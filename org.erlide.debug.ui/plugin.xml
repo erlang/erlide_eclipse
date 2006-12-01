@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.erlide.debug.ui.model.ErlDebugModelPresentation"
+            id="org.erlide.debug.model"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.erlide.ui.editors.erl.ErlangEditor"
+            class="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory">
+         <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            description="Debugging Erlang"
+            id="org.erlide.debug.ui.debugging"
+            name="Debugging Erlang"
+            parentId="org.eclipse.debug.ui.debugging"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelContextBindings">
+      <modelContextBinding
+            contextId="org.erlide.debug.ui.debugging"
+            debugModelId="org.erlide.debug.model"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.erlide.ui.perspectives.ErlangPerspective">
+		 <actionSet
+               id="org.eclipse.debug.ui.breakpointActionSet">
+         </actionSet>                            
+         <actionSet
+               id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
+         </actionSet>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>

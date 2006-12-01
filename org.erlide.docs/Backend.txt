@@ -1,0 +1,30 @@
+Definitions
+1) Backend: a Java interface towards an Erlang node, allowing thread-safe RPCs to Erlang and also creating an event sink (also per Java thread) where asynchronous notifications from Erlang are received.
+2) A backend may be Erlide managed (“managed”) or standalone (“standalone”).
+3) A backend may be linked to a project (“project”) or nor (“remote”). 
+
+Requirements
+1) Each Erlang project is linked to a specific backend, where its code is loaded and run. The backend is providing Erlide support to the project. Opening/closing the project will start/stop the backend node.
+2) Backends may be shared between projects. It is the developer’s responsibility to ensure that there are no module name clashes.
+3) Erlide specific code must be loaded on all project backends, to provide a framework for interacting with Erlide and Eclipse. Remote backends need not have Erlide code loaded [1]. 
+4) Full functionality in the backend is only available when starting a “Run” or “Debug” session. Otherwise, the code is available, but no project-specific processes are running [2] 
+5) A “Run” or “Debug” session may be specified to use the project backend, to start a fresh one (without any Erlide code loaded) or use an existing node. 
+6) Erlide specific code shall not be updateable at runtime (see below for the only exception). [3]
+7) Erlide development
+a) For development of Erlide itself, a single common backend shall be used for all Erlide projects (“DEV”). 
+b) Changes in the Erlide code in DEV should be propagated to any child Erlide instances.
+
+Notes
+1) Typical uses: 
+a) run/debug platform for a project, for example giving access to specific hardware;
+b) to access child project backends when debugging Erlide itself;
+2) Of course, they user could start processes manually from the console, but this is not supported.
+3) The reason for this is that errors in the code might make Erlide unusable, with the only solution being manual uninstallation.
+
+Issues
+* How to manage consoles and other views/functionality that are backend-specific in the UI? 
+* How to find the nodes that correspond to child Erlide projects? 
+o naming convention, search all nodes registered with epmd
+o 
+
+

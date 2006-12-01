@@ -1,0 +1,7 @@
+This application is based on syntax_tools 1.4.2 from the OTP release.
+
+Module names are renamed because small changes were made,
+and we don't want any clashes with the original version.
+
+If the changes will be compatible, maybe they will be integrated in
+the original.

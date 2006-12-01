@@ -1,0 +1,1112 @@
+package org.erlide.ui.internal.folding;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.Assert;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.projection.IProjectionListener;
+import org.eclipse.jface.text.source.projection.IProjectionPosition;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.ErlElementDelta;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlComment;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElementDelta;
+import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.util.ElementChangedEvent;
+import org.erlide.core.erlang.util.IElementChangedListener;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.folding.IErlangFoldingStructureProviderExtension;
+import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.ui.util.ErlModelUtils;
+
+public class DefaultErlangFoldingStructureProvider implements
+		IProjectionListener, IErlangFoldingStructureProvider,
+		IErlangFoldingStructureProviderExtension {
+
+	private static final class ErlangProjectionAnnotation extends
+			ProjectionAnnotation {
+
+		private IErlElement fErlElement;
+
+		private boolean fIsComment;
+
+		public ErlangProjectionAnnotation(IErlElement element,
+				boolean isCollapsed, boolean isComment) {
+			super(isCollapsed);
+			fErlElement = element;
+			fIsComment = isComment;
+		}
+
+		public IErlElement getElement() {
+			return fErlElement;
+		}
+
+		public void setElement(IErlElement element) {
+			fErlElement = element;
+		}
+
+		public boolean isComment() {
+			return fIsComment;
+		}
+
+		public void setIsComment(boolean isComment) {
+			fIsComment = isComment;
+		}
+
+		/*
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return "ErlangProjectionAnnotation:\n" + //$NON-NLS-1$
+					"\telement: \t" + fErlElement.toString() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
+					"\tcollapsed: \t" + isCollapsed() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
+					"\tcomment: \t" + fIsComment + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
+
+	private static final class Tuple {
+
+		ErlangProjectionAnnotation annotation;
+
+		Position position;
+
+		Tuple(ErlangProjectionAnnotation ann, Position pos) {
+			this.annotation = ann;
+			this.position = pos;
+		}
+	}
+
+	/**
+	 * Filter for annotations.
+	 * 
+	 * @since 3.2
+	 */
+	private static interface Filter {
+
+		boolean match(ErlangProjectionAnnotation annotation);
+	}
+
+	private static final class ErlangElementSetFilter implements Filter {
+
+		private final Set<IErlElement> fSet;
+
+		private final boolean fMatchCollapsed;
+
+		private ErlangElementSetFilter(Set<IErlElement> set, boolean matchCollapsed) {
+			fSet = set;
+			fMatchCollapsed = matchCollapsed;
+		}
+
+		public boolean match(ErlangProjectionAnnotation annotation) {
+			final boolean stateMatch = fMatchCollapsed == annotation.isCollapsed();
+			if (stateMatch && !annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
+				final IErlElement element = annotation.getElement();
+				if (fSet.contains(element)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	private class ElementChangedListener implements IElementChangedListener {
+
+		/*
+		 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)
+		 */
+		public void elementChanged(ElementChangedEvent e) {
+			IErlElementDelta delta = e.getDelta();
+			if (delta == null) {
+				return;
+			}
+			delta = delta.findElement(fModule);
+			if (delta == null) {
+				return;
+			}
+			processDelta(delta);
+		}
+
+	}
+
+	// /**
+	// * Projection position that will return two foldable regions: one folding
+	// away the
+	// * region from after the '/**' to the beginning of the content, the other
+	// from after
+	// * the first content line until after the comment.
+	// *
+	// * @since 3.1
+	// */
+	// private static final class CommentPosition extends Position implements
+	// IProjectionPosition
+	// {
+	//
+	// CommentPosition(int off, int len)
+	// {
+	// super(off, len);
+	// }
+	//
+	// /*
+	// * @see
+	// org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
+	// */
+	// public IRegion[] computeProjectionRegions(IDocument document)
+	// throws BadLocationException
+	// {
+	// DocumentCharacterIterator sequence = new
+	// DocumentCharacterIterator(document,
+	// offset, offset + length);
+	// int prefixEnd = 0;
+	// int contentStart = findFirstContent(sequence, prefixEnd);
+	//
+	// int firstLine = document.getLineOfOffset(offset + prefixEnd);
+	// int captionLine = document.getLineOfOffset(offset + contentStart);
+	// int lastLine = document.getLineOfOffset(offset + length);
+	//
+	// Assert.isTrue(firstLine <= captionLine,
+	// "first folded line is greater than the caption line"); //$NON-NLS-1$
+	// Assert.isTrue(captionLine <= lastLine,
+	// "caption line is greater than the last folded line"); //$NON-NLS-1$
+	//
+	// IRegion preRegion;
+	// if (firstLine < captionLine)
+	// {
+	// // preRegion= new Region(offset + prefixEnd, contentStart - prefixEnd);
+	// int preOffset = document.getLineOffset(firstLine);
+	// IRegion preEndLineInfo = document.getLineInformation(captionLine);
+	// int preEnd = preEndLineInfo.getOffset();
+	// preRegion = new Region(preOffset, preEnd - preOffset);
+	// } else
+	// {
+	// preRegion = null;
+	// }
+	//
+	// if (captionLine < lastLine)
+	// {
+	// int postOffset = document.getLineOffset(captionLine + 1);
+	// IRegion postRegion = new Region(postOffset, offset + length -
+	// postOffset);
+	//
+	// if (preRegion == null)
+	// return new IRegion[] { postRegion };
+	//
+	// return new IRegion[] { preRegion, postRegion };
+	// }
+	//
+	// if (preRegion != null)
+	// return new IRegion[] { preRegion };
+	//
+	// return null;
+	// }
+	//
+	// /**
+	// * Finds the offset of the first identifier part within
+	// <code>content</code>.
+	// * Returns 0 if none is found.
+	// *
+	// * @param content
+	// * the content to search
+	// * @return the first index of a unicode identifier part, or zero if none
+	// can be
+	// * found
+	// */
+	// private int findFirstContent(final CharSequence content, int prefixEnd)
+	// {
+	// int lenght = content.length();
+	// for (int i = prefixEnd; i < lenght; i++)
+	// {
+	// if (Character.isUnicodeIdentifierPart(content.charAt(i)))
+	// return i;
+	// }
+	// return 0;
+	// }
+	//
+	// // /**
+	// // * Finds the offset of the first identifier part within
+	// <code>content</code>.
+	// // * Returns 0 if none is found.
+	// // *
+	// // * @param content the content to search
+	// // * @return the first index of a unicode identifier part, or zero if
+	// none can
+	// // * be found
+	// // */
+	// // private int findPrefixEnd(final CharSequence content) {
+	// // // return the index after the leading '/*' or '/**'
+	// // int len= content.length();
+	// // int i= 0;
+	// // while (i < len && isWhiteSpace(content.charAt(i)))
+	// // i++;
+	// // if (len >= i + 2 && content.charAt(i) == '/' && content.charAt(i + 1)
+	// == '*')
+	// // if (len >= i + 3 && content.charAt(i + 2) == '*')
+	// // return i + 3;
+	// // else
+	// // return i + 2;
+	// // else
+	// // return i;
+	// // }
+	// //
+	// // private boolean isWhiteSpace(char c) {
+	// // return c == ' ' || c == '\t';
+	// // }
+	//
+	// /*
+	// * @see
+	// org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
+	// */
+	// public int computeCaptionOffset(IDocument document)
+	// {
+	// // return 0;
+	// DocumentCharacterIterator sequence = new
+	// DocumentCharacterIterator(document,
+	// offset, offset + length);
+	// return findFirstContent(sequence, 0);
+	// }
+	// }
+
+	/**
+	 * Projection position that will return two foldable regions: one folding
+	 * away the lines before the one containing the simple name of the erlang
+	 * element, one folding away any lines after the caption.
+	 * 
+	 * @since 3.1
+	 */
+	private static final class ErlangElementPosition extends Position implements
+			IProjectionPosition {
+
+		private IErlMember fMember;
+
+		public ErlangElementPosition(int off, int len, IErlMember member) {
+			super(off, len);
+			Assert.isNotNull(member);
+			fMember = member;
+		}
+
+		public void setMember(IErlMember member) {
+			Assert.isNotNull(member);
+			fMember = member;
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
+		 */
+		public IRegion[] computeProjectionRegions(IDocument document)
+				throws BadLocationException {
+			int nameStart = offset;
+			/*
+			 * The member's name range may not be correct. However, reconciling
+			 * would trigger another element delta which would lead to reentrant
+			 * situations. Therefore, we optimistically assume that the name
+			 * range is correct, but double check the received lines below.
+			 */
+			final ISourceRange nameRange = fMember.getNameRange();
+			if (nameRange != null) {
+				nameStart = nameRange.getOffset();
+			}
+
+			final int firstLine = document.getLineOfOffset(offset);
+			int captionLine = document.getLineOfOffset(nameStart);
+			final int lastLine = document.getLineOfOffset(offset + length);
+
+			/*
+			 * see comment above - adjust the caption line to be inside the
+			 * entire folded region, and rely on later element deltas to correct
+			 * the name range.
+			 */
+			if (captionLine < firstLine) {
+				captionLine = firstLine;
+			}
+			if (captionLine > lastLine) {
+				captionLine = lastLine;
+			}
+
+			IRegion preRegion;
+			if (firstLine < captionLine) {
+				final int preOffset = document.getLineOffset(firstLine);
+				final IRegion preEndLineInfo = document
+						.getLineInformation(captionLine);
+				final int preEnd = preEndLineInfo.getOffset();
+				preRegion = new Region(preOffset, preEnd - preOffset);
+			} else {
+				preRegion = null;
+			}
+
+			if (captionLine < lastLine) {
+				final int postOffset = document.getLineOffset(captionLine + 1);
+				final IRegion postRegion = new Region(postOffset, offset + length
+						- postOffset);
+
+				if (preRegion == null) {
+					return new IRegion[] { postRegion };
+				}
+
+				return new IRegion[] { preRegion, postRegion };
+			}
+
+			if (preRegion != null) {
+				return new IRegion[] { preRegion };
+			}
+
+			return null;
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
+		 */
+		public int computeCaptionOffset(IDocument document)
+				throws BadLocationException {
+			int nameStart = offset;
+			// try {
+			// need a reconcile here?
+			final ISourceRange nameRange = fMember.getNameRange();
+			if (nameRange != null) {
+				nameStart = nameRange.getOffset();
+				// } catch (ErlModelException e) {
+				// ignore and use default
+				// }
+			}
+
+			return nameStart - offset;
+		}
+
+	}
+
+	private IDocument fCachedDocument;
+
+	private ProjectionAnnotationModel fCachedModel;
+
+	private ITextEditor fEditor;
+
+	private ProjectionViewer fViewer;
+
+	IErlModule fModule;
+
+	private IElementChangedListener fElementListener;
+
+	private boolean fAllowCollapsing = false;
+
+	private boolean fCollapseHeaderComments = true;
+
+	private boolean fCollapseEdoc = false;
+
+	private boolean fCollapseComments = false;
+
+	// private boolean fCollapseFunctions = false;
+	private boolean fCollapseClauses = false;
+
+	/* caches for header comment extraction. */
+	// private IType fFirstType;
+	// private boolean fHasHeaderComment;
+	/* filters */
+	/**
+	 * Member filter, matches nested members (but not top-level types).
+	 * 
+	 * @since 3.2
+	 */
+	private final Filter fMemberFilter = new Filter() {
+
+		public boolean match(ErlangProjectionAnnotation annotation) {
+			if (!annotation.isCollapsed() && !annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
+				IErlElement element = annotation.getElement();
+				return element instanceof IParent;
+				// if (element instanceof IErlMember) {
+				// if (element.getElementType() != IErlElement.TYPE
+				// || ((IErlMember)element).getDeclaringType() != null) {
+				// return true;
+				// }
+				// }
+			}
+			return false;
+		}
+	};
+
+	/**
+	 * Comment filter, matches comments.
+	 * 
+	 * @since 3.2
+	 */
+	private final Filter fCommentFilter = new Filter() {
+
+		public boolean match(ErlangProjectionAnnotation annotation) {
+			if (!annotation.isCollapsed() && annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
+				return true;
+			}
+			return false;
+		}
+	};
+
+	public DefaultErlangFoldingStructureProvider() {
+	}
+
+	public void install(ITextEditor editor, ProjectionViewer viewer) {
+		if (editor instanceof ErlangEditor) {
+			fEditor = editor;
+			fViewer = viewer;
+			fViewer.addProjectionListener(this);
+			final IErlModel mdl = ErlangCore.getModel();
+			mdl.addModelChangeListener(this);
+		}
+	}
+
+	public void uninstall() {
+		if (isInstalled()) {
+			projectionDisabled();
+			fViewer.removeProjectionListener(this);
+			fViewer = null;
+			fEditor = null;
+			ErlangCore.getModel().removeModelChangeListener(this);
+		}
+	}
+
+	protected boolean isInstalled() {
+		return fEditor != null;
+	}
+
+	/*
+	 * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionEnabled()
+	 */
+	public void projectionEnabled() {
+		// http://home.ott.oti.com/teams/wswb/anon/out/vms/index.html
+		// projectionEnabled messages are not always paired with
+		// projectionDisabled
+		// i.e. multiple enabled messages may be sent out.
+		// we have to make sure that we disable first when getting an enable
+		// message.
+		projectionDisabled();
+
+		if (fEditor instanceof ErlangEditor) {
+			initialize();
+			fElementListener = new ElementChangedListener();
+			ErlangCore.getModelManager().addElementChangedListener(
+					fElementListener);
+		}
+	}
+
+	/*
+	 * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionDisabled()
+	 */
+	public void projectionDisabled() {
+		fCachedDocument = null;
+		if (fElementListener != null) {
+			ErlangCore.getModelManager().removeElementChangedListener(
+					fElementListener);
+			fElementListener = null;
+		}
+	}
+
+	public void initialize() {
+		if (!isInstalled()) {
+			return;
+		}
+
+		initializePreferences();
+
+		final IDocumentProvider provider = fEditor.getDocumentProvider();
+		final IDocument document = provider.getDocument(fEditor.getEditorInput());
+		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
+		fModule = m;
+		if (fModule == null) {
+			return;
+		}
+		try {
+			m.reset();
+			m.open(null);
+			// Since we are a model change listener, reconcile will fix
+			// additions
+			fAllowCollapsing = true;
+			m.reconcile(document);
+			fAllowCollapsing = false;
+		} catch (final ErlModelException x) {
+			x.printStackTrace();
+		}
+	}
+
+	private void initializePreferences() {
+		final IPreferenceStore store = ErlideUIPlugin.getDefault()
+				.getPreferenceStore();
+
+		fCollapseEdoc = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EDOC);
+		fCollapseClauses = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
+		fCollapseHeaderComments = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADERS);
+		fCollapseComments = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
+	}
+
+	private void computeAdditions(IErlModule erlModule, Map<ErlangProjectionAnnotation,Position> map) {
+		if (erlModule == null) {
+			return;
+		}
+		try {
+			computeAdditions((IParent) erlModule, map);
+			computeAdditions(erlModule.getComments(), map);
+		} catch (final ErlModelException x) {
+			x.printStackTrace();
+		}
+	}
+
+	private void computeAdditions(IParent parent, Map<ErlangProjectionAnnotation,Position> map) {
+		if (parent == null) {
+			return;
+		}
+		try {
+			computeAdditions(parent.getChildren(), map);
+		} catch (final ErlModelException x) {
+			x.printStackTrace();
+		}
+	}
+
+	private void computeAdditions(IErlElement[] elements, Map<ErlangProjectionAnnotation,Position> map)
+			throws ErlModelException {
+		if (elements == null) {
+			return;
+		}
+		for (int i = 0; i < elements.length; i++) {
+			final IErlElement element = elements[i];
+			if (element != null) {
+				computeAdditions(element, map);
+				if (element instanceof IParent) {
+					final IParent parent = (IParent) element;
+					computeAdditions(parent.getChildren(), map);
+				}
+			}
+		}
+	}
+
+	private void computeAdditions(IErlElement element, Map<ErlangProjectionAnnotation,Position> map) {
+		boolean createProjection = false;
+		boolean collapse = false;
+
+		if (element.getElementType() == IErlElement.CLAUSE) {
+			collapse = fAllowCollapsing && fCollapseClauses;
+			createProjection = true;
+		} else if (element.getElementType() == IErlElement.COMMENT) {
+			final IErlComment c = (IErlComment) element;
+			if (c.isHeader()) {
+				collapse = fAllowCollapsing && fCollapseHeaderComments;
+			} else if (c.isEdoc()) {
+				collapse = fAllowCollapsing && fCollapseEdoc;
+			} else {
+				collapse = fAllowCollapsing && fCollapseComments;
+			}
+			createProjection = true;
+		}
+		if (createProjection) {
+			final IRegion region = computeProjectionRanges(element);
+			if (region != null) {
+				final Position position = createProjectionPosition(region, element);
+				if (position != null) {
+					map.put(new ErlangProjectionAnnotation(element, collapse,
+							false), position);
+				}
+			}
+		}
+	}
+
+	// private boolean isInnerType(IType type) {
+	// return type.getDeclaringType() != null;
+	// }
+
+	/**
+	 * Computes the projection ranges for a given <code>IErlElement</code>.
+	 * More than one range may be returned if the element has a leading comment
+	 * which gets folded separately. If there are no foldable regions,
+	 * <code>null</code> is returned.
+	 * 
+	 * @param element
+	 *            the erlang element that can be folded
+	 * @return the regions to be folded, or <code>null</code> if there are
+	 *         none
+	 */
+	private IRegion computeProjectionRanges(IErlElement element) {
+
+		try {
+			if (element instanceof ISourceReference) {
+				final ISourceReference reference = (ISourceReference) element;
+				final ISourceRange range = reference.getSourceRange();
+
+				final String contents = reference.getSource();
+				if (contents == null) {
+					return null;
+				}
+
+				return new Region(range.getOffset(), range.getLength());
+			}
+		} catch (final ErlModelException e) {
+			// TODO } catch (InvalidInputException e) {
+		}
+
+		return null;
+	}
+
+	private Position createProjectionPosition(IRegion region,
+			IErlElement element) {
+
+		if (fCachedDocument == null) {
+			return null;
+		}
+
+		try {
+
+			final int start = fCachedDocument.getLineOfOffset(region.getOffset());
+			final int end = fCachedDocument.getLineOfOffset(region.getOffset()
+					+ region.getLength());
+			if (start != end) {
+				final int offset = fCachedDocument.getLineOffset(start);
+				int endOffset;
+				if (fCachedDocument.getNumberOfLines() > end + 1) {
+					endOffset = fCachedDocument.getLineOffset(end + 1);
+				} else if (end > start) {
+					endOffset = fCachedDocument.getLineOffset(end)
+							+ fCachedDocument.getLineLength(end);
+				} else {
+					return null;
+				}
+				if (element instanceof IErlMember) {
+					return new ErlangElementPosition(offset,
+							endOffset - offset, (IErlMember) element);
+					// else
+					// return new CommentPosition(offset, endOffset - offset);
+				}
+			}
+
+		} catch (final BadLocationException x) {
+		}
+
+		return null;
+	}
+
+	protected void processDelta(IErlElementDelta delta) {
+
+		if (!isInstalled()) {
+			return;
+		}
+
+		if ((delta.getFlags() & (IErlElementDelta.F_CONTENT | IErlElementDelta.F_CHILDREN)) == 0) {
+			return;
+		}
+
+		final IErlElement de = delta.getElement();
+		if (de instanceof IErlModule && de != fModule) {
+			return;
+		}
+
+		final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+				.getAdapter(ProjectionAnnotationModel.class);
+		if (model == null) {
+			return;
+		}
+
+		final IDocumentProvider provider = fEditor.getDocumentProvider();
+
+		try {
+
+			fCachedDocument = provider.getDocument(fEditor.getEditorInput());
+			fCachedModel = model;
+
+			// fFirstType= null;
+			// fHasHeaderComment = false;
+
+			final Map<ErlangProjectionAnnotation,Position> additions = 
+				new HashMap<ErlangProjectionAnnotation,Position>();
+			final List<ErlangProjectionAnnotation> deletions = 
+				new ArrayList<ErlangProjectionAnnotation>();
+			final List<ErlangProjectionAnnotation> updates = 
+				new ArrayList<ErlangProjectionAnnotation>();
+
+//			 use a linked map to maintain ordering of comments
+			final Map<ErlangProjectionAnnotation,Position> updated = 
+				new LinkedHashMap<ErlangProjectionAnnotation,Position>();
+			    
+			computeAdditions(fModule, updated);
+			final Map previous = createAnnotationMap(model);
+
+			Iterator<ErlangProjectionAnnotation> e = updated.keySet().iterator();
+			while (e.hasNext()) {
+				final ErlangProjectionAnnotation newAnnotation = e.next();
+				final IErlElement element = newAnnotation.getElement();
+				final Position newPosition = updated.get(newAnnotation);
+
+				final List annotations = (List) previous.get(element);
+				if (annotations == null) {
+
+					additions.put(newAnnotation, newPosition);
+
+				} else {
+					final Iterator x = annotations.iterator();
+					boolean matched = false;
+					while (x.hasNext()) {
+						final Tuple tuple = (Tuple) x.next();
+						final ErlangProjectionAnnotation existingAnnotation = tuple.annotation;
+						final Position existingPosition = tuple.position;
+						if (newAnnotation.isComment() == existingAnnotation
+								.isComment()) {
+							if (existingPosition != null
+									&& (!newPosition.equals(existingPosition))) {
+								existingPosition.setOffset(newPosition
+										.getOffset());
+								existingPosition.setLength(newPosition
+										.getLength());
+								updates.add(existingAnnotation);
+							}
+							matched = true;
+							x.remove();
+							break;
+						}
+					}
+					if (!matched) {
+						additions.put(newAnnotation, newPosition);
+					}
+
+					if (annotations.isEmpty()) {
+						previous.remove(element);
+					}
+				}
+			}
+
+			@SuppressWarnings("unchecked")
+			Iterator<List> l = (Iterator<List>)previous.values().iterator();
+			while (l.hasNext()) {
+				final List list = l.next();
+				final int size = list.size();
+				for (int i = 0; i < size; i++) {
+					deletions.add(((Tuple) list.get(i)).annotation);
+				}
+			}
+
+			match(deletions, additions, updates);
+
+			final Annotation[] removals = new Annotation[deletions.size()];
+			deletions.toArray(removals);
+			final Annotation[] changes = new Annotation[updates.size()];
+			updates.toArray(changes);
+			model.modifyAnnotations(removals, additions, changes);
+
+		} finally {
+			fCachedDocument = null;
+			fCachedModel = null;
+
+			// fFirstType= null;
+			// fHasHeaderComment = false;
+		}
+	}
+
+	/**
+	 * Matches deleted annotations to changed or added ones. A deleted
+	 * annotation/position tuple that has a matching addition / change is
+	 * updated and marked as changed. The matching tuple is not added (for
+	 * additions) or marked as deletion instead (for changes). The result is
+	 * that more annotations are changed and fewer get deleted/re-added.
+	 */
+	private void match(List<ErlangProjectionAnnotation> deletions, 
+			Map<ErlangProjectionAnnotation,Position> additions, 
+			List<ErlangProjectionAnnotation> changes) {
+		if (deletions.isEmpty() || (additions.isEmpty() && changes.isEmpty())) {
+			return;
+		}
+
+		final List<ErlangProjectionAnnotation> newDeletions = 
+			new ArrayList<ErlangProjectionAnnotation>();
+		final List<ErlangProjectionAnnotation> newChanges = 
+			new ArrayList<ErlangProjectionAnnotation>();
+
+		final Iterator deletionIterator = deletions.iterator();
+		while (deletionIterator.hasNext()) {
+			final ErlangProjectionAnnotation deleted = (ErlangProjectionAnnotation) deletionIterator
+					.next();
+			final Position deletedPosition = fCachedModel.getPosition(deleted);
+			if (deletedPosition == null) {
+				continue;
+			}
+
+			final Tuple deletedTuple = new Tuple(deleted, deletedPosition);
+
+			Tuple match = findMatch(deletedTuple, changes, null);
+			boolean addToDeletions = true;
+			if (match == null) {
+				match = findMatch(deletedTuple, additions.keySet(), additions);
+				addToDeletions = false;
+			}
+
+			if (match != null) {
+				final IErlElement element = match.annotation.getElement();
+				deleted.setElement(element);
+				deletedPosition.setLength(match.position.getLength());
+				if (deletedPosition instanceof ErlangElementPosition
+						&& element instanceof IErlMember) {
+					final ErlangElementPosition eep = (ErlangElementPosition) deletedPosition;
+					eep.setMember((IErlMember) element);
+				}
+
+				deletionIterator.remove();
+				newChanges.add(deleted);
+
+				if (addToDeletions) {
+					newDeletions.add(match.annotation);
+				}
+			}
+		}
+
+		deletions.addAll(newDeletions);
+		changes.addAll(newChanges);
+	}
+
+	/**
+	 * Finds a match for <code>tuple</code> in a collection of annotations.
+	 * The positions for the <code>ErlangProjectionAnnotation</code> instances
+	 * in <code>annotations</code> can be found in the passed
+	 * <code>positionMap</code> or <code>fCachedModel</code> if
+	 * <code>positionMap</code> is <code>null</code>.
+	 * <p>
+	 * A tuple is said to match another if their annotations have the same
+	 * comment flag and their position offsets are equal.
+	 * </p>
+	 * <p>
+	 * If a match is found, the annotation gets removed from
+	 * <code>annotations</code>.
+	 * </p>
+	 * 
+	 * @param tuple
+	 *            the tuple for which we want to find a match
+	 * @param annotations
+	 *            collection of <code>ErlangProjectionAnnotation</code>
+	 * @param positionMap
+	 *            a <code>Map&lt;Annotation, Position&gt;</code> or
+	 *            <code>null</code>
+	 * @return a matching tuple or <code>null</code> for no match
+	 */
+	private Tuple findMatch(Tuple tuple, Collection annotations, Map positionMap) {
+		final Iterator it = annotations.iterator();
+		while (it.hasNext()) {
+			final ErlangProjectionAnnotation annotation = (ErlangProjectionAnnotation) it
+					.next();
+			if (tuple.annotation.isComment() == annotation.isComment()) {
+				final Position position = positionMap == null ? fCachedModel
+						.getPosition(annotation) : (Position) positionMap
+						.get(annotation);
+				if (position == null) {
+					continue;
+				}
+
+				if (tuple.position.getOffset() == position.getOffset()) {
+					it.remove();
+					return new Tuple(annotation, position);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private Map createAnnotationMap(IAnnotationModel model) {
+		final Map<Object,List<Tuple>> map = new HashMap<Object,List<Tuple>>();
+		final Iterator e = model.getAnnotationIterator();
+		while (e.hasNext()) {
+			final Object annotation = e.next();
+			if (annotation instanceof ErlangProjectionAnnotation) {
+				final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
+				final Position position = model.getPosition(epa);
+				Assert.isNotNull(position);
+				List<Tuple> list = (List<Tuple>) map.get(epa.getElement());
+				if (list == null) {
+					list = new ArrayList<Tuple>(2);
+					map.put(epa.getElement(), list);
+				}
+				list.add(new Tuple(epa, position));
+			}
+		}
+
+		final Comparator<Tuple> comparator = new Comparator<Tuple>() {
+
+			public int compare(Tuple o1, Tuple o2) {
+				return o1.position.getOffset()-o2.position.getOffset();
+			}
+		};
+		for (final Iterator<List<Tuple>> it = map.values().iterator(); it.hasNext();) {
+			final List<Tuple> list = (List<Tuple>) it.next();
+			Collections.sort(list, comparator);
+		}
+		return map;
+	}
+
+	/*
+	 * @see IErlangFoldingStructureProviderExtension#collapseMembers()
+	 * @since 3.2
+	 */
+	public void collapseMembers() {
+		modifyFiltered(fMemberFilter, false);
+	}
+
+	/*
+	 * @see IErlangFoldingStructureProviderExtension#collapseComments()
+	 * @since 3.2
+	 */
+	public void collapseComments() {
+		modifyFiltered(fCommentFilter, false);
+	}
+
+	/*
+	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#collapseElements(org.eclipse.jdt.core.IErlElement[])
+	 */
+	public void collapseElements(IErlElement[] elements) {
+		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+		modifyFiltered(new ErlangElementSetFilter(set, false), false);
+	}
+
+	/*
+	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#expandElements(org.eclipse.jdt.core.IErlElement[])
+	 */
+	public void expandElements(IErlElement[] elements) {
+		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+		modifyFiltered(new ErlangElementSetFilter(set, true), true);
+	}
+
+	/**
+	 * Collapses all annotations matched by the passed filter.
+	 * 
+	 * @param filter
+	 *            the filter to use to select which annotations to collapse
+	 * @param expand
+	 *            <code>true</code> to expand the matched annotations,
+	 *            <code>false</code> to collapse them
+	 * @since 3.2
+	 */
+	private void modifyFiltered(Filter filter, boolean expand) {
+		if (!isInstalled()) {
+			return;
+		}
+
+		final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+				.getAdapter(ProjectionAnnotationModel.class);
+		if (model == null) {
+			return;
+		}
+
+		final List<ErlangProjectionAnnotation> modified = 
+			new ArrayList<ErlangProjectionAnnotation>();
+		final Iterator iter = model.getAnnotationIterator();
+		while (iter.hasNext()) {
+			final Object annotation = iter.next();
+			if (annotation instanceof ErlangProjectionAnnotation) {
+				final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
+
+				if (filter.match(epa)) {
+					if (expand) {
+						epa.markExpanded();
+					} else {
+						epa.markCollapsed();
+					}
+					modified.add(epa);
+				}
+
+			}
+		}
+
+		model.modifyAnnotations(null, null, (Annotation[]) modified
+				.toArray(new Annotation[modified.size()]));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide.core.erlang.IErlElement)
+	 */
+	public void elementChanged(IErlElement element) {
+		// TODO fixa elementchangelistener n?n g?ng
+		final IDocumentProvider provider = fEditor.getDocumentProvider();
+		if (provider == null) {
+			return;
+		}
+		final IEditorInput input = fEditor.getEditorInput();
+		if (input == null) {
+			return;
+		}
+		fCachedDocument = provider.getDocument(input);
+		if (fCachedDocument == null) {
+			return;
+		}
+		// fFirstType= null;
+		// fHasHeaderComment = false;
+		try {
+			if (fEditor == null) {
+				return;
+			}
+			final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+					.getAdapter(ProjectionAnnotationModel.class);
+			if (model == null) {
+				return;
+			}
+			fCachedModel = model;
+			if (element instanceof IErlModule && element != fModule) {
+				return;
+			}
+			// TODO anropa processDelta istället!!!
+			if (!true) {
+				final Map<ErlangProjectionAnnotation,Position> additions = 
+					new LinkedHashMap<ErlangProjectionAnnotation,Position>();
+				computeAdditions(fModule, additions);
+				/*
+				 * Minimize the events being sent out - as this happens in the
+				 * UI thread merge everything into one call.
+				 */
+				final List<Annotation> removals = 
+					new LinkedList<Annotation>();
+				@SuppressWarnings("unchecked")
+				final Iterator<Annotation> existing = model.getAnnotationIterator();
+				while (existing.hasNext()) {
+					removals.add(existing.next());
+				}
+				model.replaceAnnotations((Annotation[]) removals
+						.toArray(new Annotation[removals.size()]), additions);
+			} else {
+				final ErlElementDelta d = new ErlElementDelta(
+						IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+						fModule);
+				processDelta(d);
+			}
+		} finally {
+			fCachedDocument = null;
+			fCachedModel = null;
+		}
+	}
+}

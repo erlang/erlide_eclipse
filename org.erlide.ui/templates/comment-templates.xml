@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+<template
+	name="File Comment"
+	description="%descriptionFileComment"
+	context="org.erlide.ui.erlangsource.template.context.generate"
+	id="org.erlide.ui.erlangsource.filecomment">%% Author: ${user}
+%% Created: ${date}
+%% Description: TODO: Add desciption to ${module}</template>
+
+<template
+	name="Behaviour Comment"
+	description="%descriptionBehaviourComment"
+	context="org.erlide.ui.erlangsource.template.context.generate"
+	id="org.erlide.ui.erlangsource.behaviourcomment">%%
+%% Behaviours
+%%</template>
+
+<template
+	name="Export Comment"
+	description="%descriptionExportComment"
+	context="org.erlide.ui.erlangsource.template.context.generate"
+	id="org.erlide.ui.erlangsource.exportcomment">%%
+%% Exports
+%%</template>
+
+<template
+	name="Function Comment"
+	description="%descriptionFunctionComment"
+	context="org.erlide.ui.erlangsource.template.context.generate"
+	id="org.erlide.ui.erlangsource.functioncomment">%%
+%% TODO: Add description of ${function_name}/${function_arity}
+%%</template>
+
+</templates>

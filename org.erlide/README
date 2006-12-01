@@ -1,0 +1,108 @@
+
+Important
+=========
+
+* As from version 0.2.0, this plugin is targeted at Eclipse 3.1.
+* It is tested with R9C and R10B, mostly on Windows but also Linux FC4.
+* For bug reports and feature requests, please use the SouceForge trackers at
+http://sourceforge.net/projects/erlide/.
+  Mailing to erlide-devel@sf.net would be the second option.
+
+Installation notes:
+===================
+- Install either from remote site http://erlide.sf.net/update, or download
+the archived update site from the file releases.
+- After installing the plugin, the Erlang environment has to be set (if not already done)
+	* go to window->Preferences->Erlang->Runtime
+	  and enter the Erlang root directory ($ERL_TOP)
+
+News for 0.3.6
+==============
+- Outline view
+- Bracket matching
+- Simple code completion
+- More stable and a little faster
+
+News for 0.3.3
+==============
+- Now works with R9 backend too.
+- Removed spurious messages in console.
+- There are again many small things that aren't directly visible.
+
+News for 0.3.2
+==============
+- The Erlang backend is no longer distributed. The RPC mechanism has been changed accordingly.
+You will notice some messages in the console at startup, these will dissapear in a later
+version (they are an artifact of this new mechanism).
+- Editor now displays print margin, current line highlight, etc.
+- The New Source File wizard was incomplete in the previous build, the templates were missing.
+This is now fixed.
+
+News for 0.3.1
+==============
+- Added a startup check for proper configuration. If OTP_HOME is invalid, the configuration
+dialog pops up and asks for the right value.
+- There was a bug in jinterface, preventing strings longer than 65535 chars to be
+transmitted correctly in external format.
+
+News for 0.3.0
+==============
+- A Module Wizard has been added (thanks to Lukas Larsson). It can generate most of the
+module skeletons we all love from the Emacs environment.
+- Various bug fixes and small improvements: builder, syntax highlighting and more.
+
+News for 0.2.5
+==============
+- LiveExpressions update themselves after rebuilding. A cool way to check if that bug
+you were hunting has disappeared! ;-)
+- The builder is still shaky, if you suspect it didn't compile and load your files,
+try a clean build first.
+- There's been a lot of refactoring under the hood, the result being a more robust backend.
+There is only one Erlang node as backend, hosting all projects. Less confusing UI, but
+with potential problems if several open projects have modules named identically.
+Later one will be able to launch an Erlang node with only selected projects.
+
+Developer news:
+- Added a new plugin erlide-basic-ui, to handle runtime preferences. The "regular" ui
+plugin was depending on a backend to be running, but when first installing the backend
+couldn't start because it wasn't properly configured.
+- So now Erlide is self-hosting! The projects have an Erlang nature, so developers have to
+install a binary version of 0.2.5 or later to get things working.
+- The erlang-builder project has been deprecated and retired, as it's not needed anymore.
+
+News for 0.2.3
+==============
+- Fixed builder, now it also loads the compiled modules into the project's node.
+- There's a new view, LiveExpressions, where one can enter expressions to be evaluated and
+can see the results. It should refresh itself after a build, so one can have some testing
+calls there and need not type them in the shell over and over again. However, it's only
+alpha status: expressions aren't saved, can't be removed either (except by restarting Eclipse)
+- Syntax highlighting now uses an Erlang based scanner. I hacked erl_scan so that it returns
+char offset in file instead of line number, and also recognizes comments, macros, records
+different types of numbers, bifs. In some ways, it's better than Emacs' but in others is
+still lacking (because syntax isn't enough, we need to do some parsing too).
+
+Developer news:
+- There is a new project in the CVS, module erlide/erlang-builder, that implements
+simple nature and builder for projects that aren't completely Erlang based (like for
+example erlide-core). See below for building notes.
+- erlide-launching project has been moved inside erlide-core, and isn't used anymore.
+
+News for 0.2.0
+==============
+- Eclipse 3.1 compatible. Older versions are no longer supported (3.1 has new APIs that
+aren't backwards compatible).
+- erlide-jinterface uses OtpErlang.jar from R10B-5
+- Erlang no longer must be on the path, the value entered in the preferences is always used.
+(thanks to Mickael Remond)
+- Console input works now, just try it! The cursor may be placed wrong, but input goes
+where it should.
+- Several minor enhancements.
+
+Building notes:
+===============
+See http://erlide.sf.net/devman.html for developer's information
+
+Enjoy!
+
+/Vlad

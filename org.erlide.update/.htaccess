@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /update/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^org\.erlide\.(.*)\.jar$ http://switch.dl.sourceforge.net/sourceforge/erlide/org.erlide.$1.jar [R]

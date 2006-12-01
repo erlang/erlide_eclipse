@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.erlide.core; singleton:=true
+Bundle-Version: 0.3.27.qualifier
+Bundle-ClassPath: erlide-core.jar,
+ commons-net-1.4.1.jar
+Bundle-Activator: org.erlide.core.ErlangPlugin
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: org.apache.commons.net,
+ org.apache.commons.net.bsd,
+ org.erlide.core,
+ org.erlide.core.builder,
+ org.erlide.core.erlang,
+ org.erlide.core.erlang.util,
+ org.erlide.core.util
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ org.erlide.jinterface,
+ org.erlide.launching,
+ org.erlide.basicui,
+ org.eclipse.swt
+Eclipse-LazyStart: true

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates><template id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype" description="Newly created files" context="newtype_context" enabled="true" deleted="false">/*******************************************************************************
+ * Copyright (c) 2005 * and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available
+ * at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     *
+ *******************************************************************************/
+${package_declaration}
+
+${typecomment}
+${type_declaration}</template><template id="org.eclipse.jdt.ui.text.codetemplates.catchblock" name="catchblock" description="Code in new catch blocks" context="catchblock_context" enabled="true" deleted="false">// ${todo} Auto-generated catch block
+${exception_var}.printStackTrace();</template><template id="org.eclipse.jdt.ui.text.codetemplates.methodbody" name="methodbody" description="Code in created method stubs" context="methodbody_context" enabled="true" deleted="false">// ${todo} Auto-generated method stub
+${body_statement}</template><template id="org.eclipse.jdt.ui.text.codetemplates.constructorbody" name="constructorbody" description="Code in created constructor stubs" context="constructorbody_context" enabled="true" deleted="false">${body_statement}
+// ${todo} Auto-generated constructor stub</template><template id="org.eclipse.jdt.ui.text.codetemplates.getterbody" name="getterbody" description="Code in created getters" context="getterbody_context" enabled="true" deleted="false">return ${field};</template><template id="org.eclipse.jdt.ui.text.codetemplates.setterbody" name="setterbody" description="Code in created setters" context="setterbody_context" enabled="true" deleted="false">${field} = ${param};</template></templates>

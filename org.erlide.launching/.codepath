@@ -1,0 +1,5 @@
+#Mon May 15 22:57:31 CEST 2006
+output_dir=ebin
+otp_project_structure=false
+include_dirs=include
+source_dirs=erl

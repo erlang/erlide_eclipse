@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="backends" name="backends" schema="schema/backends.exsd"/>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.runtime.backend.ErlangNodeLaunchConfigurationDelegate"
+            id="org.erlide.core.launch.erlangProcess"
+            modes="run, debug"
+            name="Erlang application"
+            sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.launching.sourcepathcomputer"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.erlide.runtime.SourcePathComputerDelegate"
+            id="org.erlide.launching.sourcepathcomputer"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.erlide.runtime.ErlangSourceLookupDirector"
+            id="org.erlide.launching.erlangLocatorDirector"
+            name="erlide-launching.erlangSourceLocator"/>
+   </extension>
+    <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="org.erlide.runtime.debug.ErlangLineBreakpoint"
+            id="erlang.lineBreakpoint"
+            markerType="org.erlide.launching.erlang.lineBreakpoint.marker"/>
+   </extension>
+  <extension
+         id="erlang.lineBreakpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.debug.core.breakpointMarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         point="org.erlide.launching.backends">
+      <backend
+            class="org.erlide.runtime.backend.internal.ManagedBackend"
+            id="managed"
+            name="Managed backend"/>
+      <backend
+            class="org.erlide.runtime.backend.internal.StandaloneBackend"
+            id="standalone"
+            name="Standalone backend"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="org.erlide.runtime.backend.ErtsProcessFactory"
+            id="org.erlide.core.backend.ertsprocessfactory"/>
+   </extension>
+
+</plugin>

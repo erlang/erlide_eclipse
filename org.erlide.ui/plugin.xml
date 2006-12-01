@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
+
+     <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.erlide.ui.editors.erl.ErlangEditor"
+            contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
+            default="true"
+            extensions="erl,hrl,yrl"
+            icon="icons/erlang_editor.gif"
+            id="org.erlide.ui.editors.erl.ErlangEditor"
+            name="%ErlangEditor.label"
+            symbolicFontName="org.eclipse.jface.textfont">
+         <contentTypeBinding contentTypeId="org.erlide.core.content.erlang"/>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Erlang"
+            id="org.erlide.ui.wizards.newWizards">
+      </category>
+      <wizard
+            category="org.erlide.ui.wizards.newWizards"
+            class="org.erlide.ui.wizards.NewErlangProject"
+            finalPerspective="org.erlide.ui.perspectives.ErlangPerspective"
+            hasPages="true"
+            icon="icons/newproject.gif"
+            id="org.erlide.ui.wizards.newproject"
+            name="Erlang Project"
+            project="true">
+         <description>
+            Create an Erlang project.
+         </description>
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.erlide.ui.popupMenu">
+         <filter
+               name="projectNature"
+               value="erlidenature">
+         </filter>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.erlide.ui.prefs.PreferencesInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Syntax coloring"
+            category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.ColoringPreferencePage"
+            id="org.erlide.ui.preferences.editor.coloring">
+      </page>
+      <page
+            name="Editor"
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.plugin.EditorPreferencePage"
+            id="org.erlide.ui.preferences.editor">
+      </page>
+      <page
+            name="%editorFoldingPage"
+            category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.FoldingPreferencePage"
+            id="org.erlide.ui.preferences.editor.folding">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Erlang"
+            id="org.erlide.categories.views">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.modules.ModuleNavigator"
+            icon="icons\modulenavigator.gif"
+            id="org.erlide.ui.views.modulenavigator"
+            name="Module Navigator">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.processlist.ProcessListView"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.processlist.ProcessListView"
+            name="Process list view">
+      </view>
+      <view
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.eval.LiveExpressionsView"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.eval.LiveExpressionsView"
+            name="Live Expressions"/>
+      <view
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.TraceLogView"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.TraceLogView"
+            name="Trace Log View"/>
+      <view
+            allowMultiple="false"
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.EdocView"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.EdocView"
+            name="Edoc"/>
+      <view
+            allowMultiple="false"
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.console.ErlangConsoleView"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.console"
+            name="Erlang console"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Erlang"
+            class="org.erlide.ui.perspectives.ErlangPerspective"
+            id="org.erlide.ui.perspectives.ErlangPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.erlide.ui.perspectives.ErlangPerspective">
+         <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
+         <perspectiveShortcut id="org.erlide.ui.perspectives.ErlangPerspective"/>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.erlide.ui.prefs.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="org.erlide.ui.properties.ErlangProjectPropertyPage"
+            id="org.erlide.ui.properties.erlangProjectPropertyPage"
+            name="Erlang properties"
+            objectClass="org.eclipse.core.resources.IProject">
+         <filter
+               name="nature"
+               value="org.erlide.core.erlnature"/>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="org.erlide.ui.actions.togglenature">
+         <action
+               class="org.erlide.ui.actions.ToggleNatureAction"
+               enablesFor="1"
+               id="org.erlide.ui.addRemoveNatureAction"
+               label="Toggle Erlang nature"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+  <extension
+         point="org.eclipse.ui.newWizards">
+    <wizard
+            name="Module"
+            icon="icons/sample.gif"
+            category="org.erlide.ui.wizards.newWizards"
+            class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
+            id="org.erlide.ui.wizards.ErlangSourceFile">
+      </wizard>
+     </extension>
+     <extension
+         point="org.eclipse.ui.preferencePages">
+       <page
+            name="Code Templates"
+            category="org.erlide.ui.preferences"
+      class="org.erlide.ui.erlangsource.prefs.ErlangSourcePreferencePage"
+            id="org.erlide.ui.preferences.codetemplate"/>
+  </extension>
+  <extension
+         point="org.eclipse.ui.editors.templates">
+      <contextType
+            name="Comments"
+            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment"
+            id="org.erlide.ui.erlangsource.template.context.generate">
+      </contextType>
+      <contextType
+            name="Behaviours"
+            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour"
+            id="org.erlide.ui.erlangsource.template.context.behaviour">
+      </contextType>
+      <contextType
+            name="Layout"
+            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeLayout"
+            id="org.erlide.ui.erlangsource.template.context.layout">
+      </contextType>
+      <resolver
+            name="Erlangs Module"
+            type="module"
+            description="%variableResolverModule"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            class="org.erlide.ui.erlangsource.templates.ModuleVariableResolver">
+      </resolver>
+      <resolver
+            name="Local Functions"
+            type="local_functions"
+            description="%variableResolverLocalFunctions"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            class="org.erlide.ui.erlangsource.templates.LocalFunctionsVariableResolver">
+      </resolver>
+            <resolver
+            name="Erlangs Module"
+            type="module"
+            description="%variableResolverModule"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.ModuleVariableResolver">
+      </resolver>
+      <resolver
+            name="Local Functions"
+            type="local_functions"
+            description="%variableResolverLocalFunctions"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.LocalFunctionsVariableResolver">
+      </resolver>
+      <resolver
+            name="File Comment"
+            type="file_comment"
+            description="%variableResolverFileComment"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.FileCommentVariableResolver">
+      </resolver>
+      <resolver
+            name="File Comment"
+            type="file_comment"
+            description="%variableResolverFileComment"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            class="org.erlide.ui.erlangsource.templates.FileCommentVariableResolver">
+      </resolver>
+      <resolver
+            name="Exported Functions"
+            type="exported_functions"
+            description="%variableResolverExportedFunctions"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.ExportedFunctionsVariableResolver">
+      </resolver>
+      <resolver
+            name="Exported Functions"
+            type="exported_functions"
+            description="%variableResolverExportedFunctions"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            class="org.erlide.ui.erlangsource.templates.ExportedFunctionsVariableResolver">
+      </resolver>
+      <resolver
+            name="Exports"
+            type="exports"
+            description="%variableResolverExports"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.ExportsVariableResolver">
+      </resolver>
+      <resolver
+            name="Exports"
+            type="exports"
+            description="%variableResolverExports"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            class="org.erlide.ui.erlangsource.templates.ExportsVariableResolver">
+      </resolver>
+      <resolver
+            name="Function Name"
+            type="function_name"
+            description="%variableResolverFunctionName"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.FunctionNameVariableResolver">
+      </resolver>
+      <resolver
+            name="Arguments"
+            type="arguments"
+            description="%variableResolverArguments"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.ArgumentsVariableResolver">
+      </resolver>
+      <resolver
+            name="Body"
+            type="body"
+            description="%variableResolverBody"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            class="org.erlide.ui.erlangsource.templates.BodyVariableResolver">
+      </resolver>
+      <include
+          file="templates/comment-templates.xml"
+          translations="templates/template.properties">
+      </include>
+      <include
+          file="templates/behaviour-templates.xml"
+          translations="templates/template.properties">
+      </include>
+      <include
+          file="templates/layout-templates.xml"
+          translations="templates/template.properties">
+      </include>
+   </extension>
+ <extension
+       point="org.eclipse.ui.contexts">
+    <context
+          id="org.erlide.ui.erlangEditorScope"
+          name="Erlang Editor"
+          parentId="org.eclipse.ui.textEditorScope"/>
+ </extension>
+ <extension
+       point="org.erlide.ui.foldingStructureProviders">
+    <provider
+          class="org.erlide.ui.internal.folding.DefaultErlangFoldingStructureProvider"
+          id="org.erlide.ui.editors.defaultFoldingProvider"
+          name="%defaultFoldingStructureProviderName"
+          preferencesClass="org.erlide.ui.internal.folding.DefaultErlangFoldingPreferenceBlock"/>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+    <launchConfigurationTypeImage
+          configTypeID="org.erlide.core.launch.erlangProcess"
+          icon="icons/erl/erlang-notext016.gif"
+          id="org.erlide.ui.launch.launchConfigurationTypeImage.erlangNode"/>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+          class="org.erlide.ui.launch.ErlangNodeTabGroup"
+          id="org.erlide.ui.launch.launchConfigurationTabGroup.erlangNode"
+          type="org.erlide.core.launch.erlangProcess"/>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="org.erlide.ui.launch.ErlangNodeLaunchShortcut"
+          icon="icons/erl/erlang-notext030.gif"
+          id="org.erlide.ui.launch.erlangNodeShortcut"
+          label="Erlang application"
+          modes="run,debug">
+       <perspective id="org.erlide.ui.perspectives.ErlangPerspective"/>
+       <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+    </shortcut>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+      <command
+            name="Show tooltip content"
+            description="Show tooltip content"
+            categoryId="org.eclipse.ui.category.edit"
+            id="org.erlide.ui.actions.showEDoc">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.navigate"
+            id="org.erlide.ui.actions.open.editor"
+            name="open editor"/>
+      <command
+            id="org.erlide.ui.actions.console.input"
+            name="Erlang console 1"/>
+      <command
+            id="org.erlide.ui.actions.indent"
+            name="Indent code"/>
+ </extension>
+ <extension
+       point="org.eclipse.ui.bindings">
+      <key
+            sequence="F2"
+            contextId="org.erlide.ui.erlangEditorScope"
+            commandId="org.erlide.ui.actions.showEDoc"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="org.erlide.ui.actions.open.editor"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F3"/>
+      <key
+            commandId="org.erlide.ui.actions.indent"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+I"/>
+      <key
+            commandId="org.erlide.ui.actions.console.input"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+Alt+K"/>
+ </extension>
+ <extension
+       point="org.eclipse.ui.actionSetPartAssociations">
+    <actionSetPartAssociation targetID="org.eclipse.ui.edit.text.actionSet.annotationNavigation">
+       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
+    </actionSetPartAssociation>
+    <actionSetPartAssociation targetID="org.erlide.ui.actions.openActionSet">
+       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
+    </actionSetPartAssociation>
+ </extension>
+ <extension
+       point="org.eclipse.ui.actionSets">
+    <actionSet
+          id="org.erlide.ui.actions.openActionSet"
+          label="Open action set"
+          visible="false">
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.actions.open.editor"
+             id="org.erlide.ui.actions.open"
+             label="&amp;Open"
+             menubarPath="navigate/open.ext"
+             retarget="true"
+             tooltip="Open"/>
+    </actionSet>
+    <actionSet
+          id="org.erlide.ui.actions.console"
+          label="Erlang console"
+          visible="true">
+       <action
+             class="org.erlide.ui.actions.ConsoleInputAction"
+             definitionId="org.erlide.ui.actions.console.input"
+             icon="icons/console.gif"
+             id="org.erlide.ui.actions.console.input"
+             label="Console input"
+             retarget="false"
+             style="push"
+             toolbarPath="erlang/console"/>
+    </actionSet>
+ </extension>
+ <extension
+       point="org.eclipse.compare.structureCreators">
+    <structureCreator
+          class="org.erlide.ui.internal.compare.ErlStructureCreator"
+          extensions="erl,hrl"
+          id="org.erlide.ui.compare.ErlStructureCreator"/>
+    <contentTypeBinding
+          contentTypeId="org.erlide.core.content.erlang"
+          structureCreatorId="org.erlide.ui.compare.ErlStructureCreator"/>
+ </extension>
+ <extension
+       point="org.eclipse.compare.contentMergeViewers">
+    <viewer
+          class="org.erlide.ui.internal.compare.ErlContentViewerCreator"
+          id="org.erlide.ui.compare.ErlContentViewerCreator"/>
+    <contentTypeBinding
+          contentMergeViewerId="org.erlide.ui.compare.ErlContentViewerCreator"
+          contentTypeId="org.erlide.core.content.erlang"/>
+ </extension>
+</plugin>

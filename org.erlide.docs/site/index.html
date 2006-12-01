@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<meta name="description"
+  content="Erlide, the Erlang IDE. Powered by Eclipse." />
+<meta name="keywords" content="erlang,ide,eclipse,java,plugin" />
+<meta name="author"
+  content="Vlad Dumitrescu  / Original design: Andreas Viklund - http://andreasviklund.com/" />
+<link rel="stylesheet" type="text/css" href="andreas03.css" />
+<link rel="alternate" type="application/rss+xml"
+  title="Erlide Project News"
+  href="http://sourceforge.net/export/rss2_projnews.php?group_id=58889&rss_fulltext=1" />
+<title>Erlide - the Erlang IDE. Powered by Eclipse.</title>
+</head>
+
+<body>
+<div id="thetop"><a id="top"></a>
+<p class="hide">Skip to: <a href="#sitemenu" accesskey="2">Site menu</a>
+| <a href="#maincontent" accesskey="3">Main content</a></p>
+</div>
+
+<div id="container">
+<div id="main">
+
+<div id="logo">
+<h1><a href="index.html" accesskey="4">Erlide - the Erlang IDE.</a></h1>
+<span id="tagline">Powered by Eclipse.</span></div>
+
+<div id="intro">
+<h2><a id="maincontent"></a>Turbo charged Erlang development!</h2>
+<p><a href="http://www.erlang.org">Erlang</a> is a open-sourced
+concurrency-oriented programming language, developed by <a
+  href="http://www.ericsson.com">Ericsson</a>. It has proven itself in
+many industrial applications as a powerful tool. Now we are building a
+development environment that will boost programmer efficiency even more.</p>
+</div>
+<div class="clear"></div>
+
+<h3 class="headerstyle">Overview</h3>
+<p>The latest version is <strong>0.3.25</strong> and offers the
+following features:</p>
+<ul>
+  <li>works with <b>Eclipse 3.2 and <img src="img/new.gif" /> Java 1.5 only</b>. There is also a version targeting Eclipse 3.1.2, equivalent to 0.3.20,
+  which will probably not be maintained.</li>
+  <li>editor with syntax highlighting <img src="img/new.gif" /> even for macros and records</li>
+  <li>Erlang console with history</li>
+  <li>background builder</li>
+  <li>compilation errors and warnings displayed in the "Problems" view</li>
+  <li>LiveExpressions: auto-evaluating expressions (don't try to put an <code>init:stop()</code>
+  into one of those :-)</li>
+  <li>outline view of the current module; select to show the respective
+  element in the editor.</li>
+  <li>matching of brackets; double-clicking on one selects all content
+  between the brackets</li>
+  <li><img src="img/new2.gif" />a simple form of code completion: typing
+  a module name and colon brings up a list of functions from the module.
+  Pressing "enter" in the list fills the function name in the code.</li>
+  <li><img src="img/new2.gif" />code folding in the editor.</li>
+  <li><img src="img/new.gif" />documentation popup for the OTP libraries
+  [<b>*</b>]. Just hover the mouse over some "module:function" in the
+  editor.</li>
+  <li><img src="img/new.gif" />better auto-indentation (but a little
+  unstable as yet)</li>
+  <li><img src="img/new.gif" /> go to definition of local and remote functions</li>
+  <li>soon to come: even more really cool features (see the Java tools
+  for a reference)</li>
+</ul>
+<p>The IDE is functional (I use it in my daily work) even if I still
+consider the status alpha. Some features are functional in the normal
+case, but might not handle errors very well. There are also debug
+printouts and messages here and there.</p>
+
+<p>[<b>*</b>] If installed in the system in the standard place. Some
+versions of the documentation are known to produce erroneous printouts,
+but we're working on that. Also only tested on Windows and a Ubuntu
+Linux.</p>
+
+<p class="internallink">[ <a href="#top">Back to top</a> ]</p>
+
+<h3 id="faq" class="headerstyle">FAQ</h3>
+
+<p class="block"><strong>How do I get started?</strong></p>
+
+<p>First, you have to install Erlang. Look for your platform at <a
+  href="http://www.erlang.org/downloads">the Erlang download site</a> and
+follow the instructions.</p>
+<p>Then in Eclipse, choose <code>Help->Software Updates->Find and
+install...->New features</code> and create a new remote update site,
+pointing it at <a href="http://erlide.sourceforge.net/update32">http://erlide.sourceforge.net/update32</a>
+. (Use <a href="http://erlide.sourceforge.net/update">http://erlide.sourceforge.net/update</a>
+ for the Eclipse 3.1.2 version)
+Follow then the normal installation procedures.</p>
+<p>When restarting Eclipse, you will have to configure the plugin by
+pointing to the place you installed Erlang, and that should be all: now
+you can explore and send bug reports!</p>
+<p>"Small" releases (x.x.N) will mostly be available only from the
+update site, not as an archive download.</p>
+
+<p class="block"><strong>When I press a key, it takes one second to see
+the result in the editor!?!?</strong></p>
+
+<p>Make sure you create a project and open an Erlang file inside it. The
+above happens when opening a file with <code>File->Open file...</code>.</p>
+
+<p class="block"><strong>Can I help?</strong></p>
+
+<p>Sure! All help is welcome, because there's <strong>plenty</strong> to
+do.</p>
+<p>Register as a developer by contacting <a
+  href="mailto:vladdu@users.sourceforge.net">me (Vlad)</a>, or develop by
+yourself some cool feature and submit it later. If the feature is
+something you'd expect in any decent IDE, please check first if it isn't
+already under development.</p>
+
+<p class="block"><strong>What is your timeplan?</strong></p>
+
+<p>The nearest milestone is in august 2006, when we would like to be ready with enough
+stability and features as to offer a viable alternative to Emacs. </p>
+
+<p class="block"><strong>Why isn't Emacs (or vim) good enough?</strong></p>
+
+<p>They are good, no doubt about it! However, a graphical UI (as opposed
+to a text UI) offers much more potential for useful features, especially
+since Eclipse is such a nice platform. Just to mention one: an
+integrated debugger.</p>
+<p>Much of the functionality we are developing will be possible to use
+from Emacs too, since it is implemented in Erlang. If you feel that text
+UI is your thing, please go ahead and implement an Emacs frontend!</p>
+<p>There are some recent enhancements to Emacs and vim modes, but I dare
+to say that when we'll be ready, we're going to offer better
+functionality, because Erlide talks to Erlang directly and can use all
+its libraries. <br />
+For example, please compare the Emacs syntax highlighting with the
+Erlide one, when you enter <code>Ch = $"</code> in the middle of a
+module and you'll remember what I mean.</p>
+
+<p class="internallink">[ <a href="#top">Back to top</a> ]</p>
+
+</div>
+
+<div id="sidebar">
+
+<h2 class="sidelink menuheader"><a id="sitemenu"></a>Site menu:</h2>
+<a class="sidelink" href="index.html">Overview</a> <span class="hide"> |</span>
+<a class="sidelink" href="#faq">FAQ</a> <span class="hide"> | </span> <a
+  class="sidelink" href="http://sourceforge.net/projects/erlide">Project
+site</a> <span class="hide"> | </span> <a class="sidelink"
+  href="http://sourceforge.net/project/showfiles.php?group_id=58889">Downloads</a>
+<span class="hide"> | </span>
+<a class="sidelink" href="doc/index.html"><img src="img/new.gif" />Documentation</a> <span class="hide"> | </span> <a class="sidelink"
+  href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS feeds</a> <span
+  class="hide"> | </span>
+<p><form method="post" action="http://www.eclipseplugincentral.com/Web_Links.html">
+<table border="0" width="120" cellspacing="0" cellpadding="0">
+<tr><td align="center"><b>Rate the plugin!</b></a></td></tr>
+<tr><td>
+<table border="0" cellspacing="0" cellpadding="0" align="center">
+<tr><td valign="top">
+<select name="rating">
+<option selected>--</option>
+<option>10</option>
+<option>9</option>
+<option>8</option>
+<option>7</option>
+<option>6</option>
+<option>5</option>
+<option>4</option>
+<option>3</option>
+<option>2</option>
+<option>1</option>
+</select>
+</td><td valign="top">
+<input type="hidden" name="ratinglid" value="468">
+<input type="hidden" name="ratinguser" value="outside">
+<input type="hidden" name="req" value="addrating">
+<input type="submit" value="Vote!">
+</td></tr></table>
+</td></tr></table>
+</form>
+</p>
+<p>Kindly hosted by <a href="http://sourceforge.net"><img
+  src="http://sflogo.sourceforge.net/sflogo.php?group_id=58889&amp;type=2"
+  width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></p>
+<p><a href="http://www.erlang.org"><img src="img/erlang110.gif"
+  width="110" height="96" alt="Erlang logo" /></a></p>
+<p><a href="http://www.eclipse.org"><img
+  src="img/rea_eclipse_pos_logo_fc_sm.jpg" width="128" height="75"
+  alt="Eclipse logo" /></a></p>
+<a class="hide" href="#top" accesskey="1">Top of page</a>
+
+<h3>Links</h3>
+<p>- <a href="http://www.erlang.org">Open source Erlang</a><br />
+- <a href="http://www.erlang.se">Commercial Erlang</a><br />
+- <a href="http://www.eclipse.org">Eclipse</a><br />
+- <a href="http://www.trapexit.org">Trapexit</a>, an Erlang community<br />
+
+</p>
+</div>
+<div class="clear">&nbsp;</div>
+</div>
+
+<div id="footer">Last updated: 2006-06-30<br />
+&copy; 2005 Vlad Dumitrescu. Design by <a
+  href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
+
+</body>
+</html>

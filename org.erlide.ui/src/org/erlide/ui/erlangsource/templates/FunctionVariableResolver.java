@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * Copyright (c) 2004 Lukas Larsson and others.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Lukas Larsson
+ *******************************************************************************/
+
+package org.erlide.ui.erlangsource.templates;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.templates.DocumentTemplateContext;
+import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.text.templates.TemplateBuffer;
+import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.text.templates.TemplateException;
+import org.eclipse.jface.text.templates.TemplateVariable;
+import org.eclipse.jface.text.templates.TemplateVariableResolver;
+
+public class FunctionVariableResolver extends TemplateVariableResolver {
+
+	protected ArrayList<Object[]> functions = new ArrayList<Object[]>();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable,
+	 *      org.eclipse.jface.text.templates.TemplateContext)
+	 */
+	@Override
+	public void resolve(TemplateVariable variable, TemplateContext context) {
+		@SuppressWarnings("unchecked")
+		final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout.getDefault().resolvers();
+		FunctionNameVariableResolver name_var = null;
+		//!TODO: Use BodyVariableResolver
+		@SuppressWarnings("unused")
+		BodyVariableResolver body_var = null;
+		ArgumentsVariableResolver arg_var = null;
+		while (it.hasNext()) {
+			final TemplateVariableResolver element = it.next();
+			if (element instanceof FunctionNameVariableResolver) {
+				name_var = (FunctionNameVariableResolver) element;
+			} else if (element instanceof BodyVariableResolver) {
+				body_var = (BodyVariableResolver) element;
+			} else if (element instanceof ArgumentsVariableResolver) {
+				arg_var = (ArgumentsVariableResolver) element;
+			}
+		}
+
+		final StringBuffer buff = new StringBuffer();
+
+		for (final Iterator<Object[]> iter = functions.iterator(); iter.hasNext();) {
+			final Object[] element = iter.next();
+			arg_var.setArity(((Integer) element[1]).intValue());
+			name_var.setFunctionName((String) element[0]);
+
+			final Template commentTemplate = ErlangSourceContextTypeComment
+					.getDefault().getTemplateStore().getTemplateData(
+							"org.erlide.ui.erlangsource.functioncomment")
+					.getTemplate();
+
+			DocumentTemplateContext commentContext = new DocumentTemplateContext(
+					ErlangSourceContextTypeLayout.getDefault(), new Document(
+							commentTemplate.getPattern()), 0, commentTemplate
+							.getPattern().length());
+			TemplateBuffer tb = null;
+			try {
+				tb = commentContext.evaluate(commentTemplate);
+			} catch (final BadLocationException e) {
+				e.printStackTrace();
+				buff.append("Error: " + e.getMessage());
+			} catch (final TemplateException e) {
+				e.printStackTrace();
+				buff.append("Error: " + commentTemplate.getName()
+						+ " could not be validated!");
+			}
+
+			if (tb != null) {
+				buff.append(tb.getString() + "\n");
+			}
+
+			final Template template = ErlangSourceContextTypeComment.getDefault()
+					.getTemplateStore().getTemplateData(
+							"org.erlide.ui.erlangsource.functionlayout")
+					.getTemplate();
+
+			commentContext = new DocumentTemplateContext(
+					ErlangSourceContextTypeLayout.getDefault(), new Document(
+							template.getPattern()), 0, template.getPattern()
+							.length());
+			try {
+				tb = commentContext.evaluate(template);
+			} catch (final BadLocationException e) {
+				e.printStackTrace();
+				buff.append("Error: " + e.getMessage());
+			} catch (final TemplateException e) {
+				e.printStackTrace();
+				buff.append("Error: " + template.getName()
+						+ " could not be validated!");
+			}
+
+			if (tb != null) {
+				buff.append(tb.getString() + "\n");
+			}
+
+		}
+
+		variable.setValue(buff.toString());
+	}
+
+	public void doAddFunction(String name, int arity) {
+		final Object[] data = { name, new Integer(arity) };
+		functions.add(data);
+	}
+
+	public void doClearFunctions() {
+		functions.clear();
+	}
+}

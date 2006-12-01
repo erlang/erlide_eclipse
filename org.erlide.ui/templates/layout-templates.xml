@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+<template
+	name="Module Layout"
+	description="%descriptionGeneralModuleLayout"
+	context="org.erlide.ui.erlangsource.template.context.layout"
+	id="org.erlide.ui.erlangsource.modulelayout">${file_comment}
+-module(${module}).
+
+%%
+%% Include files
+%%
+
+%%
+%% Exported Functions
+%%
+-export([${exports}]).
+
+%%
+%% API Functions
+%%
+
+${exported_functions}
+
+%%
+%% Local Functions
+%%
+
+${local_functions}</template>
+
+<template
+	name="Function Layout"
+	description="%descriptionGeneralFunctionLayout"
+	context="org.erlide.ui.erlangsource.template.context.layout"
+	id="org.erlide.ui.erlangsource.functionlayout">${function_name}(${arguments}) -> 
+	${body}.</template>
+
+</templates>

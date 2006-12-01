@@ -1,0 +1,22 @@
+%%%-------------------------------------------------------------------
+%%% Author  : %{author}%
+%%% Description : 
+%%%
+%%% Created : %{date}%
+%%%-------------------------------------------------------------------
+-module(%{name}%).
+
+-export([start/0,init/1]).
+
+
+start() ->
+    spawn(tmp, init, [self()]).
+
+init(From) ->
+    loop(From).
+
+loop(From) ->
+    receive
+	_ ->
+	    loop(From)
+    end.

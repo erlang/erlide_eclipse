@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<toc label="Erlide - the Erlang IDE" topic="index.html">
+   <topic label="Getting started" href="html/ar01s01.html">
+      <topic label="Installation guide" href="html/ar01s01s01.html"/>
+      <topic label="Basic tutorial" href="html/ar01s01s02.html"/>
+      <topic label="Configuration tutorial" href="html/ar01s01s03.html"/>
+   </topic>
+   <topic label="Concepts" href="html/ar01s02.html">
+      <topic label="Erlang projects" href="ar01s02s01.html"/>
+   </topic>
+   <topic label="Tasks" href="ar01s03.html">
+      <topic label="How to..." href="ar01s03s01.html"/>
+   </topic>
+   <topic label="Reference" href="ar01s04.html">
+      <topic label="Actions" href="ar01s04s01.html"/>
+      <topic label="Views and editors" href="ar01s04s02.html"/>
+      <topic label="Menus" href="ar01s04s03.html"/>
+   </topic>
+   <topic label="Developer reference" href="ar01s05.html">
+      <topic label="Installation" href="ar01s05s01.html"/>
+      <topic label="Retrieve the code from CVS" href="ar01s05s02.html"/>
+      <topic label="Build" href="ar01s05s03.html"/>
+      <topic label="Plugin description" href="ar01s05s04.html"/>
+      <topic label="Design decisions" href="ar01s05s05.html"/>
+      <topic label="Tools used" href="ar01s05s06.html"/>
+   </topic>
+   <topic label="Tips and tricks" href="ar01s06.html"/>
+   <topic label="What's new" href="ar01s07.html"/>
+   <topic label="Legal" href="ar01s08.html"/>
+</toc>

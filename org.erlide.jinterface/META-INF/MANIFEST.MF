@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.erlide.jinterface
+Bundle-Version: 0.3.27.qualifier
+Bundle-ClassPath: erlide-jinterface.jar
+Bundle-Activator: org.erlide.jinterface.InterfacePlugin
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: com.ericsson.otp.erlang,
+ org.erlide.jinterface
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-LazyStart: true

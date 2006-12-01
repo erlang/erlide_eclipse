@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         id="erlnature"
+         name="Erlang Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.erlide.core.ErlangProjectNature">
+         </run>
+      </runtime>
+      <builder id="org.erlide.core.erlbuilder"/>
+   </extension>
+   <extension
+         id="erlbuilder"
+         name="Erlang builder"
+         point="org.eclipse.core.resources.builders">
+      <builder >
+         <run
+               class="org.erlide.core.builder.ErlangBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            default-charset="ISO-8859-1"
+            file-extensions="erl,hrl,yrl"
+            id="org.erlide.core.content.erlang"
+            name="Erlang source file"
+            priority="normal"/>
+   </extension>
+   <extension
+         id="problemmarker"
+         name="Erlang problem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="taskmarker"
+         name="Erlang task"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.taskmarker"/>
+      <persistent value="true"/>
+   </extension>
+
+</plugin>

@@ -1,0 +1,28 @@
+fmt.erl documentation
+
+uses as base ppml and box
+
+h = horizontal box; opts = hs
+v = vertical box; opts = vs
+hv = fill horizontally, then break line; opts=hs|vs
+hov = if contents fit on a line, as h; otherwise as v;; opts=hs|vs
+i = indent; opts=is
+wd = spacerbox, same width as argument
+
+others are "regular" type markup, for example
+kw = keyword
+str = string
+
+extras:
+
+{ *box delim_box } = list operator, 
+
+;;;
+
+process -> takes a box tree and converts it into a list of elements with 
+	the respective position {Line, Col}
+
+format -> takes a list of {el, {L, C}} and returns a string with the layout data
+       options: lw = line width
+
+

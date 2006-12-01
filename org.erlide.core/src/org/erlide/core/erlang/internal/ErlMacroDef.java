@@ -1,0 +1,32 @@
+package org.erlide.core.erlang.internal;
+
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlMacroDef;
+
+public class ErlMacroDef extends ErlMember implements IErlMacroDef {
+
+	String macro;
+
+	/**
+	 * @param parent
+	 * @param imports
+	 * @param module
+	 */
+	protected ErlMacroDef(IErlElement parent, String macro) {
+		super(parent, "macro_definition");
+		this.macro = macro;
+	}
+
+	public String getElementType() {
+		return MACRO_DEF;
+	}
+
+	public String getDefinedName() {
+		return macro;
+	}
+
+	@Override
+	public String toString() {
+		return getElementName() + ": " + getDefinedName();
+	}
+}

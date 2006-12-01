@@ -1,0 +1,7 @@
+<project name="org.erlide.build" default="main">
+  <target name="main">
+    <tstamp />
+    <property name="timestamp" value="${DSTAMP}-${TSTAMP}" />
+    <ant antfile="${eclipse.pdebuild.scripts}/build.xml" />
+  </target>
+</project>

@@ -1,0 +1,10 @@
+feature@org.erlide=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-feature
+
+plugin@org.erlide.core=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-core
+plugin@org.erlide.basicui=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-basic-ui
+plugin@org.erlide.jinterface=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-jinterface
+plugin@org.erlide.launching=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-launching
+plugin@org.erlide.ui=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-ui
+plugin@org.erlide.help=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-help
+plugin@org.erlide.erlc=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-erlc
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.basicui.prefs.ErtsPreferencePage"
+            id="org.erlide.ui.preferences.erts"
+            name="Runtime (ERTS)"/>
+      <page
+            class="org.erlide.basicui.prefs.ErlangPreferencePage"
+            id="org.erlide.ui.preferences"
+            name="Erlang"/>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.basicui.prefs.ErtsInstallPreferencePage"
+            id="org.erlide.ui.preferences.test"
+            name="%installErtsPageName">
+      </page>
+   </extension>
+
+</plugin>

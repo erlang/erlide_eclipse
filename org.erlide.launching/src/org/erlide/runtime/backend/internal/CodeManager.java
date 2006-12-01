@@ -1,0 +1,420 @@
+/*******************************************************************************
+ * Copyright (c) 2005 Vlad Dumitrescu and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vlad Dumitrescu
+ *******************************************************************************/
+package org.erlide.runtime.backend.internal;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
+import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.BackendUtil;
+import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.ICodeManager;
+import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.osgi.framework.Bundle;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
+public class CodeManager implements ICodeManager {
+
+	private IBackend fBackend;
+
+	private List<PathItem> pathA;
+
+	private List<PathItem> pathZ;
+
+	private List<Plugin> plugins;
+
+	// only to be called by AbstractBackend
+	CodeManager(IBackend backend) {
+		fBackend = backend;
+		pathA = new ArrayList<PathItem>(10);
+		pathZ = new ArrayList<PathItem>(10);
+		plugins = new ArrayList<Plugin>(10);
+	}
+
+	private PathItem findItem(List l, String p) {
+		final Iterator i = l.iterator();
+		while (i.hasNext()) {
+			final PathItem it = (PathItem) i.next();
+			if (it.path.equals(p)) {
+				return it;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#addPathA(java.lang.String)
+	 */
+	public void addPathA(String path) {
+		if (addPath(pathA, path)) {
+			try {
+				// System.out.println("code:patha(" + path);
+				fBackend.rpc("code", "add_patha", new OtpErlangString(path));
+			} catch (final ErlangRpcException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#addPathZ(java.lang.String)
+	 */
+	public void addPathZ(String path) {
+		if (addPath(pathZ, path)) {
+			try {
+				fBackend.rpc("code", "add_pathz", new OtpErlangString(path));
+			} catch (final ErlangRpcException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private boolean addPath(List<PathItem> l, String path) {
+		if (path == null) {
+			return false;
+		}
+
+		final PathItem it = findItem(l, path);
+		if (it == null) {
+			l.add(new PathItem(path));
+			return true;
+		} else {
+			it.incRef();
+			return false;
+		}
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
+	 */
+	public void removePathA(String path) {
+		if (removePath(pathA, path)) {
+			try {
+				fBackend.rpc("code", "del_path", new OtpErlangString(path));
+			} catch (final ErlangRpcException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
+	 */
+	public void removePathZ(String path) {
+		if (removePath(pathZ, path)) {
+			try {
+				fBackend.rpc("code", "del_path", new OtpErlangString(path));
+			} catch (final ErlangRpcException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private boolean removePath(List l, String path) {
+		if (path == null) {
+			return false;
+		}
+		final PathItem it = findItem(l, path);
+		if (it != null) {
+			it.decRef();
+			if (it.ref <= 0) {
+				l.remove(it);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#getPathA()
+	 */
+	public List getPathA() {
+		return getPath(pathA);
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#getPathZ()
+	 */
+	public List getPathZ() {
+		return getPath(pathZ);
+	}
+
+	private List<String> getPath(List<PathItem> l) {
+		final List<String> r = new ArrayList<String>(l.size());
+		for (int i = 0; i < l.size(); i++) {
+			final String p = l.get(i).path;
+			if (p != null) {
+				r.add(p);
+			}
+		}
+		return r;
+	}
+
+	/**
+	 * @param moduleName
+	 * @param beamPath
+	 * @return boolean
+	 */
+	protected boolean loadBeam(String moduleName, URL beamPath) {
+		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
+		if (bin == null) {
+			return false;
+		} else {
+			OtpErlangObject r = null;
+			try {
+				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
+						new OtpErlangAtom(moduleName)));
+				if (!((OtpErlangAtom) r).booleanValue()
+						|| !BackendManager.isDeveloper()) {
+					r = BackendUtil.checkRpc(fBackend.rpc("code",
+							"load_binary", new OtpErlangObject[] {
+									new OtpErlangAtom(moduleName),
+									new OtpErlangString(moduleName + ".erl"),
+									bin }));
+					if (BackendManager.isDeveloper()) {
+						fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
+								moduleName));
+					}
+				} else {
+					return false;
+				}
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+			if (r != null) {
+				final OtpErlangTuple t = (OtpErlangTuple) r;
+				if (((OtpErlangAtom) t.elementAt(0)).atomValue().compareTo(
+						"module") == 0) {
+					return true;
+				} else {
+					// code couldn't be loaded
+					// maybe here we should throw exception?
+					return false;
+				}
+			} else {
+				// binary couldn't be extracted
+				return false;
+			}
+		}
+	}
+
+	protected boolean loadBootstrap(String moduleName, URL beamPath) {
+		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
+		if (bin == null) {
+			return false;
+		} else {
+			final String aa = binToString(bin);
+			final String msg = "code:load_binary(" + moduleName + ",\"" + moduleName
+					+ ".beam\"," + aa + ").\n";
+			try {
+				fBackend.sendToDefaultShell(msg);
+			} catch (final IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+	}
+
+	private String binToString(OtpErlangBinary bin) {
+		String s = "<<";
+		final byte[] buf = bin.binaryValue();
+		for (int i = 0; i < buf.length - 1; i++) {
+			s += new Integer(buf[i]).toString() + ",";
+		}
+		s += new Integer(buf[buf.length - 1]).toString();
+		return s + ">>";
+	}
+
+	/**
+	 * Method getBeam
+	 * 
+	 * @param moduleName
+	 *            String
+	 * @param beamPath
+	 *            String
+	 * @param bufSize
+	 *            int
+	 * @return OtpErlangBinary
+	 */
+	private OtpErlangBinary getBeam(String moduleName, URL beamPath, int bufSize) {
+		try {
+			byte[] b = new byte[bufSize];
+			byte[] bm;
+			final BufferedInputStream s = new BufferedInputStream(beamPath
+					.openStream());
+			try {
+				final int r = s.read(b);
+
+				if (r == b.length) {
+					b = null;
+					return getBeam(moduleName, beamPath, bufSize * 2);
+				} else if (r > 0) {
+					bm = new byte[r];
+					System.arraycopy(b, 0, bm, 0, r);
+					b = null;
+					return new OtpErlangBinary(bm);
+				} else {
+					return null;
+				}
+			} finally {
+				s.close();
+			}
+		} catch (final IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	void loadBootstrap(int port) {
+		System.out.println("bootstrapping...");
+		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
+		URL e;
+		e = b.getEntry("/ebin/erlide_erpc.beam");
+		loadBootstrap("erlide_erpc", e);
+
+		try {
+			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
+					+ ", false).\n");
+			fBackend.sendToDefaultShell("unlink(X).\n");
+		} catch (final IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private void loadPluginCode(Plugin p) {
+		if (fBackend instanceof StandaloneBackend) {
+			return;
+		}
+
+		System.out.println("loading plugin " + p.getClass());
+
+		// TODO Do we have to also check any fragments?
+		// see FindSupport.findInFragments
+
+		final Bundle b = p.getBundle();
+		final String ver = fBackend.getCurrentVersion();
+		Enumeration e = b.getEntryPaths("/ebin/" + ver);
+		if (e == null || !e.hasMoreElements()) {
+			e = b.getEntryPaths("/ebin");
+		}
+		if (e == null) {
+			System.out.println("* !!! error loading plugin " + p.getClass());
+			return;
+		}
+		while (e.hasMoreElements()) {
+			final String s = (String) e.nextElement();
+			final Path path = new Path(s);
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
+				final String m = path.removeFileExtension().lastSegment();
+				// System.out.println(" " + m);
+				try {
+					loadBeam(m, b.getEntry(s));
+				} catch (final Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		System.out.println("*done! loading plugin " + p.getClass());
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#addPlugin(org.eclipse.core.runtime.Plugin)
+	 */
+	public void addPlugin(Plugin p) {
+		if (plugins.indexOf(p) < 0) {
+			plugins.add(p);
+			loadPluginCode(p);
+		}
+	}
+
+	/**
+	 * @see org.erlide.runtime.backend.ICodeManager#removePlugin(org.eclipse.core.runtime.Plugin)
+	 */
+	public void removePlugin(Plugin p) {
+		plugins.remove(p);
+		unloadPluginCode(p);
+	}
+
+	private void unloadPluginCode(Plugin p) {
+		if (fBackend instanceof StandaloneBackend) {
+			return;
+		}
+
+		// TODO Do we have to also check any fragments?
+		// see FindSupport.findInFragments
+
+		final Bundle b = p.getBundle();
+		final String ver = fBackend.getCurrentVersion();
+		Enumeration e = b.getEntryPaths("/ebin/" + ver);
+		if (e == null) {
+			return;
+		}
+		System.out.println("*> really unloading plugin "
+				+ p.getClass().getName());
+		if (!e.hasMoreElements()) {
+			e = b.getEntryPaths("/ebin");
+		}
+		while (e.hasMoreElements()) {
+			final String s = (String) e.nextElement();
+			final Path path = new Path(s);
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
+				final String m = path.removeFileExtension().lastSegment();
+				unloadBeam(m);
+			}
+		}
+	}
+
+	private void unloadBeam(String moduleName) {
+		try {
+			fBackend.rpc("code", "delete", new OtpErlangAtom(moduleName));
+		} catch (final ErlangRpcException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private class PathItem {
+
+		public PathItem(String p) {
+			path = p;
+			ref = 1;
+		}
+
+		public String path;
+
+		public int ref;
+
+		public void incRef() {
+			ref++;
+		}
+
+		public void decRef() {
+			ref--;
+		}
+	}
+
+}

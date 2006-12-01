@@ -1,0 +1,7 @@
+
+* include directories: per project or per source file?
+
+* actually we should be able to parse Makefile
+  -> there are several idioms used, how to handle all?
+  -> not everything is a "tidy" build, for example OBM uses an own Erlang script to build
+

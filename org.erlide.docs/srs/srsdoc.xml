@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.1//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.1/sdocbook.dtd">
+<article>
+  <title>Erlide SRS</title>
+
+  <articleinfo>
+    <author>
+      <firstname>Vlad</firstname>
+
+      <surname>Dumitrescu</surname>
+    </author>
+
+    <date>2006-10-16</date>
+  </articleinfo>
+
+  <section>
+    <title>Functional requirements</title>
+
+    <para>Functional requirements are grouped by feature.</para>
+
+    <section>
+      <title>Editor</title>
+
+      <para>The main functional </para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Erlang backend </title>
+
+      <para>description</para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Content assistance</title>
+
+      <para>description</para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Documentation support</title>
+
+      <para>description</para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Project management, build and deployment</title>
+
+      <para>description</para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para>description</para>
+
+      <section>
+        <title></title>
+
+        <para>description</para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Non-functional requirements</title>
+
+    <para>description</para>
+
+    <section>
+      <title>Error handling</title>
+
+      <para>description</para>
+    </section>
+
+    <section>
+      <title>User interface responsivity</title>
+
+      <para>description</para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para>description</para>
+    </section>
+  </section>
+</article>
