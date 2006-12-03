@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: org.erlide.basicui; singleton:=true
+Bundle-SymbolicName: org.erlide.basic;singleton:=true
 Bundle-Version: 0.3.27.qualifier
 Bundle-Activator: org.erlide.basicui.ErlideBasicUIPlugin
 Bundle-Vendor: %providerName
@@ -18,4 +18,4 @@ Export-Package: com.novocode.naf.swt.custom,
  org.erlide.basicui.dialogfields,
  org.erlide.basicui.prefs,
  org.erlide.basicui.util
-Bundle-ClassPath: erlide-basicui.jar
+Bundle-ClassPath: org.erlide.basic.jar
