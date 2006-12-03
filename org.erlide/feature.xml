@@ -230,6 +230,7 @@ litigation.
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -242,8 +243,6 @@ litigation.
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.ui.navigator"/>
    </requires>
 
    <plugin
@@ -260,12 +259,6 @@ litigation.
 
    <plugin
          id="org.erlide.ui"
-         download-size="0"
-         install-size="0"
-         version="0.3.27.qualifier"/>
-
-   <plugin
-         id="org.erlide.basicui"
          download-size="0"
          install-size="0"
          version="0.3.27.qualifier"/>
@@ -292,7 +285,12 @@ litigation.
          id="org.erlide.debug.ui"
          download-size="0"
          install-size="0"
-         version="0.3.27.qualifier"
-         unpack="false"/>
+         version="0.3.27.qualifier"/>
+
+   <plugin
+         id="org.erlide.basic"
+         download-size="0"
+         install-size="0"
+         version="0.3.27.qualifier"/>
 
 </feature>
