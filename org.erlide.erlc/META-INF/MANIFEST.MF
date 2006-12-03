@@ -14,10 +14,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.console,
  org.eclipse.ui.ide,
  org.eclipse.ui.workbench.texteditor,
- org.erlide.basicui,
  org.erlide.jinterface,
  org.erlide.launching,
- org.erlide.core
+ org.erlide.core,
+ org.erlide.basic
 Eclipse-LazyStart: true
 Export-Package: org.erlide.erlc,
  org.erlide.erlc.builder,
