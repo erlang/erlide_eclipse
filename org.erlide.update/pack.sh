@@ -1,5 +1,9 @@
 #! /bin/sh
 
+VER=$(ls features/org.erlide_* | sed -e 's&features/org.erlide_&&' | sed -e 's/.jar//')
+echo VER=${VER}@
+
+
 rm -rf temp
 mkdir temp
 
@@ -11,7 +15,8 @@ cp site.xml temp/
 
 rm erlide_updatesite_*
 cd temp
-zip -r ../erlide_updatesite_${1}.zip * 
-#tar -cvf ../erlide_updatesite_${1}.tar *
+zip -r ../erlide_updatesite_${VER}.zip *
 cd ..
-#gzip erlide_updatesite_${1}.tar
+
+mv erlide.zip erlide_${VER}.zip
+
