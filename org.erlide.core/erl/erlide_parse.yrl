@@ -66,23 +66,19 @@ dot.
 
 Rootsymbol form.
 
+%Left 100 '-'.
+%Unary 200 prefix_op.
+%Unary 300 attribute.
+
 form -> attribute : '$1'.
 form -> function_head : '$1'.
 form -> function_body : '$1'.
-%form -> function : '$1'.
-form -> rule : '$1'.
+%form -> rule : '$1'.
 
 attribute -> '-' atom dot : build_attribute('$2', none, span('$1', '$3')).
 attribute -> '-' atom '(' attr_val ')' dot : build_attribute('$2', '$4', span('$1', '$6')).
 
 attr_val -> exprs : '$1'.
-
-%function -> function_clauses dot : build_function('$1', '$2').
-
-%function_clauses -> function_clause : ['$1'].
-%function_clauses -> function_clause ';' function_clauses : ['$1'|'$3'].
-
-%function_clause -> atom clause_args clause_guard clause_body : {clause,span('$1', '$4'),element(3, '$1'),'$2','$3','$4'}.
 
 function_head -> atom clause_args clause_guard '->' : {clause_head, span('$1', '$3'), element(3, '$1'), '$2', '$3'}.
 
@@ -392,6 +388,7 @@ rule_clause -> atom clause_args clause_guard rule_body :
 
 rule_body -> ':-' lc_exprs: '$2'.
 
+%Expect 2.
 
 Erlang code.
 
