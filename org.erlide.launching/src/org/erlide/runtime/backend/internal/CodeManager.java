@@ -226,8 +226,8 @@ public class CodeManager implements ICodeManager {
 			return false;
 		} else {
 			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\"" + moduleName
-					+ ".beam\"," + aa + ").\n";
+			final String msg = "code:load_binary(" + moduleName + ",\""
+					+ moduleName + ".beam\"," + aa + ").\n";
 			try {
 				fBackend.sendToDefaultShell(msg);
 			} catch (final IOException e) {

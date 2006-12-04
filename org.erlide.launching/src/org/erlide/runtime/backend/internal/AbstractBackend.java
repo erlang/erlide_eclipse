@@ -169,7 +169,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	/**
 	 * @throws ErlangRpcException
-	 *
+	 * 
 	 * @param m
 	 * @param f
 	 * @return OtpErlangObject
@@ -180,7 +180,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	/**
 	 * @throws ErlangRpcException
-	 *
+	 * 
 	 * @param m
 	 * @param f
 	 * @param a1
@@ -238,7 +238,7 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param dbgPid
 	 * @param msg
 	 */
@@ -252,7 +252,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	/**
 	 * Method addEventListener
-	 *
+	 * 
 	 * @param event
 	 *            String
 	 * @param l
@@ -271,7 +271,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	/**
 	 * Method removeEventListener
-	 *
+	 * 
 	 * @param event
 	 *            String
 	 * @param l

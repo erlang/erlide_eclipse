@@ -46,7 +46,8 @@ public class BackendSupport {
 					final String name = element.getAttribute("name");
 					final String id = element.getAttribute("id");
 					final String cls = element.getAttribute("class");
-					final BackendType type = new BackendType(name, id, cls, element);
+					final BackendType type = new BackendType(name, id, cls,
+							element);
 
 					types.add(type);
 				}

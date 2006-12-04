@@ -260,7 +260,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	public void setSize(int width, int height) {
 
 		if (fStatusField != null) {
-			final GridData gd = (GridData) fViewer.getTextWidget().getLayoutData();
+			final GridData gd = (GridData) fViewer.getTextWidget()
+					.getLayoutData();
 			final Point statusSize = fStatusField.computeSize(SWT.DEFAULT,
 					SWT.DEFAULT, true);
 			final Point separatorSize = fSeparator.computeSize(SWT.DEFAULT,

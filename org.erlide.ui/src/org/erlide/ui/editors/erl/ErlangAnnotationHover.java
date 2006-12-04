@@ -29,7 +29,8 @@ import org.erlide.ui.editors.util.HTMLPrinter;
 public class ErlangAnnotationHover implements IAnnotationHover {
 
 	public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
-		final List<Annotation> anns = getErlangAnnotationsForLine(sourceViewer, lineNumber);
+		final List<Annotation> anns = getErlangAnnotationsForLine(sourceViewer,
+				lineNumber);
 		if (anns != null) {
 
 			if (anns.size() == 1) {
@@ -63,7 +64,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		return null;
 	}
 
-	private List<Annotation> getErlangAnnotationsForLine(ISourceViewer viewer, int line) {
+	private List<Annotation> getErlangAnnotationsForLine(ISourceViewer viewer,
+			int line) {
 		final IAnnotationModel model = getAnnotationModel(viewer);
 		if (model == null) {
 			return null;

@@ -75,8 +75,8 @@ public class OtpEpmd {
 
 	static {
 		// debug this connection?
-		final String trace = System.getProperties()
-				.getProperty("OtpConnection.trace");
+		final String trace = System.getProperties().getProperty(
+				"OtpConnection.trace");
 		try {
 			if (trace != null) {
 				traceLevel = Integer.valueOf(trace).intValue();
@@ -499,7 +499,7 @@ public class OtpEpmd {
 			final byte[] tmpbuf = out.toByteArray();
 			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
 			ibuf.read4BE(); // read port int
-			//final int port = ibuf.read4BE();
+			// final int port = ibuf.read4BE();
 			// check if port = epmdPort
 
 			final int n = tmpbuf.length;

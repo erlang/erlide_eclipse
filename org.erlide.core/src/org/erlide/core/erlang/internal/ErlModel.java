@@ -52,7 +52,8 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	private IProject[] nonJavaResources;
 
-	private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(5);
+	private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
+			5);
 
 	/**
 	 * Constructs a new Erlang Model on the given workspace. Note that only one
@@ -239,7 +240,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	@SuppressWarnings("unchecked")
 	public IErlProject[] getErlangProjects() throws ErlModelException {
-		final ArrayList<IErlProject> list = (ArrayList<IErlProject>)getChildrenOfType(PROJECT);
+		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(PROJECT);
 		final IErlProject[] array = new IErlProject[list.size()];
 		list.toArray(array);
 		return array;

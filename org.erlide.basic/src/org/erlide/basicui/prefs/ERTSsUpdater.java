@@ -26,17 +26,17 @@ import org.erlide.basicui.ErlideBasicUIPlugin;
 public class ERTSsUpdater {
 
 	// the VMs defined when this updated is instantiated
-	/*  NOT USED
-	private List fOriginalVMs;
-	
-	private String fDefaultVMInstallID;
-	*/
+	/*
+	 * NOT USED private List fOriginalVMs;
+	 * 
+	 * private String fDefaultVMInstallID;
+	 */
 
 	/**
 	 * Contstructs a new VM updater to update VM install settings.
 	 */
 	public ERTSsUpdater() {
-		//fOriginalVMs = new ArrayList(5);
+		// fOriginalVMs = new ArrayList(5);
 		// ErtsInstall def = JavaRuntime.getDefaultVMInstall();
 
 		// ErtsInstall[] vms = JavaRuntime.getVMInstalls();
@@ -77,10 +77,10 @@ public class ERTSsUpdater {
 		return true;
 	}
 
-	/* NOT USED
-	private void setDefaultVMInstallID(String defaultVMId) {
-		fDefaultVMInstallID = defaultVMId;
-	}*/
+	/*
+	 * NOT USED private void setDefaultVMInstallID(String defaultVMId) {
+	 * fDefaultVMInstallID = defaultVMId; }
+	 */
 
 	private void saveVMDefinitions(final List container) {
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -122,9 +122,7 @@ public class ERTSsUpdater {
 	}
 
 	/*
-	private String asXML(List container) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
+	 * private String asXML(List container) { // TODO Auto-generated method stub
+	 * return null; }
+	 */
 }

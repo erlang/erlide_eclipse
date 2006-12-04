@@ -120,8 +120,8 @@ public class HTMLTextPresenter implements
 					/ gc.getFontMetrics().getHeight());
 
 			fCounter = 0;
-			final LineBreakingReader reader = new LineBreakingReader(createReader(
-					hoverInfo, presentation), gc, maxWidth);
+			final LineBreakingReader reader = new LineBreakingReader(
+					createReader(hoverInfo, presentation), gc, maxWidth);
 
 			boolean lastLineFormatted = false;
 			String lastLineIndent = null;

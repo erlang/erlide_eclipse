@@ -123,7 +123,8 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 		workbench.getDisplay().asyncExec(new Runnable() {
 
 			public void run() {
-				final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				final IWorkbenchWindow window = workbench
+						.getActiveWorkbenchWindow();
 				if (window != null) {
 					final boolean restart = MessageDialog
 							.openConfirm(

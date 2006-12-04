@@ -14,7 +14,7 @@ package org.erlide.ui.editors.erl;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-//import org.eclipse.ui.IWorkbenchActionConstants;
+// import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
@@ -44,8 +44,8 @@ public class ErlEditorActionBarContributor extends
 
 	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
-		//final IMenuManager editMenu = menuManager
-		//		.findMenuUsingPath(IWorkbenchActionConstants.M_EDIT);
+		// final IMenuManager editMenu = menuManager
+		// .findMenuUsingPath(IWorkbenchActionConstants.M_EDIT);
 		// if (editMenu != null)
 		// {
 		// editMenu.add(new Separator());

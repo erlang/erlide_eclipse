@@ -157,7 +157,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 	/**
 	 * Sets the checked elements.
 	 */
-	public void setCheckedElements(Collection<?extends Element> list) {
+	public void setCheckedElements(Collection<? extends Element> list) {
 		fCheckElements = new ArrayList<Element>(list);
 		if (isOkToUse(fTableControl)) {
 			((CheckboxTableViewer) fTable).setCheckedElements(list.toArray());
@@ -208,9 +208,9 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 	@SuppressWarnings("unchecked")
 	protected void doCheckStateChanged(CheckStateChangedEvent e) {
 		if (e.getChecked()) {
-			fCheckElements.add((Element)e.getElement());
+			fCheckElements.add((Element) e.getElement());
 		} else {
-			fCheckElements.remove((Element)e.getElement());
+			fCheckElements.remove((Element) e.getElement());
 		}
 		checkStateChanged();
 	}

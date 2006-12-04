@@ -89,7 +89,8 @@ public class ErlideErlcPlugin extends AbstractUIPlugin {
 		return BuildInfoFactory.create(project, builderID);
 	}
 
-	public static IMakeBuilderInfo createBuildInfo(Map<String,String> args, String builderID) {
+	public static IMakeBuilderInfo createBuildInfo(Map<String, String> args,
+			String builderID) {
 		return BuildInfoFactory.create(args, builderID);
 	}
 

@@ -49,9 +49,9 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void dispose() {
-		//OtpErlangObject r1 = null;
+		// OtpErlangObject r1 = null;
 		try {
-			/*r1 = */BackendUtil.checkRpc(BackendManager.getDefault()
+			/* r1 = */BackendUtil.checkRpc(BackendManager.getDefault()
 					.getIdeBackend().rpc("erlide_scanner", "destroy", fMod));
 		} catch (final Exception e) {
 			e.printStackTrace();

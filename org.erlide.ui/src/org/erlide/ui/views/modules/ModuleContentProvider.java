@@ -128,7 +128,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final IErlModule[] resources = project.getModules();
 		final IResource[] nonerl = project.getNonErlangResources();
 
-		final List<IResource> lst = new ArrayList<IResource>(resources.length + nonerl.length);
+		final List<IResource> lst = new ArrayList<IResource>(resources.length
+				+ nonerl.length);
 		for (int i = 0; i < resources.length; i++) {
 			System.out.println("> " + resources[i].getElementName());
 		}

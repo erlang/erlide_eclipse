@@ -467,7 +467,8 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 
 		final int currentCount = ++fComputeCount;
 
-		final ISelectionProvider provider = part.getSite().getSelectionProvider();
+		final ISelectionProvider provider = part.getSite()
+				.getSelectionProvider();
 		if (provider == null) {
 			return;
 		}

@@ -17,7 +17,7 @@ public class ErlangFoldingStructureProviderRegistry {
 	private static final String EXTENSION_POINT = "foldingStructureProviders"; //$NON-NLS-1$
 
 	/** The map of descriptors, indexed by their identifiers. */
-	private Map<String,ErlangFoldingStructureProviderDescriptor> fDescriptors;
+	private Map<String, ErlangFoldingStructureProviderDescriptor> fDescriptors;
 
 	/**
 	 * Creates a new instance.
@@ -36,7 +36,9 @@ public class ErlangFoldingStructureProviderRegistry {
 	public ErlangFoldingStructureProviderDescriptor[] getFoldingProviderDescriptors() {
 		synchronized (this) {
 			ensureRegistered();
-			return fDescriptors.values().toArray(new ErlangFoldingStructureProviderDescriptor[fDescriptors.size()]);
+			return fDescriptors.values().toArray(
+					new ErlangFoldingStructureProviderDescriptor[fDescriptors
+							.size()]);
 		}
 	}
 
@@ -65,8 +67,8 @@ public class ErlangFoldingStructureProviderRegistry {
 	 * @return the current provider according to the preferences
 	 */
 	public IErlangFoldingStructureProvider getCurrentFoldingProvider() {
-		final String id = ErlideUIPlugin.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.EDITOR_FOLDING_PROVIDER);
+		final String id = ErlideUIPlugin.getDefault().getPreferenceStore()
+				.getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
 		final ErlangFoldingStructureProviderDescriptor desc = getFoldingProviderDescriptor(id);
 		if (desc != null) {
 			try {
@@ -97,8 +99,7 @@ public class ErlangFoldingStructureProviderRegistry {
 	 */
 	public void reloadExtensions() {
 		final IExtensionRegistry registry = Platform.getExtensionRegistry();
-		final Map<String,ErlangFoldingStructureProviderDescriptor> map = 
-			new HashMap<String,ErlangFoldingStructureProviderDescriptor>();
+		final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
 
 		final IConfigurationElement[] elements = registry
 				.getConfigurationElementsFor(ErlideUIPlugin.PLUGIN_ID,

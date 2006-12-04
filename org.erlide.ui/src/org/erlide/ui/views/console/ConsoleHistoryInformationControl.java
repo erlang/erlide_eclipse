@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.TableItem;
  * Source viewer based implementation of
  * {@link org.eclipse.jface.text.IInformationControl}. Displays information in
  * a source viewer.
- *
- *
+ * 
+ * 
  */
 public class ConsoleHistoryInformationControl implements IInformationControl,
 		IInformationControlExtension, IInformationControlExtension2,
@@ -79,7 +79,7 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 	/**
 	 * Creates a source viewer information control with the given shell as
 	 * parent and the given font.
-	 *
+	 * 
 	 * @param parent
 	 *            the parent shell
 	 * @param symbolicFontName
@@ -97,7 +97,7 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 	 * given styles are applied to the created styled text widget. The text
 	 * widget will be initialized with the given font. The status field will
 	 * contain the given text or be hidden.
-	 *
+	 * 
 	 * @param parent
 	 *            the parent shell
 	 * @param shellStyle
@@ -229,11 +229,11 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 	}
 
 	private String shorten(String str) {
-		//int w = fControl.getClientArea().width - 10;
+		// int w = fControl.getClientArea().width - 10;
 		String s = str.trim().replaceAll("\n", " ");
 		// TODO use char width to compute how much fits
-		//int end = 20;
-		return s;//.substring(0, end);
+		// int end = 20;
+		return s;// .substring(0, end);
 	}
 
 	/*

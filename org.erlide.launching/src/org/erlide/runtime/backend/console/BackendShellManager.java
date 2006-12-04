@@ -18,13 +18,13 @@ import org.erlide.runtime.backend.IBackend;
 
 public class BackendShellManager {
 
-	private HashMap<String,BackendShell> fShells;
+	private HashMap<String, BackendShell> fShells;
 
 	private IBackend fBackend;
 
 	public BackendShellManager(IBackend backend) {
 		fBackend = backend;
-		fShells = new HashMap<String,BackendShell>(5);
+		fShells = new HashMap<String, BackendShell>(5);
 	}
 
 	public BackendShell get(String id) {

@@ -170,14 +170,14 @@ public class ErtsPreferences {
 			return false;
 		}
 
-		final File erl = new File(otpHome + File.separator + "bin" + File.separator
-				+ "erl");
+		final File erl = new File(otpHome + File.separator + "bin"
+				+ File.separator + "erl");
 		final File erlexe = new File(otpHome + File.separator + "bin"
 				+ File.separator + "erl.exe");
 		final boolean hasErl = erl.exists() || erlexe.exists();
 
-		final File erlc = new File(otpHome + File.separator + "bin" + File.separator
-				+ "erlc");
+		final File erlc = new File(otpHome + File.separator + "bin"
+				+ File.separator + "erlc");
 		final File erlcexe = new File(otpHome + File.separator + "bin"
 				+ File.separator + "erlc.exe");
 		final boolean hasErlc = erlc.exists() || erlcexe.exists();

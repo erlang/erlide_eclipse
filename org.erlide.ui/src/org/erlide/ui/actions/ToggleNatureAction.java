@@ -35,8 +35,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		if (fSelection instanceof IStructuredSelection) {
-			for (final Iterator it = ((IStructuredSelection) fSelection).iterator(); it
-					.hasNext();) {
+			for (final Iterator it = ((IStructuredSelection) fSelection)
+					.iterator(); it.hasNext();) {
 				final Object element = it.next();
 				IProject project = null;
 				if (element instanceof IProject) {
@@ -81,7 +81,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(project);
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
 
 			for (int i = 0; i < natures.length; ++i) {
 				if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
@@ -110,8 +111,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			project.setDescription(description, null);
 
 			// add code path to backend
-			final String out = project.getLocation().append(prefs.getOutputDir())
-					.toString();
+			final String out = project.getLocation().append(
+					prefs.getOutputDir()).toString();
 			BackendManager.getDefault().get(project).getCodeManager().addPathA(
 					out);
 

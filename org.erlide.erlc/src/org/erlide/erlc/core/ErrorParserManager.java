@@ -48,11 +48,11 @@ public class ErrorParserManager extends OutputStream {
 
 	private IMarkerGenerator fMarkerGenerator;
 
-	private Map<String,IFile> fFilesInProject;
+	private Map<String, IFile> fFilesInProject;
 
 	private List<String> fNameConflicts;
 
-	private Map<String,IErrorParser[]> fErrorParsers;
+	private Map<String, IErrorParser[]> fErrorParsers;
 
 	private ArrayList<Problem> fErrors;
 
@@ -88,7 +88,8 @@ public class ErrorParserManager extends OutputStream {
 		if (parsersIDs == null) {
 			enableAllParsers();
 		} else {
-			fErrorParsers = new LinkedHashMap<String,IErrorParser[]>(parsersIDs.length);
+			fErrorParsers = new LinkedHashMap<String, IErrorParser[]>(
+					parsersIDs.length);
 			for (int i = 0; i < parsersIDs.length; i++) {
 				final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
 						.getErrorParser(parsersIDs[i]);
@@ -100,7 +101,7 @@ public class ErrorParserManager extends OutputStream {
 	}
 
 	private void initErrorParserManager(IPath workingDirectory) {
-		fFilesInProject = new HashMap<String,IFile>();
+		fFilesInProject = new HashMap<String, IFile>();
 		fNameConflicts = new ArrayList<String>();
 		fDirectoryStack = new Vector<IPath>();
 		fErrors = new ArrayList<Problem>();
@@ -155,7 +156,7 @@ public class ErrorParserManager extends OutputStream {
 	}
 
 	private void enableAllParsers() {
-		fErrorParsers = new LinkedHashMap<String,IErrorParser[]>();
+		fErrorParsers = new LinkedHashMap<String, IErrorParser[]>();
 		final String[] parserIDs = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
 		for (int i = 0; i < parserIDs.length; i++) {
@@ -184,7 +185,7 @@ public class ErrorParserManager extends OutputStream {
 
 				public boolean visit(IResourceProxy proxy) throws CoreException {
 					if (proxy.getType() == IResource.FILE) {
-						result.add((IFile)proxy.requestResource());
+						result.add((IFile) proxy.requestResource());
 						return false;
 					}
 					return true;
@@ -349,7 +350,8 @@ public class ErrorParserManager extends OutputStream {
 	 */
 	public void generateMarker(IResource file, int lineNumber, String desc,
 			int severity, String varName) {
-		final Problem problem = new Problem(file, lineNumber, desc, severity, varName);
+		final Problem problem = new Problem(file, lineNumber, desc, severity,
+				varName);
 		fErrors.add(problem);
 
 		if (severity == IMarker.SEVERITY_ERROR) {

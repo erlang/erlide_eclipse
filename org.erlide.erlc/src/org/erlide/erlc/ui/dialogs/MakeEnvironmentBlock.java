@@ -194,7 +194,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		public Object[] getElements(Object inputElement) {
 			EnvironmentVariable[] elements = new EnvironmentVariable[0];
 			final IMakeCommonBuildInfo info = (IMakeCommonBuildInfo) inputElement;
-			final Map<String,String> m = info.getEnvironment();
+			final Map<String, String> m = info.getEnvironment();
 			if (m != null && !m.isEmpty()) {
 				elements = new EnvironmentVariable[m.size()];
 				final String[] varNames = new String[m.size()];
@@ -329,7 +329,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 				// saved in the
 				// configuration's attributes.
 				TableItem[] items = environmentTable.getTable().getItems();
-				Map<String,String> map = new HashMap<String,String>(items.length);
+				Map<String, String> map = new HashMap<String, String>(
+						items.length);
 				for (int i = 0; i < items.length; i++) {
 					EnvironmentVariable var = (EnvironmentVariable) items[i]
 							.getData();
@@ -638,9 +639,9 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * @return Map of name - EnvironmentVariable pairs based on native
 	 *         environment.
 	 */
-	private Map<Object,Object> getNativeEnvironment() {
-		final Map<Object,Object> stringVars = EnvironmentReader.getEnvVars();
-		final HashMap<Object,Object> vars = new HashMap<Object,Object>();
+	private Map<Object, Object> getNativeEnvironment() {
+		final Map<Object, Object> stringVars = EnvironmentReader.getEnvVars();
+		final HashMap<Object, Object> vars = new HashMap<Object, Object>();
 		for (final Iterator i = stringVars.keySet().iterator(); i.hasNext();) {
 			final String key = (String) i.next();
 			final String value = (String) stringVars.get(key);
@@ -660,12 +661,14 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		// get Environment Variables from the table
 		final TableItem[] items = environmentTable.getTable().getItems();
 		for (int i = 0; i < items.length; i++) {
-			final EnvironmentVariable var = (EnvironmentVariable) items[i].getData();
+			final EnvironmentVariable var = (EnvironmentVariable) items[i]
+					.getData();
 			envVariables.remove(var.getName());
 		}
 
-		final ListSelectionDialog dialog = new NativeEnvironmentDialog(getShell(),
-				envVariables, createSelectionDialogContentProvider(),
+		final ListSelectionDialog dialog = new NativeEnvironmentDialog(
+				getShell(), envVariables,
+				createSelectionDialogContentProvider(),
 				createSelectionDialogLabelProvider(), ErlideErlcPlugin
 						.getResourceString("MakeEnvironmentBlock.14")); //$NON-NLS-1$
 		dialog.setTitle(ErlideErlcPlugin
@@ -738,8 +741,9 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 							return o1.compareTo(o2);
 						}
 					};
-					final TreeMap<String,Object> envVars = new TreeMap<String,Object>(comparator);
-					envVars.putAll((Map<String,Object>) inputElement);
+					final TreeMap<String, Object> envVars = new TreeMap<String, Object>(
+							comparator);
+					envVars.putAll((Map<String, Object>) inputElement);
 					elements = new EnvironmentVariable[envVars.size()];
 					int index = 0;
 					for (final Iterator iterator = envVars.keySet().iterator(); iterator
@@ -767,7 +771,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	protected void handleEnvEditButtonSelected() {
 		final IStructuredSelection sel = (IStructuredSelection) environmentTable
 				.getSelection();
-		final EnvironmentVariable var = (EnvironmentVariable) sel.getFirstElement();
+		final EnvironmentVariable var = (EnvironmentVariable) sel
+				.getFirstElement();
 		if (var == null) {
 			return;
 		}

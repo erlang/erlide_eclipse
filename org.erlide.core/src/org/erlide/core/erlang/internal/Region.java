@@ -120,7 +120,8 @@ public class Region implements IRegion {
 		if (element instanceof IParent) {
 			final ArrayList<IErlElement> newRootElements = new ArrayList<IErlElement>();
 			for (int i = 0, size = fRootElements.size(); i < size; i++) {
-				final IErlElement currentRoot = (IErlElement) fRootElements.get(i);
+				final IErlElement currentRoot = (IErlElement) fRootElements
+						.get(i);
 				// walk the current root hierarchy
 				IErlElement parent = currentRoot.getParent();
 				boolean isChild = false;

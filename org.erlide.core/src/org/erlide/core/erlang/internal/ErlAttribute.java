@@ -55,12 +55,12 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 
 	@Override
 	public String toString() {
-        String sval;
-        if (fValue != null) {
-            sval = pp(fValue);
-        } else {
-            sval = "";
-        }
-        return getElementName() + ": " + sval;
+		String sval;
+		if (fValue != null) {
+			sval = pp(fValue);
+		} else {
+			sval = "";
+		}
+		return getElementName() + ": " + sval;
 	}
 }

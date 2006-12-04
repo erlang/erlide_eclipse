@@ -94,7 +94,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	OverlayPreferenceStore fOverlayStore;
 
-	Map<Control,String> fCheckBoxes = new HashMap<Control,String>();
+	Map<Control, String> fCheckBoxes = new HashMap<Control, String>();
 
 	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
@@ -108,13 +108,14 @@ public class EditorPreferencePage extends PreferencePage implements
 		}
 	};
 
-	Map<Control,String> fTextFields = new HashMap<Control,String>();
+	Map<Control, String> fTextFields = new HashMap<Control, String>();
 
 	private final ModifyListener fTextFieldListener = new ModifyListener() {
 
 		public void modifyText(ModifyEvent e) {
 			Text text = (Text) e.widget;
-			fOverlayStore.setValue((String) fTextFields.get(text), text.getText());
+			fOverlayStore.setValue((String) fTextFields.get(text), text
+					.getText());
 		}
 	};
 
@@ -143,13 +144,11 @@ public class EditorPreferencePage extends PreferencePage implements
 	 * 
 	 * @see #createDependency(Button, String, Control)
 	 */
-	private final ArrayList<SelectionListener> fMasterSlaveListeners = 
-		new ArrayList<SelectionListener>();
+	private final ArrayList<SelectionListener> fMasterSlaveListeners = new ArrayList<SelectionListener>();
 
 	private OverlayPreferenceStore createOverlayStore() {
 
-		final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = 
-			new ArrayList<OverlayPreferenceStore.OverlayKey>();
+		final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = new ArrayList<OverlayPreferenceStore.OverlayKey>();
 
 		overlayKeys
 				.add(new OverlayPreferenceStore.OverlayKey(
@@ -217,8 +216,9 @@ public class EditorPreferencePage extends PreferencePage implements
 						OverlayPreferenceStore.TypeDescriptor.BOOLEAN,
 						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SELECTION_BACKGROUND_DEFAULT_COLOR));
 
-		return new OverlayPreferenceStore(getPreferenceStore(), overlayKeys.toArray(
-				new OverlayPreferenceStore.OverlayKey[overlayKeys.size()]));
+		return new OverlayPreferenceStore(getPreferenceStore(), overlayKeys
+				.toArray(new OverlayPreferenceStore.OverlayKey[overlayKeys
+						.size()]));
 	}
 
 	/*
@@ -331,7 +331,8 @@ public class EditorPreferencePage extends PreferencePage implements
 		gd.horizontalSpan = 2;
 		l.setLayoutData(gd);
 
-		final Composite editorComposite = new Composite(appearanceComposite, SWT.NONE);
+		final Composite editorComposite = new Composite(appearanceComposite,
+				SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginHeight = 0;
@@ -349,7 +350,8 @@ public class EditorPreferencePage extends PreferencePage implements
 		gd.heightHint = convertHeightInCharsToPixels(5);
 		fAppearanceColorList.setLayoutData(gd);
 
-		final Composite stylesComposite = new Composite(editorComposite, SWT.NONE);
+		final Composite stylesComposite = new Composite(editorComposite,
+				SWT.NONE);
 		layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;

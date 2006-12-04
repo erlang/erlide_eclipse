@@ -89,8 +89,8 @@ public class ErlStructureCreator implements IStructureCreator {
 		}
 		final Document doc = new Document(s);
 
-		final IErlModule module = ErlangCore.getModelManager().createModuleFrom(
-				fName, s, fProject);
+		final IErlModule module = ErlangCore.getModelManager()
+				.createModuleFrom(fName, s, fProject);
 		ErlNode root = null;
 		try {
 			module.open(null);

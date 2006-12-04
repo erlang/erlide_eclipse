@@ -50,8 +50,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private OtpErlangList getDocumentationFor(OtpErlangList list,
 			OtpErlangAtom mod) {
 		try {
-			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin.getDefault()
-					.getStateLocation().toString());
+			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin
+					.getDefault().getStateLocation().toString());
 			final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager
 					.getDefault().getIdeBackend().rpc("erlide_otp_doc",
 							"get_doc_from_fun_arity_list", mod, list, s));
@@ -80,7 +80,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				// we have a remote call
 				final String mod = prefix.substring(0, i);
 				prefix = prefix.substring(i + 1);
-				final IErlProject project = ErlModelUtils.getErlProject(fEditor);
+				final IErlProject project = ErlModelUtils
+						.getErlProject(fEditor);
 				final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
 				final IBackend b = BackendManager.getDefault().get(
 						project.getProject());
@@ -89,12 +90,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						new OtpErlangString(prefix)));
 				if (res instanceof OtpErlangList) {
 					final OtpErlangList resl = (OtpErlangList) res;
-					final OtpErlangList docl = getDocumentationFor(resl, modAtom);
+					final OtpErlangList docl = getDocumentationFor(resl,
+							modAtom);
 					for (i = 0; i < resl.arity(); i++) {
-						final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
+						final OtpErlangTuple f = (OtpErlangTuple) resl
+								.elementAt(i);
 						final String fstr = ((OtpErlangAtom) f.elementAt(0))
 								.atomValue();
-						final int far = ((OtpErlangLong) f.elementAt(1)).intValue();
+						final int far = ((OtpErlangLong) f.elementAt(1))
+								.intValue();
 						String args = "";
 						for (int j = 0; j < far - 1; j++) {
 							args += ", ";
@@ -106,8 +110,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 								docStr = ((OtpErlangString) elt).stringValue();
 							}
 						}
-						final String cpl = fstr.substring(prefix.length()) + "("
-								+ args + ")";
+						final String cpl = fstr.substring(prefix.length())
+								+ "(" + args + ")";
 						result.add(new CompletionProposal(cpl, offset, 0, cpl
 								.length()
 								- 1 - far * 2 + 2, null, fstr + "/" + far,
@@ -137,24 +141,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	/* NOT USED */
 	/*
-	private String lastWord(IDocument doc, int offset) {
-		try {
-			for (int n = offset - 1; n >= 0; n--) {
-				if (!Character.isJavaIdentifierPart(doc.getChar(n))) {
-					return doc.get(n + 1, offset - n - 1);
-				}
-			}
-		} catch (final BadLocationException e) {
-		}
-		return "";
-	}
-	*/
+	 * private String lastWord(IDocument doc, int offset) { try { for (int n =
+	 * offset - 1; n >= 0; n--) { if
+	 * (!Character.isJavaIdentifierPart(doc.getChar(n))) { return doc.get(n + 1,
+	 * offset - n - 1); } } } catch (final BadLocationException e) { } return
+	 * ""; }
+	 */
 
 	private String lastText(IDocument doc, int offset) {
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
 				char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c) && c!=':') {
+				if (!isErlangIdentifierChar(c) && c != ':') {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}

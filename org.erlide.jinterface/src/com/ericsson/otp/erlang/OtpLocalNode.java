@@ -102,7 +102,8 @@ public class OtpLocalNode extends AbstractNode {
 	 * @return an Erlang pid.
 	 */
 	public synchronized OtpErlangPid createPid() {
-		final OtpErlangPid p = new OtpErlangPid(node, pidCount, serial, creation);
+		final OtpErlangPid p = new OtpErlangPid(node, pidCount, serial,
+				creation);
 
 		pidCount++;
 		if (pidCount > 0x7fff) {

@@ -32,9 +32,10 @@ public class DialogSettingsHelper {
 	 */
 	public static void persistShellGeometry(Shell shell,
 			String dialogSettingsSectionName) {
-		//final Point shellLocation = shell.getLocation();
-		//final Point shellSize = shell.getSize();
-		//final IDialogSettings settings = getDialogSettings(dialogSettingsSectionName);
+		// final Point shellLocation = shell.getLocation();
+		// final Point shellSize = shell.getSize();
+		// final IDialogSettings settings =
+		// getDialogSettings(dialogSettingsSectionName);
 		// settings.put(IDebugPreferenceConstants.DIALOG_ORIGIN_X,
 		// shellLocation.x);
 		// settings.put(IDebugPreferenceConstants.DIALOG_ORIGIN_Y,
@@ -72,7 +73,8 @@ public class DialogSettingsHelper {
 	 */
 	public static Point getInitialSize(String dialogSettingsSectionName,
 			Point initialSize) {
-		//final IDialogSettings settings = getDialogSettings(dialogSettingsSectionName);
+		// final IDialogSettings settings =
+		// getDialogSettings(dialogSettingsSectionName);
 		try {
 			int x, y;
 			x = 200; // TODO
@@ -97,7 +99,8 @@ public class DialogSettingsHelper {
 	 * @return The initial location or <code>null</code>
 	 */
 	public static Point getInitialLocation(String dialogSettingsSectionName) {
-		//final IDialogSettings settings = getDialogSettings(dialogSettingsSectionName);
+		// final IDialogSettings settings =
+		// getDialogSettings(dialogSettingsSectionName);
 		try {
 			final int x = 200; // TODO
 			// settings.getInt(IDebugPreferenceConstants.DIALOG_ORIGIN_X);

@@ -37,7 +37,7 @@ public class DebuggerListener {
 		fDbgPid = dbgPid;
 
 		// TODO use the new event router job!
-		
+
 		final IErlEventHandler r = new DebuggerJob();
 		loop = new ErlEventLoop(r);
 		loop.start();

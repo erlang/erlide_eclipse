@@ -263,7 +263,8 @@ public class EditorUtility {
 		if (file != null) {
 			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
 			if (p != null) {
-				final IEditorPart editorPart = IDE.openEditor(p, file, activate);
+				final IEditorPart editorPart = IDE
+						.openEditor(p, file, activate);
 				initializeHighlightRange(editorPart);
 				return editorPart;
 			}
@@ -276,8 +277,8 @@ public class EditorUtility {
 		if (input != null) {
 			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
 			if (p != null) {
-				final IEditorPart editorPart = p
-						.openEditor(input, editorID, activate);
+				final IEditorPart editorPart = p.openEditor(input, editorID,
+						activate);
 				initializeHighlightRange(editorPart);
 				return editorPart;
 			}

@@ -63,7 +63,8 @@ class MessageDialogPage extends DialogPage {
 			messageComposite.setLayout(messageLayout);
 			messageImageLabel = new Label(messageComposite, SWT.NONE);
 
-			final GridData imageData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+			final GridData imageData = new GridData(
+					GridData.VERTICAL_ALIGN_CENTER);
 			final Image sizingImage = JFaceResources
 					.getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
 			Rectangle imageBounds;

@@ -170,8 +170,8 @@ public class EdocView extends AbstractInfoView {
 	private static class SelectionProvider implements ISelectionProvider {
 
 		/** The selection changed listeners. */
-		private final List<ISelectionChangedListener> fListeners = 
-			new ArrayList<ISelectionChangedListener>(0);
+		private final List<ISelectionChangedListener> fListeners = new ArrayList<ISelectionChangedListener>(
+				0);
 
 		/** The widget. */
 		private Control fControl;

@@ -56,7 +56,7 @@ public class OtpErlangShort extends OtpErlangLong implements Serializable,
 			OtpErlangDecodeException {
 		super(buf);
 
-		/*final short j = */shortValue();
+		/* final short j = */shortValue();
 	}
 
 }

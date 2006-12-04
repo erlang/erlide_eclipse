@@ -124,8 +124,8 @@ public class BuildConsolePreferencePage extends FieldEditorPreferencePage
 	 */
 	private ColorFieldEditor createColorFieldEditor(String preferenceName,
 			String label, Composite parent) {
-		final ColorFieldEditor editor = new ColorFieldEditor(preferenceName, label,
-				parent);
+		final ColorFieldEditor editor = new ColorFieldEditor(preferenceName,
+				label, parent);
 		editor.setPage(this);
 		editor.setPreferenceStore(getPreferenceStore());
 		return editor;

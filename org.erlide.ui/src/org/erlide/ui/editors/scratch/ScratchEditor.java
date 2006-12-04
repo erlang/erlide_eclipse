@@ -248,7 +248,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 				Shell shell = getShell();
 				if (fScratchStateListeners != null && shell != null
 						&& !shell.isDisposed()) {
-					List<IScratchStateChangedListener> v = new ArrayList<IScratchStateChangedListener>(fScratchStateListeners);
+					List<IScratchStateChangedListener> v = new ArrayList<IScratchStateChangedListener>(
+							fScratchStateListeners);
 					for (int i = 0; i < v.size(); i++) {
 						IScratchStateChangedListener l = v.get(i);
 						l.scratchStateChanged(ScratchEditor.this);
@@ -285,7 +286,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			}
 		} else {
 			// FIXME IBackend
-			final String msg = BackendUtil.format(null, "~p", r.getErrorReason());
+			final String msg = BackendUtil.format(null, "~p", r
+					.getErrorReason());
 			showError("Evaluation failed. Reason: \n" + msg);
 		}
 		evaluationEnds();
@@ -319,8 +321,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	}
 
 	protected void showError(String message) {
-		final Status status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
-				IStatus.ERROR, message, null);
+		final Status status = new Status(IStatus.ERROR,
+				ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, message, null);
 		showError(status);
 	}
 

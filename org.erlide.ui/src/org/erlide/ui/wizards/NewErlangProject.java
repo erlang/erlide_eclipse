@@ -122,8 +122,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 							: new NullProgressMonitor());
 
 					try {
-						final IWorkbench workbench = ErlideUIPlugin.getDefault()
-								.getWorkbench();
+						final IWorkbench workbench = ErlideUIPlugin
+								.getDefault().getWorkbench();
 						workbench.showPerspective(ErlangPerspective.ID,
 								workbench.getActiveWorkbenchWindow());
 					} catch (final WorkbenchException we) {
@@ -175,7 +175,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 		monitor.beginTask(ErlideUIPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
 		try {
-			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
+					.getRoot();
 			monitor.subTask(ErlideUIPlugin
 					.getResourceString("wizards.messages.creatingdirectories"));
 			final IProject project = root.getProject(namePage.getProjectName());
@@ -205,13 +206,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
 			buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(project);
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
 			prefs.copyFrom(bprefs);
 			prefs.store();
 
 			// add code path to backend
-			final String out = project.getLocation().append(prefs.getOutputDir())
-					.toString();
+			final String out = project.getLocation().append(
+					prefs.getOutputDir()).toString();
 			BackendManager.getDefault().get(project).getCodeManager().addPathA(
 					out);
 		} catch (final CoreException x) {
@@ -279,8 +281,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 *            details on the error
 	 */
 	private void reportError(String x) {
-		final Status status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0,
-				x, null);
+		final Status status = new Status(IStatus.ERROR,
+				ErlideUIPlugin.PLUGIN_ID, 0, x, null);
 
 		ErrorDialog.openError(getShell(), x, ErlideUIPlugin
 				.getResourceString("wizards.errors.projecterrortitle"), status);

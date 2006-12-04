@@ -94,27 +94,26 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 	/* the model */
 	final Map fProviderDescriptors;
 
-	private final Map<String,IErlangFoldingPreferenceBlock> fProviderPreferences;
+	private final Map<String, IErlangFoldingPreferenceBlock> fProviderPreferences;
 
-	private final Map<String,Control> fProviderControls;
+	private final Map<String, Control> fProviderControls;
 
 	public FoldingConfigurationBlock(OverlayPreferenceStore store) {
 		Assert.isNotNull(store);
 		fStore = store;
 		fStore.addKeys(createOverlayStoreKeys());
 		fProviderDescriptors = createListModel();
-		fProviderPreferences = new HashMap<String,IErlangFoldingPreferenceBlock>();
-		fProviderControls = new HashMap<String,Control>();
+		fProviderPreferences = new HashMap<String, IErlangFoldingPreferenceBlock>();
+		fProviderControls = new HashMap<String, Control>();
 	}
 
-	private Map<String,ErlangFoldingStructureProviderDescriptor> createListModel() {
+	private Map<String, ErlangFoldingStructureProviderDescriptor> createListModel() {
 		final ErlangFoldingStructureProviderRegistry reg = ErlideUIPlugin
 				.getDefault().getFoldingStructureProviderRegistry();
 		reg.reloadExtensions();
 		final ErlangFoldingStructureProviderDescriptor[] descs = reg
 				.getFoldingProviderDescriptors();
-		final Map<String,ErlangFoldingStructureProviderDescriptor> map = 
-			new HashMap<String,ErlangFoldingStructureProviderDescriptor>();
+		final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
 		for (int i = 0; i < descs.length; i++) {
 			map.put(descs[i].getId(), descs[i]);
 		}
@@ -123,8 +122,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 	private OverlayPreferenceStore.OverlayKey[] createOverlayStoreKeys() {
 
-		final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = 
-			new ArrayList<OverlayPreferenceStore.OverlayKey>();
+		final ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys = new ArrayList<OverlayPreferenceStore.OverlayKey>();
 
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.TypeDescriptor.BOOLEAN,
@@ -133,9 +131,9 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 				OverlayPreferenceStore.TypeDescriptor.STRING,
 				PreferenceConstants.EDITOR_FOLDING_PROVIDER));
 
-		return overlayKeys.toArray(
-				new OverlayPreferenceStore.OverlayKey[overlayKeys.size()]
-				);
+		return overlayKeys
+				.toArray(new OverlayPreferenceStore.OverlayKey[overlayKeys
+						.size()]);
 	}
 
 	/**

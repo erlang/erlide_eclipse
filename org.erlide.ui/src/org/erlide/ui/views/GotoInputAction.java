@@ -15,11 +15,11 @@ import org.eclipse.jface.util.Assert;
 
 class GotoInputAction extends Action {
 
-	//private AbstractInfoView fInfoView;
+	// private AbstractInfoView fInfoView;
 
 	public GotoInputAction(AbstractInfoView infoView) {
 		Assert.isNotNull(infoView);
-		//fInfoView = infoView;
+		// fInfoView = infoView;
 
 		// TODO JavaPluginImages.setLocalImageDescriptors(this,
 		// "goto_input.gif");

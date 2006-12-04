@@ -125,7 +125,8 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 		fContext = new Combo(top, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		for (final Iterator iter = ErlangSourceContextTypeComment.getDefault()
 				.getContextTypeRegistry().contextTypes(); iter.hasNext();) {
-			final TemplateContextType element = (TemplateContextType) iter.next();
+			final TemplateContextType element = (TemplateContextType) iter
+					.next();
 			fContext.add(element.getName());
 		}
 

@@ -71,8 +71,9 @@ public class BufferManager {
 	public IBuffer createBuffer(IOpenable owner) {
 		final IErlElement element = (IErlElement) owner;
 		final IResource resource = element.getResource();
-		final IBuffer buf = new Buffer(resource instanceof IFile ? (IFile) resource
-				: null, owner, element.isReadOnly());
+		final IBuffer buf = new Buffer(
+				resource instanceof IFile ? (IFile) resource : null, owner,
+				element.isReadOnly());
 		addBuffer(buf);
 		return buf;
 	}

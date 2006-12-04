@@ -18,9 +18,10 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-//import java.lang.reflect.Constructor;
-//import java.lang.reflect.Field;
-//import java.lang.reflect.Method;
+
+// import java.lang.reflect.Constructor;
+// import java.lang.reflect.Field;
+// import java.lang.reflect.Method;
 
 public class ReflectionUtils {
 
@@ -30,22 +31,15 @@ public class ReflectionUtils {
 	public static void exportClass(Class clazz) {
 		/* TODO: Define exportClass */
 		/*
-		final Constructor[] constructors = clazz.getConstructors();
-		for (int i = 0; i < constructors.length; i++) {
-			final Constructor constructor = constructors[i];
-
-		}
-		final Field[] fields = clazz.getFields();
-		for (int i = 0; i < fields.length; i++) {
-			final Field field = fields[i];
-
-		}
-		final Method[] methods = clazz.getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			final Method method = methods[i];
-
-		}
-		*/
+		 * final Constructor[] constructors = clazz.getConstructors(); for (int
+		 * i = 0; i < constructors.length; i++) { final Constructor constructor =
+		 * constructors[i];
+		 *  } final Field[] fields = clazz.getFields(); for (int i = 0; i <
+		 * fields.length; i++) { final Field field = fields[i];
+		 *  } final Method[] methods = clazz.getMethods(); for (int i = 0; i <
+		 * methods.length; i++) { final Method method = methods[i];
+		 *  }
+		 */
 	}
 
 	public static Call parseCallMsg(OtpErlangObject msg) {

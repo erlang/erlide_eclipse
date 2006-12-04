@@ -237,7 +237,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			new ErlangSourceTemplateDialog(getShell(), resourceBundle);
 		} else if (e.getSource() == edit_button) {
 			/* final ErlangSourceTemplateDialog diag = */
-			new ErlangSourceTemplateDialog(getShell(), resourceBundle, selectedTemplate);
+			new ErlangSourceTemplateDialog(getShell(), resourceBundle,
+					selectedTemplate);
 		} else if (e.getSource() == remove_button) {
 			final IStructuredSelection selection = (IStructuredSelection) templateTree
 					.getSelection();
@@ -314,7 +315,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 				final InputStream input = new BufferedInputStream(
 						new FileInputStream(file));
 				try {
-					final TemplatePersistenceData[] datas = reader.read(input, null);
+					final TemplatePersistenceData[] datas = reader.read(input,
+							null);
 					for (int i = 0; i < datas.length; i++) {
 						final TemplatePersistenceData data = datas[i];
 						ErlangSourceContextTypeComment.getDefault()
@@ -466,7 +468,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 					.getContextTypeRegistry().contextTypes();
 			final ArrayList<String> al = new ArrayList<String>();
 			while (it.hasNext()) {
-				final TemplateContextType context = (TemplateContextType) it.next();
+				final TemplateContextType context = (TemplateContextType) it
+						.next();
 				al.add(context.getId());
 			}
 			return al.toArray();

@@ -96,23 +96,15 @@ public class ErlParser {
 
 	/* NOT USED */
 	/*
-	private List splitFunction(ErlToken[] tokens) {
-		// match "^ atom (" and ") ->" to split
-
-		final List result = new ArrayList(10);
-		List tmp = new ArrayList(50);
-		for (int i = 0; i < tokens.length; i++) {
-			final ErlToken token = tokens[i];
-			tmp.add(token);
-			if (token.getKind().equals("dot")) {
-				final ErlToken[] tmpar = new ErlToken[tmp.size()];
-				result.add(tmp.toArray(tmpar));
-				tmp = new ArrayList(50);
-			}
-		}
-		return result;
-	}
-	*/
+	 * private List splitFunction(ErlToken[] tokens) { // match "^ atom (" and ")
+	 * ->" to split
+	 * 
+	 * final List result = new ArrayList(10); List tmp = new ArrayList(50); for
+	 * (int i = 0; i < tokens.length; i++) { final ErlToken token = tokens[i];
+	 * tmp.add(token); if (token.getKind().equals("dot")) { final ErlToken[]
+	 * tmpar = new ErlToken[tmp.size()]; result.add(tmp.toArray(tmpar)); tmp =
+	 * new ArrayList(50); } } return result; }
+	 */
 
 	public boolean parse(IErlModule module) {
 		try {

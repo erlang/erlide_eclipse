@@ -15,8 +15,7 @@ import java.util.Iterator;
 
 public class ExportedFunctionsVariableResolver extends FunctionVariableResolver {
 
-	private static final ArrayList<FunctionVariableResolver> fInstances = 
-		new ArrayList<FunctionVariableResolver>();
+	private static final ArrayList<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
 
 	public ExportedFunctionsVariableResolver() {
 		fInstances.add(this);

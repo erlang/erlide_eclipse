@@ -69,7 +69,8 @@ public class ColorEditor {
 
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				final ColorDialog colorDialog = new ColorDialog(fButton.getShell());
+				final ColorDialog colorDialog = new ColorDialog(fButton
+						.getShell());
 				colorDialog.setRGB(fColorValue);
 				final RGB newColor = colorDialog.open();
 				if (newColor != null) {

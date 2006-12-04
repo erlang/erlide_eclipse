@@ -50,7 +50,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	private ITextDoubleClickStrategy doubleClickStrategy;
 
-	//private IErlScanner fScanner;
+	// private IErlScanner fScanner;
 
 	private ErlHighlightScanner fHighlightScanner;
 
@@ -148,7 +148,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
 			ISourceViewer sourceViewer, String contentType) {
-		//final String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
+		// final String partitioning =
+		// getConfiguredDocumentPartitioning(sourceViewer);
 		return new IAutoEditStrategy[] { new AutoIndentStrategy() };
 	}
 
@@ -249,17 +250,12 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	/* NOT USED */
 	/*
-	private IInformationControlCreator getInformationPresenterControlCreator(
-			ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
-
-			public IInformationControl createInformationControl(Shell parent) {
-				final int shellStyle = SWT.RESIZE | SWT.TOOL;
-				final int style = SWT.V_SCROLL | SWT.H_SCROLL;
-				return new DefaultInformationControl(parent, shellStyle, style,
-						new HTMLTextPresenter(false));
-			}
-		};
-	}
-	*/
+	 * private IInformationControlCreator getInformationPresenterControlCreator(
+	 * ISourceViewer sourceViewer) { return new IInformationControlCreator() {
+	 * 
+	 * public IInformationControl createInformationControl(Shell parent) { final
+	 * int shellStyle = SWT.RESIZE | SWT.TOOL; final int style = SWT.V_SCROLL |
+	 * SWT.H_SCROLL; return new DefaultInformationControl(parent, shellStyle,
+	 * style, new HTMLTextPresenter(false)); } }; }
+	 */
 }

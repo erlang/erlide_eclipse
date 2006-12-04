@@ -59,7 +59,8 @@ class OtpMD5 {
 	 * Has to be this large to avoid sign problems
 	 */
 
-	private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L };
+	private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL,
+			0x10325476L };
 
 	private final long count[] = { 0L, 0L };
 
@@ -158,20 +159,14 @@ class OtpMD5 {
 
 	}
 
-	/*private void dumpstate() {
-		System.out.println("state = {" + state[0] + ", " + state[1] + ", "
-				+ state[2] + ", " + state[3] + "}");
-		System.out.println("count = {" + count[0] + ", " + count[1] + "}");
-		System.out.print("buffer = {");
-		int i;
-		for (i = 0; i < 64; ++i) {
-			if (i > 0) {
-				System.out.print(", ");
-			}
-			System.out.print(buffer[i]);
-		}
-		System.out.println("}");
-	}*/
+	/*
+	 * private void dumpstate() { System.out.println("state = {" + state[0] + ", " +
+	 * state[1] + ", " + state[2] + ", " + state[3] + "}");
+	 * System.out.println("count = {" + count[0] + ", " + count[1] + "}");
+	 * System.out.print("buffer = {"); int i; for (i = 0; i < 64; ++i) { if (i >
+	 * 0) { System.out.print(", "); } System.out.print(buffer[i]); }
+	 * System.out.println("}"); }
+	 */
 
 	/*
 	 * * The transformation functions

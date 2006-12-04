@@ -41,7 +41,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 	public static final int NONE = 2;
 
-	//private final String currentSkeleton = "None";
+	// private final String currentSkeleton = "None";
 
 	private Table fTable;
 
@@ -206,8 +206,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 	 * @param exported
 	 */
 	void addFunction(String name, int arity, int type, boolean exported) {
-		final TableItem item = (fEditingItem != null) ? fEditingItem : new TableItem(
-				fTable, SWT.NULL, 0);
+		final TableItem item = (fEditingItem != null) ? fEditingItem
+				: new TableItem(fTable, SWT.NULL, 0);
 		item.setChecked(exported);
 		item.setText(0, name + getPostfix(type));
 		item.setText(1, "" + arity);
@@ -304,7 +304,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 				functionList.add(f);
 			}
 		}
-		final Function[] functions = functionList.toArray(new Function[functionList.size()]);
+		final Function[] functions = functionList
+				.toArray(new Function[functionList.size()]);
 
 		return functions;
 	}

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
-//import org.eclipse.jface.preference.PathEditor;
+// import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -24,9 +24,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class BuilderPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	//private PathEditor pathA;
+	// private PathEditor pathA;
 
-	//private PathEditor pathZ;
+	// private PathEditor pathZ;
 
 	// private BooleanFieldEditor longName;
 	// private StringFieldEditor extra;

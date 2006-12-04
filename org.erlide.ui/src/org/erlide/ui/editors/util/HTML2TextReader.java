@@ -30,7 +30,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
 	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-	private static final Map<String,String> fgEntityLookup;
+	private static final Map<String, String> fgEntityLookup;
 
 	private static final Set<String> fgTags;
 
@@ -49,7 +49,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 		fgTags.add("ul"); //$NON-NLS-1$
 		fgTags.add("pre"); //$NON-NLS-1$
 
-		fgEntityLookup = new HashMap<String,String>(7);
+		fgEntityLookup = new HashMap<String, String>(7);
 		fgEntityLookup.put("lt", "<"); //$NON-NLS-1$ //$NON-NLS-2$
 		fgEntityLookup.put("gt", ">"); //$NON-NLS-1$ //$NON-NLS-2$
 		fgEntityLookup.put("nbsp", " "); //$NON-NLS-1$ //$NON-NLS-2$

@@ -158,7 +158,8 @@ public class ErlangElementImageProvider {
 		if (wbAdapter == null) {
 			return null;
 		}
-		final ImageDescriptor descriptor = wbAdapter.getImageDescriptor(adaptable);
+		final ImageDescriptor descriptor = wbAdapter
+				.getImageDescriptor(adaptable);
 		if (descriptor == null) {
 			return null;
 		}

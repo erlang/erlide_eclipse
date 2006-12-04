@@ -11,12 +11,12 @@
 package org.erlide.core.erlang.internal;
 
 import java.io.BufferedInputStream;
-//import java.io.BufferedOutputStream;
+// import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-//import java.io.DataOutputStream;
+// import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-//import java.io.FileOutputStream;
+// import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +82,8 @@ public class ErlModelManager implements IErlModelManager {
 
 	private final HashSet optionNames = new HashSet(20);
 
-	private final Map<String,IErlElement> elements = new HashMap<String,IErlElement>(10);
+	private final Map<String, IErlElement> elements = new HashMap<String, IErlElement>(
+			10);
 
 	/**
 	 * Queue of reconcile deltas on working copies that have yet to be fired.
@@ -98,7 +99,8 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * Queue of deltas created explicily by the model that have yet to be fired.
 	 */
-	List<IErlElementDelta> erlModelDeltas = Collections.synchronizedList(new ArrayList<IErlElementDelta>());
+	List<IErlElementDelta> erlModelDeltas = Collections
+			.synchronizedList(new ArrayList<IErlElementDelta>());
 
 	public static final int DEFAULT_CHANGE_EVENT = 0; // must not collide with
 
@@ -118,7 +120,8 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * Set of elements which are out of sync with their buffers.
 	 */
-	protected Map<IErlElement,IErlElement> elementsOutOfSynchWithBuffers = new HashMap<IErlElement,IErlElement>(11);
+	protected Map<IErlElement, IErlElement> elementsOutOfSynchWithBuffers = new HashMap<IErlElement, IErlElement>(
+			11);
 
 	public static boolean verbose = true;
 
@@ -419,7 +422,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * Table from IProject to PerProjectInfo. NOTE: this object itself is used
 	 * as a lock to synchronize creation/removal of per project infos
 	 */
-	protected Map<IProject,PerProjectInfo> perProjectInfos = new HashMap<IProject,PerProjectInfo>(5);
+	protected Map<IProject, PerProjectInfo> perProjectInfos = new HashMap<IProject, PerProjectInfo>(
+			5);
 
 	public class PerProjectInfo {
 
@@ -519,7 +523,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * Returns the set of elements which are out of synch with their buffers.
 	 */
-	public Map<IErlElement,IErlElement> getElementsOutOfSynchWithBuffers() {
+	public Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers() {
 		return this.elementsOutOfSynchWithBuffers;
 	}
 
@@ -795,87 +799,42 @@ public class ErlModelManager implements IErlModelManager {
 
 	/* Unused */
 	/*
-	private void saveState(PerProjectInfo info, ISaveContext context)
-			throws CoreException {
-
-		// passed this point, save actions are non trivial
-		if (context.getKind() == ISaveContext.SNAPSHOT) {
-			return;
-		}
-
-		// save built state
-		if (info.fTriedRead) {
-			saveBuiltState(info);
-		}
-	}
-	*/
+	 * private void saveState(PerProjectInfo info, ISaveContext context) throws
+	 * CoreException {
+	 *  // passed this point, save actions are non trivial if (context.getKind() ==
+	 * ISaveContext.SNAPSHOT) { return; }
+	 *  // save built state if (info.fTriedRead) { saveBuiltState(info); } }
+	 */
 
 	/**
 	 * Saves the built state for the project.
 	 */
 	/* Unused */
 	/*
-	private void saveBuiltState(PerProjectInfo info) throws CoreException {
-		// if (ErlangBuilder.DEBUG)
-		// System.out.println(Util.bind(
-		// "build.saveStateProgress", info.project.getName())); //$NON-NLS-1$
-		final File file = getSerializationFile(info.fProject);
-		if (file == null) {
-			return;
-		}
-		// long t = System.currentTimeMillis();
-		try {
-			final DataOutputStream out = new DataOutputStream(
-					new BufferedOutputStream(new FileOutputStream(file)));
-			try {
-				out.writeUTF(ErlangPlugin.PLUGIN_ID);
-				out.writeUTF("STATE"); //$NON-NLS-1$
-				if (info.fSavedState == null) {
-					out.writeBoolean(false);
-				} else {
-					out.writeBoolean(true);
-					// ErlangBuilder.writeState(info.savedState, out);
-				}
-			} finally {
-				out.close();
-			}
-		} catch (final RuntimeException e) {
-			try {
-				file.delete();
-			} catch (final SecurityException se) {
-				// could not delete file: cannot do much more
-			}
-			throw new CoreException(
-					new Status(
-							IStatus.ERROR,
-							ErlangPlugin.PLUGIN_ID,
-							Platform.PLUGIN_ERROR,
-							Util
-									.bind(
-											"build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$
-		} catch (final IOException e) {
-			try {
-				file.delete();
-			} catch (final SecurityException se) {
-				// could not delete file: cannot do much more
-			}
-			throw new CoreException(
-					new Status(
-							IStatus.ERROR,
-							ErlangPlugin.PLUGIN_ID,
-							Platform.PLUGIN_ERROR,
-							Util
-									.bind(
-											"build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$
-		}
-		// if (ErlangBuilder.DEBUG)
-		// {
-		// t = System.currentTimeMillis() - t;
-		// System.out.println(Util.bind(
-		// "build.saveStateComplete", String.valueOf(t))); //$NON-NLS-1$
-		// }
-	}
-	*/
+	 * private void saveBuiltState(PerProjectInfo info) throws CoreException { //
+	 * if (ErlangBuilder.DEBUG) // System.out.println(Util.bind( //
+	 * "build.saveStateProgress", info.project.getName())); //$NON-NLS-1$ final
+	 * File file = getSerializationFile(info.fProject); if (file == null) {
+	 * return; } // long t = System.currentTimeMillis(); try { final
+	 * DataOutputStream out = new DataOutputStream( new BufferedOutputStream(new
+	 * FileOutputStream(file))); try { out.writeUTF(ErlangPlugin.PLUGIN_ID);
+	 * out.writeUTF("STATE"); //$NON-NLS-1$ if (info.fSavedState == null) {
+	 * out.writeBoolean(false); } else { out.writeBoolean(true); //
+	 * ErlangBuilder.writeState(info.savedState, out); } } finally {
+	 * out.close(); } } catch (final RuntimeException e) { try { file.delete(); }
+	 * catch (final SecurityException se) { // could not delete file: cannot do
+	 * much more } throw new CoreException( new Status( IStatus.ERROR,
+	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
+	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ }
+	 * catch (final IOException e) { try { file.delete(); } catch (final
+	 * SecurityException se) { // could not delete file: cannot do much more }
+	 * throw new CoreException( new Status( IStatus.ERROR,
+	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
+	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ } //
+	 * if (ErlangBuilder.DEBUG) // { // t = System.currentTimeMillis() - t; //
+	 * System.out.println(Util.bind( // "build.saveStateComplete",
+	 * String.valueOf(t))); //$NON-NLS-1$ // } }
+	 */
 
 	/**
 	 * @see ISaveParticipant
@@ -1013,7 +972,8 @@ public class ErlModelManager implements IErlModelManager {
 			// order
 			final int erlangCount = erlangBuildOrder.length;
 			// create a set for fast check
-			final HashMap<String,String> newSet = new HashMap<String,String>(erlangCount); 
+			final HashMap<String, String> newSet = new HashMap<String, String>(
+					erlangCount);
 			for (int i = 0; i < erlangCount; i++) {
 				newSet.put(erlangBuildOrder[i], erlangBuildOrder[i]);
 			}

@@ -123,10 +123,12 @@ public class AddVMDialog extends StatusDialog {
 
 		final String[] buttons = new String[] { ErtsMessages.AddVMDialog_3,
 				ErtsMessages.AddVMDialog_4, ErtsMessages.AddVMDialog_5 };
-		fPathA = new ListDialogField<String>(null, buttons, new StringLabelProvider());
+		fPathA = new ListDialogField<String>(null, buttons,
+				new StringLabelProvider());
 		fPathA.setLabelText("PathA");
 
-		fPathZ = new ListDialogField<String>(null, buttons, new StringLabelProvider());
+		fPathZ = new ListDialogField<String>(null, buttons,
+				new StringLabelProvider());
 		fPathZ.setLabelText("PathZ");
 
 		fExtraArgs = new StringDialogField();
@@ -222,8 +224,8 @@ public class AddVMDialog extends StatusDialog {
 					&& (fEditedVM == null || !name.equals(fEditedVM.getName()))) {
 				status.setError("The name is already used"); //$NON-NLS-1$
 			} else {
-				final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
-						IResource.FILE);
+				final IStatus s = ResourcesPlugin.getWorkspace().validateName(
+						name, IResource.FILE);
 				if (!s.isOK()) {
 					status.setError(MessageFormat.format("name is invalid",
 							(Object[]) new String[] { s.getMessage() }));
@@ -296,7 +298,6 @@ public class AddVMDialog extends StatusDialog {
 		vm.setName(fVMName.getText());
 		vm.setVersion(ErtsInstall.retrieveVersion(fOtpHome.getText()));
 
-		
 		vm.setPathA(fPathA.getElements());
 		vm.setPathZ(fPathZ.getElements());
 

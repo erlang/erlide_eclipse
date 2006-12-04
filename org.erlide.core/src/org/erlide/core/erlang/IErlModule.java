@@ -22,7 +22,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
-
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or
  * <code>.hrl</code> source file). Compilation unit elements need to be opened

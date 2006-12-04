@@ -156,8 +156,8 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		// needed)
 		try {
 			if (!isStructureKnown()) {
-				final boolean knownStructure = buildStructure(monitor, getResource(),
-						null, null);
+				final boolean knownStructure = buildStructure(monitor,
+						getResource(), null, null);
 				setIsStructureKnown(knownStructure);
 			}
 		} catch (final ErlModelException e) {

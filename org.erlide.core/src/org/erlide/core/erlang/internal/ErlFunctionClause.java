@@ -54,15 +54,15 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 	public String getHoverHelp() {
 		return super.getHoverHelp();
 	}
-	
+
 	@Override
 	public String toString() {
-        String result = pp_1(getGuards());
-        if (result.length() > 0) {
-            result = pp(getArguments()) + " when " + result;
-        } else {
-            result = pp(getArguments());
-        }
-        return result;
+		String result = pp_1(getGuards());
+		if (result.length() > 0) {
+			result = pp(getArguments()) + " when " + result;
+		} else {
+			result = pp(getArguments());
+		}
+		return result;
 	}
 }

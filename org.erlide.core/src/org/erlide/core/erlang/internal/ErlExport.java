@@ -13,7 +13,7 @@ public class ErlExport extends ErlMember implements IErlExport, IParent {
 	public String getElementType() {
 		return EXPORT;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getElementName();

@@ -19,8 +19,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ModuleVariableResolver extends TemplateVariableResolver {
 
-	private static final ArrayList<TemplateVariableResolver> fInstances = 
-		new ArrayList<TemplateVariableResolver>();
+	private static final ArrayList<TemplateVariableResolver> fInstances = new ArrayList<TemplateVariableResolver>();
 
 	private String fModule = "<module_name>";
 

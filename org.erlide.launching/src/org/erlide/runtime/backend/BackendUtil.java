@@ -43,7 +43,8 @@ public class BackendUtil {
 		args1[1] = new OtpErlangList(args);
 
 		try {
-			final String r = b.rpc(IBackend.ERL_BACKEND, "format", args1).toString();
+			final String r = b.rpc(IBackend.ERL_BACKEND, "format", args1)
+					.toString();
 			return r.substring(1, r.length() - 1);
 		} catch (final ErlangRpcException e) {
 			e.printStackTrace();
@@ -179,8 +180,8 @@ public class BackendUtil {
 			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "eval", args));
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
-			final boolean ok = !((OtpErlangAtom) t.elementAt(0)).atomValue().equals(
-					"error");
+			final boolean ok = !((OtpErlangAtom) t.elementAt(0)).atomValue()
+					.equals("error");
 			if (ok) {
 				result.setValue(t.elementAt(1), t.elementAt(2));
 			} else {

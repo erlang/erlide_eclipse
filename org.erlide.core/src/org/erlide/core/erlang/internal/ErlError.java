@@ -56,6 +56,6 @@ public class ErlError extends ErlMember implements IErlError {
 
 	@Override
 	public String toString() {
-        return "ERR: " + getMessage();
+		return "ERR: " + getMessage();
 	}
 }

@@ -128,10 +128,12 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		final File dir = loc.toFile();
 
 		if (dir.exists()) {
-			final List<String> src = search("erl", dir, new ArrayList<String>(10));
+			final List<String> src = search("erl", dir, new ArrayList<String>(
+					10));
 			final String[] srcs = dirs(src, loc);
 
-			final List<String> inc = search("hrl", dir, new ArrayList<String>(10));
+			final List<String> inc = search("hrl", dir, new ArrayList<String>(
+					10));
 			final String[] incs = dirs(inc, loc);
 
 			source.setText(ErlangProjectProperties.pack(srcs));

@@ -286,7 +286,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 				return "Class: " + fClass + " has " + fCount + " entries."; //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-1$
 			}
 		}
-		final java.util.HashMap<Class,Temp> h = new java.util.HashMap<Class,Temp>();
+		final java.util.HashMap<Class, Temp> h = new java.util.HashMap<Class, Temp>();
 		while (keys.hasMoreElements()) {
 			entry = (LRUCacheEntry) fEntryTable.get(keys.nextElement());
 			final Class key = entry._fValue.getClass();

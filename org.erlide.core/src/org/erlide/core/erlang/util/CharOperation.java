@@ -36,18 +36,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a', 'b' }
-	 *              suffix = 'c'
-	 *              =&gt; result = { 'a', 'b' , 'c' }
+	 *      array = { 'a', 'b' }
+	 *               suffix = 'c'
+	 *               =&gt; result = { 'a', 'b' , 'c' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = null
-	 *              suffix = 'c'
-	 *              =&gt; result = { 'c' }
+	 *      array = null
+	 *               suffix = 'c'
+	 *               =&gt; result = { 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -79,36 +79,36 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     target = { 'a', 'b', '0' }
-	 *              index = 2
-	 *              array = { 'c', 'd' }
-	 *              start = 0
-	 *              end = 1
-	 *              =&gt; result = { 'a', 'b' , 'c' }
+	 *      target = { 'a', 'b', '0' }
+	 *               index = 2
+	 *               array = { 'c', 'd' }
+	 *               start = 0
+	 *               end = 1
+	 *               =&gt; result = { 'a', 'b' , 'c' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     target = { 'a', 'b' }
-	 *              index = 2
-	 *              array = { 'c', 'd' }
-	 *              start = 0
-	 *              end = 1
-	 *              =&gt; result = { 'a', 'b' , 'c', '0', '0' , '0' } (new array)
+	 *      target = { 'a', 'b' }
+	 *               index = 2
+	 *               array = { 'c', 'd' }
+	 *               start = 0
+	 *               end = 1
+	 *               =&gt; result = { 'a', 'b' , 'c', '0', '0' , '0' } (new array)
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     target = { 'a', 'b', 'c' }
-	 *              index = 1
-	 *              array = { 'c', 'd', 'e', 'f' }
-	 *              start = 1
-	 *              end = 4
-	 *              =&gt; result = { 'a', 'd' , 'e', 'f', '0', '0', '0', '0' } (new array)
+	 *      target = { 'a', 'b', 'c' }
+	 *               index = 1
+	 *               array = { 'c', 'd', 'e', 'f' }
+	 *               start = 1
+	 *               end = 4
+	 *               =&gt; result = { 'a', 'd' , 'e', 'f', '0', '0', '0', '0' } (new array)
 	 * </pre>
 	 * 
 	 * </li>
@@ -153,36 +153,36 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = null
-	 *              second = null
-	 *              =&gt; result = null
+	 *      first = null
+	 *               second = null
+	 *               =&gt; result = null
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { { ' a' } }
-	 *              second = null
-	 *              =&gt; result = { { ' a' } }
+	 *      first = { { ' a' } }
+	 *               second = null
+	 *               =&gt; result = { { ' a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = null
-	 *              second = { { ' a' } }
-	 *              =&gt; result = { { ' a' } }
+	 *      first = null
+	 *               second = { { ' a' } }
+	 *               =&gt; result = { { ' a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { { ' b' } }
-	 *              second = { { ' a' } }
-	 *              =&gt; result = { { ' b' }, { ' a' } }
+	 *      first = { { ' b' } }
+	 *               second = { { ' a' } }
+	 *               =&gt; result = { { ' b' }, { ' a' } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -258,26 +258,26 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = { 'a' }
-	 *              =&gt; result = { { ' a' } }
+	 *               first = null
+	 *               second = { 'a' }
+	 *               =&gt; result = { { ' a' } }
 	 * </pre>
 	 * 
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { ' a' } }
-	 *              second = null
-	 *              =&gt; result = { { ' a' } }
+	 *               first = { { ' a' } }
+	 *               second = null
+	 *               =&gt; result = { { ' a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { ' a' } }
-	 *              second = { ' b' }
-	 *              =&gt; result = { { ' a' } , { ' b' } }
+	 *               first = { { ' a' } }
+	 *               second = { ' b' }
+	 *               =&gt; result = { { ' a' } , { ' b' } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -319,54 +319,54 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = null
-	 *              prefix = null
-	 *              =&gt; result = NullPointerException
+	 *               array = null
+	 *               prefix = null
+	 *               =&gt; result = NullPointerException
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'b', 'c', 'd', 'e' }
-	 *              prefix = { 'a', 'b', 'c'}
-	 *              =&gt; result = 0
+	 *               array = { 'a', 'b', 'c', 'd', 'e' }
+	 *               prefix = { 'a', 'b', 'c'}
+	 *               =&gt; result = 0
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'b', 'c', 'd', 'e' }
-	 *              prefix = { 'a', 'B', 'c'}
-	 *              =&gt; result = 32
+	 *               array = { 'a', 'b', 'c', 'd', 'e' }
+	 *               prefix = { 'a', 'B', 'c'}
+	 *               =&gt; result = 32
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'd', 'b', 'c', 'd', 'e' }
-	 *              prefix = { 'a', 'b', 'c'}
-	 *              =&gt; result = 3
+	 *               array = { 'd', 'b', 'c', 'd', 'e' }
+	 *               prefix = { 'a', 'b', 'c'}
+	 *               =&gt; result = 3
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'b', 'c', 'd', 'e' }
-	 *              prefix = { 'd', 'b', 'c'}
-	 *              =&gt; result = -3
+	 *               array = { 'a', 'b', 'c', 'd', 'e' }
+	 *               prefix = { 'd', 'b', 'c'}
+	 *               =&gt; result = -3
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'a', 'c', 'd', 'e' }
-	 *              prefix = { 'a', 'e', 'c'}
-	 *              =&gt; result = -4
+	 *               array = { 'a', 'a', 'c', 'd', 'e' }
+	 *               prefix = { 'a', 'e', 'c'}
+	 *               =&gt; result = -4
 	 * </pre>
 	 * 
 	 * </li>
@@ -411,27 +411,27 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = { 'a' }
-	 *              =&gt; result = { ' a' }
+	 *               first = null
+	 *               second = { 'a' }
+	 *               =&gt; result = { ' a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { ' a' }
-	 *              second = null
-	 *              =&gt; result = { ' a' }
+	 *               first = { ' a' }
+	 *               second = null
+	 *               =&gt; result = { ' a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { ' a' }
-	 *              second = { ' b' }
-	 *              =&gt; result = { ' a' , ' b' }
+	 *               first = { ' a' }
+	 *               second = { ' b' }
+	 *               =&gt; result = { ' a' , ' b' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -472,50 +472,50 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = { 'a' }
-	 *              third = { 'b' }
-	 *              =&gt; result = { ' a', 'b' }
+	 *               first = null
+	 *               second = { 'a' }
+	 *               third = { 'b' }
+	 *               =&gt; result = { ' a', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              second = null
-	 *              third = { 'b' }
-	 *              =&gt; result = { ' a', 'b' }
+	 *               first = { 'a' }
+	 *               second = null
+	 *               third = { 'b' }
+	 *               =&gt; result = { ' a', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              second = { 'b' }
-	 *              third = null
-	 *              =&gt; result = { ' a', 'b' }
+	 *               first = { 'a' }
+	 *               second = { 'b' }
+	 *               third = null
+	 *               =&gt; result = { ' a', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = null
-	 *              third = null
-	 *              =&gt; result = null
+	 *               first = null
+	 *               second = null
+	 *               third = null
+	 *               =&gt; result = null
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              second = { 'b' }
-	 *              third = { 'c' }
-	 *              =&gt; result = { 'a', 'b', 'c' }
+	 *               first = { 'a' }
+	 *               second = { 'b' }
+	 *               third = { 'c' }
+	 *               =&gt; result = { 'a', 'b', 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -563,30 +563,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = { 'a' }
-	 *              separator = '/'
-	 *              =&gt; result = { ' a' }
+	 *               first = null
+	 *               second = { 'a' }
+	 *               separator = '/'
+	 *               =&gt; result = { ' a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { ' a' }
-	 *              second = null
-	 *              separator = '/'
-	 *              =&gt; result = { ' a' }
+	 *               first = { ' a' }
+	 *               second = null
+	 *               separator = '/'
+	 *               =&gt; result = { ' a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { ' a' }
-	 *              second = { ' b' }
-	 *              separator = '/'
-	 *              =&gt; result = { ' a' , '/', 'b' }
+	 *               first = { ' a' }
+	 *               second = { ' b' }
+	 *               separator = '/'
+	 *               =&gt; result = { ' a' , '/', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -641,48 +641,48 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              sep1 = '/'
-	 *              second = { 'a' }
-	 *              sep2 = ':'
-	 *              third = { 'b' }
-	 *              =&gt; result = { ' a' , ':', 'b' }
+	 *               first = null
+	 *               sep1 = '/'
+	 *               second = { 'a' }
+	 *               sep2 = ':'
+	 *               third = { 'b' }
+	 *               =&gt; result = { ' a' , ':', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              sep1 = '/'
-	 *              second = null
-	 *              sep2 = ':'
-	 *              third = { 'b' }
-	 *              =&gt; result = { ' a' , '/', 'b' }
+	 *               first = { 'a' }
+	 *               sep1 = '/'
+	 *               second = null
+	 *               sep2 = ':'
+	 *               third = { 'b' }
+	 *               =&gt; result = { ' a' , '/', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              sep1 = '/'
-	 *              second = { 'b' }
-	 *              sep2 = ':'
-	 *              third = null
-	 *              =&gt; result = { ' a' , '/', 'b' }
+	 *               first = { 'a' }
+	 *               sep1 = '/'
+	 *               second = { 'b' }
+	 *               sep2 = ':'
+	 *               third = null
+	 *               =&gt; result = { ' a' , '/', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              sep1 = '/'
-	 *              second = { 'b' }
-	 *              sep2 = ':'
-	 *              third = { 'c' }
-	 *              =&gt; result = { ' a' , '/', 'b' , ':', 'c' }
+	 *               first = { 'a' }
+	 *               sep1 = '/'
+	 *               second = { 'b' }
+	 *               sep2 = ':'
+	 *               third = { 'c' }
+	 *               =&gt; result = { ' a' , '/', 'b' , ':', 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -735,20 +735,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              prefix = 'a'
-	 *              array = { 'b' }
-	 *              suffix = 'c'
-	 *              =&gt; result = { 'a', 'b' , 'c' }
+	 *               prefix = 'a'
+	 *               array = { 'b' }
+	 *               suffix = 'c'
+	 *               =&gt; result = { 'a', 'b' , 'c' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              prefix = 'a'
-	 *              array = null
-	 *              suffix = 'c'
-	 *              =&gt; result = { 'a', 'c' }
+	 *               prefix = 'a'
+	 *               array = null
+	 *               suffix = 'c'
+	 *               =&gt; result = { 'a', 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -785,30 +785,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = { 'c' }
-	 *              array = { { 'a' }, { 'b' } }
-	 *              separator = '.'
-	 *              =&gt; result = { 'a', '.', 'b' , '.', 'c' }
+	 *               name = { 'c' }
+	 *               array = { { 'a' }, { 'b' } }
+	 *               separator = '.'
+	 *               =&gt; result = { 'a', '.', 'b' , '.', 'c' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = null
-	 *              array = { { 'a' }, { 'b' } }
-	 *              separator = '.'
-	 *              =&gt; result = { 'a', '.', 'b' }
+	 *               name = null
+	 *               array = { { 'a' }, { 'b' } }
+	 *               separator = '.'
+	 *               =&gt; result = { 'a', '.', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = { ' c' }
-	 *              array = null
-	 *              separator = '.'
-	 *              =&gt; result = { 'c' }
+	 *               name = { ' c' }
+	 *               array = null
+	 *               separator = '.'
+	 *               =&gt; result = { 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -866,30 +866,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = { 'c' }
-	 *              array = { { 'a' }, { 'b' } }
-	 *              separator = '.'
-	 *              =&gt; result = { 'a', '.', 'b' , '.', 'c' }
+	 *               name = { 'c' }
+	 *               array = { { 'a' }, { 'b' } }
+	 *               separator = '.'
+	 *               =&gt; result = { 'a', '.', 'b' , '.', 'c' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = null
-	 *              array = { { 'a' }, { 'b' } }
-	 *              separator = '.'
-	 *              =&gt; result = { 'a', '.', 'b' }
+	 *               name = null
+	 *               array = { { 'a' }, { 'b' } }
+	 *               separator = '.'
+	 *               =&gt; result = { 'a', '.', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              name = { ' c' }
-	 *              array = null
-	 *              separator = '.'
-	 *              =&gt; result = { 'c' }
+	 *               name = { ' c' }
+	 *               array = null
+	 *               separator = '.'
+	 *               =&gt; result = { 'c' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -947,18 +947,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { { 'a' }, { 'b' } }
-	 *              separator = '.'
-	 *              =&gt; result = { 'a', '.', 'b' }
+	 *               array = { { 'a' }, { 'b' } }
+	 *               separator = '.'
+	 *               =&gt; result = { 'a', '.', 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = null
-	 *              separator = '.'
-	 *              =&gt; result = { }
+	 *               array = null
+	 *               separator = '.'
+	 *               =&gt; result = { }
 	 * </pre>
 	 * 
 	 * </li>
@@ -1016,18 +1016,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              character = 'c'
-	 *              array = { { ' a' }, { ' b' } }
-	 *              result =&gt; false
+	 *               character = 'c'
+	 *               array = { { ' a' }, { ' b' } }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              character = 'a'
-	 *              array = { { ' a' }, { ' b' } }
-	 *              result =&gt; true
+	 *               character = 'a'
+	 *               array = { { ' a' }, { ' b' } }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
@@ -1065,18 +1065,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              character = 'c'
-	 *              array = { ' b'  }
-	 *              result =&gt; false
+	 *               character = 'c'
+	 *               array = { ' b'  }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              character = 'a'
-	 *              array = { ' a' , ' b' }
-	 *              result =&gt; true
+	 *               character = 'a'
+	 *               array = { ' a' , ' b' }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
@@ -1129,18 +1129,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'b', 'c', 'd' }
-	 *              toBeFound = { 'b', 'c' }
-	 *              result =&gt; false
+	 *               array = { 'a', 'b', 'c', 'd' }
+	 *               toBeFound = { 'b', 'c' }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              array = { 'a', 'b', 'c' }
-	 *              toBeFound = { 'b', 'c' }
-	 *              result =&gt; true
+	 *               array = { 'a', 'b', 'c' }
+	 *               toBeFound = { 'b', 'c' }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
@@ -1179,36 +1179,36 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = null
-	 *              result =&gt; true
+	 *               first = null
+	 *               second = null
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { } }
-	 *              second = null
-	 *              result =&gt; false
+	 *               first = { { } }
+	 *               second = null
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { 'a' } }
-	 *              second = { { 'a' } }
-	 *              result =&gt; true
+	 *               first = { { 'a' } }
+	 *               second = { { 'a' } }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { 'A' } }
-	 *              second = { { 'a' } }
-	 *              result =&gt; false
+	 *               first = { { 'A' } }
+	 *               second = { { 'a' } }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -1251,40 +1251,40 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = null
-	 *              isCaseSensitive = true
-	 *              result =&gt; true
+	 *               first = null
+	 *               second = null
+	 *               isCaseSensitive = true
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { } }
-	 *              second = null
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *               first = { { } }
+	 *               second = null
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { 'A' } }
-	 *              second = { { 'a' } }
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *               first = { { 'A' } }
+	 *               second = { { 'a' } }
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { { 'A' } }
-	 *              second = { { 'a' } }
-	 *              isCaseSensitive = false
-	 *              result =&gt; true
+	 *               first = { { 'A' } }
+	 *               second = { { 'a' } }
+	 *               isCaseSensitive = false
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
@@ -1332,36 +1332,36 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = null
-	 *              result =&gt; true
+	 *               first = null
+	 *               second = null
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { }
-	 *              second = null
-	 *              result =&gt; false
+	 *               first = { }
+	 *               second = null
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              second = { 'a' }
-	 *              result =&gt; true
+	 *               first = { 'a' }
+	 *               second = { 'a' }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = { 'a' }
-	 *              second = { 'A' }
-	 *              result =&gt; false
+	 *               first = { 'a' }
+	 *               second = { 'A' }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -1404,44 +1404,44 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *              first = null
-	 *              second = null
-	 *              secondStart = 0
-	 *              secondEnd = 0
-	 *              result =&gt; true
+	 *               first = null
+	 *               second = null
+	 *               secondStart = 0
+	 *               secondEnd = 0
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { }
-	 *              second = null
-	 *              secondStart = 0
-	 *              secondEnd = 0
-	 *              result =&gt; false
+	 *      first = { }
+	 *               second = null
+	 *               secondStart = 0
+	 *               secondEnd = 0
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { 'a' }
-	 *              second = { 'a' }
-	 *              secondStart = 0
-	 *              secondEnd = 1
-	 *              result =&gt; true
+	 *      first = { 'a' }
+	 *               second = { 'a' }
+	 *               secondStart = 0
+	 *               secondEnd = 1
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { 'a' }
-	 *              second = { 'A' }
-	 *              secondStart = 0
-	 *              secondEnd = 1
-	 *              result =&gt; false
+	 *      first = { 'a' }
+	 *               second = { 'A' }
+	 *               secondStart = 0
+	 *               secondEnd = 1
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -1491,40 +1491,40 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = null
-	 *              second = null
-	 *              isCaseSensitive = true
-	 *              result =&gt; true
+	 *      first = null
+	 *               second = null
+	 *               isCaseSensitive = true
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { }
-	 *              second = null
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      first = { }
+	 *               second = null
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { 'A' }
-	 *              second = { 'a' }
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      first = { 'A' }
+	 *               second = { 'a' }
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     first = { 'A' }
-	 *              second = { 'a' }
-	 *              isCaseSensitive = false
-	 *              result =&gt; true
+	 *      first = { 'A' }
+	 *               second = { 'a' }
+	 *               isCaseSensitive = false
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
@@ -1576,44 +1576,44 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     fragment = { 'b', 'c' , 'd' }
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              startIndex = 1
-	 *              isCaseSensitive = true
-	 *              result =&gt; true
+	 *      fragment = { 'b', 'c' , 'd' }
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               startIndex = 1
+	 *               isCaseSensitive = true
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     fragment = { 'b', 'c' , 'd' }
-	 *              name = { 'a', 'b', 'C' , 'd' }
-	 *              startIndex = 1
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      fragment = { 'b', 'c' , 'd' }
+	 *               name = { 'a', 'b', 'C' , 'd' }
+	 *               startIndex = 1
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     fragment = { 'b', 'c' , 'd' }
-	 *              name = { 'a', 'b', 'C' , 'd' }
-	 *              startIndex = 0
-	 *              isCaseSensitive = false
-	 *              result =&gt; false
+	 *      fragment = { 'b', 'c' , 'd' }
+	 *               name = { 'a', 'b', 'C' , 'd' }
+	 *               startIndex = 0
+	 *               isCaseSensitive = false
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     fragment = { 'b', 'c' , 'd' }
-	 *              name = { 'a', 'b'}
-	 *              startIndex = 0
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      fragment = { 'b', 'c' , 'd' }
+	 *               name = { 'a', 'b'}
+	 *               startIndex = 0
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -1695,16 +1695,16 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     c = ' '
-	 *              result =&gt; true
+	 *      c = ' '
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     c = ' \u3000'
-	 *              result =&gt; false
+	 *      c = ' \u3000'
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -1737,18 +1737,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              result =&gt; 2
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               result =&gt; 2
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'e'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              result =&gt; -1
+	 *      toBeFound = 'e'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
@@ -1782,30 +1782,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              start = 2
-	 *              result =&gt; 2
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               start = 2
+	 *               result =&gt; 2
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              start = 3
-	 *              result =&gt; -1
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               start = 3
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'e'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              start = 1
-	 *              result =&gt; -1
+	 *      toBeFound = 'e'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               start = 1
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
@@ -1843,18 +1843,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' , 'c', 'e' }
-	 *              result =&gt; 4
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' , 'c', 'e' }
+	 *               result =&gt; 4
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'e'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              result =&gt; -1
+	 *      toBeFound = 'e'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
@@ -1889,30 +1889,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              startIndex = 2
-	 *              result =&gt; 2
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               startIndex = 2
+	 *               result =&gt; 2
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd', 'e' }
-	 *              startIndex = 3
-	 *              result =&gt; -1
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd', 'e' }
+	 *               startIndex = 3
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'e'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              startIndex = 0
-	 *              result =&gt; -1
+	 *      toBeFound = 'e'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               startIndex = 0
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
@@ -1951,33 +1951,33 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              startIndex = 2
-	 *              endIndex = 2
-	 *              result =&gt; 2
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               startIndex = 2
+	 *               endIndex = 2
+	 *               result =&gt; 2
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { ' a', 'b', 'c', 'd', 'e' }
-	 *              startIndex = 3
-	 *              endIndex = 4
-	 *              result =&gt; -1
+	 *      toBeFound = 'c'
+	 *               array = { ' a', 'b', 'c', 'd', 'e' }
+	 *               startIndex = 3
+	 *               endIndex = 4
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'e'
-	 *              array = { ' a', 'b', 'c', 'd' }
-	 *              startIndex = 0
-	 *              endIndex = 3
-	 *              result =&gt; -1
+	 *      toBeFound = 'e'
+	 *               array = { ' a', 'b', 'c', 'd' }
+	 *               startIndex = 0
+	 *               endIndex = 3
+	 *               result =&gt; -1
 	 * </pre>
 	 * 
 	 * </li>
@@ -2016,7 +2016,7 @@ public final class CharOperation {
 	 * For example,
 	 * 
 	 * <pre>
-	 *     lastSegment(&quot;java.lang.Object&quot;.toCharArray(),'.') --&gt; Object
+	 *      lastSegment(&quot;java.lang.Object&quot;.toCharArray(),'.') --&gt; Object
 	 * </pre>
 	 * 
 	 * @param array
@@ -2049,30 +2049,30 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     pattern = { '?', 'b', '*' }
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              isCaseSensitive = true
-	 *              result =&gt; true
+	 *      pattern = { '?', 'b', '*' }
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               isCaseSensitive = true
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     pattern = { '?', 'b', '?' }
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      pattern = { '?', 'b', '?' }
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     pattern = { 'b', '*' }
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      pattern = { 'b', '*' }
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -2115,28 +2115,28 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     pattern = { '?', 'b', '*' }
-	 *              patternStart = 1
-	 *              patternEnd = 3
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              nameStart = 1
-	 *              nameEnd = 4
-	 *              isCaseSensitive = true
-	 *              result =&gt; true
+	 *      pattern = { '?', 'b', '*' }
+	 *               patternStart = 1
+	 *               patternEnd = 3
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               nameStart = 1
+	 *               nameEnd = 4
+	 *               isCaseSensitive = true
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     pattern = { '?', 'b', '*' }
-	 *              patternStart = 1
-	 *              patternEnd = 2
-	 *              name = { 'a', 'b', 'c' , 'd' }
-	 *              nameStart = 1
-	 *              nameEnd = 2
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      pattern = { '?', 'b', '*' }
+	 *               patternStart = 1
+	 *               patternEnd = 2
+	 *               name = { 'a', 'b', 'c' , 'd' }
+	 *               nameStart = 1
+	 *               nameEnd = 2
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -2454,18 +2454,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'b'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; 3
+	 *      toBeFound = 'b'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; 3
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; 0
+	 *      toBeFound = 'c'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; 0
 	 * </pre>
 	 * 
 	 * </li>
@@ -2501,20 +2501,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'b'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              start = 2
-	 *              result =&gt; 2
+	 *      toBeFound = 'b'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               start = 2
+	 *               result =&gt; 2
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     toBeFound = 'c'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              start = 0
-	 *              result =&gt; 0
+	 *      toBeFound = 'c'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               start = 0
+	 *               result =&gt; 0
 	 * </pre>
 	 * 
 	 * </li>
@@ -2552,18 +2552,18 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     prefix = { 'a' , 'b' }
-	 *              name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; true
+	 *      prefix = { 'a' , 'b' }
+	 *               name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     prefix = { 'a' , 'c' }
-	 *              name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; false
+	 *      prefix = { 'a' , 'c' }
+	 *               name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -2603,20 +2603,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     prefix = { 'a' , 'B' }
-	 *              name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              isCaseSensitive = false
-	 *              result =&gt; true
+	 *      prefix = { 'a' , 'B' }
+	 *               name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               isCaseSensitive = false
+	 *               result =&gt; true
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     prefix = { 'a' , 'B' }
-	 *              name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              isCaseSensitive = true
-	 *              result =&gt; false
+	 *      prefix = { 'a' , 'B' }
+	 *               name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               isCaseSensitive = true
+	 *               result =&gt; false
 	 * </pre>
 	 * 
 	 * </li>
@@ -2670,20 +2670,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              toBeReplaced = 'b'
-	 *              replacementChar = 'a'
-	 *              result =&gt; No returned value, but array is now equals to { 'a' , 'a', 'a', 'a', 'a', 'a' }
+	 *      array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               toBeReplaced = 'b'
+	 *               replacementChar = 'a'
+	 *               result =&gt; No returned value, but array is now equals to { 'a' , 'a', 'a', 'a', 'a', 'a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              toBeReplaced = 'c'
-	 *              replacementChar = 'a'
-	 *              result =&gt; No returned value, but array is now equals to { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *      array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               toBeReplaced = 'c'
+	 *               replacementChar = 'a'
+	 *               result =&gt; No returned value, but array is now equals to { 'a' , 'b', 'b', 'a', 'b', 'a' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -2719,20 +2719,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              toBeReplaced = { 'b' }
-	 *              replacementChar = { 'a', 'a' }
-	 *              result =&gt; { 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a' }
+	 *      array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               toBeReplaced = { 'b' }
+	 *               replacementChar = { 'a', 'a' }
+	 *               result =&gt; { 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              toBeReplaced = { 'c' }
-	 *              replacementChar = { 'a' }
-	 *              result =&gt; { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *      array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               toBeReplaced = { 'c' }
+	 *               replacementChar = { 'a' }
+	 *               result =&gt; { 'a' , 'b', 'b', 'a', 'b', 'a' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -2808,36 +2808,36 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'b'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
+	 *      divider = 'b'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'c'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
+	 *      divider = 'c'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'b'
-	 *              array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
+	 *      divider = 'b'
+	 *               array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'c'
-	 *              array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
-	 *              result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
+	 *      divider = 'c'
+	 *               array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
+	 *               result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -2903,27 +2903,27 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'b'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
+	 *      divider = 'b'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'c'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
+	 *      divider = 'c'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'c'
-	 *              array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
-	 *              result =&gt; { { ' ', 'a', 'b', 'b', 'a', 'b', 'a', ' ' } }
+	 *      divider = 'c'
+	 *               array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
+	 *               result =&gt; { { ' ', 'a', 'b', 'b', 'a', 'b', 'a', ' ' } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -2936,7 +2936,7 @@ public final class CharOperation {
 	 * @return a new array which is the split of the given array using the given
 	 *         divider
 	 */
-	@SuppressWarnings({ "null", "null" })
+	@SuppressWarnings( { "null", "null" })
 	public static char[][] splitOn(char divider, char[] array) {
 		final int length = (array == null) ? 0 : array.length;
 		if (length == 0) {
@@ -2975,11 +2975,11 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     divider = 'b'
-	 *              array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
-	 *              start = 2
-	 *              end = 5
-	 *              result =&gt; { {  }, { 'a' }, {  } }
+	 *      divider = 'b'
+	 *               array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
+	 *               start = 2
+	 *               end = 5
+	 *               result =&gt; { {  }, { 'a' }, {  } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -3041,20 +3041,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { { 'a' } , { 'b' } }
-	 *              start = 0
-	 *              end = 1
-	 *              result =&gt; { { 'a' } }
+	 *      array = { { 'a' } , { 'b' } }
+	 *               start = 0
+	 *               end = 1
+	 *               result =&gt; { { 'a' } }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { { 'a' } , { 'b' } }
-	 *              start = 0
-	 *              end = -1
-	 *              result =&gt; { { 'a' }, { 'b' } }
+	 *      array = { { 'a' } , { 'b' } }
+	 *               start = 0
+	 *               end = -1
+	 *               result =&gt; { { 'a' }, { 'b' } }
 	 * </pre>
 	 * 
 	 * </li>
@@ -3102,20 +3102,20 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a' , 'b' }
-	 *              start = 0
-	 *              end = 1
-	 *              result =&gt; { 'a' }
+	 *      array = { 'a' , 'b' }
+	 *               start = 0
+	 *               end = 1
+	 *               result =&gt; { 'a' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'a', 'b' }
-	 *              start = 0
-	 *              end = -1
-	 *              result =&gt; { 'a' , 'b' }
+	 *      array = { 'a', 'b' }
+	 *               start = 0
+	 *               end = -1
+	 *               result =&gt; { 'a' , 'b' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -3162,16 +3162,16 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     chars = { 'a' , 'b' }
-	 *              result =&gt; { 'a' , 'b' }
+	 *      chars = { 'a' , 'b' }
+	 *               result =&gt; { 'a' , 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'A', 'b' }
-	 *              result =&gt; { 'a' , 'b' }
+	 *      array = { 'A', 'b' }
+	 *               result =&gt; { 'a' , 'b' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -3210,16 +3210,16 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     chars = { ' ', 'a' , 'b', ' ',  ' ' }
-	 *              result =&gt; { 'a' , 'b' }
+	 *      chars = { ' ', 'a' , 'b', ' ',  ' ' }
+	 *               result =&gt; { 'a' , 'b' }
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { 'A', 'b' }
-	 *              result =&gt; { 'A' , 'b' }
+	 *      array = { 'A', 'b' }
+	 *               result =&gt; { 'A' , 'b' }
 	 * </pre>
 	 * 
 	 * </li>
@@ -3259,16 +3259,16 @@ public final class CharOperation {
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { { 'a' } , { 'b' } }
-	 *              result =&gt; &quot;a.b&quot;
+	 *      array = { { 'a' } , { 'b' } }
+	 *               result =&gt; &quot;a.b&quot;
 	 * </pre>
 	 * 
 	 * </li>
 	 * <li>
 	 * 
 	 * <pre>
-	 *     array = { { ' ',  'a' } , { 'b' } }
-	 *              result =&gt; &quot; a.b&quot;
+	 *      array = { { ' ',  'a' } , { 'b' } }
+	 *               result =&gt; &quot; a.b&quot;
 	 * </pre>
 	 * 
 	 * </li>

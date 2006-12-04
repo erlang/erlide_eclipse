@@ -175,7 +175,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 		monitor.beginTask(ErlideErlcPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
 		try {
-			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
+					.getRoot();
 			monitor.subTask(ErlideErlcPlugin
 					.getResourceString("wizards.messages.creatingdirectories"));
 			final IProject project = root.getProject(namePage.getProjectName());
@@ -205,15 +206,16 @@ public class NewErlcProject extends Wizard implements INewWizard {
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
 			buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(project);
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
 			prefs.copyFrom(bprefs);
 			prefs.store();
 
 			// add code path to backend
-			final String out = project.getLocation().append(prefs.getOutputDir())
-					.toString();
-			final ICodeManager codeManager = BackendManager.getDefault().get(project)
-					.getCodeManager();
+			final String out = project.getLocation().append(
+					prefs.getOutputDir()).toString();
+			final ICodeManager codeManager = BackendManager.getDefault().get(
+					project).getCodeManager();
 			codeManager.addPathA(out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
@@ -280,8 +282,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 *            details on the error
 	 */
 	private void reportError(String x) {
-		final Status status = new Status(IStatus.ERROR, ErlideErlcPlugin.PLUGIN_ID,
-				0, x, null);
+		final Status status = new Status(IStatus.ERROR,
+				ErlideErlcPlugin.PLUGIN_ID, 0, x, null);
 
 		ErrorDialog.openError(getShell(), x, ErlideErlcPlugin
 				.getResourceString("wizards.errors.projecterrortitle"), status);

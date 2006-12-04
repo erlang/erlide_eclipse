@@ -321,7 +321,8 @@ public class BalloonWindow {
 				systemControlsBar = new ToolBar(shell, SWT.FLAT);
 				systemControlsBar.setBackground(closeBG);
 				systemControlsBar.setForeground(closeFG);
-				final ToolItem closeItem = new ToolItem(systemControlsBar, SWT.PUSH);
+				final ToolItem closeItem = new ToolItem(systemControlsBar,
+						SWT.PUSH);
 				closeItem.setImage(closeImage);
 				closeItem.addListener(SWT.Selection, new Listener() {
 

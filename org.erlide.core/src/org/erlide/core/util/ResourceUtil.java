@@ -131,7 +131,8 @@ public class ResourceUtil {
 		if (element instanceof IResource) {
 			result = (IResource) element;
 		} else if (element instanceof IAdaptable) {
-			final Object adapter = ((IAdaptable) element).getAdapter(IResource.class);
+			final Object adapter = ((IAdaptable) element)
+					.getAdapter(IResource.class);
 			if (adapter instanceof IResource) {
 				result = (IResource) adapter;
 			}
@@ -140,7 +141,8 @@ public class ResourceUtil {
 	}
 
 	public static IResource recursiveFindNamedResource(String name) {
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+				.getRoot();
 		try {
 			return recursiveFindNamedResource(workspaceRoot, name);
 		} catch (final CoreException e) {

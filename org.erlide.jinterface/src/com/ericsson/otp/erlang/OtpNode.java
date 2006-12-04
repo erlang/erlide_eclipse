@@ -64,7 +64,7 @@ public class OtpNode extends OtpLocalNode {
 	private Acceptor acceptor = null;
 
 	// keep track of all connections
-	Hashtable<String,OtpCookedConnection> connections = null;
+	Hashtable<String, OtpCookedConnection> connections = null;
 
 	// keep track of all mailboxes
 	Mailboxes mboxes = null;
@@ -140,7 +140,8 @@ public class OtpNode extends OtpLocalNode {
 
 	private synchronized void init(int port_) throws IOException {
 		if (!initDone) {
-			connections = new Hashtable<String,OtpCookedConnection>(17, (float) 0.95);
+			connections = new Hashtable<String, OtpCookedConnection>(17,
+					(float) 0.95);
 			mboxes = new Mailboxes();
 			acceptor = new Acceptor(port_);
 			initDone = true;
@@ -557,12 +558,19 @@ public class OtpNode extends OtpLocalNode {
 	 */
 	public class Mailboxes {
 
-		private Hashtable<OtpErlangPid,WeakReference<OtpMbox>> byPid = null; // mbox pids here
-		private Hashtable<String,WeakReference<OtpMbox>> byName = null; // mbox names here
+		private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null; // mbox
+																				// pids
+																				// here
+
+		private Hashtable<String, WeakReference<OtpMbox>> byName = null; // mbox
+																			// names
+																			// here
 
 		public Mailboxes() {
-			byPid = new Hashtable<OtpErlangPid,WeakReference<OtpMbox>>(17, (float) 0.95);
-			byName = new Hashtable<String,WeakReference<OtpMbox>>(17, (float) 0.95);
+			byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17,
+					(float) 0.95);
+			byName = new Hashtable<String, WeakReference<OtpMbox>>(17,
+					(float) 0.95);
 		}
 
 		public OtpMbox create(String name) {
@@ -684,7 +692,7 @@ public class OtpNode extends OtpLocalNode {
 		private volatile boolean done = false;
 
 		Acceptor(int port) throws IOException {
-			//final IOException e;
+			// final IOException e;
 
 			this.sock = new ServerSocket(port);
 			this.port_ = sock.getLocalPort();

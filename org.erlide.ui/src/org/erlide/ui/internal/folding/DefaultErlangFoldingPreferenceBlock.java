@@ -34,7 +34,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
 
 	private OverlayKey[] fKeys;
 
-	Map<Control,String> fCheckBoxes = new HashMap<Control,String>();
+	Map<Control, String> fCheckBoxes = new HashMap<Control, String>();
 
 	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 

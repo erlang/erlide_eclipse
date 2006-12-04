@@ -41,7 +41,8 @@ public class OpenIncludeFileAction extends TextEditorAction {
 
 	@Override
 	public void run() {
-		final ISelection sel = getTextEditor().getSelectionProvider().getSelection();
+		final ISelection sel = getTextEditor().getSelectionProvider()
+				.getSelection();
 		if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
 			return;
 		}

@@ -120,9 +120,10 @@ public class BuildInfoFactory {
 			putString(name, value);
 		}
 
-		public Map<Object,Object> getExpandedEnvironment() {
+		public Map<Object, Object> getExpandedEnvironment() {
 			final Map env = getEnvironment();
-			final HashMap<Object,Object> envMap = new HashMap<Object,Object>(env.entrySet().size());
+			final HashMap<Object, Object> envMap = new HashMap<Object, Object>(
+					env.entrySet().size());
 			final Iterator iter = env.entrySet().iterator();
 			final boolean win32 = Platform.getOS().equals(Constants.OS_WIN32);
 			while (iter.hasNext()) {
@@ -185,7 +186,8 @@ public class BuildInfoFactory {
 				return null;
 			}
 			// The nature exists, or this builder doesn't specify a nature
-			final IConfigurationElement[] runElement = configs[0].getChildren("run"); //$NON-NLS-1$
+			final IConfigurationElement[] runElement = configs[0]
+					.getChildren("run"); //$NON-NLS-1$
 			final IConfigurationElement[] paramElement = runElement[0]
 					.getChildren("parameter"); //$NON-NLS-1$
 			for (int i = 0; i < paramElement.length; i++) {
@@ -355,7 +357,8 @@ public class BuildInfoFactory {
 			final String parsers = getString(ErrorParserManager.PREF_ERROR_PARSER);
 			if (parsers != null && parsers.length() > 0) {
 				final StringTokenizer tok = new StringTokenizer(parsers, ";"); //$NON-NLS-1$
-				final List<String> list = new ArrayList<String>(tok.countTokens());
+				final List<String> list = new ArrayList<String>(tok
+						.countTokens());
 				while (tok.hasMoreElements()) {
 					list.add(tok.nextToken());
 				}
@@ -396,8 +399,8 @@ public class BuildInfoFactory {
 			return Boolean.valueOf(getString(property)).booleanValue();
 		}
 
-		protected Map<String,String> decodeMap(String value) {
-			final Map<String,String> map = new HashMap<String,String>();
+		protected Map<String, String> decodeMap(String value) {
+			final Map<String, String> map = new HashMap<String, String>();
 			if (value != null) {
 				final StringBuffer envStr = new StringBuffer(value);
 				final String escapeChars = "|\\"; //$NON-NLS-1$
@@ -420,8 +423,8 @@ public class BuildInfoFactory {
 							}
 							ndx++;
 						}
-						final StringBuffer line = new StringBuffer(envStr.substring(
-								0, ndx));
+						final StringBuffer line = new StringBuffer(envStr
+								.substring(0, ndx));
 						int lndx = 0;
 						while (lndx < line.length()) {
 							if (line.charAt(lndx) == '=') {
@@ -528,7 +531,7 @@ public class BuildInfoFactory {
 
 		private String builderID;
 
-		private Map<String,String> args;
+		private Map<String, String> args;
 
 		@SuppressWarnings("unchecked")
 		BuildInfoProject(IProject project, String builderID)
@@ -587,11 +590,11 @@ public class BuildInfoFactory {
 
 	private static class BuildInfoMap extends AbstractBuildInfo {
 
-		private Map<String,String> args;
+		private Map<String, String> args;
 
 		private String builderID;
 
-		BuildInfoMap(Map<String,String> args, String builderID) {
+		BuildInfoMap(Map<String, String> args, String builderID) {
 			this.args = args;
 			this.builderID = builderID;
 		}
@@ -627,7 +630,8 @@ public class BuildInfoFactory {
 		return new BuildInfoFactory.BuildInfoProject(project, builderID);
 	}
 
-	public static IMakeBuilderInfo create(Map<String,String> args, String builderID) {
+	public static IMakeBuilderInfo create(Map<String, String> args,
+			String builderID) {
 		return new BuildInfoFactory.BuildInfoMap(args, builderID);
 	}
 

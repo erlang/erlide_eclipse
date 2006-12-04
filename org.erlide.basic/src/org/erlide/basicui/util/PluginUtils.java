@@ -83,7 +83,7 @@ public final class PluginUtils {
 				if (resource == null) {
 					return null;
 				} else if (resourceIsType((IResource) resource, resourceMask)) {
-					result.add((IResource)resource);
+					result.add((IResource) resource);
 				}
 			} else {
 				return null;

@@ -302,8 +302,10 @@ public class ErlangFileWizardPage extends WizardPage implements
 		ExportedFunctionsVariableResolver.getDefault().clearFunctions();
 		LocalFunctionsVariableResolver.getDefault().clearFunctions();
 
-		/*final LocalFunctionsVariableResolver h = LocalFunctionsVariableResolver
-				.getDefault();*/
+		/*
+		 * final LocalFunctionsVariableResolver h =
+		 * LocalFunctionsVariableResolver .getDefault();
+		 */
 
 		for (int i = 0; i < functionGroup.getFunctionData().length; i++) {
 			final Function fun = functionGroup.getFunctionData()[i];

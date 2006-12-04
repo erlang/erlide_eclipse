@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-//import org.eclipse.core.runtime.IProgressMonitor;
+// import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
@@ -26,7 +26,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy {
 
 	private IDocument fDoc;
 
-	//private IProgressMonitor mon;
+	// private IProgressMonitor mon;
 
 	public ErlReconcilerStrategy(ErlangEditor editor) {
 		fEditor = editor;
@@ -67,12 +67,10 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy {
 
 	/* NOT USED */
 	/*
-	private void reconcileModel(IDocument doc) {
-		reconcileModel(doc, new DirtyRegion(0, doc.getLength(),
-				DirtyRegion.REMOVE, null));
-		reconcileModel(doc, new DirtyRegion(0, doc.getLength(),
-				DirtyRegion.INSERT, doc.get()));
-	}
-	*/
+	 * private void reconcileModel(IDocument doc) { reconcileModel(doc, new
+	 * DirtyRegion(0, doc.getLength(), DirtyRegion.REMOVE, null));
+	 * reconcileModel(doc, new DirtyRegion(0, doc.getLength(),
+	 * DirtyRegion.INSERT, doc.get())); }
+	 */
 
 }

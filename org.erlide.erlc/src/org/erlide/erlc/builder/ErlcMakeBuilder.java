@@ -209,7 +209,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		boolean bPerformBuild = true;
-		final IMakeBuilderInfo info = ErlideErlcPlugin.createBuildInfo(args, BUILDER_ID);
+		final IMakeBuilderInfo info = ErlideErlcPlugin.createBuildInfo(args,
+				BUILDER_ID);
 		if (!shouldBuild(kind, info)) {
 			return new IProject[0];
 		}
@@ -248,8 +249,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 		final IMakeBuilderInfo info = ErlideErlcPlugin.createBuildInfo(
 				getProject(), BUILDER_ID);
 		if (shouldBuild(CLEAN_BUILD, info)) {
-			final IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace()
-					.getRuleFactory();
+			final IResourceRuleFactory ruleFactory = ResourcesPlugin
+					.getWorkspace().getRuleFactory();
 			final ISchedulingRule rule = ruleFactory.modifyRule(getProject());
 			final Job backgroundJob = new Job("Standard Make Builder") { //$NON-NLS-1$
 
@@ -314,7 +315,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 			final IPath buildCommand = info.getBuildCommand();
 			if (buildCommand != null) {
 				// TODO console, anyone?
-				final IConsole console = ErlideErlcPlugin.getDefault().getConsole();
+				final IConsole console = ErlideErlcPlugin.getDefault()
+						.getConsole();
 				console.start(currProject);
 
 				final OutputStream cos = console.getOutputStream();
@@ -347,14 +349,15 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				launcher.showCommand(true);
 
 				// Set the environment
-				final HashMap<Object,Object> envMap = new HashMap<Object,Object>();
+				final HashMap<Object, Object> envMap = new HashMap<Object, Object>();
 				if (info.appendEnvironment()) {
 					envMap.putAll(launcher.getEnvironment());
 				}
 				// Add variables from build info
 				envMap.putAll(info.getExpandedEnvironment());
 				final Iterator iter = envMap.entrySet().iterator();
-				final List<String> strings = new ArrayList<String>(envMap.size());
+				final List<String> strings = new ArrayList<String>(envMap
+						.size());
 				while (iter.hasNext()) {
 					final Map.Entry entry = (Map.Entry) iter.next();
 					final StringBuffer buffer = new StringBuffer((String) entry
@@ -362,8 +365,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 					buffer.append('=').append((String) entry.getValue());
 					strings.add(buffer.toString());
 				}
-				final String[] env = (String[]) strings.toArray(new String[strings
-						.size()]);
+				final String[] env = (String[]) strings
+						.toArray(new String[strings.size()]);
 				String[] buildArguments = targets;
 				if (info.isDefaultBuildCmd()) {
 					if (!info.isStopOnError()) {
@@ -398,8 +401,9 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				final StreamMonitor streamMon = new StreamMonitor(
 						new SubProgressMonitor(monitor, 100), cos, last
 								.intValue());
-				final ErrorParserManager epm = new ErrorParserManager(getProject(),
-						workingDirectory, this, info.getErrorParsers());
+				final ErrorParserManager epm = new ErrorParserManager(
+						getProject(), workingDirectory, this, info
+								.getErrorParsers());
 				epm.setOutputStream(streamMon);
 				final OutputStream stdout = epm.getOutputStream();
 				final OutputStream stderr = epm.getOutputStream();
@@ -416,8 +420,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				final OutputStream consoleOut = stdout;
 				final OutputStream consoleErr = stderr;
 
-				final Process p = launcher.execute(buildCommand, buildArguments, env,
-						workingDirectory);
+				final Process p = launcher.execute(buildCommand,
+						buildArguments, env, workingDirectory);
 				if (p != null) {
 					try {
 						// Close the input of the Process explicitly.

@@ -53,7 +53,8 @@ public class PluginUtils {
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(project);
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
 
 		final List sourcePaths = ErlidePrefConverter.convertToList(prefs
 				.getSourceDirsString());

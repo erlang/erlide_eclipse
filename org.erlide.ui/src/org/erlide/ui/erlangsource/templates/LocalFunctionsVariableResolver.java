@@ -15,8 +15,7 @@ import java.util.Iterator;
 
 public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 
-	private static final ArrayList<FunctionVariableResolver> fInstances =
-		new ArrayList<FunctionVariableResolver>();
+	private static final ArrayList<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
 
 	public LocalFunctionsVariableResolver() {
 		fInstances.add(this);

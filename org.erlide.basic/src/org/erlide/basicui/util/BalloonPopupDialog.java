@@ -39,8 +39,8 @@ public class BalloonPopupDialog {
 		final Shell shell = window.getShell();
 
 		final Display display = shell.getDisplay();
-		final BalloonWindow win = new BalloonWindow(display, SWT.ON_TOP | SWT.TITLE
-				| SWT.TOOL);
+		final BalloonWindow win = new BalloonWindow(display, SWT.ON_TOP
+				| SWT.TITLE | SWT.TOOL);
 		win.setText(title);
 
 		final Layout layout = new FillLayout();

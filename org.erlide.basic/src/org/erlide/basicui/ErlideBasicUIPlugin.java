@@ -166,8 +166,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 				.getResourceBundle();
 		try {
 
-			final String returnString = (bundle != null) ? bundle.getString(key)
-					: key;
+			final String returnString = (bundle != null) ? bundle
+					.getString(key) : key;
 			return returnString;
 		} catch (final MissingResourceException e) {
 			return key;
@@ -230,7 +230,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 	public static void showErtsPreferencesDialog(int tries) {
 		try {
 			final IWorkbench workbench = PlatformUI.getWorkbench();
-			final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+			final IWorkbenchWindow window = workbench
+					.getActiveWorkbenchWindow();
 			final Shell shell = window.getShell();
 
 			final IPreferenceNode targetNode = new PreferenceNode(

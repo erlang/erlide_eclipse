@@ -13,12 +13,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 
-//import com.ericsson.otp.erlang.OtpMbox;
+// import com.ericsson.otp.erlang.OtpMbox;
 
 public class ErlProgressMonitor implements IProgressMonitor,
 		IProgressMonitorWithBlocking {
 
-	//private OtpMbox mbox;
+	// private OtpMbox mbox;
 
 	/** The wrapped progress monitor. */
 	private IProgressMonitor progressMonitor;

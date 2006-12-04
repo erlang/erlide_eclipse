@@ -167,8 +167,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	}
 
 	private void throwCoreException(String message) throws CoreException {
-		final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard", IStatus.OK,
-				message, null);
+		final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
+				IStatus.OK, message, null);
 		throw new CoreException(status);
 	}
 

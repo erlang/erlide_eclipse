@@ -270,8 +270,8 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 		}
 		addPartition(new BuildConsolePartition(fLastStream, event.getOffset(),
 				text.length()));
-		final ITypedRegion[] affectedRegions = computePartitioning(event.getOffset(),
-				text.length());
+		final ITypedRegion[] affectedRegions = computePartitioning(event
+				.getOffset(), text.length());
 		if (affectedRegions.length == 0) {
 			return null;
 		}
@@ -301,10 +301,12 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 				} catch (final BadLocationException e1) {
 				}
 				// update partitions
-				final List<ITypedRegion> newParitions = new ArrayList<ITypedRegion>(fPartitions.size());
+				final List<ITypedRegion> newParitions = new ArrayList<ITypedRegion>(
+						fPartitions.size());
 				final Iterator partitions = fPartitions.iterator();
 				while (partitions.hasNext()) {
-					final ITypedRegion region = (ITypedRegion) partitions.next();
+					final ITypedRegion region = (ITypedRegion) partitions
+							.next();
 					if (region instanceof BuildConsolePartition) {
 						final BuildConsolePartition messageConsolePartition = (BuildConsolePartition) region;
 

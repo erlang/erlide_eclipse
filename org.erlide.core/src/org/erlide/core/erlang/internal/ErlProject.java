@@ -35,7 +35,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-//import org.eclipse.core.resources.IWorkspaceRoot;
+// import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -45,7 +45,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.core.ErlangPlugin;
-//import org.erlide.core.ErlangProjectProperties;
+// import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlangCore;
@@ -165,13 +165,14 @@ public class ErlProject extends Openable implements IErlProject,
 			return true;
 		}
 
-		//final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		//final IWorkspaceRoot wRoot = workspace.getRoot();
+		// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		// final IWorkspaceRoot wRoot = workspace.getRoot();
 
 		final List<IErlModule> modules = new ArrayList<IErlModule>(10);
 		try {
 			// TODO use project preferences to find which dirs are source dirs
-			//final ErlangProjectProperties pprop = new ErlangProjectProperties(getProject());
+			// final ErlangProjectProperties pprop = new
+			// ErlangProjectProperties(getProject());
 
 			final IContainer c = (IContainer) underlyingResource;
 			final IResource[] elems = c.members();
@@ -330,38 +331,25 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	void createCodeProblemMarker(IErlModelStatus status) {
 		/*
-		final IMarker marker = null;
-		int severity;
-		String[] arguments = new String[0];
-		final boolean isCycleProblem = false, isClasspathFileFormatProblem = false;
-		switch (status.getCode()) {
-
-		case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL:
-			final String setting = getOption(
-					ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
-			if (ErlangCore.ERROR.equals(setting)) {
-				severity = IMarker.SEVERITY_ERROR;
-			} else if (ErlangCore.WARNING.equals(setting)) {
-				severity = IMarker.SEVERITY_WARNING;
-			} else {
-				return; // setting == IGNORE
-			}
-			break;
-
-		default:
-			final IPath path = status.getPath();
-			if (path != null) {
-				arguments = new String[] { path.toString() };
-			}
-			if (ErlangCore.ERROR.equals(getOption(
-					ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) {
-				severity = IMarker.SEVERITY_ERROR;
-			} else {
-				severity = IMarker.SEVERITY_WARNING;
-			}
-			break;
-		}
-		*/
+		 * final IMarker marker = null; int severity; String[] arguments = new
+		 * String[0]; final boolean isCycleProblem = false,
+		 * isClasspathFileFormatProblem = false; switch (status.getCode()) {
+		 * 
+		 * case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL: final String
+		 * setting = getOption( ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
+		 * if (ErlangCore.ERROR.equals(setting)) { severity =
+		 * IMarker.SEVERITY_ERROR; } else if
+		 * (ErlangCore.WARNING.equals(setting)) { severity =
+		 * IMarker.SEVERITY_WARNING; } else { return; // setting == IGNORE }
+		 * break;
+		 * 
+		 * default: final IPath path = status.getPath(); if (path != null) {
+		 * arguments = new String[] { path.toString() }; } if
+		 * (ErlangCore.ERROR.equals(getOption(
+		 * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
+		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
+		 * break; }
+		 */
 	}
 
 	/**
@@ -417,27 +405,19 @@ public class ErlProject extends Openable implements IErlProject,
 			throw new ErlModelException(new ErlModelStatus(
 					IErlModelStatusConstants.INVALID_PATH, path));
 		}
-		/* TODO: realizate findElement(IPath path)
-		final String extension = path.getFileExtension();
-		if (extension.equalsIgnoreCase(EXTENSION_ERL)
-				|| extension.equalsIgnoreCase(EXTENSION_BEAM)) {
-			final IPath packagePath = path.removeLastSegments(1);
-			final String packageName = packagePath.toString().replace(
-					IPath.SEPARATOR, '.');
-			String typeName = path.lastSegment();
-			typeName = typeName.substring(0, typeName.length()
-					- extension.length() - 1);
-			String qualifiedName = null;
-			if (packageName.length() > 0) {
-				qualifiedName = packageName + "." + typeName; //$NON-NLS-1$
-			} else {
-				qualifiedName = typeName;
-			}
-			
-		} else {
-			// unsupported extension
-			return null;
-		}*/
+		/*
+		 * TODO: realizate findElement(IPath path) final String extension =
+		 * path.getFileExtension(); if
+		 * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
+		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
+		 * path.removeLastSegments(1); final String packageName =
+		 * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
+		 * typeName = path.lastSegment(); typeName = typeName.substring(0,
+		 * typeName.length() - extension.length() - 1); String qualifiedName =
+		 * null; if (packageName.length() > 0) { qualifiedName = packageName +
+		 * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; }
+		 *  } else { // unsupported extension return null; }
+		 */
 		return null;
 	}
 
@@ -525,11 +505,12 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see org.erlide.core.erlang.IErlProject#getOptions(boolean)
 	 */
-	public Map<String,String> getOptions(boolean inheritErlangCoreOptions) {
+	public Map<String, String> getOptions(boolean inheritErlangCoreOptions) {
 
 		// initialize to the defaults from ErlangCore options pool
-		final Map<String,String> options = inheritErlangCoreOptions ? ErlangPlugin
-				.getOptions() : new Hashtable<String,String>(5);
+		final Map<String, String> options = inheritErlangCoreOptions ? ErlangPlugin
+				.getOptions()
+				: new Hashtable<String, String>(5);
 
 		final Preferences preferences = getPreferences();
 		if (preferences == null) {
@@ -693,7 +674,7 @@ public class ErlProject extends Openable implements IErlProject,
 					preferences.load(in);
 					return preferences;
 				} catch (final IOException e) { // problems loading preference
-												// store
+					// store
 					// - quietly ignore
 				} finally {
 					if (in != null) {

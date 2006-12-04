@@ -55,7 +55,7 @@ public class MultipleInputDialog extends Dialog {
 
 	protected List<Validator> validators = new ArrayList<Validator>();
 
-	protected Map<String,String> valueMap = new HashMap<String,String>();
+	protected Map<String, String> valueMap = new HashMap<String, String>();
 
 	private String title;
 
@@ -321,8 +321,8 @@ public class MultipleInputDialog extends Dialog {
 		for (final Iterator i = controlList.iterator(); i.hasNext();) {
 			final Control control = (Control) i.next();
 			if (control instanceof Text) {
-				valueMap.put((String)control.getData(FIELD_NAME), ((Text) control)
-						.getText());
+				valueMap.put((String) control.getData(FIELD_NAME),
+						((Text) control).getText());
 			}
 		}
 		controlList = null;

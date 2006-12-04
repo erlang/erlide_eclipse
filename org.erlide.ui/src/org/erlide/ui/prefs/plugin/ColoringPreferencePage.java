@@ -68,8 +68,9 @@ import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
-//import org.erlide.basicui.util.OverlayPreferenceStore;
-//import org.erlide.basicui.util.OverlayPreferenceStore.OverlayKey;
+
+// import org.erlide.basicui.util.OverlayPreferenceStore;
+// import org.erlide.basicui.util.OverlayPreferenceStore.OverlayKey;
 
 /**
  * The color preferences.
@@ -314,7 +315,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			if (element instanceof String) {
 				return null;
 			}
-			//final int index = fListModel.indexOf(element);
+			// final int index = fListModel.indexOf(element);
 			// if (index < 4) {
 			// return fEdocCategory;
 			// }
@@ -406,8 +407,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	/**
 	 * Highlighting color list
 	 */
-	final java.util.List<HighlightingColorListItem> fListModel = 
-		new ArrayList<HighlightingColorListItem>();
+	final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
 
 	/**
 	 * Highlighting color list viewer
@@ -422,42 +422,31 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	/* NOT USED */
 	/*
-	private OverlayKey[] createOverlayStoreKeys() {
-
-		final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
-
-		for (int i = 0, n = fListModel.size(); i < n; i++) {
-			final HighlightingColorListItem item = (HighlightingColorListItem) fListModel
-					.get(i);
-			overlayKeys.add(new OverlayKey(
-					OverlayPreferenceStore.TypeDescriptor.STRING, item
-							.getColorKey()));
-			overlayKeys.add(new OverlayKey(
-					OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
-							.getBoldKey()));
-			overlayKeys.add(new OverlayKey(
-					OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
-							.getItalicKey()));
-			overlayKeys.add(new OverlayKey(
-					OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
-							.getStrikethroughKey()));
-			overlayKeys.add(new OverlayKey(
-					OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
-							.getUnderlineKey()));
-
-			if (item instanceof SemanticHighlightingColorListItem) {
-				overlayKeys.add(new OverlayKey(
-						OverlayPreferenceStore.TypeDescriptor.BOOLEAN,
-						((SemanticHighlightingColorListItem) item)
-								.getEnableKey()));
-			}
-		}
-
-		final OverlayKey[] keys = new OverlayKey[overlayKeys.size()];
-		overlayKeys.toArray(keys);
-		return keys;
-	}
-	*/
+	 * private OverlayKey[] createOverlayStoreKeys() {
+	 * 
+	 * final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
+	 * 
+	 * for (int i = 0, n = fListModel.size(); i < n; i++) { final
+	 * HighlightingColorListItem item = (HighlightingColorListItem) fListModel
+	 * .get(i); overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.STRING, item .getColorKey()));
+	 * overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getBoldKey()));
+	 * overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getItalicKey()));
+	 * overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
+	 * .getStrikethroughKey())); overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getUnderlineKey()));
+	 * 
+	 * if (item instanceof SemanticHighlightingColorListItem) {
+	 * overlayKeys.add(new OverlayKey(
+	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN,
+	 * ((SemanticHighlightingColorListItem) item) .getEnableKey())); } }
+	 * 
+	 * final OverlayKey[] keys = new OverlayKey[overlayKeys.size()];
+	 * overlayKeys.toArray(keys); return keys; }
+	 */
 
 	/**
 	 * Returns the number of pixels corresponding to the width of the given
@@ -588,7 +577,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 		});
 
-		final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true,
+				false);
 		gridData.widthHint = 150; // only expand further if anyone else
 		// requires it
 		gridData.horizontalSpan = 2;
@@ -602,7 +592,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 				.setText(PreferencesMessages.ErlEditorPreferencePage_coloring_element);
 		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		final Composite editorComposite = new Composite(colorComposite, SWT.NONE);
+		final Composite editorComposite = new Composite(colorComposite,
+				SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginHeight = 0;
@@ -652,7 +643,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 		fListViewer.getControl().setLayoutData(gd);
 
-		final Composite stylesComposite = new Composite(editorComposite, SWT.NONE);
+		final Composite stylesComposite = new Composite(editorComposite,
+				SWT.NONE);
 		layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
@@ -676,7 +668,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 		fColorEditorLabel.setLayoutData(gd);
 
 		fSyntaxForegroundColorEditor = new ColorSelector(stylesComposite);
-		final Button foregroundColorButton = fSyntaxForegroundColorEditor.getButton();
+		final Button foregroundColorButton = fSyntaxForegroundColorEditor
+				.getButton();
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		foregroundColorButton.setLayoutData(gd);
 
@@ -834,7 +827,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	private Control createPreviewer(Composite parent) {
 
-		final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
+		final IPreferenceStore generalTextStore = EditorsUI
+				.getPreferenceStore();
 		final IPreferenceStore store = new ChainedPreferenceStore(
 				new IPreferenceStore[] {
 						getPreferenceStore(),

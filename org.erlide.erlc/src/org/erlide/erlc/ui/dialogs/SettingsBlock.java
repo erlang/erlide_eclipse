@@ -216,8 +216,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 		});
 		if (fBuildInfo.getBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND,
 				null) != null) {
-			final StringBuffer cmd = new StringBuffer(fBuildInfo.getBuildAttribute(
-					IMakeCommonBuildInfo.BUILD_COMMAND, "")); //$NON-NLS-1$
+			final StringBuffer cmd = new StringBuffer(fBuildInfo
+					.getBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "")); //$NON-NLS-1$
 			if (!fBuildInfo.isDefaultBuildCmd()) {
 				final String args = fBuildInfo.getBuildAttribute(
 						IMakeCommonBuildInfo.BUILD_ARGUMENTS, ""); //$NON-NLS-1$ 
@@ -321,7 +321,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 	private Button addVariablesButton(Composite parent, final Text control) {
 		final String variablesTitle = ErlideErlcPlugin
 				.getResourceString("SettingsBlock.variables"); //$NON-NLS-1$
-		final Button variablesButton = createPushButton(parent, variablesTitle, null);
+		final Button variablesButton = createPushButton(parent, variablesTitle,
+				null);
 		final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
 		variablesButton.setLayoutData(gd);
 		variablesButton.addSelectionListener(new SelectionAdapter() {

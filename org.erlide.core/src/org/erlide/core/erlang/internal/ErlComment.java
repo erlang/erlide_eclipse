@@ -133,6 +133,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 			result = result + ":edoc";
 		if (isHeader())
 			result = result + ":header";
-		return result+">";
+		return result + ">";
 	}
 }

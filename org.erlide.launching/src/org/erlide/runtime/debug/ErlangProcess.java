@@ -142,7 +142,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public OtpErlangObject getBacktrace() {
 		OtpErlangBinary res = (OtpErlangBinary) getProcessInfo(fBackend, fPid,
 				"backtrace");
-		//byte[] r = res.binaryValue();
+		// byte[] r = res.binaryValue();
 		return res;
 	}
 

@@ -311,30 +311,30 @@ public class OtpOutputStream {
 	 * stream before it is known what the actual value should be. For example:
 	 * 
 	 * <pre>
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *                    int pos = s.getPos();
-	 *                    s.write4BE(0); // make space for length data,
-	 *                    // but final value is not yet known
-	 *      
-	 *                    [ ...more write statements...]
-	 *      
-	 *                    // later... when we know the length value
-	 *                    s.poke4BE(pos, length);
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
-	 *      
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *                     int pos = s.getPos();
+	 *                     s.write4BE(0); // make space for length data,
+	 *                     // but final value is not yet known
+	 *       
+	 *                     [ ...more write statements...]
+	 *       
+	 *                     // later... when we know the length value
+	 *                     s.poke4BE(pos, length);
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
+	 *       
 	 * </pre>
 	 * 
 	 * 

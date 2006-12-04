@@ -210,7 +210,8 @@ public class Buffer implements IBuffer {
 				return this.contents;
 			}
 			final int length = this.contents.length;
-			final char[] newContents = new char[length - this.gapEnd + this.gapStart];
+			final char[] newContents = new char[length - this.gapEnd
+					+ this.gapStart];
 			System.arraycopy(this.contents, 0, newContents, 0, this.gapStart);
 			System.arraycopy(this.contents, this.gapEnd, newContents,
 					this.gapStart, length - this.gapEnd);
@@ -551,8 +552,8 @@ public class Buffer implements IBuffer {
 				this.gapStart = -1;
 				this.gapEnd = -1;
 			}
-			final BufferChangedEvent event = new BufferChangedEvent(this, 0, this
-					.getLength(), string);
+			final BufferChangedEvent event = new BufferChangedEvent(this, 0,
+					this.getLength(), string);
 			notifyChanged(event);
 		}
 	}

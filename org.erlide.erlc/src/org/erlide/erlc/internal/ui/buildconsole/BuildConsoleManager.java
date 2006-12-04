@@ -54,7 +54,7 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 
 	BuildConsole fConsole;
 
-	private final Map<IProject,BuildConsolePartitioner> fConsoleMap = new HashMap<IProject,BuildConsolePartitioner>();
+	private final Map<IProject, BuildConsolePartitioner> fConsoleMap = new HashMap<IProject, BuildConsolePartitioner>();
 
 	Color infoColor, outputColor, errorColor;
 
@@ -81,8 +81,9 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 		if (list.length > 0) {
 			for (int i = 0; i < list.length; i++) {
 				final IBuildConsoleListener listener = (IBuildConsoleListener) list[i];
-				final ConsoleEvent event = new ConsoleEvent(BuildConsoleManager.this,
-						project, IBuildConsoleEvent.CONSOLE_START);
+				final ConsoleEvent event = new ConsoleEvent(
+						BuildConsoleManager.this, project,
+						IBuildConsoleEvent.CONSOLE_START);
 				listener.consoleChange(event);
 			}
 		}
@@ -94,7 +95,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	 * front.
 	 */
 	protected void showConsole() {
-		final IWorkbenchWindow window = ErlideErlcPlugin.getActiveWorkbenchWindow();
+		final IWorkbenchWindow window = ErlideErlcPlugin
+				.getActiveWorkbenchWindow();
 		if (window != null) {
 			final IWorkbenchPage page = window.getActivePage();
 			if (page != null) {
@@ -154,8 +156,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 					if (list.length > 0) {
 						for (int i = 0; i < list.length; i++) {
 							final IBuildConsoleListener listener = (IBuildConsoleListener) list[i];
-							final ConsoleEvent consoleEvent = new ConsoleEvent(this,
-									(IProject) resource,
+							final ConsoleEvent consoleEvent = new ConsoleEvent(
+									this, (IProject) resource,
 									IBuildConsoleEvent.CONSOLE_CLOSE);
 							listener.consoleChange(consoleEvent);
 						}
@@ -278,8 +280,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	 * Returns a color instance based on data from a preference field.
 	 */
 	Color createColor(Display display, String preference) {
-		final RGB rgb = PreferenceConverter.getColor(ErlideErlcPlugin.getDefault()
-				.getPreferenceStore(), preference);
+		final RGB rgb = PreferenceConverter.getColor(ErlideErlcPlugin
+				.getDefault().getPreferenceStore(), preference);
 		return new Color(display, rgb);
 	}
 

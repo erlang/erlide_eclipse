@@ -26,8 +26,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class TemplateVariableProcessor implements IContentAssistProcessor {
 
-	private static final Comparator<ICompletionProposal> fgTemplateVariableProposalComparator 
-	= new Comparator<ICompletionProposal>() {
+	private static final Comparator<ICompletionProposal> fgTemplateVariableProposalComparator = new Comparator<ICompletionProposal>() {
 
 		public int compare(ICompletionProposal arg0, ICompletionProposal arg1) {
 			return arg0.getDisplayString().compareTo(arg1.getDisplayString());
@@ -73,12 +72,14 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 		final int end = documentOffset;
 
 		final String string = text.substring(start, end);
-		final String prefix = (string.length() >= 2) ? string.substring(2) : null;
+		final String prefix = (string.length() >= 2) ? string.substring(2)
+				: null;
 
 		final int offset = start;
 		final int length = end - start;
 
-		for (final Iterator iterator = fContextType.resolvers(); iterator.hasNext();) {
+		for (final Iterator iterator = fContextType.resolvers(); iterator
+				.hasNext();) {
 			final TemplateVariableResolver variable = (TemplateVariableResolver) iterator
 					.next();
 

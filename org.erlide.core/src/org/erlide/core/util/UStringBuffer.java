@@ -758,7 +758,8 @@ public class UStringBuffer implements Serializable {
 	public UStringBuffer reverse() {
 		char temp;
 		if (0 != length) {
-			final int half = (((length % 2) == 0) ? (length / 2) - 1 : (length / 2));
+			final int half = (((length % 2) == 0) ? (length / 2) - 1
+					: (length / 2));
 
 			for (int j = 0, i = length - 1; j <= half; j++, i--) {
 				temp = backing[j];

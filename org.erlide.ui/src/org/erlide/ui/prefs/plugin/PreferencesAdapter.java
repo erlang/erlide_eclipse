@@ -105,8 +105,8 @@ public class PreferencesAdapter implements IPreferenceStore {
 	public void firePropertyChangeEvent(String name, Object oldValue,
 			Object newValue) {
 		if (!fSilent) {
-			final PropertyChangeEvent event = new PropertyChangeEvent(this, name,
-					oldValue, newValue);
+			final PropertyChangeEvent event = new PropertyChangeEvent(this,
+					name, oldValue, newValue);
 			final Object[] listeners = fListeners.getListeners();
 			for (int i = 0; i < listeners.length; i++) {
 				((IPropertyChangeListener) listeners[i]).propertyChange(event);

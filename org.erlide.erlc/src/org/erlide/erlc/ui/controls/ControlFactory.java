@@ -114,7 +114,8 @@ public class ControlFactory {
 	 *         SWT.DEFAULT)
 	 */
 	public static Label createSeparator(Composite parent, int nCols) {
-		final Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		final Label separator = new Label(parent, SWT.SEPARATOR
+				| SWT.HORIZONTAL);
 		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = nCols;
 		separator.setLayoutData(data);
@@ -406,7 +407,8 @@ public class ControlFactory {
 	 */
 	public static TableViewer createTableViewer(Composite parent,
 			String[] opt_list, int width, int height, int style) {
-		final TableViewer listViewer = new TableViewer(parent, SWT.BORDER | style);
+		final TableViewer listViewer = new TableViewer(parent, SWT.BORDER
+				| style);
 		final GridData data = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.FILL_VERTICAL);
 		data.widthHint = width;
@@ -423,8 +425,8 @@ public class ControlFactory {
 	 */
 	public static TableViewer createTableViewer(Composite parent, int width,
 			int height, int style, String[] columns, int[] colWidths) {
-		final TableViewer listViewer = createTableViewer(parent, null, width, height,
-				style);
+		final TableViewer listViewer = createTableViewer(parent, null, width,
+				height, style);
 
 		final Table table = listViewer.getTable();
 
@@ -460,7 +462,8 @@ public class ControlFactory {
 				final CellEditor e = es[i];
 				if (e.isActivated()) {
 					if (e.isValueValid()) {
-						final Object[] properties = viewer.getColumnProperties();
+						final Object[] properties = viewer
+								.getColumnProperties();
 						final Object value = e.getValue();
 						viewer.cancelEditing();
 						viewer.getCellModifier().modify(items[0],
@@ -496,8 +499,8 @@ public class ControlFactory {
 
 	public static CheckboxTableViewer createListViewer(Composite parent,
 			int width, int height, int style, String[] columns, int[] colWidths) {
-		final CheckboxTableViewer listViewer = createListViewer(parent, null, width,
-				height, style);
+		final CheckboxTableViewer listViewer = createListViewer(parent, null,
+				width, height, style);
 
 		final Table table = listViewer.getTable();
 
@@ -679,8 +682,8 @@ public class ControlFactory {
 	 * 
 	 */
 	public static Shell createDialogShell() {
-		final Shell parent = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getShell();
+		final Shell parent = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getShell();
 		return new Shell(parent, SWT.DIALOG_TRIM);
 	}
 

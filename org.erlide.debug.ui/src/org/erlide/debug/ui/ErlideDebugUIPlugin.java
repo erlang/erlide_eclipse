@@ -9,9 +9,9 @@ import org.osgi.framework.BundleContext;
  */
 public class ErlideDebugUIPlugin extends AbstractUIPlugin {
 
-	//The shared instance.
+	// The shared instance.
 	private static ErlideDebugUIPlugin plugin;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -44,13 +44,15 @@ public class ErlideDebugUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
+	 * 
+	 * @param path
+	 *            the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.erlide.debug.ui", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+				"org.erlide.debug.ui", path);
 	}
 }

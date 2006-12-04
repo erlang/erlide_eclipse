@@ -135,7 +135,7 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 	 * @see ErlangCore#getDefaultOptions()
 	 * 
 	 */
-	Map<String,String> getOptions(boolean inheritErlangCoreOptions);
+	Map<String, String> getOptions(boolean inheritErlangCoreOptions);
 
 	/**
 	 * Returns the default output location for this project as a workspace-

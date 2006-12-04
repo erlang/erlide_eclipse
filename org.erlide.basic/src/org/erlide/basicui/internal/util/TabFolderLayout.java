@@ -31,7 +31,8 @@ public class TabFolderLayout extends Layout {
 		int maxWidth = 0, maxHeight = 0;
 		for (int i = 0; i < count; i++) {
 			final Control child = children[i];
-			final Point pt = child.computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
+			final Point pt = child.computeSize(SWT.DEFAULT, SWT.DEFAULT,
+					flushCache);
 			maxWidth = Math.max(maxWidth, pt.x);
 			maxHeight = Math.max(maxHeight, pt.y);
 		}

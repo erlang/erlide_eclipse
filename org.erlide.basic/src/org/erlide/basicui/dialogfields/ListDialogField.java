@@ -335,7 +335,8 @@ public class ListDialogField<Element> extends DialogField {
 				final ColumnLayoutData[] columns = fTableColumns.fColumns;
 				for (int i = 0; i < columns.length; i++) {
 					composite.addColumnData(columns[i]);
-					final TableColumn column = new TableColumn(tableControl, SWT.NONE);
+					final TableColumn column = new TableColumn(tableControl,
+							SWT.NONE);
 					// tableLayout.addColumnData(columns[i]);
 					if (fTableColumns.fHeaders != null) {
 						column.setText(fTableColumns.fHeaders[i]);
@@ -656,12 +657,13 @@ public class ListDialogField<Element> extends DialogField {
 	/**
 	 * Adds elements at the end of the list.
 	 */
-	public void addElements(List<?extends Element> elements) {
+	public void addElements(List<? extends Element> elements) {
 		final int nElements = elements.size();
 
 		if (nElements > 0) {
 			// filter duplicated
-			final ArrayList<Element> elementsToAdd = new ArrayList<Element>(nElements);
+			final ArrayList<Element> elementsToAdd = new ArrayList<Element>(
+					nElements);
 
 			for (int i = 0; i < nElements; i++) {
 				final Element elem = elements.get(i);
@@ -866,7 +868,8 @@ public class ListDialogField<Element> extends DialogField {
 		if (isOkToUse(fTableControl)) {
 			final ISelection selection = fTable.getSelection();
 			if (selection instanceof IStructuredSelection) {
-				final Iterator<Element> iter = ((IStructuredSelection) selection).iterator();
+				final Iterator<Element> iter = ((IStructuredSelection) selection)
+						.iterator();
 				while (iter.hasNext()) {
 					result.add(iter.next());
 				}

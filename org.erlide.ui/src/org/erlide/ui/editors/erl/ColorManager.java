@@ -29,7 +29,8 @@ public class ColorManager implements IColorManager {
 
 	protected Map fKeyTable = new HashMap(10);
 
-	protected Map<Display,Map<RGB,Color>> fDisplayTable = new HashMap<Display,Map<RGB,Color>>(2);
+	protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<Display, Map<RGB, Color>>(
+			2);
 
 	/**
 	 * Flag which tells if the colors are automatically disposed when the
@@ -61,7 +62,7 @@ public class ColorManager implements IColorManager {
 	}
 
 	public void dispose(Display display) {
-		final Map<RGB,Color> colorTable = fDisplayTable.get(display);
+		final Map<RGB, Color> colorTable = fDisplayTable.get(display);
 		if (colorTable != null) {
 			final Iterator<Color> e = colorTable.values().iterator();
 			while (e.hasNext()) {
@@ -84,9 +85,10 @@ public class ColorManager implements IColorManager {
 
 		final Display display = Display.getCurrent();
 		@SuppressWarnings("unchecked")
-		Map<RGB,Color> colorTable = (Map<RGB,Color>) fDisplayTable.get(display);
+		Map<RGB, Color> colorTable = (Map<RGB, Color>) fDisplayTable
+				.get(display);
 		if (colorTable == null) {
-			colorTable = new HashMap<RGB,Color>(10);
+			colorTable = new HashMap<RGB, Color>(10);
 			fDisplayTable.put(display, colorTable);
 			if (fAutoDisposeOnDisplayDispose) {
 				display.disposeExec(new Runnable() {

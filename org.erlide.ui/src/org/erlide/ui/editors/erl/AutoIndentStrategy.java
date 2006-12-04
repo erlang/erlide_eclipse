@@ -72,13 +72,20 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		final OtpErlangString s = new OtpErlangString(txt);
 		try {
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
-			int tabw = ErlideUIPlugin.getDefault().getPreferenceStore().getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-			if (tabw==0) {
-				tabw = EditorsUI.getPreferenceStore().getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+			int tabw = ErlideUIPlugin
+					.getDefault()
+					.getPreferenceStore()
+					.getInt(
+							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+			if (tabw == 0) {
+				tabw = EditorsUI
+						.getPreferenceStore()
+						.getInt(
+								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 			final OtpErlangLong tw = new OtpErlangLong(tabw);
-			final OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
-					"indent_next_line", s, tw));
+			final OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc(
+					"erlide_indent", "indent_next_line", s, tw));
 			// OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
 			// "indent_next_line",
 			// new OtpErlangLong(offset)));

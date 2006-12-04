@@ -96,7 +96,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	// actions
 	private ClearOutputAction fClearOutputAction;
 
-	private final Map<String,IAction> fGlobalActions = new HashMap<String,IAction>(10);
+	private final Map<String, IAction> fGlobalActions = new HashMap<String, IAction>(
+			10);
 
 	private final List<String> fSelectionActions = new ArrayList<String>(3);
 
@@ -532,8 +533,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 */
 	public void textChanged(TextEvent event) {
 		// update the find replace action if the document length is > 0
-		final IUpdate findReplace = (IUpdate) fGlobalActions.get(ActionFactory.FIND
-				.getId());
+		final IUpdate findReplace = (IUpdate) fGlobalActions
+				.get(ActionFactory.FIND.getId());
 		if (findReplace != null) {
 			findReplace.update();
 		}

@@ -113,7 +113,7 @@ public class LRUCache implements Cloneable {
 	/**
 	 * Hash table for fast random access to cache entries
 	 */
-	protected Hashtable<Object,LRUCacheEntry> fEntryTable;
+	protected Hashtable<Object, LRUCacheEntry> fEntryTable;
 
 	/**
 	 * Start of queue (most recently used entry)
@@ -149,7 +149,7 @@ public class LRUCache implements Cloneable {
 
 		fTimestampCounter = fCurrentSpace = 0;
 		fEntryQueue = fEntryQueueTail = null;
-		fEntryTable = new Hashtable<Object,LRUCacheEntry>(size);
+		fEntryTable = new Hashtable<Object, LRUCacheEntry>(size);
 		fSpaceLimit = size;
 	}
 
@@ -182,7 +182,7 @@ public class LRUCache implements Cloneable {
 
 		fCurrentSpace = 0;
 		LRUCacheEntry entry = fEntryQueueTail; // Remember last entry
-		fEntryTable = new Hashtable<Object,LRUCacheEntry>(); // Clear it out
+		fEntryTable = new Hashtable<Object, LRUCacheEntry>(); // Clear it out
 		fEntryQueue = fEntryQueueTail = null;
 		while (entry != null) { // send deletion notifications in LRU order
 			privateNotifyDeletionFromCache(entry);

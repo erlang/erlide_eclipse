@@ -65,7 +65,8 @@ public class NewScratchFileWizardPage extends WizardNewFileCreationPage {
 				shell.getDisplay().asyncExec(new Runnable() {
 
 					public void run() {
-						final ISelection selection = new StructuredSelection(file);
+						final ISelection selection = new StructuredSelection(
+								file);
 						((ISetSelectionTarget) focusPart)
 								.selectReveal(selection);
 					}
@@ -99,7 +100,8 @@ public class NewScratchFileWizardPage extends WizardNewFileCreationPage {
 			return false;
 		}
 
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+				.getRoot();
 		final IPath containerPath = getContainerFullPath();
 		if (containerPath != null && containerPath.segmentCount() > 0) {
 			final IProject project = workspaceRoot.getProject(containerPath

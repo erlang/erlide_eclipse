@@ -26,7 +26,7 @@ public class ErtsConsole {
 		stdout = out;
 		stderr = err;
 	}
-	
+
 	public OutputStream getStdin() {
 		return stdin;
 	}

@@ -45,7 +45,7 @@ public class ErlideUIPluginImages {
 	// The plug-in registry
 	private static ImageRegistry fgImageRegistry = null;
 
-	private static HashMap<String,ImageDescriptor> fgAvoidSWTErrorMap = null;
+	private static HashMap<String, ImageDescriptor> fgAvoidSWTErrorMap = null;
 
 	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
@@ -204,8 +204,8 @@ public class ErlideUIPluginImages {
 			String relPath) {
 
 		try {
-			final ImageDescriptor id = ImageDescriptor.createFromURL(makeIconFileURL(
-					"d" + type, relPath)); //$NON-NLS-1$
+			final ImageDescriptor id = ImageDescriptor
+					.createFromURL(makeIconFileURL("d" + type, relPath)); //$NON-NLS-1$
 			if (id != null) {
 				action.setDisabledImageDescriptor(id);
 			}
@@ -230,7 +230,7 @@ public class ErlideUIPluginImages {
 					.createFromURL(makeIconFileURL(prefix, name
 							.substring(NAME_PREFIX_LENGTH)));
 			if (fgAvoidSWTErrorMap == null) {
-				fgAvoidSWTErrorMap = new HashMap<String,ImageDescriptor>();
+				fgAvoidSWTErrorMap = new HashMap<String, ImageDescriptor>();
 			}
 			fgAvoidSWTErrorMap.put(name, result);
 			if (fgImageRegistry != null) {

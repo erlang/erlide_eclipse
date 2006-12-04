@@ -80,7 +80,7 @@ public class ModuleNavigator extends ViewPart {
 						&& ResourceSelectionUtil.allResourcesAreOfType(
 								selection, IResource.PROJECT | IResource.FOLDER
 										| IResource.FILE);
-				final boolean onlyFilesSelected = anyResourceSelected 
+				final boolean onlyFilesSelected = anyResourceSelected
 						&& ResourceSelectionUtil.allResourcesAreOfType(
 								selection, IResource.FILE);
 

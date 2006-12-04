@@ -126,13 +126,15 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		private final boolean fMatchCollapsed;
 
-		private ErlangElementSetFilter(Set<IErlElement> set, boolean matchCollapsed) {
+		private ErlangElementSetFilter(Set<IErlElement> set,
+				boolean matchCollapsed) {
 			fSet = set;
 			fMatchCollapsed = matchCollapsed;
 		}
 
 		public boolean match(ErlangProjectionAnnotation annotation) {
-			final boolean stateMatch = fMatchCollapsed == annotation.isCollapsed();
+			final boolean stateMatch = fMatchCollapsed == annotation
+					.isCollapsed();
 			if (stateMatch && !annotation.isComment()
 					&& !annotation.isMarkedDeleted()) {
 				final IErlElement element = annotation.getElement();
@@ -369,8 +371,8 @@ public class DefaultErlangFoldingStructureProvider implements
 
 			if (captionLine < lastLine) {
 				final int postOffset = document.getLineOffset(captionLine + 1);
-				final IRegion postRegion = new Region(postOffset, offset + length
-						- postOffset);
+				final IRegion postRegion = new Region(postOffset, offset
+						+ length - postOffset);
 
 				if (preRegion == null) {
 					return new IRegion[] { postRegion };
@@ -540,7 +542,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		initializePreferences();
 
 		final IDocumentProvider provider = fEditor.getDocumentProvider();
-		final IDocument document = provider.getDocument(fEditor.getEditorInput());
+		final IDocument document = provider.getDocument(fEditor
+				.getEditorInput());
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
 		fModule = m;
 		if (fModule == null) {
@@ -573,7 +576,8 @@ public class DefaultErlangFoldingStructureProvider implements
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
 	}
 
-	private void computeAdditions(IErlModule erlModule, Map<ErlangProjectionAnnotation,Position> map) {
+	private void computeAdditions(IErlModule erlModule,
+			Map<ErlangProjectionAnnotation, Position> map) {
 		if (erlModule == null) {
 			return;
 		}
@@ -585,7 +589,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private void computeAdditions(IParent parent, Map<ErlangProjectionAnnotation,Position> map) {
+	private void computeAdditions(IParent parent,
+			Map<ErlangProjectionAnnotation, Position> map) {
 		if (parent == null) {
 			return;
 		}
@@ -596,7 +601,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private void computeAdditions(IErlElement[] elements, Map<ErlangProjectionAnnotation,Position> map)
+	private void computeAdditions(IErlElement[] elements,
+			Map<ErlangProjectionAnnotation, Position> map)
 			throws ErlModelException {
 		if (elements == null) {
 			return;
@@ -613,7 +619,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private void computeAdditions(IErlElement element, Map<ErlangProjectionAnnotation,Position> map) {
+	private void computeAdditions(IErlElement element,
+			Map<ErlangProjectionAnnotation, Position> map) {
 		boolean createProjection = false;
 		boolean collapse = false;
 
@@ -634,7 +641,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		if (createProjection) {
 			final IRegion region = computeProjectionRanges(element);
 			if (region != null) {
-				final Position position = createProjectionPosition(region, element);
+				final Position position = createProjectionPosition(region,
+						element);
 				if (position != null) {
 					map.put(new ErlangProjectionAnnotation(element, collapse,
 							false), position);
@@ -688,7 +696,8 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		try {
 
-			final int start = fCachedDocument.getLineOfOffset(region.getOffset());
+			final int start = fCachedDocument.getLineOfOffset(region
+					.getOffset());
 			final int end = fCachedDocument.getLineOfOffset(region.getOffset()
 					+ region.getLength());
 			if (start != end) {
@@ -747,21 +756,18 @@ public class DefaultErlangFoldingStructureProvider implements
 			// fFirstType= null;
 			// fHasHeaderComment = false;
 
-			final Map<ErlangProjectionAnnotation,Position> additions = 
-				new HashMap<ErlangProjectionAnnotation,Position>();
-			final List<ErlangProjectionAnnotation> deletions = 
-				new ArrayList<ErlangProjectionAnnotation>();
-			final List<ErlangProjectionAnnotation> updates = 
-				new ArrayList<ErlangProjectionAnnotation>();
+			final Map<ErlangProjectionAnnotation, Position> additions = new HashMap<ErlangProjectionAnnotation, Position>();
+			final List<ErlangProjectionAnnotation> deletions = new ArrayList<ErlangProjectionAnnotation>();
+			final List<ErlangProjectionAnnotation> updates = new ArrayList<ErlangProjectionAnnotation>();
 
-//			 use a linked map to maintain ordering of comments
-			final Map<ErlangProjectionAnnotation,Position> updated = 
-				new LinkedHashMap<ErlangProjectionAnnotation,Position>();
-			    
+			// use a linked map to maintain ordering of comments
+			final Map<ErlangProjectionAnnotation, Position> updated = new LinkedHashMap<ErlangProjectionAnnotation, Position>();
+
 			computeAdditions(fModule, updated);
 			final Map previous = createAnnotationMap(model);
 
-			Iterator<ErlangProjectionAnnotation> e = updated.keySet().iterator();
+			Iterator<ErlangProjectionAnnotation> e = updated.keySet()
+					.iterator();
 			while (e.hasNext()) {
 				final ErlangProjectionAnnotation newAnnotation = e.next();
 				final IErlElement element = newAnnotation.getElement();
@@ -805,7 +811,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 
 			@SuppressWarnings("unchecked")
-			Iterator<List> l = (Iterator<List>)previous.values().iterator();
+			Iterator<List> l = (Iterator<List>) previous.values().iterator();
 			while (l.hasNext()) {
 				final List list = l.next();
 				final int size = list.size();
@@ -838,17 +844,15 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * additions) or marked as deletion instead (for changes). The result is
 	 * that more annotations are changed and fewer get deleted/re-added.
 	 */
-	private void match(List<ErlangProjectionAnnotation> deletions, 
-			Map<ErlangProjectionAnnotation,Position> additions, 
+	private void match(List<ErlangProjectionAnnotation> deletions,
+			Map<ErlangProjectionAnnotation, Position> additions,
 			List<ErlangProjectionAnnotation> changes) {
 		if (deletions.isEmpty() || (additions.isEmpty() && changes.isEmpty())) {
 			return;
 		}
 
-		final List<ErlangProjectionAnnotation> newDeletions = 
-			new ArrayList<ErlangProjectionAnnotation>();
-		final List<ErlangProjectionAnnotation> newChanges = 
-			new ArrayList<ErlangProjectionAnnotation>();
+		final List<ErlangProjectionAnnotation> newDeletions = new ArrayList<ErlangProjectionAnnotation>();
+		final List<ErlangProjectionAnnotation> newChanges = new ArrayList<ErlangProjectionAnnotation>();
 
 		final Iterator deletionIterator = deletions.iterator();
 		while (deletionIterator.hasNext()) {
@@ -939,7 +943,7 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	private Map createAnnotationMap(IAnnotationModel model) {
-		final Map<Object,List<Tuple>> map = new HashMap<Object,List<Tuple>>();
+		final Map<Object, List<Tuple>> map = new HashMap<Object, List<Tuple>>();
 		final Iterator e = model.getAnnotationIterator();
 		while (e.hasNext()) {
 			final Object annotation = e.next();
@@ -959,10 +963,11 @@ public class DefaultErlangFoldingStructureProvider implements
 		final Comparator<Tuple> comparator = new Comparator<Tuple>() {
 
 			public int compare(Tuple o1, Tuple o2) {
-				return o1.position.getOffset()-o2.position.getOffset();
+				return o1.position.getOffset() - o2.position.getOffset();
 			}
 		};
-		for (final Iterator<List<Tuple>> it = map.values().iterator(); it.hasNext();) {
+		for (final Iterator<List<Tuple>> it = map.values().iterator(); it
+				.hasNext();) {
 			final List<Tuple> list = (List<Tuple>) it.next();
 			Collections.sort(list, comparator);
 		}
@@ -989,7 +994,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#collapseElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void collapseElements(IErlElement[] elements) {
-		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
+				.asList(elements));
 		modifyFiltered(new ErlangElementSetFilter(set, false), false);
 	}
 
@@ -997,7 +1003,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#expandElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void expandElements(IErlElement[] elements) {
-		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
+		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
+				.asList(elements));
 		modifyFiltered(new ErlangElementSetFilter(set, true), true);
 	}
 
@@ -1022,8 +1029,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			return;
 		}
 
-		final List<ErlangProjectionAnnotation> modified = 
-			new ArrayList<ErlangProjectionAnnotation>();
+		final List<ErlangProjectionAnnotation> modified = new ArrayList<ErlangProjectionAnnotation>();
 		final Iterator iter = model.getAnnotationIterator();
 		while (iter.hasNext()) {
 			final Object annotation = iter.next();
@@ -1082,17 +1088,16 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 			// TODO anropa processDelta istället!!!
 			if (!true) {
-				final Map<ErlangProjectionAnnotation,Position> additions = 
-					new LinkedHashMap<ErlangProjectionAnnotation,Position>();
+				final Map<ErlangProjectionAnnotation, Position> additions = new LinkedHashMap<ErlangProjectionAnnotation, Position>();
 				computeAdditions(fModule, additions);
 				/*
 				 * Minimize the events being sent out - as this happens in the
 				 * UI thread merge everything into one call.
 				 */
-				final List<Annotation> removals = 
-					new LinkedList<Annotation>();
+				final List<Annotation> removals = new LinkedList<Annotation>();
 				@SuppressWarnings("unchecked")
-				final Iterator<Annotation> existing = model.getAnnotationIterator();
+				final Iterator<Annotation> existing = model
+						.getAnnotationIterator();
 				while (existing.hasNext()) {
 					removals.add(existing.next());
 				}

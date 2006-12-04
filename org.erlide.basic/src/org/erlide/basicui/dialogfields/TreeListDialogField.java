@@ -594,7 +594,8 @@ public class TreeListDialogField extends DialogField {
 
 		if (nElements > 0) {
 			// filter duplicated
-			final ArrayList<Object> elementsToAdd = new ArrayList<Object>(nElements);
+			final ArrayList<Object> elementsToAdd = new ArrayList<Object>(
+					nElements);
 
 			for (int i = 0; i < nElements; i++) {
 				final Object elem = elements.get(i);
@@ -827,7 +828,8 @@ public class TreeListDialogField extends DialogField {
 		if (isOkToUse(fTreeControl)) {
 			final ISelection selection = fTree.getSelection();
 			if (selection instanceof IStructuredSelection) {
-				final Iterator iter = ((IStructuredSelection) selection).iterator();
+				final Iterator iter = ((IStructuredSelection) selection)
+						.iterator();
 				while (iter.hasNext()) {
 					result.add(iter.next());
 				}

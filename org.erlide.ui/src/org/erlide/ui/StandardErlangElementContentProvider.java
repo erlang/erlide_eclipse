@@ -37,26 +37,26 @@ import org.erlide.core.erlang.ISourceReference;
  * <p>
  * 
  * <pre>
- *        model (
+ *         model (
  * <code>
  * IErlangModel
  * </code>
- *    )
- *          project (
+ *     )
+ *           project (
  * <code>
  * IErlangProject
  * </code>
- *    )
- *              module (
+ *     )
+ *               module (
  * <code>
  * IErlModule
  * </code>
- *    )
- *              binary beam file (
+ *     )
+ *               binary beam file (
  * <code>
  * IBeamFile
  * </code>
- *    )
+ *     )
  * </pre>
  * 
  * </p>
@@ -279,7 +279,8 @@ public class StandardErlangElementContentProvider implements
 	protected Object internalGetParent(Object element) {
 		if (element instanceof IResource) {
 			final IResource parent = ((IResource) element).getParent();
-			final IErlElement eParent = ErlangCore.getModelManager().create(parent);
+			final IErlElement eParent = ErlangCore.getModelManager().create(
+					parent);
 			if (eParent != null && eParent.exists()) {
 				return eParent;
 			}

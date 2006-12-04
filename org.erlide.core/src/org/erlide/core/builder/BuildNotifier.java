@@ -72,9 +72,9 @@ public class BuildNotifier {
 	 * Notification before a compile that a unit is about to be compiled.
 	 */
 	public void aboutToCompile(IResource unit) {
-		final String message = BuilderMessages.bind(BuilderMessages.build_compiling,
-				unit.getFullPath().removeLastSegments(1).makeRelative()
-						.toString());
+		final String message = BuilderMessages.bind(
+				BuilderMessages.build_compiling, unit.getFullPath()
+						.removeLastSegments(1).makeRelative().toString());
 		subTask(message);
 	}
 
@@ -112,9 +112,9 @@ public class BuildNotifier {
 	 * compiled.
 	 */
 	public void compiled(IResource unit) {
-		final String message = BuilderMessages.bind(BuilderMessages.build_compiling,
-				unit.getFullPath().removeLastSegments(1).makeRelative()
-						.toString());
+		final String message = BuilderMessages.bind(
+				BuilderMessages.build_compiling, unit.getFullPath()
+						.removeLastSegments(1).makeRelative().toString());
 		subTask(message);
 		updateProgressDelta(progressPerCompilationUnit);
 		checkCancelWithinCompiler();
@@ -303,7 +303,8 @@ public class BuildNotifier {
 				}
 				final boolean wasError = IMarker.SEVERITY_ERROR == oldProblem
 						.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-				final String message = oldProblem.getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
+				final String message = oldProblem.getAttribute(IMarker.MESSAGE,
+						""); //$NON-NLS-1$
 
 				if (newProblems != null) {
 					for (int j = 0, m = newProblems.length; j < m; j++) {

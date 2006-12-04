@@ -328,8 +328,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	protected void enableButtons() {
-		final int selectionCount = ((IStructuredSelection) fVMList.getSelection())
-				.size();
+		final int selectionCount = ((IStructuredSelection) fVMList
+				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
 		fRemoveButton.setEnabled(selectionCount > 0
 				&& selectionCount < fVMList.getTable().getItemCount());
@@ -391,7 +391,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 			parentWidth = area.width;
 			parentHeight = area.height;
 		} else {
-			final Point parentSize = parent.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+			final Point parentSize = parent.computeSize(SWT.DEFAULT,
+					SWT.DEFAULT);
 			parentWidth = parentSize.x;
 			parentHeight = parentSize.y;
 		}
@@ -826,8 +827,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		tableLabel.setLayoutData(data);
 		tableLabel.setFont(font);
 
-		final Table table = new Table(parent, SWT.CHECK | SWT.BORDER | SWT.MULTI
-				| SWT.FULL_SELECTION);
+		final Table table = new Table(parent, SWT.CHECK | SWT.BORDER
+				| SWT.MULTI | SWT.FULL_SELECTION);
 
 		data = new GridData(GridData.FILL_BOTH);
 		table.setLayoutData(data);

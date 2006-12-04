@@ -36,7 +36,7 @@ public class TemplateParser {
 	/**
 	 * The internal hash map
 	 */
-	private HashMap<String,Object> env;
+	private HashMap<String, Object> env;
 
 	/**
 	 * The resource to make use of
@@ -70,7 +70,7 @@ public class TemplateParser {
 
 		input = new InputStreamReader(tmp);
 
-		env = new HashMap<String,Object>();
+		env = new HashMap<String, Object>();
 
 		final int av = tmp.available();
 

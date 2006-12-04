@@ -39,11 +39,8 @@ public class EnvironmentReader {
 		boolean check_ready = false;
 		boolean isWin32 = false;
 		String charSet = null;
-		if (OS.startsWith("windows 9") || OS.startsWith("windows me")) { // 95,
-			// 98,
-			// me
-			// //$NON-NLS-1$
-			// //$NON-NLS-2$
+		if (OS.startsWith("windows 9") || OS.startsWith("windows me")) {
+			// 95, 98, me //$NON-NLS-1$ //$NON-NLS-2$
 			command = "command.com /c set"; //$NON-NLS-1$
 			// The buffered stream doesn't always like windows 98
 			check_ready = true;

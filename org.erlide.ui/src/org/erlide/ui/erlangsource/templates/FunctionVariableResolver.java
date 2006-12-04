@@ -36,9 +36,10 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	@Override
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		@SuppressWarnings("unchecked")
-		final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout.getDefault().resolvers();
+		final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout
+				.getDefault().resolvers();
 		FunctionNameVariableResolver name_var = null;
-		//!TODO: Use BodyVariableResolver
+		// !TODO: Use BodyVariableResolver
 		@SuppressWarnings("unused")
 		BodyVariableResolver body_var = null;
 		ArgumentsVariableResolver arg_var = null;
@@ -55,7 +56,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 
 		final StringBuffer buff = new StringBuffer();
 
-		for (final Iterator<Object[]> iter = functions.iterator(); iter.hasNext();) {
+		for (final Iterator<Object[]> iter = functions.iterator(); iter
+				.hasNext();) {
 			final Object[] element = iter.next();
 			arg_var.setArity(((Integer) element[1]).intValue());
 			name_var.setFunctionName((String) element[0]);
@@ -85,8 +87,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				buff.append(tb.getString() + "\n");
 			}
 
-			final Template template = ErlangSourceContextTypeComment.getDefault()
-					.getTemplateStore().getTemplateData(
+			final Template template = ErlangSourceContextTypeComment
+					.getDefault().getTemplateStore().getTemplateData(
 							"org.erlide.ui.erlangsource.functionlayout")
 					.getTemplate();
 

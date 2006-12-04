@@ -321,8 +321,8 @@ public class TraceLogView extends ViewPart {
 					System.out.println("  " + ms[i].getElementName());
 				}
 
-				final IErlFunction[] fs = mdl.findFunction("test", ".*", "st.*",
-						IErlModel.UNKNOWN_ARITY);
+				final IErlFunction[] fs = mdl.findFunction("test", ".*",
+						"st.*", IErlModel.UNKNOWN_ARITY);
 				System.out.println("found(\"*\") " + ms.length);
 				for (int i = 0; i < fs.length; i++) {
 					System.out.println("  " + fs[i].getElementName() + "/"

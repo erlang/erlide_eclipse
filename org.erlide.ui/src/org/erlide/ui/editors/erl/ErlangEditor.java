@@ -79,7 +79,7 @@ import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
-//import org.eclipse.ui.views.contentoutline.ContentOutline;
+// import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.erlang.ErlModelException;
@@ -953,12 +953,10 @@ public class ErlangEditor extends TextEditor {
 
 	/* NOT USED */
 	/*
-	private boolean isErlangOutlinePageActive() {
-		final IWorkbenchPart part = getActivePart();
-		return part instanceof ContentOutline
-				&& ((ContentOutline) part).getCurrentPage() == myOutlinePage;
-	}
-	*/
+	 * private boolean isErlangOutlinePageActive() { final IWorkbenchPart part =
+	 * getActivePart(); return part instanceof ContentOutline &&
+	 * ((ContentOutline) part).getCurrentPage() == myOutlinePage; }
+	 */
 
 	private IWorkbenchPart getActivePart() {
 		final IWorkbenchWindow window = getSite().getWorkbenchWindow();

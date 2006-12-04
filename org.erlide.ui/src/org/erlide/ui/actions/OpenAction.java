@@ -196,8 +196,8 @@ public class OpenAction extends SelectionDispatchAction {
 			Object element = elements[i];
 			try {
 				element = getElementToOpen(element);
-				final boolean activateOnOpen = fEditor != null ? true : OpenStrategy
-						.activateOnOpen();
+				final boolean activateOnOpen = fEditor != null ? true
+						: OpenStrategy.activateOnOpen();
 				open(element, activateOnOpen);
 			} catch (final ErlModelException e) {
 				ErlangPlugin.log(new Status(IStatus.ERROR,
@@ -274,22 +274,28 @@ public class OpenAction extends SelectionDispatchAction {
 		window = w.getPos();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			final OtpErlangObject res = BackendUtil.checkRpc(b.rpc("erlide_open",
-					"open_info", list, new OtpErlangLong(window)));
+			final OtpErlangObject res = BackendUtil.checkRpc(b
+					.rpc("erlide_open", "open_info", list, new OtpErlangLong(
+							window)));
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
 			final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-			final String external = ((OtpErlangAtom) tres.elementAt(0)).atomValue();
+			final String external = ((OtpErlangAtom) tres.elementAt(0))
+					.atomValue();
 			if (external.equals("external")) {
-				final String mod = ((OtpErlangAtom) mf.elementAt(0)).atomValue();
-				final String fun = ((OtpErlangAtom) mf.elementAt(1)).atomValue();
+				final String mod = ((OtpErlangAtom) mf.elementAt(0))
+						.atomValue();
+				final String fun = ((OtpErlangAtom) mf.elementAt(1))
+						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(2)).intValue();
-				final String path = ((OtpErlangString) mf.elementAt(3)).stringValue();
+				final String path = ((OtpErlangString) mf.elementAt(3))
+						.stringValue();
 				open(mod, fun, arity, path);
 			} else if (external.equals("local")) { // local call
-				final String fun = ((OtpErlangAtom) mf.elementAt(0)).atomValue();
+				final String fun = ((OtpErlangAtom) mf.elementAt(0))
+						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(1)).intValue();
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {
@@ -300,8 +306,8 @@ public class OpenAction extends SelectionDispatchAction {
 					// imports
 					final IErlModule m = ErlModelUtils.getModule(editor
 							.getEditorInput());
-					final IErlImport ei = m
-							.findImport(new ErlangFunction(fun, arity));
+					final IErlImport ei = m.findImport(new ErlangFunction(fun,
+							arity));
 					if (ei == null) {
 						return;
 					}
@@ -310,7 +316,8 @@ public class OpenAction extends SelectionDispatchAction {
 					final OtpErlangObject res2 = BackendUtil.checkRpc(b.rpc(
 							"erlide_open", "get_source_from_module", a));
 					if (res2 instanceof OtpErlangString) {
-						final String path = ((OtpErlangString) res2).stringValue();
+						final String path = ((OtpErlangString) res2)
+								.stringValue();
 						open(mod, fun, arity, path);
 					}
 				}
@@ -318,7 +325,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
 				final ITextSelection sel = (ITextSelection) fEditor
 						.getSelectionProvider().getSelection();
-				final IErlElement e = fEditor.getElementAt(sel.getOffset(), false);
+				final IErlElement e = fEditor.getElementAt(sel.getOffset(),
+						false);
 				final ISourceReference sref = (ISourceReference) e;
 				final OtpErlangString s = new OtpErlangString(sref.getSource());
 				final OtpErlangObject res2 = BackendUtil.checkRpc(b.rpc(

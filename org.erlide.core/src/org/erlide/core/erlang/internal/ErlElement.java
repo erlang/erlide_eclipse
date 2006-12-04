@@ -203,8 +203,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * @param type -
 	 *            one of the constants defined by IErlElement
 	 */
-	public ArrayList<?extends IErlElement> getChildrenOfType(String type) throws ErlModelException {
-		//final IErlElement[] children = getChildren();
+	public ArrayList<? extends IErlElement> getChildrenOfType(String type)
+			throws ErlModelException {
+		// final IErlElement[] children = getChildren();
 		final int size = fChildren.length;
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>(size);
 		for (int i = 0; i < size; ++i) {
@@ -635,58 +636,59 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	}
 
 	protected String pp(OtpErlangObject e) {
-        if (e == null) {
-            return "";
-        }
-        if (e instanceof OtpErlangList) {
-            final OtpErlangList ll = (OtpErlangList) e;
-            String r = "";
-            for (int i = 0; i < ll.arity(); i++) {
-                final OtpErlangObject x = ll.elementAt(i);
-                r = r + pp(x) + ", ";
-            }
-            final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
-            return "(" + rr + ")";
-        } else if (e instanceof OtpErlangTuple) {
-            try {
-                OtpErlangObject p = BackendUtil.checkRpc(BackendManager
-                        .getDefault().getIdeBackend().rpc("erlide_pp", "expr",
-                                e));
-                p = BackendUtil.checkRpc(BackendManager.getDefault()
-                        .getIdeBackend().rpc("lists", "flatten", p));
-                return ((OtpErlangString) p).stringValue();
-            } catch (final BackendException e1) {
-                return "?";
-            }
-        } else {
-            return e.toString();
-        }
-    }
+		if (e == null) {
+			return "";
+		}
+		if (e instanceof OtpErlangList) {
+			final OtpErlangList ll = (OtpErlangList) e;
+			String r = "";
+			for (int i = 0; i < ll.arity(); i++) {
+				final OtpErlangObject x = ll.elementAt(i);
+				r = r + pp(x) + ", ";
+			}
+			final String rr = r.length() > 2 ? r.substring(0, r.length() - 2)
+					: "";
+			return "(" + rr + ")";
+		} else if (e instanceof OtpErlangTuple) {
+			try {
+				OtpErlangObject p = BackendUtil.checkRpc(BackendManager
+						.getDefault().getIdeBackend().rpc("erlide_pp", "expr",
+								e));
+				p = BackendUtil.checkRpc(BackendManager.getDefault()
+						.getIdeBackend().rpc("lists", "flatten", p));
+				return ((OtpErlangString) p).stringValue();
+			} catch (final BackendException e1) {
+				return "?";
+			}
+		} else {
+			return e.toString();
+		}
+	}
 
-    protected String pp_1(OtpErlangList e) {
-        if (e == null) {
-            return "";
-        }
-        String r = "";
-        for (int i = 0; i < e.arity(); i++) {
-            final OtpErlangList x = (OtpErlangList) e.elementAt(i);
-            r = r + pp_2(x) + "; ";
-        }
-        final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
-        return rr;
-    }
+	protected String pp_1(OtpErlangList e) {
+		if (e == null) {
+			return "";
+		}
+		String r = "";
+		for (int i = 0; i < e.arity(); i++) {
+			final OtpErlangList x = (OtpErlangList) e.elementAt(i);
+			r = r + pp_2(x) + "; ";
+		}
+		final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
+		return rr;
+	}
 
-    protected String pp_2(OtpErlangList e) {
-        if (e == null) {
-            return "";
-        }
-        String r = "";
-        for (int i = 0; i < e.arity(); i++) {
-            final OtpErlangObject x = e.elementAt(i);
-            r = r + pp(x) + ", ";
-        }
-        final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
-        return rr;
-    }
+	protected String pp_2(OtpErlangList e) {
+		if (e == null) {
+			return "";
+		}
+		String r = "";
+		for (int i = 0; i < e.arity(); i++) {
+			final OtpErlangObject x = e.elementAt(i);
+			r = r + pp(x) + ", ";
+		}
+		final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
+		return rr;
+	}
 
 }

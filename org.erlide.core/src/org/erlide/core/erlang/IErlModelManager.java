@@ -349,7 +349,7 @@ public interface IErlModelManager extends ISaveParticipant {
 	 */
 	HashSet getOptionNames();
 
-	Map<IErlElement,IErlElement> getElementsOutOfSynchWithBuffers();
+	Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers();
 
 	/**
 	 * @see org.erlide.core.erlang.ErlModelManager#registerErlModelDelta(IErlElementDelta)

@@ -130,8 +130,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
 			throws BackendException, ErlangRpcException {
-		final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-				.getIdeBackend().rpc(fErlModule, fErlFunction,
+		final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager
+				.getDefault().getIdeBackend().rpc(fErlModule, fErlFunction,
 						new OtpErlangString(text),
 						new OtpErlangLong(selection.getOffset())));
 		return r1;

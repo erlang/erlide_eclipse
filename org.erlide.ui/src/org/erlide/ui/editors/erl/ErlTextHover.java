@@ -64,10 +64,11 @@ public class ErlTextHover implements ITextHover,
 		OtpErlangObject r1 = null;
 		try {
 
-			final OtpErlangLong offset = new OtpErlangLong(hoverRegion.getOffset());
+			final OtpErlangLong offset = new OtpErlangLong(hoverRegion
+					.getOffset());
 
-			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin.getDefault()
-					.getStateLocation().toString());
+			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin
+					.getDefault().getStateLocation().toString());
 
 			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
 					.getIdeBackend().rpc(

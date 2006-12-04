@@ -22,8 +22,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- *
- *
+ * 
+ * 
  * @author Vlad Dumitrescu
  */
 public class PatternMatchTest extends TestCase {
@@ -58,7 +58,8 @@ public class PatternMatchTest extends TestCase {
 	 * @param b
 	 * @return
 	 */
-	private HashMap<String, OtpErlangObject> match(OtpErlangObject p, OtpErlangObject t1, HashMap<String, OtpErlangObject> b) {
+	private HashMap<String, OtpErlangObject> match(OtpErlangObject p,
+			OtpErlangObject t1, HashMap<String, OtpErlangObject> b) {
 		// System.out.println("-----------------------");
 		HashMap<String, OtpErlangObject> r;
 		// System.out.println("matching \n " + p.toString() + "\n " +

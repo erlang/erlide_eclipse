@@ -84,7 +84,8 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 
 		/* need to synchronize use of the shared baos */
 		final java.io.ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos);
+		final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(
+				baos);
 
 		oos.writeObject(o);
 		oos.flush();
@@ -100,7 +101,8 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 		try {
 			final java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(
 					buf);
-			final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(bais);
+			final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
+					bais);
 			return ois.readObject();
 		} catch (final java.lang.ClassNotFoundException e) {
 		} catch (final java.io.IOException e) {
