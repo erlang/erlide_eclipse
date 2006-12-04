@@ -46,7 +46,7 @@ prefix_op mult_op add_op list_op comp_op
 rule rule_clauses rule_clause 
 %rule_args rule_guard 
 rule_body
-binary bin_elements bin_element bit_expr
+binary bin_elements bin_element bit_expr 
 opt_bit_size_expr bit_size_expr opt_bit_type_list bit_type_list bit_type.
 
 Terminals
@@ -66,24 +66,20 @@ dot.
 
 Rootsymbol form.
 
-%Left 100 '-'.
-%Unary 200 prefix_op.
-%Unary 300 attribute.
-
 form -> attribute : '$1'.
 form -> function_head : '$1'.
 form -> function_body : '$1'.
-%form -> rule : '$1'.
+form -> rule : '$1'.
 
 attribute -> '-' atom dot : build_attribute('$2', none, span('$1', '$3')).
 attribute -> '-' atom '(' attr_val ')' dot : build_attribute('$2', '$4', span('$1', '$6')).
 
 attr_val -> exprs : '$1'.
 
-function_head -> atom clause_args clause_guard '->' : {clause_head, span('$1', '$3'), element(3, '$1'), '$2', '$3'}.
+function_head -> atom clause_args clause_guard : {clause_head, span('$1', '$3'), element(3, '$1'), '$2', '$3'}.
 
-function_body -> exprs ';' : {clause_body, '$1'}.
-function_body -> exprs dot : {clause_body, '$1'}.
+function_body -> '->' exprs ';' : {clause_body, '$2'}.
+function_body -> '->' exprs dot : {clause_body, '$2'}.
 
 clause_args -> argument_list : element(1, '$1').
 

@@ -13,7 +13,7 @@
 
 %% TODO? use ets to store the parsed content
 
--compile(export_all).
+-export([comments/1, parse/2, get_exported/2, revert/1, t/1]).
 
 %-define(DEBUG, 1).
 
@@ -32,10 +32,10 @@ comments(String) ->
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 function_header_pattern() ->
-    [{ws, "\n"}, atom, {ws}, '('].
+    [{ws, "\n"}, {ws}, atom, {ws}, '('].
 
 attribute_pattern() ->
-    ['-', {ws}, atom].
+    [{ws}, '-', {ws}, atom].
 
 match_token({N, V}, #token{kind=N, value=V}) ->
     true;
@@ -102,8 +102,9 @@ split_dot([H|T], R, V) ->
     split_dot(T, R, [H|V]).
 
 split_attr(L) ->
-    case find_match(attribute_pattern(), L) of
-        no_match ->
+    R = match(attribute_pattern(), L),
+    case R of
+        false ->
             split_fun(L);
         _ ->
             [L]
@@ -130,11 +131,18 @@ split_arrow(L) ->
 split_arrow([], R) ->
     {lists:reverse(R), []};
 split_arrow([#token{kind='->'}=H|T], R) ->
-    {lists:reverse([H|R]), T};
+    {lists:reverse(R), [H|T]};
 split_arrow([H|T], R) ->
     split_arrow(T, [H|R]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+t(F) ->
+    {ok, B} = file:read_file(F),
+    L = binary_to_list(B),
+    {ok, T, _} = erl_scan:string(L, 1),
+    erlide_parse:parse(T).
+    
 
 parse(String, Name) ->
   TN = list_to_atom("_erlide_model_"++Name),
@@ -144,19 +152,20 @@ parse(String, Name) ->
     erlide_scanner:destroy(TN),
 
     Toks1 = filter_comments(Toks),
-    Parts = split(Toks1),
- % io:format("*> ~p~n", [Parts]),
-    Fun = fun([]) ->
-                [];
-             (E) ->
-                case erlide_parse:parse([erlide_scanner:revert_token(X) || X <- E]) of
-                    {ok, X} ->
-                        [X];
-                    Err ->
-                        [Err]
-                end
-              end,
-    Res = lists:flatmap(Fun, Parts),
+     Parts = split(Toks1),
+    %%io:format("*> ~p~n", [Parts]),
+     Fun = fun([]) ->
+                 [];
+              (E) ->
+                     E1 = [erlide_scanner:revert_token(X) || X <- E],
+                 case erlide_parse:parse(E1) of
+                     {ok, X} ->
+                         [X];
+                     Err ->
+                         [Err]
+                 end
+               end,
+     Res = lists:flatmap(Fun, Parts),
   Res1 = join_funs(Res),
     {ok, Res1}.
 
