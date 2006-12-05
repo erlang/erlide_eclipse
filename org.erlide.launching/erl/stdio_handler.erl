@@ -10,24 +10,29 @@
 %% IMPORTANT! only one handle can be installed (previous are silently dropped)
 
 is_traceable(Pid) ->
-    case lists:member(process_info(Pid, registered_name), [erlide_io_server]) of
-        true ->
-            false;
+    case node(Pid)==node() of
         false ->
-    case process_info(Pid, initial_call) of
-        {_, {user, _, _}} ->
-            true;
-        {_, {erlide_reshd, _, _}} ->
-            true;
-        _ ->
-            {_, GL} = process_info(Pid, group_leader),
-            case process_info(GL, initial_call) of
-                {_, {group, _, _}} ->
-                    true;
-                _ ->
-                    false
+            false;
+        true ->
+            case lists:member(process_info(Pid, registered_name), [erlide_io_server]) of
+                true ->
+                    false;
+                false ->
+                    case process_info(Pid, initial_call) of
+                        {_, {user, _, _}} ->
+                            true;
+                        {_, {erlide_reshd, _, _}} ->
+                            true;
+                        _ ->
+                            {_, GL} = process_info(Pid, group_leader),
+                            case process_info(GL, initial_call) of
+                                {_, {group, _, _}} ->
+                                    true;
+                                _ ->
+                                    false
+                            end
+                    end
             end
-    end
     end.
 
 %% we change the second clause of io:request/2 from
