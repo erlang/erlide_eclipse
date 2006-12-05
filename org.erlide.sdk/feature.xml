@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.erlide.sdk"
+      label="Erlide SDK"
+      version="0.3.27.qualifier"
+      provider-name="Erlide project">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.erlide"
+         version="0.3.28.qualifier"/>
+
+   <includes
+         id="org.erlide.source"
+         version="0.3.28.qualifier"/>
+
+</feature>
