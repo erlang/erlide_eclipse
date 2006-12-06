@@ -10,7 +10,7 @@
    <feature url="features/org.erlide_0.3.26.jar" id="org.erlide" version="0.3.26">
       <category name="Stable"/>
    </feature>
-   <feature url="features/org.erlide_0.3.27.200612060947.jar" id="org.erlide" version="0.3.27.200612060947">
+   <feature url="features/org.erlide_0.3.27.200612061405.jar" id="org.erlide" version="0.3.27.200612061405">
       <category name="Snapshot"/>
    </feature>
    <category-def name="Stable" label="Stable builds"/>
