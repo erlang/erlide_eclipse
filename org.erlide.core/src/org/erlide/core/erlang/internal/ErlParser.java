@@ -22,7 +22,9 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -226,14 +228,13 @@ public class ErlParser {
 		// System.out.println("#! " + el.toString());
 		final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
 		if (type.atomValue().equals("error")) {
-			// TODO nicer format
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
 			final String msg = format_error(er);
 
 			final ErlError e = new ErlError(parent, msg);
 			// TODO sometimes the pos looks different than expected
-			// setPos(e, er.elementAt(0));
+			setPos(e, er.elementAt(0));
 			e.setParseTree(el);
 			return e;
 		} else if (type.atomValue().equals("tree")) {
@@ -385,23 +386,20 @@ public class ErlParser {
 
 	private String format_error(OtpErlangObject object) {
 		final OtpErlangTuple err = (OtpErlangTuple) object;
-		// OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
-		// OtpErlangObject arg = err.elementAt(2);
+		OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
+		OtpErlangObject arg = err.elementAt(2);
 
 		String res;
-		// try
-		// {
-		// OtpErlangObject r = AbstractBackend.getDefault().rpc(mod.atomValue(),
-		// "format_error",
-		// arg);
-		// r = AbstractBackend.getDefault().rpc("lists", "flatten", r);
-		// //res = ((OtpErlangString) r).stringValue();
-		// res = r.toString();
-		// } catch (ErlangRpcException e)
-		// {
-		// e.printStackTrace();
-		res = err.toString();
-		// }
+		try {
+			RpcResult r = BackendManager.getDefault().getIdeBackend().rpc(
+					mod.atomValue(), "format_error", arg);
+			 r = BackendManager.getDefault().getIdeBackend().rpc(
+					"lists", "flatten", r.getValue());
+			res = ((OtpErlangString) r.getValue()).stringValue();
+		} catch (ErlangRpcException e) {
+			e.printStackTrace();
+			res = err.toString();
+		}
 		return res;
 	}
 
