@@ -86,9 +86,6 @@ find_match(P, [H|T]=L, Before) ->
 split(L) ->
     L1 = split_dot(L),
     L2 = lists:flatmap(fun split_funcs/1, L1),
-
-    io:format("~p~n", [ [lists:flatten(X) || X<-L2]]),
-
     [lists:flatten(X) || X<-L2].
 
 
@@ -145,7 +142,8 @@ parse(String, Name) ->
     Toks = erlide_scanner:getTokens(TN),
     erlide_scanner:destroy(TN),
 
-    Parts = split(Toks),
+    Toks1 = filter_comments(Toks),
+    Parts = split(Toks1),
     Fun = fun([]) ->
 		  [];
 	     (E) ->
@@ -160,6 +158,12 @@ parse(String, Name) ->
     Res = lists:flatmap(Fun, Parts),
     Res1 = join_funs(Res),
     {ok, Res1}.
+
+filter_comments(L) ->
+    Fun = fun(#token{kind=comment}) -> false;
+             (_) -> true
+          end,
+    lists:filter(Fun, L).
 
 revert(L) when is_list(L) ->
     [revert(X) || X <-L];
