@@ -13,9 +13,14 @@
 
 %% TODO? use ets to store the parsed content
 
--export([comments/1, parse/2, get_exported/2, revert/1, t/1]).
+-export([
+	 comments/1, 
+	 parse/2, 
+	 get_exported/2, 
+	 revert/1
+	]).
 
-%-define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("../include/erlide.hrl").
 -include("../include/erlide_scanner.hrl").
@@ -31,11 +36,8 @@ comments(String) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-function_header_pattern() ->
-    [{ws, "\n"}, {ws}, atom, {ws}, '('].
-
-attribute_pattern() ->
-    [{ws}, '-', {ws}, atom].
+function_header_pattern_1(FN) ->
+    [';', {atom, FN}, '(']. 
 
 match_token({N, V}, #token{kind=N, value=V}) ->
     true;
@@ -48,7 +50,7 @@ match_token(_, _) ->
 
 match(P, L) ->
     match(P, L, []).
- 
+
 match([], L, Res) ->
     {lists:reverse(Res), L};
 match(_, [], _Res) ->
@@ -83,12 +85,12 @@ find_match(P, [H|T]=L, Before) ->
 
 split(L) ->
     L1 = split_dot(L),
-    L2 = lists:flatmap(fun split_attr/1, L1),
-    
+    L2 = lists:flatmap(fun split_funcs/1, L1),
+
     io:format("~p~n", [ [lists:flatten(X) || X<-L2]]),
-    
-    [erlide_scanner:filter_ws(lists:flatten(X)) || X<-L2].
-    
+
+    [lists:flatten(X) || X<-L2].
+
 
 split_dot(L) ->
     split_dot(L, [], []).
@@ -104,28 +106,24 @@ split_dot([#token{kind=dot}=H|T], R, V) ->
 split_dot([H|T], R, V) ->
     split_dot(T, R, [H|V]).
 
-split_attr(L) ->
-    R = match(attribute_pattern(), L),
-    case R of
-        false ->
-            split_fun(L);
-        _ ->
-            [L]
-    end.
+split_funcs([#token{kind='-'}|_]=L) ->
+    [L];
+split_funcs([#token{kind=atom, value=FN}|_]=L) ->
+    {Rest1, Rest2} = split_arrow(L),
+    split_fun(FN, Rest2, [Rest1]);
+split_funcs(L) ->
+    [{error, unexpected_token, hd(L)}].
 
 
-split_fun(L) ->
-    split_fun(L, []).
-
-split_fun([], R) ->
+split_fun(_FN, [], R) ->
     [lists:reverse(R)];
-split_fun(L, R) ->
-    case find_match(function_header_pattern(), L) of
+split_fun(FN, L, R) ->
+    case find_match(function_header_pattern_1(FN), L) of
         no_match ->
             lists:reverse([L|R]);
-        {Pre, Hdr, Rest} ->
+        {Pre, Hdr, Rest} -> 
             {Rest1, Rest2} = split_arrow(Rest),
-            split_fun(Rest2, [Hdr++Rest1, Pre|R])
+            split_fun(FN, Rest2, [tl(Hdr)++Rest1, Pre++[hd(Hdr)]|R])
     end.
 
 split_arrow(L) ->
@@ -140,42 +138,28 @@ split_arrow([H|T], R) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-t(F) ->
-    {ok, B} = file:read_file(F),
-    L = binary_to_list(B),
-    {ok, T, _} = erl_scan:string(L, 1),
-    erlide_parse:parse(T).
-    
-
 parse(String, Name) ->
     TN = list_to_atom("_erlide_model_"++Name),
     erlide_scanner:create(TN),
     erlide_scanner:insertText(TN,1,String),
-    Toks = erlide_scanner:getWsTokens(TN),
+    Toks = erlide_scanner:getTokens(TN),
     erlide_scanner:destroy(TN),
-    
-    Toks1 = filter_comments(Toks),
-    Parts = split(Toks1),
-    Fun = fun([]) ->
-        [];
-    (E) ->
-            E1 = [erlide_scanner:revert_token(X) || X <- E],
-            case erlide_parse:parse(E1) of
-                {ok, X} ->
-                    [X];
-                Err ->
-                    [Err]
-            end
-          end,
-          Res = lists:flatmap(Fun, Parts),
-          Res1 = join_funs(Res),
-          {ok, Res1}.
 
-filter_comments(L) ->
-    Fun = fun(#token{kind=comment}) -> false;
-             (_) -> true
+    Parts = split(Toks),
+    Fun = fun([]) ->
+		  [];
+	     (E) ->
+		  E1 = [erlide_scanner:revert_token(X) || X <- E],
+		  case erlide_parse:parse(E1) of
+		      {ok, X} ->
+			  [X];
+		      Err ->
+			  [Err]
+		  end
           end,
-    lists:filter(Fun, L).
+    Res = lists:flatmap(Fun, Parts),
+    Res1 = join_funs(Res),
+    {ok, Res1}.
 
 revert(L) when is_list(L) ->
     [revert(X) || X <-L];
@@ -198,7 +182,7 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
         Val ->
             Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
             lists:filter(Fun, Val)
-         end.
+    end.
 
 join_funs(L) ->
     L1 = join_clauses(L ,[]),
@@ -218,20 +202,20 @@ join_funs([], R, []) ->
 join_funs([], R, V) ->
     lists:reverse([build_fun(V)|R]);
 join_funs([{clause, _, _, _, _, _}=C|T], R, []) ->
-     join_funs(T, R, [C]);
+    join_funs(T, R, [C]);
 join_funs([{clause, _, N, A1, _, _}=C|T], R, [{clause, _, N, A2, _, _}|_]=V) ->
-     case length(A1) == length(A2) of
-    true ->
-       join_funs(T, R, [C|V]);
-      false ->
-         join_funs(T, [build_fun(V)|R], [C])
-  end;
+    case length(A1) == length(A2) of
+	true ->
+	    join_funs(T, R, [C|V]);
+	false ->
+	    join_funs(T, [build_fun(V)|R], [C])
+    end;
 join_funs([{clause, _, _, _, _, _}=C|T], R, [{clause, _, _, _, _, _}|_]=V) ->
-     join_funs(T, [build_fun(V)|R], [C]);
+    join_funs(T, [build_fun(V)|R], [C]);
 join_funs([H|T], R, []) ->
-     join_funs(T, [H|R], []);
+    join_funs(T, [H|R], []);
 join_funs([H|T], R, V) ->
-     join_funs(T, [H, build_fun(V)|R], []).
+    join_funs(T, [H, build_fun(V)|R], []).
 
 build_fun(L) ->
     L1 = lists:reverse(L),
