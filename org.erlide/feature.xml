@@ -4,7 +4,6 @@
       label="Erlang IDE"
       version="0.3.29.qualifier"
       provider-name="Erlide project"
-      plugin="org.erlide.core"
       image="erlang120.gif">
    <install-handler/>
 
@@ -223,7 +222,7 @@ litigation.
    </license>
 
    <url>
-      <update label="Erlide main update site" url="http://erlide.sourceforge.net/update32/"/>
+      <update label="Erlide main update site" url="http://erlide.sourceforge.net/update/"/>
    </url>
 
    <requires>
