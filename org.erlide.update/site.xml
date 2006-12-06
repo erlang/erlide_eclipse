@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site
       mirrorsURL="mirrors.xml">
-   <description url="http://erlide.sourceforge.net/update32/site.xml">
+   <description url="http://erlide.sourceforge.net/update/site.xml">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2.
    </description>
-   <feature url="features/org.erlide_0.3.25.jar" id="org.erlide" version="0.3.25">
-      <category name="Stable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.26.jar" id="org.erlide" version="0.3.26">
-      <category name="Stable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.27.qualifier.jar" id="org.erlide" version="0.3.27.qualifier">
+   <feature url="features/org.erlide_0.3.29.200612062133.jar" id="org.erlide" version="0.3.29.200612062133">
       <category name="Snapshot"/>
    </feature>
-   <category-def name="Stable" label="Stable builds"/>
    <category-def name="Snapshot" label="Snapshot builds (possibly unstable)"/>
 </site>
