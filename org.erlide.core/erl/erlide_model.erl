@@ -48,7 +48,7 @@ match_token(_, _) ->
 
 match(P, L) ->
     match(P, L, []).
-
+ 
 match([], L, Res) ->
     {lists:reverse(Res), L};
 match(_, [], _Res) ->
@@ -84,8 +84,11 @@ find_match(P, [H|T]=L, Before) ->
 split(L) ->
     L1 = split_dot(L),
     L2 = lists:flatmap(fun split_attr/1, L1),
-    L3 = [erlide_scanner:filter_ws(lists:flatten(X)) || X<-L2],
-    L3.
+    
+    io:format("~p~n", [ [lists:flatten(X) || X<-L2]]),
+    
+    [erlide_scanner:filter_ws(lists:flatten(X)) || X<-L2].
+    
 
 split_dot(L) ->
     split_dot(L, [], []).
@@ -145,29 +148,28 @@ t(F) ->
     
 
 parse(String, Name) ->
-  TN = list_to_atom("_erlide_model_"++Name),
+    TN = list_to_atom("_erlide_model_"++Name),
     erlide_scanner:create(TN),
     erlide_scanner:insertText(TN,1,String),
     Toks = erlide_scanner:getWsTokens(TN),
     erlide_scanner:destroy(TN),
-
+    
     Toks1 = filter_comments(Toks),
-     Parts = split(Toks1),
-    %%io:format("*> ~p~n", [Parts]),
-     Fun = fun([]) ->
-                 [];
-              (E) ->
-                     E1 = [erlide_scanner:revert_token(X) || X <- E],
-                 case erlide_parse:parse(E1) of
-                     {ok, X} ->
-                         [X];
-                     Err ->
-                         [Err]
-                 end
-               end,
-     Res = lists:flatmap(Fun, Parts),
-  Res1 = join_funs(Res),
-    {ok, Res1}.
+    Parts = split(Toks1),
+    Fun = fun([]) ->
+        [];
+    (E) ->
+            E1 = [erlide_scanner:revert_token(X) || X <- E],
+            case erlide_parse:parse(E1) of
+                {ok, X} ->
+                    [X];
+                Err ->
+                    [Err]
+            end
+          end,
+          Res = lists:flatmap(Fun, Parts),
+          Res1 = join_funs(Res),
+          {ok, Res1}.
 
 filter_comments(L) ->
     Fun = fun(#token{kind=comment}) -> false;
