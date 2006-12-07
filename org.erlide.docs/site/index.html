@@ -39,13 +39,14 @@ development environment that will boost programmer efficiency even more.</p>
 <div class="clear"></div>
 
 <h3 class="headerstyle">Overview</h3>
-<p>The latest version is <strong>0.3.25</strong> and offers the
+<p>The latest version is <strong>0.3.28</strong> and offers the
 following features:</p>
 <ul>
-  <li>works with <b>Eclipse 3.2 and <img src="img/new.gif" /> Java 1.5 only</b>. There is also a version targeting Eclipse 3.1.2, equivalent to 0.3.20,
-  which will probably not be maintained.</li>
-  <li>editor with syntax highlighting <img src="img/new.gif" /> even for macros and records</li>
-  <li>Erlang console with history</li>
+  <li>works with <b>Eclipse 3.2 and <img src="img/new2.gif" /> Java 1.5 only</b>. The older versions targeting Eclipse 3.1 and Java 1.4 are no longer available (but from the CVS).</li>
+  <li>editor with syntax highlighting <img src="img/new2.gif" /> even for macros and records</li>
+  <li><img src="img/new.gif" /> Erlang console with history, where output can be highlighted
+  according to which process wrote the respective text. May help those who (like me) use 
+  <code>io:format/2</code> as a debugging tool.</li>
   <li>background builder</li>
   <li>compilation errors and warnings displayed in the "Problems" view</li>
   <li>LiveExpressions: auto-evaluating expressions (don't try to put an <code>init:stop()</code>
@@ -54,16 +55,16 @@ following features:</p>
   element in the editor.</li>
   <li>matching of brackets; double-clicking on one selects all content
   between the brackets</li>
-  <li><img src="img/new2.gif" />a simple form of code completion: typing
+  <li>code completion: typing
   a module name and colon brings up a list of functions from the module.
   Pressing "enter" in the list fills the function name in the code.</li>
-  <li><img src="img/new2.gif" />code folding in the editor.</li>
-  <li><img src="img/new.gif" />documentation popup for the OTP libraries
+  <li>code folding in the editor.</li>
+  <li><img src="img/new2.gif" /> documentation popup for the OTP libraries
   [<b>*</b>]. Just hover the mouse over some "module:function" in the
   editor.</li>
-  <li><img src="img/new.gif" />better auto-indentation (but a little
+  <li><img src="img/new2.gif" /> better auto-indentation (but a little
   unstable as yet)</li>
-  <li><img src="img/new.gif" /> go to definition of local and remote functions</li>
+  <li><img src="img/new2.gif" /> go to definition of local and remote functions</li>
   <li>soon to come: even more really cool features (see the Java tools
   for a reference)</li>
 </ul>
@@ -88,10 +89,8 @@ Linux.</p>
 follow the instructions.</p>
 <p>Then in Eclipse, choose <code>Help->Software Updates->Find and
 install...->New features</code> and create a new remote update site,
-pointing it at <a href="http://erlide.sourceforge.net/update32">http://erlide.sourceforge.net/update32</a>
-. (Use <a href="http://erlide.sourceforge.net/update">http://erlide.sourceforge.net/update</a>
- for the Eclipse 3.1.2 version)
-Follow then the normal installation procedures.</p>
+pointing it at <a href="http://erlide.sourceforge.net/update">http://erlide.sourceforge.net/update</a>
+. Follow then the normal installation procedures.</p>
 <p>When restarting Eclipse, you will have to configure the plugin by
 pointing to the place you installed Erlang, and that should be all: now
 you can explore and send bug reports!</p>
