@@ -384,7 +384,7 @@ rule_clause -> atom clause_args clause_guard rule_body :
 
 rule_body -> ':-' lc_exprs: '$2'.
 
-%Expect 2.
+Expect 2. %% conflicts inherited from the original erl_parse
 
 Erlang code.
 
