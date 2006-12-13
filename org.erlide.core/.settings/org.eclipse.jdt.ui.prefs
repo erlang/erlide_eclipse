@@ -1,4 +1,10 @@
-#Wed Jun 14 22:43:45 CEST 2006
+#Wed Dec 13 19:07:26 CET 2006
 eclipse.preferences.version=1
 formatter_profile=org.eclipse.jdt.ui.default.eclipse_profile
 formatter_settings_version=10
+internal.default.compliance=default
+org.eclipse.jdt.ui.exception.name=e
+org.eclipse.jdt.ui.gettersetter.use.is=true
+org.eclipse.jdt.ui.javadoc=false
+org.eclipse.jdt.ui.keywordthis=true
+org.eclipse.jdt.ui.overrideannotation=true
