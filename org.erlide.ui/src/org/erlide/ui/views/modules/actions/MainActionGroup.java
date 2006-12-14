@@ -101,8 +101,7 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 		}
 		final IResourceDelta[] projDeltas = delta
 				.getAffectedChildren(IResourceDelta.CHANGED);
-		for (int i = 0; i < projDeltas.length; ++i) {
-			final IResourceDelta projDelta = projDeltas[i];
+		for (final IResourceDelta projDelta : projDeltas) {
 			if ((projDelta.getFlags() & IResourceDelta.OPEN) != 0) {
 				if (sel.contains(projDelta.getResource())) {
 					getNavigator().getSite().getShell().getDisplay().syncExec(

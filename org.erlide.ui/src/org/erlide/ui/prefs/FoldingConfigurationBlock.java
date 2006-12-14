@@ -2,7 +2,6 @@ package org.erlide.ui.prefs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -114,8 +113,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		final ErlangFoldingStructureProviderDescriptor[] descs = reg
 				.getFoldingProviderDescriptors();
 		final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
-		for (int i = 0; i < descs.length; i++) {
-			map.put(descs[i].getId(), descs[i]);
+		for (ErlangFoldingStructureProviderDescriptor element : descs) {
+			map.put(element.getId(), element);
 		}
 		return map;
 	}
@@ -310,8 +309,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 					ErlideUIPlugin.PLUGIN_ID, IStatus.OK, message, null));
 			prefs = new ErrorPreferences(message);
 		} else {
-			prefs = (IErlangFoldingPreferenceBlock) fProviderPreferences
-					.get(id);
+			prefs = fProviderPreferences.get(id);
 			if (prefs == null) {
 				try {
 					prefs = desc.createPreferences();
@@ -323,7 +321,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			}
 		}
 
-		Control control = (Control) fProviderControls.get(id);
+		Control control = fProviderControls.get(id);
 		if (control == null) {
 			control = prefs.createControl(fGroup);
 			if (control == null) {
@@ -347,29 +345,23 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 	}
 
 	public void performOk() {
-		for (final Iterator it = fProviderPreferences.values().iterator(); it
-				.hasNext();) {
-			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) it
-					.next();
+		for (Object element : fProviderPreferences.values()) {
+			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.performOk();
 		}
 	}
 
 	public void performDefaults() {
 		restoreFromPreferences();
-		for (final Iterator it = fProviderPreferences.values().iterator(); it
-				.hasNext();) {
-			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) it
-					.next();
+		for (Object element : fProviderPreferences.values()) {
+			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.performDefaults();
 		}
 	}
 
 	public void dispose() {
-		for (final Iterator it = fProviderPreferences.values().iterator(); it
-				.hasNext();) {
-			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) it
-					.next();
+		for (Object element : fProviderPreferences.values()) {
+			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.dispose();
 		}
 	}

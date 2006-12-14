@@ -63,8 +63,9 @@ public class ConsoleInputDialog extends Dialog {
 		shell.layout();
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch())
+			if (!display.readAndDispatch()) {
 				display.sleep();
+			}
 		}
 		return result;
 	}

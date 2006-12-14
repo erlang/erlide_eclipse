@@ -56,9 +56,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 
 		final StringBuffer buff = new StringBuffer();
 
-		for (final Iterator<Object[]> iter = functions.iterator(); iter
-				.hasNext();) {
-			final Object[] element = iter.next();
+		for (Object[] element : functions) {
 			arg_var.setArity(((Integer) element[1]).intValue());
 			name_var.setFunctionName((String) element[0]);
 

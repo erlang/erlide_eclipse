@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ErtsInstall {
@@ -100,8 +99,8 @@ public class ErtsInstall {
 
 	public static String encodeList(List<String> l) {
 		final StringBuffer r = new StringBuffer();
-		for (final Iterator i = l.iterator(); i.hasNext();) {
-			r.append(i.next());
+		for (Object element : l) {
+			r.append(element);
 			r.append((char) 0);
 		}
 		return r.toString();

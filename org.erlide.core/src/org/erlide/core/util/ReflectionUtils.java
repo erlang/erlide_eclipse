@@ -33,12 +33,10 @@ public class ReflectionUtils {
 		/*
 		 * final Constructor[] constructors = clazz.getConstructors(); for (int
 		 * i = 0; i < constructors.length; i++) { final Constructor constructor =
-		 * constructors[i];
-		 *  } final Field[] fields = clazz.getFields(); for (int i = 0; i <
-		 * fields.length; i++) { final Field field = fields[i];
-		 *  } final Method[] methods = clazz.getMethods(); for (int i = 0; i <
-		 * methods.length; i++) { final Method method = methods[i];
-		 *  }
+		 * constructors[i]; } final Field[] fields = clazz.getFields(); for (int
+		 * i = 0; i < fields.length; i++) { final Field field = fields[i]; }
+		 * final Method[] methods = clazz.getMethods(); for (int i = 0; i <
+		 * methods.length; i++) { final Method method = methods[i]; }
 		 */
 	}
 

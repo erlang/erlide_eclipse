@@ -214,9 +214,8 @@ public class EdocView extends AbstractInfoView {
 			final SelectionChangedEvent event = new SelectionChangedEvent(this,
 					selection);
 			final Object[] selectionChangedListeners = fListeners.toArray();
-			for (int i = 0; i < selectionChangedListeners.length; i++) {
-				((ISelectionChangedListener) selectionChangedListeners[i])
-						.selectionChanged(event);
+			for (Object element : selectionChangedListeners) {
+				((ISelectionChangedListener) element).selectionChanged(event);
 			}
 		}
 

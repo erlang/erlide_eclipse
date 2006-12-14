@@ -29,8 +29,8 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 		super(parent, "import");
 		fImportModule = importModule;
 		fFunctions = new ArrayList<ErlangFunction>(imports.length);
-		for (int i = 0; i < imports.length; ++i) {
-			fFunctions.add(imports[i]);
+		for (ErlangFunction element : imports) {
+			fFunctions.add(element);
 		}
 	}
 
@@ -64,8 +64,7 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 	}
 
 	public ErlangFunction[] getFunctions() {
-		return (ErlangFunction[]) fFunctions
-				.toArray(new ErlangFunction[fFunctions.size()]);
+		return fFunctions.toArray(new ErlangFunction[fFunctions.size()]);
 	}
 
 	@Override

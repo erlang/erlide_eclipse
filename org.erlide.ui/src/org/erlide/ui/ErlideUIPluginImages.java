@@ -14,7 +14,6 @@ package org.erlide.ui;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -149,7 +148,7 @@ public class ErlideUIPluginImages {
 	 */
 	public static ImageDescriptor getDescriptor(String key) {
 		if (fgImageRegistry == null) {
-			return (ImageDescriptor) fgAvoidSWTErrorMap.get(key);
+			return fgAvoidSWTErrorMap.get(key);
 		}
 		return getImageRegistry().getDescriptor(key);
 	}
@@ -186,11 +185,9 @@ public class ErlideUIPluginImages {
 	/* package */static ImageRegistry getImageRegistry() {
 		if (fgImageRegistry == null) {
 			fgImageRegistry = new ImageRegistry();
-			for (final Iterator iter = fgAvoidSWTErrorMap.keySet().iterator(); iter
-					.hasNext();) {
-				final String key = (String) iter.next();
-				fgImageRegistry.put(key, (ImageDescriptor) fgAvoidSWTErrorMap
-						.get(key));
+			for (Object element : fgAvoidSWTErrorMap.keySet()) {
+				final String key = (String) element;
+				fgImageRegistry.put(key, fgAvoidSWTErrorMap.get(key));
 			}
 			fgAvoidSWTErrorMap = null;
 		}

@@ -13,7 +13,6 @@ package org.erlide.erlc.internal.ui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -107,8 +106,8 @@ public class MultipleInputDialog extends Dialog {
 		panel.setLayout(layout);
 		panel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		for (final Iterator i = fieldList.iterator(); i.hasNext();) {
-			final FieldSummary field = (FieldSummary) i.next();
+		for (Object element : fieldList) {
+			final FieldSummary field = (FieldSummary) element;
 			switch (field.type) {
 			case TEXT:
 				createTextField(field.name, field.initialValue,
@@ -318,8 +317,8 @@ public class MultipleInputDialog extends Dialog {
 	 */
 	@Override
 	protected void okPressed() {
-		for (final Iterator i = controlList.iterator(); i.hasNext();) {
-			final Control control = (Control) i.next();
+		for (Object element : controlList) {
+			final Control control = (Control) element;
 			if (control instanceof Text) {
 				valueMap.put((String) control.getData(FIELD_NAME),
 						((Text) control).getText());
@@ -349,8 +348,8 @@ public class MultipleInputDialog extends Dialog {
 	}
 
 	public void validateFields() {
-		for (final Iterator i = validators.iterator(); i.hasNext();) {
-			final Validator validator = (Validator) i.next();
+		for (Object element : validators) {
+			final Validator validator = (Validator) element;
 			if (!validator.validate()) {
 				getButton(IDialogConstants.OK_ID).setEnabled(false);
 				return;

@@ -11,7 +11,6 @@
 package org.erlide.basicui.util;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.Assert;
@@ -82,9 +81,8 @@ public class ImageDescriptorRegistry {
 	 * Disposes all images managed by this registry.
 	 */
 	public void dispose() {
-		for (final Iterator iter = fRegistry.values().iterator(); iter
-				.hasNext();) {
-			final Image image = (Image) iter.next();
+		for (Object element : fRegistry.values()) {
+			final Image image = (Image) element;
 			image.dispose();
 		}
 		fRegistry.clear();

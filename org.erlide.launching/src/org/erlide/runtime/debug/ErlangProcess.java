@@ -53,8 +53,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public String getRegisteredName() {
 		OtpErlangObject res = getProcessInfo(fBackend, fPid, "registered_name");
-		if (res != null)
+		if (res != null) {
 			return res.toString();
+		}
 		return null;
 	}
 
@@ -128,8 +129,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public String getStatus() {
 		OtpErlangAtom res = (OtpErlangAtom) getProcessInfo(fBackend, fPid,
 				"status");
-		if (res != null)
+		if (res != null) {
 			return res.atomValue();
+		}
 		return STATUS_TERMINATED;
 	}
 

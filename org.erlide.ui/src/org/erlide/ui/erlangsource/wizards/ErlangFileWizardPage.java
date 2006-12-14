@@ -171,8 +171,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 				| SWT.READ_ONLY);
 		skeleton.add("None");
 
-		for (int i = 0; i < behaviours.length; i++) {
-			skeleton.add(behaviours[i].getName());
+		for (Template element : behaviours) {
+			skeleton.add(element.getName());
 		}
 		skeleton.select(0);
 

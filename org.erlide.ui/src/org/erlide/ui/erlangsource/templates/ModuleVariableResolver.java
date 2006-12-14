@@ -11,7 +11,6 @@
 package org.erlide.ui.erlangsource.templates;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
@@ -57,9 +56,8 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 	 *            The module to set.
 	 */
 	public void setModule(String module) {
-		for (final Iterator iter = fInstances.iterator(); iter.hasNext();) {
-			final ModuleVariableResolver element = (ModuleVariableResolver) iter
-					.next();
+		for (Object element0 : fInstances) {
+			final ModuleVariableResolver element = (ModuleVariableResolver) element0;
 			element.doSetModule(module);
 		}
 		this.fModule = module;

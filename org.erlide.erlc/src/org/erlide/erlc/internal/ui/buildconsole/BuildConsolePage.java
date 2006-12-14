@@ -220,14 +220,11 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 *            menu
 	 */
 	protected void contextMenuAboutToShow(IMenuManager menu) {
-		menu.add((IAction) fGlobalActions.get(ActionFactory.COPY.getId()));
-		menu
-				.add((IAction) fGlobalActions.get(ActionFactory.SELECT_ALL
-						.getId()));
+		menu.add(fGlobalActions.get(ActionFactory.COPY.getId()));
+		menu.add(fGlobalActions.get(ActionFactory.SELECT_ALL.getId()));
 		menu.add(new Separator("FIND")); //$NON-NLS-1$
-		menu.add((IAction) fGlobalActions.get(ActionFactory.FIND.getId()));
-		menu.add((IAction) fGlobalActions
-				.get(ITextEditorActionConstants.GOTO_LINE));
+		menu.add(fGlobalActions.get(ActionFactory.FIND.getId()));
+		menu.add(fGlobalActions.get(ITextEditorActionConstants.GOTO_LINE));
 		menu.add(fClearOutputAction);
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
@@ -319,7 +316,7 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	}
 
 	protected void updateAction(String actionId) {
-		final IAction action = (IAction) fGlobalActions.get(actionId);
+		final IAction action = fGlobalActions.get(actionId);
 		if (action instanceof IUpdate) {
 			((IUpdate) action).update();
 		}

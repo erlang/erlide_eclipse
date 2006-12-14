@@ -94,9 +94,9 @@ public class ErlToken {
 			{
 				final OtpErlangObject[] ems = ((OtpErlangList) ee).elements();
 				final StringBuffer buf = new StringBuffer(ems.length);
-				for (int i = 0; i < ems.length; i++) {
+				for (OtpErlangObject element : ems) {
 					try {
-						buf.append(((OtpErlangLong) ems[i]).intValue());
+						buf.append(((OtpErlangLong) element).intValue());
 					} catch (final OtpErlangRangeException e1) {
 						e1.printStackTrace();
 					}

@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.Dialog;
@@ -99,13 +98,10 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 		fColorManager = new ColorManager();
 
-		for (int i = 0, n = fSyntaxColorListModel.length; i < n; i++) {
-			fListModel.add(new HighlightingColorListItem(
-					fSyntaxColorListModel[i][0], fSyntaxColorListModel[i][1],
-					fSyntaxColorListModel[i][1] + BOLD,
-					fSyntaxColorListModel[i][1] + ITALIC,
-					fSyntaxColorListModel[i][1] + STRIKETHROUGH,
-					fSyntaxColorListModel[i][1] + UNDERLINE));
+		for (String[] element : fSyntaxColorListModel) {
+			fListModel.add(new HighlightingColorListItem(element[0],
+					element[1], element[1] + BOLD, element[1] + ITALIC,
+					element[1] + STRIKETHROUGH, element[1] + UNDERLINE));
 		}
 
 		// store.addKeys(createOverlayStoreKeys());
@@ -627,9 +623,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
 		gd.heightHint = convertHeightInCharsToPixels(9);
 		int maxWidth = 0;
-		for (final Iterator it = fListModel.iterator(); it.hasNext();) {
-			final HighlightingColorListItem item = (HighlightingColorListItem) it
-					.next();
+		for (Object element : fListModel) {
+			final HighlightingColorListItem item = (HighlightingColorListItem) element;
 			maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
 					.getDisplayName().length()));
 		}

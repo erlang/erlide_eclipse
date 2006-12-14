@@ -57,7 +57,7 @@ public class Region implements IRegion {
 		final ArrayList parents = getAncestors(element);
 
 		for (int i = 0; i < size; i++) {
-			final IErlElement aTop = (IErlElement) fRootElements.get(i);
+			final IErlElement aTop = fRootElements.get(i);
 			if (aTop.equals(element)) {
 				return true;
 			}
@@ -94,7 +94,7 @@ public class Region implements IRegion {
 		final int size = fRootElements.size();
 		final IErlElement[] roots = new IErlElement[size];
 		for (int i = 0; i < size; i++) {
-			roots[i] = (IErlElement) fRootElements.get(i);
+			roots[i] = fRootElements.get(i);
 		}
 
 		return roots;
@@ -120,8 +120,7 @@ public class Region implements IRegion {
 		if (element instanceof IParent) {
 			final ArrayList<IErlElement> newRootElements = new ArrayList<IErlElement>();
 			for (int i = 0, size = fRootElements.size(); i < size; i++) {
-				final IErlElement currentRoot = (IErlElement) fRootElements
-						.get(i);
+				final IErlElement currentRoot = fRootElements.get(i);
 				// walk the current root hierarchy
 				IErlElement parent = currentRoot.getParent();
 				boolean isChild = false;

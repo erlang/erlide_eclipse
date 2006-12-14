@@ -389,8 +389,9 @@ public class LiveExpressionsView extends ViewPart implements
 
 	@Override
 	public void saveState(IMemento aMemento) {
-		if (exprs.isEmpty())
+		if (exprs.isEmpty()) {
 			return;
+		}
 		aMemento = aMemento.createChild("LiveExpressions");
 		Iterator<LiveExpr> iter = exprs.iterator();
 		while (iter.hasNext()) {
@@ -400,14 +401,15 @@ public class LiveExpressionsView extends ViewPart implements
 	}
 
 	private boolean restoreState() {
-		if (memento != null)
+		if (memento != null) {
 			memento = memento.getChild("LiveExpressions");
+		}
 		if (memento != null) {
 			IMemento expressions[] = memento.getChildren("expression");
 			if (expressions.length > 0) {
 				exprs = new ArrayList<LiveExpr>(expressions.length);
-				for (int nX = 0; nX < expressions.length; nX++) {
-					exprs.add(new LiveExpr(expressions[nX].getTextData()));
+				for (IMemento element : expressions) {
+					exprs.add(new LiveExpr(element.getTextData()));
 				}
 			}
 			return true;

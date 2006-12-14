@@ -117,8 +117,7 @@ public class BalloonWindow {
 					if (selectionControls.get(i) == w) {
 						if ((style & SWT.CLOSE) != 0) {
 							for (int j = selectionListeners.size() - 1; j >= 0; j--) {
-								((Listener) selectionListeners.get(j))
-										.handleEvent(event);
+								(selectionListeners.get(j)).handleEvent(event);
 							}
 						} else {
 							shell.close();

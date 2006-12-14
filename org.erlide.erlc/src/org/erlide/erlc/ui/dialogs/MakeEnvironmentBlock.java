@@ -200,8 +200,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 				final String[] varNames = new String[m.size()];
 				m.keySet().toArray(varNames);
 				for (int i = 0; i < m.size(); i++) {
-					elements[i] = new EnvironmentVariable(varNames[i],
-							(String) m.get(varNames[i]));
+					elements[i] = new EnvironmentVariable(varNames[i], m
+							.get(varNames[i]));
 				}
 			}
 			return elements;
@@ -331,8 +331,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 				TableItem[] items = environmentTable.getTable().getItems();
 				Map<String, String> map = new HashMap<String, String>(
 						items.length);
-				for (int i = 0; i < items.length; i++) {
-					EnvironmentVariable var = (EnvironmentVariable) items[i]
+				for (TableItem element : items) {
+					EnvironmentVariable var = (EnvironmentVariable) element
 							.getData();
 					map.put(var.getName(), var.getValue());
 				}
@@ -610,8 +610,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	protected boolean addVariable(EnvironmentVariable variable) {
 		final String name = variable.getName();
 		final TableItem[] items = environmentTable.getTable().getItems();
-		for (int i = 0; i < items.length; i++) {
-			final EnvironmentVariable existingVariable = (EnvironmentVariable) items[i]
+		for (TableItem element : items) {
+			final EnvironmentVariable existingVariable = (EnvironmentVariable) element
 					.getData();
 			if (existingVariable.getName().equals(name)) {
 				boolean overWrite = MessageDialog
@@ -642,8 +642,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	private Map<Object, Object> getNativeEnvironment() {
 		final Map<Object, Object> stringVars = EnvironmentReader.getEnvVars();
 		final HashMap<Object, Object> vars = new HashMap<Object, Object>();
-		for (final Iterator i = stringVars.keySet().iterator(); i.hasNext();) {
-			final String key = (String) i.next();
+		for (Object element : stringVars.keySet()) {
+			final String key = (String) element;
 			final String value = (String) stringVars.get(key);
 			vars.put(key, new EnvironmentVariable(key, value));
 		}
@@ -660,8 +660,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 
 		// get Environment Variables from the table
 		final TableItem[] items = environmentTable.getTable().getItems();
-		for (int i = 0; i < items.length; i++) {
-			final EnvironmentVariable var = (EnvironmentVariable) items[i]
+		for (TableItem element : items) {
+			final EnvironmentVariable var = (EnvironmentVariable) element
 					.getData();
 			envVariables.remove(var.getName());
 		}
@@ -677,8 +677,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		final int button = dialog.open();
 		if (button == Window.OK) {
 			final Object[] selected = dialog.getResult();
-			for (int i = 0; i < selected.length; i++) {
-				environmentTable.add(selected[i]);
+			for (Object element : selected) {
+				environmentTable.add(element);
 			}
 		}
 
@@ -746,9 +746,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 					envVars.putAll((Map<String, Object>) inputElement);
 					elements = new EnvironmentVariable[envVars.size()];
 					int index = 0;
-					for (final Iterator iterator = envVars.keySet().iterator(); iterator
-							.hasNext(); index++) {
-						final Object key = iterator.next();
+					for (Object key : envVars.keySet()) {
 						elements[index] = (EnvironmentVariable) envVars
 								.get(key);
 					}

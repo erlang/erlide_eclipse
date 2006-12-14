@@ -85,9 +85,9 @@ public class ErlModelUtils {
 	public static IErlFunction findFunction(IErlModule module, String function,
 			int arity) throws ErlModelException {
 		final IErlElement[] children = module.getChildren();
-		for (int i = 0; i < children.length; ++i) {
-			if (children[i] instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) children[i];
+		for (IErlElement element : children) {
+			if (element instanceof IErlFunction) {
+				final IErlFunction f = (IErlFunction) element;
 				if (arity == -1 || f.getArity() == arity) {
 					if (f.getElementName().equals(function)) {
 						return f;
@@ -109,8 +109,7 @@ public class ErlModelUtils {
 			final IErlImport imp = imports[i];
 			final ErlangFunction[] impFuncs = imp.getFunctions();
 			final OtpErlangTuple rImpFuncs[] = new OtpErlangTuple[impFuncs.length];
-			for (int j = 0; j < impFuncs.length; ++j) {
-				final ErlangFunction f = impFuncs[j];
+			for (final ErlangFunction f : impFuncs) {
 				rImpFuncs[i] = new OtpErlangTuple(new OtpErlangObject[] {
 						new OtpErlangAtom(f.name), new OtpErlangLong(f.arity) });
 			}

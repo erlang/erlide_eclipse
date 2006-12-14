@@ -507,12 +507,11 @@ public class EditorUtility {
 		final List<IEditorPart> result = new ArrayList<IEditorPart>(0);
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-		for (int i = 0; i < windows.length; i++) {
-			final IWorkbenchPage[] pages = windows[i].getPages();
-			for (int x = 0; x < pages.length; x++) {
-				final IEditorPart[] editors = pages[x].getDirtyEditors();
-				for (int z = 0; z < editors.length; z++) {
-					final IEditorPart ep = editors[z];
+		for (IWorkbenchWindow element : windows) {
+			final IWorkbenchPage[] pages = element.getPages();
+			for (IWorkbenchPage element0 : pages) {
+				final IEditorPart[] editors = element0.getDirtyEditors();
+				for (final IEditorPart ep : editors) {
 					final IEditorInput input = ep.getEditorInput();
 					if (!inputs.contains(input)) {
 						inputs.add(input);

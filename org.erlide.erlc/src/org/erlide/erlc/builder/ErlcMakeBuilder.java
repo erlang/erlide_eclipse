@@ -365,7 +365,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 					buffer.append('=').append((String) entry.getValue());
 					strings.add(buffer.toString());
 				}
-				final String[] env = (String[]) strings
+				final String[] env = strings
 						.toArray(new String[strings.size()]);
 				String[] buildArguments = targets;
 				if (info.isDefaultBuildCmd()) {
@@ -463,8 +463,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				if (errMsg != null) {
 					StringBuffer buf = new StringBuffer(buildCommand.toString()
 							+ " "); //$NON-NLS-1$
-					for (int i = 0; i < buildArguments.length; i++) {
-						buf.append(buildArguments[i]);
+					for (String element : buildArguments) {
+						buf.append(element);
 						buf.append(' ');
 					}
 

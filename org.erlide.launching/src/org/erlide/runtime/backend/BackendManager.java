@@ -95,8 +95,8 @@ public final class BackendManager implements IResourceChangeListener {
 		final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
 		launch.addDebugTarget(target);
 
-		for (final Iterator iter = fPlugins.iterator(); iter.hasNext();) {
-			final Plugin element = (Plugin) iter.next();
+		for (Object element0 : fPlugins) {
+			final Plugin element = (Plugin) element0;
 			b.getCodeManager().addPlugin(element);
 		}
 
@@ -119,8 +119,8 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (final Iterator iter = fPlugins.iterator(); iter.hasNext();) {
-			final Plugin element = (Plugin) iter.next();
+		for (Object element0 : fPlugins) {
+			final Plugin element = (Plugin) element0;
 			b.getCodeManager().addPlugin(element);
 		}
 		return b;
@@ -130,7 +130,7 @@ public final class BackendManager implements IResourceChangeListener {
 		synchronized (fLocalBackendsLock) {
 
 			final String name = getBackendName(project);
-			IBackend b = (IBackend) fLocalBackends.get(name);
+			IBackend b = fLocalBackends.get(name);
 			if (b != null && !b.ping()) {
 				fLocalBackends.remove(name);
 				b = null;
@@ -140,7 +140,7 @@ public final class BackendManager implements IResourceChangeListener {
 				fLocalBackends.put(name, b);
 				fireUpdate(b, ADDED);
 			}
-			if ((IBackend) fProjectBackendMap.get(project) == null) {
+			if (fProjectBackendMap.get(project) == null) {
 				fProjectBackendMap.put(project, b);
 			}
 			return b;
@@ -235,8 +235,8 @@ public final class BackendManager implements IResourceChangeListener {
 			fChanged = b;
 			fType = type;
 			final Object[] copiedListeners = fListeners.toArray();
-			for (int i = 0; i < copiedListeners.length; i++) {
-				fListener = (IBackendListener) copiedListeners[i];
+			for (Object element : copiedListeners) {
+				fListener = (IBackendListener) element;
 				SafeRunner.run(this);
 			}
 			fChanged = null;
@@ -278,9 +278,8 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachLocal(IBackendVisitor visitor) {
 		synchronized (fLocalBackendsLock) {
-			for (final Iterator iter = fLocalBackends.values().iterator(); iter
-					.hasNext();) {
-				final IBackend b = (IBackend) iter.next();
+			for (Object element : fLocalBackends.values()) {
+				final IBackend b = (IBackend) element;
 				try {
 					visitor.run(b);
 				} catch (final Exception e) {
@@ -291,9 +290,8 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachRemote(IBackendVisitor visitor) {
 		synchronized (fRemoteBackendsLock) {
-			for (final Iterator iter = fRemoteBackends.values().iterator(); iter
-					.hasNext();) {
-				final IBackend b = (IBackend) iter.next();
+			for (Object element : fRemoteBackends.values()) {
+				final IBackend b = (IBackend) element;
 				try {
 					visitor.run(b);
 				} catch (final Exception e) {
@@ -328,7 +326,7 @@ public final class BackendManager implements IResourceChangeListener {
 			/* final long n = */Long.parseLong(parts[1], 16);
 
 			synchronized (fLocalBackendsLock) {
-				final IBackend bl = (IBackend) fLocalBackends.get(parts[0]);
+				final IBackend bl = fLocalBackends.get(parts[0]);
 				return (bl == null) || (!bl.getLabel().equals(label));
 			}
 
@@ -375,8 +373,7 @@ public final class BackendManager implements IResourceChangeListener {
 			try {
 				final String[] names = OtpEpmd.lookupNames();
 				final List<String> labels = new ArrayList<String>(names.length);
-				for (int i = 0; i < names.length; i++) {
-					String label = names[i];
+				for (String label : names) {
 					// label is "name X at port N"
 					final String[] parts = label.split(" ");
 					if (parts.length == 5) {
@@ -390,8 +387,8 @@ public final class BackendManager implements IResourceChangeListener {
 					final String key = (String) iter.next();
 					boolean found = false;
 
-					for (final Iterator it = labels.iterator(); it.hasNext();) {
-						final String label = (String) it.next();
+					for (Object element : labels) {
+						final String label = (String) element;
 
 						if (isExtErlideLabel(label) && label.equals(key)) {
 							found = true;
@@ -400,7 +397,7 @@ public final class BackendManager implements IResourceChangeListener {
 					}
 
 					if (!found) {
-						final IBackend b = (IBackend) fRemoteBackends.get(key);
+						final IBackend b = fRemoteBackends.get(key);
 						if (b != null) {
 							fRemoteBackends.remove(key);
 							fireUpdate(b, REMOVED);
@@ -408,11 +405,11 @@ public final class BackendManager implements IResourceChangeListener {
 					}
 				}
 
-				for (final Iterator iter = labels.iterator(); iter.hasNext();) {
-					final String label = (String) iter.next();
+				for (Object element : labels) {
+					final String label = (String) element;
 
 					if (isExtErlideLabel(label)) {
-						IBackend b = (IBackend) fRemoteBackends.get(label);
+						IBackend b = fRemoteBackends.get(label);
 						if (b == null) {
 							// System.out.println("$ Added external backend:: "
 							// +

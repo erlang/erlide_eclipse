@@ -39,8 +39,9 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 
 	@Override
 	public void execute() throws BuildException {
-		if (erlRoot == null)
+		if (erlRoot == null) {
 			erlRoot = getProject().getProperty("erlRoot");
+		}
 
 		Properties p = new Properties();
 		try {
@@ -134,10 +135,12 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 			String output) {
 		String result = erlRoot.concat("/bin/erlc").concat(" -o ").concat(
 				prj.concat("/" + output));
-		for (String s : includes)
+		for (String s : includes) {
 			result = result + " -I " + prj + "/" + s;
-		for (File f : files)
+		}
+		for (File f : files) {
 			result = result + " " + f.getAbsolutePath();
+		}
 		return result;
 	}
 

@@ -129,10 +129,12 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 	@Override
 	public String toString() {
 		String result = "<comment";
-		if (isEdoc())
+		if (isEdoc()) {
 			result = result + ":edoc";
-		if (isHeader())
+		}
+		if (isHeader()) {
 			result = result + ":header";
+		}
 		return result + ">";
 	}
 }

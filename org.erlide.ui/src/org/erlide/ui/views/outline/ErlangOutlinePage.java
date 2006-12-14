@@ -12,6 +12,7 @@ package org.erlide.ui.views.outline;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -109,7 +110,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		viewer.setContentProvider(new ChildrenProvider());
 		viewer.setLabelProvider(new ErlangLabelProvider());
 		viewer.addSelectionChangedListener(this);
-		getTreeViewer().setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+		getTreeViewer().setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
 		viewer.setInput(myMdl);
 	}
 

@@ -17,6 +17,8 @@ import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
@@ -25,9 +27,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 /**
  * The erlang auto indent strategy

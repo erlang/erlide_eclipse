@@ -85,8 +85,7 @@ public class ColorManager implements IColorManager {
 
 		final Display display = Display.getCurrent();
 		@SuppressWarnings("unchecked")
-		Map<RGB, Color> colorTable = (Map<RGB, Color>) fDisplayTable
-				.get(display);
+		Map<RGB, Color> colorTable = fDisplayTable.get(display);
 		if (colorTable == null) {
 			colorTable = new HashMap<RGB, Color>(10);
 			fDisplayTable.put(display, colorTable);

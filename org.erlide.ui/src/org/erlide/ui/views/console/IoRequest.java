@@ -62,12 +62,14 @@ public class IoRequest {
 				message = ((OtpErlangString) o).stringValue();
 			} else if (o instanceof OtpErlangList) {
 				OtpErlangList l = (OtpErlangList) o;
-				if (l.arity() == 0)
+				if (l.arity() == 0) {
 					message = "";
-				else
+				} else {
 					message = l.toString();
-			} else
+				}
+			} else {
 				message = o.toString();
+			}
 
 			leader = (OtpErlangPid) obj.elementAt(1);
 			sender = (OtpErlangPid) obj.elementAt(2);

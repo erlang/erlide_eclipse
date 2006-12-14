@@ -300,7 +300,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			} catch (final NumberFormatException e) {
 			}
 		} else {
-			final String str = (String) fgEntityLookup.get(symbol);
+			final String str = fgEntityLookup.get(symbol);
 			if (str != null) {
 				return str;
 			}

@@ -43,7 +43,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
 
 		public void widgetSelected(SelectionEvent e) {
 			Button button = (Button) e.widget;
-			fOverlayStore.setValue((String) fCheckBoxes.get(button), button
+			fOverlayStore.setValue(fCheckBoxes.get(button), button
 					.getSelection());
 		}
 	};
@@ -128,7 +128,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
 		final Iterator it = fCheckBoxes.keySet().iterator();
 		while (it.hasNext()) {
 			final Button b = (Button) it.next();
-			final String key = (String) fCheckBoxes.get(b);
+			final String key = fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
 	}

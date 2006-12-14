@@ -150,7 +150,7 @@ public class Util implements ISuffixConstants {
 						index = Integer.parseInt(argId);
 						output.append(bindings[index]);
 					} catch (final NumberFormatException nfe) { // could be
-																// nested
+						// nested
 						// message PLUGIN_ID
 						// {compiler.name}
 						boolean done = false;
@@ -808,8 +808,7 @@ public class Util implements ISuffixConstants {
 		char[] path = resourcePath.toString().toCharArray();
 
 		inclusionCheck: if (inclusionPatterns != null) {
-			for (int i = 0, length = inclusionPatterns.length; i < length; i++) {
-				final char[] pattern = inclusionPatterns[i];
+			for (final char[] pattern : inclusionPatterns) {
 				char[] folderPattern = pattern;
 				if (isFolderPath) {
 					final int lastSlash = CharOperation.lastIndexOf('/',
@@ -1473,8 +1472,8 @@ public class Util implements ISuffixConstants {
 			return new String(d);
 		}
 		final StringBuffer sb = new StringBuffer();
-		for (int i = 0, max = c.length; i < max; ++i) {
-			sb.append(c[i]);
+		for (char[] element : c) {
+			sb.append(element);
 			sb.append('.');
 		}
 		sb.append(d);

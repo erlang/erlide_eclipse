@@ -187,8 +187,8 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 			fStatusField.setText(statusFieldText);
 			final Font font = fStatusField.getFont();
 			final FontData[] fontDatas = font.getFontData();
-			for (int i = 0; i < fontDatas.length; i++) {
-				fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
+			for (FontData element : fontDatas) {
+				element.setHeight(element.getHeight() * 9 / 10);
 			}
 			fStatusTextFont = new Font(fStatusField.getDisplay(), fontDatas);
 			fStatusField.setFont(fStatusTextFont);

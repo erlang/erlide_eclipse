@@ -37,26 +37,26 @@ import org.erlide.core.erlang.ISourceReference;
  * <p>
  * 
  * <pre>
- *         model (
+ *          model (
  * <code>
  * IErlangModel
  * </code>
- *     )
- *           project (
+ *      )
+ *            project (
  * <code>
  * IErlangProject
  * </code>
- *     )
- *               module (
+ *      )
+ *                module (
  * <code>
  * IErlModule
  * </code>
- *     )
- *               binary beam file (
+ *      )
+ *                binary beam file (
  * <code>
  * IBeamFile
  * </code>
- *     )
+ *      )
  * </pre>
  * 
  * </p>

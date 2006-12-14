@@ -483,9 +483,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 			return;
 		}
 		final IErlElement[] achildren = ((ErlElement) info).getChildren();
-		for (int i = 0; i < achildren.length; i++) {
+		for (IErlElement element : achildren) {
 			buffer.append("\n"); //$NON-NLS-1$
-			((ErlElement) achildren[i]).toString(tab + 1, buffer);
+			((ErlElement) element).toString(tab + 1, buffer);
 		}
 	}
 
@@ -579,8 +579,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 */
 	protected boolean includesChild(IErlElement child) {
 
-		for (int i = 0; i < this.fChildren.length; i++) {
-			if (this.fChildren[i].equals(child)) {
+		for (IErlElement element : this.fChildren) {
+			if (element.equals(child)) {
 				return true;
 			}
 		}

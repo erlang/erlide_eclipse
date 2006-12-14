@@ -193,18 +193,17 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	private void buildStructure(IResource[] elems, List<IErlModule> modules) {
-		// TODO Auto-generated method stub
-		for (int i = 0; i < elems.length; ++i) {
+		for (IResource element : elems) {
 			// System.out.println("---< " + elems[fi].getName());
-			if (elems[i] instanceof IFolder) {
-				final IFolder ff = (IFolder) elems[i];
+			if (element instanceof IFolder) {
+				final IFolder ff = (IFolder) element;
 				try {
 					buildStructure(ff.members(), modules);
 				} catch (final CoreException e) {
 					; // ignore
 				}
-			} else if (elems[i] instanceof IFile) {
-				final IFile f = (IFile) elems[i];
+			} else if (element instanceof IFile) {
+				final IFile f = (IFile) element;
 				final String ext = f.getFileExtension();
 				if (ext != null && (ext.equals("erl") || ext.equals("hrl"))) {
 					// int l = f.getFileExtension().length();
@@ -415,8 +414,8 @@ public class ErlProject extends Openable implements IErlProject,
 		 * typeName = path.lastSegment(); typeName = typeName.substring(0,
 		 * typeName.length() - extension.length() - 1); String qualifiedName =
 		 * null; if (packageName.length() > 0) { qualifiedName = packageName +
-		 * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; }
-		 *  } else { // unsupported extension return null; }
+		 * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; } }
+		 * else { // unsupported extension return null; }
 		 */
 		return null;
 	}
@@ -431,8 +430,7 @@ public class ErlProject extends Openable implements IErlProject,
 				final IMarker[] markers = this.fProject.findMarkers(
 						IErlModelMarker.BUILDPATH_PROBLEM_MARKER, false,
 						IResource.DEPTH_ZERO);
-				for (int i = 0, length = markers.length; i < length; i++) {
-					final IMarker marker = markers[i];
+				for (final IMarker marker : markers) {
 					if (flushCycleMarkers && flushCodepathFormatMarkers) {
 						marker.delete();
 					}
@@ -524,8 +522,7 @@ public class ErlProject extends Openable implements IErlProject,
 
 		// get custom preferences not set to their default
 		final String[] propertyNames = preferences.propertyNames();
-		for (int i = 0; i < propertyNames.length; i++) {
-			final String propertyName = propertyNames[i];
+		for (final String propertyName : propertyNames) {
 			final String value = preferences.getString(propertyName).trim();
 			if (optionNames.contains(propertyName)) {
 				options.put(propertyName, value);
@@ -981,8 +978,8 @@ public class ErlProject extends Openable implements IErlProject,
 		if (fChildren == null || fChildren.length == 0) {
 			open(null);
 		}
-		for (int i = 0; i < fChildren.length; i++) {
-			final IErlModule m = (IErlModule) fChildren[i];
+		for (IErlElement element : fChildren) {
+			final IErlModule m = (IErlModule) element;
 			if (m != null && m.getElementName().equals(name)) {
 				return m;
 			}

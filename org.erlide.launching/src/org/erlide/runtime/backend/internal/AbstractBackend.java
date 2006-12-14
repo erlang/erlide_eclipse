@@ -63,8 +63,8 @@ public abstract class AbstractBackend implements IBackend {
 			final Object res = fNode.createMbox();
 			if (res == null) {
 				final String[] ss = fNode.getNames();
-				for (int i = 0; i < ss.length; i++) {
-					System.out.print(ss[i] + " ");
+				for (String element : ss) {
+					System.out.print(element + " ");
 				}
 				System.out.println();
 			}
@@ -278,7 +278,7 @@ public abstract class AbstractBackend implements IBackend {
 	 *            IBackendEventListener
 	 */
 	public void removeEventListener(String event, IBackendEventListener l) {
-		final ArrayList ls = (ArrayList) fEventListeners.get(event);
+		final ArrayList ls = fEventListeners.get(event);
 		if (ls != null) {
 			ls.remove(l);
 		}

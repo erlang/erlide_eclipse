@@ -172,9 +172,9 @@ public class ErlangProjectProperties {
 
 	public String buildIncludeDirs(String[] dirs) {
 		final StringBuffer incs = new StringBuffer();
-		for (int i = 0; i < dirs.length; i++) {
+		for (String element : dirs) {
 			final IPath loc = project.getLocation();
-			IPath inc = new Path(dirs[i]);
+			IPath inc = new Path(element);
 			System.out.println("* " + inc);
 			if (!inc.isAbsolute()) {
 				System.out.println("  not abs!");

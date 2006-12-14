@@ -12,7 +12,6 @@ package org.erlide.ui.views.console;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -346,16 +345,18 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 
 	private Color getColor(OtpErlangPid sender) {
 		int ix = 0;
-		for (Iterator iter = pids.iterator(); iter.hasNext();) {
-			OtpErlangPid pid = (OtpErlangPid) iter.next();
-			if (pid.equals(sender))
+		for (Object element : pids) {
+			OtpErlangPid pid = (OtpErlangPid) element;
+			if (pid.equals(sender)) {
 				break;
+			}
 			ix++;
 		}
-		if (ix < colors.length - 1)
+		if (ix < colors.length - 1) {
 			return colors[ix % 19 + 1];
-		else
+		} else {
 			return colors[0];
+		}
 	}
 
 	private static void addDropDown(final ToolItem item, final Menu menu) {
@@ -391,8 +392,9 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 	}
 
 	private void refreshView() {
-		if (consoleText.isDisposed())
+		if (consoleText.isDisposed()) {
 			return;
+		}
 		try {
 			updateConsoleView();
 			updateTableView();
@@ -434,8 +436,9 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			fDoc = (ErlConsoleDocument) newInput;
 
-			if (fDoc == null)
+			if (fDoc == null) {
 				return;
+			}
 
 			Table tbl = (Table) viewer.getControl();
 			tbl.setRedraw(false);
@@ -498,19 +501,21 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 						.getSender();
 				if (c.getData().equals(pid)) {
 					return req.getMessage();
-				} else
+				} else {
 					return null;
+				}
 			}
 			return null;
 		}
 
 		public Color getBackground(Object element) {
 			IoRequest req = (IoRequest) element;
-			if (fColored)
+			if (fColored) {
 				return getColor(fGroupByLeader ? req.getLeader() : req
 						.getSender());
-			else
+			} else {
 				return null;
+			}
 		}
 
 		public Color getForeground(Object element) {
@@ -521,8 +526,8 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 	}
 
 	public void markRequests(List<IoRequest> reqs) {
-		for (Iterator iter = reqs.iterator(); iter.hasNext();) {
-			IoRequest element = (IoRequest) iter.next();
+		for (Object element0 : reqs) {
+			IoRequest element = (IoRequest) element0;
 			markRequest(element);
 		}
 	}

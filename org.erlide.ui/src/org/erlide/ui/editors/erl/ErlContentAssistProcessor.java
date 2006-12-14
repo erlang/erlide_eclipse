@@ -117,7 +117,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 								- 1 - far * 2 + 2, null, fstr + "/" + far,
 								null, docStr));
 					}
-					return (ICompletionProposal[]) result
+					return result
 							.toArray(new ICompletionProposal[result.size()]);
 				} else {
 					return NO_COMPLETIONS;
@@ -127,7 +127,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				final IErlModule myMdl = ErlModelUtils.getModule(fEditor);
 				if (myMdl != null) {
 					myMdl.getContentProposals(prefix, indent, offset, result);
-					return (ICompletionProposal[]) result
+					return result
 							.toArray(new ICompletionProposal[result.size()]);
 				}
 				return NO_COMPLETIONS;

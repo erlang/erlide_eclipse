@@ -265,10 +265,10 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 					final TemplatePersistenceData[] data = ErlangSourceContextTypeComment
 							.getDefault().getTemplateStore().getTemplateData(
 									true);
-					for (int j = 0; j < data.length; j++) {
-						if (data[i].getTemplate().getContextTypeId().equals(
+					for (TemplatePersistenceData element : data) {
+						if (element.getTemplate().getContextTypeId().equals(
 								o[i])) {
-							list.add(data[i]);
+							list.add(element);
 						}
 					}
 				}
@@ -317,8 +317,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 				try {
 					final TemplatePersistenceData[] datas = reader.read(input,
 							null);
-					for (int i = 0; i < datas.length; i++) {
-						final TemplatePersistenceData data = datas[i];
+					for (final TemplatePersistenceData data : datas) {
 						ErlangSourceContextTypeComment.getDefault()
 								.getTemplateStore().add(data);
 					}
@@ -495,10 +494,10 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 						.getDefault().getTemplateStore().getTemplateData(false);
 
 				final ArrayList<TemplatePersistenceData> list = new ArrayList<TemplatePersistenceData>();
-				for (int i = 0; i < templates.length; i++) {
-					if (templates[i].getTemplate().getContextTypeId().equals(
+				for (TemplatePersistenceData element : templates) {
+					if (element.getTemplate().getContextTypeId().equals(
 							parentElement)) {
-						list.add(templates[i]);
+						list.add(element);
 					}
 				}
 

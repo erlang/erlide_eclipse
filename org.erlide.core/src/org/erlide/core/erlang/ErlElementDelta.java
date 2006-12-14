@@ -227,8 +227,8 @@ public class ErlElementDelta implements IErlElementDelta {
 					// child was changed then changed -> it is changed
 				case CHANGED:
 					final IErlElementDelta[] children = child.getChildren(ALL);
-					for (int i = 0; i < children.length; i++) {
-						final ErlElementDelta childsChild = (ErlElementDelta) children[i];
+					for (IErlElementDelta element : children) {
+						final ErlElementDelta childsChild = (ErlElementDelta) element;
 						((ErlElementDelta) existingChild)
 								.addAffectedChild(childsChild);
 					}

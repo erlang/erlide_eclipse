@@ -110,8 +110,8 @@ public class ErlStructureCreator implements IStructureCreator {
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
 			final IErlElement[] children = p.getChildren();
-			for (int i = 0; i < children.length; ++i) {
-				recursiveMakeErlNodes(children[i], n, doc);
+			for (IErlElement element0 : children) {
+				recursiveMakeErlNodes(element0, n, doc);
 			}
 		}
 		return n;

@@ -447,7 +447,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * @return ERTSs currently being displayed in this block
 	 */
 	public ErtsInstall[] getERTSs() {
-		return (ErtsInstall[]) fVMs.toArray(new ErtsInstall[fVMs.size()]);
+		return fVMs.toArray(new ErtsInstall[fVMs.size()]);
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 */
 	public boolean isDuplicateName(String name) {
 		for (int i = 0; i < fVMs.size(); i++) {
-			final ErtsInstall vm = (ErtsInstall) fVMs.get(i);
+			final ErtsInstall vm = fVMs.get(i);
 			if (vm.getName().equals(name)) {
 				return true;
 			}

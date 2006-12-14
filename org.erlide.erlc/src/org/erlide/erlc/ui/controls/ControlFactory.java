@@ -579,8 +579,8 @@ public class ControlFactory {
 		final CCombo combo = new CCombo(parent, style);
 		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		combo.setLayoutData(data);
-		for (int i = 0; i < strdata.length; ++i) {
-			combo.add(strdata[i]);
+		for (String element : strdata) {
+			combo.add(element);
 		}
 		if (selData == null) {
 			combo.select(0);
@@ -652,8 +652,8 @@ public class ControlFactory {
 		final Combo combo = new Combo(parent, style);
 		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		combo.setLayoutData(data);
-		for (int i = 0; i < strdata.length; ++i) {
-			combo.add(strdata[i]);
+		for (String element : strdata) {
+			combo.add(element);
 		}
 		if (selData == null) {
 			combo.select(0);

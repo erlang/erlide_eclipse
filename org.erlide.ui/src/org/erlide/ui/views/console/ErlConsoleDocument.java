@@ -1,7 +1,6 @@
 package org.erlide.ui.views.console;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -34,14 +33,17 @@ public class ErlConsoleDocument {
 		req.setStart(start);
 
 		// TODO this is to filter out process list events
-		if (req.getMessage() == null)
+		if (req.getMessage() == null) {
 			return 0;
+		}
 
 		// TODO use a configuration for this
 		synchronized (requests) {
-			if (requests.size() > 5000)
-				for (int i = 0; i < 1000; i++)
+			if (requests.size() > 5000) {
+				for (int i = 0; i < 1000; i++) {
 					requests.remove(0);
+				}
+			}
 			requests.add(req);
 		}
 		return req.getLength();
@@ -49,11 +51,12 @@ public class ErlConsoleDocument {
 
 	public IoRequest findAtPos(int pos) {
 		synchronized (requests) {
-			for (Iterator iter = requests.iterator(); iter.hasNext();) {
-				IoRequest req = (IoRequest) iter.next();
+			for (Object element : requests) {
+				IoRequest req = (IoRequest) element;
 				if (req.getStart() <= pos
-						&& req.getStart() + req.getLength() > pos)
+						&& req.getStart() + req.getLength() > pos) {
 					return req;
+				}
 			}
 			return null;
 		}
@@ -61,18 +64,19 @@ public class ErlConsoleDocument {
 
 	public List<IoRequest> getAllFrom(OtpErlangPid sender) {
 		List<IoRequest> result = new ArrayList<IoRequest>(10);
-		for (Iterator iter = requests.iterator(); iter.hasNext();) {
-			IoRequest element = (IoRequest) iter.next();
-			if (element.getSender().equals(sender))
+		for (Object element0 : requests) {
+			IoRequest element = (IoRequest) element0;
+			if (element.getSender().equals(sender)) {
 				result.add(element);
+			}
 		}
 		return result;
 	}
 
 	public void add(List<OtpErlangObject> msgs, int start) {
 		int ofs = start;
-		for (Iterator iter = msgs.iterator(); iter.hasNext();) {
-			OtpErlangObject element = (OtpErlangObject) iter.next();
+		for (Object element0 : msgs) {
+			OtpErlangObject element = (OtpErlangObject) element0;
 			ofs += add(element, ofs);
 		}
 

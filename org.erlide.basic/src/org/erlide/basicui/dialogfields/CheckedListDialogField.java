@@ -210,7 +210,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 		if (e.getChecked()) {
 			fCheckElements.add((Element) e.getElement());
 		} else {
-			fCheckElements.remove((Element) e.getElement());
+			fCheckElements.remove(e.getElement());
 		}
 		checkStateChanged();
 	}

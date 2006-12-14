@@ -607,8 +607,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		if (elements == null) {
 			return;
 		}
-		for (int i = 0; i < elements.length; i++) {
-			final IErlElement element = elements[i];
+		for (final IErlElement element : elements) {
 			if (element != null) {
 				computeAdditions(element, map);
 				if (element instanceof IParent) {
@@ -811,7 +810,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 
 			@SuppressWarnings("unchecked")
-			Iterator<List> l = (Iterator<List>) previous.values().iterator();
+			Iterator<List> l = previous.values().iterator();
 			while (l.hasNext()) {
 				final List list = l.next();
 				final int size = list.size();
@@ -951,7 +950,7 @@ public class DefaultErlangFoldingStructureProvider implements
 				final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
 				final Position position = model.getPosition(epa);
 				Assert.isNotNull(position);
-				List<Tuple> list = (List<Tuple>) map.get(epa.getElement());
+				List<Tuple> list = map.get(epa.getElement());
 				if (list == null) {
 					list = new ArrayList<Tuple>(2);
 					map.put(epa.getElement(), list);
@@ -966,9 +965,8 @@ public class DefaultErlangFoldingStructureProvider implements
 				return o1.position.getOffset() - o2.position.getOffset();
 			}
 		};
-		for (final Iterator<List<Tuple>> it = map.values().iterator(); it
-				.hasNext();) {
-			final List<Tuple> list = (List<Tuple>) it.next();
+		for (List<Tuple> name : map.values()) {
+			final List<Tuple> list = name;
 			Collections.sort(list, comparator);
 		}
 		return map;
@@ -1048,7 +1046,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 		}
 
-		model.modifyAnnotations(null, null, (Annotation[]) modified
+		model.modifyAnnotations(null, null, modified
 				.toArray(new Annotation[modified.size()]));
 	}
 
@@ -1101,7 +1099,7 @@ public class DefaultErlangFoldingStructureProvider implements
 				while (existing.hasNext()) {
 					removals.add(existing.next());
 				}
-				model.replaceAnnotations((Annotation[]) removals
+				model.replaceAnnotations(removals
 						.toArray(new Annotation[removals.size()]), additions);
 			} else {
 				final ErlElementDelta d = new ErlElementDelta(

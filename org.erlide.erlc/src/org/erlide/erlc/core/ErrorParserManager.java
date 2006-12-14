@@ -90,10 +90,10 @@ public class ErrorParserManager extends OutputStream {
 		} else {
 			fErrorParsers = new LinkedHashMap<String, IErrorParser[]>(
 					parsersIDs.length);
-			for (int i = 0; i < parsersIDs.length; i++) {
+			for (String element : parsersIDs) {
 				final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
-						.getErrorParser(parsersIDs[i]);
-				fErrorParsers.put(parsersIDs[i], parsers);
+						.getErrorParser(element);
+				fErrorParsers.put(element, parsers);
 			}
 		}
 		fMarkerGenerator = markerGenerator;
@@ -122,7 +122,7 @@ public class ErrorParserManager extends OutputStream {
 
 	public IPath getWorkingDirectory() {
 		if (fDirectoryStack.size() != 0) {
-			return (IPath) fDirectoryStack.lastElement();
+			return fDirectoryStack.lastElement();
 		}
 		// Fallback to the Project Location
 		return fBaseDirectory;
@@ -144,7 +144,7 @@ public class ErrorParserManager extends OutputStream {
 	public IPath popDirectory() {
 		final int i = fDirectoryStack.size();
 		if (i != 0) {
-			final IPath dir = (IPath) fDirectoryStack.lastElement();
+			final IPath dir = fDirectoryStack.lastElement();
 			fDirectoryStack.removeElementAt(i - 1);
 			return dir;
 		}
@@ -159,10 +159,10 @@ public class ErrorParserManager extends OutputStream {
 		fErrorParsers = new LinkedHashMap<String, IErrorParser[]>();
 		final String[] parserIDs = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
-		for (int i = 0; i < parserIDs.length; i++) {
+		for (String element : parserIDs) {
 			final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
-					.getErrorParser(parserIDs[i]);
-			fErrorParsers.put(parserIDs[i], parsers);
+					.getErrorParser(element);
+			fErrorParsers.put(element, parsers);
 		}
 		if (fErrorParsers.size() == 0) {
 			initErrorParsersMap();
@@ -172,10 +172,10 @@ public class ErrorParserManager extends OutputStream {
 	private void initErrorParsersMap() {
 		final String[] parserIDs = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
-		for (int i = 0; i < parserIDs.length; i++) {
+		for (String element : parserIDs) {
 			final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
-					.getErrorParser(parserIDs[i]);
-			fErrorParsers.put(parserIDs[i], parsers);
+					.getErrorParser(element);
+			fErrorParsers.put(element, parsers);
 		}
 	}
 
@@ -210,11 +210,9 @@ public class ErrorParserManager extends OutputStream {
 			parserIDs[i] = (String) items.next();
 		}
 
-		for (int i = 0; i < parserIDs.length; ++i) {
-			final IErrorParser[] parsers = (IErrorParser[]) fErrorParsers
-					.get(parserIDs[i]);
-			for (int j = 0; j < parsers.length; j++) {
-				final IErrorParser curr = parsers[j];
+		for (String element : parserIDs) {
+			final IErrorParser[] parsers = fErrorParsers.get(element);
+			for (final IErrorParser curr : parsers) {
 				if (curr.processLines(line, this)) {
 					return;
 				}
@@ -250,7 +248,7 @@ public class ErrorParserManager extends OutputStream {
 	 */
 	public IFile findFileName(String fileName) {
 		final IPath path = new Path(fileName);
-		return (IFile) fFilesInProject.get(path.lastSegment());
+		return fFilesInProject.get(path.lastSegment());
 	}
 
 	protected IFile findFileInWorkspace(IPath path) {
@@ -261,9 +259,9 @@ public class ErrorParserManager extends OutputStream {
 			// It may be a link resource so we must check it also.
 			if (file == null) {
 				final IFile[] files = root.findFilesForLocation(path);
-				for (int i = 0; i < files.length; i++) {
-					if (files[i].getProject().equals(fProject)) {
-						file = files[i];
+				for (IFile element : files) {
+					if (element.getProject().equals(fProject)) {
+						file = element;
 						break;
 					}
 				}

@@ -79,8 +79,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	protected void startConsoleActivity(IProject project) {
 		final Object[] list = listeners.getListeners();
 		if (list.length > 0) {
-			for (int i = 0; i < list.length; i++) {
-				final IBuildConsoleListener listener = (IBuildConsoleListener) list[i];
+			for (Object element : list) {
+				final IBuildConsoleListener listener = (IBuildConsoleListener) element;
 				final ConsoleEvent event = new ConsoleEvent(
 						BuildConsoleManager.this, project,
 						IBuildConsoleEvent.CONSOLE_START);
@@ -148,14 +148,14 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 		if (resource != null && resource.getType() == IResource.PROJECT) {
 			if (event.getType() == IResourceChangeEvent.PRE_DELETE
 					|| event.getType() == IResourceChangeEvent.PRE_CLOSE) {
-				final IDocumentPartitioner partioner = (IDocumentPartitioner) fConsoleMap
+				final IDocumentPartitioner partioner = fConsoleMap
 						.remove(resource);
 				if (partioner != null) {
 					partioner.disconnect();
 					final Object[] list = listeners.getListeners();
 					if (list.length > 0) {
-						for (int i = 0; i < list.length; i++) {
-							final IBuildConsoleListener listener = (IBuildConsoleListener) list[i];
+						for (Object element : list) {
+							final IBuildConsoleListener listener = (IBuildConsoleListener) element;
 							final ConsoleEvent consoleEvent = new ConsoleEvent(
 									this, (IProject) resource,
 									IBuildConsoleEvent.CONSOLE_CLOSE);
@@ -305,8 +305,7 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	}
 
 	private BuildConsolePartitioner getConsolePartioner(IProject project) {
-		BuildConsolePartitioner partioner = (BuildConsolePartitioner) fConsoleMap
-				.get(project);
+		BuildConsolePartitioner partioner = fConsoleMap.get(project);
 		if (partioner == null) {
 			partioner = new BuildConsolePartitioner(this);
 			fConsoleMap.put(project, partioner);

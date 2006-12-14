@@ -41,8 +41,9 @@ public class ErlConsoleJob implements IBackendListener {
 					do {
 						try {
 							msg = fBackend.receiveEvent(1);
-							if (msg != null)
+							if (msg != null) {
 								msgs.add(msg);
+							}
 						} catch (final OtpErlangException e) {
 							ErlangLaunchPlugin.log(e);
 							e.printStackTrace();
@@ -86,8 +87,9 @@ public class ErlConsoleJob implements IBackendListener {
 	}
 
 	public void notifyListeners(List<OtpErlangObject> msgs) {
-		if (msgs.size() == 0)
+		if (msgs.size() == 0) {
 			return;
+		}
 		synchronized (listeners) {
 			for (IErlConsoleListener client : listeners) {
 				client.handleEvent(msgs);

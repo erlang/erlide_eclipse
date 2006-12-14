@@ -38,9 +38,8 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	 *      int)
 	 */
 	public void addFunction(String name, int arity) {
-		for (final Iterator iter = fInstances.iterator(); iter.hasNext();) {
-			final ExportsVariableResolver element = (ExportsVariableResolver) iter
-					.next();
+		for (Object element0 : fInstances) {
+			final ExportsVariableResolver element = (ExportsVariableResolver) element0;
 			element.doAddFunction(name, arity);
 		}
 	}
@@ -51,9 +50,8 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions()
 	 */
 	public void clearFunctions() {
-		for (final Iterator iter = fInstances.iterator(); iter.hasNext();) {
-			final ExportsVariableResolver element = (ExportsVariableResolver) iter
-					.next();
+		for (Object element0 : fInstances) {
+			final ExportsVariableResolver element = (ExportsVariableResolver) element0;
 			element.doClearFunctions();
 		}
 	}

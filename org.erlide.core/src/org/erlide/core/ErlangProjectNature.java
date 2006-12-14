@@ -104,8 +104,8 @@ public class ErlangProjectNature implements IProjectNature {
 	 */
 	private int getBuildSpecCount(ICommand[] commands) {
 		int count = 0;
-		for (int i = 0; i < commands.length; i++) {
-			if (commands[i].getBuilderName().equals(ErlangPlugin.BUILDER_ID)) {
+		for (ICommand element : commands) {
+			if (element.getBuilderName().equals(ErlangPlugin.BUILDER_ID)) {
 				count++;
 			}
 		}

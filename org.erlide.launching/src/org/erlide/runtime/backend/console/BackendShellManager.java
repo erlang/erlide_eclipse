@@ -28,7 +28,7 @@ public class BackendShellManager {
 	}
 
 	public BackendShell get(String id) {
-		final BackendShell shell = (BackendShell) fShells.get(id);
+		final BackendShell shell = fShells.get(id);
 		return shell;
 	}
 

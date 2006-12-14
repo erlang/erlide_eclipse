@@ -159,8 +159,8 @@ public class ResourceUtil {
 			return r;
 		}
 		final IResource members[] = container.members();
-		for (int i = 0; i < members.length; ++i) {
-			r = members[i];
+		for (IResource element : members) {
+			r = element;
 			if (r instanceof IContainer) {
 				r = recursiveFindNamedResource((IContainer) r, name);
 				if (r != null) {

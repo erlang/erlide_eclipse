@@ -11,9 +11,9 @@
 
 package org.erlide.ui.properties.internal;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
@@ -79,8 +79,8 @@ public class MockupPreferenceStore implements IPreferenceStore {
 		final PropertyChangeEvent event = new PropertyChangeEvent(source, name,
 				oldValue, newValue);
 		final Object[] listeners = fListeners.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			((IPropertyChangeListener) listeners[i]).propertyChange(event);
+		for (Object element : listeners) {
+			((IPropertyChangeListener) element).propertyChange(event);
 		}
 	}
 

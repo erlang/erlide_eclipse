@@ -169,8 +169,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			}
 		} else if (file.isDirectory()) {
 			final File[] fs = file.listFiles();
-			for (int i = 0; i < fs.length; i++) {
-				final File f = fs[i];
+			for (final File f : fs) {
 				search(ext, f, list);
 			}
 		}

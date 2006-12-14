@@ -64,8 +64,8 @@ public class ErlcMakeNature implements IProjectNature {
 
 		final ICommand[] commands = desc.getBuildSpec();
 
-		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(ErlcMakeBuilder.BUILDER_ID)) {
+		for (ICommand element : commands) {
+			if (element.getBuilderName().equals(ErlcMakeBuilder.BUILDER_ID)) {
 				return;
 			}
 		}
@@ -155,9 +155,9 @@ public class ErlcMakeNature implements IProjectNature {
 	public static ICommand getBuildSpec(IProjectDescription description,
 			String builderID) {
 		final ICommand[] commands = description.getBuildSpec();
-		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(builderID)) {
-				return commands[i];
+		for (ICommand element : commands) {
+			if (element.getBuilderName().equals(builderID)) {
+				return element;
 			}
 		}
 		return null;

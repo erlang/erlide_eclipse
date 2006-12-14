@@ -247,8 +247,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 			final IPath projectPath = project.getFullPath();
 
 			String pathElement;
-			for (int i = 0; i < pathList.length; i++) {
-				pathElement = pathList[i];
+			for (String element : pathList) {
+				pathElement = element;
 				final IPath pp = new Path(pathElement);
 				// only create in-project paths
 				if (!pp.isAbsolute() && !pathElement.equals(".")) {

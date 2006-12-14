@@ -11,10 +11,10 @@
 
 package org.erlide.ui.editors.util;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension;
 import org.eclipse.jface.text.IInformationControlExtension3;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
@@ -106,8 +106,8 @@ public class BrowserInformationControl implements IInformationControl,
 			final Point minSize = new Point(0, 0);
 
 			if (children != null) {
-				for (int i = 0; i < children.length; i++) {
-					final Point size = children[i].computeSize(wHint, hHint,
+				for (Control element : children) {
+					final Point size = element.computeSize(wHint, hHint,
 							flushCache);
 					minSize.x = Math.max(minSize.x, size.x);
 					minSize.y = Math.max(minSize.y, size.y);
@@ -132,8 +132,7 @@ public class BrowserInformationControl implements IInformationControl,
 					composite.getClientArea().height);
 
 			if (children != null) {
-				for (int i = 0; i < children.length; i++) {
-					final Control child = children[i];
+				for (final Control child : children) {
 					child.setSize(minSize.x - fBorderSize * 2, minSize.y
 							- fBorderSize * 2);
 					child.setLocation(fBorderSize, fBorderSize);
@@ -304,8 +303,8 @@ public class BrowserInformationControl implements IInformationControl,
 			statusField.setText(statusFieldText);
 			final Font font = statusField.getFont();
 			final FontData[] fontDatas = font.getFontData();
-			for (int i = 0; i < fontDatas.length; i++) {
-				fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
+			for (FontData element : fontDatas) {
+				element.setHeight(element.getHeight() * 9 / 10);
 			}
 			fStatusTextFont = new Font(statusField.getDisplay(), fontDatas);
 			statusField.setFont(fStatusTextFont);
@@ -387,9 +386,9 @@ public class BrowserInformationControl implements IInformationControl,
 		}
 
 		final StringBuffer styleBuf = new StringBuffer(10 * styles.length);
-		for (int i = 0; i < styles.length; i++) {
+		for (String element : styles) {
 			styleBuf.append(" style=\""); //$NON-NLS-1$
-			styleBuf.append(styles[i]);
+			styleBuf.append(element);
 			styleBuf.append('"');
 		}
 
@@ -555,9 +554,9 @@ public class BrowserInformationControl implements IInformationControl,
 
 				public void handleEvent(Event event) {
 					final Object[] listeners = fFocusListeners.getListeners();
-					for (int i = 0; i < listeners.length; i++) {
-						((FocusListener) listeners[i])
-								.focusLost(new FocusEvent(event));
+					for (Object element : listeners) {
+						((FocusListener) element).focusLost(new FocusEvent(
+								event));
 					}
 				}
 			};

@@ -193,8 +193,8 @@ public class CommandLauncher {
 	protected String getCommandLine(String[] commandArgs) {
 		final StringBuffer buf = new StringBuffer();
 		if (fCommandArgs != null) {
-			for (int i = 0; i < commandArgs.length; i++) {
-				buf.append(commandArgs[i]);
+			for (String element : commandArgs) {
+				buf.append(element);
 				buf.append(' ');
 			}
 			buf.append(lineSeparator);

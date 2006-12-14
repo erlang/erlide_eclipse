@@ -12,7 +12,6 @@ package org.erlide.core.erlang.util;
 
 import java.text.NumberFormat;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 /**
  * The <code>OverflowingLRUCache</code> is an LRUCache which attempts to
@@ -242,7 +241,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 */
 	public Object peek(Object key) {
 
-		final LRUCacheEntry entry = (LRUCacheEntry) fEntryTable.get(key);
+		final LRUCacheEntry entry = fEntryTable.get(key);
 		if (entry == null) {
 			return null;
 		}
@@ -288,9 +287,9 @@ abstract public class OverflowingLRUCache extends LRUCache {
 		}
 		final java.util.HashMap<Class, Temp> h = new java.util.HashMap<Class, Temp>();
 		while (keys.hasMoreElements()) {
-			entry = (LRUCacheEntry) fEntryTable.get(keys.nextElement());
+			entry = fEntryTable.get(keys.nextElement());
 			final Class key = entry._fValue.getClass();
-			final Temp t = (Temp) h.get(key);
+			final Temp t = h.get(key);
 			if (t == null) {
 				h.put(key, new Temp(key));
 			} else {
@@ -298,8 +297,8 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			}
 		}
 
-		for (final Iterator iter = h.keySet().iterator(); iter.hasNext();) {
-			System.out.println(h.get(iter.next()));
+		for (Object element : h.keySet()) {
+			System.out.println(h.get(element));
 		}
 	}
 
@@ -390,7 +389,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 
 		/* Check whether there's an entry in the cache */
 		final int newSpace = spaceFor(value);
-		final LRUCacheEntry entry = (LRUCacheEntry) fEntryTable.get(key);
+		final LRUCacheEntry entry = fEntryTable.get(key);
 
 		if (entry != null) {
 

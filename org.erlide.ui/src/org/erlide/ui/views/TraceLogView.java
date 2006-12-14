@@ -122,8 +122,7 @@ public class TraceLogView extends ViewPart {
 		}
 
 		public TreeObject[] getChildren() {
-			return (TreeObject[]) children.toArray(new TreeObject[children
-					.size()]);
+			return children.toArray(new TreeObject[children.size()]);
 		}
 
 		public boolean hasChildren() {
@@ -141,8 +140,7 @@ public class TraceLogView extends ViewPart {
 				// TreeObject to1 = new TreeObject("Leaf 1");
 				final IErlModule[] x = (IErlModule[]) newInput;
 				invisibleRoot = new TreeParent("");
-				for (int i = 0; i < x.length; i++) {
-					final IErlModule module = x[i];
+				for (final IErlModule module : x) {
 					invisibleRoot.addChild(new TreeObject(module
 							.getElementName()));
 				}
@@ -317,16 +315,16 @@ public class TraceLogView extends ViewPart {
 				final IErlModel mdl = ErlangCore.getModel();
 				final IErlModule[] ms = mdl.findModule("test", ".*");
 				System.out.println("found(\"*\") " + ms.length);
-				for (int i = 0; i < ms.length; i++) {
-					System.out.println("  " + ms[i].getElementName());
+				for (IErlModule element : ms) {
+					System.out.println("  " + element.getElementName());
 				}
 
 				final IErlFunction[] fs = mdl.findFunction("test", ".*",
 						"st.*", IErlModel.UNKNOWN_ARITY);
 				System.out.println("found(\"*\") " + ms.length);
-				for (int i = 0; i < fs.length; i++) {
-					System.out.println("  " + fs[i].getElementName() + "/"
-							+ fs[i].getArity());
+				for (IErlFunction element : fs) {
+					System.out.println("  " + element.getElementName() + "/"
+							+ element.getArity());
 				}
 
 				viewer.setInput(ms);

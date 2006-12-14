@@ -261,8 +261,8 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			}
 			fText = text;
 			final Object[] copiedListeners = fListeners.toArray();
-			for (int i = 0; i < copiedListeners.length; i++) {
-				fListener = (IStreamListener) copiedListeners[i];
+			for (Object element : copiedListeners) {
+				fListener = (IStreamListener) element;
 				SafeRunner.run(this);
 			}
 			fListener = null;

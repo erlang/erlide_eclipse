@@ -240,11 +240,9 @@ public class FunctionGroup extends Group implements SelectionListener {
 	void dialogChanged() {
 		if (functionNameText.getText().length() != 0) {
 			final TableItem allTableItems[] = fTable.getItems();
-			for (int i = 0; i < allTableItems.length; i++) {
-				if (allTableItems[i].getText(0).equals(
-						functionNameText.getText())
-						&& allTableItems[i].getText(1).equals(
-								arityText.getText())) {
+			for (TableItem element : allTableItems) {
+				if (element.getText(0).equals(functionNameText.getText())
+						&& element.getText(1).equals(arityText.getText())) {
 					updateStatus("Function already exists!");
 					return;
 				}
@@ -288,18 +286,18 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 		final TableItem function[] = fTable.getItems();
 		final ArrayList<Function> functionList = new ArrayList<Function>();
-		for (int i = 0; i < function.length; i++) {
-			if (!function[i].getText(0).equals("")) {
+		for (TableItem element : function) {
+			if (!element.getText(0).equals("")) {
 				final Function f = new Function();
-				f.arity = Integer.parseInt(function[i].getText(1));
-				f.isExported = function[i].getChecked();
-				final String[] part = function[i].getText(0).split("\\(");
+				f.arity = Integer.parseInt(element.getText(1));
+				f.isExported = element.getChecked();
+				final String[] part = element.getText(0).split("\\(");
 				f.isState = part[part.length - 1].equals("State)");
 				if (f.isState) {
-					f.name = function[i].getText(0).substring(0,
-							function[i].getText(0).length() - 7);
+					f.name = element.getText(0).substring(0,
+							element.getText(0).length() - 7);
 				} else {
-					f.name = function[i].getText(0);
+					f.name = element.getText(0);
 				}
 				functionList.add(f);
 			}
@@ -340,9 +338,9 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 		if (e.widget == removeFunction) {
 			final TableItem itemsToRemove[] = fTable.getSelection();
-			for (int i = 0; i < itemsToRemove.length; i++) {
-				fTable.remove(fTable.indexOf(itemsToRemove[i]));
-				if (itemsToRemove[i] == fEditingItem) {
+			for (TableItem element : itemsToRemove) {
+				fTable.remove(fTable.indexOf(element));
+				if (element == fEditingItem) {
 					fEditingItem = null;
 				}
 			}

@@ -36,12 +36,10 @@ public class BackendSupport {
 
 		final List<BackendType> types = new ArrayList<BackendType>(10);
 
-		for (int i = 0; i < extensions.length; i++) {
-			final IExtension extension = extensions[i];
+		for (final IExtension extension : extensions) {
 			final IConfigurationElement[] elements = extension
 					.getConfigurationElements();
-			for (int j = 0; j < elements.length; j++) {
-				final IConfigurationElement element = elements[j];
+			for (final IConfigurationElement element : elements) {
 				if (element.getName().equals("backend")) {
 					final String name = element.getAttribute("name");
 					final String id = element.getAttribute("id");
@@ -60,8 +58,7 @@ public class BackendSupport {
 
 	public static BackendType getType(String id) {
 		final BackendType[] types = getTypes();
-		for (int i = 0; i < types.length; i++) {
-			final BackendType bt = types[i];
+		for (final BackendType bt : types) {
 			if (bt.getID().equals(id)) {
 				return bt;
 			}

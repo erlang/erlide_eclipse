@@ -14,8 +14,9 @@ public class ErlangSourceLookupParticipant extends
 	}
 
 	public String getSourceName(Object object) throws CoreException {
-		if (!(object instanceof ErlangStackFrame))
+		if (!(object instanceof ErlangStackFrame)) {
 			return null;
+		}
 		ErlangStackFrame f = (ErlangStackFrame) object;
 		return f.getModule();
 	}

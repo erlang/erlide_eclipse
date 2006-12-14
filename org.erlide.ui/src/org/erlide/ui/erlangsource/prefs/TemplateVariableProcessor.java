@@ -90,8 +90,7 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 		}
 
 		Collections.sort(proposals, fgTemplateVariableProposalComparator);
-		return (ICompletionProposal[]) proposals
-				.toArray(new ICompletionProposal[proposals.size()]);
+		return proposals.toArray(new ICompletionProposal[proposals.size()]);
 	}
 
 	/* Guesses the start position of the completion */

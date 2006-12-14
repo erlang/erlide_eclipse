@@ -339,8 +339,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 			return super.getSeverity();
 		}
 		int severity = -1;
-		for (int i = 0, max = children.length; i < max; i++) {
-			final int childrenSeverity = children[i].getSeverity();
+		for (IStatus element : children) {
+			final int childrenSeverity = element.getSeverity();
 			if (childrenSeverity > severity) {
 				severity = childrenSeverity;
 			}
@@ -388,8 +388,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 		if (!isMultiStatus()) {
 			return matches(this, mask);
 		}
-		for (int i = 0, max = children.length; i < max; i++) {
-			if (matches((ErlModelStatus) children[i], mask)) {
+		for (IStatus element : children) {
+			if (matches((ErlModelStatus) element, mask)) {
 				return true;
 			}
 		}

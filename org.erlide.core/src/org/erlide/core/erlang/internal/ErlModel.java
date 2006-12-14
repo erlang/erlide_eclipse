@@ -75,8 +75,7 @@ public class ErlModel extends Openable implements IErlModel {
 		// determine my children
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
 				.getProjects();
-		for (int i = 0, max = projects.length; i < max; i++) {
-			final IProject project = projects[i];
+		for (final IProject project : projects) {
 			if (ErlangCore.hasErlangNature(project)) {
 				addChild(ErlangCore.getModelManager().create(project));
 			}
@@ -101,8 +100,8 @@ public class ErlModel extends Openable implements IErlModel {
 		} catch (final ErlModelException e) {
 			return false;
 		}
-		for (int i = 0, length = projects.length; i < length; i++) {
-			final ErlProject project = (ErlProject) projects[i];
+		for (IErlProject element : projects) {
+			final ErlProject project = (ErlProject) element;
 			if (!project.contains(resource)) {
 				return false;
 			}
@@ -168,8 +167,7 @@ public class ErlModel extends Openable implements IErlModel {
 	public IErlProject findErlangProject(IProject project) {
 		try {
 			final IErlProject[] projects = this.getErlangProjects();
-			for (int i = 0, length = projects.length; i < length; i++) {
-				final IErlProject erlangProject = projects[i];
+			for (final IErlProject erlangProject : projects) {
 				if (project.equals(erlangProject.getProject())) {
 					return erlangProject;
 				}
@@ -207,9 +205,9 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see IErlModel
 	 */
 	public IErlProject getErlangProject(String projectName) {
-		for (int i = 0; i < fChildren.length; i++) {
-			if (fChildren[i].getElementName().equals(projectName)) {
-				return (IErlProject) fChildren[i];
+		for (IErlElement element : fChildren) {
+			if (element.getElementName().equals(projectName)) {
+				return (IErlProject) element;
 			}
 		}
 		return makeErlangProject(getWorkspace().getRoot().getProject(
@@ -427,8 +425,7 @@ public class ErlModel extends Openable implements IErlModel {
 		// System.out.println("^> notifying change of " +
 		// element.getElementName());
 		for (int i = 0; i < fListeners.size(); i++) {
-			((IErlModelChangeListener) fListeners.get(i))
-					.elementChanged(element);
+			(fListeners.get(i)).elementChanged(element);
 		}
 	}
 
@@ -455,8 +452,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final ArrayList<IErlFunction> funs = new ArrayList<IErlFunction>(20);
 
 		final IErlModule[] modules = findModule(project, module);
-		for (int i = 0; i < modules.length; i++) {
-			final IErlModule mod = modules[i];
+		for (final IErlModule mod : modules) {
 			try {
 				for (int j = 0; j < mod.getChildren().length; j++) {
 					final IErlElement el = mod.getChildren()[j];

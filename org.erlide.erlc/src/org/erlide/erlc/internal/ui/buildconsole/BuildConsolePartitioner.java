@@ -128,7 +128,7 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 		synchronized (fQueue) {
 			final int i = fQueue.size();
 			if (i > 0) {
-				final StreamEntry entry = (StreamEntry) fQueue.get(i - 1);
+				final StreamEntry entry = fQueue.get(i - 1);
 				// if last stream is the same and we have not exceeded our
 				// display write limit, append.
 				if (entry.getStream() == stream && entry.size() < 10000) {
@@ -145,7 +145,7 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 			public void run() {
 				StreamEntry entry;
 				try {
-					entry = (StreamEntry) fQueue.remove(0);
+					entry = fQueue.remove(0);
 				} catch (ArrayIndexOutOfBoundsException e) {
 					return;
 				}
@@ -235,7 +235,7 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 		final int end = offset + length;
 		final List<ITypedRegion> list = new ArrayList<ITypedRegion>();
 		for (int i = 0; i < fPartitions.size(); i++) {
-			final ITypedRegion partition = (ITypedRegion) fPartitions.get(i);
+			final ITypedRegion partition = fPartitions.get(i);
 			final int partitionStart = partition.getOffset();
 			final int partitionEnd = partitionStart + partition.getLength();
 			if ((offset >= partitionStart && offset <= partitionEnd)
@@ -251,7 +251,7 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 	 */
 	public ITypedRegion getPartition(int offset) {
 		for (int i = 0; i < fPartitions.size(); i++) {
-			final ITypedRegion partition = (ITypedRegion) fPartitions.get(i);
+			final ITypedRegion partition = fPartitions.get(i);
 			final int start = partition.getOffset();
 			final int end = start + partition.getLength();
 			if (offset >= start && offset < end) {

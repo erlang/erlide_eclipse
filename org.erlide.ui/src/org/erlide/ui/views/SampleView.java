@@ -119,8 +119,7 @@ public class SampleView extends ViewPart {
 		}
 
 		public TreeObject[] getChildren() {
-			return (TreeObject[]) children.toArray(new TreeObject[children
-					.size()]);
+			return children.toArray(new TreeObject[children.size()]);
 		}
 
 		public boolean hasChildren() {

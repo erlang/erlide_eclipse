@@ -99,15 +99,15 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final IResource[] resources = con.members(IResource.DEPTH_ZERO);
 
 		final List<IResource> lst = new ArrayList<IResource>(resources.length);
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i] instanceof IContainer) {
-				lst.add(resources[i]);
+		for (IResource element : resources) {
+			if (element instanceof IContainer) {
+				lst.add(element);
 			}
 		}
 
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i] instanceof IFile) {
-				lst.add(resources[i]);
+		for (IResource element : resources) {
+			if (element instanceof IFile) {
+				lst.add(element);
 			}
 		}
 
@@ -130,16 +130,16 @@ public class ModuleContentProvider implements ITreeContentProvider,
 
 		final List<IResource> lst = new ArrayList<IResource>(resources.length
 				+ nonerl.length);
-		for (int i = 0; i < resources.length; i++) {
-			System.out.println("> " + resources[i].getElementName());
+		for (IErlModule element : resources) {
+			System.out.println("> " + element.getElementName());
 		}
 
-		for (int i = 0; i < nonerl.length; i++) {
-			if (nonerl[i] instanceof IContainer) {
-				lst.add(nonerl[i]);
+		for (IResource element : nonerl) {
+			if (element instanceof IContainer) {
+				lst.add(element);
 			}
-			if (nonerl[i] instanceof IFile) {
-				lst.add(nonerl[i]);
+			if (element instanceof IFile) {
+				lst.add(element);
 			}
 		}
 
@@ -163,10 +163,10 @@ public class ModuleContentProvider implements ITreeContentProvider,
 
 		final IProject[] projects = root.getProjects();
 
-		for (int i = 0; i < projects.length; i++) {
-			if (isErlangProject(projects[i])) {
+		for (IProject element : projects) {
+			if (isErlangProject(element)) {
 				final IErlProject ep = ErlangCore.getModelManager().create(
-						projects[i]);
+						element);
 				list.add(ep);
 			}
 		}
@@ -190,8 +190,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 
 		final String[] natureIds = project.getDescription().getNatureIds();
 
-		for (int i = 0; i < natureIds.length; i++) {
-			if (natureIds[i].equals(ErlangPlugin.NATURE_ID)) {
+		for (String element : natureIds) {
+			if (element.equals(ErlangPlugin.NATURE_ID)) {
 				return true;
 			}
 		}
@@ -327,8 +327,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		// overwrite B.
 		final IResourceDelta[] affectedChildren = delta
 				.getAffectedChildren(IResourceDelta.CHANGED);
-		for (int i = 0; i < affectedChildren.length; i++) {
-			if ((affectedChildren[i].getFlags() & IResourceDelta.TYPE) != 0) {
+		for (IResourceDelta element : affectedChildren) {
+			if ((element.getFlags() & IResourceDelta.TYPE) != 0) {
 				((StructuredViewer) controlViewer).refresh(resource);
 				return;
 			}
@@ -347,9 +347,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 			return;
 		}
 
-		// Handle changed children .
-		for (int i = 0; i < affectedChildren.length; i++) {
-			processDelta(affectedChildren[i]);
+		for (IResourceDelta element : affectedChildren) {
+			processDelta(element);
 		}
 
 		boolean addedAndRemoved = false;

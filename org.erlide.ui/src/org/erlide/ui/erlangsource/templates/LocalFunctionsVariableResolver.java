@@ -11,7 +11,6 @@
 package org.erlide.ui.erlangsource.templates;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 
@@ -35,9 +34,8 @@ public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 	 *      int)
 	 */
 	public void addFunction(String name, int arity) {
-		for (final Iterator iter = fInstances.iterator(); iter.hasNext();) {
-			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) iter
-					.next();
+		for (Object element0 : fInstances) {
+			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
 			element.doAddFunction(name, arity);
 		}
 	}
@@ -48,9 +46,8 @@ public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions()
 	 */
 	public void clearFunctions() {
-		for (final Iterator iter = fInstances.iterator(); iter.hasNext();) {
-			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) iter
-					.next();
+		for (Object element0 : fInstances) {
+			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
 			element.doClearFunctions();
 		}
 	}

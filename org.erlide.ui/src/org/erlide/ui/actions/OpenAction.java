@@ -192,8 +192,7 @@ public class OpenAction extends SelectionDispatchAction {
 		if (elements == null) {
 			return;
 		}
-		for (int i = 0; i < elements.length; i++) {
-			Object element = elements[i];
+		for (Object element : elements) {
 			try {
 				element = getElementToOpen(element);
 				final boolean activateOnOpen = fEditor != null ? true
@@ -357,9 +356,9 @@ public class OpenAction extends SelectionDispatchAction {
 				IEditorPart editor = page.getActiveEditor();
 				if (pd == null) {
 					final ErlangIncludeFile[] includes = m.getIncludedFiles();
-					for (int i = 0, n = includes.length; i < n; ++i) {
+					for (ErlangIncludeFile element : includes) {
 						final IResource re = ResourceUtil
-								.recursiveFindNamedResource(includes[i]
+								.recursiveFindNamedResource(element
 										.getFilename());
 						if (re != null && re instanceof IFile) {
 							m = ErlModelUtils.getModule((IFile) re);

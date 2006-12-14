@@ -190,9 +190,9 @@ public class BuildInfoFactory {
 					.getChildren("run"); //$NON-NLS-1$
 			final IConfigurationElement[] paramElement = runElement[0]
 					.getChildren("parameter"); //$NON-NLS-1$
-			for (int i = 0; i < paramElement.length; i++) {
-				if (paramElement[i].getAttribute("name").equals(name)) { //$NON-NLS-1$
-					return paramElement[i].getAttribute("value"); //$NON-NLS-1$
+			for (IConfigurationElement element : paramElement) {
+				if (element.getAttribute("name").equals(name)) { //$NON-NLS-1$
+					return element.getAttribute("value"); //$NON-NLS-1$
 				}
 			}
 			return null;
@@ -369,8 +369,8 @@ public class BuildInfoFactory {
 
 		public void setErrorParsers(String[] parsers) throws CoreException {
 			final StringBuffer buf = new StringBuffer();
-			for (int i = 0; i < parsers.length; i++) {
-				buf.append(parsers[i]).append(';');
+			for (String element : parsers) {
+				buf.append(element).append(';');
 			}
 			putString(ErrorParserManager.PREF_ERROR_PARSER, buf.toString());
 		}
@@ -552,7 +552,7 @@ public class BuildInfoFactory {
 		@Override
 		protected void putString(String name, String value)
 				throws CoreException {
-			final String curValue = (String) args.get(name);
+			final String curValue = args.get(name);
 			if (curValue != null && curValue.equals(value)) {
 				return;
 			}
@@ -579,7 +579,7 @@ public class BuildInfoFactory {
 
 		@Override
 		protected String getString(String name) {
-			return (String) args.get(name);
+			return args.get(name);
 		}
 
 		@Override
@@ -610,7 +610,7 @@ public class BuildInfoFactory {
 
 		@Override
 		protected String getString(String name) {
-			return (String) args.get(name);
+			return args.get(name);
 		}
 
 		@Override
@@ -639,8 +639,8 @@ public class BuildInfoFactory {
 		final String[] parsers = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
 		final StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < parsers.length; i++) {
-			buf.append(parsers[i]).append(';');
+		for (String element : parsers) {
+			buf.append(element).append(';');
 		}
 		store.setDefault(ErrorParserManager.PREF_ERROR_PARSER, buf.toString());
 	}

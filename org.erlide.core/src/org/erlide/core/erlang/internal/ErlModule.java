@@ -137,22 +137,22 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlElement getElementAt(int position) throws ErlModelException {
-		for (int i = 0; i < fChildren.length; i++) {
-			if (fChildren[i] instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) fChildren[i];
+		for (IErlElement element : fChildren) {
+			if (element instanceof IErlFunction) {
+				final IErlFunction f = (IErlFunction) element;
 				final IErlElement[] cls = f.getChildren();
-				for (int j = 0; j < cls.length; j++) {
-					final ISourceReference ch = (ISourceReference) cls[j];
+				for (IErlElement element0 : cls) {
+					final ISourceReference ch = (ISourceReference) element0;
 					final ISourceRange r = ch.getSourceRange();
 					if (r.hasPosition(position)) {
-						return cls[j];
+						return element0;
 					}
 				}
 			} else {
-				final ISourceReference ch = (ISourceReference) fChildren[i];
+				final ISourceReference ch = (ISourceReference) element;
 				final ISourceRange r = ch.getSourceRange();
 				if (r != null && r.hasPosition(position)) {
-					return fChildren[i];
+					return element;
 				}
 			}
 		}
@@ -392,13 +392,11 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlComment[] getComments() {
-		return (IErlComment[]) comments
-				.toArray(new IErlComment[comments.size()]);
+		return comments.toArray(new IErlComment[comments.size()]);
 	}
 
 	public IErlImport findImport(ErlangFunction function) {
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				final IErlImport ei = (IErlImport) m;
 				if (ei.hasImported(function)) {
@@ -411,8 +409,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public IErlPreprocessorDef findPreprocessorDef(String definedName,
 			String type) {
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
 				if (pd.getElementType().equals(type)
@@ -426,8 +423,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public ErlangIncludeFile[] getIncludedFiles() {
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlAttribute) {
 				final IErlAttribute a = (IErlAttribute) m;
 				final OtpErlangObject v = a.getValue();
@@ -446,8 +442,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public IErlImport[] getImports() {
 		final List<IErlImport> r = new ArrayList<IErlImport>(0);
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				r.add((IErlImport) m);
 			}
@@ -464,8 +459,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void fixExportedFunctions() {
 		final List exports = new ArrayList(10);
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlExport) {
 				final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
 						.getParseTree();
@@ -480,8 +474,7 @@ public class ErlModule extends Openable implements IErlModule {
 				}
 			}
 		}
-		for (int i = 0; i < fChildren.length; ++i) {
-			final IErlElement m = fChildren[i];
+		for (final IErlElement m : fChildren) {
 			if (m instanceof ErlFunction) {
 				final ErlFunction f = (ErlFunction) m;
 				f.setExported(exports.contains(f.getFunction()));

@@ -247,8 +247,8 @@ public class BuildNotifier {
 	}
 
 	protected void updateProblemCounts(IProblem[] newProblems) {
-		for (int i = 0, l = newProblems.length; i < l; i++) {
-			if (newProblems[i].isError()) {
+		for (IProblem element : newProblems) {
+			if (element.isError()) {
 				fNewErrorCount++;
 			} else {
 				fNewWarningCount++;
@@ -263,8 +263,7 @@ public class BuildNotifier {
 	protected void updateProblemCounts(IMarker[] oldProblems,
 			IProblem[] newProblems) {
 		if (newProblems != null) {
-			next: for (int i = 0, l = newProblems.length; i < l; i++) {
-				final IProblem newProblem = newProblems[i];
+			next: for (final IProblem newProblem : newProblems) {
 				if (newProblem.getID() == IProblem.Task) {
 					continue; // skip task
 				}
@@ -296,8 +295,7 @@ public class BuildNotifier {
 			}
 		}
 		if (oldProblems != null) {
-			next: for (int i = 0, l = oldProblems.length; i < l; i++) {
-				final IMarker oldProblem = oldProblems[i];
+			next: for (final IMarker oldProblem : oldProblems) {
 				if (oldProblem == null) {
 					continue next; // already matched up with a new problem
 				}
@@ -307,8 +305,7 @@ public class BuildNotifier {
 						""); //$NON-NLS-1$
 
 				if (newProblems != null) {
-					for (int j = 0, m = newProblems.length; j < m; j++) {
-						final IProblem pb = newProblems[j];
+					for (final IProblem pb : newProblems) {
 						if (pb.getID() == IProblem.Task) {
 							continue; // skip task
 						}

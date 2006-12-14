@@ -11,10 +11,10 @@
 
 package org.erlide.ui.prefs.plugin;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
@@ -108,8 +108,8 @@ public class PreferencesAdapter implements IPreferenceStore {
 			final PropertyChangeEvent event = new PropertyChangeEvent(this,
 					name, oldValue, newValue);
 			final Object[] listeners = fListeners.getListeners();
-			for (int i = 0; i < listeners.length; i++) {
-				((IPropertyChangeListener) listeners[i]).propertyChange(event);
+			for (Object element : listeners) {
+				((IPropertyChangeListener) element).propertyChange(event);
 			}
 		}
 	}

@@ -46,8 +46,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			IBreakpoint[] breakpoints = DebugPlugin.getDefault()
 					.getBreakpointManager().getBreakpoints(
 							IErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
-			for (int i = 0; i < breakpoints.length; i++) {
-				IBreakpoint breakpoint = breakpoints[i];
+			for (IBreakpoint breakpoint : breakpoints) {
 				if (resource.equals(breakpoint.getMarker().getResource())) {
 					if (((ILineBreakpoint) breakpoint).getLineNumber() == (lineNumber + 1)) {
 						// remove

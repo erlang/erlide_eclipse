@@ -584,7 +584,7 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	public PerProjectInfo getPerProjectInfo(IProject project, boolean create) {
 		synchronized (perProjectInfos) {
-			PerProjectInfo info = (PerProjectInfo) perProjectInfos.get(project);
+			PerProjectInfo info = perProjectInfos.get(project);
 			if (info == null && create) {
 				info = new PerProjectInfo(project);
 				perProjectInfos.put(project, info);
@@ -782,8 +782,7 @@ public class ErlModelManager implements IErlModelManager {
 		synchronized (perProjectInfos) { // use the perProjectInfo collection
 			// as its own lock
 			final IProject project = erlangProject.getProject();
-			final PerProjectInfo info = (PerProjectInfo) perProjectInfos
-					.get(project);
+			final PerProjectInfo info = perProjectInfos.get(project);
 			if (info != null) {
 				perProjectInfos.remove(project);
 			}
@@ -800,10 +799,9 @@ public class ErlModelManager implements IErlModelManager {
 	/* Unused */
 	/*
 	 * private void saveState(PerProjectInfo info, ISaveContext context) throws
-	 * CoreException {
-	 *  // passed this point, save actions are non trivial if (context.getKind() ==
-	 * ISaveContext.SNAPSHOT) { return; }
-	 *  // save built state if (info.fTriedRead) { saveBuiltState(info); } }
+	 * CoreException { // passed this point, save actions are non trivial if
+	 * (context.getKind() == ISaveContext.SNAPSHOT) { return; } // save built
+	 * state if (info.fTriedRead) { saveBuiltState(info); } }
 	 */
 
 	/**
@@ -1308,8 +1306,8 @@ public class ErlModelManager implements IErlModelManager {
 				if (cRoot.equals(element)) {
 					final IErlElementDelta[] children = delta
 							.getChildren(IErlElementDelta.ALL);
-					for (int j = 0; j < children.length; j++) {
-						final ErlElementDelta projectDelta = (ErlElementDelta) children[j];
+					for (IErlElementDelta element0 : children) {
+						final ErlElementDelta projectDelta = (ErlElementDelta) element0;
 						rootDelta.insertDeltaTree(projectDelta.getElement(),
 								projectDelta);
 						insertedTree = true;
@@ -1317,8 +1315,8 @@ public class ErlModelManager implements IErlModelManager {
 					final IResourceDelta[] resourceDeltas = delta
 							.getResourceDeltas();
 					if (resourceDeltas != null) {
-						for (int i = 0, length = resourceDeltas.length; i < length; i++) {
-							rootDelta.addResourceDelta(resourceDeltas[i]);
+						for (IResourceDelta element0 : resourceDeltas) {
+							rootDelta.addResourceDelta(element0);
 							insertedTree = true;
 						}
 					}

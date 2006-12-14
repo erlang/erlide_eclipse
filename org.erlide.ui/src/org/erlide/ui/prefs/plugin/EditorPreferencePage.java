@@ -103,7 +103,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		public void widgetSelected(SelectionEvent e) {
 			Button button = (Button) e.widget;
-			fOverlayStore.setValue((String) fCheckBoxes.get(button), button
+			fOverlayStore.setValue(fCheckBoxes.get(button), button
 					.getSelection());
 		}
 	};
@@ -114,8 +114,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		public void modifyText(ModifyEvent e) {
 			Text text = (Text) e.widget;
-			fOverlayStore.setValue((String) fTextFields.get(text), text
-					.getText());
+			fOverlayStore.setValue(fTextFields.get(text), text.getText());
 		}
 	};
 
@@ -449,8 +448,8 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		initializeFields();
 
-		for (int i = 0; i < fAppearanceColorListModel.length; i++) {
-			fAppearanceColorList.add(fAppearanceColorListModel[i][0]);
+		for (String[] element : fAppearanceColorListModel) {
+			fAppearanceColorList.add(element[0]);
 		}
 		fAppearanceColorList.getDisplay().asyncExec(new Runnable() {
 
@@ -469,14 +468,14 @@ public class EditorPreferencePage extends PreferencePage implements
 		Iterator e = fCheckBoxes.keySet().iterator();
 		while (e.hasNext()) {
 			final Button b = (Button) e.next();
-			final String key = (String) fCheckBoxes.get(b);
+			final String key = fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
 
 		e = fTextFields.keySet().iterator();
 		while (e.hasNext()) {
 			final Text t = (Text) e.next();
-			final String key = (String) fTextFields.get(t);
+			final String key = fTextFields.get(t);
 			t.setText(fOverlayStore.getString(key));
 		}
 
@@ -636,8 +635,7 @@ public class EditorPreferencePage extends PreferencePage implements
 		final String number = textControl.getText();
 		final IStatus status = validatePositiveNumber(number);
 		if (!status.matches(IStatus.ERROR)) {
-			fOverlayStore.setValue((String) fTextFields.get(textControl),
-					number);
+			fOverlayStore.setValue(fTextFields.get(textControl), number);
 		}
 		updateStatus(status);
 	}

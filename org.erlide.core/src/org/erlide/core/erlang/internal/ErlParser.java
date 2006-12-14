@@ -84,8 +84,7 @@ public class ErlParser {
 	private List<ErlToken[]> splitForms(ErlToken[] tokens) {
 		final List<ErlToken[]> result = new ArrayList<ErlToken[]>(10);
 		List<ErlToken> tmp = new ArrayList<ErlToken>(50);
-		for (int i = 0; i < tokens.length; i++) {
-			final ErlToken token = tokens[i];
+		for (final ErlToken token : tokens) {
 			tmp.add(token);
 			if (token.getKind().equals("dot")) {
 				final ErlToken[] tmpar = new ErlToken[tmp.size()];
@@ -137,8 +136,9 @@ public class ErlParser {
 				}
 
 				ErlToken[] t = scanner.getTokens();
-				for (ErlToken tk : t)
+				for (ErlToken tk : t) {
 					System.out.print(" " + tk.toString());
+				}
 				System.out.println();
 				System.out.println(forms);
 				System.out.println("-----------------------");
@@ -393,8 +393,8 @@ public class ErlParser {
 		try {
 			RpcResult r = BackendManager.getDefault().getIdeBackend().rpc(
 					mod.atomValue(), "format_error", arg);
-			 r = BackendManager.getDefault().getIdeBackend().rpc(
-					"lists", "flatten", r.getValue());
+			r = BackendManager.getDefault().getIdeBackend().rpc("lists",
+					"flatten", r.getValue());
 			res = ((OtpErlangString) r.getValue()).stringValue();
 		} catch (ErlangRpcException e) {
 			e.printStackTrace();

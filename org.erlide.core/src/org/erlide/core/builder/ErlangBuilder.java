@@ -308,9 +308,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// delete beam files
 		final IFolder bf = getProject().getFolder(prefs.getOutputDir());
 		final IResource[] beams = bf.members();
-		for (int i = 0; i < beams.length; i++) {
-			if ("beam".equals(beams[i].getFileExtension())) {
-				beams[i].delete(true, monitor);
+		for (IResource element : beams) {
+			if ("beam".equals(element.getFileExtension())) {
+				element.delete(true, monitor);
 			}
 		}
 
@@ -498,8 +498,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final IPath projectPath = project.getLocation();
 
 		final String[] srcs = prefs.getSourceDirs();
-		for (int i = 0; i < srcs.length; i++) {
-			final IPath sp = projectPath.append(new Path(srcs[i]));
+		for (String element : srcs) {
+			final IPath sp = projectPath.append(new Path(element));
 			if (sp.equals(resource.getLocation().removeLastSegments(1))) {
 				return true;
 			}
@@ -514,8 +514,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final IPath projectPath = project.getLocation();
 
 		final String[] srcs = prefs.getSourceDirs();
-		for (int i = 0; i < srcs.length; i++) {
-			final IPath sp = projectPath.append(new Path(srcs[i]));
+		for (String element : srcs) {
+			final IPath sp = projectPath.append(new Path(element));
 			if (sp.isPrefixOf(resource.getLocation())) {
 				return true;
 			}

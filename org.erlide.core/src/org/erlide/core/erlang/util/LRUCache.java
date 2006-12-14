@@ -201,7 +201,7 @@ public class LRUCache implements Cloneable {
 
 		LRUCacheEntry entry;
 
-		entry = (LRUCacheEntry) fEntryTable.get(key);
+		entry = fEntryTable.get(key);
 
 		/* If entry does not exist, return */
 		if (entry == null) {
@@ -221,7 +221,7 @@ public class LRUCache implements Cloneable {
 	 */
 	public Object get(Object key) {
 
-		final LRUCacheEntry entry = (LRUCacheEntry) fEntryTable.get(key);
+		final LRUCacheEntry entry = fEntryTable.get(key);
 		if (entry == null) {
 			return null;
 		}
@@ -418,7 +418,7 @@ public class LRUCache implements Cloneable {
 
 		/* Check whether there's an entry in the cache */
 		newSpace = spaceFor(value);
-		entry = (LRUCacheEntry) fEntryTable.get(key);
+		entry = fEntryTable.get(key);
 
 		if (entry != null) {
 
@@ -455,7 +455,7 @@ public class LRUCache implements Cloneable {
 	 */
 	public Object removeKey(Object key) {
 
-		final LRUCacheEntry entry = (LRUCacheEntry) fEntryTable.get(key);
+		final LRUCacheEntry entry = fEntryTable.get(key);
 		if (entry == null) {
 			return null;
 		}

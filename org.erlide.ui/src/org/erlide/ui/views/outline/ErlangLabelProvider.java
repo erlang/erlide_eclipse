@@ -128,8 +128,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	protected Image decorateImage(Image image, Object element) {
 		if (fLabelDecorators != null && image != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
-				final ILabelDecorator decorator = (ILabelDecorator) fLabelDecorators
-						.get(i);
+				final ILabelDecorator decorator = fLabelDecorators.get(i);
 				image = decorator.decorateImage(image, element);
 			}
 		}
@@ -151,8 +150,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	protected String decorateText(String text, Object element) {
 		if (fLabelDecorators != null && text.length() > 0) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
-				final ILabelDecorator decorator = (ILabelDecorator) fLabelDecorators
-						.get(i);
+				final ILabelDecorator decorator = fLabelDecorators.get(i);
 				text = decorator.decorateText(text, element);
 			}
 		}
@@ -185,8 +183,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	public void dispose() {
 		if (fLabelDecorators != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
-				final ILabelDecorator decorator = (ILabelDecorator) fLabelDecorators
-						.get(i);
+				final ILabelDecorator decorator = fLabelDecorators.get(i);
 				decorator.dispose();
 			}
 			fLabelDecorators = null;
@@ -202,8 +199,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	public void addListener(ILabelProviderListener listener) {
 		if (fLabelDecorators != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
-				final ILabelDecorator decorator = (ILabelDecorator) fLabelDecorators
-						.get(i);
+				final ILabelDecorator decorator = fLabelDecorators.get(i);
 				decorator.addListener(listener);
 			}
 		}
@@ -227,8 +223,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	public void removeListener(ILabelProviderListener listener) {
 		if (fLabelDecorators != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
-				final ILabelDecorator decorator = (ILabelDecorator) fLabelDecorators
-						.get(i);
+				final ILabelDecorator decorator = fLabelDecorators.get(i);
 				decorator.removeListener(listener);
 			}
 		}
@@ -280,8 +275,8 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	protected void fireLabelProviderChanged(
 			final LabelProviderChangedEvent event) {
 		final Object[] listeners = fListeners.getListeners();
-		for (int i = 0; i < listeners.length; ++i) {
-			final ILabelProviderListener l = (ILabelProviderListener) listeners[i];
+		for (Object element : listeners) {
+			final ILabelProviderListener l = (ILabelProviderListener) element;
 			SafeRunner.run(new SafeRunnable() {
 
 				public void run() {
