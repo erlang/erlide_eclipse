@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.basicui.internal.util;
+package org.erlide.basicui.util;
 
 import java.util.Vector;
 
