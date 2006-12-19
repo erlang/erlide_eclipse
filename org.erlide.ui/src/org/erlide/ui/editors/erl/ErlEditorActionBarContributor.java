@@ -11,9 +11,11 @@
 
 package org.erlide.ui.editors.erl;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
@@ -43,13 +45,12 @@ public class ErlEditorActionBarContributor extends
 
 	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
-		// final IMenuManager editMenu = menuManager
-		// .findMenuUsingPath(IWorkbenchActionConstants.M_EDIT);
-		// if (editMenu != null)
-		// {
-		// editMenu.add(new Separator());
-		// editMenu.add(contentAssistProposal);
-		// }
+		final IMenuManager navigateMenu = menuManager
+				.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
+		if (navigateMenu != null) {
+			// navigateMenu.add(new Separator());
+			// navigateMenu.add(fQuickOutline);
+		}
 	}
 
 	@Override
@@ -74,6 +75,13 @@ public class ErlEditorActionBarContributor extends
 
 		fPreviousAnnotation.setEditor(editor);
 		fNextAnnotation.setEditor(editor);
+
+		IActionBars actionBars = getActionBars();
+		IAction showOutline = getAction(editor,
+				IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
+		actionBars.setGlobalActionHandler(
+				IErlangEditorActionDefinitionIds.SHOW_OUTLINE, showOutline);
+
 	}
 
 	/*

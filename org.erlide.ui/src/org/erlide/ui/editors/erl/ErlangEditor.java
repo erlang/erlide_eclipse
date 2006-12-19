@@ -97,6 +97,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.actions.OpenIncludeFileAction;
+import org.erlide.ui.actions.ShowOutlineAction;
 import org.erlide.ui.actions.ToggleCommentAction;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
@@ -154,6 +155,8 @@ public class ErlangEditor extends TextEditor {
 
 	/** The editor's bracket matcher */
 	InformationPresenter fInformationPresenter;
+
+	private ShowOutlineAction fShowOutline;
 
 	// private IHandlerActivation fHandlerActivation;
 
@@ -333,6 +336,15 @@ public class ErlangEditor extends TextEditor {
 				openIncludeFileAction,
 				IErlangHelpContextIds.OPEN_INCLUDE_FILE_ACTION);
 
+		System.out.println("%%%% create action");
+		fShowOutline = new ShowOutlineAction(ErlangEditorMessages
+				.getBundleForConstructedKeys(), "ShowOutline.", this);
+		fShowOutline
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
+		setAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, fShowOutline);
+		markAsContentDependentAction(
+				IErlangEditorActionDefinitionIds.SHOW_OUTLINE, true);
+
 	}
 
 	@Override
@@ -345,6 +357,7 @@ public class ErlangEditor extends TextEditor {
 		menu.add(indentAction);
 		menu.add(toggleCommentAction);
 		menu.add(openIncludeFileAction);
+		menu.add(fShowOutline);
 	}
 
 	@Override

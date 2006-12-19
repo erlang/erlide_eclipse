@@ -246,7 +246,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * @param sourceViewer
 	 *            the source viewer to be configured by this configuration
 	 * @return an information control creator
-	 * @since 2.1
 	 */
 	/* NOT USED */
 	/*

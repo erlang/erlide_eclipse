@@ -370,6 +370,9 @@
       <command
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
+      <command
+            id="org.erlide.ui.actions.show.outline"
+            name="Show outline"/>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -387,12 +390,17 @@
             commandId="org.erlide.ui.actions.indent"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="Ctrl+I"/>
+            sequence="M1+I"/>
       <key
             commandId="org.erlide.ui.actions.console.input"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Ctrl+Alt+K"/>
+      <key
+            commandId="org.erlide.ui.actions.show.outline"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+O"/>
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">
@@ -418,6 +426,7 @@
              retarget="true"
              tooltip="Open"/>
     </actionSet>
+<!--
     <actionSet
           id="org.erlide.ui.actions.console"
           label="Erlang console"
@@ -432,6 +441,7 @@
              style="push"
              toolbarPath="erlang/console"/>
     </actionSet>
+-->
  </extension>
  <extension
        point="org.eclipse.compare.structureCreators">

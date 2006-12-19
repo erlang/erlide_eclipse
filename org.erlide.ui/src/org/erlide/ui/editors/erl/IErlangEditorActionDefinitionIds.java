@@ -22,4 +22,5 @@ public class IErlangEditorActionDefinitionIds {
 
 	public static final String OPEN_INCLUDE_FILE = "org.erlide.ui.actions.openincludefile";
 
+	public static final String SHOW_OUTLINE = "org.erlide.ui.actions.show.outline";
 }
