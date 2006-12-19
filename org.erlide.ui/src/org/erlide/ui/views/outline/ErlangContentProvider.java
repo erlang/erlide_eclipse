@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.ui.views.outline.ErlangOutlinePage.NoModuleElement;
@@ -61,7 +61,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		List<IErlElement> list = Arrays.asList(res);
 		List<IErlElement> list2 = new ArrayList<IErlElement>(5);
 		for (IErlElement element : list) {
-			if (element instanceof IErlFunction)
+			if (!(element instanceof IErlAttribute))
 				list2.add(element);
 		}
 		return list2.toArray();
