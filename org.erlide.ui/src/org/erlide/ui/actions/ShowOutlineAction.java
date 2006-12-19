@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 
 public class ShowOutlineAction extends TextEditorAction {
@@ -16,7 +17,10 @@ public class ShowOutlineAction extends TextEditorAction {
 
 	@Override
 	public void run() {
-		new QuickOutlinePopupDialog(getTextEditor().getSite().getShell(),
-				SWT.NONE, null, null).setVisible(true);
+		if (getTextEditor() instanceof ErlangEditor) {
+			ErlangEditor editor = (ErlangEditor) getTextEditor();
+			new QuickOutlinePopupDialog(getTextEditor().getSite().getShell(),
+					SWT.NONE, editor, editor).setVisible(true);
+		}
 	}
 }

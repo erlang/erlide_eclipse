@@ -170,15 +170,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
 	private void createUIWidgetTreeViewer(Composite parent) {
 
-		// NOTE: Instructions to implement for PDE form pages:
-		// Need to call PDEFormEditor.getFormOutline()
-		// Specify PDE form editor as input
-		// Need to adjust commandId="org.eclipse.pde.ui.quickOutline"
-		// scope: contextId="org.eclipse.ui.textEditorScope"
-		// SEE org.eclipse.ui.contexts.window
-		// TODO: MP: QO: LOW: Implement bi-directional support between form and
-		// source page for manifest
-
 		int style = SWT.H_SCROLL | SWT.V_SCROLL;
 		// Create the tree
 		Tree widget = new Tree(parent, style);
@@ -468,7 +459,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @see org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang.Object)
 	 */
 	public void setInput(Object input) {
-		// Input comes from PDESourceInfoProvider.getInformation2()
+		// Input comes from ErlangSourceInfoProvider.getInformation2()
 		// The input should be a model object of some sort
 		// Turn it into a structured selection and set the selection in the tree
 		if (input != null) {
@@ -528,6 +519,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
 	private void gotoSelectedElement() {
 		Object selectedElement = getSelectedElement();
+		System.out.println("&&>> " + selectedElement);
 		if (selectedElement == null) {
 			return;
 		}

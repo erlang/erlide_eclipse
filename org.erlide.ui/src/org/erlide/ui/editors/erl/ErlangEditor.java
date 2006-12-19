@@ -47,12 +47,15 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
@@ -61,7 +64,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -82,12 +84,10 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
@@ -100,10 +100,14 @@ import org.erlide.ui.actions.OpenIncludeFileAction;
 import org.erlide.ui.actions.ShowOutlineAction;
 import org.erlide.ui.actions.ToggleCommentAction;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.outline.IOutlineContentCreator;
+import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.views.ErlangPropertySource;
+import org.erlide.ui.views.outline.ErlangContentProvider;
+import org.erlide.ui.views.outline.ErlangLabelProvider;
 import org.erlide.ui.views.outline.ErlangOutlinePage;
 
 /**
@@ -112,7 +116,8 @@ import org.erlide.ui.views.outline.ErlangOutlinePage;
  * 
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
-public class ErlangEditor extends TextEditor {
+public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
+		IOutlineSelectionHandler {
 
 	private ColorManager colorManager;
 
@@ -120,18 +125,8 @@ public class ErlangEditor extends TextEditor {
 
 	private IPropertySource myPropertySource;
 
-	/**
-	 * This editor's projection support
-	 * 
-	 * @since 3.0
-	 */
 	private ProjectionSupport fProjectionSupport;
 
-	/**
-	 * This editor's projection model updater
-	 * 
-	 * @since 3.0
-	 */
 	private IErlangFoldingStructureProvider fProjectionModelUpdater;
 
 	private OpenAction openAction;
@@ -147,20 +142,17 @@ public class ErlangEditor extends TextEditor {
 
 	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 
+	private InformationPresenter fInformationPresenter;
+
+	private ShowOutlineAction fShowOutline;
+
+	private Object fSelection;
+
 	/** Preference key for matching brackets */
 	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
 
 	/** Preference key for matching brackets color */
 	protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-
-	/** The editor's bracket matcher */
-	InformationPresenter fInformationPresenter;
-
-	private ShowOutlineAction fShowOutline;
-
-	// private IHandlerActivation fHandlerActivation;
-
-	// private ConsoleInputAction consoleInputAction;
 
 	/**
 	 * Simple constructor
@@ -336,7 +328,6 @@ public class ErlangEditor extends TextEditor {
 				openIncludeFileAction,
 				IErlangHelpContextIds.OPEN_INCLUDE_FILE_ACTION);
 
-		System.out.println("%%%% create action");
 		fShowOutline = new ShowOutlineAction(ErlangEditorMessages
 				.getBundleForConstructedKeys(), "ShowOutline.", this);
 		fShowOutline
@@ -351,8 +342,8 @@ public class ErlangEditor extends TextEditor {
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		menu.add(openAction);
-		// TODO: kolla varför detta inte funkar:
-		// menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS,
+		// menu
+		// .appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS,
 		// indentAction);
 		menu.add(indentAction);
 		menu.add(toggleCommentAction);
@@ -622,6 +613,10 @@ public class ErlangEditor extends TextEditor {
 		return (ISourceReference) element;
 	}
 
+	public IErlModule getModule() {
+		return ErlModelUtils.getModule(getEditorInput());
+	}
+
 	/**
 	 * Returns the most narrow element including the given offset. If
 	 * <code>reconcile</code> is <code>true</code> the editor's input
@@ -637,38 +632,22 @@ public class ErlangEditor extends TextEditor {
 	 * @throws ErlModelException
 	 */
 	public IErlElement getElementAt(int offset, boolean reconcile) {
-		// TODO fix this!
-		if (getEditorInput() instanceof IFileEditorInput) {
-			final IFileEditorInput f = (IFileEditorInput) getEditorInput();
-			final IErlModel mdl = ErlangCore.getModel();
-
-			final String prj = f.getFile().getProject().getName();
-
+		final IErlModule unit = getModule();
+		if (unit != null) {
 			try {
-				mdl.open(null);
-				final IErlModule unit = mdl.getErlangProject(prj).getModule(
-						f.getName());
-				if (unit != null) {
-					if (reconcile) {
+				if (reconcile) {
+					unit.open(null);
+					synchronized (unit) {
+						unit.reconcile(getSourceViewer().getDocument());
 						unit.open(null);
-						synchronized (unit) {
-							unit.reconcile(getSourceViewer().getDocument());
-							unit.open(null);
-						}
-						return unit.getElementAt(offset);
-					} else if (unit.isConsistent()) {
-						return unit.getElementAt(offset);
 					}
-
+					return unit.getElementAt(offset);
+				} else if (unit.isConsistent()) {
+					return unit.getElementAt(offset);
 				}
-			} catch (final ErlModelException x) {
-				if (!x.isDoesNotExist()) {
-					ErlideUIPlugin.log(x.getStatus());
-					// nothing found, be tolerant and go on
-				}
+			} catch (Exception e) {
 			}
 		}
-
 		return null;
 	}
 
@@ -714,6 +693,7 @@ public class ErlangEditor extends TextEditor {
 			} else {
 				selectionProvider.removeSelectionChangedListener(this);
 			}
+
 		}
 	}
 
@@ -1373,6 +1353,59 @@ public class ErlangEditor extends TextEditor {
 			return null;
 		}
 		return v.getDocument();
+	}
+
+	public ViewerComparator createDefaultOutlineComparator() {
+		return null;
+	}
+
+	public ViewerComparator createOutlineComparator() {
+		return null;
+	}
+
+	public ITreeContentProvider createOutlineContentProvider() {
+		return new ErlangContentProvider(false);
+	}
+
+	public ILabelProvider createOutlineLabelProvider() {
+		return new ErlangLabelProvider();
+	}
+
+	public Object getOutlineInput() {
+		return getModule();
+	}
+
+	public ISortableContentOutlinePage getContentOutline() {
+		return myOutlinePage;
+	}
+
+	public void updateSelection(SelectionChangedEvent event) {
+		ISelection sel = event.getSelection();
+		if (sel instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) sel;
+			updateSelection(structuredSelection.getFirstElement());
+		}
+	}
+
+	public void updateSelection(Object object) {
+		// TODO Auto-generated method stub
+		System.out.println("SEL::: " + object);
+	}
+
+	public void selectionChanged(SelectionChangedEvent event) {
+		if (event.getSource() == getSelectionProvider())
+			return;
+		ISelection sel = event.getSelection();
+		if (sel instanceof ITextSelection)
+			return;
+		if (sel instanceof IStructuredSelection)
+			fSelection = ((IStructuredSelection) sel).getFirstElement();
+		else
+			fSelection = null;
+	}
+
+	public Object getSelection() {
+		return fSelection;
 	}
 
 }

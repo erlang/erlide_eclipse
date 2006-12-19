@@ -12,6 +12,7 @@ package org.erlide.ui.editors.erl;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -21,6 +22,9 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.information.IInformationPresenter;
+import org.eclipse.jface.text.information.IInformationProvider;
+import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
@@ -34,6 +38,7 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
+import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
@@ -57,6 +62,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	private IColorManager colorManager;
 
 	private ErlPairMatcher fBracketMatcher;
+
+	private InformationPresenter fOutlinePresenter;
 
 	/**
 	 * Default configuration constructor
@@ -257,4 +264,46 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * SWT.H_SCROLL; return new DefaultInformationControl(parent, shellStyle,
 	 * style, new HTMLTextPresenter(false)); } }; }
 	 */
+	private IInformationControlCreator getOutlinePresenterControlCreator(
+			ISourceViewer sourceViewer, final String commandId) {
+		return new IInformationControlCreator() {
+			public IInformationControl createInformationControl(Shell parent) {
+				int shellStyle = SWT.RESIZE;
+				QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
+						parent, shellStyle, editor, editor);
+				return dialog;
+			}
+		};
+	}
+
+	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer) {
+		// Ensure the source page is defined
+		if (editor == null) {
+			return null;
+		}
+		// Reuse the old outline presenter
+		if (fOutlinePresenter != null) {
+			return fOutlinePresenter;
+		}
+		// Define a new outline presenter
+		fOutlinePresenter = new InformationPresenter(
+				getOutlinePresenterControlCreator(sourceViewer,
+						IErlangEditorActionDefinitionIds.SHOW_OUTLINE));
+		fOutlinePresenter
+				.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+		fOutlinePresenter
+				.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
+		// Define a new outline provider
+		IInformationProvider provider = new ErlangSourceInfoProvider(editor);
+		// Set the provider on all defined content types
+		String[] contentTypes = getConfiguredContentTypes(sourceViewer);
+		for (int i = 0; i < contentTypes.length; i++) {
+			fOutlinePresenter.setInformationProvider(provider, contentTypes[i]);
+		}
+		// Set the presenter size constraints
+		fOutlinePresenter.setSizeConstraints(50, 20, true, false);
+
+		return fOutlinePresenter;
+	}
+
 }
