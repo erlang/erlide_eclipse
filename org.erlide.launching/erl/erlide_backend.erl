@@ -14,7 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/1,
+-export([init/2,
 
    parse_term/1,
    eval/1,
@@ -30,14 +30,30 @@
 
   ]).
 
-init(EventSinkPid) ->
-    Pid = spawn(fun() -> event_loop(EventSinkPid) end),
-    register(erlide_events, Pid),
+init(EventSinkPid, JavaNode) ->
+    spawn(fun()->
+        Pid = spawn(fun() -> event_loop(EventSinkPid) end),
+        register(erlide_events, Pid),
 
-    erlide_io_server:start(),
-    erlide_io_server:add(EventSinkPid),
+        erlide_io_server:start(),
+        erlide_io_server:add(EventSinkPid),
+
+        spawn(fun() ->
+                monitor_node(JavaNode, true),
+          watch_eclipse()
+                  end
+            )
+    end),
 
     ok.
+
+watch_eclipse() ->
+        receive
+              {nodedown, _} ->
+                  init:stop()
+        after 100 ->
+            watch_eclipse()
+        end.
 
 parse_term(Str) ->
     case catch parse_term_raw(Str) of

@@ -505,7 +505,8 @@ public abstract class AbstractBackend implements IBackend {
 	public void init_erlang() {
 		fConsoleJob = new ErlConsoleJob(this);
 		try {
-			rpc(ERL_BACKEND, "init", getEventPid());
+			rpc(ERL_BACKEND, "init", getEventPid(), new OtpErlangAtom(fNode
+					.node()));
 		} catch (ErlangRpcException e) {
 			e.printStackTrace();
 		}
