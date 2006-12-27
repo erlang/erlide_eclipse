@@ -147,7 +147,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.erlide.ui.properties.ErlangProjectPropertyPage"
+            class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
             name="Erlang properties"
             objectClass="org.eclipse.core.resources.IProject">

@@ -28,7 +28,7 @@ import org.erlide.core.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
-public class ErlangProjectPropertyPage extends PropertyPage implements
+public class ErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
 	private ErlangProjectProperties prefs;
@@ -44,9 +44,9 @@ public class ErlangProjectPropertyPage extends PropertyPage implements
 	private PathEditor fextinc;
 
 	/**
-	 * Constructor for ErlangProjectPropertyPage.
+	 * Constructor for ErlProjectPropertyPage.
 	 */
-	public ErlangProjectPropertyPage() {
+	public ErlProjectPropertyPage() {
 		super();
 	}
 
