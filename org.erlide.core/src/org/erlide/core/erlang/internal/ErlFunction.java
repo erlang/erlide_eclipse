@@ -88,4 +88,26 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	public ErlangFunction getFunction() {
 		return new ErlangFunction(getElementName(), getArity());
 	}
+
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = super.hashCode();
+		result = PRIME * result + this.fArity;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ErlFunction other = (ErlFunction) obj;
+		if (this.fArity != other.fArity)
+			return false;
+		return true;
+	}
 }
