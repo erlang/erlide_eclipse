@@ -152,7 +152,7 @@ public final class BackendManager implements IResourceChangeListener {
 			return DEFAULT_BACKEND_LABEL;
 		} else {
 			// TODO use project configuration
-			return DEFAULT_BACKEND_LABEL;
+			return DEFAULT_BACKEND_LABEL + "/" + project.getName();
 		}
 	}
 
