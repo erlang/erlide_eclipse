@@ -168,15 +168,4 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	public void sort(boolean sorting) {
 	}
 
-	@Override
-	public void setSelection(ISelection selection) {
-		System.out.println("111111 " + selection);
-		super.setSelection(selection);
-	}
-
-	@Override
-	protected void fireSelectionChanged(ISelection selection) {
-		System.out.println("222222 " + selection);
-		super.fireSelectionChanged(selection);
-	}
 }

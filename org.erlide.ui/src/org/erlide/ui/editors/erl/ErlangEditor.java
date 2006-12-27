@@ -725,7 +725,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	protected void doSelectionChanged(SelectionChangedEvent event) {
-
 		ISourceReference reference = null;
 
 		final ISelection selection = event.getSelection();
@@ -741,7 +740,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			ErlideUIPlugin.getActivePage().bringToTop(this);
 		}
 
-		setSelection(reference, !isActivePart());
+		setSelection(reference, true);
 	}
 
 	protected void selectionChanged() {
@@ -1387,9 +1386,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	public void updateSelection(Object object) {
-		// TODO Auto-generated method stub
-		System.out.println("SEL::: " + object);
+	public void updateSelection(Object sel) {
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
