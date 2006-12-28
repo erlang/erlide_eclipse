@@ -37,19 +37,21 @@ init(EventSinkPid, JavaNode) ->
         
         erlide_io_server:start(),
         erlide_io_server:add(EventSinkPid),
-        
-        spawn(fun() ->
-            	monitor_node(JavaNode, true),
-            	watch_eclipse(JavaNode)
-              end)
-        end),
+
+        watch_eclipse(JavaNode)
+     end),
+                
     ok.
 
-watch_eclipse(JNode) ->
-    receive
-		{nodedown, JNode} ->
-        	init:stop()
-    end.
+watch_eclipse(JavaNode) ->
+        spawn(fun() ->
+            	monitor_node(JavaNode, true),
+           	    receive
+					{nodedown, JavaNode} ->
+        				init:stop()
+    			end
+              end).
+
 
 parse_term(Str) ->
     case catch parse_term_raw(Str) of
