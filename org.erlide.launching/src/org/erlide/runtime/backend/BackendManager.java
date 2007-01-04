@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 
@@ -145,8 +146,14 @@ public final class BackendManager implements IResourceChangeListener {
 		if (project == null) {
 			return DEFAULT_BACKEND_LABEL;
 		} else {
-			// TODO use project configuration
-			return DEFAULT_BACKEND_LABEL + "/" + project.getName();
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
+			String prjLabel = prefs.getBackendNodeName();
+			if (prjLabel.length() == 0) {
+				// we use the ide backend in this case
+				return DEFAULT_BACKEND_LABEL;
+			}
+			return prjLabel;
 		}
 	}
 
