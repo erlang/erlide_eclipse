@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties;
 
 /**
  * Simple utility functions

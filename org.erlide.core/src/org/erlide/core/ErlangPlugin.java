@@ -38,6 +38,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.osgi.framework.BundleContext;
 

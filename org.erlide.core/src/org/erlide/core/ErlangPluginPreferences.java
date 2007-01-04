@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.basiccore.ErtsPreferences;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
