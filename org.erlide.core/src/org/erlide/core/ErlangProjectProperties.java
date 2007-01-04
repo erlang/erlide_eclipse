@@ -41,6 +41,8 @@ public class ErlangProjectProperties {
 
 	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
 
+	private String fBackendNodeName = IPrefConstants.DEFAULT_BACKEND_NODE_NAME;
+
 	private List<IPropertyChangeListener> fListeners;
 
 	public ErlangProjectProperties() {
@@ -80,6 +82,9 @@ public class ErlangProjectProperties {
 		fExternalIncludes = prefs.getProperty(
 				IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 				IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
+		fBackendNodeName = prefs.getProperty(
+				IPrefConstants.PROJECT_BACKEND_NODE_NAME,
+				IPrefConstants.DEFAULT_BACKEND_NODE_NAME);
 	}
 
 	public void store() {
@@ -97,6 +102,7 @@ public class ErlangProjectProperties {
 		prefs.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
 		prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
 		prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
+		prefs.put(IPrefConstants.PROJECT_BACKEND_NODE_NAME, fBackendNodeName);
 
 		try {
 			prefs.store(new FileOutputStream(codepath), null);
@@ -243,6 +249,14 @@ public class ErlangProjectProperties {
 		// listener.propertyChange(new PropertyChangeEvent(null, null, null,
 		// null));
 		// }
+	}
+
+	public String getBackendNodeName() {
+		return this.fBackendNodeName;
+	}
+
+	public void setBackendNodeName(String backendNodeName) {
+		this.fBackendNodeName = backendNodeName;
 	}
 
 }

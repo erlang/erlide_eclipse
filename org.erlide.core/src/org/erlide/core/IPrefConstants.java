@@ -58,4 +58,8 @@ public interface IPrefConstants {
 
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
+	String PROJECT_BACKEND_NODE_NAME = "backend_name";
+
+	String DEFAULT_BACKEND_NODE_NAME = "";
+
 }
