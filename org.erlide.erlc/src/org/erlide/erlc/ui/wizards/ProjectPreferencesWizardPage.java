@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.ErlangProjectProperties;
 import org.erlide.erlc.ErlideErlcPlugin;
+import org.erlide.runtime.ErlangProjectProperties;
 
 /**
  * 

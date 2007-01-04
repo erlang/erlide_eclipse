@@ -34,10 +34,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.erlc.ErlideErlcPlugin;
 import org.erlide.erlc.IErlideErlcConstants;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ICodeManager;
 
