@@ -48,8 +48,6 @@ public final class BackendManager implements IResourceChangeListener {
 
 	private Object fRemoteBackendsLock = new Object();
 
-	private Map<IProject, IBackend> fProjectBackendMap;
-
 	protected List<IBackendListener> fListeners;
 
 	private List<Plugin> fPlugins;
@@ -69,7 +67,6 @@ public final class BackendManager implements IResourceChangeListener {
 
 		fLocalBackends = new HashMap<String, IBackend>(5);
 		fRemoteBackends = new HashMap<String, IBackend>(5);
-		fProjectBackendMap = new HashMap<IProject, IBackend>(5);
 		fListeners = new ArrayList<IBackendListener>(5);
 		fPlugins = new ArrayList<Plugin>(5);
 
@@ -139,9 +136,6 @@ public final class BackendManager implements IResourceChangeListener {
 				b = createManaged(name);
 				fLocalBackends.put(name, b);
 				fireUpdate(b, ADDED);
-			}
-			if (fProjectBackendMap.get(project) == null) {
-				fProjectBackendMap.put(project, b);
 			}
 			return b;
 		}
