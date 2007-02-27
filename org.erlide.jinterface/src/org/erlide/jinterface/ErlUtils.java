@@ -72,7 +72,7 @@ public class ErlUtils {
 				.clone();
 
 		final OtpVariable v = (OtpVariable) pattern;
-		final OtpErlangObject old = (OtpErlangObject) bindings.get(v.getName());
+		final OtpErlangObject old = bindings.get(v.getName());
 		// no previous binding
 		if (old == null) {
 			result.put(v.getName(), term);

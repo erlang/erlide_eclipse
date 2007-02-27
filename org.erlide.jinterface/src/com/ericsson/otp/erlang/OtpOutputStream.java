@@ -67,7 +67,7 @@ public class OtpOutputStream {
 	 * Create a stream with the specified initial size.
 	 */
 	public OtpOutputStream(int lsize) {
-		this.size = lsize;
+		size = lsize;
 		buf = new byte[lsize];
 		count = 0;
 	}
@@ -155,12 +155,12 @@ public class OtpOutputStream {
 			// System.err.println("Expanding buffer from " +
 			// size + " to " + buf.length + size + defaultIncrement);
 			final byte[] tmp = new byte[size + lbuf.length + defaultIncrement];
-			System.arraycopy(this.buf, 0, tmp, 0, count);
+			System.arraycopy(buf, 0, tmp, 0, count);
 			size += defaultIncrement + lbuf.length;
-			this.buf = tmp;
+			buf = tmp;
 		}
 
-		System.arraycopy(lbuf, 0, this.buf, count, lbuf.length);
+		System.arraycopy(lbuf, 0, buf, count, lbuf.length);
 		count += lbuf.length;
 	}
 

@@ -158,12 +158,12 @@ public abstract class AbstractConnection extends Thread {
 	protected AbstractConnection(OtpLocalNode self, Socket s)
 			throws IOException, OtpAuthException {
 		this.self = self;
-		this.peer = new OtpPeer();
-		this.socket = s;
+		peer = new OtpPeer();
+		socket = s;
 
-		this.socket.setTcpNoDelay(true);
+		socket.setTcpNoDelay(true);
 
-		this.traceLevel = defaultLevel;
+		traceLevel = defaultLevel;
 		this.setDaemon(true);
 
 		if (traceLevel >= handshakeThreshold) {
@@ -172,7 +172,7 @@ public abstract class AbstractConnection extends Thread {
 		}
 
 		// get his info
-		recvName(this.peer);
+		recvName(peer);
 
 		// now find highest common dist value
 		if ((peer.proto != self.proto) || (self.distHigh < peer.distLow)
@@ -186,7 +186,7 @@ public abstract class AbstractConnection extends Thread {
 				: peer.distHigh);
 
 		doAccept();
-		this.name = peer.node();
+		name = peer.node();
 	}
 
 	/*
@@ -200,12 +200,12 @@ public abstract class AbstractConnection extends Thread {
 	 */
 	protected AbstractConnection(OtpLocalNode self, OtpPeer other)
 			throws IOException, OtpAuthException {
-		this.peer = other;
+		peer = other;
 		this.self = self;
-		this.socket = null;
+		socket = null;
 		int port;
 
-		this.traceLevel = defaultLevel;
+		traceLevel = defaultLevel;
 		this.setDaemon(true);
 
 		// now get a connection between the two...
@@ -223,8 +223,8 @@ public abstract class AbstractConnection extends Thread {
 
 		doConnect(port);
 
-		this.name = peer.node();
-		this.connected = true;
+		name = peer.node();
+		connected = true;
 	}
 
 	/**

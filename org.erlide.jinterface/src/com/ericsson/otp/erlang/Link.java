@@ -38,11 +38,11 @@ class Link {
 	}
 
 	public boolean contains(OtpErlangPid pid) {
-		return (this.local.equals(pid) || this.remote.equals(pid));
+		return (local.equals(pid) || remote.equals(pid));
 	}
 
 	public boolean equals(OtpErlangPid local_, OtpErlangPid remote_) {
-		return ((this.local.equals(local_) && this.remote.equals(remote_)) || (this.local
-				.equals(remote_) && this.remote.equals(local_)));
+		return ((local.equals(local_) && remote.equals(remote_)) || (local
+				.equals(remote_) && remote.equals(local_)));
 	}
 }

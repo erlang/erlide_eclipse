@@ -93,8 +93,8 @@ public class OtpMbox {
 		this.self = self;
 		this.home = home;
 		this.name = name;
-		this.queue = new GenericQueue();
-		this.links = new Links(10);
+		queue = new GenericQueue();
+		links = new Links(10);
 	}
 
 	// package constructor: called by OtpNode:createMbox()
@@ -148,7 +148,7 @@ public class OtpMbox {
 	 *         no registerd name.
 	 */
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	/**
@@ -677,7 +677,7 @@ public class OtpMbox {
 		}
 
 		final OtpMbox m = (OtpMbox) o;
-		return m.self.equals(this.self);
+		return m.self.equals(self);
 	}
 
 	/*

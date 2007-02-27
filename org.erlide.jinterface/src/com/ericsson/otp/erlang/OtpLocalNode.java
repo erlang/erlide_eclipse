@@ -72,7 +72,7 @@ public class OtpLocalNode extends AbstractNode {
 	 * @return the port number this server node is accepting connections on.
 	 */
 	public int port() {
-		return this.port;
+		return port;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class OtpLocalNode extends AbstractNode {
 	 *            The socket connecting this node to Epmd.
 	 */
 	protected void setEpmd(java.net.Socket s) {
-		this.epmd = s;
+		epmd = s;
 	}
 
 	/**

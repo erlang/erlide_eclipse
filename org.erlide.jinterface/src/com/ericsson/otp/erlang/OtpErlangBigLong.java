@@ -52,7 +52,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 */
 	public OtpErlangBigLong(BigInteger l) {
 		super(l.longValue());
-		this.val = l;
+		val = l;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_biglong(this.val);
+		buf.write_biglong(val);
 	}
 
 	/**

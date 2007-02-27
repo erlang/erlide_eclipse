@@ -52,7 +52,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 *                representation of an Erlang float.
 	 */
 	public OtpErlangDouble(OtpInputStream buf) throws OtpErlangDecodeException {
-		this.d = buf.read_double();
+		d = buf.read_double();
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_double(this.d);
+		buf.write_double(d);
 	}
 
 	/**
@@ -119,6 +119,6 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 		}
 
 		final OtpErlangDouble d_ = (OtpErlangDouble) o;
-		return this.d == d_.d;
+		return d == d_.d;
 	}
 }

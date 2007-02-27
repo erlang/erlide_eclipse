@@ -49,10 +49,10 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	public OtpErlangPid(OtpLocalNode self) {
 		final OtpErlangPid p = self.createPid();
 
-		this.id = p.id;
-		this.serial = p.serial;
-		this.creation = p.creation;
-		this.node = p.node;
+		id = p.id;
+		serial = p.serial;
+		creation = p.creation;
+		node = p.node;
 	}
 
 	/**
@@ -69,10 +69,10 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	public OtpErlangPid(OtpInputStream buf) throws OtpErlangDecodeException {
 		final OtpErlangPid p = buf.read_pid();
 
-		this.node = p.node();
-		this.id = p.id();
-		this.serial = p.serial();
-		this.creation = p.creation();
+		node = p.node();
+		id = p.id();
+		serial = p.serial();
+		creation = p.creation();
 	}
 
 	/**
@@ -184,8 +184,8 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 
 		final OtpErlangPid pid = (OtpErlangPid) o;
 
-		return ((this.creation == pid.creation) && (this.serial == pid.serial)
-				&& (this.id == pid.id) && (node.compareTo(pid.node) == 0));
+		return ((creation == pid.creation) && (serial == pid.serial)
+				&& (id == pid.id) && (node.compareTo(pid.node) == 0));
 	}
 
 	public int compareTo(Object o) {
@@ -195,10 +195,11 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 
 		final OtpErlangPid pid = (OtpErlangPid) o;
 
-		if (equals(o))
+		if (equals(o)) {
 			return 0;
-		return ((this.creation > pid.creation) || (this.serial > pid.serial)
-				|| (this.id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1
+		}
+		return ((creation > pid.creation) || (serial > pid.serial)
+				|| (id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1
 				: -1;
 	}
 }

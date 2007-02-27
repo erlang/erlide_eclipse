@@ -104,13 +104,13 @@ public class OtpErlangExit extends OtpErlangException {
 	 * Get the reason associated with this exit signal.
 	 */
 	public OtpErlangObject reason() {
-		return this.reason;
+		return reason;
 	}
 
 	/**
 	 * Get the pid that sent this exit.
 	 */
 	public OtpErlangPid pid() {
-		return this.pid;
+		return pid;
 	}
 }

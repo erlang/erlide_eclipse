@@ -43,7 +43,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 	 *            the long value to use.
 	 */
 	public OtpErlangLong(long l) {
-		this.val = l;
+		val = l;
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_long(this.val);
+		buf.write_long(val);
 	}
 
 	/**
@@ -227,6 +227,6 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		}
 
 		final OtpErlangLong l = (OtpErlangLong) o;
-		return this.val == l.val;
+		return val == l.val;
 	}
 }

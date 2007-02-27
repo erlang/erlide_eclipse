@@ -50,9 +50,9 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
 	public OtpErlangRef(OtpLocalNode self) {
 		final OtpErlangRef r = self.createRef();
 
-		this.ids = r.ids;
-		this.creation = r.creation;
-		this.node = r.node;
+		ids = r.ids;
+		creation = r.creation;
+		node = r.node;
 	}
 
 	/**
@@ -69,10 +69,10 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
 	public OtpErlangRef(OtpInputStream buf) throws OtpErlangDecodeException {
 		final OtpErlangRef r = buf.read_ref();
 
-		this.node = r.node();
-		this.creation = r.creation();
+		node = r.node();
+		creation = r.creation();
 
-		this.ids = r.ids();
+		ids = r.ids();
 	}
 
 	/**
@@ -90,8 +90,8 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
 	 */
 	public OtpErlangRef(String node, int id, int creation) {
 		this.node = node;
-		this.ids = new int[1];
-		this.ids[0] = id & 0x3ffff; // 18 bits
+		ids = new int[1];
+		ids[0] = id & 0x3ffff; // 18 bits
 		this.creation = creation & 0x03; // 2 bits
 	}
 
@@ -225,14 +225,14 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
 
 		final OtpErlangRef ref = (OtpErlangRef) o;
 
-		if (!(this.node.equals(ref.node()) && this.creation == ref.creation())) {
+		if (!(node.equals(ref.node()) && creation == ref.creation())) {
 			return false;
 		}
 
 		if (this.isNewRef() && ref.isNewRef()) {
-			return (this.ids[0] == ref.ids[0] && this.ids[1] == ref.ids[1] && this.ids[2] == ref.ids[2]);
+			return (ids[0] == ref.ids[0] && ids[1] == ref.ids[1] && ids[2] == ref.ids[2]);
 		}
-		return (this.ids[0] == ref.ids[0]);
+		return (ids[0] == ref.ids[0]);
 	}
 
 	@Override

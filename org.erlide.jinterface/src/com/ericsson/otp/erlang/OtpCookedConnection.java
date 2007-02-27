@@ -81,8 +81,8 @@ public class OtpCookedConnection extends AbstractConnection {
 	OtpCookedConnection(OtpNode self, Socket s) throws IOException,
 			OtpAuthException {
 		super(self, s);
-		this.nself = self;
-		this.links = new Links(25);
+		nself = self;
+		links = new Links(25);
 		this.start();
 	}
 
@@ -99,8 +99,8 @@ public class OtpCookedConnection extends AbstractConnection {
 	OtpCookedConnection(OtpNode self, OtpPeer other) throws IOException,
 			OtpAuthException {
 		super(self, other);
-		this.nself = self;
-		this.links = new Links(25);
+		nself = self;
+		links = new Links(25);
 		this.start();
 	}
 

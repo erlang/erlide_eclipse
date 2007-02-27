@@ -50,7 +50,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 			throw new java.lang.IllegalArgumentException(
 					"Tuple element cannot be null");
 		}
-		this.elems = new OtpErlangObject[1];
+		elems = new OtpErlangObject[1];
 		elems[0] = elem;
 	}
 
@@ -113,7 +113,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 		final int arity = buf.read_tuple_head();
 
 		if (arity >= 0) {
-			this.elems = new OtpErlangObject[arity];
+			elems = new OtpErlangObject[arity];
 
 			for (int i = 0; i < arity; i++) {
 				elems[i] = buf.read_any();
@@ -153,7 +153,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 	 */
 	public OtpErlangObject[] elements() {
 		final OtpErlangObject[] res = new OtpErlangObject[arity()];
-		System.arraycopy(this.elems, 0, res, 0, res.length);
+		System.arraycopy(elems, 0, res, 0, res.length);
 		return res;
 	}
 
@@ -223,7 +223,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 		}
 
 		for (int i = 0; i < a; i++) {
-			if (!this.elems[i].equals(t.elems[i])) {
+			if (!elems[i].equals(t.elems[i])) {
 				return false; // early exit
 			}
 		}

@@ -45,7 +45,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create an empty list.
 	 */
 	public OtpErlangList() {
-		this.elems = null; // empty list
+		elems = null; // empty list
 	}
 
 	/**
@@ -62,10 +62,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		}
 
 		if (len > 0) {
-			this.elems = new OtpErlangObject[len];
+			elems = new OtpErlangObject[len];
 
 			for (int i = 0; i < len; i++) {
-				this.elems[i] = new OtpErlangChar(str.charAt(i));
+				elems[i] = new OtpErlangChar(str.charAt(i));
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 *            the elememet to make the list from.
 	 */
 	public OtpErlangList(OtpErlangObject elem) {
-		this.elems = new OtpErlangObject[1];
+		elems = new OtpErlangObject[1];
 		elems[0] = elem;
 	}
 
@@ -120,12 +120,12 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 *                representation of an Erlang list.
 	 */
 	public OtpErlangList(OtpInputStream buf) throws OtpErlangDecodeException {
-		this.elems = null;
+		elems = null;
 
 		final int arity = buf.read_list_head();
 
 		if (arity > 0) {
-			this.elems = new OtpErlangObject[arity];
+			elems = new OtpErlangObject[arity];
 
 			for (int i = 0; i < arity; i++) {
 				elems[i] = buf.read_any();
@@ -183,7 +183,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			return null;
 		} else {
 			final OtpErlangObject[] res = new OtpErlangObject[arity()];
-			System.arraycopy(this.elems, 0, res, 0, res.length);
+			System.arraycopy(elems, 0, res, 0, res.length);
 			return res;
 		}
 	}
@@ -260,7 +260,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		}
 
 		for (int i = 0; i < a; i++) {
-			if (!this.elems[i].equals(l.elems[i])) {
+			if (!elems[i].equals(l.elems[i])) {
 				return false; // early exit
 			}
 		}

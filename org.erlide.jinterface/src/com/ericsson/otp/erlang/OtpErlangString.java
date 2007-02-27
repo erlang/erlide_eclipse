@@ -102,9 +102,9 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof String) {
-			return this.str.compareTo((String) o) == 0;
+			return str.compareTo((String) o) == 0;
 		} else if (o instanceof OtpErlangString) {
-			return this.str.compareTo(((OtpErlangString) o).str) == 0;
+			return str.compareTo(((OtpErlangString) o).str) == 0;
 		}
 
 		return false;

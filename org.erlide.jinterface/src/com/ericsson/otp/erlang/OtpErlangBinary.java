@@ -57,7 +57,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 *                representation of an Erlang binary.
 	 */
 	public OtpErlangBinary(OtpInputStream buf) throws OtpErlangDecodeException {
-		this.bin = buf.read_binary();
+		bin = buf.read_binary();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 */
 	public OtpErlangBinary(Object o) {
 		try {
-			this.bin = toByteArray(o);
+			bin = toByteArray(o);
 		} catch (final IOException e) {
 			throw new java.lang.IllegalArgumentException(
 					"Object must implement Serializable");
@@ -138,7 +138,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 *         does not represent a Java Object.
 	 */
 	public Object getObject() {
-		return fromByteArray(this.bin);
+		return fromByteArray(bin);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_binary(this.bin);
+		buf.write_binary(bin);
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 		}
 
 		for (int i = 0; i < size; i++) {
-			if (this.bin[i] != bin_.bin[i]) {
+			if (bin[i] != bin_.bin[i]) {
 				return false; // early exit
 			}
 		}

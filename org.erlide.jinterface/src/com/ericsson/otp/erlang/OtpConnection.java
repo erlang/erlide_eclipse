@@ -67,8 +67,8 @@ public class OtpConnection extends AbstractConnection {
 	// package scope
 	OtpConnection(OtpSelf self, Socket s) throws IOException, OtpAuthException {
 		super(self, s);
-		this.sself = self;
-		this.queue = new GenericQueue();
+		sself = self;
+		queue = new GenericQueue();
 		this.start();
 	}
 
@@ -85,8 +85,8 @@ public class OtpConnection extends AbstractConnection {
 	OtpConnection(OtpSelf self, OtpPeer other) throws IOException,
 			OtpAuthException {
 		super(self, other);
-		this.sself = self;
-		this.queue = new GenericQueue();
+		sself = self;
+		queue = new GenericQueue();
 		this.start();
 	}
 
@@ -355,7 +355,7 @@ public class OtpConnection extends AbstractConnection {
 	 */
 	public void send(OtpErlangPid dest, OtpErlangObject msg) throws IOException {
 		// encode and send the message
-		super.sendBuf(this.sself.pid(), dest, new OtpOutputStream(msg));
+		super.sendBuf(sself.pid(), dest, new OtpOutputStream(msg));
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class OtpConnection extends AbstractConnection {
 	 */
 	public void send(String dest, OtpErlangObject msg) throws IOException {
 		// encode and send the message
-		super.sendBuf(this.sself.pid(), dest, new OtpOutputStream(msg));
+		super.sendBuf(sself.pid(), dest, new OtpOutputStream(msg));
 	}
 
 	/**
@@ -389,7 +389,7 @@ public class OtpConnection extends AbstractConnection {
 	 */
 	public void sendBuf(String dest, OtpOutputStream payload)
 			throws IOException {
-		super.sendBuf(this.sself.pid(), dest, payload);
+		super.sendBuf(sself.pid(), dest, payload);
 	}
 
 	/**
@@ -406,7 +406,7 @@ public class OtpConnection extends AbstractConnection {
 	 */
 	public void sendBuf(OtpErlangPid dest, OtpOutputStream payload)
 			throws IOException {
-		super.sendBuf(this.sself.pid(), dest, payload);
+		super.sendBuf(sself.pid(), dest, payload);
 	}
 
 	/**
@@ -479,7 +479,7 @@ public class OtpConnection extends AbstractConnection {
 		call[3] = args;
 		call[4] = new OtpErlangAtom("user");
 
-		rpc[0] = this.sself.pid();
+		rpc[0] = sself.pid();
 		rpc[1] = new OtpErlangTuple(call);
 
 		send("rex", new OtpErlangTuple(rpc));
@@ -539,7 +539,7 @@ public class OtpConnection extends AbstractConnection {
 	 *                occurs.
 	 */
 	public void link(OtpErlangPid dest) throws IOException {
-		super.sendLink(this.sself.pid(), dest);
+		super.sendLink(sself.pid(), dest);
 	}
 
 	/**
@@ -555,7 +555,7 @@ public class OtpConnection extends AbstractConnection {
 	 *                occurs.
 	 */
 	public void unlink(OtpErlangPid dest) throws IOException {
-		super.sendUnlink(this.sself.pid(), dest);
+		super.sendUnlink(sself.pid(), dest);
 	}
 
 	/**
@@ -572,6 +572,6 @@ public class OtpConnection extends AbstractConnection {
 	 */
 	public void exit(OtpErlangPid dest, OtpErlangObject reason)
 			throws IOException {
-		super.sendExit2(this.sself.pid(), dest, reason);
+		super.sendExit2(sself.pid(), dest, reason);
 	}
 }

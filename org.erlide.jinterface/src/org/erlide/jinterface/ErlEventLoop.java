@@ -20,8 +20,9 @@ public class ErlEventLoop implements Runnable {
 			OtpErlangObject msg;
 			try {
 				msg = fHandler.receiveEvent(fHandler.getTimeout());
-				if (msg != null)
+				if (msg != null) {
 					fHandler.handleEvent(msg);
+				}
 			} catch (final OtpErlangException e) {
 				done = fHandler.exception(e);
 			}

@@ -62,7 +62,7 @@ public class OtpVariable extends OtpErlangObject implements Cloneable {
 		}
 
 		final OtpVariable l = (OtpVariable) o;
-		return this.name.equals(l.name);
+		return name.equals(l.name);
 	}
 
 	/**

@@ -70,14 +70,14 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 *                representation of an Erlang atom.
 	 */
 	public OtpErlangAtom(OtpInputStream buf) throws OtpErlangDecodeException {
-		this.atom = buf.read_atom();
+		atom = buf.read_atom();
 	}
 
 	/**
 	 * Create an atom whose value is "true" or "false".
 	 */
 	public OtpErlangAtom(boolean t) {
-		this.atom = String.valueOf(t);
+		atom = String.valueOf(t);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 		}
 
 		final OtpErlangAtom atom_ = (OtpErlangAtom) o;
-		return this.atom.compareTo(atom_.atom) == 0;
+		return atom.compareTo(atom_.atom) == 0;
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_atom(this.atom);
+		buf.write_atom(atom);
 	}
 
 	/* the following four predicates are helpers for the toString() method */

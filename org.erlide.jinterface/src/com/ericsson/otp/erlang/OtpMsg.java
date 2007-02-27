@@ -78,41 +78,41 @@ public class OtpMsg {
 
 	// send has receiver pid but no sender information
 	OtpMsg(OtpErlangPid to, OtpInputStream paybuf) {
-		this.tag = sendTag;
-		this.from = null;
+		tag = sendTag;
+		from = null;
 		this.to = to;
-		this.toName = null;
+		toName = null;
 		this.paybuf = paybuf;
-		this.payload = null;
+		payload = null;
 	}
 
 	// send has receiver pid but no sender information
 	OtpMsg(OtpErlangPid to, OtpErlangObject payload) {
-		this.tag = sendTag;
-		this.from = null;
+		tag = sendTag;
+		from = null;
 		this.to = to;
-		this.toName = null;
-		this.paybuf = null;
+		toName = null;
+		paybuf = null;
 		this.payload = payload;
 	}
 
 	// send_reg has sender pid and receiver name
 	OtpMsg(OtpErlangPid from, String toName, OtpInputStream paybuf) {
-		this.tag = regSendTag;
+		tag = regSendTag;
 		this.from = from;
 		this.toName = toName;
-		this.to = null;
+		to = null;
 		this.paybuf = paybuf;
-		this.payload = null;
+		payload = null;
 	}
 
 	// send_reg has sender pid and receiver name
 	OtpMsg(OtpErlangPid from, String toName, OtpErlangObject payload) {
-		this.tag = regSendTag;
+		tag = regSendTag;
 		this.from = from;
 		this.toName = toName;
-		this.to = null;
-		this.paybuf = null;
+		to = null;
+		paybuf = null;
 		this.payload = payload;
 	}
 
@@ -121,8 +121,8 @@ public class OtpMsg {
 		this.tag = tag;
 		this.from = from;
 		this.to = to;
-		this.paybuf = null;
-		this.payload = reason;
+		paybuf = null;
+		payload = reason;
 	}
 
 	// special case when reason is an atom (i.e. most of the time)
@@ -130,8 +130,8 @@ public class OtpMsg {
 		this.tag = tag;
 		this.from = from;
 		this.to = to;
-		this.paybuf = null;
-		this.payload = new OtpErlangAtom(reason);
+		paybuf = null;
+		payload = new OtpErlangAtom(reason);
 	}
 
 	// other message types (link, unlink)

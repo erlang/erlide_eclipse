@@ -46,9 +46,9 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	private OtpErlangPort(OtpSelf self) {
 		final OtpErlangPort p = self.createPort();
 
-		this.id = p.id;
-		this.creation = p.creation;
-		this.node = p.node;
+		id = p.id;
+		creation = p.creation;
+		node = p.node;
 	}
 
 	/**
@@ -65,9 +65,9 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	public OtpErlangPort(OtpInputStream buf) throws OtpErlangDecodeException {
 		final OtpErlangPort p = buf.read_port();
 
-		this.node = p.node();
-		this.id = p.id();
-		this.creation = p.creation();
+		node = p.node();
+		id = p.id();
+		creation = p.creation();
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 
 		final OtpErlangPort port = (OtpErlangPort) o;
 
-		return ((this.creation == port.creation) && (this.id == port.id) && (node
+		return ((creation == port.creation) && (id == port.id) && (node
 				.compareTo(port.node) == 0));
 	}
 }

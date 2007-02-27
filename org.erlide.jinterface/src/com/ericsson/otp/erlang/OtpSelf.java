@@ -99,7 +99,7 @@ public class OtpSelf extends OtpLocalNode {
 			this.port = sock.getLocalPort();
 		}
 
-		this.pid = createPid();
+		pid = createPid();
 	}
 
 	/**

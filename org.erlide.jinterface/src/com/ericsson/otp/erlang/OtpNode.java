@@ -313,7 +313,7 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 */
 	public synchronized void registerStatusHandler(OtpNodeStatus handler_) {
-		this.handler = handler_;
+		handler = handler_;
 	}
 
 	/**
@@ -356,10 +356,10 @@ public class OtpNode extends OtpLocalNode {
 	 * the reply: <- SEND {2,'',#Pid<bingo@aule.1.0>} {#Ref<bingo@aule.2>,yes}
 	 */
 	public boolean ping(String node_, long timeout) {
-		if (node_.equals(this.node)) {
+		if (node_.equals(node)) {
 			return true;
 		} else if (node_.indexOf('@', 0) < 0
-				&& node_.equals(this.node.substring(0, this.node
+				&& node_.equals(node.substring(0, node
 						.indexOf('@', 0)))) {
 			return true;
 		}
@@ -485,12 +485,12 @@ public class OtpNode extends OtpLocalNode {
 
 		synchronized (connections) {
 			// first just try looking up the name as-is
-			conn = (OtpCookedConnection) connections.get(node_);
+			conn = connections.get(node_);
 
 			if (conn == null) {
 				// in case node had no '@' add localhost info and try again
 				peer = new OtpPeer(node_);
-				conn = (OtpCookedConnection) connections.get(peer.node());
+				conn = connections.get(peer.node());
 
 				if (conn == null) {
 					try {
@@ -694,9 +694,9 @@ public class OtpNode extends OtpLocalNode {
 		Acceptor(int port) throws IOException {
 			// final IOException e;
 
-			this.sock = new ServerSocket(port);
-			this.port_ = sock.getLocalPort();
-			OtpNode.this.port = this.port_;
+			sock = new ServerSocket(port);
+			port_ = sock.getLocalPort();
+			OtpNode.this.port = port_;
 
 			this.setDaemon(true);
 			this.setName("acceptor");
@@ -747,7 +747,7 @@ public class OtpNode extends OtpLocalNode {
 		}
 
 		public int port() {
-			return this.port_;
+			return port_;
 		}
 
 		@Override
