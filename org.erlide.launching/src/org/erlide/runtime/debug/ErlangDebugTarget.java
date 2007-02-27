@@ -226,19 +226,19 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public boolean isShowErlideProcesses() {
-		return this.fShowErlideProcesses;
+		return fShowErlideProcesses;
 	}
 
 	public void setShowErlideProcesses(boolean showErlideProcesses) {
-		this.fShowErlideProcesses = showErlideProcesses;
+		fShowErlideProcesses = showErlideProcesses;
 	}
 
 	public boolean isShowSystemProcesses() {
-		return this.fShowSystemProcesses;
+		return fShowSystemProcesses;
 	}
 
 	public void setShowSystemProcesses(boolean showSystemProcesses) {
-		this.fShowSystemProcesses = showSystemProcesses;
+		fShowSystemProcesses = showSystemProcesses;
 	}
 
 }

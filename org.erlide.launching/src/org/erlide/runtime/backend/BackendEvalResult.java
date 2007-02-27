@@ -31,28 +31,28 @@ public class BackendEvalResult {
 	 * @return Returns the errorReason.
 	 */
 	public final OtpErlangObject getErrorReason() {
-		return this.errorReason;
+		return errorReason;
 	}
 
 	/**
 	 * @return Returns the bindings.
 	 */
 	public final OtpErlangObject getBindings() {
-		return this.bindings;
+		return bindings;
 	}
 
 	/**
 	 * @return Returns the ok.
 	 */
 	public final boolean isOk() {
-		return this.ok;
+		return ok;
 	}
 
 	/**
 	 * @return Returns the value.
 	 */
 	public final OtpErlangObject getValue() {
-		return this.value;
+		return value;
 	}
 
 	public void setError(String r) {

@@ -56,7 +56,7 @@ public class ErtsProcess extends RuntimeProcess {
 	}
 
 	public void setConfiguration(ErtsPreferences configuration) {
-		this.fConfiguration = configuration;
+		fConfiguration = configuration;
 	}
 
 	/**

@@ -115,7 +115,7 @@ public class ErlangProjectProperties {
 	}
 
 	public void setIncludeDirsString(String includeDirs) {
-		this.fIncludeDirs = includeDirs;
+		fIncludeDirs = includeDirs;
 	}
 
 	public String[] getIncludeDirs() {
@@ -123,7 +123,7 @@ public class ErlangProjectProperties {
 	}
 
 	public void setIncludeDirs(String[] includeDirs) {
-		this.fIncludeDirs = pack(includeDirs);
+		fIncludeDirs = pack(includeDirs);
 	}
 
 	public boolean hasOtpProjectStructure() {
@@ -131,7 +131,7 @@ public class ErlangProjectProperties {
 	}
 
 	public void setOtpProjectStructure(boolean otpProjectStructure) {
-		this.fOtpProjectStructure = otpProjectStructure;
+		fOtpProjectStructure = otpProjectStructure;
 	}
 
 	public String getOutputDir() {
@@ -148,7 +148,7 @@ public class ErlangProjectProperties {
 			p = project.getLocation().append(outputDir).toString();
 			b.getCodeManager().addPathA(p);
 		}
-		this.fOutputDir = outputDir;
+		fOutputDir = outputDir;
 	}
 
 	public String getSourceDirsString() {
@@ -156,7 +156,7 @@ public class ErlangProjectProperties {
 	}
 
 	public void setSourceDirsString(String sourceDirs) {
-		this.fSourceDirs = sourceDirs;
+		fSourceDirs = sourceDirs;
 	}
 
 	public String[] getSourceDirs() {
@@ -164,7 +164,7 @@ public class ErlangProjectProperties {
 	}
 
 	public void setSourceDirs(String[] sourceDirs) {
-		this.fSourceDirs = pack(sourceDirs);
+		fSourceDirs = pack(sourceDirs);
 	}
 
 	public String buildCommandLine() {
@@ -197,6 +197,7 @@ public class ErlangProjectProperties {
 		fSourceDirs = bprefs.fSourceDirs;
 		fOutputDir = bprefs.fOutputDir;
 		fOtpProjectStructure = bprefs.fOtpProjectStructure;
+		fBackendNodeName = bprefs.fBackendNodeName;
 	}
 
 	public static String pack(String[] strs) {
@@ -252,11 +253,11 @@ public class ErlangProjectProperties {
 	}
 
 	public String getBackendNodeName() {
-		return this.fBackendNodeName;
+		return fBackendNodeName;
 	}
 
 	public void setBackendNodeName(String backendNodeName) {
-		this.fBackendNodeName = backendNodeName;
+		fBackendNodeName = backendNodeName;
 	}
 
 }

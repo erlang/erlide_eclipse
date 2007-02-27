@@ -513,6 +513,6 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	public ErlConsoleJob getConsoleJob() {
-		return this.fConsoleJob;
+		return fConsoleJob;
 	}
 }
