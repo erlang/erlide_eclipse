@@ -52,7 +52,7 @@ public class ErrorPattern {
 		this.groupLineNum = groupLineNum;
 		this.groupDesc = groupDesc;
 		this.groupVarName = groupVarName;
-		this.fSeverity = severity;
+		fSeverity = severity;
 	}
 
 	/**

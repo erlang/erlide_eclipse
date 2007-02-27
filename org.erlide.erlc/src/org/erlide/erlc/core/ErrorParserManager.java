@@ -337,7 +337,7 @@ public class ErrorParserManager extends OutputStream {
 				int severity, String variableName) {
 			this.file = file;
 			this.lineNumber = lineNumber;
-			this.description = desciption;
+			description = desciption;
 			this.severity = severity;
 			this.variableName = variableName;
 		}
