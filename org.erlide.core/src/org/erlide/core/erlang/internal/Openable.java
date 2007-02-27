@@ -221,7 +221,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	 * @see IErlElement
 	 */
 	public IResource getUnderlyingResource() throws ErlModelException {
-		final IResource parentResource = this.fParent.getUnderlyingResource();
+		final IResource parentResource = fParent.getUnderlyingResource();
 		if (parentResource == null) {
 			return null;
 		}
@@ -230,7 +230,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 			final IContainer topfolder = (IContainer) parentResource;
 
 			// TODO use project properties
-			final IResource resource = findFile(topfolder, this.fName);
+			final IResource resource = findFile(topfolder, fName);
 
 			if (resource == null) {
 				throw newNotPresentException();

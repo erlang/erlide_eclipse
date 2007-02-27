@@ -28,7 +28,7 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	 */
 	protected ErlAttribute(ErlElement parent, String name, OtpErlangObject value) {
 		super(parent, name);
-		this.fValue = value;
+		fValue = value;
 	}
 
 	/**

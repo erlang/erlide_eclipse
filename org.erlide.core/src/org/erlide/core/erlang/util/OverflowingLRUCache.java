@@ -107,7 +107,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 		LRUCacheEntry qEntry;
 
 		/* Preserve order of entries by copying from oldest to newest */
-		qEntry = this.fEntryQueueTail;
+		qEntry = fEntryQueueTail;
 		while (qEntry != null) {
 			newCache.privateAdd(qEntry._fKey, qEntry._fValue, qEntry._fSpace);
 			qEntry = qEntry._fPrevious;

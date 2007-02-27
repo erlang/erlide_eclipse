@@ -97,8 +97,8 @@ public class Buffer implements IBuffer {
 	 *            boolean
 	 */
 	protected Buffer(IFile file, IOpenable owner, boolean readOnly) {
-		this.fFile = file;
-		this.fOwner = owner;
+		fFile = file;
+		fOwner = owner;
 		if (file == null) {
 			setReadOnly(readOnly);
 		}
@@ -110,11 +110,11 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public void addBufferChangedListener(IBufferChangedListener listener) {
-		if (this.changeListeners == null) {
-			this.changeListeners = new ArrayList<IBufferChangedListener>(5);
+		if (changeListeners == null) {
+			changeListeners = new ArrayList<IBufferChangedListener>(5);
 		}
-		if (!this.changeListeners.contains(listener)) {
-			this.changeListeners.add(listener);
+		if (!changeListeners.contains(listener)) {
+			changeListeners.add(listener);
 		}
 	}
 
@@ -132,14 +132,14 @@ public class Buffer implements IBuffer {
 				return;
 			}
 			final int length = getLength();
-			synchronized (this.lock) {
-				if (this.contents == null) {
+			synchronized (lock) {
+				if (contents == null) {
 					return;
 				}
 				moveAndResizeGap(length, text.length);
-				System.arraycopy(text, 0, this.contents, length, text.length);
-				this.gapStart += text.length;
-				this.flags |= F_HAS_UNSAVED_CHANGES;
+				System.arraycopy(text, 0, contents, length, text.length);
+				gapStart += text.length;
+				flags |= F_HAS_UNSAVED_CHANGES;
 			}
 			notifyChanged(new BufferChangedEvent(this, length, 0, new String(
 					text)));
@@ -166,16 +166,16 @@ public class Buffer implements IBuffer {
 	 */
 	public void close() {
 		BufferChangedEvent event = null;
-		synchronized (this.lock) {
+		synchronized (lock) {
 			if (isClosed()) {
 				return;
 			}
 			event = new BufferChangedEvent(this, 0, 0, null);
-			this.contents = null;
-			this.flags |= F_IS_CLOSED;
+			contents = null;
+			flags |= F_IS_CLOSED;
 		}
 		notifyChanged(event); // notify outside of synchronized block
-		this.changeListeners = null;
+		changeListeners = null;
 	}
 
 	/**
@@ -185,15 +185,15 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public char getChar(int position) {
-		synchronized (this.lock) {
-			if (this.contents == null) {
+		synchronized (lock) {
+			if (contents == null) {
 				return Character.MIN_VALUE;
 			}
-			if (position < this.gapStart) {
-				return this.contents[position];
+			if (position < gapStart) {
+				return contents[position];
 			}
-			final int gapLength = this.gapEnd - this.gapStart;
-			return this.contents[position + gapLength];
+			final int gapLength = gapEnd - gapStart;
+			return contents[position + gapLength];
 		}
 	}
 
@@ -202,19 +202,19 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public char[] getCharacters() {
-		synchronized (this.lock) {
-			if (this.contents == null) {
+		synchronized (lock) {
+			if (contents == null) {
 				return null;
 			}
-			if (this.gapStart < 0) {
-				return this.contents;
+			if (gapStart < 0) {
+				return contents;
 			}
-			final int length = this.contents.length;
-			final char[] newContents = new char[length - this.gapEnd
-					+ this.gapStart];
-			System.arraycopy(this.contents, 0, newContents, 0, this.gapStart);
-			System.arraycopy(this.contents, this.gapEnd, newContents,
-					this.gapStart, length - this.gapEnd);
+			final int length = contents.length;
+			final char[] newContents = new char[length - gapEnd
+					+ gapStart];
+			System.arraycopy(contents, 0, newContents, 0, gapStart);
+			System.arraycopy(contents, gapEnd, newContents,
+					gapStart, length - gapEnd);
 			return newContents;
 		}
 	}
@@ -236,12 +236,12 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public int getLength() {
-		synchronized (this.lock) {
-			if (this.contents == null) {
+		synchronized (lock) {
+			if (contents == null) {
 				return -1;
 			}
-			final int length = this.gapEnd - this.gapStart;
-			return this.contents.length - length;
+			final int length = gapEnd - gapStart;
+			return contents.length - length;
 		}
 	}
 
@@ -250,7 +250,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public IOpenable getOwner() {
-		return this.fOwner;
+		return fOwner;
 	}
 
 	/**
@@ -262,21 +262,21 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public String getText(int offset, int length) {
-		synchronized (this.lock) {
-			if (this.contents == null) {
+		synchronized (lock) {
+			if (contents == null) {
 				return ""; //$NON-NLS-1$
 			}
-			if (offset + length < this.gapStart) {
-				return new String(this.contents, offset, length);
+			if (offset + length < gapStart) {
+				return new String(contents, offset, length);
 			}
-			if (this.gapStart < offset) {
-				final int gapLength = this.gapEnd - this.gapStart;
-				return new String(this.contents, offset + gapLength, length);
+			if (gapStart < offset) {
+				final int gapLength = gapEnd - gapStart;
+				return new String(contents, offset + gapLength, length);
 			}
 			final StringBuffer buf = new StringBuffer();
-			buf.append(this.contents, offset, this.gapStart - offset);
-			buf.append(this.contents, this.gapEnd, offset + length
-					- this.gapStart);
+			buf.append(contents, offset, gapStart - offset);
+			buf.append(contents, gapEnd, offset + length
+					- gapStart);
 			return buf.toString();
 		}
 	}
@@ -286,7 +286,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public IResource getUnderlyingResource() {
-		return this.fFile;
+		return fFile;
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public boolean hasUnsavedChanges() {
-		return (this.flags & F_HAS_UNSAVED_CHANGES) != 0;
+		return (flags & F_HAS_UNSAVED_CHANGES) != 0;
 	}
 
 	/**
@@ -302,7 +302,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public boolean isClosed() {
-		return (this.flags & F_IS_CLOSED) != 0;
+		return (flags & F_IS_CLOSED) != 0;
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public boolean isReadOnly() {
-		return (this.flags & F_IS_READ_ONLY) != 0;
+		return (flags & F_IS_READ_ONLY) != 0;
 	}
 
 	/**
@@ -326,43 +326,43 @@ public class Buffer implements IBuffer {
 	 */
 	protected void moveAndResizeGap(int position, int size) {
 		char[] content = null;
-		final int oldSize = this.gapEnd - this.gapStart;
+		final int oldSize = gapEnd - gapStart;
 		if (size < 0) {
 			if (oldSize > 0) {
-				content = new char[this.contents.length - oldSize];
-				System.arraycopy(this.contents, 0, content, 0, this.gapStart);
-				System.arraycopy(this.contents, this.gapEnd, content,
-						this.gapStart, content.length - this.gapStart);
-				this.contents = content;
+				content = new char[contents.length - oldSize];
+				System.arraycopy(contents, 0, content, 0, gapStart);
+				System.arraycopy(contents, gapEnd, content,
+						gapStart, content.length - gapStart);
+				contents = content;
 			}
-			this.gapStart = this.gapEnd = position;
+			gapStart = gapEnd = position;
 			return;
 		}
-		content = new char[this.contents.length + (size - oldSize)];
+		content = new char[contents.length + (size - oldSize)];
 		final int newGapStart = position;
 		final int newGapEnd = newGapStart + size;
 		if (oldSize == 0) {
-			System.arraycopy(this.contents, 0, content, 0, newGapStart);
-			System.arraycopy(this.contents, newGapStart, content, newGapEnd,
+			System.arraycopy(contents, 0, content, 0, newGapStart);
+			System.arraycopy(contents, newGapStart, content, newGapEnd,
 					content.length - newGapEnd);
-		} else if (newGapStart < this.gapStart) {
-			final int delta = this.gapStart - newGapStart;
-			System.arraycopy(this.contents, 0, content, 0, newGapStart);
-			System.arraycopy(this.contents, newGapStart, content, newGapEnd,
+		} else if (newGapStart < gapStart) {
+			final int delta = gapStart - newGapStart;
+			System.arraycopy(contents, 0, content, 0, newGapStart);
+			System.arraycopy(contents, newGapStart, content, newGapEnd,
 					delta);
-			System.arraycopy(this.contents, this.gapEnd, content, newGapEnd
-					+ delta, this.contents.length - this.gapEnd);
+			System.arraycopy(contents, gapEnd, content, newGapEnd
+					+ delta, contents.length - gapEnd);
 		} else {
-			final int delta = newGapStart - this.gapStart;
-			System.arraycopy(this.contents, 0, content, 0, this.gapStart);
-			System.arraycopy(this.contents, this.gapEnd, content,
-					this.gapStart, delta);
-			System.arraycopy(this.contents, this.gapEnd + delta, content,
+			final int delta = newGapStart - gapStart;
+			System.arraycopy(contents, 0, content, 0, gapStart);
+			System.arraycopy(contents, gapEnd, content,
+					gapStart, delta);
+			System.arraycopy(contents, gapEnd + delta, content,
 					newGapEnd, content.length - newGapEnd);
 		}
-		this.contents = content;
-		this.gapStart = newGapStart;
-		this.gapEnd = newGapEnd;
+		contents = content;
+		gapStart = newGapStart;
+		gapEnd = newGapEnd;
 	}
 
 	/**
@@ -373,9 +373,9 @@ public class Buffer implements IBuffer {
 	 *            BufferChangedEvent
 	 */
 	protected void notifyChanged(final BufferChangedEvent event) {
-		if (this.changeListeners != null) {
-			for (int i = 0, size = this.changeListeners.size(); i < size; ++i) {
-				final IBufferChangedListener listener = this.changeListeners
+		if (changeListeners != null) {
+			for (int i = 0, size = changeListeners.size(); i < size; ++i) {
+				final IBufferChangedListener listener = changeListeners
 						.get(i);
 				SafeRunner.run(new ISafeRunnable() {
 
@@ -400,10 +400,10 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public void removeBufferChangedListener(IBufferChangedListener listener) {
-		if (this.changeListeners != null) {
-			this.changeListeners.remove(listener);
-			if (this.changeListeners.size() == 0) {
-				this.changeListeners = null;
+		if (changeListeners != null) {
+			changeListeners.remove(listener);
+			if (changeListeners.size() == 0) {
+				changeListeners = null;
 			}
 		}
 	}
@@ -421,8 +421,8 @@ public class Buffer implements IBuffer {
 	public void replace(int position, int length, char[] text) {
 		if (!isReadOnly()) {
 			final int textLength = (text == null) ? 0 : text.length;
-			synchronized (this.lock) {
-				if (this.contents == null) {
+			synchronized (lock) {
+				if (contents == null) {
 					return;
 				}
 
@@ -432,18 +432,18 @@ public class Buffer implements IBuffer {
 				// overwrite
 				final int min = Math.min(textLength, length);
 				if (min > 0) {
-					System.arraycopy(text, 0, this.contents, position, min);
+					System.arraycopy(text, 0, contents, position, min);
 				}
 				if (length > textLength) {
 					// enlarge the gap
-					this.gapStart -= length - textLength;
+					gapStart -= length - textLength;
 				} else if (textLength > length) {
 					// shrink gap
-					this.gapStart += textLength - length;
-					System.arraycopy(text, 0, this.contents, position,
+					gapStart += textLength - length;
+					System.arraycopy(text, 0, contents, position,
 							textLength);
 				}
-				this.flags |= F_HAS_UNSAVED_CHANGES;
+				flags |= F_HAS_UNSAVED_CHANGES;
 			}
 			String string = null;
 			if (textLength > 0) {
@@ -480,7 +480,7 @@ public class Buffer implements IBuffer {
 			throws ErlModelException {
 
 		// determine if saving is required
-		if (isReadOnly() || this.fFile == null) {
+		if (isReadOnly() || fFile == null) {
 			return;
 		}
 		if (!hasUnsavedChanges()) {
@@ -491,7 +491,7 @@ public class Buffer implements IBuffer {
 		try {
 			String encoding = null;
 			try {
-				encoding = this.fFile.getCharset();
+				encoding = fFile.getCharset();
 			} catch (final CoreException ce) {
 				// use no encoding
 			}
@@ -503,13 +503,13 @@ public class Buffer implements IBuffer {
 					: stringContents.getBytes(encoding);
 			final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
 
-			if (this.fFile.exists()) {
-				this.fFile
+			if (fFile.exists()) {
+				fFile
 						.setContents(stream, force ? IResource.FORCE
 								| IResource.KEEP_HISTORY
 								: IResource.KEEP_HISTORY, null);
 			} else {
-				this.fFile.create(stream, force, null);
+				fFile.create(stream, force, null);
 			}
 		} catch (final IOException e) {
 			throw new ErlModelException(e,
@@ -519,7 +519,7 @@ public class Buffer implements IBuffer {
 		}
 
 		// the resource no longer has unsaved changes
-		this.flags &= ~(F_HAS_UNSAVED_CHANGES);
+		flags &= ~(F_HAS_UNSAVED_CHANGES);
 	}
 
 	/**
@@ -530,10 +530,10 @@ public class Buffer implements IBuffer {
 	public void setContents(char[] newContents) {
 		// allow special case for first initialization
 		// after creation by buffer factory
-		if (this.contents == null) {
-			synchronized (this.lock) {
-				this.contents = newContents;
-				this.flags &= ~(F_HAS_UNSAVED_CHANGES);
+		if (contents == null) {
+			synchronized (lock) {
+				contents = newContents;
+				flags &= ~(F_HAS_UNSAVED_CHANGES);
 			}
 			return;
 		}
@@ -543,14 +543,14 @@ public class Buffer implements IBuffer {
 			if (newContents != null) {
 				string = new String(newContents);
 			}
-			synchronized (this.lock) {
-				if (this.contents == null) {
+			synchronized (lock) {
+				if (contents == null) {
 					return; // ignore if buffer is closed (as per spec)
 				}
-				this.contents = newContents;
-				this.flags |= F_HAS_UNSAVED_CHANGES;
-				this.gapStart = -1;
-				this.gapEnd = -1;
+				contents = newContents;
+				flags |= F_HAS_UNSAVED_CHANGES;
+				gapStart = -1;
+				gapEnd = -1;
 			}
 			final BufferChangedEvent event = new BufferChangedEvent(this, 0,
 					this.getLength(), string);
@@ -575,9 +575,9 @@ public class Buffer implements IBuffer {
 	 */
 	protected final void setReadOnly(boolean readOnly) {
 		if (readOnly) {
-			this.flags |= F_IS_READ_ONLY;
+			flags |= F_IS_READ_ONLY;
 		} else {
-			this.flags &= ~(F_IS_READ_ONLY);
+			flags &= ~(F_IS_READ_ONLY);
 		}
 	}
 
@@ -590,7 +590,7 @@ public class Buffer implements IBuffer {
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer
-				.append("Owner: " + ((ErlElement) this.fOwner).toStringWithAncestors()); //$NON-NLS-1$
+				.append("Owner: " + ((ErlElement) fOwner).toStringWithAncestors()); //$NON-NLS-1$
 		buffer.append("\nHas unsaved changes: " + this.hasUnsavedChanges()); //$NON-NLS-1$
 		buffer.append("\nIs readonly: " + this.isReadOnly()); //$NON-NLS-1$
 		buffer.append("\nIs closed: " + this.isClosed()); //$NON-NLS-1$
@@ -607,7 +607,7 @@ public class Buffer implements IBuffer {
 					buffer.append("\\n\n"); //$NON-NLS-1$
 					break;
 				case '\r':
-					if (i < length - 1 && this.contents[i + 1] == '\n') {
+					if (i < length - 1 && contents[i + 1] == '\n') {
 						buffer.append("\\r\\n\n"); //$NON-NLS-1$
 						i++;
 					} else {

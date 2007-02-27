@@ -22,31 +22,31 @@ public class SourceRange implements ISourceRange {
 	private int fLength;
 
 	public SourceRange(int offset, int length) {
-		this.fOffset = offset;
-		this.fLength = length;
+		fOffset = offset;
+		fLength = length;
 	}
 
 	/**
 	 * @see ISourceRange
 	 */
 	public int getLength() {
-		return this.fLength;
+		return fLength;
 	}
 
 	/**
 	 * @see ISourceRange
 	 */
 	public int getOffset() {
-		return this.fOffset;
+		return fOffset;
 	}
 
 	@Override
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append("[offset="); //$NON-NLS-1$
-		buffer.append(this.fOffset);
+		buffer.append(fOffset);
 		buffer.append(", length="); //$NON-NLS-1$
-		buffer.append(this.fLength);
+		buffer.append(fLength);
 		buffer.append("]"); //$NON-NLS-1$
 		return buffer.toString();
 	}

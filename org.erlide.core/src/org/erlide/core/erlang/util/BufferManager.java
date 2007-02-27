@@ -44,10 +44,10 @@ public class BufferManager {
 					.toStringWithAncestors();
 			System.out.println("Adding buffer for " + owner); //$NON-NLS-1$
 		}
-		this.openBuffers.put(buffer.getOwner(), buffer);
+		openBuffers.put(buffer.getOwner(), buffer);
 		if (verbose) {
 			System.out
-					.println("-> Buffer cache filling ratio = " + NumberFormat.getInstance().format(this.openBuffers.fillingRatio()) + "%"); //$NON-NLS-1$//$NON-NLS-2$
+					.println("-> Buffer cache filling ratio = " + NumberFormat.getInstance().format(openBuffers.fillingRatio()) + "%"); //$NON-NLS-1$//$NON-NLS-2$
 		}
 	}
 
@@ -84,7 +84,7 @@ public class BufferManager {
 	 * with it.
 	 */
 	public IBuffer getBuffer(IOpenable owner) {
-		return (IBuffer) this.openBuffers.get(owner);
+		return (IBuffer) openBuffers.get(owner);
 	}
 
 	/**
@@ -106,9 +106,9 @@ public class BufferManager {
 	 * @return Enumeration of IBuffer
 	 */
 	public Enumeration getOpenBuffers() {
-		synchronized (this.openBuffers) {
-			this.openBuffers.shrink();
-			return this.openBuffers.elements();
+		synchronized (openBuffers) {
+			openBuffers.shrink();
+			return openBuffers.elements();
 		}
 	}
 
@@ -121,10 +121,10 @@ public class BufferManager {
 					.toStringWithAncestors();
 			System.out.println("Removing buffer for " + owner); //$NON-NLS-1$
 		}
-		this.openBuffers.remove(buffer.getOwner());
+		openBuffers.remove(buffer.getOwner());
 		if (verbose) {
 			System.out
-					.println("-> Buffer cache filling ratio = " + NumberFormat.getInstance().format(this.openBuffers.fillingRatio()) + "%"); //$NON-NLS-1$//$NON-NLS-2$
+					.println("-> Buffer cache filling ratio = " + NumberFormat.getInstance().format(openBuffers.fillingRatio()) + "%"); //$NON-NLS-1$//$NON-NLS-2$
 		}
 	}
 }

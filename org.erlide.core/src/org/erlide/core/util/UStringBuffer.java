@@ -777,7 +777,7 @@ public class UStringBuffer implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return new String(this.backing, 0, length);
+		return new String(backing, 0, length);
 	}
 
 	/**

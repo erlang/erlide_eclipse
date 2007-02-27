@@ -63,7 +63,7 @@ public class ErlModelException extends CoreException {
 	 */
 	public ErlModelException(CoreException exception) {
 		super(exception.getStatus());
-		this.nestedCoreException = exception;
+		nestedCoreException = exception;
 	}
 
 	/**
@@ -96,10 +96,10 @@ public class ErlModelException extends CoreException {
 	 *         if the direct case of the failure was at the Erlang model layer
 	 */
 	public Throwable getException() {
-		if (this.nestedCoreException == null) {
+		if (nestedCoreException == null) {
 			return getStatus().getException();
 		} else {
-			return this.nestedCoreException;
+			return nestedCoreException;
 		}
 	}
 
@@ -114,7 +114,7 @@ public class ErlModelException extends CoreException {
 		if (status instanceof IErlModelStatus) {
 			return (IErlModelStatus) status;
 		} else {
-			return new ErlModelStatus(this.nestedCoreException);
+			return new ErlModelStatus(nestedCoreException);
 		}
 	}
 

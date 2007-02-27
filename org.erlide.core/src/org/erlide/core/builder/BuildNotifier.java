@@ -58,14 +58,14 @@ public class BuildNotifier {
 	}
 
 	public BuildNotifier(IProgressMonitor monitor, IProject project) {
-		this.fMonitor = monitor;
-		this.fCancelling = false;
-		this.fNewErrorCount = newErrorCount;
-		this.fFixedErrorCount = fixedErrorCount;
-		this.fNewWarningCount = newWarningCount;
-		this.fFixedWarningCount = fixedWarningCount;
-		this.fWorkDone = 0;
-		this.fTotalWork = 1000000;
+		fMonitor = monitor;
+		fCancelling = false;
+		fNewErrorCount = newErrorCount;
+		fFixedErrorCount = fixedErrorCount;
+		fNewWarningCount = newWarningCount;
+		fFixedWarningCount = fixedWarningCount;
+		fWorkDone = 0;
+		fTotalWork = 1000000;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class BuildNotifier {
 		if (fMonitor != null) {
 			fMonitor.beginTask("", fTotalWork); //$NON-NLS-1$
 		}
-		this.previousSubtask = null;
+		previousSubtask = null;
 	}
 
 	/**
@@ -121,17 +121,17 @@ public class BuildNotifier {
 	}
 
 	public void done() {
-		newErrorCount = this.fNewErrorCount;
-		fixedErrorCount = this.fFixedErrorCount;
-		newWarningCount = this.fNewWarningCount;
-		fixedWarningCount = this.fFixedWarningCount;
+		newErrorCount = fNewErrorCount;
+		fixedErrorCount = fFixedErrorCount;
+		newWarningCount = fNewWarningCount;
+		fixedWarningCount = fFixedWarningCount;
 
 		updateProgress(1.0f);
 		subTask(BuilderMessages.build_done);
 		if (fMonitor != null) {
 			fMonitor.done();
 		}
-		this.previousSubtask = null;
+		previousSubtask = null;
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class BuildNotifier {
 	 * OperationCanceledException being thrown at an inopportune time.
 	 */
 	public void setCancelling(boolean cancelling) {
-		this.fCancelling = cancelling;
+		fCancelling = cancelling;
 	}
 
 	/**
@@ -228,14 +228,14 @@ public class BuildNotifier {
 	 * unit.
 	 */
 	public void setProgressPerCompilationUnit(float progress) {
-		this.progressPerCompilationUnit = progress;
+		progressPerCompilationUnit = progress;
 	}
 
 	public void subTask(String message) {
 		final String pm = problemsMessage();
 		final String msg = pm.length() == 0 ? message : pm + " " + message; //$NON-NLS-1$
 
-		if (msg.equals(this.previousSubtask)) {
+		if (msg.equals(previousSubtask)) {
 			return; // avoid refreshing with same one
 		}
 		// if (JavaBuilder.DEBUG) System.out.println(msg);
@@ -243,7 +243,7 @@ public class BuildNotifier {
 			fMonitor.subTask(msg);
 		}
 
-		this.previousSubtask = msg;
+		previousSubtask = msg;
 	}
 
 	protected void updateProblemCounts(IProblem[] newProblems) {
@@ -325,16 +325,16 @@ public class BuildNotifier {
 	}
 
 	public void updateProgress(float newPercentComplete) {
-		if (newPercentComplete > this.percentComplete) {
-			this.percentComplete = Math.min(newPercentComplete, 1.0f);
-			final int work = Math.round(this.percentComplete * this.fTotalWork);
-			if (work > this.fWorkDone) {
+		if (newPercentComplete > percentComplete) {
+			percentComplete = Math.min(newPercentComplete, 1.0f);
+			final int work = Math.round(percentComplete * fTotalWork);
+			if (work > fWorkDone) {
 				if (fMonitor != null) {
-					fMonitor.worked(work - this.fWorkDone);
+					fMonitor.worked(work - fWorkDone);
 				}
 				// if (JavaBuilder.DEBUG)
 				// System.out.println(java.text.NumberFormat.getPercentInstance().format(this.percentComplete));
-				this.fWorkDone = work;
+				fWorkDone = work;
 			}
 		}
 	}

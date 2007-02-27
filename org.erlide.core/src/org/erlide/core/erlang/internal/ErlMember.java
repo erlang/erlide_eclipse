@@ -23,7 +23,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 	}
 
 	public OtpErlangObject getParseTree() {
-		return this.fTree;
+		return fTree;
 	}
 
 	public String getHoverHelp() {

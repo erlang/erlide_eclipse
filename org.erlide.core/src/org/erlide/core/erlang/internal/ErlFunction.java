@@ -35,7 +35,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	 */
 	protected ErlFunction(ErlElement parent, String name, int arity) {
 		super(parent, name);
-		this.fArity = arity;
+		fArity = arity;
 	}
 
 	public IErlFunctionClause[] getClauses() {
@@ -66,7 +66,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	public void setExported(boolean exported) {
-		this.fExported = exported;
+		fExported = exported;
 	}
 
 	@Override
@@ -93,21 +93,25 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
-		result = PRIME * result + this.fArity;
+		result = PRIME * result + fArity;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		final ErlFunction other = (ErlFunction) obj;
-		if (this.fArity != other.fArity)
+		if (fArity != other.fArity) {
 			return false;
+		}
 		return true;
 	}
 }

@@ -82,11 +82,11 @@ public class ErlangPluginPreferences implements IPropertyChangeListener {
 	}
 
 	public boolean isTextHoverEnabled() {
-		return this.fTextHoverEnabled;
+		return fTextHoverEnabled;
 	}
 
 	public void setTextHoverEnabled(boolean textHoverEnabled) {
-		this.fTextHoverEnabled = textHoverEnabled;
+		fTextHoverEnabled = textHoverEnabled;
 	}
 
 	public ErtsPreferences getErtsPrefs() {

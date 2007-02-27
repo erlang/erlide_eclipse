@@ -439,16 +439,16 @@ public class ErlModelManager implements IErlModelManager {
 
 		public PerProjectInfo(IProject project) {
 
-			this.fTriedRead = false;
-			this.fSavedState = null;
-			this.fProject = project;
+			fTriedRead = false;
+			fSavedState = null;
+			fProject = project;
 		}
 
 		@Override
 		public String toString() {
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Info for "); //$NON-NLS-1$
-			buffer.append(this.fProject.getFullPath());
+			buffer.append(fProject.getFullPath());
 			// buffer.append("\nRaw classpath:\n"); //$NON-NLS-1$
 			// if (this.rawClasspath == null)
 			// {
@@ -480,10 +480,10 @@ public class ErlModelManager implements IErlModelManager {
 			// }
 			// }
 			buffer.append("Output location:\n  "); //$NON-NLS-1$
-			if (this.outputLocation == null) {
+			if (outputLocation == null) {
 				buffer.append("<null>"); //$NON-NLS-1$
 			} else {
-				buffer.append(this.outputLocation);
+				buffer.append(outputLocation);
 			}
 			return buffer.toString();
 		}
@@ -524,7 +524,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Returns the set of elements which are out of synch with their buffers.
 	 */
 	public Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers() {
-		return this.elementsOutOfSynchWithBuffers;
+		return elementsOutOfSynchWithBuffers;
 	}
 
 	/**
@@ -1115,7 +1115,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#getOptionNames()
 	 */
 	public HashSet getOptionNames() {
-		return this.optionNames;
+		return optionNames;
 	}
 
 	public IErlElement create(IPath path) {
@@ -1160,7 +1160,7 @@ public class ErlModelManager implements IErlModelManager {
 		if (fFire) {
 			IErlElementDelta deltaToNotify;
 			if (customDeltas == null) {
-				deltaToNotify = mergeDeltas(this.erlModelDeltas);
+				deltaToNotify = mergeDeltas(erlModelDeltas);
 			} else {
 				deltaToNotify = customDeltas;
 			}
@@ -1247,7 +1247,7 @@ public class ErlModelManager implements IErlModelManager {
 
 	private void fireReconcileDelta(IElementChangedListener[] listeners,
 			int[] listenerMask, int listenerCount) {
-		final IErlElementDelta deltaToNotify = mergeDeltas(this.reconcileDeltas
+		final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas
 				.values());
 		if (verbose) {
 			System.out
@@ -1259,7 +1259,7 @@ public class ErlModelManager implements IErlModelManager {
 			// flush now so as to keep listener reactions to post their own
 			// deltas for
 			// subsequent iteration
-			this.reconcileDeltas = new HashMap();
+			reconcileDeltas = new HashMap();
 			notifyListeners(deltaToNotify, ElementChangedEvent.POST_RECONCILE,
 					listeners, listenerMask, listenerCount);
 		}

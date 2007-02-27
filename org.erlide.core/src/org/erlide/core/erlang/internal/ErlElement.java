@@ -105,9 +105,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * 
 	 */
 	protected ErlElement(IErlElement parent, String name) {
-		this.fParent = parent;
-		this.fName = name;
-		this.fChildren = ErlElement.NO_ELEMENTS;
+		fParent = parent;
+		fName = name;
+		fChildren = ErlElement.NO_ELEMENTS;
 	}
 
 	/**
@@ -144,15 +144,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 		}
 
 		// Erlang model parent is null
-		if (this.fParent == null) {
+		if (fParent == null) {
 			return super.equals(o);
 		}
 
 		// assume instanceof check is done in subclass
 		final ErlElement other = (ErlElement) o;
-		return this.fOccurrenceCount == other.fOccurrenceCount
-				&& this.fName.equals(other.fName)
-				&& this.fParent.equals(other.fParent);
+		return fOccurrenceCount == other.fOccurrenceCount
+				&& fName.equals(other.fName)
+				&& fParent.equals(other.fParent);
 	}
 
 	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
@@ -228,7 +228,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * @see IErlElement
 	 */
 	public String getElementName() {
-		return this.fName;
+		return fName;
 	}
 
 	/**
@@ -265,14 +265,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * Subclasses that are not IOpenable's must override this method.
 	 */
 	public IOpenable getOpenableParent() {
-		return (IOpenable) this.fParent;
+		return (IOpenable) fParent;
 	}
 
 	/**
 	 * @see IErlElement
 	 */
 	public IErlElement getParent() {
-		return this.fParent;
+		return fParent;
 	}
 
 	/**
@@ -322,12 +322,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 				public IPath fPath;
 
 				public NoResourceSchedulingRule(IPath path) {
-					this.fPath = path;
+					fPath = path;
 				}
 
 				public boolean contains(ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
-						return this.fPath
+						return fPath
 								.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
 					} else {
 						return false;
@@ -337,8 +337,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 				public boolean isConflicting(ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
 						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
-						return this.fPath.isPrefixOf(otherPath)
-								|| otherPath.isPrefixOf(this.fPath);
+						return fPath.isPrefixOf(otherPath)
+								|| otherPath.isPrefixOf(fPath);
 					} else {
 						return false;
 					}
@@ -373,10 +373,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.fParent == null) {
+		if (fParent == null) {
 			return super.hashCode();
 		}
-		return Util.combineHashCodes(this.fName.hashCode(), this.fParent
+		return Util.combineHashCodes(fName.hashCode(), fParent
 				.hashCode());
 	}
 
@@ -403,7 +403,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * Creates and returns and not present exception for this element.
 	 */
 	protected ErlModelException newNotPresentException() {
-		System.out.println("not found: " + this.fName);
+		System.out.println("not found: " + fName);
 		return new ErlModelException(new ErlModelStatus(
 				IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
 	}
@@ -514,9 +514,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 */
 	protected void toStringName(StringBuffer buffer) {
 		buffer.append(getElementName());
-		if (this.fOccurrenceCount > 1) {
+		if (fOccurrenceCount > 1) {
 			buffer.append("#"); //$NON-NLS-1$
-			buffer.append(this.fOccurrenceCount);
+			buffer.append(fOccurrenceCount);
 		}
 	}
 
@@ -539,11 +539,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	static final IProject[] NO_NON_ERLANG_RESOURCES = new IProject[] {};
 
 	public void addChild(IErlElement child) {
-		if (this.fChildren == ErlElement.NO_ELEMENTS) {
+		if (fChildren == ErlElement.NO_ELEMENTS) {
 			setChildren(new IErlElement[] { child });
 		} else {
 			if (!includesChild(child)) {
-				setChildren(growAndAddToArray(this.fChildren, child));
+				setChildren(growAndAddToArray(fChildren, child));
 			}
 		}
 	}
@@ -558,7 +558,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	}
 
 	public IErlElement[] getChildren() {
-		return this.fChildren;
+		return fChildren;
 	}
 
 	/**
@@ -579,7 +579,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 */
 	protected boolean includesChild(IErlElement child) {
 
-		for (IErlElement element : this.fChildren) {
+		for (IErlElement element : fChildren) {
 			if (element.equals(child)) {
 				return true;
 			}
@@ -591,7 +591,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * @see IErlElement#isStructureKnown()
 	 */
 	public boolean isStructureKnown() {
-		return this.isStructureKnown;
+		return isStructureKnown;
 	}
 
 	/**
@@ -618,12 +618,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 
 	public void removeChild(IErlElement child) {
 		if (includesChild(child)) {
-			setChildren(removeAndShrinkArray(this.fChildren, child));
+			setChildren(removeAndShrinkArray(fChildren, child));
 		}
 	}
 
 	public void setChildren(IErlElement[] children) {
-		this.fChildren = children;
+		fChildren = children;
 	}
 
 	/**
@@ -632,7 +632,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 	 * @see IErlElement#isStructureKnown()
 	 */
 	public void setIsStructureKnown(boolean newIsStructureKnown) {
-		this.isStructureKnown = newIsStructureKnown;
+		isStructureKnown = newIsStructureKnown;
 	}
 
 	protected String pp(OtpErlangObject e) {

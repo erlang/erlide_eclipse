@@ -122,20 +122,20 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	public ErlProject() {
 		super(null, null);
-		this.nonErlangResources = null;
+		nonErlangResources = null;
 	}
 
 	ErlProject(IProject project, ErlElement parent) {
 		super(parent, project.getName());
-		this.fProject = project;
-		this.nonErlangResources = null;
+		fProject = project;
+		nonErlangResources = null;
 	}
 
 	/**
 	 * Adds a builder to the build spec for the given project.
 	 */
 	protected void addToBuildSpec(String builderID) throws CoreException {
-		final IProjectDescription description = this.fProject.getDescription();
+		final IProjectDescription description = fProject.getDescription();
 		final int erlangCommandIndex = getErlangCommandIndex(description
 				.getBuildSpec());
 
@@ -363,7 +363,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * Returns a default output location. This is the project bin folder
 	 */
 	protected IPath defaultOutputLocation() {
-		return this.fProject.getFullPath().append("ebin"); //$NON-NLS-1$
+		return fProject.getFullPath().append("ebin"); //$NON-NLS-1$
 	}
 
 	/**
@@ -386,13 +386,13 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 
 		final ErlProject other = (ErlProject) o;
-		return this.fProject.equals(other.getProject())
-				&& this.fOccurrenceCount == other.fOccurrenceCount;
+		return fProject.equals(other.getProject())
+				&& fOccurrenceCount == other.fOccurrenceCount;
 	}
 
 	@Override
 	public boolean exists() {
-		return ErlangCore.hasErlangNature(this.fProject);
+		return ErlangCore.hasErlangNature(fProject);
 	}
 
 	/**
@@ -426,8 +426,8 @@ public class ErlProject extends Openable implements IErlProject,
 	protected void flushCodepathProblemMarkers(boolean flushCycleMarkers,
 			boolean flushCodepathFormatMarkers) {
 		try {
-			if (this.fProject.isAccessible()) {
-				final IMarker[] markers = this.fProject.findMarkers(
+			if (fProject.isAccessible()) {
+				final IMarker[] markers = fProject.findMarkers(
 						IErlModelMarker.BUILDPATH_PROBLEM_MARKER, false,
 						IResource.DEPTH_ZERO);
 				for (final IMarker marker : markers) {
@@ -569,14 +569,14 @@ public class ErlProject extends Openable implements IErlProject,
 	public ErlModelManager.PerProjectInfo getPerProjectInfo()
 			throws ErlModelException {
 		return ErlangCore.getModelManager().getPerProjectInfoCheckExistence(
-				this.fProject);
+				fProject);
 	}
 
 	/**
 	 * @see IErlProject#getProject()
 	 */
 	public IProject getProject() {
-		return this.fProject;
+		return fProject;
 	}
 
 	/**
@@ -586,11 +586,11 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @return Preferences
 	 */
 	protected Preferences getPreferences() {
-		if (!ErlangCore.hasErlangNature(this.fProject)) {
+		if (!ErlangCore.hasErlangNature(fProject)) {
 			return null;
 		}
 		final ErlModelManager.PerProjectInfo perProjectInfo = ErlModelManager
-				.getDefault().getPerProjectInfo(this.fProject, true);
+				.getDefault().getPerProjectInfo(fProject, true);
 		Preferences preferences = perProjectInfo.preferences;
 		if (preferences != null) {
 			return preferences;
@@ -617,7 +617,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see IErlElement
 	 */
 	public IResource getResource() {
-		return this.fProject;
+		return fProject;
 	}
 
 	/**
@@ -628,14 +628,14 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!exists()) {
 			throw newNotPresentException();
 		}
-		return this.fProject;
+		return fProject;
 	}
 
 	/**
 	 * @see IErlProject
 	 */
 	public boolean hasBuildState() {
-		return ErlangCore.getModelManager().getLastBuiltState(this.fProject,
+		return ErlangCore.getModelManager().getLastBuiltState(fProject,
 				null) != null;
 	}
 
@@ -644,11 +644,11 @@ public class ErlProject extends Openable implements IErlProject,
 		if (fProject == null) {
 			return super.hashCode();
 		}
-		return this.fProject.hashCode();
+		return fProject.hashCode();
 	}
 
 	private IPath getPluginWorkingLocation() {
-		return this.fProject.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
+		return fProject.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
 	}
 
 	/*
@@ -692,7 +692,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	protected void removeFromBuildSpec(String builderID) throws CoreException {
 
-		final IProjectDescription description = this.fProject.getDescription();
+		final IProjectDescription description = fProject.getDescription();
 		final ICommand[] commands = description.getBuildSpec();
 		for (int i = 0; i < commands.length; ++i) {
 			if (commands[i].getBuilderName().equals(builderID)) {
@@ -701,7 +701,7 @@ public class ErlProject extends Openable implements IErlProject,
 				System.arraycopy(commands, i + 1, newCommands, i,
 						commands.length - i - 1);
 				description.setBuildSpec(newCommands);
-				this.fProject.setDescription(description, null);
+				fProject.setDescription(description, null);
 				return;
 			}
 		}
@@ -714,7 +714,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @return String
 	 */
 	public String rootID() {
-		return "[PRJ]" + this.fProject.getFullPath(); //$NON-NLS-1$
+		return "[PRJ]" + fProject.getFullPath(); //$NON-NLS-1$
 	}
 
 	/**
@@ -722,7 +722,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	private void savePreferences(Preferences preferences) {
 
-		if (!ErlangCore.hasErlangNature(this.fProject)) {
+		if (!ErlangCore.hasErlangNature(fProject)) {
 			return; // ignore
 		}
 
@@ -790,7 +790,7 @@ public class ErlProject extends Openable implements IErlProject,
 
 		// Commit the spec change into the project
 		description.setBuildSpec(newCommands);
-		this.fProject.setDescription(description, null);
+		fProject.setDescription(description, null);
 	}
 
 	/**
@@ -863,11 +863,11 @@ public class ErlProject extends Openable implements IErlProject,
 	 * Set cached preferences, no preference file is saved, only info is updated
 	 */
 	public void setPreferences(Preferences preferences) {
-		if (!ErlangCore.hasErlangNature(this.fProject)) {
+		if (!ErlangCore.hasErlangNature(fProject)) {
 			return; // ignore
 		}
 		final ErlModelManager.PerProjectInfo perProjectInfo = ErlModelManager
-				.getDefault().getPerProjectInfo(this.fProject, true);
+				.getDefault().getPerProjectInfo(fProject, true);
 		perProjectInfo.preferences = preferences;
 	}
 
@@ -878,9 +878,9 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see IProjectNature#setProject(IProject)
 	 */
 	public void setProject(IProject project) {
-		this.fProject = project;
-		this.fParent = ErlangCore.getModel();
-		this.fName = project.getName();
+		fProject = project;
+		fParent = ErlangCore.getModel();
+		fName = project.getName();
 	}
 
 	public IErlModule[] getModules() throws ErlModelException {
@@ -960,10 +960,10 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	IResource[] getNonErlangResources(ErlProject project) {
 
-		if (this.nonErlangResources == null) {
-			this.nonErlangResources = null;
+		if (nonErlangResources == null) {
+			nonErlangResources = null;
 		}
-		return this.nonErlangResources;
+		return nonErlangResources;
 	}
 
 	/**
@@ -971,7 +971,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	void setNonErlangResources(IResource[] resources) {
 
-		this.nonErlangResources = resources;
+		nonErlangResources = resources;
 	}
 
 	public IErlModule getModule(String name) throws ErlModelException {

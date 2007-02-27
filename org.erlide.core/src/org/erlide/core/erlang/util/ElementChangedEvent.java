@@ -91,7 +91,7 @@ public class ElementChangedEvent extends EventObject {
 	 */
 	public ElementChangedEvent(IErlElementDelta delta, int type) {
 		super(delta);
-		this.fType = type;
+		fType = type;
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class ElementChangedEvent extends EventObject {
 	 * @return the delta describing the change
 	 */
 	public IErlElementDelta getDelta() {
-		return (IErlElementDelta) this.source;
+		return (IErlElementDelta) source;
 	}
 
 	/**
@@ -112,6 +112,6 @@ public class ElementChangedEvent extends EventObject {
 	 * @see #POST_RECONCILE
 	 */
 	public int getType() {
-		return this.fType;
+		return fType;
 	}
 }

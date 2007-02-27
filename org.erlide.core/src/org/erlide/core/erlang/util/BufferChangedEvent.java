@@ -77,9 +77,9 @@ public class BufferChangedEvent extends EventObject {
 	public BufferChangedEvent(IBuffer buffer, int offset, int length,
 			String text) {
 		super(buffer);
-		this.fOffset = offset;
-		this.fLength = length;
-		this.fText = text;
+		fOffset = offset;
+		fLength = length;
+		fText = text;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class BufferChangedEvent extends EventObject {
 	 * @return the buffer affected by the change
 	 */
 	public IBuffer getBuffer() {
-		return (IBuffer) this.source;
+		return (IBuffer) source;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class BufferChangedEvent extends EventObject {
 	 *         change ( <code> 0 </code> in case of insertion).
 	 */
 	public int getLength() {
-		return this.fLength;
+		return fLength;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class BufferChangedEvent extends EventObject {
 	 * @return the source offset of the textual manipulation in the buffer
 	 */
 	public int getOffset() {
-		return this.fOffset;
+		return fOffset;
 	}
 
 	/**
@@ -120,6 +120,6 @@ public class BufferChangedEvent extends EventObject {
 	 *         in case of deletion).
 	 */
 	public String getText() {
-		return this.fText;
+		return fText;
 	}
 }

@@ -167,7 +167,7 @@ public class LRUCache implements Cloneable {
 		LRUCacheEntry qEntry;
 
 		/* Preserve order of entries by copying from oldest to newest */
-		qEntry = this.fEntryQueueTail;
+		qEntry = fEntryQueueTail;
 		while (qEntry != null) {
 			newCache.privateAdd(qEntry._fKey, qEntry._fValue, qEntry._fSpace);
 			qEntry = qEntry._fPrevious;
@@ -345,7 +345,7 @@ public class LRUCache implements Cloneable {
 		}
 
 		entry._fTimestamp = fTimestampCounter++;
-		entry._fNext = this.fEntryQueue;
+		entry._fNext = fEntryQueue;
 		entry._fPrevious = null;
 
 		if (fEntryQueue == null) {
@@ -433,7 +433,7 @@ public class LRUCache implements Cloneable {
 				updateTimestamp(entry);
 				entry._fValue = value;
 				entry._fSpace = newSpace;
-				this.fCurrentSpace = newTotal;
+				fCurrentSpace = newTotal;
 				return value;
 			} else {
 				privateRemoveEntry(entry, false);

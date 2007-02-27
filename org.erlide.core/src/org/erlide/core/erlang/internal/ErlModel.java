@@ -415,10 +415,10 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public IProject[] getNonErlangResources() throws ErlModelException {
 
-		if (this.nonJavaResources == null) {
-			this.nonJavaResources = computeNonErlangResources();
+		if (nonJavaResources == null) {
+			nonJavaResources = computeNonErlangResources();
 		}
-		return this.nonJavaResources;
+		return nonJavaResources;
 	}
 
 	public void notifyChange(IErlElement element) {

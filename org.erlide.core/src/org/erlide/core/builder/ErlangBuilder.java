@@ -1043,7 +1043,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	protected IProject[] build_1(int kind, Map ignored, IProgressMonitor monitor)
 			throws CoreException {
-		this.currentProject = getProject();
+		currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return new IProject[0];
 		}
@@ -1053,7 +1053,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					.println("\nStarting build of " + currentProject.getName() //$NON-NLS-1$
 							+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
-		this.notifier = new BuildNotifier(monitor, currentProject);
+		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
 		try {
 			notifier.checkCancel();
@@ -1097,7 +1097,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	protected void clean_1(IProgressMonitor monitor) throws CoreException {
-		this.currentProject = getProject();
+		currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return;
 		}
@@ -1106,7 +1106,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			System.out.println("\nCleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
-		this.notifier = new BuildNotifier(monitor, currentProject);
+		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
 		try {
 			notifier.checkCancel();
@@ -1135,11 +1135,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	private void cleanup() {
-		this.notifier = null;
+		notifier = null;
 	}
 
 	private void initializeBuilder() throws CoreException {
-		this.workspaceRoot = currentProject.getWorkspace().getRoot();
+		workspaceRoot = currentProject.getWorkspace().getRoot();
 	}
 
 	public void log(Throwable e, String message) {

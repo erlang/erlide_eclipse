@@ -83,7 +83,7 @@ public class ErlangProjectNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
 	 */
 	public void setProject(IProject lproject) {
-		this.project = lproject;
+		project = lproject;
 	}
 
 	/**

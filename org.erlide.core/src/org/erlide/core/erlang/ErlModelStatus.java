@@ -70,7 +70,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-		this.fElements = ErlElement.NO_ELEMENTS;
+		fElements = ErlElement.NO_ELEMENTS;
 	}
 
 	/**
@@ -78,8 +78,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code, IErlElement[] elements) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-		this.fElements = elements;
-		this.fPath = null;
+		fElements = elements;
+		fPath = null;
 	}
 
 	/**
@@ -94,9 +94,9 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int severity, int code, String string) {
 		super(severity, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-		this.fElements = ErlElement.NO_ELEMENTS;
-		this.fPath = null;
-		this.fString = string;
+		fElements = ErlElement.NO_ELEMENTS;
+		fPath = null;
+		fString = string;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code, Throwable throwable) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
-		this.fElements = ErlElement.NO_ELEMENTS;
+		fElements = ErlElement.NO_ELEMENTS;
 	}
 
 	/**
@@ -112,8 +112,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code, IPath path) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-		this.fElements = ErlElement.NO_ELEMENTS;
-		this.fPath = path;
+		fElements = ErlElement.NO_ELEMENTS;
+		fPath = path;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code, IErlElement element, String string) {
 		this(code, new IErlElement[] { element });
-		this.fString = string;
+		fString = string;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 */
 	public ErlModelStatus(int code, IErlElement element, IPath path) {
 		this(code, new IErlElement[] { element });
-		this.fPath = path;
+		fPath = path;
 	}
 
 	/**
@@ -148,8 +148,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	public ErlModelStatus(int code, IErlElement element, IPath path,
 			String string) {
 		this(code, new IErlElement[] { element });
-		this.fPath = path;
-		this.fString = string;
+		fPath = path;
+		fString = string;
 	}
 
 	/**
