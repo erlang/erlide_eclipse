@@ -50,7 +50,7 @@ public class ErtsInstall {
 	}
 
 	public void setName(String name) {
-		this.fName = name;
+		fName = name;
 	}
 
 	public String getVersion() {
@@ -58,7 +58,7 @@ public class ErtsInstall {
 	}
 
 	public void setVersion(String version) {
-		this.fVersion = version;
+		fVersion = version;
 	}
 
 	public String getExtraErtsArgs() {
@@ -66,7 +66,7 @@ public class ErtsInstall {
 	}
 
 	public void setExtraErtsArgs(String extraErtsArgs) {
-		this.fExtraErtsArgs = extraErtsArgs;
+		fExtraErtsArgs = extraErtsArgs;
 	}
 
 	public String getOtpHome() {
@@ -74,7 +74,7 @@ public class ErtsInstall {
 	}
 
 	public void setOtpHome(String otpHome) {
-		this.fOtpHome = otpHome;
+		fOtpHome = otpHome;
 	}
 
 	public List<String> getPathA() {
@@ -82,7 +82,7 @@ public class ErtsInstall {
 	}
 
 	public void setPathA(List<String> pathA) {
-		this.fPathA = pathA;
+		fPathA = pathA;
 	}
 
 	public List<String> getPathZ() {
@@ -90,11 +90,11 @@ public class ErtsInstall {
 	}
 
 	public void setPathZ(List<String> pathZ) {
-		this.fPathZ = pathZ;
+		fPathZ = pathZ;
 	}
 
 	public void setId(String id) {
-		this.fId = id;
+		fId = id;
 	}
 
 	public static String encodeList(List<String> l) {

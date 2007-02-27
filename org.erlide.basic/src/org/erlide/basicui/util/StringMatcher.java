@@ -45,8 +45,8 @@ public class StringMatcher {
 		private int fEnd; // exclusive
 
 		public Position(int start, int end) {
-			this.fStart = start;
-			this.fEnd = end;
+			fStart = start;
+			fEnd = end;
 		}
 
 		public int getStart() {

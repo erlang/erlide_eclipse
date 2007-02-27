@@ -96,9 +96,9 @@ public class BalloonWindow {
 	private BalloonWindow(Display display, Shell parent, final int style) {
 		this.style = style;
 		final int shellStyle = style & (SWT.ON_TOP | SWT.TOOL);
-		this.shell = (display != null) ? new Shell(display, SWT.NO_TRIM
+		shell = (display != null) ? new Shell(display, SWT.NO_TRIM
 				| shellStyle) : new Shell(parent, SWT.NO_TRIM | shellStyle);
-		this.contents = new Composite(shell, SWT.NONE);
+		contents = new Composite(shell, SWT.NONE);
 
 		final Color c = new Color(shell.getDisplay(), 255, 255, 225);
 		shell.setBackground(c);
@@ -194,7 +194,7 @@ public class BalloonWindow {
 		default:
 			throw new IllegalArgumentException("Illegal anchor value " + anchor);
 		}
-		this.preferredAnchor = anchor;
+		preferredAnchor = anchor;
 	}
 
 	public void setAutoAnchor(boolean autoAnchor) {
@@ -202,13 +202,13 @@ public class BalloonWindow {
 	}
 
 	public void setLocation(int x, int y) {
-		this.locX = x;
-		this.locY = y;
+		locX = x;
+		locY = y;
 	}
 
 	public void setLocation(Point p) {
-		this.locX = p.x;
-		this.locY = p.y;
+		locX = p.x;
+		locY = p.y;
 	}
 
 	public void setText(String title) {
@@ -240,7 +240,7 @@ public class BalloonWindow {
 	}
 
 	public void setTitleWidgetSpacing(int titleImageSpacing) {
-		this.titleWidgetSpacing = titleImageSpacing;
+		titleWidgetSpacing = titleImageSpacing;
 	}
 
 	public Shell getShell() {
