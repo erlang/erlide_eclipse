@@ -44,10 +44,11 @@ public class ErlangContentProvider implements ITreeContentProvider {
 			final IParent c = (IParent) parent;
 			try {
 				IErlElement[] res = c.getChildren();
-				if (fDetailed)
+				if (fDetailed) {
 					return res;
-				else
+				} else {
 					return filter(res);
+				}
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
 					System.out.println("element missing: " + x.getMessage());
@@ -61,8 +62,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		List<IErlElement> list = Arrays.asList(res);
 		List<IErlElement> list2 = new ArrayList<IErlElement>(5);
 		for (IErlElement element : list) {
-			if (!(element instanceof IErlAttribute))
+			if (!(element instanceof IErlAttribute)) {
 				list2.add(element);
+			}
 		}
 		return list2.toArray();
 	}
@@ -71,10 +73,11 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		if (parent instanceof IParent) {
 			try {
 				IErlElement[] res = ((IParent) parent).getChildren();
-				if (fDetailed)
+				if (fDetailed) {
 					return res;
-				else
+				} else {
 					return filter(res);
+				}
 			} catch (final ErlModelException e) {
 				e.printStackTrace();
 				return NO_CHILDREN;

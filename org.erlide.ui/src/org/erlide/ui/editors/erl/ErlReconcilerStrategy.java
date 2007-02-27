@@ -1,24 +1,31 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
 // import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
 
-public class ErlReconcilerStrategy implements IReconcilingStrategy {
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+public class ErlReconcilerStrategy implements IReconcilingStrategy,
+		IReconcilingStrategyExtension {
 
 	private IErlModule fModule;
 
@@ -26,7 +33,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy {
 
 	private IDocument fDoc;
 
-	// private IProgressMonitor mon;
+	private IProgressMonitor mon;
 
 	public ErlReconcilerStrategy(ErlangEditor editor) {
 		fEditor = editor;
@@ -37,26 +44,23 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy {
 			return;
 		}
 		fDoc = document;
-
-		fModule = ErlModelUtils.getModule(fEditor);
-		// System.out.println("set doc:: " + fModule.getElementName());
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		// System.out.println("incremental reconcile " + dirtyRegion.getOffset()
-		// + "-"
-		// + dirtyRegion.getLength() + ":" + dirtyRegion.getText() + "/"
-		// + dirtyRegion.getType());
+		System.out.println("## reconcile " + dirtyRegion.getOffset() + "-"
+				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
+
+		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
 	}
 
-	public void reconcile(IRegion partition) {
-		if (fEditor == null) {
-			return;
-		}
+	private OtpErlangObject mkReconcileMsg(String string,
+			DirtyRegion dirtyRegion, IRegion subRegion) {
+		OtpErlangAtom cmd = new OtpErlangAtom(string);
+		return cmd;
+	}
 
-		// System.out.println("??? reconcile");
-		// reconcileModel(fDoc);
+	public void reconcile(IRegion partition) {
 	}
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
@@ -65,12 +69,20 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy {
 		}
 	}
 
-	/* NOT USED */
-	/*
-	 * private void reconcileModel(IDocument doc) { reconcileModel(doc, new
-	 * DirtyRegion(0, doc.getLength(), DirtyRegion.REMOVE, null));
-	 * reconcileModel(doc, new DirtyRegion(0, doc.getLength(),
-	 * DirtyRegion.INSERT, doc.get())); }
-	 */
+	public void initialReconcile() {
+		System.out.println("## initial reconcile ");
+		fModule = ErlModelUtils.getModule(fEditor);
+		if (fModule != null)
+			System.out.println("## module:: " + fModule.getElementName());
+		notify(new OtpErlangAtom("initialReconcile"));
+	}
+
+	private void notify(OtpErlangObject msg) {
+		BackendManager.getDefault().getIdeBackend().send("erlide_code_db", msg);
+	}
+
+	public void setProgressMonitor(IProgressMonitor monitor) {
+		mon = monitor;
+	}
 
 }

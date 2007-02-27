@@ -71,7 +71,7 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 
 		rb = bundle;
 
-		this.fTemplate = new TemplatePersistenceData(new Template("", "",
+		fTemplate = new TemplatePersistenceData(new Template("", "",
 				((TemplateContextType) ErlangSourceContextTypeComment
 						.getDefault().getContextTypeRegistry().contextTypes()
 						.next()).getId(), "", true), true);
@@ -92,7 +92,7 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 
 		rb = bundle;
 
-		this.fTemplate = template;
+		fTemplate = template;
 
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 		setTitle(rb.getString("templateDialogDescriptionTitle"));

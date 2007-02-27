@@ -93,19 +93,19 @@ public class IoRequest {
 	}
 
 	public OtpErlangPid getLeader() {
-		return this.leader;
+		return leader;
 	}
 
 	public String getMessage() {
-		return this.message;
+		return message;
 	}
 
 	public OtpErlangPid getSender() {
-		return this.sender;
+		return sender;
 	}
 
 	public Timestamp getTstamp() {
-		return this.tstamp;
+		return tstamp;
 	}
 
 	void setLeader(OtpErlangPid leader) {

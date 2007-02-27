@@ -60,11 +60,11 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 			final ModuleVariableResolver element = (ModuleVariableResolver) element0;
 			element.doSetModule(module);
 		}
-		this.fModule = module;
+		fModule = module;
 	}
 
 	void doSetModule(String module) {
-		this.fModule = module;
+		fModule = module;
 	}
 
 }

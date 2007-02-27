@@ -57,6 +57,6 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
 	 *            The arity to set.
 	 */
 	public void setArity(int arity) {
-		this.fArity = arity;
+		fArity = arity;
 	}
 }

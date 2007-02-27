@@ -67,7 +67,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 	FunctionGroup(Composite parent, ErlangFileWizardPage wizPage) {
 		super(parent, SWT.NULL);
-		this.fWizPage = wizPage;
+		fWizPage = wizPage;
 		setText("Functions ");
 		GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false);
 		setLayoutData(gd);

@@ -178,7 +178,7 @@ public class ModuleNavigator extends ViewPart {
 	 *            The actionGroup to set.
 	 */
 	public void setActionGroup(ModuleNavigatorActionGroup lactionGroup) {
-		this.actionGroup = lactionGroup;
+		actionGroup = lactionGroup;
 	}
 
 	/**

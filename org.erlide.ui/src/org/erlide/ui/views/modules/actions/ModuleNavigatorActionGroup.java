@@ -34,7 +34,7 @@ public abstract class ModuleNavigatorActionGroup extends ActionGroup {
 	 *            the resource navigator
 	 */
 	public ModuleNavigatorActionGroup(ModuleNavigator lnavigator) {
-		this.navigator = lnavigator;
+		navigator = lnavigator;
 		makeActions();
 	}
 

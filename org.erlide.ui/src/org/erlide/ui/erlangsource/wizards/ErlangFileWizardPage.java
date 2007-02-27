@@ -81,7 +81,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 		super("wizardPage");
 		setTitle("Erlang Source File");
 		setDescription("This wizard creates a new erlang source file.");
-		this.fSelection = selection;
+		fSelection = selection;
 
 		behaviours = ErlangSourceContextTypeComment.getDefault()
 				.getTemplateStore().getTemplates(

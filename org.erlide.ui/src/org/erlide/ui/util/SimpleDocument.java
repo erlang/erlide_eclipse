@@ -27,7 +27,7 @@ public class SimpleDocument implements IDocument {
 	private StringBuffer buffer;
 
 	public SimpleDocument(String source) {
-		this.buffer = new StringBuffer(source);
+		buffer = new StringBuffer(source);
 	}
 
 	/*
@@ -45,7 +45,7 @@ public class SimpleDocument implements IDocument {
 	 * @see org.eclipse.jface.text.IDocument#getLength()
 	 */
 	public int getLength() {
-		return this.buffer.length();
+		return buffer.length();
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class SimpleDocument implements IDocument {
 	 * @see org.eclipse.jface.text.IDocument#get()
 	 */
 	public String get() {
-		return this.buffer.toString();
+		return buffer.toString();
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class SimpleDocument implements IDocument {
 	 * @see org.eclipse.jface.text.IDocument#get(int, int)
 	 */
 	public String get(int offset, int length) {
-		return this.buffer.substring(offset, offset + length);
+		return buffer.substring(offset, offset + length);
 	}
 
 	/*
@@ -82,7 +82,7 @@ public class SimpleDocument implements IDocument {
 	 */
 	public void replace(int offset, int length, String text) {
 
-		this.buffer.replace(offset, offset + length, text);
+		buffer.replace(offset, offset + length, text);
 	}
 
 	/*

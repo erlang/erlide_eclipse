@@ -81,6 +81,10 @@ public class ErlHighlightScanner implements ITokenScanner {
 
 	protected int fCrtToken;
 
+	private int rangeLength;
+
+	private int rangeOffset;
+
 	/**
 	 * Constructs the rules that define syntax highlighting.
 	 * 
@@ -242,29 +246,18 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return;
 		}
 
-		// TODO make scanner use the provided region
-		offset = 0;
-		length = document.getLength();
+		rangeOffset = offset;
+		rangeLength = length;
 
 		try {
-			int line = document.getLineOfOffset(offset);
-			final int crtOffset = document.getLineOffset(line);
-
-			line = document.getLineOfOffset(offset + length);
-			final int crtLength = document.getLineOffset(line)
-					+ document.getLineLength(line) - crtOffset;
-
-			// System.out.println(" @ sc " + crtOffset + ":" + crtLength + " / "
-			// + offset
-			// + ":" + length);
-			final String str = document.get(crtOffset, crtLength);
-			setText(str, crtOffset, crtLength);
+			final String str = document.get(rangeOffset, rangeLength);
+			setText(str);
 		} catch (final BadLocationException e) {
 			// e.printStackTrace();
 		}
 	}
 
-	private void setText(String document, int offset, int length) {
+	private void setText(String document) {
 		if (document == null) {
 			return;
 		}
@@ -283,11 +276,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 				for (int i = 0; i < l.arity(); i++) {
 					final OtpErlangTuple e = (OtpErlangTuple) l.elementAt(i);
 					final ErlToken tk = new ErlToken(e);
-					if ((tk.getOffset() >= offset)
-							&& (tk.getOffset() + tk.getLength() <= offset
-									+ length)) {
-						toks.add(tk);
-					}
+					tk.fixOffset(rangeOffset);
+					toks.add(tk);
 				}
 			}
 

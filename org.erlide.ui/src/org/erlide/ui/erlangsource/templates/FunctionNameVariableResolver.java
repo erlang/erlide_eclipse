@@ -52,6 +52,6 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
 	 *            The functionName to set.
 	 */
 	public void setFunctionName(String functionName) {
-		this.fFunctionName = functionName;
+		fFunctionName = functionName;
 	}
 }

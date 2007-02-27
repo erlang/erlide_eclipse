@@ -59,7 +59,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 *      org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		this.fSelection = selection;
+		fSelection = selection;
 	}
 
 	/*

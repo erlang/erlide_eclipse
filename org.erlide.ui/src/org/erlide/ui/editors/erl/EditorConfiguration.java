@@ -79,8 +79,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	public EditorConfiguration(IPreferenceStore store, ErlangEditor leditor,
 			IColorManager lcolorManager) {
 		super(store);
-		this.colorManager = lcolorManager;
-		this.editor = leditor;
+		colorManager = lcolorManager;
+		editor = leditor;
 	}
 
 	/**

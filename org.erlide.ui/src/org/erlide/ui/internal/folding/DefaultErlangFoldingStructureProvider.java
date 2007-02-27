@@ -105,8 +105,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		Position position;
 
 		Tuple(ErlangProjectionAnnotation ann, Position pos) {
-			this.annotation = ann;
-			this.position = pos;
+			annotation = ann;
+			position = pos;
 		}
 	}
 

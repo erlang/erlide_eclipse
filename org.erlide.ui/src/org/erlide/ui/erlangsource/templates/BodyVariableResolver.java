@@ -52,6 +52,6 @@ public class BodyVariableResolver extends TemplateVariableResolver {
 	 *            The body to set.
 	 */
 	public void setBody(String body) {
-		this.fBody = body;
+		fBody = body;
 	}
 }

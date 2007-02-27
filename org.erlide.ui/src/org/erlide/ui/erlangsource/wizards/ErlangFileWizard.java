@@ -179,7 +179,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.fSelection = selection;
+		fSelection = selection;
 	}
 
 }

@@ -1390,15 +1390,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		if (event.getSource() == getSelectionProvider())
+		if (event.getSource() == getSelectionProvider()) {
 			return;
+		}
 		ISelection sel = event.getSelection();
-		if (sel instanceof ITextSelection)
+		if (sel instanceof ITextSelection) {
 			return;
-		if (sel instanceof IStructuredSelection)
+		}
+		if (sel instanceof IStructuredSelection) {
 			fSelection = ((IStructuredSelection) sel).getFirstElement();
-		else
+		} else {
 			fSelection = null;
+		}
 	}
 
 	public Object getSelection() {

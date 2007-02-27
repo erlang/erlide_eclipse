@@ -106,7 +106,7 @@ public class LiveExpressionsView extends ViewPart implements
 		}
 
 		public void setActive(boolean active) {
-			this.fActive = active;
+			fActive = active;
 		}
 
 		public String getExpr() {
@@ -114,7 +114,7 @@ public class LiveExpressionsView extends ViewPart implements
 		}
 
 		public void setExpr(String expr) {
-			this.fExpr = expr;
+			fExpr = expr;
 		}
 
 		@Override
@@ -384,7 +384,7 @@ public class LiveExpressionsView extends ViewPart implements
 	public void init(IViewSite site, IMemento aMemento)
 			throws PartInitException {
 		init(site);
-		this.memento = aMemento;
+		memento = aMemento;
 	}
 
 	@Override

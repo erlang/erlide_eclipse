@@ -30,11 +30,11 @@ class ElementChangedListener implements IElementChangedListener {
 
 	public void elementChanged(final ElementChangedEvent e) {
 
-		if (this.page.getControl() == null) {
+		if (page.getControl() == null) {
 			return;
 		}
 
-		final Display d = this.page.getControl().getDisplay();
+		final Display d = page.getControl().getDisplay();
 		if (d != null) {
 			d.asyncExec(new Runnable() {
 

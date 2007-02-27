@@ -39,7 +39,7 @@ public abstract class ModuleNavigatorAction extends SelectionProviderAction {
 	 */
 	public ModuleNavigatorAction(ModuleNavigator lnavigator, String label) {
 		super(lnavigator.getViewer(), label);
-		this.navigator = lnavigator;
+		navigator = lnavigator;
 	}
 
 	/**

@@ -114,7 +114,7 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 	public ConsoleHistoryInformationControl(Shell parent, int shellStyle,
 			int style, String symbolicFontName, String statusFieldText,
 			ErlangConsoleView console) {
-		this.fConsole = console;
+		fConsole = console;
 		final ErlangConsoleView c = console;
 
 		GridLayout layout;
