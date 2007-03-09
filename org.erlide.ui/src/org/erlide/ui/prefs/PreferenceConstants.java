@@ -99,37 +99,37 @@ public class PreferenceConstants {
 
 	public static final String EDITOR_TEXT_FONT = "__erl_text_font";
 
-	public static final String EDITOR_COMMENT_COLOR = "";
+	public static final String EDITOR_COMMENT_COLOR = "__erl_comment_color";
 
-	public static final String EDITOR_ATTRIBUTE_COLOR = "";
+	public static final String EDITOR_ATTRIBUTE_COLOR = "__erl__color";
 
-	public static final String EDITOR_STRING_COLOR = "";
+	public static final String EDITOR_STRING_COLOR = "__erl__color";
 
-	public static final String EDITOR_DEFAULT_COLOR = "";
+	public static final String EDITOR_DEFAULT_COLOR = "__erl__color";
 
-	public static final String EDITOR_KEYWORD_COLOR = "";
+	public static final String EDITOR_KEYWORD_COLOR = "__erl__color";
 
-	public static final String EDITOR_VARIABLE_COLOR = "";
+	public static final String EDITOR_VARIABLE_COLOR = "__erl__color";
 
-	public static final String EDITOR_FUNCTION_COLOR = "";
+	public static final String EDITOR_FUNCTION_COLOR = "__erl__color";
 
-	public static final String EDITOR_GUARD_COLOR = "";
+	public static final String EDITOR_GUARD_COLOR = "__erl__color";
 
-	public static final String EDITOR_MACRO_COLOR = "";
+	public static final String EDITOR_MACRO_COLOR = "__erl__color";
 
-	public static final String EDITOR_RECORD_COLOR = "";
+	public static final String EDITOR_RECORD_COLOR = "__erl__color";
 
-	public static final String EDITOR_BIF_COLOR = "";
+	public static final String EDITOR_BIF_COLOR = "__erl__color";
 
-	public static final String EDITOR_CHAR_COLOR = "";
+	public static final String EDITOR_CHAR_COLOR = "__erl__color";
 
-	public static final String EDITOR_ATOM_COLOR = "";
+	public static final String EDITOR_ATOM_COLOR = "__erl__color";
 
-	public static final String EDITOR_ARROW_COLOR = "";
+	public static final String EDITOR_ARROW_COLOR = "__erl__color";
 
-	public static final String EDITOR_INTEGER_COLOR = "";
+	public static final String EDITOR_INTEGER_COLOR = "__erl__color";
 
-	public static final String EDITOR_FLOAT_COLOR = "";
+	public static final String EDITOR_FLOAT_COLOR = "__erl__color";
 
 	/**
 	 * Preference key suffix for bold text style preference keys.
