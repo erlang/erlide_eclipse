@@ -176,42 +176,42 @@
 
     <antcall target="copyDir">
       <param name="todir" value="features/org.erlide" />
-      <param name="fromdir" value="erlide-feature" />
+      <param name="fromdir" value="org.erlide" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.jinterface" />
-      <param name="fromdir" value="erlide-jinterface" />
+      <param name="fromdir" value="org.erlide.jinterface" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.core" />
-      <param name="fromdir" value="erlide-core" />
+      <param name="fromdir" value="org.erlide.core" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.basic" />
-      <param name="fromdir" value="erlide-basic-ui" />
+      <param name="fromdir" value="org.erlide.basicui" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.launching" />
-      <param name="fromdir" value="erlide-launching" />
+      <param name="fromdir" value="org.erlide.launching" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.ui" />
-      <param name="fromdir" value="erlide-ui" />
+      <param name="fromdir" value="org.erlide.ui" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.help" />
-      <param name="fromdir" value="erlide-help" />
+      <param name="fromdir" value="org.erlide.help" />
     </antcall>
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.erlc" />
-      <param name="fromdir" value="erlide-erlc" />
+      <param name="fromdir" value="org.erlide.erlc" />
     </antcall>
 
     <!--<ant antfile="${customTargets}" target="postFetch"/>-->
