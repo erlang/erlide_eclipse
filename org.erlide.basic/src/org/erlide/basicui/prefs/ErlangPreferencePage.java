@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +35,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 
 	@Override
 	protected Control createContents(Composite parent) {
+		Link l;
 		noDefaultAndApplyButton();
 		final Composite panel = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
@@ -75,9 +77,9 @@ public class ErlangPreferencePage extends PreferencePage implements
 		text = new Label(panel2, SWT.NONE);
 		text.setText(PreferenceMessages.getString("ErlangPreferencePage.3")); //$NON-NLS-1$
 
-		Link l;
 
 		l = new Link(panel2, SWT.NONE | SWT.WRAP);
+		l.setLayoutData(new GridData());
 		l.setSize(panel2.getSize().x, 20);
 		l.setText(String.format(
 				PreferenceMessages.getString("ErlangPreferencePage.4"), //$NON-NLS-1$
