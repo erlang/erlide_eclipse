@@ -191,7 +191,7 @@
 
     <antcall target="copyDir">
       <param name="todir" value="plugins/org.erlide.basic" />
-      <param name="fromdir" value="org.erlide.basicui" />
+      <param name="fromdir" value="org.erlide.basic" />
     </antcall>
 
     <antcall target="copyDir">
