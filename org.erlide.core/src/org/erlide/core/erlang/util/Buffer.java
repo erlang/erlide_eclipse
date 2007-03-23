@@ -210,11 +210,10 @@ public class Buffer implements IBuffer {
 				return contents;
 			}
 			final int length = contents.length;
-			final char[] newContents = new char[length - gapEnd
-					+ gapStart];
+			final char[] newContents = new char[length - gapEnd + gapStart];
 			System.arraycopy(contents, 0, newContents, 0, gapStart);
-			System.arraycopy(contents, gapEnd, newContents,
-					gapStart, length - gapEnd);
+			System.arraycopy(contents, gapEnd, newContents, gapStart, length
+					- gapEnd);
 			return newContents;
 		}
 	}
@@ -275,8 +274,7 @@ public class Buffer implements IBuffer {
 			}
 			final StringBuffer buf = new StringBuffer();
 			buf.append(contents, offset, gapStart - offset);
-			buf.append(contents, gapEnd, offset + length
-					- gapStart);
+			buf.append(contents, gapEnd, offset + length - gapStart);
 			return buf.toString();
 		}
 	}
@@ -331,8 +329,8 @@ public class Buffer implements IBuffer {
 			if (oldSize > 0) {
 				content = new char[contents.length - oldSize];
 				System.arraycopy(contents, 0, content, 0, gapStart);
-				System.arraycopy(contents, gapEnd, content,
-						gapStart, content.length - gapStart);
+				System.arraycopy(contents, gapEnd, content, gapStart,
+						content.length - gapStart);
 				contents = content;
 			}
 			gapStart = gapEnd = position;
@@ -348,17 +346,15 @@ public class Buffer implements IBuffer {
 		} else if (newGapStart < gapStart) {
 			final int delta = gapStart - newGapStart;
 			System.arraycopy(contents, 0, content, 0, newGapStart);
-			System.arraycopy(contents, newGapStart, content, newGapEnd,
-					delta);
-			System.arraycopy(contents, gapEnd, content, newGapEnd
-					+ delta, contents.length - gapEnd);
+			System.arraycopy(contents, newGapStart, content, newGapEnd, delta);
+			System.arraycopy(contents, gapEnd, content, newGapEnd + delta,
+					contents.length - gapEnd);
 		} else {
 			final int delta = newGapStart - gapStart;
 			System.arraycopy(contents, 0, content, 0, gapStart);
-			System.arraycopy(contents, gapEnd, content,
-					gapStart, delta);
-			System.arraycopy(contents, gapEnd + delta, content,
-					newGapEnd, content.length - newGapEnd);
+			System.arraycopy(contents, gapEnd, content, gapStart, delta);
+			System.arraycopy(contents, gapEnd + delta, content, newGapEnd,
+					content.length - newGapEnd);
 		}
 		contents = content;
 		gapStart = newGapStart;
@@ -375,8 +371,7 @@ public class Buffer implements IBuffer {
 	protected void notifyChanged(final BufferChangedEvent event) {
 		if (changeListeners != null) {
 			for (int i = 0, size = changeListeners.size(); i < size; ++i) {
-				final IBufferChangedListener listener = changeListeners
-						.get(i);
+				final IBufferChangedListener listener = changeListeners.get(i);
 				SafeRunner.run(new ISafeRunnable() {
 
 					public void handleException(Throwable exception) {
@@ -440,8 +435,7 @@ public class Buffer implements IBuffer {
 				} else if (textLength > length) {
 					// shrink gap
 					gapStart += textLength - length;
-					System.arraycopy(text, 0, contents, position,
-							textLength);
+					System.arraycopy(text, 0, contents, position, textLength);
 				}
 				flags |= F_HAS_UNSAVED_CHANGES;
 			}

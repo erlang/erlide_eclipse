@@ -151,8 +151,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 		// assume instanceof check is done in subclass
 		final ErlElement other = (ErlElement) o;
 		return fOccurrenceCount == other.fOccurrenceCount
-				&& fName.equals(other.fName)
-				&& fParent.equals(other.fParent);
+				&& fName.equals(other.fName) && fParent.equals(other.fParent);
 	}
 
 	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
@@ -376,8 +375,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement {
 		if (fParent == null) {
 			return super.hashCode();
 		}
-		return Util.combineHashCodes(fName.hashCode(), fParent
-				.hashCode());
+		return Util.combineHashCodes(fName.hashCode(), fParent.hashCode());
 	}
 
 	/**

@@ -635,8 +635,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see IErlProject
 	 */
 	public boolean hasBuildState() {
-		return ErlangCore.getModelManager().getLastBuiltState(fProject,
-				null) != null;
+		return ErlangCore.getModelManager().getLastBuiltState(fProject, null) != null;
 	}
 
 	@Override
