@@ -199,7 +199,6 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 			return 0;
 		}
 		return ((creation > pid.creation) || (serial > pid.serial)
-				|| (id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1
-				: -1;
+				|| (id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1 : -1;
 	}
 }

@@ -359,8 +359,7 @@ public class OtpNode extends OtpLocalNode {
 		if (node_.equals(node)) {
 			return true;
 		} else if (node_.indexOf('@', 0) < 0
-				&& node_.equals(node.substring(0, node
-						.indexOf('@', 0)))) {
+				&& node_.equals(node.substring(0, node.indexOf('@', 0)))) {
 			return true;
 		}
 
@@ -559,12 +558,14 @@ public class OtpNode extends OtpLocalNode {
 	public class Mailboxes {
 
 		private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null; // mbox
-																				// pids
-																				// here
+
+		// pids
+		// here
 
 		private Hashtable<String, WeakReference<OtpMbox>> byName = null; // mbox
-																			// names
-																			// here
+
+		// names
+		// here
 
 		public Mailboxes() {
 			byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17,
