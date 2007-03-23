@@ -50,7 +50,8 @@ public class ErlangPreferencePage extends PreferencePage implements
 			if (d != null) {
 				img.setImage((Image) d.createResource(parent.getDisplay()));
 			} else {
-				img.setText(PreferenceMessages.getString("ErlangPreferencePage.0")); //$NON-NLS-1$
+				img.setText(PreferenceMessages
+						.getString("ErlangPreferencePage.0")); //$NON-NLS-1$
 			}
 		} catch (final DeviceResourceException e) {
 			img.setText(PreferenceMessages.getString("ErlangPreferencePage.1")); //$NON-NLS-1$
@@ -77,30 +78,30 @@ public class ErlangPreferencePage extends PreferencePage implements
 		text = new Label(panel2, SWT.NONE);
 		text.setText(PreferenceMessages.getString("ErlangPreferencePage.3")); //$NON-NLS-1$
 
-
 		l = new Link(panel2, SWT.NONE | SWT.WRAP);
 		l.setLayoutData(new GridData());
 		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(
-				PreferenceMessages.getString("ErlangPreferencePage.4"), //$NON-NLS-1$
+		l.setText(String.format(PreferenceMessages
+				.getString("ErlangPreferencePage.4"), //$NON-NLS-1$
 				SFProjectSupport.HOME_URL));
 		l.addSelectionListener(linkListener);
 
 		l = new Link(panel2, SWT.NONE | SWT.WRAP);
 		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(PreferenceMessages.getString("ErlangPreferencePage.5"), //$NON-NLS-1$
+		l.setText(String.format(PreferenceMessages
+				.getString("ErlangPreferencePage.5"), //$NON-NLS-1$
 				SFProjectSupport.BUGS_URL));
 		l.addSelectionListener(linkListener);
 
 		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(
-				PreferenceMessages.getString("ErlangPreferencePage.6"), //$NON-NLS-1$
+		l.setText(String.format(PreferenceMessages
+				.getString("ErlangPreferencePage.6"), //$NON-NLS-1$
 				SFProjectSupport.SUPPORT_URL));
 		l.addSelectionListener(linkListener);
 
 		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(
-				PreferenceMessages.getString("ErlangPreferencePage.7"), //$NON-NLS-1$
+		l.setText(String.format(PreferenceMessages
+				.getString("ErlangPreferencePage.7"), //$NON-NLS-1$
 				SFProjectSupport.FEATURES_URL));
 		l.addSelectionListener(linkListener);
 

@@ -96,8 +96,8 @@ public class BalloonWindow {
 	private BalloonWindow(Display display, Shell parent, final int style) {
 		this.style = style;
 		final int shellStyle = style & (SWT.ON_TOP | SWT.TOOL);
-		shell = (display != null) ? new Shell(display, SWT.NO_TRIM
-				| shellStyle) : new Shell(parent, SWT.NO_TRIM | shellStyle);
+		shell = (display != null) ? new Shell(display, SWT.NO_TRIM | shellStyle)
+				: new Shell(parent, SWT.NO_TRIM | shellStyle);
 		contents = new Composite(shell, SWT.NONE);
 
 		final Color c = new Color(shell.getDisplay(), 255, 255, 225);
