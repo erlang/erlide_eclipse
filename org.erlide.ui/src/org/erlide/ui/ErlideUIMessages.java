@@ -18,39 +18,39 @@ import org.eclipse.osgi.util.NLS;
 
 public class ErlideUIMessages {
 
-    private static final String BUNDLE_NAME = "org.erlide.ui.ErlideUIMessages";//$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.erlide.ui.ErlideUIMessages";//$NON-NLS-1$
 
-    private static final ResourceBundle resourceBundle = ResourceBundle
-            .getBundle(BUNDLE_NAME);
+	private static final ResourceBundle resourceBundle = ResourceBundle
+			.getBundle(BUNDLE_NAME);
 
-    public static final String QuickOutlinePopupDialog_infoTextPressEscToExit = "press ESC to exit";
+	public static final String QuickOutlinePopupDialog_infoTextPressEscToExit = "press ESC to exit";
 
-    public static final String PDEMultiPageContentOutline_SortingAction_tooltip = "ttoltip";
+	public static final String PDEMultiPageContentOutline_SortingAction_tooltip = "ttoltip";
 
-    public static int ExceptionHandler_seeErrorLogMessage;
+	public static int ExceptionHandler_seeErrorLogMessage;
 
-    static {
-        // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, ErlideUIMessages.class);
-    }
+	static {
+		// load message values from bundle file
+		NLS.initializeMessages(BUNDLE_NAME, ErlideUIMessages.class);
+	}
 
-    public static String getString(String key) {
-        try {
-            return resourceBundle.getString(key);
-        } catch (final MissingResourceException e) {
-            return '!' + key + '!';
-        }
-    }
+	public static String getString(String key) {
+		try {
+			return resourceBundle.getString(key);
+		} catch (final MissingResourceException e) {
+			return '!' + key + '!';
+		}
+	}
 
-    public static String getFormattedString(String key, String arg) {
-        return getFormattedString(key, new String[] { arg });
-    }
+	public static String getFormattedString(String key, String arg) {
+		return getFormattedString(key, new String[] { arg });
+	}
 
-    public static String getFormattedString(String key, String[] args) {
-        return MessageFormat.format(getString(key), (Object[]) args);
-    }
+	public static String getFormattedString(String key, String[] args) {
+		return MessageFormat.format(getString(key), (Object[]) args);
+	}
 
-    public static ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
+	public static ResourceBundle getResourceBundle() {
+		return resourceBundle;
+	}
 }
