@@ -72,8 +72,9 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	public void initialReconcile() {
 		System.out.println("## initial reconcile ");
 		fModule = ErlModelUtils.getModule(fEditor);
-		if (fModule != null)
+		if (fModule != null) {
 			System.out.println("## module:: " + fModule.getElementName());
+		}
 		notify(new OtpErlangAtom("initialReconcile"));
 	}
 
