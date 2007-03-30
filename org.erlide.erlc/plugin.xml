@@ -63,10 +63,13 @@
             class="org.erlide.erlc.internal.ui.properties.MakePropertyPage"
             id="org.erlide.erlc.internal.ui.properties.erlcmakepropertypage"
             name="Erlc make properties"
-            objectClass="org.eclipse.core.resources.IProject">
+            >
          <filter
                name="nature"
                value="org.erlide.erlc.erlcnature"/>
+         <enabledWhen>
+            <instanceof value="org.eclipse.core.resources.IProject"/>
+         </enabledWhen>
       </page>
    </extension>
 
