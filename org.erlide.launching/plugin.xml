@@ -10,7 +10,12 @@
             modes="run, debug"
             name="Erlang application"
             sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.launching.sourcepathcomputer"/>
+            sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
+         <fileExtension
+               default="false"
+               extension="erl">
+         </fileExtension>
+      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">

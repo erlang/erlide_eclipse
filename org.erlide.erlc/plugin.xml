@@ -41,6 +41,10 @@
                id="org.erlide.erlc.addRemoveNatureAction">
          </action>
       </objectContribution>
+      <viewerContribution
+            id="org.erlide.erlc.viewerContribution2"
+            targetID="org.erlide.erlc.viewerContribution2">
+      </viewerContribution>
    </extension>
    <extension
          id="xmlProblem"
