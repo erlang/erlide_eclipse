@@ -15,12 +15,12 @@ package org.erlide.core.erlang;
 import java.util.ArrayList;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or

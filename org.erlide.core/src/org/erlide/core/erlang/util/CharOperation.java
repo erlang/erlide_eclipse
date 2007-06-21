@@ -2181,14 +2181,14 @@ public final class CharOperation {
 
 		/* check first segment */
 		char patternChar = 0;
-		while ((iPattern < patternEnd)
-				&& (patternChar = pattern[iPattern]) != '*') {
+		while ((iPattern < patternEnd) &&
+				(patternChar = pattern[iPattern]) != '*') {
 			if (iName == nameEnd) {
 				return false;
 			}
 			if (patternChar != (isCaseSensitive ? name[iName] : Character
-					.toLowerCase(name[iName]))
-					&& patternChar != '?') {
+					.toLowerCase(name[iName])) &&
+					patternChar != '?') {
 				return false;
 			}
 			iName++;
@@ -2220,8 +2220,8 @@ public final class CharOperation {
 			}
 			/* check current name character */
 			if ((isCaseSensitive ? name[iName] : Character
-					.toLowerCase(name[iName])) != patternChar
-					&& patternChar != '?') {
+					.toLowerCase(name[iName])) != patternChar &&
+					patternChar != '?') {
 				iPattern = segmentStart; // mismatch - restart current
 				// segment
 				iName = ++prefixStart;
@@ -2231,9 +2231,9 @@ public final class CharOperation {
 			iPattern++;
 		}
 
-		return (segmentStart == patternEnd)
-				|| (iName == nameEnd && iPattern == patternEnd)
-				|| (iPattern == patternEnd - 1 && pattern[iPattern] == '*');
+		return (segmentStart == patternEnd) ||
+				(iName == nameEnd && iPattern == patternEnd) ||
+				(iPattern == patternEnd - 1 && pattern[iPattern] == '*');
 	}
 
 	/**
@@ -2301,9 +2301,9 @@ public final class CharOperation {
 		}
 
 		// first segments
-		while (pSegmentStart < pLength
-				&& !(pSegmentEnd == pLength && freeTrailingDoubleStar || (pSegmentEnd == pSegmentStart + 2
-						&& pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*'))) {
+		while (pSegmentStart < pLength &&
+				!(pSegmentEnd == pLength && freeTrailingDoubleStar || (pSegmentEnd == pSegmentStart + 2 &&
+						pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*'))) {
 
 			if (fSegmentStart >= fLength) {
 				return false;
@@ -2331,9 +2331,9 @@ public final class CharOperation {
 
 		/* check sequence of doubleStar+segment */
 		int pSegmentRestart;
-		if ((pSegmentStart >= pLength && freeTrailingDoubleStar)
-				|| (pSegmentEnd == pSegmentStart + 2
-						&& pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*')) {
+		if ((pSegmentStart >= pLength && freeTrailingDoubleStar) ||
+				(pSegmentEnd == pSegmentStart + 2 &&
+						pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*')) {
 			pSegmentEnd = CharOperation.indexOf(pathSeparator, pattern,
 					pSegmentStart = pSegmentEnd + 1);
 			// skip separator
@@ -2379,9 +2379,9 @@ public final class CharOperation {
 			}
 
 			/* path segment is ending */
-			if (pSegmentEnd == pSegmentStart + 2
-					&& pattern[pSegmentStart] == '*'
-					&& pattern[pSegmentStart + 1] == '*') {
+			if (pSegmentEnd == pSegmentStart + 2 &&
+					pattern[pSegmentStart] == '*' &&
+					pattern[pSegmentStart + 1] == '*') {
 				pSegmentEnd = CharOperation.indexOf(pathSeparator, pattern,
 						pSegmentStart = pSegmentEnd + 1);
 				// skip separator
@@ -2436,11 +2436,10 @@ public final class CharOperation {
 			}
 		}
 
-		return (pSegmentRestart >= pSegmentEnd)
-				|| (fSegmentStart >= fLength && pSegmentStart >= pLength)
-				|| (pSegmentStart == pLength - 2
-						&& pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*')
-				|| (pSegmentStart == pLength && freeTrailingDoubleStar);
+		return (pSegmentRestart >= pSegmentEnd) ||
+				(fSegmentStart >= fLength && pSegmentStart >= pLength) ||
+				(pSegmentStart == pLength - 2 && pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*') ||
+				(pSegmentStart == pLength && freeTrailingDoubleStar);
 	}
 
 	/**
@@ -2782,8 +2781,8 @@ public final class CharOperation {
 		if (occurrenceCount == 0) {
 			return array;
 		}
-		final char[] result = new char[max + occurrenceCount
-				* (replacementLength - replacedLength)];
+		final char[] result = new char[max + occurrenceCount *
+				(replacementLength - replacedLength)];
 		int inStart = 0, outStart = 0;
 		for (int i = 0; i < occurrenceCount; i++) {
 			final int offset = starts[i] - inStart;
@@ -2875,8 +2874,8 @@ public final class CharOperation {
 					end--;
 				}
 				split[currentWord] = new char[end - start + 1];
-				System.arraycopy(array, start, split[currentWord++], 0, end
-						- start + 1);
+				System.arraycopy(array, start, split[currentWord++], 0, end -
+						start + 1);
 				last = i + 1;
 			}
 		}
@@ -2889,8 +2888,8 @@ public final class CharOperation {
 		}
 		split[currentWord] = new char[end - start + 1];
 		System
-				.arraycopy(array, start, split[currentWord++], 0, end - start
-						+ 1);
+				.arraycopy(array, start, split[currentWord++], 0, end - start +
+						1);
 		return split;
 	}
 
@@ -2955,8 +2954,8 @@ public final class CharOperation {
 			if (array[i] == divider) {
 				split[currentWord] = new char[i - last];
 				System
-						.arraycopy(array, last, split[currentWord++], 0, i
-								- last);
+						.arraycopy(array, last, split[currentWord++], 0, i -
+								last);
 				last = i + 1;
 			}
 		}
@@ -3019,8 +3018,8 @@ public final class CharOperation {
 			if (array[i] == divider) {
 				split[currentWord] = new char[i - last];
 				System
-						.arraycopy(array, last, split[currentWord++], 0, i
-								- last);
+						.arraycopy(array, last, split[currentWord++], 0, i -
+								last);
 				last = i + 1;
 			}
 		}

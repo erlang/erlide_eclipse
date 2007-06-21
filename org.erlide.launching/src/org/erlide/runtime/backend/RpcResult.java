@@ -21,11 +21,12 @@ public class RpcResult {
 	private boolean fOk = true;
 
 	public RpcResult(OtpErlangObject res) {
-		if ((res instanceof OtpErlangTuple)
-				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
-				&& (((OtpErlangAtom) (((OtpErlangTuple) res).elementAt(0)))
-						.atomValue().equals("badrpc") || ((OtpErlangAtom) (((OtpErlangTuple) res)
-						.elementAt(0))).atomValue().equals("EXIT"))) {
+		if ((res instanceof OtpErlangTuple) &&
+				(((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom) &&
+				("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
+						.elementAt(0))).atomValue()) || "EXIT"
+						.equals(((OtpErlangAtom) (((OtpErlangTuple) res)
+								.elementAt(0))).atomValue()))) {
 			fOk = false;
 			fValue = ((OtpErlangTuple) res).elementAt(1);
 		} else {

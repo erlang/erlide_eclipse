@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IProblem;
 
 public class BuildNotifier {
@@ -238,7 +239,7 @@ public class BuildNotifier {
 		if (msg.equals(previousSubtask)) {
 			return; // avoid refreshing with same one
 		}
-		// if (JavaBuilder.DEBUG) System.out.println(msg);
+		// if (JavaBuilder.DEBUG) ErlLogger.log(msg);
 		if (fMonitor != null) {
 			fMonitor.subTask(msg);
 		}
@@ -279,9 +280,9 @@ public class BuildNotifier {
 						final boolean wasError = IMarker.SEVERITY_ERROR == pb
 								.getAttribute(IMarker.SEVERITY,
 										IMarker.SEVERITY_ERROR);
-						if (isError == wasError
-								&& message.equals(pb.getAttribute(
-										IMarker.MESSAGE, ""))) { //$NON-NLS-1$
+						if (isError == wasError &&
+								message.equals(pb.getAttribute(IMarker.MESSAGE,
+										""))) { //$NON-NLS-1$
 							oldProblems[j] = null;
 							continue next;
 						}
@@ -309,8 +310,8 @@ public class BuildNotifier {
 						if (pb.getID() == IProblem.Task) {
 							continue; // skip task
 						}
-						if (wasError == pb.isError()
-								&& message.equals(pb.getMessage())) {
+						if (wasError == pb.isError() &&
+								message.equals(pb.getMessage())) {
 							continue next;
 						}
 					}
@@ -332,8 +333,10 @@ public class BuildNotifier {
 				if (fMonitor != null) {
 					fMonitor.worked(work - fWorkDone);
 				}
-				// if (JavaBuilder.DEBUG)
-				// System.out.println(java.text.NumberFormat.getPercentInstance().format(this.percentComplete));
+				if (ErlangBuilder.DEBUG) {
+					ErlLogger.log(java.text.NumberFormat.getPercentInstance()
+							.format(this.percentComplete));
+				}
 				fWorkDone = work;
 			}
 		}

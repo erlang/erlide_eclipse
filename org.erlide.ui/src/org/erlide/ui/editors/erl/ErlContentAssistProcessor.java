@@ -110,12 +110,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 								docStr = ((OtpErlangString) elt).stringValue();
 							}
 						}
-						final String cpl = fstr.substring(prefix.length())
-								+ "(" + args + ")";
+						final String cpl = fstr.substring(prefix.length()) +
+								"(" + args + ")";
 						result.add(new CompletionProposal(cpl, offset, 0, cpl
-								.length()
-								- 1 - far * 2 + 2, null, fstr + "/" + far,
-								null, docStr));
+								.length() -
+								1 - far * 2 + 2, null, fstr + "/" + far, null,
+								docStr));
 					}
 					return result
 							.toArray(new ICompletionProposal[result.size()]);

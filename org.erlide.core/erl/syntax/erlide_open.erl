@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: Mar 23, 2006
-%% Description: TODO: Add desciption to erlide_open
+%% Description: TODO: Add description to erlide_open
 -module(erlide_open).
 
 %%
@@ -100,7 +100,7 @@ find_first_var(Var, S) ->
         Other ->
             {ok, Other}
     end.
-               
+
 %% Local Functions
 %%
 

@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.basiccore.ErlLogger;
 
 /**
  * @author Lukas Larsson
@@ -90,8 +91,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 	}
 
 	private void createTable(Composite parent) {
-		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.CHECK);
+		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL |
+				SWT.FULL_SELECTION | SWT.CHECK);
 		fTable.showSelection();
 		fTable.setHeaderVisible(true);
 		fTable.setLinesVisible(true);
@@ -166,12 +167,12 @@ public class FunctionGroup extends Group implements SelectionListener {
 		arityText.addKeyListener(new KeyListener() {
 
 			public void keyPressed(KeyEvent e) {
-				System.out.println(e.character + " was pressed.");
+				ErlLogger.log(e.character + " was pressed.");
 				fWizPage.gettingInput = true;
 			}
 
 			public void keyReleased(KeyEvent e) {
-				System.out.println(e.character + " was released.");
+				ErlLogger.log(e.character + " was released.");
 				fWizPage.gettingInput = false;
 			}
 		});
@@ -213,7 +214,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 		item.setText(1, "" + arity);
 		fEditingItem = null;
 		final TableItem lastItem = fTable.getItem(fTable.getItemCount() - 1);
-		if (lastItem.getText(0).equals("")) {
+		if ("".equals(lastItem.getText(0))) {
 			fTable.remove(fTable.getItemCount() - 1);
 		}
 	}
@@ -241,16 +242,16 @@ public class FunctionGroup extends Group implements SelectionListener {
 		if (functionNameText.getText().length() != 0) {
 			final TableItem allTableItems[] = fTable.getItems();
 			for (TableItem element : allTableItems) {
-				if (element.getText(0).equals(functionNameText.getText())
-						&& element.getText(1).equals(arityText.getText())) {
+				if (element.getText(0).equals(functionNameText.getText()) &&
+						element.getText(1).equals(arityText.getText())) {
 					updateStatus("Function already exists!");
 					return;
 				}
 			}
 			// check to see if this is a valid function name
 			final int functionNameASCII = functionNameText.getText().charAt(0);
-			if (!(functionNameASCII >= 'a' && functionNameASCII <= 'z')
-					&& functionNameASCII != '\'') {
+			if (!(functionNameASCII >= 'a' && functionNameASCII <= 'z') &&
+					functionNameASCII != '\'') {
 				updateStatus("Function name has to be a valid erlang atom.");
 				return;
 			}
@@ -287,12 +288,12 @@ public class FunctionGroup extends Group implements SelectionListener {
 		final TableItem function[] = fTable.getItems();
 		final ArrayList<Function> functionList = new ArrayList<Function>();
 		for (TableItem element : function) {
-			if (!element.getText(0).equals("")) {
+			if (!"".equals(element.getText(0))) {
 				final Function f = new Function();
 				f.arity = Integer.parseInt(element.getText(1));
 				f.isExported = element.getChecked();
 				final String[] part = element.getText(0).split("\\(");
-				f.isState = part[part.length - 1].equals("State)");
+				f.isState = "State)".equals(part[part.length - 1]);
 				if (f.isState) {
 					f.name = element.getText(0).substring(0,
 							element.getText(0).length() - 7);
@@ -333,8 +334,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 	 */
 	public void widgetSelected(SelectionEvent e) {
-		System.out.println("widgetSelected: e.item = " + e.item);
-		System.out.println("widgetSelected: e.widget = " + e.widget);
+		ErlLogger.log("widgetSelected: e.item = " + e.item);
+		ErlLogger.log("widgetSelected: e.widget = " + e.widget);
 
 		if (e.widget == removeFunction) {
 			final TableItem itemsToRemove[] = fTable.getSelection();
@@ -351,13 +352,13 @@ public class FunctionGroup extends Group implements SelectionListener {
 			}
 			final int selectedIndex = fTable.getSelectionIndex();
 			final TableItem selectedItem = fTable.getItem(selectedIndex);
-			if (!selectedItem.getText(0).equals("")) {
+			if (!"".equals(selectedItem.getText(0))) {
 				fEditingItem = selectedItem;
 				functionNameText.setText(selectedItem.getText(0));
 				arityText.setText(selectedItem.getText(1));
 				exportButton.setSelection(selectedItem.getChecked());
-				fEditingItem.setText(0, selectedItem.getText(0)
-						+ "<<Being Edited>>");
+				fEditingItem.setText(0, selectedItem.getText(0) +
+						"<<Being Edited>>");
 			}
 		} else if (e.widget == addState) {
 

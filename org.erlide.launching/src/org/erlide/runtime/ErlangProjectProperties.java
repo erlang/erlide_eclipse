@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 
@@ -181,11 +182,11 @@ public class ErlangProjectProperties {
 		for (String element : dirs) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
-			System.out.println("* " + inc);
+			ErlLogger.log("* " + inc);
 			if (!inc.isAbsolute()) {
-				System.out.println("  not abs!");
+				ErlLogger.log("  not abs!");
 				inc = loc.append(inc);
-				System.out.println("  " + inc);
+				ErlLogger.log("  " + inc);
 			}
 			incs.append(" -I").append(inc.toString());
 		}

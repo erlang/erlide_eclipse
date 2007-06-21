@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.erlide.testing;
 
-import org.erlide.testing.java.PatternMatchTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.erlide.testing.java.PatternMatchTest;
 
 public class JavaTests {
 

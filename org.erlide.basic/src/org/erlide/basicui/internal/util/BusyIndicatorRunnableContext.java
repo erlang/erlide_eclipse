@@ -99,8 +99,8 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
 			final Thread thread = Thread.currentThread();
 			// Do not spawn another thread if we are already in a modal context
 			// thread or inside a busy context thread.
-			if (thread instanceof ThreadContext
-					|| ModalContext.isModalContextThread(thread)) {
+			if (thread instanceof ThreadContext ||
+					ModalContext.isModalContextThread(thread)) {
 				fork = false;
 			}
 

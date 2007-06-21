@@ -52,8 +52,8 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 		}
 
 		if (atom.length() > maxAtomLength) {
-			throw new java.lang.IllegalArgumentException("Atom may not exceed "
-					+ maxAtomLength + " characters");
+			throw new java.lang.IllegalArgumentException(
+					"Atom may not exceed " + maxAtomLength + " characters");
 		}
 		this.atom = atom;
 	}
@@ -274,6 +274,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 					// character is printable without modification!
 					so.append(c);
 				}
+				break;
 			}
 		}
 		return new String(so);

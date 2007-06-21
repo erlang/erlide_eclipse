@@ -203,8 +203,8 @@ public class LiveExpressionsView extends ViewPart implements
 	@Override
 	public void createPartControl(Composite parent) {
 		label = new Label(parent, SWT.NULL);
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
+		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL |
+				SWT.FULL_SELECTION);
 		final Table t = (Table) viewer.getControl();
 
 		final GridData labelLData = new GridData();
@@ -326,18 +326,18 @@ public class LiveExpressionsView extends ViewPart implements
 						// {
 						// str = BackendUtil.prettyPrint(bk,
 						// item.getText(1));
-						// System.out.println(str);
+						// ErlLogger.log(str);
 						BackendEvalResult r = BackendUtil.eval(BackendManager
 								.getDefault().getIdeBackend(),
-								"lists:flatten(io_lib:format(\"~p\", ["
-										+ item.getText(0) + "])).");
+								"lists:flatten(io_lib:format(\"~p\", [" +
+										item.getText(0) + "])).");
 						if (r.isOk()) {
 							str = ((OtpErlangString) r.getValue())
 									.stringValue();
 						} else {
 							str = r.getErrorReason().toString();
 						}
-						// System.out.println(str);
+						// ErlLogger.log(str);
 						// str = item.getText(1);
 						// }
 						// catch (BackendException e)
@@ -347,8 +347,8 @@ public class LiveExpressionsView extends ViewPart implements
 						// }
 
 						info = new SourceViewerInformationControl(t.getShell(),
-								SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI
-										| SWT.WRAP,
+								SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI |
+										SWT.WRAP,
 								PreferenceConstants.EDITOR_TEXT_FONT, null);
 						info.setForegroundColor(t.getDisplay().getSystemColor(
 								SWT.COLOR_INFO_FOREGROUND));
@@ -360,11 +360,12 @@ public class LiveExpressionsView extends ViewPart implements
 						int lw = t.getGridLineWidth();
 						Point pt = t.toDisplay(rect.x + lw, rect.y + lw);
 						info.setLocation(pt);
-						info.setSize(rect.width + lw, t.getBounds().height
-								- rect.y);
+						info.setSize(rect.width + lw, t.getBounds().height -
+								rect.y);
 						info.setVisible(true);
 					}
 				}
+					break;
 				}
 			}
 		};
@@ -427,7 +428,7 @@ public class LiveExpressionsView extends ViewPart implements
 		}
 
 		public boolean canModify(Object element, String property) {
-			if (property.equals("expr")) {
+			if ("expr".equals(property)) {
 				return true;
 			} else {
 				return false;
@@ -544,8 +545,8 @@ public class LiveExpressionsView extends ViewPart implements
 		viewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent event) {
-				if (event.character == SWT.DEL && event.stateMask == 0
-						&& fRemoveAction.isEnabled()) {
+				if (event.character == SWT.DEL && event.stateMask == 0 &&
+						fRemoveAction.isEnabled()) {
 					fRemoveAction.run();
 				}
 			}

@@ -78,10 +78,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="Erlang"
-            id="org.erlide.categories.views">
-      </category>
       <view
             allowMultiple="false"
             category="org.erlide.categories.views"

@@ -84,7 +84,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 						}
 					}
 					try {
-						// System.out.println("'"+newText+"'");
+						// ErlLogger.log("'"+newText+"'");
 						document.replace(firstLineOffset,
 								end - firstLineOffset, newText);
 						selectAndReveal(firstLineOffset, newText.length());

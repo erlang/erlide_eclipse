@@ -13,6 +13,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.basiccore.ErlLogger;
 
 public class DummyProcess implements IProcess {
 
@@ -24,7 +25,7 @@ public class DummyProcess implements IProcess {
 	}
 
 	public String getLabel() {
-		System.out.println("getlabel");
+		ErlLogger.log("getlabel");
 		return "...";
 	}
 
@@ -48,7 +49,7 @@ public class DummyProcess implements IProcess {
 	}
 
 	public Object getAdapter(Class adapter) {
-		System.out.println("--> adapt as " + adapter.getName());
+		ErlLogger.log("--> adapt as " + adapter.getName());
 		return null;
 	}
 

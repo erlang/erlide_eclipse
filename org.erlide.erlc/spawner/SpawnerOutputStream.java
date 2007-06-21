@@ -61,11 +61,13 @@ public class SpawnerOutputStream extends OutputStream {
 	 * @exception IOException on error.
 	 */
 	public void close() throws IOException {
-		if (fd == -1)
+		if (fd == -1) {
 			return;
+		}
 		int status = close0(fd);
-		if (status == -1)
+		if (status == -1) {
 			throw new IOException("close error"); //$NON-NLS-1$
+		}
 		fd = -1;
 	}
 

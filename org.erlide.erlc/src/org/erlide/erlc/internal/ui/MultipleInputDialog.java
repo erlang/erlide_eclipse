@@ -168,7 +168,7 @@ public class MultipleInputDialog extends Dialog {
 			validators.add(new Validator() {
 				@Override
 				public boolean validate() {
-					return !text.getText().equals(""); //$NON-NLS-1$
+					return !"".equals(text.getText()); //$NON-NLS-1$
 				}
 			});
 			text.addModifyListener(new ModifyListener() {
@@ -211,7 +211,7 @@ public class MultipleInputDialog extends Dialog {
 			validators.add(new Validator() {
 				@Override
 				public boolean validate() {
-					return !text.getText().equals(""); //$NON-NLS-1$
+					return !"".equals(text.getText()); //$NON-NLS-1$
 				}
 			});
 
@@ -230,7 +230,7 @@ public class MultipleInputDialog extends Dialog {
 				final DirectoryDialog dialog = new DirectoryDialog(getShell());
 				dialog.setMessage(MakeMessages.MultipleInputDialog_7);
 				final String currentWorkingDir = text.getText();
-				if (!currentWorkingDir.trim().equals("")) { //$NON-NLS-1$
+				if (!"".equals(currentWorkingDir.trim())) { //$NON-NLS-1$
 					final File path = new File(currentWorkingDir);
 					if (path.exists()) {
 						dialog.setFilterPath(currentWorkingDir);
@@ -278,7 +278,7 @@ public class MultipleInputDialog extends Dialog {
 			validators.add(new Validator() {
 				@Override
 				public boolean validate() {
-					return !text.getText().equals(""); //$NON-NLS-1$
+					return !"".equals(text.getText()); //$NON-NLS-1$
 				}
 			});
 

@@ -184,8 +184,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 			throw new OtpErlangDecodeException("Cannot read from input stream");
 		}
 		;
-		return ((b[0] << 24) & 0xff000000) + ((b[1] << 16) & 0xff0000)
-				+ ((b[2] << 8) & 0xff00) + (b[3] & 0xff);
+		return ((b[0] << 24) & 0xff000000) + ((b[1] << 16) & 0xff0000) +
+				((b[2] << 8) & 0xff00) + (b[3] & 0xff);
 	}
 
 	/**
@@ -223,8 +223,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 			throw new OtpErlangDecodeException("Cannot read from input stream");
 		}
 		;
-		return ((b[3] << 24) & 0xff000000) + ((b[2] << 16) & 0xff0000)
-				+ ((b[1] << 8) & 0xff00) + (b[0] & 0xff);
+		return ((b[3] << 24) & 0xff000000) + ((b[2] << 16) & 0xff0000) +
+				((b[1] << 8) & 0xff00) + (b[0] & 0xff);
 	}
 
 	/**
@@ -303,8 +303,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		if (tag != OtpExternal.atomTag) {
 			throw new OtpErlangDecodeException(
-					"wrong tag encountered, expected " + OtpExternal.atomTag
-							+ ", got " + tag);
+					"wrong tag encountered, expected " + OtpExternal.atomTag +
+							", got " + tag);
 		}
 
 		len = this.read2BE();
@@ -340,8 +340,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		if (tag != OtpExternal.binTag) {
 			throw new OtpErlangDecodeException(
-					"Wrong tag encountered, expected " + OtpExternal.binTag
-							+ ", got " + tag);
+					"Wrong tag encountered, expected " + OtpExternal.binTag +
+							", got " + tag);
 		}
 
 		len = this.read4BE();
@@ -407,8 +407,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		if (tag != OtpExternal.floatTag) {
 			throw new OtpErlangDecodeException(
-					"Wrong tag encountered, expected " + OtpExternal.floatTag
-							+ ", got " + tag);
+					"Wrong tag encountered, expected " + OtpExternal.floatTag +
+							", got " + tag);
 		}
 
 		// get the string
@@ -419,14 +419,14 @@ public class OtpInputStream extends ByteArrayInputStream {
 		epos = str.indexOf('e', 0);
 
 		if (epos < 0) {
-			throw new OtpErlangDecodeException("Invalid float format: '" + str
-					+ "'");
+			throw new OtpErlangDecodeException("Invalid float format: '" + str +
+					"'");
 		}
 
 		// remove the sign from the exponent, if positive
 		String estr = str.substring(epos + 1).trim();
 
-		if (estr.substring(0, 1).equals("+")) {
+		if ("+".equals(estr.substring(0, 1))) {
 			estr = estr.substring(1);
 		}
 
@@ -450,8 +450,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final byte i = (byte) l;
 
 		if (l != i) {
-			throw new OtpErlangDecodeException("Value does not fit in byte: "
-					+ l);
+			throw new OtpErlangDecodeException("Value does not fit in byte: " +
+					l);
 		}
 
 		return i;
@@ -471,8 +471,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final char i = (char) l;
 
 		if (l != (i & 0xffffL)) {
-			throw new OtpErlangDecodeException("Value does not fit in char: "
-					+ l);
+			throw new OtpErlangDecodeException("Value does not fit in char: " +
+					l);
 		}
 
 		return i;
@@ -492,8 +492,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final int i = (int) l;
 
 		if (l != (i & 0xFFFFffffL)) {
-			throw new OtpErlangDecodeException("Value does not fit in uint: "
-					+ l);
+			throw new OtpErlangDecodeException("Value does not fit in uint: " +
+					l);
 		}
 
 		return i;
@@ -513,8 +513,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final int i = (int) l;
 
 		if (l != i) {
-			throw new OtpErlangDecodeException("Value does not fit in int: "
-					+ l);
+			throw new OtpErlangDecodeException("Value does not fit in int: " +
+					l);
 		}
 
 		return i;
@@ -534,8 +534,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final short i = (short) l;
 
 		if (l != (i & 0xffffL)) {
-			throw new OtpErlangDecodeException("Value does not fit in ushort: "
-					+ l);
+			throw new OtpErlangDecodeException(
+					"Value does not fit in ushort: " + l);
 		}
 
 		return i;
@@ -555,8 +555,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 		final short i = (short) l;
 
 		if (l != i) {
-			throw new OtpErlangDecodeException("Value does not fit in short: "
-					+ l);
+			throw new OtpErlangDecodeException("Value does not fit in short: " +
+					l);
 		}
 
 		return i;
@@ -616,8 +616,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 			if (arity > 8) {
 				throw new OtpErlangDecodeException(
-						"Arity for smallBig may not be more than 8, was "
-								+ arity);
+						"Arity for smallBig may not be more than 8, was " +
+								arity);
 			}
 
 			sign = this.read1();
@@ -631,8 +631,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 				}
 			} else if ((val == -val) ? sign == 0 : val < 0) {
 				throw new OtpErlangDecodeException(
-						"Value of smallBig does not fit in long, val " + val
-								+ " sign " + sign);
+						"Value of smallBig does not fit in long, val " + val +
+								" sign " + sign);
 			} else if (sign != 0) {
 				val = -val;
 			}
@@ -679,8 +679,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 			}
 			break;
 		default:
-			throw new OtpErlangDecodeException("Not valid big integer tag: "
-					+ tag);
+			throw new OtpErlangDecodeException("Not valid big integer tag: " +
+					tag);
 		}
 		return val;
 	}
@@ -804,8 +804,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		if (tag != OtpExternal.pidTag) {
 			throw new OtpErlangDecodeException(
-					"Wrong tag encountered, expected " + OtpExternal.pidTag
-							+ ", got " + tag);
+					"Wrong tag encountered, expected " + OtpExternal.pidTag +
+							", got " + tag);
 		}
 
 		node = this.read_atom();
@@ -837,8 +837,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		if (tag != OtpExternal.portTag) {
 			throw new OtpErlangDecodeException(
-					"Wrong tag encountered, expected " + OtpExternal.portTag
-							+ ", got " + tag);
+					"Wrong tag encountered, expected " + OtpExternal.portTag +
+							", got " + tag);
 		}
 
 		node = this.read_atom();
@@ -935,8 +935,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 		default:
 			throw new OtpErlangDecodeException(
-					"Wrong tag encountered, expected " + OtpExternal.stringTag
-							+ " or " + OtpExternal.listTag + ", got " + tag);
+					"Wrong tag encountered, expected " + OtpExternal.stringTag +
+							" or " + OtpExternal.listTag + ", got " + tag);
 		}
 	}
 

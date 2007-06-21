@@ -40,7 +40,7 @@ public class BackendSupport {
 			final IConfigurationElement[] elements = extension
 					.getConfigurationElements();
 			for (final IConfigurationElement element : elements) {
-				if (element.getName().equals("backend")) {
+				if ("backend".equals(element.getName())) {
 					final String name = element.getAttribute("name");
 					final String id = element.getAttribute("id");
 					final String cls = element.getAttribute("class");

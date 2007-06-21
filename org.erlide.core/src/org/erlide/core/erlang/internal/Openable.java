@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlangCore;
@@ -251,8 +252,8 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		}
 
 		public boolean visit(IResource resource) {
-			if (resource.getType() == IResource.FILE
-					&& resource.getName().equals(aname)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getName().equals(aname)) {
 				findResult = resource;
 				return false;
 			}
@@ -347,11 +348,11 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	 */
 	public void makeConsistent(IProgressMonitor monitor)
 			throws ErlModelException {
-		System.out.println("make consistent? ");
+		ErlLogger.log("make consistent? ");
 		if (isConsistent()) {
 			return;
 		}
-		System.out.println("make consistent");
+		ErlLogger.log("make consistent");
 	}
 
 	/**

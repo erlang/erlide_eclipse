@@ -25,8 +25,8 @@ public interface IMakeCommonBuildInfo {
 
 	public final static String BUILD_COMMAND = ARGS_PREFIX + ".build.command"; //$NON-NLS-1$
 
-	public final static String BUILD_ARGUMENTS = ARGS_PREFIX
-			+ ".build.arguments"; //$NON-NLS-1$
+	public final static String BUILD_ARGUMENTS = ARGS_PREFIX +
+			".build.arguments"; //$NON-NLS-1$
 
 	void setBuildAttribute(String name, String value) throws CoreException;
 

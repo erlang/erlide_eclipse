@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
@@ -666,10 +667,8 @@ public class ErlangPlugin extends Plugin {
 		if (BackendManager.isDeveloper()) {
 			dev = " erlide developer version ***";
 		}
-		System.out
-				.println("*** starting Erlide v"
-						+ getBundle().getHeaders().get("Bundle-Version")
-						+ " ***" + dev);
+		System.out.println("*** starting Erlide v" +
+				getBundle().getHeaders().get("Bundle-Version") + " ***" + dev);
 
 		BackendManager.getDefault().addPlugin(this);
 
@@ -751,8 +750,8 @@ public class ErlangPlugin extends Plugin {
 
 		for (IProject element : projects) {
 			try {
-				if (element.isOpen()
-						&& element.hasNature(ErlangPlugin.NATURE_ID)) {
+				if (element.isOpen() &&
+						element.hasNature(ErlangPlugin.NATURE_ID)) {
 					final ErlangProjectProperties prefs = new ErlangProjectProperties(
 							element);
 					final String pathA = element.getLocation().append(
@@ -832,7 +831,7 @@ public class ErlangPlugin extends Plugin {
 
 	public static void debug(String message) {
 		if (getDefault().isDebugging()) {
-			System.out.println(message);
+			ErlLogger.log(message);
 		}
 	}
 

@@ -95,7 +95,7 @@ public class ProcessClosure {
 
 		public synchronized void complete() {
 			fFinished = true;
-			notify();
+			notifyAll();
 		}
 
 		public void close() {

@@ -171,8 +171,8 @@ public class SWTResourceManager {
 	 * @return Image The image stored in the file at the specified path
 	 */
 	public static Image getImage(String section, String path) {
-		String key = section + '|' + SWTResourceManager.class.getName() + '|'
-				+ path;
+		String key = section + '|' + SWTResourceManager.class.getName() + '|' +
+				path;
 		Image image = m_ClassImageMap.get(key);
 		if (image == null) {
 			try {
@@ -238,19 +238,16 @@ public class SWTResourceManager {
 	 * image.
 	 */
 	public static final int TOP_LEFT = 1;
-
 	/**
 	 * Style constant for placing decorator image in top right corner of base
 	 * image.
 	 */
 	public static final int TOP_RIGHT = 2;
-
 	/**
 	 * Style constant for placing decorator image in bottom left corner of base
 	 * image.
 	 */
 	public static final int BOTTOM_LEFT = 3;
-
 	/**
 	 * Style constant for placing decorator image in bottom right corner of base
 	 * image.
@@ -301,14 +298,14 @@ public class SWTResourceManager {
 					if (corner == TOP_LEFT) {
 						drawImage(decorator.getImageData(), 0, 0);
 					} else if (corner == TOP_RIGHT) {
-						drawImage(decorator.getImageData(), bid.width
-								- did.width - 1, 0);
+						drawImage(decorator.getImageData(), bid.width -
+								did.width - 1, 0);
 					} else if (corner == BOTTOM_LEFT) {
-						drawImage(decorator.getImageData(), 0, bid.height
-								- did.height - 1);
+						drawImage(decorator.getImageData(), 0, bid.height -
+								did.height - 1);
 					} else if (corner == BOTTOM_RIGHT) {
-						drawImage(decorator.getImageData(), bid.width
-								- did.width - 1, bid.height - did.height - 1);
+						drawImage(decorator.getImageData(), bid.width -
+								did.width - 1, bid.height - did.height - 1);
 					}
 				}
 
@@ -411,8 +408,8 @@ public class SWTResourceManager {
 	 */
 	public static Font getFont(String name, int size, int style,
 			boolean strikeout, boolean underline) {
-		String fontName = name + '|' + size + '|' + style + '|' + strikeout
-				+ '|' + underline;
+		String fontName = name + '|' + size + '|' + style + '|' + strikeout +
+				'|' + underline;
 		Font font = m_FontMap.get(fontName);
 		if (font == null) {
 			FontData fontData = new FontData(name, size, style);

@@ -18,6 +18,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -187,7 +188,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public void breakpointAdded(IBreakpoint breakpoint) {
-		System.out.println("Breakpoint added: " + breakpoint);
+		ErlLogger.log("Breakpoint added: " + breakpoint);
 		// TODO Auto-generated method stub
 	}
 

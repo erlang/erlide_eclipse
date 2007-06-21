@@ -13,6 +13,8 @@ package org.erlide.core.erlang;
 
 import java.text.DecimalFormat;
 
+import org.erlide.basiccore.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangChar;
 import com.ericsson.otp.erlang.OtpErlangDouble;
@@ -45,7 +47,7 @@ public class ErlToken {
 		fTuple = e;
 		kind = ((OtpErlangAtom) (e.elementAt(0))).atomValue();
 		if (TRACE) {
-			System.out.println("    =" + e.toString());
+			ErlLogger.log("    =" + e.toString());
 		}
 		try {
 			if (e.elementAt(1) instanceof OtpErlangTuple) {
@@ -70,8 +72,8 @@ public class ErlToken {
 		}
 		if (ee != null) {
 			if (TRACE) {
-				System.out.println("   -" + ee.toString() + " "
-						+ ee.getClass().getName());
+				ErlLogger.log("   -" + ee.toString() + " " +
+						ee.getClass().getName());
 			}
 			if (ee instanceof OtpErlangString) {
 				text = ((OtpErlangString) ee).stringValue();
@@ -107,15 +109,15 @@ public class ErlToken {
 			text = kind;
 		}
 		if (TRACE) {
-			System.out.println("mkTok " + kind + " - " + text + " " + offset
-					+ ":" + text.length() + " " + (offset + text.length()));
+			ErlLogger.log("mkTok " + kind + " - " + text + " " + offset + ":" +
+					text.length() + " " + (offset + text.length()));
 		}
 	}
 
 	public ErlToken(OtpErlangTuple e, int x) {
 		fTuple = e;
 		if (TRACE) {
-			System.out.println("    =" + e.toString());
+			ErlLogger.log("    =" + e.toString());
 		}
 
 		final OtpErlangObject[] parts = e.elements();
@@ -123,7 +125,7 @@ public class ErlToken {
 		// -record(token, {kind, line, offset, length, value, text}).
 
 		kind = ((OtpErlangAtom) parts[1]).atomValue();
-		if (kind.equals("eof")) {
+		if ("eof".equals(kind)) {
 			return;
 		}
 
@@ -146,9 +148,9 @@ public class ErlToken {
 		}
 
 		if (TRACE) {
-			System.out.println("mkTok " + kind + " - " + text + " " + line
-					+ "/" + offset + ":" + text.length() + " "
-					+ (offset + text.length()));
+			ErlLogger.log("mkTok " + kind + " - " + text + " " + line + "/" +
+					offset + ":" + text.length() + " " +
+					(offset + text.length()));
 		}
 	}
 

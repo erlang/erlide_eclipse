@@ -21,6 +21,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 
 public class ErlangNodeLaunchConfigurationDelegate extends
@@ -39,10 +40,10 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 					IProcess.ATTR_PROCESS_LABEL, "noname@localhost");
 			label = BackendManager.buildNodeName(label);
 
-			cmd += " -noshell -name " + label + " -setcookie "
-					+ Cookie.retrieveCookie();
+			cmd += " -noshell -name " + label + " -setcookie " +
+					Cookie.retrieveCookie();
 
-			System.out.println("RUN*> " + cmd);
+			ErlLogger.log("RUN*> " + cmd);
 
 			final File workingDirectory = new File(".");
 			Process vm = null;
@@ -70,7 +71,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 			// if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			// final IBackend b = getBackend(configuration);
-			// System.out.println("DEBUG*> " + mod + ":" + func + "();...");
+			// ErlLogger.log("DEBUG*> " + mod + ":" + func + "();...");
 			// final IDebugTarget target = new ErlangDebugTarget(launch, b,
 			// mod, func);
 			// launch.addDebugTarget(target);
@@ -79,7 +80,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			// }
 
 		} catch (final Exception e) {
-			System.out.println("Could not launch Erlang:::");
+			ErlLogger.log("Could not launch Erlang:::");
 			e.printStackTrace();
 		}
 

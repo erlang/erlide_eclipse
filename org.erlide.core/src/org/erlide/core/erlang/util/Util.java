@@ -154,7 +154,7 @@ public class Util implements ISuffixConstants {
 						// message PLUGIN_ID
 						// {compiler.name}
 						boolean done = false;
-						if (!id.equals(argId)) {
+						if (!argId.equals(id)) {
 							String argMessage = null;
 							try {
 								argMessage = bundle.getString(argId);
@@ -652,7 +652,7 @@ public class Util implements ISuffixConstants {
 				ARGUMENTS_DELIMITER);
 		while (tokenizer.hasMoreTokens()) {
 			String argument = tokenizer.nextToken();
-			if (argument.equals(EMPTY_ARGUMENT)) {
+			if (EMPTY_ARGUMENT.equals(argument)) {
 				argument = ""; //$NON-NLS-1$
 			}
 			args[count++] = argument;
@@ -887,8 +887,8 @@ public class Util implements ISuffixConstants {
 	 */
 	public static void log(Throwable e, String message) {
 		Throwable nestedException;
-		if (e instanceof ErlModelException
-				&& (nestedException = ((ErlModelException) e).getException()) != null) {
+		if (e instanceof ErlModelException &&
+				(nestedException = ((ErlModelException) e).getException()) != null) {
 			e = nestedException;
 		}
 		// IStatus status = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
@@ -1273,8 +1273,8 @@ public class Util implements ISuffixConstants {
 				if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
 					throw new UTFDataFormatException();
 				}
-				str[strlen++] = (char) (((c & 0x0F) << 12)
-						| ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
+				str[strlen++] = (char) (((c & 0x0F) << 12) |
+						((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
 				break;
 			default:
 				// 10xx xxxx, 1111 xxxx
@@ -1662,8 +1662,8 @@ public class Util implements ISuffixConstants {
 				// resize contents if needed
 				if (contentsLength + amountRequested > contents.length) {
 					System.arraycopy(contents, 0,
-							contents = new byte[contentsLength
-									+ amountRequested], 0, contentsLength);
+							contents = new byte[contentsLength +
+									amountRequested], 0, contentsLength);
 				}
 
 				// read as many bytes as possible
@@ -1743,8 +1743,8 @@ public class Util implements ISuffixConstants {
 				// resize contents if needed
 				if (contentsLength + amountRequested > contents.length) {
 					System.arraycopy(contents, 0,
-							contents = new char[contentsLength
-									+ amountRequested], 0, contentsLength);
+							contents = new char[contentsLength +
+									amountRequested], 0, contentsLength);
 				}
 
 				// read as many chars as possible

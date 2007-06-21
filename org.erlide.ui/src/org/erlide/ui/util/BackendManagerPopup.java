@@ -13,6 +13,7 @@ package org.erlide.ui.util;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.BalloonPopupDialog;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
@@ -32,27 +33,27 @@ public class BackendManagerPopup implements IBackendListener {
 	}
 
 	public void backendAdded(final IBackend b) {
-		System.out.println("$$ added backend " + b.getLabel());
+		ErlLogger.log("$$ added backend " + b.getLabel());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Added "
-						+ b.getLabel(), DELAY);
+				BalloonPopupDialog.show("Backend notification", "Added " +
+						b.getLabel(), DELAY);
 			}
 		});
 	}
 
 	public void backendRemoved(final IBackend b) {
-		System.out.println("$$ removed backend " + b.getLabel());
+		ErlLogger.log("$$ removed backend " + b.getLabel());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Removed "
-						+ b.getLabel(), DELAY);
+				BalloonPopupDialog.show("Backend notification", "Removed " +
+						b.getLabel(), DELAY);
 			}
 		});
 	}

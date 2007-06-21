@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
@@ -51,7 +52,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				}
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
-					System.out.println("element missing: " + x.getMessage());
+					ErlLogger.log("element missing: " + x.getMessage());
 				}
 			}
 		}
@@ -102,7 +103,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				return (children != null && children.length > 0);
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
-					System.out.println("element missing: " + x.getMessage());
+					ErlLogger.log("element missing: " + x.getMessage());
 				}
 			}
 		}
@@ -130,9 +131,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		}
 		boolean isModule = (newInput instanceof IErlModule);
 
-		// System.out.println("> cprov set input:::" + newInput);
+		// ErlLogger.log("> cprov set input:::" + newInput);
 		if (newInput != null) {
-			// System.out.println("!! " + newInput.getClass().getName() + "
+			// ErlLogger.log("!! " + newInput.getClass().getName() + "
 			// " +
 			// fListener);
 		}

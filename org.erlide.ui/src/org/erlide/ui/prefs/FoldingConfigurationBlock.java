@@ -146,8 +146,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 		final Composite composite = new Composite(parent, SWT.NULL);
 		// assume parent page uses griddata
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER
-				| GridData.VERTICAL_ALIGN_FILL);
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER |
+				GridData.VERTICAL_ALIGN_FILL);
 		composite.setLayoutData(gd);
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -159,8 +159,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		fFoldingCheckbox = new Button(composite, SWT.CHECK);
 		fFoldingCheckbox
 				.setText(PreferencesMessages.FoldingConfigurationBlock_enable);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |
+				GridData.VERTICAL_ALIGN_BEGINNING);
 		fFoldingCheckbox.setLayoutData(gd);
 		fFoldingCheckbox.addSelectionListener(new SelectionListener() {
 
@@ -176,34 +176,34 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		});
 
 		Label label = new Label(composite, SWT.CENTER);
-		gd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		gd = new GridData(GridData.FILL_HORIZONTAL |
+				GridData.VERTICAL_ALIGN_BEGINNING);
 		label.setLayoutData(gd);
 
 		if (fProviderDescriptors.size() > 1) {
 			/* list */
 			final Composite comboComp = new Composite(composite, SWT.NONE);
-			gd = new GridData(GridData.FILL_HORIZONTAL
-					| GridData.VERTICAL_ALIGN_BEGINNING);
+			gd = new GridData(GridData.FILL_HORIZONTAL |
+					GridData.VERTICAL_ALIGN_BEGINNING);
 			final GridLayout gridLayout = new GridLayout(2, false);
 			gridLayout.marginWidth = 0;
 			comboComp.setLayout(gridLayout);
 
 			final Label comboLabel = new Label(comboComp, SWT.CENTER);
-			gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-					| GridData.VERTICAL_ALIGN_CENTER);
+			gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |
+					GridData.VERTICAL_ALIGN_CENTER);
 			comboLabel.setLayoutData(gd);
 			comboLabel
 					.setText(PreferencesMessages.FoldingConfigurationBlock_combo_caption);
 
 			label = new Label(composite, SWT.CENTER);
-			gd = new GridData(GridData.FILL_HORIZONTAL
-					| GridData.VERTICAL_ALIGN_BEGINNING);
+			gd = new GridData(GridData.FILL_HORIZONTAL |
+					GridData.VERTICAL_ALIGN_BEGINNING);
 			label.setLayoutData(gd);
 
 			fProviderCombo = new Combo(comboComp, SWT.READ_ONLY | SWT.DROP_DOWN);
-			gd = new GridData(GridData.HORIZONTAL_ALIGN_END
-					| GridData.VERTICAL_ALIGN_CENTER);
+			gd = new GridData(GridData.HORIZONTAL_ALIGN_END |
+					GridData.VERTICAL_ALIGN_CENTER);
 			fProviderCombo.setLayoutData(gd);
 
 			fProviderViewer = createProviderViewer();
@@ -219,8 +219,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 		/* contributed provider preferences. */
 		fGroup = new Composite(groupComp, SWT.NONE);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |
+				GridData.VERTICAL_ALIGN_BEGINNING);
 		fGroup.setLayoutData(gd);
 		fStackLayout = new StackLayout();
 		fGroup.setLayout(fStackLayout);

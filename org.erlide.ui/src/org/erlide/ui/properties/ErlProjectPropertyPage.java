@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
@@ -70,8 +71,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 
 		// create the widgets and their grid data objects
 		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.buildoutput")
-				+ ":");
+				.getResourceString("wizards.labels.buildoutput") +
+				":");
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		output.setLayoutData(gd);
@@ -79,8 +80,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		output.addListener(SWT.Modify, nameModifyListener);
 
 		Label l1 = new Label(composite, SWT.NONE);
-		l1.setText(ErlideUIPlugin.getResourceString("wizards.labels.source")
-				+ ":");
+		l1.setText(ErlideUIPlugin.getResourceString("wizards.labels.source") +
+				":");
 		source = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		source.setLayoutData(gd);
@@ -88,8 +89,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		source.addListener(SWT.Modify, nameModifyListener);
 
 		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.include")
-				+ ":");
+				.getResourceString("wizards.labels.include") +
+				":");
 		include = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		include.setLayoutData(gd);
@@ -146,7 +147,7 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		System.out.println("*+> " + event);
+		ErlLogger.log("*+> " + event);
 	}
 
 }

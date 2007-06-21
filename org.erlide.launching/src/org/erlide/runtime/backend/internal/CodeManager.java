@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
@@ -69,7 +70,7 @@ public class CodeManager implements ICodeManager {
 	public void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
-				// System.out.println("code:patha(" + path);
+				// ErlLogger.log("code:patha(" + path);
 				fBackend.rpc("code", "add_patha", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
@@ -186,8 +187,8 @@ public class CodeManager implements ICodeManager {
 			try {
 				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
 						new OtpErlangAtom(moduleName)));
-				if (!((OtpErlangAtom) r).booleanValue()
-						|| !BackendManager.isDeveloper()) {
+				if (!((OtpErlangAtom) r).booleanValue() ||
+						!BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
 							"load_binary", new OtpErlangObject[] {
 									new OtpErlangAtom(moduleName),
@@ -226,8 +227,8 @@ public class CodeManager implements ICodeManager {
 			return false;
 		} else {
 			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\""
-					+ moduleName + ".beam\"," + aa + ").\n";
+			final String msg = "code:load_binary(" + moduleName + ",\"" +
+					moduleName + ".beam\"," + aa + ").\n";
 			try {
 				fBackend.sendToDefaultShell(msg);
 			} catch (final IOException e) {
@@ -289,15 +290,15 @@ public class CodeManager implements ICodeManager {
 	}
 
 	void loadBootstrap(int port) {
-		System.out.println("bootstrapping...");
+		ErlLogger.log("bootstrapping...");
 		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
 		URL e;
 		e = b.getEntry("/ebin/erlide_erpc.beam");
 		loadBootstrap("erlide_erpc", e);
 
 		try {
-			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
-					+ ", false).\n");
+			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port +
+					", false).\n");
 			fBackend.sendToDefaultShell("unlink(X).\n");
 		} catch (final IOException e1) {
 			e1.printStackTrace();
@@ -309,7 +310,7 @@ public class CodeManager implements ICodeManager {
 			return;
 		}
 
-		System.out.println("loading plugin " + p.getClass());
+		ErlLogger.log("loading plugin " + p.getClass());
 
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
@@ -321,16 +322,16 @@ public class CodeManager implements ICodeManager {
 			e = b.getEntryPaths("/ebin");
 		}
 		if (e == null) {
-			System.out.println("* !!! error loading plugin " + p.getClass());
+			ErlLogger.log("* !!! error loading plugin " + p.getClass());
 			return;
 		}
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null &&
+					"beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
-				// System.out.println(" " + m);
+				// ErlLogger.log(" " + m);
 				try {
 					loadBeam(m, b.getEntry(s));
 				} catch (final Exception ex) {
@@ -338,7 +339,7 @@ public class CodeManager implements ICodeManager {
 				}
 			}
 		}
-		System.out.println("*done! loading plugin " + p.getClass());
+		ErlLogger.log("*done! loading plugin " + p.getClass());
 	}
 
 	/**
@@ -373,16 +374,15 @@ public class CodeManager implements ICodeManager {
 		if (e == null) {
 			return;
 		}
-		System.out.println("*> really unloading plugin "
-				+ p.getClass().getName());
+		ErlLogger.log("*> really unloading plugin " + p.getClass().getName());
 		if (!e.hasMoreElements()) {
 			e = b.getEntryPaths("/ebin");
 		}
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null &&
+					"beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				unloadBeam(m);
 			}

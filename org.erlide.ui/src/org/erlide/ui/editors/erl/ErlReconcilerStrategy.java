@@ -17,6 +17,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
@@ -47,8 +48,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		System.out.println("## reconcile " + dirtyRegion.getOffset() + "-"
-				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
+		ErlLogger.log("## reconcile " + dirtyRegion.getOffset() + "-" +
+				dirtyRegion.getLength() + " : " + dirtyRegion.getType());
 
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
@@ -70,10 +71,10 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void initialReconcile() {
-		System.out.println("## initial reconcile ");
+		ErlLogger.log("## initial reconcile ");
 		fModule = ErlModelUtils.getModule(fEditor);
 		if (fModule != null) {
-			System.out.println("## module:: " + fModule.getElementName());
+			ErlLogger.log("## module:: " + fModule.getElementName());
 		}
 		notify(new OtpErlangAtom("initialReconcile"));
 	}

@@ -13,13 +13,13 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.erlide.basiccore.ErlLogger;
 
 public class StandaloneBackend extends AbstractBackend {
 
 	@Override
 	public void addProject(String project) {
-		System.out.println("$ add project " + project + " to remote "
-				+ getLabel());
+		ErlLogger.log("$ add project " + project + " to remote " + getLabel());
 	}
 
 	@Override

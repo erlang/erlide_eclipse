@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
@@ -344,7 +345,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	public static void debug(String message) {
 		if (getDefault().isDebugging()) {
-			System.out.println(message);
+			ErlLogger.log(message);
 		}
 	}
 

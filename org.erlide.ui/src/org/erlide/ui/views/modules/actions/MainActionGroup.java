@@ -204,8 +204,8 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		menu
-				.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
-						+ "-end")); //$NON-NLS-1$
+				.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS +
+						"-end")); //$NON-NLS-1$
 		menu.add(new Separator());
 
 		if (selection.size() == 1) {

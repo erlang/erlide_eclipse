@@ -18,6 +18,7 @@ import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.erlide.basiccore.ErlLogger;
 
 public final class TestListener implements IResourceChangeListener,
 		ISelectionChangedListener, ITextInputListener, ITextListener {
@@ -29,26 +30,25 @@ public final class TestListener implements IResourceChangeListener,
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		System.out.println("¤ resourceChanged " + event);
+		ErlLogger.log("¤ resourceChanged " + event);
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		System.out.println("¤ selectionChanged " + event);
+		ErlLogger.log("¤ selectionChanged " + event);
 	}
 
 	public void inputDocumentAboutToBeChanged(IDocument oldInput,
 			IDocument newInput) {
-		System.out.println("¤ inputDocumentAboutToBeChanged " + oldInput + " "
-				+ newInput);
+		ErlLogger.log("¤ inputDocumentAboutToBeChanged " + oldInput + " " +
+				newInput);
 	}
 
 	public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-		System.out.println("¤ inputDocumentChanged " + oldInput + " "
-				+ newInput);
+		ErlLogger.log("¤ inputDocumentChanged " + oldInput + " " + newInput);
 	}
 
 	public void textChanged(TextEvent event) {
-		System.out.println("¤ textChanged " + event);
+		ErlLogger.log("¤ textChanged " + event);
 	}
 
 }

@@ -15,6 +15,7 @@ import java.util.Enumeration;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.internal.Openable;
@@ -42,7 +43,7 @@ public class BufferManager {
 		if (verbose) {
 			final String owner = ((Openable) buffer.getOwner())
 					.toStringWithAncestors();
-			System.out.println("Adding buffer for " + owner); //$NON-NLS-1$
+			ErlLogger.log("Adding buffer for " + owner); //$NON-NLS-1$
 		}
 		openBuffers.put(buffer.getOwner(), buffer);
 		if (verbose) {
@@ -119,7 +120,7 @@ public class BufferManager {
 		if (verbose) {
 			final String owner = ((Openable) buffer.getOwner())
 					.toStringWithAncestors();
-			System.out.println("Removing buffer for " + owner); //$NON-NLS-1$
+			ErlLogger.log("Removing buffer for " + owner); //$NON-NLS-1$
 		}
 		openBuffers.remove(buffer.getOwner());
 		if (verbose) {

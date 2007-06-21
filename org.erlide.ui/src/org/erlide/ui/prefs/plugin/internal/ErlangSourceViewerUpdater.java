@@ -52,8 +52,8 @@ public class ErlangSourceViewerUpdater {
 			 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 			 */
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(
-						PreferenceConstants.EDITOR_TEXT_FONT)) {
+				if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
+						.getProperty())) {
 					Font font = JFaceResources
 							.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
 					viewer.getTextWidget().setFont(font);

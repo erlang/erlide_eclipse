@@ -58,7 +58,7 @@ public class ErlangProjectNature implements IProjectNature {
 			int i = 0;
 			int j = 0;
 			while (j < old.length) {
-				if (!old[j].getBuilderName().equals(ErlangPlugin.BUILDER_ID)) {
+				if (!ErlangPlugin.BUILDER_ID.equals(old[j].getBuilderName())) {
 					specs[i++] = old[j];
 				}
 				j++;
@@ -105,7 +105,7 @@ public class ErlangProjectNature implements IProjectNature {
 	private int getBuildSpecCount(ICommand[] commands) {
 		int count = 0;
 		for (ICommand element : commands) {
-			if (element.getBuilderName().equals(ErlangPlugin.BUILDER_ID)) {
+			if (ErlangPlugin.BUILDER_ID.equals(element.getBuilderName())) {
 				count++;
 			}
 		}

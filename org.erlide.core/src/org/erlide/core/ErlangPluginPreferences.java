@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.osgi.service.prefs.BackingStoreException;
@@ -57,7 +58,7 @@ public class ErlangPluginPreferences implements IPropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		final String property = event.getProperty();
 
-		System.out.println("modified property :> " + property);
+		ErlLogger.log("modified property :> " + property);
 		// defaultProjectPrefs.setProperty(property);
 	}
 

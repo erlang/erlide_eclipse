@@ -34,8 +34,9 @@ class SpawnerInputStream extends InputStream {
 	 */
 	public int read() throws IOException {
 		byte b[] = new byte[1];
-		if (1 != read(b, 0, 1))
+		if (1 != read(b, 0, 1)) {
 			return -1;
+		}
 		return b[0];
 	}
 
@@ -59,8 +60,9 @@ class SpawnerInputStream extends InputStream {
 		byte[] tmpBuf = new byte[len];
 
 		len = read0(fd, tmpBuf, len);
-		if (len <= 0)
+		if (len <= 0) {
 			return -1;
+		}
 
 		System.arraycopy(tmpBuf, 0, buf, off, len);
 		return len;
@@ -71,11 +73,13 @@ class SpawnerInputStream extends InputStream {
 	 * @exception IOException on error.
 	 */
 	public void close() throws IOException {
-		if (fd == -1)
+		if (fd == -1) {
 			return;
+		}
 		int status = close0(fd);
-		if (status == -1)
+		if (status == -1) {
 			throw new IOException(CCorePlugin.getResourceString("Util.exception.closeError")); //$NON-NLS-1$
+		}
 		fd = -1;
 	}
 

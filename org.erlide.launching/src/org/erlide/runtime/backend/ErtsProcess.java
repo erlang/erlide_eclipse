@@ -19,6 +19,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 
 /**
@@ -36,7 +37,7 @@ public class ErtsProcess extends RuntimeProcess {
 	public ErtsProcess(ILaunch launch, Process process, String name,
 			Map attributes) {
 		super(launch, process, name, attributes);
-		// System.out.println("# create ErtsNode: " + name + " " + attributes);
+		// ErlLogger.log("# create ErtsNode: " + name + " " + attributes);
 	}
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
@@ -120,7 +121,7 @@ public class ErtsProcess extends RuntimeProcess {
 		if (streamsProxy != null) {
 			try {
 				streamsProxy.write(string);
-				System.out.println("#>>#" + string);
+				ErlLogger.log("#>>#" + string);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

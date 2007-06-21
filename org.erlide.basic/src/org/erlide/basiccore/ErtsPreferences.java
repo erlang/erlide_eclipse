@@ -36,8 +36,8 @@ public class ErtsPreferences {
 			.getPreferencesService();
 
 	public ErtsPreferences() {
-		prefs = new InstanceScope().getNode(ErlideBasicUIPlugin.PLUGIN_ID
-				+ "/erts");
+		prefs = new InstanceScope().getNode(ErlideBasicUIPlugin.PLUGIN_ID +
+				"/erts");
 		try {
 			prefs.sync();
 		} catch (final BackingStoreException e) {
@@ -123,10 +123,10 @@ public class ErtsPreferences {
 	}
 
 	public String buildCommandLine() {
-		return defaultInstall.getOtpHome() + File.separator + "bin"
-				+ File.separator + "erl" + ifNotEmpty(" -pa ", getPathA())
-				+ ifNotEmpty(" -pz ", getPathZ()) + " "
-				+ defaultInstall.getExtraErtsArgs();
+		return defaultInstall.getOtpHome() + File.separator + "bin" +
+				File.separator + "erl" + ifNotEmpty(" -pa ", getPathA()) +
+				ifNotEmpty(" -pz ", getPathZ()) + " " +
+				defaultInstall.getExtraErtsArgs();
 	}
 
 	private String ifNotEmpty(String key, String str) {
@@ -170,16 +170,16 @@ public class ErtsPreferences {
 			return false;
 		}
 
-		final File erl = new File(otpHome + File.separator + "bin"
-				+ File.separator + "erl");
-		final File erlexe = new File(otpHome + File.separator + "bin"
-				+ File.separator + "erl.exe");
+		final File erl = new File(otpHome + File.separator + "bin" +
+				File.separator + "erl");
+		final File erlexe = new File(otpHome + File.separator + "bin" +
+				File.separator + "erl.exe");
 		final boolean hasErl = erl.exists() || erlexe.exists();
 
-		final File erlc = new File(otpHome + File.separator + "bin"
-				+ File.separator + "erlc");
-		final File erlcexe = new File(otpHome + File.separator + "bin"
-				+ File.separator + "erlc.exe");
+		final File erlc = new File(otpHome + File.separator + "bin" +
+				File.separator + "erlc");
+		final File erlcexe = new File(otpHome + File.separator + "bin" +
+				File.separator + "erlc.exe");
 		final boolean hasErlc = erlc.exists() || erlcexe.exists();
 
 		final File lib = new File(otpHome + File.separator + "lib");

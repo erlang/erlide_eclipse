@@ -21,7 +21,7 @@ public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 					.getAdapter(IResource.class);
 			if (resource != null) {
 				String extension = resource.getFileExtension();
-				if (extension != null && extension.equals("erl")) {
+				if (extension != null && "erl".equals(extension)) {
 					return new ErlLineBreakpointAdapter();
 				}
 			}

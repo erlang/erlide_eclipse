@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
@@ -73,9 +74,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				this,
-				IResourceChangeEvent.PRE_CLOSE
-						| IResourceChangeEvent.PRE_DELETE
-						| IResourceChangeEvent.POST_CHANGE);
+				IResourceChangeEvent.PRE_CLOSE |
+						IResourceChangeEvent.PRE_DELETE |
+						IResourceChangeEvent.POST_CHANGE);
 	}
 
 	public static BackendManager getDefault() {
@@ -83,7 +84,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createManaged(String name) {
-		System.out.println("create managed backend " + name + ".");
+		ErlLogger.log("create managed backend " + name + ".");
 		final BackendType bt = BackendSupport.getType(IBackend.MANAGED_BACKEND);
 		final AbstractBackend b = bt.create();
 		b.setLabel(name);
@@ -104,7 +105,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createStandalone(String name) {
-		System.out.println("create standalone backend " + name + ".");
+		ErlLogger.log("create standalone backend " + name + ".");
 		final BackendType bt = BackendSupport
 				.getType(IBackend.STANDALONE_BACKEND);
 		final AbstractBackend b = bt.create();
@@ -354,7 +355,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		// System.out.println("+BM: " + event.getType() + " " +
+		// ErlLogger.log("+BM: " + event.getType() + " " +
 		// event.getResource()
 		// + event.getDelta());
 		switch (event.getType()) {
@@ -412,7 +413,7 @@ public final class BackendManager implements IResourceChangeListener {
 					if (isExtErlideLabel(label)) {
 						IBackend b = fRemoteBackends.get(label);
 						if (b == null) {
-							// System.out.println("$ Added external backend:: "
+							// ErlLogger.log("$ Added external backend:: "
 							// +
 							// label);
 							b = createStandalone(label);

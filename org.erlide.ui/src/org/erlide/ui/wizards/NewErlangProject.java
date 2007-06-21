@@ -34,6 +34,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -148,8 +149,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 * @return
 	 */
 	private boolean validateFinish() {
-		System.out.println("validating |" + buildPage.getPrefs().getOutputDir()
-				+ "|");
+		ErlLogger.log("validating |" + buildPage.getPrefs().getOutputDir() +
+				"|");
 		final ErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().trim().length() == 0) {
 			reportError(ErlideUIPlugin
@@ -250,7 +251,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 				pathElement = element;
 				final IPath pp = new Path(pathElement);
 				// only create in-project paths
-				if (!pp.isAbsolute() && !pathElement.equals(".")) {
+				if (!pp.isAbsolute() && !".".equals(pathElement)) {
 					final IPath path = projectPath.append(pathElement);
 					final IFolder folder = root.getFolder(path);
 					createFolderHelper(folder, monitor);

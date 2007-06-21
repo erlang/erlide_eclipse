@@ -157,8 +157,8 @@ public class OtpEpmd {
 			obuf.writeTo(s.getOutputStream());
 			// don't even wait for a response (is there one?)
 			if (traceLevel >= traceThreshold) {
-				System.out.println("-> UNPUBLISH " + node + " port="
-						+ node.port());
+				System.out.println("-> UNPUBLISH " + node + " port=" +
+						node.port());
 				System.out.println("<- OK (assumed)");
 			}
 		} catch (final Exception e) {/* ignore all failures */
@@ -205,14 +205,14 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when looking up " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when looking up " + node.alive());
 		} catch (final OtpErlangDecodeException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when looking up " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when looking up " + node.alive());
 		} finally {
 			try {
 				if (s != null) {
@@ -265,8 +265,8 @@ public class OtpEpmd {
 			if (n < 0) {
 				// this was an r3 node => not a failure (yet)
 				s.close();
-				throw new IOException("Nameserver not responding on "
-						+ node.host() + " when looking up " + node.alive());
+				throw new IOException("Nameserver not responding on " +
+						node.host() + " when looking up " + node.alive());
 			}
 
 			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
@@ -288,14 +288,14 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when looking up " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when looking up " + node.alive());
 		} catch (final OtpErlangDecodeException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when looking up " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when looking up " + node.alive());
 		} finally {
 			try {
 				if (s != null) {
@@ -332,8 +332,8 @@ public class OtpEpmd {
 			// send request
 			obuf.writeTo(s.getOutputStream());
 			if (traceLevel >= traceThreshold) {
-				System.out.println("-> PUBLISH (r3) " + node + " port="
-						+ node.port());
+				System.out.println("-> PUBLISH (r3) " + node + " port=" +
+						node.port());
 			}
 
 			final byte[] tmpbuf = new byte[100];
@@ -365,8 +365,8 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when publishing " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when publishing " + node.alive());
 		} catch (final OtpErlangDecodeException e) {
 			if (s != null) {
 				s.close();
@@ -374,8 +374,8 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when publishing " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when publishing " + node.alive());
 		}
 
 		s.close();
@@ -415,8 +415,8 @@ public class OtpEpmd {
 			obuf.writeTo(s.getOutputStream());
 
 			if (traceLevel >= traceThreshold) {
-				System.out.println("-> PUBLISH (r4) " + node + " port="
-						+ node.port());
+				System.out.println("-> PUBLISH (r4) " + node + " port=" +
+						node.port());
 			}
 
 			// get reply
@@ -426,8 +426,8 @@ public class OtpEpmd {
 			if (n < 0) {
 				// this was an r3 node => not a failure (yet)
 				s.close();
-				throw new IOException("Nameserver not responding on "
-						+ node.host() + " when publishing " + node.alive());
+				throw new IOException("Nameserver not responding on " +
+						node.host() + " when publishing " + node.alive());
 			}
 
 			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
@@ -451,8 +451,8 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when publishing " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when publishing " + node.alive());
 		} catch (final OtpErlangDecodeException e) {
 			if (s != null) {
 				s.close();
@@ -460,8 +460,8 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
-					+ " when publishing " + node.alive());
+			throw new IOException("Nameserver not responding on " +
+					node.host() + " when publishing " + node.alive());
 		}
 
 		s.close();

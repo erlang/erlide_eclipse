@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.ErlEventLoop;
 import org.erlide.jinterface.IErlEventHandler;
 import org.erlide.runtime.backend.IBackend;
@@ -57,7 +58,7 @@ public class DebuggerListener {
 
 		public void handleEvent(OtpErlangObject msg) {
 			if (msg != null) {
-				System.out.println("### got msg: " + msg);
+				ErlLogger.log("### got msg: " + msg);
 			}
 		}
 

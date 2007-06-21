@@ -29,7 +29,7 @@ public class ProcessFactory {
 		runtime = Runtime.getRuntime();
 		try {
 			// Spawner does not work for Windows 98 fallback
-			if (OS != null && OS.equals("windows 98")) { //$NON-NLS-1$
+			if (OS != null && "windows 98".equals( OS )) { //$NON-NLS-1$
 				hasSpawner = false;
 			} else {
 				System.loadLibrary("spawner"); //$NON-NLS-1$
@@ -43,53 +43,61 @@ public class ProcessFactory {
 	}
 
 	public static ProcessFactory getFactory() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new ProcessFactory();
+		}
 		return instance;
 	}
 
 	public Process exec(String cmd) throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmd);
+		}
 		return runtime.exec(cmd);
 	}
 
 	public Process exec(String[] cmdarray) throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmdarray);
+		}
 		return runtime.exec(cmdarray);
 	}
 
 	public Process exec(String[] cmdarray, String[] envp) throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmdarray, envp);
+		}
 		return runtime.exec(cmdarray, envp);
 	}
 
 	public Process exec(String cmd, String[] envp) throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmd, envp);
+		}
 		return runtime.exec(cmd, envp);
 	}
 
 	public Process exec(String cmd, String[] envp, File dir)
 		throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmd, envp, dir);
+		}
 		return runtime.exec(cmd, envp, dir);
 	}
 
 	public Process exec(String cmdarray[], String[] envp, File dir)
 		throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmdarray, envp, dir);
+		}
 		return runtime.exec(cmdarray, envp, dir);
 	}
 
 	public Process exec(String cmdarray[], String[] envp, File dir, PTY pty)
 		throws IOException {
-		if (hasSpawner)
+		if (hasSpawner) {
 			return new Spawner(cmdarray, envp, dir, pty);
+		}
 		throw new UnsupportedOperationException(CCorePlugin.getResourceString("Util.exception.cannotCreatePty")); //$NON-NLS-1$
 	}
 }

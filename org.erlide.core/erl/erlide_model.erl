@@ -109,7 +109,8 @@ split_funcs([#token{kind=atom, value=FN}|_]=L) ->
     {Rest1, Rest2} = split_arrow(L),
     split_fun(FN, Rest2, [Rest1]);
 split_funcs(L) ->
-    [{error, unexpected_token, hd(L)}].
+    %% TODO: this has to be handled better!!
+    [[{error, unexpected_token, hd(L)}]].
 
 
 split_fun(_FN, [], R) ->

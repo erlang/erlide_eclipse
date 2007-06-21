@@ -209,28 +209,28 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 */
 	public void handleColorChange(String id, RGB newValue) {
 
-		if (id.equals(PreferenceConstants.ATTRIBUTE)) {
+		if (PreferenceConstants.ATTRIBUTE.equals(id)) {
 			final TextAttribute attr = (TextAttribute) t_attribute.getData();
 			t_attribute
 					.setData(new TextAttribute(
 							fColorManager.getColor(newValue), attr
 									.getBackground(), attr.getStyle()));
-		} else if (id.equals(PreferenceConstants.DEFAULT)) {
+		} else if (PreferenceConstants.DEFAULT.equals(id)) {
 			final TextAttribute defa = (TextAttribute) t_def.getData();
 			t_def.setData(new TextAttribute(fColorManager.getColor(newValue),
 					defa.getBackground(), defa.getStyle()));
 
-		} else if (id.equals(PreferenceConstants.KEYWORD)) {
+		} else if (PreferenceConstants.KEYWORD.equals(id)) {
 			final TextAttribute key = (TextAttribute) t_keyword.getData();
 			t_keyword.setData(new TextAttribute(fColorManager
 					.getColor(newValue), key.getBackground(), key.getStyle()));
 
-		} else if (id.equals(PreferenceConstants.STRING)) {
+		} else if (PreferenceConstants.STRING.equals(id)) {
 			final TextAttribute str = (TextAttribute) t_string.getData();
 			t_string.setData(new TextAttribute(
 					fColorManager.getColor(newValue), str.getBackground(), str
 							.getStyle()));
-		} else if (id.equals(PreferenceConstants.VARIABLE)) {
+		} else if (PreferenceConstants.VARIABLE.equals(id)) {
 			final TextAttribute v = (TextAttribute) t_var.getData();
 			t_var.setData(new TextAttribute(fColorManager.getColor(newValue), v
 					.getBackground(), v.getStyle()));
@@ -238,7 +238,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	public void setRange(IDocument document, int offset, int length) {
-		// System.out.println(" @@ Hsc setRange " + document + " " + offset +
+		// ErlLogger.log(" @@ Hsc setRange " + document + " " + offset +
 		// ":" +
 		// length);
 
@@ -350,8 +350,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 					.getIdeBackend().rpc("erlide_scan", "string",
 							new OtpErlangString(string)));
 		} catch (final ErlangRpcException e) {
-			throw new BackendException("Could not parse string \"" + string
-					+ "\": " + e.getMessage());
+			throw new BackendException("Could not parse string \"" + string +
+					"\": " + e.getMessage());
 		}
 		if (r1 == null) {
 			return null;
@@ -362,8 +362,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new BackendException("Could not parse string \"" + string
-				+ "\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not parse string \"" + string +
+				"\": " + t1.elementAt(1).toString());
 	}
 
 }

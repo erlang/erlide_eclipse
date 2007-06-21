@@ -21,6 +21,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.runtime.backend.BackendManager;
@@ -38,8 +39,7 @@ public class ManagedBackend extends AbstractBackend {
 	@Override
 	public void addProject(String project) {
 		// TODO
-		System.out.println("$ add project " + project + " to local "
-				+ getLabel());
+		ErlLogger.log("$ add project " + project + " to local " + getLabel());
 
 	}
 

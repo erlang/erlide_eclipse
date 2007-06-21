@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
@@ -17,7 +17,7 @@ import java.io.Serializable;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class UStringBuffer implements Serializable {
+public class UStringBuffer implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -367,8 +367,8 @@ public class UStringBuffer implements Serializable {
 		final int len = end - start;
 		if (len > 0) {
 			System
-					.arraycopy(backing, start + len, backing, start, length
-							- end);
+					.arraycopy(backing, start + len, backing, start, length -
+							end);
 			length -= len;
 		}
 		return this;
@@ -387,8 +387,8 @@ public class UStringBuffer implements Serializable {
 		}
 
 		System
-				.arraycopy(backing, index + 1, backing, index, length - index
-						- 1);
+				.arraycopy(backing, index + 1, backing, index, length - index -
+						1);
 		length--;
 		return this;
 	}
@@ -526,8 +526,8 @@ public class UStringBuffer implements Serializable {
 		if (backing.length < newLength) {
 			increaseCapacity(newLength);
 		}
-		System.arraycopy(backing, offset, backing, offset + len, length
-				- offset);
+		System.arraycopy(backing, offset, backing, offset + len, length -
+				offset);
 		string.getChars(0, len, backing, offset);
 		length = newLength;
 		return this;
@@ -561,8 +561,8 @@ public class UStringBuffer implements Serializable {
 			if (backing.length < newLength) {
 				increaseCapacity(newLength);
 			}
-			System.arraycopy(backing, offset, backing, offset + 4, length
-					- offset);
+			System.arraycopy(backing, offset, backing, offset + 4, length -
+					offset);
 			length = newLength;
 			backing[offset++] = 't';
 			backing[offset++] = 'r';
@@ -573,8 +573,8 @@ public class UStringBuffer implements Serializable {
 			if (backing.length < newLength) {
 				increaseCapacity(newLength);
 			}
-			System.arraycopy(backing, offset, backing, offset + 5, length
-					- offset);
+			System.arraycopy(backing, offset, backing, offset + 5, length -
+					offset);
 			length = newLength;
 			backing[offset++] = 'f';
 			backing[offset++] = 'a';
@@ -715,8 +715,8 @@ public class UStringBuffer implements Serializable {
 	 * @return this position of the last match of -1 if none was found
 	 */
 	public int lastIndexOf(String string, int fromIndex) {
-		if (fromIndex > length || string.length() > length
-				|| string.length() > fromIndex) {
+		if (fromIndex > length || string.length() > length ||
+				string.length() > fromIndex) {
 			return -1;
 		}
 

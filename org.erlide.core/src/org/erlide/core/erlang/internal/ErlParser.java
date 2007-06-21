@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlComment;
@@ -86,7 +87,7 @@ public class ErlParser {
 		List<ErlToken> tmp = new ArrayList<ErlToken>(50);
 		for (final ErlToken token : tokens) {
 			tmp.add(token);
-			if (token.getKind().equals("dot")) {
+			if ("dot".equals(token.getKind())) {
 				final ErlToken[] tmpar = new ErlToken[tmp.size()];
 				result.add(tmp.toArray(tmpar));
 				tmp = new ArrayList<ErlToken>(50);
@@ -132,16 +133,17 @@ public class ErlParser {
 						"ok") == 0) {
 					forms = (OtpErlangList) res.elementAt(1);
 				} else {
-					System.out.println("rpc err:: " + res);
+					ErlLogger.log("rpc err:: " + res);
 				}
 
 				ErlToken[] t = scanner.getTokens();
+				StringBuffer sb = new StringBuffer();
 				for (ErlToken tk : t) {
-					System.out.print(" " + tk.toString());
+					sb.append(" " + tk.toString());
 				}
-				System.out.println();
-				System.out.println(forms);
-				System.out.println("-----------------------");
+				ErlLogger.log(sb);
+				ErlLogger.log(forms);
+				ErlLogger.log("-----------------------");
 
 				res = (OtpErlangTuple) BackendUtil.checkRpc(b.rpc(
 						"erlide_model", "comments", source));
@@ -149,7 +151,7 @@ public class ErlParser {
 						"ok") == 0) {
 					comments = (OtpErlangList) res.elementAt(1);
 				} else {
-					System.out.println("rpc err:: " + res);
+					ErlLogger.log("rpc err:: " + res);
 				}
 			} catch (final BackendException e1) {
 				e1.printStackTrace();
@@ -225,9 +227,9 @@ public class ErlParser {
 	 * @return
 	 */
 	private IErlMember create(IErlModule parent, OtpErlangTuple el) {
-		// System.out.println("#! " + el.toString());
+		// ErlLogger.log("#! " + el.toString());
 		final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
-		if (type.atomValue().equals("error")) {
+		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
 			final String msg = format_error(er);
@@ -237,26 +239,26 @@ public class ErlParser {
 			setPos(e, er.elementAt(0));
 			e.setParseTree(el);
 			return e;
-		} else if (type.atomValue().equals("tree")) {
+		} else if ("tree".equals(type.atomValue())) {
 			final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
 			final OtpErlangObject pos = ((OtpErlangTuple) el.elementAt(2))
 					.elementAt(1);
 
 			final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
 			final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
-			// System.out.println("@nam " + name.toString());
+			// ErlLogger.log("@nam " + name.toString());
 			final OtpErlangObject val = atr.elementAt(2);
-			// System.out.println("@val " + val.toString());
+			// ErlLogger.log("@val " + val.toString());
 			return addAttribute(parent, pos, n, val);
-		} else if (type.atomValue().equals("attribute")) {
+		} else if ("attribute".equals(type.atomValue())) {
 			final OtpErlangObject pos = el.elementAt(1);
-			// System.out.println("@pos " + pos.toString());
+			// ErlLogger.log("@pos " + pos.toString());
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
-			// System.out.println("@nam " + name.toString());
+			// ErlLogger.log("@nam " + name.toString());
 			final OtpErlangObject val = el.elementAt(3);
-			// System.out.println("@val " + val.toString());
+			// ErlLogger.log("@val " + val.toString());
 			return addAttribute(parent, pos, name, val);
-		} else if (type.atomValue().equals("function")) {
+		} else if ("function".equals(type.atomValue())) {
 			OtpErlangObject pos = el.elementAt(1);
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
 			final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
@@ -278,7 +280,7 @@ public class ErlParser {
 				final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
 						.arity()];
 				for (int i = 0; i < clauses.arity(); i++) {
-					// System.out.println(" clause: " + clauses.elementAt(i));
+					// ErlLogger.log(" clause: " + clauses.elementAt(i));
 					cls[i] = new ErlFunctionClause(f, "#" + i);
 					pos = ((OtpErlangTuple) (clauses.elementAt(i)))
 							.elementAt(1);
@@ -295,7 +297,7 @@ public class ErlParser {
 			}
 			return f;
 		} else {
-			System.out.println("unknown: " + el);
+			ErlLogger.log("unknown: " + el);
 		}
 		return null;
 	}
@@ -310,7 +312,7 @@ public class ErlParser {
 	 */
 	private IErlMember addAttribute(IErlModule parent, OtpErlangObject pos,
 			OtpErlangAtom name, OtpErlangObject val) {
-		if (name.atomValue().equals("import")) {
+		if ("import".equals(name.atomValue())) {
 			final OtpErlangTuple t = (OtpErlangTuple) val;
 			final OtpErlangAtom importModule = (OtpErlangAtom) t.elementAt(0);
 			final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
@@ -320,14 +322,14 @@ public class ErlParser {
 			imp.setParseTree(val);
 			return imp;
 			// ErlImport imp = new ErlImport(val);
-		} else if (name.atomValue().equals("export")) {
+		} else if ("export".equals(name.atomValue())) {
 			// OtpErlangList exportList = (OtpErlangList) val;
 			final ErlExport ex = new ErlExport(parent);
 			// ErlExportFunction[] funs = new
 			// ErlExportFunction[exportList.arity()];
 			// for (int i = 0; i < exportList.arity(); i++)
 			// {
-			// System.out.println(" exportFun: " + exportList.elementAt(i));
+			// ErlLogger.log(" exportFun: " + exportList.elementAt(i));
 			// OtpErlangTuple xf = (OtpErlangTuple)exportList.elementAt(i);
 			// String funName = ((OtpErlangAtom)xf.elementAt(0)).atomValue();
 			// try {
@@ -346,7 +348,7 @@ public class ErlParser {
 			setPos(ex, pos);
 			ex.setParseTree(val);
 			return ex;
-		} else if (name.atomValue().equals("record")) {
+		} else if ("record".equals(name.atomValue())) {
 			final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
 			final String recordName = ((OtpErlangAtom) recordTuple.elementAt(0))
 					.atomValue();
@@ -354,7 +356,7 @@ public class ErlParser {
 			setPos(r, pos);
 			r.setParseTree(val);
 			return r;
-		} else if (name.atomValue().equals("define")) {
+		} else if ("define".equals(name.atomValue())) {
 			final OtpErlangList macroList = (OtpErlangList) val;
 			final OtpErlangTuple macroNameTuple = (OtpErlangTuple) macroList
 					.elementAt(0);

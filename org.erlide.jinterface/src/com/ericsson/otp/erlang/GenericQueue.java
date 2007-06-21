@@ -78,7 +78,7 @@ public class GenericQueue {
 		count++;
 
 		// notify any waiting tasks
-		this.notify();
+		this.notifyAll();
 	}
 
 	/**

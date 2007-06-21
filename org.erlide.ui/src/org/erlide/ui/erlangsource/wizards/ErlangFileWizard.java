@@ -116,15 +116,15 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	void doFinish(String containerName, String fileName, String skeleton,
 			IProgressMonitor monitor) throws CoreException {
 
-		// System.out.println("Generating a file with skeleton: "+skeleton);
+		// ErlLogger.log("Generating a file with skeleton: "+skeleton);
 
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IResource resource = root.findMember(new Path(containerName));
 		if (!resource.exists() || !(resource instanceof IContainer)) {
-			throwCoreException("Container \"" + containerName
-					+ "\" does not exist.");
+			throwCoreException("Container \"" + containerName +
+					"\" does not exist.");
 		}
 		final IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName + ".erl"));

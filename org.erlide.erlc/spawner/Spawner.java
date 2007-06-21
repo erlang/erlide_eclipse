@@ -39,12 +39,14 @@ public class Spawner extends Process {
 	public Spawner(String command, boolean bNoRedirect) throws IOException {
 		StringTokenizer tokenizer = new StringTokenizer(command);
 		String[] cmdarray = new String[tokenizer.countTokens()];
-		for (int n = 0; tokenizer.hasMoreTokens(); n++)
+		for (int n = 0; tokenizer.hasMoreTokens(); n++) {
 			cmdarray[n] = tokenizer.nextToken();
-		if (bNoRedirect)
+		}
+		if (bNoRedirect) {
 			exec_detached(cmdarray, new String[0], "."); //$NON-NLS-1$
-		else
+		} else {
 			exec(cmdarray, new String[0], "."); //$NON-NLS-1$
+		}
 	}
 	/**
 	 * Executes the specified command and arguments in a separate process with the
@@ -52,15 +54,17 @@ public class Spawner extends Process {
 	 **/
 	protected Spawner(String[] cmdarray, String[] envp, File dir) throws IOException {
 		String dirpath = "."; //$NON-NLS-1$
-		if (dir != null)
+		if (dir != null) {
 			dirpath = dir.getAbsolutePath();
+		}
 		exec(cmdarray, envp, dirpath);
 	}
 
 	protected Spawner(String[] cmdarray, String[] envp, File dir, PTY pty) throws IOException {
 		String dirpath = "."; //$NON-NLS-1$
-		if (dir != null)
+		if (dir != null) {
 			dirpath = dir.getAbsolutePath();
+		}
 		exec_pty(cmdarray, envp, dirpath, pty);
 	}
 	/**
@@ -100,11 +104,13 @@ public class Spawner extends Process {
 	protected Spawner(String command, String[] envp, File dir) throws IOException {
 		StringTokenizer tokenizer = new StringTokenizer(command);
 		String[] cmdarray = new String[tokenizer.countTokens()];
-		for (int n = 0; tokenizer.hasMoreTokens(); n++)
+		for (int n = 0; tokenizer.hasMoreTokens(); n++) {
 			cmdarray[n] = tokenizer.nextToken();
+		}
 		String dirpath = "."; //$NON-NLS-1$
-		if (dir != null)
+		if (dir != null) {
 			dirpath = dir.getAbsolutePath();
+		}
 		exec(cmdarray, envp, dirpath);
 	}
 
@@ -112,8 +118,9 @@ public class Spawner extends Process {
 	 * See java.lang.Process#getInputStream ();
 	 **/
 	public InputStream getInputStream() {
-		if(null == in)
+		if(null == in) {
 			in = new SpawnerInputStream(fChannels[1]);
+		}
 		return in;
 	}
 
@@ -121,8 +128,9 @@ public class Spawner extends Process {
 	 * See java.lang.Process#getOutputStream ();
 	 **/
 	public OutputStream getOutputStream() {
-		if(null == out)
+		if(null == out) {
 			out = new SpawnerOutputStream(fChannels[0]);
+		}
 		return out;
 	}
 
@@ -130,8 +138,9 @@ public class Spawner extends Process {
 	 * See java.lang.Process#getErrorStream ();
 	 **/
 	public InputStream getErrorStream() {
-		if(null == err)
+		if(null == err) {
 			err = new SpawnerInputStream(fChannels[2]);
+		}
 		return err;
 	}
 
@@ -143,12 +152,15 @@ public class Spawner extends Process {
 			wait();
 		}
 		try {
-			if(null == err)
+			if(null == err) {
 				((SpawnerInputStream)getErrorStream()).close();
-			if(null == in)
+			}
+			if(null == in) {
 				((SpawnerInputStream)getInputStream()).close();
-			if(null == out)
+			}
+			if(null == out) {
 				((SpawnerOutputStream)getOutputStream()).close();
+			}
 			
 		} catch (IOException e) {
 		}
@@ -173,12 +185,15 @@ public class Spawner extends Process {
 		terminate();
 		// Close the streams on this side.
 		try {
-			if(null == err)
+			if(null == err) {
 				((SpawnerInputStream)getErrorStream()).close();
-			if(null == in)
+			}
+			if(null == in) {
 				((SpawnerInputStream)getInputStream()).close();
-			if(null == out)
+			}
+			if(null == out) {
 				((SpawnerOutputStream)getOutputStream()).close();
+			}
 		} catch (IOException e) {
 		}
 		// Grace before using the heavy gone.
@@ -219,10 +234,12 @@ public class Spawner extends Process {
 	private void exec(String[] cmdarray, String[] envp, String dirpath) throws IOException {
 		String command = cmdarray[0];
 		SecurityManager s = System.getSecurityManager();
-		if (s != null)
+		if (s != null) {
 			s.checkExec(command);
-		if (envp == null)
+		}
+		if (envp == null) {
 			envp = new String[0];
+		}
 
 		Reaper reaper = new Reaper(cmdarray, envp, dirpath);
 		reaper.setDaemon(true);
@@ -247,10 +264,12 @@ public class Spawner extends Process {
 	private void exec_pty(String[] cmdarray, String[] envp, String dirpath, PTY pty) throws IOException {
 		String command = cmdarray[0];
 		SecurityManager s = System.getSecurityManager();
-		if (s != null)
+		if (s != null) {
 			s.checkExec(command);
-		if (envp == null)
+		}
+		if (envp == null) {
 			envp = new String[0];
+		}
 
 		final String slaveName = pty.getSlaveName();
 		final int masterFD = pty.getMasterFD().getFD();
@@ -285,11 +304,13 @@ public class Spawner extends Process {
 	public void exec_detached(String[] cmdarray, String[] envp, String dirpath) throws IOException {
 		String command = cmdarray[0];
 		SecurityManager s = System.getSecurityManager();
-		if (s != null)
+		if (s != null) {
 			s.checkExec(command);
+		}
 
-		if (envp == null)
+		if (envp == null) {
 			envp = new String[0];
+		}
 		pid = exec1(cmdarray, envp, dirpath);
 		if (pid == -1) {
 			throw new IOException("Exec error"); //$NON-NLS-1$

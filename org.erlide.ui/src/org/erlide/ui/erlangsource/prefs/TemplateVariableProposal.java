@@ -63,7 +63,7 @@ public class TemplateVariableProposal implements ICompletionProposal {
 	public void apply(IDocument document) {
 
 		try {
-			final String variable = fVariable.getType().equals("dollar") ? "$$" : "${" + fVariable.getType() + '}'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			final String variable = "dollar".equals(fVariable.getType()) ? "$$" : "${" + fVariable.getType() + '}'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			document.replace(fOffset, fLength, variable);
 			fSelection = new Point(fOffset + variable.length(), 0);
 

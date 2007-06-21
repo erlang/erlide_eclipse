@@ -55,8 +55,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_TARGET_AUTO = PREFIX + ".autoBuildTarget"; //$NON-NLS-1$
 
-	static final String BUILD_TARGET_INCREMENTAL = PREFIX
-			+ ".incrementalBuildTarget"; //$NON-NLS-1$
+	static final String BUILD_TARGET_INCREMENTAL = PREFIX +
+			".incrementalBuildTarget"; //$NON-NLS-1$
 
 	static final String BUILD_TARGET_FULL = PREFIX + ".fullBuildTarget"; //$NON-NLS-1$
 
@@ -66,8 +66,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_CLEAN_ENABLED = PREFIX + ".enableCleanBuild"; //$NON-NLS-1$
 
-	static final String BUILD_INCREMENTAL_ENABLED = PREFIX
-			+ ".enabledIncrementalBuild"; //$NON-NLS-1$
+	static final String BUILD_INCREMENTAL_ENABLED = PREFIX +
+			".enabledIncrementalBuild"; //$NON-NLS-1$
 
 	static final String BUILD_AUTO_ENABLED = PREFIX + ".enableAutoBuild"; //$NON-NLS-1$
 
@@ -75,8 +75,8 @@ public class BuildInfoFactory {
 
 	static final String ENVIRONMENT = PREFIX + ".environment"; //$NON-NLS-1$
 
-	static final String BUILD_APPEND_ENVIRONMENT = PREFIX
-			+ ".append_environment"; //$NON-NLS-1$ 
+	static final String BUILD_APPEND_ENVIRONMENT = PREFIX +
+			".append_environment"; //$NON-NLS-1$ 
 
 	private abstract static class AbstractBuildInfo implements IMakeBuilderInfo {
 
@@ -125,7 +125,7 @@ public class BuildInfoFactory {
 			final HashMap<Object, Object> envMap = new HashMap<Object, Object>(
 					env.entrySet().size());
 			final Iterator iter = env.entrySet().iterator();
-			final boolean win32 = Platform.getOS().equals(Constants.OS_WIN32);
+			final boolean win32 = Constants.OS_WIN32.equals(Platform.getOS());
 			while (iter.hasNext()) {
 				final Map.Entry entry = (Map.Entry) iter.next();
 				String key = (String) entry.getKey();

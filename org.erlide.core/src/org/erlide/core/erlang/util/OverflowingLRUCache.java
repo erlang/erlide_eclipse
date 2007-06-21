@@ -13,6 +13,8 @@ package org.erlide.core.erlang.util;
 import java.text.NumberFormat;
 import java.util.Enumeration;
 
+import org.erlide.basiccore.ErlLogger;
+
 /**
  * The <code>OverflowingLRUCache</code> is an LRUCache which attempts to
  * maintain a size equal or less than its <code>fSpaceLimit</code> by removing
@@ -258,7 +260,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			forwardListLength++;
 			entry = entry._fNext;
 		}
-		System.out.println("Forward length: " + forwardListLength); //$NON-NLS-1$
+		ErlLogger.log("Forward length: " + forwardListLength); //$NON-NLS-1$
 
 		int backwardListLength = 0;
 		entry = fEntryQueueTail;
@@ -266,7 +268,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			backwardListLength++;
 			entry = entry._fPrevious;
 		}
-		System.out.println("Backward length: " + backwardListLength); //$NON-NLS-1$
+		ErlLogger.log("Backward length: " + backwardListLength); //$NON-NLS-1$
 
 		final Enumeration keys = fEntryTable.keys();
 		class Temp {
@@ -298,7 +300,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 		}
 
 		for (Object element : h.keySet()) {
-			System.out.println(h.get(element));
+			ErlLogger.log(h.get(element));
 		}
 	}
 

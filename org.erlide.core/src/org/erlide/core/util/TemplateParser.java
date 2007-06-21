@@ -129,6 +129,7 @@ public class TemplateParser {
 				break;
 			default:
 				output.append(cur);
+				break;
 			}
 			cur = (char) input.read();
 		}
@@ -164,6 +165,7 @@ public class TemplateParser {
 				break;
 			default:
 				output.append(cur);
+				break;
 			}
 			cur = (char) input.read();
 		}

@@ -64,7 +64,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 * @param editorInput
 	 */
 	public void setInput(IEditorInput editorInput) {
-		// System.out.println("> outline set input "+editorInput);
+		// ErlLogger.log("> outline set input "+editorInput);
 		myMdl = ErlModelUtils.getModule(editorInput);
 		if (myMdl != null) {
 			try {
@@ -87,9 +87,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			d.asyncExec(new Runnable() {
 
 				public void run() {
-					if (getTreeViewer().getControl() != null
-							&& !getTreeViewer().getControl().isDisposed()) {
-						// System.out.println("*>> refreshing.");
+					if (getTreeViewer().getControl() != null &&
+							!getTreeViewer().getControl().isDisposed()) {
+						// ErlLogger.log("*>> refreshing.");
 						getTreeViewer().setInput(myMdl);
 					}
 				}

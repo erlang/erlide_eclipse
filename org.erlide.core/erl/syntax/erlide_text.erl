@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: Mar 23, 2006
-%% Description: TODO: Add desciption to erlide_text
+%% Description: TODO: Add description to erlide_text
 -module(erlide_text).
 
 %%
@@ -43,7 +43,7 @@ get_text_and_lines(S, From) ->
 check_function_call([_|Rest], Index) when Index > 2 ->
     ?D({Index, Rest}),
     check_function_call(Rest, Index-1);
-check_function_call([#token{kind=atom, value=M}, #token{kind=':'}, 
+check_function_call([#token{kind=atom, value=M}, #token{kind=':'},
                      #token{kind=atom, value=F}, #token{kind='('} | Rest], Index) when Index > -1 ->
     ?D({Index, Rest}),
     {ok, M, F, Rest};
@@ -132,7 +132,7 @@ matching_paren(']') -> '['.
 is_op2([{Op, _, _} | _]) ->
     is_op2(Op);
 is_op2(Op) ->
-    lists:member(Op, ['andalso', 'orelse', 'div', 'rem', 
+    lists:member(Op, ['andalso', 'orelse', 'div', 'rem',
                       'band', 'and', 'bor', 'bxor', 'bsl',
                       'bsr', 'or', 'xor', '<-', '=', '==', '/=',
                       '=/=', '=:=', ':', '+', '-', '*', '/', '!',
@@ -176,7 +176,7 @@ guess_arity(Tokens, N) ->
 skip_expr([#token{kind=T} | Before]) when T =:= '{'; T =:= '['; T =:= '(' ->
     A = skip_paren(Before, erlide_text:matching_paren(T)),
     ?D(A),
-    case erlide_text:is_op2(A) of 
+    case erlide_text:is_op2(A) of
         true ->
             skip_expr(A);
         false ->
@@ -259,4 +259,3 @@ clean_tokens([T | Rest], W, I, Acc) ->
 
 
 
-    

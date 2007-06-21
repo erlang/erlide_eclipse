@@ -170,8 +170,8 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * @see ISourceReference
 	 */
 	public ISourceRange getSourceRange() throws ErlModelException {
-		return new SourceRange(fSourceRangeStart, fSourceRangeEnd
-				- fSourceRangeStart + 1);
+		return new SourceRange(fSourceRangeStart, fSourceRangeEnd -
+				fSourceRangeStart + 1);
 	}
 
 	/**

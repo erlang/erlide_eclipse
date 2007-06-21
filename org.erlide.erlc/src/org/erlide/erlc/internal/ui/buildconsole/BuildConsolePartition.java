@@ -23,8 +23,8 @@ public class BuildConsolePartition extends TypedRegion {
 	/**
 	 * Partition type
 	 */
-	public static final String CONSOLE_PARTITION_TYPE = ErlideErlcPlugin.PLUGIN_ID
-			+ ".CONSOLE_PARTITION_TYPE"; //$NON-NLS-1$	
+	public static final String CONSOLE_PARTITION_TYPE = ErlideErlcPlugin.PLUGIN_ID +
+			".CONSOLE_PARTITION_TYPE"; //$NON-NLS-1$	
 
 	public BuildConsolePartition(BuildConsoleStream stream, int offset,
 			int length) {
@@ -73,10 +73,10 @@ public class BuildConsolePartition extends TypedRegion {
 		final int end = start + getLength();
 		final int otherStart = partition.getOffset();
 		final int otherEnd = otherStart + partition.getLength();
-		final boolean overlap = (otherStart >= start && otherStart <= end)
-				|| (start >= otherStart && start <= otherEnd);
-		return overlap && getType().equals(partition.getType())
-				&& getStream().equals(partition.getStream());
+		final boolean overlap = (otherStart >= start && otherStart <= end) ||
+				(start >= otherStart && start <= otherEnd);
+		return overlap && getType().equals(partition.getType()) &&
+				getStream().equals(partition.getStream());
 	}
 
 	/**

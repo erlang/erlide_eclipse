@@ -1,5 +1,6 @@
 package org.erlide.core.erlang.internal;
 
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
@@ -27,7 +28,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 	}
 
 	public String getHoverHelp() {
-		System.out.println("> hover help: " + this.getElementName());
+		ErlLogger.log("> hover help: " + this.getElementName());
 
 		return toString();
 	}
@@ -39,8 +40,8 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 	public ISourceRange getNameRange() {
 		// TODO fix this
 		return new SourceRange(this.getSourceRangeStart(), this
-				.getSourceRangeEnd()
-				- this.getSourceRangeStart() + 1);
+				.getSourceRangeEnd() -
+				this.getSourceRangeStart() + 1);
 	}
 
 }

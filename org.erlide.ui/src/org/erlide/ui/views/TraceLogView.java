@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
@@ -314,17 +315,17 @@ public class TraceLogView extends ViewPart {
 				// testing
 				final IErlModel mdl = ErlangCore.getModel();
 				final IErlModule[] ms = mdl.findModule("test", ".*");
-				System.out.println("found(\"*\") " + ms.length);
+				ErlLogger.log("found(\"*\") " + ms.length);
 				for (IErlModule element : ms) {
-					System.out.println("  " + element.getElementName());
+					ErlLogger.log("  " + element.getElementName());
 				}
 
 				final IErlFunction[] fs = mdl.findFunction("test", ".*",
 						"st.*", IErlModel.UNKNOWN_ARITY);
-				System.out.println("found(\"*\") " + ms.length);
+				ErlLogger.log("found(\"*\") " + ms.length);
 				for (IErlFunction element : fs) {
-					System.out.println("  " + element.getElementName() + "/"
-							+ element.getArity());
+					ErlLogger.log("  " + element.getElementName() + "/" +
+							element.getArity());
 				}
 
 				viewer.setInput(ms);

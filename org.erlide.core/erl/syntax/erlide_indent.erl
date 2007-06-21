@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: 2006-jan-28
-%% Description: TODO: Add desciption to erlide_indent
+%% Description: TODO: Add description to erlide_indent
 -module(erlide_indent).
 
 %%
@@ -16,7 +16,7 @@
          indent_lines/2,
          indent_lines/3]).
 
-%%-define(DEBUG, 1).  
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -320,7 +320,7 @@ skip_to_expr_start([{')', _, _} | Before]) ->
     A = skip_paren(Before, '('),
     ?D(A),
     L = tail_if(A),
-    case erlide_text:is_op2(L) of 
+    case erlide_text:is_op2(L) of
         true ->
             skip_to_expr_start(A);
         false ->
@@ -333,7 +333,7 @@ skip_to_expr_start([{'}', _, _} | Before]) ->
         [{atom, _, _}, {'#', _, _} | Rest] ->  % handle record definitions
             skip_to_expr_start(Rest);
         L ->
-            case erlide_text:is_op2(L) of 
+            case erlide_text:is_op2(L) of
                 true ->
                     skip_to_expr_start(A);
                 false ->
@@ -343,7 +343,7 @@ skip_to_expr_start([{'}', _, _} | Before]) ->
 skip_to_expr_start([{']', _, _} | Before]) ->
     A = skip_paren(Before, '['),
     L = tail_if(A),
-    case erlide_text:is_op2(L) of 
+    case erlide_text:is_op2(L) of
         true ->
             skip_to_expr_start(A);
         false ->
@@ -393,7 +393,7 @@ get_column([], Line, FirstOffs, PrevOffs, Indents) ->
     R; % nore more lines, done
 get_column([{_, {{Line, Offs}, _}, _} | Rest], Line, FirstOffs, _PrevOffs, Indents) ->
     get_column(Rest, Line, FirstOffs, Offs, Indents); % same line, iter
-get_column(_, Line, FirstOffs, PrevOffs, Indents) -> 
+get_column(_, Line, FirstOffs, PrevOffs, Indents) ->
     R = get_indent(Line, Indents) + FirstOffs - PrevOffs,
     ?D(R),
     R. % new line, done

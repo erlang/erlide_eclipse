@@ -45,16 +45,17 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 
 		Properties p = new Properties();
 		try {
-			p.load(new FileInputStream(new File(prj.concat("/.codepath"))));
+			p.load(new FileInputStream(new File(prj.concat(File.separatorChar +
+					".codepath"))));
 			outputDir = p.getProperty("output_dir");
 			includeDirs = Arrays.asList(p.getProperty("include_dirs")
 					.split(";"));
 			sourceDirs = Arrays.asList(p.getProperty("source_dirs").split(";"));
 
-			log(">> " + action + ": " + sourceDirs + " " + includeDirs + " "
-					+ outputDir);
+			log(">> " + action + ": " + sourceDirs + " " + includeDirs + " " +
+					outputDir);
 
-			if (action.equals("build")) {
+			if ("build".equals(action)) {
 				List<File> files;
 				String cmd;
 
@@ -78,7 +79,7 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 				cmd = buildCommandLine(files, includeDirs, outputDir);
 				log("  " + cmd);
 				exec(cmd);
-			} else if (action.equals("clean")) {
+			} else if ("clean".equals(action)) {
 
 			} else {
 				log("Unknown action " + action + ". Doing nothing.");
@@ -119,7 +120,7 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 		List<File> result = new ArrayList<File>(10);
 
 		for (String d : sources) {
-			File dir = new File(prj + "/" + d);
+			File dir = new File(prj + File.separatorChar + d);
 			FilenameFilter filter = new FilenameFilter() {
 				public boolean accept(File aDir, String name) {
 					return name.endsWith(ext);

@@ -39,8 +39,8 @@ import org.erlide.erlc.errorparsing.IErrorParser;
 
 public class ErrorParserManager extends OutputStream {
 
-	public final static String PREF_ERROR_PARSER = ErlangPlugin.PLUGIN_ID
-			+ ".errorOutputParser"; //$NON-NLS-1$
+	public final static String PREF_ERROR_PARSER = ErlangPlugin.PLUGIN_ID +
+			".errorOutputParser"; //$NON-NLS-1$
 
 	private int nOpens;
 
@@ -333,11 +333,11 @@ public class ErrorParserManager extends OutputStream {
 
 		protected String variableName;
 
-		public Problem(IResource file, int lineNumber, String desciption,
+		public Problem(IResource file, int lineNumber, String descr,
 				int severity, String variableName) {
 			this.file = file;
 			this.lineNumber = lineNumber;
-			description = desciption;
+			description = descr;
 			this.severity = severity;
 			this.variableName = variableName;
 		}

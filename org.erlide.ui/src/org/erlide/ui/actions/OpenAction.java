@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -140,7 +141,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 */
 	@Override
 	public void run(ITextSelection selection) {
-		System.out.println("*> goto " + selection);
+		ErlLogger.log("*> goto " + selection);
 
 		// if (!ActionUtil.isProcessable(getShell(), fEditor))
 		// return;
@@ -337,8 +338,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final OtpErlangTuple t = (OtpErlangTuple) mf2.elementAt(1);
 				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
 				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				fEditor.setHighlightRange(pos
-						+ sref.getSourceRange().getOffset(), len, true);
+				fEditor.setHighlightRange(pos +
+						sref.getSourceRange().getOffset(), len, true);
 			} else if (external.equals("record") || external.equals("macro")) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {

@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
@@ -128,10 +129,10 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final IErlModule[] resources = project.getModules();
 		final IResource[] nonerl = project.getNonErlangResources();
 
-		final List<IResource> lst = new ArrayList<IResource>(resources.length
-				+ nonerl.length);
+		final List<IResource> lst = new ArrayList<IResource>(resources.length +
+				nonerl.length);
 		for (IErlModule element : resources) {
-			System.out.println("> " + element.getElementName());
+			ErlLogger.log("> " + element.getElementName());
 		}
 
 		for (IResource element : nonerl) {
@@ -191,7 +192,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final String[] natureIds = project.getDescription().getNatureIds();
 
 		for (String element : natureIds) {
-			if (element.equals(ErlangPlugin.NATURE_ID)) {
+			if (ErlangPlugin.NATURE_ID.equals(element)) {
 				return true;
 			}
 		}
@@ -357,8 +358,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 					.getAffectedChildren(IResourceDelta.ADDED);
 			final IResourceDelta[] removedChildren = delta
 					.getAffectedChildren(IResourceDelta.REMOVED);
-			addedAndRemoved = addedChildren.length > 0
-					& removedChildren.length > 0;
+			addedAndRemoved = addedChildren.length > 0 &
+					removedChildren.length > 0;
 
 			// Disable redraw until the operation is finished so we don't get a
 			// flash of both the new and old item (in the case of rename)

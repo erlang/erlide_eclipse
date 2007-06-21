@@ -11,6 +11,7 @@
 package org.erlide.ui.editors.scratch;
 
 import org.eclipse.jface.action.IAction;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 
 /**
@@ -41,7 +42,7 @@ public class StopAction extends ScratchAction {
 	 */
 	@Override
 	public void run() {
-		System.out.println("stopped evaluation");
+		ErlLogger.log("stopped evaluation");
 	}
 
 	/**

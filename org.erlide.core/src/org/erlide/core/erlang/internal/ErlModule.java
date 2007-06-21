@@ -24,6 +24,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
@@ -71,8 +72,8 @@ public class ErlModule extends Openable implements IErlModule {
 	protected ErlModule(IErlElement parent, String name, boolean isErl) {
 		super(parent, name);
 		if (ErlModelManager.verbose) {
-			System.out.println("...creating " + parent.getElementName() + "/"
-					+ name + " " + isErl);
+			ErlLogger.log("...creating " + parent.getElementName() + "/" +
+					name + " " + isErl);
 		}
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
@@ -108,7 +109,7 @@ public class ErlModule extends Openable implements IErlModule {
 			options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 		}
 
-		// System.out.println("* build structure " + this.fName);
+		// ErlLogger.log("* build structure " + this.fName);
 		if (doc == null) {
 			doc = new Document();
 			doc.set(getBuffer().getContents());
@@ -258,7 +259,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void getContentProposals(String prefix, String indent, int offset,
 			ArrayList<ICompletionProposal> result) {
-		// System.out.println("> completing: " + prefix + "," + offset);
+		// ErlLogger.log("> completing: " + prefix + "," + offset);
 		CompletionProposal cp = null;
 
 		class PredefMacros {
@@ -327,9 +328,9 @@ public class ErlModule extends Openable implements IErlModule {
 			} else if (el instanceof IErlRecordDef) {
 				final IErlRecordDef rec = (IErlRecordDef) el;
 				String RecName = rec.getDefinedName();
-				if (prefix.length() == 0
-						|| (prefix.charAt(0) == '#' && RecName
-								.startsWith(prefix.substring(1)))) {
+				if (prefix.length() == 0 ||
+						(prefix.charAt(0) == '#' && RecName.startsWith(prefix
+								.substring(1)))) {
 					cp = new CompletionProposal("#" + RecName, /* replacementString */
 					offset - prefix.length(), /* replacementOffset */
 					prefix.length(), /* replacementLength */
@@ -345,9 +346,9 @@ public class ErlModule extends Openable implements IErlModule {
 			} else if (el instanceof IErlMacroDef) {
 				final IErlMacroDef mac = (IErlMacroDef) el;
 				String MacName = mac.getDefinedName();
-				if (prefix.length() == 0
-						|| (prefix.charAt(0) == '?' && MacName
-								.startsWith(prefix.substring(1)))) {
+				if (prefix.length() == 0 ||
+						(prefix.charAt(0) == '?' && MacName.startsWith(prefix
+								.substring(1)))) {
 					cp = new CompletionProposal("?" + MacName, /* replacementString */
 					offset - prefix.length(), /* replacementOffset */
 					prefix.length(), /* replacementLength */
@@ -412,8 +413,8 @@ public class ErlModule extends Openable implements IErlModule {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-				if (pd.getElementType().equals(type)
-						&& pd.getDefinedName().equals(definedName)) {
+				if (pd.getElementType().equals(type) &&
+						pd.getDefinedName().equals(definedName)) {
 					return pd;
 				}
 			}
@@ -429,9 +430,9 @@ public class ErlModule extends Openable implements IErlModule {
 				final OtpErlangObject v = a.getValue();
 				if (v instanceof OtpErlangString) {
 					final String s = ((OtpErlangString) v).stringValue();
-					if (a.getElementName().equals("include")) {
+					if ("include".equals(a.getElementName())) {
 						r.add(new ErlangIncludeFile(false, s));
-					} else if (a.getElementName().equals("include_lib")) {
+					} else if ("include_lib".equals(a.getElementName())) {
 						r.add(new ErlangIncludeFile(true, s));
 					}
 				}

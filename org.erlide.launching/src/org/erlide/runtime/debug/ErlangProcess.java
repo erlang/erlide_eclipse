@@ -13,6 +13,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
@@ -186,11 +187,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IStackFrame[] getStackFrames() throws DebugException {
-		System.out.println("** get stackframes for " + fPid);
+		ErlLogger.log("** get stackframes for " + fPid);
 
 		if (!isSuspended() && !isStepping()) {
-			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended()
-					+ "." + isStepping(), this, fTarget) };
+			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended() +
+					"." + isStepping(), this, fTarget) };
 		}
 
 		return new IStackFrame[] {};
@@ -212,7 +213,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public IStackFrame getTopStackFrame() throws DebugException {
 		// TODO Auto-generated method stub
-		System.out.println("get top stackframe");
+		ErlLogger.log("get top stackframe");
 		return null;
 	}
 

@@ -32,6 +32,7 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.OpenFileAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ResourceSelectionUtil;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.views.modules.actions.MainActionGroup;
 import org.erlide.ui.views.modules.actions.ModuleNavigatorActionGroup;
@@ -76,13 +77,13 @@ public class ModuleNavigator extends ViewPart {
 			@Override
 			public void run() {
 				final IStructuredSelection selection = (IStructuredSelection) getSelection();
-				final boolean anyResourceSelected = !selection.isEmpty()
-						&& ResourceSelectionUtil.allResourcesAreOfType(
-								selection, IResource.PROJECT | IResource.FOLDER
-										| IResource.FILE);
-				final boolean onlyFilesSelected = anyResourceSelected
-						&& ResourceSelectionUtil.allResourcesAreOfType(
-								selection, IResource.FILE);
+				final boolean anyResourceSelected = !selection.isEmpty() &&
+						ResourceSelectionUtil.allResourcesAreOfType(selection,
+								IResource.PROJECT | IResource.FOLDER |
+										IResource.FILE);
+				final boolean onlyFilesSelected = anyResourceSelected &&
+						ResourceSelectionUtil.allResourcesAreOfType(selection,
+								IResource.FILE);
 
 				if (onlyFilesSelected) {
 					openFileAction.selectionChanged(selection);
@@ -195,7 +196,7 @@ public class ModuleNavigator extends ViewPart {
 
 		public void treeExpanded(TreeExpansionEvent event) {
 			Object element = event.getElement();
-			System.out.println("ZZ exp::" + element.getClass().getName());
+			ErlLogger.log("ZZ exp::" + element.getClass().getName());
 			if (element instanceof IErlElement) {
 				expandMainType(element);
 			}
@@ -229,7 +230,7 @@ public class ModuleNavigator extends ViewPart {
 	 */
 	protected void editorActivated(IEditorPart part) {
 		// TODO Auto-generated method stub
-		System.out.println("act::" + part.getClass().getName());
+		ErlLogger.log("act::" + part.getClass().getName());
 	}
 
 	/**
@@ -237,7 +238,7 @@ public class ModuleNavigator extends ViewPart {
 	 */
 	protected void expandMainType(Object element) {
 		// TODO Auto-generated method stub
-		System.out.println("exp::" + element.getClass().getName());
+		ErlLogger.log("exp::" + element.getClass().getName());
 	}
 
 	/**

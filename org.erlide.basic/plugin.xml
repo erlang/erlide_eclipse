@@ -19,5 +19,17 @@
             name="%installErtsPageName">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.erlide.categories.views"
+            name="Erlang"/>
+      <view
+            category="org.erlide.categories.views"
+            class="org.erlide.basicui.views.ErlLoggerView"
+            icon="icons/sample.gif"
+            id="org.erlide.basic.views.ErlLoggerView"
+            name="Erlang Logger"/>
+   </extension>
 
 </plugin>
