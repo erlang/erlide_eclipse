@@ -13,6 +13,8 @@ package org.erlide.basicui.prefs;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -46,7 +48,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	public ErtsPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		this.setTitle("Erlang runtime");
+		setTitle("Erlang runtime");
 	}
 
 	/**
@@ -54,21 +56,26 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	protected void createFieldEditors() {
+		Composite fieldEditorParent = getFieldEditorParent();
 		home = new OtpDirectoryFieldEditor(IPrefConstants.ERTS_OTP_HOME,
-				ErlideBasicUIPlugin.getResourceString("prefs.system.home"),
-				getFieldEditorParent());
+				"ERL_TOP", fieldEditorParent);
+		final Label zzzLabel = this.home.getLabelControl(fieldEditorParent);
+		zzzLabel.setText(ErlideBasicUIPlugin
+				.getResourceString("prefs.system.home"));
 		addField(home);
 
-		pathA = new PathEditor(IPrefConstants.ERTS_PATH_A, ErlideBasicUIPlugin
-				.getResourceString("prefs.system.patha"),
-				"Add a library directory to code:patha()",
-				getFieldEditorParent());
+		pathA = new PathEditor(IPrefConstants.ERTS_PATH_A, "patha",
+				"Add a library directory to code:patha()", fieldEditorParent);
+		final Label pathaLabel = this.pathA.getLabelControl(fieldEditorParent);
+		pathaLabel.setText(ErlideBasicUIPlugin
+				.getResourceString("prefs.system.patha"));
 		addField(pathA);
 
-		pathZ = new PathEditor(IPrefConstants.ERTS_PATH_Z, ErlideBasicUIPlugin
-				.getResourceString("prefs.system.pathz"),
-				"Add a library directory to code:pathz()",
-				getFieldEditorParent());
+		pathZ = new PathEditor(IPrefConstants.ERTS_PATH_Z, "pathz",
+				"Add a library directory to code:pathz()", fieldEditorParent);
+		final Label pathzLabel = this.pathZ.getLabelControl(fieldEditorParent);
+		pathzLabel.setText(ErlideBasicUIPlugin
+				.getResourceString("prefs.system.pathz"));
 		addField(pathZ);
 
 		// longName = new BooleanFieldEditor(IPrefConstants.ERTS_USE_LONG_NAME,

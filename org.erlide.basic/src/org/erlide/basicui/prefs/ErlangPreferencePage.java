@@ -31,84 +31,84 @@ import org.erlide.basicui.IErlideBasicUIConstants;
 import org.erlide.basicui.util.SFProjectSupport;
 
 public class ErlangPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	@Override
-	protected Control createContents(Composite parent) {
-		Link l;
-		noDefaultAndApplyButton();
-		final Composite panel = new Composite(parent, SWT.NONE);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		panel.setLayout(layout);
+    @Override
+    protected Control createContents(Composite parent) {
+        Link l;
+        noDefaultAndApplyButton();
+        final Composite panel = new Composite(parent, SWT.NONE);
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        panel.setLayout(layout);
 
-		final Label img = new Label(panel, SWT.NONE);
-		try {
-			final ImageDescriptor d = ErlideBasicUIPlugin
-					.getDefault()
-					.getImageDescriptor(IErlideBasicUIConstants.IMG_ERLANG_LOGO);
-			if (d != null) {
-				img.setImage((Image) d.createResource(parent.getDisplay()));
-			} else {
-				img.setText(PreferenceMessages
-						.getString("ErlangPreferencePage.0")); //$NON-NLS-1$
-			}
-		} catch (final DeviceResourceException e) {
-			img.setText(PreferenceMessages.getString("ErlangPreferencePage.1")); //$NON-NLS-1$
-		}
+        final Label img = new Label(panel, SWT.NONE);
+        try {
+            final ImageDescriptor d = ErlideBasicUIPlugin
+                    .getDefault()
+                    .getImageDescriptor(IErlideBasicUIConstants.IMG_ERLANG_LOGO);
+            if (d != null) {
+                img.setImage((Image) d.createResource(parent.getDisplay()));
+            } else {
+                img.setText(PreferenceMessages
+                        .getString("ErlangPreferencePage.0")); //$NON-NLS-1$
+            }
+        } catch (final DeviceResourceException e) {
+            img.setText(PreferenceMessages.getString("ErlangPreferencePage.1")); //$NON-NLS-1$
+        }
 
-		Label text = new Label(panel, SWT.NONE);
-		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2")); //$NON-NLS-1$
+        Label text = new Label(panel, SWT.NONE);
+        text.setText(PreferenceMessages.getString("ErlangPreferencePage.2")); //$NON-NLS-1$
 
-		final SelectionListener linkListener = new SelectionListener() {
+        final SelectionListener linkListener = new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
-				Program.launch(e.text);
-			}
+            public void widgetSelected(SelectionEvent e) {
+                Program.launch(e.text);
+            }
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		};
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        };
 
-		final Composite panel2 = new Composite(panel, SWT.NONE);
-		final GridLayout layout2 = new GridLayout();
-		layout2.numColumns = 1;
-		panel2.setLayout(layout2);
+        final Composite panel2 = new Composite(panel, SWT.NONE);
+        final GridLayout layout2 = new GridLayout();
+        layout2.numColumns = 1;
+        panel2.setLayout(layout2);
 
-		text = new Label(panel2, SWT.NONE);
-		text.setText(PreferenceMessages.getString("ErlangPreferencePage.3")); //$NON-NLS-1$
+        text = new Label(panel2, SWT.NONE);
+        text.setText(PreferenceMessages.getString("ErlangPreferencePage.3")); //$NON-NLS-1$
 
-		l = new Link(panel2, SWT.NONE | SWT.WRAP);
-		l.setLayoutData(new GridData());
-		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.4"), //$NON-NLS-1$
-				SFProjectSupport.HOME_URL));
-		l.addSelectionListener(linkListener);
+        l = new Link(panel2, SWT.NONE | SWT.WRAP);
+        l.setLayoutData(new GridData());
+        l.setSize(panel2.getSize().x, 20);
+        l.setText(String.format(PreferenceMessages
+                .getString("ErlangPreferencePage.4"), //$NON-NLS-1$
+                SFProjectSupport.HOME_URL));
+        l.addSelectionListener(linkListener);
 
-		l = new Link(panel2, SWT.NONE | SWT.WRAP);
-		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.5"), //$NON-NLS-1$
-				SFProjectSupport.BUGS_URL));
-		l.addSelectionListener(linkListener);
+        l = new Link(panel2, SWT.NONE | SWT.WRAP);
+        l.setSize(panel2.getSize().x, 20);
+        l.setText(String.format(PreferenceMessages
+                .getString("ErlangPreferencePage.5"), //$NON-NLS-1$
+                SFProjectSupport.BUGS_URL));
+        l.addSelectionListener(linkListener);
 
-		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.6"), //$NON-NLS-1$
-				SFProjectSupport.SUPPORT_URL));
-		l.addSelectionListener(linkListener);
+        l = new Link(panel2, SWT.NONE);
+        l.setText(String.format(PreferenceMessages
+                .getString("ErlangPreferencePage.6"), //$NON-NLS-1$
+                SFProjectSupport.SUPPORT_URL));
+        l.addSelectionListener(linkListener);
 
-		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.7"), //$NON-NLS-1$
-				SFProjectSupport.FEATURES_URL));
-		l.addSelectionListener(linkListener);
+        l = new Link(panel2, SWT.NONE);
+        l.setText(String.format(PreferenceMessages
+                .getString("ErlangPreferencePage.7"), //$NON-NLS-1$
+                SFProjectSupport.FEATURES_URL));
+        l.addSelectionListener(linkListener);
 
-		return panel;
-	}
+        return panel;
+    }
 
-	public void init(IWorkbench workbench) {
-	}
+    public void init(IWorkbench workbench) {
+    }
 
 }
