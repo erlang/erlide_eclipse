@@ -18,21 +18,21 @@
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -47,24 +47,24 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.core.backend.Backend"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.runtime.backend.IBackend"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -91,7 +91,6 @@
             id=&quot;internal&quot;
             name=&quot;Internal backend&quot;/&gt;
 &lt;/pre&gt;
-
       </documentation>
    </annotation>
 
@@ -118,7 +117,7 @@
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         
+
       </documentation>
    </annotation>
 
