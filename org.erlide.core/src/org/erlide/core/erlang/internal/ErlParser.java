@@ -313,14 +313,18 @@ public class ErlParser {
 	private IErlMember addAttribute(IErlModule parent, OtpErlangObject pos,
 			OtpErlangAtom name, OtpErlangObject val) {
 		if ("import".equals(name.atomValue())) {
-			final OtpErlangTuple t = (OtpErlangTuple) val;
-			final OtpErlangAtom importModule = (OtpErlangAtom) t.elementAt(0);
-			final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
-			final ErlImport imp = new ErlImport(parent, importModule
-					.atomValue(), functionList);
-			setPos(imp, pos);
-			imp.setParseTree(val);
-			return imp;
+			if (val instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) val;
+				final OtpErlangAtom importModule = (OtpErlangAtom) t
+						.elementAt(0);
+				final OtpErlangList functionList = (OtpErlangList) t
+						.elementAt(1);
+				final ErlImport imp = new ErlImport(parent, importModule
+						.atomValue(), functionList);
+				setPos(imp, pos);
+				imp.setParseTree(val);
+				return imp;
+			}
 			// ErlImport imp = new ErlImport(val);
 		} else if ("export".equals(name.atomValue())) {
 			// OtpErlangList exportList = (OtpErlangList) val;
@@ -349,41 +353,47 @@ public class ErlParser {
 			ex.setParseTree(val);
 			return ex;
 		} else if ("record".equals(name.atomValue())) {
-			final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
-			final String recordName = ((OtpErlangAtom) recordTuple.elementAt(0))
-					.atomValue();
-			final ErlRecordDef r = new ErlRecordDef(parent, recordName);
-			setPos(r, pos);
-			r.setParseTree(val);
-			return r;
+			if (val instanceof OtpErlangTuple) {
+				final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
+				final String recordName = ((OtpErlangAtom) recordTuple
+						.elementAt(0)).atomValue();
+				final ErlRecordDef r = new ErlRecordDef(parent, recordName);
+				setPos(r, pos);
+				r.setParseTree(val);
+				return r;
+			}
 		} else if ("define".equals(name.atomValue())) {
-			final OtpErlangList macroList = (OtpErlangList) val;
-			final OtpErlangTuple macroNameTuple = (OtpErlangTuple) macroList
-					.elementAt(0);
-			OtpErlangObject o = macroNameTuple.elementAt(2);
-			if (o instanceof OtpErlangTuple) {
-				o = ((OtpErlangTuple) o).elementAt(2);
+			if (val instanceof OtpErlangList) {
+				final OtpErlangList macroList = (OtpErlangList) val;
+				final OtpErlangTuple macroNameTuple = (OtpErlangTuple) macroList
+						.elementAt(0);
+				OtpErlangObject o = macroNameTuple.elementAt(2);
+				if (o instanceof OtpErlangTuple) {
+					o = ((OtpErlangTuple) o).elementAt(2);
+				}
+				ErlMacroDef r;
+				if (o instanceof OtpErlangAtom) {
+					final String macroName = ((OtpErlangAtom) o).atomValue();
+					r = new ErlMacroDef(parent, macroName);
+				} else {
+					// what do we do here? the define isn't correct Erlang...
+					r = new ErlMacroDef(parent, o.toString());
+				}
+				setPos(r, pos);
+				r.setParseTree(val);
+				return r;
 			}
-			ErlMacroDef r;
-			if (o instanceof OtpErlangAtom) {
-				final String macroName = ((OtpErlangAtom) o).atomValue();
-				r = new ErlMacroDef(parent, macroName);
-			} else {
-				// what do we do here? the define isn't correct Erlang...
-				r = new ErlMacroDef(parent, o.toString());
-			}
-			setPos(r, pos);
-			r.setParseTree(val);
-			return r;
-		} else {
-			final OtpErlangObject val1 = concreteTerm(val);
-
-			final ErlAttribute a = new ErlAttribute((ErlElement) parent, name
-					.atomValue(), val1);
-			setPos(a, pos);
-			a.setParseTree(val);
-			return a;
 		}
+
+		// user-defined attribute
+		final OtpErlangObject val1 = concreteTerm(val);
+
+		final ErlAttribute a = new ErlAttribute((ErlElement) parent, name
+				.atomValue(), val1);
+		setPos(a, pos);
+		a.setParseTree(val);
+		return a;
+
 	}
 
 	private String format_error(OtpErlangObject object) {
