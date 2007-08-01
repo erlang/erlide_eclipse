@@ -358,8 +358,8 @@ public class OtpNode extends OtpLocalNode {
 	public boolean ping(String node_, long timeout) {
 		if (node_.equals(node)) {
 			return true;
-		} else if (node_.indexOf('@', 0) < 0 &&
-				node_.equals(node.substring(0, node.indexOf('@', 0)))) {
+		} else if (node_.indexOf('@', 0) < 0
+				&& node_.equals(node.substring(0, node.indexOf('@', 0)))) {
 			return true;
 		}
 
@@ -781,18 +781,10 @@ public class OtpNode extends OtpLocalNode {
 						addConnection(conn);
 					}
 				} catch (final OtpAuthException e) {
-					if (conn != null && conn.name != null) {
-						connAttempt(conn.name, true, e);
-					} else {
-						connAttempt("unknown", true, e);
-					}
+					connAttempt("unknown", true, e);
 					closeSock(newsock);
 				} catch (final IOException e) {
-					if (conn != null && conn.name != null) {
-						connAttempt(conn.name, true, e);
-					} else {
-						connAttempt("unknown", true, e);
-					}
+					connAttempt("unknown", true, e);
 					closeSock(newsock);
 				} catch (final Exception e) {
 					closeSock(newsock);
