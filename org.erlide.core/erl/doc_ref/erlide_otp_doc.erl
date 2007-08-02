@@ -177,7 +177,7 @@ scan_s([], _End, I, Acc) ->
 split_tag({TagType, S}, Offset) ->
     {Rest, Tag, _} = scan_s(S, $  , 0, ""),
     {Tag, Attrs} = split_tag(Rest, Tag, []),
-    LTag = httpd_util:to_lower(Tag),
+    LTag = string:to_lower(Tag),
     {tag_type(TagType, LTag), LTag, Attrs, Offset}.
 
 split_tag("", Tag, Acc) ->
