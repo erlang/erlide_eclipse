@@ -4,8 +4,11 @@
    <description url="http://erlide.sourceforge.net/update/site.xml">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2.
    </description>
-   <feature url="features/org.erlide_0.3.29.200612062133.jar" id="org.erlide" version="0.3.29.200612062133">
-      <category name="Snapshot"/>
+   <feature url="features/org.erlide_0.3.29.jar" id="org.erlide" version="0.3.29">
+      <category name="Stable"/>
    </feature>
-   <category-def name="Snapshot" label="Snapshot builds (possibly unstable)"/>
+   <feature url="features/org.erlide_0.3.30.jar" id="org.erlide" version="0.3.30">
+      <category name="Stable"/>
+   </feature>
+   <category-def name="Stable" label="Stable builds"/>
 </site>
