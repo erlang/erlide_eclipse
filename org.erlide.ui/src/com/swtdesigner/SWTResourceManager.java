@@ -7,35 +7,22 @@ import java.util.Iterator;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.CoolItem;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 
 /**
  * Utility class for managing OS resources associated with SWT controls such as
  * colors, fonts, images, etc.
- *
+ * 
  * !!! IMPORTANT !!! Application code must explicitly invoke the <code>dispose()</code>
  * method to release the operating system resources managed by cached objects
  * when those objects and OS resources are no longer needed (e.g. on
  * application shutdown)
- *
+ * 
  * This class may be freely distributed as part of any application or plugin.
  * <p>
  * Copyright (c) 2003 - 2005, Instantiations, Inc. <br>All Rights Reserved
- *
+ * 
  * @author scheglov_ke
  * @author Dan Rubel
  */
@@ -220,7 +207,7 @@ public class SWTResourceManager {
      * Style constant for placing decorator image in bottom right corner of base image.
      */
     public static final int BOTTOM_RIGHT = 4;
-
+    
     /**
      * Returns an image composed of a base image decorated by another image
      * @param baseImage Image The base image that should be decorated
@@ -230,7 +217,7 @@ public class SWTResourceManager {
     public static Image decorateImage(Image baseImage, Image decorator) {
     	return decorateImage(baseImage, decorator, BOTTOM_RIGHT);
     }
-
+    
     /**
 	 * Returns an image composed of a base image decorated by another image
 	 * @param baseImage Image The base image that should be decorated
@@ -248,27 +235,25 @@ public class SWTResourceManager {
 		if (result == null) {
 			final Rectangle bid = baseImage.getBounds();
 			final Rectangle did = decorator.getBounds();
-            final Point baseImageSize = new Point(bid.width, bid.height);
-            CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() {
-                @Override
-				protected void drawCompositeImage(int width, int height) {
-                    drawImage(baseImage.getImageData(), 0, 0);
-                    if (corner == TOP_LEFT) {
-                        drawImage(decorator.getImageData(), 0, 0);
-                    } else if (corner == TOP_RIGHT) {
-                        drawImage(decorator.getImageData(), bid.width - did.width - 1, 0);
-                    } else if (corner == BOTTOM_LEFT) {
-                        drawImage(decorator.getImageData(), 0, bid.height - did.height - 1);
-                    } else if (corner == BOTTOM_RIGHT) {
-                        drawImage(decorator.getImageData(), bid.width - did.width - 1, bid.height - did.height - 1);
-                    }
-                }
-                @Override
-				protected Point getSize() {
-                    return baseImageSize;
-                }
-            };
-            result = compositImageDesc.createImage();
+            final Point baseImageSize = new Point(bid.width, bid.height); 
+            CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() { 
+                protected void drawCompositeImage(int width, int height) { 
+                    drawImage(baseImage.getImageData(), 0, 0); 
+                    if (corner == TOP_LEFT) { 
+                        drawImage(decorator.getImageData(), 0, 0); 
+                    } else if (corner == TOP_RIGHT) { 
+                        drawImage(decorator.getImageData(), bid.width - did.width - 1, 0); 
+                    } else if (corner == BOTTOM_LEFT) { 
+                        drawImage(decorator.getImageData(), 0, bid.height - did.height - 1); 
+                    } else if (corner == BOTTOM_RIGHT) { 
+                        drawImage(decorator.getImageData(), bid.width - did.width - 1, bid.height - did.height - 1); 
+                    } 
+                } 
+                protected Point getSize() { 
+                    return baseImageSize; 
+                } 
+            }; 
+            result = compositImageDesc.createImage(); 
 			decoratedMap.put(decorator, result);
 		}
 		return result;
@@ -333,7 +318,7 @@ public class SWTResourceManager {
 
 
     /**
-     * Returns a font based on its name, height and style.
+     * Returns a font based on its name, height and style. 
      * Windows-specific strikeout and underline flags are also supported.
      * @param name String The name of the font
      * @param size int The size of the font
@@ -369,7 +354,7 @@ public class SWTResourceManager {
         }
 		return font;
 	}
-
+    
 
     /**
      * Return a bold version of the give font
@@ -435,7 +420,7 @@ public class SWTResourceManager {
      * Maps IDs to cursors
      */
     private static HashMap<Integer, Cursor> m_IdToCursorMap = new HashMap<Integer, Cursor>();
-
+ 
     /**
      * Returns the system cursor matching the specific ID
      * @param id int The ID value for the cursor
@@ -450,7 +435,7 @@ public class SWTResourceManager {
         }
         return cursor;
     }
-
+ 
     /**
      * Dispose all of the cached cursors
      */

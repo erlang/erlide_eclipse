@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
@@ -149,8 +149,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 * @return
 	 */
 	private boolean validateFinish() {
-		ErlLogger.log("validating |" + buildPage.getPrefs().getOutputDir() +
-				"|");
+		ErlLogger.log("validating |" + buildPage.getPrefs().getOutputDir()
+				+ "|");
 		final ErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().trim().length() == 0) {
 			reportError(ErlideUIPlugin
@@ -215,8 +215,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project).getCodeManager().addPathA(
-					out);
+			BackendManager.getDefault().get(project).getCodeManager().addPath(
+					prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

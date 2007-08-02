@@ -17,6 +17,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -44,6 +45,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 
 	private PathEditor fextinc;
 
+	private Button uz;
+
 	/**
 	 * Constructor for ErlProjectPropertyPage.
 	 */
@@ -69,35 +72,45 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		gl.numColumns = 2;
 		composite.setLayout(gl);
 
+		String resourceString = ErlideUIPlugin
+				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
-		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.buildoutput") +
-				":");
+		new Label(composite, SWT.NONE).setText(resourceString + ":");
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		output.setLayoutData(gd);
 		output.setText(prefs.getOutputDir());
 		output.addListener(SWT.Modify, nameModifyListener);
 
+		new Label(composite, SWT.NONE).setText("use pathZ"); // / TODO use
+		// resource!
+		uz = new Button(composite, SWT.CHECK);
+		uz.setSelection(prefs.getUsePathZ());
+		uz.addListener(SWT.Modify, nameModifyListener);
+
 		Label l1 = new Label(composite, SWT.NONE);
-		l1.setText(ErlideUIPlugin.getResourceString("wizards.labels.source") +
-				":");
+		String resourceString2 = ErlideUIPlugin
+				.getResourceString("wizards.labels.source");
+		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		source.setLayoutData(gd);
 		source.setText(prefs.getSourceDirsString());
 		source.addListener(SWT.Modify, nameModifyListener);
 
-		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.include") +
-				":");
+		String resourceString3 = ErlideUIPlugin
+				.getResourceString("wizards.labels.include");
+		new Label(composite, SWT.NONE).setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		include.setLayoutData(gd);
 		include.setText(prefs.getIncludeDirsString());
 		include.addListener(SWT.Modify, nameModifyListener);
 
-		fextinc = new PathEditor("ext include", "ext inc", "New", composite);
+		Composite composite1 = new Composite(composite, SWT.NONE);
+		gd = new GridData(SWT.LEFT, SWT.TOP, true, true, 3, 4);
+		composite1.setLayoutData(gd);
+		fextinc = new PathEditor("ext include", "ext inc", "New", composite1);
 		fextinc.setPreferenceStore(mockPrefs);
 
 		setValid(testPageComplete());
@@ -114,9 +127,10 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 	public boolean performOk() {
 		// store the value in the owner text field
 		prefs.setOutputDir(output.getText());
+		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
-
+		System.out.println(uz.getSelection());
 		prefs.store();
 		return true;
 	}

@@ -50,12 +50,6 @@
       </objectContribution>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.erlide.ui.prefs.PreferencesInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="Syntax coloring"
@@ -143,17 +137,24 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
+            adaptable="false"
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
-            name="Erlang properties">
+            name="Erlang properties"
+            objectClass="org.eclipse.core.resources.IProject">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
-         <enabledWhen>
-            <instanceof
-                  value="org.eclipse.core.resources.IProject">
-            </instanceof>
-         </enabledWhen>
+      </page>
+      <page
+            adaptable="false"
+            class="org.erlide.ui.properties.MyErlProjectPropertyPage"
+            id="org.erlide.ui.properties.myErlangProjectPropertyPage"
+            name="new Erlang properties"
+            objectClass="org.eclipse.core.resources.IProject">
+         <filter
+               name="nature"
+               value="org.erlide.core.erlnature"/>
       </page>
    </extension>
    <extension

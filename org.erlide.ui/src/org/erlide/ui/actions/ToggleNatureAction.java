@@ -98,7 +98,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 					final String out = project.getLocation().append(
 							prefs.getOutputDir()).toString();
 					BackendManager.getDefault().get(project).getCodeManager()
-							.removePathA(out);
+							.removePath(prefs.getUsePathZ(), out);
 					return;
 				}
 			}
@@ -113,8 +113,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project).getCodeManager().addPathA(
-					out);
+			BackendManager.getDefault().get(project).getCodeManager().addPath(
+					prefs.getUsePathZ(), out);
 
 		} catch (final CoreException e) {
 		}
