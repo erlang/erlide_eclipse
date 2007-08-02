@@ -21,9 +21,9 @@ public class RpcResult {
 	private boolean fOk = true;
 
 	public RpcResult(OtpErlangObject res) {
-		if ((res instanceof OtpErlangTuple) &&
-				(((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom) &&
-				("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
+		if ((res instanceof OtpErlangTuple)
+				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
+				&& ("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
 						.elementAt(0))).atomValue()) || "EXIT"
 						.equals(((OtpErlangAtom) (((OtpErlangTuple) res)
 								.elementAt(0))).atomValue()))) {
@@ -46,6 +46,6 @@ public class RpcResult {
 
 	@Override
 	public String toString() {
-		return "RPC:" + fOk + ":" + fValue.toString();
+		return "RPC:" + fOk + "=" + fValue.toString();
 	}
 }

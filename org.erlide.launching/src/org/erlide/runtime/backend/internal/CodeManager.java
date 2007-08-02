@@ -26,11 +26,13 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.ICodeManager;
+import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -70,7 +72,6 @@ public class CodeManager implements ICodeManager {
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
-				// ErlLogger.log("code:patha(" + path);
 				fBackend.rpc("code", "add_patha", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
@@ -112,6 +113,12 @@ public class CodeManager implements ICodeManager {
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
 			try {
+				// workaround for bug in code:del_path
+				RpcResult rr = fBackend.rpc("filename", "join",
+						new OtpErlangList(new OtpErlangString(path)));
+				if (rr.isOk())
+					path = ((OtpErlangString) rr.getValue()).stringValue();
+
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
@@ -125,6 +132,12 @@ public class CodeManager implements ICodeManager {
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
 			try {
+				// workaround for bug in code:del_path
+				RpcResult rr = fBackend.rpc("filename", "join",
+						new OtpErlangList(new OtpErlangString(path)));
+				if (rr.isOk())
+					path = ((OtpErlangString) rr.getValue()).stringValue();
+
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();

@@ -169,6 +169,7 @@ public class ErlangProjectProperties {
 			String p = project.getLocation().append(fOutputDir).toString();
 			b.getCodeManager().removePath(z, p);
 			b.getCodeManager().addPath(pz, p);
+			b.getCodeManager();
 		}
 		fUsePathZ = Boolean.toString(pz);
 	}
