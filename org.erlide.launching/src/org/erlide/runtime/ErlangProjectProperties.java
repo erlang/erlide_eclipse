@@ -158,11 +158,11 @@ public class ErlangProjectProperties {
 	}
 
 	public boolean getUsePathZ() {
-		return Boolean.getBoolean(fUsePathZ);
+		return Boolean.parseBoolean(fUsePathZ);
 	}
 
 	public void setUsePathZ(boolean pz) {
-		boolean z = Boolean.getBoolean(fUsePathZ);
+		boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
 			IBackend b = BackendManager.getDefault().get(project);
 

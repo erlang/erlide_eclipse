@@ -82,8 +82,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		output.setText(prefs.getOutputDir());
 		output.addListener(SWT.Modify, nameModifyListener);
 
-		new Label(composite, SWT.NONE).setText("use pathZ"); // / TODO use
-		// resource!
+		new Label(composite, SWT.NONE).setText("use pathZ");
+		// TODO use resource!
 		uz = new Button(composite, SWT.CHECK);
 		uz.setSelection(prefs.getUsePathZ());
 		uz.addListener(SWT.Modify, nameModifyListener);
@@ -130,7 +130,6 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
-		System.out.println(uz.getSelection());
 		prefs.store();
 		return true;
 	}
