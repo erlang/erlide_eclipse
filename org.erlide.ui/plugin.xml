@@ -150,7 +150,7 @@
             adaptable="false"
             class="org.erlide.ui.properties.MyErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
-            name="new Erlang properties"
+            name="new Erlang properties (work in progress)"
             objectClass="org.eclipse.core.resources.IProject">
          <filter
                name="nature"
