@@ -1,6 +1,8 @@
-#Mon May 22 13:47:26 CEST 2006
+#Thu Aug 02 22:56:18 CEST 2007
 output_dir=ebin
 otp_project_structure=false
 external_includes=
+use_pathz=true
 include_dirs=include
+backend_name=
 source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax
