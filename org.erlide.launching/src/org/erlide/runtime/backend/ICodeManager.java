@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -15,14 +15,6 @@ import org.eclipse.core.runtime.Plugin;
 
 public interface ICodeManager {
 
-	void addPathA(String path);
-
-	void addPathZ(String path);
-
-	void removePathA(String path);
-
-	void removePathZ(String path);
-
 	List getPathA();
 
 	List getPathZ();
@@ -30,5 +22,9 @@ public interface ICodeManager {
 	void addPlugin(Plugin p);
 
 	void removePlugin(Plugin p);
+
+	void addPath(boolean usePathZ, String path);
+
+	void removePath(boolean usePathZ, String path);
 
 }

@@ -62,4 +62,8 @@ public interface IPrefConstants {
 
 	String DEFAULT_BACKEND_NODE_NAME = "";
 
+	String PROJECT_USE_PATHZ = "use_pathz";
+
+	String DEFAULT_USE_PATHZ = "true";
+
 }

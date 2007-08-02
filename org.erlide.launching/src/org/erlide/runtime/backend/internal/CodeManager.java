@@ -67,7 +67,7 @@ public class CodeManager implements ICodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#addPathA(java.lang.String)
 	 */
-	public void addPathA(String path) {
+	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
 				// ErlLogger.log("code:patha(" + path);
@@ -81,7 +81,7 @@ public class CodeManager implements ICodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#addPathZ(java.lang.String)
 	 */
-	public void addPathZ(String path) {
+	private void addPathZ(String path) {
 		if (addPath(pathZ, path)) {
 			try {
 				fBackend.rpc("code", "add_pathz", new OtpErlangString(path));
@@ -109,7 +109,7 @@ public class CodeManager implements ICodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
 	 */
-	public void removePathA(String path) {
+	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
 			try {
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
@@ -122,7 +122,7 @@ public class CodeManager implements ICodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
 	 */
-	public void removePathZ(String path) {
+	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
 			try {
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
@@ -187,8 +187,8 @@ public class CodeManager implements ICodeManager {
 			try {
 				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
 						new OtpErlangAtom(moduleName)));
-				if (!((OtpErlangAtom) r).booleanValue() ||
-						!BackendManager.isDeveloper()) {
+				if (!((OtpErlangAtom) r).booleanValue()
+						|| !BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
 							"load_binary", new OtpErlangObject[] {
 									new OtpErlangAtom(moduleName),
@@ -227,8 +227,8 @@ public class CodeManager implements ICodeManager {
 			return false;
 		} else {
 			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\"" +
-					moduleName + ".beam\"," + aa + ").\n";
+			final String msg = "code:load_binary(" + moduleName + ",\""
+					+ moduleName + ".beam\"," + aa + ").\n";
 			try {
 				fBackend.sendToDefaultShell(msg);
 			} catch (final IOException e) {
@@ -297,8 +297,8 @@ public class CodeManager implements ICodeManager {
 		loadBootstrap("erlide_erpc", e);
 
 		try {
-			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port +
-					", false).\n");
+			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
+					+ ", false).\n");
 			fBackend.sendToDefaultShell("unlink(X).\n");
 		} catch (final IOException e1) {
 			e1.printStackTrace();
@@ -328,8 +328,8 @@ public class CodeManager implements ICodeManager {
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null &&
-					"beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				// ErlLogger.log(" " + m);
 				try {
@@ -381,8 +381,8 @@ public class CodeManager implements ICodeManager {
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null &&
-					"beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				unloadBeam(m);
 			}
@@ -415,6 +415,20 @@ public class CodeManager implements ICodeManager {
 		public void decRef() {
 			ref--;
 		}
+	}
+
+	public void addPath(boolean usePathZ, String path) {
+		if (usePathZ)
+			addPathZ(path);
+		else
+			addPathA(path);
+	}
+
+	public void removePath(boolean usePathZ, String path) {
+		if (usePathZ)
+			removePathZ(path);
+		else
+			removePathA(path);
 	}
 
 }

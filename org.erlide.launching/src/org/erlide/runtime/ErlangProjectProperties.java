@@ -44,6 +44,8 @@ public class ErlangProjectProperties {
 
 	private String fBackendNodeName = IPrefConstants.DEFAULT_BACKEND_NODE_NAME;
 
+	private String fUsePathZ = IPrefConstants.DEFAULT_USE_PATHZ;
+
 	private List<IPropertyChangeListener> fListeners;
 
 	public ErlangProjectProperties() {
@@ -80,6 +82,8 @@ public class ErlangProjectProperties {
 				IPrefConstants.DEFAULT_INCLUDE_DIRS);
 		fOutputDir = prefs.getProperty(IPrefConstants.PROJECT_OUTPUT_DIR,
 				IPrefConstants.DEFAULT_OUTPUT_DIR);
+		fUsePathZ = prefs.getProperty(IPrefConstants.PROJECT_USE_PATHZ,
+				IPrefConstants.DEFAULT_USE_PATHZ);
 		fExternalIncludes = prefs.getProperty(
 				IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 				IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
@@ -102,6 +106,7 @@ public class ErlangProjectProperties {
 		prefs.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
 		prefs.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
 		prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
+		prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 		prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
 		prefs.put(IPrefConstants.PROJECT_BACKEND_NODE_NAME, fBackendNodeName);
 
@@ -144,12 +149,28 @@ public class ErlangProjectProperties {
 			IBackend b = BackendManager.getDefault().get(project);
 
 			String p = project.getLocation().append(fOutputDir).toString();
-			b.getCodeManager().removePathA(p);
+			b.getCodeManager().removePath(getUsePathZ(), p);
 
 			p = project.getLocation().append(outputDir).toString();
-			b.getCodeManager().addPathA(p);
+			b.getCodeManager().addPath(getUsePathZ(), p);
 		}
 		fOutputDir = outputDir;
+	}
+
+	public boolean getUsePathZ() {
+		return Boolean.getBoolean(fUsePathZ);
+	}
+
+	public void setUsePathZ(boolean pz) {
+		boolean z = Boolean.getBoolean(fUsePathZ);
+		if (z != pz) {
+			IBackend b = BackendManager.getDefault().get(project);
+
+			String p = project.getLocation().append(fOutputDir).toString();
+			b.getCodeManager().removePath(z, p);
+			b.getCodeManager().addPath(pz, p);
+		}
+		fUsePathZ = Boolean.toString(pz);
 	}
 
 	public String getSourceDirsString() {
