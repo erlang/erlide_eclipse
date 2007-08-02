@@ -416,6 +416,10 @@ public class ErlParser {
 	}
 
 	private boolean setPos(SourceRefElement e, OtpErlangObject pos) {
+		if (!(pos instanceof OtpErlangTuple)) {
+			System.out.println("!> expecting pos tuple, got " + pos);
+			return false;
+		}
 		try {
 			final OtpErlangTuple tpos = (OtpErlangTuple) pos;
 			final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
