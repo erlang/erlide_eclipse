@@ -113,8 +113,8 @@ public class LineBreakingReader {
 	}
 
 	private int findWordBegin(int idx) {
-		while (idx < fLine.length() &&
-				Character.isWhitespace(fLine.charAt(idx))) {
+		while (idx < fLine.length()
+				&& Character.isWhitespace(fLine.charAt(idx))) {
 			idx++;
 		}
 		return idx;

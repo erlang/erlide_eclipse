@@ -114,8 +114,8 @@ public class ControlFactory {
 	 *         SWT.DEFAULT)
 	 */
 	public static Label createSeparator(Composite parent, int nCols) {
-		final Label separator = new Label(parent, SWT.SEPARATOR |
-				SWT.HORIZONTAL);
+		final Label separator = new Label(parent, SWT.SEPARATOR
+				| SWT.HORIZONTAL);
 		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = nCols;
 		separator.setLayoutData(data);
@@ -230,8 +230,8 @@ public class ControlFactory {
 	 */
 	public static Label createWrappedLabel(Composite parent, String text,
 			int widthHint, int heightHint) {
-		return createLabel(parent, text, widthHint, heightHint, SWT.LEFT |
-				SWT.WRAP);
+		return createLabel(parent, text, widthHint, heightHint, SWT.LEFT
+				| SWT.WRAP);
 	}
 
 	/**
@@ -407,10 +407,10 @@ public class ControlFactory {
 	 */
 	public static TableViewer createTableViewer(Composite parent,
 			String[] opt_list, int width, int height, int style) {
-		final TableViewer listViewer = new TableViewer(parent, SWT.BORDER |
-				style);
-		final GridData data = new GridData(GridData.FILL_HORIZONTAL |
-				GridData.FILL_VERTICAL);
+		final TableViewer listViewer = new TableViewer(parent, SWT.BORDER
+				| style);
+		final GridData data = new GridData(GridData.FILL_HORIZONTAL
+				| GridData.FILL_VERTICAL);
 		data.widthHint = width;
 		data.heightHint = height;
 		listViewer.getTable().setLayoutData(data);
@@ -536,8 +536,8 @@ public class ControlFactory {
 	 */
 	public static CCombo createSelectCCombo(Composite parent, String strdata,
 			String selData) {
-		return createSelectCCombo(parent, strdata, selData, SWT.READ_ONLY |
-				SWT.BORDER);
+		return createSelectCCombo(parent, strdata, selData, SWT.READ_ONLY
+				| SWT.BORDER);
 	}
 
 	public static CCombo createSelectCCombo(Composite parent, String strdata,
@@ -570,8 +570,8 @@ public class ControlFactory {
 	 */
 	public static CCombo createSelectCCombo(Composite parent, String[] strdata,
 			String selData) {
-		return createSelectCCombo(parent, strdata, selData, SWT.DROP_DOWN |
-				SWT.READ_ONLY | SWT.BORDER);
+		return createSelectCCombo(parent, strdata, selData, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.BORDER);
 	}
 
 	public static CCombo createSelectCCombo(Composite parent, String[] strdata,
@@ -609,8 +609,8 @@ public class ControlFactory {
 	 */
 	public static Combo createSelectCombo(Composite parent, String strdata,
 			String selData) {
-		return createSelectCombo(parent, strdata, selData, SWT.READ_ONLY |
-				SWT.BORDER);
+		return createSelectCombo(parent, strdata, selData, SWT.READ_ONLY
+				| SWT.BORDER);
 	}
 
 	public static Combo createSelectCombo(Composite parent, String strdata,
@@ -643,8 +643,8 @@ public class ControlFactory {
 	 */
 	public static Combo createSelectCombo(Composite parent, String[] strdata,
 			String selData) {
-		return createSelectCombo(parent, strdata, selData, SWT.DROP_DOWN |
-				SWT.READ_ONLY | SWT.BORDER);
+		return createSelectCombo(parent, strdata, selData, SWT.DROP_DOWN
+				| SWT.READ_ONLY | SWT.BORDER);
 	}
 
 	public static Combo createSelectCombo(Composite parent, String[] strdata,
@@ -696,16 +696,16 @@ public class ControlFactory {
 
 	public static MessageBox createDialog(String title, String message,
 			int style) {
-		final MessageBox box = new MessageBox(createDialogShell(), style |
-				SWT.APPLICATION_MODAL);
+		final MessageBox box = new MessageBox(createDialogShell(), style
+				| SWT.APPLICATION_MODAL);
 		box.setText(title);
 		box.setMessage(message);
 		return box;
 	}
 
 	public static MessageBox createYesNoDialog(String title, String message) {
-		return createDialog(title, message, SWT.YES | SWT.NO |
-				SWT.ICON_QUESTION);
+		return createDialog(title, message, SWT.YES | SWT.NO
+				| SWT.ICON_QUESTION);
 	}
 
 	public static MessageBox createOkDialog(String title, String message) {
@@ -713,8 +713,8 @@ public class ControlFactory {
 	}
 
 	public static MessageBox createOkCancelDialog(String title, String message) {
-		return createDialog(title, message, SWT.OK | SWT.CANCEL |
-				SWT.ICON_INFORMATION);
+		return createDialog(title, message, SWT.OK | SWT.CANCEL
+				| SWT.ICON_INFORMATION);
 	}
 
 }

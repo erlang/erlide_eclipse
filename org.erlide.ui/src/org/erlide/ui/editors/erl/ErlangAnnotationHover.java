@@ -94,8 +94,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 				while (e.hasNext()) {
 					annotation = (Annotation) e.next();
 					position = model.getPosition(annotation);
-					if (position != null &&
-							includeAnnotation(annotation, position,
+					if (position != null
+							&& includeAnnotation(annotation, position,
 									messagesAtPosition)) {
 						javaAnnotations.add(annotation);
 					}

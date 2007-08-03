@@ -220,9 +220,9 @@ class OtpMD5 {
 		int i, j;
 
 		for (i = 0, j = 0; j < len; i++, j += 4) {
-			output[i] = input[j + in_from] | shl(input[j + in_from + 1], 8) |
-					shl(input[j + in_from + 2], 16) |
-					shl(input[j + in_from + 3], 24);
+			output[i] = input[j + in_from] | shl(input[j + in_from + 1], 8)
+					| shl(input[j + in_from + 2], 16)
+					| shl(input[j + in_from + 3], 24);
 		}
 	}
 

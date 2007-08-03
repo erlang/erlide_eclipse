@@ -87,8 +87,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			d.asyncExec(new Runnable() {
 
 				public void run() {
-					if (getTreeViewer().getControl() != null &&
-							!getTreeViewer().getControl().isDisposed()) {
+					if (getTreeViewer().getControl() != null
+							&& !getTreeViewer().getControl().isDisposed()) {
 						// ErlLogger.log("*>> refreshing.");
 						getTreeViewer().setInput(myMdl);
 					}

@@ -113,8 +113,8 @@ public class BuildConsoleViewer extends TextViewer implements LineStyleListener 
 					widget.setCaretOffset(lineStartOffset);
 					widget.showSelection();
 				}
-				final int lineEndOffset = lineStartOffset +
-						doc.getLineLength(lines - 1);
+				final int lineEndOffset = lineStartOffset
+						+ doc.getLineLength(lines - 1);
 				if (lineEndOffset > 0) {
 					widget.setCaretOffset(lineEndOffset);
 				}
@@ -162,8 +162,8 @@ public class BuildConsoleViewer extends TextViewer implements LineStyleListener 
 					.getDocumentPartitioner();
 			if (partitioner != null) {
 				final ITypedRegion[] regions = partitioner.computePartitioning(
-						event.lineOffset, event.lineOffset +
-								event.lineText.length());
+						event.lineOffset, event.lineOffset
+								+ event.lineText.length());
 				final StyleRange[] styles = new StyleRange[regions.length];
 				for (int i = 0; i < regions.length; i++) {
 					final BuildConsolePartition partition = (BuildConsolePartition) regions[i];

@@ -60,8 +60,8 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 			String[] buttonNames, int nColumns, int borderStyle) {
 		super();
 
-		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK ||
-				buttonsStyle == SWT.TOGGLE);
+		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
+				|| buttonsStyle == SWT.TOGGLE);
 		fButtonNames = buttonNames;
 
 		final int nButtons = buttonNames.length;

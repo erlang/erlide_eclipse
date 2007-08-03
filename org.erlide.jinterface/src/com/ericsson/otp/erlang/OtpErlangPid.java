@@ -184,8 +184,8 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 
 		final OtpErlangPid pid = (OtpErlangPid) o;
 
-		return ((creation == pid.creation) && (serial == pid.serial) &&
-				(id == pid.id) && (node.compareTo(pid.node) == 0));
+		return ((creation == pid.creation) && (serial == pid.serial)
+				&& (id == pid.id) && (node.compareTo(pid.node) == 0));
 	}
 
 	public int compareTo(Object o) {
@@ -198,7 +198,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 		if (equals(o)) {
 			return 0;
 		}
-		return ((creation > pid.creation) || (serial > pid.serial) ||
-				(id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1 : -1;
+		return ((creation > pid.creation) || (serial > pid.serial)
+				|| (id > pid.id) || (node.compareTo(pid.node) > 0)) ? 1 : -1;
 	}
 }

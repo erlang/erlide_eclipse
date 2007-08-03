@@ -101,13 +101,13 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 			return start - 1;
 		}
 
-		while ((start != 0) &&
-				Character.isUnicodeIdentifierPart(string.charAt(start - 1))) {
+		while ((start != 0)
+				&& Character.isUnicodeIdentifierPart(string.charAt(start - 1))) {
 			start--;
 		}
 
-		if (start >= 2 && string.charAt(start - 1) == '{' &&
-				string.charAt(start - 2) == '$') {
+		if (start >= 2 && string.charAt(start - 1) == '{'
+				&& string.charAt(start - 2) == '$') {
 			return start - 2;
 		}
 

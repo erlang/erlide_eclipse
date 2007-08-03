@@ -37,8 +37,8 @@ public class ErlangLineBreakpoint extends LineBreakpoint implements IBreakpoint 
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
-				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: " +
-						resource.getName() + " [line: " + lineNumber + "]");
+				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: "
+						+ resource.getName() + " [line: " + lineNumber + "]");
 			}
 		};
 		run(getMarkerRule(resource), runnable);

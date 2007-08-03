@@ -74,8 +74,8 @@ public class ErlTextHover implements ITextHover,
 					.getIdeBackend().rpc(
 							"erlide_otp_doc",
 							"get_doc_from_scan_tuples",
-							new OtpErlangAtom("_erlide_" +
-									fModule.getElementName()), offset,
+							new OtpErlangAtom("_erlide_"
+									+ fModule.getElementName()), offset,
 							fImports, s));
 
 			if (r1 instanceof OtpErlangString) {

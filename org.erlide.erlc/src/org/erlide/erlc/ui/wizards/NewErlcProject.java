@@ -44,8 +44,8 @@ import org.erlide.runtime.backend.ICodeManager;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
- *
- *
+ * 
+ * 
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
 public class NewErlcProject extends Wizard implements INewWizard {
@@ -104,7 +104,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	/**
 	 * User has clicked "Finish", we create the project. In practice, it calls
 	 * the createProject() method in the appropriate thread.
-	 *
+	 * 
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	@Override
@@ -144,7 +144,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * Validate finish
-	 *
+	 * 
 	 * @return
 	 */
 	private boolean validateFinish() {
@@ -167,7 +167,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * This is the actual implementation for project creation.
-	 *
+	 * 
 	 * @param monitor
 	 *            reports progress on this object
 	 */
@@ -228,7 +228,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * Builds the path from the specified path list.
-	 *
+	 * 
 	 * @param monitor
 	 *            The progress monitor to use
 	 * @param root
@@ -263,7 +263,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * Displays an error that occured during the project creation. *
-	 *
+	 * 
 	 * @param x
 	 *            details on the error
 	 */
@@ -278,7 +278,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * Displays an error that occured during the project creation. *
-	 *
+	 * 
 	 * @param x
 	 *            details on the error
 	 */
@@ -292,7 +292,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 
 	/**
 	 * Helper method: it recursively creates a folder path.
-	 *
+	 * 
 	 * @param folder
 	 * @param monitor
 	 * @throws CoreException

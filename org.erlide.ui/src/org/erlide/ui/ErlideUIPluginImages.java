@@ -56,29 +56,29 @@ public class ErlideUIPluginImages {
 	// private static final String T_ETOOL = "etool16"; //$NON-NLS-1$
 	// private static final String T_EVIEW = "eview16"; //$NON-NLS-1$
 
-	public static final String IMG_FUNCTION_EXPORTED = NAME_PREFIX +
-			"methpub_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_FUNCTION_EXPORTED = NAME_PREFIX
+			+ "methpub_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_FUNCTION_DEFAULT = NAME_PREFIX +
-			"methpri_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_FUNCTION_DEFAULT = NAME_PREFIX
+			+ "methpri_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_FUNCTION_CLAUSE = NAME_PREFIX +
-			"methpro_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_FUNCTION_CLAUSE = NAME_PREFIX
+			+ "methpro_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_ATTRIBUTE = NAME_PREFIX +
-			"field_public_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_ATTRIBUTE = NAME_PREFIX
+			+ "field_public_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_EXPORT = NAME_PREFIX +
-			"field_public_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_EXPORT = NAME_PREFIX
+			+ "field_public_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_IMPORT = NAME_PREFIX +
-			"field_public_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_IMPORT = NAME_PREFIX
+			+ "field_public_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_RECORD_DEF = NAME_PREFIX +
-			"typevariable_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_RECORD_DEF = NAME_PREFIX
+			+ "typevariable_obj.gif"; //$NON-NLS-1$
 
-	public static final String IMG_MACRO_DEF = NAME_PREFIX +
-			"typevariable_obj.gif"; //$NON-NLS-1$
+	public static final String IMG_MACRO_DEF = NAME_PREFIX
+			+ "typevariable_obj.gif"; //$NON-NLS-1$
 
 	public static final ImageDescriptor DESC_FUNCTION_EXPORTED = createManaged(
 			T_OBJ, IMG_FUNCTION_EXPORTED);
@@ -110,11 +110,11 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_OVR_ERROR = create(T_OVR,
 			"error_co.gif");
 
-	public static final String IMG_MODULE = NAME_PREFIX +
-			"erlang-notext020.gif";
+	public static final String IMG_MODULE = NAME_PREFIX
+			+ "erlang-notext020.gif";
 
-	public static final String IMG_MODULE_RESOURCE = NAME_PREFIX +
-			"jcu_resource_obj.gif";
+	public static final String IMG_MODULE_RESOURCE = NAME_PREFIX
+			+ "jcu_resource_obj.gif";
 
 	public static final ImageDescriptor DESC_MODULE = createManaged(T_OBJ,
 			IMG_MODULE);

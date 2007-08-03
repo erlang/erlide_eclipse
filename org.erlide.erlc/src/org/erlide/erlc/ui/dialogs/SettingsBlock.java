@@ -56,63 +56,63 @@ public class SettingsBlock extends AbstractErlOptionPage {
 
 	private static final String MAKE_MESSAGE = PREFIX + ".message"; //$NON-NLS-1$
 
-	private static final String MAKE_SETTING_GROUP = PREFIX +
-			".makeSetting.group_label"; //$NON-NLS-1$
+	private static final String MAKE_SETTING_GROUP = PREFIX
+			+ ".makeSetting.group_label"; //$NON-NLS-1$
 
-	private static final String MAKE_SETTING_STOP_ERROR = PREFIX +
-			".makeSetting.stopOnError"; //$NON-NLS-1$
+	private static final String MAKE_SETTING_STOP_ERROR = PREFIX
+			+ ".makeSetting.stopOnError"; //$NON-NLS-1$
 
-	private static final String MAKE_CMD_GROUP = PREFIX +
-			".makeCmd.group_label"; //$NON-NLS-1$
+	private static final String MAKE_CMD_GROUP = PREFIX
+			+ ".makeCmd.group_label"; //$NON-NLS-1$
 
-	private static final String MAKE_CMD_USE_DEFAULT = PREFIX +
-			".makeCmd.use_default"; //$NON-NLS-1$
+	private static final String MAKE_CMD_USE_DEFAULT = PREFIX
+			+ ".makeCmd.use_default"; //$NON-NLS-1$
 
 	private static final String MAKE_CMD_LABEL = PREFIX + ".makeCmd.label"; //$NON-NLS-1$
 
-	private static final String MAKE_WORKBENCH_BUILD_GROUP = PREFIX +
-			".makeWorkbench.group_label"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_GROUP = PREFIX
+			+ ".makeWorkbench.group_label"; //$NON-NLS-1$
 
-	private static final String MAKE_WORKBENCH_BUILD_TYPE = PREFIX +
-			".makeWorkbench.type"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_TYPE = PREFIX
+			+ ".makeWorkbench.type"; //$NON-NLS-1$
 
-	private static final String MAKE_WORKBENCH_BUILD_TARGET = PREFIX +
-			".makeWorkbench.target"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_TARGET = PREFIX
+			+ ".makeWorkbench.target"; //$NON-NLS-1$
 
-	private static final String MAKE_WORKBENCH_BUILD_AUTO = PREFIX +
-			".makeWorkbench.auto"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_AUTO = PREFIX
+			+ ".makeWorkbench.auto"; //$NON-NLS-1$
 
-	private static final String MAKE_WORKBENCH_BUILD_INCR = PREFIX +
-			".makeWorkbench.incremental"; //$NON-NLS-1$
-
-	@SuppressWarnings("unused")
-	private static final String MAKE_WORKBENCH_BUILD_FULL = PREFIX +
-			".makeWorkbench.full"; //$NON-NLS-1$
-
-	private static final String MAKE_WORKBENCH_BUILD_CLEAN = PREFIX +
-			".makeWorkbench.clean"; //$NON-NLS-1$
-
-	private static final String MAKE_BUILD_DIR_GROUP = PREFIX +
-			".makeDir.group_label"; //$NON-NLS-1$
-
-	private static final String MAKE_BUILD_DIR_LABEL = PREFIX +
-			".makeDir.label"; //$NON-NLS-1$
-
-	private static final String MAKE_BUILD_DIR_BROWSE = PREFIX +
-			".makeDir.browse"; //$NON-NLS-1$
-
-	private static final String MAKE_BUILD_AUTO_TARGET = PREFIX +
-			".makeWorkbench.autoBuildTarget"; //$NON-NLS-1$
-
-	private static final String MAKE_BUILD_INCREMENTAL_TARGET = PREFIX +
-			".makeWorkbench.incrementalBuildTarget"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_INCR = PREFIX
+			+ ".makeWorkbench.incremental"; //$NON-NLS-1$
 
 	@SuppressWarnings("unused")
-	private static final String MAKE_BUILD_FULL_TARGET = PREFIX +
-			".makeWorkbench.fullBuildTarget"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_FULL = PREFIX
+			+ ".makeWorkbench.full"; //$NON-NLS-1$
 
-	private static final String MAKE_BUILD_CLEAN_TARGET = PREFIX +
-			".makeWorkbench.cleanTarget"; //$NON-NLS-1$
+	private static final String MAKE_WORKBENCH_BUILD_CLEAN = PREFIX
+			+ ".makeWorkbench.clean"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_DIR_GROUP = PREFIX
+			+ ".makeDir.group_label"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_DIR_LABEL = PREFIX
+			+ ".makeDir.label"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_DIR_BROWSE = PREFIX
+			+ ".makeDir.browse"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_AUTO_TARGET = PREFIX
+			+ ".makeWorkbench.autoBuildTarget"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_INCREMENTAL_TARGET = PREFIX
+			+ ".makeWorkbench.incrementalBuildTarget"; //$NON-NLS-1$
+
+	@SuppressWarnings("unused")
+	private static final String MAKE_BUILD_FULL_TARGET = PREFIX
+			+ ".makeWorkbench.fullBuildTarget"; //$NON-NLS-1$
+
+	private static final String MAKE_BUILD_CLEAN_TARGET = PREFIX
+			+ ".makeWorkbench.cleanTarget"; //$NON-NLS-1$
 
 	Button stopOnErrorButton;
 
@@ -203,8 +203,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 				.getResourceString(MAKE_CMD_LABEL));
 		((GridData) (label.getLayoutData())).horizontalAlignment = GridData.BEGINNING;
 		((GridData) (label.getLayoutData())).grabExcessHorizontalSpace = false;
-		buildCommand = ControlFactory.createTextField(group, SWT.SINGLE |
-				SWT.BORDER);
+		buildCommand = ControlFactory.createTextField(group, SWT.SINGLE
+				| SWT.BORDER);
 
 		((GridData) (buildCommand.getLayoutData())).horizontalAlignment = GridData.FILL;
 		((GridData) (buildCommand.getLayoutData())).grabExcessHorizontalSpace = true;
@@ -271,8 +271,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 				.getResourceString(MAKE_WORKBENCH_BUILD_AUTO));
 		autoButton.addSelectionListener(selectionAdapter);
 		autoButton.setSelection(fBuildInfo.isAutoBuildEnable());
-		targetAuto = ControlFactory.createTextField(group, SWT.SINGLE |
-				SWT.BORDER);
+		targetAuto = ControlFactory.createTextField(group, SWT.SINGLE
+				| SWT.BORDER);
 		targetAuto.setText(fBuildInfo.getBuildAttribute(
 				IMakeBuilderInfo.BUILD_TARGET_AUTO, "")); //$NON-NLS-1$
 		((GridData) (targetAuto.getLayoutData())).horizontalAlignment = GridData.FILL;
@@ -293,8 +293,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 				.getResourceString(MAKE_WORKBENCH_BUILD_INCR));
 		incrButton.addSelectionListener(selectionAdapter);
 		incrButton.setSelection(fBuildInfo.isIncrementalBuildEnabled());
-		targetIncr = ControlFactory.createTextField(group, SWT.SINGLE |
-				SWT.BORDER);
+		targetIncr = ControlFactory.createTextField(group, SWT.SINGLE
+				| SWT.BORDER);
 		targetIncr.setText(fBuildInfo.getBuildAttribute(
 				IMakeBuilderInfo.BUILD_TARGET_INCREMENTAL, "")); //$NON-NLS-1$
 		((GridData) (targetIncr.getLayoutData())).horizontalAlignment = GridData.FILL;
@@ -306,8 +306,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 				.getResourceString(MAKE_WORKBENCH_BUILD_CLEAN));
 		cleanButton.addSelectionListener(selectionAdapter);
 		cleanButton.setSelection(fBuildInfo.isCleanBuildEnabled());
-		targetClean = ControlFactory.createTextField(group, SWT.SINGLE |
-				SWT.BORDER);
+		targetClean = ControlFactory.createTextField(group, SWT.SINGLE
+				| SWT.BORDER);
 		targetClean.setText(fBuildInfo.getBuildAttribute(
 				IMakeBuilderInfo.BUILD_TARGET_CLEAN, "")); //$NON-NLS-1$
 		((GridData) (targetClean.getLayoutData())).horizontalAlignment = GridData.FILL;
@@ -412,8 +412,8 @@ public class SettingsBlock extends AbstractErlOptionPage {
 				.getResourceString(MAKE_BUILD_DIR_LABEL));
 		((GridData) (label.getLayoutData())).horizontalAlignment = GridData.BEGINNING;
 		((GridData) (label.getLayoutData())).grabExcessHorizontalSpace = false;
-		buildLocation = ControlFactory.createTextField(group, SWT.SINGLE |
-				SWT.BORDER);
+		buildLocation = ControlFactory.createTextField(group, SWT.SINGLE
+				| SWT.BORDER);
 		((GridData) (buildLocation.getLayoutData())).horizontalAlignment = GridData.FILL;
 		((GridData) (buildLocation.getLayoutData())).grabExcessHorizontalSpace = true;
 		buildLocation.addListener(SWT.Modify, new Listener() {

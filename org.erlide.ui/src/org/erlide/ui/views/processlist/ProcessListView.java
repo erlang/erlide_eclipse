@@ -205,8 +205,8 @@ public class ProcessListView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		label = new Label(parent, SWT.NULL);
 		backends = new ComboViewer(parent, SWT.SINGLE | SWT.V_SCROLL);
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL |
-				SWT.FULL_SELECTION);
+		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
+				| SWT.FULL_SELECTION);
 		final Table t = (Table) viewer.getControl();
 
 		final GridData labelLData = new GridData();
@@ -374,13 +374,14 @@ public class ProcessListView extends ViewPart {
 					for (int i = 0; i < l.arity(); i++) {
 						final OtpErlangTuple e = (OtpErlangTuple) l
 								.elementAt(i);
-						s += " " + e.elementAt(0).toString() + "\t= " +
-								e.elementAt(1).toString() + "\n";
+						s += " " + e.elementAt(0).toString() + "\t= "
+								+ e.elementAt(1).toString() + "\n";
 					}
 					showMessage(s);
 				} else {
-					showMessage("Process " + pid.toString() +
-							" is probably dead.\nPlease refresh process list.");
+					showMessage("Process "
+							+ pid.toString()
+							+ " is probably dead.\nPlease refresh process list.");
 				}
 				// }
 			}

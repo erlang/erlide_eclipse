@@ -142,8 +142,8 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 		label.setText(rb.getString("preview_label"));
 		label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
-		fPreview = new SourceViewer(top, null, null, false, SWT.BORDER |
-				SWT.V_SCROLL | SWT.H_SCROLL);
+		fPreview = new SourceViewer(top, null, null, false, SWT.BORDER
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 
 		final SourceViewerConfiguration conf = new SourceViewerConfiguration() {
 

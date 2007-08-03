@@ -58,8 +58,8 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
 						fLastItem = (TreeItem) item;
 						tree.setSelection(new TreeItem[] { fLastItem });
 					}
-				} else if (e.y > tree.getBounds().height -
-						tree.getItemHeight() / 4) {
+				} else if (e.y > tree.getBounds().height - tree.getItemHeight()
+						/ 4) {
 					// Scroll down
 					Point p = tree.toDisplay(e.x, e.y);
 					Item item = fTreeViewer.scrollDown(p.x, p.y);

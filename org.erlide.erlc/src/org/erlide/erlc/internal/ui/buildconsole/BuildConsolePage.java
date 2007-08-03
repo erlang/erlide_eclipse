@@ -140,8 +140,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	}
 
 	public void consoleChange(final IBuildConsoleEvent event) {
-		if (event.getType() == IBuildConsoleEvent.CONSOLE_START ||
-				event.getType() == IBuildConsoleEvent.CONSOLE_CLOSE) {
+		if (event.getType() == IBuildConsoleEvent.CONSOLE_START
+				|| event.getType() == IBuildConsoleEvent.CONSOLE_CLOSE) {
 			final Control control = getControl();
 			if (control != null && !control.isDisposed()) {
 				final Display display = control.getDisplay();
@@ -154,8 +154,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 					 */
 					public void run() {
 						if (isAvailable()) {
-							if (event.getType() == IBuildConsoleEvent.CONSOLE_CLOSE &&
-									getProject() != event.getProject()) {
+							if (event.getType() == IBuildConsoleEvent.CONSOLE_CLOSE
+									&& getProject() != event.getProject()) {
 								return;
 							}
 							setProject(event.getProject());
@@ -195,8 +195,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 		fMenu = manager.createContextMenu(getControl());
 		getControl().setMenu(fMenu);
 		final IPageSite site = getSite();
-		site.registerContextMenu(ErlideErlcPlugin.PLUGIN_ID +
-				".ErlcBuildConsole", manager, getViewer()); //$NON-NLS-1$
+		site.registerContextMenu(ErlideErlcPlugin.PLUGIN_ID
+				+ ".ErlcBuildConsole", manager, getViewer()); //$NON-NLS-1$
 		site.setSelectionProvider(getViewer());
 		createActions();
 		configureToolBar(site.getActionBars().getToolBarManager());
@@ -415,8 +415,8 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		final IProject newProject = convertSelectionToProject(selection);
 		final IProject oldProject = getProject();
-		if (oldProject == null ||
-				(newProject != null && !newProject.equals(oldProject))) {
+		if (oldProject == null
+				|| (newProject != null && !newProject.equals(oldProject))) {
 			setProject(newProject);
 			setDocument();
 			getConsole().setTitle(getProject());

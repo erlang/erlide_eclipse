@@ -71,8 +71,8 @@ class CopyToClipboardAction extends SelectionDispatchAction {
 			fClipboard.setContents(new String[] { selection.getText() },
 					new Transfer[] { TextTransfer.getInstance() });
 		} catch (final SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD ||
-					repeatCount >= MAX_REPEAT_COUNT) {
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD
+					|| repeatCount >= MAX_REPEAT_COUNT) {
 				throw e;
 			}
 

@@ -36,8 +36,8 @@ public class OpenActionGroup extends ModuleNavigatorActionGroup {
 	/**
 	 * The id for the Open With submenu.
 	 */
-	public static final String OPEN_WITH_ID = PlatformUI.PLUGIN_ID +
-			".OpenWithSubMenu";
+	public static final String OPEN_WITH_ID = PlatformUI.PLUGIN_ID
+			+ ".OpenWithSubMenu";
 
 	/**
 	 * Group constructor
@@ -67,11 +67,11 @@ public class OpenActionGroup extends ModuleNavigatorActionGroup {
 		final IStructuredSelection selection = (IStructuredSelection) getContext()
 				.getSelection();
 
-		final boolean anyResourceSelected = !selection.isEmpty() &&
-				ResourceSelectionUtil.allResourcesAreOfType(selection,
+		final boolean anyResourceSelected = !selection.isEmpty()
+				&& ResourceSelectionUtil.allResourcesAreOfType(selection,
 						IResource.PROJECT | IResource.FOLDER | IResource.FILE);
-		final boolean onlyFilesSelected = !selection.isEmpty() &&
-				ResourceSelectionUtil.allResourcesAreOfType(selection,
+		final boolean onlyFilesSelected = !selection.isEmpty()
+				&& ResourceSelectionUtil.allResourcesAreOfType(selection,
 						IResource.FILE);
 
 		if (onlyFilesSelected) {

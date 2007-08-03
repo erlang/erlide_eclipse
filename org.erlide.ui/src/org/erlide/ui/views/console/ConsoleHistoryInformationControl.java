@@ -178,8 +178,8 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 		if (statusFieldText != null) {
 
 			// Horizontal separator line
-			fSeparator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL |
-					SWT.LINE_DOT);
+			fSeparator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL
+					| SWT.LINE_DOT);
 			fSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 			// Status field label
@@ -192,10 +192,10 @@ public class ConsoleHistoryInformationControl implements IInformationControl,
 			}
 			fStatusTextFont = new Font(fStatusField.getDisplay(), fontDatas);
 			fStatusField.setFont(fStatusTextFont);
-			final GridData gd2 = new GridData(GridData.FILL_VERTICAL |
-					GridData.FILL_HORIZONTAL |
-					GridData.HORIZONTAL_ALIGN_BEGINNING |
-					GridData.VERTICAL_ALIGN_BEGINNING);
+			final GridData gd2 = new GridData(GridData.FILL_VERTICAL
+					| GridData.FILL_HORIZONTAL
+					| GridData.HORIZONTAL_ALIGN_BEGINNING
+					| GridData.VERTICAL_ALIGN_BEGINNING);
 			fStatusField.setLayoutData(gd2);
 			fStatusField.setForeground(display
 					.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));

@@ -71,12 +71,14 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 		includeComposite.setLayout(new GridLayout());
 		t2.setControl(includeComposite);
 		final Composite composite_5 = new Composite(includeComposite, SWT.NONE);
-		final GridData gd_composite_5 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gd_composite_5 = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
 		composite_5.setLayoutData(gd_composite_5);
 		composite_5.setLayout(new GridLayout());
 
 		final Composite composite_3 = new Composite(includeComposite, SWT.NONE);
-		final GridData gd_composite_3 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gd_composite_3 = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
 		composite_3.setLayoutData(gd_composite_3);
 		composite_3.setLayout(new GridLayout());
 
@@ -96,20 +98,22 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 				SWT.NONE);
 		sourceComposite.setBounds(0, 0, 443, 305);
 		final GridLayout gridLayout = new GridLayout();
-		
+
 		sourceComposite.setLayout(gridLayout);
 		sourceTab.setControl(sourceComposite);
 
 		final Composite composite_2 = new Composite(sourceComposite, SWT.NONE);
-		final GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
 		composite_2.setLayoutData(gd_composite_2);
 		composite_2.setLayout(new GridLayout());
-				
+
 		fSourceEditor = new PathEditor("ext include",
 				"Source directories for this project:", "New", composite_2);
 
 		this.text = new Text(sourceComposite, SWT.BORDER);
-		this.text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		this.text
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		final TabItem orderTab = new TabItem(this.tabFolder, SWT.NONE);
 		orderTab.setText("Order");

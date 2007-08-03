@@ -324,8 +324,8 @@ public class TraceLogView extends ViewPart {
 						"st.*", IErlModel.UNKNOWN_ARITY);
 				ErlLogger.log("found(\"*\") " + ms.length);
 				for (IErlFunction element : fs) {
-					ErlLogger.log("  " + element.getElementName() + "/" +
-							element.getArity());
+					ErlLogger.log("  " + element.getElementName() + "/"
+							+ element.getArity());
 				}
 
 				viewer.setInput(ms);

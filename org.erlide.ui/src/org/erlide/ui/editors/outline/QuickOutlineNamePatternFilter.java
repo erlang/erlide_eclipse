@@ -43,8 +43,8 @@ public class QuickOutlineNamePatternFilter extends ViewerFilter {
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		// Element passes the filter if the string matcher is undefined or the
 		// viewer is not a tree viewer
-		if ((fStringMatcher == null) ||
-				((viewer instanceof TreeViewer) == false)) {
+		if ((fStringMatcher == null)
+				|| ((viewer instanceof TreeViewer) == false)) {
 			return true;
 		}
 		TreeViewer treeViewer = (TreeViewer) viewer;

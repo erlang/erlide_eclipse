@@ -246,8 +246,8 @@ public class SampleView extends ViewPart {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL |
-				SWT.V_SCROLL);
+		viewer = new TableTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());

@@ -39,8 +39,8 @@ public class BackendManagerPopup implements IBackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Added " +
-						b.getLabel(), DELAY);
+				BalloonPopupDialog.show("Backend notification", "Added "
+						+ b.getLabel(), DELAY);
 			}
 		});
 	}
@@ -52,8 +52,8 @@ public class BackendManagerPopup implements IBackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Removed " +
-						b.getLabel(), DELAY);
+				BalloonPopupDialog.show("Backend notification", "Removed "
+						+ b.getLabel(), DELAY);
 			}
 		});
 	}

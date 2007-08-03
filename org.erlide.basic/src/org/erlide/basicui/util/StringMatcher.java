@@ -196,9 +196,9 @@ public class StringMatcher {
 		}
 
 		if (fIgnoreWildCards) {
-			return (end - start == fLength) &&
-					fPattern
-							.regionMatches(fIgnoreCase, 0, text, start, fLength);
+			return (end - start == fLength)
+					&& fPattern.regionMatches(fIgnoreCase, 0, text, start,
+							fLength);
 		}
 		final int segCount = fSegments.length;
 		if (segCount == 0 && (fHasLeadingStar || fHasTrailingStar)) {
@@ -238,8 +238,8 @@ public class StringMatcher {
 				tCurPos = tCurPos + segLength;
 			}
 		}
-		if ((fSegments.length == 1) && (!fHasLeadingStar) &&
-				(!fHasTrailingStar)) {
+		if ((fSegments.length == 1) && (!fHasLeadingStar)
+				&& (!fHasTrailingStar)) {
 			// only one segment to match, no wildcards specified
 			return tCurPos == end;
 		}

@@ -135,8 +135,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		public boolean match(ErlangProjectionAnnotation annotation) {
 			final boolean stateMatch = fMatchCollapsed == annotation
 					.isCollapsed();
-			if (stateMatch && !annotation.isComment() &&
-					!annotation.isMarkedDeleted()) {
+			if (stateMatch && !annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
 				final IErlElement element = annotation.getElement();
 				if (fSet.contains(element)) {
 					return true;
@@ -371,8 +371,8 @@ public class DefaultErlangFoldingStructureProvider implements
 
 			if (captionLine < lastLine) {
 				final int postOffset = document.getLineOffset(captionLine + 1);
-				final IRegion postRegion = new Region(postOffset, offset +
-						length - postOffset);
+				final IRegion postRegion = new Region(postOffset, offset
+						+ length - postOffset);
 
 				if (preRegion == null) {
 					return new IRegion[] { postRegion };
@@ -444,8 +444,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	private final Filter fMemberFilter = new Filter() {
 
 		public boolean match(ErlangProjectionAnnotation annotation) {
-			if (!annotation.isCollapsed() && !annotation.isComment() &&
-					!annotation.isMarkedDeleted()) {
+			if (!annotation.isCollapsed() && !annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
 				IErlElement element = annotation.getElement();
 				return element instanceof IParent;
 				// if (element instanceof IErlMember) {
@@ -467,8 +467,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	private final Filter fCommentFilter = new Filter() {
 
 		public boolean match(ErlangProjectionAnnotation annotation) {
-			if (!annotation.isCollapsed() && annotation.isComment() &&
-					!annotation.isMarkedDeleted()) {
+			if (!annotation.isCollapsed() && annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
 				return true;
 			}
 			return false;
@@ -697,16 +697,16 @@ public class DefaultErlangFoldingStructureProvider implements
 
 			final int start = fCachedDocument.getLineOfOffset(region
 					.getOffset());
-			final int end = fCachedDocument.getLineOfOffset(region.getOffset() +
-					region.getLength());
+			final int end = fCachedDocument.getLineOfOffset(region.getOffset()
+					+ region.getLength());
 			if (start != end) {
 				final int offset = fCachedDocument.getLineOffset(start);
 				int endOffset;
 				if (fCachedDocument.getNumberOfLines() > end + 1) {
 					endOffset = fCachedDocument.getLineOffset(end + 1);
 				} else if (end > start) {
-					endOffset = fCachedDocument.getLineOffset(end) +
-							fCachedDocument.getLineLength(end);
+					endOffset = fCachedDocument.getLineOffset(end)
+							+ fCachedDocument.getLineLength(end);
 				} else {
 					return null;
 				}
@@ -786,8 +786,8 @@ public class DefaultErlangFoldingStructureProvider implements
 						final Position existingPosition = tuple.position;
 						if (newAnnotation.isComment() == existingAnnotation
 								.isComment()) {
-							if (existingPosition != null &&
-									(!newPosition.equals(existingPosition))) {
+							if (existingPosition != null
+									&& (!newPosition.equals(existingPosition))) {
 								existingPosition.setOffset(newPosition
 										.getOffset());
 								existingPosition.setLength(newPosition
@@ -875,8 +875,8 @@ public class DefaultErlangFoldingStructureProvider implements
 				final IErlElement element = match.annotation.getElement();
 				deleted.setElement(element);
 				deletedPosition.setLength(match.position.getLength());
-				if (deletedPosition instanceof ErlangElementPosition &&
-						element instanceof IErlMember) {
+				if (deletedPosition instanceof ErlangElementPosition
+						&& element instanceof IErlMember) {
 					final ErlangElementPosition eep = (ErlangElementPosition) deletedPosition;
 					eep.setMember((IErlMember) element);
 				}

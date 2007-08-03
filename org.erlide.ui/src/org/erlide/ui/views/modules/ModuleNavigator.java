@@ -77,13 +77,13 @@ public class ModuleNavigator extends ViewPart {
 			@Override
 			public void run() {
 				final IStructuredSelection selection = (IStructuredSelection) getSelection();
-				final boolean anyResourceSelected = !selection.isEmpty() &&
-						ResourceSelectionUtil.allResourcesAreOfType(selection,
-								IResource.PROJECT | IResource.FOLDER |
-										IResource.FILE);
-				final boolean onlyFilesSelected = anyResourceSelected &&
-						ResourceSelectionUtil.allResourcesAreOfType(selection,
-								IResource.FILE);
+				final boolean anyResourceSelected = !selection.isEmpty()
+						&& ResourceSelectionUtil.allResourcesAreOfType(
+								selection, IResource.PROJECT | IResource.FOLDER
+										| IResource.FILE);
+				final boolean onlyFilesSelected = anyResourceSelected
+						&& ResourceSelectionUtil.allResourcesAreOfType(
+								selection, IResource.FILE);
 
 				if (onlyFilesSelected) {
 					openFileAction.selectionChanged(selection);

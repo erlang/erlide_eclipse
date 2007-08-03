@@ -68,9 +68,9 @@ public class ErtsLaunchConfiguration {
 	}
 
 	public String buildCommandLine() {
-		return getOtpHome() + File.separator + "bin" + File.separator + "erl" +
-				ifNotEmpty(" -pa ", getPathA()) +
-				ifNotEmpty(" -pz ", getPathZ()) + " " + getExtraErtsArgs();
+		return getOtpHome() + File.separator + "bin" + File.separator + "erl"
+				+ ifNotEmpty(" -pa ", getPathA())
+				+ ifNotEmpty(" -pz ", getPathZ()) + " " + getExtraErtsArgs();
 	}
 
 	public String getWorkingDirectory() {

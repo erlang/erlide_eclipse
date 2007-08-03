@@ -81,8 +81,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		final long l = val.longValue();
 
 		if (BigInteger.valueOf(l).compareTo(val) != 0) {
-			throw new OtpErlangRangeException("Value too large for long: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for long: "
+					+ val);
 		}
 
 		return l;
@@ -142,8 +142,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		final short i = val.shortValue();
 
 		if (BigInteger.valueOf(i).compareTo(val) != 0) {
-			throw new OtpErlangRangeException("Value too large for short: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for short: "
+					+ val);
 		}
 
 		return i;
@@ -163,8 +163,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		final short i = val.shortValue();
 
 		if (BigInteger.valueOf(i).compareTo(val) != 0) {
-			throw new OtpErlangRangeException("Value too large for short: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for short: "
+					+ val);
 		} else if (i < 0) {
 			throw new OtpErlangRangeException("Value not positive: " + val);
 		}
@@ -185,8 +185,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		final char i = (char) val.shortValue();
 
 		if (BigInteger.valueOf(i).compareTo(val) != 0) {
-			throw new OtpErlangRangeException("Value too large for char: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for char: "
+					+ val);
 		}
 
 		return i;
@@ -205,8 +205,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		final byte i = val.byteValue();
 
 		if (BigInteger.valueOf(i).compareTo(val) != 0) {
-			throw new OtpErlangRangeException("Value too large for byte: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for byte: "
+					+ val);
 		}
 
 		return i;

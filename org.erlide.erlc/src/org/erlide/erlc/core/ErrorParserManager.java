@@ -39,8 +39,8 @@ import org.erlide.erlc.errorparsing.IErrorParser;
 
 public class ErrorParserManager extends OutputStream {
 
-	public final static String PREF_ERROR_PARSER = ErlangPlugin.PLUGIN_ID +
-			".errorOutputParser"; //$NON-NLS-1$
+	public final static String PREF_ERROR_PARSER = ErlangPlugin.PLUGIN_ID
+			+ ".errorOutputParser"; //$NON-NLS-1$
 
 	private int nOpens;
 

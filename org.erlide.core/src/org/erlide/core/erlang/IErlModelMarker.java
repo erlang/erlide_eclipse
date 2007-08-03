@@ -78,8 +78,8 @@ public interface IErlModelMarker {
 	 * used to recognize those markers in the workspace that flag problems
 	 * detected by the Erlang tooling during classpath setting.
 	 */
-	String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID +
-			".buildpath_problem"; //$NON-NLS-1$
+	String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".buildpath_problem"; //$NON-NLS-1$
 
 	/**
 	 * Path entry problem marker type (value
@@ -87,8 +87,8 @@ public interface IErlModelMarker {
 	 * used to recognize those markers in the workspace that flag problems
 	 * detected by the Erlang tooling during classpath setting.
 	 */
-	String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID +
-			".pathentry_problem"; //$NON-NLS-1$
+	String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".pathentry_problem"; //$NON-NLS-1$
 
 	/**
 	 * PathEntry file format marker attribute (value

@@ -53,8 +53,8 @@ public class ErlConsoleDocument {
 		synchronized (requests) {
 			for (Object element : requests) {
 				IoRequest req = (IoRequest) element;
-				if (req.getStart() <= pos &&
-						req.getStart() + req.getLength() > pos) {
+				if (req.getStart() <= pos
+						&& req.getStart() + req.getLength() > pos) {
 					return req;
 				}
 			}

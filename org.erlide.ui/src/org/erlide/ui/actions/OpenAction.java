@@ -338,8 +338,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final OtpErlangTuple t = (OtpErlangTuple) mf2.elementAt(1);
 				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
 				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				fEditor.setHighlightRange(pos +
-						sref.getSourceRange().getOffset(), len, true);
+				fEditor.setHighlightRange(pos
+						+ sref.getSourceRange().getOffset(), len, true);
 			} else if (external.equals("record") || external.equals("macro")) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {

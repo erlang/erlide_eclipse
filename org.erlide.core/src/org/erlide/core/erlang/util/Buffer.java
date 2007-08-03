@@ -212,8 +212,8 @@ public class Buffer implements IBuffer {
 			final int length = contents.length;
 			final char[] newContents = new char[length - gapEnd + gapStart];
 			System.arraycopy(contents, 0, newContents, 0, gapStart);
-			System.arraycopy(contents, gapEnd, newContents, gapStart, length -
-					gapEnd);
+			System.arraycopy(contents, gapEnd, newContents, gapStart, length
+					- gapEnd);
 			return newContents;
 		}
 	}
@@ -498,8 +498,10 @@ public class Buffer implements IBuffer {
 			final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
 
 			if (fFile.exists()) {
-				fFile.setContents(stream, force ? IResource.FORCE |
-						IResource.KEEP_HISTORY : IResource.KEEP_HISTORY, null);
+				fFile
+						.setContents(stream, force ? IResource.FORCE
+								| IResource.KEEP_HISTORY
+								: IResource.KEEP_HISTORY, null);
 			} else {
 				fFile.create(stream, force, null);
 			}

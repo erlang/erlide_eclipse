@@ -238,8 +238,8 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 			final ITypedRegion partition = fPartitions.get(i);
 			final int partitionStart = partition.getOffset();
 			final int partitionEnd = partitionStart + partition.getLength();
-			if ((offset >= partitionStart && offset <= partitionEnd) ||
-					(offset < partitionStart && end >= partitionStart)) {
+			if ((offset >= partitionStart && offset <= partitionEnd)
+					|| (offset < partitionStart && end >= partitionStart)) {
 				list.add(partition);
 			}
 		}
@@ -326,8 +326,8 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 							// modify parition offset
 							newPartition = messageConsolePartition
 									.createNewPartition(messageConsolePartition
-											.getOffset() -
-											overflow, messageConsolePartition
+											.getOffset()
+											- overflow, messageConsolePartition
 											.getLength());
 						}
 						if (newPartition != null) {

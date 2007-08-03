@@ -123,8 +123,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	protected Control createDialogArea(Composite parent) {
 		// Applies only to dialog body - not title. See createTitleControl
 		// Create an empty dialog area, if the source page is not defined
-		if ((fOutlineContentCreator == null) ||
-				(fOutlineSelectionHandler == null)) {
+		if ((fOutlineContentCreator == null)
+				|| (fOutlineSelectionHandler == null)) {
 			return super.createDialogArea(parent);
 		}
 		// Create the tree viewer
@@ -255,8 +255,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	private void handleTreeViewerMouseUp(final Tree tree, MouseEvent e) {
 		// Ensure a selection was made, the first mouse button was
 		// used and the event happened in the tree
-		if ((tree.getSelectionCount() < 1) || (e.button != 1) ||
-				(tree.equals(e.getSource()) == false)) {
+		if ((tree.getSelectionCount() < 1) || (e.button != 1)
+				|| (tree.equals(e.getSource()) == false)) {
 			return;
 		}
 		// Selection is made in the selection changed listener
@@ -322,8 +322,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @see org.eclipse.jface.text.IInformationControl#isFocusControl()
 	 */
 	public boolean isFocusControl() {
-		if (fTreeViewer.getControl().isFocusControl() ||
-				fFilterText.isFocusControl()) {
+		if (fTreeViewer.getControl().isFocusControl()
+				|| fFilterText.isFocusControl()) {
 			return true;
 		}
 		return false;

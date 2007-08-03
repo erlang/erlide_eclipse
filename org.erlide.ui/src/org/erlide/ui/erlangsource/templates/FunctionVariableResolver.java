@@ -77,8 +77,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				buff.append("Error: " + e.getMessage());
 			} catch (final TemplateException e) {
 				e.printStackTrace();
-				buff.append("Error: " + commentTemplate.getName() +
-						" could not be validated!");
+				buff.append("Error: " + commentTemplate.getName()
+						+ " could not be validated!");
 			}
 
 			if (tb != null) {
@@ -101,8 +101,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				buff.append("Error: " + e.getMessage());
 			} catch (final TemplateException e) {
 				e.printStackTrace();
-				buff.append("Error: " + template.getName() +
-						" could not be validated!");
+				buff.append("Error: " + template.getName()
+						+ " could not be validated!");
 			}
 
 			if (tb != null) {

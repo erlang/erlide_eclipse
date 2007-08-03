@@ -337,8 +337,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				}
 
 				final String[] targets = getTargets(kind, info);
-				if (targets.length != 0 &&
-						targets[targets.length - 1].equals(info
+				if (targets.length != 0
+						&& targets[targets.length - 1].equals(info
 								.getCleanBuildTarget())) {
 					isClean = true;
 				}
@@ -379,8 +379,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 					final String args = info.getBuildArguments();
 					if (args != null && !args.equals("")) { //$NON-NLS-1$
 						final String[] newArgs = makeArray(args);
-						buildArguments = new String[targets.length +
-								newArgs.length];
+						buildArguments = new String[targets.length
+								+ newArgs.length];
 						System.arraycopy(newArgs, 0, buildArguments, 0,
 								newArgs.length);
 						System.arraycopy(targets, 0, buildArguments,
@@ -430,8 +430,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 					} catch (final IOException e) {
 					}
 					// Before launching give visual cues via the monitor
-					monitor.subTask("Invoking command " +
-							launcher.getCommandLine());
+					monitor.subTask("Invoking command "
+							+ launcher.getCommandLine());
 					if (launcher.waitAndRead(consoleOut, consoleErr,
 							new SubProgressMonitor(monitor, 0)) != CommandLauncher.OK) {
 						errMsg = launcher.getErrorMessage();
@@ -461,15 +461,15 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 								streamMon.getWorkDone()) : null);
 
 				if (errMsg != null) {
-					StringBuffer buf = new StringBuffer(
-							buildCommand.toString() + " "); //$NON-NLS-1$
+					StringBuffer buf = new StringBuffer(buildCommand.toString()
+							+ " "); //$NON-NLS-1$
 					for (String element : buildArguments) {
 						buf.append(element);
 						buf.append(' ');
 					}
 
-					final String errorDesc = "Error launching builder (" +
-							buf.toString() + ")";
+					final String errorDesc = "Error launching builder ("
+							+ buf.toString() + ")";
 					buf = new StringBuffer(errorDesc);
 					buf.append(System.getProperty("line.separator", "\n")); //$NON-NLS-1$ //$NON-NLS-2$
 					buf.append("(").append(errMsg).append(")"); //$NON-NLS-1$ //$NON-NLS-2$

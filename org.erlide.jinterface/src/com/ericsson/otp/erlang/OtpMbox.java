@@ -383,9 +383,9 @@ public class OtpMbox {
 			final String currentNode = home.node();
 			if (currentNode.equals(node)) {
 				send(name_, msg);
-			} else if (node.indexOf('@', 0) < 0 &&
-					node.equals(currentNode.substring(0, currentNode.indexOf(
-							'@', 0)))) {
+			} else if (node.indexOf('@', 0) < 0
+					&& node.equals(currentNode.substring(0, currentNode
+							.indexOf('@', 0)))) {
 				send(name_, msg);
 			} else {
 				// other node

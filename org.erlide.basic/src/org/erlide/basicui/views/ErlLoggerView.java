@@ -100,8 +100,8 @@ public class ErlLoggerView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL |
-				SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
