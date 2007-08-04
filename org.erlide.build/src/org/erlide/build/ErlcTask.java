@@ -45,15 +45,15 @@ public class ErlcTask extends org.apache.tools.ant.Task {
 
 		Properties p = new Properties();
 		try {
-			p.load(new FileInputStream(new File(prj.concat(File.separatorChar
-					+ ".codepath"))));
+			p.load(new FileInputStream(new File(prj.concat(File.separatorChar +
+					".codepath"))));
 			outputDir = p.getProperty("output_dir");
 			includeDirs = Arrays.asList(p.getProperty("include_dirs")
 					.split(";"));
 			sourceDirs = Arrays.asList(p.getProperty("source_dirs").split(";"));
 
-			log(">> " + action + ": " + sourceDirs + " " + includeDirs + " "
-					+ outputDir);
+			log(">> " + action + ": " + sourceDirs + " " + includeDirs + " " +
+					outputDir);
 
 			if ("build".equals(action)) {
 				List<File> files;
