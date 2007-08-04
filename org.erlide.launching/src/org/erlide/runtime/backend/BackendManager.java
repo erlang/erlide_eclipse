@@ -74,9 +74,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				this,
-				IResourceChangeEvent.PRE_CLOSE
-						| IResourceChangeEvent.PRE_DELETE
-						| IResourceChangeEvent.POST_CHANGE);
+				IResourceChangeEvent.PRE_CLOSE |
+						IResourceChangeEvent.PRE_DELETE |
+						IResourceChangeEvent.POST_CHANGE);
 	}
 
 	public static BackendManager getDefault() {

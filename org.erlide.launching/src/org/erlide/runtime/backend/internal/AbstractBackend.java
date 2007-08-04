@@ -126,9 +126,10 @@ public abstract class AbstractBackend implements IBackend {
 			ErlLogger.log("java node is " + fNode.node());
 
 			fPeer = new OtpPeer(BackendManager.buildNodeName(label));
-			ErlLogger.log("erlang peer is " + label + " ("
-					+ BackendManager.buildNodeName(label) + ")-- "
-					+ fPeer.node());
+			ErlLogger
+					.log("erlang peer is " + label + " (" +
+							BackendManager.buildNodeName(label) + ")-- " +
+							fPeer.node());
 
 			int tries = Integer.parseInt(System.getProperty(
 					"erlide.backend.retries", "50"));
@@ -225,8 +226,8 @@ public abstract class AbstractBackend implements IBackend {
 			ErlLogger.log("PARSE=" + r);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			throw new ErlangParseException("Could not parse term \"" + string
-					+ "\"");
+			throw new ErlangParseException("Could not parse term \"" + string +
+					"\"");
 		}
 		return r;
 	}
@@ -390,8 +391,8 @@ public abstract class AbstractBackend implements IBackend {
 
 			if (res == null) {
 				if (CHECK_RPC) {
-					ErlLogger.log("    timed out: " + m + ":" + f + "(" + a
-							+ ")");
+					ErlLogger.log("    timed out: " + m + ":" + f + "(" + a +
+							")");
 				}
 				return null;
 			}

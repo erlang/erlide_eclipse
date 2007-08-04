@@ -40,8 +40,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 					IProcess.ATTR_PROCESS_LABEL, "noname@localhost");
 			label = BackendManager.buildNodeName(label);
 
-			cmd += " -noshell -name " + label + " -setcookie "
-					+ Cookie.retrieveCookie();
+			cmd += " -noshell -name " + label + " -setcookie " +
+					Cookie.retrieveCookie();
 
 			ErlLogger.log("RUN*> " + cmd);
 

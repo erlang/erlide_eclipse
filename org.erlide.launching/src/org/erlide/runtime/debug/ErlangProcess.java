@@ -190,8 +190,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		ErlLogger.log("** get stackframes for " + fPid);
 
 		if (!isSuspended() && !isStepping()) {
-			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended()
-					+ "." + isStepping(), this, fTarget) };
+			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended() +
+					"." + isStepping(), this, fTarget) };
 		}
 
 		return new IStackFrame[] {};

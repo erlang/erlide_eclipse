@@ -72,8 +72,8 @@ public class Cookie {
 		final File f;
 		String cookie = "nocookie";
 
-		cookieFileName = System.getProperty("user.home") + File.separator
-				+ ".erlang.cookie";
+		cookieFileName = System.getProperty("user.home") + File.separator +
+				".erlang.cookie";
 		// ErlLogger.log("Cookie file: " + cookieFileName);
 		f = new File(cookieFileName);
 

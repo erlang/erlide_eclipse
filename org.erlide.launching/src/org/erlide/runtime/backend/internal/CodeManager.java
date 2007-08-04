@@ -116,8 +116,9 @@ public class CodeManager implements ICodeManager {
 				// workaround for bug in code:del_path
 				RpcResult rr = fBackend.rpc("filename", "join",
 						new OtpErlangList(new OtpErlangString(path)));
-				if (rr.isOk())
+				if (rr.isOk()) {
 					path = ((OtpErlangString) rr.getValue()).stringValue();
+				}
 
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
@@ -135,8 +136,9 @@ public class CodeManager implements ICodeManager {
 				// workaround for bug in code:del_path
 				RpcResult rr = fBackend.rpc("filename", "join",
 						new OtpErlangList(new OtpErlangString(path)));
-				if (rr.isOk())
+				if (rr.isOk()) {
 					path = ((OtpErlangString) rr.getValue()).stringValue();
+				}
 
 				fBackend.rpc("code", "del_path", new OtpErlangString(path));
 			} catch (final ErlangRpcException e) {
@@ -200,8 +202,8 @@ public class CodeManager implements ICodeManager {
 			try {
 				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
 						new OtpErlangAtom(moduleName)));
-				if (!((OtpErlangAtom) r).booleanValue()
-						|| !BackendManager.isDeveloper()) {
+				if (!((OtpErlangAtom) r).booleanValue() ||
+						!BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
 							"load_binary", new OtpErlangObject[] {
 									new OtpErlangAtom(moduleName),
@@ -240,8 +242,8 @@ public class CodeManager implements ICodeManager {
 			return false;
 		} else {
 			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\""
-					+ moduleName + ".beam\"," + aa + ").\n";
+			final String msg = "code:load_binary(" + moduleName + ",\"" +
+					moduleName + ".beam\"," + aa + ").\n";
 			try {
 				fBackend.sendToDefaultShell(msg);
 			} catch (final IOException e) {
@@ -310,8 +312,8 @@ public class CodeManager implements ICodeManager {
 		loadBootstrap("erlide_erpc", e);
 
 		try {
-			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
-					+ ", false).\n");
+			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port +
+					", false).\n");
 			fBackend.sendToDefaultShell("unlink(X).\n");
 		} catch (final IOException e1) {
 			e1.printStackTrace();
@@ -341,8 +343,8 @@ public class CodeManager implements ICodeManager {
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null &&
+					"beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				// ErlLogger.log(" " + m);
 				try {
@@ -394,8 +396,8 @@ public class CodeManager implements ICodeManager {
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null &&
+					"beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				unloadBeam(m);
 			}
@@ -431,17 +433,19 @@ public class CodeManager implements ICodeManager {
 	}
 
 	public void addPath(boolean usePathZ, String path) {
-		if (usePathZ)
+		if (usePathZ) {
 			addPathZ(path);
-		else
+		} else {
 			addPathA(path);
+		}
 	}
 
 	public void removePath(boolean usePathZ, String path) {
-		if (usePathZ)
+		if (usePathZ) {
 			removePathZ(path);
-		else
+		} else {
 			removePathA(path);
+		}
 	}
 
 }
