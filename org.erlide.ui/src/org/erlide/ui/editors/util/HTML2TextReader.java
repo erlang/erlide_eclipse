@@ -265,7 +265,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			final int tagLen = buf.length();
 			// needs special treatment for comments
 			if ((tagLen >= 3 && "!--".equals(buf.substring(0, 3))) //$NON-NLS-1$
-					&& !(tagLen >= 5 && "--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
+					&&
+					!(tagLen >= 5 && "--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
 				// unfinished comment
 				buf.append(ch);
 			} else {

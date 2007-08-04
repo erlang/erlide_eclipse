@@ -83,8 +83,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		// create the widgets and their grid data objects
 		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.buildoutput")
-				+ ":");
+				.getResourceString("wizards.labels.buildoutput") +
+				":");
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		output.setLayoutData(gd);
@@ -92,8 +92,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		output.addListener(SWT.Modify, nameModifyListener);
 
 		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.source")
-				+ ":");
+				.getResourceString("wizards.labels.source") +
+				":");
 		source = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		source.setLayoutData(gd);
@@ -101,8 +101,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		source.addListener(SWT.Modify, nameModifyListener);
 
 		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.include")
-				+ ":");
+				.getResourceString("wizards.labels.include") +
+				":");
 		include = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		include.setLayoutData(gd);
@@ -163,8 +163,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		if (file.isFile()) {
 			final IPath path = new Path(file.getPath());
-			if (path.getFileExtension() != null
-					&& path.getFileExtension().equals(ext)) {
+			if (path.getFileExtension() != null &&
+					path.getFileExtension().equals(ext)) {
 				list.add(file.getPath());
 			}
 		} else if (file.isDirectory()) {
@@ -177,17 +177,15 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	}
 
 	protected boolean testPageComplete() {
-		if (null != output
-				&& (output.getText() == null || output.getText().trim()
-						.length() == 0)) {
+		if (null != output &&
+				(output.getText() == null || output.getText().trim().length() == 0)) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.outputrequired"));
 			return false;
 		}
 
-		if (null != source
-				&& (source.getText() == null || source.getText().trim()
-						.length() == 0)) {
+		if (null != source &&
+				(source.getText() == null || source.getText().trim().length() == 0)) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.sourcerequired"));
 			return false;

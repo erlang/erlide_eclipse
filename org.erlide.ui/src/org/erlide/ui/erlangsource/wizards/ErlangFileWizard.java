@@ -123,8 +123,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IResource resource = root.findMember(new Path(containerName));
 		if (!resource.exists() || !(resource instanceof IContainer)) {
-			throwCoreException("Container \"" + containerName
-					+ "\" does not exist.");
+			throwCoreException("Container \"" + containerName +
+					"\" does not exist.");
 		}
 		final IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName + ".erl"));

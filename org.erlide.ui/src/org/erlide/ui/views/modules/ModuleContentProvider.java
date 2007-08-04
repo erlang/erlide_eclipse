@@ -129,8 +129,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final IErlModule[] resources = project.getModules();
 		final IResource[] nonerl = project.getNonErlangResources();
 
-		final List<IResource> lst = new ArrayList<IResource>(resources.length
-				+ nonerl.length);
+		final List<IResource> lst = new ArrayList<IResource>(resources.length +
+				nonerl.length);
 		for (IErlModule element : resources) {
 			ErlLogger.log("> " + element.getElementName());
 		}
@@ -358,8 +358,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 					.getAffectedChildren(IResourceDelta.ADDED);
 			final IResourceDelta[] removedChildren = delta
 					.getAffectedChildren(IResourceDelta.REMOVED);
-			addedAndRemoved = addedChildren.length > 0
-					& removedChildren.length > 0;
+			addedAndRemoved = addedChildren.length > 0 &
+					removedChildren.length > 0;
 
 			// Disable redraw until the operation is finished so we don't get a
 			// flash of both the new and old item (in the case of rename)

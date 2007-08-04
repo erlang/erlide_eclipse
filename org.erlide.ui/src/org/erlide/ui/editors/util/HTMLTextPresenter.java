@@ -116,8 +116,8 @@ public class HTMLTextPresenter implements
 		try {
 
 			final StringBuffer buffer = new StringBuffer();
-			long maxNumberOfLines = Math.round(maxHeight * 1.0
-					/ gc.getFontMetrics().getHeight());
+			long maxNumberOfLines = Math.round(maxHeight * 1.0 /
+					gc.getFontMetrics().getHeight());
 
 			fCounter = 0;
 			final LineBreakingReader reader = new LineBreakingReader(

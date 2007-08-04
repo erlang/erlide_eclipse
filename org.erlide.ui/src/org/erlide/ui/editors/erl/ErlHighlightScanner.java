@@ -350,8 +350,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 					.getIdeBackend().rpc("erlide_scan", "string",
 							new OtpErlangString(string)));
 		} catch (final ErlangRpcException e) {
-			throw new BackendException("Could not parse string \"" + string
-					+ "\": " + e.getMessage());
+			throw new BackendException("Could not parse string \"" + string +
+					"\": " + e.getMessage());
 		}
 		if (r1 == null) {
 			return null;
@@ -362,8 +362,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new BackendException("Could not parse string \"" + string
-				+ "\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not parse string \"" + string +
+				"\": " + t1.elementAt(1).toString());
 	}
 
 }

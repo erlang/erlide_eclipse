@@ -39,8 +39,8 @@ public final class TestListener implements IResourceChangeListener,
 
 	public void inputDocumentAboutToBeChanged(IDocument oldInput,
 			IDocument newInput) {
-		ErlLogger.log("¤ inputDocumentAboutToBeChanged " + oldInput + " "
-				+ newInput);
+		ErlLogger.log("¤ inputDocumentAboutToBeChanged " + oldInput + " " +
+				newInput);
 	}
 
 	public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {

@@ -48,8 +48,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		ErlLogger.log("## reconcile " + dirtyRegion.getOffset() + "-"
-				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
+		ErlLogger.log("## reconcile " + dirtyRegion.getOffset() + "-" +
+				dirtyRegion.getLength() + " : " + dirtyRegion.getType());
 
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);

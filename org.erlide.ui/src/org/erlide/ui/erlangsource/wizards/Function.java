@@ -22,7 +22,7 @@ public class Function {
 
 	@Override
 	public String toString() {
-		return "<Function name=" + name + " arity=" + arity + " isExported="
-				+ isState + " isState=" + isState + ">";
+		return "<Function name=" + name + " arity=" + arity + " isExported=" +
+				isState + " isState=" + isState + ">";
 	}
 }

@@ -126,9 +126,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (object == null
-				|| !ErlangElementImageDescriptor.class
-						.equals(object.getClass())) {
+		if (object == null ||
+				!ErlangElementImageDescriptor.class.equals(object.getClass())) {
 			return false;
 		}
 

@@ -149,8 +149,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 * @return
 	 */
 	private boolean validateFinish() {
-		ErlLogger.log("validating |" + buildPage.getPrefs().getOutputDir()
-				+ "|");
+		ErlLogger.log("validating |" + buildPage.getPrefs().getOutputDir() +
+				"|");
 		final ErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().trim().length() == 0) {
 			reportError(ErlideUIPlugin

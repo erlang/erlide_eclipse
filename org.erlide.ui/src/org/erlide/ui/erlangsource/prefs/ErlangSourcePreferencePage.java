@@ -204,8 +204,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		final Label treeGroup = new Label(previewParent, SWT.LEFT);
 		treeGroup.setText(resourceBundle.getString("preview_label"));
 
-		preview = new SourceViewer(previewParent, null, null, false, SWT.MULTI
-				| SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		preview = new SourceViewer(previewParent, null, null, false, SWT.MULTI |
+				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		final Document doc = new Document();
 		preview.setDocument(doc);
@@ -346,8 +346,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 
 		if (file.isHidden()) {
 			final String title = "Error: Hidden file!";
-			final String message = "A hidden file has been found at "
-					+ file.getAbsolutePath();
+			final String message = "A hidden file has been found at " +
+					file.getAbsolutePath();
 			MessageDialog.openError(getShell(), title, message);
 			return;
 		}
@@ -381,14 +381,14 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 
 	private boolean confirmOverwrite(File file) {
 		return MessageDialog.openQuestion(getShell(), "Overwrite file?",
-				"Are you sure that you want to overwrite "
-						+ file.getAbsolutePath());
+				"Are you sure that you want to overwrite " +
+						file.getAbsolutePath());
 	}
 
 	private void openWriteErrorDialog(Exception e) {
 		final String title = "Error!";
-		final String message = "An unexpected exception has been raised"
-				+ e.getLocalizedMessage();
+		final String message = "An unexpected exception has been raised" +
+				e.getLocalizedMessage();
 		MessageDialog.openError(getShell(), title, message);
 	}
 

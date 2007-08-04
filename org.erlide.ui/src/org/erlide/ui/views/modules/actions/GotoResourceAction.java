@@ -42,12 +42,12 @@ public class GotoResourceAction extends ModuleNavigatorAction {
 	public void run() {
 		final IContainer container = (IContainer) getViewer().getInput();
 		final GotoResourceDialog dialog = new GotoResourceDialog(getShell(),
-				container, IResource.FILE | IResource.FOLDER
-						| IResource.PROJECT);
+				container, IResource.FILE | IResource.FOLDER |
+						IResource.PROJECT);
 		dialog.open();
 		final Object[] result = dialog.getResult();
-		if (result == null || result.length == 0
-				|| !(result[0] instanceof IResource)) {
+		if (result == null || result.length == 0 ||
+				!(result[0] instanceof IResource)) {
 			return;
 		}
 
