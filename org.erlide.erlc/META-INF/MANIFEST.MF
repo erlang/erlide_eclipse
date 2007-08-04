@@ -29,6 +29,9 @@ Export-Package: org.erlide.erlc,
  org.erlide.erlc.internal.ui.preferences,
  org.erlide.erlc.ui,
  org.erlide.erlc.ui.actions,
+ org.erlide.erlc.ui.controls,
+ org.erlide.erlc.ui.dialogs,
+ org.erlide.erlc.ui.wizards,
  org.erlide.erlc.utils.spawner
 Bundle-Vendor: %providerName
 Bundle-ClassPath: erlide-erlc.jar
