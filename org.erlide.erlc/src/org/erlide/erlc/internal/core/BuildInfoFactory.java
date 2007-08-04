@@ -55,8 +55,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_TARGET_AUTO = PREFIX + ".autoBuildTarget"; //$NON-NLS-1$
 
-	static final String BUILD_TARGET_INCREMENTAL = PREFIX
-			+ ".incrementalBuildTarget"; //$NON-NLS-1$
+	static final String BUILD_TARGET_INCREMENTAL = PREFIX +
+			".incrementalBuildTarget"; //$NON-NLS-1$
 
 	static final String BUILD_TARGET_FULL = PREFIX + ".fullBuildTarget"; //$NON-NLS-1$
 
@@ -66,8 +66,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_CLEAN_ENABLED = PREFIX + ".enableCleanBuild"; //$NON-NLS-1$
 
-	static final String BUILD_INCREMENTAL_ENABLED = PREFIX
-			+ ".enabledIncrementalBuild"; //$NON-NLS-1$
+	static final String BUILD_INCREMENTAL_ENABLED = PREFIX +
+			".enabledIncrementalBuild"; //$NON-NLS-1$
 
 	static final String BUILD_AUTO_ENABLED = PREFIX + ".enableAutoBuild"; //$NON-NLS-1$
 
@@ -75,8 +75,8 @@ public class BuildInfoFactory {
 
 	static final String ENVIRONMENT = PREFIX + ".environment"; //$NON-NLS-1$
 
-	static final String BUILD_APPEND_ENVIRONMENT = PREFIX
-			+ ".append_environment"; //$NON-NLS-1$ 
+	static final String BUILD_APPEND_ENVIRONMENT = PREFIX +
+			".append_environment"; //$NON-NLS-1$ 
 
 	private abstract static class AbstractBuildInfo implements IMakeBuilderInfo {
 
@@ -148,6 +148,7 @@ public class BuildInfoFactory {
 			return envMap;
 		}
 
+		@Deprecated
 		public void setBuildCommand(IPath location) throws CoreException {
 			putString(IMakeCommonBuildInfo.BUILD_COMMAND, null);
 			putString(BuildInfoFactory.BUILD_COMMAND, location.toString());
@@ -200,6 +201,7 @@ public class BuildInfoFactory {
 
 		protected abstract String getBuilderID();
 
+		@Deprecated
 		public void setBuildLocation(IPath location) throws CoreException {
 			putString(IMakeCommonBuildInfo.BUILD_LOCATION, null);
 			putString(BuildInfoFactory.BUILD_LOCATION, location.toString());
@@ -234,6 +236,7 @@ public class BuildInfoFactory {
 			return result;
 		}
 
+		@Deprecated
 		public void setBuildArguments(String args) throws CoreException {
 			putString(IMakeCommonBuildInfo.BUILD_ARGUMENTS, null);
 			putString(BuildInfoFactory.BUILD_ARGUMENTS, args);
@@ -247,6 +250,7 @@ public class BuildInfoFactory {
 			return getBoolean(STOP_ON_ERROR);
 		}
 
+		@Deprecated
 		public void setAutoBuildTarget(String target) throws CoreException {
 			putString(IMakeBuilderInfo.BUILD_TARGET_AUTO, null);
 			putString(BuildInfoFactory.BUILD_TARGET_AUTO, target);
@@ -265,6 +269,7 @@ public class BuildInfoFactory {
 			return result;
 		}
 
+		@Deprecated
 		public void setIncrementalBuildTarget(String target)
 				throws CoreException {
 			putString(IMakeBuilderInfo.BUILD_TARGET_INCREMENTAL, null);
@@ -284,6 +289,7 @@ public class BuildInfoFactory {
 			return result;
 		}
 
+		@Deprecated
 		public void setFullBuildTarget(String target) throws CoreException {
 
 		}
@@ -301,6 +307,7 @@ public class BuildInfoFactory {
 			return result;
 		}
 
+		@Deprecated
 		public void setCleanBuildTarget(String target) throws CoreException {
 			putString(IMakeBuilderInfo.BUILD_TARGET_CLEAN, null);
 			putString(BuildInfoFactory.BUILD_TARGET_CLEAN, target);
