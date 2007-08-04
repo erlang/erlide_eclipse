@@ -48,6 +48,10 @@
                value="erlidenature">
          </filter>
       </objectContribution>
+      <viewerContribution
+            id="org.erlide.ui.viewerContribution2"
+            targetID="org.erlide.ui.viewerContribution2">
+      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -172,6 +176,10 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+      <viewerContribution
+            id="org.erlide.ui.viewerContribution1"
+            targetID="org.erlide.ui.viewerContribution1">
+      </viewerContribution>
    </extension>
   <extension
          point="org.eclipse.ui.newWizards">
