@@ -39,6 +39,7 @@ public class ErlangSourceInfoProvider implements IInformationProvider,
 	 * @see org.eclipse.jface.text.information.IInformationProvider#getInformation(org.eclipse.jface.text.ITextViewer,
 	 *      org.eclipse.jface.text.IRegion)
 	 */
+	@Deprecated
 	public String getInformation(ITextViewer textViewer, IRegion subject) {
 		// This method is deprecated. Call the non-deprecated method
 		return getInformation2(textViewer, subject).toString();

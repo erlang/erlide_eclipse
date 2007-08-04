@@ -458,8 +458,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		// #26314
-		final int sourceCaretOffset = selection.getOffset()
-				+ selection.getLength();
+		final int sourceCaretOffset = selection.getOffset() +
+				selection.getLength();
 		// TODO fix me!
 		// if (isSurroundedByBrackets(document, sourceCaretOffset))
 		// sourceCaretOffset -= selection.getLength();
@@ -492,8 +492,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			final IRegion visibleRegion = sourceViewer.getVisibleRegion();
 			// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
 			visible = (targetOffset >= visibleRegion.getOffset() && targetOffset <= visibleRegion
-					.getOffset()
-					+ visibleRegion.getLength());
+					.getOffset() +
+					visibleRegion.getLength());
 		}
 
 		if (!visible) {
@@ -827,8 +827,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final ISelection selection = getSelectionProvider().getSelection();
 		if (selection instanceof TextSelection) {
 			final TextSelection textSelection = (TextSelection) selection;
-			if (moveCursor
-					&& (textSelection.getOffset() != 0 || textSelection
+			if (moveCursor &&
+					(textSelection.getOffset() != 0 || textSelection
 							.getLength() != 0)) {
 				markInNavigationHistory();
 			}
@@ -972,8 +972,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			public IInformationControl createInformationControl(Shell shell) {
 				boolean cutDown = false;
 				int style = cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
-				return new DefaultInformationControl(shell, SWT.RESIZE
-						| SWT.TOOL, style, new HTMLTextPresenter(cutDown));
+				return new DefaultInformationControl(shell, SWT.RESIZE |
+						SWT.TOOL, style, new HTMLTextPresenter(cutDown));
 			}
 		};
 
@@ -1069,6 +1069,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					return fControlCreator;
 				}
 
+				@Deprecated
 				public String getInformation(ITextViewer textViewer,
 						IRegion subject) {
 					return null;
@@ -1210,9 +1211,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final Iterator e = new ErlangAnnotationIterator(model, true, true);
 		while (e.hasNext()) {
 			final Annotation a = (Annotation) e.next();
-			if ((a instanceof IErlangAnnotation)
-					&& ((IErlangAnnotation) a).hasOverlay()
-					|| !isNavigationTarget(a)) {
+			if ((a instanceof IErlangAnnotation) &&
+					((IErlangAnnotation) a).hasOverlay() ||
+					!isNavigationTarget(a)) {
 				continue;
 			}
 
@@ -1221,14 +1222,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				continue;
 			}
 
-			if (forward && p.offset == offset || !forward
-					&& p.offset + p.getLength() == offset + length) {// ||
+			if (forward && p.offset == offset || !forward &&
+					p.offset + p.getLength() == offset + length) {// ||
 				// p.includes(offset))
 				// {
-				if (containingAnnotation == null
-						|| (forward
-								&& p.length >= containingAnnotationPosition.length || !forward
-								&& p.length >= containingAnnotationPosition.length)) {
+				if (containingAnnotation == null ||
+						(forward &&
+								p.length >= containingAnnotationPosition.length || !forward &&
+								p.length >= containingAnnotationPosition.length)) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1242,23 +1243,23 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 						currentDistance = endOfDocument + currentDistance;
 					}
 
-					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
+					if (currentDistance < distance ||
+							currentDistance == distance &&
+							p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;
 					}
 				} else {
-					currentDistance = offset + length
-							- (p.getOffset() + p.length);
+					currentDistance = offset + length -
+							(p.getOffset() + p.length);
 					if (currentDistance < 0) {
 						currentDistance = endOfDocument + currentDistance;
 					}
 
-					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
+					if (currentDistance < distance ||
+							currentDistance == distance &&
+							p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;
@@ -1266,8 +1267,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 			}
 		}
-		if (containingAnnotationPosition != null
-				&& (!currentAnnotation || nextAnnotation == null)) {
+		if (containingAnnotationPosition != null &&
+				(!currentAnnotation || nextAnnotation == null)) {
 			annotationPosition.setOffset(containingAnnotationPosition
 					.getOffset());
 			annotationPosition.setLength(containingAnnotationPosition
