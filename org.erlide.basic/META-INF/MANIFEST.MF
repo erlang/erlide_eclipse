@@ -17,5 +17,6 @@ Export-Package: com.novocode.naf.swt.custom,
  org.erlide.basicui.actions,
  org.erlide.basicui.dialogfields,
  org.erlide.basicui.prefs,
- org.erlide.basicui.util
+ org.erlide.basicui.util,
+ org.erlide.basicui.views
 Bundle-ClassPath: org.erlide.basic.jar
