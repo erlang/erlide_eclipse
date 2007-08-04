@@ -102,8 +102,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 			if (page != null) {
 				IViewPart consoleView = page
 						.findView(IConsoleConstants.ID_CONSOLE_VIEW);
-				if (consoleView == null
-						&& BuildConsolePreferencePage.isAutoOpenConsole()) {
+				if (consoleView == null &&
+						BuildConsolePreferencePage.isAutoOpenConsole()) {
 					final IWorkbenchPart activePart = page.getActivePart();
 					try {
 						consoleView = page
@@ -131,8 +131,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 		final boolean bringToTop = false;
 		if (consoleView instanceof IConsoleView) {
 			final IConsoleView cView = (IConsoleView) consoleView;
-			return !cView.isPinned()
-					&& BuildConsolePreferencePage.isConsoleOnTop();
+			return !cView.isPinned() &&
+					BuildConsolePreferencePage.isConsoleOnTop();
 		}
 		return bringToTop;
 	}
@@ -146,8 +146,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	public void resourceChanged(IResourceChangeEvent event) {
 		final IResource resource = event.getResource();
 		if (resource != null && resource.getType() == IResource.PROJECT) {
-			if (event.getType() == IResourceChangeEvent.PRE_DELETE
-					|| event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+			if (event.getType() == IResourceChangeEvent.PRE_DELETE ||
+					event.getType() == IResourceChangeEvent.PRE_CLOSE) {
 				final IDocumentPartitioner partioner = fConsoleMap
 						.remove(resource);
 				if (partioner != null) {

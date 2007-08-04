@@ -22,8 +22,8 @@ public class BuildConsole extends AbstractConsole {
 	/**
 	 * Property constant indicating the color of a stream has changed.
 	 */
-	public static final String P_STREAM_COLOR = ErlideErlcPlugin.PLUGIN_ID
-			+ ".CONSOLE_P_STREAM_COLOR"; //$NON-NLS-1$
+	public static final String P_STREAM_COLOR = ErlideErlcPlugin.PLUGIN_ID +
+			".CONSOLE_P_STREAM_COLOR"; //$NON-NLS-1$
 
 	private IBuildConsoleManager fConsoleManager;
 
