@@ -91,8 +91,9 @@ public class ResourceManager extends SWTResourceManager {
 	 * @return Image The image based on the specified image descriptor
 	 */
 	public static Image getImage(ImageDescriptor descriptor) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		Image image = m_DescriptorImageMap.get(descriptor);
 		if (image == null) {
 			image = descriptor.createImage();
@@ -107,8 +108,9 @@ public class ResourceManager extends SWTResourceManager {
 	public static void disposeImages() {
 		SWTResourceManager.disposeImages();
 		//
-		for (Iterator I = m_DescriptorImageMap.values().iterator(); I.hasNext();)
+		for (Iterator I = m_DescriptorImageMap.values().iterator(); I.hasNext();) {
 			((Image) I.next()).dispose();
+		}
 		m_DescriptorImageMap.clear();
 	}
 
@@ -134,8 +136,9 @@ public class ResourceManager extends SWTResourceManager {
 		try {
 			try {
 				URL url = getPluginImageURL(plugin, name);
-				if (m_URLImageMap.containsKey(url))
+				if (m_URLImageMap.containsKey(url)) {
 					return m_URLImageMap.get(url);
+				}
 				InputStream is = url.openStream();
 				Image image;
 				try {
@@ -189,7 +192,7 @@ public class ResourceManager extends SWTResourceManager {
 	 * @return URL The URL representing the file at the specified path
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")//$NON-NLS-1$
+	@SuppressWarnings("unchecked")
 	private static URL getPluginImageURL(Object plugin, String name)
 			throws Exception {
 		// try to work with 'plugin' as with OSGI BundleContext

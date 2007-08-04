@@ -60,8 +60,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 		plugin = this;
 
 		try {
-			resourceBundle = ResourceBundle.getBundle(PLUGIN_ID
-					+ ".ErlideBasicUIPluginResources");
+			resourceBundle = ResourceBundle.getBundle(PLUGIN_ID +
+					".ErlideBasicUIPluginResources");
 		} catch (final MissingResourceException x) {
 			x.printStackTrace();
 			resourceBundle = null;
@@ -241,8 +241,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 
 			final PreferenceDialog dialog = new PreferenceDialog(shell, manager);
 			dialog.create();
-			dialog.setMessage("Please configure your Erlang installation! ("
-					+ tries + " more tries");
+			dialog.setMessage("Please configure your Erlang installation! (" +
+					tries + " more tries");
 			dialog.open();
 		} catch (final Exception e) {
 			System.out
@@ -255,8 +255,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		final Shell shell = window.getShell();
-		final MessageBox box = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR
-				| SWT.APPLICATION_MODAL);
+		final MessageBox box = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR |
+				SWT.APPLICATION_MODAL);
 		box.setMessage("Could not find an Erlang installation. Giving up...");
 		box.setText("Fatal Error");
 		box.open();

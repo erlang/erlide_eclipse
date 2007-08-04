@@ -350,8 +350,8 @@ public class BalloonWindow {
 		int anchor = preferredAnchor;
 		if (anchor != SWT.NONE && autoAnchor && locX != Integer.MIN_VALUE) {
 			if ((anchor & SWT.LEFT) != 0) {
-				if (locX + contentsSize.x + marginLeft + marginRight - 16 >= screen.x
-						+ screen.width) {
+				if (locX + contentsSize.x + marginLeft + marginRight - 16 >= screen.x +
+						screen.width) {
 					anchor = anchor - SWT.LEFT + SWT.RIGHT;
 				}
 			} else
@@ -362,8 +362,8 @@ public class BalloonWindow {
 				}
 			}
 			if ((anchor & SWT.TOP) != 0) {
-				if (locY + contentsSize.y + 20 + marginTop + marginBottom >= screen.y
-						+ screen.height) {
+				if (locY + contentsSize.y + 20 + marginTop + marginBottom >= screen.y +
+						screen.height) {
 					anchor = anchor - SWT.TOP + SWT.BOTTOM;
 				}
 			} else
@@ -375,10 +375,11 @@ public class BalloonWindow {
 			}
 		}
 
-		final Point shellSize = (anchor == SWT.NONE) ? new Point(contentsSize.x
-				+ marginLeft + marginRight, contentsSize.y + marginTop
-				+ marginBottom) : new Point(contentsSize.x + marginLeft
-				+ marginRight, contentsSize.y + marginTop + marginBottom + 20);
+		final Point shellSize = (anchor == SWT.NONE) ? new Point(
+				contentsSize.x + marginLeft + marginRight, contentsSize.y +
+						marginTop + marginBottom) : new Point(contentsSize.x +
+				marginLeft + marginRight, contentsSize.y + marginTop +
+				marginBottom + 20);
 
 		if (shellSize.x < 54 + marginLeft + marginRight) {
 			shellSize.x = 54 + marginLeft + marginRight;
@@ -399,21 +400,20 @@ public class BalloonWindow {
 		if (showTitle) {
 			final int realTitleHeight = titleSize.y - titleSpacing;
 			if (titleImageLabel != null) {
-				titleImageLabel.setLocation(marginLeft, titleLocY
-						+ (realTitleHeight - titleImageLabel.getSize().y) / 2);
-				titleLabel.setLocation(marginLeft + titleImageLabel.getSize().x
-						+ titleWidgetSpacing, titleLocY
-						+ (realTitleHeight - titleLabel.getSize().y) / 2);
+				titleImageLabel.setLocation(marginLeft, titleLocY +
+						(realTitleHeight - titleImageLabel.getSize().y) / 2);
+				titleLabel.setLocation(marginLeft +
+						titleImageLabel.getSize().x + titleWidgetSpacing,
+						titleLocY + (realTitleHeight - titleLabel.getSize().y) /
+								2);
 			} else {
-				titleLabel.setLocation(marginLeft, titleLocY
-						+ (realTitleHeight - titleLabel.getSize().y) / 2);
+				titleLabel.setLocation(marginLeft, titleLocY +
+						(realTitleHeight - titleLabel.getSize().y) / 2);
 			}
 			if (systemControlsBar != null) {
-				systemControlsBar
-						.setLocation(shellSize.x - marginRight
-								- systemControlsBar.getSize().x, titleLocY
-								+ (realTitleHeight - systemControlsBar
-										.getSize().y) / 2);
+				systemControlsBar.setLocation(shellSize.x - marginRight -
+						systemControlsBar.getSize().x, titleLocY +
+						(realTitleHeight - systemControlsBar.getSize().y) / 2);
 			}
 		}
 
@@ -457,8 +457,8 @@ public class BalloonWindow {
 				if (anchor == SWT.NONE) {
 					if (shellLoc.y < screen.y) {
 						shellLoc.y = screen.y;
-					} else if (shellLoc.y > screen.y + screen.height
-							- shellSize.y) {
+					} else if (shellLoc.y > screen.y + screen.height -
+							shellSize.y) {
 						shellLoc.y = screen.y + screen.height - shellSize.y;
 					}
 				}

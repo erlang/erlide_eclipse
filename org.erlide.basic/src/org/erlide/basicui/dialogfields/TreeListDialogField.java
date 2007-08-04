@@ -381,8 +381,8 @@ public class TreeListDialogField extends DialogField {
 					if (currLabel != null) {
 						fButtonControls[i] = createButton(contents, currLabel,
 								listener);
-						fButtonControls[i].setEnabled(isEnabled()
-								&& fButtonsEnabled[i]);
+						fButtonControls[i].setEnabled(isEnabled() &&
+								fButtonsEnabled[i]);
 					} else {
 						fButtonControls[i] = null;
 						createSeparator(contents);
@@ -416,8 +416,8 @@ public class TreeListDialogField extends DialogField {
 	 */
 	protected void handleKeyPressed(KeyEvent event) {
 		if (event.character == SWT.DEL && event.stateMask == 0) {
-			if (fRemoveButtonIndex != -1
-					&& isButtonEnabled(fTree.getSelection(), fRemoveButtonIndex)) {
+			if (fRemoveButtonIndex != -1 &&
+					isButtonEnabled(fTree.getSelection(), fRemoveButtonIndex)) {
 				managedButtonPressed(fRemoveButtonIndex);
 				return;
 			}

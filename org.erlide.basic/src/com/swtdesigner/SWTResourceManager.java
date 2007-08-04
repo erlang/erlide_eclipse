@@ -114,8 +114,9 @@ public class SWTResourceManager {
 	 */
 	public static void disposeColors() {
 		for (Iterator<Color> iter = m_ColorMap.values().iterator(); iter
-				.hasNext();)
+				.hasNext();) {
 			iter.next().dispose();
+		}
 		m_ColorMap.clear();
 	}
 
@@ -143,8 +144,9 @@ public class SWTResourceManager {
 	protected static Image getImage(InputStream is) {
 		Display display = Display.getCurrent();
 		ImageData data = new ImageData(is);
-		if (data.transparentPixel > 0)
+		if (data.transparentPixel > 0) {
 			return new Image(display, data, data.getTransparencyMask());
+		}
 		return new Image(display, data);
 	}
 
@@ -169,8 +171,8 @@ public class SWTResourceManager {
 	 * @return Image The image stored in the file at the specified path
 	 */
 	public static Image getImage(String section, String path) {
-		String key = section + '|' + SWTResourceManager.class.getName() + '|'
-				+ path;
+		String key = section + '|' + SWTResourceManager.class.getName() + '|' +
+				path;
 		Image image = m_ClassImageMap.get(key);
 		if (image == null) {
 			try {
@@ -296,14 +298,14 @@ public class SWTResourceManager {
 					if (corner == TOP_LEFT) {
 						drawImage(decorator.getImageData(), 0, 0);
 					} else if (corner == TOP_RIGHT) {
-						drawImage(decorator.getImageData(), bid.width
-								- did.width - 1, 0);
+						drawImage(decorator.getImageData(), bid.width -
+								did.width - 1, 0);
 					} else if (corner == BOTTOM_LEFT) {
-						drawImage(decorator.getImageData(), 0, bid.height
-								- did.height - 1);
+						drawImage(decorator.getImageData(), 0, bid.height -
+								did.height - 1);
 					} else if (corner == BOTTOM_RIGHT) {
-						drawImage(decorator.getImageData(), bid.width
-								- did.width - 1, bid.height - did.height - 1);
+						drawImage(decorator.getImageData(), bid.width -
+								did.width - 1, bid.height - did.height - 1);
 					}
 				}
 
@@ -323,8 +325,9 @@ public class SWTResourceManager {
 	 */
 	public static void disposeImages() {
 		for (Iterator<Image> I = m_ClassImageMap.values().iterator(); I
-				.hasNext();)
+				.hasNext();) {
 			I.next().dispose();
+		}
 		m_ClassImageMap.clear();
 		//
 		for (Iterator<HashMap<Image, Image>> I = m_ImageToDecoratorMap.values()
@@ -332,7 +335,7 @@ public class SWTResourceManager {
 			HashMap<Image, Image> decoratedMap = I.next();
 			for (Iterator<Image> J = decoratedMap.values().iterator(); J
 					.hasNext();) {
-				Image image = (Image) J.next();
+				Image image = J.next();
 				image.dispose();
 			}
 		}
@@ -348,8 +351,9 @@ public class SWTResourceManager {
 		for (Iterator<String> I = m_ClassImageMap.keySet().iterator(); I
 				.hasNext();) {
 			String key = I.next();
-			if (!key.startsWith(section + '|'))
+			if (!key.startsWith(section + '|')) {
 				continue;
+			}
 			Image image = m_ClassImageMap.get(key);
 			image.dispose();
 			I.remove();
@@ -404,8 +408,8 @@ public class SWTResourceManager {
 	 */
 	public static Font getFont(String name, int size, int style,
 			boolean strikeout, boolean underline) {
-		String fontName = name + '|' + size + '|' + style + '|' + strikeout
-				+ '|' + underline;
+		String fontName = name + '|' + size + '|' + style + '|' + strikeout +
+				'|' + underline;
 		Font font = m_FontMap.get(fontName);
 		if (font == null) {
 			FontData fontData = new FontData(name, size, style);
@@ -460,8 +464,9 @@ public class SWTResourceManager {
 	 */
 	public static void disposeFonts() {
 		for (Iterator<Font> iter = m_FontMap.values().iterator(); iter
-				.hasNext();)
+				.hasNext();) {
 			iter.next().dispose();
+		}
 		m_FontMap.clear();
 	}
 
@@ -480,7 +485,7 @@ public class SWTResourceManager {
 		// ensure that each item has control (at least empty one)
 		for (int i = 0; i < items.length; i++) {
 			CoolItem item = items[i];
-			if (item.getControl() == null)
+			if (item.getControl() == null) {
 				item.setControl(new Canvas(bar, SWT.NONE) {
 					@Override
 					public Point computeSize(int wHint, int hHint,
@@ -488,6 +493,7 @@ public class SWTResourceManager {
 						return new Point(20, 20);
 					}
 				});
+			}
 		}
 		// compute size for each item
 		for (int i = 0; i < items.length; i++) {
@@ -530,8 +536,9 @@ public class SWTResourceManager {
 	 */
 	public static void disposeCursors() {
 		for (Iterator<Cursor> iter = m_IdToCursorMap.values().iterator(); iter
-				.hasNext();)
+				.hasNext();) {
 			iter.next().dispose();
+		}
 		m_IdToCursorMap.clear();
 	}
 }
