@@ -28,9 +28,9 @@ import java.net.UnknownHostException;
 public class OtpPeer extends AbstractNode {
 
 	int distChoose = 0; /*
-						 * this is set by OtpConnection and is the highest
-						 * common protocol version we both support
-						 */
+	 * this is set by OtpConnection and is the highest
+	 * common protocol version we both support
+	 */
 
 	OtpPeer() {
 		super();

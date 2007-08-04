@@ -358,8 +358,8 @@ public class OtpNode extends OtpLocalNode {
 	public boolean ping(String node_, long timeout) {
 		if (node_.equals(node)) {
 			return true;
-		} else if (node_.indexOf('@', 0) < 0
-				&& node_.equals(node.substring(0, node.indexOf('@', 0)))) {
+		} else if (node_.indexOf('@', 0) < 0 &&
+				node_.equals(node.substring(0, node.indexOf('@', 0)))) {
 			return true;
 		}
 

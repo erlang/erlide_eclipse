@@ -480,8 +480,8 @@ public class OtpOutputStream {
 			this.write1(v);
 		} else {
 			// note that v != 0L
-			if ((v < 0 && unsigned) || v < OtpExternal.erlMin
-					|| v > OtpExternal.erlMax) {
+			if ((v < 0 && unsigned) || v < OtpExternal.erlMin ||
+					v > OtpExternal.erlMax) {
 				// some kind of bignum
 				final long abs = (unsigned ? v : ((v < 0) ? -v : v));
 				final int sign = (unsigned ? 0 : ((v < 0) ? 1 : 0));
