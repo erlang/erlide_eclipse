@@ -72,8 +72,8 @@ public class ErlToken {
 		}
 		if (ee != null) {
 			if (TRACE) {
-				ErlLogger.log("   -" + ee.toString() + " "
-						+ ee.getClass().getName());
+				ErlLogger.log("   -" + ee.toString() + " " +
+						ee.getClass().getName());
 			}
 			if (ee instanceof OtpErlangString) {
 				text = ((OtpErlangString) ee).stringValue();
@@ -109,8 +109,8 @@ public class ErlToken {
 			text = kind;
 		}
 		if (TRACE) {
-			ErlLogger.log("mkTok " + kind + " - " + text + " " + offset + ":"
-					+ text.length() + " " + (offset + text.length()));
+			ErlLogger.log("mkTok " + kind + " - " + text + " " + offset + ":" +
+					text.length() + " " + (offset + text.length()));
 		}
 	}
 
@@ -148,9 +148,9 @@ public class ErlToken {
 		}
 
 		if (TRACE) {
-			ErlLogger.log("mkTok " + kind + " - " + text + " " + line + "/"
-					+ offset + ":" + text.length() + " "
-					+ (offset + text.length()));
+			ErlLogger.log("mkTok " + kind + " - " + text + " " + line + "/" +
+					offset + ":" + text.length() + " " +
+					(offset + text.length()));
 		}
 	}
 

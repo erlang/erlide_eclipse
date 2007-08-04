@@ -403,8 +403,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 		final int severityMask = mask & 0x7;
 		final int categoryMask = mask & ~0x7;
 		final int bits = status.getBits();
-		return ((severityMask == 0) || (bits & severityMask) != 0)
-				&& ((categoryMask == 0) || (bits & categoryMask) != 0);
+		return ((severityMask == 0) || (bits & severityMask) != 0) &&
+				((categoryMask == 0) || (bits & categoryMask) != 0);
 	}
 
 	/**

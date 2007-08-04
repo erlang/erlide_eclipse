@@ -280,9 +280,9 @@ public class BuildNotifier {
 						final boolean wasError = IMarker.SEVERITY_ERROR == pb
 								.getAttribute(IMarker.SEVERITY,
 										IMarker.SEVERITY_ERROR);
-						if (isError == wasError
-								&& message.equals(pb.getAttribute(
-										IMarker.MESSAGE, ""))) { //$NON-NLS-1$
+						if (isError == wasError &&
+								message.equals(pb.getAttribute(IMarker.MESSAGE,
+										""))) { //$NON-NLS-1$
 							oldProblems[j] = null;
 							continue next;
 						}
@@ -310,8 +310,8 @@ public class BuildNotifier {
 						if (pb.getID() == IProblem.Task) {
 							continue; // skip task
 						}
-						if (wasError == pb.isError()
-								&& message.equals(pb.getMessage())) {
+						if (wasError == pb.isError() &&
+								message.equals(pb.getMessage())) {
 							continue next;
 						}
 					}

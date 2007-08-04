@@ -29,8 +29,8 @@ public final class ErlangCore {
 	 * The identifier for the Erlang model (value
 	 * <code>"org.erlide.core.erlang.erlangmodel"</code>).
 	 */
-	public static final String MODEL_ID = ErlangPlugin.PLUGIN_ID
-			+ ".erlangmodel"; //$NON-NLS-1$
+	public static final String MODEL_ID = ErlangPlugin.PLUGIN_ID +
+			".erlangmodel"; //$NON-NLS-1$
 
 	/**
 	 * Name of the handle id attribute in a Erlang marker.
@@ -51,160 +51,160 @@ public final class ErlangCore {
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_LOCAL_VARIABLE_ATTR = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.debug.localVariable"; //$NON-NLS-1$
+	public static final String COMPILER_LOCAL_VARIABLE_ATTR = ErlangPlugin.PLUGIN_ID +
+			".compiler.debug.localVariable"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_LINE_NUMBER_ATTR = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.debug.lineNumber"; //$NON-NLS-1$
+	public static final String COMPILER_LINE_NUMBER_ATTR = ErlangPlugin.PLUGIN_ID +
+			".compiler.debug.lineNumber"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_SOURCE_FILE_ATTR = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.debug.sourceFile"; //$NON-NLS-1$
+	public static final String COMPILER_SOURCE_FILE_ATTR = ErlangPlugin.PLUGIN_ID +
+			".compiler.debug.sourceFile"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_CODEGEN_UNUSED_LOCAL = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.codegen.unusedLocal"; //$NON-NLS-1$
+	public static final String COMPILER_CODEGEN_UNUSED_LOCAL = ErlangPlugin.PLUGIN_ID +
+			".compiler.codegen.unusedLocal"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_CODEGEN_TARGET_PLATFORM = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.codegen.targetPlatform"; //$NON-NLS-1$
+	public static final String COMPILER_CODEGEN_TARGET_PLATFORM = ErlangPlugin.PLUGIN_ID +
+			".compiler.codegen.targetPlatform"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_CODEGEN_INLINE_JSR_BYTECODE = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.codegen.inlineJsrBytecode"; //$NON-NLS-1$
+	public static final String COMPILER_CODEGEN_INLINE_JSR_BYTECODE = ErlangPlugin.PLUGIN_ID +
+			".compiler.codegen.inlineJsrBytecode"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_DOC_COMMENT_SUPPORT = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.doc.comment.support"; //$NON-NLS-1$
+	public static final String COMPILER_DOC_COMMENT_SUPPORT = ErlangPlugin.PLUGIN_ID +
+			".compiler.doc.comment.support"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_DEPRECATION = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.deprecation"; //$NON-NLS-1$
+	public static final String COMPILER_PB_DEPRECATION = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.deprecation"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_UNUSED_LOCAL = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.unusedLocal"; //$NON-NLS-1$
+	public static final String COMPILER_PB_UNUSED_LOCAL = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.unusedLocal"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_UNUSED_PARAMETER = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.unusedParameter"; //$NON-NLS-1$
+	public static final String COMPILER_PB_UNUSED_PARAMETER = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.unusedParameter"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_UNUSED_PRIVATE_FUNCTION = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.unusedPrivateFunction"; //$NON-NLS-1$
+	public static final String COMPILER_PB_UNUSED_PRIVATE_FUNCTION = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.unusedPrivateFunction"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_LOCAL_VARIABLE_HIDING = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.localVariableHiding"; //$NON-NLS-1$
+	public static final String COMPILER_PB_LOCAL_VARIABLE_HIDING = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.localVariableHiding"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_INVALID_EDOC = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.invalidEdoc"; //$NON-NLS-1$
+	public static final String COMPILER_PB_INVALID_EDOC = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.invalidEdoc"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_INVALID_EDOC_TAGS = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.invalidEdocTags"; //$NON-NLS-1$
+	public static final String COMPILER_PB_INVALID_EDOC_TAGS = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.invalidEdocTags"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_MISSING_Edoc_TAGS = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.missingEdocTags"; //$NON-NLS-1$
+	public static final String COMPILER_PB_MISSING_Edoc_TAGS = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.missingEdocTags"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_MISSING_Edoc_COMMENTS = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.problem.missingEdocComments"; //$NON-NLS-1$
+	public static final String COMPILER_PB_MISSING_Edoc_COMMENTS = ErlangPlugin.PLUGIN_ID +
+			".compiler.problem.missingEdocComments"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_MAX_PER_UNIT = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.maxProblemPerUnit"; //$NON-NLS-1$
+	public static final String COMPILER_PB_MAX_PER_UNIT = ErlangPlugin.PLUGIN_ID +
+			".compiler.maxProblemPerUnit"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_SOURCE = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.source"; //$NON-NLS-1$
+	public static final String COMPILER_SOURCE = ErlangPlugin.PLUGIN_ID +
+			".compiler.source"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_COMPLIANCE = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.compliance"; //$NON-NLS-1$
+	public static final String COMPILER_COMPLIANCE = ErlangPlugin.PLUGIN_ID +
+			".compiler.compliance"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_TASK_PRIORITIES = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.taskPriorities"; //$NON-NLS-1$
+	public static final String COMPILER_TASK_PRIORITIES = ErlangPlugin.PLUGIN_ID +
+			".compiler.taskPriorities"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option value for COMPILER_TASK_PRIORITIES.
@@ -232,104 +232,104 @@ public final class ErlangCore {
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_TASK_TAGS = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.taskTags"; //$NON-NLS-1$
+	public static final String COMPILER_TASK_TAGS = ErlangPlugin.PLUGIN_ID +
+			".compiler.taskTags"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_TASK_CASE_SENSITIVE = ErlangPlugin.PLUGIN_ID
-			+ ".compiler.taskCaseSensitive"; //$NON-NLS-1$
+	public static final String COMPILER_TASK_CASE_SENSITIVE = ErlangPlugin.PLUGIN_ID +
+			".compiler.taskCaseSensitive"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ERLANG_BUILD_ORDER = ErlangPlugin.PLUGIN_ID
-			+ ".computeErlangBuildOrder"; //$NON-NLS-1$
+	public static final String CORE_ERLANG_BUILD_ORDER = ErlangPlugin.PLUGIN_ID +
+			".computeErlangBuildOrder"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ERLANG_BUILD_RESOURCE_COPY_FILTER = ErlangPlugin.PLUGIN_ID
-			+ ".builder.resourceCopyExclusionFilter"; //$NON-NLS-1$
+	public static final String CORE_ERLANG_BUILD_RESOURCE_COPY_FILTER = ErlangPlugin.PLUGIN_ID +
+			".builder.resourceCopyExclusionFilter"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ERLANG_BUILD_DUPLICATE_RESOURCE = ErlangPlugin.PLUGIN_ID
-			+ ".builder.duplicateResourceTask"; //$NON-NLS-1$
+	public static final String CORE_ERLANG_BUILD_DUPLICATE_RESOURCE = ErlangPlugin.PLUGIN_ID +
+			".builder.duplicateResourceTask"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ERLANG_BUILD_CLEAN_OUTPUT_FOLDER = ErlangPlugin.PLUGIN_ID
-			+ ".builder.cleanOutputFolder"; //$NON-NLS-1$
+	public static final String CORE_ERLANG_BUILD_CLEAN_OUTPUT_FOLDER = ErlangPlugin.PLUGIN_ID +
+			".builder.cleanOutputFolder"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_INCOMPLETE_CLASSPATH = ErlangPlugin.PLUGIN_ID
-			+ ".incompleteClasspath"; //$NON-NLS-1$
+	public static final String CORE_INCOMPLETE_CLASSPATH = ErlangPlugin.PLUGIN_ID +
+			".incompleteClasspath"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_CIRCULAR_CLASSPATH = ErlangPlugin.PLUGIN_ID
-			+ ".circularClasspath"; //$NON-NLS-1$
+	public static final String CORE_CIRCULAR_CLASSPATH = ErlangPlugin.PLUGIN_ID +
+			".circularClasspath"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_INCOMPATIBLE_ERTS_LEVEL = ErlangPlugin.PLUGIN_ID
-			+ ".incompatibleERTSLevel"; //$NON-NLS-1$
+	public static final String CORE_INCOMPATIBLE_ERTS_LEVEL = ErlangPlugin.PLUGIN_ID +
+			".incompatibleERTSLevel"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ERLANG_BUILD_INVALID_CLASSPATH = ErlangPlugin.PLUGIN_ID
-			+ ".builder.invalidClasspath"; //$NON-NLS-1$
+	public static final String CORE_ERLANG_BUILD_INVALID_CLASSPATH = ErlangPlugin.PLUGIN_ID +
+			".builder.invalidClasspath"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ENCODING = ErlangPlugin.PLUGIN_ID
-			+ ".encoding"; //$NON-NLS-1$
+	public static final String CORE_ENCODING = ErlangPlugin.PLUGIN_ID +
+			".encoding"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS = ErlangPlugin.PLUGIN_ID
-			+ ".classpath.exclusionPatterns"; //$NON-NLS-1$
+	public static final String CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS = ErlangPlugin.PLUGIN_ID +
+			".classpath.exclusionPatterns"; //$NON-NLS-1$
 
 	/**
 	 * Possible configurable option ErlangPlugin.PLUGIN_ID.
 	 * 
 	 * @see #getDefaultOptions()
 	 */
-	public static final String CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS = ErlangPlugin.PLUGIN_ID
-			+ ".classpath.multipleOutputLocations"; //$NON-NLS-1$
+	public static final String CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS = ErlangPlugin.PLUGIN_ID +
+			".classpath.multipleOutputLocations"; //$NON-NLS-1$
 
 	/**
 	 * Default task tag

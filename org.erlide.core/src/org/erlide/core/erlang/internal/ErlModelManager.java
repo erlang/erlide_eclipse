@@ -696,8 +696,8 @@ public class ErlModelManager implements IErlModelManager {
 					}
 					if (ErlangBuilder.DEBUG) {
 						System.out
-								.println("Saved state thinks last build failed for "
-										+ project.getName());
+								.println("Saved state thinks last build failed for " +
+										project.getName());
 					}
 				} finally {
 					in.close();
@@ -1104,8 +1104,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see ElementChangedEvent
 	 */
 	public void addElementChangedListener(IElementChangedListener listener) {
-		addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE
-				| ElementChangedEvent.POST_RECONCILE);
+		addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE |
+				ElementChangedEvent.POST_RECONCILE);
 	}
 
 	/**

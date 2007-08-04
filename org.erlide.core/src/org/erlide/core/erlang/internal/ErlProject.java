@@ -385,8 +385,8 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 
 		final ErlProject other = (ErlProject) o;
-		return fProject.equals(other.getProject())
-				&& fOccurrenceCount == other.fOccurrenceCount;
+		return fProject.equals(other.getProject()) &&
+				fOccurrenceCount == other.fOccurrenceCount;
 	}
 
 	@Override
@@ -724,8 +724,8 @@ public class ErlProject extends Openable implements IErlProject,
 			return; // ignore
 		}
 
-		if (preferences == null
-				|| (!preferences.needsSaving() && preferences.propertyNames().length != 0)) {
+		if (preferences == null ||
+				(!preferences.needsSaving() && preferences.propertyNames().length != 0)) {
 			// nothing to save
 			return;
 		}
@@ -937,8 +937,8 @@ public class ErlProject extends Openable implements IErlProject,
 			// 'd:/myfolder/lib/classes.zip'
 			final int externalLength = externalPath.segmentCount();
 			if (canonicalLength >= externalLength) {
-				result = canonicalPath.removeFirstSegments(canonicalLength
-						- externalLength);
+				result = canonicalPath.removeFirstSegments(canonicalLength -
+						externalLength);
 			} else {
 				return externalPath;
 			}

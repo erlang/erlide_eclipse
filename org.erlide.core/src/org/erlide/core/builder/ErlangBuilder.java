@@ -70,11 +70,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	public static final boolean DEBUG = true;
 
-	protected static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
-			+ ".problemmarker";
+	protected static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID +
+			".problemmarker";
 
-	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
-			+ ".taskmarker";
+	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID +
+			".taskmarker";
 
 	private static final String MODULE = "erlide_builder";
 
@@ -189,8 +189,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
 				String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
-				addMarker(getProject(), "Code clash between " + f1 + " and "
-						+ f2, 0, IMarker.SEVERITY_WARNING, "");
+				addMarker(getProject(), "Code clash between " + f1 + " and " +
+						f2, 0, IMarker.SEVERITY_WARNING, "");
 			}
 
 		} catch (Exception e) {
@@ -204,8 +204,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			for (int i = 0; i < sd.length; i++) {
 				String ss = sd[i];
 				dirList[i] = new OtpErlangString(getProject().getLocation()
-						.toPortableString()
-						+ "/" + ss);
+						.toPortableString() +
+						"/" + ss);
 			}
 
 			OtpErlangObject dirs = new OtpErlangList(dirList);
@@ -215,8 +215,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
 				String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
-				addMarker(getProject(), "Duplicated module name in " + f1
-						+ " and " + f2, 0, IMarker.SEVERITY_ERROR, "");
+				addMarker(getProject(), "Duplicated module name in " + f1 +
+						" and " + f2, 0, IMarker.SEVERITY_ERROR, "");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -335,12 +335,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					IResource.DEPTH_INFINITE);
 		} catch (final CoreException e1) {
 		}
-		if (isInExtCodePath(resource, project)
-				&& !isInCodePath(resource, project)) {
+		if (isInExtCodePath(resource, project) &&
+				!isInCodePath(resource, project)) {
 			addMarker(
 					resource,
-					resource.getName()
-							+ " is not directly on source path (packages are not supported yet)",
+					resource.getName() +
+							" is not directly on source path (packages are not supported yet)",
 					0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
@@ -392,8 +392,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.removeFileExtension().lastSegment();
 				// ErlLogger.log(">>>>> " + project.getName() + ": " +
 				// beamf);
-				if (project.getName().startsWith("erlide")
-						|| beamf.startsWith("erlide")) {
+				if (project.getName().startsWith("erlide") ||
+						beamf.startsWith("erlide")) {
 					// ErlLogger.log(">>>>> is erlide");
 					if (BackendManager.isDeveloper()) {
 						// ErlLogger.log(">>>>> is developer");
@@ -445,12 +445,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					IResource.DEPTH_INFINITE);
 		} catch (final CoreException e1) {
 		}
-		if (isInExtCodePath(resource, project)
-				&& !isInCodePath(resource, project)) {
+		if (isInExtCodePath(resource, project) &&
+				!isInCodePath(resource, project)) {
 			addMarker(
 					resource,
-					resource.getName()
-							+ " is not directly on source path (packages are not supported yet)",
+					resource.getName() +
+							" is not directly on source path (packages are not supported yet)",
 					0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
@@ -586,8 +586,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						final RpcResult result = b.rpc("code", "load_binary",
 								new OtpErlangAtom(beamf), new OtpErlangString(
 										beamf), code);
-						ErlLogger.log("  $ distribute " + beamf + " to "
-								+ b.getLabel() + "  - " + result.getValue());
+						ErlLogger.log("  $ distribute " + beamf + " to " +
+								b.getLabel() + "  - " + result.getValue());
 					}
 				} catch (final ErlangRpcException e) {
 					// TODO Auto-generated catch block
@@ -608,9 +608,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "hrl".compareTo(resource.getFileExtension()) == 0) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"hrl".compareTo(resource.getFileExtension()) == 0) {
 				hasAny = true;
 				return false;
 			}
@@ -640,13 +640,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					my_project);
 
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"erl".equals(resource.getFileExtension()) &&
+					isInExtCodePath(resource, my_project)) {
 				if (ErlangBuilder.DEBUG) {
-					ErlLogger.log("+++ Incr: " + resource.getName() + " "
-							+ delta.getKind());
+					ErlLogger.log("+++ Incr: " + resource.getName() + " " +
+							delta.getKind());
 				}
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
@@ -687,13 +687,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 				mon.worked(1);
 			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "yrl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"yrl".equals(resource.getFileExtension()) &&
+					isInExtCodePath(resource, my_project)) {
 				if (ErlangBuilder.DEBUG) {
-					ErlLogger.log("+++ Incr: " + resource.getName() + " "
-							+ delta.getKind());
+					ErlLogger.log("+++ Incr: " + resource.getName() + " " +
+							delta.getKind());
 				}
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
@@ -719,10 +719,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 				mon.worked(1);
 			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "beam".equals(resource.getFileExtension())
-					&& isInOutputPath(resource, my_project)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"beam".equals(resource.getFileExtension()) &&
+					isInOutputPath(resource, my_project)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
@@ -743,8 +743,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				mon.worked(1);
 			}
 			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER
-					&& "org".equals(resource.getName())) {
+			if (resource.getType() == IResource.FOLDER &&
+					"org".equals(resource.getName())) {
 				return false;
 			} else {
 				return true;
@@ -766,10 +766,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			// ErlangProjectProperties(my_project);
 
 			// monitor.worked(1);
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"erl".equals(resource.getFileExtension()) &&
+					isInExtCodePath(resource, my_project)) {
 
 				try {
 					if (ErlangBuilder.DEBUG) {
@@ -794,8 +794,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.log(" recompiling " + resource.getName()
-									+ " " + timestamp + " " + moduletimestamp);
+							ErlLogger.log(" recompiling " + resource.getName() +
+									" " + timestamp + " " + moduletimestamp);
 						}
 						compileFile(resource.getProject(), resource);
 						monitor.worked(1);
@@ -804,10 +804,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					e.printStackTrace();
 				}
 			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "yrl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"yrl".equals(resource.getFileExtension()) &&
+					isInExtCodePath(resource, my_project)) {
 
 				try {
 					if (ErlangBuilder.DEBUG) {
@@ -830,8 +830,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.log(" recompiling " + resource.getName()
-									+ " " + timestamp + " " + erltimestamp);
+							ErlLogger.log(" recompiling " + resource.getName() +
+									" " + timestamp + " " + erltimestamp);
 						}
 						compileYrlFile(resource.getProject(), resource);
 						monitor.worked(1);
@@ -841,8 +841,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 			}
 			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER
-					&& "org".equals(resource.getName())) {
+			if (resource.getType() == IResource.FOLDER &&
+					"org".equals(resource.getName())) {
 				return false;
 			} else {
 				return true;
@@ -873,10 +873,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (fResult != null) {
 				return false;
 			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, resource.getProject())) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getFileExtension() != null &&
+					"erl".equals(resource.getFileExtension()) &&
+					isInExtCodePath(resource, resource.getProject())) {
 				final String[] p = resource.getName().split("\\.");
 				if (p[0].equals(fName)) {
 					fResult = resource;
@@ -1143,8 +1143,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	public void log(Throwable e, String message) {
 		Throwable nestedException;
-		if (e instanceof ErlModelException
-				&& (nestedException = ((ErlModelException) e).getException()) != null) {
+		if (e instanceof ErlModelException &&
+				(nestedException = ((ErlModelException) e).getException()) != null) {
 			e = nestedException;
 		}
 		final IStatus status = new Status(IStatus.ERROR,
@@ -1218,8 +1218,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				rconn.write(pass);
 			}
 			rconn.write("4\n");
-			rconn.write("ls\nls -l\ncleartool lsview | grep " + remoteuser
-					+ "\n");
+			rconn.write("ls\nls -l\ncleartool lsview | grep " + remoteuser +
+					"\n");
 
 			rconn.write("exit\n");
 			rconn.waitDisconnect();

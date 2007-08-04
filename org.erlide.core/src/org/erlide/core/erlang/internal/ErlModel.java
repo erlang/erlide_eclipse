@@ -458,8 +458,8 @@ public class ErlModel extends Openable implements IErlModel {
 					final IErlElement el = mod.getChildren()[j];
 					if (el instanceof IErlFunction) {
 						final IErlFunction fun = (IErlFunction) el;
-						final boolean arityOk = (arity == UNKNOWN_ARITY)
-								|| (arity == fun.getArity());
+						final boolean arityOk = (arity == UNKNOWN_ARITY) ||
+								(arity == fun.getArity());
 						if (arityOk && fun.getElementName().matches(function)) {
 							funs.add(fun);
 						}

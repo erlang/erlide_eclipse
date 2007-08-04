@@ -152,8 +152,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 		// assume instanceof check is done in subclass
 		final ErlElement other = (ErlElement) o;
-		return fOccurrenceCount == other.fOccurrenceCount
-				&& fName.equals(other.fName) && fParent.equals(other.fParent);
+		return fOccurrenceCount == other.fOccurrenceCount &&
+				fName.equals(other.fName) && fParent.equals(other.fParent);
 	}
 
 	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
@@ -338,8 +338,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 				public boolean isConflicting(ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
 						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
-						return fPath.isPrefixOf(otherPath)
-								|| otherPath.isPrefixOf(fPath);
+						return fPath.isPrefixOf(otherPath) ||
+								otherPath.isPrefixOf(fPath);
 					} else {
 						return false;
 					}

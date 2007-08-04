@@ -252,8 +252,8 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		}
 
 		public boolean visit(IResource resource) {
-			if (resource.getType() == IResource.FILE
-					&& resource.getName().equals(aname)) {
+			if (resource.getType() == IResource.FILE &&
+					resource.getName().equals(aname)) {
 				findResult = resource;
 				return false;
 			}
