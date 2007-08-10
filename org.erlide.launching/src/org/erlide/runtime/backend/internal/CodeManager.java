@@ -55,10 +55,10 @@ public class CodeManager implements ICodeManager {
 		plugins = new ArrayList<Plugin>(10);
 	}
 
-	private PathItem findItem(List l, String p) {
-		final Iterator i = l.iterator();
+	private PathItem findItem(List<PathItem> l, String p) {
+		final Iterator<PathItem> i = l.iterator();
 		while (i.hasNext()) {
-			final PathItem it = (PathItem) i.next();
+			final PathItem it = i.next();
 			if (it.path.equals(p)) {
 				return it;
 			}
@@ -148,7 +148,7 @@ public class CodeManager implements ICodeManager {
 
 	}
 
-	private boolean removePath(List l, String path) {
+	private boolean removePath(List<PathItem> l, String path) {
 		if (path == null) {
 			return false;
 		}
@@ -166,14 +166,14 @@ public class CodeManager implements ICodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#getPathA()
 	 */
-	public List getPathA() {
+	public List<String> getPathA() {
 		return getPath(pathA);
 	}
 
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#getPathZ()
 	 */
-	public List getPathZ() {
+	public List<String> getPathZ() {
 		return getPath(pathZ);
 	}
 

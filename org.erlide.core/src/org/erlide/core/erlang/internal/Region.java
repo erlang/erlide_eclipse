@@ -54,7 +54,7 @@ public class Region implements IRegion {
 	public boolean contains(IErlElement element) {
 
 		final int size = fRootElements.size();
-		final ArrayList parents = getAncestors(element);
+		final ArrayList<IErlElement> parents = getAncestors(element);
 
 		for (int i = 0; i < size; i++) {
 			final IErlElement aTop = fRootElements.get(i);
@@ -76,7 +76,7 @@ public class Region implements IRegion {
 	 * order.
 	 * 
 	 */
-	private ArrayList getAncestors(IErlElement element) {
+	private ArrayList<IErlElement> getAncestors(IErlElement element) {
 		final ArrayList<IErlElement> parents = new ArrayList<IErlElement>();
 		IErlElement parent = element.getParent();
 		while (parent != null) {

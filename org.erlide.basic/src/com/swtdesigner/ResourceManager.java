@@ -63,6 +63,7 @@ public class ResourceManager extends SWTResourceManager {
 	 * @return ImageDescriptor The image descriptor stored in the file at the
 	 *         specified path
 	 */
+	@SuppressWarnings("unchecked")
 	public static ImageDescriptor getImageDescriptor(Class clazz, String path) {
 		return ImageDescriptor.createFromFile(clazz, path);
 	}

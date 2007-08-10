@@ -155,13 +155,13 @@ public class OtpNode extends OtpLocalNode {
 	public synchronized void close() {
 		acceptor.quit();
 		OtpCookedConnection conn;
-		final Collection coll = connections.values();
-		final Iterator it = coll.iterator();
+		final Collection<OtpCookedConnection> coll = connections.values();
+		final Iterator<OtpCookedConnection> it = coll.iterator();
 
 		mboxes.clear();
 
 		while (it.hasNext()) {
-			conn = (OtpCookedConnection) it.next();
+			conn = it.next();
 			it.remove();
 			conn.close();
 		}

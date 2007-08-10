@@ -280,7 +280,7 @@ public abstract class AbstractBackend implements IBackend {
 	 *            IBackendEventListener
 	 */
 	public void removeEventListener(String event, IBackendEventListener l) {
-		final ArrayList ls = fEventListeners.get(event);
+		final ArrayList<IBackendEventListener> ls = fEventListeners.get(event);
 		if (ls != null) {
 			ls.remove(l);
 		}

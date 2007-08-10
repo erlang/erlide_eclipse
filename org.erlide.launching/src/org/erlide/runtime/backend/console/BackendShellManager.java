@@ -50,9 +50,9 @@ public class BackendShellManager {
 	}
 
 	public void dispose() {
-		final Collection c = fShells.values();
-		for (final Iterator iter = c.iterator(); iter.hasNext();) {
-			final BackendShell element = (BackendShell) iter.next();
+		final Collection<BackendShell> c = fShells.values();
+		for (final Iterator<BackendShell> iter = c.iterator(); iter.hasNext();) {
+			final BackendShell element = iter.next();
 			element.close();
 		}
 	}

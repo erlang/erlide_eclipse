@@ -52,9 +52,9 @@ public class ErlParser {
 		mm.reset();
 		// mm.setParseTree(forms);
 
-		final List sforms = splitForms(tokens);
-		for (final Iterator iter = sforms.iterator(); iter.hasNext();) {
-			final ErlToken[] element = (ErlToken[]) iter.next();
+		final List<ErlToken[]> sforms = splitForms(tokens);
+		for (final Iterator<ErlToken[]> iter = sforms.iterator(); iter.hasNext();) {
+			final ErlToken[] element = iter.next();
 			final OtpErlangObject form = parseForm(element);
 			final IErlMember elem = create(module, (OtpErlangTuple) form);
 			if (elem != null) {

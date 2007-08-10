@@ -171,11 +171,13 @@ public class ViewSiteDecorator extends PlatformObject implements IViewSite {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getService(Class api) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean hasService(Class api) {
 		// TODO Auto-generated method stub
 		return false;

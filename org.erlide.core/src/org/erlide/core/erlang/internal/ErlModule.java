@@ -459,7 +459,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void fixExportedFunctions() {
-		final List exports = new ArrayList(10);
+		final List<ErlangFunction> exports = new ArrayList<ErlangFunction>(10);
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlExport) {
 				final OtpErlangList l = (OtpErlangList) ((IErlExport) m)

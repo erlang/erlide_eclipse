@@ -15,9 +15,9 @@ import org.eclipse.core.runtime.Plugin;
 
 public interface ICodeManager {
 
-	List getPathA();
+	List<String> getPathA();
 
-	List getPathZ();
+	List<String> getPathZ();
 
 	void addPlugin(Plugin p);
 

@@ -384,9 +384,9 @@ public final class BackendManager implements IResourceChangeListener {
 					}
 				}
 
-				final Set keySet = fRemoteBackends.keySet();
-				for (final Iterator iter = keySet.iterator(); iter.hasNext();) {
-					final String key = (String) iter.next();
+				final Set<String> keySet = fRemoteBackends.keySet();
+				for (final Iterator<String> iter = keySet.iterator(); iter.hasNext();) {
+					final String key = iter.next();
 					boolean found = false;
 
 					for (Object element : labels) {
