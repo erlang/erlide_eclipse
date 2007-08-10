@@ -31,6 +31,7 @@ import java.util.Enumeration;
  * 
  * @see LRUCache
  */
+@SuppressWarnings("unchecked")
 public interface ICacheEnumeration extends Enumeration {
 
 	/**

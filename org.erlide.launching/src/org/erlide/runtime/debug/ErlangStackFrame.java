@@ -94,6 +94,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub

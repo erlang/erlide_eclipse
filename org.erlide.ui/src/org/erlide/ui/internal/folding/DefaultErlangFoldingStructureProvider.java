@@ -918,8 +918,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 *            <code>null</code>
 	 * @return a matching tuple or <code>null</code> for no match
 	 */
-	private Tuple findMatch(Tuple tuple, Collection annotations, Map positionMap) {
-		final Iterator it = annotations.iterator();
+	private Tuple findMatch(Tuple tuple, Collection<ErlangProjectionAnnotation> annotations, Map positionMap) {
+		final Iterator<ErlangProjectionAnnotation> it = annotations.iterator();
 		while (it.hasNext()) {
 			final ErlangProjectionAnnotation annotation = (ErlangProjectionAnnotation) it
 					.next();

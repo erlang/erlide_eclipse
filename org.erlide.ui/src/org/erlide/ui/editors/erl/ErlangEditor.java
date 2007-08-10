@@ -352,6 +352,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		menu.add(fShowOutline);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class required) {
 		if (IContentOutlinePage.class.equals(required)) {

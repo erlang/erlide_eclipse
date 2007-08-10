@@ -31,7 +31,7 @@ public class ErtsProcess extends RuntimeProcess {
 
 	private ErtsPreferences fConfiguration;
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
 
 	public ErtsProcess(ILaunch launch, Process process, String name,

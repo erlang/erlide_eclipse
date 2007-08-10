@@ -600,7 +600,7 @@ public class ErlangPlugin extends Plugin {
 	 *            options to their default values
 	 * @see ErlangCore#getDefaultOptions()
 	 */
-	public static void setOptions(Hashtable newOptions) {
+	public static void setOptions(Hashtable<String, String> newOptions) {
 
 		// see #initializeDefaultPluginPreferences() for changing default
 		// settings
@@ -609,9 +609,9 @@ public class ErlangPlugin extends Plugin {
 		if (newOptions == null) {
 			newOptions = ErlangPlugin.getDefaultOptions();
 		}
-		final Enumeration keys = newOptions.keys();
+		final Enumeration<String> keys = newOptions.keys();
 		while (keys.hasMoreElements()) {
-			final String key = (String) keys.nextElement();
+			final String key = keys.nextElement();
 			if (!ErlangCore.getModelManager().getOptionNames().contains(key)) {
 				continue; // unrecognized option
 			}

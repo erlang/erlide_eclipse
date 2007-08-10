@@ -290,6 +290,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	/**
 	 * @see IOpenable
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean hasUnsavedChanges() throws ErlModelException {
 
 		if (isReadOnly() || !isOpen()) {

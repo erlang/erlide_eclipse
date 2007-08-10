@@ -132,6 +132,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * Returns an enumerator of the values in the cache with the most recently
 	 * used first.
 	 */
+	@SuppressWarnings("unchecked")
 	public Enumeration elements() {
 		if (fEntryQueue == null) {
 			return new LRUCacheEnumerator(null);
@@ -253,6 +254,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	/**
 	 * For testing purposes only
 	 */
+	@SuppressWarnings("unchecked")
 	public void printStats() {
 		int forwardListLength = 0;
 		LRUCacheEntry entry = fEntryQueue;
@@ -273,10 +275,12 @@ abstract public class OverflowingLRUCache extends LRUCache {
 		final Enumeration keys = fEntryTable.keys();
 		class Temp {
 
+			@SuppressWarnings("unchecked")
 			public Class fClass;
 
 			public int fCount;
 
+			@SuppressWarnings("unchecked")
 			public Temp(Class aClass) {
 				fClass = aClass;
 				fCount = 1;

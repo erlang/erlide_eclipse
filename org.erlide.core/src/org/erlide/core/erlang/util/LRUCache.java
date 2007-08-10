@@ -247,6 +247,7 @@ public class LRUCache implements Cloneable {
 	/**
 	 * Returns an Enumeration of the keys currently in the cache.
 	 */
+	@SuppressWarnings("unchecked")
 	public Enumeration keys() {
 
 		return fEntryTable.keys();
@@ -259,6 +260,7 @@ public class LRUCache implements Cloneable {
 	public ICacheEnumeration keysAndValues() {
 		return new ICacheEnumeration() {
 
+			@SuppressWarnings("unchecked")
 			Enumeration fValues = fEntryTable.elements();
 
 			LRUCacheEntry fEntry;
@@ -503,6 +505,7 @@ public class LRUCache implements Cloneable {
 	 * Returns a String that represents the contents of this object. This method
 	 * is for debugging purposes only.
 	 */
+	@SuppressWarnings("unchecked")
 	protected String toStringContents() {
 		final StringBuffer result = new StringBuffer();
 		final int length = fEntryTable.size();

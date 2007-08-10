@@ -21,6 +21,7 @@ import java.util.Enumeration;
  * are not returned by the enumerator. However, elements returned from the
  * enumerator could have been closed by the cache.
  */
+@SuppressWarnings("unchecked")
 public class LRUCacheEnumerator implements Enumeration {
 
 	/**

@@ -23,6 +23,7 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang PIDs. PIDs represent Erlang
  * processes and consist of a nodename and a number of integers.
  */
+@SuppressWarnings("unchecked")
 public class OtpErlangPid extends OtpErlangObject implements Serializable,
 		Cloneable, Comparable {
 

@@ -28,6 +28,7 @@ public class ReflectionUtils {
 	private ReflectionUtils() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void exportClass(Class clazz) {
 		/* TODO: Define exportClass */
 		/*
@@ -40,6 +41,7 @@ public class ReflectionUtils {
 		 */
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Call parseCallMsg(OtpErlangObject msg) {
 		try {
 			final Call result = new Call();
@@ -71,12 +73,14 @@ public class ReflectionUtils {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static Object[] parseArgs(Class cls, String string,
 			OtpErlangList args) {
 		final Object[] result = new Object[args.arity()];
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Class mapType(Class c) {
 		if (c == int.class) {
 			return OtpErlangInt.class;

@@ -606,7 +606,7 @@ public class OtpNode extends OtpLocalNode {
 
 			synchronized (byName) {
 				final int n = byName.size();
-				final java.util.Enumeration keys = byName.keys();
+				final java.util.Enumeration<String> keys = byName.keys();
 				allnames = new String[n];
 
 				int i = 0;

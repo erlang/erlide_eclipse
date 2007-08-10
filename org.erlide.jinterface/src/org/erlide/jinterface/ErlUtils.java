@@ -176,6 +176,7 @@ public class ErlUtils {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected HashMap mergeBindings(HashMap m1, HashMap m2) {
 		final HashMap res = (HashMap) m1.clone();
 		return res;

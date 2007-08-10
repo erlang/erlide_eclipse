@@ -507,6 +507,7 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class required) {
 		if (IFindReplaceTarget.class.equals(required)) {
 			return getViewer().getFindReplaceTarget();

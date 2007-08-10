@@ -106,6 +106,7 @@ public class BufferManager {
 	 * @see OverflowingLRUCache
 	 * @return Enumeration of IBuffer
 	 */
+	@SuppressWarnings("unchecked")
 	public Enumeration getOpenBuffers() {
 		synchronized (openBuffers) {
 			openBuffers.shrink();

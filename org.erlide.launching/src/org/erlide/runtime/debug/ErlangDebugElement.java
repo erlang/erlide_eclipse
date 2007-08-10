@@ -23,6 +23,7 @@ public class ErlangDebugElement extends DebugElement {
 		return "org.erlide.debug.model";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IDebugElement.class) {

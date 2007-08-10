@@ -320,6 +320,7 @@ public class CodeManager implements ICodeManager {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void loadPluginCode(Plugin p) {
 		if (fBackend instanceof StandaloneBackend) {
 			return;
@@ -375,6 +376,7 @@ public class CodeManager implements ICodeManager {
 		unloadPluginCode(p);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void unloadPluginCode(Plugin p) {
 		if (fBackend instanceof StandaloneBackend) {
 			return;
