@@ -22,12 +22,12 @@ import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.Cookie;
+import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.console.ErlConsoleJob;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -95,7 +95,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	protected BackendShellManager fShellManager;
 
-	private ErlConsoleJob fConsoleJob;
+	private ErlRpcDaemon fRpcDaemon;
 
 	public AbstractBackend() {
 		fLabel = null;
@@ -126,10 +126,9 @@ public abstract class AbstractBackend implements IBackend {
 			ErlLogger.log("java node is " + fNode.node());
 
 			fPeer = new OtpPeer(BackendManager.buildNodeName(label));
-			ErlLogger
-					.log("erlang peer is " + label + " (" +
-							BackendManager.buildNodeName(label) + ")-- " +
-							fPeer.node());
+			ErlLogger.log("erlang peer is " + label + " ("
+					+ BackendManager.buildNodeName(label) + ")-- "
+					+ fPeer.node());
 
 			int tries = Integer.parseInt(System.getProperty(
 					"erlide.backend.retries", "50"));
@@ -166,7 +165,7 @@ public abstract class AbstractBackend implements IBackend {
 		}
 
 		fShellManager.dispose();
-		fConsoleJob.stop();
+		fRpcDaemon.stop();
 	}
 
 	/**
@@ -226,8 +225,8 @@ public abstract class AbstractBackend implements IBackend {
 			ErlLogger.log("PARSE=" + r);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			throw new ErlangParseException("Could not parse term \"" + string +
-					"\"");
+			throw new ErlangParseException("Could not parse term \"" + string
+					+ "\"");
 		}
 		return r;
 	}
@@ -391,8 +390,8 @@ public abstract class AbstractBackend implements IBackend {
 
 			if (res == null) {
 				if (CHECK_RPC) {
-					ErlLogger.log("    timed out: " + m + ":" + f + "(" + a +
-							")");
+					ErlLogger.log("    timed out: " + m + ":" + f + "(" + a
+							+ ")");
 				}
 				return null;
 			}
@@ -505,7 +504,7 @@ public abstract class AbstractBackend implements IBackend {
 	public abstract ILaunch initialize();
 
 	public void init_erlang() {
-		fConsoleJob = new ErlConsoleJob(this);
+		fRpcDaemon = new ErlRpcDaemon(this);
 		try {
 			rpc(ERL_BACKEND, "init", getEventPid(), new OtpErlangAtom(fNode
 					.node()));
@@ -514,7 +513,7 @@ public abstract class AbstractBackend implements IBackend {
 		}
 	}
 
-	public ErlConsoleJob getConsoleJob() {
-		return fConsoleJob;
+	public ErlRpcDaemon getRpcDaemon() {
+		return fRpcDaemon;
 	}
 }

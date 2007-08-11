@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.console.ErlConsoleJob;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -137,5 +136,5 @@ public interface IBackend {
 
 	boolean ping();
 
-	ErlConsoleJob getConsoleJob();
+	ErlRpcDaemon getRpcDaemon();
 }

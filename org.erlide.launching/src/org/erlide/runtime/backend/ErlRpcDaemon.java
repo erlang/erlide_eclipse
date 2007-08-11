@@ -1,4 +1,4 @@
-package org.erlide.runtime.backend.console;
+package org.erlide.runtime.backend;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,24 +8,21 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.runtime.ErlangLaunchPlugin;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IBackendListener;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlConsoleJob implements IBackendListener {
+public class ErlRpcDaemon implements IBackendListener {
 
 	private IBackend fBackend;
 
 	private boolean fStopJob = false;
 
-	private List<IErlConsoleListener> listeners;
+	private List<IErlEventListener> listeners;
 
-	public ErlConsoleJob(IBackend b) {
+	public ErlRpcDaemon(IBackend b) {
 		fBackend = b;
-		listeners = new ArrayList<IErlConsoleListener>(10);
+		listeners = new ArrayList<IErlEventListener>(10);
 
 		BackendManager.getDefault().addBackendListener(this);
 
@@ -74,13 +71,13 @@ public class ErlConsoleJob implements IBackendListener {
 		}
 	}
 
-	public void addListener(IErlConsoleListener client) {
+	public void addListener(IErlEventListener client) {
 		synchronized (listeners) {
 			listeners.add(client);
 		}
 	}
 
-	public void removeListener(IErlConsoleListener client) {
+	public void removeListener(IErlEventListener client) {
 		synchronized (listeners) {
 			listeners.remove(client);
 		}
@@ -91,7 +88,7 @@ public class ErlConsoleJob implements IBackendListener {
 			return;
 		}
 		synchronized (listeners) {
-			for (IErlConsoleListener client : listeners) {
+			for (IErlEventListener client : listeners) {
 				client.handleEvent(msgs);
 			}
 		}
