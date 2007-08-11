@@ -63,15 +63,15 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IErlEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
-import org.erlide.runtime.backend.console.IErlConsoleListener;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
+public class ErlangConsoleView extends ViewPart implements IErlEventListener {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -119,7 +119,7 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 	public ErlangConsoleView() {
 		fDoc = new ErlConsoleDocument();
 		fBackend = BackendManager.getDefault().getIdeBackend();
-		fBackend.getConsoleJob().addListener(this);
+		fBackend.getRpcDaemon().addListener(this);
 
 		try {
 			Job j = new Job("shell opener") {
@@ -202,10 +202,10 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 		composite.setLayout(gridLayout);
 		plainTab.setControl(composite);
 
-		consoleText = new StyledText(composite, SWT.V_SCROLL | SWT.MULTI |
-				SWT.READ_ONLY | SWT.BORDER);
-		consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI |
-				SWT.V_SCROLL);
+		consoleText = new StyledText(composite, SWT.V_SCROLL | SWT.MULTI
+				| SWT.READ_ONLY | SWT.BORDER);
+		consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL);
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
@@ -232,8 +232,8 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 					int ofs = consoleText.getOffsetAtLocation(new Point(e.x,
 							e.y));
 					IoRequest req = fDoc.findAtPos(ofs);
-					consoleText.setToolTipText("sent by " +
-							ErlangProcess.toLocalPid(req.getSender()));
+					consoleText.setToolTipText("sent by "
+							+ ErlangProcess.toLocalPid(req.getSender()));
 				} catch (Exception ex) {
 				}
 			}
@@ -251,12 +251,12 @@ public class ErlangConsoleView extends ViewPart implements IErlConsoleListener {
 				if (e.keyCode == 13 && (e.stateMask & SWT.CTRL) == SWT.CTRL) {
 					ErlangConsoleView.this.sendInput();
 					e.doit = false;
-				} else if ((e.keyCode == SWT.ARROW_UP) &&
-						((e.stateMask & SWT.CTRL) == SWT.CTRL)) {
+				} else if ((e.keyCode == SWT.ARROW_UP)
+						&& ((e.stateMask & SWT.CTRL) == SWT.CTRL)) {
 					ConsoleHistoryInformationControl info;
 					info = new ConsoleHistoryInformationControl(new Shell(),
-							SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI |
-									SWT.WRAP,
+							SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI
+									| SWT.WRAP,
 							PreferenceConstants.EDITOR_TEXT_FONT, null,
 							ErlangConsoleView.this);
 					info.setForegroundColor(Display.getDefault()
