@@ -33,6 +33,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable,
 	 *      org.eclipse.jface.text.templates.TemplateContext)
 	 */
+	@SuppressWarnings("null")
 	@Override
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		@SuppressWarnings("unchecked")
@@ -77,8 +78,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				buff.append("Error: " + e.getMessage());
 			} catch (final TemplateException e) {
 				e.printStackTrace();
-				buff.append("Error: " + commentTemplate.getName() +
-						" could not be validated!");
+				buff.append("Error: " + commentTemplate.getName()
+						+ " could not be validated!");
 			}
 
 			if (tb != null) {
@@ -101,8 +102,8 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				buff.append("Error: " + e.getMessage());
 			} catch (final TemplateException e) {
 				e.printStackTrace();
-				buff.append("Error: " + template.getName() +
-						" could not be validated!");
+				buff.append("Error: " + template.getName()
+						+ " could not be validated!");
 			}
 
 			if (tb != null) {
