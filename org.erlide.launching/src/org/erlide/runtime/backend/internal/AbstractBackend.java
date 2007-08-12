@@ -289,65 +289,49 @@ public abstract class AbstractBackend implements IBackend {
 	 * This executes in the event thread
 	 */
 	protected void handleReceiveEvent() {
-		// try
-		// {
-		// while (!Thread.currentThread().isInterrupted())
-		// {
-		// OtpErlangObject msg = eventBox.receive(1000);
-		// if (msg == null)
-		// continue;
-		// ErlLogger.log("handleReceiveEvent() - Event! "
-		// + msg.toString());
-		// if (msg instanceof OtpErlangAtom)
-		// {
-		// String sys = ((OtpErlangAtom) msg).atomValue();
-		// if (sys.compareTo("stopped") == 0)
-		// {
-		// break;
-		// }
-		// else
-		// {
-		// System.out
-		// .println("handleReceiveEvent() - Unrecognized system event: "
-		// + sys);
-		// }
-		// }
-		// else
-		// {
-		// OtpErlangTuple t = (OtpErlangTuple) msg;
-		// msg = t.elementAt(1);
-		// String event = null;
-		// if (msg instanceof OtpErlangAtom)
-		// {
-		// event = ((OtpErlangAtom) msg).atomValue();
-		// }
-		// else if (msg instanceof OtpErlangTuple)
-		// {
-		// event = ((OtpErlangTuple) msg).elementAt(0).toString();
-		// }
-		// if (event != null)
-		// {
-		// ArrayList ls = (ArrayList) eventListeners.get(event);
-		// if (ls != null)
-		// {
-		// for (int i = 0; i < ls.size(); i++)
-		// {
-		// ((IBackendEventListener) ls.get(i)).eventReceived(msg);
-		// }
-		// }
-		// }
-		// }
-		// }
-		// // ErlLogger.log("exited event thread");
-		// }
-		// catch (OtpErlangExit e)
-		// {
-		// ErlLogger.log("Erlide backend: event source crashed.");
-		// }
-		// catch (OtpErlangDecodeException e)
-		// {
-		// e.printStackTrace();
-		// }
+		try {
+			while (!Thread.currentThread().isInterrupted()) {
+				OtpErlangObject msg = ftEvBox.receive(1000);
+				if (msg == null)
+					continue;
+				ErlLogger
+						.log("handleReceiveEvent() - Event! " + msg.toString());
+				if (msg instanceof OtpErlangAtom) {
+					String sys = ((OtpErlangAtom) msg).atomValue();
+					if (sys.compareTo("stopped") == 0) {
+						break;
+					} else {
+						System.out
+								.println("handleReceiveEvent() - Unrecognized system event: "
+										+ sys);
+					}
+				} else {
+					OtpErlangTuple t = (OtpErlangTuple) msg;
+					msg = t.elementAt(1);
+					String event = null;
+					if (msg instanceof OtpErlangAtom) {
+						event = ((OtpErlangAtom) msg).atomValue();
+					} else if (msg instanceof OtpErlangTuple) {
+						event = ((OtpErlangTuple) msg).elementAt(0).toString();
+					}
+					if (event != null) {
+						ArrayList ls = fEventListeners.get(event);
+						if (ls != null) {
+							for (int i = 0; i < ls.size(); i++) {
+								((IBackendEventListener) ls.get(i))
+										.eventReceived(msg);
+							}
+						}
+					}
+				}
+			}
+			// ErlLogger.log("exited event thread");
+		} catch (OtpErlangExit e) {
+			ErlLogger.log("Erlide backend: event source crashed.\n"
+					+ e.getMessage());
+		} catch (OtpErlangDecodeException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ICodeManager getCodeManager() {
@@ -363,16 +347,8 @@ public abstract class AbstractBackend implements IBackend {
 		RpcResult result = null;
 		OtpErlangObject res = null;
 		try {
-			final OtpErlangObject m = new OtpErlangAtom(module);
-			final OtpErlangObject f = new OtpErlangAtom(fun);
-			final OtpErlangObject a = new OtpErlangList(args);
-
 			final OtpMbox mbox = getMbox();
-			res = new OtpErlangTuple(new OtpErlangObject[] {
-					mbox.self(),
-					new OtpErlangTuple(new OtpErlangObject[] {
-							new OtpErlangAtom("call"), m, f, a,
-							new OtpErlangAtom("user") }) });
+			res = buildRpcCall(module, fun, args, mbox.self());
 
 			send("rex", res);
 			if (CHECK_RPC) {
@@ -390,8 +366,8 @@ public abstract class AbstractBackend implements IBackend {
 
 			if (res == null) {
 				if (CHECK_RPC) {
-					ErlLogger.log("    timed out: " + m + ":" + f + "(" + a
-							+ ")");
+					ErlLogger.log("    timed out: " + module + ":" + fun + "("
+							+ new OtpErlangList(args) + ")");
 				}
 				return null;
 			}
@@ -406,6 +382,18 @@ public abstract class AbstractBackend implements IBackend {
 			ErlangLaunchPlugin.log(e);
 		}
 		return result;
+	}
+
+	private OtpErlangTuple buildRpcCall(final String module, final String fun,
+			final OtpErlangObject[] args, final OtpErlangPid pid) {
+		final OtpErlangObject m = new OtpErlangAtom(module);
+		final OtpErlangObject f = new OtpErlangAtom(fun);
+		final OtpErlangObject a = new OtpErlangList(args);
+		return new OtpErlangTuple(new OtpErlangObject[] {
+				pid,
+				new OtpErlangTuple(new OtpErlangObject[] {
+						new OtpErlangAtom("call"), m, f, a,
+						new OtpErlangAtom("user") }) });
 	}
 
 	private OtpMbox getMbox() {
