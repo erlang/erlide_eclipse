@@ -24,8 +24,7 @@
 	]).
 
 init(EventSinkPid) ->
-    Pid = spawn(fun() -> event_loop(EventSinkPid) end),
-    register(erlide_events, Pid),
+    process_list_init(),
     ok.
 
 %% taken from distel, for testing
@@ -73,22 +72,13 @@ process_list_init() ->
 
 process_list_updater() ->
     receive
-	_ -> ok
-    after 5000 ->
+	stop -> ok;
+	_ -> process_list_updater()
+        after 5000 ->
 	    erlide_events ! {processlist, erlang:now(), self()},
 	    process_list_updater()
     end.
 
 
 %% end distel
-
-event_loop(SinkPid) ->
-    receive
-	stop ->
-	    SinkPid ! stopped,
-	    ok;
-	Msg ->
-	    SinkPid ! {event, Msg},
-	    event_loop(SinkPid)
-    end.
 
