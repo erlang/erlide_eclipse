@@ -59,13 +59,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 
 		if (str != null) {
 			len = str.length();
-		}
-
-		if (len > 0) {
-			elems = new OtpErlangObject[len];
-
-			for (int i = 0; i < len; i++) {
-				elems[i] = new OtpErlangChar(str.charAt(i));
+			if (len > 0) {
+				elems = new OtpErlangObject[len];
+				for (int i = 0; i < len; i++) {
+					elems[i] = new OtpErlangChar(str.charAt(i));
+				}
 			}
 		}
 	}
@@ -74,7 +72,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create a list containing one element.
 	 * 
 	 * @param elem
-	 *            the elememet to make the list from.
+	 *            the element to make the list from.
 	 */
 	public OtpErlangList(OtpErlangObject elem) {
 		elems = new OtpErlangObject[1];
