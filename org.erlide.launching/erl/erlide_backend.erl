@@ -15,30 +15,37 @@
 -module(erlide_backend).
 
 -export([init/2,
+         
+         parse_term/1,
+         eval/1,
+         eval/2,
+         
+         format/2,
+         pretty_print/1,
+         
+         scan_string/1,
+         parse_string/1,
+         
+         execute/2,
+         
+         call/2,
+         call/3,
+         cast/2,
+         event/2
 
-   parse_term/1,
-   eval/1,
-   eval/2,
-
-   format/2,
-   pretty_print/1,
-
-   scan_string/1,
-   parse_string/1,
-
-   execute/2
-
-  ]).
+]).
 
 init(EventSinkPid, JavaNode) ->
     spawn(fun()->
-        Pid = spawn(fun() -> event_loop(EventSinkPid) end),
-        register(erlide_events, Pid),
-        
+        Pid = spawn(fun() -> io_event_loop() end),
         erlide_io_server:start(),
-        erlide_io_server:add(EventSinkPid),
-
-        watch_eclipse(JavaNode)
+        erlide_io_server:add(Pid),
+        
+        watch_eclipse(JavaNode),
+        
+        RpcPid = spawn(fun() -> rpc_loop(JavaNode) end),
+        register(erlide_rex, RpcPid)
+        
      end),
                 
     ok.
@@ -84,14 +91,11 @@ eval_raw(Str, Bindings) ->
 
 
 
-event_loop(SinkPid) ->
+io_event_loop() ->
     receive
-    stop ->
-        SinkPid ! stopped,
-        ok;
     Msg ->
-        SinkPid ! {event, Msg},
-        event_loop(SinkPid)
+        event(io_server, Msg),
+        io_event_loop()
     end.
 
 format(Fmt, Args) ->
@@ -158,3 +162,33 @@ execute(StrFun, Args) ->
   end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
+
+call(Rcvr, Msg) ->
+    call(Rcvr, Msg, infinity).
+
+call(Rcvr, Msg, Timeout) ->
+        erlide_rex ! {call, self(), Rcvr, Msg},
+    receive
+              Resp ->
+                  {reply, Resp}
+             after Timeout ->
+                 timeout
+                   end,
+    ok.
+
+cast(Rcvr, Msg) ->
+    erlide_rex ! {cast, Rcvr, Msg},
+    ok.
+
+event(Id, Msg) ->
+    erlide_rex ! {event, Id, Msg},
+    ok.
+
+rpc_loop(JavaNode) ->
+    receive
+       Msg ->
+           {rex, JavaNode} ! Msg,
+           rpc_loop(JavaNode)
+       end,
+    ok.
+

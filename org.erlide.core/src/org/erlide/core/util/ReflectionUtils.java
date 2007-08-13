@@ -19,10 +19,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-// import java.lang.reflect.Constructor;
-// import java.lang.reflect.Field;
-// import java.lang.reflect.Method;
-
 public class ReflectionUtils {
 
 	private ReflectionUtils() {

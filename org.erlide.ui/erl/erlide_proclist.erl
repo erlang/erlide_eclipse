@@ -23,7 +23,7 @@
 	 get_process_info/1
 	]).
 
-init(EventSinkPid) ->
+init(_EventSinkPid) ->
     process_list_init(),
     ok.
 
@@ -75,7 +75,7 @@ process_list_updater() ->
 	stop -> ok;
 	_ -> process_list_updater()
         after 5000 ->
-	    erlide_events ! {processlist, erlang:now(), self()},
+	    erlide_backend:event(processlist, {erlang:now(), self()}),
 	    process_list_updater()
     end.
 

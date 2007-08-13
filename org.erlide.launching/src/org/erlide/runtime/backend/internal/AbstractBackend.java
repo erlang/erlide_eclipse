@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
@@ -79,9 +80,9 @@ public abstract class AbstractBackend implements IBackend {
 		}
 	}
 
-	private ThreadLocalMbox ftMBox; // rpc and send
+	private ThreadLocalMbox ftMBox; // outgoing rpc and send
 
-	private OtpMbox ftEvBox; // events
+	private OtpMbox ftRpcBox; // ingoing rpc and events
 
 	// private static final boolean TRACE = false;
 
@@ -139,7 +140,7 @@ public abstract class AbstractBackend implements IBackend {
 				tries--;
 			}
 			ftMBox = new ThreadLocalMbox();
-			ftEvBox = fNode.createMbox("event_box");
+			ftRpcBox = fNode.createMbox("rex");
 			if (tries > 0) {
 				ErlLogger.log("connected to peer!");
 			} else {
@@ -291,7 +292,7 @@ public abstract class AbstractBackend implements IBackend {
 	protected void handleReceiveEvent() {
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
-				OtpErlangObject msg = ftEvBox.receive(1000);
+				OtpErlangObject msg = ftRpcBox.receive(1000);
 				if (msg == null)
 					continue;
 				ErlLogger
@@ -349,7 +350,6 @@ public abstract class AbstractBackend implements IBackend {
 		try {
 			final OtpMbox mbox = getMbox();
 			res = buildRpcCall(module, fun, args, mbox.self());
-
 			send("rex", res);
 			if (CHECK_RPC) {
 				ErlLogger.log("RPC :: " + res);
@@ -401,7 +401,7 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	private OtpMbox getEventBox() {
-		return ftEvBox;
+		return ftRpcBox;
 	}
 
 	public OtpErlangPid getEventPid() {
@@ -456,7 +456,7 @@ public abstract class AbstractBackend implements IBackend {
 		return getEventBox().receive();
 	}
 
-	public OtpErlangObject receiveEvent(long timeout) throws OtpErlangExit,
+	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
 		return getEventBox().receive(timeout);
 	}
@@ -503,5 +503,9 @@ public abstract class AbstractBackend implements IBackend {
 
 	public ErlRpcDaemon getRpcDaemon() {
 		return fRpcDaemon;
+	}
+
+	public List<IBackendEventListener> getEventListeners(String event) {
+		return fEventListeners.get(event);
 	}
 }

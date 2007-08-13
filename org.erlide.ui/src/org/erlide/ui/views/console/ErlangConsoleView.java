@@ -63,7 +63,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IErlEventListener;
+import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -71,7 +71,8 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangConsoleView extends ViewPart implements IErlEventListener {
+public class ErlangConsoleView extends ViewPart implements
+		IBackendEventListener {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -119,7 +120,7 @@ public class ErlangConsoleView extends ViewPart implements IErlEventListener {
 	public ErlangConsoleView() {
 		fDoc = new ErlConsoleDocument();
 		fBackend = BackendManager.getDefault().getIdeBackend();
-		fBackend.getRpcDaemon().addListener(this);
+		fBackend.addEventListener("io_server", this);
 
 		try {
 			Job j = new Job("shell opener") {
@@ -417,17 +418,6 @@ public class ErlangConsoleView extends ViewPart implements IErlEventListener {
 		return history;
 	}
 
-	public void handleEvent(final List<OtpErlangObject> msgs) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (!consoleText.isDisposed()) {
-					fDoc.add(msgs, consoleText.getCharCount());
-					refreshView();
-				}
-			}
-		});
-	}
-
 	private final class IoRequestContentProvider implements
 			IStructuredContentProvider {
 		public void dispose() {
@@ -555,5 +545,16 @@ public class ErlangConsoleView extends ViewPart implements IErlEventListener {
 
 	@Override
 	public void setFocus() {
+	}
+
+	public void eventReceived(final OtpErlangObject event) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				if (!consoleText.isDisposed()) {
+					fDoc.add(event, consoleText.getCharCount());
+					refreshView();
+				}
+			}
+		});
 	}
 }

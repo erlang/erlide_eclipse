@@ -11,6 +11,7 @@
 package org.erlide.runtime.backend;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.console.BackendShellManager;
@@ -116,7 +117,7 @@ public interface IBackend {
 	OtpErlangObject receiveEvent() throws OtpErlangExit,
 			OtpErlangDecodeException;
 
-	OtpErlangObject receiveEvent(long timeout) throws OtpErlangExit,
+	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
 	OtpErlangObject execute(String fun, OtpErlangObject[] args)
@@ -137,4 +138,6 @@ public interface IBackend {
 	boolean ping();
 
 	ErlRpcDaemon getRpcDaemon();
+
+	List<IBackendEventListener> getEventListeners(String event);
 }

@@ -29,6 +29,8 @@ public class ErlConsoleDocument {
 	}
 
 	public int add(OtpErlangObject msg, int start) {
+		if (!(msg instanceof OtpErlangTuple))
+			return 0;
 		IoRequest req = new IoRequest((OtpErlangTuple) msg);
 		req.setStart(start);
 
@@ -53,8 +55,8 @@ public class ErlConsoleDocument {
 		synchronized (requests) {
 			for (Object element : requests) {
 				IoRequest req = (IoRequest) element;
-				if (req.getStart() <= pos &&
-						req.getStart() + req.getLength() > pos) {
+				if (req.getStart() <= pos
+						&& req.getStart() + req.getLength() > pos) {
 					return req;
 				}
 			}
