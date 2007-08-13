@@ -471,4 +471,10 @@
           contentMergeViewerId="org.erlide.ui.compare.ErlContentViewerCreator"
           contentTypeId="org.erlide.core.content.erlang"/>
  </extension>
+   <extension
+         point="org.erlide.launching.codepath">
+      <bundle_dir
+            path="/ebin">
+      </bundle_dir>
+   </extension>
 </plugin>

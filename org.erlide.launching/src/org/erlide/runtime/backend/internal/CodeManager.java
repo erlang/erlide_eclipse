@@ -18,8 +18,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
@@ -37,7 +43,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class CodeManager implements ICodeManager {
+public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	private IBackend fBackend;
 
@@ -202,8 +208,8 @@ public class CodeManager implements ICodeManager {
 			try {
 				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
 						new OtpErlangAtom(moduleName)));
-				if (!((OtpErlangAtom) r).booleanValue() ||
-						!BackendManager.isDeveloper()) {
+				if (!((OtpErlangAtom) r).booleanValue()
+						|| !BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
 							"load_binary", new OtpErlangObject[] {
 									new OtpErlangAtom(moduleName),
@@ -242,8 +248,8 @@ public class CodeManager implements ICodeManager {
 			return false;
 		} else {
 			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\"" +
-					moduleName + ".beam\"," + aa + ").\n";
+			final String msg = "code:load_binary(" + moduleName + ",\""
+					+ moduleName + ".beam\"," + aa + ").\n";
 			try {
 				fBackend.sendToDefaultShell(msg);
 			} catch (final IOException e) {
@@ -312,8 +318,8 @@ public class CodeManager implements ICodeManager {
 		loadBootstrap("erlide_erpc", e);
 
 		try {
-			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port +
-					", false).\n");
+			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
+					+ ", false).\n");
 			fBackend.sendToDefaultShell("unlink(X).\n");
 		} catch (final IOException e1) {
 			e1.printStackTrace();
@@ -326,36 +332,51 @@ public class CodeManager implements ICodeManager {
 			return;
 		}
 
-		ErlLogger.log("loading plugin " + p.getClass());
+		final Bundle b = p.getBundle();
+		ErlLogger.log("loading plugin " + b.getSymbolicName());
 
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
 
-		final Bundle b = p.getBundle();
-		final String ver = fBackend.getCurrentVersion();
-		Enumeration e = b.getEntryPaths("/ebin/" + ver);
-		if (e == null || !e.hasMoreElements()) {
-			e = b.getEntryPaths("/ebin");
-		}
-		if (e == null) {
-			ErlLogger.log("* !!! error loading plugin " + p.getClass());
-			return;
-		}
-		while (e.hasMoreElements()) {
-			final String s = (String) e.nextElement();
-			final Path path = new Path(s);
-			if (path.getFileExtension() != null &&
-					"beam".compareTo(path.getFileExtension()) == 0) {
-				final String m = path.removeFileExtension().lastSegment();
-				// ErlLogger.log(" " + m);
-				try {
-					loadBeam(m, b.getEntry(s));
-				} catch (final Exception ex) {
-					ex.printStackTrace();
+		IExtensionRegistry reg = RegistryFactory.getRegistry();
+		reg.addRegistryChangeListener(this);
+		IConfigurationElement[] els = reg.getConfigurationElementsFor(
+				ErlangLaunchPlugin.PLUGIN_ID, "codepath");
+		for (IConfigurationElement el : els) {
+			IContributor c = el.getContributor();
+			if (c.getName().equals(b.getSymbolicName())) {
+				String dir_path = el.getAttribute("path");
+
+				ErlLogger.log("    " + dir_path);
+
+				final String ver = fBackend.getCurrentVersion();
+				Enumeration e = b.getEntryPaths(dir_path + "/" + ver);
+				if (e == null || !e.hasMoreElements()) {
+					e = b.getEntryPaths(dir_path);
+				}
+				if (e == null) {
+					ErlLogger.log("* !!! error loading plugin "
+							+ b.getSymbolicName());
+					return;
+				}
+				while (e.hasMoreElements()) {
+					final String s = (String) e.nextElement();
+					final Path path = new Path(s);
+					if (path.getFileExtension() != null
+							&& "beam".compareTo(path.getFileExtension()) == 0) {
+						final String m = path.removeFileExtension()
+								.lastSegment();
+						// ErlLogger.log(" " + m);
+						try {
+							loadBeam(m, b.getEntry(s));
+						} catch (final Exception ex) {
+							ex.printStackTrace();
+						}
+					}
 				}
 			}
 		}
-		ErlLogger.log("*done! loading plugin " + p.getClass());
+		ErlLogger.log("*done! loading plugin " + b.getSymbolicName());
 	}
 
 	/**
@@ -398,8 +419,8 @@ public class CodeManager implements ICodeManager {
 		while (e.hasMoreElements()) {
 			final String s = (String) e.nextElement();
 			final Path path = new Path(s);
-			if (path.getFileExtension() != null &&
-					"beam".compareTo(path.getFileExtension()) == 0) {
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
 				unloadBeam(m);
 			}
@@ -450,4 +471,9 @@ public class CodeManager implements ICodeManager {
 		}
 	}
 
+	public void registryChanged(IRegistryChangeEvent event) {
+		System.out.println("??"
+				+ event.getExtensionDeltas()[0].getExtensionPoint()
+						.getUniqueIdentifier());
+	}
 }

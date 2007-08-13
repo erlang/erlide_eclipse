@@ -3,17 +3,19 @@
 <schema targetNamespace="org.erlide.launching">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.erlide.launching" id="backends" name="backends"/>
+         <meta.schema plugin="org.erlide.launching" id="codepath" name="codepath"/>
       </appInfo>
       <documentation>
-         This extension is used to add support for new Erlang backends, who must implement the &lt;code&gt;org.erlide.core.backend.IBackend&lt;/code&gt; interface.
+         defines additions to a backend&apos;s codepath. 
+
+- &quot;bundle&quot; refers to code inside a jar. This code is loaded when the plugin gets activated
       </documentation>
    </annotation>
 
    <element name="extension">
       <complexType>
-         <sequence>
-            <element ref="backend" minOccurs="1" maxOccurs="unbounded"/>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="bundle_dir"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,30 +44,13 @@
       </complexType>
    </element>
 
-   <element name="backend">
+   <element name="bundle_dir">
       <complexType>
-         <attribute name="name" type="string" use="required">
+         <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  specify the relaive path inside the plugin&apos;s bundle of the directory containing .beam files
                </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.runtime.backend.IBackend"/>
-               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -76,7 +61,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         0.3.6.8
+         [Enter the first release in which this extension point appears.]
       </documentation>
    </annotation>
 
@@ -85,12 +70,7 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         &lt;pre&gt;
-      &lt;backend
-            class=&quot;org.erlide.core.backend.InternalBackend&quot;
-            id=&quot;internal&quot;
-            name=&quot;Internal backend&quot;/&gt;
-&lt;/pre&gt;
+         [Enter extension point usage example here.]
       </documentation>
    </annotation>
 
