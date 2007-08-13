@@ -79,7 +79,9 @@ process_list_updater() ->
         erlide_backend:cast('org.erlide.runtime.backend.ErlRpcDaemon', testing, []),
         R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1, 'end', {999, self()}], 2000),
                 io:format(">>>> ~p~n", [R]),
-        process_list_updater()
+        %%R1=erlide_backend:call(erlang:make_ref(), atesting, [1, 'end', {999, erlang:now()}], 2000),
+        %%        io:format("#### ~p~n", [R1]),
+                process_list_updater()
     end.
 
 
