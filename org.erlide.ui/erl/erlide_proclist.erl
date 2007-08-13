@@ -76,7 +76,10 @@ process_list_updater() ->
 	_ -> process_list_updater()
         after 5000 ->
 	    erlide_backend:event(processlist, {erlang:now(), self()}),
-	    process_list_updater()
+        erlide_backend:cast('org.erlide.runtime.backend.ErlRpcDaemon', testing, []),
+        R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1, 'end', {999, self()}], 2000),
+                io:format(">>>> ~p~n", [R]),
+        process_list_updater()
     end.
 
 

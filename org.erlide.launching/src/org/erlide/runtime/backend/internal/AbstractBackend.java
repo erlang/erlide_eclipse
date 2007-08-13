@@ -494,8 +494,7 @@ public abstract class AbstractBackend implements IBackend {
 	public void init_erlang() {
 		fRpcDaemon = new ErlRpcDaemon(this);
 		try {
-			rpc(ERL_BACKEND, "init", getEventPid(), new OtpErlangAtom(fNode
-					.node()));
+			rpc(ERL_BACKEND, "init", new OtpErlangAtom(fNode.node()));
 		} catch (ErlangRpcException e) {
 			e.printStackTrace();
 		}

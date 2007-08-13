@@ -14,7 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/2,
+-export([init/1,
          
          parse_term/1,
          eval/1,
@@ -28,14 +28,14 @@
          
          execute/2,
          
-         call/2,
          call/3,
-         cast/2,
+         call/4,
+         cast/3,
          event/2
 
 ]).
 
-init(EventSinkPid, JavaNode) ->
+init(JavaNode) ->
     spawn(fun()->
         Pid = spawn(fun() -> io_event_loop() end),
         erlide_io_server:start(),
@@ -163,21 +163,22 @@ execute(StrFun, Args) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-call(Rcvr, Msg) ->
-    call(Rcvr, Msg, infinity).
+call(Rcvr, Msg, Args) ->
+    call(Rcvr, Msg, Args, infinity).
 
-call(Rcvr, Msg, Timeout) ->
-        erlide_rex ! {call, self(), Rcvr, Msg},
+call(Rcvr, Msg, Args, Timeout) ->
+        erlide_rex ! {call, self(), Rcvr, Msg, Args},
     receive
-              Resp ->
-                  {reply, Resp}
+              {ok, Resp} ->
+                  {reply, Resp};
+                       Err ->
+                           {error, Err}
              after Timeout ->
                  timeout
-                   end,
-    ok.
+                   end.
 
-cast(Rcvr, Msg) ->
-    erlide_rex ! {cast, Rcvr, Msg},
+cast(Rcvr, Msg, Args) ->
+    erlide_rex ! {cast, Rcvr, Msg, Args},
     ok.
 
 event(Id, Msg) ->
