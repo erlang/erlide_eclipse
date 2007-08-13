@@ -169,6 +169,7 @@ public class ErlRpcDaemon implements IBackendListener {
 				try {
 					return callMethod(rcvr, method, args);
 				} catch (Exception e) {
+					ErlLogger.log("RPC: bad RPC: " + e.getMessage());
 					return new OtpErlangTuple(new OtpErlangObject[] {
 							new OtpErlangAtom("error"),
 							new OtpErlangString(String.format("Bad RPC: %s%n",
@@ -176,6 +177,7 @@ public class ErlRpcDaemon implements IBackendListener {
 				}
 
 			} else {
+				ErlLogger.log("RPC: unknown receiver: " + ref);
 				return new OtpErlangTuple(new OtpErlangObject[] {
 						new OtpErlangAtom("error"),
 						new OtpErlangString(String.format(
@@ -189,12 +191,14 @@ public class ErlRpcDaemon implements IBackendListener {
 				Class clazz = Class.forName(clazzName);
 				return callMethod(clazz, method, args);
 			} catch (Exception e) {
+				ErlLogger.log("RPC: bad RPC: " + e.getMessage());
 				return new OtpErlangTuple(new OtpErlangObject[] {
 						new OtpErlangAtom("error"),
 						new OtpErlangString(String.format("Bad RPC: %s%n", e
 								.getMessage())) });
 			}
 		} else {
+			ErlLogger.log("RPC: unknown receiver: " + target);
 			return new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
