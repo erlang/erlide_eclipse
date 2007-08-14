@@ -13,14 +13,15 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.ErlUtils;
 import org.erlide.runtime.ErlangLaunchPlugin;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -68,7 +69,9 @@ public class ErlRpcDaemon implements IBackendListener {
 					}
 					return Status.OK_STATUS;
 				} finally {
-					schedule(100);
+					if (ErlangLaunchPlugin.getDefault().getBundle().getState() != Bundle.STOPPING) {
+						schedule(100);
+					}
 				}
 			}
 		};
@@ -192,9 +195,9 @@ public class ErlRpcDaemon implements IBackendListener {
 			parms = null;
 		}
 
-		if (target instanceof OtpErlangLong) {
+		if (target instanceof OtpErlangRef) {
 			// object call
-			Object rcvr = ErlUtils.getTarget((OtpErlangLong) target);
+			Object rcvr = ErlUtils.getTarget((OtpErlangRef) target);
 			if (rcvr != null) {
 				try {
 					return callMethod(rcvr, method.atomValue(), parms);
@@ -239,7 +242,7 @@ public class ErlRpcDaemon implements IBackendListener {
 	private OtpErlangObject callMethod(Object rcvr, String method, Object[] args)
 			throws Exception {
 		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
-		Method meth;
+		Method meth; // = invoke(cls, args);
 		boolean many;
 		try {
 			Class[] params;
@@ -279,12 +282,13 @@ public class ErlRpcDaemon implements IBackendListener {
 				many = false;
 			} catch (NoSuchMethodException ee) {
 				meth = cls.getMethod(method, Class
-						.forName("[Lcom.ericsson.otp.erlang.OtpErlangObject;"));
+						.forName("[Ljava.lang.Object;"));
 				many = true;
 			}
 		}
 		try {
 			// meth.setAccessible(true);
+			System.out.println("¤¤ " + many + " " + meth.isVarArgs());
 			Object o = many ? meth.invoke(rcvr, (Object) args) : meth.invoke(
 					rcvr, args);
 			if (VERBOSE) {
@@ -313,17 +317,20 @@ public class ErlRpcDaemon implements IBackendListener {
 		return m;
 	}
 
-	public static Object[] testing(OtpErlangObject arg1) {
+	public static Object[] testing(Object arg1) {
 		return new Object[] { 64, "hej", arg1 };
 	}
 
-	public static Object testing(OtpErlangObject arg1, OtpErlangObject arg2) {
+	public static String testing(String arg1) {
+		return arg1 + arg1;
+	}
+
+	public static Object testing(Object arg1, Object arg2) {
 		return arg1;
 	}
 
-	public static Object testing(OtpErlangObject[] args) {
-		return new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("many"), new OtpErlangTuple(args) });
+	public static Object testing(Object... args) {
+		return args;
 	}
 
 	// /////////////////////////////////////////////////

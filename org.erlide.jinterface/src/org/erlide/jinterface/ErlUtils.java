@@ -21,6 +21,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -216,7 +217,7 @@ public class ErlUtils {
 			}
 			return new OtpErlangTuple(vv);
 		} else {
-			return new OtpErlangLong(registerTarget(o));
+			return registerTarget(o);
 		}
 	}
 
@@ -261,40 +262,31 @@ public class ErlUtils {
 		}
 	}
 
-	private static Map<Long, Object> objects = new HashMap<Long, Object>();;
-	private static long refid = 1;
+	private static Map<OtpErlangRef, Object> objects = new HashMap<OtpErlangRef, Object>();;
+	private static int refid = 1;
 
-	public static Long registerTarget(Object o) {
-		long ref = refid++;
+	public static OtpErlangRef registerTarget(Object o) {
+		OtpErlangRef ref = mkref();
 		objects.put(ref, o);
 		System.out.println("    >>" + ref + " " + o);
 		return ref;
 	}
 
-	public static Object getTarget(Long ref) {
+	public static Object getTarget(OtpErlangRef ref) {
 		System.out.println("    <<" + ref + " " + objects.get(ref));
 		return objects.get(ref);
 	}
 
-	public static Object getTarget(OtpErlangLong ref) {
-		long r;
-		try {
-			r = ref.longValue();
-		} catch (OtpErlangRangeException e) {
-			return null;
-		}
-		System.out.println("    <<" + ref + " " + objects.get(r));
-		return objects.get(r);
-	}
-
-	public static void unregisterTarget(Long ref) {
+	public static void unregisterTarget(OtpErlangRef ref) {
 		objects.remove(ref);
 	}
 
-	public static Class erlang2javaType(Object o) {
-		if (o instanceof OtpErlangObject) {
-			return OtpErlangObject.class;
-		} else if (o instanceof OtpErlangString) {
+	// TODO define an exception type here
+	public static Class erlang2javaType(Object o) throws Exception {
+		if (!(o instanceof OtpErlangObject)) {
+			throw new Exception("unsupported erlang2java type");
+		}
+		if (o instanceof OtpErlangString) {
 			return String.class;
 		} else if (o instanceof OtpErlangInt) {
 			return Integer.class;
@@ -308,8 +300,15 @@ public class ErlUtils {
 			return List.class;
 		} else if (o instanceof OtpErlangTuple) {
 			return Object[].class;
+		} else if (o instanceof OtpErlangRef) {
+			return objects.get(o).getClass();
 		} else {
-			return null;// ??new OtpErlangLong(registerTarget(o));
+			return o.getClass();
 		}
+	}
+
+	private static OtpErlangRef mkref() {
+		return new OtpErlangRef("dummy_erlide", new int[] { refid++, refid++,
+				refid++ }, 0);
 	}
 }

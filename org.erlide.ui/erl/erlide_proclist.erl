@@ -84,12 +84,14 @@ process_list_updater() ->
         Rx=erlide_backend:call(R0, get, ["alfa"], 2000),
         io:format(">>>> ~p~n", [Rx]),
                 
-        %%R1=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1], 2000),
-        %%io:format(">>>> ~p~n", [R1]),
-        %%R2=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [2, 'end'], 2000),
-        %%io:format(">>>> ~p~n", [R2]),
-        %%R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [3, 'end', {999, self()}], 2000),
-        %%io:format(">>>> ~p~n", [R]),
+        R1=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1], 2000),
+        io:format(">>>> ~p~n", [R1]),
+        R1a=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, ["A"], 2000),
+        io:format(">>>> ~p~n", [R1a]),
+                R2=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [2, 'end'], 2000),
+        io:format(">>>> ~p~n", [R2]),
+        R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [3.14, 'end', {999, self()}], 2000),
+        io:format(">>>> ~p~n", [R]),
         process_list_updater()
     end.
 
