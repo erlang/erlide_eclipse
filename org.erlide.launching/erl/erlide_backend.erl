@@ -181,8 +181,8 @@ uicall(Rcvr, Msg, Args, Timeout) ->
 call0(Kind, Rcvr, Msg, Args, Timeout) ->
         erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
     receive
-              {ok, Resp} ->
-                  {reply, Resp};
+              {reply, Resp} ->
+                  {ok, Resp};
                        Err ->
                            {error, Err}
              after Timeout ->

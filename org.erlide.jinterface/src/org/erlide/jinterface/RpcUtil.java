@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangDouble;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -33,85 +34,90 @@ public class RpcUtil {
 	private static Map<OtpErlangRef, Object> objects = new HashMap<OtpErlangRef, Object>();
 	private static int refid = 1;
 
+	// eclipse uses different classloaders for each plugin. this one is non-ui
+	// so we have to set it from a ui one (when that one is initialized) so that
+	// we can access even the UI classes (which are actually most interesting)
+	public static ClassLoader loader = RpcUtil.class.getClassLoader();
+
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject java2erlang(Object o) {
-		if (o instanceof OtpErlangObject) {
-			return (OtpErlangObject) o;
-		} else if (o instanceof String) {
-			return new OtpErlangString((String) o);
-		} else if (o instanceof Integer) {
-			return new OtpErlangInt((Integer) o);
-		} else if (o instanceof Long) {
-			return new OtpErlangLong((Long) o);
-		} else if (o instanceof Double) {
-			return new OtpErlangDouble((Double) o);
-		} else if (o instanceof Boolean) {
-			return new OtpErlangAtom((Boolean) o ? "true" : "false");
-		} else if (o instanceof List<?>) {
-			Object[] v = ((List<?>) o).toArray(new Object[] {});
+	public static OtpErlangObject java2erlang(Object obj) {
+		if (obj instanceof OtpErlangObject) {
+			return (OtpErlangObject) obj;
+		} else if (obj instanceof String) {
+			return new OtpErlangString((String) obj);
+		} else if (obj instanceof Integer) {
+			return new OtpErlangInt((Integer) obj);
+		} else if (obj instanceof Long) {
+			return new OtpErlangLong((Long) obj);
+		} else if (obj instanceof Double) {
+			return new OtpErlangDouble((Double) obj);
+		} else if (obj instanceof Boolean) {
+			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
+		} else if (obj instanceof List<?>) {
+			Object[] v = ((List<?>) obj).toArray(new Object[] {});
 			OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
 			}
 			return new OtpErlangList(vv);
-		} else if (o instanceof Object[]) {
-			Object[] v = ((Object[]) o);
+		} else if (obj instanceof Object[]) {
+			Object[] v = ((Object[]) obj);
 			OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
 			}
 			return new OtpErlangTuple(vv);
 		} else {
-			return registerTarget(o);
+			return registerTarget(obj);
 		}
 	}
 
 	@SuppressWarnings("boxing")
-	public static Object erlang2java(OtpErlangObject o) {
+	public static Object erlang2java(OtpErlangObject obj) {
 		try {
-			if (o instanceof OtpErlangString) {
-				return ((OtpErlangString) o).stringValue();
-			} else if (o instanceof OtpErlangInt) {
-				return ((OtpErlangInt) o).intValue();
-			} else if (o instanceof OtpErlangLong) {
-				return ((OtpErlangLong) o).longValue();
-			} else if (o instanceof OtpErlangDouble) {
-				return ((OtpErlangDouble) o).doubleValue();
-			} else if (o instanceof OtpErlangAtom) {
-				String a = ((OtpErlangAtom) o).atomValue();
+			if (obj instanceof OtpErlangString) {
+				return ((OtpErlangString) obj).stringValue();
+			} else if (obj instanceof OtpErlangInt) {
+				return ((OtpErlangInt) obj).intValue();
+			} else if (obj instanceof OtpErlangLong) {
+				return ((OtpErlangLong) obj).longValue();
+			} else if (obj instanceof OtpErlangDouble) {
+				return ((OtpErlangDouble) obj).doubleValue();
+			} else if (obj instanceof OtpErlangAtom) {
+				String a = ((OtpErlangAtom) obj).atomValue();
 				if ("true".equals(a)) {
 					return true;
 				} else if ("false".equals(a)) {
 					return false;
 				} else {
-					return 0;
+					return obj;
 				}
-			} else if (o instanceof OtpErlangList) {
-				OtpErlangObject[] v = ((OtpErlangList) o).elements();
+			} else if (obj instanceof OtpErlangList) {
+				OtpErlangObject[] v = ((OtpErlangList) obj).elements();
 				Object[] vv = new Object[v.length];
 				for (int i = 0; i < v.length; i++) {
 					vv[i] = erlang2java(v[i]);
 				}
 				return Arrays.asList(vv);
-			} else if (o instanceof OtpErlangTuple) {
-				OtpErlangObject[] v = ((OtpErlangTuple) o).elements();
+			} else if (obj instanceof OtpErlangTuple) {
+				OtpErlangObject[] v = ((OtpErlangTuple) obj).elements();
 				Object[] vv = new Object[v.length];
 				for (int i = 0; i < v.length; i++) {
 					vv[i] = erlang2java(v[i]);
 				}
 				return vv;
 			} else {
-				return o;
+				return obj;
 			}
 		} catch (Exception e) {
-			return o;
+			return obj;
 		}
 	}
 
-	public static OtpErlangRef registerTarget(Object o) {
+	public static OtpErlangRef registerTarget(Object obj) {
 		OtpErlangRef ref = mkref();
-		objects.put(ref, o);
-		System.out.println("    >>" + ref + " " + o);
+		objects.put(ref, obj);
+		System.out.println("    >>" + ref + " " + obj);
 		return ref;
 	}
 
@@ -125,28 +131,34 @@ public class RpcUtil {
 	}
 
 	// TODO define an exception type here
-	public static Class erlang2javaType(Object o) throws Exception {
-		if (!(o instanceof OtpErlangObject)) {
+	// TODO we could return several alternatives
+	public static Class erlang2javaType(Object obj) throws Exception {
+		if (!(obj instanceof OtpErlangObject)) {
 			throw new Exception("unsupported erlang2java type");
 		}
-		if (o instanceof OtpErlangString) {
+		if (obj instanceof OtpErlangString) {
 			return String.class;
-		} else if (o instanceof OtpErlangInt) {
+		} else if (obj instanceof OtpErlangInt) {
 			return Integer.class;
-		} else if (o instanceof OtpErlangLong) {
+		} else if (obj instanceof OtpErlangLong) {
 			return Long.class;
-		} else if (o instanceof OtpErlangDouble) {
+		} else if (obj instanceof OtpErlangDouble) {
 			return Double.class;
-		} else if (o instanceof OtpErlangAtom) {
-			return Boolean.class;
-		} else if (o instanceof OtpErlangList) {
+		} else if (obj instanceof OtpErlangAtom) {
+			OtpErlangAtom a = (OtpErlangAtom) obj;
+			if ("true".equals(a.atomValue()) || "false".equals(a.atomValue())) {
+				return Boolean.class;
+			} else {
+				return OtpErlangAtom.class;
+			}
+		} else if (obj instanceof OtpErlangList) {
 			return List.class;
-		} else if (o instanceof OtpErlangTuple) {
+		} else if (obj instanceof OtpErlangTuple) {
 			return Object[].class;
-		} else if (o instanceof OtpErlangRef) {
-			return objects.get(o).getClass();
+		} else if (obj instanceof OtpErlangRef) {
+			return objects.get(obj).getClass();
 		} else {
-			return o.getClass();
+			return obj.getClass();
 		}
 	}
 
@@ -166,12 +178,12 @@ public class RpcUtil {
 				debug("-- RPC: " + msg);
 				OtpErlangAtom kind = (OtpErlangAtom) t.elementAt(0);
 				OtpErlangObject receiver = t.elementAt(1);
-				OtpErlangAtom method = (OtpErlangAtom) t.elementAt(2);
+				OtpErlangObject target = t.elementAt(2);
 				if ("call".equals(kind.atomValue())) {
 					OtpErlangList args = buildArgs(t.elementAt(3));
 					OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
 
-					OtpErlangObject result = execute(receiver, method, args
+					OtpErlangObject result = execute(receiver, target, args
 							.elements());
 					rpcHandler.reply(from, result);
 
@@ -180,19 +192,19 @@ public class RpcUtil {
 					OtpErlangList args = buildArgs(t.elementAt(4));
 
 					// TODO how to use Display.asyncExec() in a non-ui plugin?
-					OtpErlangObject result = execute(receiver, method, args
+					OtpErlangObject result = execute(receiver, target, args
 							.elements());
 					rpcHandler.reply(from, result);
 
 				} else if ("cast".equals(kind.atomValue())) {
 					OtpErlangList args = buildArgs(t.elementAt(3));
 
-					execute(receiver, method, args.elements());
+					execute(receiver, target, args.elements());
 
 				} else if ("event".equals(kind.atomValue())) {
 					String id = ((OtpErlangAtom) receiver).atomValue();
 
-					rpcHandler.event(id, method);
+					rpcHandler.event(id, target);
 
 				} else {
 					log("unknown message type: " + msg);
@@ -223,7 +235,7 @@ public class RpcUtil {
 	}
 
 	private static OtpErlangObject execute(OtpErlangObject target,
-			OtpErlangAtom method, OtpErlangObject[] args) {
+			OtpErlangObject method, OtpErlangObject[] args) {
 
 		debug("EXEC:: " + target + ":" + method + " " + args + " >"
 				+ (args == null ? 0 : args.length));
@@ -233,18 +245,20 @@ public class RpcUtil {
 			parms = new Object[args.length];
 			for (int i = 0; i < args.length; i++) {
 				// parms[i] = args[i];
-				parms[i] = RpcUtil.erlang2java(args[i]);
+				parms[i] = erlang2java(args[i]);
 			}
 		} else {
 			parms = null;
 		}
 
+		// TODO the resolver here can be smarter (check combinations of type
+		// parameters, check hierarchy, etc)
 		if (target instanceof OtpErlangRef) {
 			// object call
-			Object rcvr = RpcUtil.getTarget((OtpErlangRef) target);
+			Object rcvr = getTarget((OtpErlangRef) target);
 			if (rcvr != null) {
 				try {
-					return callMethod(rcvr, method.atomValue(), parms);
+					return callMethod(rcvr, getName(method), parms);
 				} catch (Exception e) {
 					log("bad RPC: " + e.getMessage());
 					return new OtpErlangTuple(new OtpErlangObject[] {
@@ -261,12 +275,14 @@ public class RpcUtil {
 								"Bad RPC: unknown object ref %s%n", target)) });
 			}
 
-		} else if (target instanceof OtpErlangAtom) {
+		} else if (target instanceof OtpErlangAtom
+				|| target instanceof OtpErlangString
+				|| target instanceof OtpErlangBinary) {
 			// static call
-			String clazzName = ((OtpErlangAtom) target).atomValue();
+			String clazzName = getName(target);
 			try {
-				Class clazz = Class.forName(clazzName);
-				return callMethod(clazz, method.atomValue(), parms);
+				Class clazz = Class.forName(clazzName, true, loader);
+				return callMethod(clazz, getName(method), parms);
 			} catch (Exception e) {
 				log("bad RPC: " + e.getMessage());
 				return new OtpErlangTuple(new OtpErlangObject[] {
@@ -283,11 +299,24 @@ public class RpcUtil {
 		}
 	}
 
+	private static String getName(OtpErlangObject target) {
+		if (target instanceof OtpErlangAtom) {
+			return ((OtpErlangAtom) target).atomValue();
+		} else if (target instanceof OtpErlangString) {
+			return ((OtpErlangString) target).stringValue();
+		} else if (target instanceof OtpErlangBinary) {
+			return new String(((OtpErlangBinary) target).binaryValue());
+		} else {
+			return target.toString();
+		}
+	}
+
 	private static OtpErlangObject callMethod(Object rcvr, String method,
 			Object[] args) throws Exception {
 		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
 		Method meth; // = invoke(cls, args);
 		boolean many;
+
 		try {
 			Class[] params;
 			if (args != null) {
@@ -330,6 +359,7 @@ public class RpcUtil {
 				many = true;
 			}
 		}
+
 		try {
 			// meth.setAccessible(true);
 			System.out.println("&& " + many + " " + meth.isVarArgs());
@@ -359,8 +389,9 @@ public class RpcUtil {
 	}
 
 	private static void debug(String s) {
-		if (VERBOSE)
+		if (VERBOSE) {
 			System.out.println("ErlUtils: " + s);
+		}
 	}
 
 	// /////////////////////// test rpc from erlang

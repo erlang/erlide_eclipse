@@ -9,5 +9,6 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.ericsson.otp.erlang,
  org.erlide.jinterface
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true

@@ -31,6 +31,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
@@ -108,6 +109,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		if (BackendManager.isDeveloper()) {
 			BackendManagerPopup.init();
 		}
+
+		// set this classloader to be used with erlang rpc
+		RpcUtil.loader = getClass().getClassLoader();
 	}
 
 	/**
