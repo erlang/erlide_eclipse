@@ -293,8 +293,9 @@ public abstract class AbstractBackend implements IBackend {
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				OtpErlangObject msg = ftRpcBox.receive(1000);
-				if (msg == null)
+				if (msg == null) {
 					continue;
+				}
 				ErlLogger
 						.log("handleReceiveEvent() - Event! " + msg.toString());
 				if (msg instanceof OtpErlangAtom) {

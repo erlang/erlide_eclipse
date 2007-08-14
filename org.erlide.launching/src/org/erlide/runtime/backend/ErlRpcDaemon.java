@@ -5,25 +5,28 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.ErlUtils;
 import org.erlide.runtime.ErlangLaunchPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlRpcDaemon implements IBackendListener {
+
+	private static final boolean VERBOSE = true;
 
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
@@ -32,13 +35,8 @@ public class ErlRpcDaemon implements IBackendListener {
 
 	private boolean fStopJob = false;
 
-	private Map<OtpErlangRef, Object> objects;
-
-	private int refid = 1;
-
 	public ErlRpcDaemon(IBackend b) {
 		fBackend = b;
-		objects = new HashMap<OtpErlangRef, Object>();
 
 		BackendManager.getDefault().addBackendListener(this);
 
@@ -99,19 +97,20 @@ public class ErlRpcDaemon implements IBackendListener {
 		for (OtpErlangObject msg : msgs) {
 			try {
 				OtpErlangTuple t = (OtpErlangTuple) msg;
-				ErlLogger.log("RPC: " + msg);
+				if (VERBOSE) {
+					ErlLogger.log("-RPC: " + msg);
+				}
 				OtpErlangAtom kind = (OtpErlangAtom) t.elementAt(0);
 				if ("call".equals(kind.atomValue())) {
 					final OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
 					final OtpErlangObject target = t.elementAt(2);
 					final OtpErlangAtom method = (OtpErlangAtom) t.elementAt(3);
-					final OtpErlangList args = (OtpErlangList) t.elementAt(4);
+					final OtpErlangList args = buildArgs(t.elementAt(4));
 					Job job = new Job("rpc") {
 						@Override
 						protected IStatus run(IProgressMonitor monitor) {
 							OtpErlangObject result = execute(target, method,
 									args.elements());
-							System.out.println("reply to " + from);
 							fBackend.send(from, new OtpErlangTuple(
 									new OtpErlangObject[] {
 											new OtpErlangAtom("ok"), result }));
@@ -125,7 +124,7 @@ public class ErlRpcDaemon implements IBackendListener {
 				} else if ("cast".equals(kind.atomValue())) {
 					final OtpErlangObject receiver = t.elementAt(1);
 					final OtpErlangAtom method = (OtpErlangAtom) t.elementAt(2);
-					final OtpErlangList args = (OtpErlangList) t.elementAt(3);
+					final OtpErlangList args = buildArgs(t.elementAt(3));
 					Job job = new Job("rpc") {
 						@Override
 						protected IStatus run(IProgressMonitor monitor) {
@@ -156,32 +155,63 @@ public class ErlRpcDaemon implements IBackendListener {
 		}
 	}
 
+	private OtpErlangList buildArgs(OtpErlangObject a) throws Exception {
+		final OtpErlangList args;
+		if (a instanceof OtpErlangList) {
+			args = (OtpErlangList) a;
+		} else if (a instanceof OtpErlangString) {
+			String ss = ((OtpErlangString) a).stringValue();
+			byte[] bytes = ss.getBytes();
+			OtpErlangObject[] str = new OtpErlangObject[ss.length()];
+			for (int i = 0; i < ss.length(); i++) {
+				str[i] = new OtpErlangInt(bytes[i]);
+			}
+			args = new OtpErlangList(str);
+		} else {
+			throw new Exception("bad RPC argument list: " + a);
+		}
+		return args;
+	}
+
 	private OtpErlangObject execute(OtpErlangObject target,
 			OtpErlangAtom method, OtpErlangObject[] args) {
 
-		ErlLogger.log("EXEC:: " + target + ":" + method + " " + args);
+		if (VERBOSE) {
+			ErlLogger.log("EXEC:: " + target + ":" + method + " " + args + " >"
+					+ (args == null ? 0 : args.length));
+		}
 
-		if (target instanceof OtpErlangRef) {
+		Object[] parms;
+		if (args != null) {
+			parms = new Object[args.length];
+			for (int i = 0; i < args.length; i++) {
+				// parms[i] = args[i];
+				parms[i] = ErlUtils.erlang2java(args[i]);
+			}
+		} else {
+			parms = null;
+		}
+
+		if (target instanceof OtpErlangLong) {
 			// object call
-			OtpErlangObject ref = target;
-			Object rcvr = objects.get(ref);
+			Object rcvr = ErlUtils.getTarget((OtpErlangLong) target);
 			if (rcvr != null) {
 				try {
-					return callMethod(rcvr, method, args);
+					return callMethod(rcvr, method.atomValue(), parms);
 				} catch (Exception e) {
 					ErlLogger.log("RPC: bad RPC: " + e.getMessage());
 					return new OtpErlangTuple(new OtpErlangObject[] {
 							new OtpErlangAtom("error"),
-							new OtpErlangString(String.format("Bad RPC: %s%n",
-									e.getMessage())) });
+							new OtpErlangString(String.format("Bad RPC: %s", e
+									.getMessage())) });
 				}
 
 			} else {
-				ErlLogger.log("RPC: unknown receiver: " + ref);
+				ErlLogger.log("RPC: unknown receiver: " + target);
 				return new OtpErlangTuple(new OtpErlangObject[] {
 						new OtpErlangAtom("error"),
 						new OtpErlangString(String.format(
-								"Bad RPC: unknown object ref %s%n", ref)) });
+								"Bad RPC: unknown object ref %s%n", target)) });
 			}
 
 		} else if (target instanceof OtpErlangAtom) {
@@ -189,12 +219,12 @@ public class ErlRpcDaemon implements IBackendListener {
 			String clazzName = ((OtpErlangAtom) target).atomValue();
 			try {
 				Class clazz = Class.forName(clazzName);
-				return callMethod(clazz, method, args);
+				return callMethod(clazz, method.atomValue(), parms);
 			} catch (Exception e) {
 				ErlLogger.log("RPC: bad RPC: " + e.getMessage());
 				return new OtpErlangTuple(new OtpErlangObject[] {
 						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format("Bad RPC: %s%n", e
+						new OtpErlangString(String.format("Bad RPC: %s", e
 								.getMessage())) });
 			}
 		} else {
@@ -202,64 +232,100 @@ public class ErlRpcDaemon implements IBackendListener {
 			return new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
-							"Bad RPC: unknown receiver %s%n", target)) });
+							"Bad RPC: unknown receiver %s", target)) });
 		}
 	}
 
-	private OtpErlangObject callMethod(Object rcvr, OtpErlangAtom method,
-			OtpErlangObject[] args) throws Exception {
+	private OtpErlangObject callMethod(Object rcvr, String method, Object[] args)
+			throws Exception {
 		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
-		Method meth = cls.getMethod(method.atomValue(), Class
-				.forName("[Lcom.ericsson.otp.erlang.OtpErlangObject;"));
+		Method meth;
+		boolean many;
+		try {
+			Class[] params;
+			if (args != null) {
+				params = new Class[args.length];
+				for (int i = 0; i < args.length; i++) {
+					// params[i] = Class
+					// .forName("com.ericsson.otp.erlang.OtpErlangObject");
+					params[i] = args[i].getClass();
+					// params[i] =ErlUtils.erlang2javaType(args[i]);
+					System.out.println("? " + i + " "
+							+ args[i].getClass().getName() + " : "
+							+ params[i].getName());
+				}
+			} else {
+				params = null;
+			}
+			meth = cls.getMethod(method, params);
+			many = false;
+		} catch (NoSuchMethodException e) {
+			try {
+				Class[] params;
+				if (args != null) {
+					params = new Class[args.length];
+					for (int i = 0; i < args.length; i++) {
+						params[i] = Class.forName("java.lang.Object");
+						// params[i] = args[i].getClass();
+						// params[i] =ErlUtils.erlang2javaType(args[i]);
+						System.out.println("? " + i + " "
+								+ args[i].getClass().getName() + " : "
+								+ params[i].getName());
+					}
+				} else {
+					params = null;
+				}
+				meth = cls.getMethod(method, params);
+				many = false;
+			} catch (NoSuchMethodException ee) {
+				meth = cls.getMethod(method, Class
+						.forName("[Lcom.ericsson.otp.erlang.OtpErlangObject;"));
+				many = true;
+			}
+		}
 		try {
 			// meth.setAccessible(true);
-			Object o = meth.invoke(rcvr, (Object) args);
-			System.out.format("%s() returned %s%n", meth, o);
+			Object o = many ? meth.invoke(rcvr, (Object) args) : meth.invoke(
+					rcvr, args);
+			if (VERBOSE) {
+				ErlLogger.log(String.format("** %s() returned %s", meth, o));
+			}
 
-			if (o instanceof OtpErlangObject)
-				return (OtpErlangObject) o;
-			else if (o instanceof String)
-				return new OtpErlangString((String) o);
-			else
-				return new OtpErlangString("???" + o.toString());
+			return ErlUtils.java2erlang(o);
 
 			// Handle any exceptions thrown by method to be invoked.
 		} catch (InvocationTargetException x) {
 			Throwable cause = x.getCause();
+			ErlLogger.log(String.format("invocation of %s failed: %s", meth,
+					cause.getMessage()));
 			return new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
-							"invocation of %s failed: %s%n", meth, cause
+							"invocation of %s failed: %s", meth, cause
 									.getMessage())) });
 		}
 	}
 
-	// test rpc from erlang
-	public static OtpErlangObject testing(OtpErlangObject... args) {
+	// /////////////////////// test rpc from erlang
+	public static Object testing() {
+		HashMap<String, String> m = new HashMap<String, String>();
+		m.put("alfa", "beta");
+		return m;
+	}
+
+	public static Object[] testing(OtpErlangObject arg1) {
+		return new Object[] { 64, "hej", arg1 };
+	}
+
+	public static Object testing(OtpErlangObject arg1, OtpErlangObject arg2) {
+		return arg1;
+	}
+
+	public static Object testing(OtpErlangObject[] args) {
 		return new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("hej"), new OtpErlangList(args) });
+				new OtpErlangAtom("many"), new OtpErlangTuple(args) });
 	}
 
-	// test rpc from erlang
-	public OtpErlangObject atesting(OtpErlangObject... args) {
-		return new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("hej"), new OtpErlangList(args) });
-	}
-
-	public OtpErlangRef registerTarget(Object o) {
-		OtpErlangRef ref = new OtpErlangRef(fBackend.getLabel(), refid++, 0);
-		objects.put(ref, o);
-		return ref;
-	}
-
-	public void unregisterTarget(Object o) {
-		OtpErlangRef ref = new OtpErlangRef(fBackend.getLabel(), refid++, 0);
-		if (o instanceof OtpErlangRef) {
-			ref = (OtpErlangRef) o;
-		} else {
-			ref = new OtpErlangRef(fBackend.getLabel(), refid++, 0);
-		}
-		objects.remove(ref);
-	}
+	// /////////////////////////////////////////////////
 
 }

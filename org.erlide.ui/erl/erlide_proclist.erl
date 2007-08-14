@@ -74,14 +74,23 @@ process_list_updater() ->
     receive
 	stop -> ok;
 	_ -> process_list_updater()
-        after 5000 ->
-	    erlide_backend:event(processlist, {erlang:now(), self()}),
-        erlide_backend:cast('org.erlide.runtime.backend.ErlRpcDaemon', testing, []),
-        R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1, 'end', {999, self()}], 2000),
-                io:format(">>>> ~p~n", [R]),
-        %%R1=erlide_backend:call(erlang:make_ref(), atesting, [1, 'end', {999, erlang:now()}], 2000),
-        %%        io:format("#### ~p~n", [R1]),
-                process_list_updater()
+    after 5000 ->
+	    %%erlide_backend:event(processlist, {erlang:now(), self()}),
+        
+        %%erlide_backend:cast('org.erlide.runtime.backend.ErlRpcDaemon', testing, []),
+        
+        {reply, R0}=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [], 2000),
+        io:format(">>>> ~p~n", [R0]),
+        Rx=erlide_backend:call(R0, get, ["alfa"], 2000),
+        io:format(">>>> ~p~n", [Rx]),
+                
+        %%R1=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1], 2000),
+        %%io:format(">>>> ~p~n", [R1]),
+        %%R2=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [2, 'end'], 2000),
+        %%io:format(">>>> ~p~n", [R2]),
+        %%R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [3, 'end', {999, self()}], 2000),
+        %%io:format(">>>> ~p~n", [R]),
+        process_list_updater()
     end.
 
 
