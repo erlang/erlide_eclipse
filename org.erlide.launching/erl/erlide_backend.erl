@@ -30,6 +30,8 @@
          
          call/3,
          call/4,
+         uicall/3,
+         uicall/4,
          cast/3,
          event/2
 
@@ -164,10 +166,20 @@ execute(StrFun, Args) ->
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 call(Rcvr, Msg, Args) ->
-    call(Rcvr, Msg, Args, infinity).
+    call0(call, Rcvr, Msg, Args, infinity).
 
 call(Rcvr, Msg, Args, Timeout) ->
-        erlide_rex ! {call, self(), Rcvr, Msg, Args},
+    call0(call, Rcvr, Msg, Args, Timeout).
+
+uicall(Rcvr, Msg, Args) ->
+    call0(uicall, Rcvr, Msg, Args, infinity).
+
+uicall(Rcvr, Msg, Args, Timeout) ->
+    call0(uicall, Rcvr, Msg, Args, Timeout).
+
+
+call0(Kind, Rcvr, Msg, Args, Timeout) ->
+        erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
     receive
               {ok, Resp} ->
                   {reply, Resp};

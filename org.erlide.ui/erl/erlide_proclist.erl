@@ -75,22 +75,22 @@ process_list_updater() ->
 	stop -> ok;
 	_ -> process_list_updater()
     after 5000 ->
-	    %%erlide_backend:event(processlist, {erlang:now(), self()}),
+	    erlide_backend:event(processlist, {erlang:now(), self()}),
         
-        %%erlide_backend:cast('org.erlide.runtime.backend.ErlRpcDaemon', testing, []),
+        %%erlide_backend:cast('org.erlide.jinterface.RpcUtil', testing, []),
         
-        {reply, R0}=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [], 2000),
+        {reply, R0}=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [], 2000),
         io:format(">>>> ~p~n", [R0]),
         Rx=erlide_backend:call(R0, get, ["alfa"], 2000),
         io:format(">>>> ~p~n", [Rx]),
                 
-        R1=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [1], 2000),
+        R1=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [1], 2000),
         io:format(">>>> ~p~n", [R1]),
-        R1a=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, ["A"], 2000),
+        R1a=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, ["A"], 2000),
         io:format(">>>> ~p~n", [R1a]),
-                R2=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [2, 'end'], 2000),
+                R2=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [2, 'end'], 2000),
         io:format(">>>> ~p~n", [R2]),
-        R=erlide_backend:call('org.erlide.runtime.backend.ErlRpcDaemon', testing, [3.14, 'end', {999, self()}], 2000),
+        R=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [3.14, 'end', {999, self()}], 2000),
         io:format(">>>> ~p~n", [R]),
         process_list_updater()
     end.
