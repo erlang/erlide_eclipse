@@ -79,7 +79,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
-				fBackend.rpc("code", "add_patha", new OtpErlangString(path));
+				fBackend.rpc("code", "add_patha", (Object) path);
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
 			}
@@ -212,10 +212,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 				if (!((OtpErlangAtom) r).booleanValue()
 						|| !BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
-							"load_binary", new OtpErlangObject[] {
-									new OtpErlangAtom(moduleName),
-									new OtpErlangString(moduleName + ".erl"),
-									bin }));
+							"load_binary", new OtpErlangAtom(moduleName),
+							new OtpErlangString(moduleName + ".erl"), bin));
 					if (BackendManager.isDeveloper()) {
 						fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
 								moduleName));

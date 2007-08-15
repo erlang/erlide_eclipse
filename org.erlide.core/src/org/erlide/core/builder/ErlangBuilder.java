@@ -907,17 +907,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				includes[i] = new OtpErlangString(includedirs[i]);
 			}
 			final OtpErlangList includeList = new OtpErlangList(includes);
-			final RpcResult r = BackendManager.getDefault().get(project).rpc(
+			final RpcResult r = BackendManager.getDefault().get(project).rpct(
 					MODULE,
 					"compile",
-					new OtpErlangObject[] { new OtpErlangString(fn),
-							new OtpErlangString(outputdir),
-							includeList
-							// FIXME add an option for this
-							,
-							new OtpErlangList(
-									new OtpErlangObject[] { new OtpErlangAtom(
-											"debug_info") }) }, 20000);
+					20000,
+					fn,
+					outputdir,
+					includeList
+					// FIXME add an option for this
+					,
+					new OtpErlangList(
+							new OtpErlangObject[] { new OtpErlangAtom(
+									"debug_info") }));
 			return BackendUtil.checkRpc(r);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -931,11 +932,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			ErlLogger.log("!!! compiling " + fn);
 		}
 		try {
-			final RpcResult r = BackendManager.getDefault().get(project).rpc(
-					MODULE,
-					"compile_yrl",
-					new OtpErlangObject[] { new OtpErlangString(fn),
-							new OtpErlangString(output) }, 30000);
+			final RpcResult r = BackendManager.getDefault().get(project).rpct(
+					MODULE, "compile_yrl", 30000, fn, output);
 			if (ErlangBuilder.DEBUG) {
 				ErlLogger.log("!!! r== " + r);
 			}

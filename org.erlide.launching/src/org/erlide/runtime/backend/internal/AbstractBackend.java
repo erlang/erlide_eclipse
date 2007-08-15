@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
@@ -169,74 +170,16 @@ public abstract class AbstractBackend implements IBackend {
 		fRpcDaemon.stop();
 	}
 
-	/**
-	 * @throws ErlangRpcException
-	 * 
-	 * @param m
-	 * @param f
-	 * @return OtpErlangObject
-	 */
-	public RpcResult rpc(String m, String f) throws ErlangRpcException {
-		return rpc(m, f, new OtpErlangObject[] {});
-	}
-
-	/**
-	 * @throws ErlangRpcException
-	 * 
-	 * @param m
-	 * @param f
-	 * @param a1
-	 * @return OtpErlangObject
-	 */
-	public RpcResult rpc(String m, String f, OtpErlangObject... a)
+	public RpcResult rpc(String m, String f, Object... a)
 			throws ErlangRpcException {
-		return rpc(m, f, a, 10000);
-	}
-
-	/**
-	 * @throws ErlangRpcException
-	 * @param m
-	 * @param f
-	 * @param a
-	 * @return OtpErlangObject
-	 * @throws ErlangParseException
-	 */
-	public RpcResult rpc(String m, String f, String[] a)
-			throws ErlangParseException, ErlangRpcException {
-		final OtpErlangObject[] args = new OtpErlangObject[a.length];
-
-		for (int i = 0; i < a.length; i++) {
-			args[i] = parseTerm(a[i]);
-		}
-
-		return rpc(m, f, args, 2000);
-	}
-
-	/**
-	 * @param string
-	 * @return OtpErlangobject
-	 * @throws ErlangParseException
-	 */
-	private OtpErlangObject parseTerm(String string)
-			throws ErlangParseException {
-		OtpErlangObject r = null;
-		try {
-			r = BackendUtil.checkRpc(rpc(ERL_BACKEND, "parse_term",
-					new OtpErlangString(string)));
-			ErlLogger.log("PARSE=" + r);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			throw new ErlangParseException("Could not parse term \"" + string
-					+ "\"");
-		}
-		return r;
+		return rpct(m, f, 10000, a);
 	}
 
 	/**
 	 */
-	public RpcResult rpc(String m, String f, OtpErlangObject[] a, int timeout)
+	public RpcResult rpct(String m, String f, int timeout, Object... a)
 			throws ErlangRpcException {
-		return sendRpc(m, f, a, timeout);
+		return sendRpc(m, f, timeout, a);
 	}
 
 	/**
@@ -244,12 +187,12 @@ public abstract class AbstractBackend implements IBackend {
 	 * @param dbgPid
 	 * @param msg
 	 */
-	public void send(OtpErlangPid pid, OtpErlangObject msg) {
-		getMbox().send(pid, msg);
+	public void send(OtpErlangPid pid, Object msg) {
+		getMbox().send(pid, RpcUtil.java2erlang(msg));
 	}
 
-	public void send(String name, OtpErlangObject msg) {
-		getMbox().send(name, fPeer.node(), msg);
+	public void send(String name, Object msg) {
+		getMbox().send(name, fPeer.node(), RpcUtil.java2erlang(msg));
 	}
 
 	/**
@@ -340,10 +283,18 @@ public abstract class AbstractBackend implements IBackend {
 		return fCodeManager;
 	}
 
-	private RpcResult sendRpc(String module, String fun,
-			OtpErlangObject[] args, int timeout) {
+	private RpcResult sendRpc(String module, String fun, int timeout,
+			Object... args0) {
 		if (!fConnected) {
 			return null;
+		}
+		if (args0 == null) {
+			args0 = new OtpErlangObject[] {};
+		}
+		OtpErlangObject[] args = null;
+		args = new OtpErlangObject[args0.length];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = RpcUtil.java2erlang(args0[i]);
 		}
 
 		RpcResult result = null;
@@ -447,9 +398,9 @@ public abstract class AbstractBackend implements IBackend {
 		} while (!ok);
 	}
 
-	public OtpErlangObject receive(int i) throws OtpErlangExit,
+	public OtpErlangObject receive(int timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
-		return getMbox().receive(i);
+		return getMbox().receive(timeout);
 	}
 
 	public OtpErlangObject receiveEvent() throws OtpErlangExit,
@@ -462,12 +413,10 @@ public abstract class AbstractBackend implements IBackend {
 		return getEventBox().receive(timeout);
 	}
 
-	public OtpErlangObject execute(String fun, OtpErlangObject[] args)
+	public OtpErlangObject execute(String fun, OtpErlangObject... args)
 			throws ErlangRpcException {
-		final OtpErlangObject[] allargs = new OtpErlangObject[2];
-		allargs[0] = new OtpErlangString(fun);
-		allargs[1] = new OtpErlangList(args);
-		return rpc(ERL_BACKEND, "execute", allargs).getValue();
+		return rpc(ERL_BACKEND, "execute", new OtpErlangString(fun),
+				new OtpErlangList(args)).getValue();
 	}
 
 	public BackendShellManager getShellManager() {
@@ -501,11 +450,29 @@ public abstract class AbstractBackend implements IBackend {
 		}
 	}
 
-	public ErlRpcDaemon getRpcDaemon() {
-		return fRpcDaemon;
-	}
-
 	public List<IBackendEventListener> getEventListeners(String event) {
 		return fEventListeners.get(event);
 	}
+
+	/**
+	 * @param string
+	 * @return OtpErlangobject
+	 * @throws ErlangParseException
+	 */
+	@SuppressWarnings("unused")
+	private OtpErlangObject parseTerm(String string)
+			throws ErlangParseException {
+		OtpErlangObject r = null;
+		try {
+			r = BackendUtil.checkRpc(rpc(ERL_BACKEND, "parse_term",
+					new OtpErlangString(string)));
+			ErlLogger.log("PARSE=" + r);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw new ErlangParseException("Could not parse term \"" + string
+					+ "\"");
+		}
+		return r;
+	}
+
 }

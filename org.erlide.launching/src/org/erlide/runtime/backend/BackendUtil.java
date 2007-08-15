@@ -37,14 +37,14 @@ public class BackendUtil {
 		return format(b, fmt, new OtpErlangObject[] { arg });
 	}
 
-	public static String format(IBackend b, String fmt, OtpErlangObject[] args) {
+	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
 		final OtpErlangObject[] args1 = new OtpErlangObject[2];
 		args1[0] = new OtpErlangString(fmt);
 		args1[1] = new OtpErlangList(args);
 
 		try {
-			final String r = b.rpc(IBackend.ERL_BACKEND, "format", args1)
-					.toString();
+			final String r = b.rpc(IBackend.ERL_BACKEND, "format",
+					(Object) args1).toString();
 			return r.substring(1, r.length() - 1);
 		} catch (final ErlangRpcException e) {
 			e.printStackTrace();
@@ -64,16 +64,16 @@ public class BackendUtil {
 			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "parse_term",
 					new OtpErlangString(string)));
 		} catch (final Exception e) {
-			throw new ErlangParseException("Could not parse term \"" + string +
-					"\"");
+			throw new ErlangParseException("Could not parse term \"" + string
+					+ "\"");
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new ErlangParseException("Could not parse term \"" + string +
-				"\": " + t1.elementAt(1).toString());
+		throw new ErlangParseException("Could not parse term \"" + string
+				+ "\": " + t1.elementAt(1).toString());
 	}
 
 	/**
@@ -88,16 +88,16 @@ public class BackendUtil {
 			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "scan_string",
 					new OtpErlangString(string)));
 		} catch (final Exception e) {
-			throw new BackendException("Could not tokenize string \"" + string +
-					"\": " + e.getMessage());
+			throw new BackendException("Could not tokenize string \"" + string
+					+ "\": " + e.getMessage());
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new BackendException("Could not tokenize string \"" + string +
-				"\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not tokenize string \"" + string
+				+ "\": " + t1.elementAt(1).toString());
 	}
 
 	/**
@@ -112,16 +112,16 @@ public class BackendUtil {
 			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "parse_string",
 					new OtpErlangString(string)));
 		} catch (final BackendException e) {
-			throw new BackendException("Could not parse string \"" + string +
-					"\": " + e.getMessage());
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": " + e.getMessage());
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new BackendException("Could not parse string \"" + string +
-				"\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not parse string \"" + string
+				+ "\": " + t1.elementAt(1).toString());
 	}
 
 	public static OtpErlangObject ok(OtpErlangObject v0) {
@@ -143,8 +143,8 @@ public class BackendUtil {
 			r1 = checkRpc(b.rpc("erlide_backend", "pretty_print",
 					new OtpErlangString(text + ".")));
 		} catch (final BackendException e) {
-			throw new BackendException("Could not parse string \"" + text +
-					"\": " + e.getMessage());
+			throw new BackendException("Could not parse string \"" + text
+					+ "\": " + e.getMessage());
 		}
 		return ((OtpErlangString) r1).stringValue();
 	}
@@ -177,7 +177,7 @@ public class BackendUtil {
 						bindings };
 			}
 
-			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "eval", args));
+			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "eval", (Object) args));
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final boolean ok = !"error".equals(((OtpErlangAtom) t.elementAt(0))

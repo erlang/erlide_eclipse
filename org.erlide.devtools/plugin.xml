@@ -10,6 +10,9 @@
        <menu
              id="org.erlide.devtools.rpcstubgen.menu"
              label="RPC Stub generator*">
+          <separator
+                name="org.erlide.devtools.separator2">
+          </separator>
        </menu>
        <action
              class="org.erlide.devtools.RpcStubGenAction"

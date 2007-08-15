@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -43,35 +42,21 @@ public interface IBackend {
 	 * 
 	 * @param m
 	 * @param f
+	 * @param a
 	 * @return OtpErlangObject
 	 */
-	RpcResult rpc(String m, String f) throws ErlangRpcException;
+	RpcResult rpc(String m, String f, Object... a) throws ErlangRpcException;
 
 	/**
 	 * @throws ErlangRpcException
 	 * 
 	 * @param m
 	 * @param f
+	 * @param timeout
 	 * @param a
 	 * @return OtpErlangObject
 	 */
-	RpcResult rpc(String m, String f, OtpErlangObject... a)
-			throws ErlangRpcException;
-
-	/**
-	 * @throws ErlangRpcException
-	 * @param m
-	 * @param f
-	 * @param a
-	 * @return OtpErlangObject
-	 * @throws ErlangParseException
-	 */
-	RpcResult rpc(String m, String f, String[] a) throws ErlangParseException,
-			ErlangRpcException;
-
-	/**
-	 */
-	RpcResult rpc(String m, String f, OtpErlangObject[] a, int timeout)
+	RpcResult rpct(String m, String f, int timeout, Object... a)
 			throws ErlangRpcException;
 
 	/**
@@ -79,9 +64,9 @@ public interface IBackend {
 	 * @param pid
 	 * @param msg
 	 */
-	void send(OtpErlangPid pid, OtpErlangObject msg);
+	void send(OtpErlangPid pid, Object msg);
 
-	void send(String name, OtpErlangObject msg);
+	void send(String name, Object msg);
 
 	/**
 	 * Method addEventListener
@@ -120,7 +105,7 @@ public interface IBackend {
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
-	OtpErlangObject execute(String fun, OtpErlangObject[] args)
+	OtpErlangObject execute(String fun, OtpErlangObject... args)
 			throws ErlangRpcException;
 
 	BackendShellManager getShellManager();
@@ -136,8 +121,6 @@ public interface IBackend {
 	String getLabel();
 
 	boolean ping();
-
-	ErlRpcDaemon getRpcDaemon();
 
 	List<IBackendEventListener> getEventListeners(String event);
 }

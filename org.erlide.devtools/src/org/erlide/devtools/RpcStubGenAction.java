@@ -21,8 +21,6 @@ public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 		if (fSelection == null) {
 			return;
 		}
-		System.out.println("@@" + fSelection.getText());
-
 		Class target;
 		try {
 			target = Class.forName(fSelection.getText());
@@ -32,10 +30,11 @@ public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 
 			// StubGenerator.tofile(target, null);
 
-			System.out.println(StubGenerator.generate(target));
+			String text = StubGenerator.generate(target);
+			System.out.println(text);
 
 		} catch (ClassNotFoundException e) {
-			System.out.format("class %s not found", fSelection.getText());
+			System.out.format("class %s not found%n", fSelection.getText());
 		}
 
 	}
@@ -43,6 +42,8 @@ public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof TextSelection) {
 			fSelection = (TextSelection) selection;
+		} else {
+			fSelection = null;
 		}
 	}
 
