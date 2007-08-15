@@ -30,7 +30,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcUtil {
 
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
+
 	private static Map<OtpErlangRef, Object> objects = new HashMap<OtpErlangRef, Object>();
 	private static int refid = 1;
 
@@ -177,15 +178,19 @@ public class RpcUtil {
 				OtpErlangTuple t = (OtpErlangTuple) msg;
 				debug("-- RPC: " + msg);
 				OtpErlangAtom kind = (OtpErlangAtom) t.elementAt(0);
-				OtpErlangObject receiver = t.elementAt(1);
-				OtpErlangObject target = t.elementAt(2);
+				final OtpErlangObject receiver = t.elementAt(1);
+				final OtpErlangObject target = t.elementAt(2);
 				if ("call".equals(kind.atomValue())) {
-					OtpErlangList args = buildArgs(t.elementAt(3));
-					OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
+					final OtpErlangList args = buildArgs(t.elementAt(3));
+					final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
 
-					OtpErlangObject result = execute(receiver, target, args
-							.elements());
-					rpcHandler.reply(from, result);
+					rpcHandler.executeRpc(new IRpcExecuter() {
+						public void execute() {
+							OtpErlangObject result = RpcUtil.execute(receiver,
+									target, args.elements());
+							rpcHandler.rpcReply(from, result);
+						}
+					});
 
 				} else if ("uicall".equals(kind.atomValue())) {
 					OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
@@ -194,7 +199,7 @@ public class RpcUtil {
 					// TODO how to use Display.asyncExec() in a non-ui plugin?
 					OtpErlangObject result = execute(receiver, target, args
 							.elements());
-					rpcHandler.reply(from, result);
+					rpcHandler.rpcReply(from, result);
 
 				} else if ("cast".equals(kind.atomValue())) {
 					OtpErlangList args = buildArgs(t.elementAt(3));
@@ -204,7 +209,7 @@ public class RpcUtil {
 				} else if ("event".equals(kind.atomValue())) {
 					String id = ((OtpErlangAtom) receiver).atomValue();
 
-					rpcHandler.event(id, target);
+					rpcHandler.rpcEvent(id, target);
 
 				} else {
 					log("unknown message type: " + msg);
@@ -385,12 +390,12 @@ public class RpcUtil {
 	}
 
 	private static void log(String s) {
-		System.out.println("ErlUtils: " + s);
+		System.out.println("RpcUtil: " + s);
 	}
 
 	private static void debug(String s) {
 		if (VERBOSE) {
-			System.out.println("ErlUtils: " + s);
+			log(s);
 		}
 	}
 

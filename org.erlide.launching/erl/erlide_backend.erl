@@ -26,15 +26,7 @@
          scan_string/1,
          parse_string/1,
          
-         execute/2,
-         
-         call/3,
-         call/4,
-         uicall/3,
-         uicall/4,
-         cast/3,
-         event/2
-
+         execute/2
 ]).
 
 init(JavaNode) ->
@@ -45,7 +37,7 @@ init(JavaNode) ->
         
         watch_eclipse(JavaNode),
         
-        RpcPid = spawn(fun() -> rpc_loop(JavaNode) end),
+        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
         register(erlide_rex, RpcPid)
         
      end),
@@ -96,7 +88,7 @@ eval_raw(Str, Bindings) ->
 io_event_loop() ->
     receive
     Msg ->
-        event(io_server, Msg),
+        jrpc:event(io_server, Msg),
         io_event_loop()
     end.
 
@@ -164,44 +156,3 @@ execute(StrFun, Args) ->
   end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-
-call(Rcvr, Msg, Args) ->
-    call0(call, Rcvr, Msg, Args, infinity).
-
-call(Rcvr, Msg, Args, Timeout) ->
-    call0(call, Rcvr, Msg, Args, Timeout).
-
-uicall(Rcvr, Msg, Args) ->
-    call0(uicall, Rcvr, Msg, Args, infinity).
-
-uicall(Rcvr, Msg, Args, Timeout) ->
-    call0(uicall, Rcvr, Msg, Args, Timeout).
-
-
-call0(Kind, Rcvr, Msg, Args, Timeout) ->
-        erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
-    receive
-              {reply, Resp} ->
-                  {ok, Resp};
-                       Err ->
-                           {error, Err}
-             after Timeout ->
-                 timeout
-                   end.
-
-cast(Rcvr, Msg, Args) ->
-    erlide_rex ! {cast, Rcvr, Msg, Args},
-    ok.
-
-event(Id, Msg) ->
-    erlide_rex ! {event, Id, Msg},
-    ok.
-
-rpc_loop(JavaNode) ->
-    receive
-       Msg ->
-           {rex, JavaNode} ! Msg,
-           rpc_loop(JavaNode)
-       end,
-    ok.
-

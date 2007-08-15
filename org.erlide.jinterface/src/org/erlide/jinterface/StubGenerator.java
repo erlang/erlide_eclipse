@@ -91,7 +91,7 @@ public class StubGenerator {
 		return clazz.getName().replaceAll("\\.", "_");
 	}
 
-	private void tofile(Class clazz, IFile out) {
+	public void tofile(Class clazz, IFile out) {
 
 		String s = generate(clazz);
 		String fn = module(clazz);

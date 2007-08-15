@@ -2,7 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="backends" name="backends" schema="schema/backends.exsd"/>
-   <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -62,7 +61,7 @@
             id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
    <extension
-         point="org.erlide.launching.codepath">
+         point="org.erlide.jinterface.codepath">
       <bundle_dir
             path="/ebin">
       </bundle_dir>

@@ -75,35 +75,34 @@ process_list_updater() ->
 	stop -> ok;
 	_ -> process_list_updater()
     after 5000 ->
-	    erlide_backend:event(processlist, {erlang:now(), self()}),
+	    jrpc:event(processlist, {erlang:now(), self()}),
         
         %%erlide_backend:cast('org.erlide.jinterface.RpcUtil', testing, []),
         
-        {ok, R0}=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [], 2000),
+        {ok, R0}=jrpc:call('org.erlide.jinterface.RpcUtil', testing, [], 2000),
         io:format(">>>> ~p~n", [R0]),
-        Rx=erlide_backend:call(R0, get, ["alfa"], 2000),
-                
+        Rx=jrpc:call(R0, get, ["alfa"], 2000),
         io:format(">>>> ~p~n", [Rx]),
-                java_util_HashMap:put(R0, "gamma", "delta"),
-        Rx1=java_util_HashMap:get(R0, "gamma"),
+
+        %%java_util_HashMap:put(R0, "gamma", "delta"),
+        %%Rx1=java_util_HashMap:get(R0, "gamma"),
+        %%io:format(">>>> ~p~n", [Rx1]),
                 
-        io:format(">>>> ~p~n", [Rx1]),
-                
-        R1=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [1], 2000),
+        R1=jrpc:call('org.erlide.jinterface.RpcUtil', testing, [1], 2000),
         io:format(">>>> ~p~n", [R1]),
-        R1a=erlide_backend:call(<<"org.erlide.jinterface.RpcUtil">>, "testing", ["A"], 2000),
+        R1a=jrpc:call(<<"org.erlide.jinterface.RpcUtil">>, "testing", ["A"], 2000),
         io:format(">>>> ~p~n", [R1a]),
-                R2=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [2, 'end'], 2000),
+        R2=jrpc:call('org.erlide.jinterface.RpcUtil', testing, [2, 'end'], 2000),
         io:format(">>>> ~p~n", [R2]),
-        R=erlide_backend:call('org.erlide.jinterface.RpcUtil', testing, [3.14, 'end', {999, self()}], 2000),
+        R=jrpc:call('org.erlide.jinterface.RpcUtil', testing, [3.14, 'end', {999, self()}], 2000),
         io:format(">>>> ~p~n", [R]),
         
         P = 'org.eclipse.core.runtime.Platform',
-        io:format("---- ~p~n", [erlide_backend:call(P, getApplicationArgs, [], 2000)]),
-        io:format("---- ~p~n", [erlide_backend:call(P, knownOSValues, [], 2000)]),
+        io:format("---- ~p~n", [jrpc:call(P, getApplicationArgs, [], 2000)]),
+        io:format("---- ~p~n", [jrpc:call(P, knownOSValues, [], 2000)]),
                 
         U = 'org.eclipse.ui.PlatformUI',
-        io:format("++++ ~p~n", [erlide_backend:call(U, getWorkbench, [], 2000)]),
+        io:format("++++ ~p~n", [jrpc:call(U, getWorkbench, [], 2000)]),
                         
         process_list_updater()
     end.

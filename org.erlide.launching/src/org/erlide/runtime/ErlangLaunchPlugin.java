@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.EpmdWatchJob;
 import org.osgi.framework.BundleContext;
@@ -62,6 +63,7 @@ public class ErlangLaunchPlugin extends Plugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 
+		BackendManager.getDefault().addPlugin(InterfacePlugin.getDefault());
 		BackendManager.getDefault().addPlugin(this);
 	}
 

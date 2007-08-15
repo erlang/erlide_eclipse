@@ -20,6 +20,8 @@ import org.osgi.framework.BundleContext;
  */
 public class InterfacePlugin extends Plugin {
 
+	public static final String PLUGIN_ID = "org.erlide.jinterface";
+
 	// The shared instance.
 	private static InterfacePlugin plugin;
 

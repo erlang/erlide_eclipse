@@ -618,7 +618,7 @@ public class ErlangPlugin extends Plugin {
 			if (key.equals(ErlangCore.CORE_ENCODING)) {
 				continue; // skipped, contributed by resource prefs
 			}
-			final String value = (String) newOptions.get(key);
+			final String value = newOptions.get(key);
 			preferences.setValue(key, value);
 		}
 
@@ -669,8 +669,10 @@ public class ErlangPlugin extends Plugin {
 		if (BackendManager.isDeveloper()) {
 			dev = " erlide developer version ***";
 		}
-		System.out.println("*** starting Erlide v" +
-				getBundle().getHeaders().get("Bundle-Version") + " ***" + dev);
+		System.out
+				.println("*** starting Erlide v"
+						+ getBundle().getHeaders().get("Bundle-Version")
+						+ " ***" + dev);
 
 		BackendManager.getDefault().addPlugin(this);
 
@@ -752,8 +754,8 @@ public class ErlangPlugin extends Plugin {
 
 		for (IProject element : projects) {
 			try {
-				if (element.isOpen() &&
-						element.hasNature(ErlangPlugin.NATURE_ID)) {
+				if (element.isOpen()
+						&& element.hasNature(ErlangPlugin.NATURE_ID)) {
 					final ErlangProjectProperties prefs = new ErlangProjectProperties(
 							element);
 					final String path = element.getLocation().append(

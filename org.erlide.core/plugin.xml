@@ -48,7 +48,7 @@
       <persistent value="true"/>
    </extension>
    <extension
-         point="org.erlide.launching.codepath">
+         point="org.erlide.jinterface.codepath">
       <bundle_dir
             path="/ebin">
       </bundle_dir>

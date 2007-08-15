@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.jinterface.IRpcExecuter;
 import org.erlide.jinterface.IRpcHandler;
 import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -19,8 +20,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
-
-	private static final boolean VERBOSE = true;
 
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
@@ -88,7 +87,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		}
 	}
 
-	public void event(String id, OtpErlangObject event) {
+	public void rpcEvent(String id, OtpErlangObject event) {
 		List<IBackendEventListener> list = fBackend.getEventListeners(id);
 		if (list != null) {
 			for (IBackendEventListener client : list) {
@@ -97,9 +96,13 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		}
 	}
 
-	public void reply(OtpErlangPid from, OtpErlangObject result) {
+	public void rpcReply(OtpErlangPid from, OtpErlangObject result) {
 		fBackend.send(from, new OtpErlangTuple(new OtpErlangObject[] {
 				new OtpErlangAtom("reply"), result }));
+	}
+
+	public void executeRpc(IRpcExecuter rpcExecuter) {
+		rpcExecuter.execute();
 	}
 
 }

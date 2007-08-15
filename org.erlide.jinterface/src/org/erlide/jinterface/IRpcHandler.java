@@ -14,8 +14,10 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IRpcHandler {
 
-	void event(String id, OtpErlangObject event);
+	void executeRpc(IRpcExecuter rpcExecuter);
 
-	void reply(OtpErlangPid from, OtpErlangObject result);
+	void rpcEvent(String id, OtpErlangObject event);
+
+	void rpcReply(OtpErlangPid from, OtpErlangObject result);
 
 }
