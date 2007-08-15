@@ -101,8 +101,16 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 				new OtpErlangAtom("reply"), result }));
 	}
 
-	public void executeRpc(IRpcExecuter rpcExecuter) {
-		rpcExecuter.execute();
+	public void executeRpc(final IRpcExecuter rpcExecuter) {
+		Job job = new Job("rpc") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				rpcExecuter.execute();
+				return Status.OK_STATUS;
+			}
+		};
+		job.setSystem(true);
+		job.setPriority(Job.SHORT);
+		job.schedule();
 	}
-
 }

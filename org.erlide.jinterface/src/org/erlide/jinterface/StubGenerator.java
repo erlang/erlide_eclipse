@@ -15,12 +15,16 @@ import org.eclipse.core.runtime.CoreException;
 public class StubGenerator {
 
 	public static String generate(Class clazz) {
-		return generate(clazz.getName());
+		return generate(clazz.getName(), clazz.getClassLoader());
 	}
 
-	public static String generate(String className) {
+	public static String generate(Class clazz, ClassLoader cl) {
+		return generate(clazz.getName(), cl);
+	}
+
+	public static String generate(String className, ClassLoader cl) {
 		try {
-			Class clazz = Class.forName(className);
+			Class clazz = Class.forName(className, true, cl);
 
 			String moduleName = module(clazz);
 
@@ -33,7 +37,7 @@ public class StubGenerator {
 
 	private static String generate(Class clazz, String moduleName) {
 		StringBuffer buf = new StringBuffer();
-		buf.append(String.format("-module(%s).%n-compile(export_al).%n%n",
+		buf.append(String.format("-module(%s).%n-compile(export_all).%n%n",
 				moduleName));
 
 		// TODO add constructors
@@ -59,7 +63,11 @@ public class StubGenerator {
 			printParams(statik, buf, params);
 			buf.append(") ->\n");
 
-			buf.append("  erlide_backend:call(");
+			if (method.getReturnType() == Void.TYPE) {
+				buf.append("  jrpc:cast(");
+			} else {
+				buf.append("  jrpc:call(");
+			}
 			if (statik) {
 				buf.append("<<\"" + clazz.getName() + "\">>, ");
 			} else {
@@ -91,7 +99,7 @@ public class StubGenerator {
 		return clazz.getName().replaceAll("\\.", "_");
 	}
 
-	public void tofile(Class clazz, IFile out) {
+	public static void tofile(Class clazz, IFile out) {
 
 		String s = generate(clazz);
 		String fn = module(clazz);

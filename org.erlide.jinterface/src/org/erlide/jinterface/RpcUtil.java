@@ -107,6 +107,8 @@ public class RpcUtil {
 					vv[i] = erlang2java(v[i]);
 				}
 				return vv;
+			} else if (obj instanceof OtpErlangRef) {
+				return getTarget((OtpErlangRef) obj);
 			} else {
 				return obj;
 			}
@@ -193,18 +195,26 @@ public class RpcUtil {
 					});
 
 				} else if ("uicall".equals(kind.atomValue())) {
-					OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
-					OtpErlangList args = buildArgs(t.elementAt(4));
+					final OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
+					final OtpErlangList args = buildArgs(t.elementAt(4));
 
-					// TODO how to use Display.asyncExec() in a non-ui plugin?
-					OtpErlangObject result = execute(receiver, target, args
-							.elements());
-					rpcHandler.rpcReply(from, result);
+					// TODO how to mark this as executable in UI thread?
+					rpcHandler.executeRpc(new IRpcExecuter() {
+						public void execute() {
+							OtpErlangObject result = RpcUtil.execute(receiver,
+									target, args.elements());
+							rpcHandler.rpcReply(from, result);
+						}
+					});
 
 				} else if ("cast".equals(kind.atomValue())) {
-					OtpErlangList args = buildArgs(t.elementAt(3));
+					final OtpErlangList args = buildArgs(t.elementAt(3));
 
-					execute(receiver, target, args.elements());
+					rpcHandler.executeRpc(new IRpcExecuter() {
+						public void execute() {
+							RpcUtil.execute(receiver, target, args.elements());
+						}
+					});
 
 				} else if ("event".equals(kind.atomValue())) {
 					String id = ((OtpErlangAtom) receiver).atomValue();
@@ -319,60 +329,57 @@ public class RpcUtil {
 	private static OtpErlangObject callMethod(Object rcvr, String method,
 			Object[] args) throws Exception {
 		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
-		Method meth; // = invoke(cls, args);
+		Method meth;
 		boolean many;
 
+		Class[] params = null;
+		if (args == null) {
+			args = new Object[] {};
+		}
+		params = new Class[args.length];
+		for (int i = 0; i < args.length; i++) {
+			params[i] = args[i].getClass();
+		}
+
+		meth = null;
+		many = false;
 		try {
-			Class[] params;
-			if (args != null) {
-				params = new Class[args.length];
-				for (int i = 0; i < args.length; i++) {
-					// params[i] = Class
-					// .forName("com.ericsson.otp.erlang.OtpErlangObject");
-					params[i] = args[i].getClass();
-					// params[i] =ErlUtils.erlang2javaType(args[i]);
-					System.out.println("? " + i + " "
-							+ args[i].getClass().getName() + " : "
-							+ params[i].getName());
-				}
-			} else {
-				params = null;
+			for (int i = 0; i < args.length; i++) {
+				// params[i] = Class
+				// .forName("com.ericsson.otp.erlang.OtpErlangObject");
+				params[i] = args[i].getClass();
+				// params[i] =ErlUtils.erlang2javaType(args[i]);
 			}
 			meth = cls.getMethod(method, params);
-			many = false;
 		} catch (NoSuchMethodException e) {
+		}
+
+		if (meth == null) {
 			try {
-				Class[] params;
-				if (args != null) {
-					params = new Class[args.length];
-					for (int i = 0; i < args.length; i++) {
-						params[i] = Class.forName("java.lang.Object");
-						// params[i] = args[i].getClass();
-						// params[i] =ErlUtils.erlang2javaType(args[i]);
-						System.out.println("? " + i + " "
-								+ args[i].getClass().getName() + " : "
-								+ params[i].getName());
-					}
-				} else {
-					params = null;
+				for (int i = 0; i < args.length; i++) {
+					params[i] = Class.forName("java.lang.Object");
+					// params[i] = args[i].getClass();
+					// params[i] =ErlUtils.erlang2javaType(args[i]);
 				}
 				meth = cls.getMethod(method, params);
-				many = false;
-			} catch (NoSuchMethodException ee) {
-				meth = cls.getMethod(method, Class
-						.forName("[Ljava.lang.Object;"));
-				many = true;
+			} catch (NoSuchMethodException e) {
 			}
 		}
 
+		if (meth == null) {
+			meth = cls.getMethod(method, Class.forName("[Ljava.lang.Object;"));
+			many = true;
+		}
+
+		meth = many ? cls.getMethod(method, Class
+				.forName("[Ljava.lang.Object;")) : cls
+				.getMethod(method, params);
 		try {
 			// meth.setAccessible(true);
-			System.out.println("&& " + many + " " + meth.isVarArgs());
+			// System.out.println("&& " + many + " " + meth.isVarArgs());
 			Object o = many ? meth.invoke(rcvr, (Object) args) : meth.invoke(
 					rcvr, args);
-			if (VERBOSE) {
-				log(String.format("** %s() returned %s", meth, o));
-			}
+			debug(String.format("** %s() returned %s", meth, o));
 
 			return java2erlang(o);
 

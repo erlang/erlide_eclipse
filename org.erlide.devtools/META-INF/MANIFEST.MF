@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Devtools Plug-in
+Bundle-SymbolicName: org.erlide.devtools;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Activator: org.erlide.devtools.Activator
+Bundle-Vendor: Erlide team
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.erlide.jinterface,
+ org.eclipse.jface.text
+Eclipse-LazyStart: true
+Export-Package: org.erlide.devtools
