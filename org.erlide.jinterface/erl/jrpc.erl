@@ -11,6 +11,8 @@
          rpc_loop/1 
 ]).
 
+-export([test/0]).
+
 call(Rcvr, Msg, Args) ->
     call0(call, Rcvr, Msg, Args, infinity).
 
@@ -51,3 +53,31 @@ rpc_loop(JavaNode) ->
        end,
     ok.
 
+test() ->
+       
+        {ok, R0}=call('org.erlide.jinterface.RpcUtil', testing, [], 2000),
+        io:format(">>>> ~p~n", [R0]),
+        Rx=call(R0, get, ["alfa"], 2000),
+        io:format(">>>> ~p~n", [Rx]),
+
+        %%java_util_HashMap:put(R0, "gamma", "delta"),
+        %%Rx1=java_util_HashMap:get(R0, "gamma"),
+        %%io:format(">>>> ~p~n", [Rx1]),
+                
+        R1=call('org.erlide.jinterface.RpcUtil', testing, [1], 2000),
+        io:format(">>>> ~p~n", [R1]),
+        R1a=call(<<"org.erlide.jinterface.RpcUtil">>, "testing", ["A"], 2000),
+        io:format(">>>> ~p~n", [R1a]),
+        R2=call('org.erlide.jinterface.RpcUtil', testing, [2, 'end'], 2000),
+        io:format(">>>> ~p~n", [R2]),
+        R=call('org.erlide.jinterface.RpcUtil', testing, [3.14, 'end', {999, self()}], 2000),
+        io:format(">>>> ~p~n", [R]),
+        
+        P = 'org.eclipse.core.runtime.Platform',
+        io:format("---- ~p~n", [call(P, getApplicationArgs, [], 2000)]),
+        io:format("---- ~p~n", [call(P, knownOSValues, [], 2000)]),
+                
+        U = 'org.eclipse.ui.PlatformUI',
+        io:format("++++ ~p~n", [call(U, getWorkbench, [], 2000)]),
+                        
+    ok.
