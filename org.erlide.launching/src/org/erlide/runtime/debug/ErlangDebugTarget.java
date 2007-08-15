@@ -41,6 +41,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fDisconnected = false;
 
+	@SuppressWarnings("unused")
 	private DebuggerListener fDbgListener;
 
 	private boolean fTerminated;

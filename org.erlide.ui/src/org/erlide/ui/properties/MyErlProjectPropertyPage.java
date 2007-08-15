@@ -32,11 +32,16 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 	private Text text;
 	private TabFolder tabFolder;
+	@SuppressWarnings("unused")
 	private ErlangProjectProperties prefs;
 	private MockupPreferenceStore mockPrefs;
+	@SuppressWarnings("unused")
 	private PathEditor fextinc;
+	@SuppressWarnings("unused")
 	private PathEditor fSourceEditor;
+	@SuppressWarnings("unused")
 	private PathEditor fIncludeEditor;
+	@SuppressWarnings("unused")
 	private PathEditor fExternalIncludeEditor;
 
 	public MyErlProjectPropertyPage() {
