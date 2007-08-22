@@ -41,6 +41,7 @@ public class StubGenerator {
 				moduleName));
 
 		// TODO add constructors
+		// TODO support overloaded methods with same # of parameters
 
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
@@ -48,13 +49,18 @@ public class StubGenerator {
 			boolean statik = Modifier.isStatic(mod);
 			Class<?>[] params = method.getParameterTypes();
 
-			buf.append("  %% ");
-			for (Class<?> param : params) {
-				buf.append(param.getName() + ";");
+			if (!method.getReturnType().getName().equals("void")) {
+				buf.append("  %% ");
+				buf.append(" returns " + method.getReturnType().getName()
+						+ "\n");
 			}
-			buf.append(" -> " + method.getReturnType().getName() + "\n");
 
-			buf.append(method.getName() + "(");
+			StringBuffer suffix = new StringBuffer();
+			// for (int i = 0; i < at.length; i++) {
+			// args.append("_");
+			// args.append(at[i].getName());
+			// }
+			buf.append("'" + method.getName() + suffix + "'(");
 			if (statik) {
 			} else {
 				buf.append("Obj");
@@ -73,7 +79,16 @@ public class StubGenerator {
 			} else {
 				buf.append("Obj, ");
 			}
-			buf.append("<<\"" + method.getName() + "\">>, [");
+			StringBuffer args = new StringBuffer();
+			Class<?>[] at = method.getParameterTypes();
+			for (int i = 0; i < at.length; i++) {
+				args.append("\"" + at[i].getName() + "\"");
+				if (i < at.length - 1) {
+					args.append(", ");
+				}
+			}
+			buf.append("{<<\"" + method.getName() + "\">>, [").append(args)
+					.append("]}, [");
 			printParams(true, buf, params);
 			buf.append("]).\n\n");
 		}

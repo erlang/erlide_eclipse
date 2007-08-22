@@ -11,6 +11,7 @@ package org.erlide.jinterface;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,16 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcUtil {
+
+	private static class MethodDescription {
+		public MethodDescription(String meth, Class<?>[] args) {
+			name = meth;
+			argTypes = args;
+		}
+
+		String name;
+		Class<?>[] argTypes;
+	}
 
 	private static final boolean VERBOSE = false;
 
@@ -95,18 +106,26 @@ public class RpcUtil {
 				}
 			} else if (obj instanceof OtpErlangList) {
 				OtpErlangObject[] v = ((OtpErlangList) obj).elements();
-				Object[] vv = new Object[v.length];
-				for (int i = 0; i < v.length; i++) {
-					vv[i] = erlang2java(v[i]);
+				if (v != null) {
+					Object[] vv = new Object[v.length];
+					for (int i = 0; i < v.length; i++) {
+						vv[i] = erlang2java(v[i]);
+					}
+					return Arrays.asList(vv);
+				} else {
+					return new ArrayList<Object>();
 				}
-				return Arrays.asList(vv);
 			} else if (obj instanceof OtpErlangTuple) {
 				OtpErlangObject[] v = ((OtpErlangTuple) obj).elements();
-				Object[] vv = new Object[v.length];
-				for (int i = 0; i < v.length; i++) {
-					vv[i] = erlang2java(v[i]);
+				if (v != null) {
+					Object[] vv = new Object[v.length];
+					for (int i = 0; i < v.length; i++) {
+						vv[i] = erlang2java(v[i]);
+					}
+					return vv;
+				} else {
+					return new Object[0];
 				}
-				return vv;
 			} else if (obj instanceof OtpErlangRef) {
 				return getTarget((OtpErlangRef) obj);
 			} else {
@@ -255,25 +274,27 @@ public class RpcUtil {
 		debug("EXEC:: " + target + ":" + method + " " + args + " >"
 				+ (args == null ? 0 : args.length));
 
+		MethodDescription description = getDescription(method);
+
 		Object[] parms;
 		if (args != null) {
 			parms = new Object[args.length];
 			for (int i = 0; i < args.length; i++) {
 				// parms[i] = args[i];
+				// TODO: we can do it better, we have the expected java types in
+				// 'description'
 				parms[i] = erlang2java(args[i]);
 			}
 		} else {
 			parms = null;
 		}
 
-		// TODO the resolver here can be smarter (check combinations of type
-		// parameters, check hierarchy, etc)
 		if (target instanceof OtpErlangRef) {
 			// object call
 			Object rcvr = getTarget((OtpErlangRef) target);
 			if (rcvr != null) {
 				try {
-					return callMethod(rcvr, getName(method), parms);
+					return callMethod(rcvr, description, parms);
 				} catch (Exception e) {
 					log("bad RPC: " + e.getMessage());
 					return new OtpErlangTuple(new OtpErlangObject[] {
@@ -294,10 +315,10 @@ public class RpcUtil {
 				|| target instanceof OtpErlangString
 				|| target instanceof OtpErlangBinary) {
 			// static call
-			String clazzName = getName(target);
+			String clazzName = getString(target);
 			try {
 				Class clazz = Class.forName(clazzName, true, loader);
-				return callMethod(clazz, getName(method), parms);
+				return callMethod(clazz, description, parms);
 			} catch (Exception e) {
 				log("bad RPC: " + e.getMessage());
 				return new OtpErlangTuple(new OtpErlangObject[] {
@@ -314,7 +335,28 @@ public class RpcUtil {
 		}
 	}
 
-	private static String getName(OtpErlangObject target) {
+	private static MethodDescription getDescription(OtpErlangObject target) {
+		System.out.println("@ descr::" + target);
+		if (!(target instanceof OtpErlangTuple)) {
+			target = new OtpErlangTuple(new OtpErlangObject[] { target,
+					new OtpErlangList() });
+		}
+		OtpErlangTuple t = (OtpErlangTuple) target;
+		String name = getString(t.elementAt(0));
+		Object olist = erlang2java(t.elementAt(1));
+		List<String> arglist = (List<String>) olist;
+		Class<?>[] args = new Class<?>[arglist.size()];
+		for (int i = 0; i < args.length; i++) {
+			try {
+				args[i] = Class.forName(arglist.get(i));
+			} catch (ClassNotFoundException e) {
+				args[i] = Object.class;
+			}
+		}
+		return new MethodDescription(name, args);
+	}
+
+	private static String getString(OtpErlangObject target) {
 		if (target instanceof OtpErlangAtom) {
 			return ((OtpErlangAtom) target).atomValue();
 		} else if (target instanceof OtpErlangString) {
@@ -326,11 +368,9 @@ public class RpcUtil {
 		}
 	}
 
-	private static OtpErlangObject callMethod(Object rcvr, String method,
-			Object[] args) throws Exception {
+	private static OtpErlangObject callMethod(Object rcvr,
+			MethodDescription method, Object[] args) throws Exception {
 		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
-		Method meth;
-		boolean many;
 
 		Class[] params = null;
 		if (args == null) {
@@ -341,57 +381,28 @@ public class RpcUtil {
 			params[i] = args[i].getClass();
 		}
 
-		meth = null;
-		many = false;
+		Method meth;
 		try {
-			for (int i = 0; i < args.length; i++) {
-				// params[i] = Class
-				// .forName("com.ericsson.otp.erlang.OtpErlangObject");
-				params[i] = args[i].getClass();
-				// params[i] =ErlUtils.erlang2javaType(args[i]);
-			}
-			meth = cls.getMethod(method, params);
-		} catch (NoSuchMethodException e) {
-		}
-
-		if (meth == null) {
-			try {
-				for (int i = 0; i < args.length; i++) {
-					params[i] = Class.forName("java.lang.Object");
-					// params[i] = args[i].getClass();
-					// params[i] =ErlUtils.erlang2javaType(args[i]);
-				}
-				meth = cls.getMethod(method, params);
-			} catch (NoSuchMethodException e) {
-			}
-		}
-
-		if (meth == null) {
-			meth = cls.getMethod(method, Class.forName("[Ljava.lang.Object;"));
-			many = true;
-		}
-
-		meth = many ? cls.getMethod(method, Class
-				.forName("[Ljava.lang.Object;")) : cls
-				.getMethod(method, params);
-		try {
+			meth = cls.getMethod(method.name, method.argTypes);
 			// meth.setAccessible(true);
-			// System.out.println("&& " + many + " " + meth.isVarArgs());
-			Object o = many ? meth.invoke(rcvr, (Object) args) : meth.invoke(
-					rcvr, args);
+			Object o = meth.invoke(rcvr, args);
 			debug(String.format("** %s() returned %s", meth, o));
 
 			return java2erlang(o);
-
-			// Handle any exceptions thrown by method to be invoked.
+		} catch (NoSuchMethodException e) {
+			return new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"can't find method %s of %s", method.name, cls
+									.getName())) });
 		} catch (InvocationTargetException x) {
 			Throwable cause = x.getCause();
-			log(String.format("invocation of %s failed: %s", meth, cause
+			log(String.format("invocation of %s failed: %s", method.name, cause
 					.getMessage()));
 			return new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
-							"invocation of %s failed: %s", meth, cause
+							"invocation of %s failed: %s", method.name, cause
 									.getMessage())) });
 		}
 	}
@@ -417,16 +428,12 @@ public class RpcUtil {
 		return new Object[] { 64, "hej", arg1 };
 	}
 
-	public static String testing(String arg1) {
+	public static String testing_s(String arg1) {
 		return arg1 + arg1;
 	}
 
 	public static Object testing(Object arg1, Object arg2) {
 		return arg1;
-	}
-
-	public static Object testing(Object... args) {
-		return args;
 	}
 
 }
