@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -44,6 +47,7 @@ public class StubGenerator {
 		// TODO support overloaded methods with same # of parameters
 
 		Method[] methods = clazz.getMethods();
+		Map<String, List<Method>> mmap = new HashMap<String, List<Method>>();
 		for (Method method : methods) {
 			int mod = method.getModifiers();
 			boolean statik = Modifier.isStatic(mod);

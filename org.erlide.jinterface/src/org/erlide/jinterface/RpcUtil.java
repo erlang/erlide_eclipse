@@ -335,6 +335,7 @@ public class RpcUtil {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static MethodDescription getDescription(OtpErlangObject target) {
 		System.out.println("@ descr::" + target);
 		if (!(target instanceof OtpErlangTuple)) {
@@ -344,16 +345,21 @@ public class RpcUtil {
 		OtpErlangTuple t = (OtpErlangTuple) target;
 		String name = getString(t.elementAt(0));
 		Object olist = erlang2java(t.elementAt(1));
-		List<String> arglist = (List<String>) olist;
-		Class<?>[] args = new Class<?>[arglist.size()];
-		for (int i = 0; i < args.length; i++) {
-			try {
-				args[i] = Class.forName(arglist.get(i));
-			} catch (ClassNotFoundException e) {
-				args[i] = Object.class;
+		if (olist instanceof List) {
+			List<String> arglist = (List<String>) olist;
+			Class<?>[] args = new Class<?>[arglist.size()];
+			for (int i = 0; i < args.length; i++) {
+				try {
+					args[i] = Class.forName(arglist.get(i));
+				} catch (ClassNotFoundException e) {
+					args[i] = Object.class;
+				}
 			}
+			return new MethodDescription(name, args);
+		} else {
+			// TODO should throw exception
+			return null;
 		}
-		return new MethodDescription(name, args);
 	}
 
 	private static String getString(OtpErlangObject target) {
