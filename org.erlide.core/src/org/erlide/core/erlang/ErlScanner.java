@@ -35,9 +35,8 @@ public class ErlScanner implements IErlScanner {
 
 	public ErlScanner(IErlModule module) {
 		fModule = module;
-		IErlProject proj = (IErlProject) fModule.getParent();
-		fMod = new OtpErlangAtom("_erlide_" + proj.getElementName() + "_"
-				+ fModule.getElementName());
+		fMod = new OtpErlangAtom("_erlide_"
+				+ fModule.getResource().getFullPath().toPortableString());
 		create();
 	}
 
