@@ -30,7 +30,7 @@ public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 
 			// StubGenerator.tofile(target, null);
 
-			String text = StubGenerator.generate(target);
+			String text = StubGenerator.generate(target, false);
 			System.out.println(text);
 
 		} catch (ClassNotFoundException e) {

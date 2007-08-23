@@ -72,8 +72,8 @@ public class ErlModule extends Openable implements IErlModule {
 	protected ErlModule(IErlElement parent, String name, boolean isErl) {
 		super(parent, name);
 		if (ErlModelManager.verbose) {
-			ErlLogger.log("...creating " + parent.getElementName() + "/" +
-					name + " " + isErl);
+			ErlLogger.log("...creating " + parent.getElementName() + "/" + name
+					+ " " + isErl);
 		}
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
@@ -328,27 +328,27 @@ public class ErlModule extends Openable implements IErlModule {
 			} else if (el instanceof IErlRecordDef) {
 				final IErlRecordDef rec = (IErlRecordDef) el;
 				String RecName = rec.getDefinedName();
-				if (prefix.length() == 0 ||
-						(prefix.charAt(0) == '#' && RecName.startsWith(prefix
-								.substring(1)))) {
+				if (prefix.length() == 0
+						|| (prefix.charAt(0) == '#' && RecName
+								.startsWith(prefix.substring(1)))) {
 					cp = new CompletionProposal("#" + RecName, /* replacementString */
 					offset - prefix.length(), /* replacementOffset */
 					prefix.length(), /* replacementLength */
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-					 * FIXME:
-					 * displayString
-					 */
+															 * FIXME:
+															 * displayString
+															 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
 			} else if (el instanceof IErlMacroDef) {
 				final IErlMacroDef mac = (IErlMacroDef) el;
 				String MacName = mac.getDefinedName();
-				if (prefix.length() == 0 ||
-						(prefix.charAt(0) == '?' && MacName.startsWith(prefix
-								.substring(1)))) {
+				if (prefix.length() == 0
+						|| (prefix.charAt(0) == '?' && MacName
+								.startsWith(prefix.substring(1)))) {
 					cp = new CompletionProposal("?" + MacName, /* replacementString */
 					offset - prefix.length(), /* replacementOffset */
 					prefix.length(), /* replacementLength */
@@ -413,8 +413,8 @@ public class ErlModule extends Openable implements IErlModule {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-				if (pd.getElementType().equals(type) &&
-						pd.getDefinedName().equals(definedName)) {
+				if (pd.getElementType().equals(type)
+						&& pd.getDefinedName().equals(definedName)) {
 					return pd;
 				}
 			}

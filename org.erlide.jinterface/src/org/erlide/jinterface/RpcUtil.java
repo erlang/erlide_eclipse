@@ -55,33 +55,77 @@ public class RpcUtil {
 	public static OtpErlangObject java2erlang(Object obj) {
 		if (obj instanceof OtpErlangObject) {
 			return (OtpErlangObject) obj;
-		} else if (obj instanceof String) {
+		}
+		if (obj instanceof String) {
 			return new OtpErlangString((String) obj);
-		} else if (obj instanceof Integer) {
+		}
+		if (obj instanceof Integer) {
 			return new OtpErlangInt((Integer) obj);
-		} else if (obj instanceof Long) {
+		}
+		if (obj instanceof Long) {
 			return new OtpErlangLong((Long) obj);
-		} else if (obj instanceof Double) {
+		}
+		if (obj instanceof Double) {
 			return new OtpErlangDouble((Double) obj);
-		} else if (obj instanceof Boolean) {
+		}
+		if (obj instanceof Boolean) {
 			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
-		} else if (obj instanceof List<?>) {
+		}
+		if (obj instanceof List<?>) {
 			Object[] v = ((List<?>) obj).toArray(new Object[] {});
 			OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
 			}
 			return new OtpErlangList(vv);
-		} else if (obj instanceof Object[]) {
+		}
+		if (obj instanceof Object[]) {
 			Object[] v = ((Object[]) obj);
 			OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
 			}
 			return new OtpErlangTuple(vv);
-		} else {
-			return registerTarget(obj);
 		}
+		return registerTarget(obj);
+	}
+
+	public static Class<?> javaType2erlang(Class<?> obj) {
+		if (obj.isArray()) {
+			return OtpErlangTuple.class;
+		}
+		if (List.class.isAssignableFrom(obj)) {
+			return OtpErlangList.class;
+		}
+		if (obj == Integer.TYPE) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Long.TYPE) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Boolean.TYPE) {
+			return OtpErlangAtom.class;
+		}
+		if (obj == Double.TYPE) {
+			return OtpErlangDouble.class;
+		}
+		if (obj == String.class) {
+			return OtpErlangString.class;
+		}
+		if (obj == Long.class) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Integer.class) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Double.class) {
+			return OtpErlangDouble.class;
+		}
+		if (obj == Boolean.class) {
+			return OtpErlangAtom.class;
+		}
+		return OtpErlangRef.class;
+
 	}
 
 	@SuppressWarnings("boxing")
@@ -160,28 +204,34 @@ public class RpcUtil {
 		}
 		if (obj instanceof OtpErlangString) {
 			return String.class;
-		} else if (obj instanceof OtpErlangInt) {
+		}
+		if (obj instanceof OtpErlangInt) {
 			return Integer.class;
-		} else if (obj instanceof OtpErlangLong) {
+		}
+		if (obj instanceof OtpErlangLong) {
 			return Long.class;
-		} else if (obj instanceof OtpErlangDouble) {
+		}
+		if (obj instanceof OtpErlangDouble) {
 			return Double.class;
-		} else if (obj instanceof OtpErlangAtom) {
+		}
+		if (obj instanceof OtpErlangAtom) {
 			OtpErlangAtom a = (OtpErlangAtom) obj;
 			if ("true".equals(a.atomValue()) || "false".equals(a.atomValue())) {
 				return Boolean.class;
 			} else {
 				return OtpErlangAtom.class;
 			}
-		} else if (obj instanceof OtpErlangList) {
-			return List.class;
-		} else if (obj instanceof OtpErlangTuple) {
-			return Object[].class;
-		} else if (obj instanceof OtpErlangRef) {
-			return objects.get(obj).getClass();
-		} else {
-			return obj.getClass();
 		}
+		if (obj instanceof OtpErlangList) {
+			return List.class;
+		}
+		if (obj instanceof OtpErlangTuple) {
+			return Object[].class;
+		}
+		if (obj instanceof OtpErlangRef) {
+			return objects.get(obj).getClass();
+		}
+		return obj.getClass();
 	}
 
 	private static OtpErlangRef mkref() {
@@ -349,8 +399,25 @@ public class RpcUtil {
 			List<String> arglist = (List<String>) olist;
 			Class<?>[] args = new Class<?>[arglist.size()];
 			for (int i = 0; i < args.length; i++) {
+				String arg = arglist.get(i);
+				if (arg.equals("int")) {
+					args[i] = Integer.TYPE;
+					continue;
+				}
+				if (arg.equals("long")) {
+					args[i] = Long.TYPE;
+					continue;
+				}
+				if (arg.equals("boolean")) {
+					args[i] = Boolean.TYPE;
+					continue;
+				}
+				if (arg.equals("double")) {
+					args[i] = Double.TYPE;
+					continue;
+				}
 				try {
-					args[i] = Class.forName(arglist.get(i));
+					args[i] = Class.forName(arg);
 				} catch (ClassNotFoundException e) {
 					args[i] = Object.class;
 				}
@@ -396,11 +463,15 @@ public class RpcUtil {
 
 			return java2erlang(o);
 		} catch (NoSuchMethodException e) {
+			StringBuffer paramstr = new StringBuffer();
+			for (Class param : params) {
+				paramstr.append(param.getName()).append(",");
+			}
 			return new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
-							"can't find method %s of %s", method.name, cls
-									.getName())) });
+							"can't find method %s of %s(%s)", method.name, cls
+									.getName(), paramstr)) });
 		} catch (InvocationTargetException x) {
 			Throwable cause = x.getCause();
 			log(String.format("invocation of %s failed: %s", method.name, cause
@@ -434,11 +505,27 @@ public class RpcUtil {
 		return new Object[] { 64, "hej", arg1 };
 	}
 
-	public static String testing_s(String arg1) {
+	public static String testing(String arg1) {
 		return arg1 + arg1;
 	}
 
-	public static Object testing(Object arg1, Object arg2) {
+	public String testing2(String arg1) {
+		return arg1 + arg1;
+	}
+
+	public static Object testing2(String arg1, int arg2) {
+		return arg1;
+	}
+
+	public static Object testing2(Object arg1, Object arg2) {
+		return arg1;
+	}
+
+	public static Object testing2(String arg1, long arg2) {
+		return arg1;
+	}
+
+	public static Object testing2(Object arg1, int arg2) {
 		return arg1;
 	}
 
