@@ -217,12 +217,16 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				int ofs = consoleText.getOffsetAtLocation(new Point(e.x, e.y));
-				IoRequest req = fDoc.findAtPos(ofs);
-				clearMarks();
-				if (req.getSender() != null) {
-					List<IoRequest> reqs = fDoc.getAllFrom(req.getSender());
-					markRequests(reqs);
+				try {
+					int ofs = consoleText.getOffsetAtLocation(new Point(e.x,
+							e.y));
+					IoRequest req = fDoc.findAtPos(ofs);
+					clearMarks();
+					if (req.getSender() != null) {
+						List<IoRequest> reqs = fDoc.getAllFrom(req.getSender());
+						markRequests(reqs);
+					}
+				} catch (Exception ex) {
 				}
 			}
 		});
