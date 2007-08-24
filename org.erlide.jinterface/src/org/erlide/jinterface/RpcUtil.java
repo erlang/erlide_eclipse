@@ -400,6 +400,18 @@ public class RpcUtil {
 			Class<?>[] args = new Class<?>[arglist.size()];
 			for (int i = 0; i < args.length; i++) {
 				String arg = arglist.get(i);
+				if (arg.equals("char")) {
+					args[i] = Character.TYPE;
+					continue;
+				}
+				if (arg.equals("byte")) {
+					args[i] = Byte.TYPE;
+					continue;
+				}
+				if (arg.equals("short")) {
+					args[i] = Short.TYPE;
+					continue;
+				}
 				if (arg.equals("int")) {
 					args[i] = Integer.TYPE;
 					continue;
@@ -412,6 +424,10 @@ public class RpcUtil {
 					args[i] = Boolean.TYPE;
 					continue;
 				}
+				if (arg.equals("float")) {
+					args[i] = Float.TYPE;
+					continue;
+				}
 				if (arg.equals("double")) {
 					args[i] = Double.TYPE;
 					continue;
@@ -419,6 +435,7 @@ public class RpcUtil {
 				try {
 					args[i] = Class.forName(arg);
 				} catch (ClassNotFoundException e) {
+					System.out.println("RpcUtil: can't find class " + arg);
 					args[i] = Object.class;
 				}
 			}
