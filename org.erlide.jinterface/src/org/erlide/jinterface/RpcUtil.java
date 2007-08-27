@@ -341,7 +341,6 @@ public class RpcUtil {
 		params = new Class[args.length];
 		for (int i = 0; i < args.length; i++) {
 			params[i] = args[i].getClass();
-			System.out.println(" " + params[i].getName());
 		}
 
 		if (method.name.equals(cls.getName())) {

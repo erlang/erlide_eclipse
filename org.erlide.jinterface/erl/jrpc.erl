@@ -57,9 +57,7 @@ rpc_loop(JavaNode) ->
 
 test() ->
     	RT=org_erlide_jinterface_RpcTest,
-        ?P(RT:test_str_arr(["1zx3"])),
-        ?P(RT:test_str_arr([55, x, "123"])),
-        
+        ?P(RT:test_str_arr(["1zx3", "ee"])),
         
         ?P(RT:test_int(422)),
         
