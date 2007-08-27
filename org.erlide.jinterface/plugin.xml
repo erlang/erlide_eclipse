@@ -2,17 +2,10 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
-   <extension-point id="javaRpcStubs" name="javaRpcStubs" schema="schema/javaRpcStubs.exsd"/>
    <extension
          point="org.erlide.jinterface.codepath">
       <bundle_dir
             path="/ebin">
       </bundle_dir>
-   </extension>
-   <extension
-         point="org.erlide.jinterface.javaRpcStubs">
-      <stub
-            class="org.erlide.jinterface.RpcTest">
-      </stub>
    </extension>
 </plugin>

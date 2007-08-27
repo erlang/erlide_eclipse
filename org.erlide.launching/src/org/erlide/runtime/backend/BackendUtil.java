@@ -14,6 +14,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.erlide.jinterface.RpcStubGenerator;
+import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
@@ -219,10 +220,17 @@ public class BackendUtil {
 
 	public static void generateRpcStub(String className, boolean onlyDeclared,
 			IBackend b) {
+		generateRpcStub(RpcUtil.getClassByName(className), onlyDeclared, b);
+	}
+
+	public static void generateRpcStub(Class cls, boolean onlyDeclared,
+			IBackend b) {
 		try {
-			String s = RpcStubGenerator.generate(Class.forName(className),
-					onlyDeclared);
-			b.rpc("erlide_builder", "compile_string", s);
+			String s = RpcStubGenerator.generate(cls, onlyDeclared);
+			RpcResult r = b.rpc("erlide_backend", "compile_string", s);
+			if (!r.isOk()) {
+				System.out.println("rpcstub::" + r.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

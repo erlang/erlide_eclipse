@@ -199,18 +199,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			ErlangProjectProperties pp = new ErlangProjectProperties(
 					getProject());
 			String[] sd = pp.getSourceDirs();
-			OtpErlangObject[] dirList = new OtpErlangObject[sd.length];
-
+			String[] dirList = new String[sd.length];
 			for (int i = 0; i < sd.length; i++) {
-				String ss = sd[i];
-				dirList[i] = new OtpErlangString(getProject().getLocation()
-						.toPortableString()
-						+ "/" + ss);
+				dirList[i] = getProject().getLocation().toPortableString()
+						+ "/" + sd[i];
 			}
-
-			OtpErlangObject dirs = new OtpErlangList(dirList);
 			OtpErlangList res = (OtpErlangList) BackendUtil.checkRpc(b.rpc(
-					"erlide_builder", "source_clash", dirs));
+					"erlide_builder", "source_clash", (Object) dirList));
 			for (int i = 0; i < res.arity(); i++) {
 				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();

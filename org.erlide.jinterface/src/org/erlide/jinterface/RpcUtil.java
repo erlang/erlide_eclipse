@@ -56,7 +56,9 @@ public class RpcUtil {
 	private static final boolean VERBOSE = false;
 
 	private static Map<OtpErlangRef, WeakReference<Object>> objects = new HashMap<OtpErlangRef, WeakReference<Object>>();
-	private static int refid = 1;
+	private static int refid0 = 1;
+	private static int refid1 = 0;
+	private static int refid2 = 0;
 
 	// eclipse uses different classloaders for each plugin. this one is non-ui
 	// so we have to set it from a ui one (when that one is initialized) so that
@@ -89,8 +91,19 @@ public class RpcUtil {
 	}
 
 	private static OtpErlangRef mkref() {
-		return new OtpErlangRef(REF_NODE,
-				new int[] { refid++, refid++, refid++ }, 0);
+		if (refid0 < 65535) {
+			refid0++;
+		} else {
+			if (refid1 < 65535) {
+				refid1++;
+			} else {
+				refid2++;
+				refid1 = 0;
+			}
+			refid0 = 0;
+		}
+		return new OtpErlangRef(REF_NODE, new int[] { refid0, refid1, refid2 },
+				0);
 	}
 
 	public static void handleRequests(List<OtpErlangObject> msgs,
@@ -305,107 +318,70 @@ public class RpcUtil {
 			params[i] = args[i].getClass();
 		}
 
-		if (method.name.equals(cls.getName())) {
-			Constructor ctr;
-			try {
+		try {
+			if (method.name.equals(cls.getName())) {
+				Constructor ctr;
 				ctr = cls.getConstructor(method.argTypes);
 				// meth.setAccessible(true);
 				Object o = ctr.newInstance(args);
 				debug(String.format("** %s() returned %s", ctr, o));
 
 				return java2erlang(o);
-			} catch (NoSuchMethodException e) {
-				StringBuffer paramstr = new StringBuffer();
-				for (Class param : params) {
-					paramstr.append(param.getName()).append(",");
-				}
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"can't find method %s of %s(%s)", method.name,
-								cls.getName(), paramstr)) });
-			} catch (InvocationTargetException x) {
-				Throwable cause = x.getCause();
-				log(String.format("invocation of %s failed: %s", method.name,
-						cause.getMessage()));
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"invocation of %s failed: %s", method.name,
-								cause.getMessage())) });
-			} catch (IllegalArgumentException x) {
-				StringBuffer paramstr = new StringBuffer();
-				for (Class param : params) {
-					paramstr.append(param.getName()).append(",");
-				}
-				log(String.format("invocation of %s failed: %s -- %s",
-						method.name, x.getMessage(), paramstr));
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"invocation of %s failed: %s", method.name, x
-										.getMessage())) });
-			} catch (InstantiationException e) {
-				StringBuffer paramstr = new StringBuffer();
-				for (Class param : params) {
-					paramstr.append(param.getName()).append(",");
-				}
-				log(String.format("instantiation of %s failed: %s -- %s", cls
-						.getName(), e.getMessage(), paramstr));
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"invocation of %s failed: %s", cls.getName(), e
-										.getMessage())) });
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-				return null;
-			}
-
-		} else {
-			Method meth;
-			try {
+			} else {
+				Method meth;
 				meth = cls.getMethod(method.name, method.argTypes);
 				// meth.setAccessible(true);
 				Object o = meth.invoke(rcvr, args);
 				debug(String.format("** %s() returned %s", meth, o));
 
 				return java2erlang(o);
-			} catch (NoSuchMethodException e) {
-				StringBuffer paramstr = new StringBuffer();
-				for (Class param : params) {
-					paramstr.append(param.getName()).append(",");
-				}
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"can't find method %s of %s(%s)", method.name,
-								cls.getName(), paramstr)) });
-			} catch (InvocationTargetException x) {
-				Throwable cause = x.getCause();
-				log(String.format("invocation1 of %s failed: %s", method.name,
-						cause.getMessage()));
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"invocation1 of %s failed: %s", method.name,
-								cause.getMessage())) });
-			} catch (IllegalArgumentException x) {
-				StringBuffer paramstr = new StringBuffer();
-				for (Class param : params) {
-					paramstr.append(param.getName()).append(",");
-				}
-				log(String.format("invocation2 of %s failed: %s -- %s",
-						method.name, x.getMessage(), paramstr));
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"invocation2 of %s failed: %s", method.name, x
-										.getMessage())) });
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-				return null;
 			}
+		} catch (NoSuchMethodException e) {
+			StringBuffer paramstr = new StringBuffer();
+			for (Class param : params) {
+				paramstr.append(param.getName()).append(",");
+			}
+			return new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"can't find method %s of %s(%s)", method.name, cls
+									.getName(), paramstr)) });
+		} catch (InvocationTargetException x) {
+			Throwable cause = x.getCause();
+			log(String.format("invocation of %s failed: %s", method.name, cause
+					.getMessage()));
+			return new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"invocation of %s failed: %s", method.name, cause
+									.getMessage())) });
+		} catch (IllegalArgumentException x) {
+			StringBuffer paramstr = new StringBuffer();
+			for (Class param : params) {
+				paramstr.append(param.getName()).append(",");
+			}
+			log(String.format("invocation of %s failed: %s -- %s", method.name,
+					x.getMessage(), paramstr));
+			return new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"invocation of %s failed: %s", method.name, x
+									.getMessage())) });
+		} catch (InstantiationException e) {
+			StringBuffer paramstr = new StringBuffer();
+			for (Class param : params) {
+				paramstr.append(param.getName()).append(",");
+			}
+			log(String.format("instantiation of %s failed: %s -- %s", cls
+					.getName(), e.getMessage(), paramstr));
+			return new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"invocation of %s failed: %s", cls.getName(), e
+									.getMessage())) });
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
 		}
 
 	}
@@ -503,7 +479,7 @@ public class RpcUtil {
 					}
 				}
 			}
-			if (isDeveloper()) {
+			if (true || isDeveloper()) {
 				System.out.println(" *** deprecated use of java2erlang: "
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
@@ -528,7 +504,7 @@ public class RpcUtil {
 	}
 
 	@SuppressWarnings("boxing")
-	public static Object erlang2java(OtpErlangObject obj, Class cls)
+	protected static Object erlang2java(OtpErlangObject obj, Class cls)
 			throws RpcException {
 		try {
 			if (cls == obj.getClass()) {
@@ -617,7 +593,9 @@ public class RpcUtil {
 						return res;
 					}
 				}
-				return null;
+				throw new RpcException("wrong arg type "
+						+ obj.getClass().getName() + ", can't convert to "
+						+ cls.getCanonicalName());
 			}
 			if (cls == boolean.class || cls == Boolean.class) {
 				if (obj instanceof OtpErlangAtom) {
@@ -629,6 +607,9 @@ public class RpcUtil {
 						return false;
 					}
 				}
+				throw new RpcException("wrong arg type "
+						+ obj.getClass().getName() + ", can't convert to "
+						+ cls.getCanonicalName());
 			}
 			if (List.class.isAssignableFrom(cls)) {
 				if (obj instanceof OtpErlangList) {
@@ -639,23 +620,27 @@ public class RpcUtil {
 					}
 					return Arrays.asList(olist);
 				}
+				throw new RpcException("wrong arg type "
+						+ obj.getClass().getName() + ", can't convert to "
+						+ cls.getCanonicalName());
 			}
 			if (obj instanceof OtpErlangRef) {
 				if (!((OtpErlangRef) obj).node().equals(REF_NODE)) {
 					return getTarget((OtpErlangRef) obj);
 				}
+				throw new RpcException("wrong arg type "
+						+ obj.getClass().getName() + ", can't convert to "
+						+ cls.getCanonicalName());
 			}
-			if (obj instanceof OtpErlangObject) {
-				return obj;
-			}
-
 			return obj;
+		} catch (RpcException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RpcException(e);
 		}
 	}
 
-	private static Class getClassByName(String arg) {
+	public static Class getClassByName(String arg) {
 		if (arg.equals("char")) {
 			return char.class;
 		}

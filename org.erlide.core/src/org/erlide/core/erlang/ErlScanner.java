@@ -35,6 +35,7 @@ public class ErlScanner implements IErlScanner {
 	public ErlScanner(IErlModule module) {
 		fModule = module;
 		fMod = new OtpErlangAtom("_erlide_"
+				+ fModule.getErlProject().getElementName() + "_"
 				+ fModule.getResource().getFullPath().toPortableString());
 		create();
 	}
@@ -65,8 +66,8 @@ public class ErlScanner implements IErlScanner {
 			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
 					.getIdeBackend().rpc("erlide_scanner", "do_getTokenAt",
 							fMod, offset + 1));
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			// e.printStackTrace();
 			return null;
 		}
 		if (r1 == null) {

@@ -64,7 +64,7 @@ test() ->
         ?P(RT:test_str("qwer")),
         ?P(RT:test_str('atomic')),
         ?P(RT:test_str([16#013d, 65])),
-        ?P(RT:test_str(io_lib:format("hej ~w ~s", [45, "scoo"]))),
+        ?P(RT:test_str(io_lib:format("hej ~w ~s", [45.5, "scoo"]))),
                          
         {ok, E} = RT:new(),
         N = RT:square(E, 7),
@@ -74,11 +74,11 @@ test() ->
                 
                
                  
-        P = 'org.eclipse.core.runtime.Platform',
-        io:format("---- ~p~n", [call(P, getApplicationArgs, [], 2000)]),
-        io:format("---- ~p~n", [call(P, knownOSValues, [], 2000)]),
+        P = 'org_eclipse_core_runtime_Platform',
+        io:format("---- ~p~n", [P:getApplicationArgs()]),
+        io:format("---- ~p~n", [P:knownOSValues()]),
                 
-        U = 'org.eclipse.ui.PlatformUI',
-        io:format("++++ ~p~n", [call(U, getWorkbench, [], 2000)]),
+        U = 'org_eclipse_ui_PlatformUI',
+        io:format("++++ ~p~n", [U:getWorkbench()]),
                         
     ok.

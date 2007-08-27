@@ -325,6 +325,7 @@ public abstract class AbstractBackend implements IBackend {
 			}
 
 			res = ((OtpErlangTuple) res).elementAt(1);
+			// res = erlang2java(res); // ??
 			result = new RpcResult(res);
 		} catch (final OtpErlangExit e) {
 			e.printStackTrace();

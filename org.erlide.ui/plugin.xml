@@ -478,9 +478,14 @@
       </bundle_dir>
    </extension>
    <extension
-         point="org.erlide.jinterface.javaRpcStubs">
+         point="org.erlide.launching.javaRpcStubs">
       <stub
-            class="org.eclipse.core.runtime.IProgressMonitor">
+            class="java.util.Map"
+            onlyDeclared="true">
+      </stub>
+      <stub
+            class="org.eclipse.ui.PlatformUI"
+            onlyDeclared="true">
       </stub>
    </extension>
 </plugin>

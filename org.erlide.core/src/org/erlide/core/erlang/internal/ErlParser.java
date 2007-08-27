@@ -142,9 +142,9 @@ public class ErlParser {
 				for (ErlToken tk : t) {
 					sb.append(" " + tk.toString());
 				}
-				ErlLogger.log(sb);
-				ErlLogger.log(forms);
-				ErlLogger.log("-----------------------");
+				// ErlLogger.log(sb);
+				// ErlLogger.log(forms);
+				// ErlLogger.log("-----------------------");
 
 				res = (OtpErlangTuple) BackendUtil.checkRpc(b.rpc(
 						"erlide_model", "comments", doc));

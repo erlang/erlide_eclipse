@@ -13,7 +13,14 @@ package org.erlide.basiccore;
 public class ErlLogger {
 
 	public static void log(Object o) {
-		System.out.println("LOG: " + o.toString());
+		StackTraceElement[] st = null;
+		try {
+			throw new Exception("");
+		} catch (Exception e) {
+			st = e.getStackTrace();
+		}
+		StackTraceElement el = st[1];
+		System.out.println("ERL (" + el.getFileName() + ":"
+				+ el.getLineNumber() + ") : " + o.toString());
 	}
-
 }

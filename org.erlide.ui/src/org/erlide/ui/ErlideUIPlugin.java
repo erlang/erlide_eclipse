@@ -94,11 +94,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	 * @param context
 	 *            The context
 	 * @throws Exception
-	 *             if a problem occures
+	 *             if a problem occurs
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+
+		// set this classloader to be used with erlang rpc
+		RpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
 		BackendManager.getDefault().addPlugin(ErlangPlugin.getDefault());
@@ -110,8 +113,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 			BackendManagerPopup.init();
 		}
 
-		// set this classloader to be used with erlang rpc
-		RpcUtil.loader = getClass().getClassLoader();
 	}
 
 	/**
