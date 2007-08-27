@@ -79,7 +79,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
-				fBackend.rpc("code", "add_patha", (Object) path);
+				fBackend.rpc("code", "add_patha", path);
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
 			}
@@ -92,7 +92,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private void addPathZ(String path) {
 		if (addPath(pathZ, path)) {
 			try {
-				fBackend.rpc("code", "add_pathz", new OtpErlangString(path));
+				fBackend.rpc("code", "add_pathz", path);
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
 			}
@@ -127,7 +127,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 					path = ((OtpErlangString) rr.getValue()).stringValue();
 				}
 
-				fBackend.rpc("code", "del_path", new OtpErlangString(path));
+				fBackend.rpc("code", "del_path", path);
 			} catch (final ErlangRpcException e) {
 				e.printStackTrace();
 			}
@@ -213,7 +213,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 						|| !BackendManager.isDeveloper()) {
 					r = BackendUtil.checkRpc(fBackend.rpc("code",
 							"load_binary", new OtpErlangAtom(moduleName),
-							new OtpErlangString(moduleName + ".erl"), bin));
+							moduleName + ".erl", bin));
 					if (BackendManager.isDeveloper()) {
 						fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
 								moduleName));

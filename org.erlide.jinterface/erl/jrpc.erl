@@ -14,13 +14,13 @@
 -export([test/0]).
 
 call(Rcvr, Msg, Args) ->
-    call0(call, Rcvr, Msg, Args, infinity).
+    call0(call, Rcvr, Msg, Args, 5000).
 
 call(Rcvr, Msg, Args, Timeout) ->
     call0(call, Rcvr, Msg, Args, Timeout).
 
 uicall(Rcvr, Msg, Args) ->
-    call0(uicall, Rcvr, Msg, Args, infinity).
+    call0(uicall, Rcvr, Msg, Args, 5000).
 
 uicall(Rcvr, Msg, Args, Timeout) ->
     call0(uicall, Rcvr, Msg, Args, Timeout).
@@ -53,17 +53,26 @@ rpc_loop(JavaNode) ->
        end,
     ok.
 
-test() ->
-       
-        {ok, R0}=call('org.erlide.jinterface.RpcUtil', testing, [], 2000),
-        io:format(">>>> ~p~n", [R0]),
-        Rx=call(R0, {get, ["java.lang.Object"]}, ["alfa"], 2000),
-        io:format(">>>> ~p~n", [Rx]),
+-define(P(X), io:format(">>> ~p~n", [X])).
 
-        %%java_util_HashMap:put(R0, "gamma", "delta"),
-        %%Rx1=java_util_HashMap:get(R0, "gamma"),
-        %%io:format(">>>> ~p~n", [Rx1]),
+test() ->
+    	RT=org_erlide_jinterface_RpcTest,
+        ?P(RT:test_str_arr(["1zx3"])),
+        ?P(RT:test_str_arr([55, x, "123"])),
+        
+        
+        ?P(RT:test_int(422)),
+        
+        ?P(RT:test_str("qwer")),
+         
+        {ok, E} = RT:new(),
+        N = RT:square(E, 7),
+        ?P(N),
+        
+        ?P(RT:test_int_arr([422])),
                 
+               
+                 
         P = 'org.eclipse.core.runtime.Platform',
         io:format("---- ~p~n", [call(P, getApplicationArgs, [], 2000)]),
         io:format("---- ~p~n", [call(P, knownOSValues, [], 2000)]),

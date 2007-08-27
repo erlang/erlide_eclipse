@@ -51,7 +51,7 @@ import com.ericsson.otp.erlang.OtpPeer;
 public abstract class AbstractBackend implements IBackend {
 
 	// use this for debugging
-	private static final boolean CHECK_RPC = false;
+	private static final boolean CHECK_RPC = true;
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
 

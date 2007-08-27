@@ -128,8 +128,8 @@ public class ErlParser {
 				final OtpErlangString source = new OtpErlangString(doc);
 
 				OtpErlangTuple res = (OtpErlangTuple) BackendUtil.checkRpc(b
-						.rpc("erlide_model", "parse", source,
-								new OtpErlangString(module.getElementName())));
+						.rpc("erlide_model", "parse", doc, module
+								.getElementName()));
 				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
 						"ok") == 0) {
 					forms = (OtpErlangList) res.elementAt(1);
@@ -147,7 +147,7 @@ public class ErlParser {
 				ErlLogger.log("-----------------------");
 
 				res = (OtpErlangTuple) BackendUtil.checkRpc(b.rpc(
-						"erlide_model", "comments", source));
+						"erlide_model", "comments", doc));
 				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
 						"ok") == 0) {
 					comments = (OtpErlangList) res.elementAt(1);

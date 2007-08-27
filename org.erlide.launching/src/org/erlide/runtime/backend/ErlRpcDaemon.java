@@ -64,7 +64,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 					ErlangLaunchPlugin plugin = ErlangLaunchPlugin.getDefault();
 					if (plugin != null
 							&& plugin.getBundle().getState() != Bundle.STOPPING) {
-						schedule(100);
+						schedule(50);
 					}
 				}
 			}

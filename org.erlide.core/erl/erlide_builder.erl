@@ -22,7 +22,8 @@
      load/1,
      compile_yrl/2,
      code_clash/0,
-     source_clash/1
+     source_clash/1,
+     compile_string/1
     ]).
 
 %%-define(DEBUG, 1).
@@ -182,3 +183,40 @@ source_clash(Dirs) ->
     Struct = lists:flatten(build(Dirs, "erl")),
     search(Struct).
 
+parse(Toks) ->
+    Parts = split_dot(Toks),
+    Fun = fun(E) ->
+		  case erl_parse:parse(E) of
+		      {ok, X} ->
+			  X;
+		      Err ->
+			  Err
+		  end
+	  end,
+    Res = lists:map(Fun, Parts),
+    {ok, Res}.
+
+split_dot(L) ->
+    split_dot(L, [], []).
+
+split_dot([], R, []) ->
+    lists:reverse(R);
+split_dot([], R, V) ->
+    lists:reverse([V|R]);
+split_dot([{eof}|T], R, V) ->
+    split_dot(T, R, V);
+split_dot([{dot, _}=H|T], R, V) ->
+    split_dot(T, [lists:reverse([H|V])|R], []);
+split_dot([H|T], R, V) ->
+    split_dot(T, R, [H|V]).
+
+compile_string(Str) ->
+    {ok, T, _} = erl_scan:string(Str),
+    {ok, Code} = parse(T),
+    case compile:forms(Code) of
+        {ok, Mod, Bin} ->
+            code:load_binary(Mod, atom_to_list(Mod), Bin);
+        {ok, Mod, Bin, _} ->
+            code:load_binary(Mod, atom_to_list(Mod), Bin);
+         _ -> ok
+    end.

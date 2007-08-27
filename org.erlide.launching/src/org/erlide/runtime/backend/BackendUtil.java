@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.erlide.jinterface.RpcStubGenerator;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
@@ -214,6 +215,16 @@ public class BackendUtil {
 			throw new BackendException("RPC error: null response (timeout?)");
 		}
 		throw new BackendException("RPC error: " + r.getValue());
+	}
+
+	public static void generateRpcStub(Class cls, boolean onlyDeclared,
+			IBackend b) {
+		String s = RpcStubGenerator.generate(cls, onlyDeclared);
+		try {
+			b.rpc("erlide_builder", "compile_string", s);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

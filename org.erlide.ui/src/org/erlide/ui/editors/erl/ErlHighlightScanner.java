@@ -35,7 +35,6 @@ import org.erlide.ui.util.IColorManager;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
@@ -347,11 +346,10 @@ public class ErlHighlightScanner implements ITokenScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scan", "string",
-							new OtpErlangString(string)));
+					.getIdeBackend().rpc("erlide_scan", "string", string));
 		} catch (final ErlangRpcException e) {
-			throw new BackendException("Could not parse string \"" + string +
-					"\": " + e.getMessage());
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": " + e.getMessage());
 		}
 		if (r1 == null) {
 			return null;
@@ -362,8 +360,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			return t1.elementAt(1);
 		}
-		throw new BackendException("Could not parse string \"" + string +
-				"\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not parse string \"" + string
+				+ "\": " + t1.elementAt(1).toString());
 	}
 
 }

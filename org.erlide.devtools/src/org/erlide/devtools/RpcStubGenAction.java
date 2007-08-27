@@ -5,7 +5,7 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.erlide.jinterface.StubGenerator;
+import org.erlide.jinterface.RpcStubGenerator;
 
 public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 
@@ -25,12 +25,12 @@ public class RpcStubGenAction implements IWorkbenchWindowActionDelegate {
 		try {
 			target = Class.forName(fSelection.getText());
 
-			String module = StubGenerator.module(target);
+			String module = RpcStubGenerator.module(target);
 			System.out.println("generate stub!!! " + module);
 
 			// StubGenerator.tofile(target, null);
 
-			String text = StubGenerator.generate(target, false);
+			String text = RpcStubGenerator.generate(target, false);
 			System.out.println(text);
 
 		} catch (ClassNotFoundException e) {

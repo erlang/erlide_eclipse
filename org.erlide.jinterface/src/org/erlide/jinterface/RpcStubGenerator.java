@@ -1,7 +1,6 @@
 package org.erlide.jinterface;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -11,26 +10,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDouble;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Takes a fully qualified class name and generates an erlang stub module that
  * uses rpc to call the class and its instances.
  * 
- * Restrictions:
- *  - can't handle the difference between int and long
+ * Restrictions: - can't handle the difference between int and long
  * 
  */
-public class StubGenerator {
+public class RpcStubGenerator {
 
 	public static String generate(Class clazz, boolean onlyDeclared) {
 		return generate(clazz.getName(), clazz.getClassLoader(), onlyDeclared);
@@ -55,6 +49,7 @@ public class StubGenerator {
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private static String generate(Class clazz, String moduleName,
 			boolean onlyDeclared) {
 		StringBuffer buf = new StringBuffer();
@@ -62,6 +57,54 @@ public class StubGenerator {
 				moduleName));
 
 		// TODO add constructors
+		Constructor[] constructors = onlyDeclared ? clazz
+				.getDeclaredConstructors() : clazz.getConstructors();
+		Map<Integer, List<Constructor>> cmap = new HashMap<Integer, List<Constructor>>();
+		for (Constructor constructor : constructors) {
+			int plen = constructor.getParameterTypes().length;
+			List<Constructor> list = cmap.get(plen);
+			if (list == null) {
+				list = new ArrayList<Constructor>();
+			}
+			list.add(constructor);
+			cmap.put(plen, list);
+		}
+
+		for (Integer key : cmap.keySet()) {
+			List<Constructor> list = cmap.get(key);
+			Collections.sort(list, new Comparator<Constructor>() {
+
+				public int compare(Constructor m1, Constructor m2) {
+					Class<?>[] p1 = m1.getParameterTypes();
+					Class<?>[] p2 = m2.getParameterTypes();
+					for (int i = 0; i < p1.length; i++) {
+						Class<?> t1 = RpcUtil.javaType2erlang(p1[i]);
+						Class<?> t2 = RpcUtil.javaType2erlang(p2[i]);
+
+						int result = -2;
+						if (t1 == OtpErlangRef.class) {
+							result = 1;
+						}
+						if (t2 == OtpErlangRef.class) {
+							result = -1;
+						}
+						if (result != -2) {
+							return result;
+						}
+					}
+					return 0;
+				}
+
+			});
+			for (Constructor constructor : list) {
+				printClause(clazz, buf, constructor);
+				if (list.indexOf(constructor) == list.size() - 1) {
+					buf.append(".\n\n");
+				} else {
+					buf.append(";\n");
+				}
+			}
+		}
 
 		Method[] methods = onlyDeclared ? clazz.getDeclaredMethods() : clazz
 				.getMethods();
@@ -121,6 +164,45 @@ public class StubGenerator {
 
 	}
 
+	private static void printClause(Class clazz, StringBuffer buf,
+			Constructor constructor) {
+		Class<?>[] params = constructor.getParameterTypes();
+
+		buf.append("  'new'(");
+
+		printParams(true, buf, params);
+		StringBuffer guards = new StringBuffer();
+		Class<?>[] p = constructor.getParameterTypes();
+		for (int i = 0; i < p.length; i++) {
+			String name = "P" + i;
+			String grd = mkGuard(RpcUtil.javaType2erlang(p[i]), name);
+			guards.append(grd);
+			if ((i < p.length - 1) && grd.length() > 0) {
+				guards.append(", ");
+			}
+		}
+		if (guards.length() != 0) {
+			guards = new StringBuffer("when ").append(guards);
+		}
+		buf.append(") " + guards + " ->\n");
+
+		buf.append("    jrpc:call(");
+		buf.append("<<\"" + clazz.getName() + "\">>, ");
+
+		StringBuffer args = new StringBuffer();
+		Class<?>[] at = constructor.getParameterTypes();
+		for (int i = 0; i < at.length; i++) {
+			args.append("<<\"" + at[i].getName() + "\">>");
+			if (i < at.length - 1) {
+				args.append(", ");
+			}
+		}
+		buf.append("{<<\"" + constructor.getName() + "\">>, [").append(args)
+				.append("]}, [");
+		printParams(true, buf, params);
+		buf.append("])");
+	}
+
 	private static Class<?>[] getExParams(Method m1) {
 		Class<?>[] p1 = m1.getParameterTypes();
 		int mod = m1.getModifiers();
@@ -139,19 +221,23 @@ public class StubGenerator {
 		Class<?>[] params = method.getParameterTypes();
 
 		buf.append("  '" + method.getName() + "'(");
-		if (statik) {
-		} else {
+		if (!statik) {
 			buf.append("Obj");
 		}
 
 		printParams(statik, buf, params);
 		StringBuffer guards = new StringBuffer();
 		Class<?>[] p = getExParams(method);
+		boolean supported = true;
 		for (int i = 0; i < p.length; i++) {
 			String name = ((!statik) && (i == 0)) ? "Obj" : "P"
 					+ (statik ? i : i - 1);
-			guards.append(mkGuard(RpcUtil.javaType2erlang(p[i]), name));
-			if (i < p.length - 1) {
+			if (p[i].isArray() && p[i].getComponentType().isPrimitive()) {
+				supported = false;
+			}
+			String grd = mkGuard(RpcUtil.javaType2erlang(p[i]), name);
+			guards.append(grd);
+			if ((i < p.length - 1) && grd.length() > 0) {
 				guards.append(", ");
 			}
 		}
@@ -160,30 +246,35 @@ public class StubGenerator {
 		}
 		buf.append(") " + guards + " ->\n");
 
-		if (method.getReturnType() == Void.TYPE) {
-			buf.append("    jrpc:cast(");
-		} else {
-			buf.append("    %% ");
-			buf.append(" returns " + method.getReturnType().getName() + "\n");
-			buf.append("    jrpc:call(");
-		}
-		if (statik) {
-			buf.append("<<\"" + clazz.getName() + "\">>, ");
-		} else {
-			buf.append("Obj, ");
-		}
-		StringBuffer args = new StringBuffer();
-		Class<?>[] at = method.getParameterTypes();
-		for (int i = 0; i < at.length; i++) {
-			args.append("\"" + at[i].getName() + "\"");
-			if (i < at.length - 1) {
-				args.append(", ");
+		if (supported) {
+			if (method.getReturnType() == Void.TYPE) {
+				buf.append("    jrpc:cast(");
+			} else {
+				buf.append("    %% ");
+				buf.append(" returns " + method.getReturnType().getName()
+						+ "\n");
+				buf.append("    jrpc:call(");
 			}
+			if (statik) {
+				buf.append("<<\"" + clazz.getName() + "\">>, ");
+			} else {
+				buf.append("Obj, ");
+			}
+			StringBuffer args = new StringBuffer();
+			Class<?>[] at = method.getParameterTypes();
+			for (int i = 0; i < at.length; i++) {
+				args.append("<<\"" + at[i].getName() + "\">>");
+				if (i < at.length - 1) {
+					args.append(", ");
+				}
+			}
+			buf.append("{<<\"" + method.getName() + "\">>, [").append(args)
+					.append("]}, [");
+			printParams(true, buf, params);
+			buf.append("])");
+		} else {
+			buf.append("    {error, not_supported}");
 		}
-		buf.append("{<<\"" + method.getName() + "\">>, [").append(args).append(
-				"]}, [");
-		printParams(true, buf, params);
-		buf.append("])");
 	}
 
 	private static String mkGuard(Class<?> param, String name) {
@@ -194,7 +285,7 @@ public class StubGenerator {
 			return "is_atom(" + name + ")";
 		}
 		if (param == OtpErlangDouble.class) {
-			return "is_double(" + name + ")";
+			return "is_float(" + name + ")";
 		}
 		if (param == OtpErlangList.class) {
 			return "is_list(" + name + ")";
@@ -202,13 +293,13 @@ public class StubGenerator {
 		if (param == OtpErlangString.class) {
 			return "is_list(" + name + ")";
 		}
-		if (param == OtpErlangTuple.class) {
-			return "is_tuple(" + name + ")";
-		}
-		if (param == OtpErlangRef.class) {
-			return "is_reference(" + name + ")";
-		}
-		return "??" + param.getName();
+		// if (param == OtpErlangTuple.class) {
+		// return "is_tuple(" + name + ")";
+		// }
+		// if (param == OtpErlangRef.class) {
+		// return "";
+		// }
+		return "";
 	}
 
 	private static void printParams(boolean nohdr, StringBuffer buf,
@@ -226,19 +317,6 @@ public class StubGenerator {
 
 	public static String module(Class clazz) {
 		return clazz.getName().replaceAll("\\.", "_");
-	}
-
-	public static void tofile(Class clazz, boolean onlyDeclared, IFile out) {
-
-		String s = generate(clazz, onlyDeclared);
-
-		InputStream source = new ByteArrayInputStream(s.getBytes());
-		try {
-			out.create(source, false, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 }
