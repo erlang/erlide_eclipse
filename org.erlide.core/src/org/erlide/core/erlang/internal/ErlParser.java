@@ -125,8 +125,6 @@ public class ErlParser {
 
 			OtpErlangList forms = null, comments = null;
 			try {
-				final OtpErlangString source = new OtpErlangString(doc);
-
 				OtpErlangTuple res = (OtpErlangTuple) BackendUtil.checkRpc(b
 						.rpc("erlide_model", "parse", doc, module
 								.getElementName()));

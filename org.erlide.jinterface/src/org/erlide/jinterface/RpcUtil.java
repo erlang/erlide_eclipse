@@ -479,7 +479,7 @@ public class RpcUtil {
 					}
 				}
 			}
-			if (true || isDeveloper()) {
+			if (isDeveloper()) {
 				System.out.println(" *** deprecated use of java2erlang: "
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
