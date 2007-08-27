@@ -13,7 +13,6 @@ package org.erlide.ui;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -34,7 +33,6 @@ import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.osgi.framework.BundleContext;
@@ -114,9 +112,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 		// set this classloader to be used with erlang rpc
 		RpcUtil.loader = getClass().getClassLoader();
-
-		BackendUtil.generateRpcStub(Map.class, false, BackendManager
-				.getDefault().getIdeBackend());
 	}
 
 	/**

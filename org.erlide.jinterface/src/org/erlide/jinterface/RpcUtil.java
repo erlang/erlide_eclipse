@@ -63,44 +63,6 @@ public class RpcUtil {
 	// we can access even the UI classes (which are actually most interesting)
 	public static ClassLoader loader = RpcUtil.class.getClassLoader();
 
-	public static Class<?> javaType2erlang(Class<?> obj) {
-		if (obj.isArray()) {
-			return OtpErlangTuple.class;
-		}
-		if (List.class.isAssignableFrom(obj)) {
-			return OtpErlangList.class;
-		}
-		if (obj == Integer.TYPE) {
-			return OtpErlangLong.class;
-		}
-		if (obj == Long.TYPE) {
-			return OtpErlangLong.class;
-		}
-		if (obj == Boolean.TYPE) {
-			return OtpErlangAtom.class;
-		}
-		if (obj == Double.TYPE) {
-			return OtpErlangDouble.class;
-		}
-		if (obj == String.class) {
-			return OtpErlangString.class;
-		}
-		if (obj == Long.class) {
-			return OtpErlangLong.class;
-		}
-		if (obj == Integer.class) {
-			return OtpErlangLong.class;
-		}
-		if (obj == Double.class) {
-			return OtpErlangDouble.class;
-		}
-		if (obj == Boolean.class) {
-			return OtpErlangAtom.class;
-		}
-		return OtpErlangRef.class;
-
-	}
-
 	public static OtpErlangRef registerTarget(Object obj) {
 		if (obj == null) {
 			return new OtpErlangRef(REF_NODE, new int[] { 0, 0, 0 }, 0);
@@ -466,55 +428,30 @@ public class RpcUtil {
 		if (obj instanceof Character) {
 			return new OtpErlangChar((Character) obj);
 		}
-		// if (char.class.isInstance(obj)) {
-		// char c = (char) obj;
-		// return new OtpErlangChar(c);
-		// }
 		if (obj instanceof Byte) {
 			return new OtpErlangByte((Byte) obj);
 		}
-		// if (byte.class.isInstance(obj)) {
-		// return new OtpErlangByte(((Byte) obj).byteValue());
-		// }
 		if (obj instanceof Short) {
 			return new OtpErlangShort((Short) obj);
 		}
-		// if (short.class.isInstance(obj)) {
-		// return new OtpErlangShort((Short) obj);
-		// }
 		if (obj instanceof Integer) {
 			return new OtpErlangInt((Integer) obj);
 		}
-		// if (int.class.isInstance(obj)) {
-		// return new OtpErlangInt((Integer) obj);
-		// }
 		if (obj instanceof Long) {
 			return new OtpErlangLong((Long) obj);
 		}
-		// if (long.class.isInstance(obj)) {
-		// return new OtpErlangLong((Long) obj);
-		// }
 		if (obj instanceof BigInteger) {
 			return new OtpErlangBigLong((BigInteger) obj);
 		}
 		if (obj instanceof Float) {
 			return new OtpErlangFloat((Float) obj);
 		}
-		// if (float.class.isInstance(obj)) {
-		// return new OtpErlangFloat((Float) obj);
-		// }
 		if (obj instanceof Double) {
 			return new OtpErlangDouble((Double) obj);
 		}
-		// if (double.class.isInstance(obj)) {
-		// return new OtpErlangDouble((Double) obj);
-		// }
 		if (obj instanceof Boolean) {
 			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
 		}
-		// if (boolean.class.isInstance(obj)) {
-		// return new OtpErlangAtom((Boolean) obj ? "true" : "false");
-		// }
 		if (obj instanceof List<?>) {
 			Object[] v = ((List<?>) obj).toArray(new Object[] {});
 			OtpErlangObject[] vv = new OtpErlangObject[v.length];
@@ -580,7 +517,6 @@ public class RpcUtil {
 		}
 
 		if (obj != null && obj.getClass().isArray()) {
-			Class klass = obj.getClass().getComponentType();
 			int len = Array.getLength(obj);
 			OtpErlangObject[] vv = new OtpErlangObject[len];
 			for (int i = 0; i < len; i++) {
@@ -641,10 +577,19 @@ public class RpcUtil {
 				if (obj instanceof OtpErlangBinary) {
 					return new String(((OtpErlangBinary) obj).binaryValue());
 				}
-				// if (obj instanceof OtpErlangList) {
-				// // TODO check if string and convert
-				// return null;
-				// }
+				if (obj instanceof OtpErlangList) {
+					OtpErlangObject[] els = ((OtpErlangList) obj).elements();
+					StringBuffer res = new StringBuffer();
+					for (OtpErlangObject el : els) {
+						if (el instanceof OtpErlangLong) {
+							long l = ((OtpErlangLong) el).longValue();
+							res.append((char) (l & 0xFFFF));
+						} else {
+							res.append(erlang2java(el, String.class));
+						}
+					}
+					return res.toString();
+				}
 				throw new RpcException("wrong arg type "
 						+ obj.getClass().getName()
 						+ ", can't convert to String");

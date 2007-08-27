@@ -16,6 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Takes a fully qualified class name and generates an erlang stub module that
@@ -78,8 +79,8 @@ public class RpcStubGenerator {
 					Class<?>[] p1 = m1.getParameterTypes();
 					Class<?>[] p2 = m2.getParameterTypes();
 					for (int i = 0; i < p1.length; i++) {
-						Class<?> t1 = RpcUtil.javaType2erlang(p1[i]);
-						Class<?> t2 = RpcUtil.javaType2erlang(p2[i]);
+						Class<?> t1 = RpcStubGenerator.javaType2erlang(p1[i]);
+						Class<?> t2 = RpcStubGenerator.javaType2erlang(p2[i]);
 
 						int result = -2;
 						if (t1 == OtpErlangRef.class) {
@@ -132,8 +133,8 @@ public class RpcStubGenerator {
 					Class<?>[] p1 = getExParams(m1);
 					Class<?>[] p2 = getExParams(m2);
 					for (int i = 0; i < p1.length; i++) {
-						Class<?> t1 = RpcUtil.javaType2erlang(p1[i]);
-						Class<?> t2 = RpcUtil.javaType2erlang(p2[i]);
+						Class<?> t1 = RpcStubGenerator.javaType2erlang(p1[i]);
+						Class<?> t2 = RpcStubGenerator.javaType2erlang(p2[i]);
 
 						int result = -2;
 						if (t1 == OtpErlangRef.class) {
@@ -175,7 +176,7 @@ public class RpcStubGenerator {
 		Class<?>[] p = constructor.getParameterTypes();
 		for (int i = 0; i < p.length; i++) {
 			String name = "P" + i;
-			String grd = mkGuard(RpcUtil.javaType2erlang(p[i]), name);
+			String grd = mkGuard(RpcStubGenerator.javaType2erlang(p[i]), name);
 			guards.append(grd);
 			if ((i < p.length - 1) && grd.length() > 0) {
 				guards.append(", ");
@@ -226,25 +227,18 @@ public class RpcStubGenerator {
 		}
 
 		printParams(statik, buf, params);
-		StringBuffer guards = new StringBuffer();
 		Class<?>[] p = getExParams(method);
 		boolean supported = true;
 		for (int i = 0; i < p.length; i++) {
-			String name = ((!statik) && (i == 0)) ? "Obj" : "P"
-					+ (statik ? i : i - 1);
 			if (p[i].isArray() && p[i].getComponentType().isPrimitive()) {
 				supported = false;
 			}
-			String grd = mkGuard(RpcUtil.javaType2erlang(p[i]), name);
-			guards.append(grd);
-			if ((i < p.length - 1) && grd.length() > 0) {
-				guards.append(", ");
-			}
 		}
-		if (guards.length() != 0) {
-			guards = new StringBuffer("when ").append(guards);
+		if (statik) {
+			buf.append(") ->\n");
+		} else {
+			buf.append(") when is_reference(Obj) ->\n");
 		}
-		buf.append(") " + guards + " ->\n");
 
 		if (supported) {
 			if (method.getReturnType() == Void.TYPE) {
@@ -290,9 +284,9 @@ public class RpcStubGenerator {
 		if (param == OtpErlangList.class) {
 			return "is_list(" + name + ")";
 		}
-		if (param == OtpErlangString.class) {
-			return "is_list(" + name + ")";
-		}
+		// if (param == OtpErlangString.class) {
+		// return "is_list(" + name + ")";
+		// }
 		// if (param == OtpErlangTuple.class) {
 		// return "is_tuple(" + name + ")";
 		// }
@@ -317,6 +311,44 @@ public class RpcStubGenerator {
 
 	public static String module(Class clazz) {
 		return clazz.getName().replaceAll("\\.", "_");
+	}
+
+	public static Class<?> javaType2erlang(Class<?> obj) {
+		if (obj.isArray()) {
+			return OtpErlangTuple.class;
+		}
+		if (List.class.isAssignableFrom(obj)) {
+			return OtpErlangList.class;
+		}
+		if (obj == Integer.TYPE) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Long.TYPE) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Boolean.TYPE) {
+			return OtpErlangAtom.class;
+		}
+		if (obj == Double.TYPE) {
+			return OtpErlangDouble.class;
+		}
+		if (obj == String.class) {
+			return OtpErlangString.class;
+		}
+		if (obj == Long.class) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Integer.class) {
+			return OtpErlangLong.class;
+		}
+		if (obj == Double.class) {
+			return OtpErlangDouble.class;
+		}
+		if (obj == Boolean.class) {
+			return OtpErlangAtom.class;
+		}
+		return OtpErlangRef.class;
+
 	}
 
 }

@@ -62,7 +62,10 @@ test() ->
         ?P(RT:test_int(422)),
         
         ?P(RT:test_str("qwer")),
-         
+        ?P(RT:test_str('atomic')),
+        ?P(RT:test_str([16#013d, 65])),
+        ?P(RT:test_str(io_lib:format("hej ~w ~s", [45, "scoo"]))),
+                         
         {ok, E} = RT:new(),
         N = RT:square(E, 7),
         ?P(N),

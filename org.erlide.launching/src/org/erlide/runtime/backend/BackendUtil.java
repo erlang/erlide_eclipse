@@ -217,10 +217,11 @@ public class BackendUtil {
 		throw new BackendException("RPC error: " + r.getValue());
 	}
 
-	public static void generateRpcStub(Class cls, boolean onlyDeclared,
+	public static void generateRpcStub(String className, boolean onlyDeclared,
 			IBackend b) {
-		String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		try {
+			String s = RpcStubGenerator.generate(Class.forName(className),
+					onlyDeclared);
 			b.rpc("erlide_builder", "compile_string", s);
 		} catch (Exception e) {
 			e.printStackTrace();

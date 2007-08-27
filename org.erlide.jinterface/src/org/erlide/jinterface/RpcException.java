@@ -11,6 +11,8 @@ package org.erlide.jinterface;
 
 public class RpcException extends Exception {
 
+	private static final long serialVersionUID = -3985020542523854596L;
+
 	public RpcException(Exception e) {
 		super(e);
 	}

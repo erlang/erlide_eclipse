@@ -477,4 +477,10 @@
             path="/ebin">
       </bundle_dir>
    </extension>
+   <extension
+         point="org.erlide.jinterface.javaRpcStubs">
+      <stub
+            class="org.eclipse.core.runtime.IProgressMonitor">
+      </stub>
+   </extension>
 </plugin>

@@ -375,6 +375,21 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 				}
 			}
 		}
+
+		// load all stub code
+		IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
+				InterfacePlugin.PLUGIN_ID, "javaRpcStubs");
+		for (IConfigurationElement stub : stubs) {
+			IContributor c = stub.getContributor();
+
+			if (c.getName().equals(b.getSymbolicName())) {
+				System.out.println("*>> STUB: " + stub.getAttribute("class"));
+				BackendUtil.generateRpcStub(stub.getAttribute("class"), Boolean
+						.parseBoolean(stub.getAttribute("onlyDeclared")),
+						fBackend);
+
+			}
+		}
 		ErlLogger.log("*done! loading plugin " + b.getSymbolicName());
 	}
 

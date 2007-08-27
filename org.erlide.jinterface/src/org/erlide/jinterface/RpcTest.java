@@ -28,7 +28,7 @@ public class RpcTest {
 	}
 
 	public static int test_int_arr(int[] x) {
-		return x.length + ((x.length > 0) ? (10000 * x[0]) : 0);
+		return x.length;
 	}
 
 	public static String test_str(String arg1) {
