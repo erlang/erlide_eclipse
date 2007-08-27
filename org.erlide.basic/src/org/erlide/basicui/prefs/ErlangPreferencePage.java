@@ -105,6 +105,14 @@ public class ErlangPreferencePage extends PreferencePage implements
 				SFProjectSupport.FEATURES_URL));
 		l.addSelectionListener(linkListener);
 
+		new Label(panel2, SWT.NONE).setText("    ");
+		new Label(panel2, SWT.NONE).setText("The main developers are: ");
+		new Label(panel2, SWT.NONE).setText("    Vlad Dumitrescu");
+		new Label(panel2, SWT.NONE).setText("    Jakob Cederlund");
+		new Label(panel2, SWT.NONE).setText("Other contributors:");
+		new Label(panel2, SWT.NONE).setText("    Lukas Larsson");
+		new Label(panel2, SWT.NONE).setText("    Mickaël Remond");
+
 		return panel;
 	}
 
