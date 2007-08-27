@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.jinterface;
 
+
 public class RpcTest {
 
 	public RpcTest() {
@@ -39,4 +40,5 @@ public class RpcTest {
 		return ">" + arg1.length + " "
 				+ ((arg1.length > 0) ? arg1[0].toUpperCase() : "--");
 	}
+
 }

@@ -56,7 +56,7 @@ public class RpcUtil {
 	private static final boolean VERBOSE = false;
 
 	private static Map<OtpErlangRef, WeakReference<Object>> objects = new HashMap<OtpErlangRef, WeakReference<Object>>();
-	private static int refid0 = 1;
+	private static int refid0 = 0;
 	private static int refid1 = 0;
 	private static int refid2 = 0;
 
@@ -90,17 +90,18 @@ public class RpcUtil {
 		objects.remove(ref);
 	}
 
-	private static OtpErlangRef mkref() {
-		if (refid0 < 65535) {
-			refid0++;
+	static OtpErlangRef mkref() {
+		final int max = 0x7fffffff;
+		if (refid2 < max) {
+			refid2++;
 		} else {
-			if (refid1 < 65535) {
+			if (refid1 < max) {
 				refid1++;
 			} else {
-				refid2++;
+				refid0++;
 				refid1 = 0;
 			}
-			refid0 = 0;
+			refid2 = 0;
 		}
 		return new OtpErlangRef(REF_NODE, new int[] { refid0, refid1, refid2 },
 				0);
