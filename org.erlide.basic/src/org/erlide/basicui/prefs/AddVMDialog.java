@@ -43,7 +43,7 @@ import org.erlide.basicui.dialogfields.StringDialogField;
 
 public class AddVMDialog extends StatusDialog {
 
-	public class StringLabelProvider implements ILabelProvider {
+	public static class StringLabelProvider implements ILabelProvider {
 
 		public Image getImage(Object element) {
 			return null;
@@ -220,8 +220,8 @@ public class AddVMDialog extends StatusDialog {
 		if (name == null || name.trim().length() == 0) {
 			status.setInfo("Enter the VM's name"); //$NON-NLS-1$
 		} else {
-			if (fRequestor.isDuplicateName(name) &&
-					(fEditedVM == null || !name.equals(fEditedVM.getName()))) {
+			if (fRequestor.isDuplicateName(name)
+					&& (fEditedVM == null || !name.equals(fEditedVM.getName()))) {
 				status.setError("The name is already used"); //$NON-NLS-1$
 			} else {
 				final IStatus s = ResourcesPlugin.getWorkspace().validateName(

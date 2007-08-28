@@ -125,8 +125,8 @@ public class AbstractNode {
 			localHost = "localhost";
 		}
 
-		final String dotCookieFilename = System.getProperty("user.home") +
-				File.separator + ".erlang.cookie";
+		final String dotCookieFilename = System.getProperty("user.home")
+				+ File.separator + ".erlang.cookie";
 		BufferedReader br = null;
 
 		try {
@@ -239,7 +239,7 @@ public class AbstractNode {
 	}
 
 	// package scope
-	int creation() {
+	synchronized int creation() {
 		return creation;
 	}
 

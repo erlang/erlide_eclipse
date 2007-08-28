@@ -27,7 +27,7 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	}
 
 	protected BaseTuple addElement(int i) {
-		return addElement(new Integer(i));
+		return addElement(Integer.valueOf(i));
 	}
 
 	// Compare two tuples. All elements must be equal.

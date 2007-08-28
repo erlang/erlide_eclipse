@@ -29,7 +29,7 @@ public class IoRequest {
 
 	private int start;
 
-	public class Timestamp {
+	public static class Timestamp {
 		public long megasecs;
 
 		public long secs;

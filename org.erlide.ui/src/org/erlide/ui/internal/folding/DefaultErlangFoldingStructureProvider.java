@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Assert;
@@ -765,12 +766,11 @@ public class DefaultErlangFoldingStructureProvider implements
 			computeAdditions(fModule, updated);
 			final Map previous = createAnnotationMap(model);
 
-			Iterator<ErlangProjectionAnnotation> e = updated.keySet()
-					.iterator();
-			while (e.hasNext()) {
-				final ErlangProjectionAnnotation newAnnotation = e.next();
+			for (Entry<ErlangProjectionAnnotation, Position> entry : updated
+					.entrySet()) {
+				final ErlangProjectionAnnotation newAnnotation = entry.getKey();
 				final IErlElement element = newAnnotation.getElement();
-				final Position newPosition = updated.get(newAnnotation);
+				final Position newPosition = entry.getValue();
 
 				final List annotations = (List) previous.get(element);
 				if (annotations == null) {
@@ -1057,6 +1057,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	 */
 	public void elementChanged(IErlElement element) {
 		// TODO fixa elementchangelistener n?n g?ng
+		if (fEditor == null) {
+			return;
+		}
 		final IDocumentProvider provider = fEditor.getDocumentProvider();
 		if (provider == null) {
 			return;
@@ -1072,9 +1075,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		// fFirstType= null;
 		// fHasHeaderComment = false;
 		try {
-			if (fEditor == null) {
-				return;
-			}
+
 			final ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
 					.getAdapter(ProjectionAnnotationModel.class);
 			if (model == null) {

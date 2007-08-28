@@ -64,7 +64,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ProcessListView extends ViewPart {
 
-	public class BackendContentProvider implements IStructuredContentProvider {
+	public static class BackendContentProvider implements
+			IStructuredContentProvider {
 
 		public void dispose() {
 			// TODO unsubscribe from backend manager
@@ -80,7 +81,7 @@ public class ProcessListView extends ViewPart {
 		}
 	}
 
-	public class BackendLabelProvider extends LabelProvider {
+	public static class BackendLabelProvider extends LabelProvider {
 
 		@Override
 		public Image getImage(Object element) {
@@ -158,7 +159,7 @@ public class ProcessListView extends ViewPart {
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider implements
+	static class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
 		public String getColumnText(Object obj, int index) {
@@ -186,7 +187,7 @@ public class ProcessListView extends ViewPart {
 		}
 	}
 
-	class NameSorter extends ViewerSorter {
+	static class NameSorter extends ViewerSorter {
 	}
 
 	/**

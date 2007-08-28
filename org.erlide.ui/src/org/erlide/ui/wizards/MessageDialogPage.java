@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 class MessageDialogPage extends DialogPage {
 
-	class MessageRegion {
+	static class MessageRegion {
 
 		private Text messageText;
 
@@ -75,10 +75,10 @@ class MessageDialogPage extends DialogPage {
 			} else {
 				imageBounds = sizingImage.getBounds();
 			}
-			imageData.heightHint = imageBounds.height +
-					IDialogConstants.VERTICAL_SPACING;
-			imageData.widthHint = imageBounds.width +
-					IDialogConstants.HORIZONTAL_SPACING;
+			imageData.heightHint = imageBounds.height
+					+ IDialogConstants.VERTICAL_SPACING;
+			imageData.widthHint = imageBounds.width
+					+ IDialogConstants.HORIZONTAL_SPACING;
 			messageImageLabel.setLayoutData(imageData);
 
 			messageText = new Text(messageComposite, SWT.NONE);
@@ -86,8 +86,8 @@ class MessageDialogPage extends DialogPage {
 			messageText.setBackground(parent.getDisplay().getSystemColor(
 					SWT.COLOR_WIDGET_BACKGROUND));
 
-			final GridData textData = new GridData(GridData.GRAB_HORIZONTAL |
-					GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER);
+			final GridData textData = new GridData(GridData.GRAB_HORIZONTAL
+					| GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER);
 			messageText.setLayoutData(textData);
 			hideRegion();
 
@@ -142,8 +142,8 @@ class MessageDialogPage extends DialogPage {
 			}
 			showRegion();
 			// Any more updates required
-			if (newMessage.equals(messageText.getText()) &&
-					newImage == messageImageLabel.getImage()) {
+			if (newMessage.equals(messageText.getText())
+					&& newImage == messageImageLabel.getImage()) {
 				return;
 			}
 			messageImageLabel.setImage(newImage);
@@ -211,8 +211,8 @@ class MessageDialogPage extends DialogPage {
 		composite1.setLayout(layout);
 		fMessageRegion = new MessageRegion();
 		fMessageRegion.createContents(composite1);
-		final GridData messageData = new GridData(GridData.FILL_HORIZONTAL |
-				GridData.GRAB_HORIZONTAL);
+		final GridData messageData = new GridData(GridData.FILL_HORIZONTAL
+				| GridData.GRAB_HORIZONTAL);
 		fMessageRegion.setMessageLayoutData(messageData);
 		setControl(composite1);
 	}

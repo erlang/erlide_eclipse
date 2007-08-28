@@ -107,7 +107,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 
 	protected Button envSelectButton;
 
-	class EnvironmentVariable {
+	static class EnvironmentVariable {
 
 		// The name of the environment variable
 		private String name;
@@ -242,7 +242,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	/**
 	 * Label provider for the environment table
 	 */
-	public class EnvironmentVariableLabelProvider extends LabelProvider
+	public static class EnvironmentVariableLabelProvider extends LabelProvider
 			implements ITableLabelProvider {
 
 		public String getColumnText(Object element, int columnIndex) {
@@ -443,8 +443,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		label.setText(ErlideErlcPlugin
 				.getResourceString("MakeEnvironmentBlock.6")); //$NON-NLS-1$
 		// Create table
-		environmentTable = new TableViewer(tableComposite, SWT.BORDER |
-				SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+		environmentTable = new TableViewer(tableComposite, SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
 		final Table table = environmentTable.getTable();
 		final TableLayout tableLayout = new TableLayout();
 		table.setLayout(tableLayout);
@@ -517,8 +517,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		glayout.marginHeight = 0;
 		glayout.marginWidth = 0;
 		glayout.numColumns = 1;
-		final GridData gdata = new GridData(GridData.VERTICAL_ALIGN_BEGINNING |
-				GridData.HORIZONTAL_ALIGN_END);
+		final GridData gdata = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+				| GridData.HORIZONTAL_ALIGN_END);
 		buttonComposite.setLayout(glayout);
 		buttonComposite.setLayoutData(gdata);
 		buttonComposite.setFont(parent.getFont());
@@ -581,8 +581,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		final String name = dialog.getStringValue(NAME_LABEL);
 		final String value = dialog.getStringValue(VALUE_LABEL);
 
-		if (name != null && value != null && name.length() > 0 &&
-				value.length() > 0) {
+		if (name != null && value != null && name.length() > 0
+				&& value.length() > 0) {
 			addVariable(new EnvironmentVariable(name.trim(), value.trim()));
 			updateAppendReplace();
 		}
@@ -813,7 +813,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		getContainer().updateContainer();
 	}
 
-	private class NativeEnvironmentDialog extends ListSelectionDialog {
+	private static class NativeEnvironmentDialog extends ListSelectionDialog {
 
 		public NativeEnvironmentDialog(Shell parentShell, Object input,
 				IStructuredContentProvider contentProvider,
@@ -841,8 +841,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		 * @return String
 		 */
 		protected String getDialogSettingsSectionName() {
-			return ErlideErlcPlugin.PLUGIN_ID +
-					".ENVIRONMENT_TAB.NATIVE_ENVIROMENT_DIALOG"; //$NON-NLS-1$
+			return ErlideErlcPlugin.PLUGIN_ID
+					+ ".ENVIRONMENT_TAB.NATIVE_ENVIROMENT_DIALOG"; //$NON-NLS-1$
 		}
 
 		/*

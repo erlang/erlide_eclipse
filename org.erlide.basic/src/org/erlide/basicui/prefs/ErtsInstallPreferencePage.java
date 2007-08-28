@@ -150,7 +150,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	/**
 	 * Label provider for installed ERTSs table.
 	 */
-	class VMLabelProvider extends LabelProvider implements ITableLabelProvider {
+	static class VMLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
 
 		/**
 		 * @see ITableLabelProvider#getColumnText(Object, int)
@@ -331,8 +332,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		final int selectionCount = ((IStructuredSelection) fVMList
 				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
-		fRemoveButton.setEnabled(selectionCount > 0 &&
-				selectionCount < fVMList.getTable().getItemCount());
+		fRemoveButton.setEnabled(selectionCount > 0
+				&& selectionCount < fVMList.getTable().getItemCount());
 	}
 
 	protected Button createPushButton(Composite parent, String label) {
@@ -595,7 +596,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 				final File location = iter.next();
 				final ErtsInstall vm = new ErtsInstall();
 				final String name = location.getName();
-				String nameCopy = new String(name);
+				String nameCopy = name;
 				int i = 1;
 				while (isDuplicateName(nameCopy)) {
 					nameCopy = name + '(' + i++ + ')';
@@ -827,8 +828,8 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		tableLabel.setLayoutData(data);
 		tableLabel.setFont(font);
 
-		final Table table = new Table(parent, SWT.CHECK | SWT.BORDER |
-				SWT.MULTI | SWT.FULL_SELECTION);
+		final Table table = new Table(parent, SWT.CHECK | SWT.BORDER
+				| SWT.MULTI | SWT.FULL_SELECTION);
 
 		data = new GridData(GridData.FILL_BOTH);
 		table.setLayoutData(data);

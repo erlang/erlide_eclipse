@@ -46,7 +46,7 @@ import java.net.Socket;
  * {@link OtpSelf#connect(OtpPeer) OtpSelf.connect()} and {@link
  * OtpSelf#accept() OtpSelf.accept()}.
  */
-public class OtpConnection extends AbstractConnection {
+public final class OtpConnection extends AbstractConnection {
 
 	protected OtpSelf sself;
 

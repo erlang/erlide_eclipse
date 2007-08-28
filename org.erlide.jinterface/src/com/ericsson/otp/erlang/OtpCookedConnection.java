@@ -55,7 +55,7 @@ import java.net.Socket;
  * mechanism.
  * </p>
  */
-public class OtpCookedConnection extends AbstractConnection {
+public final class OtpCookedConnection extends AbstractConnection {
 
 	protected OtpNode nself;
 

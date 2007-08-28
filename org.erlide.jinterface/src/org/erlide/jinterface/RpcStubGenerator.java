@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDouble;
@@ -71,8 +72,8 @@ public class RpcStubGenerator {
 			cmap.put(plen, list);
 		}
 
-		for (Integer key : cmap.keySet()) {
-			List<Constructor> list = cmap.get(key);
+		for (Entry<Integer, List<Constructor>> entry : cmap.entrySet()) {
+			List<Constructor> list = entry.getValue();
 			Collections.sort(list, new Comparator<Constructor>() {
 
 				public int compare(Constructor m1, Constructor m2) {
@@ -125,8 +126,8 @@ public class RpcStubGenerator {
 			mmap.put(key, list);
 		}
 
-		for (Tuple key : mmap.keySet()) {
-			List<Method> list = mmap.get(key);
+		for (Entry<Tuple, List<Method>> entry : mmap.entrySet()) {
+			List<Method> list = entry.getValue();
 			Collections.sort(list, new Comparator<Method>() {
 
 				public int compare(Method m1, Method m2) {

@@ -227,7 +227,7 @@ public class TraceLogView extends ViewPart {
 		}
 	}
 
-	class NameSorter extends ViewerSorter {
+	static class NameSorter extends ViewerSorter {
 	}
 
 	/**
@@ -325,8 +325,8 @@ public class TraceLogView extends ViewPart {
 						"st.*", IErlModel.UNKNOWN_ARITY);
 				ErlLogger.debug("found(\"*\") " + ms.length);
 				for (IErlFunction element : fs) {
-					ErlLogger.debug("  " + element.getElementName() + "/" +
-							element.getArity());
+					ErlLogger.debug("  " + element.getElementName() + "/"
+							+ element.getArity());
 				}
 
 				viewer.setInput(ms);

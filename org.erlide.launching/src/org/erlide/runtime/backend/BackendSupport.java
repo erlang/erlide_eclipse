@@ -23,7 +23,7 @@ public class BackendSupport {
 	private BackendSupport() {
 	}
 
-	private static BackendType[] fTypes = null;
+	private static volatile BackendType[] fTypes = null;
 
 	public static BackendType[] getTypes() {
 		if (fTypes != null) {

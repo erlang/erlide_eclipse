@@ -56,7 +56,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 	Button addFunction;
 
-	Button addState;
+	// Button addState;
 
 	Button removeFunction;
 
@@ -91,8 +91,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 	}
 
 	private void createTable(Composite parent) {
-		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL |
-				SWT.FULL_SELECTION | SWT.CHECK);
+		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
+				| SWT.FULL_SELECTION | SWT.CHECK);
 		fTable.showSelection();
 		fTable.setHeaderVisible(true);
 		fTable.setLinesVisible(true);
@@ -196,6 +196,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 
 			}
 		});
+
 	}
 
 	/**
@@ -242,16 +243,16 @@ public class FunctionGroup extends Group implements SelectionListener {
 		if (functionNameText.getText().length() != 0) {
 			final TableItem allTableItems[] = fTable.getItems();
 			for (TableItem element : allTableItems) {
-				if (element.getText(0).equals(functionNameText.getText()) &&
-						element.getText(1).equals(arityText.getText())) {
+				if (element.getText(0).equals(functionNameText.getText())
+						&& element.getText(1).equals(arityText.getText())) {
 					updateStatus("Function already exists!");
 					return;
 				}
 			}
 			// check to see if this is a valid function name
 			final int functionNameASCII = functionNameText.getText().charAt(0);
-			if (!(functionNameASCII >= 'a' && functionNameASCII <= 'z') &&
-					functionNameASCII != '\'') {
+			if (!(functionNameASCII >= 'a' && functionNameASCII <= 'z')
+					&& functionNameASCII != '\'') {
 				updateStatus("Function name has to be a valid erlang atom.");
 				return;
 			}
@@ -279,7 +280,7 @@ public class FunctionGroup extends Group implements SelectionListener {
 	}
 
 	public void enableFSM(boolean value) {
-		addState.setEnabled(value);
+		// addState.setEnabled(value);
 	}
 
 	public Function[] getFunctionData() {
@@ -357,10 +358,10 @@ public class FunctionGroup extends Group implements SelectionListener {
 				functionNameText.setText(selectedItem.getText(0));
 				arityText.setText(selectedItem.getText(1));
 				exportButton.setSelection(selectedItem.getChecked());
-				fEditingItem.setText(0, selectedItem.getText(0) +
-						"<<Being Edited>>");
+				fEditingItem.setText(0, selectedItem.getText(0)
+						+ "<<Being Edited>>");
 			}
-		} else if (e.widget == addState) {
+			// } else if (e.widget == addState) {
 
 		}
 		dialogChanged();

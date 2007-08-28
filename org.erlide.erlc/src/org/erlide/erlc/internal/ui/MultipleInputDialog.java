@@ -379,7 +379,7 @@ public class MultipleInputDialog extends Dialog {
 		return section;
 	}
 
-	protected class FieldSummary {
+	protected static class FieldSummary {
 		int type;
 
 		String name;

@@ -55,8 +55,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_TARGET_AUTO = PREFIX + ".autoBuildTarget"; //$NON-NLS-1$
 
-	static final String BUILD_TARGET_INCREMENTAL = PREFIX +
-			".incrementalBuildTarget"; //$NON-NLS-1$
+	static final String BUILD_TARGET_INCREMENTAL = PREFIX
+			+ ".incrementalBuildTarget"; //$NON-NLS-1$
 
 	static final String BUILD_TARGET_FULL = PREFIX + ".fullBuildTarget"; //$NON-NLS-1$
 
@@ -66,8 +66,8 @@ public class BuildInfoFactory {
 
 	static final String BUILD_CLEAN_ENABLED = PREFIX + ".enableCleanBuild"; //$NON-NLS-1$
 
-	static final String BUILD_INCREMENTAL_ENABLED = PREFIX +
-			".enabledIncrementalBuild"; //$NON-NLS-1$
+	static final String BUILD_INCREMENTAL_ENABLED = PREFIX
+			+ ".enabledIncrementalBuild"; //$NON-NLS-1$
 
 	static final String BUILD_AUTO_ENABLED = PREFIX + ".enableAutoBuild"; //$NON-NLS-1$
 
@@ -75,13 +75,13 @@ public class BuildInfoFactory {
 
 	static final String ENVIRONMENT = PREFIX + ".environment"; //$NON-NLS-1$
 
-	static final String BUILD_APPEND_ENVIRONMENT = PREFIX +
-			".append_environment"; //$NON-NLS-1$ 
+	static final String BUILD_APPEND_ENVIRONMENT = PREFIX
+			+ ".append_environment"; //$NON-NLS-1$ 
 
 	private abstract static class AbstractBuildInfo implements IMakeBuilderInfo {
 
 		public void setUseDefaultBuildCmd(boolean on) throws CoreException {
-			putString(USE_DEFAULT_BUILD_CMD, new Boolean(on).toString());
+			putString(USE_DEFAULT_BUILD_CMD, Boolean.valueOf(on).toString());
 		}
 
 		public boolean isDefaultBuildCmd() {
@@ -243,7 +243,7 @@ public class BuildInfoFactory {
 		}
 
 		public void setStopOnError(boolean enabled) throws CoreException {
-			putString(STOP_ON_ERROR, new Boolean(enabled).toString());
+			putString(STOP_ON_ERROR, Boolean.valueOf(enabled).toString());
 		}
 
 		public boolean isStopOnError() {
@@ -327,7 +327,7 @@ public class BuildInfoFactory {
 		}
 
 		public void setAutoBuildEnable(boolean enabled) throws CoreException {
-			putString(BUILD_AUTO_ENABLED, new Boolean(enabled).toString());
+			putString(BUILD_AUTO_ENABLED, Boolean.valueOf(enabled).toString());
 		}
 
 		public boolean isAutoBuildEnable() {
@@ -336,7 +336,7 @@ public class BuildInfoFactory {
 
 		public void setIncrementalBuildEnable(boolean enabled)
 				throws CoreException {
-			putString(BUILD_INCREMENTAL_ENABLED, new Boolean(enabled)
+			putString(BUILD_INCREMENTAL_ENABLED, Boolean.valueOf(enabled)
 					.toString());
 		}
 
@@ -345,7 +345,7 @@ public class BuildInfoFactory {
 		}
 
 		public void setFullBuildEnable(boolean enabled) throws CoreException {
-			putString(BUILD_FULL_ENABLED, new Boolean(enabled).toString());
+			putString(BUILD_FULL_ENABLED, Boolean.valueOf(enabled).toString());
 		}
 
 		public boolean isFullBuildEnabled() {
@@ -353,7 +353,7 @@ public class BuildInfoFactory {
 		}
 
 		public void setCleanBuildEnable(boolean enabled) throws CoreException {
-			putString(BUILD_CLEAN_ENABLED, new Boolean(enabled).toString());
+			putString(BUILD_CLEAN_ENABLED, Boolean.valueOf(enabled).toString());
 		}
 
 		public boolean isCleanBuildEnabled() {
