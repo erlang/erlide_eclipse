@@ -554,10 +554,9 @@ compile(MetaMod, Options) ->
 		end,
 	    case Res of
 		ok ->
+            OldSrc = get_source_ebin(Module),
 		    code:purge(Module),
-		    case code:load_binary(
-			   Module,
-			   atom_to_list(Module) ++ ".erl", Bin) of
+		    case code:load_binary(Module, OldSrc, Bin) of
 			{module, _Module} ->
 			    ok;
 			Err ->
@@ -569,6 +568,14 @@ compile(MetaMod, Options) ->
 	Err ->
 	    Err
     end.
+
+
+get_source_ebin(Mod) ->
+    EbinPath = code:which(Mod),
+    BeamF = filename:basename(EbinPath),
+    ErlF = filename:rootname(BeamF) ++ ".erl",
+    SrcPath = filename:join([filename:dirname(filename:dirname(EbinPath)), "src", ErlF]),
+    SrcPath.
 
 %% @doc Change the name of the function represented by the form.
 %%

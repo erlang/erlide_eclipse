@@ -415,7 +415,11 @@ public class OpenAction extends SelectionDispatchAction {
 		final String modFileName = mod + ".erl";
 		IResource r = ResourceUtil.recursiveFindNamedResource(modFileName);
 		if (r == null) {
-			r = EditorUtility.openExternal(path);
+			try {
+				r = EditorUtility.openExternal(path);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;

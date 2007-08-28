@@ -72,8 +72,8 @@ public class ErlModule extends Openable implements IErlModule {
 	protected ErlModule(IErlElement parent, String name, boolean isErl) {
 		super(parent, name);
 		if (ErlModelManager.verbose) {
-			ErlLogger.debug("...creating " + parent.getElementName() + "/" + name
-					+ " " + isErl);
+			ErlLogger.debug("...creating " + parent.getElementName() + "/"
+					+ name + " " + isErl);
 		}
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
@@ -224,7 +224,7 @@ public class ErlModule extends Openable implements IErlModule {
 			b.setContents(Util.getResourceContentsAsCharArray(f));
 			b.addBufferChangedListener(this);
 		} catch (final ErlModelException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return b;
 	}
@@ -337,9 +337,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-															 * FIXME:
-															 * displayString
-															 */
+					 * FIXME:
+					 * displayString
+					 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
