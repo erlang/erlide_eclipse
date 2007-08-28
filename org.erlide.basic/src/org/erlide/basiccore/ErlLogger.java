@@ -16,9 +16,15 @@ import java.util.Date;
 
 public class ErlLogger {
 
-	private enum LogKind {
+	public enum Level {
 		DEBUG, INFO, WARN, ERROR
 	};
+
+	private static Level minLevel = Level.DEBUG;
+
+	public static void setLevel(Level level) {
+		minLevel = level;
+	}
 
 	private static StackTraceElement getCaller() {
 		StackTraceElement[] st = null;
@@ -35,7 +41,10 @@ public class ErlLogger {
 		return el;
 	}
 
-	private static void log(LogKind kind, String fmt, Object... o) {
+	private static void log(Level kind, String fmt, Object... o) {
+		if (kind.compareTo(minLevel) < 0) {
+			return;
+		}
 		StackTraceElement el = getCaller();
 		String str = String.format(fmt, o);
 		Date time = Calendar.getInstance().getTime();
@@ -45,18 +54,18 @@ public class ErlLogger {
 	}
 
 	public static void debug(String fmt, Object... o) {
-		log(LogKind.DEBUG, fmt, o);
+		log(Level.DEBUG, fmt, o);
 	}
 
 	public static void info(String fmt, Object... o) {
-		log(LogKind.INFO, fmt, o);
+		log(Level.INFO, fmt, o);
 	}
 
 	public static void warn(String fmt, Object... o) {
-		log(LogKind.WARN, fmt, o);
+		log(Level.WARN, fmt, o);
 	}
 
 	public static void error(String fmt, Object... o) {
-		log(LogKind.ERROR, fmt, o);
+		log(Level.ERROR, fmt, o);
 	}
 }
