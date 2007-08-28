@@ -270,7 +270,7 @@ public class OpenAction extends SelectionDispatchAction {
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
 		final TokenWindow w = fEditor.getTokenWindow(window);
 		if (w == null) {
-			System.out.println("open::: null token window " + fEditor);
+			ErlLogger.debug("open::: null token window " + fEditor);
 			return;
 		}
 		final OtpErlangList list = w.getList();

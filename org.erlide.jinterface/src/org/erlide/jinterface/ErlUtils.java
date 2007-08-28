@@ -11,7 +11,6 @@ package org.erlide.jinterface;
 
 import java.util.HashMap;
 
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -30,7 +29,7 @@ public class ErlUtils {
 	public static HashMap<String, OtpErlangObject> match(
 			OtpErlangObject pattern, OtpErlangObject term,
 			HashMap<String, OtpErlangObject> bindings) {
-		// System.out.println("matching \n " + pattern.toString() + "\n "
+		// ErlLogger.debug("matching \n " + pattern.toString() + "\n "
 		// + term.toString() + "\n B=" + bindings);
 
 		if (pattern instanceof OtpVariable) {

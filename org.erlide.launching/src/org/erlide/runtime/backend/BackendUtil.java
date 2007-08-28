@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.RpcStubGenerator;
 import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -219,7 +220,7 @@ public class BackendUtil {
 			String s = RpcStubGenerator.generate(cls, onlyDeclared);
 			RpcResult r = b.rpc("erlide_backend", "compile_string", s);
 			if (!r.isOk()) {
-				System.out.println("rpcstub::" + r.toString());
+				ErlLogger.debug("rpcstub::" + r.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

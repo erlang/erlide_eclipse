@@ -485,7 +485,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	public void registryChanged(IRegistryChangeEvent event) {
-		System.out.println("??"
+		ErlLogger.debug("??"
 				+ event.getExtensionDeltas()[0].getExtensionPoint()
 						.getUniqueIdentifier());
 	}
