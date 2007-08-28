@@ -58,8 +58,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		OtpErlangObject res;
 		try {
-			res = BackendUtil.checkRpc(b.rpc("erlide_debug", "start_debug",
-					new OtpErlangAtom(mod), new OtpErlangAtom(func)));
+			res = b.rpcx("erlide_debug", "start_debug", new OtpErlangAtom(mod),
+					new OtpErlangAtom(func));
 			final OtpErlangPid pid = (OtpErlangPid) BackendUtil.ok(res);
 
 			// start debugger listener job
@@ -94,10 +94,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 		OtpErlangList procs = null;
 		try {
-			procs = (OtpErlangList) BackendUtil.ok(BackendUtil
-					.checkRpc(fBackend.rpc("erlide_debug", "processes",
-							new OtpErlangBoolean(fShowSystemProcesses),
-							new OtpErlangBoolean(fShowErlideProcesses))));
+			procs = (OtpErlangList) BackendUtil.ok(fBackend.rpcx(
+					"erlide_debug", "processes", new OtpErlangBoolean(
+							fShowSystemProcesses), new OtpErlangBoolean(
+							fShowErlideProcesses)));
 
 			fBackend.send("erlide_dbg_mon", new OtpErlangAtom("dumpState"));
 		} catch (final BackendException e) {
@@ -189,7 +189,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public void breakpointAdded(IBreakpoint breakpoint) {
-		ErlLogger.log("Breakpoint added: " + breakpoint);
+		ErlLogger.debug("Breakpoint added: " + breakpoint);
 		// TODO Auto-generated method stub
 	}
 

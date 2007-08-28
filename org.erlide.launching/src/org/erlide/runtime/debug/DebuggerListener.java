@@ -58,7 +58,7 @@ public class DebuggerListener {
 
 		public void handleEvent(OtpErlangObject msg) {
 			if (msg != null) {
-				ErlLogger.log("### got msg: " + msg);
+				ErlLogger.debug("### got msg: " + msg);
 			}
 		}
 

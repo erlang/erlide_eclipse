@@ -123,7 +123,7 @@ public class ErlModelUtils {
 
 	public static IErlScanner getScanner(ITextEditor editor) {
 		final IErlModule mod = getModule(editor);
-		ErlLogger.log("getScanner:: " + editor + " = " + mod);
+		ErlLogger.debug("getScanner:: " + editor + " = " + mod);
 		if (mod != null) {
 			return getModule(editor).getScanner();
 		}

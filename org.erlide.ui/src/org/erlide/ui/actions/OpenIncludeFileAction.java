@@ -18,7 +18,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -54,9 +53,9 @@ public class OpenIncludeFileAction extends TextEditorAction {
 			final int offset = document.getLineOffset(line);
 			final int length = document.getLineLength(line);
 			final String text = document.get(offset, length);
-			final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager
-					.getDefault().getIdeBackend().rpc(fErlModule, fErlFunction,
-							new OtpErlangString(text)));
+			final OtpErlangObject r1 = BackendManager.getDefault()
+					.getIdeBackend().rpcx(fErlModule, fErlFunction,
+							new OtpErlangString(text));
 			if (!(r1 instanceof OtpErlangString)) {
 				final String e = r1.toString();
 				ErlangPlugin.log(new Status(IStatus.ERROR,

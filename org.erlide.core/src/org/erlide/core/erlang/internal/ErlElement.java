@@ -33,7 +33,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
+import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -152,8 +152,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 		// assume instanceof check is done in subclass
 		final ErlElement other = (ErlElement) o;
-		return fOccurrenceCount == other.fOccurrenceCount &&
-				fName.equals(other.fName) && fParent.equals(other.fParent);
+		return fOccurrenceCount == other.fOccurrenceCount
+				&& fName.equals(other.fName) && fParent.equals(other.fParent);
 	}
 
 	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
@@ -338,8 +338,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 				public boolean isConflicting(ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
 						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
-						return fPath.isPrefixOf(otherPath) ||
-								otherPath.isPrefixOf(fPath);
+						return fPath.isPrefixOf(otherPath)
+								|| otherPath.isPrefixOf(fPath);
 					} else {
 						return false;
 					}
@@ -403,7 +403,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Creates and returns and not present exception for this element.
 	 */
 	protected ErlModelException newNotPresentException() {
-		ErlLogger.log("not found: " + fName);
+		ErlLogger.debug("not found: " + fName);
 		return new ErlModelException(new ErlModelStatus(
 				IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
 	}
@@ -651,11 +651,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
-				OtpErlangObject p = BackendUtil.checkRpc(BackendManager
-						.getDefault().getIdeBackend().rpc("erlide_pp", "expr",
-								e));
-				p = BackendUtil.checkRpc(BackendManager.getDefault()
-						.getIdeBackend().rpc("lists", "flatten", p));
+				IBackend b = BackendManager.getDefault().getIdeBackend();
+				OtpErlangObject p = b.rpcx("erlide_pp", "expr", e);
+				p = b.rpcx("lists", "flatten", p);
 				return ((OtpErlangString) p).stringValue();
 			} catch (final BackendException e1) {
 				return "?";

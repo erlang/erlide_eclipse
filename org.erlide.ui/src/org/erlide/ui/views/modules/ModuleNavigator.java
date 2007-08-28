@@ -196,7 +196,7 @@ public class ModuleNavigator extends ViewPart {
 
 		public void treeExpanded(TreeExpansionEvent event) {
 			Object element = event.getElement();
-			ErlLogger.log("ZZ exp::" + element.getClass().getName());
+			ErlLogger.debug("ZZ exp::" + element.getClass().getName());
 			if (element instanceof IErlElement) {
 				expandMainType(element);
 			}
@@ -230,7 +230,7 @@ public class ModuleNavigator extends ViewPart {
 	 */
 	protected void editorActivated(IEditorPart part) {
 		// TODO Auto-generated method stub
-		ErlLogger.log("act::" + part.getClass().getName());
+		ErlLogger.debug("act::" + part.getClass().getName());
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class ModuleNavigator extends ViewPart {
 	 */
 	protected void expandMainType(Object element) {
 		// TODO Auto-generated method stub
-		ErlLogger.log("exp::" + element.getClass().getName());
+		ErlLogger.debug("exp::" + element.getClass().getName());
 	}
 
 	/**

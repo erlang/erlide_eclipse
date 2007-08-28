@@ -43,7 +43,7 @@ public class BufferManager {
 		if (verbose) {
 			final String owner = ((Openable) buffer.getOwner())
 					.toStringWithAncestors();
-			ErlLogger.log("Adding buffer for " + owner); //$NON-NLS-1$
+			ErlLogger.debug("Adding buffer for " + owner); //$NON-NLS-1$
 		}
 		openBuffers.put(buffer.getOwner(), buffer);
 		if (verbose) {
@@ -121,7 +121,7 @@ public class BufferManager {
 		if (verbose) {
 			final String owner = ((Openable) buffer.getOwner())
 					.toStringWithAncestors();
-			ErlLogger.log("Removing buffer for " + owner); //$NON-NLS-1$
+			ErlLogger.debug("Removing buffer for " + owner); //$NON-NLS-1$
 		}
 		openBuffers.remove(buffer.getOwner());
 		if (verbose) {

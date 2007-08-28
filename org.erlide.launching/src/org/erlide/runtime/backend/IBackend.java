@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.console.BackendShellManager;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -58,6 +59,31 @@ public interface IBackend {
 	 */
 	RpcResult rpct(String m, String f, int timeout, Object... a)
 			throws ErlangRpcException;
+
+	/**
+	 * @throws ErlangRpcException,
+	 *             BackendException
+	 * 
+	 * @param m
+	 * @param f
+	 * @param a
+	 * @return OtpErlangObject
+	 */
+	OtpErlangObject rpcx(String m, String f, Object... a)
+			throws ErlangRpcException, BackendException;
+
+	/**
+	 * @throws ErlangRpcException,
+	 *             BackendException
+	 * 
+	 * @param m
+	 * @param f
+	 * @param timeout
+	 * @param a
+	 * @return OtpErlangObject
+	 */
+	OtpErlangObject rpcxt(String m, String f, int timeout, Object... a)
+			throws ErlangRpcException, BackendException;
 
 	/**
 	 * 

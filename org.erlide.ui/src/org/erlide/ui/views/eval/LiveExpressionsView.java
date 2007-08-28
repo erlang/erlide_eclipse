@@ -326,7 +326,7 @@ public class LiveExpressionsView extends ViewPart implements
 						// {
 						// str = BackendUtil.prettyPrint(bk,
 						// item.getText(1));
-						// ErlLogger.log(str);
+						// ErlLogger.debug(str);
 						BackendEvalResult r = BackendUtil.eval(BackendManager
 								.getDefault().getIdeBackend(),
 								"lists:flatten(io_lib:format(\"~p\", [" +
@@ -337,7 +337,7 @@ public class LiveExpressionsView extends ViewPart implements
 						} else {
 							str = r.getErrorReason().toString();
 						}
-						// ErlLogger.log(str);
+						// ErlLogger.debug(str);
 						// str = item.getText(1);
 						// }
 						// catch (BackendException e)

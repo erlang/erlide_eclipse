@@ -30,25 +30,25 @@ public final class TestListener implements IResourceChangeListener,
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		ErlLogger.log("¤ resourceChanged " + event);
+		ErlLogger.debug("¤ resourceChanged " + event);
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		ErlLogger.log("¤ selectionChanged " + event);
+		ErlLogger.debug("¤ selectionChanged " + event);
 	}
 
 	public void inputDocumentAboutToBeChanged(IDocument oldInput,
 			IDocument newInput) {
-		ErlLogger.log("¤ inputDocumentAboutToBeChanged " + oldInput + " " +
+		ErlLogger.debug("¤ inputDocumentAboutToBeChanged " + oldInput + " " +
 				newInput);
 	}
 
 	public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-		ErlLogger.log("¤ inputDocumentChanged " + oldInput + " " + newInput);
+		ErlLogger.debug("¤ inputDocumentChanged " + oldInput + " " + newInput);
 	}
 
 	public void textChanged(TextEvent event) {
-		ErlLogger.log("¤ textChanged " + event);
+		ErlLogger.debug("¤ textChanged " + event);
 	}
 
 }

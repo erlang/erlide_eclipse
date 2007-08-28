@@ -132,7 +132,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final List<IResource> lst = new ArrayList<IResource>(resources.length +
 				nonerl.length);
 		for (IErlModule element : resources) {
-			ErlLogger.log("> " + element.getElementName());
+			ErlLogger.debug("> " + element.getElementName());
 		}
 
 		for (IResource element : nonerl) {

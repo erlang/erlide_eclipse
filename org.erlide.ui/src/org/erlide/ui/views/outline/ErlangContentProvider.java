@@ -52,7 +52,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				}
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
-					ErlLogger.log("element missing: " + x.getMessage());
+					ErlLogger.debug("element missing: " + x.getMessage());
 				}
 			}
 		}
@@ -103,7 +103,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				return (children != null && children.length > 0);
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
-					ErlLogger.log("element missing: " + x.getMessage());
+					ErlLogger.debug("element missing: " + x.getMessage());
 				}
 			}
 		}
@@ -131,9 +131,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		}
 		boolean isModule = (newInput instanceof IErlModule);
 
-		// ErlLogger.log("> cprov set input:::" + newInput);
+		// ErlLogger.debug("> cprov set input:::" + newInput);
 		if (newInput != null) {
-			// ErlLogger.log("!! " + newInput.getClass().getName() + "
+			// ErlLogger.debug("!! " + newInput.getClass().getName() + "
 			// " +
 			// fListener);
 		}

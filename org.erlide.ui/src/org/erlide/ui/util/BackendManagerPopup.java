@@ -33,7 +33,7 @@ public class BackendManagerPopup implements IBackendListener {
 	}
 
 	public void backendAdded(final IBackend b) {
-		ErlLogger.log("$$ added backend " + b.getLabel());
+		ErlLogger.debug("$$ added backend " + b.getLabel());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {
@@ -46,7 +46,7 @@ public class BackendManagerPopup implements IBackendListener {
 	}
 
 	public void backendRemoved(final IBackend b) {
-		ErlLogger.log("$$ removed backend " + b.getLabel());
+		ErlLogger.debug("$$ removed backend " + b.getLabel());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {

@@ -25,7 +25,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -237,7 +236,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	public void setRange(IDocument document, int offset, int length) {
-		// ErlLogger.log(" @@ Hsc setRange " + document + " " + offset +
+		// ErlLogger.debug(" @@ Hsc setRange " + document + " " + offset +
 		// ":" +
 		// length);
 
@@ -345,8 +344,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scan", "string", string));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scan", "string", string);
 		} catch (final ErlangRpcException e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());

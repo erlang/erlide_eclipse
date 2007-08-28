@@ -236,7 +236,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
 	public IErlModule createModuleFrom(IFile file, IErlProject project) {
-		// ErlLogger.log("createModuleFrom:: " + file + " " + project);
+		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (file == null) {
 			return null;
 		}
@@ -267,7 +267,7 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	public IErlModule createModuleFrom(String name, String text,
 			IErlProject project) {
-		// ErlLogger.log("createModuleFrom:: " + file + " " + project);
+		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (name == null || text == null || project == null) {
 			return null;
 		}
@@ -807,7 +807,7 @@ public class ErlModelManager implements IErlModelManager {
 	/* Unused */
 	/*
 	 * private void saveBuiltState(PerProjectInfo info) throws CoreException { //
-	 * if (ErlangBuilder.DEBUG) // ErlLogger.log(Util.bind( //
+	 * if (ErlangBuilder.DEBUG) // ErlLogger.debug(Util.bind( //
 	 * "build.saveStateProgress", info.project.getName())); //$NON-NLS-1$ final
 	 * File file = getSerializationFile(info.fProject); if (file == null) {
 	 * return; } // long t = System.currentTimeMillis(); try { final
@@ -827,7 +827,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
 	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ } //
 	 * if (ErlangBuilder.DEBUG) // { // t = System.currentTimeMillis() - t; //
-	 * ErlLogger.log(Util.bind( // "build.saveStateComplete",
+	 * ErlLogger.debug(Util.bind( // "build.saveStateComplete",
 	 * String.valueOf(t))); //$NON-NLS-1$ // } }
 	 */
 
@@ -1207,10 +1207,10 @@ public class ErlModelManager implements IErlModelManager {
 	// listenerCount) {
 	//
 	// if (verbose) {
-	// ErlLogger.log("FIRING PRE_AUTO_BUILD Delta [" +
+	// ErlLogger.debug("FIRING PRE_AUTO_BUILD Delta [" +
 	// Thread.currentThread() +
 	// "]:"); //$NON-NLS-1$//$NON-NLS-2$
-	// ErlLogger.log(deltaToNotify == null ? "<NONE>" :
+	// ErlLogger.debug(deltaToNotify == null ? "<NONE>" :
 	// deltaToNotify.toString());
 	// //$NON-NLS-1$
 	// }

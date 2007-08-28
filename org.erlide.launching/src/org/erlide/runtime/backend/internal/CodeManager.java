@@ -207,13 +207,12 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		} else {
 			OtpErlangObject r = null;
 			try {
-				r = BackendUtil.checkRpc(fBackend.rpc("code", "is_sticky",
-						new OtpErlangAtom(moduleName)));
+				r = fBackend.rpcx("code", "is_sticky", new OtpErlangAtom(
+						moduleName));
 				if (!((OtpErlangAtom) r).booleanValue()
 						|| !BackendManager.isDeveloper()) {
-					r = BackendUtil.checkRpc(fBackend.rpc("code",
-							"load_binary", new OtpErlangAtom(moduleName),
-							moduleName + ".erl", bin));
+					r = fBackend.rpcx("code", "load_binary", new OtpErlangAtom(
+							moduleName), moduleName + ".erl", bin);
 					if (BackendManager.isDeveloper()) {
 						fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
 								moduleName));
@@ -310,7 +309,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	void loadBootstrap(int port) {
-		ErlLogger.log("bootstrapping...");
+		ErlLogger.debug("bootstrapping...");
 		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
 		URL e;
 		e = b.getEntry("/ebin/erlide_erpc.beam");
@@ -332,7 +331,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 
 		final Bundle b = p.getBundle();
-		ErlLogger.log("loading plugin " + b.getSymbolicName());
+		ErlLogger.debug("loading plugin " + b.getSymbolicName());
 
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
@@ -346,7 +345,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 			if (c.getName().equals(b.getSymbolicName())) {
 				String dir_path = el.getAttribute("path");
 
-				ErlLogger.log("    " + dir_path);
+				ErlLogger.debug("    " + dir_path);
 
 				final String ver = fBackend.getCurrentVersion();
 				Enumeration e = b.getEntryPaths(dir_path + "/" + ver);
@@ -354,7 +353,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 					e = b.getEntryPaths(dir_path);
 				}
 				if (e == null) {
-					ErlLogger.log("* !!! error loading plugin "
+					ErlLogger.debug("* !!! error loading plugin "
 							+ b.getSymbolicName());
 					return;
 				}
@@ -365,7 +364,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 							&& "beam".compareTo(path.getFileExtension()) == 0) {
 						final String m = path.removeFileExtension()
 								.lastSegment();
-						// ErlLogger.log(" " + m);
+						// ErlLogger.debug(" " + m);
 						try {
 							loadBeam(m, b.getEntry(s));
 						} catch (final Exception ex) {
@@ -383,14 +382,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 			IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				String decl = stub.getAttribute("onlyDeclared");
-				ErlLogger.log("  STUB: " + stub.getAttribute("class") + " "
-						+ decl);
+				ErlLogger.debug("  STUB: %s %s", stub.getAttribute("class"),
+						decl);
 				BackendUtil.generateRpcStub(stub.getAttribute("class"),
 						(decl == null) ? false : Boolean.parseBoolean(decl),
 						fBackend);
 			}
 		}
-		ErlLogger.log("*done! loading plugin " + b.getSymbolicName());
+		ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
 	}
 
 	/**
@@ -426,7 +425,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		if (e == null) {
 			return;
 		}
-		ErlLogger.log("*> really unloading plugin " + p.getClass().getName());
+		ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());
 		if (!e.hasMoreElements()) {
 			e = b.getEntryPaths("/ebin");
 		}

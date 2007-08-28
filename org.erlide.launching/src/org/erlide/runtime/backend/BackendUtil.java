@@ -63,8 +63,8 @@ public class BackendUtil {
 			throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "parse_term",
-					new OtpErlangString(string)));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_term",
+					new OtpErlangString(string));
 		} catch (final Exception e) {
 			throw new ErlangParseException("Could not parse term \"" + string
 					+ "\"");
@@ -87,8 +87,8 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "scan_string",
-					new OtpErlangString(string)));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "scan_string",
+					new OtpErlangString(string));
 		} catch (final Exception e) {
 			throw new BackendException("Could not tokenize string \"" + string
 					+ "\": " + e.getMessage());
@@ -111,8 +111,8 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "parse_string",
-					new OtpErlangString(string)));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_string",
+					new OtpErlangString(string));
 		} catch (final BackendException e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -142,8 +142,8 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = checkRpc(b.rpc("erlide_backend", "pretty_print",
-					new OtpErlangString(text + ".")));
+			r1 = b.rpcx("erlide_backend", "pretty_print", new OtpErlangString(
+					text + "."));
 		} catch (final BackendException e) {
 			throw new BackendException("Could not parse string \"" + text
 					+ "\": " + e.getMessage());
@@ -179,7 +179,7 @@ public class BackendUtil {
 						bindings };
 			}
 
-			r1 = checkRpc(b.rpc(IBackend.ERL_BACKEND, "eval", (Object) args));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", (Object) args);
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final boolean ok = !"error".equals(((OtpErlangAtom) t.elementAt(0))
@@ -206,16 +206,6 @@ public class BackendUtil {
 			e.printStackTrace();
 		}
 		return dir;
-	}
-
-	public static OtpErlangObject checkRpc(RpcResult r) throws BackendException {
-		if (r != null && r.isOk()) {
-			return r.getValue();
-		}
-		if (r == null) {
-			throw new BackendException("RPC error: null response (timeout?)");
-		}
-		throw new BackendException("RPC error: " + r.getValue());
 	}
 
 	public static void generateRpcStub(String className, boolean onlyDeclared,

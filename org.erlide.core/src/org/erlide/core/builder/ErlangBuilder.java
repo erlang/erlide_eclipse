@@ -46,7 +46,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendVisitor;
 import org.erlide.runtime.backend.RpcResult;
@@ -147,12 +146,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// ReflectionUtils.exportClass(ErlangBuilder.class);
 		// if (monitor == null)
 		// {
-		// ErlLogger.log("** null monitor in build!?");
+		// ErlLogger.debug("** null monitor in build!?");
 		// monitor = new NullProgressMonitor();
 		// }
 
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("building!...");
+			ErlLogger.debug("building!...");
 		}
 		if (fInternal) {
 			if (kind == FULL_BUILD) {
@@ -183,8 +182,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			OtpErlangList res = (OtpErlangList) BackendUtil.checkRpc(b.rpc(
-					"erlide_builder", "code_clash"));
+			OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+					"code_clash");
 			for (int i = 0; i < res.arity(); i++) {
 				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
@@ -204,8 +203,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				dirList[i] = getProject().getLocation().toPortableString()
 						+ "/" + sd[i];
 			}
-			OtpErlangList res = (OtpErlangList) BackendUtil.checkRpc(b.rpc(
-					"erlide_builder", "source_clash", (Object) dirList));
+			OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+					"source_clash", (Object) dirList);
 			for (int i = 0; i < res.arity(); i++) {
 				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
@@ -241,7 +240,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected void fullBuild(Map args, final IProgressMonitor monitor)
 			throws CoreException {
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("full build...");
+			ErlLogger.debug("full build...");
 		}
 		monitor.beginTask("Performing full build", 100);
 		try {
@@ -266,7 +265,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected void incrementalBuild(Map args, IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("incr build...");
+			ErlLogger.debug("incr build...");
 		}
 		final IResourceDelta[] chd = delta.getAffectedChildren();
 		final int n = chd.length * 100;
@@ -289,7 +288,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("cleaning...");
+			ErlLogger.debug("cleaning...");
 		}
 
 		super.clean(monitor);
@@ -380,28 +379,28 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				return;
 			}
 			final OtpErlangTuple t = (OtpErlangTuple) r;
-			// ErlLogger.log("** " + r);
+			// ErlLogger.debug("** " + r);
 
 			if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
 				final String beamf = resource.getFullPath()
 						.removeFileExtension().lastSegment();
-				// ErlLogger.log(">>>>> " + project.getName() + ": " +
+				// ErlLogger.debug(">>>>> " + project.getName() + ": " +
 				// beamf);
 				if (project.getName().startsWith("erlide")
 						|| beamf.startsWith("erlide")) {
-					// ErlLogger.log(">>>>> is erlide");
+					// ErlLogger.debug(">>>>> is erlide");
 					if (BackendManager.isDeveloper()) {
-						// ErlLogger.log(">>>>> is developer");
+						// ErlLogger.debug(">>>>> is developer");
 						final OtpErlangBinary code = (OtpErlangBinary) t
 								.elementAt(2);
 						distributeModule(beamf, code);
 					}
 				} else {
-					// ErlLogger.log(">>>>> normal");
+					// ErlLogger.debug(">>>>> normal");
 					loadModule(project, beamf);
 				}
 			} else {
-				ErlLogger.log(">>>> compile error..." + resource.getName());
+				ErlLogger.debug(">>>> compile error..." + resource.getName());
 			}
 
 			if (br != null) {
@@ -581,7 +580,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						final RpcResult result = b.rpc("code", "load_binary",
 								new OtpErlangAtom(beamf), new OtpErlangString(
 										beamf), code);
-						ErlLogger.log("  $ distribute " + beamf + " to "
+						ErlLogger.debug("  $ distribute " + beamf + " to "
 								+ b.getLabel() + "  - " + result.getValue());
 					}
 				} catch (final ErlangRpcException e) {
@@ -640,7 +639,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& "erl".equals(resource.getFileExtension())
 					&& isInExtCodePath(resource, my_project)) {
 				if (ErlangBuilder.DEBUG) {
-					ErlLogger.log("+++ Incr: " + resource.getName() + " "
+					ErlLogger.debug("+++ Incr: " + resource.getName() + " "
 							+ delta.getKind());
 				}
 				switch (delta.getKind()) {
@@ -687,7 +686,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& "yrl".equals(resource.getFileExtension())
 					&& isInExtCodePath(resource, my_project)) {
 				if (ErlangBuilder.DEBUG) {
-					ErlLogger.log("+++ Incr: " + resource.getName() + " "
+					ErlLogger.debug("+++ Incr: " + resource.getName() + " "
 							+ delta.getKind());
 				}
 				switch (delta.getKind()) {
@@ -730,7 +729,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					searcher.init(p[0]);
 					my_project.accept(searcher);
 					if (searcher.fResult != null) {
-						ErlLogger.log("recompiling " + searcher.fResult);
+						ErlLogger.debug("recompiling " + searcher.fResult);
 						compileFile(my_project, searcher.fResult);
 					}
 					break;
@@ -768,7 +767,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 				try {
 					if (ErlangBuilder.DEBUG) {
-						ErlLogger.log("Full: " + resource.getName());
+						ErlLogger.debug("Full: " + resource.getName());
 					}
 					// we should skip it is the beam file already exists and
 					// timestamp is
@@ -789,7 +788,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.log(" recompiling " + resource.getName()
+							ErlLogger.debug(" recompiling " + resource.getName()
 									+ " " + timestamp + " " + moduletimestamp);
 						}
 						compileFile(resource.getProject(), resource);
@@ -806,7 +805,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 				try {
 					if (ErlangBuilder.DEBUG) {
-						ErlLogger.log("Full: " + resource.getName());
+						ErlLogger.debug("Full: " + resource.getName());
 					}
 					// we should skip it is the beam file already exists and
 					// timestamp is
@@ -825,7 +824,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.log(" recompiling " + resource.getName()
+							ErlLogger.debug(" recompiling " + resource.getName()
 									+ " " + timestamp + " " + erltimestamp);
 						}
 						compileYrlFile(resource.getProject(), resource);
@@ -894,7 +893,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected static OtpErlangObject compileFile(IProject project, String fn,
 			String outputdir, String[] includedirs) {
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("!!! compiling " + fn);
+			ErlLogger.debug("!!! compiling " + fn);
 		}
 		try {
 			final OtpErlangString[] includes = new OtpErlangString[includedirs.length];
@@ -902,7 +901,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				includes[i] = new OtpErlangString(includedirs[i]);
 			}
 			final OtpErlangList includeList = new OtpErlangList(includes);
-			final RpcResult r = BackendManager.getDefault().get(project).rpct(
+			return BackendManager.getDefault().get(project).rpcxt(
 					MODULE,
 					"compile",
 					20000,
@@ -914,7 +913,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					new OtpErlangList(
 							new OtpErlangObject[] { new OtpErlangAtom(
 									"debug_info") }));
-			return BackendUtil.checkRpc(r);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -924,13 +922,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected static OtpErlangObject compileYrlFile(IProject project,
 			String fn, String output) {
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("!!! compiling " + fn);
+			ErlLogger.debug("!!! compiling " + fn);
 		}
 		try {
 			final RpcResult r = BackendManager.getDefault().get(project).rpct(
 					MODULE, "compile_yrl", 30000, fn, output);
 			if (ErlangBuilder.DEBUG) {
-				ErlLogger.log("!!! r== " + r);
+				ErlLogger.debug("!!! r== " + r);
 			}
 			return r.getValue();
 		} catch (final Exception e) {
@@ -941,9 +939,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	protected static OtpErlangObject loadModule(IProject project, String module) {
 		try {
-			final RpcResult r = BackendManager.getDefault().get(project).rpc(
-					MODULE, "load", new OtpErlangAtom(module));
-			return BackendUtil.checkRpc(r);
+			return BackendManager.getDefault().get(project).rpcx(MODULE,
+					"load", new OtpErlangAtom(module));
 		} catch (final BackendException e) {
 			e.printStackTrace();
 			return null;
@@ -1076,7 +1073,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			cleanup();
 		}
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("Finished build of " + currentProject.getName() //$NON-NLS-1$
+			ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
 		return null;
@@ -1095,7 +1092,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("\nCleaning " + currentProject.getName() //$NON-NLS-1$
+			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
 		notifier = new BuildNotifier(monitor, currentProject);
@@ -1121,7 +1118,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			cleanup();
 		}
 		if (ErlangBuilder.DEBUG) {
-			ErlLogger.log("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
+			ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
 	}
@@ -1157,14 +1154,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			// args.put("remoteuser", "qvladum");
 			// args.put("password", "");
 
-			ErlLogger.log("## BUILDING!!! " + args.toString());
+			ErlLogger.debug("## BUILDING!!! " + args.toString());
 
 			final String server = (String) args.get("server");
 			final String localuser = (String) args.get("remoteuser");
 			final String remoteuser = (String) args.get("remoteuser");
 			final String terminal = "network";
 
-			ErlLogger.log("## " + server + "." + localuser + "." + remoteuser);
+			ErlLogger.debug("## " + server + "." + localuser + "." + remoteuser);
 
 			if (server == null || localuser == null || remoteuser == null) {
 				return null;
@@ -1221,7 +1218,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				// e1.printStackTrace();
 			}
 
-			ErlLogger.log(out.toString());
+			ErlLogger.debug(out.toString());
 
 			try {
 				client.disconnect();

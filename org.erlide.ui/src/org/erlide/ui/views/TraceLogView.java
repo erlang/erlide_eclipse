@@ -316,16 +316,16 @@ public class TraceLogView extends ViewPart {
 				// testing
 				final IErlModel mdl = ErlangCore.getModel();
 				final IErlModule[] ms = mdl.findModule("test", ".*");
-				ErlLogger.log("found(\"*\") " + ms.length);
+				ErlLogger.debug("found(\"*\") " + ms.length);
 				for (IErlModule element : ms) {
-					ErlLogger.log("  " + element.getElementName());
+					ErlLogger.debug("  " + element.getElementName());
 				}
 
 				final IErlFunction[] fs = mdl.findFunction("test", ".*",
 						"st.*", IErlModel.UNKNOWN_ARITY);
-				ErlLogger.log("found(\"*\") " + ms.length);
+				ErlLogger.debug("found(\"*\") " + ms.length);
 				for (IErlFunction element : fs) {
-					ErlLogger.log("  " + element.getElementName() + "/" +
+					ErlLogger.debug("  " + element.getElementName() + "/" +
 							element.getArity());
 				}
 

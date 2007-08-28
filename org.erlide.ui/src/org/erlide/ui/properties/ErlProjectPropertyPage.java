@@ -172,7 +172,7 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		ErlLogger.log("*+> " + event);
+		ErlLogger.debug("*+> " + event);
 	}
 
 }

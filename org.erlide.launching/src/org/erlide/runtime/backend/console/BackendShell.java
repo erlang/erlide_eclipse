@@ -36,8 +36,7 @@ public class BackendShell {
 		// fId = id;
 
 		try {
-			final OtpErlangObject r = BackendUtil.checkRpc(fBackend.rpc(
-					"erlide_reshd", "start", 0));
+			final OtpErlangObject r = fBackend.rpcx("erlide_reshd", "start", 0);
 			final int port = ((OtpErlangLong) BackendUtil.ok(r)).intValue();
 			// TODO use backend.getHost()
 			fSocket = new Socket("localhost", port);

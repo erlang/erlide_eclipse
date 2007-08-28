@@ -14,9 +14,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -173,8 +171,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 			String item) {
 		OtpErlangObject res;
 		try {
-			res = BackendUtil.checkRpc(b.rpc("erlang", "process_info", pid,
-					new OtpErlangAtom(item)));
+			res = b
+					.rpcx("erlang", "process_info", pid,
+							new OtpErlangAtom(item));
 			if (res instanceof OtpErlangTuple) {
 				return ((OtpErlangTuple) res).elementAt(1);
 			} else {
@@ -187,11 +186,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IStackFrame[] getStackFrames() throws DebugException {
-		ErlLogger.log("** get stackframes for " + fPid);
+		ErlLogger.debug("** get stackframes for " + fPid);
 
 		if (!isSuspended() && !isStepping()) {
-			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended() +
-					"." + isStepping(), this, fTarget) };
+			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended()
+					+ "." + isStepping(), this, fTarget) };
 		}
 
 		return new IStackFrame[] {};
@@ -213,7 +212,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public IStackFrame getTopStackFrame() throws DebugException {
 		// TODO Auto-generated method stub
-		ErlLogger.log("get top stackframe");
+		ErlLogger.debug("get top stackframe");
 		return null;
 	}
 
@@ -306,9 +305,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public boolean isSystemProcess() {
 		boolean res = false;
 		try {
-			RpcResult r = fBackend.rpc("pman_process", "is_system_process",
-					fPid);
-			OtpErlangAtom eres = (OtpErlangAtom) BackendUtil.checkRpc(r);
+			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("pman_process",
+					"is_system_process", fPid);
 			res = "true".equals(eres.atomValue());
 		} catch (ErlangRpcException e) {
 		} catch (BackendException e) {
@@ -319,9 +317,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public boolean isErlideProcess() {
 		boolean res = false;
 		try {
-			RpcResult r = fBackend.rpc("erlide_debug", "is_erlide_process",
-					fPid);
-			OtpErlangAtom eres = (OtpErlangAtom) BackendUtil.checkRpc(r);
+			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("erlide_debug",
+					"is_erlide_process", fPid);
 			res = "true".equals(eres.atomValue());
 		} catch (ErlangRpcException e) {
 		} catch (BackendException e) {

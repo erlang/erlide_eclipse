@@ -262,7 +262,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			forwardListLength++;
 			entry = entry._fNext;
 		}
-		ErlLogger.log("Forward length: " + forwardListLength); //$NON-NLS-1$
+		ErlLogger.debug("Forward length: " + forwardListLength); //$NON-NLS-1$
 
 		int backwardListLength = 0;
 		entry = fEntryQueueTail;
@@ -270,7 +270,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			backwardListLength++;
 			entry = entry._fPrevious;
 		}
-		ErlLogger.log("Backward length: " + backwardListLength); //$NON-NLS-1$
+		ErlLogger.debug("Backward length: " + backwardListLength); //$NON-NLS-1$
 
 		final Enumeration keys = fEntryTable.keys();
 		class Temp {
@@ -304,7 +304,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 		}
 
 		for (Object element : h.keySet()) {
-			ErlLogger.log(h.get(element));
+			ErlLogger.debug("%s", h.get(element));
 		}
 	}
 

@@ -19,7 +19,7 @@ public class StandaloneBackend extends AbstractBackend {
 
 	@Override
 	public void addProject(String project) {
-		ErlLogger.log("$ add project " + project + " to remote " + getLabel());
+		ErlLogger.debug("$ add project " + project + " to remote " + getLabel());
 	}
 
 	@Override

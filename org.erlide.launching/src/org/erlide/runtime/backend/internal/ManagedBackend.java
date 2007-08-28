@@ -39,7 +39,7 @@ public class ManagedBackend extends AbstractBackend {
 	@Override
 	public void addProject(String project) {
 		// TODO
-		ErlLogger.log("$ add project " + project + " to local " + getLabel());
+		ErlLogger.debug("$ add project " + project + " to local " + getLabel());
 
 	}
 

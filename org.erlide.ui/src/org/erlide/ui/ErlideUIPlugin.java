@@ -350,7 +350,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	public static void debug(String message) {
 		if (getDefault().isDebugging()) {
-			ErlLogger.log(message);
+			ErlLogger.debug(message);
 		}
 	}
 

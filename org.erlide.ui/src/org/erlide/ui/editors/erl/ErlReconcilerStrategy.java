@@ -48,7 +48,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		ErlLogger.log("## reconcile " + dirtyRegion.getOffset() + "-"
+		ErlLogger.debug("## reconcile " + dirtyRegion.getOffset() + "-"
 				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
 
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
@@ -72,10 +72,10 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void initialReconcile() {
-		ErlLogger.log("## initial reconcile ");
+		ErlLogger.debug("## initial reconcile ");
 		fModule = ErlModelUtils.getModule(fEditor);
 		if (fModule != null) {
-			ErlLogger.log("## module:: " + fModule.getElementName());
+			ErlLogger.debug("## module:: " + fModule.getElementName());
 		}
 		notify(new OtpErlangAtom("initialReconcile"));
 	}

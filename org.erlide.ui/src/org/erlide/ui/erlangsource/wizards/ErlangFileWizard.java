@@ -116,7 +116,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	void doFinish(String containerName, String fileName, String skeleton,
 			IProgressMonitor monitor) throws CoreException {
 
-		// ErlLogger.log("Generating a file with skeleton: "+skeleton);
+		// ErlLogger.debug("Generating a file with skeleton: "+skeleton);
 
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);

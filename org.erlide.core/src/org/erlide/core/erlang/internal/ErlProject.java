@@ -157,10 +157,10 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
 		}
-		ErlLogger
-				.log("--- " + getProject().getName() + "? " + fChildren.length);
+		ErlLogger.debug("--- " + getProject().getName() + "? "
+				+ fChildren.length);
 		if (fChildren != null && fChildren.length != 0) {
-			ErlLogger.log("--- !");
+			ErlLogger.debug("--- !");
 			return true;
 		}
 
@@ -176,7 +176,7 @@ public class ErlProject extends Openable implements IErlProject,
 			final IContainer c = (IContainer) underlyingResource;
 			final IResource[] elems = c.members();
 
-			// ErlLogger.log("--- >>> " + this.getElementName());
+			// ErlLogger.debug("--- >>> " + this.getElementName());
 
 			// TODO should do this lazily!
 			buildStructure(elems, modules);
@@ -186,14 +186,14 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 		fChildren = new ErlElement[modules.size()];
 		System.arraycopy(modules.toArray(), 0, fChildren, 0, modules.size());
-		ErlLogger.log("---YY " + fChildren.length);
+		ErlLogger.debug("---YY " + fChildren.length);
 
 		return true;
 	}
 
 	private void buildStructure(IResource[] elems, List<IErlModule> modules) {
 		for (IResource element : elems) {
-			// ErlLogger.log("---< " + elems[fi].getName());
+			// ErlLogger.debug("---< " + elems[fi].getName());
 			if (element instanceof IFolder) {
 				final IFolder ff = (IFolder) element;
 				try {
@@ -209,7 +209,7 @@ public class ErlProject extends Openable implements IErlProject,
 					// String mn = f.getName().substring(0, f.getName().length()
 					// - l - 1);
 
-					// ErlLogger.log("--- l " + f.getName());
+					// ErlLogger.debug("--- l " + f.getName());
 					final IErlModule m = ErlangCore.getModelManager()
 							.createModuleFrom(f, this);
 					modules.add(m);
@@ -385,8 +385,8 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 
 		final ErlProject other = (ErlProject) o;
-		return fProject.equals(other.getProject()) &&
-				fOccurrenceCount == other.fOccurrenceCount;
+		return fProject.equals(other.getProject())
+				&& fOccurrenceCount == other.fOccurrenceCount;
 	}
 
 	@Override
@@ -724,8 +724,8 @@ public class ErlProject extends Openable implements IErlProject,
 			return; // ignore
 		}
 
-		if (preferences == null ||
-				(!preferences.needsSaving() && preferences.propertyNames().length != 0)) {
+		if (preferences == null
+				|| (!preferences.needsSaving() && preferences.propertyNames().length != 0)) {
 			// nothing to save
 			return;
 		}
@@ -937,8 +937,8 @@ public class ErlProject extends Openable implements IErlProject,
 			// 'd:/myfolder/lib/classes.zip'
 			final int externalLength = externalPath.segmentCount();
 			if (canonicalLength >= externalLength) {
-				result = canonicalPath.removeFirstSegments(canonicalLength -
-						externalLength);
+				result = canonicalPath.removeFirstSegments(canonicalLength
+						- externalLength);
 			} else {
 				return externalPath;
 			}

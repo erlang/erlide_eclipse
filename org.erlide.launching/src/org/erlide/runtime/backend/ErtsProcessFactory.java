@@ -22,7 +22,7 @@ public class ErtsProcessFactory implements IProcessFactory {
 
 	public IProcess newProcess(ILaunch launch, Process process, String label,
 			Map attributes) {
-		// ErlLogger.log("#* ProcFact: " + label + " " + attributes);
+		// ErlLogger.debug("#* ProcFact: " + label + " " + attributes);
 
 		return new ErtsProcess(launch, process, label, attributes);
 	}

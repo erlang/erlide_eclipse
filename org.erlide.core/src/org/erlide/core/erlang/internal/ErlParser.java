@@ -21,7 +21,6 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -125,14 +124,13 @@ public class ErlParser {
 
 			OtpErlangList forms = null, comments = null;
 			try {
-				OtpErlangTuple res = (OtpErlangTuple) BackendUtil.checkRpc(b
-						.rpc("erlide_model", "parse", doc, module
-								.getElementName()));
+				OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_model",
+						"parse", doc, module.getElementName());
 				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
 						"ok") == 0) {
 					forms = (OtpErlangList) res.elementAt(1);
 				} else {
-					ErlLogger.log("rpc err:: " + res);
+					ErlLogger.debug("rpc err:: " + res);
 				}
 
 				ErlToken[] t = scanner.getTokens();
@@ -140,17 +138,16 @@ public class ErlParser {
 				for (ErlToken tk : t) {
 					sb.append(" " + tk.toString());
 				}
-				// ErlLogger.log(sb);
-				// ErlLogger.log(forms);
-				// ErlLogger.log("-----------------------");
+				// ErlLogger.debug(sb);
+				// ErlLogger.debug(forms);
+				// ErlLogger.debug("-----------------------");
 
-				res = (OtpErlangTuple) BackendUtil.checkRpc(b.rpc(
-						"erlide_model", "comments", doc));
+				res = (OtpErlangTuple) b.rpcx("erlide_model", "comments", doc);
 				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
 						"ok") == 0) {
 					comments = (OtpErlangList) res.elementAt(1);
 				} else {
-					ErlLogger.log("rpc err:: " + res);
+					ErlLogger.debug("rpc err:: " + res);
 				}
 			} catch (final BackendException e1) {
 				e1.printStackTrace();
@@ -226,7 +223,7 @@ public class ErlParser {
 	 * @return
 	 */
 	private IErlMember create(IErlModule parent, OtpErlangTuple el) {
-		// ErlLogger.log("#! " + el.toString());
+		// ErlLogger.debug("#! " + el.toString());
 		final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
 		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
@@ -245,17 +242,17 @@ public class ErlParser {
 
 			final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
 			final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
-			// ErlLogger.log("@nam " + name.toString());
+			// ErlLogger.debug("@nam " + name.toString());
 			final OtpErlangObject val = atr.elementAt(2);
-			// ErlLogger.log("@val " + val.toString());
+			// ErlLogger.debug("@val " + val.toString());
 			return addAttribute(parent, pos, n, val);
 		} else if ("attribute".equals(type.atomValue())) {
 			final OtpErlangObject pos = el.elementAt(1);
-			// ErlLogger.log("@pos " + pos.toString());
+			// ErlLogger.debug("@pos " + pos.toString());
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
-			// ErlLogger.log("@nam " + name.toString());
+			// ErlLogger.debug("@nam " + name.toString());
 			final OtpErlangObject val = el.elementAt(3);
-			// ErlLogger.log("@val " + val.toString());
+			// ErlLogger.debug("@val " + val.toString());
 			return addAttribute(parent, pos, name, val);
 		} else if ("function".equals(type.atomValue())) {
 			OtpErlangObject pos = el.elementAt(1);
@@ -279,7 +276,7 @@ public class ErlParser {
 				final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
 						.arity()];
 				for (int i = 0; i < clauses.arity(); i++) {
-					// ErlLogger.log(" clause: " + clauses.elementAt(i));
+					// ErlLogger.debug(" clause: " + clauses.elementAt(i));
 					cls[i] = new ErlFunctionClause(f, "#" + i);
 					pos = ((OtpErlangTuple) (clauses.elementAt(i)))
 							.elementAt(1);
@@ -296,7 +293,7 @@ public class ErlParser {
 			}
 			return f;
 		} else {
-			ErlLogger.log("unknown: " + el);
+			ErlLogger.debug("unknown: " + el);
 		}
 		return null;
 	}
@@ -332,7 +329,7 @@ public class ErlParser {
 			// ErlExportFunction[exportList.arity()];
 			// for (int i = 0; i < exportList.arity(); i++)
 			// {
-			// ErlLogger.log(" exportFun: " + exportList.elementAt(i));
+			// ErlLogger.debug(" exportFun: " + exportList.elementAt(i));
 			// OtpErlangTuple xf = (OtpErlangTuple)exportList.elementAt(i);
 			// String funName = ((OtpErlangAtom)xf.elementAt(0)).atomValue();
 			// try {
@@ -447,8 +444,8 @@ public class ErlParser {
 			return new OtpErlangList(res);
 		} else {
 			try {
-				return BackendUtil.checkRpc(BackendManager.getDefault()
-						.getIdeBackend().rpc("erlide_syntax", "concrete", val));
+				return BackendManager.getDefault().getIdeBackend().rpcx(
+						"erlide_syntax", "concrete", val);
 			} catch (final BackendException e) {
 				return val;
 			}

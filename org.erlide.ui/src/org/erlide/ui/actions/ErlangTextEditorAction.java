@@ -18,7 +18,6 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -84,7 +83,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 						}
 					}
 					try {
-						// ErlLogger.log("'"+newText+"'");
+						// ErlLogger.debug("'"+newText+"'");
 						document.replace(firstLineOffset,
 								end - firstLineOffset, newText);
 						selectAndReveal(firstLineOffset, newText.length());
@@ -130,10 +129,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
 			throws BackendException, ErlangRpcException {
-		final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager
-				.getDefault().getIdeBackend().rpc(fErlModule, fErlFunction,
-						new OtpErlangString(text),
-						new OtpErlangLong(selection.getOffset())));
+		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
+				.rpcx(fErlModule, fErlFunction, new OtpErlangString(text),
+						new OtpErlangLong(selection.getOffset()));
 		return r1;
 	}
 

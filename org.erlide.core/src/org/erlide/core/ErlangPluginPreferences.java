@@ -58,7 +58,7 @@ public class ErlangPluginPreferences implements IPropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		final String property = event.getProperty();
 
-		ErlLogger.log("modified property :> " + property);
+		ErlLogger.debug("modified property :> " + property);
 		// defaultProjectPrefs.setProperty(property);
 	}
 

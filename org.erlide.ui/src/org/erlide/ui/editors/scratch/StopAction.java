@@ -42,7 +42,7 @@ public class StopAction extends ScratchAction {
 	 */
 	@Override
 	public void run() {
-		ErlLogger.log("stopped evaluation");
+		ErlLogger.debug("stopped evaluation");
 	}
 
 	/**

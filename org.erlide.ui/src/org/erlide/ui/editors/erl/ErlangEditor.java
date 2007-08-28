@@ -220,7 +220,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 		super.handlePreferenceStoreChanged(event);
-		ErlLogger.log("prefs changed");
+		ErlLogger.debug("prefs changed");
 		final String name = event.getProperty();
 		if (name.startsWith(PreferenceConstants.EDITOR_PREFIX)) {
 			final RGB rgb = getRGB(event.getNewValue());
@@ -363,7 +363,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 		if (IPropertySource.class.equals(required)) {
 			if (myPropertySource == null) {
-				ErlLogger.log("make prop source...");
+				ErlLogger.debug("make prop source...");
 				myPropertySource = new ErlangPropertySource(this);
 			}
 			return myPropertySource;
@@ -933,7 +933,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			setSelection(reference, true);
 			// set outliner selection
 			try {
-				ErlLogger.log(".. sel" + reference.getSource() + myOutlinePage);
+				ErlLogger.debug(".. sel" + reference.getSource() + myOutlinePage);
 			} catch (final ErlModelException e) {
 				e.printStackTrace();
 			}

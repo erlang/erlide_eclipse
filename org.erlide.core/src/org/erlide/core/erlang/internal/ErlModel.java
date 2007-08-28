@@ -422,7 +422,7 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	public void notifyChange(IErlElement element) {
-		// ErlLogger.log("^> notifying change of " +
+		// ErlLogger.debug("^> notifying change of " +
 		// element.getElementName());
 		for (int i = 0; i < fListeners.size(); i++) {
 			(fListeners.get(i)).elementChanged(element);

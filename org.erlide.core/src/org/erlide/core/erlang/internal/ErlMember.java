@@ -28,7 +28,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 	}
 
 	public String getHoverHelp() {
-		ErlLogger.log("> hover help: " + this.getElementName());
+		ErlLogger.debug("> hover help: " + this.getElementName());
 
 		return toString();
 	}

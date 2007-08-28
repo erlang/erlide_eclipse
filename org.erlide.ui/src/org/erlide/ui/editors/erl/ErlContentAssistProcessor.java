@@ -23,7 +23,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -52,9 +51,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin
 					.getDefault().getStateLocation().toString());
-			final OtpErlangObject r1 = BackendUtil.checkRpc(BackendManager
-					.getDefault().getIdeBackend().rpc("erlide_otp_doc",
-							"get_doc_from_fun_arity_list", mod, list, s));
+			final OtpErlangObject r1 = BackendManager.getDefault()
+					.getIdeBackend().rpcx("erlide_otp_doc",
+							"get_doc_from_fun_arity_list", mod, list, s);
 			if (r1 instanceof OtpErlangList) {
 				return (OtpErlangList) r1;
 			} else {
@@ -85,9 +84,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
 				final IBackend b = BackendManager.getDefault().get(
 						project.getProject());
-				final OtpErlangObject res = BackendUtil.checkRpc(b.rpc(
-						"erlide_model", "get_exported", modAtom,
-						new OtpErlangString(prefix)));
+				final OtpErlangObject res = b.rpcx("erlide_model",
+						"get_exported", modAtom, new OtpErlangString(prefix));
 				if (res instanceof OtpErlangList) {
 					final OtpErlangList resl = (OtpErlangList) res;
 					final OtpErlangList docl = getDocumentationFor(resl,
@@ -110,12 +108,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 								docStr = ((OtpErlangString) elt).stringValue();
 							}
 						}
-						final String cpl = fstr.substring(prefix.length()) +
-								"(" + args + ")";
+						final String cpl = fstr.substring(prefix.length())
+								+ "(" + args + ")";
 						result.add(new CompletionProposal(cpl, offset, 0, cpl
-								.length() -
-								1 - far * 2 + 2, null, fstr + "/" + far, null,
-								docStr));
+								.length()
+								- 1 - far * 2 + 2, null, fstr + "/" + far,
+								null, docStr));
 					}
 					return result
 							.toArray(new ICompletionProposal[result.size()]);

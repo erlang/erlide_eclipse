@@ -74,7 +74,7 @@ public class Cookie {
 
 		cookieFileName = System.getProperty("user.home") + File.separator +
 				".erlang.cookie";
-		// ErlLogger.log("Cookie file: " + cookieFileName);
+		// ErlLogger.debug("Cookie file: " + cookieFileName);
 		f = new File(cookieFileName);
 
 		try {

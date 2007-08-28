@@ -72,7 +72,7 @@ public class ErlModule extends Openable implements IErlModule {
 	protected ErlModule(IErlElement parent, String name, boolean isErl) {
 		super(parent, name);
 		if (ErlModelManager.verbose) {
-			ErlLogger.log("...creating " + parent.getElementName() + "/" + name
+			ErlLogger.debug("...creating " + parent.getElementName() + "/" + name
 					+ " " + isErl);
 		}
 		isModule = isErl;
@@ -109,7 +109,7 @@ public class ErlModule extends Openable implements IErlModule {
 			options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 		}
 
-		// ErlLogger.log("* build structure " + this.fName);
+		// ErlLogger.debug("* build structure " + this.fName);
 		if (doc == null) {
 			doc = new Document();
 			doc.set(getBuffer().getContents());
@@ -259,7 +259,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void getContentProposals(String prefix, String indent, int offset,
 			ArrayList<ICompletionProposal> result) {
-		// ErlLogger.log("> completing: " + prefix + "," + offset);
+		// ErlLogger.debug("> completing: " + prefix + "," + offset);
 		CompletionProposal cp = null;
 
 		class PredefMacros {

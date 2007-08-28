@@ -167,12 +167,12 @@ public class FunctionGroup extends Group implements SelectionListener {
 		arityText.addKeyListener(new KeyListener() {
 
 			public void keyPressed(KeyEvent e) {
-				ErlLogger.log(e.character + " was pressed.");
+				ErlLogger.debug(e.character + " was pressed.");
 				fWizPage.gettingInput = true;
 			}
 
 			public void keyReleased(KeyEvent e) {
-				ErlLogger.log(e.character + " was released.");
+				ErlLogger.debug(e.character + " was released.");
 				fWizPage.gettingInput = false;
 			}
 		});
@@ -334,8 +334,8 @@ public class FunctionGroup extends Group implements SelectionListener {
 	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 	 */
 	public void widgetSelected(SelectionEvent e) {
-		ErlLogger.log("widgetSelected: e.item = " + e.item);
-		ErlLogger.log("widgetSelected: e.widget = " + e.widget);
+		ErlLogger.debug("widgetSelected: e.item = " + e.item);
+		ErlLogger.debug("widgetSelected: e.widget = " + e.widget);
 
 		if (e.widget == removeFunction) {
 			final TableItem itemsToRemove[] = fTable.getSelection();

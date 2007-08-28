@@ -520,7 +520,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
 	private void gotoSelectedElement() {
 		Object selectedElement = getSelectedElement();
-		ErlLogger.log("&&>> " + selectedElement);
+		ErlLogger.debug("&&>> " + selectedElement);
 		if (selectedElement == null) {
 			return;
 		}

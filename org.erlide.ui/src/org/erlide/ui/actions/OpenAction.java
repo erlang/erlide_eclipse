@@ -43,7 +43,6 @@ import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -141,7 +140,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 */
 	@Override
 	public void run(ITextSelection selection) {
-		ErlLogger.log("*> goto " + selection);
+		ErlLogger.debug("*> goto " + selection);
 
 		// if (!ActionUtil.isProcessable(getShell(), fEditor))
 		// return;
@@ -278,9 +277,8 @@ public class OpenAction extends SelectionDispatchAction {
 		window = w.getPos();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			final OtpErlangObject res = BackendUtil.checkRpc(b
-					.rpc("erlide_open", "open_info", list, new OtpErlangLong(
-							window)));
+			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
+					list, new OtpErlangLong(window));
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
@@ -317,8 +315,8 @@ public class OpenAction extends SelectionDispatchAction {
 					}
 					final String mod = ei.getImportModule();
 					final OtpErlangAtom a = new OtpErlangAtom(mod);
-					final OtpErlangObject res2 = BackendUtil.checkRpc(b.rpc(
-							"erlide_open", "get_source_from_module", a));
+					final OtpErlangObject res2 = b.rpcx("erlide_open",
+							"get_source_from_module", a);
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
@@ -333,8 +331,8 @@ public class OpenAction extends SelectionDispatchAction {
 						false);
 				final ISourceReference sref = (ISourceReference) e;
 				final OtpErlangString s = new OtpErlangString(sref.getSource());
-				final OtpErlangObject res2 = BackendUtil.checkRpc(b.rpc(
-						"erlide_open", "find_first_var", var, s));
+				final OtpErlangObject res2 = b.rpcx("erlide_open",
+						"find_first_var", var, s);
 				if (!(res2 instanceof OtpErlangTuple)) {
 					return;
 				}

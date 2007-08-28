@@ -13,7 +13,6 @@ package org.erlide.core.erlang;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -50,10 +49,9 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void dispose() {
-		// OtpErlangObject r1 = null;
 		try {
-			/* r1 = */BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scanner", "destroy", fMod));
+			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
+					"destroy", fMod);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -63,9 +61,8 @@ public class ErlScanner implements IErlScanner {
 	public ErlToken getTokenAt(int offset) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scanner", "do_getTokenAt",
-							fMod, offset + 1));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scanner", "do_getTokenAt", fMod, offset + 1);
 		} catch (Exception e) {
 			// e.printStackTrace();
 			return null;
@@ -85,10 +82,9 @@ public class ErlScanner implements IErlScanner {
 	public ErlToken[] getTokensAround(int offset) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scanner",
-							"do_getTokensAround", fMod,
-							new OtpErlangLong(offset + 1)));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scanner", "do_getTokensAround", fMod,
+					new OtpErlangLong(offset + 1));
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -151,9 +147,8 @@ public class ErlScanner implements IErlScanner {
 	public ErlToken[] getTokens() {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend()
-					.rpc("erlide_scanner", "do_getTokens", fMod));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scanner", "do_getTokens", fMod);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -178,10 +173,9 @@ public class ErlScanner implements IErlScanner {
 	public TokenWindow getTokenWindow(int offset, int window) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc("erlide_scanner", "do_getTokenWindow",
-							fMod, new OtpErlangLong(offset),
-							new OtpErlangLong(window)));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scanner", "do_getTokenWindow", fMod,
+					new OtpErlangLong(offset), new OtpErlangLong(window));
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;

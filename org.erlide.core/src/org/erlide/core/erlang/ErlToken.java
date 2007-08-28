@@ -47,7 +47,7 @@ public class ErlToken {
 		fTuple = e;
 		kind = ((OtpErlangAtom) (e.elementAt(0))).atomValue();
 		if (TRACE) {
-			ErlLogger.log("    =" + e.toString());
+			ErlLogger.debug("    =" + e.toString());
 		}
 		try {
 			if (e.elementAt(1) instanceof OtpErlangTuple) {
@@ -72,7 +72,7 @@ public class ErlToken {
 		}
 		if (ee != null) {
 			if (TRACE) {
-				ErlLogger.log("   -" + ee.toString() + " " +
+				ErlLogger.debug("   -" + ee.toString() + " " +
 						ee.getClass().getName());
 			}
 			if (ee instanceof OtpErlangString) {
@@ -109,7 +109,7 @@ public class ErlToken {
 			text = kind;
 		}
 		if (TRACE) {
-			ErlLogger.log("mkTok " + kind + " - " + text + " " + offset + ":" +
+			ErlLogger.debug("mkTok " + kind + " - " + text + " " + offset + ":" +
 					text.length() + " " + (offset + text.length()));
 		}
 	}
@@ -117,7 +117,7 @@ public class ErlToken {
 	public ErlToken(OtpErlangTuple e, int x) {
 		fTuple = e;
 		if (TRACE) {
-			ErlLogger.log("    =" + e.toString());
+			ErlLogger.debug("    =" + e.toString());
 		}
 
 		final OtpErlangObject[] parts = e.elements();
@@ -148,7 +148,7 @@ public class ErlToken {
 		}
 
 		if (TRACE) {
-			ErlLogger.log("mkTok " + kind + " - " + text + " " + line + "/" +
+			ErlLogger.debug("mkTok " + kind + " - " + text + " " + line + "/" +
 					offset + ":" + text.length() + " " +
 					(offset + text.length()));
 		}

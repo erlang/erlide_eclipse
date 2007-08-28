@@ -15,7 +15,6 @@ import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.erlc.core.ErrorParserManager;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -33,8 +32,8 @@ public class ErlcErrorParser implements IErrorParser {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangObject res;
 		try {
-			res = BackendUtil.checkRpc(b.rpc("erlide_erlcerrors",
-					"convert_erlc_errors", new OtpErlangString(lines)));
+			res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors",
+					new OtpErlangString(lines));
 			if (!(res instanceof OtpErlangList)) {
 				return false;
 			}

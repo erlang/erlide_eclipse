@@ -31,7 +31,7 @@ public class ErlEditorActionBarContributor extends
 
 		// contentAssistProposal = new RetargetTextEditorAction(ErlideUIMessages
 		// .getResourceBundle(), "ContentAssistProposal.");
-		// ErlLogger.log("AC 1");
+		// ErlLogger.debug("AC 1");
 
 		fPreviousAnnotation = new GotoAnnotationAction(
 				"PreviousAnnotation.", false); //$NON-NLS-1$

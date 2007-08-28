@@ -37,7 +37,7 @@ public class ErtsProcess extends RuntimeProcess {
 	public ErtsProcess(ILaunch launch, Process process, String name,
 			Map attributes) {
 		super(launch, process, name, attributes);
-		// ErlLogger.log("# create ErtsNode: " + name + " " + attributes);
+		// ErlLogger.debug("# create ErtsNode: " + name + " " + attributes);
 	}
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
@@ -121,7 +121,7 @@ public class ErtsProcess extends RuntimeProcess {
 		if (streamsProxy != null) {
 			try {
 				streamsProxy.write(string);
-				ErlLogger.log("#>>#" + string);
+				ErlLogger.debug("#>>#" + string);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

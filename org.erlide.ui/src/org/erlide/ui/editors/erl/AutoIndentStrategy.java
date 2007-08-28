@@ -20,7 +20,6 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
 
@@ -83,8 +82,8 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 			final OtpErlangLong tw = new OtpErlangLong(tabw);
-			final OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc(
-					"erlide_indent", "indent_next_line", s, tw));
+			final OtpErlangObject r1 = b.rpcx("erlide_indent",
+					"indent_next_line", s, tw);
 			// OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
 			// "indent_next_line",
 			// new OtpErlangLong(offset)));
@@ -141,9 +140,9 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	@Override
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-		if (c.length == 0 &&
-				c.text != null &&
-				TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
+		if (c.length == 0
+				&& c.text != null
+				&& TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
 			autoIndentAfterNewLine(d, c);
 		}
 	}

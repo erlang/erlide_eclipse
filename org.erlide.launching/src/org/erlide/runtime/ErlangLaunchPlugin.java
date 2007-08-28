@@ -148,7 +148,7 @@ public class ErlangLaunchPlugin extends Plugin {
 
 	public static void debug(String message) {
 		if (getDefault().isDebugging()) {
-			ErlLogger.log(message);
+			ErlLogger.debug(message);
 		}
 	}
 

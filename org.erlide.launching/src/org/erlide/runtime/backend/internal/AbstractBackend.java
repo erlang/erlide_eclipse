@@ -22,7 +22,6 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.IBackend;
@@ -30,6 +29,7 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -70,7 +70,7 @@ public abstract class AbstractBackend implements IBackend {
 				for (String element : ss) {
 					sb.append(element).append(" ");
 				}
-				ErlLogger.log(sb);
+				ErlLogger.debug(sb.toString());
 			}
 			return res;
 		}
@@ -118,17 +118,17 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	protected void doConnect(String label) {
-		ErlLogger.log(">>:: " + label);
+		ErlLogger.debug(">>:: " + label);
 		try {
 			wait_for_epmd();
 
 			fNode = new OtpNode(BackendManager
 					.buildNodeName(BackendManager.JAVA_NODE_LABEL), Cookie
 					.retrieveCookie());
-			ErlLogger.log("java node is " + fNode.node());
+			ErlLogger.debug("java node is " + fNode.node());
 
 			fPeer = new OtpPeer(BackendManager.buildNodeName(label));
-			ErlLogger.log("erlang peer is " + label + " ("
+			ErlLogger.debug("erlang peer is " + label + " ("
 					+ BackendManager.buildNodeName(label) + ")-- "
 					+ fPeer.node());
 
@@ -143,9 +143,9 @@ public abstract class AbstractBackend implements IBackend {
 			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
 			if (tries > 0) {
-				ErlLogger.log("connected to peer!");
+				ErlLogger.debug("connected to peer!");
 			} else {
-				ErlLogger.log("Couldn't connect!!!");
+				ErlLogger.debug("Couldn't connect!!!");
 			}
 			fConnected = tries > 0;
 
@@ -160,7 +160,7 @@ public abstract class AbstractBackend implements IBackend {
 	 * Method dispose
 	 */
 	public void dispose() {
-		ErlLogger.log("disposing backend " + fLabel);
+		ErlLogger.debug("disposing backend " + fLabel);
 
 		if (fNode != null) {
 			fNode.close();
@@ -172,14 +172,42 @@ public abstract class AbstractBackend implements IBackend {
 
 	public RpcResult rpc(String m, String f, Object... a)
 			throws ErlangRpcException {
-		return rpct(m, f, 10000, a);
+		return rpct(m, f, 5000, a);
 	}
 
 	/**
+	 * RPC with timeout
 	 */
 	public RpcResult rpct(String m, String f, int timeout, Object... a)
 			throws ErlangRpcException {
 		return sendRpc(m, f, timeout, a);
+	}
+
+	/**
+	 * RPC , throws Exception
+	 */
+	public OtpErlangObject rpcx(String m, String f, Object... a)
+			throws ErlangRpcException, BackendException {
+		return rpcxt(m, f, 5000, a);
+	}
+
+	/**
+	 * RPC with timeout, throws Exception
+	 */
+	public OtpErlangObject rpcxt(String m, String f, int timeout, Object... a)
+			throws ErlangRpcException, BackendException {
+		return checkRpc(rpct(m, f, timeout, a));
+	}
+
+	private static OtpErlangObject checkRpc(RpcResult r)
+			throws BackendException {
+		if (r != null && r.isOk()) {
+			return r.getValue();
+		}
+		if (r == null) {
+			throw new BackendException("RPC error: null response (timeout?)");
+		}
+		throw new BackendException("RPC error: " + r.getValue());
 	}
 
 	/**
@@ -239,8 +267,8 @@ public abstract class AbstractBackend implements IBackend {
 				if (msg == null) {
 					continue;
 				}
-				ErlLogger
-						.log("handleReceiveEvent() - Event! " + msg.toString());
+				ErlLogger.debug("handleReceiveEvent() - Event! "
+						+ msg.toString());
 				if (msg instanceof OtpErlangAtom) {
 					String sys = ((OtpErlangAtom) msg).atomValue();
 					if (sys.compareTo("stopped") == 0) {
@@ -270,9 +298,9 @@ public abstract class AbstractBackend implements IBackend {
 					}
 				}
 			}
-			// ErlLogger.log("exited event thread");
+			// ErlLogger.debug("exited event thread");
 		} catch (OtpErlangExit e) {
-			ErlLogger.log("Erlide backend: event source crashed.\n"
+			ErlLogger.debug("Erlide backend: event source crashed.\n"
 					+ e.getMessage());
 		} catch (OtpErlangDecodeException e) {
 			e.printStackTrace();
@@ -304,7 +332,7 @@ public abstract class AbstractBackend implements IBackend {
 			res = buildRpcCall(module, fun, args, mbox.self());
 			send("rex", res);
 			if (CHECK_RPC) {
-				ErlLogger.log("RPC :: " + res);
+				ErlLogger.debug("RPC :: " + res);
 			}
 
 			if (timeout < 0) {
@@ -313,13 +341,13 @@ public abstract class AbstractBackend implements IBackend {
 				res = getMbox().receive(timeout);
 			}
 			if (CHECK_RPC) {
-				ErlLogger.log("    -> " + res);
+				ErlLogger.debug("    -> " + res);
 			}
 
 			if (res == null) {
 				if (CHECK_RPC) {
-					ErlLogger.log("    timed out: " + module + ":" + fun + "("
-							+ new OtpErlangList(args) + ")");
+					ErlLogger.debug("    timed out: " + module + ":" + fun
+							+ "(" + new OtpErlangList(args) + ")");
 				}
 				return null;
 			}
@@ -367,8 +395,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	public String getCurrentVersion() {
 		try {
-			final OtpErlangObject r = BackendUtil.checkRpc(rpc("init",
-					"script_id"));
+			final OtpErlangObject r = rpcx("init", "script_id");
 			final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
 			return ((OtpErlangString) rr).stringValue();
 		} catch (final Exception e) {
@@ -392,7 +419,7 @@ public abstract class AbstractBackend implements IBackend {
 			}
 			try {
 				Thread.sleep(100);
-				// ErlLogger.log("sleep............");
+				// ErlLogger.debug("sleep............");
 			} catch (final InterruptedException e1) {
 			}
 
@@ -465,9 +492,8 @@ public abstract class AbstractBackend implements IBackend {
 			throws ErlangParseException {
 		OtpErlangObject r = null;
 		try {
-			r = BackendUtil.checkRpc(rpc(ERL_BACKEND, "parse_term",
-					new OtpErlangString(string)));
-			ErlLogger.log("PARSE=" + r);
+			r = rpcx(ERL_BACKEND, "parse_term", new OtpErlangString(string));
+			ErlLogger.debug("PARSE=" + r);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			throw new ErlangParseException("Could not parse term \"" + string

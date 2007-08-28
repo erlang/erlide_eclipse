@@ -25,7 +25,7 @@ public class DummyProcess implements IProcess {
 	}
 
 	public String getLabel() {
-		ErlLogger.log("getlabel");
+		ErlLogger.debug("getlabel");
 		return "...";
 	}
 
@@ -50,7 +50,7 @@ public class DummyProcess implements IProcess {
 
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
-		ErlLogger.log("--> adapt as " + adapter.getName());
+		ErlLogger.debug("--> adapt as " + adapter.getName());
 		return null;
 	}
 

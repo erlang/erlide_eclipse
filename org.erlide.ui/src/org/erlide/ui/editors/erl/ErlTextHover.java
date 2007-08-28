@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
@@ -53,7 +52,7 @@ public class ErlTextHover implements ITextHover,
 		if (token == null) {
 			return null;
 		}
-		// ErlLogger.log("getHoverRegion " + token.toString());
+		// ErlLogger.debug("getHoverRegion " + token.toString());
 		return new Region(token.getOffset(), token.getLength());
 	}
 
@@ -70,13 +69,10 @@ public class ErlTextHover implements ITextHover,
 			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin
 					.getDefault().getStateLocation().toString());
 
-			r1 = BackendUtil.checkRpc(BackendManager.getDefault()
-					.getIdeBackend().rpc(
-							"erlide_otp_doc",
-							"get_doc_from_scan_tuples",
-							new OtpErlangAtom("_erlide_" +
-									fModule.getElementName()), offset,
-							fImports, s));
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_otp_doc", "get_doc_from_scan_tuples",
+					new OtpErlangAtom("_erlide_" + fModule.getElementName()),
+					offset, fImports, s);
 
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;

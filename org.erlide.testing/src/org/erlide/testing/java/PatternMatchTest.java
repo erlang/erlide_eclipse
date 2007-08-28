@@ -60,13 +60,13 @@ public class PatternMatchTest extends TestCase {
 	 */
 	private HashMap<String, OtpErlangObject> match(OtpErlangObject p,
 			OtpErlangObject t1, HashMap<String, OtpErlangObject> b) {
-		// ErlLogger.log("-----------------------");
+		// ErlLogger.debug("-----------------------");
 		HashMap<String, OtpErlangObject> r;
-		// ErlLogger.log("matching \n " + p.toString() + "\n " +
+		// ErlLogger.debug("matching \n " + p.toString() + "\n " +
 		// t1.toString() + "\n
 		// B=" + b);
 		r = ErlUtils.match(p, t1, b);
-		// ErlLogger.log("R=" + r);
+		// ErlLogger.debug("R=" + r);
 		return r;
 	}
 

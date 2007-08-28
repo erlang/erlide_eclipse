@@ -204,11 +204,11 @@ public class ErlangProjectProperties {
 		for (String element : dirs) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
-			ErlLogger.log("* " + inc);
+			ErlLogger.debug("* " + inc);
 			if (!inc.isAbsolute()) {
-				ErlLogger.log("  not abs!");
+				ErlLogger.debug("  not abs!");
 				inc = loc.append(inc);
-				ErlLogger.log("  " + inc);
+				ErlLogger.debug("  " + inc);
 			}
 			incs.append(" -I").append(inc.toString());
 		}

@@ -43,7 +43,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			cmd += " -noshell -name " + label + " -setcookie " +
 					Cookie.retrieveCookie();
 
-			ErlLogger.log("RUN*> " + cmd);
+			ErlLogger.debug("RUN*> " + cmd);
 
 			final File workingDirectory = new File(".");
 			Process vm = null;
@@ -71,7 +71,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 			// if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			// final IBackend b = getBackend(configuration);
-			// ErlLogger.log("DEBUG*> " + mod + ":" + func + "();...");
+			// ErlLogger.debug("DEBUG*> " + mod + ":" + func + "();...");
 			// final IDebugTarget target = new ErlangDebugTarget(launch, b,
 			// mod, func);
 			// launch.addDebugTarget(target);
@@ -80,7 +80,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			// }
 
 		} catch (final Exception e) {
-			ErlLogger.log("Could not launch Erlang:::");
+			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
 		}
 

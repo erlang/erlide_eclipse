@@ -44,7 +44,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IBackendVisitor;
@@ -432,8 +431,7 @@ public class ProcessListView extends ViewPart {
 
 	public static OtpErlangList getProcessList(IBackend b) {
 		try {
-			return (OtpErlangList) BackendUtil.checkRpc(b.rpc(MODULE_NAME,
-					"process_list"));
+			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list");
 		} catch (final BackendException e) {
 			e.printStackTrace();
 			return new OtpErlangList();
@@ -443,8 +441,7 @@ public class ProcessListView extends ViewPart {
 	public static OtpErlangObject getProcessInfo(IBackend b,
 			OtpErlangObject object) {
 		try {
-			return BackendUtil.checkRpc(b.rpc(MODULE_NAME, "get_process_info",
-					object));
+			return b.rpcx(MODULE_NAME, "get_process_info", object);
 		} catch (final BackendException e) {
 			e.printStackTrace();
 			return new OtpErlangAtom("error");

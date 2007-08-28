@@ -84,7 +84,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createManaged(String name) {
-		ErlLogger.log("create managed backend " + name + ".");
+		ErlLogger.debug("create managed backend " + name + ".");
 		final BackendType bt = BackendSupport.getType(IBackend.MANAGED_BACKEND);
 		final AbstractBackend b = bt.create();
 		b.setLabel(name);
@@ -105,7 +105,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createStandalone(String name) {
-		ErlLogger.log("create standalone backend " + name + ".");
+		ErlLogger.debug("create standalone backend " + name + ".");
 		final BackendType bt = BackendSupport
 				.getType(IBackend.STANDALONE_BACKEND);
 		final AbstractBackend b = bt.create();
@@ -355,7 +355,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		// ErlLogger.log("+BM: " + event.getType() + " " +
+		// ErlLogger.debug("+BM: " + event.getType() + " " +
 		// event.getResource()
 		// + event.getDelta());
 		switch (event.getType()) {
@@ -413,7 +413,7 @@ public final class BackendManager implements IResourceChangeListener {
 					if (isExtErlideLabel(label)) {
 						IBackend b = fRemoteBackends.get(label);
 						if (b == null) {
-							// ErlLogger.log("$ Added external backend:: "
+							// ErlLogger.debug("$ Added external backend:: "
 							// +
 							// label);
 							b = createStandalone(label);

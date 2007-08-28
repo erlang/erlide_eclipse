@@ -19,13 +19,13 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
 	public void launch(ISelection selection, String mode) {
 		// TODO Auto-generated method stub
-		ErlLogger.log("** Launch:: " + selection.toString());
+		ErlLogger.debug("** Launch:: " + selection.toString());
 
 	}
 
 	public void launch(IEditorPart editor, String mode) {
 		// TODO Auto-generated method stub
-		ErlLogger.log("** Launch :: " + editor.getTitle());
+		ErlLogger.debug("** Launch :: " + editor.getTitle());
 	}
 
 }
