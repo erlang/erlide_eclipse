@@ -157,8 +157,7 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
 		}
-		ErlLogger.debug("--- " + getProject().getName() + "? "
-				+ fChildren.length);
+		ErlLogger.debug("--- " + getProject().getName() + "? " + fChildren);
 		if (fChildren != null && fChildren.length != 0) {
 			ErlLogger.debug("--- !");
 			return true;

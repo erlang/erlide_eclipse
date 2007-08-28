@@ -18,6 +18,7 @@
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Provides a Java representation of Erlang tuples. Tuples are created from one
@@ -91,8 +92,8 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 					this.elems[i] = elems[start + i];
 				} else {
 					throw new java.lang.IllegalArgumentException(
-							"Tuple element cannot be null (element" +
-									(start + i) + ")");
+							"Tuple element cannot be null (element"
+									+ (start + i) + ")");
 				}
 			}
 		}
@@ -236,5 +237,10 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 		final OtpErlangTuple newTuple = (OtpErlangTuple) (super.clone());
 		newTuple.elems = elems.clone();
 		return newTuple;
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(elems);
 	}
 }

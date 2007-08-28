@@ -121,4 +121,9 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 		final OtpErlangDouble d_ = (OtpErlangDouble) o;
 		return d == d_.d;
 	}
+
+	@Override
+	public int hashCode() {
+		return Double.valueOf(d).hashCode();
+	}
 }

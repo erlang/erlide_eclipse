@@ -196,6 +196,11 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	}
 
 	@Override
+	public int hashCode() {
+		return new String(bin).hashCode();
+	}
+
+	@Override
 	public Object clone() {
 		final OtpErlangBinary newBin = (OtpErlangBinary) (super.clone());
 		newBin.bin = bin.clone();

@@ -262,9 +262,9 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		String s = "<<";
 		final byte[] buf = bin.binaryValue();
 		for (int i = 0; i < buf.length - 1; i++) {
-			s += new Integer(buf[i]).toString() + ",";
+			s += Integer.valueOf(buf[i]).toString() + ",";
 		}
-		s += new Integer(buf[buf.length - 1]).toString();
+		s += Integer.valueOf(buf[buf.length - 1]).toString();
 		return s + ">>";
 	}
 
@@ -448,7 +448,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	private class PathItem {
+	private static class PathItem {
 
 		public PathItem(String p) {
 			path = p;

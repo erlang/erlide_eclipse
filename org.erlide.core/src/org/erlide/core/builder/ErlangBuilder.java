@@ -127,8 +127,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final int end = range == null ? 1 : start + range.getLength();
 			marker.setAttributes(new String[] { IMarker.MESSAGE,
 					IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
-					new Object[] { message, new Integer(severity),
-							new Integer(start), new Integer(end) });
+					new Object[] { message, Integer.valueOf(severity),
+							Integer.valueOf(start), Integer.valueOf(end) });
 		} catch (final CoreException e) {
 			throw e;
 		}
@@ -788,8 +788,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.debug(" recompiling " + resource.getName()
-									+ " " + timestamp + " " + moduletimestamp);
+							ErlLogger.debug(" recompiling "
+									+ resource.getName() + " " + timestamp
+									+ " " + moduletimestamp);
 						}
 						compileFile(resource.getProject(), resource);
 						monitor.worked(1);
@@ -824,8 +825,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					// if (timestamp > moduletimestamp)
 					{
 						if (ErlangBuilder.DEBUG) {
-							ErlLogger.debug(" recompiling " + resource.getName()
-									+ " " + timestamp + " " + erltimestamp);
+							ErlLogger.debug(" recompiling "
+									+ resource.getName() + " " + timestamp
+									+ " " + erltimestamp);
 						}
 						compileYrlFile(resource.getProject(), resource);
 						monitor.worked(1);
@@ -1161,7 +1163,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final String remoteuser = (String) args.get("remoteuser");
 			final String terminal = "network";
 
-			ErlLogger.debug("## " + server + "." + localuser + "." + remoteuser);
+			ErlLogger
+					.debug("## " + server + "." + localuser + "." + remoteuser);
 
 			if (server == null || localuser == null || remoteuser == null) {
 				return null;

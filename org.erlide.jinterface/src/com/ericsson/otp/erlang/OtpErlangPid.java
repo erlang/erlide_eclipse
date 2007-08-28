@@ -165,7 +165,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public int hashCode() {
-		return (creation + serial + id + node.hashCode()) & 0xFFFFFF;
+		return (creation * 17 + serial * 23 + id * 31 + node.hashCode()) & 0xFFFFFF;
 	}
 
 	/**

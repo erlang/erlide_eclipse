@@ -122,8 +122,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		final short i = (short) val;
 
 		if (i != val) {
-			throw new OtpErlangRangeException("Value too large for short: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for short: "
+					+ val);
 		}
 
 		return i;
@@ -142,8 +142,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		final short i = (short) val;
 
 		if (i != val) {
-			throw new OtpErlangRangeException("Value too large for short: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for short: "
+					+ val);
 		} else if (i < 0) {
 			throw new OtpErlangRangeException("Value not positive: " + val);
 		}
@@ -163,8 +163,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		final char i = (char) val;
 
 		if (i != val) {
-			throw new OtpErlangRangeException("Value too large for char: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for char: "
+					+ val);
 		}
 
 		return i;
@@ -182,8 +182,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		final byte i = (byte) val;
 
 		if (i != val) {
-			throw new OtpErlangRangeException("Value too large for byte: " +
-					val);
+			throw new OtpErlangRangeException("Value too large for byte: "
+					+ val);
 		}
 
 		return i;
@@ -228,5 +228,10 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 
 		final OtpErlangLong l = (OtpErlangLong) o;
 		return val == l.val;
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.valueOf(val).hashCode();
 	}
 }

@@ -55,6 +55,11 @@ public class ErlangFunction {
 	}
 
 	@Override
+	public int hashCode() {
+		return arity * 123 + name.hashCode();
+	}
+
+	@Override
 	public String toString() {
 		return name + "/" + Integer.toString(arity);
 	}

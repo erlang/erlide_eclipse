@@ -65,6 +65,11 @@ public class OtpVariable extends OtpErlangObject implements Cloneable {
 		return name.equals(l.name);
 	}
 
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
+
 	/**
 	 * @see com.ericsson.otp.erlang.OtpErlangObject#encode(com.ericsson.otp.erlang.OtpOutputStream)
 	 */

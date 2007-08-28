@@ -18,6 +18,7 @@
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Provides a Java representation of Erlang lists. Lists are created from zero
@@ -264,6 +265,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		}
 
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(elems);
 	}
 
 	@Override

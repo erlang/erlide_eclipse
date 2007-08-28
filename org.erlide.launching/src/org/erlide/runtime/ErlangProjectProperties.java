@@ -66,7 +66,9 @@ public class ErlangProjectProperties {
 				.toFile();
 		final Properties prefs = new Properties();
 		try {
-			prefs.load(new FileInputStream(codepath));
+			FileInputStream stream = new FileInputStream(codepath);
+			prefs.load(stream);
+			stream.close();
 		} catch (final IOException e) {
 		}
 

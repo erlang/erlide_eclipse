@@ -56,7 +56,7 @@ public class ErlLoggerView extends ViewPart {
 	 * example).
 	 */
 
-	class ViewContentProvider implements IStructuredContentProvider {
+	static class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
 
@@ -68,7 +68,7 @@ public class ErlLoggerView extends ViewPart {
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider implements
+	static class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			return getText(obj);
@@ -85,7 +85,7 @@ public class ErlLoggerView extends ViewPart {
 		}
 	}
 
-	class NameSorter extends ViewerSorter {
+	static class NameSorter extends ViewerSorter {
 	}
 
 	/**
@@ -100,8 +100,8 @@ public class ErlLoggerView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL |
-				SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
