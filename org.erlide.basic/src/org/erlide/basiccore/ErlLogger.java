@@ -48,7 +48,7 @@ public class ErlLogger {
 		StackTraceElement el = getCaller();
 		String str = String.format(fmt, o);
 		Date time = Calendar.getInstance().getTime();
-		String stime = new SimpleDateFormat("HH:mm:ss,S").format(time);
+		String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
 				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
 	}

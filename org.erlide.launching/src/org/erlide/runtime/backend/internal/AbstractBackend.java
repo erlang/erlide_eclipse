@@ -370,11 +370,8 @@ public abstract class AbstractBackend implements IBackend {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
-		return new OtpErlangTuple(new OtpErlangObject[] {
-				pid,
-				new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("call"), m, f, a,
-						new OtpErlangAtom("user") }) });
+		return new OtpErlangTuple(pid, new OtpErlangTuple(new OtpErlangAtom(
+				"call"), m, f, a, new OtpErlangAtom("user")));
 	}
 
 	private OtpMbox getMbox() {

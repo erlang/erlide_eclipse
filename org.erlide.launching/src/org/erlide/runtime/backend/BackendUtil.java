@@ -37,7 +37,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class BackendUtil {
 
 	public static String format(IBackend b, String fmt, OtpErlangObject arg) {
-		return format(b, fmt, new OtpErlangObject[] { arg });
+		return format(b, fmt, arg);
 	}
 
 	public static String format(IBackend b, String fmt, OtpErlangObject... args) {

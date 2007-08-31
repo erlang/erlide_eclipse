@@ -52,8 +52,8 @@ public class DebuggerListener {
 		public void init() {
 			self = fBackend.getEventPid();
 
-			fBackend.send(fDbgPid, new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("parent"), self }));
+			fBackend.send(fDbgPid, new OtpErlangTuple(new OtpErlangAtom(
+					"parent"), self));
 		}
 
 		public void handleEvent(OtpErlangObject msg) {

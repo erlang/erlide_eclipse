@@ -21,12 +21,10 @@ public class ErlangTest extends AbstractErlangTest {
 		OtpErlangAtom a = new OtpErlangAtom("1");
 		OtpErlangLong b = new OtpErlangLong(2);
 		OtpErlangLong c = new OtpErlangLong(3);
-		OtpErlangList l1 = new OtpErlangList(new OtpErlangObject[] { a, b, c });
+		OtpErlangList l1 = new OtpErlangList(a, b, c);
 
-		OtpErlangList l2 = new OtpErlangList(new OtpErlangObject[] { c, b, a });
-		OtpErlangObject rr = runErlangTest("lists", "reverse",
-				new OtpErlangObject[] { l1 });
-
+		OtpErlangList l2 = new OtpErlangList(c, b, a);
+		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 		assertTrue(rr.equals(l2));
 	}
 
@@ -34,11 +32,10 @@ public class ErlangTest extends AbstractErlangTest {
 		OtpErlangLong a = new OtpErlangLong(65);
 		OtpErlangLong b = new OtpErlangLong(66);
 		OtpErlangLong c = new OtpErlangLong(67);
-		OtpErlangList l1 = new OtpErlangList(new OtpErlangObject[] { a, b, c });
+		OtpErlangList l1 = new OtpErlangList(a, b, c);
 
-		OtpErlangList l2 = new OtpErlangList(new OtpErlangObject[] { c, b, a });
-		OtpErlangObject rr = runErlangTest("lists", "reverse",
-				new OtpErlangObject[] { l1 });
+		OtpErlangList l2 = new OtpErlangList(c, b, a);
+		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 
 		assertFalse(rr.equals(l2));
 	}

@@ -29,15 +29,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class PatternMatchTest extends TestCase {
 
 	public void testMatch() {
-		OtpErlangObject p = new OtpErlangList(
-				new OtpErlangObject[] { new OtpVariable("V"),
-						new OtpErlangTuple(new OtpVariable("W")) });
-		OtpErlangObject t1 = new OtpErlangList(new OtpErlangObject[] {
-				new OtpErlangAtom("a"),
-				new OtpErlangTuple(new OtpErlangAtom("b")) });
-		OtpErlangObject t2 = new OtpErlangList(new OtpErlangObject[] {
-				new OtpErlangAtom("a"),
-				new OtpErlangTuple(new OtpErlangAtom("a")) });
+		OtpErlangObject p = new OtpErlangList(new OtpVariable("V"),
+				new OtpErlangTuple(new OtpVariable("W")));
+		OtpErlangObject t1 = new OtpErlangList(new OtpErlangAtom("a"),
+				new OtpErlangTuple(new OtpErlangAtom("b")));
+		OtpErlangObject t2 = new OtpErlangList(new OtpErlangAtom("a"),
+				new OtpErlangTuple(new OtpErlangAtom("a")));
 		HashMap<String, OtpErlangObject> b = new HashMap<String, OtpErlangObject>();
 		HashMap<String, OtpErlangObject> r;
 		@SuppressWarnings("unused")

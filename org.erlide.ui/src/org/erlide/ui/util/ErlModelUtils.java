@@ -29,7 +29,6 @@ import org.erlide.core.util.ErlangFunction;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlModelUtils {
@@ -111,12 +110,11 @@ public class ErlModelUtils {
 			final ErlangFunction[] impFuncs = imp.getFunctions();
 			final OtpErlangTuple rImpFuncs[] = new OtpErlangTuple[impFuncs.length];
 			for (final ErlangFunction f : impFuncs) {
-				rImpFuncs[i] = new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom(f.name), new OtpErlangLong(f.arity) });
+				rImpFuncs[i] = new OtpErlangTuple(new OtpErlangAtom(f.name),
+						new OtpErlangLong(f.arity));
 			}
-			rImports[i] = new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom(imp.getImportModule()),
-					new OtpErlangList(rImpFuncs) });
+			rImports[i] = new OtpErlangTuple(new OtpErlangAtom(imp
+					.getImportModule()), new OtpErlangList(rImpFuncs));
 		}
 		return new OtpErlangList(rImports);
 	}

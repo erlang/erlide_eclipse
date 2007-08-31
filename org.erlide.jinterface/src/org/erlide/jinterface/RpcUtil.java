@@ -219,18 +219,16 @@ public class RpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return new OtpErlangTuple(new OtpErlangObject[] {
-							new OtpErlangAtom("error"),
+					return new OtpErlangTuple(new OtpErlangAtom("error"),
 							new OtpErlangString(String.format("Bad RPC: %s", e
-									.getMessage())) });
+									.getMessage())));
 				}
 
 			} else {
 				log("RPC: unknown receiver: " + target);
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
+				return new OtpErlangTuple(new OtpErlangAtom("error"),
 						new OtpErlangString(String.format(
-								"Bad RPC: unknown object ref %s%n", target)) });
+								"Bad RPC: unknown object ref %s%n", target)));
 			}
 
 		} else if (target instanceof OtpErlangAtom
@@ -244,25 +242,22 @@ public class RpcUtil {
 			} catch (Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
-				return new OtpErlangTuple(new OtpErlangObject[] {
-						new OtpErlangAtom("error"),
+				return new OtpErlangTuple(new OtpErlangAtom("error"),
 						new OtpErlangString(String.format("Bad RPC: %s", e
-								.getMessage())) });
+								.getMessage())));
 			}
 		} else {
 			log("unknown receiver: " + target);
-			return new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("error"),
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
-							"Bad RPC: unknown receiver %s", target)) });
+							"Bad RPC: unknown receiver %s", target)));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private static MethodDescription getDescription(OtpErlangObject target) {
 		if (!(target instanceof OtpErlangTuple)) {
-			target = new OtpErlangTuple(new OtpErlangObject[] { target,
-					new OtpErlangList() });
+			target = new OtpErlangTuple(target, new OtpErlangList());
 		}
 		OtpErlangTuple t = (OtpErlangTuple) target;
 		String name = getString(t.elementAt(0));
@@ -342,20 +337,18 @@ public class RpcUtil {
 			for (Class param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
-			return new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("error"),
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"can't find method %s of %s(%s)", method.name, cls
-									.getName(), paramstr)) });
+									.getName(), paramstr)));
 		} catch (InvocationTargetException x) {
 			Throwable cause = x.getCause();
 			log(String.format("invocation of %s failed: %s", method.name, cause
 					.getMessage()));
-			return new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("error"),
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, cause
-									.getMessage())) });
+									.getMessage())));
 		} catch (IllegalArgumentException x) {
 			StringBuffer paramstr = new StringBuffer();
 			for (Class param : params) {
@@ -363,11 +356,10 @@ public class RpcUtil {
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
 					x.getMessage(), paramstr));
-			return new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("error"),
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, x
-									.getMessage())) });
+									.getMessage())));
 		} catch (InstantiationException e) {
 			StringBuffer paramstr = new StringBuffer();
 			for (Class param : params) {
@@ -375,11 +367,10 @@ public class RpcUtil {
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
 					.getName(), e.getMessage(), paramstr));
-			return new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom("error"),
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", cls.getName(), e
-									.getMessage())) });
+									.getMessage())));
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			return null;

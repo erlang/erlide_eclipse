@@ -97,8 +97,8 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	}
 
 	public void rpcReply(OtpErlangPid from, OtpErlangObject result) {
-		fBackend.send(from, new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("reply"), result }));
+		fBackend.send(from, new OtpErlangTuple(new OtpErlangAtom("reply"),
+				result));
 	}
 
 	public void executeRpc(final IRpcExecuter rpcExecuter) {

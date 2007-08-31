@@ -42,7 +42,7 @@ public abstract class AbstractErlangTest extends TestCase {
 	}
 
 	public OtpErlangObject runErlangTest(String m, String f,
-			OtpErlangObject[] args) {
+			OtpErlangObject... args) {
 		try {
 			return getBackend().rpc(m, f, (Object) args).getValue();
 		} catch (ErlangRpcException e) {
@@ -51,9 +51,9 @@ public abstract class AbstractErlangTest extends TestCase {
 		return null;
 	}
 
-	public void erlangTest(String m, String f, OtpErlangObject[] args) {
+	public void erlangTest(String m, String f, OtpErlangObject... args) {
 		try {
-			RpcResult r = getBackend().rpc(m, f, (Object) args);
+			RpcResult r = getBackend().rpc(m, f, (Object[]) args);
 			System.out.println("RRR=" + r.getValue());
 			assertNotNull(r);
 			// assertTrue(r.isOk());

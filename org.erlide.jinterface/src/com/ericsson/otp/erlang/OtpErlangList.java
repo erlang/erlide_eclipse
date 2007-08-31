@@ -86,7 +86,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * @param elems
 	 *            the array of terms from which to create the list.
 	 */
-	public OtpErlangList(OtpErlangObject[] elems) {
+	public OtpErlangList(OtpErlangObject... elems) {
 		this(elems, 0, elems.length);
 	}
 

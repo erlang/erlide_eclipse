@@ -64,7 +64,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 	 * @exception java.lang.IllegalArgumentException
 	 *                if the array is empty (null) or contains null elements.
 	 */
-	public OtpErlangTuple(OtpErlangObject[] elems) {
+	public OtpErlangTuple(OtpErlangObject... elems) {
 		this(elems, 0, elems.length);
 	}
 

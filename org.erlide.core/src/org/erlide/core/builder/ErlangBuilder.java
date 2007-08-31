@@ -903,18 +903,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				includes[i] = new OtpErlangString(includedirs[i]);
 			}
 			final OtpErlangList includeList = new OtpErlangList(includes);
-			return BackendManager.getDefault().get(project).rpcxt(
-					MODULE,
-					"compile",
-					20000,
-					fn,
-					outputdir,
-					includeList
+			return BackendManager.getDefault().get(project).rpcxt(MODULE,
+					"compile", 20000, fn, outputdir, includeList
 					// FIXME add an option for this
-					,
-					new OtpErlangList(
-							new OtpErlangObject[] { new OtpErlangAtom(
-									"debug_info") }));
+					, new OtpErlangList(new OtpErlangAtom("debug_info")));
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
