@@ -40,7 +40,7 @@ open_include(Text) ->
 
 get_include(Tokens) ->
     {value, {string, _, S, _}} = lists:keysearch(string, 1, Tokens),
-    S.
+    {include, S}.
 
 find_lib_dir(Dir) ->
     [Lib | Rest] = filename:split(Dir),
@@ -48,12 +48,24 @@ find_lib_dir(Dir) ->
 
 get_include_lib(Tokens) ->
     {value, {string, _, S, _}} = lists:keysearch(string, 1, Tokens),
-    ?D({str, S}),
-    {LibDir, Rest} = find_lib_dir(S),
-     ?D({libdir,LibDir,Rest}),
-    R = filename:join([LibDir | Rest]),
-    ?D({fn,R}),
-    R.
+    {include_lib, S}.
+    
+%%     ?D({str, S}),
+%%     {LibDir, Rest} = find_lib_dir(S),
+%%      ?D({libdir,LibDir,Rest}),
+%%     R = filename:join([LibDir | Rest]),
+%%     ?D({fn,R}),
+%%     R.
+
+check_include(Tokens) ->
+    case lists:keymember(include, 3, Tokens) of
+        true -> get_include(Tokens);
+        false -> 
+            case lists:keymember(include_lib, 3, Tokens) of
+                true -> get_include_lib(Tokens);
+                false -> none
+            end
+    end.  
 
 open_info(L, W) ->
     ?D({open_info, W, L}),
@@ -62,14 +74,16 @@ open_info(L, W) ->
     case erlide_text:check_function_call(CL, CW) of
         {ok, M, F, Rest} ->
              {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M)}};
-        {ok, F, Rest} ->
-            {local, {F, erlide_text:guess_arity(Rest)}};
+        {ok, F, Rest} -> {local, {F, erlide_text:guess_arity(Rest)}};
         _ ->
             case erlide_text:check_variable_macro_or_record(CL, CW) of
-                {ok, M, R} ->
-                    {M, {R}};
+                {ok, M, R} -> {M, {R}};
                 _ ->
-                    none
+                    case check_include(CL) of
+                        {include, F} -> {include, F};
+                        {include_lib, D, F} -> {include, filename:join(find_lib_dir(D), F)};
+                        _ -> none
+                    end
             end
     end.
 
