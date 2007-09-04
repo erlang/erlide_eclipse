@@ -15,7 +15,7 @@ public class ActionMessages extends NLS {
 
 	public static final String OpenWithMenu_label = "Open menu action";
 
-	public static final String OpenAction_label = "Open action";
+	public static final String OpenAction_label = "Open Declaration";
 
 	public static final String OpenAction_tooltip = "open action";
 
@@ -31,4 +31,5 @@ public class ActionMessages extends NLS {
 
 	public static final String IndentAction_error_message = "indent action";
 
+	public static final String OpenIncludeFileAction_label = "Open Include File";
 }
