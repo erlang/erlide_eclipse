@@ -382,6 +382,10 @@
       <command
             id="org.erlide.ui.actions.show.outline"
             name="Show outline"/>
+      <command
+            id="org.erlide.ui.actions.togglecomment"
+            name="Toggle Comment"/>
+            
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -410,6 +414,11 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+O"/>
+      <key
+            commandId="org.erlide.ui.actions.togglecomment"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Ctrl+/"/>
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">
@@ -430,7 +439,7 @@
              allowLabelUpdate="true"
              definitionId="org.erlide.ui.actions.open.editor"
              id="org.erlide.ui.actions.open"
-             label="&amp;Open"
+             label="Open"
              menubarPath="navigate/open.ext"
              retarget="true"
              tooltip="Open"/>
