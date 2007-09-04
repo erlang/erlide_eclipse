@@ -34,6 +34,7 @@ public class OpenIncludeFileAction extends TextEditorAction {
 	public OpenIncludeFileAction(ResourceBundle bundle, String prefix,
 			ITextEditor editor) {
 		super(bundle, prefix, editor);
+		setText(ActionMessages.OpenIncludeFileAction_label);
 		fErlModule = "erlide_open";
 		fErlFunction = "open_included";
 	}
