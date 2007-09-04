@@ -5,31 +5,43 @@
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Vlad Dumitrescu
+ * Vlad Dumitrescu
  *******************************************************************************/
+
 package org.erlide.ui.views.outline;
 
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
@@ -38,20 +50,27 @@ import org.erlide.ui.util.ErlModelUtils;
 /**
  * 
  * 
+ * 
+ * 
+ * 
  * @author Vlad Dumitrescu
+ * 
  */
+
 public class ErlangOutlinePage extends ContentOutlinePage implements
 		IErlModelChangeListener, ISortableContentOutlinePage {
 
 	IErlModule myMdl;
 
 	private ErlangEditor myEditor;
-
-	// private IDocumentProvider myDocProvider;
+	private String fToolTipText = "Sort";
 
 	/**
+	 * 
 	 * @param documentProvider
+	 * 
 	 * @param editor
+	 * 
 	 */
 	public ErlangOutlinePage(IDocumentProvider documentProvider,
 			ErlangEditor editor) {
@@ -61,10 +80,12 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	}
 
 	/**
+	 * 
 	 * @param editorInput
+	 * 
 	 */
 	public void setInput(IEditorInput editorInput) {
-		// ErlLogger.debug("> outline set input "+editorInput);
+		// ErlLogger.log("> outline set input "+editorInput);
 		myMdl = ErlModelUtils.getModule(editorInput);
 		if (myMdl != null) {
 			try {
@@ -87,9 +108,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			d.asyncExec(new Runnable() {
 
 				public void run() {
-					if (getTreeViewer().getControl() != null &&
-							!getTreeViewer().getControl().isDisposed()) {
-						// ErlLogger.debug("*>> refreshing.");
+					if (getTreeViewer().getControl() != null
+							&& !getTreeViewer().getControl().isDisposed()) {
+						// ErlLogger.log("*>> refreshing.");
 						getTreeViewer().setInput(myMdl);
 					}
 				}
@@ -107,12 +128,28 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		getTreeViewer().setAutoExpandLevel(0);
 		getTreeViewer().setUseHashlookup(true);
 		viewer.setInput(myMdl);
+		
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		manager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager m) {
+				menuAboutToShow(m);
+			}
+		});
+		IPageSite site = getSite();
+
+		site.registerContextMenu(
+				ErlangPlugin.PLUGIN_ID + ".outline", manager, viewer); //$NON-NLS-1$
+		IActionBars actionBars = site.getActionBars();
+		registerToolbarActions(actionBars);
 	}
 
 	static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
 
 		/*
+		 * 
 		 * @see java.lang.Object#toString()
+		 * 
 		 */
 		@Override
 		public String toString() {
@@ -120,7 +157,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 
 		/*
+		 * 
 		 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
+		 * 
 		 */
 		@SuppressWarnings("unchecked")
 		public Object getAdapter(Class clas) {
@@ -166,7 +205,25 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
-	public void sort(boolean sorting) {
+	class LexicalSortingAction extends SortAction {
+		public LexicalSortingAction(StructuredViewer viewer,
+				String tooltipText, ViewerComparator sorter,
+				ViewerComparator defaultSorter,
+				IPropertyChangeListener listener, boolean useMiniImage) {
+			super(viewer, tooltipText, sorter, defaultSorter, listener,
+					useMiniImage);
+		}
 	}
 
+	/**
+	 * @param actionBars
+	 */
+	private void registerToolbarActions(IActionBars actionBars) {
+		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		toolBarManager.add(new LexicalSortingAction(getTreeViewer(),
+				fToolTipText, null, null, null, false));
+	}
+
+	public void sort(boolean sorting) {
+	}
 }
