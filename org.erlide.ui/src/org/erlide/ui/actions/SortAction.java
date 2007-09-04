@@ -15,6 +15,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.erlide.ui.ErlideUIPluginImages;
 
 public class SortAction extends Action {
 
@@ -44,8 +45,10 @@ public class SortAction extends Action {
 		// Set the image
 		if (useMiniImage) {
 			// setImageDescriptor(PDEPluginImages.DESC_ALPHAB_SORT_CO_MINI);
+			setImageDescriptor(ErlideUIPluginImages.DESC_ALPHAB_SORT);
 		} else {
-			// setImageDescriptor(PDEPluginImages.DESC_ALPHAB_SORT_CO);
+			// setImageDescriptor(ErlideUIPluginImages.DESC_ALPHAB_SORT);
+			setImageDescriptor(ErlideUIPluginImages.DESC_ALPHAB_SORT);
 		}
 		// Set the default comparator
 		fDefaultComparator = defaultSorter;
