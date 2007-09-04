@@ -342,14 +342,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
-		menu.add(openAction);
-		// menu
-		// .appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS,
-		// indentAction);
-		menu.add(indentAction);
-		menu.add(toggleCommentAction);
-		menu.add(openIncludeFileAction);
-		menu.add(fShowOutline);
+
+		menu.prependToGroup("group.open", fShowOutline);
+		menu.prependToGroup("group.open", openIncludeFileAction);
+		menu.prependToGroup("group.open", toggleCommentAction);
+		menu.prependToGroup("group.open", indentAction);
+		menu.prependToGroup("group.open", openAction);
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -933,7 +932,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			setSelection(reference, true);
 			// set outliner selection
 			try {
-				ErlLogger.debug(".. sel" + reference.getSource() + myOutlinePage);
+				ErlLogger.debug(".. sel" + reference.getSource()
+						+ myOutlinePage);
 			} catch (final ErlModelException e) {
 				e.printStackTrace();
 			}
