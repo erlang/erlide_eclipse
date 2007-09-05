@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.erlide.testing.erlang;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 public class ErlangTest extends AbstractErlangTest {
 
+	@Test
 	public void testRpc() {
 		OtpErlangAtom a = new OtpErlangAtom("1");
 		OtpErlangLong b = new OtpErlangLong(2);
@@ -28,24 +34,14 @@ public class ErlangTest extends AbstractErlangTest {
 		assertTrue(rr.equals(l2));
 	}
 
+	@Test
 	public void testStringResult() {
-		OtpErlangLong a = new OtpErlangLong(65);
-		OtpErlangLong b = new OtpErlangLong(66);
-		OtpErlangLong c = new OtpErlangLong(67);
-		OtpErlangList l1 = new OtpErlangList(a, b, c);
+		OtpErlangString l1 = new OtpErlangString("abc");
 
-		OtpErlangList l2 = new OtpErlangList(c, b, a);
+		OtpErlangString l2 = new OtpErlangString("cba");
 		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 
-		assertFalse(rr.equals(l2));
-	}
-
-	public void testOk() {
-		erlangTest("erlang", "now", NO_ARGS);
-	}
-
-	public void testFail() {
-		erlangTest("erlang", "hrlp", NO_ARGS);
+		assertTrue(rr.equals(l2));
 	}
 
 }

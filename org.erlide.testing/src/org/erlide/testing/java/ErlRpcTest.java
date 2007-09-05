@@ -1,17 +1,11 @@
 package org.erlide.testing.java;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ErlRpcTest extends TestCase {
+public class ErlRpcTest {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Test
+	public void dummy() {
+
 	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 }

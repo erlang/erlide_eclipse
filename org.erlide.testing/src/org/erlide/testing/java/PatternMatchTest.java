@@ -11,10 +11,9 @@ package org.erlide.testing.java;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import org.erlide.jinterface.ErlUtils;
 import org.erlide.jinterface.OtpVariable;
+import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -26,8 +25,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * 
  * @author Vlad Dumitrescu
  */
-public class PatternMatchTest extends TestCase {
+public class PatternMatchTest {
 
+	@Test
 	public void testMatch() {
 		OtpErlangObject p = new OtpErlangList(new OtpVariable("V"),
 				new OtpErlangTuple(new OtpVariable("W")));

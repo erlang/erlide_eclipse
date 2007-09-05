@@ -10,31 +10,31 @@
  *******************************************************************************/
 package org.erlide.testing.erlang;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.fail;
 
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.RpcResult;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.junit.After;
+import org.junit.Before;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public abstract class AbstractErlangTest extends TestCase {
+public abstract class AbstractErlangTest {
 
 	protected static final OtpErlangObject[] NO_ARGS = new OtpErlangObject[] {};
 
 	private IBackend fBackend;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		fBackend = BackendManager.getDefault().getIdeBackend();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		fBackend = null;
-		super.tearDown();
 	}
 
 	protected IBackend getBackend() {
@@ -44,22 +44,13 @@ public abstract class AbstractErlangTest extends TestCase {
 	public OtpErlangObject runErlangTest(String m, String f,
 			OtpErlangObject... args) {
 		try {
-			return getBackend().rpc(m, f, (Object) args).getValue();
+			return getBackend().rpcx(m, f, (Object[]) args);
 		} catch (ErlangRpcException e) {
+			fail("RPC failed: " + e.getMessage());
+		} catch (BackendException e) {
 			fail("RPC failed: " + e.getMessage());
 		}
 		return null;
-	}
-
-	public void erlangTest(String m, String f, OtpErlangObject... args) {
-		try {
-			RpcResult r = getBackend().rpc(m, f, (Object[]) args);
-			System.out.println("RRR=" + r.getValue());
-			assertNotNull(r);
-			// assertTrue(r.isOk());
-		} catch (ErlangRpcException e) {
-			fail("RPC failed: " + e.getMessage());
-		}
 	}
 
 }

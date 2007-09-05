@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.erlide.testing;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.erlide.testing.erlang.ErlangTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( { ErlangTest.class })
 public class ErlangTests {
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Erlang tests for org.erlide");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(ErlangTest.class);
-		// $JUnit-END$
-		return suite;
-	}
 
 }

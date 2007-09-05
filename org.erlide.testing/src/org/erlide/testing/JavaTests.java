@@ -10,19 +10,13 @@
  *******************************************************************************/
 package org.erlide.testing;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
+import org.erlide.testing.java.ErlRpcTest;
 import org.erlide.testing.java.PatternMatchTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( { ErlRpcTest.class, PatternMatchTest.class })
 public class JavaTests {
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Java tests for org.erlide");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(PatternMatchTest.class);
-		// $JUnit-END$
-		return suite;
-	}
 
 }
