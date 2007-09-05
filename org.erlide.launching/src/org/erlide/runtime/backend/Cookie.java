@@ -17,6 +17,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import org.erlide.basiccore.ErlLogger;
+
 /**
  * 
  * 
@@ -72,9 +74,9 @@ public class Cookie {
 		final File f;
 		String cookie = "nocookie";
 
-		cookieFileName = System.getProperty("user.home") + File.separator +
-				".erlang.cookie";
-		// ErlLogger.debug("Cookie file: " + cookieFileName);
+		cookieFileName = System.getProperty("user.home") + File.separator
+				+ ".erlang.cookie";
+		ErlLogger.debug("Cookie file: " + cookieFileName);
 		f = new File(cookieFileName);
 
 		try {

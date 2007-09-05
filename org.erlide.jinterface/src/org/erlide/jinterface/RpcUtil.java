@@ -455,23 +455,27 @@ public class RpcUtil {
 				for (StackTraceElement ste : st) {
 					if (found) {
 						if (!((ste.getMethodName().equals("send")
-								|| ste.getMethodName().equals("rpc") || ste
-								.getMethodName().equals("rpct")) && ste
+								|| ste.getMethodName().equals("rpc")
+								|| ste.getMethodName().equals("rpct")
+								|| ste.getMethodName().equals("rpcx") || ste
+								.getMethodName().equals("rpcxt")) && ste
 								.getClassName().endsWith("AbstractBackend"))) {
 							el = ste;
 							break;
 						}
 					}
 					if ((ste.getMethodName().equals("send")
-							|| ste.getMethodName().equals("rpc") || ste
-							.getMethodName().equals("rpct"))
+							|| ste.getMethodName().equals("rpc")
+							|| ste.getMethodName().equals("rpct")
+							|| ste.getMethodName().equals("rpcx") || ste
+							.getMethodName().equals("rpcxt"))
 							&& ste.getClassName().endsWith("AbstractBackend")) {
 						found = true;
 
 					}
 				}
 			}
-			if (isDeveloper()) {
+			if (true || isDeveloper()) {
 				System.out.println(" *** deprecated use of java2erlang: "
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {

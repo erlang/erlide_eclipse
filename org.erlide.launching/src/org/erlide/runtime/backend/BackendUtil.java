@@ -172,15 +172,12 @@ public class BackendUtil {
 		final BackendEvalResult result = new BackendEvalResult();
 		OtpErlangObject r1;
 		try {
-			OtpErlangObject[] args;
+			// ErlLogger.debug("eval %s %s", string, bindings);
 			if (bindings == null) {
-				args = new OtpErlangObject[] { new OtpErlangString(string) };
+				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", string);
 			} else {
-				args = new OtpErlangObject[] { new OtpErlangString(string),
-						bindings };
+				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", string, bindings);
 			}
-
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", (Object) args);
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final boolean ok = !"error".equals(((OtpErlangAtom) t.elementAt(0))

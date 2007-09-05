@@ -68,7 +68,6 @@ import org.erlide.ui.IErlideUIConstants;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
@@ -161,8 +160,7 @@ public class LiveExpressionsView extends ViewPart implements
 				return e.fExpr;
 			} else {
 				final BackendEvalResult r = BackendUtil.eval(BackendManager
-						.getDefault().getIdeBackend(), e.fExpr + ".",
-						new OtpErlangList());
+						.getDefault().getIdeBackend(), e.fExpr + ".", null);
 				if (r.isOk()) {
 					return r.getValue().toString();
 				} else {
