@@ -542,6 +542,7 @@ build_attribute({atom,_La,file}, Val, Span) ->
         {attribute, Span, file, Other}
     end;
 build_attribute({atom,_La,Attr}, Val, Span) ->
+    io:format("¤¤ ~p ~n", [{Attr, Val, Span}]),
     case Val of
     [Expr] ->
         {attribute,Span,Attr,term(Expr)};
@@ -579,6 +580,7 @@ record_fields([Other|_Fields]) ->
 record_fields([]) -> [].
 
 term(Expr) ->
+    io:format("-- ~p~n", [catch normalise(Expr)]),
     case catch normalise(Expr) of
     {'EXIT',_R} -> return_error(line(Expr), "bad attribute");
     Term -> Term
@@ -654,6 +656,7 @@ normalise({bin,_,Fs}) ->
                    {value, normalise(E), []}
                end, [], true),
     B;
+normalise({var,_, V}) -> V; %% TODO vars aren't terms! but how to handle them?
 normalise({cons,_,Head,Tail}) ->
     [normalise(Head)|normalise(Tail)];
 normalise({tuple,_,Args}) ->
