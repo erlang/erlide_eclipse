@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.jinterface.IRpcExecuter;
 import org.erlide.jinterface.IRpcHandler;
 import org.erlide.jinterface.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -101,11 +100,11 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 				result));
 	}
 
-	public void executeRpc(final IRpcExecuter rpcExecuter) {
+	public void executeRpc(final Runnable runnable) {
 		Job job = new Job("rpc") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				rpcExecuter.execute();
+				runnable.run();
 				return Status.OK_STATUS;
 			}
 		};
