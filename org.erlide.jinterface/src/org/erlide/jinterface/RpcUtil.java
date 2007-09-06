@@ -123,8 +123,8 @@ public class RpcUtil {
 					final OtpErlangList args = buildArgs(t.elementAt(3));
 					final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
 
-					rpcHandler.executeRpc(new IRpcExecuter() {
-						public void execute() {
+					rpcHandler.executeRpc(new Runnable() {
+						public void run() {
 							OtpErlangObject result = RpcUtil.execute(receiver,
 									target, args.elements());
 							rpcHandler.rpcReply(from, result);
@@ -136,8 +136,8 @@ public class RpcUtil {
 					final OtpErlangList args = buildArgs(t.elementAt(4));
 
 					// TODO how to mark this as executable in UI thread?
-					rpcHandler.executeRpc(new IRpcExecuter() {
-						public void execute() {
+					rpcHandler.executeRpc(new Runnable() {
+						public void run() {
 							OtpErlangObject result = RpcUtil.execute(receiver,
 									target, args.elements());
 							rpcHandler.rpcReply(from, result);
@@ -147,16 +147,22 @@ public class RpcUtil {
 				} else if ("cast".equals(kind.atomValue())) {
 					final OtpErlangList args = buildArgs(t.elementAt(3));
 
-					rpcHandler.executeRpc(new IRpcExecuter() {
-						public void execute() {
+					rpcHandler.executeRpc(new Runnable() {
+						public void run() {
 							RpcUtil.execute(receiver, target, args.elements());
 						}
 					});
 
 				} else if ("event".equals(kind.atomValue())) {
-					String id = ((OtpErlangAtom) receiver).atomValue();
+					final String id = ((OtpErlangAtom) receiver).atomValue();
 
-					rpcHandler.rpcEvent(id, target);
+					// rpcHandler.rpcEvent(id, target);
+					rpcHandler.executeRpc(new Runnable() {
+						public void run() {
+							rpcHandler.rpcEvent(id, target);
+
+						}
+					});
 
 				} else {
 					log("unknown message type: " + msg);

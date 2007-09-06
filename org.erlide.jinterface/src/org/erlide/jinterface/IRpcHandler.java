@@ -14,7 +14,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IRpcHandler {
 
-	void executeRpc(IRpcExecuter rpcExecuter);
+	void executeRpc(Runnable runnable);
 
 	void rpcEvent(String id, OtpErlangObject event);
 
