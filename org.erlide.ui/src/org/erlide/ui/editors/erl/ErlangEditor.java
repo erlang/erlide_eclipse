@@ -97,7 +97,6 @@ import org.erlide.core.erlang.TokenWindow;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
-import org.erlide.ui.actions.OpenIncludeFileAction;
 import org.erlide.ui.actions.ShowOutlineAction;
 import org.erlide.ui.actions.ToggleCommentAction;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
@@ -133,8 +132,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private OpenAction openAction;
 
 	private IndentAction indentAction;
-
-	private OpenIncludeFileAction openIncludeFileAction;
 
 	private ToggleCommentAction toggleCommentAction;
 
@@ -318,17 +315,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(toggleCommentAction,
 				IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
-		openIncludeFileAction = new OpenIncludeFileAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "OpenIncludeFile.", this); //$NON-NLS-1$
-		openIncludeFileAction
-				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_INCLUDE_FILE);
-		setAction("OpenIncludeFile", openIncludeFileAction); //$NON-NLS-1$
-		markAsStateDependentAction("OpenIncludeFile", true); //$NON-NLS-1$
-		markAsSelectionDependentAction("OpenIncludeFile", true); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(
-				openIncludeFileAction,
-				IErlangHelpContextIds.OPEN_INCLUDE_FILE_ACTION);
-
 		fShowOutline = new ShowOutlineAction(ErlangEditorMessages
 				.getBundleForConstructedKeys(), "ShowOutline.", this);
 		fShowOutline
@@ -344,7 +330,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		super.editorContextMenuAboutToShow(menu);
 
 		menu.prependToGroup("group.open", fShowOutline);
-		menu.prependToGroup("group.open", openIncludeFileAction);
 		menu.prependToGroup("group.open", toggleCommentAction);
 		menu.prependToGroup("group.open", indentAction);
 		menu.prependToGroup("group.open", openAction);
