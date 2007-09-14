@@ -99,6 +99,8 @@ public abstract class AbstractBackend implements IBackend {
 
 	private ErlRpcDaemon fRpcDaemon;
 
+	private String fCurrentVersion;
+
 	public AbstractBackend() {
 		fLabel = null;
 
@@ -391,21 +393,22 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	public String getCurrentVersion() {
-		OtpErlangObject r;
-		try {
-			r = rpcx("init", "script_id");
-			if (r instanceof OtpErlangTuple) {
-				OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-				if (rr instanceof OtpErlangString) {
-					return ((OtpErlangString) rr).stringValue();
+		if (fCurrentVersion == null) {
+			fCurrentVersion = "";
+			OtpErlangObject r;
+			try {
+				r = rpcx("init", "script_id");
+				if (r instanceof OtpErlangTuple) {
+					OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
+					if (rr instanceof OtpErlangString) {
+						fCurrentVersion = ((OtpErlangString) rr).stringValue();
+					}
 				}
+			} catch (ErlangRpcException e) {
+			} catch (BackendException e) {
 			}
-			return "";
-		} catch (ErlangRpcException e) {
-			return "";
-		} catch (BackendException e) {
-			return "";
 		}
+		return fCurrentVersion;
 	}
 
 	private static final int EPMD_PORT = 4369;
