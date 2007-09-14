@@ -25,8 +25,8 @@ public class ErlError extends ErlMember implements IErlError {
 		message = name;
 	}
 
-	public String getElementType() {
-		return ERROR;
+	public ErlElementType getElementType() {
+		return ErlElementType.ERROR;
 	}
 
 	public String getMessage() {

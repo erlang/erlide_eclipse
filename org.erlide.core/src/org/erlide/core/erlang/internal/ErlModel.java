@@ -181,8 +181,8 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlElement
 	 */
-	public String getElementType() {
-		return MODEL;
+	public ErlElementType getElementType() {
+		return ErlElementType.MODEL;
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	@SuppressWarnings("unchecked")
 	public IErlProject[] getErlangProjects() throws ErlModelException {
-		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(PROJECT);
+		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(ErlElementType.PROJECT);
 		final IErlProject[] array = new IErlProject[list.size()];
 		list.toArray(array);
 		return array;
@@ -458,8 +458,8 @@ public class ErlModel extends Openable implements IErlModel {
 					final IErlElement el = mod.getChildren()[j];
 					if (el instanceof IErlFunction) {
 						final IErlFunction fun = (IErlFunction) el;
-						final boolean arityOk = (arity == UNKNOWN_ARITY) ||
-								(arity == fun.getArity());
+						final boolean arityOk = (arity == UNKNOWN_ARITY)
+								|| (arity == fun.getArity());
 						if (arityOk && fun.getElementName().matches(function)) {
 							funs.add(fun);
 						}

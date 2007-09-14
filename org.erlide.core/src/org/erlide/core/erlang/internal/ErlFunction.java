@@ -49,8 +49,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		return FC.toArray(new IErlFunctionClause[FC.size()]);
 	}
 
-	public String getElementType() {
-		return FUNCTION;
+	public ErlElementType getElementType() {
+		return ErlElementType.FUNCTION;
 	}
 
 	public int getArity() {

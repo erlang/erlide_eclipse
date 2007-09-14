@@ -17,8 +17,8 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 		this.record = record;
 	}
 
-	public String getElementType() {
-		return RECORD_DEF;
+	public ErlElementType getElementType() {
+		return ErlElementType.RECORD_DEF;
 	}
 
 	public String getDefinedName() {

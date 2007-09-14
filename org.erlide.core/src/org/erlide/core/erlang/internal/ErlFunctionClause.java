@@ -47,8 +47,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 		return (OtpErlangList) tree.elementAt(4);
 	}
 
-	public String getElementType() {
-		return CLAUSE;
+	public ErlElementType getElementType() {
+		return ErlElementType.CLAUSE;
 	}
 
 	@Override

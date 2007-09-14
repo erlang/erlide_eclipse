@@ -624,10 +624,10 @@ public class DefaultErlangFoldingStructureProvider implements
 		boolean createProjection = false;
 		boolean collapse = false;
 
-		if (element.getElementType() == IErlElement.CLAUSE) {
+		if (element.getElementType() == IErlElement.ErlElementType.CLAUSE) {
 			collapse = fAllowCollapsing && fCollapseClauses;
 			createProjection = true;
-		} else if (element.getElementType() == IErlElement.COMMENT) {
+		} else if (element.getElementType() == IErlElement.ErlElementType.COMMENT) {
 			final IErlComment c = (IErlComment) element;
 			if (c.isHeader()) {
 				collapse = fAllowCollapsing && fCollapseHeaderComments;

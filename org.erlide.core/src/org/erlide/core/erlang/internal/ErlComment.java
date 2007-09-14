@@ -97,8 +97,8 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 	/**
 	 * @see org.erlide.core.erlang.IErlElement#getElementType()
 	 */
-	public String getElementType() {
-		return COMMENT;
+	public ErlElementType getElementType() {
+		return ErlElementType.COMMENT;
 	}
 
 	@Override

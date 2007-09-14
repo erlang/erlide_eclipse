@@ -445,8 +445,8 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see IErlElement
 	 */
-	public String getElementType() {
-		return PROJECT;
+	public ErlElementType getElementType() {
+		return ErlElementType.PROJECT;
 	}
 
 	/**

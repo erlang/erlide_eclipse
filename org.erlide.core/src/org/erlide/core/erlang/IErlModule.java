@@ -91,7 +91,8 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 
 	IErlImport[] getImports();
 
-	IErlPreprocessorDef findPreprocessorDef(String definedName, String type);
+	IErlPreprocessorDef findPreprocessorDef(String definedName,
+			ErlElementType type);
 
 	ErlangIncludeFile[] getIncludedFiles();
 

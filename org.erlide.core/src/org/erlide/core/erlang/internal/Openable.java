@@ -252,8 +252,8 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		}
 
 		public boolean visit(IResource resource) {
-			if (resource.getType() == IResource.FILE &&
-					resource.getName().equals(aname)) {
+			if (resource.getType() == IResource.FILE
+					&& resource.getName().equals(aname)) {
 				findResult = resource;
 				return false;
 			}
@@ -302,8 +302,9 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		}
 		// for packages and projects must check open buffers
 		// to see if they have an child with unsaved changes
-		final String elementType = getElementType();
-		if (elementType == PROJECT || elementType == MODEL) {
+		final ErlElementType elementType = getElementType();
+		if (elementType == ErlElementType.PROJECT
+				|| elementType == ErlElementType.MODEL) {
 			final Enumeration openBuffers = getBufferManager().getOpenBuffers();
 			while (openBuffers.hasMoreElements()) {
 				final IBuffer buffer = (IBuffer) openBuffers.nextElement();

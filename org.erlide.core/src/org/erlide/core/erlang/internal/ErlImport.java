@@ -51,8 +51,8 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 		}
 	}
 
-	public String getElementType() {
-		return IMPORT;
+	public ErlElementType getElementType() {
+		return ErlElementType.IMPORT;
 	}
 
 	public String getImportModule() {

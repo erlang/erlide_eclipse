@@ -34,8 +34,8 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	/**
 	 * @see org.erlide.core.erlang.IErlElement#getElementType()
 	 */
-	public String getElementType() {
-		return ATTRIBUTE;
+	public ErlElementType getElementType() {
+		return ErlElementType.ATTRIBUTE;
 	}
 
 	public OtpErlangObject getValue() {

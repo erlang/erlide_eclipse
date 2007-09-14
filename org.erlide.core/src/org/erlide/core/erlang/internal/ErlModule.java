@@ -45,6 +45,7 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.IErlElement.ErlElementType;
 import org.erlide.core.erlang.util.BufferManager;
 import org.erlide.core.erlang.util.IBuffer;
 import org.erlide.core.erlang.util.Util;
@@ -165,8 +166,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return false;
 	}
 
-	public String getElementType() {
-		return MODULE;
+	public ErlElementType getElementType() {
+		return ErlElementType.MODULE;
 	}
 
 	public IResource getResource() {
@@ -337,9 +338,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-					 * FIXME:
-					 * displayString
-					 */
+															 * FIXME:
+															 * displayString
+															 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
@@ -409,7 +410,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlPreprocessorDef findPreprocessorDef(String definedName,
-			String type) {
+			ErlElementType type) {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;

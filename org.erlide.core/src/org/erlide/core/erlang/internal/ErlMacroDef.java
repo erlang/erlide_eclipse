@@ -17,8 +17,8 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 		this.macro = macro;
 	}
 
-	public String getElementType() {
-		return MACRO_DEF;
+	public ErlElementType getElementType() {
+		return ErlElementType.MACRO_DEF;
 	}
 
 	public String getDefinedName() {

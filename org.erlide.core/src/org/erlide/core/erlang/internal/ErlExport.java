@@ -10,8 +10,8 @@ public class ErlExport extends ErlMember implements IErlExport, IParent {
 		super(parent, "export");
 	}
 
-	public String getElementType() {
-		return EXPORT;
+	public ErlElementType getElementType() {
+		return ErlElementType.EXPORT;
 	}
 
 	@Override

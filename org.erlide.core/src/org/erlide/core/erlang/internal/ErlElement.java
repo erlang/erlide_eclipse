@@ -30,6 +30,7 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.IErlElement.ErlElementType;
 import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
@@ -185,7 +186,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * @see IErlElement
 	 */
-	public IErlElement getAncestor(String ancestorType) {
+	public IErlElement getAncestor(ErlElementType ancestorType) {
 
 		IErlElement element = this;
 		while (element != null) {
@@ -204,7 +205,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * @param type -
 	 *            one of the constants defined by IErlElement
 	 */
-	public ArrayList<? extends IErlElement> getChildrenOfType(String type)
+	public ArrayList<? extends IErlElement> getChildrenOfType(ErlElementType type)
 			throws ErlModelException {
 		// final IErlElement[] children = getChildren();
 		final int size = fChildren.length;

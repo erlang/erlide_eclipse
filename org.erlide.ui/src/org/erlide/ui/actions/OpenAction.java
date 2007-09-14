@@ -352,8 +352,8 @@ public class OpenAction extends SelectionDispatchAction {
 				IErlModule m = ErlModelUtils
 						.getModule(fEditor.getEditorInput());
 				final String definedName = defined.atomValue();
-				final String type = macro ? IErlElement.MACRO_DEF
-						: IErlElement.RECORD_DEF;
+				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
+						: IErlElement.ErlElementType.RECORD_DEF;
 				IErlPreprocessorDef pd = m.findPreprocessorDef(definedName,
 						type);
 				IEditorPart editor = page.getActiveEditor();

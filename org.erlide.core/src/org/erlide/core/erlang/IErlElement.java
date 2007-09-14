@@ -34,33 +34,9 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 public interface IErlElement extends IAdaptable {
 
-	String ERROR = "__error__";
-
-	String MODEL = "__model__";
-
-	String PROJECT = "__project__";
-
-	String MODULE = "__module__";
-
-	String ATTRIBUTE = "__attribute__";
-
-	String FUNCTION = "__function__";
-
-	String CLAUSE = "__clause__";
-
-	String EXPORT = "__export__";
-
-	String IMPORT = "__import__";
-
-	String EXPORTFUNCTION = "__export_function__";
-
-	String HEADERCOMMENT = "__HEADER_COMMENT__";
-
-	String COMMENT = "__COMMENT__";
-
-	String RECORD_DEF = "__RECORD_DEF__";
-
-	String MACRO_DEF = "__MACRO_DEF__";
+	enum ErlElementType {
+		ERROR, MODEL, PROJECT, MODULE, ATTRIBUTE, FUNCTION, CLAUSE, EXPORT, IMPORT, EXPORTFUNCTION, HEADERCOMMENT, COMMENT, RECORD_DEF, MACRO_DEF
+	}
 
 	/**
 	 * Returns whether this Erlang element exists in the model.
@@ -89,7 +65,7 @@ public interface IErlElement extends IAdaptable {
 	 * @return the first ancestor of this Erlang element that has the given
 	 *         type, null if no such an ancestor can be found
 	 */
-	IErlElement getAncestor(String ancestorType);
+	IErlElement getAncestor(ErlElementType ancestorType);
 
 	/**
 	 * Returns the enclosing IErlProject if there is one
@@ -129,7 +105,7 @@ public interface IErlElement extends IAdaptable {
 	 *         <code>IErlElement</code>
 	 * @see IErlElement
 	 */
-	String getElementType();
+	ErlElementType getElementType();
 
 	/**
 	 * Returns the Erlang model. This is a handle-only method.
