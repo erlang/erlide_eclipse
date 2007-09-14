@@ -128,12 +128,13 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		getTreeViewer().setAutoExpandLevel(0);
 		getTreeViewer().setUseHashlookup(true);
 		viewer.setInput(myMdl);
-		
+
 		MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager m) {
-				menuAboutToShow(m);
+				// recursive loop?
+				// menuAboutToShow(m);
 			}
 		});
 		IPageSite site = getSite();
@@ -205,7 +206,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
-	class LexicalSortingAction extends SortAction {
+	static class LexicalSortingAction extends SortAction {
 		public LexicalSortingAction(StructuredViewer viewer,
 				String tooltipText, ViewerComparator sorter,
 				ViewerComparator defaultSorter,

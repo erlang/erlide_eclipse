@@ -391,12 +391,20 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	public String getCurrentVersion() {
+		OtpErlangObject r;
 		try {
-			final OtpErlangObject r = rpcx("init", "script_id");
-			final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-			return ((OtpErlangString) rr).stringValue();
-		} catch (final Exception e) {
-			return "0";
+			r = rpcx("init", "script_id");
+			if (r instanceof OtpErlangTuple) {
+				OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
+				if (rr instanceof OtpErlangString) {
+					return ((OtpErlangString) rr).stringValue();
+				}
+			}
+			return "";
+		} catch (ErlangRpcException e) {
+			return "";
+		} catch (BackendException e) {
+			return "";
 		}
 	}
 
