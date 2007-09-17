@@ -23,6 +23,7 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -243,6 +244,24 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 						new HTMLTextPresenter(true));
 			}
 		};
+	}
+
+	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+		if (editor == null)
+			return null;
+
+		// Add ErlangSubHyperlinkDetector to the list provided by the superclass
+
+		IHyperlinkDetector[] superDetectors = super
+				.getHyperlinkDetectors(sourceViewer);
+		if (superDetectors == null)
+			superDetectors = new IHyperlinkDetector[0];
+
+		IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
+		ourDetectors[ourDetectors.length - 1] = new ErlangHyperlinkDetector(
+				(ErlangEditor) editor);
+
+		return ourDetectors;
 	}
 
 	/**
