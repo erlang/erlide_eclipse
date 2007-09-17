@@ -173,9 +173,9 @@ public class ErlScanner implements IErlScanner {
 	public TokenWindow getTokenWindow(int offset, int window) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scanner", "do_getTokenWindow", fMod,
-					new OtpErlangLong(offset), new OtpErlangLong(window));
+			r1 = BackendManager.getDefault().getIdeBackend()
+					.rpcx("erlide_scanner", "do_getTokenWindow", fMod, offset,
+							window);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;

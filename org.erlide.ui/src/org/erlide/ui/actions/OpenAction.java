@@ -278,7 +278,7 @@ public class OpenAction extends SelectionDispatchAction {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
 			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
-					list, new OtpErlangLong(window));
+					list, window);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}

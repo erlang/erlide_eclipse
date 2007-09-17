@@ -49,8 +49,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private OtpErlangList getDocumentationFor(OtpErlangList list,
 			OtpErlangAtom mod) {
 		try {
-			final OtpErlangString s = new OtpErlangString(ErlideUIPlugin
-					.getDefault().getStateLocation().toString());
+			final String s = ErlideUIPlugin.getDefault().getStateLocation()
+					.toString();
 			final OtpErlangObject r1 = BackendManager.getDefault()
 					.getIdeBackend().rpcx("erlide_otp_doc",
 							"get_doc_from_fun_arity_list", mod, list, s);
@@ -85,7 +85,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				final IBackend b = BackendManager.getDefault().get(
 						project.getProject());
 				final OtpErlangObject res = b.rpcx("erlide_model",
-						"get_exported", modAtom, new OtpErlangString(prefix));
+						"get_exported", modAtom, prefix);
 				if (res instanceof OtpErlangList) {
 					final OtpErlangList resl = (OtpErlangList) res;
 					final OtpErlangList docl = getDocumentationFor(resl,
