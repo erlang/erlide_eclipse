@@ -50,7 +50,7 @@
      format_error/1,reserved_word/1,
      filter/1, filter1/1, filter_comments/1, filter_ws/1]).
 
--import(lists, [reverse/1,reverse/2,member/2]).
+-import(lists, [reverse/1]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -94,7 +94,7 @@ string(Cs) ->
 string_ws(Cs) ->
     string(Cs, {1, 1}).
 
-string(Cs, Pos) when list(Cs) ->
+string(Cs, Pos) when is_list(Cs) ->
     scan(Cs, [], [], Pos, [], []).
 
 %% tokens(Continuation, CharList, StartPos) ->
@@ -205,13 +205,13 @@ scan([C|Cs], _Stack, Toks, Pos, State, Errors)
   when C >= $\000, C =< $\s; C >= $\200, C =< $\240 ->  % Control chars
     scan_white(Cs, [C], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
-  when C >= $a, C =< $z; C >= $ß, C =< $ÿ, C /= $÷ ->   % Atoms
+  when C >= $a, C =< $z; C >= $ß, C =< $ÿ, C =/= $÷ ->   % Atoms
     sub_scan_name(Cs, [C,fun scan_atom/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
   when C >= $A, C =< $Z ->                              % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
-  when C >= $À, C =< $Þ, C /= $× ->                     % Variables
+  when C >= $À, C =< $Þ, C =/= $× ->                     % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([$_|Cs], _Stack, Toks, Pos, State, Errors) ->      % _Variables
     sub_scan_name(Cs, [$_,fun scan_variable/6], Toks, Pos, State, Errors);
@@ -288,6 +288,10 @@ scan("|"=Cs, Stack, Toks, Pos, State, Errors) ->
 %% :-
 scan(":-"++Cs, Stack, Toks, Pos, State, Errors) ->
     scan(Cs, Stack, [{':-', {Pos, 2}}|Toks], inc(Pos,2), State, Errors);
+%% :: for typed records
+scan("::"++Cs, Stack, Toks, Pos, State, Errors) ->
+    scan(Cs, Stack, [{'::',{Pos, 2}}|Toks], Pos, State, Errors);
+%%
 scan(":"=Cs, Stack, Toks, Pos, State, Errors) ->
     more(Cs, Stack, Toks, Pos, State, Errors, fun scan/6);
 %% Full stop and plain '.'
@@ -320,7 +324,7 @@ scan_atom(Cs, Name, Toks, Pos, State, Errors) ->
 
 scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
-    A when atom(A) ->
+    A when is_atom(A) ->
         scan(Cs, [], [{var,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,var},Pos}|Errors])
@@ -328,7 +332,7 @@ scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
 
 scan_macro(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
-    A when atom(A) ->
+    A when is_atom(A) ->
         scan(Cs, [], [{macro,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,macro},Pos}|Errors])
@@ -354,9 +358,9 @@ sub_scan_name(Eof, Stack, Toks, Pos, State, Errors) ->
     Fun(Eof, Name, Toks, Pos, State, Errors).
 
 name_char(C) when C >= $a, C =< $z -> true;
-name_char(C) when C >= $ß, C =< $ÿ, C /= $÷ -> true;
+name_char(C) when C >= $ß, C =< $ÿ, C =/= $÷ -> true;
 name_char(C) when C >= $A, C =< $Z -> true;
-name_char(C) when C >= $À, C =< $Þ, C /= $× -> true;
+name_char(C) when C >= $À, C =< $Þ, C =/= $× -> true;
 name_char(C) when C >= $0, C =< $9 -> true;
 name_char($_) -> true;
 name_char($@) -> true;
@@ -638,10 +642,10 @@ reserved_word('begin') -> true;
 reserved_word('case') -> true;
 reserved_word('try') ->
     Opts = get_compiler_options(),
-    not member('disable_try', Opts);
+    not lists:member('disable_try', Opts);
 reserved_word('cond') ->
     Opts = get_compiler_options(),
-    not member('disable_cond', Opts);
+    not lists:member('disable_cond', Opts);
 reserved_word('catch') -> true;
 reserved_word('andalso') -> true;
 reserved_word('orelse') -> true;
