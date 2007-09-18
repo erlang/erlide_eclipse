@@ -394,6 +394,9 @@ public class OpenAction extends SelectionDispatchAction {
 		} catch (final CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (final ClassCastException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
