@@ -28,7 +28,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.resources.IWorkspace;
@@ -94,7 +97,8 @@ public class ErlModelManager implements IErlModelManager {
 	private static final ErlModelManager MANAGER = new ErlModelManager();
 
 	/**
-	 * Queue of deltas created explicily by the model that have yet to be fired.
+	 * Queue of deltas created explicitly by the model that have yet to be
+	 * fired.
 	 */
 	List<IErlElementDelta> erlModelDeltas = Collections
 			.synchronizedList(new ArrayList<IErlElementDelta>());
@@ -105,7 +109,7 @@ public class ErlModelManager implements IErlModelManager {
 
 	/**
 	 * Registers the given delta with this manager. This API is to be used to
-	 * registerd deltas that are created explicitly by the C Model. Deltas
+	 * registered deltas that are created explicitly by the C Model. Deltas
 	 * created as translations of <code>IResourceDeltas</code> are to be
 	 * registered with <code>#registerResourceDelta</code>.
 	 */
@@ -194,6 +198,8 @@ public class ErlModelManager implements IErlModelManager {
 		if (file == null) {
 			return null;
 		}
+		if (project == null)
+			project = erlangModel.findErlangProject(file.getProject());
 		if (project == null) {
 			project = create(file.getProject());
 		}
@@ -253,6 +259,10 @@ public class ErlModelManager implements IErlModelManager {
 			if (ext.equals("erl") || ext.equals("hrl")) {
 				final IErlModule module = new ErlModule(project,
 						file.getName(), ext.equals("erl"));
+				project.addChild(module);
+				// project.setIsStructureKnown(false);
+				// IProgressMonitor
+				// project.open(null);
 				elements.put(key, module);
 				return module;
 			} else {
@@ -503,11 +513,53 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
+	class ResourceChangeListener implements IResourceChangeListener {
+		public void resourceChanged(IResourceChangeEvent event) {
+			if (event.getType() != IResourceChangeEvent.POST_CHANGE)
+				return;
+			IResourceDelta rootDelta = event.getDelta();
+			final ArrayList<IResource> changed = new ArrayList<IResource>();
+			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+				public boolean visit(IResourceDelta delta) {
+					// only interested in changed resources (not added or
+					// removed)
+					if (delta.getKind() != IResourceDelta.ADDED)
+						return true;
+					IResource resource = delta.getResource();
+					// only interested in files with the erl extension
+					if (resource.getType() == IResource.FILE
+							&& Util.isErlangFileName(resource.getName())) {
+						changed.add(resource);
+					}
+					return true;
+				}
+			};
+			try {
+				rootDelta.accept(visitor);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// nothing more to do if there were no changed text files
+			if (changed.size() == 0)
+				return;
+
+			for (int i = 0; i < changed.size(); i++) {
+				ErlangCore.getModelManager().create(changed.get(i));
+			}
+			System.out.println("change " + event.toString());
+		}
+	}
+
 	/**
 	 * Constructs a new ErlModelManager
 	 */
 	private ErlModelManager() {
 		// singleton: prevent others from creating a new instance
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IResourceChangeListener listener = new ResourceChangeListener();
+		workspace.addResourceChangeListener(listener);
 	}
 
 	/**
