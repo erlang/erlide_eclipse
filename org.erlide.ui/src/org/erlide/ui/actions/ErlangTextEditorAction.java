@@ -22,7 +22,6 @@ import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
@@ -49,9 +48,10 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		final int offset = selection.getOffset();
 		int length = selection.getLength();
 		final IDocument document = getTextEditor().getDocumentProvider()
-		.getDocument(getTextEditor().getEditorInput());
-		if (length == 0 && offset + length < document.getLength())
+				.getDocument(getTextEditor().getEditorInput());
+		if (length == 0 && offset + length < document.getLength()) {
 			length = 1;
+		}
 		final int end = offset + length;
 		try {
 			final String text = document.get(0, offset + length);
@@ -136,11 +136,11 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * @throws BackendException
 	 * @throws ErlangRpcException
 	 */
+	@SuppressWarnings("boxing")
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
 			throws BackendException, ErlangRpcException {
 		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
-				.rpcx(fErlModule, fErlFunction, new OtpErlangString(text),
-						new OtpErlangLong(selection.getOffset()));
+				.rpcx(fErlModule, fErlFunction, text, selection.getOffset());
 		return r1;
 	}
 
