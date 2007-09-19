@@ -184,4 +184,8 @@ public interface IErlElement extends IAdaptable {
 	 */
 	boolean isStructureKnown() throws ErlModelException;
 
+	// void setIsStructureKnown(boolean known) throws ErlModelException;
+
+	public void addChild(IErlElement child);
+
 }
