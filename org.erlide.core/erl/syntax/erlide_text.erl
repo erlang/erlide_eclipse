@@ -11,6 +11,7 @@
 %% Exported Functions
 %%
 -export([get_text_and_lines/2,
+         split_lines/1,
          check_function_call/2,
          check_variable_macro_or_record/2,
          matching_paren/1,
