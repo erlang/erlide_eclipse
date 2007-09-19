@@ -389,6 +389,9 @@
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
+       <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+            carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+       
       <key
             sequence="F2"
             contextId="org.erlide.ui.erlangEditorScope"
@@ -418,7 +421,24 @@
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+C"/>      
+      <key
+            commandId="org.erlide.ui.actions.togglecomment"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+7"/>      
+      <key
+            commandId="org.erlide.ui.actions.togglecomment"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+/"/>
+      <key
+      		platform="gtk"
+            commandId="org.erlide.ui.actions.togglecomment"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="ESC CTRL+C"/>      
+            
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">
