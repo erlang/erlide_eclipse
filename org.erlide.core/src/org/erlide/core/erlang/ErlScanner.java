@@ -33,9 +33,7 @@ public class ErlScanner implements IErlScanner {
 
 	public ErlScanner(IErlModule module) {
 		fModule = module;
-		fMod = new OtpErlangAtom("_erlide_"
-				+ fModule.getErlProject().getElementName() + "_"
-				+ fModule.getResource().getFullPath().toPortableString());
+		fMod = fModule.getScannerName();
 		create();
 	}
 
@@ -170,6 +168,7 @@ public class ErlScanner implements IErlScanner {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public TokenWindow getTokenWindow(int offset, int window) {
 		OtpErlangObject r1 = null;
 		try {

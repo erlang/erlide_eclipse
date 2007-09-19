@@ -20,6 +20,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
@@ -97,5 +98,9 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 	ErlangIncludeFile[] getIncludedFiles();
 
 	IErlScanner getScanner();
+
+	// TODO this should not be visible in java, but an internal implementation
+	// detail of the erlang scanner
+	OtpErlangAtom getScannerName();
 
 }
