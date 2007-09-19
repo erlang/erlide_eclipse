@@ -292,9 +292,11 @@ public class OpenAction extends SelectionDispatchAction {
 				final String fun = ((OtpErlangAtom) mf.elementAt(1))
 						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(2)).intValue();
-				final String path = ((OtpErlangString) mf.elementAt(3))
-						.stringValue();
-				open(mod, fun, arity, path);
+				if (mf.elementAt(3) instanceof OtpErlangString) {
+					final String path = ((OtpErlangString) mf.elementAt(3))
+							.stringValue();
+					open(mod, fun, arity, path);
+				}
 			} else if (external.equals("local")) { // local call
 				final String fun = ((OtpErlangAtom) mf.elementAt(0))
 						.atomValue();
