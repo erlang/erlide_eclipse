@@ -12,7 +12,7 @@
 %%
 -export([toggle_comment/2]).
 
--define(DEBUG, 1). %
+%-define(DEBUG, 1). %
 
 -include("erlide.hrl").
 
