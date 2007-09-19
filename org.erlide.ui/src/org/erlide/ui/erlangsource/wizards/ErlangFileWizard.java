@@ -37,7 +37,6 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.ErlangCore;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -123,8 +122,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IResource resource = root.findMember(new Path(containerName));
 		if (!resource.exists() || !(resource instanceof IContainer)) {
-			throwCoreException("Container \"" + containerName +
-					"\" does not exist.");
+			throwCoreException("Container \"" + containerName
+					+ "\" does not exist.");
 		}
 		final IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName + ".erl"));
@@ -140,7 +139,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 		}
 		monitor.worked(1);
 
-		ErlangCore.getModelManager().create(file, null);
+		// ErlangCore.getModelManager().create(file, null);
 
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
