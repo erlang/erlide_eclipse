@@ -46,7 +46,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		}
 		final ITextSelection selection = (ITextSelection) sel;
 		final int offset = selection.getOffset();
-		final int length = selection.getLength();
+		int length = selection.getLength();
+		if (length == 0)
+			length = 1;
 		final int end = offset + length;
 		final IDocument document = getTextEditor().getDocumentProvider()
 				.getDocument(getTextEditor().getEditorInput());
