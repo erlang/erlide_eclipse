@@ -418,7 +418,7 @@
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="Ctrl+/"/>
+            sequence="M1+/"/>
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">
