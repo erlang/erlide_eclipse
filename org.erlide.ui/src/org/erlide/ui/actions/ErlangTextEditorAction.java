@@ -21,6 +21,7 @@ import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -47,15 +48,16 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		final ITextSelection selection = (ITextSelection) sel;
 		final int offset = selection.getOffset();
 		int length = selection.getLength();
-		if (length == 0)
+		final IDocument document = getTextEditor().getDocumentProvider()
+		.getDocument(getTextEditor().getEditorInput());
+		if (length == 0 && offset + length < document.getLength())
 			length = 1;
 		final int end = offset + length;
-		final IDocument document = getTextEditor().getDocumentProvider()
-				.getDocument(getTextEditor().getEditorInput());
 		try {
 			final String text = document.get(0, offset + length);
 			final OtpErlangObject r1 = callErlang(selection, text);
-			if (!(r1 instanceof OtpErlangString)) {
+			if (!((r1 instanceof OtpErlangString) || (r1 instanceof OtpErlangList && ((OtpErlangList) r1)
+					.arity() == 0))) {
 				final String e = r1.toString();
 				ErlangPlugin.log(new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID,
@@ -66,8 +68,14 @@ public class ErlangTextEditorAction extends TextEditorAction {
 						ActionMessages.IndentAction_error_message, e, null);
 				return;
 			}
-			final OtpErlangString s1 = (OtpErlangString) r1;
-			final String newText = s1.stringValue();
+
+			final String newText;
+			if (r1 instanceof OtpErlangList) {
+				newText = "";
+			} else {
+				final OtpErlangString s1 = (OtpErlangString) r1;
+				newText = s1.stringValue();
+			}
 			final int firstLine = document.getLineOfOffset(offset);
 			final int firstLineOffset = document.getLineOffset(firstLine);
 			final int lastLine = document.getLineOfOffset(end);
