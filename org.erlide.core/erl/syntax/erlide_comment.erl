@@ -12,22 +12,18 @@
 %%
 -export([toggle_comment/2]).
 
--undef(DEBUG). % -define(DEBUG, 1). %
+-define(DEBUG, 1). %
 
--ifdef(DEBUG).
--compile(export_all).
--define(D(T), erlang:display({?LINE, T})).
--else.
--define(D(T), ok).
--endif.
-
+-include("erlide.hrl").
 
 %%
 %% API Functions
 %%
 
 toggle_comment(Text, From) ->
+    ?D({Text, From}),
     {_, Lines} = erlide_text:get_text_and_lines(Text, From),
+    ?D(Lines),
     LineF = case lists:all(fun(L) -> is_comment_line(L) end, Lines) of
                    true ->
                        fun(L) -> uncomment_line(L) end;
@@ -40,7 +36,7 @@ toggle_comment(Text, From) ->
 %% Local Functions
 %%
 
-is_comment_line("") -> true;
+is_comment_line("") -> false;
 is_comment_line(" " ++ Rest) -> is_comment_line(Rest);
 is_comment_line("\t" ++ Rest) -> is_comment_line(Rest);
 is_comment_line("%" ++ _) -> true;
