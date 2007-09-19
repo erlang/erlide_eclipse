@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.text.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRewriteTarget;
@@ -148,8 +147,6 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 *            the selection range
 	 */
 	protected void selectAndReveal(int newOffset, int newLength) {
-		Assert.isTrue(newOffset >= 0);
-		Assert.isTrue(newLength >= 0);
 		final ITextEditor editor = getTextEditor();
 		if (editor instanceof ErlangEditor) {
 			final ErlangEditor erlEditor = ((ErlangEditor) editor);
