@@ -33,8 +33,16 @@ public class ErlScanner implements IErlScanner {
 
 	public ErlScanner(IErlModule module) {
 		fModule = module;
-		fMod = fModule.getScannerName();
+		fMod = new OtpErlangAtom(getScannerModuleName());
 		create();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getScannerModuleName() {
+		return "_erlide_" + fModule.getErlProject().getElementName() + "_"
+				+ fModule.getResource().getFullPath().toPortableString();
 	}
 
 	private void create() {
@@ -197,5 +205,4 @@ public class ErlScanner implements IErlScanner {
 		}
 		return null;
 	}
-
 }
