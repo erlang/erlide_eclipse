@@ -125,8 +125,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	public ErlPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
-			final IErlScanner mod = ErlModelUtils.getScanner(editor);
-			fBracketMatcher = new ErlPairMatcher(mod);
+			final IErlScanner scanner = ErlModelUtils.getScanner(editor);
+			fBracketMatcher = new ErlPairMatcher(scanner);
 		}
 		return fBracketMatcher;
 	}
