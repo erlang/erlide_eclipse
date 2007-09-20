@@ -263,6 +263,7 @@ public class OpenAction extends SelectionDispatchAction {
 	// ActionMessages.OpenAction_error_message);
 	// }
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void run() {
 		int window = 5;

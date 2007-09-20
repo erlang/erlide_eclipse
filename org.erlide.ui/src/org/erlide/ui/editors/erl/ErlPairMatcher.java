@@ -54,11 +54,12 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	private boolean matchPairsAt() {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_pair_match", "match", new OtpErlangLong(fOffset),
+					"erlide_pair_match", "match", fOffset,
 					new OtpErlangAtom(fScanner.getScannerModuleName()));
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
