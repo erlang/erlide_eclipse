@@ -25,4 +25,5 @@ public interface IErlScanner {
 
 	TokenWindow getTokenWindow(int offset, int window);
 
+	String getScannerModuleName();
 }
