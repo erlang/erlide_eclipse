@@ -39,34 +39,28 @@ development environment that will boost programmer efficiency even more.</p>
 <div class="clear"></div>
 
 <h3 class="headerstyle">Overview</h3>
-<p>The latest version is <strong>0.3.32</strong> and offers the
+<p>The latest version is <strong>0.3.33</strong> and offers the
 following features:</p>
 <ul>
-  <li>works with <b>Eclipse 3.2, <img src="img/new2.gif" /> Java 1.5 and <img src="img/new.gif"/> Erlang R11B only </b>. The older versions targeting Eclipse 3.1, Java 1.4 and Erlang R10 are no longer available (but from the CVS). It should also work with Eclipse 3.3. </li>
-  <li>editor with syntax highlighting <img src="img/new2.gif" /> even for macros and records</li>
-  <li><img src="img/new.gif" /> Erlang console with history, where output can be highlighted
-  according to which process wrote the respective text. May help those who (like me) use 
-  <code>io:format/2</code> as a debugging tool.</li>
-  <li>background builder</li>
-  <li>compilation errors and warnings displayed in the "Problems" view</li>
-  <li>LiveExpressions: auto-evaluating expressions (don't try to put an <code>init:stop()</code>
-  into one of those :-)</li>
-  <li>outline view of the current module; select to show the respective
-  element in the editor.</li>
-  <li>matching of brackets; double-clicking on one selects all content
-  between the brackets</li>
-  <li>code completion: typing
-  a module name and colon brings up a list of functions from the module.
-  Pressing "enter" in the list fills the function name in the code.</li>
-  <li>code folding in the editor.</li>
-  <li><img src="img/new2.gif" /> documentation popup for the OTP libraries
-  [<b>*</b>]. Just hover the mouse over some "module:function" in the
-  editor.</li>
-  <li><img src="img/new2.gif" /> better auto-indentation (but a little
-  unstable as yet)</li>
-  <li><img src="img/new2.gif" /> go to definition of local and remote functions</li>
-  <li>soon to come: even more really cool features (see the Java tools
-  for a reference)</li>
+  <li>works with <b>Eclipse 3.2, Java 1.5 and Erlang R11B only </b>. The older versions targeting Eclipse 3.1, Java 1.4 and Erlang R10 are no longer available (but from the CVS). </li>
+  <li>It should work with Eclipse 3.3</li>
+  <li><img src="img/new.gif" /> Sort function in Outline.</li>
+  <li><img src="img/new.gif" /> Hyperlink style navigation.</li>
+  <li>Improved logging output & API.</li>
+  <li>Improved IBackend RPC API, now using automatic conversions from Java types.</li>
+   <li>Fixed:
+  		<ul><li>parsing of -ifdef(Var).</li></ul>
+		<ul><li>problems reported by FindBugs.</li></ul>
+		<ul><li>editor menu.</li></ul>
+		<ul><li>problem when copy a source .erl file to an erlang project.</li></ul>
+		<ul><li>[ 1631936 ] Eclipse hangs on loading org.erlide.ui.</li></ul>
+		<ul><li>[ 1782905 ] go to definition of io:format.</li></ul>
+		<ul><li>[ 1788266 ] Toggle Comment do it wrong.</li></ul>
+		<ul><li>[ 1796993 ] Update erl_parse and erl_scan to R11B-5.</li></ul>
+		<ul><li>[ 1797944 ] Paren matching works badly.</li></ul>
+		<ul><li>[ 1797954 ] Scanner problems.</li></ul>
+	</li>
+		
 </ul>
 <p>The IDE is functional (I use it in my daily work) even if I still
 consider the status alpha. Some features are functional in the normal
@@ -115,7 +109,7 @@ already under development.</p>
 
 <p class="block"><strong>What is your timeplan?</strong></p>
 
-<p>The nearest milestone is in august 2006, when we would like to be ready with enough
+<p>The nearest milestone is in December 2007, when we would like to be ready with enough
 stability and features as to offer a viable alternative to Emacs. </p>
 
 <p class="block"><strong>Why isn't Emacs (or vim) good enough?</strong></p>
@@ -148,7 +142,7 @@ module and you'll remember what I mean.</p>
 site</a> <span class="hide"> | </span> <a class="sidelink"
   href="http://sourceforge.net/project/showfiles.php?group_id=58889">Downloads</a>
 <span class="hide"> | </span>
-<a class="sidelink" href="doc/index.html"><img src="img/new.gif" />Documentation</a> <span class="hide"> | </span> <a class="sidelink"
+<a class="sidelink" href="doc/index.html">Documentation</a> <span class="hide"> | </span> <a class="sidelink"
   href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS feeds</a> <span
   class="hide"> | </span>
 <p><form action="http://www.eclipseplugincentral.com/Web_Links.html" method="post">
@@ -203,7 +197,7 @@ site</a> <span class="hide"> | </span> <a class="sidelink"
 <div class="clear">&nbsp;</div>
 </div>
 
-<div id="footer">Last updated: 2006-06-30<br />
+<div id="footer">Last updated: 2007-09-20<br />
 &copy; 2005 Vlad Dumitrescu. Design by <a
   href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
 
