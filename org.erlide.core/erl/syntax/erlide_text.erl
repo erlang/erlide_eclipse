@@ -15,6 +15,7 @@
          check_function_call/2,
          check_variable_macro_or_record/2,
          matching_paren/1,
+         is_paren/1,
          is_op1/1,
          is_op2/1,
          is_block_start_token/1,
@@ -127,6 +128,16 @@ matching_paren('[') -> ']';
 matching_paren(')') -> '(';
 matching_paren('}') -> '{';
 matching_paren(']') -> '['.
+
+is_paren('<<') -> opening;
+is_paren('>>') -> closing;
+is_paren('(') -> opening;
+is_paren('{') -> opening;
+is_paren('[') -> opening;
+is_paren(')') -> closing;
+is_paren('}') -> closing;
+is_paren(']') -> closing;
+is_paren(_) -> false.
 
 %% return true if Op is a binary operator
 %%
