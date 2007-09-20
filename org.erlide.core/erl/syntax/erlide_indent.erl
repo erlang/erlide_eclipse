@@ -16,7 +16,7 @@
          indent_lines/2,
          indent_lines/3]).
 
-%%-define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -31,7 +31,6 @@ indent_next_line(S, Tablength) ->
         {ok, T, _} ->
             LineIndents = get_indents(S, Tablength),
             Tr = fix_scan_tuples(T),
-            ?D(Tr),
             indent_after(Tr, LineIndents);
         _  ->
             0
@@ -87,13 +86,14 @@ fix_scan_tuples([{T, P, V} | Rest], Acc) ->
 %%
 indent_after([{'->', _, _} | Before], Indents) ->
     Start = skip_guard(Before),
-    ?D(Start),
     indent_with(get_indent(Start, Indents), get_token_indent('->'));
 indent_after([{dot, _, _} | _Before], _Indents) ->
     0; %    skip_and_indent('->', dot, Before, Indents);
 indent_after([{';', _, _} | Before], Indents) ->
-    Start = skip_to_block_start(Before, true),
-    get_column(Start, Indents); %% skip_and_indent('->', ';', Before, Indents);
+    Start = to_clause_start(Before),
+    get_column(Start, Indents);
+%%     Start = skip_to_block_start(Before, true),
+%%     get_column(Start, Indents); %% skip_and_indent('->', ';', Before, Indents);
 indent_after([{'of', _, _} | Before], Indents) ->
     Start0 = skip_to_expr_start(Before),
     Start1 = tail_if(Start0),
@@ -104,11 +104,9 @@ indent_after([{',', _, _} | Before], Indents) ->
         [_ | [{',', _, _} | _] = Rest] ->
             indent_after(Rest, Indents);
         Start ->
-            ?D(Start),
             get_column(Start, Indents)
     end;
 indent_after([{T, _, _} | _] = L, Indents) ->
-    ?D({indent_after, L}),
     case erlide_text:is_block_start_token(T) of
         true ->
             indent_with(get_column(L, Indents),
@@ -154,80 +152,99 @@ check_paren_list(_) ->
 skip_to_block_start([], _Semi) ->
     [];
 skip_to_block_start([{';', _, _} | Before], Semi) ->
-    Start = Before, %Start = skip_to_block_start(Before),
-    skip_to_block_start(Start, Semi);
+     Start = Before, %Start = skip_to_block_start(Before),
+     skip_to_block_start(Start, Semi);
 skip_to_block_start([{'end', _, _} | Before], Semi) ->
-    ?D(Before),
     Start0 = skip_to_block_start(Before, false),
     Start1 = tail_if(Start0),
-    ?D(Start1),
     skip_to_block_start(Start1, Semi);
 skip_to_block_start([{'->', _, _} | Before], Semi) ->
-    ?D({arrow, Semi, Before}),
-        case Semi of
+    case Semi of
         true ->
-            skip_guard(Before);
+	    ?D(Before),
+            A = skip_guard(Before),
+	    ?D(A),
+	    A;
         false ->
             Before
     end;
-%%     ?D({arrow, Semi}),
 %%     case is_function_declaration(Before) of
 %%         true ->
-%%             ?D({fn, Before}),
 %%             skip_to_fn_start(Before);
 %%         false ->
 %%             case Semi of
 %%                 true ->
-%%                     ?D({no_fn_C, Before}),
 %%                     skip_guard(Before);
 %%                 false ->
 %%                     A = skip_to_expr_start(Before),
-%%                     ?D({no_fn_A, A}),
 %%                     B = tail_if(A),
-%%                     ?D({no_fn_B, B}),
 %%                     skip_to_block_start(B, Semi)
 %%             end
 %%     end;
 skip_to_block_start([{'when', _, _} | Before], Semi) ->
-    ?D({arrow, Semi}),
     case Semi orelse is_function_declaration(Before) of
         true ->
-            ?D({fn, Before}),
             skip_to_fn_start_without_guards(Before);
         false ->
             A = skip_to_expr_start(Before),
-            ?D({no_fn_A, A}),
             B = tail_if(A),
-            ?D({no_fn_B, B}),
             skip_to_block_start(B, Semi)
     end;
 skip_to_block_start([{',', _, _} | Before], Semi) ->
-    ?D(Before),
     Start = skip_to_expr_start(Before),
     B = tail_if(Start),
     skip_to_block_start(B, Semi);
 skip_to_block_start([{'of', _, _} | Before], _Semi) ->
-    ?D('of'),
     Start0 = skip_to_expr_start(Before),
-    ?D(Start0),
     _Start1 = tail_if(Start0);
 skip_to_block_start([{T, _, _V} | _Before] = L, Semi) ->
-    ?D(L),
     case erlide_text:is_block_start_token(T) of
         true ->
             L;
         false ->
             A = skip_to_expr_start(L),
-            ?D(A),
-            skip_to_block_start(tail_if(A), Semi)
+            B = skip_to_block_start(tail_if(A), Semi),
+            B
     end.
 
 skip_to_fn_start_without_guards([{')', _, _} | _] = L) ->
     A = skip_to_expr_start(L),
-    ?D(A),
     A; %% tail_if(A);
 skip_to_fn_start_without_guards(L) ->
     tail_if(L).
+
+%% skip to beginning of clause (containing ->)
+to_clause_start([{'->', _, _V} | Before]) ->
+    B = skip_guard(Before),
+    to_expr_start(B);
+to_clause_start([{T, _, _V} | _Before] = L) ->
+    case erlide_text:is_block_start_token(T) of
+        true ->
+            L;
+        false ->
+            A = to_expr_start(L),
+            ?D(A),
+            to_clause_start(tail_if(A))
+        end.
+
+to_block_start([_, {'of', _, _} | Rest]) ->
+    A = to_expr_start(Rest),
+    tail_if(A);
+
+to_block_start(L) ->    
+    ?D(L),
+    A = tail_if(L),
+    [{T, _, _V} | _] = A,
+    case erlide_text:is_block_start_token(T) of
+	true ->
+	    A;
+	false ->
+	    B = to_clause_start(A),
+	    to_block_start(B)
+    end.
+
+to_expr_start([{_T, _, _V} | _Before] = L) ->
+   	skip_to_expr_start(L).
 
 %% TODO: Add description of asd/function_arity
 %%
@@ -245,14 +262,11 @@ skip_guard(L) ->
 %% skip past guards
 skip_guard([_, {',', _, _} | A], Old) ->
     B = skip_to_expr_start(A),
-    ?D(B),
     skip_guard(B, Old);
 skip_guard([_, {';', _, _} | A], Old) ->
     B = skip_to_expr_start(A),
-    ?D(B),
     skip_guard(B, Old);
 skip_guard([_, {'when', _, _} | A], _Old) ->
-    ?D(A),
     skip_to_expr_start(A);
 skip_guard(_A, Old) ->
     Old.
@@ -315,16 +329,14 @@ skip_fn_call([_|L]) ->
 %% skip to the start of an expression, checking parens, operators etc
 %%
 skip_to_expr_start([{'end', _, _} | Before]) ->
-    skip_to_block_start(Before, false);
+    to_block_start(Before);
 skip_to_expr_start([{')', _, _} | Before]) ->
     A = skip_paren(Before, '('),
-    ?D(A),
     L = tail_if(A),
     case erlide_text:is_op2(L) of
         true ->
             skip_to_expr_start(A);
         false ->
-            ?D(A),
             skip_fn_call(A)
     end;
 skip_to_expr_start([{'}', _, _} | Before]) ->
@@ -363,7 +375,6 @@ skip_to_expr_start([_Tup, {Op,_, _} | Before] = L) ->
             L
     end;
 skip_to_expr_start(L) ->
-    ?D(d),
     L.
 
 %% TODO: Add description of asd/function_arity
@@ -371,10 +382,8 @@ skip_to_expr_start(L) ->
 skip_paren([], _) ->
     [];
 skip_paren([{P, _, _} | _] = L, P) ->
-    ?D(L),
     L;
 skip_paren([{T, _, _} | Before], P) when T =:= '}'; T =:= ')'; T =:= ']' ->
-    ?D(Before),
     skip_paren(tail_if(skip_paren(Before, erlide_text:matching_paren(T))), P);
 skip_paren([_ | Before], P) ->
     skip_paren(Before, P).
@@ -384,18 +393,15 @@ skip_paren([_ | Before], P) ->
 get_column([], Indents) ->
     element(1, Indents);
 get_column([{_, {{Line, Offs}, _}, _} = _T | _] = L, Indents) ->
-    ?D({get_column, _T}),
     get_column(L, Line, Offs, Offs, Indents).
 
 get_column([], Line, FirstOffs, PrevOffs, Indents) ->
     R = get_indent(Line, Indents) + FirstOffs - PrevOffs,
-    ?D(R),
     R; % nore more lines, done
 get_column([{_, {{Line, Offs}, _}, _} | Rest], Line, FirstOffs, _PrevOffs, Indents) ->
     get_column(Rest, Line, FirstOffs, Offs, Indents); % same line, iter
 get_column(_, Line, FirstOffs, PrevOffs, Indents) ->
     R = get_indent(Line, Indents) + FirstOffs - PrevOffs,
-    ?D(R),
     R. % new line, done
 
 %% get_indents/2
