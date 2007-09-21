@@ -2,8 +2,9 @@
 Important
 =========
 
-* As from version 0.2.0, this plugin is targeted at Eclipse 3.1.
-* It is tested with R9C and R10B, mostly on Windows but also Linux FC4.
+* This plugin is targeted at Eclipse 3.2. with Java 1.5 and Erlang R11B.
+* It should also work with Eclipse 3.3.
+* It is tested with R11B, mostly on Windows.
 * For bug reports and feature requests, please use the SouceForge trackers at
 http://sourceforge.net/projects/erlide/.
   Mailing to erlide-devel@sf.net would be the second option.
@@ -15,6 +16,43 @@ the archived update site from the file releases.
 - After installing the plugin, the Erlang environment has to be set (if not already done)
 	* go to window->Preferences->Erlang->Runtime
 	  and enter the Erlang root directory ($ERL_TOP)
+	  
+News for 0.3.33
+==============
+It should work with Eclipse 3.3 
+Sort function in Outline. 
+Hyperlink style navigation. 
+Improved logging output & API. 
+Improved IBackend RPC API, now using automatic conversions from Java types. 
+Fixed: 
+	parsing of -ifdef(Var).
+	problems reported by FindBugs.
+	editor menu.
+	problem when copy a source .erl file to an erlang project.
+	[ 1631936 ] Eclipse hangs on loading org.erlide.ui.
+	[ 1782905 ] go to definition of io:format.
+	[ 1788266 ] Toggle Comment do it wrong.
+	[ 1796993 ] Update erl_parse and erl_scan to R11B-5.
+	[ 1797944 ] Paren matching works badly.
+	[ 1797954 ] Scanner problems.
+	  
+
+News for 0.3.32
+==============
+It should also work with Eclipse 3.3.
+Editor with syntax highlighting even for macros and records
+Erlang console with history, where output can be highlighted according to which process wrote the respective text. May help those who (like me) use io:format/2 as a debugging tool.
+background builder
+Compilation errors and warnings displayed in the "Problems" view
+LiveExpressions: auto-evaluating expressions (don't try to put an init:stop() into one of those :-)
+outline view of the current module; select to show the respective element in the editor.
+matching of brackets; double-clicking on one selects all content between the brackets
+code completion: typing a module name and colon brings up a list of functions from the module. Pressing "enter" in the list fills the function name in the code.
+code folding in the editor.
+documentation popup for the OTP libraries [*]. Just hover the mouse over some "module:function" in the editor.
+better auto-indentation (but a little unstable as yet)
+go to definition of local and remote functions
+soon to come: even more really cool features (see the Java tools for a reference)
 
 News for 0.3.6
 ==============
