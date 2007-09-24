@@ -56,6 +56,9 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 
 	@SuppressWarnings("boxing")
 	private boolean matchPairsAt() {
+		if (fScanner == null) {
+			return false;
+		}
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
