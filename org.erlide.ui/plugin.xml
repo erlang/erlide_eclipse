@@ -118,6 +118,14 @@
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.console"
             name="Erlang console"/>
+      <view
+            allowMultiple="false"
+            category="org.erlide.categories.views"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.views.navigator.view"
+            name="Erlang Navigator">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -516,5 +524,55 @@
             class="org.eclipse.ui.PlatformUI"
             onlyDeclared="true">
       </stub>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <dragAssistant
+            class="org.erlide.ui.CommonDragAdapterAssistant2"
+            viewerId="org.erlide.ui.dragAssistant2">
+      </dragAssistant>
+      <viewer
+            viewerId="org.erlide.ui.views.navigator.view">
+      </viewer>
+      <viewerContentBinding
+            viewerId="org.erlide.ui.views.navigator.view">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.erlide.ui.navigator.filters.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+      <viewerActionBinding
+            viewerId="org.erlide.ui.views.navigator.view">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonFilter
+            id="org.erlide.ui.navigator.filters.hideNonJavaProjects"
+            name="Hide non-Java projects">
+         <filterExpression>
+            <not>
+               <adapt
+                     type="org.eclipse.core.resources.IProject">
+                  <test
+                        property="org.eclipse.core.resources.projectNature"
+                        value="org.eclipse.jdt.core.javanature">
+                  </test>
+               </adapt>
+            </not>
+         </filterExpression>
+      </commonFilter>
    </extension>
 </plugin>
