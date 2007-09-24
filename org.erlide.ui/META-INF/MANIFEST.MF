@@ -49,5 +49,6 @@ Require-Bundle: org.eclipse.compare,
  org.erlide.jinterface,
  org.erlide.launching,
  org.erlide.core,
- org.erlide.basic
+ org.erlide.basic,
+ org.eclipse.ui.navigator
 Eclipse-LazyStart: true
