@@ -424,8 +424,18 @@ public class ErlParser {
 
 	private boolean setPos(SourceRefElement e, OtpErlangObject pos) {
 		if (!(pos instanceof OtpErlangTuple)) {
-			ErlLogger.debug("!> expecting pos tuple, got " + pos);
-			return false;
+			if (pos instanceof OtpErlangLong) {
+				int ipos = 999999;
+				try {
+					ipos = ((OtpErlangLong) pos).intValue();
+				} catch (OtpErlangRangeException e1) {
+				}
+				setPos(e, ipos, 0);
+				return true;
+			} else {
+				ErlLogger.debug("!> expecting pos tuple, got " + pos);
+				return false;
+			}
 		}
 		try {
 			final OtpErlangTuple tpos = (OtpErlangTuple) pos;
