@@ -25,7 +25,6 @@ import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * The erlang auto indent strategy
@@ -67,7 +66,6 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		final int offset = c.offset;
 		final String txt = d.get(0, offset);
 
-		final OtpErlangString s = new OtpErlangString(txt);
 		try {
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			int tabw = ErlideUIPlugin
@@ -81,9 +79,8 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 						.getInt(
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
-			final OtpErlangLong tw = new OtpErlangLong(tabw);
 			final OtpErlangObject r1 = b.rpcx("erlide_indent",
-					"indent_next_line", s, tw);
+					"indent_next_line", txt, tabw);
 			// OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
 			// "indent_next_line",
 			// new OtpErlangLong(offset)));
