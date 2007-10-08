@@ -125,8 +125,6 @@ public class ErlModelUtils {
 		if (mod != null) {
 			return getModule(editor).getScanner();
 		}
-
-		// TODO: fix this! bug 1496540
 		return null;
 	}
 
