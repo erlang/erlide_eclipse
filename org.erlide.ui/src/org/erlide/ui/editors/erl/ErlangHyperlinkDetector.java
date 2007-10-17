@@ -67,7 +67,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		Region ErlRegion = new Region(token.getOffset(), token.getLength());
 
 		try {
-			partition = (ITypedRegion) doc.getPartition(offset);
+			partition = doc.getPartition(offset);
 
 			aPartion.setLength(ErlRegion.getLength());
 			aPartion.setOffset(ErlRegion.getOffset());

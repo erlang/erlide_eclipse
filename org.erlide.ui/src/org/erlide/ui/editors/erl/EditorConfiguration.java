@@ -246,20 +246,23 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		};
 	}
 
+	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
-		if (editor == null)
+		if (editor == null) {
 			return null;
+		}
 
 		// Add ErlangSubHyperlinkDetector to the list provided by the superclass
 
 		IHyperlinkDetector[] superDetectors = super
 				.getHyperlinkDetectors(sourceViewer);
-		if (superDetectors == null)
+		if (superDetectors == null) {
 			superDetectors = new IHyperlinkDetector[0];
+		}
 
 		IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
 		ourDetectors[ourDetectors.length - 1] = new ErlangHyperlinkDetector(
-				(ErlangEditor) editor);
+				editor);
 
 		return ourDetectors;
 	}
