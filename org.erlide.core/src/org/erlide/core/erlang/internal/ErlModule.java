@@ -51,7 +51,6 @@ import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -338,9 +337,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-															 * FIXME:
-															 * displayString
-															 */
+					 * FIXME:
+					 * displayString
+					 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
@@ -484,8 +483,4 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 	}
 
-	public OtpErlangAtom getScannerName() {
-		return new OtpErlangAtom("_erlide_" + getErlProject().getElementName()
-				+ "_" + getResource().getFullPath().toPortableString());
-	}
 }
