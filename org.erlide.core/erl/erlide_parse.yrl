@@ -550,9 +550,9 @@ build_type({atom,_,string}, []) -> {type, string, []};
 build_type({atom,_,tuple}, []) -> {type, tuple, []};
 build_type({atom,_,Other}, []) -> {type, var, [Other]}.
 
-build_typed_attribute({atom,La,record}, [{atom,_Ln,RecordName},RecTuple], Span) ->
+build_typed_attribute({atom,_La,record}, [{atom,_Ln,RecordName},RecTuple], Span) ->
     {attribute,Span,record,{RecordName,record_tuple(RecTuple)}};
-build_typed_attribute({atom,La,spec}, [{op,_Lo,'/',{atom,_La,FunName},
+build_typed_attribute({atom,_La,spec}, [{op,_Lo,'/',{atom,_La,FunName},
 				                   {integer,_Li,FunArity}},
 				       	TypeSpec], Span)  ->
     {attribute,Span,type_spec,{{FunName,FunArity},TypeSpec}};
@@ -663,7 +663,7 @@ farity_list({nil,_Ln}) -> [];
 farity_list(Other) ->
     return_error(line(Other), "bad function arity").
 
-record_tuple({tuple,_Lt,Fields}=T) ->
+record_tuple({tuple,_Lt,Fields}=_T) ->
     %%io:format("--->~p ~n", [T]),
     record_fields(Fields);
 record_tuple(Other) ->
