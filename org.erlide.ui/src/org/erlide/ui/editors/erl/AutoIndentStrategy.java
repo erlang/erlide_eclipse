@@ -61,6 +61,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	protected void indentAfterNewLine(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		final int offset = c.offset;

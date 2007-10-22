@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -320,6 +321,7 @@ public class ErlangConsoleView extends ViewPart implements
 		Table tbl = (Table) consoleTable.getControl();
 		tbl.setFont(JFaceResources.getTextFont());
 		tbl.setLinesVisible(true);
+		initializeToolBar();
 
 	}
 
@@ -560,5 +562,10 @@ public class ErlangConsoleView extends ViewPart implements
 				}
 			}
 		});
+	}
+
+	private void initializeToolBar() {
+		IToolBarManager toolBarManager = getViewSite().getActionBars()
+				.getToolBarManager();
 	}
 }
