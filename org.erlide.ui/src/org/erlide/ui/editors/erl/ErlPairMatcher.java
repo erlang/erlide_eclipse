@@ -59,11 +59,15 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		if (fScanner == null) {
 			return false;
 		}
+		String module = fScanner.getScannerModuleName();
+		if (module == null) {
+			return false;
+		}
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_pair_match", "match", fOffset,
-					new OtpErlangAtom(fScanner.getScannerModuleName()));
+					new OtpErlangAtom(module));
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
 				final int pos = s1.intValue() - 1, offset = fOffset - 1;
