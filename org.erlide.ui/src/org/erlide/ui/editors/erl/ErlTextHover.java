@@ -76,7 +76,7 @@ public class ErlTextHover implements ITextHover,
 				return s1.stringValue();
 			}
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}
