@@ -158,7 +158,7 @@ public class ErlProject extends Openable implements IErlProject,
 			throw newNotPresentException();
 		}
 		ErlLogger.debug("--- " + getProject().getName() + "? " + fChildren);
-		if (fChildren != null && fChildren.length != 0) {
+		if (fChildren != null && !fChildren.isEmpty()) {
 			ErlLogger.debug("--- !");
 			return true;
 		}
@@ -166,7 +166,7 @@ public class ErlProject extends Openable implements IErlProject,
 		// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		// final IWorkspaceRoot wRoot = workspace.getRoot();
 
-		final List<IErlModule> modules = new ArrayList<IErlModule>(10);
+		final ArrayList<IErlModule> modules = new ArrayList<IErlModule>(10);
 		try {
 			// TODO use project preferences to find which dirs are source dirs
 			// final ErlangProjectProperties pprop = new
@@ -183,9 +183,8 @@ public class ErlProject extends Openable implements IErlProject,
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
-		fChildren = new ErlElement[modules.size()];
-		System.arraycopy(modules.toArray(), 0, fChildren, 0, modules.size());
-		ErlLogger.debug("---YY " + fChildren.length);
+		setChildren(modules);
+		ErlLogger.debug("---YY " + fChildren.size());
 
 		return true;
 	}
@@ -234,7 +233,7 @@ public class ErlProject extends Openable implements IErlProject,
 	public void computeChildren(ErlProject info) throws ErlModelException {
 		// TODO fix this
 		info.setNonErlangResources(null);
-		info.setChildren(null);
+		info.setChildren(new ArrayList<IErlElement>());
 	}
 
 	/**
@@ -880,8 +879,8 @@ public class ErlProject extends Openable implements IErlProject,
 		fName = project.getName();
 	}
 
-	public IErlModule[] getModules() throws ErlModelException {
-		return (IErlModule[]) fChildren;
+	public IErlModule[] getModules() {
+		return (IErlModule[]) getChildren();
 	}
 
 	/**
@@ -972,7 +971,7 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	public IErlModule getModule(String name) throws ErlModelException {
-		if (fChildren == null || fChildren.length == 0) {
+		if (!hasChildren()) {
 			open(null);
 		}
 		for (IErlElement element : fChildren) {

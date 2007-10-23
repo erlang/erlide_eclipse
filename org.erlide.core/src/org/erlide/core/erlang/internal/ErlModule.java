@@ -141,8 +141,7 @@ public class ErlModule extends Openable implements IErlModule {
 		for (IErlElement element : fChildren) {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;
-				final IErlElement[] cls = f.getChildren();
-				for (IErlElement element0 : cls) {
+				for (IErlElement element0 : fChildren) {
 					final ISourceReference ch = (ISourceReference) element0;
 					final ISourceRange r = ch.getSourceRange();
 					if (r.hasPosition(position)) {
@@ -230,10 +229,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void addMember(IErlMember elem) {
-		final IErlElement[] newch = new IErlElement[fChildren.length + 1];
-		System.arraycopy(fChildren, 0, newch, 0, fChildren.length);
-		newch[fChildren.length] = elem;
-		fChildren = newch;
+		addChild(elem);
 	}
 
 	public void addComment(IErlComment c) {
@@ -241,8 +237,8 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void reset() {
-		fChildren = ErlElement.NO_ELEMENTS;
-		comments = new ArrayList<IErlComment>(0);
+		fChildren.clear();
+		comments.clear();
 	}
 
 	public OtpErlangObject getParseTree() {
@@ -442,7 +438,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlImport[] getImports() {
-		final List<IErlImport> r = new ArrayList<IErlImport>(0);
+		final List<IErlImport> r = new ArrayList<IErlImport>();
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				r.add((IErlImport) m);

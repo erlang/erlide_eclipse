@@ -239,9 +239,7 @@ public class ErlModel extends Openable implements IErlModel {
 	@SuppressWarnings("unchecked")
 	public IErlProject[] getErlangProjects() throws ErlModelException {
 		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(ErlElementType.PROJECT);
-		final IErlProject[] array = new IErlProject[list.size()];
-		list.toArray(array);
-		return array;
+		return list.toArray(new IErlProject[list.size()]);
 	}
 
 	/*

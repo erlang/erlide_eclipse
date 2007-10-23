@@ -11,6 +11,8 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -30,7 +32,6 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.IErlElement.ErlElementType;
 import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
@@ -110,7 +111,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	protected ErlElement(IErlElement parent, String name) {
 		fParent = parent;
 		fName = name;
-		fChildren = ErlElement.NO_ELEMENTS;
 	}
 
 	/**
@@ -151,10 +151,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return super.equals(o);
 		}
 
-		// assume instanceof check is done in subclass
-		final ErlElement other = (ErlElement) o;
-		return fOccurrenceCount == other.fOccurrenceCount
-				&& fName.equals(other.fName) && fParent.equals(other.fParent);
+		if (o instanceof ErlElement) { // WHY OH WHY?!?!?!? This was a tough
+			// bug (jc)
+			// assume instanceof check is done in subclass
+			final ErlElement other = (ErlElement) o;
+			return fOccurrenceCount == other.fOccurrenceCount
+					&& fName.equals(other.fName)
+					&& fParent.equals(other.fParent);
+		}
+		return false;
 	}
 
 	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
@@ -205,17 +210,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * @param type -
 	 *            one of the constants defined by IErlElement
 	 */
-	public ArrayList<? extends IErlElement> getChildrenOfType(ErlElementType type)
-			throws ErlModelException {
+	public ArrayList<? extends IErlElement> getChildrenOfType(
+			ErlElementType type) throws ErlModelException {
 		// final IErlElement[] children = getChildren();
-		final int size = fChildren.length;
-		final ArrayList<IErlElement> list = new ArrayList<IErlElement>(size);
-		for (int i = 0; i < size; ++i) {
-			final ErlElement elt = (ErlElement) fChildren[i];
-			if (elt.getElementType() == type) {
-				list.add(elt);
-			}
-		}
+		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
+		for (IErlElement i : list)
+			if (i.getElementType() == type)
+				list.add(i);
 		return list;
 	}
 
@@ -287,11 +288,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	protected IErlElement getSourceElementAt(int position)
 			throws ErlModelException {
 		if (this instanceof ISourceReference) {
-			final IErlElement[] children = getChildren();
-			for (int i = children.length - 1; i >= 0; i--) {
-				final IErlElement aChild = children[i];
-				if (aChild instanceof SourceRefElement) {
-					final SourceRefElement child = (SourceRefElement) children[i];
+			for (IErlElement i : fChildren) {
+				if (i instanceof SourceRefElement) {
+					final SourceRefElement child = (SourceRefElement) i;
 					final ISourceRange range = child.getSourceRange();
 					final int start = range.getOffset();
 					final int end = start + range.getLength();
@@ -362,7 +361,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		// also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
 		final Object elementInfo = ErlangCore.getModelManager().getInfo(this);
 		if (elementInfo instanceof ErlElement) {
-			return ((ErlElement) elementInfo).getChildren().length > 0;
+			return !fChildren.isEmpty();
 		} else {
 			return true;
 		}
@@ -483,8 +482,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		if (info == null || !(info instanceof ErlElement)) {
 			return;
 		}
-		final IErlElement[] achildren = ((ErlElement) info).getChildren();
-		for (IErlElement element : achildren) {
+		for (IErlElement element : fChildren) {
 			buffer.append("\n"); //$NON-NLS-1$
 			((ErlElement) element).toString(tab + 1, buffer);
 		}
@@ -525,7 +523,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Collection of handles of immediate children of this object. This is an
 	 * empty array if this element has no children.
 	 */
-	protected IErlElement[] fChildren;
+	protected List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
 	/**
 	 * Is the structure of this element known
@@ -540,13 +538,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	static final IProject[] NO_NON_ERLANG_RESOURCES = new IProject[] {};
 
 	public void addChild(IErlElement child) {
-		if (fChildren == ErlElement.NO_ELEMENTS) {
-			setChildren(new IErlElement[] { child });
-		} else {
-			if (!includesChild(child)) {
-				setChildren(growAndAddToArray(fChildren, child));
-			}
-		}
+		fChildren.add(child);
 	}
 
 	@Override
@@ -559,33 +551,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	public IErlElement[] getChildren() {
-		return fChildren;
-	}
-
-	/**
-	 * Adds the new element to a new array that contains all of the elements of
-	 * the old array. Returns the new array.
-	 */
-	protected IErlElement[] growAndAddToArray(IErlElement[] array,
-			IErlElement addition) {
-		final IErlElement[] old = array;
-		array = new IErlElement[old.length + 1];
-		System.arraycopy(old, 0, array, 0, old.length);
-		array[old.length] = addition;
-		return array;
+		return fChildren.toArray(new IErlElement[fChildren.size()]);
 	}
 
 	/**
 	 * Returns <code>true</code> if this child is in my children collection
 	 */
 	protected boolean includesChild(IErlElement child) {
-
-		for (IErlElement element : fChildren) {
-			if (element.equals(child)) {
-				return true;
-			}
-		}
-		return false;
+		return fChildren.contains(child);
 	}
 
 	/**
@@ -595,36 +568,19 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return isStructureKnown;
 	}
 
-	/**
-	 * Returns an array with all the same elements as the specified array except
-	 * for the element to remove. Assumes that the deletion is contained in the
-	 * array.
-	 */
-	protected IErlElement[] removeAndShrinkArray(IErlElement[] array,
-			IErlElement deletion) {
-		final IErlElement[] old = array;
-		array = new IErlElement[old.length - 1];
-		int j = 0;
-		for (int i = 0; i < old.length; i++) {
-			if (!old[i].equals(deletion)) {
-				array[j] = old[i];
-			} else {
-				System.arraycopy(old, i + 1, array, j, old.length - (i + 1));
-				return array;
-			}
-			j++;
-		}
-		return array;
+	public void removeChild(IErlElement child) {
+		fChildren.remove(child);
 	}
 
-	public void removeChild(IErlElement child) {
-		if (includesChild(child)) {
-			setChildren(removeAndShrinkArray(fChildren, child));
-		}
+	public void setChildren(Collection<? extends IErlElement> c) {
+		fChildren.clear();
+		fChildren.addAll(c);
 	}
 
 	public void setChildren(IErlElement[] children) {
-		fChildren = children;
+		fChildren.clear();
+		for (IErlElement i : children)
+			fChildren.add(i);
 	}
 
 	/**

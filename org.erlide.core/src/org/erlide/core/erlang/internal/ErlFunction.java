@@ -39,8 +39,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	public IErlFunctionClause[] getClauses() {
-		ArrayList<IErlFunctionClause> FC = new ArrayList<IErlFunctionClause>(
-				fChildren.length);
+		ArrayList<IErlFunctionClause> FC = new ArrayList<IErlFunctionClause>();
 		for (IErlElement el : fChildren) {
 			if (el instanceof IErlFunctionClause) {
 				FC.add((IErlFunctionClause) el);
