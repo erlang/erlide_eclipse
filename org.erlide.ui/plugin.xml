@@ -9,7 +9,7 @@
             class="org.erlide.ui.editors.erl.ErlangEditor"
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
-            extensions="erl,hrl,yrl"
+            extensions="erl,hrl"
             icon="icons/erlang_editor.gif"
             id="org.erlide.ui.editors.erl.ErlangEditor"
             name="%ErlangEditor.label"
