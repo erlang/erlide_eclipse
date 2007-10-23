@@ -125,11 +125,9 @@ public class ErtsPreferences {
 		defaultInstall.setPathZ(cvt(pathZ));
 	}
 
-	public String buildCommandLine() {
-		org.eclipse.core.runtime.Preferences pluginPreferences = ErlideBasicUIPlugin
-				.getDefault().getPluginPreferences();
-		return defaultInstall.getOtpHome() + File.separator + "bin"
-				+ File.separator + "erl" + ifNotEmpty(" -pa ", getPathA())
+	public String buildCommandLine(String otpHome) {
+		return otpHome + File.separator + "bin" + File.separator + "erl"
+				+ ifNotEmpty(" -pa ", getPathA())
 				+ ifNotEmpty(" -pz ", getPathZ()) + " "
 				+ defaultInstall.getExtraErtsArgs();
 	}

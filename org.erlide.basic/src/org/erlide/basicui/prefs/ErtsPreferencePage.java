@@ -11,6 +11,7 @@
 package org.erlide.basicui.prefs;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
@@ -20,7 +21,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -112,30 +112,32 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	public boolean performOk() {
-		final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
-				.getPreferences();
+		// final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
+		// .getPreferences();
 
-		prefs.setOtpHome(home.getStringValue());
-		System.out.println(">" + prefs.getOtpHome());
+		// prefs.setValue(name, value)
+		// prefs.setOtpHome(home.getStringValue());
+		// System.out.println(">" + prefs.getOtpHome());
 
 		// setting ECLIPSE !!!! preferece store
-		org.eclipse.core.runtime.Preferences pluginPreferences = ErlideBasicUIPlugin
-				.getDefault().getPluginPreferences();
-		pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, prefs
-				.getOtpHome());
+		Preferences pluginPreferences = ErlideBasicUIPlugin.getDefault()
+				.getPluginPreferences();
+		pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, home
+				.getStringValue());
+		ErlideBasicUIPlugin.getDefault().savePluginPreferences();
 
 		// prefs.setPathA(pathA.getPreferenceName());
 		// prefs.setPathZ(pathZ.getStringValue());
 
 		// prefs.getErtsPrefs().setUseLongName(longName.getBooleanValue());
 		// prefs.setExtraErtsArgs(extra.getStringValue());
-		prefs.updatePluginPreferences();
+		// prefs.updatePluginPreferences();
 
 		// showRestartWarning();
 		Bundle bundle = Platform.getPlugin("org.erlide.launching").getBundle();
 
 		try {
-			//System.out.println("Stopping handler");
+			// System.out.println("Stopping handler");
 			bundle.stop();
 			// Bundle.
 			while (bundle.getState() != Bundle.RESOLVED) {
@@ -144,7 +146,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 
 			}
 
-			System.out.println("starting handler");
+			// System.out.println("starting handler");
 			bundle.start();
 			while (bundle.getState() != Bundle.ACTIVE) {
 				System.out.println(bundle.getState());
@@ -194,9 +196,11 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected void initialize() {
 		super.initialize();
-		final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
-				.getPreferences();
-		home.setStringValue(prefs.getOtpHome());
+		// final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
+		// .getPreferences();
+		Preferences prefs = ErlideBasicUIPlugin.getDefault()
+				.getPluginPreferences();
+		home.setStringValue(prefs.getString(IPrefConstants.ERTS_OTP_HOME));
 
 		// pathA.setStringValue(prefs.getPathA());
 		// pathZ.setStringValue(prefs.getPathZ());
