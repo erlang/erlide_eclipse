@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,9 +73,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				this,
-				IResourceChangeEvent.PRE_CLOSE |
-						IResourceChangeEvent.PRE_DELETE |
-						IResourceChangeEvent.POST_CHANGE);
+				IResourceChangeEvent.PRE_CLOSE
+						| IResourceChangeEvent.PRE_DELETE
+						| IResourceChangeEvent.POST_CHANGE);
 	}
 
 	public static BackendManager getDefault() {
@@ -118,10 +117,8 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (Object element0 : fPlugins) {
-			final Plugin element = (Plugin) element0;
+		for (final Plugin element : fPlugins)
 			b.getCodeManager().addPlugin(element);
-		}
 		return b;
 	}
 
@@ -385,8 +382,7 @@ public final class BackendManager implements IResourceChangeListener {
 				}
 
 				final Set<String> keySet = fRemoteBackends.keySet();
-				for (final Iterator<String> iter = keySet.iterator(); iter.hasNext();) {
-					final String key = iter.next();
+				for (final String key : keySet) {
 					boolean found = false;
 
 					for (Object element : labels) {
