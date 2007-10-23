@@ -16,13 +16,18 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.basicui.prefs.IPrefConstants;
 
 public class ErlangNodeLaunchConfigurationDelegate extends
 		LaunchConfigurationDelegate {
@@ -34,20 +39,24 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		// TODO define all launch config attributes
 
 		try {
-			String cmd = getCmdLine(configuration);
-
 			String label = configuration.getAttribute(
 					IProcess.ATTR_PROCESS_LABEL, "noname@localhost");
 			label = BackendManager.buildNodeName(label);
 
-			cmd += " -noshell -name " + label + " -setcookie " +
-					Cookie.retrieveCookie();
-
+			Preferences pluginPreferences = ErlideBasicUIPlugin.getDefault().getPluginPreferences();
+			
+			String cmdTail= " -noshell -name " + label + " -setcookie "
+			+ Cookie.retrieveCookie();
+			
+			String cmd = pluginPreferences.getString(IPrefConstants.ERTS_OTP_HOME)+File.separator+"bin"+File.separator+"erl"+cmdTail;
 			ErlLogger.debug("RUN*> " + cmd);
-
 			final File workingDirectory = new File(".");
 			Process vm = null;
 			int tries = 3;
+
+			
+			// TODO this should retrieve new values every time
+			// and maybe reset the workspace instead of closing it
 			while (vm == null && tries > 1) {
 				try {
 					vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
@@ -64,20 +73,18 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 					tries--;
 					ErlideBasicUIPlugin.showErtsPreferencesDialog(tries - 1);
 				}
-			}
-			if (vm == null) {
-				ErlideBasicUIPlugin.closeWorkbench();
+				cmd = pluginPreferences.getString(IPrefConstants.ERTS_OTP_HOME)+File.separator+"bin"+File.separator+"erl"+cmdTail;
 			}
 
-			// if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			// final IBackend b = getBackend(configuration);
-			// ErlLogger.debug("DEBUG*> " + mod + ":" + func + "();...");
-			// final IDebugTarget target = new ErlangDebugTarget(launch, b,
-			// mod, func);
-			// launch.addDebugTarget(target);
-			//
-			// // TODO initialize debugger
-			// }
+			if (vm == null) {
+
+				MessageDialog dialog = new MessageDialog(new Shell(Display.getCurrent()),
+						"Starting OTP",null,"could not start Erlang OTP, pease check your path",
+						MessageDialog.ERROR,new String[]{"OK"},0);
+				dialog.open();		
+			}
+				
+			
 
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
