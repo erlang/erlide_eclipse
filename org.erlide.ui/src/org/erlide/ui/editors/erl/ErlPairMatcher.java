@@ -13,10 +13,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -47,6 +47,8 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 	 *      int)
 	 */
 	public IRegion match(IDocument document, int offset) {
+		ErlLogger.debug("## pair match " + offset);
+
 		fOffset = offset;
 		if (fOffset >= 0 && matchPairsAt() && fStartPos != fEndPos) {
 			return new Region(fStartPos, fEndPos - fStartPos + 1);
@@ -54,7 +56,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		return null;
 	}
 
-	@SuppressWarnings("boxing")
+	// @SuppressWarnings("boxing")
 	private boolean matchPairsAt() {
 		if (fScanner == null) {
 			return false;
@@ -82,9 +84,6 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 				}
 				return true;
 			}
-		} catch (ErlangRpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (BackendException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

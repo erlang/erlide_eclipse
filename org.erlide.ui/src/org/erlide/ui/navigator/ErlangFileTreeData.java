@@ -1,14 +1,15 @@
 package org.erlide.ui.navigator;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlElement;
 
 public class ErlangFileTreeData {
 
-	IErlModule myMdl;
 	private IFile container;
-	private String name;
-	private String value;
+	private IErlElement elt;
+
+	// private String name;
+	// private String value;
 
 	/**
 	 * Create a property with the given name and value contained by the given
@@ -21,19 +22,27 @@ public class ErlangFileTreeData {
 	 * @param aFile
 	 *            The file that defines this property.
 	 */
-	public ErlangFileTreeData(String aName, String aValue, IFile aFile) {
-		name = aName;
-		value = aValue;
+	public ErlangFileTreeData(IErlElement e, IFile aFile) {
+		elt = e;
 		container = aFile;
 	}
+
+	// public ErlangFileTreeData(String aName, String aValue, IFile aFile) {
+	// name = aName;
+	// value = aValue;
+	// container = aFile;
+	// }
 
 	/**
 	 * The name of this property.
 	 * 
 	 * @return The name of this property.
 	 */
+	// public String getName() {
+	// return name;
+	// }
 	public String getName() {
-		return name;
+		return elt.getElementName();
 	}
 
 	/**
@@ -42,7 +51,8 @@ public class ErlangFileTreeData {
 	 * @return The value of the property in the file.
 	 */
 	public String getValue() {
-		return value;
+		// return value;
+		return elt.toString();
 	}
 
 	/**
@@ -54,13 +64,13 @@ public class ErlangFileTreeData {
 		return container;
 	}
 
-	public int hashCode() {
-		return name.hashCode();
-	}
+	// public int hashCode() {
+	// return name.hashCode();
+	// }
 
 	public boolean equals(Object obj) {
 		return obj instanceof ErlangFileTreeData
-				&& ((ErlangFileTreeData) obj).getName().equals(name);
+				&& ((ErlangFileTreeData) obj).getName().equals(getName());
 	}
 
 	public String toString() {

@@ -597,7 +597,7 @@
             contentProvider="org.erlide.ui.navigator.ErlangFileContentProvider"
             icon="icons/erlang_editor.gif"
             id="org.erlide.ui.navigator.erlangContent"
-            labelProvider="org.erlide.ui.navigator.ErlangFileLabelProvider"
+            labelProvider="org.erlide.ui.views.outline.ErlangLabelProvider"
             name="Erlang File Contents"
             priority="normal">
          <triggerPoints>
@@ -613,19 +613,22 @@
                   </test>
                </and>
                <instanceof
-                     value="org.erlide.ui.navigator.ErlangFileTreeData">
+                     value="org.erlide.core.erlang.IErlElement">
                </instanceof>
             </or></triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.ui.navigator.ErlangFileTreeData">
+                     value="org.erlide.core.erlang.IErlElement">
                </instanceof>
             </or></possibleChildren>
          <actionProvider
                class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
                id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
          </actionProvider>
+         <commonSorter
+               class="org.erlide.ui.navigator.ErlElementSorter">
+         </commonSorter>
       </navigatorContent>
    </extension>
    

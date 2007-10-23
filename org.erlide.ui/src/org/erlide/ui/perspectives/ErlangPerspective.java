@@ -63,7 +63,8 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
 		final IFolderLayout left = layout.createFolder("left",
 				IPageLayout.LEFT, (float) 0.2, editorArea);
-		left.addView(IPageLayout.ID_RES_NAV);
+		// left.addView(IPageLayout.ID_RES_NAV);
+		left.addView("org.erlide.ui.views.navigator.view");
 
 		final IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, (float) 0.75, editorArea);
