@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.runtime.backend.BackendManager;
@@ -41,8 +42,14 @@ public class ErlScanner implements IErlScanner {
 	 * @return
 	 */
 	public String getScannerModuleName() {
+		IResource res = fModule.getResource();
+		String resName;
+		if (res != null)
+			resName = res.getFullPath().toPortableString();
+		else
+			resName = "res";
 		return "_erlide_" + fModule.getErlProject().getElementName() + "_"
-				+ fModule.getResource().getFullPath().toPortableString();
+				+ resName;
 	}
 
 	private void create() {
