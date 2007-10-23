@@ -216,13 +216,28 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
+	static class Comparator extends ViewerComparator {
+		@Override
+		public int category(Object element) {
+			if (element instanceof IErlElement) {
+				IErlElement e = (IErlElement) element;
+				if (e.getElementType() == IErlElement.ErlElementType.FUNCTION)
+					return 1000;
+				else
+					return e.getElementType().ordinal();
+			} else
+				return super.category(element);
+		}
+	}
+
 	/**
 	 * @param actionBars
 	 */
 	private void registerToolbarActions(IActionBars actionBars) {
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		ViewerComparator vc = new Comparator();
 		toolBarManager.add(new LexicalSortingAction(getTreeViewer(),
-				fToolTipText, null, null, null, false));
+				fToolTipText, vc, null, null, false));
 	}
 
 	public void sort(boolean sorting) {
