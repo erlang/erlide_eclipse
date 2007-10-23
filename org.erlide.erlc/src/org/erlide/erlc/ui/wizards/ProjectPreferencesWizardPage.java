@@ -12,7 +12,6 @@ package org.erlide.erlc.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -83,8 +82,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		// create the widgets and their grid data objects
 		new Label(composite, SWT.NONE).setText(ErlideErlcPlugin
-				.getResourceString("wizards.labels.buildoutput") +
-				":");
+				.getResourceString("wizards.labels.buildoutput")
+				+ ":");
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		output.setLayoutData(gd);
@@ -92,8 +91,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		output.addListener(SWT.Modify, nameModifyListener);
 
 		new Label(composite, SWT.NONE).setText(ErlideErlcPlugin
-				.getResourceString("wizards.labels.source") +
-				":");
+				.getResourceString("wizards.labels.source")
+				+ ":");
 		source = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		source.setLayoutData(gd);
@@ -101,8 +100,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		source.addListener(SWT.Modify, nameModifyListener);
 
 		new Label(composite, SWT.NONE).setText(ErlideErlcPlugin
-				.getResourceString("wizards.labels.include") +
-				":");
+				.getResourceString("wizards.labels.include")
+				+ ":");
 		include = new Text(composite, SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		include.setLayoutData(gd);
@@ -141,12 +140,11 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		}
 	}
 
-	private String[] dirs(List list, IPath ref) {
+	private String[] dirs(List<String> list, IPath ref) {
 		final int n = ref.segmentCount();
 		final List<String> res = new ArrayList<String>(10);
-		for (final Iterator iter = list.iterator(); iter.hasNext();) {
-			final String element = (String) iter.next();
-			IPath p = new Path(element);
+		for (String i : list) {
+			IPath p = new Path(i);
 			p = p.removeLastSegments(1).removeFirstSegments(n).setDevice(null);
 			String ps = p.toString();
 			if ("".equals(ps)) {
@@ -156,17 +154,15 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 				res.add(ps);
 			}
 		}
-		String[] r = new String[res.size()];
-		r = res.toArray(r);
-		return r;
+		return res.toArray(new String[res.size()]);
 	}
 
 	private List<String> search(String ext, File file, List<String> list) {
 
 		if (file.isFile()) {
 			final IPath path = new Path(file.getPath());
-			if (path.getFileExtension() != null &&
-					path.getFileExtension().equals(ext)) {
+			if (path.getFileExtension() != null
+					&& path.getFileExtension().equals(ext)) {
 				list.add(file.getPath());
 			}
 		} else if (file.isDirectory()) {
@@ -179,15 +175,17 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	}
 
 	protected boolean testPageComplete() {
-		if (null != output &&
-				(output.getText() == null || output.getText().trim().length() == 0)) {
+		if (null != output
+				&& (output.getText() == null || output.getText().trim()
+						.length() == 0)) {
 			setErrorMessage(ErlideErlcPlugin
 					.getResourceString("wizards.errors.outputrequired"));
 			return false;
 		}
 
-		if (null != source &&
-				(source.getText() == null || source.getText().trim().length() == 0)) {
+		if (null != source
+				&& (source.getText() == null || source.getText().trim()
+						.length() == 0)) {
 			setErrorMessage(ErlideErlcPlugin
 					.getResourceString("wizards.errors.sourcerequired"));
 			return false;
