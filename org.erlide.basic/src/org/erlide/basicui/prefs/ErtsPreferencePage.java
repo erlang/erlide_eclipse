@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.basicui.prefs;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
@@ -21,6 +22,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 /**
  * The system preferences
@@ -111,7 +114,15 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	public boolean performOk() {
 		final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
 				.getPreferences();
+
 		prefs.setOtpHome(home.getStringValue());
+		System.out.println(">" + prefs.getOtpHome());
+
+		// setting ECLIPSE !!!! preferece store
+		org.eclipse.core.runtime.Preferences pluginPreferences = ErlideBasicUIPlugin
+				.getDefault().getPluginPreferences();
+		pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, prefs
+				.getOtpHome());
 
 		// prefs.setPathA(pathA.getPreferenceName());
 		// prefs.setPathZ(pathZ.getStringValue());
@@ -120,7 +131,35 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 		// prefs.setExtraErtsArgs(extra.getStringValue());
 		prefs.updatePluginPreferences();
 
-		showRestartWarning();
+		// showRestartWarning();
+		Bundle bundle = Platform.getPlugin("org.erlide.launching").getBundle();
+
+		try {
+			//System.out.println("Stopping handler");
+			bundle.stop();
+			// Bundle.
+			while (bundle.getState() != Bundle.RESOLVED) {
+				System.out.println(bundle.getState());
+				Thread.sleep(2000);
+
+			}
+
+			System.out.println("starting handler");
+			bundle.start();
+			while (bundle.getState() != Bundle.ACTIVE) {
+				System.out.println(bundle.getState());
+				Thread.sleep(2000);
+
+			}
+			System.out.println("handler started");
+
+		} catch (BundleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return super.performOk();
 	}
