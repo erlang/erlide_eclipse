@@ -24,6 +24,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.basicui.prefs.IPrefConstants;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.ErtsProcessFactory;
@@ -48,9 +49,7 @@ public class ManagedBackend extends AbstractBackend {
 			return null;
 		}
 
-		final ErtsPreferences ertsPrefs = ErlideBasicUIPlugin.getDefault()
-				.getPreferences();
-		final String cmd = ertsPrefs.buildCommandLine();
+		final String cmd = getCmdLine();
 
 		try {
 			final ILaunchManager manager = DebugPlugin.getDefault()
@@ -80,6 +79,15 @@ public class ManagedBackend extends AbstractBackend {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	static public String getCmdLine() {
+		final ErtsPreferences ertsPrefs = ErlideBasicUIPlugin.getDefault()
+				.getPreferences();
+		String otpHome = ErlideBasicUIPlugin.getDefault()
+				.getPluginPreferences().getString(IPrefConstants.ERTS_OTP_HOME);
+		final String cmd = ertsPrefs.buildCommandLine(otpHome);
+		return cmd;
 	}
 
 	@Override
