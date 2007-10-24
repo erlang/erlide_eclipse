@@ -25,6 +25,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	 * 
 	 * @see org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator.ICommonActionExtensionSite)
 	 */
+	@Override
 	public void init(ICommonActionExtensionSite aSite) {
 
 		ICommonViewerSite viewSite = aSite.getViewSite();
@@ -40,11 +41,13 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	 * 
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		/* Set up the property open action when enabled. */
-		if (openAction.isEnabled())
+		if (openAction.isEnabled()) {
 			actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN,
 					openAction);
+		}
 	}
 
 	/*
@@ -52,9 +55,11 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	 * 
 	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
-		if (openAction.isEnabled())
+		if (openAction.isEnabled()) {
 			menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, openAction);
+		}
 	}
 
 }

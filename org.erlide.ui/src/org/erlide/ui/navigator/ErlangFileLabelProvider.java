@@ -16,6 +16,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 		super();
 	}
 
+	@Override
 	public Image getImage(Object element) {
 		if (element instanceof IErlElement) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
@@ -30,6 +31,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 		return null;
 	}
 
+	@Override
 	public String getText(Object element) {
 		if (element instanceof ErlangFileTreeData) {
 			ErlangFileTreeData data = (ErlangFileTreeData) element;
@@ -37,7 +39,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 		}
 		if (element instanceof IErlElement) {
 			IErlElement data = (IErlElement) element;
-			return data.toString();// + "= " + data.getValue(); //$NON-NLS-1$
+			return data.toString();// + "= " + data.getValue();
 		}
 		return null;
 	}
@@ -54,21 +56,25 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 		return null;
 	}
 
+	@Override
 	public void addListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
+	@Override
 	public void removeListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 

@@ -160,8 +160,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			if (parent instanceof IErlModule) {
 				IErlModule mod = (IErlModule) parent;
 				try {
-					if (mod != null)
+					if (mod != null) {
 						return mod.getCorrespondingResource();
+					}
 				} catch (ErlModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -177,8 +178,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			return parent.hasChildren();
 		} else if (element instanceof IFile) {
 			IErlModule mod = ErlModelUtils.getModule((IFile) element);
-			if (mod != null)
+			if (mod != null) {
 				return mod.hasChildren();
+			}
 		}
 		return false;
 	}
@@ -231,9 +233,11 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			if (ERLANGFILE_EXT.equals(file.getFileExtension())) {
 				// updateModel(file);
 				new UIJob("Update Erlang Model in CommonViewer") { //$NON-NLS-1$
+					@Override
 					public IStatus runInUIThread(IProgressMonitor monitor) {
-						if (viewer != null && !viewer.getControl().isDisposed())
+						if (viewer != null && !viewer.getControl().isDisposed()) {
 							viewer.refresh(file);
+						}
 						return Status.OK_STATUS;
 					}
 				}.schedule();

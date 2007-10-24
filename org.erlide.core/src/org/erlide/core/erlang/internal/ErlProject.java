@@ -24,6 +24,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -810,16 +811,18 @@ public class ErlProject extends Openable implements IErlProject,
 
 		final Preferences preferences = getPreferences();
 		if (newOptions != null) {
-			final Iterator<String> keys = newOptions.keySet().iterator();
-			while (keys.hasNext()) {
-				final String key = keys.next();
+			final Iterator<Map.Entry<String, String>> entries = newOptions
+					.entrySet().iterator();
+			while (entries.hasNext()) {
+				Entry<String, String> entry = entries.next();
+				final String key = entry.getKey();
 				if (!ErlangCore.getModelManager().getOptionNames()
 						.contains(key)) {
 					continue; // unrecognized option
 				}
 				// no filtering for encoding (custom encoding for project is
 				// allowed)
-				final String value = newOptions.get(key);
+				final String value = entry.getValue();
 				preferences.setDefault(key, CUSTOM_DEFAULT_OPTION_VALUE);
 				preferences.setValue(key, value);
 			}

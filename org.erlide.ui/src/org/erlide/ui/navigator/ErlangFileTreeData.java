@@ -68,11 +68,13 @@ public class ErlangFileTreeData {
 	// return name.hashCode();
 	// }
 
+	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ErlangFileTreeData
 				&& ((ErlangFileTreeData) obj).getName().equals(getName());
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer toString = new StringBuffer(getName())
 				.append(":").append(getValue()); //$NON-NLS-1$

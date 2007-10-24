@@ -37,6 +37,7 @@ public class OpenErlangAction extends Action {
 	 * 
 	 * @see org.eclipse.jface.action.Action#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		ISelection selection = provider.getSelection();
 		if (!selection.isEmpty()) {
@@ -55,13 +56,14 @@ public class OpenErlangAction extends Action {
 	 * 
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
+	@Override
 	public void run() {
 
 		if (isEnabled()) {
 			try {
 				final IEditorPart part = EditorUtility.openInEditor(element,
 						true);
-				EditorUtility.revealInEditor(part, (IErlElement) element);
+				EditorUtility.revealInEditor(part, element);
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
