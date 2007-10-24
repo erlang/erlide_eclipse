@@ -14,11 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -69,8 +67,12 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private IErlScanner fScanner;
 
-	protected ErlModule(IErlElement parent, String name, boolean isErl) {
+	private IFile fFile;
+
+	protected ErlModule(IErlElement parent, String name, boolean isErl,
+			IFile file) {
 		super(parent, name);
+		fFile = file;
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getElementName() + "/"
 					+ name + " " + isErl);
@@ -80,8 +82,8 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	protected ErlModule(IErlElement parent, String name, String text,
-			boolean isErl) {
-		this(parent, name, isErl);
+			boolean isErl, IFile file) {
+		this(parent, name, isErl, file);
 		final IBuffer b = BufferManager.getDefaultBufferManager().createBuffer(
 				this);
 		b.setContents(text);
@@ -169,11 +171,12 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IResource getResource() {
-		final IResource parentRes = this.getParent().getResource();
-		if (parentRes == null || !(parentRes instanceof IContainer)) {
-			return null;
-		}
-		return ((IContainer) parentRes).getFile(new Path(getElementName()));
+		// final IResource parentRes = this.getParent().getResource();
+		// if (parentRes == null || !(parentRes instanceof IContainer)) {
+		// return null;
+		// }
+		// return ((IContainer) parentRes).getFile(new Path(getElementName()));
+		return fFile;
 	}
 
 	public String getSource() throws ErlModelException {
@@ -333,9 +336,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-					 * FIXME:
-					 * displayString
-					 */
+															 * FIXME:
+															 * displayString
+															 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}

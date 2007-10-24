@@ -258,7 +258,7 @@ public class ErlModelManager implements IErlModelManager {
 			final String ext = file.getFileExtension();
 			if (ext.equals("erl") || ext.equals("hrl")) {
 				final IErlModule module = new ErlModule(project,
-						file.getName(), ext.equals("erl"));
+						file.getName(), ext.equals("erl"), file);
 				project.addChild(module);
 				// project.setIsStructureKnown(false);
 				// IProgressMonitor
@@ -276,7 +276,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
 	public IErlModule createModuleFrom(String name, String text,
-			IErlProject project) {
+			IErlProject project, IFile file) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (name == null || text == null || project == null) {
 			return null;
@@ -292,7 +292,7 @@ public class ErlModelManager implements IErlModelManager {
 			return null;
 		}
 		final IErlModule module = new ErlModule(project, name, text, ext
-				.equals("erl"));
+				.equals("erl"), file);
 		elements.put(key, module);
 		return module;
 	}

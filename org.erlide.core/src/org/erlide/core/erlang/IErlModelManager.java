@@ -97,7 +97,7 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * Currently used by compare functions
 	 */
 	public IErlModule createModuleFrom(String name, String text,
-			IErlProject project);
+			IErlProject project, IFile file);
 
 	/**
 	 * Returns the Erlang project corresponding to the given project.
@@ -212,11 +212,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * @return the Erlang model, or <code>null</code> if the root is null
 	 */
 	IErlModel create(IWorkspaceRoot root);
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile)
-	 */
-	IErlModule createModuleFrom(IFile file);
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
