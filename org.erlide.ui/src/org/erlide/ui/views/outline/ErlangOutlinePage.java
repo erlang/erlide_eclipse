@@ -44,6 +44,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
+import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -176,7 +177,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			ISelection s = getTreeViewer().getSelection();
 			if (s instanceof IStructuredSelection) {
 				final IStructuredSelection ss = (IStructuredSelection) s;
-				final List elements = ss.toList();
+				final List<?> elements = ss.toList();
 				if (!elements.contains(reference)) {
 					s = (reference == null ? StructuredSelection.EMPTY
 							: new StructuredSelection(reference));
@@ -216,26 +217,12 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
-	static class Comparator extends ViewerComparator {
-		@Override
-		public int category(Object element) {
-			if (element instanceof IErlElement) {
-				IErlElement e = (IErlElement) element;
-				if (e.getElementType() == IErlElement.ErlElementType.FUNCTION)
-					return 1000;
-				else
-					return e.getElementType().ordinal();
-			} else
-				return super.category(element);
-		}
-	}
-
 	/**
 	 * @param actionBars
 	 */
 	private void registerToolbarActions(IActionBars actionBars) {
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
-		ViewerComparator vc = new Comparator();
+		ViewerComparator vc = new ErlElementSorter();
 		toolBarManager.add(new LexicalSortingAction(getTreeViewer(),
 				fToolTipText, vc, null, null, false));
 	}

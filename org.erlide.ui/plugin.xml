@@ -445,7 +445,12 @@
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="ESC CTRL+C"/>      
+            sequence="ESC CTRL+C"/>
+      <key
+            commandId="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F3">
+      </key>      
             
  </extension>
  <extension
