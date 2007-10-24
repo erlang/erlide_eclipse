@@ -290,11 +290,11 @@ public abstract class AbstractBackend implements IBackend {
 						event = ((OtpErlangTuple) msg).elementAt(0).toString();
 					}
 					if (event != null) {
-						ArrayList ls = fEventListeners.get(event);
+						ArrayList<IBackendEventListener> ls = fEventListeners
+								.get(event);
 						if (ls != null) {
-							for (int i = 0; i < ls.size(); i++) {
-								((IBackendEventListener) ls.get(i))
-										.eventReceived(msg);
+							for (IBackendEventListener l : ls) {
+								l.eventReceived(msg);
 							}
 						}
 					}

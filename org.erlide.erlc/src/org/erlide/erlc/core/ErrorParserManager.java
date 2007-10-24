@@ -205,9 +205,9 @@ public class ErrorParserManager extends OutputStream {
 		}
 
 		final String[] parserIDs = new String[fErrorParsers.size()];
-		final Iterator items = fErrorParsers.keySet().iterator();
+		final Iterator<String> items = fErrorParsers.keySet().iterator();
 		for (int i = 0; items.hasNext(); i++) {
-			parserIDs[i] = (String) items.next();
+			parserIDs[i] = items.next();
 		}
 
 		for (String element : parserIDs) {
@@ -491,9 +491,9 @@ public class ErrorParserManager extends OutputStream {
 	public boolean reportProblems() {
 		boolean reset = false;
 		if (nOpens == 0) {
-			final Iterator iter = fErrors.iterator();
+			final Iterator<Problem> iter = fErrors.iterator();
 			while (iter.hasNext()) {
-				final Problem problem = (Problem) iter.next();
+				final Problem problem = iter.next();
 				if (problem.severity == IMarker.SEVERITY_ERROR) {
 					reset = true;
 				}

@@ -19,7 +19,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 /**
  * Filters problems based on their types.
  */
-public class ErlangAnnotationIterator implements Iterator {
+public class ErlangAnnotationIterator implements Iterator<Annotation> {
 
 	private Iterator fIterator;
 
@@ -91,7 +91,7 @@ public class ErlangAnnotationIterator implements Iterator {
 	/*
 	 * @see Iterator#next()
 	 */
-	public Object next() {
+	public Annotation next() {
 		try {
 			return fNext;
 		} finally {

@@ -28,11 +28,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class RpcStubGenerator {
 
-	public static String generate(Class clazz, boolean onlyDeclared) {
+	public static String generate(Class<?> clazz, boolean onlyDeclared) {
 		return generate(clazz.getName(), clazz.getClassLoader(), onlyDeclared);
 	}
 
-	public static String generate(Class clazz, ClassLoader cl,
+	public static String generate(Class<?> clazz, ClassLoader cl,
 			boolean onlyDeclared) {
 		return generate(clazz.getName(), cl, onlyDeclared);
 	}
@@ -40,7 +40,7 @@ public class RpcStubGenerator {
 	public static String generate(String className, ClassLoader cl,
 			boolean onlyDeclared) {
 		try {
-			Class clazz = Class.forName(className, true, cl);
+			Class<?> clazz = Class.forName(className, true, cl);
 
 			String moduleName = module(clazz);
 
@@ -52,31 +52,31 @@ public class RpcStubGenerator {
 	}
 
 	@SuppressWarnings("boxing")
-	private static String generate(Class clazz, String moduleName,
+	private static String generate(Class<?> clazz, String moduleName,
 			boolean onlyDeclared) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(String.format("-module(%s).%n-compile(export_all).%n%n",
 				moduleName));
 
 		// TODO add constructors
-		Constructor[] constructors = onlyDeclared ? clazz
+		Constructor<?>[] constructors = onlyDeclared ? clazz
 				.getDeclaredConstructors() : clazz.getConstructors();
-		Map<Integer, List<Constructor>> cmap = new HashMap<Integer, List<Constructor>>();
-		for (Constructor constructor : constructors) {
+		Map<Integer, List<Constructor<?>>> cmap = new HashMap<Integer, List<Constructor<?>>>();
+		for (Constructor<?> constructor : constructors) {
 			int plen = constructor.getParameterTypes().length;
-			List<Constructor> list = cmap.get(plen);
+			List<Constructor<?>> list = cmap.get(plen);
 			if (list == null) {
-				list = new ArrayList<Constructor>();
+				list = new ArrayList<Constructor<?>>();
 			}
 			list.add(constructor);
 			cmap.put(plen, list);
 		}
 
-		for (Entry<Integer, List<Constructor>> entry : cmap.entrySet()) {
-			List<Constructor> list = entry.getValue();
-			Collections.sort(list, new Comparator<Constructor>() {
+		for (Entry<Integer, List<Constructor<?>>> entry : cmap.entrySet()) {
+			List<Constructor<?>> list = entry.getValue();
+			Collections.sort(list, new Comparator<Constructor<?>>() {
 
-				public int compare(Constructor m1, Constructor m2) {
+				public int compare(Constructor<?> m1, Constructor<?> m2) {
 					Class<?>[] p1 = m1.getParameterTypes();
 					Class<?>[] p2 = m2.getParameterTypes();
 					for (int i = 0; i < p1.length; i++) {
@@ -98,7 +98,7 @@ public class RpcStubGenerator {
 				}
 
 			});
-			for (Constructor constructor : list) {
+			for (Constructor<?> constructor : list) {
 				printClause(clazz, buf, constructor);
 				if (list.indexOf(constructor) == list.size() - 1) {
 					buf.append(".\n\n");
@@ -166,8 +166,8 @@ public class RpcStubGenerator {
 
 	}
 
-	private static void printClause(Class clazz, StringBuffer buf,
-			Constructor constructor) {
+	private static void printClause(Class<?> clazz, StringBuffer buf,
+			Constructor<?> constructor) {
 		Class<?>[] params = constructor.getParameterTypes();
 
 		buf.append("  'new'(");
@@ -217,7 +217,8 @@ public class RpcStubGenerator {
 		return p1;
 	}
 
-	private static void printClause(Class clazz, StringBuffer buf, Method method) {
+	private static void printClause(Class<?> clazz, StringBuffer buf,
+			Method method) {
 		int mod = method.getModifiers();
 		boolean statik = Modifier.isStatic(mod);
 		Class<?>[] params = method.getParameterTypes();
@@ -310,7 +311,7 @@ public class RpcStubGenerator {
 		}
 	}
 
-	public static String module(Class clazz) {
+	public static String module(Class<?> clazz) {
 		return clazz.getName().replaceAll("\\.", "_");
 	}
 

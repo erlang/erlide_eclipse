@@ -39,7 +39,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 
 	private List<Element> fCheckElements;
 
-	public CheckedListDialogField(IListAdapter adapter,
+	public CheckedListDialogField(IListAdapter<Element> adapter,
 			String[] customButtonLabels, ILabelProvider lprovider) {
 		super(adapter, customButtonLabels, lprovider);
 		fCheckElements = new ArrayList<Element>();

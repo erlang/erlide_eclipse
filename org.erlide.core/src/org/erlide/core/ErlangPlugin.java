@@ -389,13 +389,13 @@ public class ErlangPlugin extends Plugin {
 		// see #initializeDefaultPluginPreferences() for changing default
 		// settings
 		final Preferences preferences = getDefault().getPluginPreferences();
-		final HashSet optionNames = ErlangCore.getModelManager()
+		final HashSet<String> optionNames = ErlangCore.getModelManager()
 				.getOptionNames();
 
 		// initialize preferences to their default
-		final Iterator iterator = optionNames.iterator();
+		final Iterator<String> iterator = optionNames.iterator();
 		while (iterator.hasNext()) {
-			final String propertyName = (String) iterator.next();
+			final String propertyName = iterator.next();
 			defaultOptions.put(propertyName, preferences
 					.getDefaultString(propertyName));
 		}
@@ -478,13 +478,13 @@ public class ErlangPlugin extends Plugin {
 		final Plugin thePlugin = getDefault();
 		if (thePlugin != null) {
 			final Preferences preferences = getDefault().getPluginPreferences();
-			final HashSet optionNames = ErlangCore.getModelManager()
+			final HashSet<String> optionNames = ErlangCore.getModelManager()
 					.getOptionNames();
 
 			// initialize preferences to their default
-			final Iterator iterator = optionNames.iterator();
+			final Iterator<String> iterator = optionNames.iterator();
 			while (iterator.hasNext()) {
-				final String propertyName = (String) iterator.next();
+				final String propertyName = iterator.next();
 				options.put(propertyName, preferences
 						.getDefaultString(propertyName));
 			}

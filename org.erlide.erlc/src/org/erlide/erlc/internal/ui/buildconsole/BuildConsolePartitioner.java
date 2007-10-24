@@ -303,9 +303,9 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 				// update partitions
 				final List<ITypedRegion> newParitions = new ArrayList<ITypedRegion>(
 						fPartitions.size());
-				final Iterator partitions = fPartitions.iterator();
+				final Iterator<ITypedRegion> partitions = fPartitions.iterator();
 				while (partitions.hasNext()) {
-					final ITypedRegion region = (ITypedRegion) partitions
+					final ITypedRegion region = partitions
 							.next();
 					if (region instanceof BuildConsolePartition) {
 						final BuildConsolePartition messageConsolePartition = (BuildConsolePartition) region;

@@ -14,21 +14,21 @@ package org.erlide.basicui.dialogfields;
  * Change listener used by <code>ListDialogField</code> and
  * <code>CheckedListDialogField</code>
  */
-public interface IListAdapter {
+public interface IListAdapter<Element> {
 
 	/**
 	 * A button from the button bar has been pressed.
 	 */
-	void customButtonPressed(ListDialogField field, int index);
+	void customButtonPressed(ListDialogField<Element> field, int index);
 
 	/**
 	 * The selection of the list has changed.
 	 */
-	void selectionChanged(ListDialogField field);
+	void selectionChanged(ListDialogField<Element> field);
 
 	/**
 	 * En entry in the list has been double clicked
 	 */
-	void doubleClicked(ListDialogField field);
+	void doubleClicked(ListDialogField<Element> field);
 
 }

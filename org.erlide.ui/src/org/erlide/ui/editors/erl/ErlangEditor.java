@@ -715,7 +715,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		ISourceReference reference = null;
 
 		final ISelection selection = event.getSelection();
-		final Iterator iter = ((IStructuredSelection) selection).iterator();
+		final Iterator<IStructuredSelection> iter = ((IStructuredSelection) selection)
+				.iterator();
 		while (iter.hasNext()) {
 			final Object o = iter.next();
 			if (o instanceof ISourceReference) {

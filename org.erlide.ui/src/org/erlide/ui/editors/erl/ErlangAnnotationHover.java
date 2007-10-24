@@ -149,17 +149,17 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	/*
 	 * Formats several message as HTML text.
 	 */
-	private String formatMultipleMessages(List messages) {
+	private String formatMultipleMessages(List<String> messages) {
 		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter
 				.convertToHTMLContent("Multiple markers at this line"));
 
 		HTMLPrinter.startBulletList(buffer);
-		final Iterator e = messages.iterator();
+		final Iterator<String> e = messages.iterator();
 		while (e.hasNext()) {
 			HTMLPrinter.addBullet(buffer, HTMLPrinter
-					.convertToHTMLContent((String) e.next()));
+					.convertToHTMLContent(e.next()));
 		}
 		HTMLPrinter.endBulletList(buffer);
 

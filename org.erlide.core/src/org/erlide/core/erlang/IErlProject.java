@@ -225,7 +225,7 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 	 * @see ErlangCore#getDefaultOptions()
 	 * 
 	 */
-	void setOptions(Map newOptions);
+	void setOptions(Map<String, String> newOptions);
 
 	/**
 	 * Sets the default output location of this project to the location

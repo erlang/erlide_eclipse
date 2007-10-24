@@ -511,7 +511,7 @@ public class ErlProject extends Openable implements IErlProject,
 		if (preferences == null) {
 			return options; // cannot do better (non-Erlang project)
 		}
-		final HashSet optionNames = ErlangCore.getModelManager()
+		final HashSet<String> optionNames = ErlangCore.getModelManager()
 				.getOptionNames();
 
 		// project cannot hold custom preferences set to their default, as it
@@ -806,20 +806,20 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see org.erlide.core.erlang.IErlProject#setOptions(Map)
 	 */
-	public void setOptions(Map newOptions) {
+	public void setOptions(Map<String, String> newOptions) {
 
 		final Preferences preferences = getPreferences();
 		if (newOptions != null) {
-			final Iterator keys = newOptions.keySet().iterator();
+			final Iterator<String> keys = newOptions.keySet().iterator();
 			while (keys.hasNext()) {
-				final String key = (String) keys.next();
+				final String key = keys.next();
 				if (!ErlangCore.getModelManager().getOptionNames()
 						.contains(key)) {
 					continue; // unrecognized option
 				}
 				// no filtering for encoding (custom encoding for project is
 				// allowed)
-				final String value = (String) newOptions.get(key);
+				final String value = newOptions.get(key);
 				preferences.setDefault(key, CUSTOM_DEFAULT_OPTION_VALUE);
 				preferences.setValue(key, value);
 			}

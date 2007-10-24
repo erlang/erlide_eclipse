@@ -337,15 +337,15 @@ public class EditorPreferencePage extends PreferencePage implements
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		editorComposite.setLayout(layout);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL |
-				GridData.FILL_VERTICAL);
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.FILL_VERTICAL);
 		gd.horizontalSpan = 2;
 		editorComposite.setLayoutData(gd);
 
-		fAppearanceColorList = new List(editorComposite, SWT.SINGLE |
-				SWT.V_SCROLL | SWT.BORDER);
-		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING |
-				GridData.FILL_HORIZONTAL);
+		fAppearanceColorList = new List(editorComposite, SWT.SINGLE
+				| SWT.V_SCROLL | SWT.BORDER);
+		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
 		gd.heightHint = convertHeightInCharsToPixels(5);
 		fAppearanceColorList.setLayoutData(gd);
 
@@ -454,8 +454,8 @@ public class EditorPreferencePage extends PreferencePage implements
 		fAppearanceColorList.getDisplay().asyncExec(new Runnable() {
 
 			public void run() {
-				if (fAppearanceColorList != null &&
-						!fAppearanceColorList.isDisposed()) {
+				if (fAppearanceColorList != null
+						&& !fAppearanceColorList.isDisposed()) {
 					fAppearanceColorList.select(0);
 					handleAppearanceColorListSelection();
 				}
@@ -465,7 +465,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	private void initializeFields() {
 
-		Iterator e = fCheckBoxes.keySet().iterator();
+		Iterator<Control> e = fCheckBoxes.keySet().iterator();
 		while (e.hasNext()) {
 			final Button b = (Button) e.next();
 			final String key = fCheckBoxes.get(b);
@@ -483,9 +483,10 @@ public class EditorPreferencePage extends PreferencePage implements
 		updateStatus(validatePositiveNumber("0")); //$NON-NLS-1$
 
 		// Update slaves
-		final Iterator iter = fMasterSlaveListeners.iterator();
+		final Iterator<SelectionListener> iter = fMasterSlaveListeners
+				.iterator();
 		while (iter.hasNext()) {
-			final SelectionListener listener = (SelectionListener) iter.next();
+			final SelectionListener listener = iter.next();
 			listener.widgetSelected(null);
 		}
 	}

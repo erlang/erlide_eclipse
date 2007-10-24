@@ -941,7 +941,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		return null;
 	}
 
-	private Map createAnnotationMap(IAnnotationModel model) {
+	private Map<Object, List<Tuple>> createAnnotationMap(IAnnotationModel model) {
 		final Map<Object, List<Tuple>> map = new HashMap<Object, List<Tuple>>();
 		final Iterator e = model.getAnnotationIterator();
 		while (e.hasNext()) {

@@ -207,7 +207,7 @@ public class BackendUtil {
 		generateRpcStub(RpcUtil.getClassByName(className), onlyDeclared, b);
 	}
 
-	public static void generateRpcStub(Class cls, boolean onlyDeclared,
+	public static void generateRpcStub(Class<?> cls, boolean onlyDeclared,
 			IBackend b) {
 		try {
 			String s = RpcStubGenerator.generate(cls, onlyDeclared);

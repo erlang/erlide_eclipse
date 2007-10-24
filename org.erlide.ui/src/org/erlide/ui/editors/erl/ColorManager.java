@@ -27,7 +27,7 @@ import org.erlide.ui.util.IColorManager;
  */
 public class ColorManager implements IColorManager {
 
-	protected Map fKeyTable = new HashMap(10);
+	protected Map<String, RGB> fKeyTable = new HashMap<String, RGB>(10);
 
 	protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<Display, Map<RGB, Color>>(
 			2);
@@ -126,7 +126,7 @@ public class ColorManager implements IColorManager {
 			return null;
 		}
 
-		final RGB rgb = (RGB) fKeyTable.get(key);
+		final RGB rgb = fKeyTable.get(key);
 		return getColor(rgb);
 	}
 

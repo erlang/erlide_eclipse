@@ -60,6 +60,7 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IRegion;
+import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.core.erlang.util.Util;
@@ -80,7 +81,7 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	final ErlModel erlangModel = new ErlModel();
 
-	private final HashSet optionNames = new HashSet(20);
+	private final HashSet<String> optionNames = new HashSet<String>(20);
 
 	private final Map<String, IErlElement> elements = new HashMap<String, IErlElement>(
 			10);
@@ -89,7 +90,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Queue of reconcile deltas on working copies that have yet to be fired.
 	 * This is a table form IWorkingCopy to IErlElementDelta
 	 */
-	HashMap reconcileDeltas = new HashMap();
+	HashMap<IWorkingCopy, IErlElementDelta> reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
 
 	/**
 	 * The singleton manager
@@ -198,8 +199,9 @@ public class ErlModelManager implements IErlModelManager {
 		if (file == null) {
 			return null;
 		}
-		if (project == null)
+		if (project == null) {
 			project = erlangModel.findErlangProject(file.getProject());
+		}
 		if (project == null) {
 			project = create(file.getProject());
 		}
@@ -515,16 +517,18 @@ public class ErlModelManager implements IErlModelManager {
 
 	class ResourceChangeListener implements IResourceChangeListener {
 		public void resourceChanged(IResourceChangeEvent event) {
-			if (event.getType() != IResourceChangeEvent.POST_CHANGE)
+			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 				return;
+			}
 			IResourceDelta rootDelta = event.getDelta();
 			final ArrayList<IResource> changed = new ArrayList<IResource>();
 			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) {
 					// only interested in changed resources (not added or
 					// removed)
-					if (delta.getKind() != IResourceDelta.ADDED)
+					if (delta.getKind() != IResourceDelta.ADDED) {
 						return true;
+					}
 					IResource resource = delta.getResource();
 					// only interested in files with the erl extension
 					if (resource.getType() == IResource.FILE
@@ -541,8 +545,9 @@ public class ErlModelManager implements IErlModelManager {
 				e.printStackTrace();
 			}
 			// nothing more to do if there were no changed text files
-			if (changed.size() == 0)
+			if (changed.size() == 0) {
 				return;
+			}
 
 			for (int i = 0; i < changed.size(); i++) {
 				ErlangCore.getModelManager().create(changed.get(i));
@@ -1163,7 +1168,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getOptionNames()
 	 */
-	public HashSet getOptionNames() {
+	public HashSet<String> getOptionNames() {
 		return optionNames;
 	}
 
@@ -1308,7 +1313,7 @@ public class ErlModelManager implements IErlModelManager {
 			// flush now so as to keep listener reactions to post their own
 			// deltas for
 			// subsequent iteration
-			reconcileDeltas = new HashMap();
+			reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
 			notifyListeners(deltaToNotify, ElementChangedEvent.POST_RECONCILE,
 					listeners, listenerMask, listenerCount);
 		}
@@ -1332,20 +1337,20 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
-	private IErlElementDelta mergeDeltas(Collection deltas) {
+	private IErlElementDelta mergeDeltas(Collection<IErlElementDelta> deltas) {
 
 		synchronized (deltas) {
 			if (deltas.size() == 0) {
 				return null;
 			}
 			if (deltas.size() == 1) {
-				return (IErlElementDelta) deltas.iterator().next();
+				return deltas.iterator().next();
 			}
 			if (deltas.size() <= 1) {
 				return null;
 			}
 
-			final Iterator iterator = deltas.iterator();
+			final Iterator<IErlElementDelta> iterator = deltas.iterator();
 			final IErlElement cRoot = getErlangModel();
 			final ErlElementDelta rootDelta = new ErlElementDelta(0, 0, cRoot);
 			boolean insertedTree = false;

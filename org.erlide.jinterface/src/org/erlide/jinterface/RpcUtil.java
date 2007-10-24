@@ -243,7 +243,7 @@ public class RpcUtil {
 			// static call
 			String clazzName = getString(target);
 			try {
-				Class clazz = Class.forName(clazzName, true, loader);
+				Class<?> clazz = Class.forName(clazzName, true, loader);
 				return callMethod(clazz, description, parms);
 			} catch (Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
@@ -309,9 +309,10 @@ public class RpcUtil {
 
 	private static OtpErlangObject callMethod(Object rcvr,
 			MethodDescription method, Object[] args) {
-		Class cls = (rcvr instanceof Class) ? (Class) rcvr : rcvr.getClass();
+		Class<?> cls = (rcvr instanceof Class) ? (Class<?>) rcvr : rcvr
+				.getClass();
 
-		Class[] params = null;
+		Class<?>[] params = null;
 		if (args == null) {
 			args = new Object[] {};
 		}
@@ -322,7 +323,7 @@ public class RpcUtil {
 
 		try {
 			if (method.name.equals(cls.getName())) {
-				Constructor ctr;
+				Constructor<?> ctr;
 				ctr = cls.getConstructor(method.argTypes);
 				// meth.setAccessible(true);
 				Object o = ctr.newInstance(args);
@@ -340,7 +341,7 @@ public class RpcUtil {
 			}
 		} catch (NoSuchMethodException e) {
 			StringBuffer paramstr = new StringBuffer();
-			for (Class param : params) {
+			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			return new OtpErlangTuple(new OtpErlangAtom("error"),
@@ -357,7 +358,7 @@ public class RpcUtil {
 									.getMessage())));
 		} catch (IllegalArgumentException x) {
 			StringBuffer paramstr = new StringBuffer();
-			for (Class param : params) {
+			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
@@ -368,7 +369,7 @@ public class RpcUtil {
 									.getMessage())));
 		} catch (InstantiationException e) {
 			StringBuffer paramstr = new StringBuffer();
-			for (Class param : params) {
+			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
@@ -506,7 +507,7 @@ public class RpcUtil {
 	}
 
 	@SuppressWarnings("boxing")
-	protected static Object erlang2java(OtpErlangObject obj, Class cls)
+	protected static Object erlang2java(OtpErlangObject obj, Class<?> cls)
 			throws RpcException {
 		try {
 			if (cls == obj.getClass()) {
@@ -642,7 +643,7 @@ public class RpcUtil {
 		}
 	}
 
-	public static Class getClassByName(String arg) {
+	public static Class<?> getClassByName(String arg) {
 		if (arg.equals("char")) {
 			return char.class;
 		}

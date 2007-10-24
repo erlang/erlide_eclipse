@@ -56,10 +56,10 @@ public class PluginUtils {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 
-		final List sourcePaths = ErlidePrefConverter.convertToList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = ErlidePrefConverter
+				.convertToList(prefs.getSourceDirsString());
 
-		final Iterator iter = sourcePaths.iterator();
+		final Iterator<String> iter = sourcePaths.iterator();
 
 		IPath compare;
 		final IPath path = con.getFullPath();
