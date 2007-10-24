@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.basic;singleton:=true
-Bundle-Version: 0.3.34
+Bundle-Version: 0.3.35
 Bundle-Activator: org.erlide.basicui.ErlideBasicUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
