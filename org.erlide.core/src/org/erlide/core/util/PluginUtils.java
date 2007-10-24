@@ -64,7 +64,7 @@ public class PluginUtils {
 		IPath compare;
 		final IPath path = con.getFullPath();
 		while (iter.hasNext()) {
-			compare = project.getFile(iter.next().toString()).getFullPath();
+			compare = project.getFile(iter.next()).getFullPath();
 
 			if (path.equals(compare)) {
 				return true;
