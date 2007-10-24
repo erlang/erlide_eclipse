@@ -441,12 +441,22 @@ public abstract class AbstractBackend implements IBackend {
 
 	public OtpErlangObject receiveEvent() throws OtpErlangExit,
 			OtpErlangDecodeException {
-		return getEventBox().receive();
+		OtpMbox eventBox = getEventBox();
+		if (eventBox != null) {
+			return eventBox.receive();
+		} else {
+			return null;
+		}
 	}
 
 	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
-		return getEventBox().receive(timeout);
+		OtpMbox eventBox = getEventBox();
+		if (eventBox != null) {
+			return eventBox.receive(timeout);
+		} else {
+			return null;
+		}
 	}
 
 	public OtpErlangObject execute(String fun, OtpErlangObject... args)
