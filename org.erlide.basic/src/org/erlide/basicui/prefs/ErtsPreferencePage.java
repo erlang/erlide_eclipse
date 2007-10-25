@@ -112,14 +112,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	public boolean performOk() {
-		// final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
-		// .getPreferences();
-
-		// prefs.setValue(name, value)
-		// prefs.setOtpHome(home.getStringValue());
-		// System.out.println(">" + prefs.getOtpHome());
-
-		// setting ECLIPSE !!!! preferece store
+		// setting eclipse preference store
 		Preferences pluginPreferences = ErlideBasicUIPlugin.getDefault()
 				.getPluginPreferences();
 		pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, home
@@ -137,23 +130,20 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 		Bundle bundle = Platform.getPlugin("org.erlide.launching").getBundle();
 
 		try {
-			// System.out.println("Stopping handler");
+			// Stopping handler
 			bundle.stop();
 			// Bundle.
 			while (bundle.getState() != Bundle.RESOLVED) {
-				System.out.println(bundle.getState());
 				Thread.sleep(2000);
 
 			}
 
-			// System.out.println("starting handler");
+			// starting handler
 			bundle.start();
 			while (bundle.getState() != Bundle.ACTIVE) {
-				System.out.println(bundle.getState());
 				Thread.sleep(2000);
 
 			}
-			System.out.println("handler started");
 
 		} catch (BundleException e) {
 			// TODO Auto-generated catch block
