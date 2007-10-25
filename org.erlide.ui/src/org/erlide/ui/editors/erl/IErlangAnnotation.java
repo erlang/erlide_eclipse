@@ -12,6 +12,8 @@ package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
 
+// TODO remove?
+
 /**
  * Interface of annotations representing markers and problems.
  * 
@@ -61,7 +63,7 @@ public interface IErlangAnnotation {
 	 * 
 	 * @return an iterator over the overlaid annotations
 	 */
-	Iterator getOverlaidIterator();
+	Iterator<IErlangAnnotation> getOverlaidIterator();
 
 	/**
 	 * Adds the given annotation to the list of annotations which are overlaid
