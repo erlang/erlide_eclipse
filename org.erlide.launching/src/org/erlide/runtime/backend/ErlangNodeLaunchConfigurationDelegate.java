@@ -37,7 +37,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 		try {
 			String label = configuration.getAttribute(
-					IProcess.ATTR_PROCESS_LABEL, "noname@localhost");
+					IProcess.ATTR_PROCESS_LABEL, "noname");
 			label = BackendManager.buildNodeName(label);
 
 			String cmdTail = " -noshell -name " + label + " -setcookie "
