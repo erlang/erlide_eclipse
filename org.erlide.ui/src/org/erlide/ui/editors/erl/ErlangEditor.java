@@ -715,8 +715,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		ISourceReference reference = null;
 
 		final ISelection selection = event.getSelection();
-		final Iterator<IStructuredSelection> iter = ((IStructuredSelection) selection)
-				.iterator();
+		final Iterator<?> iter = ((IStructuredSelection) selection).iterator();
 		while (iter.hasNext()) {
 			final Object o = iter.next();
 			if (o instanceof ISourceReference) {
@@ -1022,11 +1021,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					IInformationProviderExtension,
 					IInformationProviderExtension2 {
 
-				private IRegion fHoverRegion;
+				private final IRegion fHoverRegion;
 
-				private String fHoverInfo;
+				private final String fHoverInfo;
 
-				private IInformationControlCreator fControlCreator;
+				private final IInformationControlCreator fControlCreator;
 
 				InformationProvider(IRegion hoverRegion, String hoverInfo,
 						IInformationControlCreator controlCreator) {
@@ -1197,9 +1196,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		final IAnnotationModel model = getDocumentProvider()
 				.getAnnotationModel(getEditorInput());
-		final Iterator e = new ErlangAnnotationIterator(model, true, true);
+		final Iterator<Annotation> e = new ErlangAnnotationIterator(model,
+				true, true);
 		while (e.hasNext()) {
-			final Annotation a = (Annotation) e.next();
+			final Annotation a = e.next();
 			if ((a instanceof IErlangAnnotation)
 					&& ((IErlangAnnotation) a).hasOverlay()
 					|| !isNavigationTarget(a)) {
