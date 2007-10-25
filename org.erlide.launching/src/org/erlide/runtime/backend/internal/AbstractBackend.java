@@ -59,7 +59,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	private boolean fConnected = false;
 
-	private class ThreadLocalMbox extends ThreadLocal {
+	private class ThreadLocalMbox extends ThreadLocal<Object> {
 
 		@Override
 		protected Object initialValue() {
