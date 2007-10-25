@@ -21,13 +21,13 @@ import org.eclipse.jface.text.source.IAnnotationModel;
  */
 public class ErlangAnnotationIterator implements Iterator<Annotation> {
 
-	private Iterator fIterator;
+	private Iterator<?> fIterator;
 
 	private Annotation fNext;
 
-	private boolean fSkipIrrelevants;
+	private final boolean fSkipIrrelevants;
 
-	private boolean fReturnAllAnnotations;
+	private final boolean fReturnAllAnnotations;
 
 	/**
 	 * Equivalent to
