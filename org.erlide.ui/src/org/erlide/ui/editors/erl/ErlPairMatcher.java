@@ -54,6 +54,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 	}
 
 	// @SuppressWarnings("boxing")
+	@SuppressWarnings("boxing")
 	private boolean matchPairsAt() {
 		if (fScanner == null) {
 			return false;

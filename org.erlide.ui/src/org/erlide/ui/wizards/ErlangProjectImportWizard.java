@@ -34,10 +34,10 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
@@ -56,8 +56,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	// WizardFileSystemResourceImportPage1 mainPage;
 
 	public ErlangProjectImportWizard() {
-		AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
-				.getPlugin(PlatformUI.PLUGIN_ID);
+		AbstractUIPlugin plugin = WorkbenchPlugin.getDefault();
 		IDialogSettings workbenchSettings = plugin.getDialogSettings();
 		IDialogSettings section = workbenchSettings
 				.getSection("FileSystemImportWizard");//$NON-NLS-1$
@@ -73,6 +72,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * 
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		if (!validateFinish()) {
 			return false;
@@ -143,6 +143,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * 
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		super.addPages();
 		mainPage = new ErlangProjectImportWizardPage(workbench, selection);

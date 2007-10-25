@@ -99,6 +99,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * <code>WizardDataTransferPage</code> method returns <code>true</code>.
 	 * Subclasses may override this method.
 	 */
+	@Override
 	protected boolean allowNewContainerName() {
 		return true;
 	}
@@ -213,6 +214,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/*
 	 * @see WizardDataTransferPage.getErrorDialogTitle()
 	 */
+	@Override
 	protected String getErrorDialogTitle() {
 		return IDEWorkbenchMessages.WizardImportPage_errorDialogTitle;
 	}
@@ -437,6 +439,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/**
 	 * Check if widgets are enabled or disabled by a change in the dialog.
 	 */
+	@Override
 	protected void updateWidgetEnablements() {
 
 		boolean pageComplete = determinePageCompletion();
@@ -528,6 +531,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/*
 	 * @see WizardDataTransferPage.determinePageCompletion.
 	 */
+	@Override
 	protected boolean determinePageCompletion() {
 		// Check for valid projects before making the user do anything
 		if (noOpenProjects()) {

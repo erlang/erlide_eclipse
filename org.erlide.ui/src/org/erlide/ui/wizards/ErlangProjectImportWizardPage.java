@@ -200,6 +200,7 @@ public class ErlangProjectImportWizardPage extends
 				IDialogConstants.SELECT_TYPES_ID, SELECT_TYPES_TITLE, false);
 
 		SelectionListener listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleTypesEditButtonPressed();
 			}
@@ -211,6 +212,7 @@ public class ErlangProjectImportWizardPage extends
 				IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
 
 		listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setAllSelections(true);
 			}
@@ -222,6 +224,7 @@ public class ErlangProjectImportWizardPage extends
 				IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
 
 		listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setAllSelections(false);
 			}
@@ -234,6 +237,7 @@ public class ErlangProjectImportWizardPage extends
 	/*
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		validateSourceGroup();
@@ -244,6 +248,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Create the import options specification widgets.
 	 */
+	@Override
 	protected void createOptionsGroupButtons(Group optionsGroup) {
 
 		// // overwrite... checkbox
@@ -274,6 +279,7 @@ public class ErlangProjectImportWizardPage extends
 				.setText(ErlangDataTransferMessages.FileImport_copyProjectIntoWorkspace);
 		copyProjectsIntoWorkspaceCheckbox
 				.addSelectionListener(new SelectionAdapter() {
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						copyFiles = copyProjectsIntoWorkspaceCheckbox
 								.getSelection();
@@ -307,6 +313,7 @@ public class ErlangProjectImportWizardPage extends
 		sourceNameField.setFont(parent.getFont());
 
 		sourceNameField.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateFromSourceField();
 			}
@@ -399,6 +406,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Create the import source specification widgets
 	 */
+	@Override
 	protected void createSourceGroup(Composite parent) {
 
 		createRootDirectoryGroup(parent);
@@ -493,8 +501,10 @@ public class ErlangProjectImportWizardPage extends
 	 * Returns a content provider for <code>FileSystemElement</code>s that
 	 * returns only files as children.
 	 */
+	@Override
 	protected ITreeContentProvider getFileProvider() {
 		return new WorkbenchContentProvider() {
+			@Override
 			public Object[] getChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
@@ -527,8 +537,10 @@ public class ErlangProjectImportWizardPage extends
 	 * Returns a content provider for <code>FileSystemElement</code>s that
 	 * returns only folders as children.
 	 */
+	@Override
 	protected ITreeContentProvider getFolderProvider() {
 		return new WorkbenchContentProvider() {
+			@Override
 			public Object[] getChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
@@ -539,6 +551,7 @@ public class ErlangProjectImportWizardPage extends
 				return new Object[0];
 			}
 
+			@Override
 			public boolean hasChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
@@ -658,6 +671,7 @@ public class ErlangProjectImportWizardPage extends
 	 * receivers types-to-export field., Added here so that inner classes can
 	 * have access
 	 */
+	@Override
 	protected void handleTypesEditButtonPressed() {
 
 		super.handleTypesEditButtonPressed();
@@ -723,6 +737,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Use the dialog store to restore widget values to the values that they
 	 * held last time this wizard was used to completion
 	 */
+	@Override
 	protected void restoreWidgetValues() {
 		IDialogSettings settings = getDialogSettings();
 		if (settings != null) {
@@ -753,6 +768,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Since Finish was pressed, write widget values to the dialog store so that
 	 * they will persist into the next invocation of this wizard page
 	 */
+	@Override
 	protected void saveWidgetValues() {
 		IDialogSettings settings = getDialogSettings();
 		if (settings != null) {
@@ -804,6 +820,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param value
 	 *            boolean
 	 */
+	@Override
 	protected void setAllSelections(boolean value) {
 		super.setAllSelections(value);
 	}
@@ -844,6 +861,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Update the tree to only select those elements that match the selected
 	 * types
 	 */
+	@Override
 	protected void setupSelectionsBasedOnSelectedTypes() {
 		// ProgressMonitorDialog dialog = new ProgressMonitorJobsDialog(
 		// getContainer().getShell());
@@ -931,6 +949,7 @@ public class ErlangProjectImportWizardPage extends
 	 * (non-Javadoc) Method declared on IDialogPage. Set the selection up when
 	 * it becomes visible.
 	 */
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		resetSelection();
@@ -946,6 +965,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param map
 	 *            Map - key tree elements, values Lists of list elements
 	 */
+	@Override
 	protected void updateSelections(Map map) {
 		super.updateSelections(map);
 	}
@@ -954,6 +974,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Check if widgets are enabled or disabled by a change in the dialog.
 	 * Provided here to give access to inner classes.
 	 */
+	@Override
 	protected void updateWidgetEnablements() {
 
 		super.updateWidgetEnablements();
@@ -963,6 +984,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Answer a boolean indicating whether self's source specification widgets
 	 * currently all contain valid values.
 	 */
+	@Override
 	protected boolean validateSourceGroup() {
 		File sourceDirectory = getSourceDirectory();
 		if (sourceDirectory == null) {
