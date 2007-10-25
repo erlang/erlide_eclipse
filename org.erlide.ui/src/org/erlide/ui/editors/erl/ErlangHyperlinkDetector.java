@@ -147,7 +147,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	 */
 	private static class ErlangSubHyperlink implements IHyperlink {
 		private final ErlangEditor editor;
-		private final String subName;
 		private final ErlPartition subNameRegion;
 
 		/**
@@ -158,7 +157,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		public ErlangSubHyperlink(ErlangEditor editor, String subName,
 				ErlPartition partion) {
 			this.editor = editor;
-			this.subName = subName;
 			partion.setOffset(partion.getOffset() - 1);
 			this.subNameRegion = partion;
 		}
