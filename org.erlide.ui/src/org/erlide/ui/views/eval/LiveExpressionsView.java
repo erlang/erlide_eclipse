@@ -131,14 +131,16 @@ public class LiveExpressionsView extends ViewPart implements
 	 */
 	static class ViewContentProvider implements IStructuredContentProvider {
 
-		private List exprlist;
+		private List<?> exprlist;
 
 		public ViewContentProvider() {
 			super();
 		}
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			exprlist = (List) newInput;
+			if (newInput instanceof List<?>) {
+				exprlist = (List<?>) newInput;
+			}
 		}
 
 		public void dispose() {
@@ -419,7 +421,7 @@ public class LiveExpressionsView extends ViewPart implements
 
 	private static class LiveExprCellModifier implements ICellModifier {
 
-		private LiveExpressionsView view;
+		private final LiveExpressionsView view;
 
 		public LiveExprCellModifier(LiveExpressionsView v) {
 			view = v;
