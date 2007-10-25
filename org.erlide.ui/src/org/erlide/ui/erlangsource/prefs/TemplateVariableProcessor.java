@@ -84,7 +84,7 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 		final int offset = start;
 		final int length = end - start;
 
-		for (final Iterator iterator = fContextType.resolvers(); iterator
+		for (final Iterator<?> iterator = fContextType.resolvers(); iterator
 				.hasNext();) {
 			final TemplateVariableResolver variable = (TemplateVariableResolver) iterator
 					.next();

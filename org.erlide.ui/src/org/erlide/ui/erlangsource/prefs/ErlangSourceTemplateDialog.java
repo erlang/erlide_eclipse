@@ -123,8 +123,9 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 		lab.setText(rb.getString("templateDialogTypeLabel"));
 
 		fContext = new Combo(top, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
-		for (final Iterator iter = ErlangSourceContextTypeComment.getDefault()
-				.getContextTypeRegistry().contextTypes(); iter.hasNext();) {
+		for (final Iterator<?> iter = ErlangSourceContextTypeComment
+				.getDefault().getContextTypeRegistry().contextTypes(); iter
+				.hasNext();) {
 			final TemplateContextType element = (TemplateContextType) iter
 					.next();
 			fContext.add(element.getName());
@@ -142,8 +143,8 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 		label.setText(rb.getString("preview_label"));
 		label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
-		fPreview = new SourceViewer(top, null, null, false, SWT.BORDER |
-				SWT.V_SCROLL | SWT.H_SCROLL);
+		fPreview = new SourceViewer(top, null, null, false, SWT.BORDER
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 
 		final SourceViewerConfiguration conf = new SourceViewerConfiguration() {
 
@@ -232,7 +233,7 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 	 */
 	@Override
 	protected void okPressed() {
-		final Iterator it = ErlangSourceContextTypeComment.getDefault()
+		final Iterator<?> it = ErlangSourceContextTypeComment.getDefault()
 				.getContextTypeRegistry().contextTypes();
 		String id = null;
 		while (it.hasNext()) {

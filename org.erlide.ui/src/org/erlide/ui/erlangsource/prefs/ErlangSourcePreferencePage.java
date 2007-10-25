@@ -65,6 +65,7 @@ import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
 public class ErlangSourcePreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage, SelectionListener, ISelectionChangedListener {
 
+	@SuppressWarnings("unchecked")
 	private final java.util.List fTreeModel = new ArrayList();
 
 	private TreeViewer templateTree;
@@ -204,8 +205,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		final Label treeGroup = new Label(previewParent, SWT.LEFT);
 		treeGroup.setText(resourceBundle.getString("preview_label"));
 
-		preview = new SourceViewer(previewParent, null, null, false, SWT.MULTI |
-				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		preview = new SourceViewer(previewParent, null, null, false, SWT.MULTI
+				| SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		final Document doc = new Document();
 		preview.setDocument(doc);
@@ -243,7 +244,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			final IStructuredSelection selection = (IStructuredSelection) templateTree
 					.getSelection();
 
-			final Iterator elements = selection.iterator();
+			final Iterator<?> elements = selection.iterator();
 			while (elements.hasNext()) {
 				final TemplatePersistenceData data = (TemplatePersistenceData) elements
 						.next();
@@ -346,8 +347,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 
 		if (file.isHidden()) {
 			final String title = "Error: Hidden file!";
-			final String message = "A hidden file has been found at " +
-					file.getAbsolutePath();
+			final String message = "A hidden file has been found at "
+					+ file.getAbsolutePath();
 			MessageDialog.openError(getShell(), title, message);
 			return;
 		}
@@ -381,14 +382,14 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 
 	private boolean confirmOverwrite(File file) {
 		return MessageDialog.openQuestion(getShell(), "Overwrite file?",
-				"Are you sure that you want to overwrite " +
-						file.getAbsolutePath());
+				"Are you sure that you want to overwrite "
+						+ file.getAbsolutePath());
 	}
 
 	private void openWriteErrorDialog(Exception e) {
 		final String title = "Error!";
-		final String message = "An unexpected exception has been raised" +
-				e.getLocalizedMessage();
+		final String message = "An unexpected exception has been raised"
+				+ e.getLocalizedMessage();
 		MessageDialog.openError(getShell(), title, message);
 	}
 
@@ -463,7 +464,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 		 */
 		public Object[] getElements(Object inputElement) {
-			final Iterator it = ErlangSourceContextTypeComment.getDefault()
+			final Iterator<?> it = ErlangSourceContextTypeComment.getDefault()
 					.getContextTypeRegistry().contextTypes();
 			final ArrayList<String> al = new ArrayList<String>();
 			while (it.hasNext()) {
