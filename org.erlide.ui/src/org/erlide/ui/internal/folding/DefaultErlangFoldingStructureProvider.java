@@ -764,7 +764,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			final Map<ErlangProjectionAnnotation, Position> updated = new LinkedHashMap<ErlangProjectionAnnotation, Position>();
 
 			computeAdditions(fModule, updated);
-			final Map previous = createAnnotationMap(model);
+			final Map<Object, List<Tuple>> previous = createAnnotationMap(model);
 
 			for (Entry<ErlangProjectionAnnotation, Position> entry : updated
 					.entrySet()) {
@@ -772,16 +772,16 @@ public class DefaultErlangFoldingStructureProvider implements
 				final IErlElement element = newAnnotation.getElement();
 				final Position newPosition = entry.getValue();
 
-				final List annotations = (List) previous.get(element);
+				final List<Tuple> annotations = previous.get(element);
 				if (annotations == null) {
 
 					additions.put(newAnnotation, newPosition);
 
 				} else {
-					final Iterator x = annotations.iterator();
+					final Iterator<Tuple> x = annotations.iterator();
 					boolean matched = false;
 					while (x.hasNext()) {
-						final Tuple tuple = (Tuple) x.next();
+						final Tuple tuple = x.next();
 						final ErlangProjectionAnnotation existingAnnotation = tuple.annotation;
 						final Position existingPosition = tuple.position;
 						if (newAnnotation.isComment() == existingAnnotation
@@ -810,12 +810,12 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 
 			@SuppressWarnings("unchecked")
-			Iterator<List> l = previous.values().iterator();
+			Iterator<List<Tuple>> l = previous.values().iterator();
 			while (l.hasNext()) {
-				final List list = l.next();
+				final List<Tuple> list = l.next();
 				final int size = list.size();
 				for (int i = 0; i < size; i++) {
-					deletions.add(((Tuple) list.get(i)).annotation);
+					deletions.add((list.get(i)).annotation);
 				}
 			}
 
@@ -853,10 +853,10 @@ public class DefaultErlangFoldingStructureProvider implements
 		final List<ErlangProjectionAnnotation> newDeletions = new ArrayList<ErlangProjectionAnnotation>();
 		final List<ErlangProjectionAnnotation> newChanges = new ArrayList<ErlangProjectionAnnotation>();
 
-		final Iterator deletionIterator = deletions.iterator();
+		final Iterator<ErlangProjectionAnnotation> deletionIterator = deletions
+				.iterator();
 		while (deletionIterator.hasNext()) {
-			final ErlangProjectionAnnotation deleted = (ErlangProjectionAnnotation) deletionIterator
-					.next();
+			final ErlangProjectionAnnotation deleted = deletionIterator.next();
 			final Position deletedPosition = fCachedModel.getPosition(deleted);
 			if (deletedPosition == null) {
 				continue;
@@ -919,7 +919,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * @return a matching tuple or <code>null</code> for no match
 	 */
 	private Tuple findMatch(Tuple tuple,
-			Collection<ErlangProjectionAnnotation> annotations, Map positionMap) {
+			Collection<ErlangProjectionAnnotation> annotations,
+			Map<ErlangProjectionAnnotation, Position> positionMap) {
 		final Iterator<ErlangProjectionAnnotation> it = annotations.iterator();
 		while (it.hasNext()) {
 			final ErlangProjectionAnnotation annotation = it.next();
@@ -943,7 +944,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private Map<Object, List<Tuple>> createAnnotationMap(IAnnotationModel model) {
 		final Map<Object, List<Tuple>> map = new HashMap<Object, List<Tuple>>();
-		final Iterator e = model.getAnnotationIterator();
+		final Iterator<?> e = model.getAnnotationIterator();
 		while (e.hasNext()) {
 			final Object annotation = e.next();
 			if (annotation instanceof ErlangProjectionAnnotation) {
@@ -1028,7 +1029,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		final List<ErlangProjectionAnnotation> modified = new ArrayList<ErlangProjectionAnnotation>();
-		final Iterator iter = model.getAnnotationIterator();
+		final Iterator<?> iter = model.getAnnotationIterator();
 		while (iter.hasNext()) {
 			final Object annotation = iter.next();
 			if (annotation instanceof ErlangProjectionAnnotation) {

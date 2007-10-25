@@ -28,13 +28,13 @@ import org.erlide.ui.prefs.PreferenceConstants;
 public class DefaultErlangFoldingPreferenceBlock implements
 		IErlangFoldingPreferenceBlock {
 
-	private IPreferenceStore fStore;
+	private final IPreferenceStore fStore;
 
 	OverlayPreferenceStore fOverlayStore;
 
-	private OverlayKey[] fKeys;
+	private final OverlayKey[] fKeys;
 
-	Map<Control, String> fCheckBoxes = new HashMap<Control, String>();
+	Map<Button, String> fCheckBoxes = new HashMap<Button, String>();
 
 	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
@@ -125,9 +125,9 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	}
 
 	private void initializeFields() {
-		final Iterator it = fCheckBoxes.keySet().iterator();
+		final Iterator<Button> it = fCheckBoxes.keySet().iterator();
 		while (it.hasNext()) {
-			final Button b = (Button) it.next();
+			final Button b = it.next();
 			final String key = fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
