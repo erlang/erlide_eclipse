@@ -122,7 +122,14 @@ do_getTokenAt(Module, Offset) ->
 
 getTokenAt(Module, Offset) when Offset =< 0 ->
     %% ets:lookup returns [] sometimes....
-    hd(ets:lookup(Module, 1));
+    case ets:lookup(Module, 1) of
+        [Token | _] ->
+            Token;
+        _ ->
+            K = ets:first(Module),
+            [A] = ets:lookup(Module, K),
+            A
+    end;
 getTokenAt(Module, Offset) ->
     MS = ets:fun2ms(fun(#token{offset=Ofs, length=Len}=T)
            when Ofs =< Offset, Ofs+Len>Offset ->
