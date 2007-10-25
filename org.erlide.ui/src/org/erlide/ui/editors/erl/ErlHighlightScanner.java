@@ -43,39 +43,39 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ErlHighlightScanner implements ITokenScanner {
 
-	private Token t_def;
+	private final Token t_def;
 
-	private Token t_atom;
+	private final Token t_atom;
 
-	private Token t_attribute;
+	private final Token t_attribute;
 
-	private Token t_string;
+	private final Token t_string;
 
-	private Token t_keyword;
+	private final Token t_keyword;
 
-	private Token t_var;
+	private final Token t_var;
 
-	private Token t_char;
+	private final Token t_char;
 
-	private Token t_arrow;
+	private final Token t_arrow;
 
-	private Token t_guard;
+	private final Token t_guard;
 
-	private Token t_bif;
+	private final Token t_bif;
 
-	private Token t_macro;
+	private final Token t_macro;
 
-	private Token t_record;
+	private final Token t_record;
 
-	private Token t_integer;
+	private final Token t_integer;
 
-	private Token t_float;
+	private final Token t_float;
 
-	private Token t_comment;
+	private final Token t_comment;
 
-	private IColorManager fColorManager;
+	private final IColorManager fColorManager;
 
-	protected List fTokens;
+	protected List<ErlToken> fTokens;
 
 	protected int fCrtToken;
 
@@ -301,7 +301,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return 0;
 		}
 
-		final ErlToken tk = (ErlToken) fTokens.get(fCrtToken);
+		final ErlToken tk = fTokens.get(fCrtToken);
 		return tk.getOffset();
 	}
 
@@ -314,7 +314,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return 0;
 		}
 
-		final ErlToken tk = (ErlToken) fTokens.get(fCrtToken);
+		final ErlToken tk = fTokens.get(fCrtToken);
 		return tk.getLength();
 	}
 
@@ -328,11 +328,11 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return ErlToken.EOF;
 		}
 
-		final ErlToken tk = (ErlToken) fTokens.get(fCrtToken);
+		final ErlToken tk = fTokens.get(fCrtToken);
 		if ((tk.getKind() == null)) {
 			return ErlToken.EOF;
 		}
-		return (ErlToken) fTokens.get(fCrtToken);
+		return fTokens.get(fCrtToken);
 	}
 
 	/**
