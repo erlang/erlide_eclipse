@@ -11,7 +11,6 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,9 +71,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		}
 
 		final IDocument document = viewer.getDocument();
-		final List<Annotation> javaAnnotations = new ArrayList<Annotation>();
-		final HashMap messagesAtPosition = new HashMap();
-		final Iterator iterator = model.getAnnotationIterator();
+		final List<Annotation> erlAnnotations = new ArrayList<Annotation>();
+		final Iterator<?> iterator = model.getAnnotationIterator();
 
 		while (iterator.hasNext()) {
 			Annotation annotation = (Annotation) iterator.next();
@@ -90,30 +88,21 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 
 			if (annotation instanceof AnnotationBag) {
 				final AnnotationBag bag = (AnnotationBag) annotation;
-				final Iterator e = bag.iterator();
+				final Iterator<?> e = bag.iterator();
 				while (e.hasNext()) {
 					annotation = (Annotation) e.next();
 					position = model.getPosition(annotation);
-					if (position != null &&
-							includeAnnotation(annotation, position,
-									messagesAtPosition)) {
-						javaAnnotations.add(annotation);
+					if (position != null) {
+						erlAnnotations.add(annotation);
 					}
 				}
 				continue;
 			}
 
-			if (includeAnnotation(annotation, position, messagesAtPosition)) {
-				javaAnnotations.add(annotation);
-			}
+			erlAnnotations.add(annotation);
 		}
 
-		return javaAnnotations;
-	}
-
-	private boolean includeAnnotation(Annotation annotation, Position position,
-			HashMap messagesAtPosition) {
-		return true;
+		return erlAnnotations;
 	}
 
 	private IAnnotationModel getAnnotationModel(ISourceViewer viewer) {
@@ -158,8 +147,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		HTMLPrinter.startBulletList(buffer);
 		final Iterator<String> e = messages.iterator();
 		while (e.hasNext()) {
-			HTMLPrinter.addBullet(buffer, HTMLPrinter
-					.convertToHTMLContent(e.next()));
+			HTMLPrinter.addBullet(buffer, HTMLPrinter.convertToHTMLContent(e
+					.next()));
 		}
 		HTMLPrinter.endBulletList(buffer);
 
