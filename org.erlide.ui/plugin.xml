@@ -632,7 +632,8 @@
                id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
          </actionProvider>
          <commonSorter
-               class="org.erlide.ui.navigator.ErlElementSorter">
+               class="org.erlide.ui.navigator.ErlElementSorter"
+               id="org.erlide.ui.navigator.ErlElementSorterId">
          </commonSorter>
       </navigatorContent>
    </extension>
@@ -645,5 +646,22 @@
             <contentExtension pattern="org.erlide.ui.navigator.erlangContent"/>
          </includes>
       </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="org.erlide.ui.ErlangProjectImport.category"
+            name="Erlang">
+      </category>
+      <wizard
+            category="org.erlide.ui.ErlangProjectImport.category"
+            class="org.erlide.ui.wizards.ErlangProjectImportWizard"
+            icon="icons/erlang_editor.gif"
+            id="org.erlide.ui.ErlangProjectImport.wizard"
+            name="Import and convert erlang projects into erlIde projects">
+         <description>
+            Import an existing erlang project from the local file system into the workspace.
+         </description>
+      </wizard>
    </extension>
 </plugin>
