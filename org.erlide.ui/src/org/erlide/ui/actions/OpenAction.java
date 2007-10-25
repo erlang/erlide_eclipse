@@ -119,7 +119,7 @@ public class OpenAction extends SelectionDispatchAction {
 		if (selection.isEmpty()) {
 			return false;
 		}
-		for (final Iterator iter = selection.iterator(); iter.hasNext();) {
+		for (final Iterator<?> iter = selection.iterator(); iter.hasNext();) {
 			final Object element = iter.next();
 			if (element instanceof ISourceReference) {
 				continue;
