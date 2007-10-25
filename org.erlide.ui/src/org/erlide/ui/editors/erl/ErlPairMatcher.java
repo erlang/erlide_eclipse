@@ -13,7 +13,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -47,8 +46,6 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 	 *      int)
 	 */
 	public IRegion match(IDocument document, int offset) {
-		ErlLogger.debug("## pair match " + offset);
-
 		fOffset = offset;
 		if (fOffset >= 0 && matchPairsAt() && fStartPos != fEndPos) {
 			return new Region(fStartPos, fEndPos - fStartPos + 1);
