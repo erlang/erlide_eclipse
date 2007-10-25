@@ -13,9 +13,8 @@ import org.erlide.ui.editors.util.EditorUtility;
 
 public class OpenErlangAction extends Action {
 
-	private IWorkbenchPage page;
 	private IErlElement element;
-	private ISelectionProvider provider;
+	private final ISelectionProvider provider;
 
 	/**
 	 * Construct the OpenPropertyAction with the given page.
@@ -28,7 +27,6 @@ public class OpenErlangAction extends Action {
 	public OpenErlangAction(IWorkbenchPage p,
 			ISelectionProvider selectionProvider) {
 		setText(Messages.getString("OpenErlangAction.0")); //$NON-NLS-1$
-		page = p;
 		provider = selectionProvider;
 	}
 
