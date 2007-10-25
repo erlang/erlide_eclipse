@@ -21,8 +21,5 @@
          id="org.erlide"
          version="0.0.0"/>
 
-   <includes
-         id="org.erlide.source"
-         version="0.0.0"/>
 
 </feature>
