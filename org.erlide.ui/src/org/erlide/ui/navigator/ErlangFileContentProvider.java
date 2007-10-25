@@ -15,14 +15,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.progress.UIJob;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.ui.util.ErlModelUtils;
-
-//public class ErlangFileContentProvider extends ErlangContentProvider implements
-//		IResourceChangeListener, IResourceDeltaVisitor {
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
 		IResourceChangeListener, IResourceDeltaVisitor {
@@ -30,12 +28,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	private static final Object[] NO_CHILDREN = new Object[0];
 
 	private static final String ERLANGFILE_EXT = "erl"; //$NON-NLS-1$
-
-	// private final Map/* <IFile, PropertiesTreeData[]> */<IFile,
-	// IErlElement[]> cachedModelMap = new HashMap<IFile, IErlElement[]>();
-	// private final Map/* <IFile, PropertiesTreeData[]> */<IFile,
-	// ErlangFileTreeData[]> cachedModelMap = new HashMap<IFile,
-	// ErlangFileTreeData[]>();
 
 	private StructuredViewer viewer;
 
@@ -56,44 +48,24 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 * Return the model elements for a *.erl IFile or NO_CHILDREN for otherwise.
 	 */
 	public Object[] getChildren(Object parentElement) {
+		Object[] result = NO_CHILDREN;
 		try {
 			if (parentElement instanceof IFile) {
 				IErlModule mod = ErlModelUtils.getModule((IFile) parentElement);
 				if (mod != null) {
 					mod.open(null);
-					return mod.getChildren();
+					result = mod.getChildren();
 				}
 			} else if (parentElement instanceof IParent) {
 				IParent parent = (IParent) parentElement;
-				return parent.getChildren();
+				result = parent.getChildren();
 			}
 		} catch (ErlModelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return NO_CHILDREN;
-		// Object[] children = null;
-		// if (parentElement instanceof ErlangFileTreeData) {
-		// children = NO_CHILDREN;
-		// } else if (parentElement instanceof IErlElement) {
-		// children = NO_CHILDREN;
-		// } else if (parentElement instanceof IFile) {
-		// /* possible model file */
-		// IFile modelFile = (IFile) parentElement;
-		// if (ERLANGFILE_EXT.equals(modelFile.getFileExtension())) {
-		// children = (IErlElement[]) cachedModelMap.get(modelFile);
-		// if (children == null && updateModel(modelFile) != null) {
-		// children = (IErlElement[]) cachedModelMap.get(modelFile);
-		// }
-		// // children = (ErlangFileTreeData[])
-		// // cachedModelMap.get(modelFile);
-		// // if (children == null && updateModel(modelFile) != null) {
-		// // children = (ErlangFileTreeData[]) cachedModelMap
-		// // .get(modelFile);
-		// // }
-		// }
-		// }
-		// return children;
+		ErlLogger.debug("// " + result.length + " children");
+		return result;
 	}
 
 	/**
@@ -102,57 +74,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 * @param modelFile
 	 *            The IFile which contains the persisted model
 	 */
-	// private synchronized Object updateModel(IFile modelFile) {
-	//
-	// try {
-	// if (ERLANGFILE_EXT.equals(modelFile.getFileExtension())) {
-	// IErlModule mod = ErlModelUtils.getModule(modelFile);
-	// IErlElement[] children;
-	// children = mod.getChildren();
-	// cachedModelMap.put(modelFile, children);
-	// // List<ErlangFileTreeData> result = new
-	// // ArrayList<ErlangFileTreeData>();
-	// // for (IErlElement e : children)
-	// // result.add(new ErlangFileTreeData(e, modelFile));
-	// // ErlangFileTreeData[] treeData = (ErlangFileTreeData[]) result
-	// // .toArray(new ErlangFileTreeData[result.size()]);
-	// // cachedModelMap.put(modelFile, treeData);
-	// return cachedModelMap;
-	// }
-	// } catch (ErlModelException e1) {
-	// // TODO Auto-generated catch block
-	// e1.printStackTrace();
-	// }
-	// return null;
-	// // Properties model = new Properties();
-	// // if (modelFile.exists()) {
-	// // try {
-	// // model.load(modelFile.getContents());
-	// //
-	// // String propertyName;
-	// // List<ErlangFileTreeData> properties = new
-	// // ArrayList<ErlangFileTreeData>();
-	// // for (Enumeration<?> names = model.propertyNames(); names
-	// // .hasMoreElements();) {
-	// // propertyName = (String) names.nextElement();
-	// // properties.add(new ErlangFileTreeData(propertyName,
-	// // propertyName, modelFile));
-	// // }
-	// // ErlangFileTreeData[] propertiesTreeData = (ErlangFileTreeData[])
-	// // properties
-	// // .toArray(new ErlangFileTreeData[properties.size()]);
-	// //
-	// // cachedModelMap.put(modelFile, propertiesTreeData);
-	// // return model;
-	// // } catch (IOException e) {
-	// // } catch (CoreException e) {
-	// // }
-	// // } else {
-	// // cachedModelMap.remove(modelFile);
-	// // }
-	// // }
-	// // return null;
-	// }
+
 	public Object getParent(Object element) {
 		if (element instanceof IErlElement) {
 			IErlElement elt = (IErlElement) element;
@@ -173,16 +95,24 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	public boolean hasChildren(Object element) {
+		boolean result = false;
 		if (element instanceof IParent) {
 			IParent parent = (IParent) element;
-			return parent.hasChildren();
+			result = parent.hasChildren();
 		} else if (element instanceof IFile) {
 			IErlModule mod = ErlModelUtils.getModule((IFile) element);
 			if (mod != null) {
-				return mod.hasChildren();
+				try {
+					mod.open(null);
+				} catch (ErlModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				result = mod.hasChildren();
 			}
 		}
-		return false;
+		ErlLogger.debug("// hasChildren " + result);
+		return result;
 	}
 
 	public Object[] getElements(Object inputElement) {
@@ -190,13 +120,10 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	public void dispose() {
-		// cachedModelMap.clear();
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 
 	public void inputChanged(Viewer aViewer, Object oldInput, Object newInput) {
-		// if (oldInput != null && !oldInput.equals(newInput))
-		// cachedModelMap.clear();
 		viewer = (StructuredViewer) aViewer;
 	}
 

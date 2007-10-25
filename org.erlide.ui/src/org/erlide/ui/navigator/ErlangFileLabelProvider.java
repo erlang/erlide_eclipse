@@ -23,20 +23,11 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 					ISharedImages.IMG_OBJS_INFO_TSK);
 
 		}
-		if (element instanceof ErlangFileTreeData) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJS_INFO_TSK);
-
-		}
 		return null;
 	}
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof ErlangFileTreeData) {
-			ErlangFileTreeData data = (ErlangFileTreeData) element;
-			return data.getValue();
-		}
 		if (element instanceof IErlElement) {
 			IErlElement data = (IErlElement) element;
 			return data.toString();// + "= " + data.getValue();
@@ -48,10 +39,6 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 		if (anElement instanceof IErlElement) {
 			IErlElement data = (IErlElement) anElement;
 			return "Property: " + data.toString(); //$NON-NLS-1$
-		}
-		if (anElement instanceof ErlangFileTreeData) {
-			ErlangFileTreeData data = (ErlangFileTreeData) anElement;
-			return "Property: " + data.getValue();
 		}
 		return null;
 	}
