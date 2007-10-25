@@ -33,7 +33,7 @@ public class HTMLTextPresenter implements
 
 	private int fCounter;
 
-	private boolean fEnforceUpperLineLimit;
+	private final boolean fEnforceUpperLineLimit;
 
 	public HTMLTextPresenter(boolean enforceUpperLineLimit) {
 		super();
@@ -56,7 +56,7 @@ public class HTMLTextPresenter implements
 		int yoursEnd = offset + insertLength - 1;
 		yoursEnd = Math.max(yoursStart, yoursEnd);
 
-		final Iterator e = presentation.getAllStyleRangeIterator();
+		final Iterator<?> e = presentation.getAllStyleRangeIterator();
 		while (e.hasNext()) {
 
 			final StyleRange range = (StyleRange) e.next();
@@ -116,8 +116,8 @@ public class HTMLTextPresenter implements
 		try {
 
 			final StringBuffer buffer = new StringBuffer();
-			long maxNumberOfLines = Math.round(maxHeight * 1.0 /
-					gc.getFontMetrics().getHeight());
+			long maxNumberOfLines = Math.round(maxHeight * 1.0
+					/ gc.getFontMetrics().getHeight());
 
 			fCounter = 0;
 			final LineBreakingReader reader = new LineBreakingReader(
