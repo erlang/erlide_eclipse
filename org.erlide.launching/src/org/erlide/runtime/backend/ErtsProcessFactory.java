@@ -20,6 +20,7 @@ public class ErtsProcessFactory implements IProcessFactory {
 
 	public static final String ID = "org.erlide.core.backend.ertsprocessfactory";
 
+	@SuppressWarnings("unchecked")
 	public IProcess newProcess(ILaunch launch, Process process, String label,
 			Map attributes) {
 		// ErlLogger.debug("#* ProcFact: " + label + " " + attributes);

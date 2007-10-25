@@ -34,6 +34,7 @@ public class ErtsProcess extends RuntimeProcess {
 	@SuppressWarnings({ "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
 
+	@SuppressWarnings("unchecked")
 	public ErtsProcess(ILaunch launch, Process process, String name,
 			Map attributes) {
 		super(launch, process, name, attributes);
