@@ -35,7 +35,9 @@ import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.prefs.ErtsPreferencePage;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -72,6 +74,8 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 	private ErtsPreferences preferences;
 
 	private ImageDescriptorRegistry fImageDescriptorRegistry;
+
+	private Bundle fLaunchBundle;
 
 	/**
 	 * @return
@@ -262,5 +266,33 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 		box.open();
 		// TODO what do we do?
 		workbench.close();
+	}
+
+	public void setLaunchBundle(Bundle b) {
+		fLaunchBundle = b;
+	}
+
+	public void restartBundle() {
+		if (fLaunchBundle != null) {
+			try {
+				// Stopping handler
+				fLaunchBundle.stop();
+				while (fLaunchBundle.getState() != Bundle.RESOLVED) {
+					Thread.sleep(2000);
+				}
+
+				// starting handler
+				fLaunchBundle.start();
+				while (fLaunchBundle.getState() != Bundle.ACTIVE) {
+					Thread.sleep(2000);
+				}
+			} catch (BundleException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

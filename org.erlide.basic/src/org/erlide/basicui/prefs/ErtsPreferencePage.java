@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.basicui.prefs;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -22,8 +21,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 /**
  * The system preferences
@@ -119,40 +116,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 				.getStringValue());
 		ErlideBasicUIPlugin.getDefault().savePluginPreferences();
 
-		// prefs.setPathA(pathA.getPreferenceName());
-		// prefs.setPathZ(pathZ.getStringValue());
-
-		// prefs.getErtsPrefs().setUseLongName(longName.getBooleanValue());
-		// prefs.setExtraErtsArgs(extra.getStringValue());
-		// prefs.updatePluginPreferences();
-
-		// showRestartWarning();
-		Bundle bundle = Platform.getPlugin("org.erlide.launching").getBundle();
-
-		try {
-			// Stopping handler
-			bundle.stop();
-			// Bundle.
-			while (bundle.getState() != Bundle.RESOLVED) {
-				Thread.sleep(2000);
-
-			}
-
-			// starting handler
-			bundle.start();
-			while (bundle.getState() != Bundle.ACTIVE) {
-				Thread.sleep(2000);
-
-			}
-
-		} catch (BundleException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		ErlideBasicUIPlugin.getDefault().restartBundle();
 		return super.performOk();
 	}
 
