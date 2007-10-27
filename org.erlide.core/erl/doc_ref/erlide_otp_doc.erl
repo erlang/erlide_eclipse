@@ -239,59 +239,6 @@ listify(A) when is_atom(A) ->
 listify(L) when is_list(L) ->
     L.
 
-newer_file(F1, F2) when is_list(F1), is_list(F2) ->
-    case file:read_file_info(F1) of
-        {ok, Info1} ->
-            case file:read_file_info(F2) of
-                {ok, Info2} ->
-                    Info1#file_info.mtime > Info2#file_info.mtime;
-                _ ->
-                    true
-            end;
-        _ ->
-            false
-    end;
-newer_file(Module, F2) when is_atom(Module) ->
-    case lists:keysearch(time, 1, Module:module_info(compile)) of
-        {value, time, ModTime} ->
-            case file:read_file_info(F2) of
-                {ok, Info2} ->
-                    ModTime > Info2#file_info.mtime;
-                _ ->
-                    true
-            end;
-        _ ->
-            false
-    end.
-
-renew_index(M, DocFileName, IndexFileName) ->
-    Doc = extract_from_file(DocFileName),
-    B = term_to_binary(Doc),
-    file:delete(IndexFileName),
-    file:write_file(IndexFileName, B),
-    put(erlide_doc_index, {M, Doc}),
-    Doc.
-
-read_index(M, IndexFileName) ->
-    case get(erlide_doc_index) of
-        {M, Doc} ->
-            Doc;
-        _ ->
-            {ok, B} = file:read_file(IndexFileName),
-            Doc = binary_to_term(B),
-            put(erlide_doc_index, {M, Doc}),
-            Doc
-    end.
-
-check_index(M, DocFileName, IndexFileName) ->
-    case newer_file(IndexFileName, DocFileName) 
-         orelse not newer_file(?MODULE, IndexFileName) of
-        true ->
-            renew_index(M, DocFileName, IndexFileName);
-        _ ->
-            read_index(M, IndexFileName)
-    end.
-
 combine_docs([]) ->
     [];
 combine_docs([D | Rest]) ->
@@ -441,7 +388,8 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         IndexFileName = filename:join([StateDir, "erlide_doc", 
                                        Module ++ ".erlide_doc_x"]),
         filelib:ensure_dir(IndexFileName),
-        Doc = check_index(Mod, DocFileName, IndexFileName),
+        Renew = fun(F) -> extract_from_file(F) end,
+        Doc = erlide_util:check_cached(DocFileName, IndexFileName, Renew),
         ?D({doc, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
