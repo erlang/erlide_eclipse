@@ -59,15 +59,15 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private OtpErlangObject parseTree;
 
-	private boolean isModule;
+	private final boolean isModule;
 
 	// the document last reconciled with
 	// private IDocument fDoc;
-	private List<IErlComment> comments;
+	private final List<IErlComment> comments;
 
 	private IErlScanner fScanner;
 
-	private IFile fFile;
+	private final IFile fFile;
 
 	protected ErlModule(IErlElement parent, String name, boolean isErl,
 			IFile file) {
@@ -142,7 +142,6 @@ public class ErlModule extends Openable implements IErlModule {
 	public IErlElement getElementAt(int position) throws ErlModelException {
 		for (IErlElement element : fChildren) {
 			if (element instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) element;
 				for (IErlElement element0 : fChildren) {
 					final ISourceReference ch = (ISourceReference) element0;
 					final ISourceRange r = ch.getSourceRange();
@@ -461,17 +460,17 @@ public class ErlModule extends Openable implements IErlModule {
 		final List<ErlangFunction> exports = new ArrayList<ErlangFunction>(10);
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlExport) {
-				final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
-						.getParseTree();
-				for (int j = 0; j < l.arity(); ++j) {
-					// TODO removed temporarily
-					// try {
-					// exports.add(new ErlangFunction((OtpErlangTuple)
-					// l.elementAt(j)));
-					// } catch (OtpErlangRangeException e) {
-					// e.printStackTrace();
-					// }
-				}
+				// final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
+				// .getParseTree();
+				// for (int j = 0; j < l.arity(); ++j) {
+				// TODO removed temporarily
+				// try {
+				// exports.add(new ErlangFunction((OtpErlangTuple)
+				// l.elementAt(j)));
+				// } catch (OtpErlangRangeException e) {
+				// e.printStackTrace();
+				// }
+				// }
 			}
 		}
 		for (final IErlElement m : fChildren) {

@@ -124,11 +124,14 @@ public class ErlParser {
 
 			OtpErlangList forms = null, comments = null;
 			try {
-				OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_model",
+				// OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_model",
+				// "parse", doc, module.getElementName());
+				OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
 						"parse", doc, module.getElementName());
 				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
 						"ok") == 0) {
 					forms = (OtpErlangList) res.elementAt(1);
+					comments = (OtpErlangList) res.elementAt(2);
 				} else {
 					ErlLogger.debug("rpc err:: " + res);
 				}
@@ -142,13 +145,14 @@ public class ErlParser {
 				// ErlLogger.debug(forms);
 				// ErlLogger.debug("-----------------------");
 
-				res = (OtpErlangTuple) b.rpcx("erlide_model", "comments", doc);
-				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
-						"ok") == 0) {
-					comments = (OtpErlangList) res.elementAt(1);
-				} else {
-					ErlLogger.debug("rpc err:: " + res);
-				}
+				// res = (OtpErlangTuple) b.rpcx("erlide_model", "comments",
+				// doc);
+				// if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
+				// "ok") == 0) {
+				// comments = (OtpErlangList) res.elementAt(1);
+				// } else {
+				// ErlLogger.debug("rpc err:: " + res);
+				// }
 			} catch (final BackendException e1) {
 				e1.printStackTrace();
 			}
@@ -193,10 +197,12 @@ public class ErlParser {
 	 * @return IErlComment
 	 */
 	private IErlComment createComment(IErlModule parent, OtpErlangTuple c) {
-		final OtpErlangTuple pos = (OtpErlangTuple) c.elementAt(0);
-		final OtpErlangTuple lineOffs = (OtpErlangTuple) pos.elementAt(0);
-		final OtpErlangLong line = (OtpErlangLong) lineOffs.elementAt(0);
-		final OtpErlangString s = (OtpErlangString) c.elementAt(1);
+		// final OtpErlangTuple pos = (OtpErlangTuple) c.elementAt(0);
+		// final OtpErlangTuple lineOffs = (OtpErlangTuple) pos.elementAt(0);
+		// final OtpErlangLong line = (OtpErlangLong) lineOffs.elementAt(0);
+		// final OtpErlangString s = (OtpErlangString) c.elementAt(1);
+		final OtpErlangLong line = (OtpErlangLong) c.elementAt(2);
+		final OtpErlangString s = (OtpErlangString) c.elementAt(5);
 		int l;
 		try {
 			l = line.intValue();
@@ -206,9 +212,11 @@ public class ErlParser {
 		final ErlComment comment = new ErlComment(parent, s.stringValue(),
 				false, l == 1);
 		try {
-			final OtpErlangTuple tpos = (OtpErlangTuple) pos.elementAt(0);
-			final int ofs = ((OtpErlangLong) (tpos.elementAt(1))).intValue();
-			final int len = ((OtpErlangLong) (pos.elementAt(1))).intValue();
+			// final OtpErlangTuple tpos = (OtpErlangTuple) pos.elementAt(0);
+			// final int ofs = ((OtpErlangLong) (tpos.elementAt(1))).intValue();
+			// final int len = ((OtpErlangLong) (pos.elementAt(1))).intValue();
+			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
+			final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
 			setPos(comment, ofs + 1, len - 1);
 		} catch (final OtpErlangRangeException e) {
 			return null;

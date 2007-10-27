@@ -28,13 +28,18 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 		IBackendEventListener {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 
 		IResourceDelta delta = getDelta(getProject());
-		OtpErlangPid builder = (kind == FULL_BUILD) ? start_builder()
-				: start_builder(delta);
+		if (kind == FULL_BUILD)
+			start_builder();
+		else
+			start_builder(delta);
+//		OtpErlangPid builder = (kind == FULL_BUILD) ? start_builder()
+//				: start_builder(delta);
 
 		// ?????
 		BackendManager.getDefault().getIdeBackend().addEventListener("build",
@@ -55,7 +60,7 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 				}
 			}
 			if (msg instanceof OtpErlangTuple) {
-				OtpErlangTuple event = (OtpErlangTuple) msg;
+				//OtpErlangTuple event = (OtpErlangTuple) msg;
 
 			}
 

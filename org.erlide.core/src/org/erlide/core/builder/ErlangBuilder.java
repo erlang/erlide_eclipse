@@ -140,6 +140,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
@@ -237,6 +238,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void fullBuild(Map args, final IProgressMonitor monitor)
 			throws CoreException {
 		if (ErlangBuilder.DEBUG) {
@@ -262,6 +264,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void incrementalBuild(Map args, IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
 		if (ErlangBuilder.DEBUG) {
@@ -1024,6 +1027,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected IProject[] build_1(int kind, Map ignored, IProgressMonitor monitor)
 			throws CoreException {
 		currentProject = getProject();
@@ -1140,6 +1144,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected IProject[] build_remote(int kind, Map args,
 			IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask("Remote building", 100);

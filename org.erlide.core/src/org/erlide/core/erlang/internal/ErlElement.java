@@ -38,6 +38,7 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -597,14 +598,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "";
 		}
 		if (e instanceof OtpErlangList) {
-			final OtpErlangList ll = (OtpErlangList) e;
-			String r = "";
-			for (int i = 0; i < ll.arity(); i++) {
-				final OtpErlangObject x = ll.elementAt(i);
-				r = r + pp(x) + ", ";
-			}
-			final String rr = r.length() > 2 ? r.substring(0, r.length() - 2)
-					: "";
+			// final OtpErlangList ll = (OtpErlangList) e;
+			// String r = "";
+			// for (int i = 0; i < ll.arity(); i++) {
+			// final OtpErlangObject x = ll.elementAt(i);
+			// r = r + pp(x) + ", ";
+			// }
+			// final String rr = r.length() > 2 ? r.substring(0, r.length() - 2)
+			// : "";
+			final String rr = pp_1((OtpErlangList) e);
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
@@ -626,24 +628,41 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		}
 		String r = "";
 		for (int i = 0; i < e.arity(); i++) {
-			final OtpErlangList x = (OtpErlangList) e.elementAt(i);
-			r = r + pp_2(x) + "; ";
+			// final OtpErlangList x = (OtpErlangList) e.elementAt(i);
+			final OtpErlangTuple x = (OtpErlangTuple) e.elementAt(i);
+			r = r + pp_2(x);
 		}
-		final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
-		return rr;
+		return r;
+		// final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) :
+		// "";
+		// return rr;
 	}
 
-	protected String pp_2(OtpErlangList e) {
-		if (e == null) {
-			return "";
+	protected String pp_2(OtpErlangTuple x2) {
+		// if (x2 == null) {
+		// return "";
+		// }
+		// String r = "";
+		// for (int i = 0; i < x2.arity(); i++) {
+		// final OtpErlangObject x = x2.elementAt(i);
+		// r = r + pp(x) + ", ";
+		// }
+		// final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) :
+		// "";
+		// return rr;
+		OtpErlangObject o = x2.elementAt(5);
+		String result;
+		if (o instanceof OtpErlangAtom) {
+			OtpErlangAtom a = (OtpErlangAtom) o;
+			result = a.atomValue();
+		} else {
+			result = o.toString();
 		}
-		String r = "";
-		for (int i = 0; i < e.arity(); i++) {
-			final OtpErlangObject x = e.elementAt(i);
-			r = r + pp(x) + ", ";
+		if (result.equals("undefined")) {
+			OtpErlangAtom a = (OtpErlangAtom) x2.elementAt(1);
+			result = a.atomValue();
 		}
-		final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) : "";
-		return rr;
+		return result;
 	}
 
 }

@@ -696,8 +696,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * the element (or one of its ancestors). So returns without updating the
 	 * cache.
 	 */
-	protected synchronized void putInfos(IErlElement openedElement,
-			Map newElements) {
+//	protected synchronized void putInfos(IErlElement openedElement,
+//			Map newElements) {
 		// remove children
 		// Object existingInfo = this.cache.peekAtInfo(openedElement);
 		// if (openedElement instanceof IParent
@@ -726,7 +726,7 @@ public class ErlModelManager implements IErlModelManager {
 		// Object info = newElements.get(element);
 		// this.cache.putInfo(element, info);
 		// }
-	}
+//	}
 
 	/**
 	 * Reads the build state for the relevant project.

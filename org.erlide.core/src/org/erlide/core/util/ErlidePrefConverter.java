@@ -27,8 +27,8 @@ public class ErlidePrefConverter {
 	 *            The objects to make use of
 	 * @return the string rep
 	 */
-	public static String convert(List objects) {
-		final Iterator iter = objects.iterator();
+	public static String convert(List<Object> objects) {
+		final Iterator<Object> iter = objects.iterator();
 
 		final UStringBuffer buffer = new UStringBuffer();
 		while (iter.hasNext()) {

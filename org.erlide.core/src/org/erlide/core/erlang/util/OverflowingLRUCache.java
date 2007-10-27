@@ -160,6 +160,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * 
 	 * @return Hashtable of entries
 	 */
+	@SuppressWarnings("unchecked")
 	public java.util.Hashtable getEntryTable() {
 		return fEntryTable;
 	}
