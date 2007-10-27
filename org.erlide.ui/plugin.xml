@@ -533,8 +533,8 @@
    <extension
          point="org.eclipse.ui.navigator.viewer">
       <dragAssistant
-            class="org.erlide.ui.CommonDragAdapterAssistant2"
-            viewerId="org.erlide.ui.dragAssistant2">
+            class="org.erlide.ui.navigator.CommonDragAdapterAssistant"
+            viewerId="org.erlide.ui.views.navigator.view">
       </dragAssistant>
       <viewer
             viewerId="org.erlide.ui.views.navigator.view">
