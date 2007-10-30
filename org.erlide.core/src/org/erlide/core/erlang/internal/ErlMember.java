@@ -12,6 +12,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Vlad Dumitrescu
  */
 public abstract class ErlMember extends SourceRefElement implements IErlMember {
+	int fNameRangeStart, fNameRangeEnd;
 
 	protected ErlMember(IErlElement parent, String name) {
 		super(parent, name);
@@ -37,11 +38,20 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 		return true;
 	}
 
+	public void setNameRangeStartEnd(int start, int end) {
+		fNameRangeStart = start;
+		fNameRangeEnd = end;
+	}
+
 	public ISourceRange getNameRange() {
-		// TODO fix this
-		return new SourceRange(this.getSourceRangeStart(), this
-				.getSourceRangeEnd()
-				- this.getSourceRangeStart() + 1);
+		if (fNameRangeStart == 0 && fNameRangeEnd == 0) {
+			return new SourceRange(this.getSourceRangeStart(), this
+					.getSourceRangeEnd()
+					- this.getSourceRangeStart() + 1);
+		} else {
+			return new SourceRange(fNameRangeStart, fNameRangeEnd
+					- fNameRangeStart);
+		}
 	}
 
 }
