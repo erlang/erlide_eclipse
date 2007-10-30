@@ -18,9 +18,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ErlComment extends SourceRefElement implements IErlComment {
 
-	private boolean fIsEdoc;
+	private final boolean fIsEdoc;
 
-	private boolean fIsHeader;
+	private final boolean fIsHeader;
 
 	private int fLevel;
 
@@ -136,5 +136,10 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 			result = result + ":header";
 		}
 		return result + ">";
+	}
+
+	public void setNameRangeStartEnd(int start, int end) {
+		// TODO Auto-generated method stub
+
 	}
 }
