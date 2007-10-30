@@ -15,6 +15,8 @@
 
 -include_lib("stdlib/include/ms_transform.hrl").
 
+-export([isScanned/1]).
+
 %%-include_lib("eunit/include/eunit.hrl").
 %%-include_lib("eunit/include/eunit_test.hrl").
 
@@ -38,15 +40,15 @@ spawn_owner() ->
 
 loop() ->
     receive
-    stop ->
-                    ok;
+    	stop ->
+            ok;
         {new, Module} ->
-        _T = ets:new(Module, [ordered_set, public, named_table, {keypos, #token.offset}]),
-        ets:insert(Module, mktoken({eof, {{1, 1}, 0}}, 0, 0)),
+            _T = ets:new(Module, [ordered_set, public, named_table, {keypos, #token.offset}]),
+            ets:insert(Module, mktoken({eof, {{1, 1}, 0}}, 0, 0)),
             loop();
         _ ->
             loop()
-  end.
+    end.
 
 
 create(Module) ->
@@ -136,8 +138,10 @@ getTokenAt(Module, Offset) ->
           T
         end),
     case ets:select(Module, MS) of
-  [X] -> X;
-  [] -> hd(ets:lookup(Module, ets:last(Module)))
+        [X] -> 
+            X;
+        [] -> 
+            hd(ets:lookup(Module, ets:last(Module)))
     end.
 
 do_getTokensAround(Module, Offset) ->
@@ -150,6 +154,10 @@ getTokensAround(Module, Offset) ->
         true -> T1;
         false -> [T2, T1]
     end.
+
+isScanned(Module) ->
+    lists:member(Module, ets:all()).
+
 
 insertText(Module, Offset, Text) ->
     Z = getTokensAround(Module, Offset),
