@@ -248,11 +248,11 @@ to_expr_start([{_T, _, _V} | _Before] = L) ->
 
 %% TODO: Add description of asd/function_arity
 %%
-skip_to_fn_start([{')', _, _} | _] = L) ->
-    skip_guard(L);
-%%    skip_guard(L, L);
-skip_to_fn_start(L) ->
-    L.
+%% skip_to_fn_start([{')', _, _} | _] = L) ->
+%%     skip_guard(L);
+%% %%    skip_guard(L, L);
+%% skip_to_fn_start(L) ->
+%%     L.
 
 %% skip past guards
 skip_guard(L) ->

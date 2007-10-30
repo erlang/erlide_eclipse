@@ -1,23 +1,35 @@
+%% Author: jakob
+%% Created: Mar 23, 2006
+%% Description: TODO: Add description to erlide_open
+
 -module(erlide_noparse).
 
--compile(export_all).
+%%
+%% Exported Functions
+%%
 
 -export([parse/2]).
+-compile(export_all).
+
+%%
+%% Include files
+%%
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
--record(function, {pos, name, arity, clauses}).
--record(clause, {pos, name, args, guards, code}).
+-record(function, {pos, name, arity, clauses, name_pos}).
+-record(clause, {pos, name, args, guards, code, name_pos}).
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
 
-parse(String, Name) ->
+parse(String, ModuleName) ->
     try
-        {Toks, Comments} = scan(String, Name),
+        {Toks, Comments} = scan(String, ModuleName),
         F = split_after_dots(Toks, [], []),
         C = [split_clauses(I, [], []) || I <- F],
-        {ok, [classify_and_collect(I) || I <- C], Comments}
+        JoinedC = join_comments(Comments),
+        {ok, [classify_and_collect(I) || I <- C], JoinedC}
     catch
         error:Reason ->
             {error, Reason}
@@ -27,28 +39,25 @@ classify_and_collect([C1 | _] = C) ->
     cac(check_class(C1), C).
 
 cac(function, ClauseList) ->
-    Clauses = [#clause{pos={{Line, Offset}, Length},
-                       name=Name, args=get_args(R), guards=get_guards(R), code=[]}
-               || [#token{kind=atom, value=Name, line=Line,
-                         offset=Offset, length=Length} | R] <- ClauseList],
-    [#clause{pos=P, name=N, args=A} | _] = Clauses,
+    Clauses = [fix_clause(C) || C <- ClauseList],
+    [#clause{pos=P, name=N, args=A, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
-    #function{pos=P, name=N, arity=Arity, clauses=Clauses};
+    #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
 cac(attribute, [Attribute]) ->
     [_, #token{kind=atom, value=Name, line=Line,
                offset=Offset, length=Length},
      _, #token{value=Args} | _] = Attribute,
     #attribute{pos={{Line, Offset}, Length},
                 name=Name, args=Args};
-cac(other, [#token{value=Name, line=Line,
-                         offset=Offset, length=Length} | _]) ->
+cac(other, [[#token{value=Name, line=Line,
+                         offset=Offset, length=Length} | _] | _]) ->
     #other{pos={{Line, Offset}, Length}, name=Name}.
 
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
     attribute;
-check_class([_]) ->
+check_class(_) ->
     other.
 
 get_args(T) ->
@@ -108,16 +117,25 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
             split_clauses(TRest, [[T | ClAcc] | Acc], [])
     end.
 
-
+fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
+    #token{offset=LastOffset, length=LastLength} = lists:last(Rest),
+    PosLength = LastOffset - Offset + LastLength,
+    #clause{pos={{Line, Offset}, PosLength},
+            name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
+            name_pos={{Line, Offset}, Length}}.
+           
 
 scan(String, Name) ->
-    TN = list_to_atom("_erlide_model_"++Name),
-    erlide_scanner:create(TN),
-    erlide_scanner:insertText(TN,1,String),
-    Toks = erlide_scanner:getTokens(TN),
-    erlide_scanner:destroy(TN),
+    case erlide_scanner:isScanned(Name) of
+        false ->
+		    erlide_scanner:create(Name),
+		    erlide_scanner:insertText(Name, 1, String);
+        true ->
+            ok
+    end,
+    Toks = erlide_scanner:getTokens(Name),
     lists:partition(fun(#token{kind=comment}) -> false;
-                             (_) -> true end, Toks).
+                       (_) -> true end, Toks).
 
 %% %% fixa in line-offset i tokens
 %% %% invariant: first-line-offset alltid =< tokenoffset
@@ -136,3 +154,14 @@ scan(String, Name) ->
 %%     fix_twlo(Tokens, LRest, LOffset, Acc);
 %% fix_twlo([T = #token{offset=TOffset} | TRest], Lines, CurLOffset, Acc) ->
 %%     fix_twlo(TRest, Lines, CurLOffset, [{TOffset - CurLOffset, T} | Acc]).
+
+join_comments(L) ->
+    join_comments(L, []).
+
+join_comments([], Acc) ->
+    lists:reverse(Acc);
+join_comments([#token{offset=O, length=L}=T | [#token{offset=ONext, length=LNext} | Rest]], Acc)
+  when O+L>=ONext-2 ->
+    join_comments([T#token{offset=O, length=ONext-O+LNext} | Rest], Acc);
+join_comments([T | Rest], Acc) ->
+    join_comments(Rest, [T | Acc]).
