@@ -27,6 +27,8 @@ public interface IErlMember extends IErlElement, ISourceReference,
 
 	OtpErlangObject getParseTree();
 
+	void setNameRangeStartEnd(int start, int end);
+
 	ISourceRange getNameRange();
 
 	String getHoverHelp();
