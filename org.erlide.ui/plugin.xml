@@ -615,6 +615,7 @@
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <commonFilter
+            description="Hide non-Erlang projects"
             id="org.erlide.ui.navigator.filters.hideNonJavaProjects"
             name="Hide non-Erlang projects">
          <filterExpression>
@@ -658,7 +659,7 @@
             class="org.erlide.ui.wizards.ErlangProjectImportWizard"
             icon="icons/erlang_editor.gif"
             id="org.erlide.ui.ErlangProjectImport.wizard"
-            name="Import and convert erlang projects into erlIde projects">
+            name="Import erlang project into workspace">
          <description>
             Import an existing erlang project from the local file system into the workspace.
          </description>
