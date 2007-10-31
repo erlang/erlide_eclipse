@@ -8,7 +8,7 @@
 %% Exported Functions
 %%
 
--export([parse/2]).
+-export([parse/2]). 
 -compile(export_all).
 
 %%
@@ -25,15 +25,16 @@
 
 parse(String, ModuleName) ->
     try
-        {Toks, Comments} = scan(String, ModuleName),
-        F = split_after_dots(Toks, [], []),
-        C = [split_clauses(I, [], []) || I <- F],
-        JoinedC = join_comments(Comments),
-        {ok, [classify_and_collect(I) || I <- C], JoinedC}
+        Toks = scan(String, ModuleName),
+        {UncommentToks, Comments} = extract_comments(Toks),
+        F = split_after_dots(UncommentToks, [], []),
+        C = split_clauses(F),
+        Collected = [classify_and_collect(I) || I <- C],
+        {ok, Collected, Comments}
     catch
         error:Reason ->
             {error, Reason}
-    end.        
+    end.
 
 classify_and_collect([C1 | _] = C) ->
     cac(check_class(C1), C).
@@ -105,6 +106,9 @@ check_clause([#token{kind = ';'} | Rest]) ->
 check_clause(_) ->
     false.
 
+split_clauses(F) ->
+    [split_clauses(I, [], []) || I <- F].
+
 split_clauses([], Acc, []) ->
     reverse2(Acc);
 split_clauses([], Acc, ClAcc) ->
@@ -123,7 +127,6 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
     #clause{pos={{Line, Offset}, PosLength},
             name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
             name_pos={{Line, Offset}, Length}}.
-           
 
 scan(String, Name) ->
     case erlide_scanner:isScanned(Name) of
@@ -133,9 +136,7 @@ scan(String, Name) ->
         true ->
             ok
     end,
-    Toks = erlide_scanner:getTokens(Name),
-    lists:partition(fun(#token{kind=comment}) -> false;
-                       (_) -> true end, Toks).
+    erlide_scanner:getTokens(Name).
 
 %% %% fixa in line-offset i tokens
 %% %% invariant: first-line-offset alltid =< tokenoffset
@@ -155,13 +156,41 @@ scan(String, Name) ->
 %% fix_twlo([T = #token{offset=TOffset} | TRest], Lines, CurLOffset, Acc) ->
 %%     fix_twlo(TRest, Lines, CurLOffset, [{TOffset - CurLOffset, T} | Acc]).
 
-join_comments(L) ->
-    join_comments(L, []).
+extract_comments(Tokens) ->
+    extract_comments(Tokens, -1, [], []).
 
-join_comments([], Acc) ->
-    lists:reverse(Acc);
-join_comments([#token{offset=O, length=L}=T | [#token{offset=ONext, length=LNext} | Rest]], Acc)
-  when O+L>=ONext-2 ->
-    join_comments([T#token{offset=O, length=ONext-O+LNext} | Rest], Acc);
-join_comments([T | Rest], Acc) ->
-    join_comments(Rest, [T | Acc]).
+extract_comments([], _, TAcc, CAcc) ->
+    {lists:reverse(TAcc), lists:reverse(CAcc)};
+extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
+                         value=VNext}
+                  | Rest], NNext, TAcc,
+                 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
+    NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext},
+    extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
+extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
+    extract_comments(Rest, N+1, TAcc, [C | CAcc]);
+extract_comments([T | Rest], _, TAcc, CAcc) ->
+    extract_comments(Rest, -1, [T | TAcc], CAcc).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
