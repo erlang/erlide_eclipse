@@ -15,6 +15,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 
 /**
  * The double click strategy for the editor
@@ -29,9 +30,9 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	 */
 	protected ITextViewer fText;
 
-	protected ErlPairMatcher fPairMatcher;
+	protected ICharacterPairMatcher fPairMatcher;
 
-	public DoubleClickStrategy(ErlPairMatcher matcher) {
+	public DoubleClickStrategy(ICharacterPairMatcher matcher) {
 		fPairMatcher = matcher;
 	}
 

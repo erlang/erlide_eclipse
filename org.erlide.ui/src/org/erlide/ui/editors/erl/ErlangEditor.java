@@ -201,7 +201,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return ErlModelUtils.getScanner(this);
 	}
 
-	public ErlPairMatcher getBracketMatcher() {
+	public ICharacterPairMatcher getBracketMatcher() {
 		return ((EditorConfiguration) getSourceViewerConfiguration())
 				.getBracketMatcher();
 	}
@@ -619,18 +619,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @throws ErlModelException
 	 */
 	public IErlElement getElementAt(int offset, boolean reconcile) {
-		final IErlModule unit = getModule();
-		if (unit != null) {
+		final IErlModule module = getModule();
+		if (module != null) {
 			try {
 				if (reconcile) {
-					unit.open(null);
-					synchronized (unit) {
-						unit.reconcile(getSourceViewer().getDocument());
-						unit.open(null);
+					module.open(null);
+					synchronized (module) {
+						module.reconcile(getSourceViewer().getDocument());
+						module.open(null);
 					}
-					return unit.getElementAt(offset);
-				} else if (unit.isConsistent()) {
-					return unit.getElementAt(offset);
+					return module.getElementAt(offset);
+				} else if (module.isConsistent()) {
+					return module.getElementAt(offset);
 				}
 			} catch (Exception e) {
 			}

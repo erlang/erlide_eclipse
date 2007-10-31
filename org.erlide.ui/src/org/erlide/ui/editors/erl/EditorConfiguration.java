@@ -33,6 +33,7 @@ import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -53,7 +54,7 @@ import org.erlide.ui.util.IColorManager;
  */
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
-	private ErlangEditor editor;
+	private final ErlangEditor editor;
 
 	private ITextDoubleClickStrategy doubleClickStrategy;
 
@@ -61,9 +62,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	private ErlHighlightScanner fHighlightScanner;
 
-	private IColorManager colorManager;
+	private final IColorManager colorManager;
 
-	private ErlPairMatcher fBracketMatcher;
+	private ICharacterPairMatcher fBracketMatcher;
 
 	private InformationPresenter fOutlinePresenter;
 
@@ -123,7 +124,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		return fHighlightScanner;
 	}
 
-	public ErlPairMatcher getBracketMatcher() {
+	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
 			final IErlScanner scanner = ErlModelUtils.getScanner(editor);
 			fBracketMatcher = new ErlPairMatcher(scanner);
