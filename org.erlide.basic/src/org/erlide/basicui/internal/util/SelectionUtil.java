@@ -10,19 +10,17 @@
  *******************************************************************************/
 package org.erlide.basicui.internal.util;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class SelectionUtil {
 
-	public static List toList(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			return ((IStructuredSelection) selection).toList();
-		}
-		return null;
-	}
+	// public static List toList(ISelection selection) {
+	// if (selection instanceof IStructuredSelection) {
+	// return ((IStructuredSelection) selection).toList();
+	// }
+	// return null;
+	// }
 
 	/**
 	 * Returns the selected element if the selection consists of a single
