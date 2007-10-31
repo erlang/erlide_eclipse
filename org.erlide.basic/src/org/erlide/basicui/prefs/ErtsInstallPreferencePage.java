@@ -505,7 +505,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		final IStructuredSelection selection = (IStructuredSelection) fVMList
 				.getSelection();
 		final ErtsInstall[] vms = new ErtsInstall[selection.size()];
-		final Iterator iter = selection.iterator();
+		final Iterator<?> iter = selection.iterator();
 		int i = 0;
 		while (iter.hasNext()) {
 			vms[i] = (ErtsInstall) iter.next();
@@ -624,7 +624,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * @param types
 	 * @param ignore
 	 */
-	protected void search(File directory, List found, Set ignore,
+	protected void search(File directory, List<File> found, Set<String> ignore,
 			IProgressMonitor monitor) {
 		if (monitor.isCanceled()) {
 			return;

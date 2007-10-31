@@ -45,7 +45,7 @@ public final class PluginUtils {
 	 */
 	public static boolean allResourcesAreOfType(IStructuredSelection selection,
 			int resourceMask) {
-		final Iterator resources = selection.iterator();
+		final Iterator<?> resources = selection.iterator();
 		while (resources.hasNext()) {
 			final Object next = resources.next();
 			if (!(next instanceof IResource)) {
@@ -73,7 +73,7 @@ public final class PluginUtils {
 	 */
 	public static IStructuredSelection allResources(
 			IStructuredSelection selection, int resourceMask) {
-		final Iterator adaptables = selection.iterator();
+		final Iterator<?> adaptables = selection.iterator();
 		final List<IResource> result = new ArrayList<IResource>();
 		while (adaptables.hasNext()) {
 			final Object next = adaptables.next();

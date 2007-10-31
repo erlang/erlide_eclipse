@@ -82,7 +82,7 @@ public class ERTSsUpdater {
 	 * fDefaultVMInstallID = defaultVMId; }
 	 */
 
-	private void saveVMDefinitions(final List container) {
+	private void saveVMDefinitions(final List<?> container) {
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
 			public void run(IProgressMonitor monitor) {
