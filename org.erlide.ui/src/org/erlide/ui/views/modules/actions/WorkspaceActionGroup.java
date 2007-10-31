@@ -108,10 +108,10 @@ public class WorkspaceActionGroup extends ModuleNavigatorActionGroup {
 		boolean hasBuilder = true; // false if any project is closed or does
 		// not
 		// have builder
-		final Iterator resources = selection.iterator();
+		final Iterator<?> resources = selection.iterator();
 
-		while (resources.hasNext() &&
-				(!hasOpenProjects || !hasClosedProjects || hasBuilder || isProjectSelection)) {
+		while (resources.hasNext()
+				&& (!hasOpenProjects || !hasClosedProjects || hasBuilder || isProjectSelection)) {
 			final Object next = resources.next();
 			IProject project = null;
 
@@ -136,8 +136,9 @@ public class WorkspaceActionGroup extends ModuleNavigatorActionGroup {
 				hasBuilder = false;
 			}
 		}
-		if (!selection.isEmpty() && isProjectSelection &&
-				!ResourcesPlugin.getWorkspace().isAutoBuilding() && hasBuilder) {
+		if (!selection.isEmpty() && isProjectSelection
+				&& !ResourcesPlugin.getWorkspace().isAutoBuilding()
+				&& hasBuilder) {
 			// Allow manual incremental build only if auto build is off.
 			buildAction.selectionChanged(selection);
 			menu.add(buildAction);
