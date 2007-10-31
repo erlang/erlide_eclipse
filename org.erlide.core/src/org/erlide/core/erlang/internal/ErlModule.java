@@ -140,20 +140,24 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlElement getElementAt(int position) throws ErlModelException {
-		for (IErlElement element : fChildren) {
-			if (element instanceof IErlFunction) {
-				for (IErlElement element0 : fChildren) {
-					final ISourceReference ch = (ISourceReference) element0;
-					final ISourceRange r = ch.getSourceRange();
-					if (r.hasPosition(position)) {
-						return element0;
+		for (final IErlElement child : fChildren) {
+			if (child instanceof IErlFunction) {
+				IErlFunction f = (IErlFunction) child;
+				final IErlFunctionClause[] clauses = f.getClauses();
+				if (clauses.length == 1
+						&& f.getSourceRange().hasPosition(position)) {
+					return f;
+				}
+				for (final IErlFunctionClause c : clauses) {
+					if (c.getSourceRange().hasPosition(position)) {
+						return c;
 					}
 				}
 			} else {
-				final ISourceReference ch = (ISourceReference) element;
+				final ISourceReference ch = (ISourceReference) child;
 				final ISourceRange r = ch.getSourceRange();
 				if (r != null && r.hasPosition(position)) {
-					return element;
+					return child;
 				}
 			}
 		}
@@ -335,9 +339,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-															 * FIXME:
-															 * displayString
-															 */
+					 * FIXME:
+					 * displayString
+					 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
