@@ -51,7 +51,7 @@ import org.erlide.basicui.util.SWTUtil;
 
 /**
  * A list with a button bar. Typical buttons are 'Add', 'Remove', 'Up' and
- * 'Down'. List model is independend of widget creation. DialogFields controls
+ * 'Down'. List model is independent of widget creation. DialogFields controls
  * are: Label, List and Composite containing buttons.
  */
 public class ListDialogField<Element> extends DialogField {
@@ -118,9 +118,9 @@ public class ListDialogField<Element> extends DialogField {
 
 	private ISelection fSelectionWhenEnabled;
 
-	private IListAdapter fListAdapter;
+	private final IListAdapter<Element> fListAdapter;
 
-	private Object fParentElement;
+	private final Object fParentElement;
 
 	private ColumnsDescription fTableColumns;
 
@@ -136,8 +136,8 @@ public class ListDialogField<Element> extends DialogField {
 	 * @param lprovider
 	 *            The label provider to render the table entries
 	 */
-	public ListDialogField(IListAdapter adapter, String[] buttonLabels,
-			ILabelProvider lprovider) {
+	public ListDialogField(IListAdapter<Element> adapter,
+			String[] buttonLabels, ILabelProvider lprovider) {
 		super();
 		fListAdapter = adapter;
 
@@ -459,8 +459,8 @@ public class ListDialogField<Element> extends DialogField {
 					if (currLabel != null) {
 						fButtonControls[i] = createButton(contents, currLabel,
 								listener);
-						fButtonControls[i].setEnabled(isEnabled() &&
-								fButtonsEnabled[i]);
+						fButtonControls[i].setEnabled(isEnabled()
+								&& fButtonsEnabled[i]);
 					} else {
 						fButtonControls[i] = null;
 						createSeparator(contents);
@@ -494,8 +494,9 @@ public class ListDialogField<Element> extends DialogField {
 	 */
 	protected void handleKeyPressed(KeyEvent event) {
 		if (event.character == SWT.DEL && event.stateMask == 0) {
-			if (fRemoveButtonIndex != -1 &&
-					isButtonEnabled(fTable.getSelection(), fRemoveButtonIndex)) {
+			if (fRemoveButtonIndex != -1
+					&& isButtonEnabled(fTable.getSelection(),
+							fRemoveButtonIndex)) {
 				managedButtonPressed(fRemoveButtonIndex);
 			}
 		}
@@ -709,7 +710,7 @@ public class ListDialogField<Element> extends DialogField {
 	/**
 	 * Removes elements from the list.
 	 */
-	public void removeElements(List elements) {
+	public void removeElements(List<Element> elements) {
 		if (elements.size() > 0) {
 			fElements.removeAll(elements);
 			if (isOkToUse(fTableControl)) {
@@ -778,7 +779,7 @@ public class ListDialogField<Element> extends DialogField {
 
 	// ------- list maintenance
 
-	private List<Element> moveUp(List<Element> elements, List move) {
+	private List<Element> moveUp(List<Element> elements, List<Element> move) {
 		final int nElements = elements.size();
 		final List<Element> res = new ArrayList<Element>(nElements);
 		Element floating = null;

@@ -121,7 +121,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 	/**
 	 * Gets the checked elements.
 	 */
-	public List getCheckedElements() {
+	public List<Object> getCheckedElements() {
 		if (isOkToUse(fTableControl)) {
 			// workaround for bug 53853
 			final Object[] checked = ((CheckboxTableViewer) fTable)

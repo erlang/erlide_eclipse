@@ -381,8 +381,8 @@ public class TreeListDialogField extends DialogField {
 					if (currLabel != null) {
 						fButtonControls[i] = createButton(contents, currLabel,
 								listener);
-						fButtonControls[i].setEnabled(isEnabled() &&
-								fButtonsEnabled[i]);
+						fButtonControls[i].setEnabled(isEnabled()
+								&& fButtonsEnabled[i]);
 					} else {
 						fButtonControls[i] = null;
 						createSeparator(contents);
@@ -416,8 +416,8 @@ public class TreeListDialogField extends DialogField {
 	 */
 	protected void handleKeyPressed(KeyEvent event) {
 		if (event.character == SWT.DEL && event.stateMask == 0) {
-			if (fRemoveButtonIndex != -1 &&
-					isButtonEnabled(fTree.getSelection(), fRemoveButtonIndex)) {
+			if (fRemoveButtonIndex != -1
+					&& isButtonEnabled(fTree.getSelection(), fRemoveButtonIndex)) {
 				managedButtonPressed(fRemoveButtonIndex);
 				return;
 			}
@@ -451,7 +451,7 @@ public class TreeListDialogField extends DialogField {
 		}
 	}
 
-	protected boolean containsAttributes(List selected) {
+	protected boolean containsAttributes(List<Object> selected) {
 		for (int i = 0; i < selected.size(); i++) {
 			if (!fElements.contains(selected.get(i))) {
 				return true;
@@ -461,7 +461,7 @@ public class TreeListDialogField extends DialogField {
 	}
 
 	protected boolean getManagedButtonState(ISelection sel, int index) {
-		final List selected = getSelectedElements();
+		final List<Object> selected = getSelectedElements();
 		boolean hasAttributes = containsAttributes(selected);
 		if (index == fRemoveButtonIndex) {
 			return !selected.isEmpty() && !hasAttributes;
@@ -589,7 +589,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Adds elements at the end of the tree list.
 	 */
-	public void addElements(List elements) {
+	public void addElements(List<Object> elements) {
 		final int nElements = elements.size();
 
 		if (nElements > 0) {
@@ -660,7 +660,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Removes elements from the list.
 	 */
-	public void removeElements(List elements) {
+	public void removeElements(List<Object> elements) {
 		if (elements.size() > 0) {
 			fElements.removeAll(elements);
 			if (isOkToUse(fTreeControl)) {
@@ -793,7 +793,7 @@ public class TreeListDialogField extends DialogField {
 		moveDown(getSelectedElements());
 	}
 
-	private boolean canMoveUp(List selectedElements) {
+	private boolean canMoveUp(List<Object> selectedElements) {
 		if (isOkToUse(fTreeControl)) {
 			int nSelected = selectedElements.size();
 			final int nElements = fElements.size();
@@ -807,7 +807,7 @@ public class TreeListDialogField extends DialogField {
 		return false;
 	}
 
-	private boolean canMoveDown(List selectedElements) {
+	private boolean canMoveDown(List<Object> selectedElements) {
 		if (isOkToUse(fTreeControl)) {
 			int nSelected = selectedElements.size();
 			for (int i = fElements.size() - 1; i >= 0 && nSelected > 0; i--) {
@@ -828,7 +828,7 @@ public class TreeListDialogField extends DialogField {
 		if (isOkToUse(fTreeControl)) {
 			final ISelection selection = fTree.getSelection();
 			if (selection instanceof IStructuredSelection) {
-				final Iterator iter = ((IStructuredSelection) selection)
+				final Iterator<?> iter = ((IStructuredSelection) selection)
 						.iterator();
 				while (iter.hasNext()) {
 					result.add(iter.next());
