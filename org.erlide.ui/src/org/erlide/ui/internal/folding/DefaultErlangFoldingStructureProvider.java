@@ -326,6 +326,13 @@ public class DefaultErlangFoldingStructureProvider implements
 			fMember = member;
 		}
 
+		@Override
+		public String toString() {
+			return "ErlangElementPosition " + offset + " " + length + " "
+					+ fMember.getElementName();
+
+		}
+
 		/*
 		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
 		 */
