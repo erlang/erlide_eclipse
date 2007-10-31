@@ -243,20 +243,14 @@ public class ErlParser {
 			final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
 			final OtpErlangObject pos = ((OtpErlangTuple) el.elementAt(2))
 					.elementAt(1);
-
 			final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
 			final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
-			// ErlLogger.debug("@nam " + name.toString());
 			final OtpErlangObject val = atr.elementAt(2);
-			// ErlLogger.debug("@val " + val.toString());
 			return addAttribute(parent, pos, n, val);
 		} else if ("attribute".equals(type.atomValue())) {
 			final OtpErlangObject pos = el.elementAt(1);
-			// ErlLogger.debug("@pos " + pos.toString());
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
-			// ErlLogger.debug("@nam " + name.toString());
 			final OtpErlangObject val = el.elementAt(3);
-			// ErlLogger.debug("@val " + val.toString());
 			return addAttribute(parent, pos, name, val);
 		} else if ("function".equals(type.atomValue())) {
 			final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
@@ -264,15 +258,6 @@ public class ErlParser {
 			final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
 			final OtpErlangList clauses = (OtpErlangList) el.elementAt(4);
 			final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(5);
-
-			// try
-			// {
-			// IErlAttribute exp = parent.getAttribute("export");
-			//
-			// } catch (ErlModelException e1)
-			// {
-			// }
-
 			ErlFunction f = null;
 			try {
 				f = new ErlFunction((ErlElement) parent, name.atomValue(),
@@ -283,7 +268,6 @@ public class ErlParser {
 				final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
 						.arity()];
 				for (int i = 0; i < clauses.arity(); i++) {
-					// ErlLogger.debug(" clause: " + clauses.elementAt(i));
 					cls[i] = new ErlFunctionClause(f, "#" + i);
 					OtpErlangTuple clause = (OtpErlangTuple) (clauses
 							.elementAt(i));
@@ -291,9 +275,6 @@ public class ErlParser {
 							.elementAt(1);
 					final OtpErlangTuple cnamePos = (OtpErlangTuple) clause
 							.elementAt(6);
-
-					// OtpErlangList args = (OtpErlangList)
-					// ((OtpErlangTuple)(clauses.elementAt(i))).elementAt(2);
 					cls[i].setParseTree(clauses.elementAt(i));
 					setNamePos(cls[i], cnamePos);
 					setPos(cls[i], cpos);
