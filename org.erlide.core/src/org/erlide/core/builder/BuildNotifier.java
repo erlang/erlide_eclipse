@@ -333,7 +333,7 @@ public class BuildNotifier {
 				if (fMonitor != null) {
 					fMonitor.worked(work - fWorkDone);
 				}
-				if (ErlangBuilder.DEBUG) {
+				if (ErlangBuilder.isDebugging()) {
 					ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
 							.format(this.percentComplete));
 				}

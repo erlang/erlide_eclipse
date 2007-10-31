@@ -696,38 +696,37 @@ public class ErlModelManager implements IErlModelManager {
 	 * the element (or one of its ancestors). So returns without updating the
 	 * cache.
 	 */
-//	protected synchronized void putInfos(IErlElement openedElement,
-//			Map newElements) {
-		// remove children
-		// Object existingInfo = this.cache.peekAtInfo(openedElement);
-		// if (openedElement instanceof IParent
-		// && existingInfo instanceof ErlElementInfo)
-		// {
-		// IErlElement[] children = ((ErlElementInfo) existingInfo)
-		// .getChildren();
-		// for (int i = 0, size = children.length; i < size; ++i)
-		// {
-		// ErlElement child = (ErlElement) children[i];
-		// try
-		// {
-		// child.close();
-		// }
-		// catch (ErlModelException e)
-		// {
-		// // ignore
-		// }
-		// }
-		// }
-		//
-		// Iterator iterator = newElements.keySet().iterator();
-		// while (iterator.hasNext())
-		// {
-		// IErlElement element = (IErlElement) iterator.next();
-		// Object info = newElements.get(element);
-		// this.cache.putInfo(element, info);
-		// }
-//	}
-
+	// protected synchronized void putInfos(IErlElement openedElement,
+	// Map newElements) {
+	// remove children
+	// Object existingInfo = this.cache.peekAtInfo(openedElement);
+	// if (openedElement instanceof IParent
+	// && existingInfo instanceof ErlElementInfo)
+	// {
+	// IErlElement[] children = ((ErlElementInfo) existingInfo)
+	// .getChildren();
+	// for (int i = 0, size = children.length; i < size; ++i)
+	// {
+	// ErlElement child = (ErlElement) children[i];
+	// try
+	// {
+	// child.close();
+	// }
+	// catch (ErlModelException e)
+	// {
+	// // ignore
+	// }
+	// }
+	// }
+	//
+	// Iterator iterator = newElements.keySet().iterator();
+	// while (iterator.hasNext())
+	// {
+	// IErlElement element = (IErlElement) iterator.next();
+	// Object info = newElements.get(element);
+	// this.cache.putInfo(element, info);
+	// }
+	// }
 	/**
 	 * Reads the build state for the relevant project.
 	 */
@@ -751,7 +750,7 @@ public class ErlModelManager implements IErlModelManager {
 					if (in.readBoolean()) {
 						return ErlangBuilder.readState(project, in);
 					}
-					if (ErlangBuilder.DEBUG) {
+					if (ErlangBuilder.isDebugging()) {
 						System.out
 								.println("Saved state thinks last build failed for "
 										+ project.getName());

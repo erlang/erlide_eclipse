@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.erlide.basiccore.ErlLogger;
@@ -66,8 +67,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ErlangBuilder extends IncrementalProjectBuilder implements
 		IMarkerGenerator {
-
-	public static final boolean DEBUG = true;
 
 	protected static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".problemmarker";
@@ -151,7 +150,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// monitor = new NullProgressMonitor();
 		// }
 
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("building!...");
 		}
 		if (fInternal) {
@@ -241,7 +240,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	@SuppressWarnings("unchecked")
 	protected void fullBuild(Map args, final IProgressMonitor monitor)
 			throws CoreException {
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("full build...");
 		}
 		monitor.beginTask("Performing full build", 100);
@@ -267,7 +266,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	@SuppressWarnings("unchecked")
 	protected void incrementalBuild(Map args, IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("incr build...");
 		}
 		final IResourceDelta[] chd = delta.getAffectedChildren();
@@ -290,7 +289,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 */
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("cleaning...");
 		}
 
@@ -641,7 +640,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
 					&& isInExtCodePath(resource, my_project)) {
-				if (ErlangBuilder.DEBUG) {
+				if (isDebugging()) {
 					ErlLogger.debug("+++ Incr: " + resource.getName() + " "
 							+ delta.getKind());
 				}
@@ -688,7 +687,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& resource.getFileExtension() != null
 					&& "yrl".equals(resource.getFileExtension())
 					&& isInExtCodePath(resource, my_project)) {
-				if (ErlangBuilder.DEBUG) {
+				if (isDebugging()) {
 					ErlLogger.debug("+++ Incr: " + resource.getName() + " "
 							+ delta.getKind());
 				}
@@ -769,7 +768,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& isInExtCodePath(resource, my_project)) {
 
 				try {
-					if (ErlangBuilder.DEBUG) {
+					if (isDebugging()) {
 						ErlLogger.debug("Full: " + resource.getName());
 					}
 					// we should skip it is the beam file already exists and
@@ -790,7 +789,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					}
 					// if (timestamp > moduletimestamp)
 					{
-						if (ErlangBuilder.DEBUG) {
+						if (isDebugging()) {
 							ErlLogger.debug(" recompiling "
 									+ resource.getName() + " " + timestamp
 									+ " " + moduletimestamp);
@@ -808,7 +807,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& isInExtCodePath(resource, my_project)) {
 
 				try {
-					if (ErlangBuilder.DEBUG) {
+					if (isDebugging()) {
 						ErlLogger.debug("Full: " + resource.getName());
 					}
 					// we should skip it is the beam file already exists and
@@ -827,7 +826,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					}
 					// if (timestamp > moduletimestamp)
 					{
-						if (ErlangBuilder.DEBUG) {
+						if (isDebugging()) {
 							ErlLogger.debug(" recompiling "
 									+ resource.getName() + " " + timestamp
 									+ " " + erltimestamp);
@@ -897,7 +896,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 */
 	protected static OtpErlangObject compileFile(IProject project, String fn,
 			String outputdir, String[] includedirs) {
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
 		try {
@@ -916,15 +915,21 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
+	public static boolean isDebugging() {
+		return ErlangPlugin.getDefault().isDebugging()
+				&& Platform.getDebugOption("org.erlide.core/debug/builder")
+						.equals("true");
+	}
+
 	protected static OtpErlangObject compileYrlFile(IProject project,
 			String fn, String output) {
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
 		try {
 			final RpcResult r = BackendManager.getDefault().get(project).rpct(
 					MODULE, "compile_yrl", 30000, fn, output);
-			if (ErlangBuilder.DEBUG) {
+			if (isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
 			return r.getValue();
@@ -1035,7 +1040,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			return new IProject[0];
 		}
 
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			System.out
 					.println("\nStarting build of " + currentProject.getName() //$NON-NLS-1$
 							+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
@@ -1070,7 +1075,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			notifier.done();
 			cleanup();
 		}
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
@@ -1089,7 +1094,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			return;
 		}
 
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
@@ -1115,7 +1120,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			notifier.done();
 			cleanup();
 		}
-		if (ErlangBuilder.DEBUG) {
+		if (isDebugging()) {
 			ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
 		}
