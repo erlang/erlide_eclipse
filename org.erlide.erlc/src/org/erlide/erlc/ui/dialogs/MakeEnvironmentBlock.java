@@ -656,7 +656,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 */
 	protected void handleEnvSelectButtonSelected() {
 		// get Environment Variables from the OS
-		final Map envVariables = getNativeEnvironment();
+		final Map<Object, Object> envVariables = getNativeEnvironment();
 
 		// get Environment Variables from the table
 		final TableItem[] items = environmentTable.getTable().getItems();
@@ -804,7 +804,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		final IStructuredSelection sel = (IStructuredSelection) environmentTable
 				.getSelection();
 		environmentTable.getControl().setRedraw(false);
-		for (final Iterator i = sel.iterator(); i.hasNext();) {
+		for (final Iterator<?> i = sel.iterator(); i.hasNext();) {
 			final EnvironmentVariable var = (EnvironmentVariable) i.next();
 			environmentTable.remove(var);
 		}

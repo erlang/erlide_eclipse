@@ -70,9 +70,9 @@ public interface IMakeCommonBuildInfo {
 
 	Map<Object, Object> getExpandedEnvironment() throws CoreException;
 
-	Map getEnvironment();
+	Map<String,String> getEnvironment();
 
-	void setEnvironment(Map env) throws CoreException;
+	void setEnvironment(Map<String,String> env) throws CoreException;
 
 	boolean appendEnvironment();
 
