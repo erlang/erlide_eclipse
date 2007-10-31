@@ -55,7 +55,7 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 
 	protected WorkspaceActionGroup workspaceGroup;
 
-	private IResourceChangeListener resourceChangeListener;
+	private final IResourceChangeListener resourceChangeListener;
 
 	/**
 	 * Constructs the main action group.
@@ -94,7 +94,7 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 		if (!(PluginUtils.allResourcesAreOfType(selection, IResource.PROJECT))) {
 			return;
 		}
-		final List sel = selection.toList();
+		final List<?> sel = selection.toList();
 		final IResourceDelta delta = event.getDelta();
 		if (delta == null) {
 			return;
@@ -204,8 +204,8 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		menu
-				.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS +
-						"-end")); //$NON-NLS-1$
+				.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
+						+ "-end")); //$NON-NLS-1$
 		menu.add(new Separator());
 
 		if (selection.size() == 1) {
