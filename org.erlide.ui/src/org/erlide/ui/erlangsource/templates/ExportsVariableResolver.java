@@ -66,12 +66,13 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		final StringBuffer buff = new StringBuffer();
 
-		for (final Iterator iter = functions.iterator(); iter.hasNext();) {
+		for (final Iterator<Object[]> iter = functions.iterator(); iter
+				.hasNext();) {
 			final String[] part = buff.toString().split("\\n");
 			if (part[part.length - 1].length() > 60) {
 				buff.append("\n");
 			}
-			final Object[] element = (Object[]) iter.next();
+			final Object[] element = iter.next();
 			buff.append(element[0] + "/" + element[1]);
 			if (iter.hasNext()) {
 				buff.append(", ");
