@@ -3,11 +3,15 @@ package org.erlide.ui.wizards;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -17,6 +21,9 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
@@ -38,7 +45,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	protected java.util.List selectedTypes = new ArrayList();
 
 	// widgets
-	// private Text containerNameField;
+	private String containerNameField;
 	//
 	// private Button containerBrowseButton;
 
@@ -130,14 +137,15 @@ public abstract class ErlangWizardResourceImportPage extends
 		setErrorMessage(null); // should not initially have error message
 
 		setControl(composite);
+
 	}
 
-	/**
-	 * Creates the import destination specification controls.
-	 * 
-	 * @param parent
-	 *            the parent control
-	 */
+	// /**
+	// * Creates the import destination specification controls.
+	// *
+	// * @param parent
+	// * the parent control
+	// */
 	// protected final void createDestinationGroup(Composite parent) {
 	// // container specification group
 	// Composite containerGroup = new Composite(parent, SWT.NONE);
@@ -230,24 +238,16 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @return the full path of the container resource specified in the
 	 *         container name entry field, or <code>null</code>
 	 */
-	// protected IPath getContainerFullPath() {
-	// IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
-	//
-	// // make the path absolute to allow for optional leading slash
-	// // IPath testPath = getResourcePath();
-	//
-	// if (testPath.equals(workspace.getRoot().getFullPath())) {
-	// return testPath;
-	// }
-	//
-	// IStatus result = workspace.validatePath(testPath.toString(),
-	// IResource.PROJECT | IResource.FOLDER | IResource.ROOT);
-	// if (result.isOK()) {
-	// return testPath;
-	// }
-	//
-	// return null;
-	// }
+	protected IPath getContainerFullPath() {
+		IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
+
+		// make the path absolute to allow for optional leading slash
+		IPath testPath = getResourcePath();
+
+		return testPath;
+
+	}
+
 	/**
 	 * Returns a content provider for <code>FileSystemElement</code>s that
 	 * returns only files as children.
@@ -265,9 +265,11 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * 
 	 * @return IPath
 	 */
-	// protected IPath getResourcePath() {
-	// return getPathFromText(this.containerNameField);
-	// }
+	private IPath getResourcePath() {
+		// return getPathFromText(containerNameField);
+		return (new Path(containerNameField)).makeAbsolute();
+	}
+
 	/**
 	 * Returns this page's list of currently-specified resources to be imported.
 	 * This is the primary resource selection facility accessor for subclasses.
@@ -297,20 +299,21 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @return the container resource specified in the container name entry
 	 *         field, or <code>null</code>
 	 */
-	// protected IContainer getSpecifiedContainer() {
-	// IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
-	// IPath path = getContainerFullPath();
-	// if (workspace.getRoot().exists(path)) {
-	// IResource resource = workspace.getRoot().findMember(path);
-	// if (resource.getType() == IResource.FILE) {
-	// return null;
-	// }
-	// return (IContainer) resource;
-	//
-	// }
-	//
-	// return null;
-	// }
+	protected IContainer getSpecifiedContainer() {
+		IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
+		IPath path = getContainerFullPath();
+		if (workspace.getRoot().exists(path)) {
+			IResource resource = workspace.getRoot().findMember(path);
+			if (resource.getType() == IResource.FILE) {
+				return null;
+			}
+			return (IContainer) resource;
+
+		}
+
+		return null;
+	}
+
 	/**
 	 * Returns a collection of the currently-specified resource types for use by
 	 * the type selection dialog.
@@ -347,11 +350,11 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	// public void handleEvent(Event event) {
 	// Widget source = event.widget;
-	//
+	//	
 	// if (source == containerBrowseButton) {
 	// handleContainerBrowseButtonPressed();
 	// }
-	//
+	//	
 	// updateWidgetEnablements();
 	// }
 	/**
@@ -405,13 +408,12 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param value
 	 *            String
 	 */
-	// public void setContainerFieldValue(String value) {
-	// if (containerNameField == null) {
-	// initialContainerFieldValue = value;
-	// } else {
-	// containerNameField.setText(value);
-	// }
-	// }
+	public void setContainerFieldValue(String value) {
+		if (value != null) {
+			containerNameField = value;
+		}
+	}
+
 	/**
 	 * Update the tree to only select those elements that match the selected
 	 * types. Do nothing by default.

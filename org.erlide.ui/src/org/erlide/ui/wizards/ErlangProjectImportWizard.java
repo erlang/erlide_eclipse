@@ -85,7 +85,6 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 				protected void execute(IProgressMonitor monitor) {
 					createProject((monitor != null) ? monitor
 							: new NullProgressMonitor());
-					// TODO Copy files and folders to the new project
 
 					try {
 						final IWorkbench workbench = ErlideUIPlugin
@@ -105,7 +104,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			return false;
 		}
 
-		return true;
+		return mainPage.finish();
 	}
 
 	/**
@@ -128,7 +127,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		this.workbench = workbench;
 		this.selection = selection;
 
-		List selectedResources = IDE.computeSelectedResources(selection);
+		List<?> selectedResources = IDE.computeSelectedResources(selection);
 		if (!selectedResources.isEmpty()) {
 			this.selection = new StructuredSelection(selectedResources);
 		}
@@ -151,40 +150,40 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 	}
 
-	/**
-	 * Builds the path from the specified path list.
-	 * 
-	 * @param monitor
-	 *            The progress monitor to use
-	 * @param root
-	 *            the root worksapce
-	 * @param project
-	 *            the project
-	 * @param pathList
-	 *            the paths to create
-	 * @throws CoreException
-	 *             if a problem occures
-	 */
-	private void buildPaths(IProgressMonitor monitor, IWorkspaceRoot root,
-			IProject project) throws CoreException {
-		// Some paths are optionals (include): If we do not specify it, we get a
-		// null string and we do not need to create the directory
-		// if (null != pathList) {
-		final IPath projectPath = project.getFullPath();
-
-		// String pathElement;
-		// for (String element : pathList) {
-		// pathElement = element;
-		// final IPath pp = new Path(pathElement);
-		// // only create in-project paths
-		// if (!pp.isAbsolute() && !".".equals(pathElement)) {
-		// final IPath path = projectPath.append(pathElement);
-		// final IFolder folder = root.getFolder(path);
-		// createFolderHelper(folder, monitor);
-		// }
-		// }
-		// }
-	}
+	// /**
+	// * Builds the path from the specified path list.
+	// *
+	// * @param monitor
+	// * The progress monitor to use
+	// * @param root
+	// * the root worksapce
+	// * @param project
+	// * the project
+	// * @param pathList
+	// * the paths to create
+	// * @throws CoreException
+	// * if a problem occures
+	// */
+	// private void buildPaths(IProgressMonitor monitor, IWorkspaceRoot root,
+	// IProject project) throws CoreException {
+	// // Some paths are optionals (include): If we do not specify it, we get a
+	// // null string and we do not need to create the directory
+	// // if (null != pathList) {
+	// final IPath projectPath = project.getFullPath();
+	//
+	// // String pathElement;
+	// // for (String element : pathList) {
+	// // pathElement = element;
+	// // final IPath pp = new Path(pathElement);
+	// // // only create in-project paths
+	// // if (!pp.isAbsolute() && !".".equals(pathElement)) {
+	// // final IPath path = projectPath.append(pathElement);
+	// // final IFolder folder = root.getFolder(path);
+	// // createFolderHelper(folder, monitor);
+	// // }
+	// // }
+	// // }
+	// }
 
 	/**
 	 * Displays an error that occured during the project creation. *
@@ -251,9 +250,9 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 			// final ErlangProjectProperties bprefs = buildPage.getPrefs();
 
-			buildPaths(monitor, root, project);
-			buildPaths(monitor, root, project);
-			buildPaths(monitor, root, project);
+			// buildPaths(monitor, root, project);
+			// buildPaths(monitor, root, project);
+			// buildPaths(monitor, root, project);
 
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					project);

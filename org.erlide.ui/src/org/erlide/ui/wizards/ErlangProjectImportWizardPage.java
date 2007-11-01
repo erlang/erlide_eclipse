@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +38,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -53,6 +57,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FileSystemElement;
+import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.dialogs.IElementFilter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
@@ -69,8 +74,8 @@ public class ErlangProjectImportWizardPage extends
 	protected Button copyProjectsIntoWorkspaceCheckbox;
 
 	// protected Button createContainerStructureButton;
-	//
-	protected Button createOnlySelectedButton;
+	// //
+	// protected Button createOnlySelectedButton;
 
 	protected Button sourceBrowseButton;
 
@@ -252,12 +257,11 @@ public class ErlangProjectImportWizardPage extends
 	protected void createOptionsGroupButtons(Group optionsGroup) {
 
 		// // overwrite... checkbox
-		// overwriteExistingResourcesCheckbox = new Button(optionsGroup,
-		// SWT.CHECK);
-		// overwriteExistingResourcesCheckbox.setFont(optionsGroup.getFont());
-		// overwriteExistingResourcesCheckbox
-		// .setText(ErlangDataTransferMessages.FileImport_overwriteExisting);
-		//
+		overwriteExistingResourcesCheckbox = new Button(optionsGroup, SWT.CHECK);
+		overwriteExistingResourcesCheckbox.setFont(optionsGroup.getFont());
+		overwriteExistingResourcesCheckbox
+				.setText(ErlangDataTransferMessages.FileImport_overwriteExisting);
+
 		// // create containers radio
 		// createContainerStructureButton = new Button(optionsGroup, SWT.RADIO);
 		// createContainerStructureButton.setFont(optionsGroup.getFont());
@@ -319,6 +323,48 @@ public class ErlangProjectImportWizardPage extends
 			}
 		});
 
+		sourceNameField.addModifyListener(new ModifyListener() {
+
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+
+			private void dialogChanged() {
+				String xPath = sourceNameField.toString();
+
+				String filePath = xPath.substring(xPath.lastIndexOf("{") + 1,
+						xPath.lastIndexOf("}"));
+
+				if (filePath != null) {
+
+					File file = new File(filePath);
+					File folderfile;
+
+					setProjectName(file.getName());
+
+					// IFolder projectFolder = projectPath.getFolder(file
+					// .getName());
+					// System.out.println(projectFolder.toString());
+					//
+					// if (projectFolder.exists()) {
+					// MessageDialog dialog = new MessageDialog(new Shell(
+					// Display.getCurrent()),
+					// "Erlang project import", null,
+					// "Target already exists.",
+					// MessageDialog.ERROR, new String[] { "OK" },
+					// 0);
+					// dialog.open();
+					// // errMessage = Messages
+					// // .getString("Target already exists.");
+					// // //$NON-NLS-1$
+					// complete = false;
+					// }
+				}
+
+			}
+
+		});
+
 		sourceNameField.addKeyListener(new KeyListener() {
 			/*
 			 * @see KeyListener.keyPressed
@@ -365,6 +411,14 @@ public class ErlangProjectImportWizardPage extends
 				GridData.HORIZONTAL_ALIGN_FILL));
 		sourceBrowseButton.setFont(parent.getFont());
 		setButtonLayoutData(sourceBrowseButton);
+	}
+
+	protected void setProjectName(String name) {
+		this.projectName = name;
+		if (name.length() > 0) {
+			setContainerFieldValue(name);
+		}
+
 	}
 
 	/**
@@ -442,7 +496,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected boolean executeImportOperation(ImportOperation op) {
 		initializeOperation(op);
-
+		// FIXME
 		try {
 			getContainer().run(true, true, op);
 		} catch (InterruptedException e) {
@@ -486,9 +540,9 @@ public class ErlangProjectImportWizardPage extends
 					.getFileSystemObject());
 		}
 
-		// if (fileSystemObjects.size() > 0) {
-		// return importResources(fileSystemObjects);
-		// }
+		if (fileSystemObjects.size() > 0) {
+			return importResources(fileSystemObjects);
+		}
 
 		MessageDialog.openInformation(getContainer().getShell(),
 				ErlangDataTransferMessages.DataTransfer_information,
@@ -680,22 +734,25 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Import the resources with extensions as specified by the user
 	 */
-	// protected boolean importResources(List fileSystemObjects) {
-	// ImportOperation operation = new ImportOperation(getContainerFullPath(),
-	// getSourceDirectory(), FileSystemStructureProvider.INSTANCE,
-	// this, fileSystemObjects);
-	//
-	// operation.setContext(getShell());
-	// return executeImportOperation(operation);
-	// }
+	protected boolean importResources(List fileSystemObjects) {
+		ImportOperation operation = new ImportOperation(getContainerFullPath(),
+				getSourceDirectory(), FileSystemStructureProvider.INSTANCE,
+				this, fileSystemObjects);
+
+		operation.setContext(getShell());
+		return executeImportOperation(operation);
+	}
+
 	/**
 	 * Initializes the specified operation appropriately.
 	 */
 	protected void initializeOperation(ImportOperation op) {
+
 		// op.setCreateContainerStructure(createContainerStructureButton
 		// .getSelection());
-		// op.setOverwriteResources(overwriteExistingResourcesCheckbox
-		// .getSelection());
+		op.setCreateContainerStructure(false);
+		op.setOverwriteResources(overwriteExistingResourcesCheckbox
+				.getSelection());
 
 	}
 
@@ -752,8 +809,8 @@ public class ErlangProjectImportWizardPage extends
 			}
 
 			// radio buttons and checkboxes
-			// overwriteExistingResourcesCheckbox.setSelection(settings
-			// .getBoolean(STORE_OVERWRITE_EXISTING_RESOURCES_ID));
+			overwriteExistingResourcesCheckbox.setSelection(settings
+					.getBoolean(STORE_OVERWRITE_EXISTING_RESOURCES_ID));
 			//
 			// boolean createStructure = settings
 			// .getBoolean(STORE_CREATE_CONTAINER_STRUCTURE_ID);
