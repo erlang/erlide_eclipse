@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -57,7 +55,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FileSystemElement;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.dialogs.IElementFilter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
@@ -94,8 +91,6 @@ public class ErlangProjectImportWizardPage extends
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
 
 	private final static String STORE_OVERWRITE_EXISTING_RESOURCES_ID = "WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID";//$NON-NLS-1$
-
-	private final static String STORE_CREATE_CONTAINER_STRUCTURE_ID = "WizardFileSystemResourceImportPage1.STORE_CREATE_CONTAINER_STRUCTURE_ID";//$NON-NLS-1$
 
 	private static final String SELECT_TYPES_TITLE = ErlangDataTransferMessages.DataTransfer_selectTypes;
 
@@ -338,8 +333,6 @@ public class ErlangProjectImportWizardPage extends
 				if (filePath != null) {
 
 					File file = new File(filePath);
-					File folderfile;
-
 					setProjectName(file.getName());
 
 					// IFolder projectFolder = projectPath.getFolder(file
@@ -770,7 +763,7 @@ public class ErlangProjectImportWizardPage extends
 			return true;
 		}
 
-		Iterator itr = selectedTypes.iterator();
+		Iterator<?> itr = selectedTypes.iterator();
 		while (itr.hasNext()) {
 			if (extension.equalsIgnoreCase((String) itr.next())) {
 				return true;
@@ -922,7 +915,7 @@ public class ErlangProjectImportWizardPage extends
 	protected void setupSelectionsBasedOnSelectedTypes() {
 		// ProgressMonitorDialog dialog = new ProgressMonitorJobsDialog(
 		// getContainer().getShell());
-		final Map selectionMap = new Hashtable();
+		final Map<FileSystemElement, List<MinimizedFileSystemElement>> selectionMap = new Hashtable<FileSystemElement, List<MinimizedFileSystemElement>>();
 
 		final IElementFilter filter = new IElementFilter() {
 
@@ -931,7 +924,7 @@ public class ErlangProjectImportWizardPage extends
 				if (files == null) {
 					throw new InterruptedException();
 				}
-				Iterator filesList = files.iterator();
+				Iterator<?> filesList = files.iterator();
 				while (filesList.hasNext()) {
 					if (monitor.isCanceled()) {
 						throw new InterruptedException();
@@ -956,10 +949,11 @@ public class ErlangProjectImportWizardPage extends
 			private void checkFile(Object fileElement) {
 				MinimizedFileSystemElement file = (MinimizedFileSystemElement) fileElement;
 				if (isExportableExtension(file.getFileNameExtension())) {
-					List elements = new ArrayList();
+					List<MinimizedFileSystemElement> elements = new ArrayList<MinimizedFileSystemElement>();
 					FileSystemElement parent = file.getParent();
 					if (selectionMap.containsKey(parent)) {
-						elements = (List) selectionMap.get(parent);
+						elements = (List<MinimizedFileSystemElement>) selectionMap
+								.get(parent);
 					}
 					elements.add(file);
 					selectionMap.put(parent, elements);
@@ -1056,7 +1050,7 @@ public class ErlangProjectImportWizardPage extends
 			return false;
 		}
 
-		List resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
+		List<?> resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
