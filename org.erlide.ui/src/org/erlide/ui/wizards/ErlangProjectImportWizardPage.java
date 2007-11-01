@@ -256,6 +256,7 @@ public class ErlangProjectImportWizardPage extends
 		overwriteExistingResourcesCheckbox.setFont(optionsGroup.getFont());
 		overwriteExistingResourcesCheckbox
 				.setText(ErlangDataTransferMessages.FileImport_overwriteExisting);
+		overwriteExistingResourcesCheckbox.setEnabled(false);
 
 		// // create containers radio
 		// createContainerStructureButton = new Button(optionsGroup, SWT.RADIO);
@@ -284,6 +285,7 @@ public class ErlangProjectImportWizardPage extends
 								.getSelection();
 					}
 				});
+		copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
 
 	}
 
