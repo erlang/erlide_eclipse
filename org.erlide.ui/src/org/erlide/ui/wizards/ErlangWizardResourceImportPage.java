@@ -536,10 +536,10 @@ public abstract class ErlangWizardResourceImportPage extends
 	@Override
 	protected boolean determinePageCompletion() {
 		// Check for valid projects before making the user do anything
-		if (noOpenProjects()) {
-			setErrorMessage(IDEWorkbenchMessages.WizardImportPage_noOpenProjects);
-			return false;
-		}
+		// if (noOpenProjects()) {
+		// setErrorMessage(IDEWorkbenchMessages.WizardImportPage_noOpenProjects);
+		// return false;
+		// }
 		return super.determinePageCompletion();
 	}
 

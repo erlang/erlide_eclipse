@@ -491,7 +491,6 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected boolean executeImportOperation(ImportOperation op) {
 		initializeOperation(op);
-		// FIXME
 		try {
 			getContainer().run(true, true, op);
 		} catch (InterruptedException e) {
