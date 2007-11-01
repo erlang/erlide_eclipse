@@ -37,7 +37,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 
 	protected int fAnchor;
 
-	public ErlPairMatcher(IErlScanner scanner) {
+	private ErlPairMatcher(IErlScanner scanner) {
 		fScanner = scanner;
 	}
 

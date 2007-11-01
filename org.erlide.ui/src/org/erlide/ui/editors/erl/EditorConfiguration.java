@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -126,8 +125,11 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
-			final IErlScanner scanner = ErlModelUtils.getScanner(editor);
-			fBracketMatcher = new ErlPairMatcher(scanner);
+			// TODO: get the ErlPairMatcher to work in some way
+			// final IErlScanner scanner = ErlModelUtils.getScanner(editor);
+			// fBracketMatcher = new ErlPairMatcher(scanner);
+			fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(", ")",
+					"{", "}", "[", "]", "<<", ">>" });
 		}
 		return fBracketMatcher;
 	}
