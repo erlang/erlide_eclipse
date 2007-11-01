@@ -579,11 +579,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-      <dragAssistant
-            class="org.erlide.ui.navigator.CommonDragAdapterAssistant"
-            viewerId="org.erlide.ui.views.navigator.view">
-      </dragAssistant>
-      <viewer
+       <viewer
             viewerId="org.erlide.ui.views.navigator.view">
       </viewer>
       <viewerContentBinding
