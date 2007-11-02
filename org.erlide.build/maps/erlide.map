@@ -1,11 +1,12 @@
 
-feature@org.erlide=SVN=tags/REL-0.3.34,https://erlidesvn.sourceforge.net/svnroot/erlide,,org.erlide
+feature@org.erlide=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide
 
-plugin@org.erlide.core=SVN=tags/REL-0.3.34,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-core
-plugin@org.erlide.basicui=SVN=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-basic-ui
-plugin@org.erlide.jinterface=SVN=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-jinterface
-plugin@org.erlide.launching=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-launching
-plugin@org.erlide.ui=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-ui
-plugin@org.erlide.help=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-help
-plugin@org.erlide.erlc=HEAD,https://erlidesvn.sourceforge.net/svnroot/erlide,,erlide/erlide-erlc
+plugin@org.erlide.core=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.core
+plugin@org.erlide.basic=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.basic
+plugin@org.erlide.jinterface=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.jinterface
+plugin@org.erlide.launching=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.launching
+plugin@org.erlide.ui=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.ui
+plugin@org.erlide.help=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.help
+plugin@org.erlide.erlc=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.erlc
+plugin@org.erlide.debug.ui=SVN,trunk,https://erlide.svn.sourceforge.net/svnroot/erlide,,org.erlide.debug.ui
 

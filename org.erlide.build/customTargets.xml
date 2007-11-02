@@ -27,7 +27,9 @@
   <!-- ===================================================================== -->
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <property name="mapsCheckoutTag" value="HEAD" />
-    <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+  	<svn javahl="false">
+	  	<export srcurl="${map}" revision="${revision}" destpath="${buildDirectory}/maps" force="true"/>
+  	</svn>
   </target>
 
   <target name="checkLocalMaps">
@@ -169,7 +171,7 @@
 
   <target name="fetch.local" unless="skipLocalFetch">
     <!--<ant antfile="${customTargets}" target="preFetch"/>-->
-
+<echo message="${buildDirectory}"/>
     <copy todir="${buildDirectory}/bin">
       <fileset dir="${builder}/bin" />
     </copy>
@@ -218,6 +220,7 @@
   </target>
 
   <target name="copyDir">
+  	<echo message="${buildDirectory}"/>
     <echo message="fetch local ${todir}" />
     <copy todir="${buildDirectory}/${todir}">
       <fileset dir="${localWorkspace}/${fromdir}">

@@ -1,0 +1,80 @@
+<project default="main">
+
+	<property name="pde.build.scripts" value="${basedir}/../org.eclipse.releng.basebuilder/plugins/org.eclipse.pde.build/scripts" />
+	<!-- value below is for people using basebuilder from the command line as described in the org.eclipse.releng.eclipsebuilder readme -->
+	
+	<target name="main">
+		<!--Default values for required properties-->
+		<property name="buildDirectory" value="${basedir}/tempbuild" />
+		
+		<available file="${buildDirectory}/label.properties" property="label.properties.exists" />
+		<antcall target="create.label.properties" />
+		<property file="${buildDirectory}/label.properties" />
+		
+		<!--fetch the HEAD stream of all projects if build type specified as N-->
+		<condition property="fetchTag" value="trunk:HEAD">
+			<equals arg1="${buildType}" arg2="N" />
+		</condition>
+		<property name="fetchTag" value="" />
+
+		<condition property="maps.tag" value="trunk">
+			<equals arg1="${buildType}" arg2="N" />
+		</condition>
+
+		<condition property="maps.revision" value="HEAD">
+			<equals arg1="${buildType}" arg2="N" />
+		</condition>
+
+		<property name="buildScript" value="build.xml"/>
+		<property name="buildScriptLocation" value="${pde.build.scripts}"/>
+		
+		<!--this property required as of Eclipse 3.0 stream builds > 20031126 -->
+		<property name="buildingOSGi" value="true" />
+
+		<echo message=""/>
+		<echo message="Erlide Build Launcher"/>
+		<echo message="======================================"/>
+		<echo message=""/>
+		<echo message="Build script:     ${buildScript}"/>
+		<echo message="Script location:  ${buildScriptLocation}"/>
+		<echo message="Component:        ${component}"/>
+		<echo message="Build dir:        ${buildDirectory}"/>
+		<echo message="Eclipse Base dir: ${baseLocation}"/>
+		<echo message="buildId:          ${buildId}"/>
+		<echo message=""/>
+
+		<!--run the build for the specified component-->
+		<ant antfile="${buildScript}" dir="${buildScriptLocation}">
+			<property name="builder" value="${basedir}/${component}" />
+			<property name="builderBaseDir" value="${basedir}" />
+		</ant>
+	</target>
+	
+	<target name="create.label.properties" unless="label.properties.exists">
+			<mkdir dir="${buildDirectory}" />
+			<tstamp/>
+			<property name="date" value="${DSTAMP}" />
+			<property name="time" value="${TSTAMP}" />
+			<property name="timestamp" value="${date}${time}" />
+			<property name="buildType" value="I" />
+			<property name="buildId" value="${buildType}${date}" />
+
+			<!--this naming convention used by php scripts on download server-->
+			<property name="buildLabel" value="${buildType}-${buildId}-${timestamp}" />
+
+			<!--store the build label information in a file-->
+			<echo file="${buildDirectory}/label.properties" append="true" >
+			buildType=${buildType}
+			</echo>
+			<echo file="${buildDirectory}/label.properties" append="true" >
+			buildId=${buildId}
+			</echo>
+			<echo file="${buildDirectory}/label.properties" append="true" >
+			timestamp=${timestamp}
+			</echo>
+			<echo file="${buildDirectory}/label.properties" append="true" >
+			buildLabel=${buildLabel}
+			</echo>
+	</target>
+		
+</project>
