@@ -27,6 +27,8 @@ public interface IErlangLaunchConfigurationAttributes {
 	String ATTR_PROJECT_NAME = "project";
 
 	// /
+	String ATTR_OTP_HOME = "otphome";
+
 	String ERTS_OTP_HOME = prefix + ".otp_home";
 
 	String DEFAULT_OTP_HOME = "";
