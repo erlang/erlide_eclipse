@@ -12,15 +12,14 @@ package org.erlide.runtime.backend.console;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.erlide.runtime.backend.IBackend;
 
 public class BackendShellManager {
 
-	private HashMap<String, BackendShell> fShells;
+	private final HashMap<String, BackendShell> fShells;
 
-	private IBackend fBackend;
+	private final IBackend fBackend;
 
 	public BackendShellManager(IBackend backend) {
 		fBackend = backend;
@@ -51,9 +50,8 @@ public class BackendShellManager {
 
 	public void dispose() {
 		final Collection<BackendShell> c = fShells.values();
-		for (final Iterator<BackendShell> iter = c.iterator(); iter.hasNext();) {
-			final BackendShell element = iter.next();
-			element.close();
+		for (final BackendShell backendShell : c) {
+			backendShell.close();
 		}
 	}
 
