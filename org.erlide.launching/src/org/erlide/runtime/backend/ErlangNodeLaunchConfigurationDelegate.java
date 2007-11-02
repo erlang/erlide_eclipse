@@ -12,6 +12,8 @@ package org.erlide.runtime.backend;
 
 import java.io.File;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
@@ -24,6 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
 public class ErlangNodeLaunchConfigurationDelegate extends
@@ -36,16 +39,52 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		// TODO define all launch config attributes
 
 		try {
+			// TODO split erts-launch for erlide needs and erlang-launch into
+			// two separate LaunchConfigurations
+
+			// We have two kind of launches to handle here
 			String label = configuration.getAttribute(
 					IProcess.ATTR_PROCESS_LABEL, "noname");
 			label = BackendManager.buildNodeName(label);
 
-			String cmdTail = " -noshell -name " + label + " -setcookie "
+			String nameAndCookie = "-name " + label + " -setcookie "
 					+ Cookie.retrieveCookie();
 
-			String cmd = configuration.getAttribute(IProcess.ATTR_CMDLINE,
-					"erl")
-					+ cmdTail;
+			// If ATTR_CMDLINE is set, it's an erts-launch
+			String cmd;
+			if (configuration.getAttribute(IProcess.ATTR_CMDLINE, "").length() > 0) {
+				// ErlIDE internal node
+				cmd = configuration.getAttribute(IProcess.ATTR_CMDLINE, "")
+						+ " -noshell " + nameAndCookie + " ";
+			} else {
+				// launch of erlang project
+				cmd = configuration.getAttribute(
+						IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME, "");
+				if (cmd.length() > 0) {
+					cmd += File.separator + "bin" + File.separator + "erl ";
+				}
+				cmd += nameAndCookie + " ";
+				String projectName = configuration.getAttribute(
+						IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME,
+						"");
+				if (projectName.length() > 0) {
+					IProject project = ResourcesPlugin.getWorkspace().getRoot()
+							.getProject(projectName);
+					ErlangProjectProperties prefs = new ErlangProjectProperties(
+							project);
+					String projOutputDir = project.getLocation().append(
+							prefs.getOutputDir()).toOSString();
+					if (projOutputDir.length() > 0) {
+						cmd += (prefs.getUsePathZ() ? "-pz" : "-pa") + " "
+								+ projOutputDir + " ";
+					}
+				}
+				String mod = getStartModule(configuration);
+				String fn = getStartFunc(configuration);
+				if (mod.length() > 0 && fn.length() > 0) {
+					cmd += "-s " + mod + " " + fn + " ";
+				}
+			}
 			ErlLogger.debug("RUN*> " + cmd);
 			final File workingDirectory = new File(".");
 			Process vm = null;
@@ -65,7 +104,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 					tries--;
 					ErlideBasicUIPlugin.showErtsPreferencesDialog(tries - 1);
 				}
-				cmd = ManagedBackend.getCmdLine() + cmdTail;
+				cmd = ManagedBackend.getCmdLine() + nameAndCookie;
 			}
 
 			if (vm == null) {
@@ -116,6 +155,10 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	public IBackend getBackend(ILaunchConfiguration configuration) {
 		// TODO use project backend
 		return BackendManager.getDefault().getIdeBackend();
+	}
+
+	protected String getAdditionalArgs(ILaunchConfiguration configuration) {
+		return "";
 	}
 
 	/* NOT USED */
