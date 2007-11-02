@@ -1,4 +1,5 @@
-feature@org.erlide=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-feature
+
+feature@org.erlide=tags/REL-0.3.34,https://erlidesvn.sourceforge.net/svnroot/erlide,,org.erlide
 
 plugin@org.erlide.core=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-core
 plugin@org.erlide.basicui=HEAD,:pserver:anonymous@erlide.cvs.sourceforge.net:/cvsroot/erlide,,erlide/erlide-basic-ui
