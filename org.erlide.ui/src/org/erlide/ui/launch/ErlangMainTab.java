@@ -55,65 +55,59 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	private Button otpPathBrowseButton;
 
 	public void createControl(Composite parent) {
-		final Font font = parent.getFont();
+		// final Font font = parent.getFont();
 
 		final Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
 		final GridLayout topLayout = new GridLayout();
 		comp.setLayout(topLayout);
-		GridData gd;
+		// GridData gd;
 
 		createProjectEditor(comp);
+		createStartFunctionEditor(comp);
+		createOtpPathEditor(comp);
 
-		final Composite widthHeightNameComp = new Composite(comp, SWT.NONE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		widthHeightNameComp.setLayoutData(gd);
-		final GridLayout widthHeightNameLayout = new GridLayout();
-		widthHeightNameLayout.marginHeight = 0;
-		widthHeightNameLayout.marginWidth = 0;
-		widthHeightNameLayout.numColumns = 4;
-		widthHeightNameComp.setLayout(widthHeightNameLayout);
+		// final Composite widthHeightNameComp = new Composite(comp, SWT.NONE);
+		// gd = new GridData(GridData.FILL_HORIZONTAL);
+		// widthHeightNameComp.setLayoutData(gd);
+		// final GridLayout widthHeightNameLayout = new GridLayout();
+		// widthHeightNameLayout.marginHeight = 0;
+		// widthHeightNameLayout.marginWidth = 0;
+		// widthHeightNameLayout.numColumns = 4;
+		// widthHeightNameComp.setLayout(widthHeightNameLayout);
+		// final Composite opComp = new Composite(comp, SWT.NONE);
+		// gd = new GridData(GridData.FILL_HORIZONTAL);
+		// opComp.setLayoutData(gd);
+		// final GridLayout opCompLayout = new GridLayout();
+		// opCompLayout.marginHeight = 0;
+		// opCompLayout.marginWidth = 0;
+		// opCompLayout.numColumns = 4;
+		// opComp.setLayout(opCompLayout);
 
-		final Label moduleLabel = new Label(widthHeightNameComp, SWT.NONE);
-		moduleLabel.setText("module");
-		moduleLabel.setFont(font);
+	}
 
-		moduleText = new Text(widthHeightNameComp, SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		moduleText.setLayoutData(gd);
-		moduleText.setFont(font);
-		moduleText.addModifyListener(fBasicModifyListener);
+	private void createOtpPathEditor(Composite parent) {
+		final Font font = parent.getFont();
+		Group group = new Group(parent, SWT.NONE);
+		group.setText("OTP Home");
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		group.setLayoutData(gd);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		group.setLayout(layout);
+		group.setFont(font);
 
-		final Label funcLabel = new Label(widthHeightNameComp, SWT.NONE);
-		funcLabel.setText("function");
-		funcLabel.setFont(font);
+		// final Label otpPathLabel = new Label(group, SWT.NONE);
+		// otpPathLabel.setText("Otp Home");
+		// otpPathLabel.setFont(font);
 
-		funcText = new Text(widthHeightNameComp, SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		funcText.setLayoutData(gd);
-		funcText.setFont(font);
-		funcText.addModifyListener(fBasicModifyListener);
-
-		final Composite opComp = new Composite(comp, SWT.NONE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		opComp.setLayoutData(gd);
-		final GridLayout opCompLayout = new GridLayout();
-		opCompLayout.marginHeight = 0;
-		opCompLayout.marginWidth = 0;
-		opCompLayout.numColumns = 4;
-		opComp.setLayout(opCompLayout);
-
-		final Label otpPathLabel = new Label(opComp, SWT.NONE);
-		otpPathLabel.setText("Otp Home");
-		otpPathLabel.setFont(font);
-
-		otpPathText = new Text(opComp, SWT.SINGLE | SWT.BORDER);
+		otpPathText = new Text(group, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		otpPathText.setLayoutData(gd);
 		otpPathText.setFont(font);
 		otpPathText.addModifyListener(fBasicModifyListener);
 
-		otpPathBrowseButton = new Button(opComp, SWT.PUSH);
+		otpPathBrowseButton = new Button(group, SWT.PUSH);
 		otpPathBrowseButton.setText("Browse...");
 		otpPathBrowseButton.setFont(font);
 		otpPathBrowseButton.addSelectionListener(new SelectionAdapter() {
@@ -124,6 +118,38 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 		});
 
+	}
+
+	private void createStartFunctionEditor(final Composite parent) {
+		final Font font = parent.getFont();
+		Group group = new Group(parent, SWT.NONE);
+		group.setText("Start function");
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		group.setLayoutData(gd);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 4;
+		group.setLayout(layout);
+		group.setFont(font);
+
+		final Label moduleLabel = new Label(group, SWT.NONE);
+		moduleLabel.setText("module");
+		moduleLabel.setFont(font);
+
+		moduleText = new Text(group, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		moduleText.setLayoutData(gd);
+		moduleText.setFont(font);
+		moduleText.addModifyListener(fBasicModifyListener);
+
+		final Label funcLabel = new Label(group, SWT.NONE);
+		funcLabel.setText("function");
+		funcLabel.setFont(font);
+
+		funcText = new Text(group, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		funcText.setLayoutData(gd);
+		funcText.setFont(font);
+		funcText.addModifyListener(fBasicModifyListener);
 	}
 
 	private void handleotpPathBrowseButtonSelected() {
