@@ -74,11 +74,11 @@ public class MinimizedFileSystemElement extends FileSystemElement {
 
 		Object fileSystemObject = getFileSystemObject();
 
-		List children = provider.getChildren(fileSystemObject);
+		List<?> children = provider.getChildren(fileSystemObject);
 		if (children == null) {
-			children = new ArrayList(1);
+			children = new ArrayList<Object>(1);
 		}
-		Iterator childrenEnum = children.iterator();
+		Iterator<?> childrenEnum = children.iterator();
 		while (childrenEnum.hasNext()) {
 			Object child = childrenEnum.next();
 

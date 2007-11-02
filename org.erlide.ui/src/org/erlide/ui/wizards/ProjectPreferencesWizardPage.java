@@ -141,11 +141,11 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		}
 	}
 
-	private String[] dirs(List list, IPath ref) {
+	private String[] dirs(List<String> list, IPath ref) {
 		final int n = ref.segmentCount();
 		final List<String> res = new ArrayList<String>(10);
-		for (final Iterator iter = list.iterator(); iter.hasNext();) {
-			final String element = (String) iter.next();
+		for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
+			final String element = iter.next();
 			IPath p = new Path(element);
 			p = p.removeLastSegments(1).removeFirstSegments(n).setDevice(null);
 			String ps = p.toString();

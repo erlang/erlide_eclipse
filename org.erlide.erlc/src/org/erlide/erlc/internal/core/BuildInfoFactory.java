@@ -121,20 +121,21 @@ public class BuildInfoFactory {
 		}
 
 		public Map<Object, Object> getExpandedEnvironment() {
-			final Map<String,String> env = getEnvironment();
+			final Map<String, String> env = getEnvironment();
 			final HashMap<Object, Object> envMap = new HashMap<Object, Object>(
 					env.entrySet().size());
-			final Iterator<Map.Entry<String, String>> iter = env.entrySet().iterator();
+			final Iterator<Map.Entry<String, String>> iter = env.entrySet()
+					.iterator();
 			final boolean win32 = Constants.OS_WIN32.equals(Platform.getOS());
 			while (iter.hasNext()) {
-				final Map.Entry<String,String> entry = iter.next();
-				String key = (String) entry.getKey();
+				final Map.Entry<String, String> entry = iter.next();
+				String key = entry.getKey();
 				if (win32) {
 					// Win32 vars are case insensitive. Uppercase everything so
 					// that (for example) "pAtH" will correctly replace "PATH"
 					key = key.toUpperCase();
 				}
-				final String value = (String) entry.getValue();
+				final String value = entry.getValue();
 				// translate any string substitution variables
 				String translated = value;
 				try {
@@ -382,11 +383,12 @@ public class BuildInfoFactory {
 			putString(ErrorParserManager.PREF_ERROR_PARSER, buf.toString());
 		}
 
-		public Map<String,String> getEnvironment() {
+		public Map<String, String> getEnvironment() {
 			return decodeMap(getString(ENVIRONMENT));
 		}
 
-		public void setEnvironment(Map<String,String> env) throws CoreException {
+		public void setEnvironment(Map<String, String> env)
+				throws CoreException {
 			putString(ENVIRONMENT, encodeMap(env));
 		}
 
@@ -454,14 +456,15 @@ public class BuildInfoFactory {
 			return map;
 		}
 
-		protected String encodeMap(Map<String,String> values) {
+		protected String encodeMap(Map<String, String> values) {
 			final StringBuffer str = new StringBuffer();
-			final Iterator<Map.Entry<String, String>> entries = values.entrySet().iterator();
+			final Iterator<Map.Entry<String, String>> entries = values
+					.entrySet().iterator();
 			while (entries.hasNext()) {
 				final Entry<String, String> entry = entries.next();
-				str.append(escapeChars((String) entry.getKey(), "=|\\", '\\')); //$NON-NLS-1$
+				str.append(escapeChars(entry.getKey(), "=|\\", '\\')); //$NON-NLS-1$
 				str.append("="); //$NON-NLS-1$
-				str.append(escapeChars((String) entry.getValue(), "|\\", '\\')); //$NON-NLS-1$
+				str.append(escapeChars(entry.getValue(), "|\\", '\\')); //$NON-NLS-1$
 				str.append("|"); //$NON-NLS-1$
 			}
 			return str.toString();

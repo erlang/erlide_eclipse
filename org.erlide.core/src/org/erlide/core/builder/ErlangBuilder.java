@@ -102,13 +102,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				lineNumber = 1;
 			}
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-
-			// There is a bug in Eclipse 3.1.1, char_start is needed if the
-			// marker
-			// shall follow changes in the document.
-			// Those we can get from IDocument, or the compiler.
-			// Or we can wait for 3.2
-
 		} catch (final CoreException e) {
 		}
 	}
@@ -139,7 +132,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {

@@ -728,7 +728,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Import the resources with extensions as specified by the user
 	 */
-	protected boolean importResources(List fileSystemObjects) {
+	protected boolean importResources(List<Object> fileSystemObjects) {
 		ImportOperation operation = new ImportOperation(getContainerFullPath(),
 				getSourceDirectory(), FileSystemStructureProvider.INSTANCE,
 				this, fileSystemObjects);
@@ -953,8 +953,7 @@ public class ErlangProjectImportWizardPage extends
 					List<MinimizedFileSystemElement> elements = new ArrayList<MinimizedFileSystemElement>();
 					FileSystemElement parent = file.getParent();
 					if (selectionMap.containsKey(parent)) {
-						elements = (List<MinimizedFileSystemElement>) selectionMap
-								.get(parent);
+						elements = selectionMap.get(parent);
 					}
 					elements.add(file);
 					selectionMap.put(parent, elements);

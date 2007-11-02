@@ -42,7 +42,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	// initial value stores
 	private String initialContainerFieldValue;
 
-	protected java.util.List selectedTypes = new ArrayList();
+	protected java.util.List<Object> selectedTypes = new ArrayList<Object>();
 
 	// widgets
 	private String containerNameField;
@@ -318,7 +318,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * Returns a collection of the currently-specified resource types for use by
 	 * the type selection dialog.
 	 */
-	protected java.util.List getTypesToImport() {
+	protected java.util.List<Object> getTypesToImport() {
 
 		return selectedTypes;
 	}
@@ -370,7 +370,7 @@ public abstract class ErlangWizardResourceImportPage extends
 
 		Object[] newSelectedTypes = dialog.getResult();
 		if (newSelectedTypes != null) { // ie.- did not press Cancel
-			this.selectedTypes = new ArrayList(newSelectedTypes.length);
+			this.selectedTypes = new ArrayList<Object>(newSelectedTypes.length);
 			for (int i = 0; i < newSelectedTypes.length; i++) {
 				this.selectedTypes.add(newSelectedTypes[i]);
 			}
