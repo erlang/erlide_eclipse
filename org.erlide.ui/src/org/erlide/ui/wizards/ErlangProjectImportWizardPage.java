@@ -285,7 +285,7 @@ public class ErlangProjectImportWizardPage extends
 								.getSelection();
 					}
 				});
-		copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+		// copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
 
 	}
 
@@ -327,10 +327,11 @@ public class ErlangProjectImportWizardPage extends
 			}
 
 			private void dialogChanged() {
-				String xPath = sourceNameField.toString();
+				Path xPath = new Path(sourceNameField.getText());
 
-				String filePath = xPath.substring(xPath.lastIndexOf("{") + 1,
-						xPath.lastIndexOf("}"));
+				String filePath = xPath.lastSegment();
+				// xPath.substring(xPath.lastIndexOf("{") + 1,
+				// xPath.lastIndexOf("}"));
 
 				if (filePath != null) {
 

@@ -11,6 +11,8 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -20,12 +22,9 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -200,19 +199,19 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 				PluginUtils.makeStatus(x));
 	}
 
-	/**
-	 * Displays an error that occured during the project creation. *
-	 * 
-	 * @param x
-	 *            details on the error
-	 */
-	private void reportError(String x) {
-		final Status status = new Status(IStatus.ERROR,
-				ErlideUIPlugin.PLUGIN_ID, 0, x, null);
-
-		ErrorDialog.openError(getShell(), x, ErlideUIPlugin
-				.getResourceString("wizards.errors.projecterrortitle"), status);
-	}
+	// /**
+	// * Displays an error that occured during the project creation. *
+	// *
+	// * @param x
+	// * details on the error
+	// */
+	// private void reportError(String x) {
+	// final Status status = new Status(IStatus.ERROR,
+	// ErlideUIPlugin.PLUGIN_ID, 0, x, null);
+	//
+	// ErrorDialog.openError(getShell(), x, ErlideUIPlugin
+	// .getResourceString("wizards.errors.projecterrortitle"), status);
+	// }
 
 	/**
 	 * This is the actual implementation for project creation.
@@ -256,6 +255,11 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					project);
+			// String[] directories = findErlDirectories();
+			// prefs.setSourceDirs(directories);
+			// monitor.worked(10);
+			// directories = findHrlDirectories();
+			// prefs.setIncludeDirs(directories);
 			// prefs.copyFrom(bprefs);
 			prefs.store();
 
@@ -270,6 +274,22 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		} finally {
 			monitor.done();
 		}
+	}
+
+	private String[] findErlDirectories() {
+		List<String> result = new ArrayList<String>();
+		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+			;
+		}
+		return result.toArray(new String[result.size()]);
+	}
+
+	private String[] findHrlDirectories() {
+		List<String> result = new ArrayList<String>();
+		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+			;
+		}
+		return result.toArray(new String[result.size()]);
 	}
 
 	/**

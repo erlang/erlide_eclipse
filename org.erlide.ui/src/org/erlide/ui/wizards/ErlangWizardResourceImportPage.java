@@ -7,10 +7,11 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -21,9 +22,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
@@ -40,7 +38,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	private IResource currentResourceSelection;
 
 	// initial value stores
-	private String initialContainerFieldValue;
+	// private String initialContainerFieldValue;
 
 	protected java.util.List<Object> selectedTypes = new ArrayList<Object>();
 
@@ -300,17 +298,15 @@ public abstract class ErlangWizardResourceImportPage extends
 	 *         field, or <code>null</code>
 	 */
 	protected IContainer getSpecifiedContainer() {
-		IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IPath path = getContainerFullPath();
-		if (workspace.getRoot().exists(path)) {
-			IResource resource = workspace.getRoot().findMember(path);
+		if (root.exists(path)) {
+			IResource resource = root.findMember(path);
 			if (resource.getType() == IResource.FILE) {
 				return null;
 			}
 			return (IContainer) resource;
-
 		}
-
 		return null;
 	}
 
@@ -365,19 +361,15 @@ public abstract class ErlangWizardResourceImportPage extends
 
 		TypeFilteringDialog dialog = new TypeFilteringDialog(getContainer()
 				.getShell(), getTypesToImport());
-
 		dialog.open();
-
 		Object[] newSelectedTypes = dialog.getResult();
 		if (newSelectedTypes != null) { // ie.- did not press Cancel
 			this.selectedTypes = new ArrayList<Object>(newSelectedTypes.length);
 			for (int i = 0; i < newSelectedTypes.length; i++) {
 				this.selectedTypes.add(newSelectedTypes[i]);
 			}
-
 			setupSelectionsBasedOnSelectedTypes();
 		}
-
 	}
 
 	/**
