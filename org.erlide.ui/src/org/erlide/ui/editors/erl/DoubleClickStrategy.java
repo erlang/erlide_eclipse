@@ -82,7 +82,9 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 					pos -= 2;
 					continue;
 				}
-				if ((c == Character.LINE_SEPARATOR) || (c == '\"')) {
+				if (c == Character.LINE_SEPARATOR
+						|| c == Character.DIRECTIONALITY_PARAGRAPH_SEPARATOR
+						|| c == '\"') {
 					break;
 				}
 				--pos;
@@ -100,7 +102,9 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
 			while (pos < length) {
 				c = doc.getChar(pos);
-				if ((c == Character.LINE_SEPARATOR) || (c == '\"')) {
+				if (c == Character.LINE_SEPARATOR
+						|| c == Character.DIRECTIONALITY_PARAGRAPH_SEPARATOR
+						|| c == '\"') {
 					break;
 				}
 				++pos;
