@@ -28,30 +28,36 @@ parse(String, ModuleName) ->
         Toks = scan(String, ModuleName),
         {UncommentToks, Comments} = extract_comments(Toks),
         F = split_after_dots(UncommentToks, [], []),
-        C = split_clauses(F),
-        Collected = [classify_and_collect(I) || I <- C],
+        Collected = [classify_and_collect(I) || I <- F],
         {ok, Collected, Comments}
     catch
         error:Reason ->
             {error, Reason}
     end.
 
-classify_and_collect([C1 | _] = C) ->
-    cac(check_class(C1), C).
+classify_and_collect(C) ->
+    cac(check_class(C), C).
 
-cac(function, ClauseList) ->
+cac(function, Tokens) ->
+    ClauseList = split_clauses(Tokens),
     Clauses = [fix_clause(C) || C <- ClauseList],
     [#clause{pos=P, name=N, args=A, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
     #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
-cac(attribute, [Attribute]) ->
-    [_, #token{kind=atom, value=Name, line=Line,
-               offset=Offset, length=Length},
-     _, #token{value=Args} | _] = Attribute,
-    #attribute{pos={{Line, Offset}, Length},
-                name=Name, args=Args};
-cac(other, [[#token{value=Name, line=Line,
-                         offset=Offset, length=Length} | _] | _]) ->
+cac(attribute, Attribute) ->
+    case Attribute of
+        [_, #token{kind=atom, value=Name, line=Line,
+                   offset=Offset, length=Length},
+         _, #token{value=Args} | _] = Attribute ->
+            #attribute{pos={{Line, Offset}, Length},
+                       name=Name, args=Args};
+        [_, #token{kind=atom, value=Name, line=Line,
+                   offset=Offset, length=Length} | _] ->
+            #attribute{pos={{Line, Offset}, Length},
+                       name=Name, args=[]}
+    end;
+cac(other, [#token{value=Name, line=Line,
+                         offset=Offset, length=Length} | _]) ->
     #other{pos={{Line, Offset}, Length}, name=Name}.
 
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
@@ -107,7 +113,7 @@ check_clause(_) ->
     false.
 
 split_clauses(F) ->
-    [split_clauses(I, [], []) || I <- F].
+    split_clauses(F, [], []).
 
 split_clauses([], Acc, []) ->
     reverse2(Acc);
