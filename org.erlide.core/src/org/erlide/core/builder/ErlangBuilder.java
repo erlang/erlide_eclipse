@@ -133,6 +133,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		// ReflectionUtils.exportClass(ErlangBuilder.class);
@@ -611,7 +612,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
-		private IProgressMonitor mon;
+		private final IProgressMonitor mon;
 
 		public ErlangDeltaVisitor(IProgressMonitor submon) {
 			mon = submon;
@@ -742,7 +743,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	class ErlangResourceVisitor implements IResourceVisitor {
 
-		private IProgressMonitor monitor;
+		private final IProgressMonitor monitor;
 
 		public ErlangResourceVisitor(IProgressMonitor subMon) {
 			monitor = subMon;
