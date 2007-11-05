@@ -48,10 +48,12 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 							IErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
 			for (IBreakpoint breakpoint : breakpoints) {
 				if (resource.equals(breakpoint.getMarker().getResource())) {
-					if (((ILineBreakpoint) breakpoint).getLineNumber() == (lineNumber + 1)) {
-						// remove
-						breakpoint.delete();
-						return;
+					if (breakpoint instanceof ILineBreakpoint) {
+						ILineBreakpoint lineBr = (ILineBreakpoint) breakpoint;
+						if (lineBr.getLineNumber() == lineNumber + 1) {
+							breakpoint.delete();
+							return;
+						}
 					}
 				}
 			}
