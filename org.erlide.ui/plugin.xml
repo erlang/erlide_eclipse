@@ -607,6 +607,10 @@
             </actionExtension>
          </includes>
       </viewerActionBinding>
+      <dragAssistant
+            class="org.erlide.ui.ErlDragAdapterAssistant"
+            viewerId="org.erlide.ui.views.navigator.view">
+      </dragAssistant>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
