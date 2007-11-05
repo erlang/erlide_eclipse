@@ -111,7 +111,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 				result = mod.hasChildren();
 			}
 		}
-		ErlLogger.debug("// hasChildren " + result);
+		// ErlLogger.debug("// hasChildren " + result);
 		return result;
 	}
 
