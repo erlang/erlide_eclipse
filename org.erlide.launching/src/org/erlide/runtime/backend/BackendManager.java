@@ -41,17 +41,17 @@ public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
 
-	private Map<String, IBackend> fLocalBackends;
+	private final Map<String, IBackend> fLocalBackends;
 
-	private Object fLocalBackendsLock = new Object();
+	private final Object fLocalBackendsLock = new Object();
 
-	private Map<String, IBackend> fRemoteBackends;
+	private final Map<String, IBackend> fRemoteBackends;
 
-	private Object fRemoteBackendsLock = new Object();
+	private final Object fRemoteBackendsLock = new Object();
 
 	protected List<IBackendListener> fListeners;
 
-	private List<Plugin> fPlugins;
+	private final List<Plugin> fPlugins;
 
 	private static final int ADDED = 1;
 
@@ -82,7 +82,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return MANAGER;
 	}
 
-	public IBackend createManaged(String name) {
+	public IBackend createManaged(String name, boolean debug) {
 		ErlLogger.debug("create managed backend " + name + ".");
 		final BackendType bt = BackendSupport.getType(IBackend.MANAGED_BACKEND);
 		final AbstractBackend b = bt.create();
@@ -90,8 +90,10 @@ public final class BackendManager implements IResourceChangeListener {
 
 		ILaunch launch = b.initialize();
 		b.connect();
-		final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
-		launch.addDebugTarget(target);
+		if (debug) {
+			final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
+			launch.addDebugTarget(target);
+		}
 
 		for (Object element0 : fPlugins) {
 			final Plugin element = (Plugin) element0;
@@ -132,7 +134,7 @@ public final class BackendManager implements IResourceChangeListener {
 				b = null;
 			}
 			if (b == null) {
-				b = createManaged(name);
+				b = createManaged(name, false);
 				fLocalBackends.put(name, b);
 				fireUpdate(b, ADDED);
 			}
@@ -168,7 +170,9 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public static boolean isDeveloper() {
-		final String dev = System.getProperty("erlide.devel");
+		// final String dev = System.getProperty("erlide.devel"); // TODO Vad i
+		// hela fridens namn????
+		final String dev = System.getenv("erlide.devel");
 		return dev != null && "true".equals(dev);
 	}
 

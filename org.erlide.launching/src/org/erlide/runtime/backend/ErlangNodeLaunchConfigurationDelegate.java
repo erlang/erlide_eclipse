@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Vlad Dumitrescu
+ *     Jakob Cederlund
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
@@ -39,8 +40,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		// TODO define all launch config attributes
 
 		try {
-			// TODO split erts-launch for erlide needs and erlang-launch into
-			// two separate LaunchConfigurations
+			// TODO split erts-launch for ErlIde needs and Erlang-launch into
+			// two separate LaunchConfigurations?
 
 			// We have two kind of launches to handle here
 			String label = configuration.getAttribute(
@@ -50,7 +51,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			String nameAndCookie = "-name " + label + " -setcookie "
 					+ Cookie.retrieveCookie();
 
-			// If ATTR_CMDLINE is set, it's an erts-launch
+			// If ATTR_CMDLINE is set, it's an launch for internal ErlIde
 			String cmd;
 			if (configuration.getAttribute(IProcess.ATTR_CMDLINE, "").length() > 0) {
 				// ErlIDE internal node
