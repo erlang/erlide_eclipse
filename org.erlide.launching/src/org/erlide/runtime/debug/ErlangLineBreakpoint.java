@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.LineBreakpoint;
 
-public class ErlangLineBreakpoint extends LineBreakpoint implements IBreakpoint {
+public class ErlangLineBreakpoint extends LineBreakpoint {
 
 	public ErlangLineBreakpoint() {
 		super();
@@ -37,8 +37,8 @@ public class ErlangLineBreakpoint extends LineBreakpoint implements IBreakpoint 
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
-				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: " +
-						resource.getName() + " [line: " + lineNumber + "]");
+				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: "
+						+ resource.getName() + " [line: " + lineNumber + "]");
 			}
 		};
 		run(getMarkerRule(resource), runnable);
