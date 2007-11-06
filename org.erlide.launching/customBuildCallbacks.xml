@@ -5,7 +5,6 @@
 <project name="Build specific targets and properties" default="noDefault">
 
   <property name="builder" value="${basedir}/../erlide-build" />
-  <taskdef name="erlang" classname="org.erlide.build.ErlcTask" classpath="${builder}/bin/" />
 
   <!-- ===================================================================== -->
   <!-- Default target                                                        -->
