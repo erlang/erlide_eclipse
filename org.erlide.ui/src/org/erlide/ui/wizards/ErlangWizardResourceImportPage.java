@@ -25,13 +25,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
-import org.eclipse.ui.internal.ide.DialogUtil;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.ide.dialogs.IElementFilter;
-import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerSorter;
+import org.erlide.ui.util.DialogUtil;
+import org.erlide.ui.util.IElementFilter;
+import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public abstract class ErlangWizardResourceImportPage extends
 		WizardDataTransferPage {
@@ -54,11 +53,12 @@ public abstract class ErlangWizardResourceImportPage extends
 	protected ResourceTreeAndListGroup selectionGroup;
 
 	// messages
-	private static final String EMPTY_FOLDER_MESSAGE = IDEWorkbenchMessages.WizardImportPage_specifyFolder;
 
-	private static final String EMPTY_PROJECT_MESSAGE = IDEWorkbenchMessages.WizardImportPage_specifyProject;
+	private static final String EMPTY_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyFolder;
 
-	private static final String INACCESSABLE_FOLDER_MESSAGE = IDEWorkbenchMessages.WizardImportPage_folderMustExist;
+	private static final String EMPTY_PROJECT_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyProject;
+
+	private static final String INACCESSABLE_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_folderMustExist;
 
 	/**
 	 * Creates an import wizard page. If the initial resource selection contains
@@ -222,7 +222,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	@Override
 	protected String getErrorDialogTitle() {
-		return IDEWorkbenchMessages.WizardImportPage_errorDialogTitle;
+		return ErlangDataTransferMessages.WizardImportPage_errorDialogTitle;
 	}
 
 	/**
@@ -505,7 +505,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * destination.
 	 */
 	protected final String getSourceConflictMessage() {
-		return (IDEWorkbenchMessages.WizardImportPage_importOnReceiver);
+		return (ErlangDataTransferMessages.WizardImportPage_importOnReceiver);
 	}
 
 	/**

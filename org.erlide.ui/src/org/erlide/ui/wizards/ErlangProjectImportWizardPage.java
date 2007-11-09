@@ -55,11 +55,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FileSystemElement;
-import org.eclipse.ui.internal.ide.dialogs.IElementFilter;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
+import org.erlide.ui.util.IElementFilter;
 
 public class ErlangProjectImportWizardPage extends
 		ErlangWizardResourceImportPage implements Listener {
