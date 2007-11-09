@@ -61,29 +61,13 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		setControl(comp);
 		final GridLayout topLayout = new GridLayout();
 		comp.setLayout(topLayout);
-		// GridData gd;
+
+		Label l = new Label(comp, SWT.NONE);
+		l.setText("*** Only for internal erlide testing! ***");
 
 		createProjectEditor(comp);
 		createStartFunctionEditor(comp);
 		createOtpPathEditor(comp);
-
-		// final Composite widthHeightNameComp = new Composite(comp, SWT.NONE);
-		// gd = new GridData(GridData.FILL_HORIZONTAL);
-		// widthHeightNameComp.setLayoutData(gd);
-		// final GridLayout widthHeightNameLayout = new GridLayout();
-		// widthHeightNameLayout.marginHeight = 0;
-		// widthHeightNameLayout.marginWidth = 0;
-		// widthHeightNameLayout.numColumns = 4;
-		// widthHeightNameComp.setLayout(widthHeightNameLayout);
-		// final Composite opComp = new Composite(comp, SWT.NONE);
-		// gd = new GridData(GridData.FILL_HORIZONTAL);
-		// opComp.setLayoutData(gd);
-		// final GridLayout opCompLayout = new GridLayout();
-		// opCompLayout.marginHeight = 0;
-		// opCompLayout.marginWidth = 0;
-		// opCompLayout.numColumns = 4;
-		// opComp.setLayout(opCompLayout);
-
 	}
 
 	private void createOtpPathEditor(Composite parent) {
