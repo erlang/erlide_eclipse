@@ -151,7 +151,7 @@ public abstract class AbstractBackend implements IBackend {
 			}
 			fConnected = tries > 0;
 
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			ErlangLaunchPlugin.log(e);
 			fConnected = false;
@@ -413,7 +413,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	private static final int EPMD_PORT = 4369;
 
-	protected void wait_for_epmd() {
+	protected void wait_for_epmd() throws BackendException {
 		// If anyone has a better solution for waiting for epmd to be up, please
 		// let me know
 		int tries = 50;
@@ -435,7 +435,11 @@ public abstract class AbstractBackend implements IBackend {
 		} while (!ok && tries > 0);
 		if (!ok) {
 			ErlLogger
-					.error("Couldn't contact epmd - erlang backend is probably not working");
+					.error("Couldn't contact epmd - erlang backend is probably not working\n"
+							+ "  Possibly your host's entry in /etc/hosts is wrong.");
+			throw new BackendException(
+					"Couldn't contact epmd - erlang backend is probably not working\n"
+							+ "  Possibly your host's entry in /etc/hosts is wrong.");
 		}
 	}
 
