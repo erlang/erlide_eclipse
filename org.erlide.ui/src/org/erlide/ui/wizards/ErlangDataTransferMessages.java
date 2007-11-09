@@ -24,6 +24,13 @@ public class ErlangDataTransferMessages extends NLS {
 	public static String DataTransfer_information;
 
 	// --- Import Wizards ---
+	// --- Import ---
+	public static String WizardImportPage_specifyFolder;
+	public static String WizardImportPage_specifyProject;
+	public static String WizardImportPage_folderMustExist;
+	public static String WizardImportPage_importOnReceiver;
+	public static String WizardImportPage_errorDialogTitle;
+
 	public static String DataTransfer_importTitle;
 
 	public static String DataTransfer_importTask;
