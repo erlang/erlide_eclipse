@@ -119,8 +119,9 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (final Plugin element : fPlugins)
+		for (final Plugin element : fPlugins) {
 			b.getCodeManager().addPlugin(element);
+		}
 		return b;
 	}
 
@@ -170,9 +171,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public static boolean isDeveloper() {
-		// final String dev = System.getProperty("erlide.devel"); // TODO Vad i
-		// hela fridens namn????
-		final String dev = System.getenv("erlide.devel");
+		final String dev = System.getProperty("erlide.devel");
 		return dev != null && "true".equals(dev);
 	}
 
