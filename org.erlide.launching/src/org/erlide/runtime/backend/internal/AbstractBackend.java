@@ -416,6 +416,7 @@ public abstract class AbstractBackend implements IBackend {
 	protected void wait_for_epmd() {
 		// If anyone has a better solution for waiting for epmd to be up, please
 		// let me know
+		int tries = 50;
 		boolean ok = false;
 		do {
 			Socket s;
@@ -430,8 +431,12 @@ public abstract class AbstractBackend implements IBackend {
 				// ErlLogger.debug("sleep............");
 			} catch (final InterruptedException e1) {
 			}
-
-		} while (!ok);
+			tries--;
+		} while (!ok && tries > 0);
+		if (!ok) {
+			ErlLogger
+					.error("Couldn't contact epmd - erlang backend is probably not working");
+		}
 	}
 
 	public OtpErlangObject receive(int timeout) throws OtpErlangExit,
