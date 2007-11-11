@@ -117,6 +117,8 @@ public class ErlangPreferencePage extends PreferencePage implements
 		new Label(group, SWT.NONE).setText("The main developers are: ");
 		new Label(group, SWT.NONE).setText("  * Vlad Dumitrescu");
 		new Label(group, SWT.NONE).setText("  * Jakob Cederlund");
+		new Label(group, SWT.NONE).setText("  * Tomas Daarstad");
+
 		new Label(group, SWT.NONE).setText("Other contributors:");
 		new Label(group, SWT.NONE).setText("  * Lukas Larsson");
 		new Label(group, SWT.NONE).setText("  * Mickaël Rémond");
