@@ -16,6 +16,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -66,6 +67,8 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 
 		pathA = new PathEditor(IPrefConstants.ERTS_PATH_A, "patha",
 				"Add a library directory to code:patha()", fieldEditorParent);
+		final List list = this.pathA.getListControl(fieldEditorParent);
+		list.setEnabled(false);
 		final Label pathaLabel = this.pathA.getLabelControl(fieldEditorParent);
 		pathaLabel.setText(ErlideBasicUIPlugin
 				.getResourceString("prefs.system.patha"));
@@ -73,6 +76,8 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 
 		pathZ = new PathEditor(IPrefConstants.ERTS_PATH_Z, "pathz",
 				"Add a library directory to code:pathz()", fieldEditorParent);
+		final List list_1 = this.pathZ.getListControl(fieldEditorParent);
+		list_1.setEnabled(false);
 		final Label pathzLabel = this.pathZ.getLabelControl(fieldEditorParent);
 		pathzLabel.setText(ErlideBasicUIPlugin
 				.getResourceString("prefs.system.pathz"));
