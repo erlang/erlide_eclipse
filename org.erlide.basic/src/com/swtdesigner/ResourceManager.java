@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.*;
 
@@ -48,6 +50,11 @@ public class ResourceManager extends SWTResourceManager {
 	 * Maps image descriptors to images
 	 */
     private static HashMap<ImageDescriptor, Image> m_DescriptorImageMap = new HashMap<ImageDescriptor, Image>();
+
+	/**
+	 * Maps images to image decorators
+	 */
+    private static HashMap<Image, HashMap<Image, Image>> m_ImageToDecoratorMap = new HashMap<Image, HashMap<Image, Image>>();
     
     /**
      * Returns an image descriptor stored in the file at the specified path relative to the specified class
@@ -87,6 +94,47 @@ public class ResourceManager extends SWTResourceManager {
         }
         return image;
     }
+
+    /**
+	 * Returns an image composed of a base image decorated by another image
+	 * @param baseImage Image The base image that should be decorated
+	 * @param decorator Image The image to decorate the base image
+	 * @param corner The corner to place decorator image
+	 * @return Image The resulting decorated image
+	 */
+	public static Image decorateImage(final Image baseImage, final Image decorator, final int corner) {
+		HashMap<Image, Image> decoratedMap = m_ImageToDecoratorMap.get(baseImage);
+		if (decoratedMap == null) {
+			decoratedMap = new HashMap<Image, Image>();
+			m_ImageToDecoratorMap.put(baseImage, decoratedMap);
+		}
+		Image result = decoratedMap.get(decorator);
+		if (result == null) {
+			final Rectangle bid = baseImage.getBounds();
+			final Rectangle did = decorator.getBounds();
+            final Point baseImageSize = new Point(bid.width, bid.height); 
+            CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() { 
+                protected void drawCompositeImage(int width, int height) { 
+                    drawImage(baseImage.getImageData(), 0, 0); 
+                    if (corner == TOP_LEFT) { 
+                        drawImage(decorator.getImageData(), 0, 0); 
+                    } else if (corner == TOP_RIGHT) { 
+                        drawImage(decorator.getImageData(), bid.width - did.width - 1, 0); 
+                    } else if (corner == BOTTOM_LEFT) { 
+                        drawImage(decorator.getImageData(), 0, bid.height - did.height - 1); 
+                    } else if (corner == BOTTOM_RIGHT) { 
+                        drawImage(decorator.getImageData(), bid.width - did.width - 1, bid.height - did.height - 1); 
+                    } 
+                } 
+                protected Point getSize() { 
+                    return baseImageSize; 
+                } 
+            }; 
+            result = compositImageDesc.createImage(); 
+			decoratedMap.put(decorator, result);
+		}
+		return result;
+	}
 
     /**
      * Dispose all of the cached images
