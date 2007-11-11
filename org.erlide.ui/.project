@@ -28,9 +28,9 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
-		<nature>org.erlide.core.erlnature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.jem.beaninfo.BeanInfoNature</nature>
+		<nature>org.erlide.core.erlnature</nature>
 	</natures>
 </projectDescription>

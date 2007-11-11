@@ -27,8 +27,8 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.erlide.core.erlnature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.erlide.core.erlnature</nature>
 	</natures>
 </projectDescription>
