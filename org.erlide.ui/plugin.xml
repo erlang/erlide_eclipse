@@ -10,7 +10,7 @@
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
             extensions="erl,hrl"
-            icon="icons/erlang_editor.gif"
+            icon="icons/erlang_srcFile.png"
             id="org.erlide.ui.editors.erl.ErlangEditor"
             name="%ErlangEditor.label"
             symbolicFontName="org.eclipse.jface.textfont">
@@ -193,7 +193,7 @@
          point="org.eclipse.ui.newWizards">
     <wizard
             name="Module"
-            icon="icons/sample.gif"
+            icon="icons/erlang_srcFile.png"
             category="org.erlide.ui.wizards.newWizards"
             class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
             id="org.erlide.ui.wizards.ErlangSourceFile">
