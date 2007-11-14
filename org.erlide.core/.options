@@ -1,0 +1,2 @@
+org.erlide.core/debug = true
+org.erlide.core/debug/builder = true
