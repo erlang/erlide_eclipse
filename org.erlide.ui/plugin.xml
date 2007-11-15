@@ -192,11 +192,11 @@
   <extension
          point="org.eclipse.ui.newWizards">
     <wizard
-            name="Module"
-            icon="icons/erlang_srcFile.png"
-            category="org.erlide.ui.wizards.newWizards"
-            class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
-            id="org.erlide.ui.wizards.ErlangSourceFile">
+          category="org.erlide.ui.wizards.newWizards"
+          class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
+          icon="icons/erlang_srcFile.png"
+          id="org.erlide.ui.wizards.ErlangSourceFile"
+          name="Module">
       </wizard>
      </extension>
      <extension
@@ -581,6 +581,40 @@
          point="org.eclipse.ui.navigator.viewer">
        <viewer
             viewerId="org.erlide.ui.views.navigator.view">
+            <popupMenu
+                allowsPlatformContributions="true"
+                id="org.erlide.ui.views.navigator.view#PopupMenu">
+             <insertionPoint name="erlideMenu1"
+             				 separator="true"/>
+             <insertionPoint name="erlideMenu2"/> 
+             <insertionPoint name="group.new"
+             				separator="true"/>
+             <insertionPoint
+                   name="group.open"
+                   separator="true"/>
+             <insertionPoint name="group.openWith"/>   
+             <insertionPoint name="group.edit"
+                   separator="true"/>   
+             <insertionPoint name="group.reorganize" />         
+             <insertionPoint
+                   name="group.port"
+                   separator="true"/>     
+             <insertionPoint
+                   name="group.build"
+                   separator="true"/> 
+             <insertionPoint
+                   name="group.generate"
+                   separator="true"/> 
+             <insertionPoint
+                   name="group.search"
+                   separator="true"/>              
+             <insertionPoint
+                   name="additions"
+                   separator="true"/>              
+             <insertionPoint
+                   name="group.properties"
+                   separator="true"/>             
+          </popupMenu>
       </viewer>
       <viewerContentBinding
             viewerId="org.erlide.ui.views.navigator.view">
@@ -664,5 +698,31 @@
             Import an existing erlang project from the local file system into the workspace.
          </description>
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.erlide.ui.objectContribution1"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.erlide.ui.actions.NewErlangModuleAction"
+               icon="icons/erlang_srcFile.png"
+               id="org.erlide.ui.wizards.NewErlangModuleAction"
+               label="New Module"
+               menubarPath="erlideMenu2">
+         </action>
+ 
+      </objectContribution>
+      <viewerContribution
+            id="org.erlide.ui.viewerContribution1"
+            targetID="org.erlide.ui.views.navigator.view#PopupMenu">
+         <action
+               class="org.erlide.ui.actions.NewErlangProjectAction"
+               icon="icons/newproject.gif"
+               id="org.erlide.ui.action1"
+               label="New Erlang Project"
+               menubarPath="erlidemenu1">
+         </action>
+      </viewerContribution>
    </extension>
 </plugin>
