@@ -702,24 +702,24 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            id="org.erlide.ui.objectContribution1"
+            id="org.erlide.ui.navigatorObjectContribution"
             objectClass="org.eclipse.core.resources.IResource">
          <action
                class="org.erlide.ui.actions.NewErlangModuleAction"
                icon="icons/erlang_NewModule.png"
-               id="org.erlide.ui.wizards.NewErlangModuleAction"
+               id="org.erlide.ui.menuModuleAction"
                label="New Module"
                menubarPath="erlideMenu2">
          </action>
  
       </objectContribution>
       <viewerContribution
-            id="org.erlide.ui.viewerContribution1"
+            id="org.erlide.ui.navigatorViewerContribution"
             targetID="org.erlide.ui.views.navigator.view#PopupMenu">
          <action
                class="org.erlide.ui.actions.NewErlangProjectAction"
                icon="icons/newproject.png"
-               id="org.erlide.ui.action1"
+               id="org.erlide.ui.menuProjectAction"
                label="New Erlang Project"
                menubarPath="erlidemenu1">
          </action>
