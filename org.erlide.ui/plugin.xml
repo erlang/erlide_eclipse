@@ -10,7 +10,7 @@
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
             extensions="erl,hrl"
-            icon="icons/erlang_srcFile.png"
+            icon="icons/erlang_srcFile.gif"
             id="org.erlide.ui.editors.erl.ErlangEditor"
             name="%ErlangEditor.label"
             symbolicFontName="org.eclipse.jface.textfont">
