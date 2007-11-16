@@ -631,6 +631,9 @@
             <contentExtension
                   pattern="org.erlide.ui.navigator.erlangContent">
             </contentExtension>
+            <contentExtension
+                  pattern="org.erlide.ui.navigator.linkHelper">
+            </contentExtension>
          </includes>
       </viewerContentBinding>
       <viewerActionBinding
@@ -724,5 +727,21 @@
                menubarPath="erlidemenu1">
          </action>
       </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="org.erlide.ui.actions.ErlangLinkHelperAction"
+            id="org.erlide.ui.navigator.linkHelper">
+         <selectionEnablement>
+            <or>
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+               </adapt>
+            </or></selectionEnablement>
+            <editorInputEnablement>
+				<instanceof value="org.eclipse.ui.IFileEditorInput"/>
+			</editorInputEnablement>
+      </linkHelper>
    </extension>
 </plugin>
