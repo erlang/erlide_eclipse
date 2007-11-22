@@ -64,6 +64,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -94,6 +95,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.TokenWindow;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
@@ -265,7 +267,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void createActions() {
 		super.createActions();
-		openAction = new OpenAction(getSite());
+		String externalModules;
+		IEditorInput input = getEditorInput();
+		if (input instanceof IFileEditorInput) {
+			IFileEditorInput fileInput = (IFileEditorInput) input;
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					fileInput.getFile().getProject());
+			externalModules = prefs.getExternalModules();
+		} else {
+			externalModules = "";
+		}
+		openAction = new OpenAction(getSite(), externalModules);
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction("org.erlide.ui.actions.open", openAction);

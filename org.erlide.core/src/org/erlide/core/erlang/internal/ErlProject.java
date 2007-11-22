@@ -103,11 +103,6 @@ public class ErlProject extends Openable implements IErlProject,
 	private IResource[] nonErlangResources;
 
 	/**
-	 * Name of file containing project classpath
-	 */
-	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
-
-	/**
 	 * Name of file containing custom project preferences
 	 */
 	public static final String PREF_FILENAME = ".eprefs"; //$NON-NLS-1$

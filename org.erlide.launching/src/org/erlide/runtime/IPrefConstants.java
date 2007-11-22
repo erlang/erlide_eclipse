@@ -66,4 +66,8 @@ public interface IPrefConstants {
 
 	String DEFAULT_USE_PATHZ = "true";
 
+	String DEFAULT_EXTERNAL_MODULES = "";
+
+	String PROJECT_EXTERNAL_MODULES = "external_modules";
+
 }

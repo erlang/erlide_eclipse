@@ -11,11 +11,11 @@
 %% Exported Functions
 %%
 -export([open_included/1,
-         open_info/2,
+         open_info/3,
          find_first_var/2,
-         get_source_from_module/1]).
+         get_source_from_module/2]).
 
-%% -define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -67,13 +67,14 @@ check_include(Tokens) ->
             end
     end.  
 
-open_info(L, W) ->
+open_info(L, W, ExternalModules) ->
     ?D({open_info, W, L}),
     {CL, CW} = erlide_text:clean_tokens(L, W),
     ?D({open_info, CW, CL}),
     case erlide_text:check_function_call(CL, CW) of
-        {ok, M, F, Rest} ->
-             {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M)}};
+        {ok, M, F, Rest} = Xx ->
+            ?D(Xx),
+            {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M, ExternalModules)}};
         {ok, F, Rest} -> {local, {F, erlide_text:guess_arity(Rest)}};
         _ ->
             case erlide_text:check_variable_macro_or_record(CL, CW) of
@@ -87,16 +88,69 @@ open_info(L, W) ->
             end
     end.
 
-get_source_from_module(Mod) ->
+get_source_from_module(Mod, ExternalModules) ->
     case catch get_source(Mod) of
         {'EXIT', _} ->
-            not_found;
+            get_source_from_external_modules(Mod, ExternalModules);
         [] ->
-            not_found;
+            get_source_from_external_modules(Mod, ExternalModules);
         Other ->
             Other
     end.
 
+get_external_modules_file(FileName) ->
+    get_external_modules_file(FileName, []).
+
+get_external_modules_file(FileName, Acc) ->
+    case file:read_file(FileName) of
+        {ok, B} ->
+            get_ext_aux(split_lines(B), Acc);
+        _ ->
+            Acc
+    end.
+
+get_ext_aux([], Acc) ->
+    Acc;
+get_ext_aux([L | Rest], Acc0) ->
+     case filename:extension(L) of
+         ".erlidex" ->
+             Acc = get_external_modules_file(L, Acc0),
+             get_ext_aux(Rest, Acc);
+         _ ->
+             get_ext_aux(Rest, [L | Acc0])
+     end.
+
+get_source_from_external_modules(Mod, ExternalModules) ->
+    ?D(ExternalModules),
+    L = get_external_modules_file(ExternalModules),
+    select_external(L, atom_to_list(Mod)).
+
+select_external([], _) ->
+    not_found;
+select_external([P | Rest], Mod) ->
+	case filename:rootname(filename:basename(P)) of
+        Mod ->
+            P;
+        _ ->
+            select_external(Rest, Mod)
+    end.
+
+split_lines(<<B/binary>>) ->
+    split_lines(binary_to_list(B), [], []).
+
+split_lines([], [], Acc) ->
+    lists:reverse(Acc);
+split_lines([], LineAcc, Acc) ->
+    split_lines([], [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\n | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\r | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([C | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [C | LineAcc], Acc).
+                                                              
 get_source(Mod) ->
     L = Mod:module_info(compile),
     {value, {source, Path}} = lists:keysearch(source, 1, L),

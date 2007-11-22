@@ -75,6 +75,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class OpenAction extends SelectionDispatchAction {
 
 	private ErlangEditor fEditor;
+	private String fExternalModules;
 
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
@@ -83,10 +84,13 @@ public class OpenAction extends SelectionDispatchAction {
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
+	 * @param externalModules
+	 *            the externalModules file that can be searched for references
+	 *            to external modules
 	 */
-	public OpenAction(IWorkbenchSite site) {
+	public OpenAction(IWorkbenchSite site, String externalModules) {
 		super(site);
-
+		fExternalModules = externalModules;
 		setText(ActionMessages.OpenAction_label);
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
@@ -94,9 +98,10 @@ public class OpenAction extends SelectionDispatchAction {
 
 	}
 
-	public OpenAction(ErlangEditor editor) {
-		this(editor.getEditorSite());
+	public OpenAction(ErlangEditor editor, String externalModules) {
+		this(editor.getEditorSite(), externalModules);
 		fEditor = editor;
+		fExternalModules = externalModules;
 		setText(ActionMessages.OpenAction_declaration_label);
 	}
 
@@ -279,7 +284,7 @@ public class OpenAction extends SelectionDispatchAction {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
 			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
-					list, window);
+					list, window, fExternalModules);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
@@ -319,7 +324,7 @@ public class OpenAction extends SelectionDispatchAction {
 					final String mod = ei.getImportModule();
 					final OtpErlangAtom a = new OtpErlangAtom(mod);
 					final OtpErlangObject res2 = b.rpcx("erlide_open",
-							"get_source_from_module", a);
+							"get_source_from_module", a, fExternalModules);
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();

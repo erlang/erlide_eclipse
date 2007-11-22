@@ -162,7 +162,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			ISourceViewer sourceViewer, String contentType) {
 		// final String partitioning =
 		// getConfiguredDocumentPartitioning(sourceViewer);
-		return new IAutoEditStrategy[] { new AutoIndentStrategy() };
+		return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
 	}
 
 	@Override

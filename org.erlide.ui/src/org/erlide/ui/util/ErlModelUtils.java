@@ -128,4 +128,9 @@ public class ErlModelUtils {
 		return null;
 	}
 
+	public static IErlFunction findFunctionFromPos(IErlModule module, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

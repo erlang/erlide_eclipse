@@ -46,7 +46,14 @@ public class ErlangProjectProperties {
 
 	private String fUsePathZ = IPrefConstants.DEFAULT_USE_PATHZ;
 
+	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
+
 	private List<IPropertyChangeListener> fListeners;
+
+	/**
+	 * Name of file containing project classpath
+	 */
+	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
 	}
@@ -62,8 +69,8 @@ public class ErlangProjectProperties {
 			return;
 		}
 
-		final File codepath = project.getFile(".codepath").getRawLocation()
-				.toFile();
+		final File codepath = project.getFile(CODEPATH_FILENAME)
+				.getRawLocation().toFile();
 		final Properties prefs = new Properties();
 		try {
 			FileInputStream stream = new FileInputStream(codepath);
@@ -92,6 +99,9 @@ public class ErlangProjectProperties {
 		fBackendNodeName = prefs.getProperty(
 				IPrefConstants.PROJECT_BACKEND_NODE_NAME,
 				IPrefConstants.DEFAULT_BACKEND_NODE_NAME);
+		fExternalModules = prefs.getProperty(
+				IPrefConstants.PROJECT_EXTERNAL_MODULES,
+				IPrefConstants.DEFAULT_EXTERNAL_MODULES);
 	}
 
 	public void store() {
@@ -111,6 +121,7 @@ public class ErlangProjectProperties {
 		prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 		prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
 		prefs.put(IPrefConstants.PROJECT_BACKEND_NODE_NAME, fBackendNodeName);
+		prefs.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
 			prefs.store(new FileOutputStream(codepath), null);
@@ -283,6 +294,14 @@ public class ErlangProjectProperties {
 
 	public void setBackendNodeName(String backendNodeName) {
 		fBackendNodeName = backendNodeName;
+	}
+
+	public void setExternalModules(String fExternalModules) {
+		this.fExternalModules = fExternalModules;
+	}
+
+	public String getExternalModules() {
+		return fExternalModules;
 	}
 
 }

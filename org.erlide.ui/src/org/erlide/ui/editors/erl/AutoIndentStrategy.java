@@ -19,6 +19,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlMember;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -33,6 +36,13 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
+
+	private final ErlangEditor fEditor;
+
+	public AutoIndentStrategy(ErlangEditor editor) {
+		super();
+		fEditor = editor;
+	}
 
 	/**
 	 * The default indent depth
@@ -65,8 +75,22 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	protected void indentAfterNewLine(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		final int offset = c.offset;
-		final String txt = d.get(0, offset);
-
+		String txt = null;
+		final IErlElement element = fEditor.getElementAt(offset, false);
+		final IErlMember member = (IErlMember) element;
+		if (member != null) {
+			int start;
+			try {
+				start = member.getSourceRange().getOffset();
+				txt = d.get(start, offset - start);
+			} catch (ErlModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (txt == null) {
+			txt = d.get(0, offset);
+		}
 		try {
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			int tabw = ErlideUIPlugin

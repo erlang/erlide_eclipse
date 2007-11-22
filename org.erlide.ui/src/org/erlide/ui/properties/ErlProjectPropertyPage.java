@@ -10,17 +10,19 @@
 package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -43,9 +45,12 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 
 	private MockupPreferenceStore mockPrefs;
 
-	private PathEditor fextinc;
+	// private PathEditor fextinc;
 
 	private Button uz;
+
+	private Text externalModules;
+	private Button externalModulesBrowse;
 
 	/**
 	 * Constructor for ErlProjectPropertyPage.
@@ -116,18 +121,76 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		include.setText(prefs.getIncludeDirsString());
 		include.addListener(SWT.Modify, nameModifyListener);
 
-		Composite composite1 = new Composite(composite, SWT.NONE);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
-		gd.heightHint = 135;
-		gd.widthHint = 459;
-		composite1.setLayoutData(gd);
-		fextinc = new PathEditor("ext include", "ext inc", "New", composite1);
-		fextinc.setPreferenceStore(mockPrefs);
-		new Label(composite, SWT.NONE);
+		createExternalModuleEditor(composite);
+
+		// Composite composite1 = new Composite(composite, SWT.NONE);
+		// gd = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		// gd.heightHint = 135;
+		// gd.widthHint = 459;
+		// composite1.setLayoutData(gd);
+		// fextinc = new PathEditor("ext include", "ext inc", "New",
+		// composite1);
+		// fextinc.setPreferenceStore(mockPrefs);
+		// new Label(composite, SWT.NONE);
 
 		setValid(testPageComplete());
 
 		return composite;
+	}
+
+	private void createExternalModuleEditor(final Composite parent) {
+		Composite composite = parent;
+		// Composite composite = new Composite(parent, SWT.NONE);
+		// GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		// composite.setLayoutData(gd);
+		// GridLayout layout = new GridLayout(2, false);
+		// composite.setLayout(layout);
+
+		String resourceString4 = "External Modules File";
+		new Label(composite, SWT.NONE).setText(resourceString4 + ":");
+		externalModules = new Text(composite, SWT.BORDER);
+		externalModules.setToolTipText("enter a list of folders");
+		// gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		// externalModules.setLayoutData(gd);
+		externalModules.setText(prefs.getExternalModules());
+		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gd.minimumWidth = 50;
+		gd.widthHint = 384;
+		externalModules.setLayoutData(gd);
+		externalModules.addListener(SWT.Modify, nameModifyListener);
+		externalModulesBrowse = new Button(composite, SWT.BORDER);
+		externalModulesBrowse.setText("Browse...");
+		// externalModulesBrowse.setLayoutData(new GridData());
+		// externalModulesBrowse.setFont(font);
+		externalModulesBrowse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent evt) {
+				handleExternalModulesBrowseSelected();
+			}
+
+		});
+	}
+
+	protected void handleExternalModulesBrowseSelected() {
+		String last = externalModules.getText();
+		// if (last.length() == 0) {
+		// last =
+		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		// }
+		if (last == null) {
+			last = ""; //$NON-NLS-1$
+		} else {
+			last = last.trim();
+		}
+		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+		dialog.setText("Select file with external modules");
+		dialog.setFileName(last);
+		dialog.setFilterExtensions(new String[] { "*.erlidex" });
+		String result = dialog.open();
+		if (result == null) {
+			return;
+		}
+		externalModules.setText(result);
 	}
 
 	@Override
@@ -142,12 +205,12 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
+		prefs.setExternalModules(externalModules.getText());
 		prefs.store();
 		return true;
 	}
 
 	private final Listener nameModifyListener = new Listener() {
-
 		public void handleEvent(Event e) {
 			setValid(testPageComplete());
 		}

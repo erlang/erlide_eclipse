@@ -39,11 +39,11 @@ import org.erlide.ui.util.IContextMenuConstants;
  */
 public class OpenEditorActionGroup extends ActionGroup {
 
-	private IWorkbenchSite fSite;
+	private final IWorkbenchSite fSite;
 
 	private boolean fIsEditorOwner;
 
-	private OpenAction fOpen;
+	private final OpenAction fOpen;
 
 	/**
 	 * Creates a new <code>OpenActionGroup</code>. The group requires that
@@ -55,7 +55,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 	 */
 	public OpenEditorActionGroup(IViewPart part) {
 		fSite = part.getSite();
-		fOpen = new OpenAction(fSite);
+		fOpen = new OpenAction(fSite, "");
 		fOpen
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		initialize(fSite.getSelectionProvider());
