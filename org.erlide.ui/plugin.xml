@@ -744,4 +744,17 @@
 			</editorInputEnablement>
       </linkHelper>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="org.erlide.ui.navigator.NavigatorProblemsDecorator"
+            id="org.erlide.ui.navigatorDecorator"
+            label="Erlang Problem Decorator"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            objectClass="org.eclipse.core.resources.IResource"
+            state="true">
+      </decorator>
+   </extension>
 </plugin>
