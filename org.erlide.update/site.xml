@@ -19,5 +19,8 @@
    <feature url="features/org.erlide_0.3.33.jar" id="org.erlide" version="0.3.33">
       <category name="Stable"/>
    </feature>
+   <feature url="features/org.erlide_0.3.36.jar" id="org.erlide" version="0.3.36">
+      <category name="Stable"/>
+   </feature>
    <category-def name="Stable" label="Stable builds"/>
 </site>
