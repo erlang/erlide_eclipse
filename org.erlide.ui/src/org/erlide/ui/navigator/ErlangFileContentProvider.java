@@ -154,6 +154,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		case IResource.ROOT:
 		case IResource.PROJECT:
 		case IResource.FOLDER:
+			viewer.refresh();
 			return true;
 		case IResource.FILE:
 			final IFile file = (IFile) source;
