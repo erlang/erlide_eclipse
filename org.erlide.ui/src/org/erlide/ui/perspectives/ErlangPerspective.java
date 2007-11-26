@@ -16,6 +16,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.erlide.ui.IErlideUIConstants;
 import org.erlide.ui.views.console.ErlangConsoleView;
 import org.erlide.ui.views.eval.LiveExpressionsView;
 import org.erlide.ui.views.processlist.ProcessListView;
@@ -64,7 +65,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		final IFolderLayout left = layout.createFolder("left",
 				IPageLayout.LEFT, (float) 0.2, editorArea);
 		// left.addView(IPageLayout.ID_RES_NAV);
-		left.addView("org.erlide.ui.views.navigator.view");
+		left.addView(IErlideUIConstants.NAVIGATOR_VIEW_ID);
 
 		final IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, (float) 0.75, editorArea);
