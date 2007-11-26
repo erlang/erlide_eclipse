@@ -103,5 +103,8 @@ public interface IErlideUIConstants {
 	String CONSOLE_ACTION_ERLANG_GROUP = "erlang_group";
 
 	String EVALUATION_GROUP = "erlang_evaluation_group";
+	
+	// The Erlang Navigator View ID
+	public static final String NAVIGATOR_VIEW_ID = "org.erlide.ui.views.navigator.view"; //$NON-NLS-1$
 
 }
