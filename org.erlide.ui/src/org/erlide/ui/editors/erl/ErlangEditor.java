@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -73,6 +74,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
+import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ContentAssistAction;
@@ -97,6 +99,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.TokenWindow;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.IErlideUIConstants;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.actions.ShowOutlineAction;
@@ -1409,6 +1412,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	public Object getSelection() {
 		return fSelection;
+	}
+
+	@Override
+	public void doSave(IProgressMonitor progressMonitor) {
+		super.doSave(progressMonitor);
+
+		// Refresh the Erlang Navigator 
+		CommonNavigator cv = (CommonNavigator) PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().findView(IErlideUIConstants.NAVIGATOR_VIEW_ID);
+		cv.getCommonViewer().refresh();
+
 	}
 
 }
