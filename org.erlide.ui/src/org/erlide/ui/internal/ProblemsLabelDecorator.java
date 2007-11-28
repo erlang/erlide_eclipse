@@ -63,7 +63,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	/*
 	 * Creates decorator with a shared image registry.
 	 *
-	 * @param registry The registry to use or <code>null</code> to use the PHP plugin's
+	 * @param registry The registry to use or <code>null</code> to use the erlide plugin's
 	 * image registry.
 	 */
 
