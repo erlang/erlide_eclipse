@@ -3,9 +3,9 @@
  */
 package org.erlide.ui.internal.folding;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.jface.text.Assert;
 import org.erlide.ui.editors.folding.IErlangFoldingPreferenceBlock;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
 
@@ -26,13 +26,13 @@ public final class ErlangFoldingStructureProviderDescriptor {
 	private static final String ID = "id"; //$NON-NLS-1$
 
 	/** The identifier of the extension. */
-	private String fId;
+	private final String fId;
 
 	/** The name of the extension. */
 	private String fName;
 
 	/** The class name of the provided <code>IJavaFoldingStructureProvider</code>. */
-	private String fClass;
+	private final String fClass;
 
 	/**
 	 * <code>true</code> if the extension specifies a custom
@@ -41,7 +41,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 	private boolean fHasPreferences;
 
 	/** The configuration element of this extension. */
-	private IConfigurationElement fElement;
+	private final IConfigurationElement fElement;
 
 	/**
 	 * Creates a new descriptor.

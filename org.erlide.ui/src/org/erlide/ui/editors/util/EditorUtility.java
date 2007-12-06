@@ -24,13 +24,13 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.Assert;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -213,8 +213,8 @@ public class EditorUtility {
 							marker = ((IFileEditorInput) input).getFile()
 									.createMarker(IMarker.TEXT);
 							marker.setAttribute(IMarker.CHAR_START, offset);
-							marker.setAttribute(IMarker.CHAR_END, offset +
-									length);
+							marker.setAttribute(IMarker.CHAR_END, offset
+									+ length);
 
 							gotoMarkerTarget.gotoMarker(marker);
 
@@ -241,8 +241,8 @@ public class EditorUtility {
 		 * Workaround: send out a text selection XXX: Needs to be improved, see
 		 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=32214
 		 */
-		if (editor != null &&
-				editor.getEditorSite().getSelectionProvider() != null) {
+		if (editor != null
+				&& editor.getEditorSite().getSelectionProvider() != null) {
 			final IEditorSite site = editor.getEditorSite();
 			if (site == null) {
 				return;
@@ -299,8 +299,8 @@ public class EditorUtility {
 				enable = ErlideUIPlugin.getDefault().getPreferenceStore()
 						.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS);
 			} else {
-				enable = enable && toggleAction.isEnabled() &&
-						toggleAction.isChecked();
+				enable = enable && toggleAction.isEnabled()
+						&& toggleAction.isChecked();
 			}
 			if (enable) {
 				if (toggleAction instanceof TextEditorAction) {
