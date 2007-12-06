@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -317,12 +316,10 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		public ErlangElementPosition(int off, int len, IErlMember member) {
 			super(off, len);
-			Assert.isNotNull(member);
 			fMember = member;
 		}
 
 		public void setMember(IErlMember member) {
-			Assert.isNotNull(member);
 			fMember = member;
 		}
 
@@ -429,7 +426,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private IElementChangedListener fElementListener;
 
-	private boolean fAllowCollapsing = false;
+	private final boolean fAllowCollapsing = false;
 
 	private boolean fCollapseHeaderComments = true;
 
@@ -548,10 +545,6 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		initializePreferences();
-
-		final IDocumentProvider provider = fEditor.getDocumentProvider();
-		final IDocument document = provider.getDocument(fEditor
-				.getEditorInput());
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
 		fModule = m;
 		if (fModule == null) {
@@ -560,11 +553,6 @@ public class DefaultErlangFoldingStructureProvider implements
 		try {
 			m.reset();
 			m.open(null);
-			// Since we are a model change listener, reconcile will fix
-			// additions
-			fAllowCollapsing = true;
-			m.reconcile(document);
-			fAllowCollapsing = false;
 		} catch (final ErlModelException x) {
 			x.printStackTrace();
 		}
@@ -957,7 +945,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			if (annotation instanceof ErlangProjectionAnnotation) {
 				final ErlangProjectionAnnotation epa = (ErlangProjectionAnnotation) annotation;
 				final Position position = model.getPosition(epa);
-				Assert.isNotNull(position);
 				List<Tuple> list = map.get(epa.getElement());
 				if (list == null) {
 					list = new ArrayList<Tuple>(2);
