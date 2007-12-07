@@ -78,30 +78,36 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			return false;
 		}
 
-		try {
-			getContainer().run(false, true, new WorkspaceModifyOperation() {
+		if (mainPage.isCopyFiles()) {
 
-				@Override
-				protected void execute(IProgressMonitor monitor) {
-					createProject((monitor != null) ? monitor
-							: new NullProgressMonitor());
+			try {
+				getContainer().run(false, true, new WorkspaceModifyOperation() {
 
-					try {
-						final IWorkbench workbench = ErlideUIPlugin
-								.getDefault().getWorkbench();
-						workbench.showPerspective(ErlangPerspective.ID,
-								workbench.getActiveWorkbenchWindow());
-					} catch (final WorkbenchException we) {
-						// ignore
+					@Override
+					protected void execute(IProgressMonitor monitor) {
+						createProject((monitor != null) ? monitor
+								: new NullProgressMonitor());
+
+						try {
+							final IWorkbench workbench = ErlideUIPlugin
+									.getDefault().getWorkbench();
+							workbench.showPerspective(ErlangPerspective.ID,
+									workbench.getActiveWorkbenchWindow());
+						} catch (final WorkbenchException we) {
+							// ignore
+						}
 					}
-				}
-			});
-		} catch (final InvocationTargetException x) {
-			reportError(x);
-			return false;
-		} catch (final InterruptedException x) {
-			reportError(x);
-			return false;
+				});
+			} catch (final InvocationTargetException x) {
+				reportError(x);
+				return false;
+			} catch (final InterruptedException x) {
+				reportError(x);
+				return false;
+			}
+		} else {
+			//mainPage.createLinkedProject();
+
 		}
 
 		return mainPage.finish();

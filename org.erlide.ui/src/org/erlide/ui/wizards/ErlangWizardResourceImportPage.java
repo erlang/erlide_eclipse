@@ -123,6 +123,7 @@ public abstract class ErlangWizardResourceImportPage extends
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
+		
 		createSourceGroup(composite);
 
 		// createDestinationGroup(composite);
@@ -535,6 +536,14 @@ public abstract class ErlangWizardResourceImportPage extends
 		return super.determinePageCompletion();
 	}
 
+	/**
+	 * @param selection
+	 */
+	public void enableSelectionGroup(boolean selection){
+		
+		selectionGroup.setAllSelections(selection);
+	
+	}
 	/**
 	 * Returns whether or not the passed workspace has any open projects
 	 * 

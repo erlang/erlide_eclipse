@@ -19,10 +19,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -54,11 +62,16 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
+import org.erlide.core.ErlangPlugin;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.util.IElementFilter;
 
 public class ErlangProjectImportWizardPage extends
@@ -85,7 +98,7 @@ public class ErlangProjectImportWizardPage extends
 	// A boolean to indicate if the user has typed anything
 	private boolean entryChanged = false;
 
-	private boolean copyFiles = false;
+	private boolean copyFiles = true;
 
 	// dialog store id constants
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
@@ -105,6 +118,10 @@ public class ErlangProjectImportWizardPage extends
 	protected static final String SOURCE_EMPTY_MESSAGE = ErlangDataTransferMessages.FileImport_sourceEmpty;
 
 	private String projectName;
+
+	protected Path projectPath;
+
+	private Composite sourceContainerGroup;
 
 	/**
 	 * Creates an instance of this class
@@ -283,9 +300,17 @@ public class ErlangProjectImportWizardPage extends
 					public void widgetSelected(SelectionEvent e) {
 						copyFiles = copyProjectsIntoWorkspaceCheckbox
 								.getSelection();
+						if(copyFiles){
+							enableButtonGroup(true);
+							enableSourceGroup(true);
+						}else{
+							enableButtonGroup(false);
+							enableSourceGroup(false);
+							
+						}
 					}
 				});
-		// copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+		copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
 
 	}
 
@@ -293,7 +318,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Create the group for creating the root directory
 	 */
 	protected void createRootDirectoryGroup(Composite parent) {
-		Composite sourceContainerGroup = new Composite(parent, SWT.NONE);
+		sourceContainerGroup = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		sourceContainerGroup.setLayout(layout);
@@ -327,9 +352,10 @@ public class ErlangProjectImportWizardPage extends
 			}
 
 			private void dialogChanged() {
-				Path xPath = new Path(sourceNameField.getText());
+				projectPath = new Path(sourceNameField.getText());
 
-				String filePath = xPath.lastSegment();
+				String filePath = projectPath.lastSegment();
+
 				// xPath.substring(xPath.lastIndexOf("{") + 1,
 				// xPath.lastIndexOf("}"));
 
@@ -472,6 +498,13 @@ public class ErlangProjectImportWizardPage extends
 		selectAllButton.setEnabled(enable);
 		deselectAllButton.setEnabled(enable);
 	}
+	
+	/**
+	 * Enable or disable the  group.
+	 */
+	protected void enableSourceGroup(boolean enable) {
+		sourceContainerGroup.setEnabled(enable);
+	}
 
 	/**
 	 * Answer a boolean indicating whether the specified source currently exists
@@ -529,14 +562,50 @@ public class ErlangProjectImportWizardPage extends
 		saveWidgetValues();
 
 		Iterator<?> resourcesEnum = getSelectedResources().iterator();
-		List<Object> fileSystemObjects = new ArrayList<Object>();
+		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		while (resourcesEnum.hasNext()) {
 			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
 					.getFileSystemObject());
 		}
 
 		if (fileSystemObjects.size() > 0) {
-			return importResources(fileSystemObjects);
+			if (copyFiles) {
+				return importResources(fileSystemObjects);
+			} else {
+
+				try {
+					getContainer().run(false, true,
+							new WorkspaceModifyOperation() {
+
+								@Override
+								protected void execute(IProgressMonitor monitor)
+										throws InvocationTargetException,
+										CoreException {
+									linkToResources(fileSystemObjects,
+											new SubProgressMonitor(monitor, 1));
+
+									try {
+										final IWorkbench workbench = ErlideUIPlugin
+												.getDefault().getWorkbench();
+										workbench
+												.showPerspective(
+														ErlangPerspective.ID,
+														workbench
+																.getActiveWorkbenchWindow());
+									} catch (final WorkbenchException we) {
+										// ignore
+									}
+								}
+							});
+				} catch (final InvocationTargetException x) {
+					System.out.println("EXCEPTION");// reportError(x);
+					return false;
+				} catch (final InterruptedException x) {
+					System.out.println("EXCEPTION");// reportError(x);
+					return false;
+				}
+				return true;
+			}
 		}
 
 		MessageDialog.openInformation(getContainer().getShell(),
@@ -544,6 +613,114 @@ public class ErlangProjectImportWizardPage extends
 				ErlangDataTransferMessages.FileImport_noneSelected);
 
 		return false;
+	}
+
+	private boolean linkToResources(List<Object> fileSystemObjects,
+			IProgressMonitor monitor) throws InvocationTargetException,
+			CoreException {
+		String projectName = getProjectName();
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IProject project = workspace.getRoot().getProject(projectName);
+
+		final IProjectDescription description = workspace
+				.newProjectDescription(projectName);
+		description.setLocation(getProjectPath());
+
+		
+		
+			final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
+			System.arraycopy(old, 0, specs, 0, old.length);
+			final ICommand command = description.newCommand();
+			command.setBuilderName(ErlangPlugin.BUILDER_ID);
+			specs[old.length] = command;
+			description.setBuildSpec(specs);
+			//project.setDescription(description, new NullProgressMonitor());
+		
+		
+		
+		//description.setBuildSpec(new ICommand[] {dasdfalkjdalkjdkasj});
+		// description.setComment(record.description.getComment());
+		// description.setDynamicReferences(record.description
+		// .getDynamicReferences());
+		description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+		
+		// description.setReferencedProjects(record.description
+		// .getReferencedProjects());
+		// record.description = description;
+
+//		//TODO -------------------------------------------------------------
+//		project.setDescription(description, new SubProgressMonitor(monitor,
+//				10));
+//
+//		monitor.worked(10);
+//		monitor.subTask(ErlideUIPlugin
+//				.getResourceString("wizards.messages.creatingfiles"));
+//
+//
+//		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+//				project);
+////		prefs.copyFrom(bprefs);
+//		prefs.store();
+//
+//		// add code path to backend
+//		final String out = project.getLocation().append(
+//				prefs.getOutputDir()).toString();
+//		BackendManager.getDefault().get(project).getCodeManager().addPath(
+//				prefs.getUsePathZ(), out);
+//		//TODO ---------------------------------------------------------------
+		
+		
+		
+		
+		// if (record.description == null) {
+		// // error case
+		// record.description = workspace.newProjectDescription(projectName);
+		// IPath locationPath = new Path(record.projectSystemFile
+		// .getAbsolutePath());
+		//
+		// // If it is under the root use the default location
+		// if (Platform.getLocation().isPrefixOf(locationPath)) {
+		// record.description.setLocation(null);
+		// } else {
+		// record.description.setLocation(locationPath);
+		// }
+		// } else {
+		// record.description.setName(projectName);
+		// }
+
+		try {
+			monitor
+					.beginTask(
+							ErlangDataTransferMessages.WizardProjectsImportPage_CreateProjectsTask,
+							100);
+			project.create(description, new SubProgressMonitor(monitor, 30));
+			project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
+					monitor, 70));
+		} catch (CoreException e) {
+			throw new InvocationTargetException(e);
+		} finally {
+			monitor.done();
+		}
+
+		// // import operation to import project files if copy checkbox is
+		// selected
+		// if (copyFiles && importSource != null) {
+		// List filesToImport = FileSystemStructureProvider.INSTANCE
+		// .getChildren(importSource);
+		// ImportOperation operation = new ImportOperation(project
+		// .getFullPath(), importSource,
+		// FileSystemStructureProvider.INSTANCE, this, filesToImport);
+		// operation.setContext(getShell());
+		// operation.setOverwriteResources(true); // need to overwrite
+		// // .project, .classpath
+		// // files
+		// operation.setCreateContainerStructure(false);
+		// operation.run(monitor);
+		// }
+
+		return true;
+
+		// return false;
 	}
 
 	/**
@@ -730,6 +907,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Import the resources with extensions as specified by the user
 	 */
 	protected boolean importResources(List<Object> fileSystemObjects) {
+
 		ImportOperation operation = new ImportOperation(getContainerFullPath(),
 				getSourceDirectory(), FileSystemStructureProvider.INSTANCE,
 				this, fileSystemObjects);
@@ -746,8 +924,7 @@ public class ErlangProjectImportWizardPage extends
 		// op.setCreateContainerStructure(createContainerStructureButton
 		// .getSelection());
 		op.setCreateContainerStructure(false);
-		op.setOverwriteResources(overwriteExistingResourcesCheckbox
-				.getSelection());
+		op.setOverwriteResources(true);
 
 	}
 
@@ -1080,6 +1257,72 @@ public class ErlangProjectImportWizardPage extends
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public boolean isCopyFiles() {
+		return this.copyFiles;
+	}
+
+	public Path getProjectPath() {
+		return this.projectPath;
+	}
+
+	// public boolean createLinkedProject (final ProjectRecord record,
+	// IProgressMonitor monitor) throws InvocationTargetException,
+	// InterruptedException {
+	// String projectName = record.getProjectName();
+	// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	// final IProject project = workspace.getRoot().getProject(projectName);
+	// if (record.description == null) {
+	// // error case
+	// record.description = workspace.newProjectDescription(projectName);
+	// IPath locationPath = new Path(record.projectSystemFile
+	// .getAbsolutePath());
+	//
+	// // If it is under the root use the default location
+	// if (Platform.getLocation().isPrefixOf(locationPath)) {
+	// record.description.setLocation(null);
+	// } else {
+	// record.description.setLocation(locationPath);
+	// }
+	// } else {
+	// record.description.setName(projectName);
+	// }
+	// // import from file system
+	// File importSource = null;
+	// try {
+	// monitor
+	// .beginTask(
+	// DataTransferMessages.WizardProjectsImportPage_CreateProjectsTask,
+	// 100);
+	// project.create(record.description, new SubProgressMonitor(monitor,
+	// 30));
+	// project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
+	// monitor, 70));
+	// } catch (CoreException e) {
+	// throw new InvocationTargetException(e);
+	// } finally {
+	// monitor.done();
+	// }
+	//
+	// // // import operation to import project files if copy checkbox is
+	// selected
+	// // if (copyFiles && importSource != null) {
+	// // List filesToImport = FileSystemStructureProvider.INSTANCE
+	// // .getChildren(importSource);
+	// // ImportOperation operation = new ImportOperation(project
+	// // .getFullPath(), importSource,
+	// // FileSystemStructureProvider.INSTANCE, this, filesToImport);
+	// // operation.setContext(getShell());
+	// // operation.setOverwriteResources(true); // need to overwrite
+	// // // .project, .classpath
+	// // // files
+	// // operation.setCreateContainerStructure(false);
+	// // operation.run(monitor);
+	// // }
+	//
+	// return true;
+	//		
+	// }
 
 	/**
 	 * Returns whether the source location conflicts with the destination
