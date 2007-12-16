@@ -67,6 +67,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 	private CheckboxTableViewer listViewer;
 
+	private static Composite folderComposite;
+
 	// height hint for viewers
 	private static int PREFERRED_HEIGHT = 150;
 
@@ -98,6 +100,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 		this.treeLabelProvider = treeLabelProvider;
 		this.listLabelProvider = listLabelProvider;
 		createContents(parent, style, useHeightHint);
+
 	}
 
 	/**
@@ -217,18 +220,18 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	protected void createContents(Composite parent, int style,
 			boolean useHeightHint) {
 		// group pane
-		Composite composite = new Composite(parent, style);
-		composite.setFont(parent.getFont());
+		folderComposite = new Composite(parent, style);
+		folderComposite.setFont(parent.getFont());
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.makeColumnsEqualWidth = true;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		folderComposite.setLayout(layout);
+		folderComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		createTreeViewer(composite, useHeightHint);
-		createListViewer(composite, useHeightHint);
+		createTreeViewer(folderComposite, useHeightHint);
+		createListViewer(folderComposite, useHeightHint);
 
 		initialize();
 	}
@@ -778,7 +781,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 					});
 
 		} else {
-			List listItemsToCheck = (List) checkedStateStore.get(treeElement);
+			List<?> listItemsToCheck = (List<?>) checkedStateStore.get(treeElement);
 
 			if (listItemsToCheck != null) {
 				Iterator<?> listItemsEnum = listItemsToCheck.iterator();
@@ -794,14 +797,14 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * appear in the checked table. Add any elements to the selectedNodes so we
 	 * can track that has been done.
 	 */
-	private void primeHierarchyForSelection(Object item, Set selectedNodes) {
+	private void primeHierarchyForSelection(Object item, Set<Object> selectedNodes) {
 
 		// Only prime it if we haven't visited yet
 		if (selectedNodes.contains(item)) {
 			return;
 		}
 
-		checkedStateStore.put(item, new ArrayList());
+		checkedStateStore.put(item, new ArrayList<Object>());
 
 		// mark as expanded as we are going to populate it after this
 		expandedTreeNodes.add(item);
@@ -881,7 +884,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	private void setListForWhiteSelection(Object treeElement) {
 
 		Object[] listItems = listContentProvider.getElements(treeElement);
-		List listItemsChecked = new ArrayList();
+		List<Object> listItemsChecked = new ArrayList<Object>();
 		for (int i = 0; i < listItems.length; ++i) {
 			listItemsChecked.add(listItems[i]);
 		}
@@ -1087,16 +1090,16 @@ public class ResourceTreeAndListGroup extends EventManager implements
 		// so reinitialize everything.
 		this.listViewer.setAllChecked(false);
 		this.treeViewer.setCheckedElements(new Object[0]);
-		this.whiteCheckedTreeItems = new HashSet();
-		Set selectedNodes = new HashSet();
+		this.whiteCheckedTreeItems = new HashSet<Object>();
+		Set<Object> selectedNodes = new HashSet<Object>();
 		checkedStateStore = new HashMap();
 
 		// Update the store before the hierarchy to prevent updating parents
 		// before all of the children are done
-		Iterator keyIterator = items.keySet().iterator();
+		Iterator<?> keyIterator = items.keySet().iterator();
 		while (keyIterator.hasNext()) {
 			Object key = keyIterator.next();
-			List selections = (List) items.get(key);
+			List<?> selections = (List<?>) items.get(key);
 			// Replace the items in the checked state store with those from the
 			// supplied items
 			checkedStateStore.put(key, selections);
@@ -1119,9 +1122,16 @@ public class ResourceTreeAndListGroup extends EventManager implements
 		if (currentTreeSelection != null) {
 			Object displayItems = items.get(currentTreeSelection);
 			if (displayItems != null) {
-				listViewer.setCheckedElements(((List) displayItems).toArray());
+				listViewer.setCheckedElements(((List<?>) displayItems).toArray());
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static void enableFolderComposite(boolean enabled){ 
+		folderComposite.setEnabled(enabled);
 	}
 
 	/**
