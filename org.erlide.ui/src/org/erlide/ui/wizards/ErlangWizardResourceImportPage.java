@@ -116,6 +116,7 @@ public abstract class ErlangWizardResourceImportPage extends
 
 		initializeDialogUnits(parent);
 
+		//Browse
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
@@ -125,7 +126,7 @@ public abstract class ErlangWizardResourceImportPage extends
 
 		
 		createSourceGroup(composite);
-
+		
 		// createDestinationGroup(composite);
 
 		createOptionsGroup(composite);
@@ -181,6 +182,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	//
 	// initialPopulateContainerField();
 	// }
+	
 	/**
 	 * Create the import source selection widget
 	 */
@@ -206,6 +208,7 @@ public abstract class ErlangWizardResourceImportPage extends
 		this.selectionGroup.addCheckStateListener(listener);
 
 	}
+	
 
 	/**
 	 * Creates the import source specification controls.
@@ -217,6 +220,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 *            the parent control
 	 */
 	protected abstract void createSourceGroup(Composite parent);
+	
 
 	/*
 	 * @see WizardDataTransferPage.getErrorDialogTitle()
@@ -536,15 +540,7 @@ public abstract class ErlangWizardResourceImportPage extends
 		return super.determinePageCompletion();
 	}
 
-	/**
-	 * @param selection
-	 */
-	public void enableSelectionGroup(boolean selection){
-		
-		selectionGroup.setAllSelections(selection);
-	
-	}
-	/**
+		/**
 	 * Returns whether or not the passed workspace has any open projects
 	 * 
 	 * @return boolean

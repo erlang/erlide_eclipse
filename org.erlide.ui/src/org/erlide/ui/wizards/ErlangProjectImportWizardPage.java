@@ -70,9 +70,11 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.util.IElementFilter;
+import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public class ErlangProjectImportWizardPage extends
 		ErlangWizardResourceImportPage implements Listener {
@@ -98,7 +100,7 @@ public class ErlangProjectImportWizardPage extends
 	// A boolean to indicate if the user has typed anything
 	private boolean entryChanged = false;
 
-	private boolean copyFiles = true;
+	private boolean copyFiles = false;
 
 	// dialog store id constants
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
@@ -258,7 +260,7 @@ public class ErlangProjectImportWizardPage extends
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		validateSourceGroup();
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+				PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
 				"file_system_import_wizard_page");
 	}
 
@@ -303,14 +305,17 @@ public class ErlangProjectImportWizardPage extends
 						if(copyFiles){
 							enableButtonGroup(true);
 							enableSourceGroup(true);
+							enableResourceTreeGroup(true);
+							setAllSelections(false);
 						}else{
+							setAllSelections(true);
 							enableButtonGroup(false);
-							enableSourceGroup(false);
+							enableResourceTreeGroup(false);
 							
 						}
 					}
 				});
-		copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+		//copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
 
 	}
 
@@ -342,6 +347,7 @@ public class ErlangProjectImportWizardPage extends
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateFromSourceField();
+				setAllSelections(true);
 			}
 		});
 
@@ -500,6 +506,13 @@ public class ErlangProjectImportWizardPage extends
 	}
 	
 	/**
+	 * @param enable
+	 */
+	protected void enableResourceTreeGroup(boolean enable){
+		ResourceTreeAndListGroup.enableFolderComposite(enable);
+	}
+	
+	/**
 	 * Enable or disable the  group.
 	 */
 	protected void enableSourceGroup(boolean enable) {
@@ -598,10 +611,10 @@ public class ErlangProjectImportWizardPage extends
 								}
 							});
 				} catch (final InvocationTargetException x) {
-					System.out.println("EXCEPTION");// reportError(x);
+					reportError(x);
 					return false;
 				} catch (final InterruptedException x) {
-					System.out.println("EXCEPTION");// reportError(x);
+					reportError(x);
 					return false;
 				}
 				return true;
@@ -615,16 +628,34 @@ public class ErlangProjectImportWizardPage extends
 		return false;
 	}
 
+	/**
+	 * Displays an error that occured during the project creation. *
+	 * 
+	 * @param x
+	 *            details on the error
+	 */
+	private void reportError(Exception x) {
+		x.printStackTrace();
+		ErrorDialog.openError(getShell(), ErlideUIPlugin
+				.getResourceString("wizards.errors.projecterrordesc"),
+				ErlideUIPlugin
+						.getResourceString("wizards.errors.projecterrortitle"),
+				PluginUtils.makeStatus(x));
+	}
+
 	private boolean linkToResources(List<Object> fileSystemObjects,
 			IProgressMonitor monitor) throws InvocationTargetException,
 			CoreException {
 		String projectName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
+     	
 
 		final IProjectDescription description = workspace
 				.newProjectDescription(projectName);
 		description.setLocation(getProjectPath());
+		
+		
 
 		
 		
@@ -634,60 +665,9 @@ public class ErlangProjectImportWizardPage extends
 			command.setBuilderName(ErlangPlugin.BUILDER_ID);
 			specs[old.length] = command;
 			description.setBuildSpec(specs);
-			//project.setDescription(description, new NullProgressMonitor());
-		
-		
-		
-		//description.setBuildSpec(new ICommand[] {dasdfalkjdalkjdkasj});
-		// description.setComment(record.description.getComment());
-		// description.setDynamicReferences(record.description
-		// .getDynamicReferences());
+
 		description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
 		
-		// description.setReferencedProjects(record.description
-		// .getReferencedProjects());
-		// record.description = description;
-
-//		//TODO -------------------------------------------------------------
-//		project.setDescription(description, new SubProgressMonitor(monitor,
-//				10));
-//
-//		monitor.worked(10);
-//		monitor.subTask(ErlideUIPlugin
-//				.getResourceString("wizards.messages.creatingfiles"));
-//
-//
-//		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-//				project);
-////		prefs.copyFrom(bprefs);
-//		prefs.store();
-//
-//		// add code path to backend
-//		final String out = project.getLocation().append(
-//				prefs.getOutputDir()).toString();
-//		BackendManager.getDefault().get(project).getCodeManager().addPath(
-//				prefs.getUsePathZ(), out);
-//		//TODO ---------------------------------------------------------------
-		
-		
-		
-		
-		// if (record.description == null) {
-		// // error case
-		// record.description = workspace.newProjectDescription(projectName);
-		// IPath locationPath = new Path(record.projectSystemFile
-		// .getAbsolutePath());
-		//
-		// // If it is under the root use the default location
-		// if (Platform.getLocation().isPrefixOf(locationPath)) {
-		// record.description.setLocation(null);
-		// } else {
-		// record.description.setLocation(locationPath);
-		// }
-		// } else {
-		// record.description.setName(projectName);
-		// }
-
 		try {
 			monitor
 					.beginTask(
@@ -701,26 +681,8 @@ public class ErlangProjectImportWizardPage extends
 		} finally {
 			monitor.done();
 		}
-
-		// // import operation to import project files if copy checkbox is
-		// selected
-		// if (copyFiles && importSource != null) {
-		// List filesToImport = FileSystemStructureProvider.INSTANCE
-		// .getChildren(importSource);
-		// ImportOperation operation = new ImportOperation(project
-		// .getFullPath(), importSource,
-		// FileSystemStructureProvider.INSTANCE, this, filesToImport);
-		// operation.setContext(getShell());
-		// operation.setOverwriteResources(true); // need to overwrite
-		// // .project, .classpath
-		// // files
-		// operation.setCreateContainerStructure(false);
-		// operation.run(monitor);
-		// }
-
 		return true;
 
-		// return false;
 	}
 
 	/**
@@ -1227,14 +1189,18 @@ public class ErlangProjectImportWizardPage extends
 			enableButtonGroup(false);
 			return false;
 		}
-
+		if (!isCopyFiles()) {
+			selectionGroup.setAllSelections(true);
+		}
 		List<?> resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
 		}
-
-		enableButtonGroup(true);
+		
+		if (copyFiles) {
+			enableButtonGroup(true);
+		}
 		setErrorMessage(null);
 		return true;
 	}
