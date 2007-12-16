@@ -49,8 +49,9 @@ rule rule_clauses rule_clause
 rule_body
 binary bin_elements bin_element bit_expr 
 opt_bit_size_expr bit_size_expr opt_bit_type_list bit_type_list bit_type
-top_type top_types type typed_expr typed_attr_val arg_types arg_type
-typed_exprs typed_record_fields.
+%%top_type top_types type typed_expr typed_attr_val arg_types arg_type
+%%typed_exprs typed_record_fields
+.
 
 Terminals
 char integer float atom string var macro
@@ -64,7 +65,8 @@ char integer float atom string var macro
 '++' '--'
 '==' '/=' '=<' '<' '>=' '>' '=:=' '=/=' '<='
 '<<' '>>'
-'!' '=' '::'
+'!' '=' 
+%% '::'
 dot.
 
 Rootsymbol form.
@@ -79,45 +81,45 @@ attribute -> '-' atom '(' attr_val ')' dot : build_attribute('$2', '$4', span('$
 %% this doesn't seem to work yet /2007-09-19
 %%attribute -> '-' atom '(' typed_attr_val ')' dot : build_typed_attribute('$2','$4', span('$1', '$6')).
 
-typed_attr_val -> expr ',' typed_record_fields : ['$1' , '$3'].
-typed_attr_val -> expr '::' top_types          : ['$1' , '$3'].
+%typed_attr_val -> expr ',' typed_record_fields : ['$1' , '$3'].
+%typed_attr_val -> expr '::' top_types          : ['$1' , '$3'].
 
-typed_record_fields -> '{' typed_exprs '}' : {tuple,line('$1'),'$2'}.
+%typed_record_fields -> '{' typed_exprs '}' : {tuple,line('$1'),'$2'}.
 
-typed_exprs -> typed_expr                 : ['$1'].
-typed_exprs -> typed_expr ',' typed_exprs : ['$1'|'$3'].
-typed_exprs -> expr ',' typed_exprs       : ['$1'|'$3'].
-typed_exprs -> typed_expr ',' exprs       : ['$1'|'$3'].
+%typed_exprs -> typed_expr                 : ['$1'].
+%typed_exprs -> typed_expr ',' typed_exprs : ['$1'|'$3'].
+%typed_exprs -> expr ',' typed_exprs       : ['$1'|'$3'].
+%typed_exprs -> typed_expr ',' exprs       : ['$1'|'$3'].
 
-typed_expr -> expr '::' top_type          : {typed,'$1','$3'}.
+%typed_expr -> expr '::' top_type          : {typed,'$1','$3'}.
 
-top_types -> top_type                     : ['$1'].
-top_types -> top_type ',' top_types       : ['$1'|'$3'].
+%top_types -> top_type                     : ['$1'].
+%top_types -> top_type ',' top_types       : ['$1'|'$3'].
 
-top_type -> type                          : '$1'.
-top_type -> type '|' top_type             : lift_unions('$1','$3').
+%top_type -> type                          : '$1'.
+%top_type -> type '|' top_type             : lift_unions('$1','$3').
 
-type -> atom                              : {type, atom, [normalise('$1')]}.
-type -> atom '(' ')'                      : build_type('$1', []).
-type -> atom '(' top_type ')'             : build_type('$1', ['$3']).
-type -> atom '(' top_type ',' top_type ')': build_type('$1', ['$3', '$5']).
-type -> '[' ']'                           : {type, nil, []}.
-type -> '[' top_type ']'                  : {type, list, ['$2']}.
-type -> '[' top_type ',' '.' '.' '.' ']'  : {type, nonempty_list, ['$2']}.
-type -> '(' '(' ')' '->' top_type ')'     : {type, 'fun', [[], '$5']}.
-type -> '(' '(' arg_types ')' '->' top_type ')' : {type, 'fun', ['$3', '$6']}.
-type -> '{' '}'                           : {type, tuple, []}.
-type -> '{' top_types '}'                 : {type, tuple, '$2'}.
-type -> '#' atom '{' '}'                  : {type, record, [normalise('$2')]}.
-type -> integer                           : {type, integer, [normalise('$1')]}.
-type -> '(' integer '.' '.' integer ')'   : 
-			{type, range, [normalise('$2'), normalise('$5')]}.
+%type -> atom                              : {type, atom, [normalise('$1')]}.
+%type -> atom '(' ')'                      : build_type('$1', []).
+%type -> atom '(' top_type ')'             : build_type('$1', ['$3']).
+%type -> atom '(' top_type ',' top_type ')': build_type('$1', ['$3', '$5']).
+%type -> '[' ']'                           : {type, nil, []}.
+%type -> '[' top_type ']'                  : {type, list, ['$2']}.
+%type -> '[' top_type ',' '.' '.' '.' ']'  : {type, nonempty_list, ['$2']}.
+%type -> '(' '(' ')' '->' top_type ')'     : {type, 'fun', [[], '$5']}.
+%type -> '(' '(' arg_types ')' '->' top_type ')' : {type, 'fun', ['$3', '$6']}.
+%type -> '{' '}'                           : {type, tuple, []}.
+%type -> '{' top_types '}'                 : {type, tuple, '$2'}.
+%type -> '#' atom '{' '}'                  : {type, record, [normalise('$2')]}.
+%type -> integer                           : {type, integer, [normalise('$1')]}.
+%type -> '(' integer '.' '.' integer ')'   : 
+%			{type, range, [normalise('$2'), normalise('$5')]}.
 
-arg_types -> arg_type                     : ['$1'].
-arg_types -> arg_type ',' arg_types       : ['$1'|'$3'].
+%arg_types -> arg_type                     : ['$1'].
+%arg_types -> arg_type ',' arg_types       : ['$1'|'$3'].
 
-arg_type -> var '::' top_type             : '$3'.
-arg_type -> top_type                      : '$1'.
+%arg_type -> var '::' top_type             : '$3'.
+%arg_type -> top_type                      : '$1'.
 
 attr_val -> exprs : '$1'.
 
