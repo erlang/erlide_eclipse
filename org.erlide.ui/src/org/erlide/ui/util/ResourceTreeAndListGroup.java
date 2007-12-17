@@ -50,17 +50,18 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 	private Collection<Object> expandedTreeNodes = new HashSet<Object>();
 
-	private Map<Object, List> checkedStateStore = new HashMap<Object, List>(9);
+	private Map<Object, List<Object>> checkedStateStore = new HashMap<Object, List<Object>>(
+			9);
 
 	private Collection<Object> whiteCheckedTreeItems = new HashSet<Object>();
 
-	private ITreeContentProvider treeContentProvider;
+	private final ITreeContentProvider treeContentProvider;
 
-	private IStructuredContentProvider listContentProvider;
+	private final IStructuredContentProvider listContentProvider;
 
-	private ILabelProvider treeLabelProvider;
+	private final ILabelProvider treeLabelProvider;
 
-	private ILabelProvider listLabelProvider;
+	private final ILabelProvider listLabelProvider;
 
 	// widgets
 	private CheckboxTreeViewer treeViewer;
@@ -159,7 +160,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 *            java.lang.Object
 	 */
 	protected boolean areAllElementsChecked(Object treeElement) {
-		List<?> checkedElements = (List<?>) checkedStateStore.get(treeElement);
+		List<Object> checkedElements = checkedStateStore.get(treeElement);
 		if (checkedElements == null) {
 			return false;
 		}
@@ -288,7 +289,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	protected boolean determineShouldBeAtLeastGrayChecked(Object treeElement) {
 		// if any list items associated with treeElement are checked then it
 		// retains its gray-checked status regardless of its children
-		List<?> checked = (List<?>) checkedStateStore.get(treeElement);
+		List<Object> checked = checkedStateStore.get(treeElement);
 		if (checked != null && (!checked.isEmpty())) {
 			return true;
 		}
@@ -424,8 +425,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 					monitor);
 		} else { // Add what we have stored
 			if (checkedStateStore.containsKey(treeElement)) {
-				filter.filterElements((Collection<?>) checkedStateStore
-						.get(treeElement), monitor);
+				filter.filterElements(checkedStateStore.get(treeElement),
+						monitor);
 			}
 		}
 
@@ -462,8 +463,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 		if (whiteCheckedTreeItems.contains(treeElement)) {
 			result.add(treeElement);
 		} else {
-			Collection<?> listChildren = (Collection<?>) checkedStateStore
-					.get(treeElement);
+			List<Object> listChildren = checkedStateStore.get(treeElement);
 			// if it is not in the store then it and it's children are not
 			// interesting
 			if (listChildren == null) {
@@ -514,7 +514,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 		IElementFilter passThroughFilter = new IElementFilter() {
 
-			public void filterElements(Collection elements,
+			public void filterElements(Collection<?> elements,
 					IProgressMonitor monitor) {
 				returnValue.addAll(elements);
 			}
@@ -698,13 +698,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	}
 
 	/**
-	 * Callback that's invoked when the checked status of an item in the list is
-	 * changed by the user. Do not try and update the hierarchy if we are
+	 * Call-back that's invoked when the checked status of an item in the list
+	 * is changed by the user. Do not try and update the hierarchy if we are
 	 * building the initial list.
 	 */
 	protected void listItemChecked(Object listElement, boolean state,
 			boolean updatingFromSelection) {
-		List checkedListItems = (List) checkedStateStore
+		List<Object> checkedListItems = checkedStateStore
 				.get(currentTreeSelection);
 		// If it has not been expanded do so as the selection of list items will
 		// affect gray state
@@ -717,8 +717,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 				// since the associated tree item has gone from 0 -> 1 checked
 				// list items, tree checking may need to be updated
 				grayCheckHierarchy(currentTreeSelection);
-				checkedListItems = (List) checkedStateStore
-						.get(currentTreeSelection);
+				checkedListItems = checkedStateStore.get(currentTreeSelection);
 			}
 			checkedListItems.add(listElement);
 		} else {
@@ -781,10 +780,10 @@ public class ResourceTreeAndListGroup extends EventManager implements
 					});
 
 		} else {
-			List<?> listItemsToCheck = (List<?>) checkedStateStore.get(treeElement);
+			List<Object> listItemsToCheck = checkedStateStore.get(treeElement);
 
 			if (listItemsToCheck != null) {
-				Iterator<?> listItemsEnum = listItemsToCheck.iterator();
+				Iterator<Object> listItemsEnum = listItemsToCheck.iterator();
 				while (listItemsEnum.hasNext()) {
 					listViewer.setChecked(listItemsEnum.next(), true);
 				}
@@ -797,7 +796,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * appear in the checked table. Add any elements to the selectedNodes so we
 	 * can track that has been done.
 	 */
-	private void primeHierarchyForSelection(Object item, Set<Object> selectedNodes) {
+	private void primeHierarchyForSelection(Object item,
+			Set<Object> selectedNodes) {
 
 		// Only prime it if we haven't visited yet
 		if (selectedNodes.contains(item)) {
@@ -1085,21 +1085,21 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 *            empty list). If a tree element does not have any selected
 	 *            items, do not include the element in the Map.
 	 */
-	public void updateSelections(Map items) {
+	public void updateSelections(Map<Object, List<Object>> items) {
 		// We are replacing all selected items with the given selected items,
 		// so reinitialize everything.
 		this.listViewer.setAllChecked(false);
 		this.treeViewer.setCheckedElements(new Object[0]);
 		this.whiteCheckedTreeItems = new HashSet<Object>();
 		Set<Object> selectedNodes = new HashSet<Object>();
-		checkedStateStore = new HashMap();
+		checkedStateStore = new HashMap<Object, List<Object>>();
 
 		// Update the store before the hierarchy to prevent updating parents
 		// before all of the children are done
-		Iterator<?> keyIterator = items.keySet().iterator();
+		Iterator<Object> keyIterator = items.keySet().iterator();
 		while (keyIterator.hasNext()) {
 			Object key = keyIterator.next();
-			List<?> selections = (List<?>) items.get(key);
+			List<Object> selections = items.get(key);
 			// Replace the items in the checked state store with those from the
 			// supplied items
 			checkedStateStore.put(key, selections);
@@ -1122,15 +1122,16 @@ public class ResourceTreeAndListGroup extends EventManager implements
 		if (currentTreeSelection != null) {
 			Object displayItems = items.get(currentTreeSelection);
 			if (displayItems != null) {
-				listViewer.setCheckedElements(((List<?>) displayItems).toArray());
+				listViewer.setCheckedElements(((List<?>) displayItems)
+						.toArray());
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
-	public static void enableFolderComposite(boolean enabled){ 
+	public static void enableFolderComposite(boolean enabled) {
 		folderComposite.setEnabled(enabled);
 	}
 
