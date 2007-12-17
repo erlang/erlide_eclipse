@@ -350,7 +350,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (inc.isAbsolute()) {
 				includeDirs[i] = inc.toString();
 			} else {
-				includeDirs[i] = projectPath.append(incs[i]).toString();
+				includeDirs[i] = project.getFolder(incs[i]).getLocation().toString();
 			}
 		}
 
@@ -484,12 +484,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	private static boolean isInCodePath(IResource resource, IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final IPath projectPath = project.getLocation();
+		final IPath projectPath = project.getFullPath();
 
 		final String[] srcs = prefs.getSourceDirs();
 		for (String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
-			if (sp.equals(resource.getLocation().removeLastSegments(1))) {
+			if (sp.equals(resource.getFullPath().removeLastSegments(1))) {
 				return true;
 			}
 		}
@@ -500,12 +500,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	private static boolean isInExtCodePath(IResource resource, IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final IPath projectPath = project.getLocation();
+		final IPath projectPath = project.getFullPath();
 
 		final String[] srcs = prefs.getSourceDirs();
 		for (String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
-			if (sp.isPrefixOf(resource.getLocation())) {
+			if (sp.isPrefixOf(resource.getFullPath())) {
 				return true;
 			}
 		}
