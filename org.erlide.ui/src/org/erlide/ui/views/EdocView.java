@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
@@ -27,7 +28,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -113,10 +113,10 @@ public class EdocView extends AbstractInfoView {
 	private class SelectAllAction extends Action {
 
 		/** The control. */
-		private Control fControl;
+		private final Control fControl;
 
 		/** The selection provider. */
-		private SelectionProvider fSelectionProvider;
+		private final SelectionProvider fSelectionProvider;
 
 		/**
 		 * Creates the action.
@@ -174,7 +174,7 @@ public class EdocView extends AbstractInfoView {
 				0);
 
 		/** The widget. */
-		private Control fControl;
+		private final Control fControl;
 
 		/**
 		 * Creates a new selection provider.
