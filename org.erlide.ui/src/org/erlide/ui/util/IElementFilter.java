@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IElementFilter {
 
-	public void filterElements(Collection elements, IProgressMonitor monitor)
+	public void filterElements(Collection<?> elements, IProgressMonitor monitor)
 			throws InterruptedException;
 
 	public void filterElements(Object[] elements, IProgressMonitor monitor)
