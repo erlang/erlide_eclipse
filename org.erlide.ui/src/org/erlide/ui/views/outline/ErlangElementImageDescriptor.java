@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.views.outline;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.ui.ErlideUIPlugin;
@@ -38,7 +38,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
 	public static final int WARNING = 0x200;
 
-	private ImageDescriptor fBaseImage;
+	private final ImageDescriptor fBaseImage;
 
 	private int fFlags;
 
@@ -126,8 +126,9 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (object == null ||
-				!ErlangElementImageDescriptor.class.equals(object.getClass())) {
+		if (object == null
+				|| !ErlangElementImageDescriptor.class
+						.equals(object.getClass())) {
 			return false;
 		}
 
