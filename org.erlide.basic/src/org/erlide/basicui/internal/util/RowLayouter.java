@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.basicui.internal.util;
 
-import org.eclipse.jface.util.Assert;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
 
@@ -50,7 +50,7 @@ public class RowLayouter {
 
 	public int spanHeightHint = -1;
 
-	private int fNumColumns;
+	private final int fNumColumns;
 
 	private boolean fOrder;
 

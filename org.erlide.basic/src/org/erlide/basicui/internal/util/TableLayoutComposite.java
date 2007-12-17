@@ -13,7 +13,7 @@ package org.erlide.basicui.internal.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.util.Assert;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -143,8 +143,8 @@ public class TableLayoutComposite extends Composite {
 					// int weight = firstTime ? cw.weight :
 					// tableColumns[i].getWidth();
 					final int weight = cw.weight;
-					int pixels = totalWeight == 0 ? 0 : weight * rest /
-							totalWeight;
+					int pixels = totalWeight == 0 ? 0 : weight * rest
+							/ totalWeight;
 					if (pixels < cw.minimumWidth) {
 						pixels = cw.minimumWidth;
 					}
