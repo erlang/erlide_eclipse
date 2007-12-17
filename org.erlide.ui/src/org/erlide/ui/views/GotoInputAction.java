@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.views;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.util.Assert;
 
 class GotoInputAction extends Action {
 
