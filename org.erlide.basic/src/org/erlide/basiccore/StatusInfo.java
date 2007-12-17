@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.erlide.basiccore;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.util.Assert;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 
 /**
