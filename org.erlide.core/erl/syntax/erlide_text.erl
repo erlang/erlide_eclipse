@@ -1,6 +1,7 @@
 %% Author: jakob
 %% Created: Mar 23, 2006
-%% Description: TODO: Add description to erlide_text
+%% @doc Some text-handling utilities
+
 -module(erlide_text).
 
 %%
@@ -35,13 +36,16 @@
 %% get_text_and_lines(Text, From) -> {First, Lines}
 %%     Text = string(), From = integer(), First = string(), Lines = [string()]
 %%
-%% Given text and a From position, return a tuple with
+%% @doc Given text and a From position, return a tuple with
 %% the text upto From and a list of the rest of the lines
+%% @spec get_text_and_lines(S::string(), From::integer()) -> [{string()}]
 get_text_and_lines(S, From) ->
     L = split_lines(S),
     get_text_and_lines(L, From, []).
 
-%% get function call from token list
+%% @doc Get function call from token list
+%% @spec check_function_call(Tokens::list(), Index::integer()) -> 
+%%           {ok, Module::atom(), Function::atom(), Rest::term()} 
 check_function_call([_|Rest], Index) when Index > 2 ->
     ?D({Index, Rest}),
     check_function_call(Rest, Index-1);
@@ -65,7 +69,7 @@ check_function_call(_L, _Index) ->
 
 %% this doesn't work with the new scanner!
 
-%% get variable, macro or record from token list
+%% @doc get variable, macro or record from token list
 check_variable_macro_or_record([_|Rest] = _L, Index) when Index > 0 ->
     ?D({macro_or_record, Index, _L}),
     check_variable_macro_or_record(Rest, Index-1);
