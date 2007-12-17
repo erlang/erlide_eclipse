@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.basicui.dialogfields;
 
-import org.eclipse.jface.util.Assert;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -31,17 +31,17 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
 	private Button[] fButtons;
 
-	private String[] fButtonNames;
+	private final String[] fButtonNames;
 
-	private boolean[] fButtonsSelected;
+	private final boolean[] fButtonsSelected;
 
-	private boolean[] fButtonsEnabled;
+	private final boolean[] fButtonsEnabled;
 
-	private int fGroupBorderStyle;
+	private final int fGroupBorderStyle;
 
-	private int fGroupNumberOfColumns;
+	private final int fGroupNumberOfColumns;
 
-	private int fButtonsStyle;
+	private final int fButtonsStyle;
 
 	/**
 	 * Creates a group without border.
@@ -60,8 +60,8 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 			String[] buttonNames, int nColumns, int borderStyle) {
 		super();
 
-		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK ||
-				buttonsStyle == SWT.TOGGLE);
+		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
+				|| buttonsStyle == SWT.TOGGLE);
 		fButtonNames = buttonNames;
 
 		final int nButtons = buttonNames.length;
@@ -71,7 +71,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 			fButtonsSelected[i] = false;
 			fButtonsEnabled[i] = true;
 		}
-		if (fButtonsStyle == SWT.RADIO) {
+		if (buttonsStyle == SWT.RADIO) {
 			fButtonsSelected[0] = true;
 		}
 
