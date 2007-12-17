@@ -167,6 +167,8 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
 				IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
+		configuration.setAttribute(
+				IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME, "");
 	}
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
@@ -196,6 +198,15 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		} catch (CoreException e) {
 			otpPathText
 					.setText(IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
+		}
+		try {
+			fProjText
+					.setText(configuration
+							.getAttribute(
+									IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME,
+									""));
+		} catch (CoreException e) {
+			fProjText.setText("");
 		}
 	}
 
