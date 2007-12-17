@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -104,17 +103,17 @@ public class ErlangConsoleView extends ViewPart implements
 
 	private boolean fColored;
 
-	private Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
+	private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 
 	private TableViewer consoleTable;
 
 	private ErlConsoleDocument fDoc;
 
-	private IBackend fBackend;
+	private final IBackend fBackend;
 
 	private BackendShell fShell;
 
-	private List<String> history = new ArrayList<String>(10);
+	private final List<String> history = new ArrayList<String>(10);
 
 	private StyledText consoleInput;
 
@@ -321,7 +320,7 @@ public class ErlangConsoleView extends ViewPart implements
 		Table tbl = (Table) consoleTable.getControl();
 		tbl.setFont(JFaceResources.getTextFont());
 		tbl.setLinesVisible(true);
-		initializeToolBar();
+		// initializeToolBar();
 
 	}
 
@@ -564,8 +563,8 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 	}
 
-	private void initializeToolBar() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
-				.getToolBarManager();
-	}
+	// private void initializeToolBar() {
+	// IToolBarManager toolBarManager = getViewSite().getActionBars()
+	// .getToolBarManager();
+	// }
 }
