@@ -18,12 +18,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -102,8 +102,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 			if (page != null) {
 				IViewPart consoleView = page
 						.findView(IConsoleConstants.ID_CONSOLE_VIEW);
-				if (consoleView == null &&
-						BuildConsolePreferencePage.isAutoOpenConsole()) {
+				if (consoleView == null
+						&& BuildConsolePreferencePage.isAutoOpenConsole()) {
 					final IWorkbenchPart activePart = page.getActivePart();
 					try {
 						consoleView = page
@@ -131,8 +131,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 		final boolean bringToTop = false;
 		if (consoleView instanceof IConsoleView) {
 			final IConsoleView cView = (IConsoleView) consoleView;
-			return !cView.isPinned() &&
-					BuildConsolePreferencePage.isConsoleOnTop();
+			return !cView.isPinned()
+					&& BuildConsolePreferencePage.isConsoleOnTop();
 		}
 		return bringToTop;
 	}
@@ -146,8 +146,8 @@ public class BuildConsoleManager implements IBuildConsoleManager,
 	public void resourceChanged(IResourceChangeEvent event) {
 		final IResource resource = event.getResource();
 		if (resource != null && resource.getType() == IResource.PROJECT) {
-			if (event.getType() == IResourceChangeEvent.PRE_DELETE ||
-					event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+			if (event.getType() == IResourceChangeEvent.PRE_DELETE
+					|| event.getType() == IResourceChangeEvent.PRE_CLOSE) {
 				final IDocumentPartitioner partioner = fConsoleMap
 						.remove(resource);
 				if (partioner != null) {
