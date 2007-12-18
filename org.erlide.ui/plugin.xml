@@ -753,7 +753,6 @@
             label="Erlang Problem Decorator"
             lightweight="true"
             location="BOTTOM_LEFT"
-            objectClass="org.eclipse.core.resources.IResource"
             state="true">
       </decorator>
    </extension>
