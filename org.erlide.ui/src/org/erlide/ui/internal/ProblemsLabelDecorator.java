@@ -32,7 +32,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private boolean fMarkerChange;
+		private final boolean fMarkerChange;
 
 		/**
 		 * Note: This constructor is for internal use only. Clients should not
@@ -134,13 +134,25 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	private boolean isMarkerInRange(IMarker marker,
 			ISourceReference sourceElement) throws CoreException {
 		int pos = marker.getAttribute(IMarker.CHAR_START, -1);
-		return isInside(pos, sourceElement);
+		if (pos != -1) {
+			return isInside(pos, sourceElement);
+		}
+		int line = marker.getAttribute(IMarker.LINE_NUMBER, -1);
+		if (line != -1) {
+			return isInsideLines(line, sourceElement);
+		}
+		return false;
 	}
 
 	// private boolean isInside(Position pos, ISourceReference sourceElement)
 	// throws CoreException {
 	// return pos != null && isInside(pos.getOffset(), sourceElement);
 	// }
+
+	private boolean isInsideLines(int line, ISourceReference sourceElement) {
+		return line >= sourceElement.getLineStart()
+				&& line <= sourceElement.getLineEnd();
+	}
 
 	/**
 	 * Tests if a position is inside the source range of an element.
