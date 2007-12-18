@@ -611,7 +611,7 @@ public class ErlangProjectImportWizardPage extends
 								}
 							});
 				} catch (final InvocationTargetException x) {
-					reportError(x);
+					reportError();
 					return false;
 				} catch (final InterruptedException x) {
 					reportError(x);
@@ -629,18 +629,24 @@ public class ErlangProjectImportWizardPage extends
 	}
 
 	/**
-	 * Displays an error that occured during the project creation. *
+	 * Displays an error that occured during the .project file creation. *
 	 * 
 	 * @param x
 	 *            details on the error
 	 */
-	private void reportError(Exception x) {
-		x.printStackTrace();
+	private void reportError(InterruptedException x) {
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
-				.getResourceString("wizards.errors.projecterrordesc"),
-				ErlideUIPlugin
-						.getResourceString("wizards.errors.projecterrortitle"),
+				.getResourceString("wizards.errors.projectfileerrordesc"),
+				ErlideUIPlugin.getResourceString("wizards.errors.projecterrortitle"),
 				PluginUtils.makeStatus(x));
+		
+	}
+
+	
+	private void reportError() {
+		MessageDialog.openError(getShell(), ErlideUIPlugin
+				.getResourceString("wizards.errors.projecterrortitle"), ErlideUIPlugin
+				.getResourceString("wizards.errors.projectfileerrordesc"));
 	}
 
 	private boolean linkToResources(List<Object> fileSystemObjects,
