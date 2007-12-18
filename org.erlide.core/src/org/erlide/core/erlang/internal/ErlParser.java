@@ -193,27 +193,22 @@ public class ErlParser {
 	 * @return IErlComment
 	 */
 	private IErlComment createComment(IErlModule parent, OtpErlangTuple c) {
-		// final OtpErlangTuple pos = (OtpErlangTuple) c.elementAt(0);
-		// final OtpErlangTuple lineOffs = (OtpErlangTuple) pos.elementAt(0);
-		// final OtpErlangLong line = (OtpErlangLong) lineOffs.elementAt(0);
-		// final OtpErlangString s = (OtpErlangString) c.elementAt(1);
-		final OtpErlangLong line = (OtpErlangLong) c.elementAt(2);
+		// from erlide_scanner.hrl:
+		// -record(token, {kind, line, offset, length, value, text}).
+		final OtpErlangLong l = (OtpErlangLong) c.elementAt(2);
 		final OtpErlangString s = (OtpErlangString) c.elementAt(5);
-		int l;
+		int line;
 		try {
-			l = line.intValue();
+			line = l.intValue();
 		} catch (final OtpErlangRangeException x) {
-			l = 0;
+			line = 0;
 		}
 		final ErlComment comment = new ErlComment(parent, s.stringValue(),
-				false, l == 1);
+				false, line == 1);
 		try {
-			// final OtpErlangTuple tpos = (OtpErlangTuple) pos.elementAt(0);
-			// final int ofs = ((OtpErlangLong) (tpos.elementAt(1))).intValue();
-			// final int len = ((OtpErlangLong) (pos.elementAt(1))).intValue();
 			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
 			final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
-			setPos(comment, ofs + 1, len - 1);
+			setPos(comment, line, ofs + 1, len - 1);
 		} catch (final OtpErlangRangeException e) {
 			return null;
 		}
@@ -438,7 +433,7 @@ public class ErlParser {
 					ipos = ((OtpErlangLong) pos).intValue();
 				} catch (OtpErlangRangeException e1) {
 				}
-				setPos(e, ipos, 0);
+				setPos(e, 0, ipos, 0);
 				return true;
 			} else {
 				ErlLogger.debug("!> expecting pos tuple, got " + pos);
@@ -446,11 +441,13 @@ public class ErlParser {
 			}
 		}
 		try {
+			// pos={{Line, Offset}, Length}
 			final OtpErlangTuple tpos = (OtpErlangTuple) pos;
 			final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
+			final int line = ((OtpErlangLong) (tpos1.elementAt(0))).intValue();
 			final int ofs = ((OtpErlangLong) (tpos1.elementAt(1))).intValue();
 			final int len = ((OtpErlangLong) (tpos.elementAt(1))).intValue();
-			setPos(e, ofs, len);
+			setPos(e, line, ofs, len);
 			return true;
 		} catch (final OtpErlangRangeException ex) {
 			return false;
@@ -458,9 +455,12 @@ public class ErlParser {
 
 	}
 
-	private void setPos(SourceRefElement e, int ofs, int len) {
+	private void setPos(SourceRefElement e, int line, int ofs, int len) {
 		e.setSourceRangeStart(ofs - 1);
 		e.setSourceRangeEnd(ofs + len - 2);
+		e.setLineStart(line);
+		e.setLineEnd(line); // FIXME (JC) line end should be returned from
+							// parser (noparse)
 	}
 
 	private OtpErlangObject concreteTerm(OtpErlangObject val) {
