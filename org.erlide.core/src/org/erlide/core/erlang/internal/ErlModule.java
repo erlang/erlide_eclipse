@@ -339,9 +339,9 @@ public class ErlModule extends Openable implements IErlModule {
 					RecName.length() + 1, /* cursorPosition */
 					null, /* image */
 					"#" + rec.getDefinedName() + "{...}", /*
-					 * FIXME:
-					 * displayString
-					 */
+															 * FIXME:
+															 * displayString
+															 */
 					null, /* contextInformation */
 					null); /* String additionalProposalInfo */
 				}
@@ -483,6 +483,16 @@ public class ErlModule extends Openable implements IErlModule {
 				f.setExported(exports.contains(f.getFunction()));
 			}
 		}
+	}
+
+	public int getLineEnd() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getLineStart() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
