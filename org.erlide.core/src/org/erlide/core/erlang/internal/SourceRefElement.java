@@ -33,6 +33,8 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
 	protected int fSourceRangeEnd;
 
+	protected int lineStart, lineEnd;
+
 	protected SourceRefElement(IErlElement parent, String name) {
 		super(parent, name);
 	}
@@ -170,8 +172,8 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * @see ISourceReference
 	 */
 	public ISourceRange getSourceRange() throws ErlModelException {
-		return new SourceRange(fSourceRangeStart, fSourceRangeEnd -
-				fSourceRangeStart + 1);
+		return new SourceRange(fSourceRangeStart, fSourceRangeEnd
+				- fSourceRangeStart + 1);
 	}
 
 	/**
@@ -247,6 +249,22 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
 	protected void setSourceRangeStart(int start) {
 		fSourceRangeStart = start;
+	}
+
+	protected void setLineStart(int lineStart) {
+		this.lineStart = lineStart;
+	}
+
+	public int getLineStart() {
+		return this.lineStart;
+	}
+
+	public int getLineEnd() {
+		return this.lineEnd;
+	}
+
+	protected void setLineEnd(int lineEnd) {
+		this.lineEnd = lineEnd;
 	}
 
 }
