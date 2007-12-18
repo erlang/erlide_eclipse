@@ -21,6 +21,7 @@ public class NewErlangModuleAction extends ActionDelegate {
 	 * @see org.eclipse.ui.actions.ActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
 	 *      org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		if (sel instanceof IStructuredSelection)
 			selection = (IStructuredSelection) sel;
@@ -28,6 +29,7 @@ public class NewErlangModuleAction extends ActionDelegate {
 			selection = StructuredSelection.EMPTY;
 	}
 
+	@Override
 	public void run(IAction action) {
 		// Create the Wizard
 		ErlangFileWizard wizard = new ErlangFileWizard();

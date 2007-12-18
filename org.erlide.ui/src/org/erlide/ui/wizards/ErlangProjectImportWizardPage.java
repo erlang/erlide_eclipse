@@ -260,7 +260,7 @@ public class ErlangProjectImportWizardPage extends
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		validateSourceGroup();
-				PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
 				"file_system_import_wizard_page");
 	}
 
@@ -302,20 +302,20 @@ public class ErlangProjectImportWizardPage extends
 					public void widgetSelected(SelectionEvent e) {
 						copyFiles = copyProjectsIntoWorkspaceCheckbox
 								.getSelection();
-						if(copyFiles){
+						if (copyFiles) {
 							enableButtonGroup(true);
 							enableSourceGroup(true);
 							enableResourceTreeGroup(true);
 							setAllSelections(false);
-						}else{
+						} else {
 							setAllSelections(true);
 							enableButtonGroup(false);
 							enableResourceTreeGroup(false);
-							
+
 						}
 					}
 				});
-		//copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+		// copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
 
 	}
 
@@ -504,16 +504,16 @@ public class ErlangProjectImportWizardPage extends
 		selectAllButton.setEnabled(enable);
 		deselectAllButton.setEnabled(enable);
 	}
-	
+
 	/**
 	 * @param enable
 	 */
-	protected void enableResourceTreeGroup(boolean enable){
+	protected void enableResourceTreeGroup(boolean enable) {
 		ResourceTreeAndListGroup.enableFolderComposite(enable);
 	}
-	
+
 	/**
-	 * Enable or disable the  group.
+	 * Enable or disable the group.
 	 */
 	protected void enableSourceGroup(boolean enable) {
 		sourceContainerGroup.setEnabled(enable);
@@ -637,16 +637,20 @@ public class ErlangProjectImportWizardPage extends
 	private void reportError(InterruptedException x) {
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
 				.getResourceString("wizards.errors.projectfileerrordesc"),
-				ErlideUIPlugin.getResourceString("wizards.errors.projecterrortitle"),
+				ErlideUIPlugin
+						.getResourceString("wizards.errors.projecterrortitle"),
 				PluginUtils.makeStatus(x));
-		
+
 	}
 
-	
 	private void reportError() {
-		MessageDialog.openError(getShell(), ErlideUIPlugin
-				.getResourceString("wizards.errors.projecterrortitle"), ErlideUIPlugin
-				.getResourceString("wizards.errors.projectfileerrordesc"));
+		MessageDialog
+				.openError(
+						getShell(),
+						ErlideUIPlugin
+								.getResourceString("wizards.errors.projecterrortitle"),
+						ErlideUIPlugin
+								.getResourceString("wizards.errors.projectfileerrordesc"));
 	}
 
 	private boolean linkToResources(List<Object> fileSystemObjects,
@@ -655,25 +659,20 @@ public class ErlangProjectImportWizardPage extends
 		String projectName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
-     	
 
 		final IProjectDescription description = workspace
 				.newProjectDescription(projectName);
 		description.setLocation(getProjectPath());
-		
-		
 
-		
-		
-			final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
-			System.arraycopy(old, 0, specs, 0, old.length);
-			final ICommand command = description.newCommand();
-			command.setBuilderName(ErlangPlugin.BUILDER_ID);
-			specs[old.length] = command;
-			description.setBuildSpec(specs);
+		final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
+		System.arraycopy(old, 0, specs, 0, old.length);
+		final ICommand command = description.newCommand();
+		command.setBuilderName(ErlangPlugin.BUILDER_ID);
+		specs[old.length] = command;
+		description.setBuildSpec(specs);
 
 		description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-		
+
 		try {
 			monitor
 					.beginTask(
@@ -1156,12 +1155,13 @@ public class ErlangProjectImportWizardPage extends
 	}
 
 	/**
-	 * Update the selections with those in map . Implemented here to give inner
+	 * Update the selections with those in map. Implemented here to give inner
 	 * class visibility
 	 * 
 	 * @param map
 	 *            Map - key tree elements, values Lists of list elements
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateSelections(Map map) {
 		super.updateSelections(map);
@@ -1203,7 +1203,7 @@ public class ErlangProjectImportWizardPage extends
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
 		}
-		
+
 		if (copyFiles) {
 			enableButtonGroup(true);
 		}

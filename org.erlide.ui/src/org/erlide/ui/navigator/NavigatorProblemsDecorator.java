@@ -24,6 +24,7 @@ public class NavigatorProblemsDecorator extends ProblemsLabelDecorator{
 		return super.computeAdornmentFlags(folder);
 	}
 
+	@Override
 	protected int computeAdornmentFlags(Object element) {
 		if (element instanceof IFolder) {
 			return computeFolderAdornmentFlags((IFolder) element);

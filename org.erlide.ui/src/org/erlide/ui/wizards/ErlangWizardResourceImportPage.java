@@ -1,6 +1,7 @@
 package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
@@ -424,7 +425,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param map
 	 *            Map - key tree elements, values Lists of list elements
 	 */
-	protected void updateSelections(final Map map) {
+	protected void updateSelections(final Map<Object, List<Object>> map) {
 
 		Runnable runnable = new Runnable() {
 			public void run() {
