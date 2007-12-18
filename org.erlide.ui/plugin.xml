@@ -149,7 +149,6 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            adaptable="false"
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
             name="Erlang properties"
@@ -159,7 +158,6 @@
                value="org.erlide.core.erlnature"/>
       </page>
       <page
-            adaptable="false"
             class="org.erlide.ui.properties.MyErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang properties (work in progress)"
