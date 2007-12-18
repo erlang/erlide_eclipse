@@ -67,4 +67,9 @@ public interface ISourceReference {
 	 *                resource
 	 */
 	ISourceRange getSourceRange() throws ErlModelException;
+
+	public int getLineStart();
+
+	public int getLineEnd();
+
 }
