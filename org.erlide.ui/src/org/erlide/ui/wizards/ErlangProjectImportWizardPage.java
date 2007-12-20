@@ -303,14 +303,14 @@ public class ErlangProjectImportWizardPage extends
 						copyFiles = copyProjectsIntoWorkspaceCheckbox
 								.getSelection();
 						if (copyFiles) {
-							enableButtonGroup(true);
+							enableButtonGroup(false);
 							enableSourceGroup(true);
 							enableResourceTreeGroup(true);
-							setAllSelections(false);
+							//setAllSelections(false);
 						} else {
-							setAllSelections(true);
+							//setAllSelections(tr);
 							enableButtonGroup(false);
-							enableResourceTreeGroup(false);
+							enableResourceTreeGroup(true);
 
 						}
 					}
@@ -501,8 +501,8 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void enableButtonGroup(boolean enable) {
 		selectTypesButton.setEnabled(enable);
-		selectAllButton.setEnabled(enable);
-		deselectAllButton.setEnabled(enable);
+		selectAllButton.setEnabled(false);
+		deselectAllButton.setEnabled(false);
 	}
 
 	/**
@@ -1197,18 +1197,18 @@ public class ErlangProjectImportWizardPage extends
 			enableButtonGroup(false);
 			return false;
 		}
-		if (!isCopyFiles()) {
-			selectionGroup.setAllSelections(true);
-		}
+//		if (!isCopyFiles()) {
+//			selectionGroup.setAllSelections(true);
+//		}
 		List<?> resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
 		}
 
-		if (copyFiles) {
-			enableButtonGroup(true);
-		}
+//		if (copyFiles) {
+//			enableButtonGroup(true);
+//		}
 		setErrorMessage(null);
 		return true;
 	}
