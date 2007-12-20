@@ -11,12 +11,8 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -54,6 +50,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 	// WizardFileSystemResourceImportPage1 mainPage;
 
+	@SuppressWarnings("deprecation")
 	public ErlangProjectImportWizard() {
 		AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
 				.getPlugin(PlatformUI.PLUGIN_ID);
@@ -283,21 +280,21 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		}
 	}
 
-	private String[] findErlDirectories() {
-		List<String> result = new ArrayList<String>();
-		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-			;
-		}
-		return result.toArray(new String[result.size()]);
-	}
-
-	private String[] findHrlDirectories() {
-		List<String> result = new ArrayList<String>();
-		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-			;
-		}
-		return result.toArray(new String[result.size()]);
-	}
+//	private String[] findErlDirectories() {
+//		List<String> result = new ArrayList<String>();
+//		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+//			;
+//		}
+//		return result.toArray(new String[result.size()]);
+//	}
+//
+//	private String[] findHrlDirectories() {
+//		List<String> result = new ArrayList<String>();
+//		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+//			;
+//		}
+//		return result.toArray(new String[result.size()]);
+//	}
 
 	/**
 	 * Helper method: it recursively creates a folder path.
@@ -307,16 +304,16 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @throws CoreException
 	 * @see java.io.File#mkdirs()
 	 */
-	private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
-			throws CoreException {
-		if (!folder.exists()) {
-			final IContainer parent = folder.getParent();
-			if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
-				createFolderHelper((IFolder) parent, monitor);
-			}
-
-			folder.create(false, true, monitor);
-		}
-	}
+//	private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
+//			throws CoreException {
+//		if (!folder.exists()) {
+//			final IContainer parent = folder.getParent();
+//			if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
+//				createFolderHelper((IFolder) parent, monitor);
+//			}
+//
+//			folder.create(false, true, monitor);
+//		}
+//	}
 
 }

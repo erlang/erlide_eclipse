@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -26,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerSorter;
 import org.erlide.ui.util.DialogUtil;
@@ -55,11 +52,11 @@ public abstract class ErlangWizardResourceImportPage extends
 
 	// messages
 
-	private static final String EMPTY_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyFolder;
-
-	private static final String EMPTY_PROJECT_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyProject;
-
-	private static final String INACCESSABLE_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_folderMustExist;
+//	private static final String EMPTY_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyFolder;
+//
+//	private static final String EMPTY_PROJECT_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyProject;
+//
+//	private static final String INACCESSABLE_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_folderMustExist;
 
 	/**
 	 * Creates an import wizard page. If the initial resource selection contains
@@ -187,6 +184,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/**
 	 * Create the import source selection widget
 	 */
+	@SuppressWarnings("deprecation")
 	protected void createFileSelectionGroup(Composite parent) {
 
 		// Just create with a dummy root.
@@ -243,7 +241,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 *         container name entry field, or <code>null</code>
 	 */
 	protected IPath getContainerFullPath() {
-		IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
+		//IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
 
 		// make the path absolute to allow for optional leading slash
 		IPath testPath = getResourcePath();
@@ -281,6 +279,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @return a list of resources currently selected for export (element type:
 	 *         <code>IResource</code>)
 	 */
+	@SuppressWarnings("unchecked")
 	protected java.util.List getSelectedResources() {
 		return this.selectionGroup.getAllCheckedListItems();
 	}
@@ -541,19 +540,19 @@ public abstract class ErlangWizardResourceImportPage extends
 		return super.determinePageCompletion();
 	}
 
-		/**
-	 * Returns whether or not the passed workspace has any open projects
-	 * 
-	 * @return boolean
-	 */
-	private boolean noOpenProjects() {
-		IProject[] projects = IDEWorkbenchPlugin.getPluginWorkspace().getRoot()
-				.getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].isOpen()) {
-				return false;
-			}
-		}
-		return true;
-	}
+//		/**
+//	 * Returns whether or not the passed workspace has any open projects
+//	 * 
+//	 * @return boolean
+//	 */
+//	private boolean noOpenProjects() {
+//		IProject[] projects = IDEWorkbenchPlugin.getPluginWorkspace().getRoot()
+//				.getProjects();
+//		for (int i = 0; i < projects.length; i++) {
+//			if (projects[i].isOpen()) {
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 }

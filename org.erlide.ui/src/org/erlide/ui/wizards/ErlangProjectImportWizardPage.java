@@ -1065,6 +1065,7 @@ public class ErlangProjectImportWizardPage extends
 
 		final IElementFilter filter = new IElementFilter() {
 
+			@SuppressWarnings("unchecked")
 			public void filterElements(Collection files,
 					IProgressMonitor monitor) throws InterruptedException {
 				if (files == null) {
@@ -1107,6 +1108,7 @@ public class ErlangProjectImportWizardPage extends
 
 		};
 
+		@SuppressWarnings("unused")
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(final IProgressMonitor monitor)
 					throws InterruptedException {
