@@ -553,6 +553,16 @@
                <instanceof
                      value="org.erlide.core.erlang.IErlElement">
                </instanceof>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="hrl">
+                  </test>
+               </and>
             </or></triggerPoints>
          <possibleChildren>
             <or>
