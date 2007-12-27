@@ -93,9 +93,9 @@ public class ErlangProjectImportWizardPage extends
 
 	protected Button selectTypesButton;
 
-	protected Button selectAllButton;
+	//protected Button selectAllButton;
 
-	protected Button deselectAllButton;
+	//protected Button deselectAllButton;
 
 	// A boolean to indicate if the user has typed anything
 	private boolean entryChanged = false;
@@ -227,29 +227,29 @@ public class ErlangProjectImportWizardPage extends
 		selectTypesButton.addSelectionListener(listener);
 		setButtonLayoutData(selectTypesButton);
 
-		selectAllButton = createButton(buttonComposite,
-				IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
+//		selectAllButton = createButton(buttonComposite,
+//				IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
+//
+//		listener = new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				setAllSelections(true);
+//			}
+//		};
+		//selectAllButton.addSelectionListener(listener);
+		//setButtonLayoutData(selectAllButton);
 
-		listener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setAllSelections(true);
-			}
-		};
-		selectAllButton.addSelectionListener(listener);
-		setButtonLayoutData(selectAllButton);
-
-		deselectAllButton = createButton(buttonComposite,
-				IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
-
-		listener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setAllSelections(false);
-			}
-		};
-		deselectAllButton.addSelectionListener(listener);
-		setButtonLayoutData(deselectAllButton);
+//		deselectAllButton = createButton(buttonComposite,
+//				IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
+//
+//		listener = new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				setAllSelections(false);
+//			}
+//		};
+//		deselectAllButton.addSelectionListener(listener);
+//		setButtonLayoutData(deselectAllButton);
 
 	}
 
@@ -501,8 +501,8 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void enableButtonGroup(boolean enable) {
 		selectTypesButton.setEnabled(enable);
-		selectAllButton.setEnabled(false);
-		deselectAllButton.setEnabled(false);
+//		selectAllButton.setEnabled(false);
+//		deselectAllButton.setEnabled(false);
 	}
 
 	/**
