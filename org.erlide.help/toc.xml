@@ -17,8 +17,8 @@
       <topic label="Actions" href="html/reference/actions.html"/>
       <topic label="Views and editors" href="html/reference/viewsAndEditors.html">
       	<topic label="Navigator view" href="html/reference/navigatorView.html"></topic>
-      	<topic label="Erlang editor" href="html/reference/erlangEditor.html"></topic>
-      	<topic label="Outline view" href="html/reference/outlineView.html"></topic>
+      	<topic label="Erlang editor" href="html/reference/erlide_editor_view.html"></topic>
+      	<topic label="Outline view" href="html/reference/erlide_outline_view.html"></topic>
       	<topic label="Erlang Console" href="html/reference/erlangConsole.html"></topic>
       	<topic label="Process list view" href="html/reference/processListView.html"></topic>
       	<topic label="Live expressions" href="html/reference/liveExpressions.html"></topic></topic>
