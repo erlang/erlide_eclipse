@@ -9,7 +9,9 @@
       <topic label="Erlang projects" href="html/erlangProjects.html"/>
    </topic>
    <topic label="Tasks" href="html/tasks.html">
-      <topic label="How to..." href="html/howTo.html"/>
+      <topic label="Creating an erlang project" href="html/tasks/erlide_new_proj.html"/><topic
+      	label="Importing an erlang project" href="html/tasks/erlide_import_proj.html">
+</topic>
    </topic>
    <topic label="Reference" href="html/reference/reference.html">
       <topic label="Actions" href="html/reference/actions.html"/>
