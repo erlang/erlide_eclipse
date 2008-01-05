@@ -31,7 +31,7 @@ import org.erlide.runtime.backend.ErtsProcessFactory;
 import org.erlide.runtime.backend.console.BackendShellManager;
 
 /**
- * @author Vlad Dumitrescu [vlad_dumitrescu at hotmail dot com]
+ * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public class ManagedBackend extends AbstractBackend {
 

@@ -12,7 +12,7 @@ package org.erlide.ui.editors.scratch;
 /**
  * 
  * 
- * @author Vlad Dumitrescu [vlad_dumitrescu at hotmail dot com]
+ * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 
 import java.lang.reflect.InvocationTargetException;

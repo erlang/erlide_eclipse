@@ -106,7 +106,8 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		}
 		int severity = 0;
 		if (sourceElement == null) {
-			severity = res.findMaxProblemSeverity(IMarker.PROBLEM, true, depth);
+			severity = IMarker.SEVERITY_INFO; // res.findMaxProblemSeverity(IMarker.PROBLEM,
+			// true, depth);
 		} else {
 			IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true, depth);
 			if (markers != null && markers.length > 0) {

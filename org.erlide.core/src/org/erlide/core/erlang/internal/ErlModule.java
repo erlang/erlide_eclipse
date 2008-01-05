@@ -295,14 +295,14 @@ public class ErlModule extends Openable implements IErlModule {
 		for (PredefMacros m : Macroses) {
 			final String mname = m.getName();
 			if (mname.startsWith(prefix)) {
-				cp = new CompletionProposal(mname, /* replacementString */
-				offset - prefix.length(), /* replacementOffset */
-				prefix.length(), /* replacementLength */
-				mname.length(), /* cursorPosition */
-				null, /* image */
-				mname, /* displayString */
-				null, /* contextInformation */
-				m.getDesc()); /* String additionalProposalInfo */
+				// cp = new CompletionProposal(mname, /* replacementString */
+				// offset - prefix.length(), /* replacementOffset */
+				// prefix.length(), /* replacementLength */
+				// mname.length(), /* cursorPosition */
+				// null, /* image */
+				// mname, /* displayString */
+				// null, /* contextInformation */
+				// m.getDesc()); /* String additionalProposalInfo */
 			}
 			if (cp != null) {
 				result.add(cp);
@@ -317,14 +317,15 @@ public class ErlModule extends Openable implements IErlModule {
 				String FuncName = f.getElementName();
 				if (FuncName.startsWith(prefix)) {
 					for (IErlFunctionClause fc : f.getClauses()) {
-						cp = new CompletionProposal(FuncName, /* replacementString */
-						offset - prefix.length(), /* replacementOffset */
-						prefix.length(), /* replacementLength */
-						FuncName.length(), /* cursorPosition */
-						null, /* image */
-						FuncName + fc.toString(), /* displayString */
-						null, /* contextInformation */
-						null); /* String additionalProposalInfo */
+						// cp = new CompletionProposal(FuncName, /*
+						// replacementString */
+						// offset - prefix.length(), /* replacementOffset */
+						// prefix.length(), /* replacementLength */
+						// FuncName.length(), /* cursorPosition */
+						// null, /* image */
+						// FuncName + fc.toString(), /* displayString */
+						// null, /* contextInformation */
+						// null); /* String additionalProposalInfo */
 					}
 				}
 			} else if (el instanceof IErlRecordDef) {
@@ -333,17 +334,18 @@ public class ErlModule extends Openable implements IErlModule {
 				if (prefix.length() == 0
 						|| (prefix.charAt(0) == '#' && RecName
 								.startsWith(prefix.substring(1)))) {
-					cp = new CompletionProposal("#" + RecName, /* replacementString */
-					offset - prefix.length(), /* replacementOffset */
-					prefix.length(), /* replacementLength */
-					RecName.length() + 1, /* cursorPosition */
-					null, /* image */
-					"#" + rec.getDefinedName() + "{...}", /*
-															 * FIXME:
-															 * displayString
-															 */
-					null, /* contextInformation */
-					null); /* String additionalProposalInfo */
+					// cp = new CompletionProposal("#" + RecName, /*
+					// replacementString */
+					// offset - prefix.length(), /* replacementOffset */
+					// prefix.length(), /* replacementLength */
+					// RecName.length() + 1, /* cursorPosition */
+					// null, /* image */
+					// "#" + rec.getDefinedName() + "{...}", /*
+					// * FIXME:
+					// * displayString
+					// */
+					// null, /* contextInformation */
+					//					null); /* String additionalProposalInfo */
 				}
 			} else if (el instanceof IErlMacroDef) {
 				final IErlMacroDef mac = (IErlMacroDef) el;
@@ -351,14 +353,15 @@ public class ErlModule extends Openable implements IErlModule {
 				if (prefix.length() == 0
 						|| (prefix.charAt(0) == '?' && MacName
 								.startsWith(prefix.substring(1)))) {
-					cp = new CompletionProposal("?" + MacName, /* replacementString */
-					offset - prefix.length(), /* replacementOffset */
-					prefix.length(), /* replacementLength */
-					MacName.length() + 1, /* cursorPosition */
-					null, /* image */
-					"?" + mac.getDefinedName(), /* displayString */
-					null, /* contextInformation */
-					null); /* String additionalProposalInfo */
+					// cp = new CompletionProposal("?" + MacName, /*
+					// replacementString */
+					// offset - prefix.length(), /* replacementOffset */
+					// prefix.length(), /* replacementLength */
+					// MacName.length() + 1, /* cursorPosition */
+					// null, /* image */
+					// "?" + mac.getDefinedName(), /* displayString */
+					// null, /* contextInformation */
+					// null); /* String additionalProposalInfo */
 				}
 			}
 			if (cp != null) {

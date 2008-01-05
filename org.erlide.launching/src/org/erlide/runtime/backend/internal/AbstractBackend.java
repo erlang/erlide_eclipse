@@ -46,7 +46,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpPeer;
 
 /**
- * @author Vlad Dumitrescu [vlad_dumitrescu at hotmail dot com]
+ * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public abstract class AbstractBackend implements IBackend {
 

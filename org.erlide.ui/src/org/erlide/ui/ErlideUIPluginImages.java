@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * 
  * 
- * @author Vlad Dumitrescu [vlad_dumitrescu at hotmail dot com]
+ * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public class ErlideUIPluginImages {
 
