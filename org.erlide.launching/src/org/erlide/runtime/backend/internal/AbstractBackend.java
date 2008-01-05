@@ -331,7 +331,7 @@ public abstract class AbstractBackend implements IBackend {
 		OtpErlangObject res = null;
 		try {
 			final OtpMbox mbox = getMbox();
-			res = buildRpcCall(module, fun, args, mbox.self());
+			res = RpcUtil.buildRpcCall(module, fun, args, mbox.self());
 			send("rex", res);
 			if (CHECK_RPC) {
 				ErlLogger.debug("RPC :: " + res);
@@ -365,15 +365,6 @@ public abstract class AbstractBackend implements IBackend {
 			ErlangLaunchPlugin.log(e);
 		}
 		return result;
-	}
-
-	private OtpErlangTuple buildRpcCall(final String module, final String fun,
-			final OtpErlangObject[] args, final OtpErlangPid pid) {
-		final OtpErlangObject m = new OtpErlangAtom(module);
-		final OtpErlangObject f = new OtpErlangAtom(fun);
-		final OtpErlangObject a = new OtpErlangList(args);
-		return new OtpErlangTuple(pid, new OtpErlangTuple(new OtpErlangAtom(
-				"call"), m, f, a, new OtpErlangAtom("user")));
 	}
 
 	private OtpMbox getMbox() {

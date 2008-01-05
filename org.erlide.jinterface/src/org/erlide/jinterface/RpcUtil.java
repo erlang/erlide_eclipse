@@ -65,6 +65,16 @@ public class RpcUtil {
 	// we can access even the UI classes (which are actually most interesting)
 	public static ClassLoader loader = RpcUtil.class.getClassLoader();
 
+	public static OtpErlangTuple buildRpcCall(final String module,
+			final String fun, final OtpErlangObject[] args,
+			final OtpErlangPid pid) {
+		final OtpErlangObject m = new OtpErlangAtom(module);
+		final OtpErlangObject f = new OtpErlangAtom(fun);
+		final OtpErlangObject a = new OtpErlangList(args);
+		return new OtpErlangTuple(pid, new OtpErlangTuple(new OtpErlangAtom(
+				"call"), m, f, a, new OtpErlangAtom("user")));
+	}
+
 	public static OtpErlangRef registerTarget(Object obj) {
 		if (obj == null) {
 			return new OtpErlangRef(REF_NODE, new int[] { 0, 0, 0 }, 0);
