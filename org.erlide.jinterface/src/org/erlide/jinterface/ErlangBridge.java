@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.jinterface;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -51,10 +52,18 @@ public class ErlangBridge {
 
 		private String module;
 		private String node;
+		private OtpNode lnode;
+		private OtpMbox mbox;
 
 		public ErlangBridgeHandler(String node, String module) {
 			this.node = node;
 			this.module = module;
+			try {
+				lnode = new OtpNode("dummy");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			mbox = lnode.createMbox();
 		}
 
 		// TODO this works only for static methods!
@@ -62,8 +71,6 @@ public class ErlangBridge {
 
 		public Object invoke(Object proxy, Method method, Object[] args)
 				throws Throwable {
-			OtpNode lnode = new OtpNode("dummy");
-			OtpMbox mbox = lnode.createMbox();
 			OtpErlangObject[] eargs = new OtpErlangObject[args.length];
 			for (int i = 0; i < args.length; i++) {
 				eargs[i] = (OtpErlangObject) args[i];
