@@ -10,7 +10,6 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
@@ -104,81 +103,45 @@ public class ErlParser {
 	 */
 
 	public boolean parse(IErlModule module) {
+		final IErlScanner scanner = module.getScanner();
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		OtpErlangList forms = null, comments = null;
 		try {
-			final String moduleText = module.getBuffer().getContents();
-			final IErlScanner scanner = module.getScanner();
-
-			if (moduleText == null) {
-				return true;
+			OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
+					"parse", scanner.getScannerModuleName());
+			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
+				forms = (OtpErlangList) res.elementAt(1);
+				comments = (OtpErlangList) res.elementAt(2);
+			} else {
+				ErlLogger.debug("rpc err:: " + res);
 			}
-			if (moduleText.length() == 0) {
-				return true;
-			}
-
-			final IBackend b = BackendManager.getDefault().getIdeBackend();
-
-			OtpErlangList forms = null, comments = null;
-			try {
-				// OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_model",
-				// "parse", doc, module.getElementName());
-				OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
-						"parse", moduleText, new OtpErlangAtom(scanner
-								.getScannerModuleName()));
-				if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
-						"ok") == 0) {
-					forms = (OtpErlangList) res.elementAt(1);
-					comments = (OtpErlangList) res.elementAt(2);
-				} else {
-					ErlLogger.debug("rpc err:: " + res);
-				}
-
-				// ErlToken[] t = scanner.getTokens();
-				// StringBuffer sb = new StringBuffer();
-				// for (ErlToken tk : t) {
-				// sb.append(" " + tk.toString());
-				// }
-				// ErlLogger.debug(sb);
-				// ErlLogger.debug(forms);
-				// ErlLogger.debug("-----------------------");
-
-				// res = (OtpErlangTuple) b.rpcx("erlide_model", "comments",
-				// doc);
-				// if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
-				// "ok") == 0) {
-				// comments = (OtpErlangList) res.elementAt(1);
-				// } else {
-				// ErlLogger.debug("rpc err:: " + res);
-				// }
-			} catch (final BackendException e1) {
-				e1.printStackTrace();
-			}
-			final ErlModule mm = (ErlModule) module;
-			mm.reset();
-			mm.setParseTree(forms);
-			if (forms == null) {
-				return true;
-			}
-
-			for (int i = 0; i < forms.arity(); i++) {
-				final IErlMember elem = create(module, (OtpErlangTuple) forms
-						.elementAt(i));
-				if (elem != null) {
-					mm.addMember(elem);
-				}
-			}
-			if (comments != null) {
-				for (int i = 0; i < comments.arity(); i++) {
-					final IErlComment c = createComment(module,
-							(OtpErlangTuple) comments.elementAt(i));
-					if (c != null) {
-						mm.addComment(c);
-					}
-				}
-			}
-			mm.fixExportedFunctions();
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
+		} catch (final BackendException e1) {
+			e1.printStackTrace();
 		}
+		final ErlModule mm = (ErlModule) module;
+		mm.reset();
+		mm.setParseTree(forms);
+		if (forms == null) {
+			return true;
+		}
+
+		for (int i = 0; i < forms.arity(); i++) {
+			final IErlMember elem = create(module, (OtpErlangTuple) forms
+					.elementAt(i));
+			if (elem != null) {
+				mm.addMember(elem);
+			}
+		}
+		if (comments != null) {
+			for (int i = 0; i < comments.arity(); i++) {
+				final IErlComment c = createComment(module,
+						(OtpErlangTuple) comments.elementAt(i));
+				if (c != null) {
+					mm.addComment(c);
+				}
+			}
+		}
+		mm.fixExportedFunctions();
 
 		return true;
 	}
@@ -194,21 +157,32 @@ public class ErlParser {
 	 */
 	private IErlComment createComment(IErlModule parent, OtpErlangTuple c) {
 		// from erlide_scanner.hrl:
-		// -record(token, {kind, line, offset, length, value, text}).
-		final OtpErlangLong l = (OtpErlangLong) c.elementAt(2);
+		// -record(token, {kind, line = {Line, LastLine}, offset, length, value,
+		// text}).
+		final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(2);
 		final OtpErlangString s = (OtpErlangString) c.elementAt(5);
+
 		int line;
+		int lastLine;
 		try {
-			line = l.intValue();
+			line = lineL.intValue();
 		} catch (final OtpErlangRangeException x) {
 			line = 0;
+		}
+		lastLine = line;
+		try {
+			if (c.elementAt(5) instanceof OtpErlangLong) {
+				final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(7);
+				lastLine = lastLineL.intValue();
+			}
+		} catch (OtpErlangRangeException e1) {
 		}
 		final ErlComment comment = new ErlComment(parent, s.stringValue(),
 				false, line == 1);
 		try {
 			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
 			final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
-			setPos(comment, line, ofs + 1, len - 1);
+			setPos(comment, line, lastLine, ofs + 1, len - 1);
 		} catch (final OtpErlangRangeException e) {
 			return null;
 		}
@@ -230,7 +204,6 @@ public class ErlParser {
 			final String msg = format_error(er);
 
 			final ErlError e = new ErlError(parent, msg);
-			// TODO sometimes the pos looks different than expected
 			setPos(e, er.elementAt(0));
 			e.setParseTree(el);
 			return e;
@@ -433,7 +406,7 @@ public class ErlParser {
 					ipos = ((OtpErlangLong) pos).intValue();
 				} catch (OtpErlangRangeException e1) {
 				}
-				setPos(e, 0, ipos, 0);
+				setPos(e, 0, 0, ipos, 0);
 				return true;
 			} else {
 				ErlLogger.debug("!> expecting pos tuple, got " + pos);
@@ -441,13 +414,21 @@ public class ErlParser {
 			}
 		}
 		try {
-			// pos={{Line, Offset}, Length}
+			// pos={{Line, LastLine, Offset}, PosLength} or {{Line, Offset},
+			// PosLength}
 			final OtpErlangTuple tpos = (OtpErlangTuple) pos;
 			final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
 			final int line = ((OtpErlangLong) (tpos1.elementAt(0))).intValue();
-			final int ofs = ((OtpErlangLong) (tpos1.elementAt(1))).intValue();
+			int lastLine = ((OtpErlangLong) (tpos1.elementAt(1))).intValue();
+			int ofs;
+			if (tpos1.arity() > 2) {
+				ofs = ((OtpErlangLong) (tpos1.elementAt(2))).intValue();
+			} else {
+				ofs = lastLine;
+				lastLine = line;
+			}
 			final int len = ((OtpErlangLong) (tpos.elementAt(1))).intValue();
-			setPos(e, line, ofs, len);
+			setPos(e, line, lastLine, ofs, len);
 			return true;
 		} catch (final OtpErlangRangeException ex) {
 			return false;
@@ -455,12 +436,13 @@ public class ErlParser {
 
 	}
 
-	private void setPos(SourceRefElement e, int line, int ofs, int len) {
+	private void setPos(SourceRefElement e, int line, int lastLine, int ofs,
+			int len) {
 		e.setSourceRangeStart(ofs - 1);
 		e.setSourceRangeEnd(ofs + len - 2);
 		e.setLineStart(line);
-		e.setLineEnd(line); // FIXME (JC) line end should be returned from
-							// parser (noparse)
+		e.setLineEnd(lastLine);
+		// parser (noparse)
 	}
 
 	private OtpErlangObject concreteTerm(OtpErlangObject val) {
