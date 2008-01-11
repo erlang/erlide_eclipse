@@ -12,11 +12,6 @@
  * *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.ArrayList;
-
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 
@@ -78,12 +73,11 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 
 	long getTimestamp();
 
-	void reconcile(IDocument doc, DirtyRegion dirtyRegion);
+	// void reconcile(IDocument doc, DirtyRegion dirtyRegion);
 
-	void reconcile(IDocument document);
+	// void reconcile(IDocument document);
 
-	void getContentProposals(String prefix, String indent, int offset,
-			ArrayList<ICompletionProposal> result);
+	// ArrayList<ICompletionProposal> result);
 
 	void reset();
 
@@ -97,5 +91,9 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 	ErlangIncludeFile[] getIncludedFiles();
 
 	IErlScanner getScanner();
+
+	void insertText(int offset, String text);
+
+	void removeText(int offset, int length);
 
 }

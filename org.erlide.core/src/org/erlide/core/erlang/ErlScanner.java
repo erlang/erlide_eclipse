@@ -11,8 +11,6 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -28,20 +26,20 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ErlScanner implements IErlScanner {
 
-	private IErlModule fModule;
+	private final IErlModule fModule;
 
-	private OtpErlangAtom fMod;
+	private final OtpErlangAtom fMod;
 
 	public ErlScanner(IErlModule module) {
 		fModule = module;
-		fMod = new OtpErlangAtom(getScannerModuleName());
+		fMod = new OtpErlangAtom(createScannerModuleName());
 		create();
 	}
 
 	/**
 	 * @return
 	 */
-	public String getScannerModuleName() {
+	public String createScannerModuleName() {
 		IResource res = fModule.getResource();
 		String resName;
 		if (res != null)
@@ -120,25 +118,24 @@ public class ErlScanner implements IErlScanner {
 		return null;
 	}
 
-	public void modifyText(IDocument doc, DirtyRegion dirtyRegion) {
-		if (doc == null) {
-			return;
-		}
-		if (dirtyRegion == null) {
-			dirtyRegion = new DirtyRegion(0, doc.getLength(),
-					DirtyRegion.INSERT, doc.get());
-		}
+	// public void modifyText(IDocument doc, DirtyRegion dirtyRegion) {
+	// if (doc == null) {
+	// return;
+	// }
+	// if (dirtyRegion == null) {
+	// dirtyRegion = new DirtyRegion(0, doc.getLength(),
+	// DirtyRegion.INSERT, doc.get());
+	// }
+	//
+	// if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
+	// removeText(doc, dirtyRegion.getOffset() + 1, dirtyRegion
+	// .getLength());
+	// } else if (dirtyRegion.getType() == DirtyRegion.INSERT) {
+	// insertText(doc, dirtyRegion.getOffset() + 1, dirtyRegion.getText());
+	// }
+	// }
 
-		if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
-			removeText(doc, dirtyRegion.getOffset() + 1, dirtyRegion
-					.getLength());
-		} else if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-			insertText(doc, dirtyRegion.getOffset() + 1, dirtyRegion.getText());
-		}
-	}
-
-	@SuppressWarnings("boxing")
-	private void insertText(IDocument doc, int offset, String text) {
+	public void insertText(int offset, String text) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"insertText", fMod, offset, text);
@@ -147,8 +144,7 @@ public class ErlScanner implements IErlScanner {
 		}
 	}
 
-	@SuppressWarnings("boxing")
-	private void removeText(IDocument doc, int offset, int length) {
+	public void removeText(int offset, int length) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"removeText", fMod, offset, length);
@@ -211,5 +207,9 @@ public class ErlScanner implements IErlScanner {
 
 		}
 		return null;
+	}
+
+	public OtpErlangAtom getScannerModuleName() {
+		return fMod;
 	}
 }

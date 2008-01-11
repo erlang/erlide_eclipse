@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
+import com.ericsson.otp.erlang.OtpErlangAtom;
 
 public interface IErlScanner {
 
@@ -19,11 +18,13 @@ public interface IErlScanner {
 
 	ErlToken[] getTokensAround(int offset);
 
-	void modifyText(IDocument doc, DirtyRegion dirtyRegion);
+	public void removeText(int offset, int length);
+
+	public void insertText(int offset, String text);
 
 	ErlToken[] getTokens();
 
 	TokenWindow getTokenWindow(int offset, int window);
 
-	String getScannerModuleName();
+	OtpErlangAtom getScannerModuleName();
 }
