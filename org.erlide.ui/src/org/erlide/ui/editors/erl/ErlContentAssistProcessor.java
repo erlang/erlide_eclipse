@@ -21,9 +21,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
@@ -40,7 +38,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
-	private ErlangEditor fEditor;
+	private final ErlangEditor fEditor;
 
 	public ErlContentAssistProcessor(ErlangEditor editor) {
 		fEditor = editor;
@@ -70,64 +68,59 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			final IDocument doc = viewer.getDocument();
 			String prefix = lastText(doc, offset);
-			final String indent = lastIndent(doc, offset);
+			// final String indent = lastIndent(doc, offset);
 
 			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-
-			int i = prefix.indexOf(':');
-			if (i >= 0) {
-				// we have a remote call
-				final String mod = prefix.substring(0, i);
-				prefix = prefix.substring(i + 1);
-				final IErlProject project = ErlModelUtils
-						.getErlProject(fEditor);
-				final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
-				final IBackend b = BackendManager.getDefault().get(
-						project.getProject());
-				final OtpErlangObject res = b.rpcx("erlide_model",
-						"get_exported", modAtom, prefix);
-				if (res instanceof OtpErlangList) {
-					final OtpErlangList resl = (OtpErlangList) res;
-					final OtpErlangList docl = getDocumentationFor(resl,
-							modAtom);
-					for (i = 0; i < resl.arity(); i++) {
-						final OtpErlangTuple f = (OtpErlangTuple) resl
-								.elementAt(i);
-						final String fstr = ((OtpErlangAtom) f.elementAt(0))
-								.atomValue();
-						final int far = ((OtpErlangLong) f.elementAt(1))
-								.intValue();
-						String args = "";
-						for (int j = 0; j < far - 1; j++) {
-							args += ", ";
-						}
-						String docStr = null;
-						if (docl != null) {
-							final OtpErlangObject elt = docl.elementAt(i);
-							if (elt instanceof OtpErlangString) {
-								docStr = ((OtpErlangString) elt).stringValue();
-							}
-						}
-						final String cpl = fstr.substring(prefix.length())
-								+ "(" + args + ")";
-						result.add(new CompletionProposal(cpl, offset, 0, cpl
-								.length()
-								- 1 - far * 2 + 2, null, fstr + "/" + far,
-								null, docStr));
+			final IErlModule module = ErlModelUtils.getModule(fEditor
+					.getEditorInput());
+			if (module == null) {
+				return null;
+			}
+			//
+			// int i = prefix.indexOf(':');
+			// if (i >= 0) {
+			// // we have a remote call
+			// final String mod = prefix.substring(0, i);
+			// prefix = prefix.substring(i + 1);
+			// final IErlProject project = ErlModelUtils
+			// .getErlProject(fEditor);
+			// final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
+			// final IBackend b = BackendManager.getDefault().get(
+			// project.getProject());
+			// final OtpErlangObject res = b.rpcx("erlide_model",
+			// "get_exported", modAtom, prefix);
+			OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
+					.rpcx("erlide_otp_doc", "get_exported",
+							module.getScanner().getScannerModuleName(), offset);
+			if (r1 instanceof OtpErlangList) {
+				final OtpErlangList resl = (OtpErlangList) r1;
+				final OtpErlangList docl = getDocumentationFor(resl,
+						new OtpErlangAtom(module.getElementName()));
+				for (int i = 0; i < resl.arity(); i++) {
+					final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
+					final String fstr = ((OtpErlangAtom) f.elementAt(0))
+							.atomValue();
+					final int far = ((OtpErlangLong) f.elementAt(1)).intValue();
+					StringBuilder args = new StringBuilder(far * 2);
+					for (int j = 0; j < far - 1; j++) {
+						args.append(", ");
 					}
-					return result
-							.toArray(new ICompletionProposal[result.size()]);
-				} else {
-					return NO_COMPLETIONS;
+					String docStr = null;
+					if (docl != null) {
+						final OtpErlangObject elt = docl.elementAt(i);
+						if (elt instanceof OtpErlangString) {
+							docStr = ((OtpErlangString) elt).stringValue();
+						}
+					}
+					final String cpl = fstr.substring(prefix.length()) + "("
+							+ args.toString() + ")";
+					result.add(new CompletionProposal(cpl, offset, 0, cpl
+							.length()
+							- 1 - far * 2 + 2, null, fstr + "/" + far, null,
+							docStr));
 				}
+				return result.toArray(new ICompletionProposal[result.size()]);
 			} else {
-				// either a local call or a module name
-				final IErlModule myMdl = ErlModelUtils.getModule(fEditor);
-				if (myMdl != null) {
-					myMdl.getContentProposals(prefix, indent, offset, result);
-					return result
-							.toArray(new ICompletionProposal[result.size()]);
-				}
 				return NO_COMPLETIONS;
 			}
 		} catch (final BackendException e) {
@@ -163,25 +156,25 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return Character.isJavaIdentifierPart(char1);
 	}
 
-	private String lastIndent(IDocument doc, int offset) {
-		try {
-			int start = offset - 1;
-			while (start >= 0 && doc.getChar(start) != '\n') {
-				start--;
-			}
-			int end = start + 1;
-			while (end < offset && isspace(doc.getChar(end))) {
-				end++;
-			}
-			return doc.get(start + 1, end - start - 1);
-		} catch (final BadLocationException e) {
-		}
-		return "";
-	}
+	// private String lastIndent(IDocument doc, int offset) {
+	// try {
+	// int start = offset - 1;
+	// while (start >= 0 && doc.getChar(start) != '\n') {
+	// start--;
+	// }
+	// int end = start + 1;
+	// while (end < offset && isspace(doc.getChar(end))) {
+	// end++;
+	// }
+	// return doc.get(start + 1, end - start - 1);
+	// } catch (final BadLocationException e) {
+	// }
+	// return "";
+	// }
 
-	private boolean isspace(char ch) {
-		return ch == ' ' || ch == '\t';
-	}
+	// private boolean isspace(char ch) {
+	// return ch == ' ' || ch == '\t';
+	// }
 
 	public IContextInformation[] computeContextInformation(ITextViewer viewer,
 			int offset) {
