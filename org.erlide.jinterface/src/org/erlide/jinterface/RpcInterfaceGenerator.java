@@ -29,6 +29,7 @@ import com.ericsson.otp.erlang.OtpNode;
  */
 public class RpcInterfaceGenerator {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		try {
 			OtpNode node = new OtpNode("dummy");
@@ -50,11 +51,13 @@ public class RpcInterfaceGenerator {
 			}
 			OtpErlangTuple r = (OtpErlangTuple) res;
 			res = r.elementAt(1);
-			List l = null;
+			List<OtpErlangObject> l = null;
 			try {
-				l = (List) RpcUtil.erlang2java(res, List.class);
+				l = (List<OtpErlangObject>) RpcUtil
+						.erlang2java(res, List.class);
 				System.out.println(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
+
 			} catch (RpcException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
