@@ -447,7 +447,7 @@ annotate_bindings(Tree) ->
         {value, {env, InVars}} ->
             annotate_bindings(Tree, InVars);
         _ ->
-            erlang:fault(badarg)
+            erlang:error(badarg)
     end.
 
 vann(Tree, Env) ->
