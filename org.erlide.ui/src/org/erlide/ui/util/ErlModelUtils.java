@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -102,21 +105,23 @@ public class ErlModelUtils {
 		if (mod == null) {
 			return new OtpErlangList();
 		}
-
 		final IErlImport[] imports = mod.getImports();
-		final OtpErlangTuple rImports[] = new OtpErlangTuple[imports.length];
-		for (int i = 0; i < imports.length; ++i) {
-			final IErlImport imp = imports[i];
+		final List<OtpErlangTuple> rImports = new ArrayList<OtpErlangTuple>(
+				imports.length);
+		for (IErlImport imp : imports) {
 			final ErlangFunction[] impFuncs = imp.getFunctions();
-			final OtpErlangTuple rImpFuncs[] = new OtpErlangTuple[impFuncs.length];
+			final List<OtpErlangTuple> rImpFuncs = new ArrayList<OtpErlangTuple>(
+					impFuncs.length);
 			for (final ErlangFunction f : impFuncs) {
-				rImpFuncs[i] = new OtpErlangTuple(new OtpErlangAtom(f.name),
-						new OtpErlangLong(f.arity));
+				rImpFuncs.add(new OtpErlangTuple(new OtpErlangAtom(f.name),
+						new OtpErlangLong(f.arity)));
 			}
-			rImports[i] = new OtpErlangTuple(new OtpErlangAtom(imp
-					.getImportModule()), new OtpErlangList(rImpFuncs));
+			rImports.add(new OtpErlangTuple(new OtpErlangAtom(imp
+					.getImportModule()), new OtpErlangList(rImpFuncs
+					.toArray(new OtpErlangTuple[rImpFuncs.size()]))));
 		}
-		return new OtpErlangList(rImports);
+		return new OtpErlangList(rImports.toArray(new OtpErlangTuple[rImports
+				.size()]));
 	}
 
 	public static IErlScanner getScanner(ITextEditor editor) {
