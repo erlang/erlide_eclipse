@@ -199,7 +199,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final EditorConfiguration cfg = new EditorConfiguration(
 				getPreferenceStore(), this, colorManager);
 		setSourceViewerConfiguration(cfg);
-
 	}
 
 	public IErlScanner getScanner() {
@@ -640,7 +639,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				if (reconcile) {
 					module.open(null);
 					synchronized (module) {
-						module.reconcile(getSourceViewer().getDocument());
+						fullReconcileModule(module, getSourceViewer()
+								.getDocument());
 						module.open(null);
 					}
 					return module.getElementAt(offset);
@@ -651,6 +651,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			}
 		}
 		return null;
+	}
+
+	private void fullReconcileModule(IErlModule module, IDocument document) {
+		module.insertText(0, document.get());
 	}
 
 	protected abstract class AbstractSelectionChangedListener implements
@@ -1418,9 +1422,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void doSave(IProgressMonitor progressMonitor) {
 		super.doSave(progressMonitor);
 
-		// Refresh the Erlang Navigator 
+		// Refresh the Erlang Navigator
 		CommonNavigator cv = (CommonNavigator) PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().findView(IErlideUIConstants.NAVIGATOR_VIEW_ID);
+				.getActiveWorkbenchWindow().getActivePage().findView(
+						IErlideUIConstants.NAVIGATOR_VIEW_ID);
 		cv.getCommonViewer().refresh();
 
 	}
