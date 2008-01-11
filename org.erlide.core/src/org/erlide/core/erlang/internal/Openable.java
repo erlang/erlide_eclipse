@@ -19,8 +19,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
@@ -81,8 +79,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	 *            TODO
 	 */
 	protected abstract boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource, IDocument doc, DirtyRegion dirtyRegion)
-			throws ErlModelException;
+			IResource underlyingResource) throws ErlModelException;
 
 	/*
 	 * Returns whether this element can be removed from the Erlang model cache
@@ -158,7 +155,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 		try {
 			if (!isStructureKnown()) {
 				final boolean knownStructure = buildStructure(monitor,
-						getResource(), null, null);
+						getResource());
 				setIsStructureKnown(knownStructure);
 			}
 		} catch (final ErlModelException e) {
@@ -180,7 +177,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	 * 
 	 * @see IOpenable
 	 */
-	public IBuffer getBuffer() throws ErlModelException {
+	public IBuffer getBuffer() {
 		if (hasBuffer()) {
 			// ensure element is open
 			IBuffer buffer = getBufferManager().getBuffer(this);
@@ -245,7 +242,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 
 	class ErlangResourceVisitor implements IResourceVisitor {
 
-		private String aname;
+		private final String aname;
 
 		public ErlangResourceVisitor(String name) {
 			aname = name;
@@ -362,8 +359,7 @@ public abstract class Openable extends ErlElement implements IOpenable,
 	 * or returns <code>null</code> if opening fails. By default, do nothing -
 	 * subclasses that have buffers must override as required.
 	 */
-	protected IBuffer openBuffer(IProgressMonitor pm, Object info)
-			throws ErlModelException {
+	protected IBuffer openBuffer(IProgressMonitor pm, Object info) {
 		return null;
 	}
 
