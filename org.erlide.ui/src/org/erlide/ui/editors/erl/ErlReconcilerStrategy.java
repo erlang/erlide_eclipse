@@ -18,6 +18,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
@@ -30,7 +31,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private IErlModule fModule;
 
-	private ErlangEditor fEditor;
+	private final ErlangEditor fEditor;
 
 	private IDocument fDoc;
 
@@ -66,7 +67,35 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
 		if (fModule != null) {
-			fModule.reconcile(fDoc, dirtyRegion);
+			// public void reconcile(IDocument doc, DirtyRegion dirtyRegion) {
+			// if (doc == null) {
+			// return;
+			// }
+			// final IBuffer buffer = getBufferManager().getBuffer(this);
+			// if (buffer == null) {
+			// return;
+			// }
+			// buffer.setContents(doc.get());
+			// try {
+			// buildStructure(null, this.getResource(), doc, dirtyRegion);
+			// } catch (final ErlModelException e) {
+			// e.printStackTrace();
+			// }
+			// }
+			if (dirtyRegion.getType() == DirtyRegion.INSERT) {
+				fModule.insertText(dirtyRegion.getOffset(), dirtyRegion
+						.getText());
+			} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
+				fModule.removeText(dirtyRegion.getOffset(), dirtyRegion
+						.getLength());
+			}
+			try {
+				fModule.open(null);
+			} catch (ErlModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// fModule.reconcile(fDoc, dirtyRegion);
 			mon.done();
 		}
 	}
@@ -75,6 +104,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		ErlLogger.debug("## initial reconcile ");
 		fModule = ErlModelUtils.getModule(fEditor);
 		if (fModule != null) {
+			fModule.getScanner();
 			ErlLogger.debug("## module:: " + fModule.getElementName());
 		}
 		notify(new OtpErlangAtom("initialReconcile"));
