@@ -12,8 +12,8 @@ package org.erlide.basicui.util;
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -25,7 +25,7 @@ public class ImageDescriptorRegistry {
 	private final HashMap<ImageDescriptor, Image> fRegistry = new HashMap<ImageDescriptor, Image>(
 			10);
 
-	private Display fDisplay;
+	private final Display fDisplay;
 
 	/**
 	 * Creates a new image descriptor registry for the current or default
