@@ -42,8 +42,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -147,8 +145,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	@Override
 	protected boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource, IDocument doc, DirtyRegion dirtyRegion)
-			throws ErlModelException {
+			IResource underlyingResource) throws ErlModelException {
 		// check whether the Erlang project can be opened
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
