@@ -11,7 +11,6 @@
 package org.erlide.basicui.prefs;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -19,8 +18,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 
 /**
@@ -125,27 +122,28 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 		return super.performOk();
 	}
 
-	private void showRestartWarning() {
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		workbench.getDisplay().asyncExec(new Runnable() {
-
-			public void run() {
-				final IWorkbenchWindow window = workbench
-						.getActiveWorkbenchWindow();
-				if (window != null) {
-					final boolean restart = MessageDialog
-							.openConfirm(
-									null,
-									"Workbench may need restart",
-									"Your changes will only be visible after restarting. Do you want to restart now?");
-					if (restart) {
-						ErlideBasicUIPlugin.getDefault().getWorkbench()
-								.restart();
-					}
-				}
-			}
-		});
-	}
+	// private void showRestartWarning() {
+	// final IWorkbench workbench = PlatformUI.getWorkbench();
+	// workbench.getDisplay().asyncExec(new Runnable() {
+	//
+	// public void run() {
+	// final IWorkbenchWindow window = workbench
+	// .getActiveWorkbenchWindow();
+	// if (window != null) {
+	// final boolean restart = MessageDialog
+	// .openConfirm(
+	// null,
+	// "Workbench may need restart",
+	// "Your changes will only be visible after restarting. Do you want to
+	// restart now?");
+	// if (restart) {
+	// ErlideBasicUIPlugin.getDefault().getWorkbench()
+	// .restart();
+	// }
+	// }
+	// }
+	// });
+	// }
 
 	/*
 	 * (non-Javadoc)
