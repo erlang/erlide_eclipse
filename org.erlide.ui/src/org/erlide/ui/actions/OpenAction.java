@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -283,8 +288,21 @@ public class OpenAction extends SelectionDispatchAction {
 		window = w.getPos();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IPathVariableManager pvm = workspace.getPathVariableManager();
+			String[] names = pvm.getPathVariableNames();
+			List<OtpErlangTuple> pv = new ArrayList<OtpErlangTuple>(
+					names.length);
+			for (String name : names) {
+				OtpErlangTuple t = new OtpErlangTuple(
+						new OtpErlangString(name), new OtpErlangString(pvm
+								.getValue(name).toOSString()));
+				pv.add(t);
+			}
+			OtpErlangList pathVars = new OtpErlangList(pv
+					.toArray(new OtpErlangTuple[pv.size()]));
 			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
-					list, window, fExternalModules);
+					list, window, fExternalModules, pathVars);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
@@ -324,7 +342,8 @@ public class OpenAction extends SelectionDispatchAction {
 					final String mod = ei.getImportModule();
 					final OtpErlangAtom a = new OtpErlangAtom(mod);
 					final OtpErlangObject res2 = b.rpcx("erlide_open",
-							"get_source_from_module", a, fExternalModules);
+							"get_source_from_module", a, fExternalModules,
+							pathVars);
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
