@@ -151,8 +151,7 @@
       <page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
-            name="Erlang properties"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="Erlang properties">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
@@ -160,8 +159,7 @@
       <page
             class="org.erlide.ui.properties.MyErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
-            name="new Erlang properties (work in progress)"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="new Erlang properties (work in progress)">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
