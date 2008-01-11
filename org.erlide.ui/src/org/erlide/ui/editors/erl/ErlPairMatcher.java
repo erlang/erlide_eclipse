@@ -17,7 +17,6 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -59,15 +58,11 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		if (fScanner == null) {
 			return false;
 		}
-		String module = fScanner.getScannerModuleName();
-		if (module == null) {
-			return false;
-		}
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_pair_match", "match", fOffset,
-					new OtpErlangAtom(module));
+					fScanner.getScannerModuleName());
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
 				final int pos = s1.intValue() - 1, offset = fOffset - 1;
