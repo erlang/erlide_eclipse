@@ -590,7 +590,7 @@ type(Node) ->
 	{'try', _, _, _, _, _} -> try_expr;
 	{tuple, _, _} -> tuple;
 	_ ->
-	    erlang:fault({badarg, Node})
+	    erlang:error({badarg, Node})
     end.
 
 
@@ -5726,7 +5726,7 @@ abstract(T) when tuple(T) ->
 abstract(T) when binary(T) ->
     binary([binary_field(integer(B)) || B <- binary_to_list(T)]);
 abstract(T) ->
-    erlang:fault({badarg, T}).
+    erlang:error({badarg, T}).
 
 abstract_list([T | Ts]) ->
     [abstract(T) | abstract_list(Ts)];
@@ -5801,7 +5801,7 @@ concrete(Node) ->
 				   end, [], true),
 	    B;
     	_ ->
-	    erlang:fault({badarg, Node})
+	    erlang:error({badarg, Node})
     end.
 
 concrete_list([E | Es]) ->
@@ -6016,14 +6016,14 @@ revert_forms(T) ->
 		{ok, Fs} ->
 		    Fs;
 		{error, R} ->
-		    erlang:fault({error, R});
+		    erlang:error({error, R});
 		{'EXIT', R} ->
 		    exit(R);
 		R ->
 		    throw(R)
 	    end;
 	_ ->
-	    erlang:fault({badarg, T})
+	    erlang:error({badarg, T})
     end.
 
 revert_forms_1([T | Ts]) ->
@@ -6587,7 +6587,7 @@ is_tree(_) ->
 %% @see tree/2
 
 data(#tree{data = D}) -> D;
-data(T) -> erlang:fault({badarg, T}).
+data(T) -> erlang:error({badarg, T}).
 
 
 %% =====================================================================
