@@ -213,9 +213,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 */
 	public ArrayList<? extends IErlElement> getChildrenOfType(
 			ErlElementType type) throws ErlModelException {
-		// final IErlElement[] children = getChildren();
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
-		for (IErlElement i : list)
+		for (IErlElement i : getChildren())
 			if (i.getElementType() == type)
 				list.add(i);
 		return list;
