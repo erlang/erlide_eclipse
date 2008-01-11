@@ -11,11 +11,11 @@
 %% Exported Functions
 %%
 -export([open_included/1,
-         open_info/3,
+         open_info/4,
          find_first_var/2,
-         get_source_from_module/2]).
+         get_source_from_module/3]).
 
--define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -67,14 +67,14 @@ check_include(Tokens) ->
             end
     end.  
 
-open_info(L, W, ExternalModules) ->
+open_info(L, W, ExternalModules, PathVars) ->
     ?D({open_info, W, L}),
     {CL, CW} = erlide_text:clean_tokens(L, W),
     ?D({open_info, CW, CL}),
     case erlide_text:check_function_call(CL, CW) of
-        {ok, M, F, Rest} = Xx ->
-            ?D(Xx),
-            {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M, ExternalModules)}};
+        {ok, M, F, Rest} = _Xx ->
+            ?D(_Xx),
+            {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M, ExternalModules, PathVars)}};
         {ok, F, Rest} -> {local, {F, erlide_text:guess_arity(Rest)}};
         _ ->
             case erlide_text:check_variable_macro_or_record(CL, CW) of
@@ -88,41 +88,59 @@ open_info(L, W, ExternalModules) ->
             end
     end.
 
-get_source_from_module(Mod, ExternalModules) ->
+get_source_from_module(Mod, ExternalModules, PathVars) ->
     case catch get_source(Mod) of
         {'EXIT', _} ->
-            get_source_from_external_modules(Mod, ExternalModules);
+            get_source_from_external_modules(Mod, ExternalModules, PathVars);
         [] ->
-            get_source_from_external_modules(Mod, ExternalModules);
+            get_source_from_external_modules(Mod, ExternalModules, PathVars);
         Other ->
             Other
     end.
 
-get_external_modules_file(FileName) ->
-    get_external_modules_file(FileName, []).
+get_external_modules_file(FileName, PathVars) ->
+    get_external_modules_file(FileName, PathVars, []).
 
-get_external_modules_file(FileName, Acc) ->
+replace_path_var(FileName, PathVars) ->
+    case filename:split(FileName) of
+        ["/" | _] ->
+            FileName;
+        [Var | Rest] ->
+            filename:join([replace_path_var_aux(Var, PathVars) | Rest])
+    end.
+
+replace_path_var_aux(Var, PathVars) ->
+    case lists:keysearch(Var, 1, PathVars) of
+        {value, {Var, Value}} ->
+            Value;
+        _ ->
+            Var
+    end.
+
+get_external_modules_file(FileName0, PathVars, Acc) ->
+    FileName = replace_path_var(FileName0, PathVars),
     case file:read_file(FileName) of
         {ok, B} ->
-            get_ext_aux(split_lines(B), Acc);
+            get_ext_aux(split_lines(B), PathVars, Acc);
         _ ->
             Acc
     end.
 
-get_ext_aux([], Acc) ->
+get_ext_aux([], _PathVars, Acc) ->
     Acc;
-get_ext_aux([L | Rest], Acc0) ->
+get_ext_aux([L | Rest], PathVars, Acc0) ->
      case filename:extension(L) of
          ".erlidex" ->
-             Acc = get_external_modules_file(L, Acc0),
-             get_ext_aux(Rest, Acc);
+             Acc = get_external_modules_file(L, PathVars, Acc0),
+             get_ext_aux(Rest, PathVars, Acc);
          _ ->
-             get_ext_aux(Rest, [L | Acc0])
+             get_ext_aux(Rest, PathVars, [L | Acc0])
      end.
 
-get_source_from_external_modules(Mod, ExternalModules) ->
+get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D(ExternalModules),
-    L = get_external_modules_file(ExternalModules),
+    ?D(PathVars),
+    L = get_external_modules_file(ExternalModules, PathVars),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
