@@ -8,12 +8,14 @@
 %% Exported Functions
 %%
 
--export([parse/2]). 
+-export([parse/1]). 
 -compile(export_all).
 
 %%
 %% Include files
 %%
+
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -23,13 +25,25 @@
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
 
-parse(String, ModuleName) ->
+%% parse(String, ModuleName) ->
+%%     try
+%%         Toks = scan(String, ModuleName),
+%%         {UncommentToks, Comments} = extract_comments(Toks),
+%%         F = split_after_dots(UncommentToks, [], []),
+%%         Collected = [classify_and_collect(I) || I <- F],
+%%         {ok, Collected, Comments, String, Toks}
+%%     catch
+%%         error:Reason ->
+%%             {error, Reason}
+%%     end.
+
+parse(ModuleName) ->
     try
-        Toks = scan(String, ModuleName),
+        Toks = scan(ModuleName),
         {UncommentToks, Comments} = extract_comments(Toks),
         F = split_after_dots(UncommentToks, [], []),
         Collected = [classify_and_collect(I) || I <- F],
-        {ok, Collected, Comments}
+        {ok, Collected, Comments, Toks}
     catch
         error:Reason ->
             {error, Reason}
@@ -48,17 +62,17 @@ cac(attribute, Attribute) ->
     case Attribute of
         [_, #token{kind=atom, value=Name, line=Line,
                    offset=Offset, length=Length},
-         _, #token{value=Args} | _] = Attribute ->
-            #attribute{pos={{Line, Offset}, Length},
+         _, #token{value=Args, line=LastLine} | _] = Attribute ->
+            #attribute{pos={{Line, LastLine, Offset}, Length},
                        name=Name, args=Args};
         [_, #token{kind=atom, value=Name, line=Line,
                    offset=Offset, length=Length} | _] ->
-            #attribute{pos={{Line, Offset}, Length},
+            #attribute{pos={{Line, Line, Offset}, Length},
                        name=Name, args=[]}
     end;
 cac(other, [#token{value=Name, line=Line,
                          offset=Offset, length=Length} | _]) ->
-    #other{pos={{Line, Offset}, Length}, name=Name}.
+    #other{pos={{Line, Line, Offset}, Length}, name=Name}.
 
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
@@ -128,20 +142,21 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
     end.
 
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
-    #token{offset=LastOffset, length=LastLength} = lists:last(Rest),
+    #token{line=LastLine, offset=LastOffset, length=LastLength} = lists:last(Rest),
     PosLength = LastOffset - Offset + LastLength,
-    #clause{pos={{Line, Offset}, PosLength},
+    #clause{pos={{Line, LastLine, Offset}, PosLength},
             name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
             name_pos={{Line, Offset}, Length}}.
 
-scan(String, Name) ->
-    case erlide_scanner:isScanned(Name) of
-        false ->
-		    erlide_scanner:create(Name),
-		    erlide_scanner:insertText(Name, 1, String);
-        true ->
-            ok
-    end,
+%% scan(String, Name) ->
+%%     case erlide_scanner:isScanned(Name) of
+%%         false ->
+%% 		    erlide_scanner:create(Name),
+%% 		    erlide_scanner:insertText(Name, 1, String);
+%%         true ->
+%%             ok
+%%     end,
+scan(Name) ->
     erlide_scanner:getTokens(Name).
 
 %% %% fixa in line-offset i tokens
@@ -171,7 +186,8 @@ extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
                          value=VNext}
                   | Rest], NNext, TAcc,
                  [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
-    NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext},
+    NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext,
+                         last_line=NNext},
     extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
 extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, N+1, TAcc, [C | CAcc]);
