@@ -161,40 +161,49 @@ isScanned(Module) ->
 
 insertText(Module, Offset, Text) ->
     Z = getTokensAround(Module, Offset),
-    %%?D({"*> insert at ~p: ~p~n", [Offset, Z]}),
+    ?D({"*> insert at ~p: ~p~n", [Offset, Z]}),
     {Ofs, L, XL, Text2} = case Z of
-            [T1, #token{kind=eof}=_T2] ->
-          Ofs1 = T1#token.offset + T1#token.length,
-          case Offset of
-              Ofs1 ->
-            ets:delete(Module, T1#token.offset),
-            {T1#token.offset, T1#token.line, nl(T1), get_text(T1)++Text};
-              _ ->
-            {Offset, T1#token.line, 0, Text}
-          end;
-            [T1, T2] ->
-          ets:delete(Module, T1#token.offset),
-          ets:delete(Module, T2#token.offset),
-          {T1#token.offset, T1#token.line, nl(T1)+nl(T2), get_text(T1)++Text++get_text(T2)};
-            #token{kind=eof}=T ->
-          {T#token.offset, T#token.line, 0, Text};
-            T -> %% delete T, split the text and paste it to Text
-          ets:delete(Module, T#token.offset),
-          {A, B} = split(T, Offset),
-          {T#token.offset, T#token.line, nl(T), A++Text++B}
-        end,
-
+                              #token{kind=eof}=T ->
+                                  ?D(T),
+                                  {T#token.offset, T#token.line, 0, Text};
+                              [bof, #token{kind=eof}=T] ->
+                                  ?D(T),
+                                  {T#token.offset, T#token.line, 0, Text};
+                              [T1, #token{kind=eof}=_T2] ->
+                                  ?D(T1),
+                                  Ofs1 = T1#token.offset + T1#token.length,
+                                  ?D(a),
+                                  case Offset of
+                                      Ofs1 ->
+                                          ?D(b),
+                                          ets:delete(Module, T1#token.offset),
+                                          {T1#token.offset, T1#token.line, nl(T1), get_text(T1)++Text};
+                                      _ ->
+                                          ?D(c),
+                                          {Offset, T1#token.line, 0, Text}
+                                      end;
+                              [T1, T2] ->
+                                  ?D(T1),
+                                  ets:delete(Module, T1#token.offset),
+                                  ets:delete(Module, T2#token.offset),
+                                  {T1#token.offset, T1#token.line, nl(T1)+nl(T2), get_text(T1)++Text++get_text(T2)};
+                              T -> %% delete T, split the text and paste it to Text
+                                  ?D(T),
+                                  ets:delete(Module, T#token.offset),
+                                  {A, B} = split(T, Offset),
+                                  {T#token.offset, T#token.line, nl(T), A++Text++B}
+                          end,
+    ?D(d),
     %% update offsets of tokens following the insertion point
     {ok, Tks, {LL, _LO}} = erlide_scan:string_ws(Text2),
-    %%?D({sCAN, Text2, Tks}),
+    ?D({sCAN, Text2, Tks}),
     %%io:format(">>> ~p ~p ~p/~p   ~n", [Ofs, Text2, L, LL-XL-1]),
     %%io:format("1 &&& ~p~n", [getWsTokens(Module)]),
     update_after(Module, Ofs, length(Text), LL-XL-1),
     %%io:format("2 &&& ~p~n", [getWsTokens(Module)]),
     %%io:format("      ~p~n", [Tks]),
     lists:foreach(fun(X)-> ets:insert(Module, mktoken(X, Ofs-1, L-1)) end, Tks),
-    %%io:format("3 &&& ~p~n", [getWsTokens(Module)]),
-
+    ?D({"3 &&& ~p~n", [getWsTokens(Module)]}),
     ok.
 
 removeText(Module, Offset, Length) ->
@@ -259,7 +268,7 @@ update_after(Module, Offset, DOfs, DL) ->
         end),
     Z = ets:select(Module, MS),
     case Z of
-  [] ->
+        [] ->
             ok;
         _ ->
             [fix(Module, T, DOfs, DL) || T<-Z]

@@ -152,7 +152,7 @@ tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) ->
 
 %% String
 more(Cs, Stack, Toks, Pos, eos, Errors, Fun) ->
-    erlang:fault(badstate, [Cs,Stack,Toks,Pos,eos,Errors,Fun]);
+    erlang:error(badstate, [Cs,Stack,Toks,Pos,eos,Errors,Fun]);
 % %% Debug clause for chopping string into 1-char segments
 % more(Cs, Stack, Toks, Pos, [H|T], Errors, Fun) ->
 %     Fun(Cs++[H], Stack, Toks, Pos, T, Errors);
@@ -160,7 +160,7 @@ more(Cs, Stack, Toks, Pos, [], Errors, Fun) ->
     Fun(Cs++eof, Stack, Toks, Pos, eos, Errors);
 %% Stream
 more(Cs, Stack, Toks, Pos, eof, Errors, Fun) ->
-    erlang:fault(badstate, [Cs,Stack,Toks,Pos,eof,Errors,Fun]);
+    erlang:error(badstate, [Cs,Stack,Toks,Pos,eof,Errors,Fun]);
 more(Cs, Stack, Toks, Pos, io, Errors,Fun) ->
     {more,{Cs,Stack,Toks,Pos,io,Errors,Fun}}.
 
@@ -290,7 +290,7 @@ scan(":-"++Cs, Stack, Toks, Pos, State, Errors) ->
     scan(Cs, Stack, [{':-', {Pos, 2}}|Toks], inc(Pos,2), State, Errors);
 %% :: for typed records
 scan("::"++Cs, Stack, Toks, Pos, State, Errors) ->
-    scan(Cs, Stack, [{'::',{Pos, 2}}|Toks], Pos, State, Errors);
+    scan(Cs, Stack, [{'::',{Pos, 2}}|Toks], inc(Pos, 2), State, Errors);
 %%
 scan(":"=Cs, Stack, Toks, Pos, State, Errors) ->
     more(Cs, Stack, Toks, Pos, State, Errors, fun scan/6);
