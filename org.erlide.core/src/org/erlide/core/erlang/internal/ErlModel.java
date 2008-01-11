@@ -22,8 +22,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -69,7 +67,7 @@ public class ErlModel extends Openable implements IErlModel {
 
 	@Override
 	protected boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource, IDocument doc, DirtyRegion dirtyRegion)
+			IResource underlyingResource)
 	// throws ErlModelException
 	{
 		// determine my children
