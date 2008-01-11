@@ -6,7 +6,8 @@
 -export([check_all/0,
          get_doc_from_scan_tuples/4,
          get_doc_from_fun_arity_list/3,
-         get_all_links_to_other/0]).
+         get_all_links_to_other/0,
+         get_exported/2]).
 
 -include_lib("kernel/include/file.hrl").
 
@@ -18,6 +19,26 @@
 %%
 %% recu_find_tags(L, Fun) ->
 %%     lists:reverse(recu_find_tags(L, Fun, [])).
+
+
+get_exported(Module, Offset) ->
+    Window = 1,
+    List = erlide_scanner:getTokenWindow(Module, Offset, Window),
+    ?D({get_doc, List}),
+    D = case erlide_text:check_function_call(List, Window) of
+            ok -> 
+                ok
+        end,
+    D.
+
+%% get_exported_old(M, Prefix) when is_atom(M), is_list(Prefix) ->
+%%     case catch M:module_info(exports) of
+%%         {'EXIT', _} ->
+%%             error;
+%%         Val ->
+%%             Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
+%%             lists:filter(Fun, Val)
+%%     end.
 
 find_tags(L, Fun) ->
      lists:filter(Fun, L).        
