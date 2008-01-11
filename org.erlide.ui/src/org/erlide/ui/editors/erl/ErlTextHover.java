@@ -28,7 +28,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -39,7 +38,7 @@ public class ErlTextHover implements ITextHover,
 	// private ITextEditor fEditor;
 	private OtpErlangList fImports;
 
-	private IErlModule fModule;
+	private final IErlModule fModule;
 
 	public ErlTextHover(IErlModule module) {
 		fImports = null;
@@ -67,10 +66,9 @@ public class ErlTextHover implements ITextHover,
 			String s = ErlideUIPlugin.getDefault().getStateLocation()
 					.toString();
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_otp_doc",
-					"get_doc_from_scan_tuples",
-					new OtpErlangAtom(fModule.getScanner()
-							.getScannerModuleName()), offset, fImports, s);
+					"erlide_otp_doc", "get_doc_from_scan_tuples",
+					fModule.getScanner().getScannerModuleName(), offset,
+					fImports, s);
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				return s1.stringValue();
