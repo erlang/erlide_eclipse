@@ -22,6 +22,7 @@ import com.ericsson.otp.erlang.OtpNode;
 
 public class ErlangBridge {
 
+	@SuppressWarnings("boxing")
 	public static void main(String[] args) {
 		Map o = (Map) newInstance(Map.class, "wolf", null);
 		o.put("dd", 44);
