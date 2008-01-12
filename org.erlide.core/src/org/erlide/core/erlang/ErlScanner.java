@@ -42,10 +42,11 @@ public class ErlScanner implements IErlScanner {
 	public String createScannerModuleName() {
 		IResource res = fModule.getResource();
 		String resName;
-		if (res != null)
+		if (res != null) {
 			resName = res.getFullPath().toPortableString();
-		else
+		} else {
 			resName = "res";
+		}
 		return "_erlide_" + fModule.getErlProject().getElementName() + "_"
 				+ resName;
 	}
@@ -135,6 +136,7 @@ public class ErlScanner implements IErlScanner {
 	// }
 	// }
 
+	@SuppressWarnings("boxing")
 	public void insertText(int offset, String text) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
@@ -144,6 +146,7 @@ public class ErlScanner implements IErlScanner {
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	public void removeText(int offset, int length) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
