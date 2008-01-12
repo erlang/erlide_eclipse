@@ -413,8 +413,7 @@ public final class BackendManager implements IResourceChangeListener {
 						IBackend b = fRemoteBackends.get(label);
 						if (b == null) {
 							// ErlLogger.debug("$ Added external backend:: "
-							// +
-							// label);
+							// + label);
 							b = createStandalone(label);
 							fRemoteBackends.put(label, b);
 							fireUpdate(b, ADDED);
