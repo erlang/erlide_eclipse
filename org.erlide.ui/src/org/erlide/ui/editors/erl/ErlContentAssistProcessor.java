@@ -63,6 +63,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
 			int offset) {
 		try {
