@@ -12,6 +12,10 @@
             name="Erlang application"
             sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
+         <fileExtension
+               default="false"
+               extension="erl">
+         </fileExtension>
       </launchConfigurationType>
    </extension>
    <extension
