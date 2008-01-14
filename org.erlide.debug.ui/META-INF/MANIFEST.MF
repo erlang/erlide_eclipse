@@ -16,9 +16,12 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.ui.workbench.texteditor,
  org.erlide.jinterface,
  org.erlide.launching,
+ org.erlide.basic,
+ org.erlide.core,
  org.erlide.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: %providerName
 Bundle-ClassPath: erlide-debug-ui.jar
 Export-Package: org.erlide.debug.ui,
- org.erlide.debug.ui.model
+ org.erlide.debug.ui.model,
+ org.erlide.ui.launch;uses:="org.eclipse.debug.ui,org.eclipse.ui,org.eclipse.jface.viewers"
