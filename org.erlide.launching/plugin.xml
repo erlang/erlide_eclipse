@@ -70,7 +70,7 @@
    <extension
          point="org.erlide.launching.javaRpcStubs">
       <stub
-            class="org.erlide.jinterface.RpcTest"
+            class="org.erlide.jinterface.rpc.RpcTest"
             onlyDeclared="true">
       </stub>
       <stub
