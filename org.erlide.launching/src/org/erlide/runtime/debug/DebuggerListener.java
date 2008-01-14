@@ -10,8 +10,8 @@
 package org.erlide.runtime.debug;
 
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.jinterface.ErlEventLoop;
-import org.erlide.jinterface.IErlEventHandler;
+import org.erlide.jinterface.rpc.ErlEventLoop;
+import org.erlide.jinterface.rpc.IErlEventHandler;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

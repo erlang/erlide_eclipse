@@ -1,8 +1,9 @@
-package org.erlide.jinterface;
+package org.erlide.jinterface.rpc;
+
 
 public class Tuple extends BaseTuple {
 
-	// Display a coma-separated list of elements.
+	// Display a comma-separated list of elements.
 	public Tuple() {
 		super("(", ", ", ")");
 	}

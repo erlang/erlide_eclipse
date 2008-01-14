@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.jinterface.RpcUtil;
+import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;

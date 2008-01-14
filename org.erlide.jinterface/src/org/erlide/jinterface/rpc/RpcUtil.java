@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface;
+package org.erlide.jinterface.rpc;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBigLong;
@@ -517,7 +518,7 @@ public class RpcUtil {
 	}
 
 	@SuppressWarnings("boxing")
-	protected static Object erlang2java(OtpErlangObject obj, Class<?> cls)
+	public static Object erlang2java(OtpErlangObject obj, Class<?> cls)
 			throws RpcException {
 		try {
 			if (cls == obj.getClass()) {

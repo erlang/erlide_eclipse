@@ -1,4 +1,4 @@
-package org.erlide.jinterface;
+package org.erlide.jinterface.rpc;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,12 +6,12 @@ import java.util.Iterator;
 public abstract class BaseTuple implements Comparable<BaseTuple> {
 
 	// Ordered collection of elements.
-	ArrayList<Object> elements = new ArrayList<Object>();
+	final ArrayList<Object> elements = new ArrayList<Object>();
 
 	// Strings used to display the tuple.
-	String open;
-	String separator;
-	String close;
+	final String open;
+	final String separator;
+	final String close;
 
 	// Initialize the strings for this tuple type.
 	protected BaseTuple(String open, String separator, String close) {

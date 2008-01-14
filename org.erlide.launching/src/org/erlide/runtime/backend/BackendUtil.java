@@ -14,8 +14,8 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.jinterface.RpcStubGenerator;
-import org.erlide.jinterface.RpcUtil;
+import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;

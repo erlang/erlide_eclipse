@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface;
+package org.erlide.jinterface.rpc;
 
 
 public class RpcTest {

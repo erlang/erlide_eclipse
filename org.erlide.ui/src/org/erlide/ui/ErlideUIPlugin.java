@@ -31,7 +31,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.jinterface.RpcUtil;
+import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
