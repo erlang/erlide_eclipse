@@ -41,5 +41,24 @@
          </actionSet>
       </perspectiveExtension>
    </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+          class="org.erlide.ui.launch.ErlangNodeTabGroup"
+          id="org.erlide.ui.launch.launchConfigurationTabGroup.erlangNode"
+          type="org.erlide.core.launch.erlangProcess"/>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="org.erlide.ui.launch.ErlangNodeLaunchShortcut"
+          icon="icons/erl/erlang-notext030.gif"
+          id="org.erlide.ui.launch.erlangNodeShortcut"
+          label="Erlang application"
+          modes="run,debug">
+       <perspective id="org.erlide.ui.perspectives.ErlangPerspective"/>
+       <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+    </shortcut>
+ </extension>
 
 </plugin>

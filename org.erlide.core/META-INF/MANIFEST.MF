@@ -19,6 +19,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.jinterface,
  org.erlide.launching,
- org.erlide.basic,
- org.eclipse.swt
+ org.erlide.basic
 Eclipse-LazyStart: true
