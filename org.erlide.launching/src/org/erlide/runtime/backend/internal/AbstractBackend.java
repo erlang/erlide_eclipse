@@ -20,6 +20,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;
@@ -218,11 +219,11 @@ public abstract class AbstractBackend implements IBackend {
 	 * @param msg
 	 */
 	public void send(OtpErlangPid pid, Object msg) {
-		getMbox().send(pid, RpcUtil.java2erlang(msg));
+		getMbox().send(pid, RpcConverter.java2erlang(msg));
 	}
 
 	public void send(String name, Object msg) {
-		getMbox().send(name, fPeer.node(), RpcUtil.java2erlang(msg));
+		getMbox().send(name, fPeer.node(), RpcConverter.java2erlang(msg));
 	}
 
 	/**
@@ -324,7 +325,7 @@ public abstract class AbstractBackend implements IBackend {
 		OtpErlangObject[] args = null;
 		args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
-			args[i] = RpcUtil.java2erlang(args0[i]);
+			args[i] = RpcConverter.java2erlang(args0[i]);
 		}
 
 		RpcResult result = null;

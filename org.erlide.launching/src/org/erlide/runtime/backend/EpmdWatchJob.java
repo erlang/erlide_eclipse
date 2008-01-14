@@ -16,6 +16,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.runtime.ErlangLaunchPlugin;
 
+/**
+ * Each 2 seconds, query epmd to see if there are any new nodes that have been
+ * registered.
+ * 
+ */
 public class EpmdWatchJob extends Job {
 
 	public EpmdWatchJob() {

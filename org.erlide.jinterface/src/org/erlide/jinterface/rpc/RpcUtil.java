@@ -10,39 +10,28 @@
 package org.erlide.jinterface.rpc;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangBigLong;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangByte;
-import com.ericsson.otp.erlang.OtpErlangChar;
-import com.ericsson.otp.erlang.OtpErlangDouble;
-import com.ericsson.otp.erlang.OtpErlangFloat;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRef;
-import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcUtil {
 
-	private static final String REF_NODE = "RPC";
+	static final String REF_NODE = "jRPC";
 
 	private static class MethodDescription {
 		public MethodDescription(String meth, Class<?>[] args) {
@@ -219,7 +208,8 @@ public class RpcUtil {
 				// TODO: we can do it better, we have the expected java types in
 				// 'description'
 				try {
-					parms[i] = erlang2java(args[i], description.argTypes[i]);
+					parms[i] = RpcConverter.erlang2java(args[i],
+							description.argTypes[i]);
 				} catch (RpcException e) {
 					e.printStackTrace();
 				}
@@ -280,7 +270,7 @@ public class RpcUtil {
 		String name = getString(t.elementAt(0));
 		Object olist = null;
 		try {
-			olist = erlang2java(t.elementAt(1), String[].class);
+			olist = RpcConverter.erlang2java(t.elementAt(1), String[].class);
 		} catch (RpcException e) {
 			// can't fail for String
 		}
@@ -289,7 +279,7 @@ public class RpcUtil {
 			Class<?>[] args = new Class<?>[arglist.size()];
 			for (int i = 0; i < args.length; i++) {
 				String arg = arglist.get(i);
-				args[i] = getClassByName(arg);
+				args[i] = RpcConverter.getClassByName(arg);
 			}
 			return new MethodDescription(name, args);
 		} else if (olist instanceof Object[]) {
@@ -297,7 +287,7 @@ public class RpcUtil {
 			Class<?>[] args = new Class<?>[arglist.length];
 			for (int i = 0; i < args.length; i++) {
 				String arg = (String) arglist[i];
-				args[i] = getClassByName(arg);
+				args[i] = RpcConverter.getClassByName(arg);
 			}
 			return new MethodDescription(name, args);
 		} else {
@@ -340,7 +330,7 @@ public class RpcUtil {
 				Object o = ctr.newInstance(args);
 				debug(String.format("** %s() returned %s", ctr, o));
 
-				return java2erlang(o);
+				return RpcConverter.java2erlang(o);
 			} else {
 				Method meth;
 				meth = cls.getMethod(method.name, method.argTypes);
@@ -348,7 +338,7 @@ public class RpcUtil {
 				Object o = meth.invoke(rcvr, args);
 				debug(String.format("** %s() returned %s", meth, o));
 
-				return java2erlang(o);
+				return RpcConverter.java2erlang(o);
 			}
 		} catch (NoSuchMethodException e) {
 			StringBuffer paramstr = new StringBuffer();
@@ -404,293 +394,6 @@ public class RpcUtil {
 		if (VERBOSE) {
 			log(s);
 		}
-	}
-
-	@SuppressWarnings( { "boxing", "null" })
-	public static OtpErlangObject java2erlang(Object obj) {
-		if (obj instanceof String) {
-			return new OtpErlangString((String) obj);
-		}
-		if (obj instanceof Character) {
-			return new OtpErlangChar((Character) obj);
-		}
-		if (obj instanceof Byte) {
-			return new OtpErlangByte((Byte) obj);
-		}
-		if (obj instanceof Short) {
-			return new OtpErlangShort((Short) obj);
-		}
-		if (obj instanceof Integer) {
-			return new OtpErlangInt((Integer) obj);
-		}
-		if (obj instanceof Long) {
-			return new OtpErlangLong((Long) obj);
-		}
-		if (obj instanceof BigInteger) {
-			return new OtpErlangBigLong((BigInteger) obj);
-		}
-		if (obj instanceof Float) {
-			return new OtpErlangFloat((Float) obj);
-		}
-		if (obj instanceof Double) {
-			return new OtpErlangDouble((Double) obj);
-		}
-		if (obj instanceof Boolean) {
-			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
-		}
-		if (obj instanceof List<?>) {
-			Object[] v = ((List<?>) obj).toArray(new Object[] {});
-			OtpErlangObject[] vv = new OtpErlangObject[v.length];
-			for (int i = 0; i < v.length; i++) {
-				vv[i] = java2erlang(v[i]);
-			}
-			return new OtpErlangList(vv);
-		}
-
-		if (obj instanceof OtpErlangPid) {
-			return (OtpErlangPid) obj;
-		}
-		if (obj instanceof OtpErlangRef) {
-			return (OtpErlangObject) obj;
-		}
-		if (obj instanceof OtpErlangTuple) {
-			return (OtpErlangObject) obj;
-		}
-		if (obj instanceof OtpErlangAtom) {
-			return (OtpErlangObject) obj;
-		}
-		if (obj instanceof OtpErlangBinary) {
-			return (OtpErlangObject) obj;
-		}
-		if (obj instanceof OtpErlangObject) {
-			StackTraceElement el = null;
-			StackTraceElement[] st = null;
-			try {
-				throw new Exception("");
-			} catch (Exception e) {
-				boolean found = false;
-				st = e.getStackTrace();
-				for (StackTraceElement ste : st) {
-					if (found) {
-						if (!((ste.getMethodName().equals("send")
-								|| ste.getMethodName().equals("rpc")
-								|| ste.getMethodName().equals("rpct")
-								|| ste.getMethodName().equals("rpcx") || ste
-								.getMethodName().equals("rpcxt")) && ste
-								.getClassName().endsWith("AbstractBackend"))) {
-							el = ste;
-							break;
-						}
-					}
-					if ((ste.getMethodName().equals("send")
-							|| ste.getMethodName().equals("rpc")
-							|| ste.getMethodName().equals("rpct")
-							|| ste.getMethodName().equals("rpcx") || ste
-							.getMethodName().equals("rpcxt"))
-							&& ste.getClassName().endsWith("AbstractBackend")) {
-						found = true;
-
-					}
-				}
-			}
-			if (isDeveloper()) {
-				System.out.println(" *** deprecated use of java2erlang: "
-						+ obj.getClass().getSimpleName() + " " + el);
-				if (el == null) {
-					System.out.println("$$$");
-					for (StackTraceElement ste : st) {
-						System.out.println("   " + ste);
-					}
-				}
-			}
-			return (OtpErlangObject) obj;
-		}
-
-		if (obj != null && obj.getClass().isArray()) {
-			int len = Array.getLength(obj);
-			OtpErlangObject[] vv = new OtpErlangObject[len];
-			for (int i = 0; i < len; i++) {
-				vv[i] = java2erlang(Array.get(obj, i));
-			}
-			return new OtpErlangList(vv);
-		}
-		return registerTarget(obj);
-	}
-
-	@SuppressWarnings("boxing")
-	public static Object erlang2java(OtpErlangObject obj, Class<?> cls)
-			throws RpcException {
-		try {
-			if (cls == obj.getClass()) {
-				return obj;
-			}
-
-			if (cls.isArray()) {
-				OtpErlangObject[] els = null;
-				if (obj instanceof OtpErlangList) {
-					els = ((OtpErlangList) obj).elements();
-				}
-				if (obj instanceof OtpErlangTuple) {
-					els = ((OtpErlangTuple) obj).elements();
-				}
-				if (els != null) {
-					Object arr = Array.newInstance(cls.getComponentType(),
-							els.length);
-					for (int i = 0; i < els.length; i++) {
-						Array.set(arr, i, erlang2java(els[i], cls
-								.getComponentType()));
-					}
-					return arr;
-				} else {
-					if (obj instanceof OtpErlangString) {
-						byte[] s = ((OtpErlangString) obj).stringValue()
-								.getBytes();
-						Object arr = Array.newInstance(cls.getComponentType(),
-								s.length);
-
-						for (int i = 0; i < s.length; i++) {
-							Array.set(arr, i, s[i]);
-						}
-						return arr;
-					}
-					return new Object[0];
-				}
-			}
-
-			if (cls == String.class) {
-				if (obj instanceof OtpErlangString) {
-					return ((OtpErlangString) obj).stringValue();
-				}
-				if (obj instanceof OtpErlangAtom) {
-					return ((OtpErlangAtom) obj).atomValue();
-				}
-				if (obj instanceof OtpErlangBinary) {
-					return new String(((OtpErlangBinary) obj).binaryValue());
-				}
-				if (obj instanceof OtpErlangList) {
-					OtpErlangObject[] els = ((OtpErlangList) obj).elements();
-					StringBuffer res = new StringBuffer();
-					for (OtpErlangObject el : els) {
-						if (el instanceof OtpErlangLong) {
-							long l = ((OtpErlangLong) el).longValue();
-							res.append((char) (l & 0xFFFF));
-						} else {
-							res.append(erlang2java(el, String.class));
-						}
-					}
-					return res.toString();
-				}
-				throw new RpcException("wrong arg type "
-						+ obj.getClass().getName()
-						+ ", can't convert to String");
-			}
-			if (cls == char.class || cls == Character.class || cls == int.class
-					|| cls == Integer.class || cls == byte.class
-					|| cls == Byte.class || cls == short.class
-					|| cls == Short.class || cls == long.class
-					|| cls == Long.class) {
-				if (obj instanceof OtpErlangLong) {
-					long res = ((OtpErlangLong) obj).longValue();
-					if (cls == char.class) {
-						return (char) res;
-					}
-					if (cls == int.class) {
-						return (int) res;
-					}
-					if (cls == byte.class) {
-						return (byte) res;
-					}
-					if (cls == short.class) {
-						return (short) res;
-					}
-					if (cls == long.class) {
-						return res;
-					}
-				}
-				throw new RpcException("wrong arg type "
-						+ obj.getClass().getName() + ", can't convert to "
-						+ cls.getCanonicalName());
-			}
-			if (cls == boolean.class || cls == Boolean.class) {
-				if (obj instanceof OtpErlangAtom) {
-					String s = ((OtpErlangAtom) obj).atomValue();
-					if (s.equals("true")) {
-						return true;
-					}
-					if (s.equals("false")) {
-						return false;
-					}
-				}
-				throw new RpcException("wrong arg type "
-						+ obj.getClass().getName() + ", can't convert to "
-						+ cls.getCanonicalName());
-			}
-			if (List.class.isAssignableFrom(cls)) {
-				if (obj instanceof OtpErlangList) {
-					OtpErlangObject[] list = ((OtpErlangList) obj).elements();
-					Object[] olist = new Object[list.length];
-					for (int i = 0; i < list.length; i++) {
-						olist[i] = erlang2java(list[i], list[i].getClass());
-					}
-					return Arrays.asList(olist);
-				}
-				throw new RpcException("wrong arg type "
-						+ obj.getClass().getName() + ", can't convert to "
-						+ cls.getCanonicalName());
-			}
-			if (obj instanceof OtpErlangRef) {
-				if (!((OtpErlangRef) obj).node().equals(REF_NODE)) {
-					return getTarget((OtpErlangRef) obj);
-				}
-				throw new RpcException("wrong arg type "
-						+ obj.getClass().getName() + ", can't convert to "
-						+ cls.getCanonicalName());
-			}
-			return obj;
-		} catch (RpcException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RpcException(e);
-		}
-	}
-
-	public static Class<?> getClassByName(String arg) {
-		if (arg.equals("char")) {
-			return char.class;
-		}
-		if (arg.equals("byte")) {
-			return byte.class;
-		}
-		if (arg.equals("short")) {
-			return short.class;
-		}
-		if (arg.equals("int")) {
-			return int.class;
-		}
-		if (arg.equals("long")) {
-			return long.class;
-		}
-		if (arg.equals("boolean")) {
-			return boolean.class;
-		}
-		if (arg.equals("float")) {
-			return float.class;
-		}
-		if (arg.equals("double")) {
-			return double.class;
-		}
-		try {
-			return Class.forName(arg, true, loader);
-		} catch (ClassNotFoundException e) {
-			System.out.println("RpcUtil: can't find class " + arg);
-			return Object.class;
-		}
-
-	}
-
-	public static boolean isDeveloper() {
-		final String dev = System.getProperty("erlide.devel");
-		return dev != null && "true".equals(dev);
 	}
 
 }

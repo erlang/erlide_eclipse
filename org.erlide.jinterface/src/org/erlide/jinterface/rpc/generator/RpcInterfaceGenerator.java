@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.RpcConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -65,7 +66,7 @@ public class RpcInterfaceGenerator {
 			res = r.elementAt(1);
 			List<OtpErlangObject> l = null;
 			try {
-				l = (List<OtpErlangObject>) RpcUtil
+				l = (List<OtpErlangObject>) RpcConverter
 						.erlang2java(res, List.class);
 				System.out.println(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
