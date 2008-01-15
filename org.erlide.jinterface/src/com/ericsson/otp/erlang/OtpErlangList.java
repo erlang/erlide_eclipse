@@ -136,9 +136,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			} catch (final OtpErlangDecodeException e) {
 				if (e.getMessage().startsWith("Not valid nil tag:")) {
 					throw new OtpErlangDecodeException("Non proper list");
-				} else {
-					throw e;
 				}
+				throw e;
 			}
 		}
 	}
@@ -151,9 +150,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	public int arity() {
 		if (elems == null) {
 			return 0;
-		} else {
-			return elems.length;
 		}
+		return elems.length;
 	}
 
 	/**
@@ -180,11 +178,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	public OtpErlangObject[] elements() {
 		if (arity() == 0) {
 			return null;
-		} else {
-			final OtpErlangObject[] res = new OtpErlangObject[arity()];
-			System.arraycopy(elems, 0, res, 0, res.length);
-			return res;
 		}
+		final OtpErlangObject[] res = new OtpErlangObject[arity()];
+		System.arraycopy(elems, 0, res, 0, res.length);
+		return res;
 	}
 
 	/**

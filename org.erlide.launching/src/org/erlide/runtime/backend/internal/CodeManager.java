@@ -108,10 +108,9 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		if (it == null) {
 			l.add(new PathItem(path));
 			return true;
-		} else {
-			it.incRef();
-			return false;
 		}
+		it.incRef();
+		return false;
 	}
 
 	/**
@@ -204,58 +203,54 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
 		if (bin == null) {
 			return false;
-		} else {
-			OtpErlangObject r = null;
-			try {
-				r = fBackend.rpcx("code", "is_sticky", new OtpErlangAtom(
-						moduleName));
-				if (!((OtpErlangAtom) r).booleanValue()
-						|| !BackendManager.isDeveloper()) {
-					r = fBackend.rpcx("code", "load_binary", new OtpErlangAtom(
-							moduleName), moduleName + ".erl", bin);
-					if (BackendManager.isDeveloper()) {
-						fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
-								moduleName));
-					}
-				} else {
-					return false;
-				}
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-			if (r != null) {
-				final OtpErlangTuple t = (OtpErlangTuple) r;
-				if (((OtpErlangAtom) t.elementAt(0)).atomValue().compareTo(
-						"module") == 0) {
-					return true;
-				} else {
-					// code couldn't be loaded
-					// maybe here we should throw exception?
-					return false;
+		}
+		OtpErlangObject r = null;
+		try {
+			r = fBackend.rpcx("code", "is_sticky",
+					new OtpErlangAtom(moduleName));
+			if (!((OtpErlangAtom) r).booleanValue()
+					|| !BackendManager.isDeveloper()) {
+				r = fBackend.rpcx("code", "load_binary", new OtpErlangAtom(
+						moduleName), moduleName + ".erl", bin);
+				if (BackendManager.isDeveloper()) {
+					fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
+							moduleName));
 				}
 			} else {
-				// binary couldn't be extracted
 				return false;
 			}
+		} catch (final Exception e) {
+			e.printStackTrace();
 		}
+		if (r != null) {
+			final OtpErlangTuple t = (OtpErlangTuple) r;
+			if (((OtpErlangAtom) t.elementAt(0)).atomValue()
+					.compareTo("module") == 0) {
+				return true;
+			}
+			// code couldn't be loaded
+			// maybe here we should throw exception?
+			return false;
+		}
+		// binary couldn't be extracted
+		return false;
 	}
 
 	protected boolean loadBootstrap(String moduleName, URL beamPath) {
 		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
 		if (bin == null) {
 			return false;
-		} else {
-			final String aa = binToString(bin);
-			final String msg = "code:load_binary(" + moduleName + ",\""
-					+ moduleName + ".beam\"," + aa + ").\n";
-			try {
-				fBackend.sendToDefaultShell(msg);
-			} catch (final IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-			return true;
 		}
+		final String aa = binToString(bin);
+		final String msg = "code:load_binary(" + moduleName + ",\""
+				+ moduleName + ".beam\"," + aa + ").\n";
+		try {
+			fBackend.sendToDefaultShell(msg);
+		} catch (final IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	private String binToString(OtpErlangBinary bin) {

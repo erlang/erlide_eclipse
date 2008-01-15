@@ -77,9 +77,8 @@ public class ErlUtils {
 		if (old == null) {
 			result.put(v.getName(), term);
 			return result;
-		} else {
-			return old.equals(term) ? result : null;
 		}
+		return old.equals(term) ? result : null;
 	}
 
 	/**
@@ -94,9 +93,8 @@ public class ErlUtils {
 
 		if (pattern.atomValue().equals(term.atomValue())) {
 			return bindings;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -113,9 +111,8 @@ public class ErlUtils {
 		try {
 			if (pattern.intValue() == term.intValue()) {
 				return bindings;
-			} else {
-				return null;
 			}
+			return null;
 		} catch (final OtpErlangRangeException e) {
 			e.printStackTrace();
 			return null;

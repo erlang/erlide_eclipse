@@ -370,10 +370,9 @@ public class ErlModel extends Openable implements IErlModel {
 		final File externalFile = new File(path.toOSString());
 		if (!checkResourceExistence) {
 			return externalFile;
-		} else {
-			if (externalFile.exists()) {
-				return externalFile;
-			}
+		}
+		if (externalFile.exists()) {
+			return externalFile;
 		}
 		return null;
 	}

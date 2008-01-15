@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -23,9 +22,10 @@ import com.ericsson.otp.erlang.OtpNode;
 
 public class ErlangBridge {
 
-	@SuppressWarnings("boxing")
+	@SuppressWarnings( { "boxing", "unchecked" })
 	public static void main(String[] args) {
-		Map o = (Map) newInstance(Map.class, "wolf", null);
+		Map<String, Integer> o = (Map<String, Integer>) newInstance(Map.class,
+				"wolf", null);
 		o.put("dd", 44);
 
 	}
@@ -41,7 +41,7 @@ public class ErlangBridge {
 	 * @param module
 	 * @return
 	 */
-	public static Object newInstance(Class intf, String node, String module) {
+	public static Object newInstance(Class<?> intf, String node, String module) {
 		try {
 			return Proxy.newProxyInstance(intf.getClassLoader(),
 					new Class[] { intf }, new ErlangBridgeHandler(intf
@@ -53,7 +53,7 @@ public class ErlangBridge {
 
 	}
 
-	public static Object newInstance(Class intf, String node) {
+	public static Object newInstance(Class<Map> intf, String node) {
 		return newInstance(intf, node, intf.getName().replaceAll("\\.", "_"));
 	}
 

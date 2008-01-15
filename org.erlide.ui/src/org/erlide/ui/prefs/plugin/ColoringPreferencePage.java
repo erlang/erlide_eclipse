@@ -252,7 +252,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 * Color list label provider.
 	 * 
 	 */
-	private static class ColorListLabelProvider extends LabelProvider {
+	static class ColorListLabelProvider extends LabelProvider {
 
 		/*
 		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
@@ -270,7 +270,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 * Color list content provider.
 	 * 
 	 */
-	private class ColorListContentProvider implements ITreeContentProvider {
+	class ColorListContentProvider implements ITreeContentProvider {
 
 		/*
 		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)

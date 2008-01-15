@@ -43,10 +43,10 @@ import org.eclipse.ui.part.ViewPart;
  */
 
 public class ErlLoggerView extends ViewPart {
-	private TableViewer viewer;
+	TableViewer viewer;
 	private Action action1;
 	private Action action2;
-	private Action doubleClickAction;
+	Action doubleClickAction;
 
 	/*
 	 * The content provider class is responsible for providing objects to the
@@ -137,7 +137,7 @@ public class ErlLoggerView extends ViewPart {
 		manager.add(action2);
 	}
 
-	private void fillContextMenu(IMenuManager manager) {
+	void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 		// Other plug-ins can contribute there actions here
@@ -190,7 +190,7 @@ public class ErlLoggerView extends ViewPart {
 		});
 	}
 
-	private void showMessage(String message) {
+	void showMessage(String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
 				"Erlang Logger", message);
 	}

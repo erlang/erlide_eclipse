@@ -95,7 +95,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 	 *            the preference key string
 	 * @return the overlay key or <code>null</code> if none can be found
 	 */
-	private OverlayKey findOverlayKey(String key) {
+	OverlayKey findOverlayKey(String key) {
 		for (OverlayKey element : fOverlayKeys) {
 			if (element.fKey.equals(key)) {
 				return element;
@@ -182,8 +182,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 
 			final String originValue = orgin.getString(key.fKey);
 			final String targetValue = target.getString(key.fKey);
-			if (targetValue != null && originValue != null &&
-					!targetValue.equals(originValue)) {
+			if (targetValue != null && originValue != null
+					&& !targetValue.equals(originValue)) {
 				target.setValue(key.fKey, originValue);
 			}
 
@@ -576,8 +576,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 	 */
 	public void addKeys(OverlayKey[] keys) {
 		final int overlayKeysLength = fOverlayKeys.length;
-		final OverlayKey[] result = new OverlayKey[keys.length +
-				overlayKeysLength];
+		final OverlayKey[] result = new OverlayKey[keys.length
+				+ overlayKeysLength];
 
 		for (int i = 0, length = overlayKeysLength; i < length; i++) {
 			result[i] = fOverlayKeys[i];

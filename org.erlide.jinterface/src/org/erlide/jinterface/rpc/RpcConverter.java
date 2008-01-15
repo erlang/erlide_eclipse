@@ -129,20 +129,18 @@ public class RpcConverter {
 								.getComponentType()));
 					}
 					return arr;
-				} else {
-					if (obj instanceof OtpErlangString) {
-						byte[] s = ((OtpErlangString) obj).stringValue()
-								.getBytes();
-						Object arr = Array.newInstance(cls.getComponentType(),
-								s.length);
-
-						for (int i = 0; i < s.length; i++) {
-							Array.set(arr, i, s[i]);
-						}
-						return arr;
-					}
-					return new Object[0];
 				}
+				if (obj instanceof OtpErlangString) {
+					byte[] s = ((OtpErlangString) obj).stringValue().getBytes();
+					Object arr = Array.newInstance(cls.getComponentType(),
+							s.length);
+
+					for (int i = 0; i < s.length; i++) {
+						Array.set(arr, i, s[i]);
+					}
+					return arr;
+				}
+				return new Object[0];
 			}
 
 			if (cls == String.class) {

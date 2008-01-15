@@ -176,9 +176,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 							new OtpErlangAtom(item));
 			if (res instanceof OtpErlangTuple) {
 				return ((OtpErlangTuple) res).elementAt(1);
-			} else {
-				return null;
 			}
+			return null;
 		} catch (final BackendException e) {
 			return null;
 		}

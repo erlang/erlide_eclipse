@@ -408,10 +408,9 @@ public class ErlParser {
 				}
 				setPos(e, 0, 0, ipos, 0);
 				return true;
-			} else {
-				ErlLogger.debug("!> expecting pos tuple, got " + pos);
-				return false;
 			}
+			ErlLogger.debug("!> expecting pos tuple, got " + pos);
+			return false;
 		}
 		try {
 			// pos={{Line, LastLine, Offset}, PosLength} or {{Line, Offset},
@@ -453,13 +452,12 @@ public class ErlParser {
 				res[i] = concreteTerm(ll.elementAt(i));
 			}
 			return new OtpErlangList(res);
-		} else {
-			try {
-				return BackendManager.getDefault().getIdeBackend().rpcx(
-						"erlide_syntax", "concrete", val);
-			} catch (final BackendException e) {
-				return val;
-			}
+		}
+		try {
+			return BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_syntax", "concrete", val);
+		} catch (final BackendException e) {
+			return val;
 		}
 	}
 

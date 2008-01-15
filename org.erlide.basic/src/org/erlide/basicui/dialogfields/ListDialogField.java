@@ -880,7 +880,7 @@ public class ListDialogField<Element> extends DialogField {
 
 	// ------- ListViewerAdapter
 
-	private class ListViewerAdapter implements IStructuredContentProvider,
+	class ListViewerAdapter implements IStructuredContentProvider,
 			ISelectionChangedListener, IDoubleClickListener {
 
 		// ------- ITableContentProvider Interface ------------

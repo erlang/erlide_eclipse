@@ -82,6 +82,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			// final int lastLineOffset = document.getLineOffset(lastLine);
 			final int nLines = lastLine - firstLine + 1;
 			final Runnable runnable = new Runnable() {
+				@SuppressWarnings("synthetic-access")
 				public void run() {
 					IRewriteTarget target = (IRewriteTarget) getTextEditor()
 							.getAdapter(IRewriteTarget.class);

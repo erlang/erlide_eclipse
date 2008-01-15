@@ -80,9 +80,8 @@ public abstract class SelectionDispatchAction extends Action implements
 	public ISelection getSelection() {
 		if (getSelectionProvider() != null) {
 			return getSelectionProvider().getSelection();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**

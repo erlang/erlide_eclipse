@@ -103,7 +103,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 				return false;
 			}
 		} else {
-			//mainPage.createLinkedProject();
+			// mainPage.createLinkedProject();
 
 		}
 
@@ -126,11 +126,11 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
+	public void init(IWorkbench aWorkbench, IStructuredSelection aSelection) {
+		this.workbench = aWorkbench;
+		this.selection = aSelection;
 
-		List<?> selectedResources = IDE.computeSelectedResources(selection);
+		List<?> selectedResources = IDE.computeSelectedResources(aSelection);
 		if (!selectedResources.isEmpty()) {
 			this.selection = new StructuredSelection(selectedResources);
 		}
@@ -280,21 +280,21 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		}
 	}
 
-//	private String[] findErlDirectories() {
-//		List<String> result = new ArrayList<String>();
-//		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-//			;
-//		}
-//		return result.toArray(new String[result.size()]);
-//	}
-//
-//	private String[] findHrlDirectories() {
-//		List<String> result = new ArrayList<String>();
-//		for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-//			;
-//		}
-//		return result.toArray(new String[result.size()]);
-//	}
+	// private String[] findErlDirectories() {
+	// List<String> result = new ArrayList<String>();
+	// for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+	// ;
+	// }
+	// return result.toArray(new String[result.size()]);
+	// }
+	//
+	// private String[] findHrlDirectories() {
+	// List<String> result = new ArrayList<String>();
+	// for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+	// ;
+	// }
+	// return result.toArray(new String[result.size()]);
+	// }
 
 	/**
 	 * Helper method: it recursively creates a folder path.
@@ -304,16 +304,15 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @throws CoreException
 	 * @see java.io.File#mkdirs()
 	 */
-//	private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
-//			throws CoreException {
-//		if (!folder.exists()) {
-//			final IContainer parent = folder.getParent();
-//			if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
-//				createFolderHelper((IFolder) parent, monitor);
-//			}
-//
-//			folder.create(false, true, monitor);
-//		}
-//	}
-
+	// private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
+	// throws CoreException {
+	// if (!folder.exists()) {
+	// final IContainer parent = folder.getParent();
+	// if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
+	// createFolderHelper((IFolder) parent, monitor);
+	// }
+	//
+	// folder.create(false, true, monitor);
+	// }
+	// }
 }

@@ -94,9 +94,8 @@ public class ProcessListView extends ViewPart {
 			final String s = b.getLabel();
 			if (s == null) {
 				return "<default>";
-			} else {
-				return s;
 			}
+			return s;
 		}
 
 	}
@@ -167,17 +166,15 @@ public class ProcessListView extends ViewPart {
 			final OtpErlangObject e = t.elementAt(index + 1);
 			if (e instanceof OtpErlangString) {
 				return ((OtpErlangString) e).stringValue();
-			} else {
-				return e.toString();
 			}
+			return e.toString();
 		}
 
 		public Image getColumnImage(Object obj, int index) {
 			if (index == 0) {
 				return getImage(obj);
-			} else {
-				return null;
 			}
+			return null;
 		}
 
 		@Override
@@ -415,11 +412,10 @@ public class ProcessListView extends ViewPart {
 		if (sel.getFirstElement() != null) {
 			final IBackend b = (IBackend) sel.getFirstElement();
 			return b;
-		} else {
-			final IBackend b = BackendManager.getDefault().getIdeBackend();
-			backends.setSelection(new StructuredSelection(b));
-			return b;
 		}
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		backends.setSelection(new StructuredSelection(b));
+		return b;
 	}
 
 	public static void processListInit(IBackend b) {

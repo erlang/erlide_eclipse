@@ -44,18 +44,18 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class ResourceTreeAndListGroup extends EventManager implements
 		ICheckStateListener, ISelectionChangedListener, ITreeViewerListener {
-	private Object root;
+	Object root;
 
 	private Object currentTreeSelection;
 
-	private Collection<Object> expandedTreeNodes = new HashSet<Object>();
+	Collection<Object> expandedTreeNodes = new HashSet<Object>();
 
-	private Map<Object, List<Object>> checkedStateStore = new HashMap<Object, List<Object>>(
+	Map<Object, List<Object>> checkedStateStore = new HashMap<Object, List<Object>>(
 			9);
 
-	private Collection<Object> whiteCheckedTreeItems = new HashSet<Object>();
+	Collection<Object> whiteCheckedTreeItems = new HashSet<Object>();
 
-	private final ITreeContentProvider treeContentProvider;
+	final ITreeContentProvider treeContentProvider;
 
 	private final IStructuredContentProvider listContentProvider;
 
@@ -64,9 +64,9 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	private final ILabelProvider listLabelProvider;
 
 	// widgets
-	private CheckboxTreeViewer treeViewer;
+	CheckboxTreeViewer treeViewer;
 
-	private CheckboxTableViewer listViewer;
+	CheckboxTableViewer listViewer;
 
 	private static Composite folderComposite;
 
@@ -881,7 +881,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            the element being updated
 	 */
-	private void setListForWhiteSelection(Object treeElement) {
+	void setListForWhiteSelection(Object treeElement) {
 
 		Object[] listItems = listContentProvider.getElements(treeElement);
 		List<Object> listItemsChecked = new ArrayList<Object>();

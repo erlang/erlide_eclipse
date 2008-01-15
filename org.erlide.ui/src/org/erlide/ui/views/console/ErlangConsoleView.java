@@ -97,25 +97,25 @@ public class ErlangConsoleView extends ViewPart implements
 			new Color(Display.getDefault(), 0xFF, 0x99, 0x99),
 			new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
-	private StyledText consoleText;
+	StyledText consoleText;
 
-	private boolean fGroupByLeader;
+	boolean fGroupByLeader;
 
-	private boolean fColored;
+	boolean fColored;
 
-	private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
+	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 
-	private TableViewer consoleTable;
+	TableViewer consoleTable;
 
-	private ErlConsoleDocument fDoc;
+	ErlConsoleDocument fDoc;
 
-	private final IBackend fBackend;
+	final IBackend fBackend;
 
-	private BackendShell fShell;
+	BackendShell fShell;
 
 	private final List<String> history = new ArrayList<String>(10);
 
-	private StyledText consoleInput;
+	StyledText consoleInput;
 
 	public ErlangConsoleView() {
 		fDoc = new ErlConsoleDocument();
@@ -349,7 +349,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.setSelection(consoleText.getCharCount() - 1);
 	}
 
-	private Color getColor(OtpErlangPid sender) {
+	Color getColor(OtpErlangPid sender) {
 		int ix = 0;
 		for (Object element : pids) {
 			OtpErlangPid pid = (OtpErlangPid) element;
@@ -360,9 +360,8 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 		if (ix < colors.length - 1) {
 			return colors[ix % 19 + 1];
-		} else {
-			return colors[0];
 		}
+		return colors[0];
 	}
 
 	private static void addDropDown(final ToolItem item, final Menu menu) {
@@ -397,7 +396,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 	}
 
-	private void refreshView() {
+	void refreshView() {
 		if (consoleText.isDisposed()) {
 			return;
 		}
@@ -423,8 +422,7 @@ public class ErlangConsoleView extends ViewPart implements
 		return history;
 	}
 
-	private final class IoRequestContentProvider implements
-			IStructuredContentProvider {
+	final class IoRequestContentProvider implements IStructuredContentProvider {
 		public void dispose() {
 		}
 
@@ -468,7 +466,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 	}
 
-	private final class IoRequestLabelProvider implements ITableLabelProvider,
+	final class IoRequestLabelProvider implements ITableLabelProvider,
 			IColorProvider {
 		public void addListener(ILabelProviderListener listener) {
 		}
@@ -496,9 +494,8 @@ public class ErlangConsoleView extends ViewPart implements
 						.getSender();
 				if (c.getData().equals(pid)) {
 					return req.getMessage();
-				} else {
-					return null;
 				}
+				return null;
 			}
 			return null;
 		}
@@ -508,9 +505,8 @@ public class ErlangConsoleView extends ViewPart implements
 			if (fColored) {
 				return getColor(fGroupByLeader ? req.getLeader() : req
 						.getSender());
-			} else {
-				return null;
 			}
+			return null;
 		}
 
 		public Color getForeground(Object element) {

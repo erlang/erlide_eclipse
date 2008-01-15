@@ -93,14 +93,14 @@ public class ErlangProjectImportWizardPage extends
 
 	protected Button selectTypesButton;
 
-	//protected Button selectAllButton;
+	// protected Button selectAllButton;
 
-	//protected Button deselectAllButton;
+	// protected Button deselectAllButton;
 
 	// A boolean to indicate if the user has typed anything
-	private boolean entryChanged = false;
+	boolean entryChanged = false;
 
-	private boolean copyFiles = false;
+	boolean copyFiles = false;
 
 	// dialog store id constants
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
@@ -227,29 +227,29 @@ public class ErlangProjectImportWizardPage extends
 		selectTypesButton.addSelectionListener(listener);
 		setButtonLayoutData(selectTypesButton);
 
-//		selectAllButton = createButton(buttonComposite,
-//				IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
-//
-//		listener = new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				setAllSelections(true);
-//			}
-//		};
-		//selectAllButton.addSelectionListener(listener);
-		//setButtonLayoutData(selectAllButton);
+		// selectAllButton = createButton(buttonComposite,
+		// IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
+		//
+		// listener = new SelectionAdapter() {
+		// @Override
+		// public void widgetSelected(SelectionEvent e) {
+		// setAllSelections(true);
+		// }
+		// };
+		// selectAllButton.addSelectionListener(listener);
+		// setButtonLayoutData(selectAllButton);
 
-//		deselectAllButton = createButton(buttonComposite,
-//				IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
-//
-//		listener = new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				setAllSelections(false);
-//			}
-//		};
-//		deselectAllButton.addSelectionListener(listener);
-//		setButtonLayoutData(deselectAllButton);
+		// deselectAllButton = createButton(buttonComposite,
+		// IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
+		//
+		// listener = new SelectionAdapter() {
+		// @Override
+		// public void widgetSelected(SelectionEvent e) {
+		// setAllSelections(false);
+		// }
+		// };
+		// deselectAllButton.addSelectionListener(listener);
+		// setButtonLayoutData(deselectAllButton);
 
 	}
 
@@ -306,9 +306,9 @@ public class ErlangProjectImportWizardPage extends
 							enableButtonGroup(false);
 							enableSourceGroup(true);
 							enableResourceTreeGroup(true);
-							//setAllSelections(false);
+							// setAllSelections(false);
 						} else {
-							//setAllSelections(tr);
+							// setAllSelections(tr);
 							enableButtonGroup(false);
 							enableResourceTreeGroup(true);
 
@@ -453,7 +453,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Update the receiver from the source name field.
 	 */
 
-	private void updateFromSourceField() {
+	void updateFromSourceField() {
 
 		setSourceName(sourceNameField.getText());
 		// Update enablements when this is selected
@@ -501,8 +501,8 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void enableButtonGroup(boolean enable) {
 		selectTypesButton.setEnabled(enable);
-//		selectAllButton.setEnabled(false);
-//		deselectAllButton.setEnabled(false);
+		// selectAllButton.setEnabled(false);
+		// deselectAllButton.setEnabled(false);
 	}
 
 	/**
@@ -584,41 +584,34 @@ public class ErlangProjectImportWizardPage extends
 		if (fileSystemObjects.size() > 0) {
 			if (copyFiles) {
 				return importResources(fileSystemObjects);
-			} else {
-
-				try {
-					getContainer().run(false, true,
-							new WorkspaceModifyOperation() {
-
-								@Override
-								protected void execute(IProgressMonitor monitor)
-										throws InvocationTargetException,
-										CoreException {
-									linkToResources(fileSystemObjects,
-											new SubProgressMonitor(monitor, 1));
-
-									try {
-										final IWorkbench workbench = ErlideUIPlugin
-												.getDefault().getWorkbench();
-										workbench
-												.showPerspective(
-														ErlangPerspective.ID,
-														workbench
-																.getActiveWorkbenchWindow());
-									} catch (final WorkbenchException we) {
-										// ignore
-									}
-								}
-							});
-				} catch (final InvocationTargetException x) {
-					reportError();
-					return false;
-				} catch (final InterruptedException x) {
-					reportError(x);
-					return false;
-				}
-				return true;
 			}
+			try {
+				getContainer().run(false, true, new WorkspaceModifyOperation() {
+
+					@Override
+					protected void execute(IProgressMonitor monitor)
+							throws InvocationTargetException, CoreException {
+						linkToResources(fileSystemObjects,
+								new SubProgressMonitor(monitor, 1));
+
+						try {
+							final IWorkbench workbench = ErlideUIPlugin
+									.getDefault().getWorkbench();
+							workbench.showPerspective(ErlangPerspective.ID,
+									workbench.getActiveWorkbenchWindow());
+						} catch (final WorkbenchException we) {
+							// ignore
+						}
+					}
+				});
+			} catch (final InvocationTargetException x) {
+				reportError();
+				return false;
+			} catch (final InterruptedException x) {
+				reportError(x);
+				return false;
+			}
+			return true;
 		}
 
 		MessageDialog.openInformation(getContainer().getShell(),
@@ -653,7 +646,7 @@ public class ErlangProjectImportWizardPage extends
 								.getResourceString("wizards.errors.projectfileerrordesc"));
 	}
 
-	private boolean linkToResources(List<Object> fileSystemObjects,
+	boolean linkToResources(List<Object> fileSystemObjects,
 			IProgressMonitor monitor) throws InvocationTargetException,
 			CoreException {
 		String projectName = getProjectName();
@@ -1197,23 +1190,24 @@ public class ErlangProjectImportWizardPage extends
 			enableButtonGroup(false);
 			return false;
 		}
-//		if (!isCopyFiles()) {
-//			selectionGroup.setAllSelections(true);
-//		}
+		// if (!isCopyFiles()) {
+		// selectionGroup.setAllSelections(true);
+		// }
 		List<?> resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
 		}
 
-//		if (copyFiles) {
-//			enableButtonGroup(true);
-//		}
+		// if (copyFiles) {
+		// enableButtonGroup(true);
+		// }
 		setErrorMessage(null);
 		return true;
 	}
 
 	/**
+	 * 
 	 * @return
 	 */
 	public String getProjectName() {
@@ -1222,7 +1216,6 @@ public class ErlangProjectImportWizardPage extends
 		while (resourcesEnum.hasNext()) {
 			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
 					.getFileSystemObject());
-
 		}
 		return this.projectName;
 	}

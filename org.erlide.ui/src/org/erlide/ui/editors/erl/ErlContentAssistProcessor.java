@@ -54,9 +54,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 							"get_doc_from_fun_arity_list", mod, list, s);
 			if (r1 instanceof OtpErlangList) {
 				return (OtpErlangList) r1;
-			} else {
-				return null;
 			}
+			return null;
 		} catch (final BackendException e) {
 
 		}
@@ -121,9 +120,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 							docStr));
 				}
 				return result.toArray(new ICompletionProposal[result.size()]);
-			} else {
-				return NO_COMPLETIONS;
 			}
+			return NO_COMPLETIONS;
 		} catch (final BackendException e) {
 			return NO_COMPLETIONS;
 		} catch (final OtpErlangRangeException e) {

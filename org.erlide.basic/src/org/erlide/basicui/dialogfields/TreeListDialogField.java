@@ -846,7 +846,7 @@ public class TreeListDialogField extends DialogField {
 
 	// ------- TreeViewerAdapter
 
-	private class TreeViewerAdapter implements ITreeContentProvider,
+	class TreeViewerAdapter implements ITreeContentProvider,
 			ISelectionChangedListener, IDoubleClickListener {
 
 		private final Object[] NO_ELEMENTS = new Object[0];

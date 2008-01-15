@@ -88,7 +88,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	 * 
 	 * 
 	 */
-	private static class ErlPartition implements IRegion {
+	static class ErlPartition implements IRegion {
 		int length;
 		int offset;
 		String aType;

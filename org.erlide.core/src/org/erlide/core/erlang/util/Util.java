@@ -1887,9 +1887,8 @@ public class Util implements ISuffixConstants {
 	public static Boolean toBoolean(boolean bool) {
 		if (bool) {
 			return Boolean.TRUE;
-		} else {
-			return Boolean.FALSE;
 		}
+		return Boolean.FALSE;
 	}
 
 }

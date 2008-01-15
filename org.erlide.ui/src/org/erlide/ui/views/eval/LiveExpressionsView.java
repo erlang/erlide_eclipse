@@ -88,7 +88,7 @@ public class LiveExpressionsView extends ViewPart implements
 
 	private Action fAddAction;
 
-	private Action fRemoveAction;
+	Action fRemoveAction;
 
 	static private class LiveExpr {
 
@@ -160,15 +160,13 @@ public class LiveExpressionsView extends ViewPart implements
 			final LiveExpr e = (LiveExpr) obj;
 			if (index == 0) {
 				return e.fExpr;
-			} else {
-				final BackendEvalResult r = BackendUtil.eval(BackendManager
-						.getDefault().getIdeBackend(), e.fExpr + ".", null);
-				if (r.isOk()) {
-					return r.getValue().toString();
-				} else {
-					return "ERR: " + r.getErrorReason().toString();
-				}
 			}
+			final BackendEvalResult r = BackendUtil.eval(BackendManager
+					.getDefault().getIdeBackend(), e.fExpr + ".", null);
+			if (r.isOk()) {
+				return r.getValue().toString();
+			}
+			return "ERR: " + r.getErrorReason().toString();
 		}
 
 		public Image getColumnImage(Object obj, int index) {
@@ -430,9 +428,8 @@ public class LiveExpressionsView extends ViewPart implements
 		public boolean canModify(Object element, String property) {
 			if ("expr".equals(property)) {
 				return true;
-			} else {
-				return false;
 			}
+			return false;
 		}
 
 		public Object getValue(Object element, String property) {

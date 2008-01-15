@@ -98,9 +98,8 @@ public class ErlModelException extends CoreException {
 	public Throwable getException() {
 		if (nestedCoreException == null) {
 			return getStatus().getException();
-		} else {
-			return nestedCoreException;
 		}
+		return nestedCoreException;
 	}
 
 	/**
@@ -113,9 +112,8 @@ public class ErlModelException extends CoreException {
 		final IStatus status = this.getStatus();
 		if (status instanceof IErlModelStatus) {
 			return (IErlModelStatus) status;
-		} else {
-			return new ErlModelStatus(nestedCoreException);
 		}
+		return new ErlModelStatus(nestedCoreException);
 	}
 
 	/**

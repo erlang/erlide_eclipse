@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.jinterface.rpc.RpcConverter;
+import org.erlide.jinterface.rpc.Tuple;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDouble;
@@ -215,7 +215,7 @@ public class RpcStubGenerator {
 		buf.append("])");
 	}
 
-	private static Class<?>[] getExParams(Method m1) {
+	static Class<?>[] getExParams(Method m1) {
 		Class<?>[] p1 = m1.getParameterTypes();
 		int mod = m1.getModifiers();
 		boolean statik = Modifier.isStatic(mod);

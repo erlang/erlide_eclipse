@@ -108,6 +108,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			final Display d = c.getDisplay();
 			d.asyncExec(new Runnable() {
 
+				@SuppressWarnings("synthetic-access")
 				public void run() {
 					if (getTreeViewer().getControl() != null
 							&& !getTreeViewer().getControl().isDisposed()) {

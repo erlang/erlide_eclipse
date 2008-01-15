@@ -40,10 +40,9 @@ public class ModuleLabelProvider implements ILabelProvider {
 			if (project.isOpen()) {
 				return ErlideUIPlugin.getDefault().getImage(
 						IErlideUIConstants.IMG_PROJECT_LABEL);
-			} else {
-				return ErlideUIPlugin.getDefault().getImage(
-						IErlideUIConstants.IMG_PROJECT_CLOSED_LABEL);
 			}
+			return ErlideUIPlugin.getDefault().getImage(
+					IErlideUIConstants.IMG_PROJECT_CLOSED_LABEL);
 		} else if (element instanceof IContainer) {
 			if (PluginUtils.isOnSourcePath((IContainer) element)) {
 				return ErlideUIPlugin.getDefault().getImage(

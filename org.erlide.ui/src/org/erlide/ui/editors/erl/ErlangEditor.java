@@ -707,7 +707,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * Updates the Erlang outline page selection and this editor's range
 	 * indicator.
 	 */
-	private class EditorSelectionChangedListener extends
+	class EditorSelectionChangedListener extends
 			AbstractSelectionChangedListener {
 
 		/*
@@ -1028,6 +1028,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/*
 		 * @see org.eclipse.jface.action.IAction#run()
 		 */
+		@SuppressWarnings("synthetic-access")
 		@Override
 		public void run() {
 
@@ -1171,10 +1172,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				if (textViewer instanceof ITextViewerExtension5) {
 					final ITextViewerExtension5 extension = (ITextViewerExtension5) textViewer;
 					return extension.widgetOffset2ModelOffset(widgetLocation);
-				} else {
-					final IRegion visibleRegion = textViewer.getVisibleRegion();
-					return widgetLocation + visibleRegion.getOffset();
 				}
+				final IRegion visibleRegion = textViewer.getVisibleRegion();
+				return widgetLocation + visibleRegion.getOffset();
 			} catch (final IllegalArgumentException e) {
 				return -1;
 			}
@@ -1324,18 +1324,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					forward, position);
 			selectAndReveal(position.getOffset(), position.getLength());
 			return null;
-		} else {
-			final Annotation annotation = getNextAnnotation(selection
-					.getOffset(), selection.getLength(), forward, position);
-			setStatusLineErrorMessage(null);
-			setStatusLineMessage(null);
-			if (annotation != null) {
-				updateAnnotationViews(annotation);
-				selectAndReveal(position.getOffset(), position.getLength());
-				setStatusLineMessage(annotation.getText());
-			}
-			return annotation;
 		}
+		final Annotation annotation = getNextAnnotation(selection.getOffset(),
+				selection.getLength(), forward, position);
+		setStatusLineErrorMessage(null);
+		setStatusLineMessage(null);
+		if (annotation != null) {
+			updateAnnotationViews(annotation);
+			selectAndReveal(position.getOffset(), position.getLength());
+			setStatusLineMessage(annotation.getText());
+		}
+		return annotation;
 	}
 
 	private void updateAnnotationViews(Annotation annotation) {

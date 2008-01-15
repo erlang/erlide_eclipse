@@ -353,12 +353,11 @@ abstract public class OverflowingLRUCache extends LRUCache {
 				// thus entry will already be removed if reaching this point.
 				if (fEntryTable.get(entry._fKey) == null) {
 					return;
-				} else {
-					// basic removal
-					fEntryTable.remove(entry._fKey);
-					fCurrentSpace -= entry._fSpace;
-					privateNotifyDeletionFromCache(entry);
 				}
+				// basic removal
+				fEntryTable.remove(entry._fKey);
+				fCurrentSpace -= entry._fSpace;
+				privateNotifyDeletionFromCache(entry);
 			}
 		}
 		final LRUCacheEntry previous = entry._fPrevious;
@@ -414,9 +413,8 @@ abstract public class OverflowingLRUCache extends LRUCache {
 				fCurrentSpace = newTotal;
 				fOverflow = 0;
 				return value;
-			} else {
-				privateRemoveEntry(entry, false, false);
 			}
+			privateRemoveEntry(entry, false, false);
 		}
 
 		// attempt to make new space

@@ -45,6 +45,7 @@ import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	private Text fProjText;
+
 	private Button fProjButton;
 
 	private Text moduleText;
@@ -52,6 +53,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	private Text funcText;
 
 	private Text otpPathText;
+
 	private Button otpPathBrowseButton;
 
 	public void createControl(Composite parent) {
@@ -136,7 +138,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		funcText.addModifyListener(fBasicModifyListener);
 	}
 
-	private void handleotpPathBrowseButtonSelected() {
+	void handleotpPathBrowseButtonSelected() {
 
 		String last = otpPathText.getText().trim();
 		// if (last.length() == 0) {
@@ -236,6 +238,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	private final ModifyListener fBasicModifyListener = new ModifyListener() {
 
+		@SuppressWarnings("synthetic-access")
 		public void modifyText(ModifyEvent evt) {
 			updateLaunchConfigurationDialog();
 		}

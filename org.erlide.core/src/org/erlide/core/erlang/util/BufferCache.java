@@ -48,10 +48,9 @@ public class BufferCache extends OverflowingLRUCache {
 		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=39311
 		if (!((Openable) buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
 			return false;
-		} else {
-			buffer.close();
-			return true;
 		}
+		buffer.close();
+		return true;
 	}
 
 	/**

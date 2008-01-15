@@ -207,9 +207,8 @@ public class ErlangProjectProperties {
 		if (project != null) {
 			final String incs = buildIncludeDirs(getIncludeDirs());
 			return " -pa " + project.getLocation().append(fOutputDir) + incs;
-		} else {
-			return "";
 		}
+		return "";
 	}
 
 	public String buildIncludeDirs(String[] dirs) {

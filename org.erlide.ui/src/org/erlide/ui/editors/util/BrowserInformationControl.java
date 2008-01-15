@@ -133,8 +133,8 @@ public class BrowserInformationControl implements IInformationControl,
 
 			if (children != null) {
 				for (final Control child : children) {
-					child.setSize(minSize.x - fBorderSize * 2, minSize.y -
-							fBorderSize * 2);
+					child.setSize(minSize.x - fBorderSize * 2, minSize.y
+							- fBorderSize * 2);
 					child.setLocation(fBorderSize, fBorderSize);
 				}
 			}
@@ -176,7 +176,7 @@ public class BrowserInformationControl implements IInformationControl,
 	private static boolean fgAvailabilityChecked = false;
 
 	/** The control's shell */
-	private Shell fShell;
+	Shell fShell;
 
 	/** The control's browser widget */
 	private Browser fBrowser;
@@ -196,7 +196,7 @@ public class BrowserInformationControl implements IInformationControl,
 
 	private Listener fDeactivateListener;
 
-	private final ListenerList fFocusListeners = new ListenerList();
+	final ListenerList fFocusListeners = new ListenerList();
 
 	/**
 	 * Creates a default information control with the given shell as parent. The
@@ -267,8 +267,8 @@ public class BrowserInformationControl implements IInformationControl,
 
 		// Browser field
 		fBrowser = new Browser(fShell, SWT.NONE);
-		fHideScrollBars = (style & SWT.V_SCROLL) == 0 &&
-				(style & SWT.H_SCROLL) == 0;
+		fHideScrollBars = (style & SWT.V_SCROLL) == 0
+				&& (style & SWT.H_SCROLL) == 0;
 		gd = new GridData(GridData.BEGINNING | GridData.FILL_BOTH);
 		fBrowser.setLayoutData(gd);
 		fBrowser.setForeground(display
@@ -294,8 +294,8 @@ public class BrowserInformationControl implements IInformationControl,
 		if (statusFieldText != null) {
 
 			// Horizontal separator line
-			final Label separator = new Label(composite, SWT.SEPARATOR |
-					SWT.HORIZONTAL | SWT.LINE_DOT);
+			final Label separator = new Label(composite, SWT.SEPARATOR
+					| SWT.HORIZONTAL | SWT.LINE_DOT);
 			separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 			// Status field label
@@ -308,9 +308,9 @@ public class BrowserInformationControl implements IInformationControl,
 			}
 			fStatusTextFont = new Font(statusField.getDisplay(), fontDatas);
 			statusField.setFont(fStatusTextFont);
-			gd = new GridData(GridData.FILL_HORIZONTAL |
-					GridData.HORIZONTAL_ALIGN_BEGINNING |
-					GridData.VERTICAL_ALIGN_BEGINNING);
+			gd = new GridData(GridData.FILL_HORIZONTAL
+					| GridData.HORIZONTAL_ALIGN_BEGINNING
+					| GridData.VERTICAL_ALIGN_BEGINNING);
 			statusField.setLayoutData(gd);
 
 			statusField.setForeground(display

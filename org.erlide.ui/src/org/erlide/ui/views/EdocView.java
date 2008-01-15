@@ -90,7 +90,7 @@ public class EdocView extends AbstractInfoView {
 	private Browser fBrowser;
 
 	/** The text widget. */
-	private StyledText fText;
+	StyledText fText;
 
 	/** The information presenter. */
 	private DefaultInformationControl.IInformationPresenterExtension fPresenter;
@@ -105,7 +105,7 @@ public class EdocView extends AbstractInfoView {
 	private URL fStyleSheetURL;
 
 	/** The Browser widget */
-	private boolean fIsUsingBrowserWidget;
+	boolean fIsUsingBrowserWidget;
 
 	/**
 	 * The Javadoc view's select all action.
@@ -235,11 +235,10 @@ public class EdocView extends AbstractInfoView {
 				final IDocument document = new Document(((StyledText) fControl)
 						.getSelectionText());
 				return new TextSelection(document, 0, document.getLength());
-			} else {
-				// FIXME: see
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
-				return StructuredSelection.EMPTY;
 			}
+			// FIXME: see
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+			return StructuredSelection.EMPTY;
 		}
 
 		/*
@@ -586,9 +585,8 @@ public class EdocView extends AbstractInfoView {
 	protected Control getControl() {
 		if (fIsUsingBrowserWidget) {
 			return fBrowser;
-		} else {
-			return fText;
 		}
+		return fText;
 	}
 
 	/*

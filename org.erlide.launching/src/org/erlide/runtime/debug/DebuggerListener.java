@@ -71,9 +71,8 @@ public class DebuggerListener {
 			if (timeout < 0) {
 				// TODO how to handle stopping, if it's blocked in a receive?
 				return fBackend.receiveEvent();
-			} else {
-				return fBackend.receiveRpc(timeout);
 			}
+			return fBackend.receiveRpc(timeout);
 		}
 
 		public int getTimeout() {

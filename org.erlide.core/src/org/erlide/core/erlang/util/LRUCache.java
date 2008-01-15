@@ -437,9 +437,8 @@ public class LRUCache implements Cloneable {
 				entry._fSpace = newSpace;
 				fCurrentSpace = newTotal;
 				return value;
-			} else {
-				privateRemoveEntry(entry, false);
 			}
+			privateRemoveEntry(entry, false);
 		}
 		if (makeSpace(newSpace)) {
 			privateAdd(key, value, newSpace);
@@ -486,9 +485,8 @@ public class LRUCache implements Cloneable {
 
 		if (value instanceof ILRUCacheable) {
 			return ((ILRUCacheable) value).getCacheFootprint();
-		} else {
-			return 1;
 		}
+		return 1;
 	}
 
 	/**

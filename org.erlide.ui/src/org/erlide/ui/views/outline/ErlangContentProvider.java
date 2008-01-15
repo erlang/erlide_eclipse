@@ -47,9 +47,8 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				IErlElement[] res = c.getChildren();
 				if (fDetailed) {
 					return res;
-				} else {
-					return filter(res);
 				}
+				return filter(res);
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
 					ErlLogger.debug("element missing: " + x.getMessage());
@@ -76,9 +75,8 @@ public class ErlangContentProvider implements ITreeContentProvider {
 				IErlElement[] res = ((IParent) parent).getChildren();
 				if (fDetailed) {
 					return res;
-				} else {
-					return filter(res);
 				}
+				return filter(res);
 			} catch (final ErlModelException e) {
 				e.printStackTrace();
 				return NO_CHILDREN;

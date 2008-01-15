@@ -186,9 +186,8 @@ public abstract class Openable extends ErlElement implements IOpenable,
 				buffer = openBuffer(null, this);
 			}
 			return buffer;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -232,12 +231,10 @@ public abstract class Openable extends ErlElement implements IOpenable,
 
 			if (resource == null) {
 				throw newNotPresentException();
-			} else {
-				return resource;
 			}
-		} else {
-			return parentResource;
+			return resource;
 		}
+		return parentResource;
 	}
 
 	class ErlangResourceVisitor implements IResourceVisitor {

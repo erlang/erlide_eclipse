@@ -92,8 +92,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return new ErlangBuilder.ErlangBuilderMarkerGenerator();
 	}
 
-	private static void addMarker(IResource file, String message,
-			int lineNumber, int severity) {
+	static void addMarker(IResource file, String message, int lineNumber,
+			int severity) {
 		try {
 			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -350,7 +350,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (inc.isAbsolute()) {
 				includeDirs[i] = inc.toString();
 			} else {
-				includeDirs[i] = project.getFolder(incs[i]).getLocation().toString();
+				includeDirs[i] = project.getFolder(incs[i]).getLocation()
+						.toString();
 			}
 		}
 
@@ -497,7 +498,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	private static boolean isInExtCodePath(IResource resource, IProject project) {
+	static boolean isInExtCodePath(IResource resource, IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getFullPath();
@@ -513,7 +514,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	private static boolean isInOutputPath(IResource resource, IProject project) {
+	static boolean isInOutputPath(IResource resource, IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getLocation();
@@ -735,9 +736,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (resource.getType() == IResource.FOLDER
 					&& "org".equals(resource.getName())) {
 				return false;
-			} else {
-				return true;
 			}
+			return true;
 		}
 	}
 
@@ -835,9 +835,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (resource.getType() == IResource.FOLDER
 					&& "org".equals(resource.getName())) {
 				return false;
-			} else {
-				return true;
 			}
+			return true;
 		}
 	}
 

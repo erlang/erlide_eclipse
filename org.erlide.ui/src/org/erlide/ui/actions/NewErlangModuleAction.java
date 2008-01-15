@@ -23,10 +23,11 @@ public class NewErlangModuleAction extends ActionDelegate {
 	 */
 	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
-		if (sel instanceof IStructuredSelection)
+		if (sel instanceof IStructuredSelection) {
 			selection = (IStructuredSelection) sel;
-		else
+		} else {
 			selection = StructuredSelection.EMPTY;
+		}
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class NewErlangModuleAction extends ActionDelegate {
 	 * 
 	 * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void selectionChanged(IStructuredSelection selection) {
-		this.selection = selection;
+	public void selectionChanged(IStructuredSelection aSelection) {
+		this.selection = aSelection;
 	}
 }

@@ -19,8 +19,8 @@ import java.util.List;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter;
+import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;
@@ -60,7 +60,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	private boolean fConnected = false;
 
-	private class ThreadLocalMbox extends ThreadLocal<Object> {
+	class ThreadLocalMbox extends ThreadLocal<Object> {
 
 		@Override
 		protected Object initialValue() {
@@ -276,11 +276,10 @@ public abstract class AbstractBackend implements IBackend {
 					String sys = ((OtpErlangAtom) msg).atomValue();
 					if (sys.compareTo("stopped") == 0) {
 						break;
-					} else {
-						System.out
-								.println("handleReceiveEvent() - Unrecognized system event: "
-										+ sys);
 					}
+					System.out
+							.println("handleReceiveEvent() - Unrecognized system event: "
+									+ sys);
 				} else {
 					OtpErlangTuple t = (OtpErlangTuple) msg;
 					msg = t.elementAt(1);
@@ -445,9 +444,8 @@ public abstract class AbstractBackend implements IBackend {
 		OtpMbox eventBox = getEventBox();
 		if (eventBox != null) {
 			return eventBox.receive();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
@@ -455,9 +453,8 @@ public abstract class AbstractBackend implements IBackend {
 		OtpMbox eventBox = getEventBox();
 		if (eventBox != null) {
 			return eventBox.receive(timeout);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public OtpErlangObject execute(String fun, OtpErlangObject... args)

@@ -53,7 +53,7 @@ import org.erlide.ui.util.IColorManager;
  */
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
-	private final ErlangEditor editor;
+	final ErlangEditor editor;
 
 	private ITextDoubleClickStrategy doubleClickStrategy;
 
@@ -171,9 +171,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module != null) {
 			return new ErlTextHover(module);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**

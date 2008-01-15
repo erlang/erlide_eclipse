@@ -73,7 +73,7 @@ public class ViewSiteDecorator extends PlatformObject implements IViewSite {
 		}
 	}
 
-	private class SelectionChangedListener implements ISelectionChangedListener {
+	class SelectionChangedListener implements ISelectionChangedListener {
 
 		ListenerList fListeners = new ListenerList();
 

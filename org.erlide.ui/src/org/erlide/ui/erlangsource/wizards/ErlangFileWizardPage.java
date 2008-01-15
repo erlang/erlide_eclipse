@@ -147,8 +147,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 		label = new Label(filePanel, SWT.NULL);
 		label.setText("&Application name:");
 
-		applications = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN |
-				SWT.READ_ONLY);
+		applications = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
+				| SWT.READ_ONLY);
 		applications.add("None");
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		applications.setLayoutData(gd);
@@ -167,8 +167,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 		label.setLayoutData(gd);
 		label.setText("&Skeleton");
 
-		skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN |
-				SWT.READ_ONLY);
+		skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
+				| SWT.READ_ONLY);
 		skeleton.add("None");
 
 		for (Template element : behaviours) {
@@ -188,8 +188,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 	 */
 
 	private void initialize() {
-		if (fSelection != null && !fSelection.isEmpty() &&
-				fSelection instanceof IStructuredSelection) {
+		if (fSelection != null && !fSelection.isEmpty()
+				&& fSelection instanceof IStructuredSelection) {
 			final IStructuredSelection ssel = (IStructuredSelection) fSelection;
 			if (ssel.size() > 1) {
 				return;
@@ -239,8 +239,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 			updateStatus("File container must be specified");
 			return;
 		}
-		if (container == null ||
-				(container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
+		if (container == null
+				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
 			updateStatus("File container must exist");
 			return;
 		}
@@ -333,9 +333,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 
 		if (tb == null) {
 			return null;
-		} else {
-			return tb.getString();
 		}
+		return tb.getString();
 	}
 
 	/*

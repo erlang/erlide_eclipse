@@ -126,8 +126,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		private final boolean fMatchCollapsed;
 
-		private ErlangElementSetFilter(Set<IErlElement> set,
-				boolean matchCollapsed) {
+		ErlangElementSetFilter(Set<IErlElement> set, boolean matchCollapsed) {
 			fSet = set;
 			fMatchCollapsed = matchCollapsed;
 		}
@@ -146,7 +145,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private class ElementChangedListener implements IElementChangedListener {
+	class ElementChangedListener implements IElementChangedListener {
 
 		/*
 		 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)

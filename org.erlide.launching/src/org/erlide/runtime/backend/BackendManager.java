@@ -146,16 +146,15 @@ public final class BackendManager implements IResourceChangeListener {
 	public static String getBackendName(IProject project) {
 		if (project == null) {
 			return DEFAULT_BACKEND_LABEL;
-		} else {
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					project);
-			String prjLabel = prefs.getBackendNodeName();
-			if (prjLabel.length() == 0) {
-				// we use the ide backend in this case
-				return DEFAULT_BACKEND_LABEL;
-			}
-			return prjLabel;
 		}
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		String prjLabel = prefs.getBackendNodeName();
+		if (prjLabel.length() == 0) {
+			// we use the ide backend in this case
+			return DEFAULT_BACKEND_LABEL;
+		}
+		return prjLabel;
 	}
 
 	public void remove(IProject project) {
@@ -310,9 +309,8 @@ public final class BackendManager implements IResourceChangeListener {
 	public static String buildNodeLabel(String label) {
 		if (label.indexOf('_') < 0) {
 			return label + "_" + fUniqueId;
-		} else {
-			return label;
 		}
+		return label;
 	}
 
 	private boolean isExtErlideLabel(String label) {

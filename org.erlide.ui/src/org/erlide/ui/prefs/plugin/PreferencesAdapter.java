@@ -31,8 +31,7 @@ public class PreferencesAdapter implements IPreferenceStore {
 	 * fires a {@link org.eclipse.jface.util.PropertyChangeEvent} on the adapter
 	 * with arguments from the received event.
 	 */
-	private class PropertyChangeListener implements
-			Preferences.IPropertyChangeListener {
+	class PropertyChangeListener implements Preferences.IPropertyChangeListener {
 
 		/*
 		 * @see org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(org.eclipse.core.runtime.Preferences.PropertyChangeEvent)

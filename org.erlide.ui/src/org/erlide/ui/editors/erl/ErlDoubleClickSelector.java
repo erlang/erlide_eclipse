@@ -42,7 +42,7 @@ public class ErlDoubleClickSelector implements ITextDoubleClickStrategy {
 	 * 
 	 * @since 3.1
 	 */
-	private static final class AtJavaIdentifierDetector {
+	static final class AtJavaIdentifierDetector {
 
 		private boolean fSelectAnnotations;
 

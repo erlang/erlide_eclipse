@@ -256,21 +256,19 @@ public class ErlModelManager implements IErlModelManager {
 		final String key = project.getElementName() + "/" + file.getName();
 		if (elements.containsKey(key)) {
 			return (IErlModule) elements.get(key);
-		} else {
-			final String ext = file.getFileExtension();
-			if (ext.equals("erl") || ext.equals("hrl")) {
-				final IErlModule module = new ErlModule(project,
-						file.getName(), ext.equals("erl"), file);
-				project.addChild(module);
-				// project.setIsStructureKnown(false);
-				// IProgressMonitor
-				// project.open(null);
-				elements.put(key, module);
-				return module;
-			} else {
-				return null;
-			}
 		}
+		final String ext = file.getFileExtension();
+		if (ext.equals("erl") || ext.equals("hrl")) {
+			final IErlModule module = new ErlModule(project, file.getName(),
+					ext.equals("erl"), file);
+			project.addChild(module);
+			// project.setIsStructureKnown(false);
+			// IProgressMonitor
+			// project.open(null);
+			elements.put(key, module);
+			return module;
+		}
+		return null;
 	}
 
 	/**

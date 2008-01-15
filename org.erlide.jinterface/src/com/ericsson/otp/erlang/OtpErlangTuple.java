@@ -85,16 +85,15 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 		if (elems == null) {
 			throw new java.lang.IllegalArgumentException(
 					"Cannot make an empty tuple");
-		} else {
-			this.elems = new OtpErlangObject[count];
-			for (int i = 0; i < count; i++) {
-				if (elems[start + i] != null) {
-					this.elems[i] = elems[start + i];
-				} else {
-					throw new java.lang.IllegalArgumentException(
-							"Tuple element cannot be null (element"
-									+ (start + i) + ")");
-				}
+		}
+		this.elems = new OtpErlangObject[count];
+		for (int i = 0; i < count; i++) {
+			if (elems[start + i] != null) {
+				this.elems[i] = elems[start + i];
+			} else {
+				throw new java.lang.IllegalArgumentException(
+						"Tuple element cannot be null (element" + (start + i)
+								+ ")");
 			}
 		}
 	}

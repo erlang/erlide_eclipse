@@ -75,7 +75,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 
 	private int fResultMode; // one of the RESULT_* constants
 
-	private List<IScratchStateChangedListener> fScratchStateListeners;
+	List<IScratchStateChangedListener> fScratchStateListeners;
 
 	private boolean fEvaluating;
 
@@ -177,8 +177,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			return;
 		}
 		final boolean build = !erlProject.getProject().getWorkspace()
-				.isAutoBuilding() ||
-				!erlProject.hasBuildState();
+				.isAutoBuilding()
+				|| !erlProject.hasBuildState();
 
 		if (build) {
 			if (!performIncrementalBuild()) {
@@ -228,8 +228,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 
 	public void addScratchStateChangedListener(
 			IScratchStateChangedListener listener) {
-		if (fScratchStateListeners != null &&
-				!fScratchStateListeners.contains(listener)) {
+		if (fScratchStateListeners != null
+				&& !fScratchStateListeners.contains(listener)) {
 			fScratchStateListeners.add(listener);
 		}
 	}
@@ -246,8 +246,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 
 			public void run() {
 				Shell shell = getShell();
-				if (fScratchStateListeners != null && shell != null &&
-						!shell.isDisposed()) {
+				if (fScratchStateListeners != null && shell != null
+						&& !shell.isDisposed()) {
 					List<IScratchStateChangedListener> v = new ArrayList<IScratchStateChangedListener>(
 							fScratchStateListeners);
 					for (int i = 0; i < v.size(); i++) {
@@ -300,8 +300,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		String res = r.toString();
 		final int resLength = res.length();
 		if (resLength > 30) {
-			res = res.substring(0, 15) +
-					ScratchMessages.getString("ScratchEditor.ellipsis") + res.substring(resLength - 15, resLength); //$NON-NLS-1$
+			res = res.substring(0, 15)
+					+ ScratchMessages.getString("ScratchEditor.ellipsis") + res.substring(resLength - 15, resLength); //$NON-NLS-1$
 		}
 		res = res.replace('\n', ' ');
 		res = res.replace('\r', ' ');
@@ -347,6 +347,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 
 		final Runnable r = new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				try {
 					getSourceViewer().getDocument().replace(fScratchStart, 0,
@@ -405,6 +406,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	protected void evaluationEnds() {
 		final Runnable r = new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				fEvaluating = false;
 				setTitleImage();
@@ -477,12 +479,12 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		}
 		String message = ""; //$NON-NLS-1$
 		if (projectName != null) {
-			message = projectName +
-					ScratchMessages
+			message = projectName
+					+ ScratchMessages
 							.getString("ScratchEditor._is_not_a_Erlang_Project._n_1"); //$NON-NLS-1$
 		}
-		showError(message +
-				ScratchMessages
+		showError(message
+				+ ScratchMessages
 						.getString("ScratchEditor.Unable_to_perform_evaluation_outside_of_a_Erlang_Project_2")); //$NON-NLS-1$
 	}
 
@@ -585,6 +587,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	protected void showAndSelect(final String text, final int offset) {
 		final Runnable r = new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				try {
 					getSourceViewer().getDocument().replace(offset, 0, text);

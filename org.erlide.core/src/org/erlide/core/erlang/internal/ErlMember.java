@@ -48,10 +48,8 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 			return new SourceRange(this.getSourceRangeStart(), this
 					.getSourceRangeEnd()
 					- this.getSourceRangeStart() + 1);
-		} else {
-			return new SourceRange(fNameRangeStart, fNameRangeEnd
-					- fNameRangeStart);
 		}
+		return new SourceRange(fNameRangeStart, fNameRangeEnd - fNameRangeStart);
 	}
 
 }

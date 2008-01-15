@@ -167,16 +167,16 @@ public abstract class AbstractConnection extends Thread {
 		this.setDaemon(true);
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("<- ACCEPT FROM " + s.getInetAddress() + ":" +
-					s.getPort());
+			System.out.println("<- ACCEPT FROM " + s.getInetAddress() + ":"
+					+ s.getPort());
 		}
 
 		// get his info
 		recvName(peer);
 
 		// now find highest common dist value
-		if ((peer.proto != self.proto) || (self.distHigh < peer.distLow) ||
-				(self.distLow > peer.distHigh)) {
+		if ((peer.proto != self.proto) || (self.distHigh < peer.distLow)
+				|| (self.distLow > peer.distHigh)) {
 			close();
 			throw new IOException(
 					"No common protocol found - cannot accept connection");
@@ -212,8 +212,8 @@ public abstract class AbstractConnection extends Thread {
 		port = OtpEpmd.lookupPort(peer);
 
 		// now find highest common dist value
-		if ((peer.proto != self.proto) || (self.distHigh < peer.distLow) ||
-				(self.distLow > peer.distHigh)) {
+		if ((peer.proto != self.proto) || (self.distHigh < peer.distLow)
+				|| (self.distLow > peer.distHigh)) {
 			throw new IOException("No common protocol found - cannot connect");
 		}
 
@@ -361,8 +361,8 @@ public abstract class AbstractConnection extends Thread {
 			final OtpErlangObject[] msgbody = new OtpErlangObject[3];
 
 			msgbody[0] = new OtpErlangAtom("print");
-			msgbody[1] = new OtpErlangString("~n** Bad cookie sent to " +
-					local + " **~n");
+			msgbody[1] = new OtpErlangString("~n** Bad cookie sent to " + local
+					+ " **~n");
 			// Erlang will crash and burn if there is no third argument here...
 			msgbody[2] = new OtpErlangList(); // empty list
 
@@ -382,8 +382,8 @@ public abstract class AbstractConnection extends Thread {
 			}
 		} finally {
 			close();
-			throw new OtpAuthException("Remote cookie not authorized: " +
-					cookie.atomValue());
+			throw new OtpAuthException("Remote cookie not authorized: "
+					+ cookie.atomValue());
 		}
 	}
 
@@ -602,8 +602,8 @@ public abstract class AbstractConnection extends Thread {
 					}
 
 					if (traceLevel >= sendThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 
 						/* show received payload too */
 						ibuf.mark(0);
@@ -646,8 +646,8 @@ public abstract class AbstractConnection extends Thread {
 					}
 
 					if (traceLevel >= sendThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 
 						/* show received payload too */
 						ibuf.mark(0);
@@ -673,8 +673,8 @@ public abstract class AbstractConnection extends Thread {
 						break receive_loop;
 					}
 					if (traceLevel >= ctrlThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 					}
 
 					from = (OtpErlangPid) (head.elementAt(1));
@@ -692,8 +692,8 @@ public abstract class AbstractConnection extends Thread {
 						break receive_loop;
 					}
 					if (traceLevel >= ctrlThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 					}
 
 					from = (OtpErlangPid) (head.elementAt(1));
@@ -706,8 +706,8 @@ public abstract class AbstractConnection extends Thread {
 				case linkTag: // { LINK, FromPid, ToPid}
 				case unlinkTag: // { UNLINK, FromPid, ToPid}
 					if (traceLevel >= ctrlThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 					}
 
 					from = (OtpErlangPid) (head.elementAt(1));
@@ -722,8 +722,8 @@ public abstract class AbstractConnection extends Thread {
 				case nodeLinkTag: // { NODELINK }
 					// (just show trace)
 					if (traceLevel >= ctrlThreshold) {
-						System.out.println("<- " + headerType(head) + " " +
-								head);
+						System.out.println("<- " + headerType(head) + " "
+								+ head);
 					}
 					break;
 
@@ -850,11 +850,11 @@ public abstract class AbstractConnection extends Thread {
 					System.out.println("   " + o);
 					o = null;
 				} catch (final OtpErlangDecodeException e) {
-					System.out.println("   " + "can't decode output buffer:" +
-							e);
+					System.out.println("   " + "can't decode output buffer:"
+							+ e);
 				} catch (final OtpErlangRangeException e) {
-					System.out.println("   " + "can't decode output buffer: " +
-							e);
+					System.out.println("   " + "can't decode output buffer: "
+							+ e);
 				}
 			}
 
@@ -876,11 +876,11 @@ public abstract class AbstractConnection extends Thread {
 							.read_any();
 					System.out.println("-> " + headerType(h) + " " + h);
 				} catch (final OtpErlangDecodeException e) {
-					System.out.println("   " + "can't decode output buffer: " +
-							e);
+					System.out.println("   " + "can't decode output buffer: "
+							+ e);
 				} catch (final OtpErlangRangeException e) {
-					System.out.println("   " + "can't decode output buffer: " +
-							e);
+					System.out.println("   " + "can't decode output buffer: "
+							+ e);
 				}
 			}
 			header.writeTo(socket.getOutputStream());
@@ -949,8 +949,8 @@ public abstract class AbstractConnection extends Thread {
 
 		synchronized (this) {
 			if (s == null) {
-				throw new IOException("expected " + len +
-						" bytes, socket was closed");
+				throw new IOException("expected " + len
+						+ " bytes, socket was closed");
 			}
 			is = s.getInputStream();
 		}
@@ -959,11 +959,10 @@ public abstract class AbstractConnection extends Thread {
 			i = is.read(b, got, len - got);
 
 			if (i < 0) {
-				throw new IOException("expected " + len +
-						" bytes, got EOF after " + got + " bytes");
-			} else {
-				got += i;
+				throw new IOException("expected " + len
+						+ " bytes, got EOF after " + got + " bytes");
 			}
+			got += i;
 		}
 		return got;
 	}
@@ -1001,8 +1000,8 @@ public abstract class AbstractConnection extends Thread {
 			socket.setTcpNoDelay(true);
 
 			if (traceLevel >= handshakeThreshold) {
-				System.out.println("-> MD5 CONNECT TO " + peer.host() + ":" +
-						port);
+				System.out.println("-> MD5 CONNECT TO " + peer.host() + ":"
+						+ port);
 			}
 			sendName(peer.distChoose, self.flags);
 			recvStatus();
@@ -1091,8 +1090,8 @@ public abstract class AbstractConnection extends Thread {
 		obuf.writeTo(socket.getOutputStream());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("-> " + "HANDSHAKE sendName" + " flags=" +
-					flags + " dist=" + dist + " local=" + self);
+			System.out.println("-> " + "HANDSHAKE sendName" + " flags=" + flags
+					+ " dist=" + dist + " local=" + self);
 		}
 	}
 
@@ -1111,9 +1110,9 @@ public abstract class AbstractConnection extends Thread {
 		obuf.writeTo(socket.getOutputStream());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("-> " + "HANDSHAKE sendChallenge" + " flags=" +
-					flags + " dist=" + dist + " challenge=" + challenge +
-					" local=" + self);
+			System.out.println("-> " + "HANDSHAKE sendChallenge" + " flags="
+					+ flags + " dist=" + dist + " challenge=" + challenge
+					+ " local=" + self);
 		}
 	}
 
@@ -1165,8 +1164,8 @@ public abstract class AbstractConnection extends Thread {
 						"Handshake failed - peer cannot handle extended references");
 			}
 
-			if (OtpSystem.useExtendedPidsPorts() &&
-					(peer_.flags & AbstractNode.dFlagExtendedPidsPorts) == 0) {
+			if (OtpSystem.useExtendedPidsPorts()
+					&& (peer_.flags & AbstractNode.dFlagExtendedPidsPorts) == 0) {
 				throw new IOException(
 						"Handshake failed - peer cannot handle extended pids and ports");
 			}
@@ -1181,8 +1180,8 @@ public abstract class AbstractConnection extends Thread {
 		peer_.host = hisname.substring(i + 1, hisname.length());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("<- " + "HANDSHAKE" + " ntype=" + peer_.ntype +
-					" dist=" + peer_.distHigh + " remote=" + peer_);
+			System.out.println("<- " + "HANDSHAKE" + " ntype=" + peer_.ntype
+					+ " dist=" + peer_.distHigh + " remote=" + peer_);
 		}
 	}
 
@@ -1213,8 +1212,8 @@ public abstract class AbstractConnection extends Thread {
 						"Handshake failed - peer cannot handle extended references");
 			}
 
-			if (OtpSystem.useExtendedPidsPorts() &&
-					(peer.flags & AbstractNode.dFlagExtendedPidsPorts) == 0) {
+			if (OtpSystem.useExtendedPidsPorts()
+					&& (peer.flags & AbstractNode.dFlagExtendedPidsPorts) == 0) {
 				throw new IOException(
 						"Handshake failed - peer cannot handle extended pids and ports");
 			}
@@ -1224,8 +1223,8 @@ public abstract class AbstractConnection extends Thread {
 		}
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("<- " + "HANDSHAKE recvChallenge" + " from=" +
-					peer.node + " challenge=" + challenge + " local=" + self);
+			System.out.println("<- " + "HANDSHAKE recvChallenge" + " from="
+					+ peer.node + " challenge=" + challenge + " local=" + self);
 		}
 
 		return challenge;
@@ -1242,9 +1241,9 @@ public abstract class AbstractConnection extends Thread {
 		obuf.writeTo(socket.getOutputStream());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("-> " + "HANDSHAKE sendChallengeReply" +
-					" challenge=" + challenge + " digest=" + hex(digest) +
-					" local=" + self);
+			System.out.println("-> " + "HANDSHAKE sendChallengeReply"
+					+ " challenge=" + challenge + " digest=" + hex(digest)
+					+ " local=" + self);
 		}
 	}
 
@@ -1283,9 +1282,9 @@ public abstract class AbstractConnection extends Thread {
 		}
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("<- " + "HANDSHAKE recvChallengeReply" +
-					" from=" + peer.node + " challenge=" + challenge +
-					" digest=" + hex(her_digest) + " local=" + self);
+			System.out.println("<- " + "HANDSHAKE recvChallengeReply"
+					+ " from=" + peer.node + " challenge=" + challenge
+					+ " digest=" + hex(her_digest) + " local=" + self);
 		}
 
 		return challenge;
@@ -1301,8 +1300,8 @@ public abstract class AbstractConnection extends Thread {
 		obuf.writeTo(socket.getOutputStream());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("-> " + "HANDSHAKE sendChallengeAck" +
-					" digest=" + hex(digest) + " local=" + self);
+			System.out.println("-> " + "HANDSHAKE sendChallengeAck"
+					+ " digest=" + hex(digest) + " local=" + self);
 		}
 	}
 
@@ -1329,10 +1328,9 @@ public abstract class AbstractConnection extends Thread {
 		}
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out
-					.println("<- " + "HANDSHAKE recvChallengeAck" + " from=" +
-							peer.node + " digest=" + hex(her_digest) +
-							" local=" + self);
+			System.out.println("<- " + "HANDSHAKE recvChallengeAck" + " from="
+					+ peer.node + " digest=" + hex(her_digest) + " local="
+					+ self);
 		}
 	}
 
@@ -1346,8 +1344,8 @@ public abstract class AbstractConnection extends Thread {
 		obuf.writeTo(socket.getOutputStream());
 
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("-> " + "HANDSHAKE sendStatus" + " status=" +
-					status + " local=" + self);
+			System.out.println("-> " + "HANDSHAKE sendStatus" + " status="
+					+ status + " local=" + self);
 		}
 	}
 
@@ -1365,15 +1363,15 @@ public abstract class AbstractConnection extends Thread {
 			final String status = new String(tmpbuf);
 
 			if (status.compareTo("ok") != 0) {
-				throw new IOException("Peer replied with status '" + status +
-						"' instead of 'ok'");
+				throw new IOException("Peer replied with status '" + status
+						+ "' instead of 'ok'");
 			}
 		} catch (final OtpErlangDecodeException e) {
 			throw new IOException("Handshake failed - not enough data");
 		}
 		if (traceLevel >= handshakeThreshold) {
-			System.out.println("<- " + "HANDSHAKE recvStatus (ok)" + " local=" +
-					self);
+			System.out.println("<- " + "HANDSHAKE recvStatus (ok)" + " local="
+					+ self);
 		}
 	}
 }

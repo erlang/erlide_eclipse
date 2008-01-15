@@ -237,11 +237,10 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 			case INVALID_PATH:
 				if (fString != null) {
 					return fString;
-				} else {
-					return Util
-							.bind(
-									"status.invalidPath", (getPath() == null) ? "null" : getPath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
 				}
+				return Util
+						.bind(
+								"status.invalidPath", (getPath() == null) ? "null" : getPath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
 
 			case INVALID_PROJECT:
 				return Util.bind("status.invalidProject", fString); //$NON-NLS-1$
@@ -255,11 +254,10 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 			case INVALID_SIBLING:
 				if (fString != null) {
 					return Util.bind("status.invalidSibling", fString); //$NON-NLS-1$
-				} else {
-					return Util
-							.bind(
-									"status.invalidSibling", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 				}
+				return Util
+						.bind(
+								"status.invalidSibling", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
 			case IO_EXCEPTION:
 				return Util.bind("status.IOException"); //$NON-NLS-1$
@@ -271,9 +269,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 				}
 				if (fString != null) {
 					return fString;
-				} else {
-					return Util.bind("status.nameCollision", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				}
+				return Util.bind("status.nameCollision", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 			case NO_ELEMENTS_TO_PROCESS:
 				return Util.bind("operation.needElements"); //$NON-NLS-1$
@@ -310,17 +307,15 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 			}
 			if (fString != null) {
 				return fString;
-			} else {
-				return ""; // //$NON-NLS-1$
 			}
-		} else {
-			final String message = exception.getMessage();
-			if (message != null) {
-				return message;
-			} else {
-				return exception.toString();
-			}
+			return ""; // //$NON-NLS-1$
 		}
+		final String message = exception.getMessage();
+		if (message != null) {
+			return message;
+		}
+		return exception.toString();
+
 	}
 
 	/**
@@ -403,8 +398,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 		final int severityMask = mask & 0x7;
 		final int categoryMask = mask & ~0x7;
 		final int bits = status.getBits();
-		return ((severityMask == 0) || (bits & severityMask) != 0) &&
-				((categoryMask == 0) || (bits & categoryMask) != 0);
+		return ((severityMask == 0) || (bits & severityMask) != 0)
+				&& ((categoryMask == 0) || (bits & categoryMask) != 0);
 	}
 
 	/**

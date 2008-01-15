@@ -214,9 +214,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public ArrayList<? extends IErlElement> getChildrenOfType(
 			ErlElementType type) throws ErlModelException {
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
-		for (IErlElement i : getChildren())
-			if (i.getElementType() == type)
+		for (IErlElement i : getChildren()) {
+			if (i.getElementType() == type) {
 				list.add(i);
+			}
+		}
 		return list;
 	}
 
@@ -297,9 +299,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 					if (start <= position && position <= end) {
 						if (child instanceof IParent) {
 							return child.getSourceElementAt(position);
-						} else {
-							return child;
 						}
+						return child;
 					}
 				}
 			}
@@ -330,9 +331,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 					if (rule instanceof NoResourceSchedulingRule) {
 						return fPath
 								.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
-					} else {
-						return false;
 					}
+					return false;
 				}
 
 				public boolean isConflicting(ISchedulingRule rule) {
@@ -340,16 +340,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
 						return fPath.isPrefixOf(otherPath)
 								|| otherPath.isPrefixOf(fPath);
-					} else {
-						return false;
 					}
+					return false;
 				}
 			}
 			return new NoResourceSchedulingRule(getResource()
 					.getProjectRelativePath());
-		} else {
-			return resource;
 		}
+		return resource;
 	}
 
 	/**
@@ -362,9 +360,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		final Object elementInfo = ErlangCore.getModelManager().getInfo(this);
 		if (elementInfo instanceof ErlElement) {
 			return !fChildren.isEmpty();
-		} else {
-			return true;
 		}
+		return true;
 	}
 
 	/**
@@ -579,8 +576,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 	public void setChildren(IErlElement[] children) {
 		fChildren.clear();
-		for (IErlElement i : children)
+		for (IErlElement i : children) {
 			fChildren.add(i);
+		}
 	}
 
 	/**

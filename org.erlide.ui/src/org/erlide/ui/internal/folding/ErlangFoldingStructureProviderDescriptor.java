@@ -98,9 +98,8 @@ public final class ErlangFoldingStructureProviderDescriptor {
 			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) fElement
 					.createExecutableExtension(PREFERENCES_CLASS);
 			return prefs;
-		} else {
-			return new EmptyErlangFoldingPreferenceBlock();
 		}
+		return new EmptyErlangFoldingPreferenceBlock();
 	}
 
 	/**

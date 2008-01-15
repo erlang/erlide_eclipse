@@ -192,7 +192,7 @@ public class RpcUtil {
 		return args;
 	}
 
-	private static OtpErlangObject execute(OtpErlangObject target,
+	static OtpErlangObject execute(OtpErlangObject target,
 			OtpErlangObject method, OtpErlangObject[] args) {
 
 		debug("EXEC:: " + target + ":" + method + " " + args + " >"
@@ -231,12 +231,11 @@ public class RpcUtil {
 									.getMessage())));
 				}
 
-			} else {
-				log("RPC: unknown receiver: " + target);
-				return new OtpErlangTuple(new OtpErlangAtom("error"),
-						new OtpErlangString(String.format(
-								"Bad RPC: unknown object ref %s%n", target)));
 			}
+			log("RPC: unknown receiver: " + target);
+			return new OtpErlangTuple(new OtpErlangAtom("error"),
+					new OtpErlangString(String.format(
+							"Bad RPC: unknown object ref %s%n", target)));
 
 		} else if (target instanceof OtpErlangAtom
 				|| target instanceof OtpErlangString
@@ -331,15 +330,14 @@ public class RpcUtil {
 				debug(String.format("** %s() returned %s", ctr, o));
 
 				return RpcConverter.java2erlang(o);
-			} else {
-				Method meth;
-				meth = cls.getMethod(method.name, method.argTypes);
-				// meth.setAccessible(true);
-				Object o = meth.invoke(rcvr, args);
-				debug(String.format("** %s() returned %s", meth, o));
-
-				return RpcConverter.java2erlang(o);
 			}
+			Method meth;
+			meth = cls.getMethod(method.name, method.argTypes);
+			// meth.setAccessible(true);
+			Object o = meth.invoke(rcvr, args);
+			debug(String.format("** %s() returned %s", meth, o));
+
+			return RpcConverter.java2erlang(o);
 		} catch (NoSuchMethodException e) {
 			StringBuffer paramstr = new StringBuffer();
 			for (Class<?> param : params) {

@@ -20,12 +20,12 @@ public class ErlElementSorter extends ViewerSorter {
 	public int category(Object element) {
 		if (element instanceof IErlElement) {
 			IErlElement e = (IErlElement) element;
-			if (e.getElementType() == IErlElement.ErlElementType.FUNCTION)
+			if (e.getElementType() == IErlElement.ErlElementType.FUNCTION) {
 				return 1000;
-			else
-				return e.getElementType().ordinal();
-		} else
-			return super.category(element);
+			}
+			return e.getElementType().ordinal();
+		}
+		return super.category(element);
 	}
 
 }

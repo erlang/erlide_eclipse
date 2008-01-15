@@ -112,7 +112,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	private GotoInputAction fGotoInputAction;
 
 	/** Counts the number of background computation requests. */
-	private volatile int fComputeCount;
+	volatile int fComputeCount;
 
 	/**
 	 * Set the input of this view.
@@ -463,7 +463,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 * @param part
 	 *            the workbench part
 	 */
-	private void computeAndSetInput(final IWorkbenchPart part) {
+	void computeAndSetInput(final IWorkbenchPart part) {
 
 		final int currentCount = ++fComputeCount;
 
@@ -509,8 +509,8 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 					 */
 					public void run() {
 
-						if (fComputeCount != currentCount ||
-								getViewSite().getShell().isDisposed()) {
+						if (fComputeCount != currentCount
+								|| getViewSite().getShell().isDisposed()) {
 							return;
 						}
 
@@ -526,7 +526,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 		thread.start();
 	}
 
-	private void doSetInfo(String info) {
+	void doSetInfo(String info) {
 		setInfo(info);
 
 		fGotoInputAction.setEnabled(true);

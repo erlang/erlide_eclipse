@@ -125,8 +125,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 
 	private SAXParserFactory parserFactory;
 
-	private void addMarker(IFile file, String message, int lineNumber,
-			int severity) {
+	void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
 			final IMarker marker = file.createMarker(MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -145,21 +144,20 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
-//	protected IProject[] xbuild(int kind, Map args, IProgressMonitor monitor)
-//			throws CoreException {
-//		if (kind == FULL_BUILD) {
-//			xfullBuild(monitor);
-//		} else {
-//			final IResourceDelta delta = getDelta(getProject());
-//			if (delta == null) {
-//				xfullBuild(monitor);
-//			} else {
-//				xincrementalBuild(delta, monitor);
-//			}
-//		}
-//		return null;
-//	}
-
+	// protected IProject[] xbuild(int kind, Map args, IProgressMonitor monitor)
+	// throws CoreException {
+	// if (kind == FULL_BUILD) {
+	// xfullBuild(monitor);
+	// } else {
+	// final IResourceDelta delta = getDelta(getProject());
+	// if (delta == null) {
+	// xfullBuild(monitor);
+	// } else {
+	// xincrementalBuild(delta, monitor);
+	// }
+	// }
+	// return null;
+	// }
 	void checkXML(IResource resource) {
 		if (resource instanceof IFile && resource.getName().endsWith(".xml")) {
 			final IFile file = (IFile) resource;
@@ -355,7 +353,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 				}
 				// Add variables from build info
 				envMap.putAll(info.getExpandedEnvironment());
-				final Iterator<Map.Entry<Object, Object>> iter = envMap.entrySet().iterator();
+				final Iterator<Map.Entry<Object, Object>> iter = envMap
+						.entrySet().iterator();
 				final List<String> strings = new ArrayList<String>(envMap
 						.size());
 				while (iter.hasNext()) {

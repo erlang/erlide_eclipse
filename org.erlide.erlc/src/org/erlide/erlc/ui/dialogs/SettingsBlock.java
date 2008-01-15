@@ -453,7 +453,7 @@ public class SettingsBlock extends AbstractErlOptionPage {
 	 * A variable entry button has been pressed for the given text field. Prompt
 	 * the user for a variable and enter the result in the given field.
 	 */
-	private void handleVariablesButtonSelected(Text textField) {
+	void handleVariablesButtonSelected(Text textField) {
 		final String variable = getVariable();
 		if (variable != null) {
 			textField.append(variable);

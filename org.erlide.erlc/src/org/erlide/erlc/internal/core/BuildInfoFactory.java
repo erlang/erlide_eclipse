@@ -78,7 +78,7 @@ public class BuildInfoFactory {
 	static final String BUILD_APPEND_ENVIRONMENT = PREFIX
 			+ ".append_environment"; //$NON-NLS-1$ 
 
-	private abstract static class AbstractBuildInfo implements IMakeBuilderInfo {
+	abstract static class AbstractBuildInfo implements IMakeBuilderInfo {
 
 		public void setUseDefaultBuildCmd(boolean on) throws CoreException {
 			putString(USE_DEFAULT_BUILD_CMD, Boolean.valueOf(on).toString());

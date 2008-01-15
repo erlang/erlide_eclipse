@@ -184,9 +184,8 @@ public class ErlangElementImageProvider {
 			// int flags= method.getFlags();
 			if (fun.isExported()) {
 				return ErlideUIPluginImages.DESC_FUNCTION_EXPORTED;
-			} else {
-				return ErlideUIPluginImages.DESC_FUNCTION_DEFAULT;
 			}
+			return ErlideUIPluginImages.DESC_FUNCTION_DEFAULT;
 		} else if (element.getElementType() == IErlElement.ErlElementType.ATTRIBUTE) {
 			return ErlideUIPluginImages.DESC_ATTRIBUTE;
 		} else if (element.getElementType() == IErlElement.ErlElementType.CLAUSE) {

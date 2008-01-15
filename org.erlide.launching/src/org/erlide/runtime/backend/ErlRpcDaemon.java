@@ -23,9 +23,9 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
 
-	private IBackend fBackend;
+	IBackend fBackend;
 
-	private boolean fStopJob = false;
+	boolean fStopJob = false;
 
 	public ErlRpcDaemon(IBackend b) {
 		fBackend = b;

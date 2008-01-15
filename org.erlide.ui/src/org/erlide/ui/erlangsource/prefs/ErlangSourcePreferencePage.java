@@ -439,7 +439,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * Color list label provider.
 	 * 
 	 */
-	private class TemplateLabelProvider extends LabelProvider {
+	class TemplateLabelProvider extends LabelProvider {
 
 		/*
 		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
@@ -457,8 +457,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * Color list content provider.
 	 * 
 	 */
-	private static class TemplateContentProvider implements
-			ITreeContentProvider {
+	static class TemplateContentProvider implements ITreeContentProvider {
 
 		/*
 		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
