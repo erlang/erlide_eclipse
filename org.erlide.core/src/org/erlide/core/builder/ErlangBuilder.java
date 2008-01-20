@@ -20,6 +20,7 @@ import org.apache.commons.net.bsd.RLoginClient;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -82,8 +84,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	static class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 
-		public void addMarker(IResource file, String errorDesc, int lineNumber,
-				int severity, String errorVar) {
+		public void addMarker(final IResource file, final String errorDesc,
+				final int lineNumber, final int severity, final String errorVar) {
 			ErlangBuilder.addMarker(file, errorDesc, lineNumber, severity);
 		}
 	};
@@ -92,8 +94,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return new ErlangBuilder.ErlangBuilderMarkerGenerator();
 	}
 
-	static void addMarker(IResource file, String message, int lineNumber,
-			int severity) {
+	static void addMarker(final IResource file, final String message,
+			int lineNumber, final int severity) {
 		try {
 			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -106,9 +108,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	protected void createProblemFor(IResource resource,
-			IErlFunction erlElement, String message, int problemSeverity)
-			throws CoreException {
+	protected void createProblemFor(final IResource resource,
+			final IErlFunction erlElement, final String message,
+			final int problemSeverity) throws CoreException {
 		try {
 			final IMarker marker = resource.createMarker(PROBLEM_MARKER);
 			final int severity = problemSeverity;
@@ -134,8 +136,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
+	protected IProject[] build(final int kind, final Map args,
+			final IProgressMonitor monitor) throws CoreException {
 		// ReflectionUtils.exportClass(ErlangBuilder.class);
 		// if (monitor == null)
 		// {
@@ -170,47 +172,51 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		try {
 			getProject().deleteMarkers(PROBLEM_MARKER, true,
 					IResource.DEPTH_ZERO);
-		} catch (CoreException e1) {
+		} catch (final CoreException e1) {
 		}
 
-		IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
 					"code_clash");
 			for (int i = 0; i < res.arity(); i++) {
-				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
-				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
-				String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
+				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
+				final String f1 = ((OtpErlangString) t.elementAt(0))
+						.stringValue();
+				final String f2 = ((OtpErlangString) t.elementAt(1))
+						.stringValue();
 				addMarker(getProject(), "Code clash between " + f1 + " and "
 						+ f2, 0, IMarker.SEVERITY_WARNING, "");
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 		}
 		try {
-			ErlangProjectProperties pp = new ErlangProjectProperties(
+			final ErlangProjectProperties pp = new ErlangProjectProperties(
 					getProject());
-			String[] sd = pp.getSourceDirs();
-			String[] dirList = new String[sd.length];
+			final String[] sd = pp.getSourceDirs();
+			final String[] dirList = new String[sd.length];
 			for (int i = 0; i < sd.length; i++) {
 				dirList[i] = getProject().getLocation().toPortableString()
 						+ "/" + sd[i];
 			}
-			OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
 					"source_clash", (Object) dirList);
 			for (int i = 0; i < res.arity(); i++) {
-				OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
-				String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
-				String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
+				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
+				final String f1 = ((OtpErlangString) t.elementAt(0))
+						.stringValue();
+				final String f2 = ((OtpErlangString) t.elementAt(1))
+						.stringValue();
 				addMarker(getProject(), "Duplicated module name in " + f1
 						+ " and " + f2, 0, IMarker.SEVERITY_ERROR, "");
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private boolean hasHrl(IResourceDelta delta) {
+	private boolean hasHrl(final IResourceDelta delta) {
 		if (delta == null) {
 			return false;
 		}
@@ -223,7 +229,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return v.hasAny;
 	}
 
-	protected void deleteMarkers(IFile file) {
+	protected void deleteMarkers(final IFile file) {
 		try {
 			file.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
 		} catch (final CoreException ce) {
@@ -231,7 +237,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void fullBuild(Map args, final IProgressMonitor monitor)
+	protected void fullBuild(final Map args, final IProgressMonitor monitor)
 			throws CoreException {
 		if (isDebugging()) {
 			ErlLogger.debug("full build...");
@@ -257,8 +263,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void incrementalBuild(Map args, IResourceDelta delta,
-			IProgressMonitor monitor) throws CoreException {
+	protected void incrementalBuild(final Map args, final IResourceDelta delta,
+			final IProgressMonitor monitor) throws CoreException {
 		if (isDebugging()) {
 			ErlLogger.debug("incr build...");
 		}
@@ -281,7 +287,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @throws CoreException
 	 */
 	@Override
-	protected void clean(IProgressMonitor monitor) throws CoreException {
+	protected void clean(final IProgressMonitor monitor) throws CoreException {
 		if (isDebugging()) {
 			ErlLogger.debug("cleaning...");
 		}
@@ -298,7 +304,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// delete beam files
 		final IFolder bf = getProject().getFolder(prefs.getOutputDir());
 		final IResource[] beams = bf.members();
-		for (IResource element : beams) {
+		for (final IResource element : beams) {
 			if ("beam".equals(element.getFileExtension())) {
 				element.delete(true, monitor);
 			}
@@ -314,7 +320,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @param resource
 	 *            IResource
 	 */
-	protected void compileFile(IProject project, IResource resource) {
+	protected void compileFile(final IProject project, final IResource resource) {
 		final IPath projectPath = project.getLocation();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
@@ -345,8 +351,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		final String[] incs = prefs.getIncludeDirs();
 		final String[] includeDirs = new String[incs.length];
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
 		for (int i = 0; i < incs.length; i++) {
-			final IPath inc = new Path(incs[i]);
+			final IPath inc = pvm.resolvePath(new Path(incs[i]));
 			if (inc.isAbsolute()) {
 				includeDirs[i] = inc.toString();
 			} else {
@@ -420,12 +428,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	private void ensureDirExists(String outputDir) {
+	private void ensureDirExists(final String outputDir) {
 		final File f = new File(outputDir);
 		f.mkdir();
 	}
 
-	protected void compileYrlFile(IProject project, IResource resource) {
+	protected void compileYrlFile(final IProject project,
+			final IResource resource) {
 		// final IPath projectPath = project.getLocation();
 		// final ErlangProjectProperties prefs = new
 		// ErlangProjectProperties(project);
@@ -482,13 +491,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	private static boolean isInCodePath(IResource resource, IProject project) {
+	private static boolean isInCodePath(final IResource resource,
+			final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getFullPath();
 
 		final String[] srcs = prefs.getSourceDirs();
-		for (String element : srcs) {
+		for (final String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
 			if (sp.equals(resource.getFullPath().removeLastSegments(1))) {
 				return true;
@@ -498,13 +508,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	static boolean isInExtCodePath(IResource resource, IProject project) {
+	static boolean isInExtCodePath(final IResource resource,
+			final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getFullPath();
 
 		final String[] srcs = prefs.getSourceDirs();
-		for (String element : srcs) {
+		for (final String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
 			if (sp.isPrefixOf(resource.getFullPath())) {
 				return true;
@@ -514,7 +525,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	static boolean isInOutputPath(IResource resource, IProject project) {
+	static boolean isInOutputPath(final IResource resource,
+			final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getLocation();
@@ -530,8 +542,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @param resource
 	 * @param errorList
 	 */
-	public static void addErrorMarkers(IMarkerGenerator mg, IResource resource,
-			OtpErlangList errorList) {
+	public static void addErrorMarkers(final IMarkerGenerator mg,
+			final IResource resource, final OtpErlangList errorList) {
 		for (int i = 0; i < errorList.arity(); i++) {
 			final OtpErlangTuple data = (OtpErlangTuple) errorList.elementAt(i);
 
@@ -570,7 +582,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final OtpErlangBinary code) {
 		BackendManager.getDefault().forEachRemote(new IBackendVisitor() {
 
-			public void run(IBackend b) {
+			public void run(final IBackend b) {
 				try {
 					if (b != BackendManager.getDefault().getIdeBackend()) {
 						final RpcResult result = b.rpc("code", "load_binary",
@@ -596,7 +608,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		 * 
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 		 */
-		public boolean visit(IResourceDelta delta) throws CoreException {
+		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -615,7 +627,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		private final IProgressMonitor mon;
 
-		public ErlangDeltaVisitor(IProgressMonitor submon) {
+		public ErlangDeltaVisitor(final IProgressMonitor submon) {
 			mon = submon;
 		}
 
@@ -624,7 +636,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		 * 
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 		 */
-		public boolean visit(IResourceDelta delta) throws CoreException {
+		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -745,11 +757,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		private final IProgressMonitor monitor;
 
-		public ErlangResourceVisitor(IProgressMonitor subMon) {
+		public ErlangResourceVisitor(final IProgressMonitor subMon) {
 			monitor = subMon;
 		}
 
-		public boolean visit(IResource resource) {
+		public boolean visit(final IResource resource) {
 			final IProject my_project = resource.getProject();
 			// final ErlangProjectProperties prefs = new
 			// ErlangProjectProperties(my_project);
@@ -846,17 +858,17 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		String fName;
 
-		public ErlangFileVisitor(IProgressMonitor submon) {
+		public ErlangFileVisitor(final IProgressMonitor submon) {
 			fResult = null;
 			fName = null;
 		}
 
-		public void init(String name) {
+		public void init(final String name) {
 			fName = name;
 			fResult = null;
 		}
 
-		public boolean visit(IResource resource) throws CoreException {
+		public boolean visit(final IResource resource) throws CoreException {
 			if (fName == null) {
 				return false;
 			}
@@ -886,8 +898,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @param includedirs
 	 * @return OtpErlangObject
 	 */
-	protected static OtpErlangObject compileFile(IProject project, String fn,
-			String outputdir, String[] includedirs) {
+	protected static OtpErlangObject compileFile(final IProject project,
+			final String fn, final String outputdir, final String[] includedirs) {
 		if (isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
@@ -913,8 +925,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.equals("true");
 	}
 
-	protected static OtpErlangObject compileYrlFile(IProject project,
-			String fn, String output) {
+	protected static OtpErlangObject compileYrlFile(final IProject project,
+			final String fn, final String output) {
 		if (isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
@@ -931,7 +943,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	protected static OtpErlangObject loadModule(IProject project, String module) {
+	protected static OtpErlangObject loadModule(final IProject project,
+			final String module) {
 		try {
 			return BackendManager.getDefault().get(project).rpcx(MODULE,
 					"load", new OtpErlangAtom(module));
@@ -949,7 +962,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	BuildNotifier notifier;
 
-	public static IMarker[] getProblemsFor(IResource resource) {
+	public static IMarker[] getProblemsFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
 				return resource.findMarkers(PROBLEM_MARKER, false,
@@ -961,7 +974,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return new IMarker[0];
 	}
 
-	public static IMarker[] getTasksFor(IResource resource) {
+	public static IMarker[] getTasksFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
 				return resource.findMarkers(TASK_MARKER, false,
@@ -989,7 +1002,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		BuildNotifier.resetProblemCounters();
 	}
 
-	protected static void removeProblemsFor(IResource resource) {
+	protected static void removeProblemsFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
 				resource.deleteMarkers(PROBLEM_MARKER, false,
@@ -1000,7 +1013,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	protected static void removeTasksFor(IResource resource) {
+	protected static void removeTasksFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
 				resource.deleteMarkers(TASK_MARKER, false,
@@ -1011,7 +1024,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	protected static void removeProblemsAndTasksFor(IResource resource) {
+	protected static void removeProblemsAndTasksFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
 				resource.deleteMarkers(PROBLEM_MARKER, false,
@@ -1025,8 +1038,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unchecked")
-	protected IProject[] build_1(int kind, Map ignored, IProgressMonitor monitor)
-			throws CoreException {
+	protected IProject[] build_1(final int kind, final Map ignored,
+			final IProgressMonitor monitor) throws CoreException {
 		currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return new IProject[0];
@@ -1080,7 +1093,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// fullBuild();
 	}
 
-	protected void clean_1(IProgressMonitor monitor) throws CoreException {
+	protected void clean_1(final IProgressMonitor monitor) throws CoreException {
 		currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return;
@@ -1126,7 +1139,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		workspaceRoot = currentProject.getWorkspace().getRoot();
 	}
 
-	public void log(Throwable e, String message) {
+	public void log(Throwable e, final String message) {
 		Throwable nestedException;
 		if (e instanceof ErlModelException
 				&& (nestedException = ((ErlModelException) e).getException()) != null) {
@@ -1137,13 +1150,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		ErlangPlugin.getDefault().getLog().log(status);
 	}
 
-	public static Object readState(IProject project, DataInputStream in) {
+	public static Object readState(final IProject project,
+			final DataInputStream in) {
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected IProject[] build_remote(int kind, Map args,
-			IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build_remote(final int kind, final Map args,
+			final IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask("Remote building", 100);
 		try {
 			// args.put("server", "gsnbuild1");
@@ -1228,7 +1242,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return null;
 	}
 
-	protected void clean_remote(IProgressMonitor monitor) throws CoreException {
+	protected void clean_remote(final IProgressMonitor monitor)
+			throws CoreException {
 		super.clean(monitor);
 	}
 
@@ -1254,8 +1269,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	// job.schedule();
 	// }
 
-	public void addMarker(IResource file, String errorDesc, int lineNumber,
-			int severity, String errorVar) {
+	public void addMarker(final IResource file, final String errorDesc,
+			final int lineNumber, final int severity, final String errorVar) {
 		addMarker(file, errorDesc, lineNumber, severity);
 	}
 

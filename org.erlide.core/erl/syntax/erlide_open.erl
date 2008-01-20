@@ -10,8 +10,7 @@
 %%
 %% Exported Functions
 %%
--export([open_included/1,
-         open_info/4,
+-export([open_info/4,
          find_first_var/2,
          get_source_from_module/3]).
 
@@ -25,30 +24,17 @@
 %% API Functions
 %%
 
-open_included(Text) ->
-        catch open_include(Text).
-
-open_include(Text) ->
-    {ok, Tokens, _} = erlide_scan:string(Text),
-    ?D({scan, Tokens}),
-    case lists:keysearch(include, 3, Tokens) of
-        {value, _} ->
-            get_include(Tokens);
-        false ->
-            get_include_lib(Tokens)
+get_include(Tokens, T) ->
+    case lists:keysearch(string, #token.kind, Tokens) of
+    	{value, Token} ->
+            {T, Token#token.value};
+		_ ->
+            none
     end.
-
-get_include(Tokens) ->
-    {value, {string, _, S, _}} = lists:keysearch(string, 1, Tokens),
-    {include, S}.
 
 find_lib_dir(Dir) ->
     [Lib | Rest] = filename:split(Dir),
     {code:lib_dir(Lib), Rest}.
-
-get_include_lib(Tokens) ->
-    {value, {string, _, S, _}} = lists:keysearch(string, 1, Tokens),
-    {include_lib, S}.
     
 %%     ?D({str, S}),
 %%     {LibDir, Rest} = find_lib_dir(S),
@@ -58,12 +44,15 @@ get_include_lib(Tokens) ->
 %%     R.
 
 check_include(Tokens) ->
-    case lists:keymember(include, 3, Tokens) of
-        true -> get_include(Tokens);
+    case lists:keymember(include, #token.value, Tokens) of
+        true ->
+            get_include(Tokens, include);
         false -> 
-            case lists:keymember(include_lib, 3, Tokens) of
-                true -> get_include_lib(Tokens);
-                false -> none
+            case lists:keymember(include_lib, #token.value, Tokens) of
+                true ->
+                    get_include(Tokens, include);
+                false ->
+                    none
             end
     end.  
 
@@ -71,19 +60,30 @@ open_info(L, W, ExternalModules, PathVars) ->
     ?D({open_info, W, L}),
     {CL, CW} = erlide_text:clean_tokens(L, W),
     ?D({open_info, CW, CL}),
-    case erlide_text:check_function_call(CL, CW) of
-        {ok, M, F, Rest} = _Xx ->
-            ?D(_Xx),
-            {external, {M, F, erlide_text:guess_arity(Rest), get_source_from_module(M, ExternalModules, PathVars)}};
+    case check_include(CL) of
+        {include, F} ->
+            ?D(F),
+            {include, F};
+        {include_lib, D, F} ->
+            ?D({D,F}),
+            {include, filename:join(find_lib_dir(D), F)};
         {ok, F, Rest} -> {local, {F, erlide_text:guess_arity(Rest)}};
         _ ->
-            case erlide_text:check_variable_macro_or_record(CL, CW) of
-                {ok, M, R} -> {M, {R}};
+            case erlide_text:check_function_call(CL, CW) of
+                {ok, M, F, Rest} = _Xx ->
+                    ?D(_Xx),
+                    {external, {M, F, erlide_text:guess_arity(Rest), 
+                                get_source_from_module(M, ExternalModules, PathVars)}};
+                {ok, F, Rest} -> 
+                    ?D(F),
+                    {local, {F, erlide_text:guess_arity(Rest)}};
                 _ ->
-                    case check_include(CL) of
-                        {include, F} -> {include, F};
-                        {include_lib, D, F} -> {include, filename:join(find_lib_dir(D), F)};
-                        _ -> none
+                    ?D(CL),
+                    case erlide_text:check_variable_macro_or_record(CL, CW) of
+                        {ok, M, R} -> 
+                            {M, {R}};
+                        _ ->
+                            none
                     end
             end
     end.

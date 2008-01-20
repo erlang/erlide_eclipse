@@ -307,10 +307,10 @@ public class OpenAction extends SelectionDispatchAction {
 				return; // not a call, ignore
 			}
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
-			final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 			final String external = ((OtpErlangAtom) tres.elementAt(0))
 					.atomValue();
 			if (external.equals("external")) {
+				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final String mod = ((OtpErlangAtom) mf.elementAt(0))
 						.atomValue();
 				final String fun = ((OtpErlangAtom) mf.elementAt(1))
@@ -321,7 +321,23 @@ public class OpenAction extends SelectionDispatchAction {
 							.stringValue();
 					open(mod, fun, arity, path);
 				}
+			} else if (external.equals("include")) {
+				final OtpErlangString s = (OtpErlangString)tres.elementAt(1);
+				final String mod = s.stringValue();
+				IResource r = ResourceUtil.recursiveFindNamedResource(mod);
+				if (r == null) {
+					try {
+						r = EditorUtility.openExternal(mod);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (r instanceof IFile) {
+					IFile f = (IFile) r;
+					EditorUtility.openInEditor(f);
+				}
 			} else if (external.equals("local")) { // local call
+				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final String fun = ((OtpErlangAtom) mf.elementAt(0))
 						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(1)).intValue();
@@ -351,7 +367,8 @@ public class OpenAction extends SelectionDispatchAction {
 					}
 				}
 			} else if (external.equals("variable")) {
-				final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
+				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
+final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
 				final ITextSelection sel = (ITextSelection) fEditor
 						.getSelectionProvider().getSelection();
 				final IErlElement e = fEditor.getElementAt(sel.getOffset(),
@@ -375,6 +392,7 @@ public class OpenAction extends SelectionDispatchAction {
 					return;
 				}
 				final boolean macro = external.equals("macro");
+				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final OtpErlangAtom defined = (OtpErlangAtom) mf.elementAt(0);
 				IErlModule m = ErlModelUtils
 						.getModule(fEditor.getEditorInput());
