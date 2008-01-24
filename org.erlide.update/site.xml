@@ -22,5 +22,15 @@
    <feature url="features/org.erlide_0.3.36.jar" id="org.erlide" version="0.3.36">
       <category name="Stable"/>
    </feature>
+   <feature url="features/org.erlide_0.3.37.1.jar" id="org.erlide" version="0.3.37.1">
+      <category name="Unstable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.37.jar" id="org.erlide" version="0.3.37">
+      <category name="Stable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.37.2.jar" id="org.erlide" version="0.3.37.2">
+      <category name="Unstable"/>
+   </feature>
    <category-def name="Stable" label="Stable builds"/>
+   <category-def name="Unstable" label="New Category 1"/>
 </site>

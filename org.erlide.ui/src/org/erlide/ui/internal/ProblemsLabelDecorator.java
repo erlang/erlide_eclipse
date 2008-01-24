@@ -38,8 +38,8 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		 * Note: This constructor is for internal use only. Clients should not
 		 * call this constructor.
 		 */
-		public ProblemsLabelChangedEvent(IBaseLabelProvider source,
-				IResource[] changedResource, boolean isMarkerChange) {
+		public ProblemsLabelChangedEvent(final IBaseLabelProvider source,
+				final IResource[] changedResource, final boolean isMarkerChange) {
 			super(source, changedResource);
 			fMarkerChange = isMarkerChange;
 		}
@@ -81,17 +81,17 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	 * 
 	 * @return the adornment flags
 	 */
-	protected int computeAdornmentFlags(Object obj) {
+	protected int computeAdornmentFlags(final Object obj) {
 		try {
 			if (obj instanceof IResource) {
 				return getErrorTicksFromMarkers((IResource) obj,
 						IResource.DEPTH_INFINITE, null);
 			} else if (obj instanceof IErlMember) {
-				IErlMember m = (IErlMember) obj;
+				final IErlMember m = (IErlMember) obj;
 				return getErrorTicksFromMarkers(m.getResource(),
 						IResource.DEPTH_INFINITE, m);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			if (e.getStatus().getCode() == IResourceStatus.MARKER_NOT_FOUND) {
 				return 0;
 			}
@@ -99,23 +99,23 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		return 0;
 	}
 
-	private int getErrorTicksFromMarkers(IResource res, int depth,
-			ISourceReference sourceElement) throws CoreException {
+	private int getErrorTicksFromMarkers(final IResource res, final int depth,
+			final ISourceReference sourceElement) throws CoreException {
 		if (res == null || !res.isAccessible()) {
 			return 0;
 		}
 		int severity = 0;
 		if (sourceElement == null) {
-			severity = IMarker.SEVERITY_INFO; // res.findMaxProblemSeverity(IMarker.PROBLEM,
-			// true, depth);
+			severity = res.findMaxProblemSeverity(IMarker.PROBLEM, true, depth);
 		} else {
-			IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true, depth);
+			final IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true,
+					depth);
 			if (markers != null && markers.length > 0) {
 				for (int i = 0; i < markers.length
-						&& (severity != IMarker.SEVERITY_ERROR); i++) {
-					IMarker curr = markers[i];
+						&& severity != IMarker.SEVERITY_ERROR; i++) {
+					final IMarker curr = markers[i];
 					if (isMarkerInRange(curr, sourceElement)) {
-						int val = curr.getAttribute(IMarker.SEVERITY, -1);
+						final int val = curr.getAttribute(IMarker.SEVERITY, -1);
 						if (val == IMarker.SEVERITY_WARNING
 								|| val == IMarker.SEVERITY_ERROR) {
 							severity = val;
@@ -132,13 +132,13 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		return 0;
 	}
 
-	private boolean isMarkerInRange(IMarker marker,
-			ISourceReference sourceElement) throws CoreException {
-		int pos = marker.getAttribute(IMarker.CHAR_START, -1);
+	private boolean isMarkerInRange(final IMarker marker,
+			final ISourceReference sourceElement) throws CoreException {
+		final int pos = marker.getAttribute(IMarker.CHAR_START, -1);
 		if (pos != -1) {
 			return isInside(pos, sourceElement);
 		}
-		int line = marker.getAttribute(IMarker.LINE_NUMBER, -1);
+		final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1);
 		if (line != -1) {
 			return isInsideLines(line, sourceElement);
 		}
@@ -150,7 +150,8 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	// return pos != null && isInside(pos.getOffset(), sourceElement);
 	// }
 
-	private boolean isInsideLines(int line, ISourceReference sourceElement) {
+	private boolean isInsideLines(final int line,
+			final ISourceReference sourceElement) {
 		return line >= sourceElement.getLineStart()
 				&& line <= sourceElement.getLineEnd();
 	}
@@ -168,22 +169,22 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	 *             Exception thrown if element range could not be accessed.
 	 * 
 	 */
-	protected boolean isInside(int pos, ISourceReference sourceElement)
-			throws CoreException {
+	protected boolean isInside(final int pos,
+			final ISourceReference sourceElement) throws CoreException {
 		// if (fCachedRange == null) {
 		// fCachedRange= sourceElement.getSourceRange();
 		// }
 		// ISourceRange range= fCachedRange;
-		ISourceRange range = sourceElement.getSourceRange();
+		final ISourceRange range = sourceElement.getSourceRange();
 		if (range != null) {
-			int rangeOffset = range.getOffset();
-			return (rangeOffset <= pos && rangeOffset + range.getLength() > pos);
+			final int rangeOffset = range.getOffset();
+			return rangeOffset <= pos && rangeOffset + range.getLength() > pos;
 		}
 		return false;
 	}
 
-	public void decorate(Object element, IDecoration decoration) {
-		int adornmentFlags = computeAdornmentFlags(element);
+	public void decorate(final Object element, final IDecoration decoration) {
+		final int adornmentFlags = computeAdornmentFlags(element);
 		if (adornmentFlags == ERRORTICK_ERROR) {
 			decoration.addOverlay(ErlideUIPluginImages.DESC_OVR_ERROR);
 		} else if (adornmentFlags == ERRORTICK_WARNING) {
@@ -192,7 +193,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 
 	}
 
-	public void addListener(ILabelProviderListener listener) {
+	public void addListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
@@ -202,12 +203,12 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 
 	}
 
-	public boolean isLabelProperty(Object element, String property) {
+	public boolean isLabelProperty(final Object element, final String property) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void removeListener(ILabelProviderListener listener) {
+	public void removeListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}

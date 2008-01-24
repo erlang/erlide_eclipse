@@ -96,7 +96,8 @@ public class Buffer implements IBuffer {
 	 * @param readOnly
 	 *            boolean
 	 */
-	protected Buffer(IFile file, IOpenable owner, boolean readOnly) {
+	protected Buffer(final IFile file, final IOpenable owner,
+			final boolean readOnly) {
 		fFile = file;
 		fOwner = owner;
 		if (file == null) {
@@ -109,7 +110,7 @@ public class Buffer implements IBuffer {
 	 *            IBufferChangedListener
 	 * @see IBuffer
 	 */
-	public void addBufferChangedListener(IBufferChangedListener listener) {
+	public void addBufferChangedListener(final IBufferChangedListener listener) {
 		if (changeListeners == null) {
 			changeListeners = new ArrayList<IBufferChangedListener>(5);
 		}
@@ -126,7 +127,7 @@ public class Buffer implements IBuffer {
 	 *            char[]
 	 * @see org.erlide.core.erlang.util.IBuffer#append(char[])
 	 */
-	public void append(char[] text) {
+	public void append(final char[] text) {
 		if (!isReadOnly()) {
 			if (text == null || text.length == 0) {
 				return;
@@ -154,7 +155,7 @@ public class Buffer implements IBuffer {
 	 *            String
 	 * @see org.erlide.core.erlang.util.IBuffer#append(String)
 	 */
-	public void append(String text) {
+	public void append(final String text) {
 		if (text == null) {
 			return;
 		}
@@ -184,7 +185,7 @@ public class Buffer implements IBuffer {
 	 * @return char
 	 * @see IBuffer
 	 */
-	public char getChar(int position) {
+	public char getChar(final int position) {
 		synchronized (lock) {
 			if (contents == null) {
 				return Character.MIN_VALUE;
@@ -212,8 +213,8 @@ public class Buffer implements IBuffer {
 			final int length = contents.length;
 			final char[] newContents = new char[length - gapEnd + gapStart];
 			System.arraycopy(contents, 0, newContents, 0, gapStart);
-			System.arraycopy(contents, gapEnd, newContents, gapStart, length -
-					gapEnd);
+			System.arraycopy(contents, gapEnd, newContents, gapStart, length
+					- gapEnd);
 			return newContents;
 		}
 	}
@@ -223,7 +224,7 @@ public class Buffer implements IBuffer {
 	 * @see IBuffer
 	 */
 	public String getContents() {
-		final char[] chars = this.getCharacters();
+		final char[] chars = getCharacters();
 		if (chars == null) {
 			return null;
 		}
@@ -260,7 +261,7 @@ public class Buffer implements IBuffer {
 	 * @return String
 	 * @see IBuffer
 	 */
-	public String getText(int offset, int length) {
+	public String getText(final int offset, final int length) {
 		synchronized (lock) {
 			if (contents == null) {
 				return ""; //$NON-NLS-1$
@@ -322,7 +323,7 @@ public class Buffer implements IBuffer {
 	 * @param size
 	 *            int
 	 */
-	protected void moveAndResizeGap(int position, int size) {
+	protected void moveAndResizeGap(final int position, final int size) {
 		char[] content = null;
 		final int oldSize = gapEnd - gapStart;
 		if (size < 0) {
@@ -336,7 +337,7 @@ public class Buffer implements IBuffer {
 			gapStart = gapEnd = position;
 			return;
 		}
-		content = new char[contents.length + (size - oldSize)];
+		content = new char[contents.length + size - oldSize];
 		final int newGapStart = position;
 		final int newGapEnd = newGapStart + size;
 		if (oldSize == 0) {
@@ -374,7 +375,7 @@ public class Buffer implements IBuffer {
 				final IBufferChangedListener listener = changeListeners.get(i);
 				SafeRunner.run(new ISafeRunnable() {
 
-					public void handleException(Throwable exception) {
+					public void handleException(final Throwable exception) {
 						Util
 								.log(exception,
 										"Exception occurred in listener of buffer change notification"); //$NON-NLS-1$
@@ -394,7 +395,8 @@ public class Buffer implements IBuffer {
 	 *            IBufferChangedListener
 	 * @see IBuffer
 	 */
-	public void removeBufferChangedListener(IBufferChangedListener listener) {
+	public void removeBufferChangedListener(
+			final IBufferChangedListener listener) {
 		if (changeListeners != null) {
 			changeListeners.remove(listener);
 			if (changeListeners.size() == 0) {
@@ -413,11 +415,14 @@ public class Buffer implements IBuffer {
 	 * @param text char[]
 	 * @see org.erlide.core.erlang.util.IBuffer#replace(int, int, char[])
 	 */
-	public void replace(int position, int length, char[] text) {
+	public void replace(final int position, final int length, final char[] text) {
 		if (!isReadOnly()) {
-			final int textLength = (text == null) ? 0 : text.length;
+			final int textLength = text == null ? 0 : text.length;
 			synchronized (lock) {
 				if (contents == null) {
+					return;
+				}
+				if (contents.length < position + length) {
 					return;
 				}
 
@@ -457,9 +462,10 @@ public class Buffer implements IBuffer {
 	 * @param text String
 	 * @see org.erlide.core.erlang.util.IBuffer#replace(int, int, String)
 	 */
-	public void replace(int position, int length, String text) {
-		this.replace(position, length, (text == null) ? null : text
-				.toCharArray());
+	public void replace(final int position, final int length, final String text) {
+		this
+				.replace(position, length, text == null ? null : text
+						.toCharArray());
 	}
 
 	/**
@@ -470,7 +476,7 @@ public class Buffer implements IBuffer {
 	 * @throws ErlModelException
 	 * @see IBuffer
 	 */
-	public void save(IProgressMonitor progress, boolean force)
+	public void save(final IProgressMonitor progress, final boolean force)
 			throws ErlModelException {
 
 		// determine if saving is required
@@ -489,17 +495,19 @@ public class Buffer implements IBuffer {
 			} catch (final CoreException ce) {
 				// use no encoding
 			}
-			final String stringContents = this.getContents();
+			final String stringContents = getContents();
 			if (stringContents == null) {
 				return;
 			}
-			final byte[] bytes = (encoding == null) ? stringContents.getBytes()
+			final byte[] bytes = encoding == null ? stringContents.getBytes()
 					: stringContents.getBytes(encoding);
 			final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
 
 			if (fFile.exists()) {
-				fFile.setContents(stream, force ? IResource.FORCE |
-						IResource.KEEP_HISTORY : IResource.KEEP_HISTORY, null);
+				fFile
+						.setContents(stream, force ? IResource.FORCE
+								| IResource.KEEP_HISTORY
+								: IResource.KEEP_HISTORY, null);
 			} else {
 				fFile.create(stream, force, null);
 			}
@@ -511,7 +519,7 @@ public class Buffer implements IBuffer {
 		}
 
 		// the resource no longer has unsaved changes
-		flags &= ~(F_HAS_UNSAVED_CHANGES);
+		flags &= ~F_HAS_UNSAVED_CHANGES;
 	}
 
 	/**
@@ -519,13 +527,13 @@ public class Buffer implements IBuffer {
 	 *            char[]
 	 * @see IBuffer
 	 */
-	public void setContents(char[] newContents) {
+	public void setContents(final char[] newContents) {
 		// allow special case for first initialization
 		// after creation by buffer factory
 		if (contents == null) {
 			synchronized (lock) {
 				contents = newContents;
-				flags &= ~(F_HAS_UNSAVED_CHANGES);
+				flags &= ~F_HAS_UNSAVED_CHANGES;
 			}
 			return;
 		}
@@ -545,7 +553,7 @@ public class Buffer implements IBuffer {
 				gapEnd = -1;
 			}
 			final BufferChangedEvent event = new BufferChangedEvent(this, 0,
-					this.getLength(), string);
+					getLength(), string);
 			notifyChanged(event);
 		}
 	}
@@ -555,7 +563,7 @@ public class Buffer implements IBuffer {
 	 *            String
 	 * @see IBuffer
 	 */
-	public void setContents(String newContents) {
+	public void setContents(final String newContents) {
 		this.setContents(newContents.toCharArray());
 	}
 
@@ -565,11 +573,11 @@ public class Buffer implements IBuffer {
 	 * @param readOnly
 	 *            boolean
 	 */
-	protected final void setReadOnly(boolean readOnly) {
+	protected final void setReadOnly(final boolean readOnly) {
 		if (readOnly) {
 			flags |= F_IS_READ_ONLY;
 		} else {
-			flags &= ~(F_IS_READ_ONLY);
+			flags &= ~F_IS_READ_ONLY;
 		}
 	}
 
@@ -583,11 +591,11 @@ public class Buffer implements IBuffer {
 		final StringBuffer buffer = new StringBuffer();
 		buffer
 				.append("Owner: " + ((ErlElement) fOwner).toStringWithAncestors()); //$NON-NLS-1$
-		buffer.append("\nHas unsaved changes: " + this.hasUnsavedChanges()); //$NON-NLS-1$
-		buffer.append("\nIs readonly: " + this.isReadOnly()); //$NON-NLS-1$
-		buffer.append("\nIs closed: " + this.isClosed()); //$NON-NLS-1$
+		buffer.append("\nHas unsaved changes: " + hasUnsavedChanges()); //$NON-NLS-1$
+		buffer.append("\nIs readonly: " + isReadOnly()); //$NON-NLS-1$
+		buffer.append("\nIs closed: " + isClosed()); //$NON-NLS-1$
 		buffer.append("\nContents:\n"); //$NON-NLS-1$
-		final char[] charContents = this.getCharacters();
+		final char[] charContents = getCharacters();
 		if (charContents == null) {
 			buffer.append("<null>"); //$NON-NLS-1$
 		} else {

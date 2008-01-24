@@ -179,7 +179,7 @@ public class ErlModule extends Openable implements IErlModule {
 	public IErlElement getElementAt(int position) throws ErlModelException {
 		for (final IErlElement child : fChildren) {
 			if (child instanceof IErlFunction) {
-				IErlFunction f = (IErlFunction) child;
+				final IErlFunction f = (IErlFunction) child;
 				final IErlFunctionClause[] clauses = f.getClauses();
 				if (clauses.length == 1
 						&& f.getSourceRange().hasPosition(position)) {
@@ -281,6 +281,7 @@ public class ErlModule extends Openable implements IErlModule {
 	public void reset() {
 		fChildren.clear();
 		comments.clear();
+		isStructureKnown = false;
 	}
 
 	public OtpErlangObject getParseTree() {
@@ -536,15 +537,21 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void insertText(int offset, String text) {
+		ErlLogger.debug("insertText " + getElementName() + " offset " + offset
+				+ " length " + text.length());
 		getBuffer().replace(offset, 0, text);
 		getScanner();
 		fScanner.insertText(offset, text);
+		isStructureKnown = false;
 	}
 
 	public void removeText(int offset, int length) {
+		ErlLogger.debug("removeText " + getElementName() + " offset " + offset
+				+ " length " + length);
 		getBuffer().replace(offset, length, "");
 		getScanner();
 		fScanner.removeText(offset, length);
+		isStructureKnown = false;
 	}
 
 }

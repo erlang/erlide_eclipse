@@ -313,12 +313,17 @@ split(Tok, Ofs) ->
     Txt = get_text(Tok),
     lists:split(Ofs-Tok#token.offset, Txt).
 
+listify(L) when is_list(L) ->
+    L;
+listify(A) when is_atom(A) ->
+    atom_to_list(A).
+
 get_text(#token{text=V}) when V =/= undefined ->
     V;
 get_text(#token{value=V}) when V =/= undefined ->
-    atom_to_list(V);
+    listify(V);
 get_text(#token{kind=V}) ->
-    atom_to_list(V).
+    listify(V).
 
 
 cut(Src, Ofs, Len) ->

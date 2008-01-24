@@ -11,6 +11,7 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -40,7 +41,7 @@ public class ErlScanner implements IErlScanner {
 	 * @return
 	 */
 	public String createScannerModuleName() {
-		IResource res = fModule.getResource();
+		final IResource res = fModule.getResource();
 		String resName;
 		if (res != null) {
 			resName = res.getFullPath().toPortableString();
@@ -75,7 +76,7 @@ public class ErlScanner implements IErlScanner {
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_scanner", "do_getTokenAt", fMod, offset + 1);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// e.printStackTrace();
 			return null;
 		}
@@ -136,21 +137,22 @@ public class ErlScanner implements IErlScanner {
 	// }
 	// }
 
-	@SuppressWarnings("boxing")
 	public void insertText(int offset, String text) {
+		ErlLogger.debug("scanner insert offset" + offset + " text.length "
+				+ text.length());
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"insertText", fMod, offset, text);
+					"insertText", fMod, offset + 1, text);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@SuppressWarnings("boxing")
 	public void removeText(int offset, int length) {
+		ErlLogger.debug("scanner remove offset" + offset + " length " + length);
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"removeText", fMod, offset, length);
+					"removeText", fMod, offset + 1, length);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.erlc; singleton:=true
-Bundle-Version: 0.3.37
+Bundle-Version: 0.3.37.2
 Bundle-Activator: org.erlide.erlc.ErlideErlcPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,

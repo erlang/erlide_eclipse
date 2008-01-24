@@ -40,9 +40,12 @@
 parse(ModuleName) ->
     try
         Toks = scan(ModuleName),
+        ?D(Toks),
         {UncommentToks, Comments} = extract_comments(Toks),
         F = split_after_dots(UncommentToks, [], []),
+        ?D(F),
         Collected = [classify_and_collect(I) || I <- F],
+        ?D(Collected),
         {ok, Collected, Comments, Toks}
     catch
         error:Reason ->

@@ -11,9 +11,9 @@ import org.erlide.core.erlang.IErlElement;
 
 public class ErlangFileLabelProvider extends LabelProvider implements
 		ILabelProvider, IDescriptionProvider {
-	
+
 	@SuppressWarnings("unused")
-	private NavigatorProblemsDecorator fProblemDecorator;
+	private final NavigatorProblemsDecorator fProblemDecorator;
 
 	public ErlangFileLabelProvider() {
 		super();
@@ -21,7 +21,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 	}
 
 	@Override
-	public Image getImage(Object element) {
+	public Image getImage(final Object element) {
 		if (element instanceof IErlElement) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
 					ISharedImages.IMG_OBJS_INFO_TSK);
@@ -31,24 +31,24 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 	}
 
 	@Override
-	public String getText(Object element) {
+	public String getText(final Object element) {
 		if (element instanceof IErlElement) {
-			IErlElement data = (IErlElement) element;
+			final IErlElement data = (IErlElement) element;
 			return data.toString();// + "= " + data.getValue();
 		}
 		return null;
 	}
 
-	public String getDescription(Object anElement) {
+	public String getDescription(final Object anElement) {
 		if (anElement instanceof IErlElement) {
-			IErlElement data = (IErlElement) anElement;
+			final IErlElement data = (IErlElement) anElement;
 			return "Property: " + data.toString(); //$NON-NLS-1$
 		}
 		return null;
 	}
 
 	@Override
-	public void addListener(ILabelProviderListener listener) {
+	public void addListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
@@ -60,13 +60,13 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 	}
 
 	@Override
-	public boolean isLabelProperty(Object element, String property) {
+	public boolean isLabelProperty(final Object element, final String property) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener listener) {
+	public void removeListener(final ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}

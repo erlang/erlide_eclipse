@@ -37,6 +37,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private IProgressMonitor mon;
 
+	private boolean initialInsert;
+
 	public ErlReconcilerStrategy(ErlangEditor editor) {
 		fEditor = editor;
 	}
@@ -58,7 +60,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private OtpErlangObject mkReconcileMsg(String string,
 			DirtyRegion dirtyRegion, IRegion subRegion) {
-		OtpErlangAtom cmd = new OtpErlangAtom(string);
+		final OtpErlangAtom cmd = new OtpErlangAtom(string);
 		return cmd;
 	}
 
@@ -66,42 +68,34 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
-		if (fModule != null) {
-			// public void reconcile(IDocument doc, DirtyRegion dirtyRegion) {
-			// if (doc == null) {
-			// return;
-			// }
-			// final IBuffer buffer = getBufferManager().getBuffer(this);
-			// if (buffer == null) {
-			// return;
-			// }
-			// buffer.setContents(doc.get());
-			// try {
-			// buildStructure(null, this.getResource(), doc, dirtyRegion);
-			// } catch (final ErlModelException e) {
-			// e.printStackTrace();
-			// }
-			// }
-			if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-				fModule.insertText(dirtyRegion.getOffset(), dirtyRegion
-						.getText());
-			} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
-				fModule.removeText(dirtyRegion.getOffset(), dirtyRegion
-						.getLength());
-			}
-			try {
-				fModule.open(null);
-			} catch (ErlModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// fModule.reconcile(fDoc, dirtyRegion);
-			mon.done();
+		if (fModule == null) {
+			return;
 		}
+		if (dirtyRegion.getType() == DirtyRegion.INSERT) {
+			if (initialInsert) { // We don't want the initial insert, it's
+				// delivered too late (why?)
+				initialInsert = false;
+				return;
+			}
+			fModule.insertText(dirtyRegion.getOffset(), dirtyRegion.getText());
+		} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
+			fModule
+					.removeText(dirtyRegion.getOffset(), dirtyRegion
+							.getLength());
+		}
+		try {
+			fModule.open(null);
+		} catch (final ErlModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// fModule.reconcile(fDoc, dirtyRegion);
+		mon.done();
 	}
 
 	public void initialReconcile() {
 		ErlLogger.debug("## initial reconcile ");
+		initialInsert = true;
 		fModule = ErlModelUtils.getModule(fEditor);
 		if (fModule != null) {
 			fModule.getScanner();
