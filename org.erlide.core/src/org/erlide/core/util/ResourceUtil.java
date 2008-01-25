@@ -152,14 +152,14 @@ public class ResourceUtil {
 		return null;
 	}
 
-	private static IResource recursiveFindNamedResource(IContainer container,
+	public static IResource recursiveFindNamedResource(IContainer container,
 			String name) throws CoreException {
 		IResource r = container.findMember(name);
 		if (r != null) {
 			return r;
 		}
 		final IResource members[] = container.members();
-		for (IResource element : members) {
+		for (final IResource element : members) {
 			r = element;
 			if (r instanceof IContainer) {
 				r = recursiveFindNamedResource((IContainer) r, name);
