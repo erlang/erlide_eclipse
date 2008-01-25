@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
@@ -288,18 +289,18 @@ public class OpenAction extends SelectionDispatchAction {
 		window = w.getPos();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IPathVariableManager pvm = workspace.getPathVariableManager();
-			String[] names = pvm.getPathVariableNames();
-			List<OtpErlangTuple> pv = new ArrayList<OtpErlangTuple>(
+			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			final IPathVariableManager pvm = workspace.getPathVariableManager();
+			final String[] names = pvm.getPathVariableNames();
+			final List<OtpErlangTuple> pv = new ArrayList<OtpErlangTuple>(
 					names.length);
-			for (String name : names) {
-				OtpErlangTuple t = new OtpErlangTuple(
+			for (final String name : names) {
+				final OtpErlangTuple t = new OtpErlangTuple(
 						new OtpErlangString(name), new OtpErlangString(pvm
 								.getValue(name).toOSString()));
 				pv.add(t);
 			}
-			OtpErlangList pathVars = new OtpErlangList(pv
+			final OtpErlangList pathVars = new OtpErlangList(pv
 					.toArray(new OtpErlangTuple[pv.size()]));
 			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
 					list, window, fExternalModules, pathVars);
@@ -322,18 +323,18 @@ public class OpenAction extends SelectionDispatchAction {
 					open(mod, fun, arity, path);
 				}
 			} else if (external.equals("include")) {
-				final OtpErlangString s = (OtpErlangString)tres.elementAt(1);
+				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
 				final String mod = s.stringValue();
 				IResource r = ResourceUtil.recursiveFindNamedResource(mod);
 				if (r == null) {
 					try {
 						r = EditorUtility.openExternal(mod);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						e.printStackTrace();
 					}
 				}
 				if (r instanceof IFile) {
-					IFile f = (IFile) r;
+					final IFile f = (IFile) r;
 					EditorUtility.openInEditor(f);
 				}
 			} else if (external.equals("local")) { // local call
@@ -368,7 +369,7 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 			} else if (external.equals("variable")) {
 				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
+				final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
 				final ITextSelection sel = (ITextSelection) fEditor
 						.getSelectionProvider().getSelection();
 				final IErlElement e = fEditor.getElementAt(sel.getOffset(),
@@ -404,7 +405,7 @@ final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
 				IEditorPart editor = page.getActiveEditor();
 				if (pd == null) {
 					final ErlangIncludeFile[] includes = m.getIncludedFiles();
-					for (ErlangIncludeFile element : includes) {
+					for (final ErlangIncludeFile element : includes) {
 						final IResource re = ResourceUtil
 								.recursiveFindNamedResource(element
 										.getFilename());
@@ -461,11 +462,21 @@ final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
 	private void open(String mod, String fun, int arity, String path)
 			throws CoreException {
 		final String modFileName = mod + ".erl";
-		IResource r = ResourceUtil.recursiveFindNamedResource(modFileName);
+		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
+		IResource r = null;
+		if (m != null) {
+			final IProject p = m.getErlProject().getProject();
+			if (p != null) {
+				r = ResourceUtil.recursiveFindNamedResource(p, modFileName);
+			}
+		}
+		if (r == null) {
+			r = ResourceUtil.recursiveFindNamedResource(modFileName);
+		}
 		if (r == null) {
 			try {
 				r = EditorUtility.openExternal(path);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
