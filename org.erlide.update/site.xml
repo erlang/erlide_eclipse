@@ -35,5 +35,5 @@
       <category name="Unstable"/>
    </feature>
    <category-def name="Stable" label="Stable builds"/>
-   <category-def name="Unstable" label="New Category 1"/>
+   <category-def name="Unstable" label="Unstable builds"/>
 </site>
