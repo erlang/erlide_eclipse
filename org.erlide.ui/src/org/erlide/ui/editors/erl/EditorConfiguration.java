@@ -30,7 +30,6 @@ import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
@@ -192,7 +191,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
 		final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-		final MonoReconciler reconciler = new MonoReconciler(strategy, true);
+		final ErlReconciler reconciler = new ErlReconciler(strategy, true);
 		// reconciler.setIsIncrementalReconciler(false);
 		reconciler.setProgressMonitor(new NullProgressMonitor());
 		reconciler.setDelay(500);
@@ -262,7 +261,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			superDetectors = new IHyperlinkDetector[0];
 		}
 
-		IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
+		final IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
 		ourDetectors[ourDetectors.length - 1] = new ErlangHyperlinkDetector(
 				editor);
 
@@ -293,8 +292,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			ISourceViewer sourceViewer, final String commandId) {
 		return new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell parent) {
-				int shellStyle = SWT.RESIZE;
-				QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
+				final int shellStyle = SWT.RESIZE;
+				final QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
 						parent, shellStyle, editor, editor);
 				return dialog;
 			}
@@ -319,9 +318,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		fOutlinePresenter
 				.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
 		// Define a new outline provider
-		IInformationProvider provider = new ErlangSourceInfoProvider(editor);
+		final IInformationProvider provider = new ErlangSourceInfoProvider(
+				editor);
 		// Set the provider on all defined content types
-		String[] contentTypes = getConfiguredContentTypes(sourceViewer);
+		final String[] contentTypes = getConfiguredContentTypes(sourceViewer);
 		for (int i = 0; i < contentTypes.length; i++) {
 			fOutlinePresenter.setInformationProvider(provider, contentTypes[i]);
 		}

@@ -11,7 +11,6 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -138,8 +137,8 @@ public class ErlScanner implements IErlScanner {
 	// }
 
 	public void insertText(int offset, String text) {
-		ErlLogger.debug("scanner insert offset" + offset + " text.length "
-				+ text.length());
+		// ErlLogger.debug("scanner insert offset" + offset + " text.length "
+		// + text.length());
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"insertText", fMod, offset + 1, text);
@@ -149,7 +148,8 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void removeText(int offset, int length) {
-		ErlLogger.debug("scanner remove offset" + offset + " length " + length);
+		// ErlLogger.debug("scanner remove offset" + offset + " length " +
+		// length);
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"removeText", fMod, offset + 1, length);

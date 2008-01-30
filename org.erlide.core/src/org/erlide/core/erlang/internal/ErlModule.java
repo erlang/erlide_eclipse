@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
@@ -61,6 +62,8 @@ public class ErlModule extends Openable implements IErlModule {
 	private IErlScanner fScanner;
 
 	private final IFile fFile;
+
+	private boolean fFirstInsert = true;
 
 	protected ErlModule(IErlElement parent, String name, boolean isErl,
 			IFile file) {
@@ -202,6 +205,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public boolean hasResourceChanged() {
+		Assert.isTrue(false);
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -539,15 +543,22 @@ public class ErlModule extends Openable implements IErlModule {
 	public void insertText(int offset, String text) {
 		ErlLogger.debug("insertText " + getElementName() + " offset " + offset
 				+ " length " + text.length());
-		getBuffer().replace(offset, 0, text);
+		if (!fFirstInsert) {
+			getBuffer().replace(offset, 0, text);
+
+		}
 		getScanner();
-		fScanner.insertText(offset, text);
+		if (!fFirstInsert) {
+			fScanner.insertText(offset, text);
+		}
+		fFirstInsert = false;
 		isStructureKnown = false;
 	}
 
 	public void removeText(int offset, int length) {
-		ErlLogger.debug("removeText " + getElementName() + " offset " + offset
-				+ " length " + length);
+		// ErlLogger.debug("removeText " + getElementName() + " offset " +
+		// offset
+		// + " length " + length);
 		getBuffer().replace(offset, length, "");
 		getScanner();
 		fScanner.removeText(offset, length);

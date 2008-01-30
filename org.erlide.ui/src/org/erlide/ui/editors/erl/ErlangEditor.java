@@ -270,9 +270,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected void createActions() {
 		super.createActions();
 		String externalModules;
-		IEditorInput input = getEditorInput();
+		final IEditorInput input = getEditorInput();
 		if (input instanceof IFileEditorInput) {
-			IFileEditorInput fileInput = (IFileEditorInput) input;
+			final IFileEditorInput fileInput = (IFileEditorInput) input;
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					fileInput.getFile().getProject());
 			externalModules = prefs.getExternalModules();
@@ -480,19 +480,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		final int anchor = getBracketMatcher().getAnchor();
 		// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-		int targetOffset = (ICharacterPairMatcher.RIGHT == anchor) ? offset + 1
+		int targetOffset = ICharacterPairMatcher.RIGHT == anchor ? offset + 1
 				: offset + length;
 
 		boolean visible = false;
 		if (sourceViewer instanceof ITextViewerExtension5) {
 			final ITextViewerExtension5 extension = (ITextViewerExtension5) sourceViewer;
-			visible = (extension.modelOffset2WidgetOffset(targetOffset) > -1);
+			visible = extension.modelOffset2WidgetOffset(targetOffset) > -1;
 		} else {
 			final IRegion visibleRegion = sourceViewer.getVisibleRegion();
 			// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-			visible = (targetOffset >= visibleRegion.getOffset() && targetOffset <= visibleRegion
-					.getOffset()
-					+ visibleRegion.getLength());
+			visible = targetOffset >= visibleRegion.getOffset()
+					&& targetOffset <= visibleRegion.getOffset()
+							+ visibleRegion.getLength();
 		}
 
 		if (!visible) {
@@ -647,7 +647,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				} else if (module.isConsistent()) {
 					return module.getElementAt(offset);
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			}
 		}
 		return null;
@@ -935,12 +935,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// set highlight range
 			setSelection(reference, true);
 			// set outliner selection
-			try {
-				ErlLogger.debug(".. sel" + reference.getSource()
-						+ myOutlinePage);
-			} catch (final ErlModelException e) {
-				e.printStackTrace();
-			}
+			// try {
+			// ErlLogger.debug(".. sel" + reference.getSource()
+			// + myOutlinePage);
+			// } catch (final ErlModelException e) {
+			// e.printStackTrace();
+			// }
 			if (myOutlinePage != null) {
 				fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 				myOutlinePage.select(reference);
@@ -977,7 +977,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 			public IInformationControl createInformationControl(Shell shell) {
 				boolean cutDown = false;
-				int style = cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
+				int style = cutDown ? SWT.NONE : SWT.V_SCROLL | SWT.H_SCROLL;
 				return new DefaultInformationControl(shell, SWT.RESIZE
 						| SWT.TOOL, style, new HTMLTextPresenter(cutDown));
 			}
@@ -1219,7 +1219,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				true, true);
 		while (e.hasNext()) {
 			final Annotation a = e.next();
-			if ((a instanceof IErlangAnnotation)
+			if (a instanceof IErlangAnnotation
 					&& ((IErlangAnnotation) a).hasOverlay()
 					|| !isNavigationTarget(a)) {
 				continue;
@@ -1234,10 +1234,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& p.offset + p.getLength() == offset + length) {// ||
 				// p.includes(offset))
 				// {
-				if (containingAnnotation == null
-						|| (forward
-								&& p.length >= containingAnnotationPosition.length || !forward
-								&& p.length >= containingAnnotationPosition.length)) {
+				if (containingAnnotation == null || forward
+						&& p.length >= containingAnnotationPosition.length
+						|| !forward
+						&& p.length >= containingAnnotationPosition.length) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1311,7 +1311,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// preference.getIsGoToPreviousNavigationTargetKey();
 		final String key = preference == null ? null : preference
 				.getIsGoToNextNavigationTargetKey();
-		return (key != null && preferences.getBoolean(key));
+		return key != null && preferences.getBoolean(key);
 	}
 
 	@Override
@@ -1388,9 +1388,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void updateSelection(SelectionChangedEvent event) {
-		ISelection sel = event.getSelection();
+		final ISelection sel = event.getSelection();
 		if (sel instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) sel;
+			final IStructuredSelection structuredSelection = (IStructuredSelection) sel;
 			updateSelection(structuredSelection.getFirstElement());
 		}
 	}
@@ -1402,7 +1402,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (event.getSource() == getSelectionProvider()) {
 			return;
 		}
-		ISelection sel = event.getSelection();
+		final ISelection sel = event.getSelection();
 		if (sel instanceof ITextSelection) {
 			return;
 		}
@@ -1422,7 +1422,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		super.doSave(progressMonitor);
 
 		// Refresh the Erlang Navigator
-		CommonNavigator cv = (CommonNavigator) PlatformUI.getWorkbench()
+		final CommonNavigator cv = (CommonNavigator) PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().findView(
 						IErlideUIConstants.NAVIGATOR_VIEW_ID);
 		cv.getCommonViewer().refresh();

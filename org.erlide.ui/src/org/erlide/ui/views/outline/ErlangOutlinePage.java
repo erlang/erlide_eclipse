@@ -35,7 +35,6 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
@@ -64,7 +63,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	IErlModule myMdl;
 
 	private ErlangEditor myEditor;
-	private String fToolTipText = "Sort";
+	private final String fToolTipText = "Sort";
 
 	/**
 	 * 
@@ -88,15 +87,15 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	public void setInput(IEditorInput editorInput) {
 		// ErlLogger.log("> outline set input "+editorInput);
 		myMdl = ErlModelUtils.getModule(editorInput);
-		if (myMdl != null) {
-			try {
-				myMdl.open(null);
-			} catch (final ErlModelException e) {
-				e.printStackTrace();
-			}
-
-			refresh();
-		}
+		// if (myMdl != null) {
+		// try {
+		// myMdl.open(null);
+		// } catch (final ErlModelException e) {
+		// e.printStackTrace();
+		// }
+		//
+		// refresh();
+		// }
 	}
 
 	public void refresh() {
@@ -131,7 +130,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		getTreeViewer().setUseHashlookup(true);
 		viewer.setInput(myMdl);
 
-		MenuManager manager = new MenuManager();
+		final MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager m) {
@@ -139,11 +138,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 				// menuAboutToShow(m);
 			}
 		});
-		IPageSite site = getSite();
+		final IPageSite site = getSite();
 
 		site.registerContextMenu(
 				ErlangPlugin.PLUGIN_ID + ".outline", manager, viewer); //$NON-NLS-1$
-		IActionBars actionBars = site.getActionBars();
+		final IActionBars actionBars = site.getActionBars();
 		registerToolbarActions(actionBars);
 	}
 
@@ -180,8 +179,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 				final IStructuredSelection ss = (IStructuredSelection) s;
 				final List<?> elements = ss.toList();
 				if (!elements.contains(reference)) {
-					s = (reference == null ? StructuredSelection.EMPTY
-							: new StructuredSelection(reference));
+					s = reference == null ? StructuredSelection.EMPTY
+							: new StructuredSelection(reference);
 					getTreeViewer().setSelection(s, true);
 				}
 			}
@@ -222,8 +221,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 * @param actionBars
 	 */
 	private void registerToolbarActions(IActionBars actionBars) {
-		IToolBarManager toolBarManager = actionBars.getToolBarManager();
-		ViewerComparator vc = new ErlElementSorter();
+		final IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		final ViewerComparator vc = new ErlElementSorter();
 		toolBarManager.add(new LexicalSortingAction(getTreeViewer(),
 				fToolTipText, vc, null, null, false));
 	}

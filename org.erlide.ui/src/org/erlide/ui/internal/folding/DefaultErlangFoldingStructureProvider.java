@@ -546,15 +546,15 @@ public class DefaultErlangFoldingStructureProvider implements
 		initializePreferences();
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
 		fModule = m;
-		if (fModule == null) {
-			return;
-		}
-		try {
-			m.reset();
-			m.open(null);
-		} catch (final ErlModelException x) {
-			x.printStackTrace();
-		}
+		// if (fModule == null) {
+		// return;
+		// }
+		// try {
+		// m.reset();
+		// m.open(null);
+		// } catch (final ErlModelException x) {
+		// x.printStackTrace();
+		// }
 	}
 
 	private void initializePreferences() {
@@ -760,7 +760,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			computeAdditions(fModule, updated);
 			final Map<Object, List<Tuple>> previous = createAnnotationMap(model);
 
-			for (Entry<ErlangProjectionAnnotation, Position> entry : updated
+			for (final Entry<ErlangProjectionAnnotation, Position> entry : updated
 					.entrySet()) {
 				final ErlangProjectionAnnotation newAnnotation = entry.getKey();
 				final IErlElement element = newAnnotation.getElement();
@@ -781,7 +781,7 @@ public class DefaultErlangFoldingStructureProvider implements
 						if (newAnnotation.isComment() == existingAnnotation
 								.isComment()) {
 							if (existingPosition != null
-									&& (!newPosition.equals(existingPosition))) {
+									&& !newPosition.equals(existingPosition)) {
 								existingPosition.setOffset(newPosition
 										.getOffset());
 								existingPosition.setLength(newPosition
@@ -803,13 +803,9 @@ public class DefaultErlangFoldingStructureProvider implements
 				}
 			}
 
-			@SuppressWarnings("unchecked")
-			Iterator<List<Tuple>> l = previous.values().iterator();
-			while (l.hasNext()) {
-				final List<Tuple> list = l.next();
-				final int size = list.size();
-				for (int i = 0; i < size; i++) {
-					deletions.add((list.get(i)).annotation);
+			for (final List<Tuple> l : previous.values()) {
+				for (final Tuple t : l) {
+					deletions.add(t.annotation);
 				}
 			}
 
@@ -840,7 +836,7 @@ public class DefaultErlangFoldingStructureProvider implements
 	private void match(List<ErlangProjectionAnnotation> deletions,
 			Map<ErlangProjectionAnnotation, Position> additions,
 			List<ErlangProjectionAnnotation> changes) {
-		if (deletions.isEmpty() || (additions.isEmpty() && changes.isEmpty())) {
+		if (deletions.isEmpty() || additions.isEmpty() && changes.isEmpty()) {
 			return;
 		}
 
@@ -959,7 +955,7 @@ public class DefaultErlangFoldingStructureProvider implements
 				return o1.position.getOffset() - o2.position.getOffset();
 			}
 		};
-		for (List<Tuple> name : map.values()) {
+		for (final List<Tuple> name : map.values()) {
 			final List<Tuple> list = name;
 			Collections.sort(list, comparator);
 		}

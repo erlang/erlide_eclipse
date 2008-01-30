@@ -371,8 +371,7 @@ public class Buffer implements IBuffer {
 	 */
 	protected void notifyChanged(final BufferChangedEvent event) {
 		if (changeListeners != null) {
-			for (int i = 0, size = changeListeners.size(); i < size; ++i) {
-				final IBufferChangedListener listener = changeListeners.get(i);
+			for (final IBufferChangedListener listener : changeListeners) {
 				SafeRunner.run(new ISafeRunnable() {
 
 					public void handleException(final Throwable exception) {

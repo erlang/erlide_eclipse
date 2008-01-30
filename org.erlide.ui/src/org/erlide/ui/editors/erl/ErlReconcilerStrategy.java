@@ -11,6 +11,7 @@
 package org.erlide.ui.editors.erl;
 
 // import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -37,7 +38,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private IProgressMonitor mon;
 
-	private boolean initialInsert;
+	// private boolean initialInsert;
 
 	public ErlReconcilerStrategy(ErlangEditor editor) {
 		fEditor = editor;
@@ -53,7 +54,6 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
 		ErlLogger.debug("## reconcile " + dirtyRegion.getOffset() + "-"
 				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
-
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
 	}
@@ -68,15 +68,16 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
-		if (fModule == null) {
-			return;
-		}
+		// if (fModule == null) {
+		// return;
+		// }
+		Assert.isNotNull(fModule);
 		if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-			if (initialInsert) { // We don't want the initial insert, it's
-				// delivered too late (why?)
-				initialInsert = false;
-				return;
-			}
+			// if (initialInsert) { // We don't want the initial insert, it's
+			// // delivered too late (why?)
+			// initialInsert = false;
+			// return;
+			// }
 			fModule.insertText(dirtyRegion.getOffset(), dirtyRegion.getText());
 		} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
 			fModule
@@ -94,13 +95,14 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void initialReconcile() {
-		ErlLogger.debug("## initial reconcile ");
-		initialInsert = true;
+		// ErlLogger.debug("## initial reconcile ");
+		// initialInsert = true;
 		fModule = ErlModelUtils.getModule(fEditor);
-		if (fModule != null) {
-			fModule.getScanner();
-			ErlLogger.debug("## module:: " + fModule.getElementName());
-		}
+		Assert.isNotNull(fModule);
+		// if (fModule != null) {
+		// fModule.getScanner();
+		// ErlLogger.debug("## module:: " + fModule.getElementName());
+		// }
 		notify(new OtpErlangAtom("initialReconcile"));
 	}
 

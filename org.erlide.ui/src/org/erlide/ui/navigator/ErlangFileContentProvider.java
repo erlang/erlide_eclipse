@@ -15,15 +15,17 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
-		IResourceChangeListener, IResourceDeltaVisitor {
+		IResourceChangeListener, IResourceDeltaVisitor, IErlModelChangeListener {
 
 	private static final Object[] NO_CHILDREN = new Object[0];
 
@@ -42,6 +44,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		// super(false);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
 				IResourceChangeEvent.POST_CHANGE);
+		final IErlModel mdl = ErlangCore.getModel();
+		mdl.addModelChangeListener(this);
 	}
 
 	/**
@@ -51,20 +55,21 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		Object[] result = NO_CHILDREN;
 		try {
 			if (parentElement instanceof IFile) {
-				IErlModule mod = ErlModelUtils.getModule((IFile) parentElement);
+				final IErlModule mod = ErlModelUtils
+						.getModule((IFile) parentElement);
 				if (mod != null) {
 					mod.open(null);
 					result = mod.getChildren();
 				}
 			} else if (parentElement instanceof IParent) {
-				IParent parent = (IParent) parentElement;
+				final IParent parent = (IParent) parentElement;
 				result = parent.getChildren();
 			}
-		} catch (ErlModelException e) {
+		} catch (final ErlModelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ErlLogger.debug("// " + result.length + " children");
+		// ErlLogger.debug("// " + result.length + " children");
 		return result;
 	}
 
@@ -77,15 +82,15 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
 	public Object getParent(Object element) {
 		if (element instanceof IErlElement) {
-			IErlElement elt = (IErlElement) element;
-			IErlElement parent = elt.getParent();
+			final IErlElement elt = (IErlElement) element;
+			final IErlElement parent = elt.getParent();
 			if (parent instanceof IErlModule) {
-				IErlModule mod = (IErlModule) parent;
+				final IErlModule mod = (IErlModule) parent;
 				try {
 					if (mod != null) {
 						return mod.getCorrespondingResource();
 					}
-				} catch (ErlModelException e) {
+				} catch (final ErlModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -97,14 +102,14 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	public boolean hasChildren(Object element) {
 		boolean result = false;
 		if (element instanceof IParent) {
-			IParent parent = (IParent) element;
+			final IParent parent = (IParent) element;
 			result = parent.hasChildren();
 		} else if (element instanceof IFile) {
-			IErlModule mod = ErlModelUtils.getModule((IFile) element);
+			final IErlModule mod = ErlModelUtils.getModule((IFile) element);
 			if (mod != null) {
 				try {
 					mod.open(null);
-				} catch (ErlModelException e) {
+				} catch (final ErlModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -134,10 +139,10 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 
-		IResourceDelta delta = event.getDelta();
+		final IResourceDelta delta = event.getDelta();
 		try {
 			delta.accept(this);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 	}
@@ -149,7 +154,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 */
 	public boolean visit(IResourceDelta delta) {
 
-		IResource source = delta.getResource();
+		final IResource source = delta.getResource();
 		switch (source.getType()) {
 		case IResource.ROOT:
 		case IResource.PROJECT:
@@ -159,19 +164,33 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			final IFile file = (IFile) source;
 			if (ERLANGFILE_EXT.equals(file.getFileExtension())) {
 				// updateModel(file);
-				new UIJob("Update Erlang Model in CommonViewer") { //$NON-NLS-1$
-					@Override
-					public IStatus runInUIThread(IProgressMonitor monitor) {
-						if (viewer != null && !viewer.getControl().isDisposed()) {
-							viewer.refresh(file);
-						}
-						return Status.OK_STATUS;
-					}
-				}.schedule();
+				doRefresh(file);
 			}
 			return false;
 		}
 		return false;
+	}
+
+	private void doRefresh(final IFile file) {
+		new UIJob("Update Erlang Model in CommonViewer") { //$NON-NLS-1$
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				if (viewer != null && !viewer.getControl().isDisposed()) {
+					viewer.refresh(file);
+				}
+				return Status.OK_STATUS;
+			}
+		}.schedule();
+	}
+
+	public void elementChanged(IErlElement element) {
+		if (element instanceof IErlModule) {
+			final IErlModule m = (IErlModule) element;
+			final IResource r = m.getResource();
+			if (r instanceof IFile) {
+				doRefresh((IFile) r);
+			}
+		}
 	}
 
 }
