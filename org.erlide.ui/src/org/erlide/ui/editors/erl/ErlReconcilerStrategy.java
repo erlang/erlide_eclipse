@@ -68,16 +68,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
-		// if (fModule == null) {
-		// return;
-		// }
 		Assert.isNotNull(fModule);
 		if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-			// if (initialInsert) { // We don't want the initial insert, it's
-			// // delivered too late (why?)
-			// initialInsert = false;
-			// return;
-			// }
 			fModule.insertText(dirtyRegion.getOffset(), dirtyRegion.getText());
 		} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
 			fModule

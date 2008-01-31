@@ -21,7 +21,9 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
@@ -76,32 +78,28 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			if (module == null) {
 				return null;
 			}
-			//
-			// int i = prefix.indexOf(':');
-			// if (i >= 0) {
-			// // we have a remote call
-			// final String mod = prefix.substring(0, i);
-			// prefix = prefix.substring(i + 1);
-			// final IErlProject project = ErlModelUtils
-			// .getErlProject(fEditor);
-			// final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
-			// final IBackend b = BackendManager.getDefault().get(
-			// project.getProject());
-			// final OtpErlangObject res = b.rpcx("erlide_model",
-			// "get_exported", modAtom, prefix);
-			OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
-					.rpcx("erlide_otp_doc", "get_exported",
-							module.getScanner().getScannerModuleName(), offset);
-			if (r1 instanceof OtpErlangList) {
-				final OtpErlangList resl = (OtpErlangList) r1;
-				final OtpErlangList docl = getDocumentationFor(resl,
-						new OtpErlangAtom(module.getElementName()));
+			final int k = prefix.indexOf(':');
+			if (k < 0) {
+				return null;
+			}
+			// we have a remote call
+			final String mod = prefix.substring(0, k);
+			prefix = prefix.substring(k + 1);
+			final IErlProject project = ErlModelUtils.getErlProject(fEditor);
+			final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
+			final IBackend b = BackendManager.getDefault().get(
+					project.getProject());
+			final OtpErlangObject res = b.rpcx("erlide_otp_doc",
+					"get_exported", modAtom, prefix);
+			if (res instanceof OtpErlangList) {
+				final OtpErlangList resl = (OtpErlangList) res;
+				final OtpErlangList docl = getDocumentationFor(resl, modAtom);
 				for (int i = 0; i < resl.arity(); i++) {
 					final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
 					final String fstr = ((OtpErlangAtom) f.elementAt(0))
 							.atomValue();
 					final int far = ((OtpErlangLong) f.elementAt(1)).intValue();
-					StringBuilder args = new StringBuilder(far * 2);
+					final StringBuilder args = new StringBuilder(far * 2);
 					for (int j = 0; j < far - 1; j++) {
 						args.append(", ");
 					}
@@ -141,7 +139,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private String lastText(IDocument doc, int offset) {
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
-				char c = doc.getChar(n);
+				final char c = doc.getChar(n);
 				if (!isErlangIdentifierChar(c) && c != ':') {
 					return doc.get(n + 1, offset - n - 1);
 				}

@@ -154,6 +154,9 @@ public class ResourceUtil {
 
 	public static IResource recursiveFindNamedResource(IContainer container,
 			String name) throws CoreException {
+		if (!container.isAccessible()) {
+			return null;
+		}
 		IResource r = container.findMember(name);
 		if (r != null) {
 			return r;

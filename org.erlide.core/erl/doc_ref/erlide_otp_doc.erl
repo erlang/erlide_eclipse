@@ -11,34 +11,24 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%% -define(DEBUG, 1). 
+%-define(DEBUG, 1). 
 
 -include("erlide.hrl").
+-include("erlide_scanner.hrl").
 
 %% recursively return tags for which Fun returns true
 %%
 %% recu_find_tags(L, Fun) ->
 %%     lists:reverse(recu_find_tags(L, Fun, [])).
 
-
-get_exported(Module, Offset) ->
-    Window = 1,
-    List = erlide_scanner:getTokenWindow(Module, Offset, Window),
-    ?D({get_doc, List}),
-    D = case erlide_text:check_function_call(List, Window) of
-            ok -> 
-                ok
-        end,
-    D.
-
-%% get_exported_old(M, Prefix) when is_atom(M), is_list(Prefix) ->
-%%     case catch M:module_info(exports) of
-%%         {'EXIT', _} ->
-%%             error;
-%%         Val ->
-%%             Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
-%%             lists:filter(Fun, Val)
-%%     end.
+get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
+    case catch M:module_info(exports) of
+        Val when is_list(Val) ->
+            Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
+            lists:filter(Fun, Val);
+    	_ ->
+            error
+    end.
 
 find_tags(L, Fun) ->
      lists:filter(Fun, L).        
@@ -404,12 +394,15 @@ get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
 get_doc_for_external(StateDir, Mod, FuncList) ->
     try
         Module = listify(Mod),
+        ?D(Module),
         OutDir = get_doc_dir(Module),
+        ?D(OutDir),
         DocFileName = filename:join(OutDir, Module ++ ".html"),
         IndexFileName = filename:join([StateDir, "erlide_doc", 
                                        Module ++ ".erlide_doc_x"]),
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
+		?D({DocFileName, IndexFileName, Renew}),
         Doc = erlide_util:check_cached(DocFileName, IndexFileName, Renew),
         ?D({doc, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),

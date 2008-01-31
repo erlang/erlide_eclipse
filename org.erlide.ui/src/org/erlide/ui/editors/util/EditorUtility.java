@@ -154,29 +154,6 @@ public class EditorUtility {
 			((ErlangEditor) part).setSelection(element);
 			return;
 		}
-
-		// Support for non-Java editor
-		// TODO: behövs kod nedan i nån form?
-		// try {
-		// ISourceRange range= null;
-		// if (element instanceof ICompilationUnit)
-		// range= null;
-		// else if (element instanceof IClassFile)
-		// range= null;
-		// else if (element instanceof ILocalVariable)
-		// range= ((ILocalVariable)element).getNameRange();
-		// else if (element instanceof IMember)
-		// range= ((IMember)element).getNameRange();
-		// else if (element instanceof ITypeParameter)
-		// range= ((ITypeParameter)element).getNameRange();
-		// else if (element instanceof ISourceReference)
-		// range= ((ISourceReference)element).getSourceRange();
-		//
-		// if (range != null)
-		// revealInEditor(part, range.getOffset(), range.getLength());
-		// } catch (JavaModelException e) {
-		// // don't reveal
-		// }
 	}
 
 	/**
@@ -507,9 +484,9 @@ public class EditorUtility {
 		final List<IEditorPart> result = new ArrayList<IEditorPart>(0);
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-		for (IWorkbenchWindow element : windows) {
+		for (final IWorkbenchWindow element : windows) {
 			final IWorkbenchPage[] pages = element.getPages();
-			for (IWorkbenchPage element0 : pages) {
+			for (final IWorkbenchPage element0 : pages) {
 				final IEditorPart[] editors = element0.getDirtyEditors();
 				for (final IEditorPart ep : editors) {
 					final IEditorInput input = ep.getEditorInput();

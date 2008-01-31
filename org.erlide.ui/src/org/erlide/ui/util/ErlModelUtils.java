@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -121,7 +120,7 @@ public class ErlModelUtils {
 
 	public static IErlScanner getScanner(ITextEditor editor) {
 		final IErlModule mod = getModule(editor);
-		ErlLogger.debug("getScanner:: " + editor + " = " + mod);
+		// ErlLogger.debug("getScanner:: " + editor + " = " + mod);
 		if (mod != null) {
 			return getModule(editor).getScanner();
 		}

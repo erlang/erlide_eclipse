@@ -43,7 +43,7 @@ newer_file(Module, F2) when is_atom(Module) ->
     end.
 
 check_cached(SourceFileName, CacheFileName, Renew) ->
-    case erlide_util:newer_file(CacheFileName, SourceFileName) 
+    case erlide_util:newer_file(CacheFileName, SourceFileName)
          orelse not erlide_util:newer_file(?MODULE, CacheFileName) of
         true ->
             renew_cache(SourceFileName, CacheFileName, Renew);

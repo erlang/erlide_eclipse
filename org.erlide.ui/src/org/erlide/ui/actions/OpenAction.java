@@ -517,6 +517,11 @@ public class OpenAction extends SelectionDispatchAction {
 		if (m == null) {
 			return false;
 		}
+		if (!m.isStructureKnown()) {
+			m.open(null); // FIXME vi måste kolla så att den inte
+							// dubbel-parsas... kanske sätta nån flagga på
+							// modulen?
+		}
 		final IErlFunction function = ErlModelUtils.findFunction(m, fun, arity);
 		if (function == null) {
 			return false;

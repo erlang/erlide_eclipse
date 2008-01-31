@@ -25,7 +25,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
@@ -85,55 +84,6 @@ public class ErlModule extends Openable implements IErlModule {
 		b.setContents(text);
 		b.addBufferChangedListener(this);
 	}
-
-	// @Override
-	// protected boolean buildStructure(IProgressMonitor pm,
-	// IResource underlyingResource, IDocument doc, DirtyRegion dirtyRegion)
-	// throws ErlModelException {
-	// // get buffer contents
-	// final IBuffer buffer = getBufferManager().getBuffer(this);
-	// if (buffer == null) {
-	// openBuffer(pm, this);
-	// }
-	//
-	// // generate structure and compute syntax problems if needed
-	// final IErlProject project = getErlProject();
-	// boolean computeProblems = ErlangCore.hasErlangNature(project
-	// .getProject());
-	//
-	// final Map<String, String> options = project.getOptions(true);
-	// if (!computeProblems) {
-	// // disable task tags checking to speed up parsing
-	// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-	// }
-	//
-	// // ErlLogger.debug("* build structure " + this.fName);
-	// if (doc == null) {
-	// doc = new Document();
-	// doc.set(getBuffer().getContents());
-	// }
-	// getScanner().modifyText(doc, dirtyRegion);
-	//
-	// final ErlParser parser = new ErlParser();
-	// isStructureKnown = parser.parse(this);
-	// final IErlModel model = getModel();
-	// if (model != null) {
-	// model.notifyChange(this);
-	// }
-	//
-	// // update timestamp (might be IResource.NULL_STAMP if original does not
-	// // exist)
-	// if (underlyingResource == null) {
-	// underlyingResource = getResource();
-	// }
-	// if (underlyingResource != null) {
-	// timestamp = ((IFile) underlyingResource).getLocalTimeStamp();
-	// } else {
-	// timestamp = IResource.NULL_STAMP;
-	// }
-	//
-	// return isStructureKnown();
-	// }
 
 	@Override
 	protected boolean buildStructure(IProgressMonitor pm,
@@ -300,144 +250,10 @@ public class ErlModule extends Openable implements IErlModule {
 		return isModule;
 	}
 
-	// public void getContentProposals(String prefix, String indent, int offset,
-	// ArrayList<ICompletionProposal> result) {
-	// // ErlLogger.debug("> completing: " + prefix + "," + offset);
-	// CompletionProposal cp = null;
-	//
-	// class PredefMacros {
-	// String fMacroName;
-	//
-	// String fDescription;
-	//
-	// PredefMacros(String name, String desc) {
-	// fMacroName = name;
-	// fDescription = desc;
-	// }
-	//
-	// String getName() {
-	// return fMacroName;
-	// }
-	//
-	// String getDesc() {
-	// return fDescription;
-	// }
-	// }
-	//
-	// /* Pre-defined macroses */
-	// PredefMacros[] Macroses = {
-	// new PredefMacros("?MODULE", "The name of the current module."),
-	// new PredefMacros("?MODULE_STRING",
-	// "The name of the current module, as a string."),
-	// new PredefMacros("?FILE",
-	// "The file name of the current module."),
-	// new PredefMacros("?LINE", "The current line number."),
-	// new PredefMacros("?MACHINE", "The machine name, 'BEAM'.") };
-	// for (PredefMacros m : Macroses) {
-	// final String mname = m.getName();
-	// if (mname.startsWith(prefix)) {
-	// // cp = new CompletionProposal(mname, /* replacementString */
-	// // offset - prefix.length(), /* replacementOffset */
-	// // prefix.length(), /* replacementLength */
-	// // mname.length(), /* cursorPosition */
-	// // null, /* image */
-	// // mname, /* displayString */
-	// // null, /* contextInformation */
-	// // m.getDesc()); /* String additionalProposalInfo */
-	// }
-	// if (cp != null) {
-	// result.add(cp);
-	// cp = null;
-	// }
-	// }
-	//
-	// /* Local module completition: records, defines, functions */
-	// for (IErlElement el : fChildren) {
-	// if (el instanceof IErlFunction) {
-	// final IErlFunction f = (IErlFunction) el;
-	// String FuncName = f.getElementName();
-	// if (FuncName.startsWith(prefix)) {
-	// for (IErlFunctionClause fc : f.getClauses()) {
-	// // cp = new CompletionProposal(FuncName, /*
-	// // replacementString */
-	// // offset - prefix.length(), /* replacementOffset */
-	// // prefix.length(), /* replacementLength */
-	// // FuncName.length(), /* cursorPosition */
-	// // null, /* image */
-	// // FuncName + fc.toString(), /* displayString */
-	// // null, /* contextInformation */
-	// // null); /* String additionalProposalInfo */
-	// }
-	// }
-	// } else if (el instanceof IErlRecordDef) {
-	// final IErlRecordDef rec = (IErlRecordDef) el;
-	// String RecName = rec.getDefinedName();
-	// if (prefix.length() == 0
-	// || (prefix.charAt(0) == '#' && RecName
-	// .startsWith(prefix.substring(1)))) {
-	// // cp = new CompletionProposal("#" + RecName, /*
-	// // replacementString */
-	// // offset - prefix.length(), /* replacementOffset */
-	// // prefix.length(), /* replacementLength */
-	// // RecName.length() + 1, /* cursorPosition */
-	// // null, /* image */
-	// // "#" + rec.getDefinedName() + "{...}", /*
-	// // * FIXME:
-	// // * displayString
-	// // */
-	// // null, /* contextInformation */
-	// // null); /* String additionalProposalInfo */
-	// }
-	// } else if (el instanceof IErlMacroDef) {
-	// final IErlMacroDef mac = (IErlMacroDef) el;
-	// String MacName = mac.getDefinedName();
-	// if (prefix.length() == 0
-	// || (prefix.charAt(0) == '?' && MacName
-	// .startsWith(prefix.substring(1)))) {
-	// // cp = new CompletionProposal("?" + MacName, /*
-	// // replacementString */
-	// // offset - prefix.length(), /* replacementOffset */
-	// // prefix.length(), /* replacementLength */
-	// // MacName.length() + 1, /* cursorPosition */
-	// // null, /* image */
-	// // "?" + mac.getDefinedName(), /* displayString */
-	// // null, /* contextInformation */
-	// // null); /* String additionalProposalInfo */
-	// }
-	// }
-	// if (cp != null) {
-	// result.add(cp);
-	// cp = null;
-	// }
-	// }
-	// }
-
 	public long getTimestamp() {
 		return timestamp;
 	}
 
-	// public void reconcile(IDocument doc, DirtyRegion dirtyRegion) {
-	// if (doc == null) {
-	// return;
-	// }
-	// final IBuffer buffer = getBufferManager().getBuffer(this);
-	// if (buffer == null) {
-	// return;
-	// }
-	// buffer.setContents(doc.get());
-	// try {
-	// buildStructure(null, this.getResource(), doc, dirtyRegion);
-	// } catch (final ErlModelException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// public void reconcile(IDocument document) {
-	// // fDoc = document;
-	// reconcile(document, new DirtyRegion(0, document.getLength(),
-	// DirtyRegion.INSERT, document.get()));
-	// }
-	//
 	public IErlComment[] getComments() {
 		return comments.toArray(new IErlComment[comments.size()]);
 	}
@@ -506,28 +322,29 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void fixExportedFunctions() {
-		final List<ErlangFunction> exports = new ArrayList<ErlangFunction>(10);
-		for (final IErlElement m : fChildren) {
-			if (m instanceof IErlExport) {
-				// final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
-				// .getParseTree();
-				// for (int j = 0; j < l.arity(); ++j) {
-				// TODO removed temporarily
-				// try {
-				// exports.add(new ErlangFunction((OtpErlangTuple)
-				// l.elementAt(j)));
-				// } catch (OtpErlangRangeException e) {
-				// e.printStackTrace();
-				// }
-				// }
-			}
-		}
-		for (final IErlElement m : fChildren) {
-			if (m instanceof ErlFunction) {
-				final ErlFunction f = (ErlFunction) m;
-				f.setExported(exports.contains(f.getFunction()));
-			}
-		}
+		// final List<ErlangFunction> exports = new
+		// ArrayList<ErlangFunction>(10);
+		// for (final IErlElement m : fChildren) {
+		// if (m instanceof IErlExport) {
+		// // final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
+		// // .getParseTree();
+		// // for (int j = 0; j < l.arity(); ++j) {
+		// // TODO removed temporarily
+		// // try {
+		// // exports.add(new ErlangFunction((OtpErlangTuple)
+		// // l.elementAt(j)));
+		// // } catch (OtpErlangRangeException e) {
+		// // e.printStackTrace();
+		// // }
+		// // }
+		// }
+		// }
+		// for (final IErlElement m : fChildren) {
+		// if (m instanceof ErlFunction) {
+		// final ErlFunction f = (ErlFunction) m;
+		// f.setExported(exports.contains(f.getFunction()));
+		// }
+		// }
 	}
 
 	public int getLineEnd() {
@@ -541,8 +358,9 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void insertText(int offset, String text) {
-		ErlLogger.debug("insertText " + getElementName() + " offset " + offset
-				+ " length " + text.length());
+		// ErlLogger.debug("insertText " + getElementName() + " offset " +
+		// offset
+		// + " length " + text.length());
 		if (!fFirstInsert) {
 			getBuffer().replace(offset, 0, text);
 
