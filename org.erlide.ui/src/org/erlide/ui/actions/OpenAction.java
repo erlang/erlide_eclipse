@@ -397,7 +397,13 @@ public class OpenAction extends SelectionDispatchAction {
 				final OtpErlangAtom defined = (OtpErlangAtom) mf.elementAt(0);
 				IErlModule m = ErlModelUtils
 						.getModule(fEditor.getEditorInput());
-				final String definedName = defined.atomValue();
+				String definedName = defined.atomValue();
+				if (definedName.length() == 0) {
+					return;
+				}
+				if (definedName.charAt(0) == '?') {
+					definedName = definedName.substring(1);
+				}
 				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
 						: IErlElement.ErlElementType.RECORD_DEF;
 				IErlPreprocessorDef pd = m.findPreprocessorDef(definedName,
@@ -519,8 +525,8 @@ public class OpenAction extends SelectionDispatchAction {
 		}
 		if (!m.isStructureKnown()) {
 			m.open(null); // FIXME vi måste kolla så att den inte
-							// dubbel-parsas... kanske sätta nån flagga på
-							// modulen?
+			// dubbel-parsas... kanske sätta nån flagga på
+			// modulen?
 		}
 		final IErlFunction function = ErlModelUtils.findFunction(m, fun, arity);
 		if (function == null) {

@@ -336,7 +336,22 @@ public class ErlParser {
 					return r;
 				}
 			}
+			if (val instanceof OtpErlangAtom) {
+				final OtpErlangAtom nameA = (OtpErlangAtom) val;
+				final String recordName = nameA.atomValue();
+				final ErlRecordDef r = new ErlRecordDef(parent, recordName);
+				setPos(r, pos);
+				r.setParseTree(val);
+				return r;
+			}
 		} else if ("define".equals(name.atomValue())) {
+			if (val instanceof OtpErlangAtom) {
+				final OtpErlangAtom o = (OtpErlangAtom) val;
+				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue());
+				setPos(r, pos);
+				r.setParseTree(val);
+				return r;
+			}
 			if (val instanceof OtpErlangList) {
 				final OtpErlangList macroList = (OtpErlangList) val;
 				if (macroList.elementAt(0) instanceof OtpErlangTuple) {

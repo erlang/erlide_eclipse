@@ -8,12 +8,15 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.Saveable;
+import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -25,7 +28,8 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
-		IResourceChangeListener, IResourceDeltaVisitor, IErlModelChangeListener {
+		IResourceChangeListener, IResourceDeltaVisitor,
+		IErlModelChangeListener, IAdaptable {
 
 	private static final Object[] NO_CHILDREN = new Object[0];
 
@@ -193,4 +197,30 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class required) {
+		if (SaveablesProvider.class.equals(required)) {
+			return new SaveablesProvider() {
+
+				@Override
+				public Object[] getElements(Saveable saveable) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public Saveable getSaveable(Object element) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public Saveable[] getSaveables() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
+		}
+		return null;
+	}
 }
