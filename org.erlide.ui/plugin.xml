@@ -508,63 +508,6 @@
       </stub>
    </extension>
    <extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            activeByDefault="true"
-            contentProvider="org.erlide.ui.navigator.ErlangFileContentProvider"
-            icon="icons/erlang_editor.gif"
-            id="org.erlide.ui.navigator.erlangContent"
-            labelProvider="org.erlide.ui.views.outline.ErlangLabelProvider"
-            name="Erlang File Contents"
-            priority="normal">
-         <triggerPoints>
-            <or>
-               <and>
-                  <instanceof
-                        value="org.eclipse.core.resources.IResource">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.eclipse.core.resources.extension"
-                        value="erl">
-                  </test>
-               </and>
-               <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
-               </instanceof>
-               <and>
-                  <instanceof
-                        value="org.eclipse.core.resources.IResource">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.eclipse.core.resources.extension"
-                        value="hrl">
-                  </test>
-               </and>
-            </or></triggerPoints>
-         <possibleChildren>
-            <or>
-               <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
-               </instanceof>
-            </or></possibleChildren>
-         <actionProvider
-               class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
-               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
-         </actionProvider>
-         <commonSorter
-               class="org.erlide.ui.navigator.ErlElementSorter"
-               id="org.erlide.ui.navigator.ErlElementSorterId">
-            <parentExpression>
-               <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
-               </instanceof>
-            </parentExpression>
-         </commonSorter>
-      </navigatorContent>
-   </extension>
-   <extension
          point="org.eclipse.ui.navigator.viewer">
        <viewer
             viewerId="org.erlide.ui.views.navigator.view">
@@ -669,6 +612,57 @@
             </not>
          </filterExpression>
       </commonFilter>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.erlide.ui.navigator.ErlangFileContentProvider"
+            icon="icons/erlang_editor.gif"
+            id="org.erlide.ui.navigator.erlangContent"
+            labelProvider="org.erlide.ui.views.outline.ErlangLabelProvider"
+            name="Erlang File Contents"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="erl">
+                  </test>
+               </and>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlElement">
+               </instanceof>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="hrl">
+                  </test>
+               </and>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlElement">
+               </instanceof>
+            </or>
+         </possibleChildren>
+         <actionProvider
+               class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
+               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
+         </actionProvider>
+         <commonSorter
+               class="org.erlide.ui.navigator.ErlElementSorter"
+               id="org.erlide.ui.navigator.ErlElementSorterId">
+         </commonSorter>
+      </navigatorContent>
    </extension>
    
    <!-- Bind the Properties content extension to the viewer -->
