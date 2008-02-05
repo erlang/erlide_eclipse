@@ -137,7 +137,7 @@ server_init(From, IP, PortNumber) ->
 		  {active, true},		% this is the default
 		  {nodelay, true},
 		  {reuseaddr, true}] ++ IPOpt,
-    erlang:display(ListenOpts),
+    %%erlang:display(ListenOpts),
     case gen_tcp:listen(PortNumber, ListenOpts) of
 	{ok, ServerSocket} ->
 	    {ok, UsedPortNumber} = inet:port(ServerSocket),
@@ -239,11 +239,11 @@ clienthandler_init(_From, Server, ClientSocket) ->
     
 
 clienthandler_loop(State, Reshd, Server, ClientSocket) ->
-    erlang:display(looping),
+    %%erlang:display(looping),
     receive
 	{tcp, _Socket, Input} ->
 	    NativeInput = nl_network_to_native(Input),
-    erlang:display({msg, Input}),
+    %%erlang:display({msg, Input}),
         	    case handle_input(ClientSocket, State, NativeInput) of
 		{ok, NewState} ->
 		    clienthandler_loop(NewState, Reshd, Server, ClientSocket);
@@ -264,7 +264,7 @@ clienthandler_loop(State, Reshd, Server, ClientSocket) ->
 	    done;
 
 	{io_request, From, ReplyAs, Req} ->
-            erlang:display({req, Req}),
+            %%erlang:display({req, Req}),
         
 	    case handle_io_request(ClientSocket, State, From, ReplyAs, Req) of
 		{ok, NewState} ->
@@ -417,16 +417,16 @@ io_reply(From, ReplyAs, Result) ->
     From ! {io_reply, ReplyAs, Result}.
 
 print_prompt(ClientSocket, Prompt) ->
-        erlang:display({prompt, Prompt}),
+        %%erlang:display({prompt, Prompt}),
     
     PromptText = case Prompt of
 		     TxtAtom when atom(TxtAtom) ->
 			 io_lib:format('~s', [TxtAtom]);
 		     {IoFun, PromptFmtStr, PromptArgs} ->
 			 case catch io_lib:IoFun(PromptFmtStr, PromptArgs) of
-			     {'EXIT',Err} ->     erlang:display(Err),
+			     {'EXIT',Err} ->     %%erlang:display(Err),
                      "???";
-			     T ->     erlang:display(T),
+			     T ->     %%erlang:display(T),
                      T
 			 end;
 		     {IoFun, PromptFmtStr} ->
@@ -438,8 +438,9 @@ print_prompt(ClientSocket, Prompt) ->
 			 io_lib:write(Term)
 		 end,
     NWPromptText = nl_native_to_network(string_flatten(PromptText)),
-    erlang:display({'--->',NWPromptText}),
-                     R=gen_tcp:send(ClientSocket, NWPromptText),    erlang:display(R),R
+    %%erlang:display({'--->',NWPromptText}),
+                     R=gen_tcp:send(ClientSocket, NWPromptText),    %%erlang:display(R),
+                 R
                  .
 
 %% Convert network newline (cr,lf) to native (\n)
