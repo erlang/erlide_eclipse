@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
@@ -155,7 +154,6 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public boolean hasResourceChanged() {
-		Assert.isTrue(false);
 		// TODO Auto-generated method stub
 		return false;
 	}
