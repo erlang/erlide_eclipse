@@ -39,7 +39,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			return null;
 		}
 
-		IDocument document = textViewer.getDocument();
+		final IDocument document = textViewer.getDocument();
 		if (document == null) {
 			return null;
 		}
@@ -55,16 +55,19 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	private IHyperlink[] detectHyperlinks(IDocument doc, int offset) {
 
 		ITypedRegion partition;
-		ErlPartition aPartion = new ErlPartition();
+		final ErlPartition aPartion = new ErlPartition();
 
 		fModule = ErlModelUtils.getModule(editor);
-		ErlToken token = fModule.getScanner().getTokenAt(offset);
+		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 
-		if (token == null || !token.getKind().matches("atom")) {
+		final String tokenKind = token.getKind();
+		if (token == null || !tokenKind.equals("atom")
+				&& !tokenKind.equals("string") && !tokenKind.equals("macro")) {
 			return null;
 		}
 
-		Region ErlRegion = new Region(token.getOffset(), token.getLength());
+		final Region ErlRegion = new Region(token.getOffset(), token
+				.getLength());
 
 		try {
 			partition = doc.getPartition(offset);
@@ -76,7 +79,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(aPartion.getAType())) {
 				return null;
 			}
-		} catch (BadLocationException e) {
+		} catch (final BadLocationException e) {
 			return null;
 		}
 
@@ -99,7 +102,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @see org.eclipse.jface.text.IRegion#getLength()
 		 */
 		public int getLength() {
-			return this.length;
+			return length;
 		}
 
 		/**
@@ -115,7 +118,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @see org.eclipse.jface.text.IRegion#getOffset()
 		 */
 		public int getOffset() {
-			return this.offset;
+			return offset;
 		}
 
 		/**
@@ -129,14 +132,14 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @return
 		 */
 		public String getAType() {
-			return this.aType;
+			return aType;
 		}
 
 		/**
 		 * @param string
 		 */
 		public void setAType(String string) {
-			this.aType = string;
+			aType = string;
 		}
 
 	}
@@ -158,7 +161,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 				ErlPartition partion) {
 			this.editor = editor;
 			partion.setOffset(partion.getOffset() - 1);
-			this.subNameRegion = partion;
+			subNameRegion = partion;
 		}
 
 		/*
@@ -186,7 +189,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 */
 		public void open() {
 
-			OpenAction action = (OpenAction) editor
+			final OpenAction action = (OpenAction) editor
 					.getAction("org.erlide.ui.actions.open");
 
 			if (action != null) {

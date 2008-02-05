@@ -2,6 +2,7 @@ package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.util.Util;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
@@ -28,5 +29,11 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 	@Override
 	public String toString() {
 		return getElementName() + ": " + getDefinedName();
+	}
+
+	@Override
+	public int hashCode() {
+		return Util.combineHashCodes(super.hashCode(), getDefinedName()
+				.hashCode());
 	}
 }

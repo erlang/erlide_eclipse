@@ -2,6 +2,7 @@ package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMacroDef;
+import org.erlide.core.erlang.util.Util;
 
 public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 
@@ -29,4 +30,11 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 	public String toString() {
 		return getElementName() + ": " + getDefinedName();
 	}
+
+	@Override
+	public int hashCode() {
+		return Util.combineHashCodes(super.hashCode(), getDefinedName()
+				.hashCode());
+	}
+
 }

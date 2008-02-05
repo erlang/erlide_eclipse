@@ -310,6 +310,12 @@ public class OpenAction extends SelectionDispatchAction {
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
 			final String external = ((OtpErlangAtom) tres.elementAt(0))
 					.atomValue();
+			IProject project = null;
+			final IErlModule module = ErlModelUtils.getModule(fEditor
+					.getEditorInput());
+			if (module != null) {
+				project = module.getErlProject().getProject();
+			}
 			if (external.equals("external")) {
 				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final String mod = ((OtpErlangAtom) mf.elementAt(0))
@@ -325,7 +331,8 @@ public class OpenAction extends SelectionDispatchAction {
 			} else if (external.equals("include")) {
 				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
 				final String mod = s.stringValue();
-				IResource r = ResourceUtil.recursiveFindNamedResource(mod);
+				IResource r = ResourceUtil.recursiveFindNamedResourceTryRoot(
+						project, mod);
 				if (r == null) {
 					try {
 						r = EditorUtility.openExternal(mod);
@@ -349,10 +356,11 @@ public class OpenAction extends SelectionDispatchAction {
 				final IEditorPart editor = page.getActiveEditor();
 				if (!open(fun, arity, editor)) { // not local, so check
 					// imports
-					final IErlModule m = ErlModelUtils.getModule(editor
-							.getEditorInput());
-					final IErlImport ei = m.findImport(new ErlangFunction(fun,
-							arity));
+					if (module == null) {
+						return;
+					}
+					final IErlImport ei = module.findImport(new ErlangFunction(
+							fun, arity));
 					if (ei == null) {
 						return;
 					}
@@ -413,8 +421,8 @@ public class OpenAction extends SelectionDispatchAction {
 					final ErlangIncludeFile[] includes = m.getIncludedFiles();
 					for (final ErlangIncludeFile element : includes) {
 						final IResource re = ResourceUtil
-								.recursiveFindNamedResource(element
-										.getFilename());
+								.recursiveFindNamedResourceTryRoot(project,
+										element.getFilenameLastPart());
 						if (re != null && re instanceof IFile) {
 							m = ErlModelUtils.getModule((IFile) re);
 							if (m != null) {
@@ -473,11 +481,9 @@ public class OpenAction extends SelectionDispatchAction {
 		if (m != null) {
 			final IProject p = m.getErlProject().getProject();
 			if (p != null) {
-				r = ResourceUtil.recursiveFindNamedResource(p, modFileName);
+				r = ResourceUtil.recursiveFindNamedResourceTryRoot(p,
+						modFileName);
 			}
-		}
-		if (r == null) {
-			r = ResourceUtil.recursiveFindNamedResource(modFileName);
 		}
 		if (r == null) {
 			try {

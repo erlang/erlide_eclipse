@@ -140,7 +140,7 @@ public class ResourceUtil {
 		return result;
 	}
 
-	public static IResource recursiveFindNamedResource(String name) {
+	private static IResource recursiveFindNamedResource(String name) {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
 				.getRoot();
 		try {
@@ -152,7 +152,7 @@ public class ResourceUtil {
 		return null;
 	}
 
-	public static IResource recursiveFindNamedResource(IContainer container,
+	private static IResource recursiveFindNamedResource(IContainer container,
 			String name) throws CoreException {
 		if (!container.isAccessible()) {
 			return null;
@@ -172,6 +172,15 @@ public class ResourceUtil {
 			}
 		}
 		return null;
+	}
+
+	public static IResource recursiveFindNamedResourceTryRoot(
+			IContainer container, String name) throws CoreException {
+		final IResource r = recursiveFindNamedResource(container, name);
+		if (r != null) {
+			return r;
+		}
+		return recursiveFindNamedResource(name);
 	}
 
 	/**

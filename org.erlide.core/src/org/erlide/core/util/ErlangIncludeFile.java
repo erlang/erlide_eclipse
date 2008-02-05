@@ -24,4 +24,12 @@ public class ErlangIncludeFile {
 		return systemInclude;
 	}
 
+	public String getFilenameLastPart() {
+		final int i = filename.lastIndexOf('/');
+		if (i != -1) {
+			return filename.substring(i + 1);
+		}
+		return filename;
+	}
+
 }

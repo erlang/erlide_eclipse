@@ -2,10 +2,17 @@ package org.erlide.ui.navigator;
 
 import java.text.Collator;
 
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.erlide.core.erlang.IErlElement;
 
 public class ErlElementSorter extends ViewerSorter {
+
+	@Override
+	public int compare(Viewer viewer, Object e1, Object e2) {
+		// TODO Auto-generated method stub
+		return super.compare(viewer, e1, e2);
+	}
 
 	public ErlElementSorter() {
 		// TODO Auto-generated constructor stub
@@ -19,7 +26,7 @@ public class ErlElementSorter extends ViewerSorter {
 	@Override
 	public int category(Object element) {
 		if (element instanceof IErlElement) {
-			IErlElement e = (IErlElement) element;
+			final IErlElement e = (IErlElement) element;
 			if (e.getElementType() == IErlElement.ErlElementType.FUNCTION) {
 				return 1000;
 			}
