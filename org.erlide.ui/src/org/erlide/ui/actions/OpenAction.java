@@ -307,6 +307,7 @@ public class OpenAction extends SelectionDispatchAction {
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
+			ErlLogger.debug("open res " + res);
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
 			final String external = ((OtpErlangAtom) tres.elementAt(0))
 					.atomValue();
@@ -331,8 +332,8 @@ public class OpenAction extends SelectionDispatchAction {
 			} else if (external.equals("include")) {
 				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
 				final String mod = s.stringValue();
-				IResource r = ResourceUtil.recursiveFindNamedResourceTryRoot(
-						project, mod);
+				IResource r = ResourceUtil
+						.recursiveFindNamedResourceWithReferences(project, mod);
 				if (r == null) {
 					try {
 						r = EditorUtility.openExternal(mod);
@@ -375,26 +376,27 @@ public class OpenAction extends SelectionDispatchAction {
 						open(mod, fun, arity, path);
 					}
 				}
-			} else if (external.equals("variable")) {
-				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-				final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
-				final ITextSelection sel = (ITextSelection) fEditor
-						.getSelectionProvider().getSelection();
-				final IErlElement e = fEditor.getElementAt(sel.getOffset(),
-						false);
-				final ISourceReference sref = (ISourceReference) e;
-				final OtpErlangString s = new OtpErlangString(sref.getSource());
-				final OtpErlangObject res2 = b.rpcx("erlide_open",
-						"find_first_var", var, s);
-				if (!(res2 instanceof OtpErlangTuple)) {
-					return;
-				}
-				final OtpErlangTuple mf2 = (OtpErlangTuple) res2;
-				final OtpErlangTuple t = (OtpErlangTuple) mf2.elementAt(1);
-				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
-				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				fEditor.setHighlightRange(pos
-						+ sref.getSourceRange().getOffset(), len, true);
+				// } else if (external.equals("variable")) {
+				// final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
+				// final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
+				// final ITextSelection sel = (ITextSelection) fEditor
+				// .getSelectionProvider().getSelection();
+				// final IErlElement e = fEditor.getElementAt(sel.getOffset(),
+				// false);
+				// final ISourceReference sref = (ISourceReference) e;
+				// final OtpErlangString s = new
+				// OtpErlangString(sref.getSource());
+				// final OtpErlangObject res2 = b.rpcx("erlide_open",
+				// "find_first_var", var, s);
+				// if (!(res2 instanceof OtpErlangTuple)) {
+				// return;
+				// }
+				// final OtpErlangTuple mf2 = (OtpErlangTuple) res2;
+				// final OtpErlangTuple t = (OtpErlangTuple) mf2.elementAt(1);
+				// final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
+				// final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
+				// fEditor.setHighlightRange(pos
+				// + sref.getSourceRange().getOffset(), len, true);
 			} else if (external.equals("record") || external.equals("macro")) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {
@@ -421,8 +423,8 @@ public class OpenAction extends SelectionDispatchAction {
 					final ErlangIncludeFile[] includes = m.getIncludedFiles();
 					for (final ErlangIncludeFile element : includes) {
 						final IResource re = ResourceUtil
-								.recursiveFindNamedResourceTryRoot(project,
-										element.getFilenameLastPart());
+								.recursiveFindNamedResourceWithReferences(
+										project, element.getFilenameLastPart());
 						if (re != null && re instanceof IFile) {
 							m = ErlModelUtils.getModule((IFile) re);
 							if (m != null) {
@@ -481,10 +483,11 @@ public class OpenAction extends SelectionDispatchAction {
 		if (m != null) {
 			final IProject p = m.getErlProject().getProject();
 			if (p != null) {
-				r = ResourceUtil.recursiveFindNamedResourceTryRoot(p,
+				r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
 						modFileName);
 			}
 		}
+		ErlLogger.debug("open after find w ref " + r);
 		if (r == null) {
 			try {
 				r = EditorUtility.openExternal(path);
@@ -492,6 +495,7 @@ public class OpenAction extends SelectionDispatchAction {
 				e.printStackTrace();
 			}
 		}
+		ErlLogger.debug("open after find external " + r);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
