@@ -109,9 +109,11 @@ public class ErlangProjectImportWizardPage extends
 
 	private static final String SELECT_TYPES_TITLE = ErlangDataTransferMessages.DataTransfer_selectTypes;
 
-	private static final String SELECT_ALL_TITLE = ErlangDataTransferMessages.DataTransfer_selectAll;
-
-	private static final String DESELECT_ALL_TITLE = ErlangDataTransferMessages.DataTransfer_deselectAll;
+	// private static final String SELECT_ALL_TITLE =
+	// ErlangDataTransferMessages.DataTransfer_selectAll;
+	//
+	// private static final String DESELECT_ALL_TITLE =
+	// ErlangDataTransferMessages.DataTransfer_deselectAll;
 
 	private static final String SELECT_SOURCE_TITLE = ErlangDataTransferMessages.FileImport_selectSourceTitle;
 
@@ -175,17 +177,17 @@ public class ErlangProjectImportWizardPage extends
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
 
-		Button button = new Button(parent, SWT.PUSH);
+		final Button button = new Button(parent, SWT.PUSH);
 		button.setFont(parent.getFont());
 
-		GridData buttonData = new GridData(GridData.FILL_HORIZONTAL);
+		final GridData buttonData = new GridData(GridData.FILL_HORIZONTAL);
 		button.setLayoutData(buttonData);
 
 		button.setData(new Integer(id));
 		button.setText(label);
 
 		if (defaultButton) {
-			Shell shell = parent.getShell();
+			final Shell shell = parent.getShell();
 			if (shell != null) {
 				shell.setDefaultButton(button);
 			}
@@ -203,13 +205,13 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected final void createButtonsGroup(Composite parent) {
 		// top level group
-		Composite buttonComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final Composite buttonComposite = new Composite(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.makeColumnsEqualWidth = true;
 		buttonComposite.setLayout(layout);
 		buttonComposite.setFont(parent.getFont());
-		GridData buttonData = new GridData(GridData.VERTICAL_ALIGN_FILL
+		final GridData buttonData = new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL);
 		buttonData.horizontalSpan = 2;
 		buttonComposite.setLayoutData(buttonData);
@@ -218,7 +220,7 @@ public class ErlangProjectImportWizardPage extends
 		selectTypesButton = createButton(buttonComposite,
 				IDialogConstants.SELECT_TYPES_ID, SELECT_TYPES_TITLE, false);
 
-		SelectionListener listener = new SelectionAdapter() {
+		final SelectionListener listener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleTypesEditButtonPressed();
@@ -324,20 +326,20 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void createRootDirectoryGroup(Composite parent) {
 		sourceContainerGroup = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		sourceContainerGroup.setLayout(layout);
 		sourceContainerGroup.setFont(parent.getFont());
 		sourceContainerGroup.setLayoutData(new GridData(
 				GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 
-		Label groupLabel = new Label(sourceContainerGroup, SWT.NONE);
+		final Label groupLabel = new Label(sourceContainerGroup, SWT.NONE);
 		groupLabel.setText(getSourceLabel());
 		groupLabel.setFont(parent.getFont());
 
 		// source name entry field
 		sourceNameField = new Combo(sourceContainerGroup, SWT.BORDER);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+		final GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_HORIZONTAL);
 		data.widthHint = SIZING_TEXT_FIELD_WIDTH;
 		sourceNameField.setLayoutData(data);
@@ -360,14 +362,14 @@ public class ErlangProjectImportWizardPage extends
 			private void dialogChanged() {
 				projectPath = new Path(sourceNameField.getText());
 
-				String filePath = projectPath.lastSegment();
+				final String filePath = projectPath.lastSegment();
 
 				// xPath.substring(xPath.lastIndexOf("{") + 1,
 				// xPath.lastIndexOf("}"));
 
 				if (filePath != null) {
 
-					File file = new File(filePath);
+					final File file = new File(filePath);
 					setProjectName(file.getName());
 
 					// IFolder projectFolder = projectPath.getFolder(file
@@ -442,7 +444,7 @@ public class ErlangProjectImportWizardPage extends
 	}
 
 	protected void setProjectName(String name) {
-		this.projectName = name;
+		projectName = name;
 		if (name.length() > 0) {
 			setContainerFieldValue(name);
 		}
@@ -467,15 +469,15 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected MinimizedFileSystemElement createRootElement(
 			Object fileSystemObject, IImportStructureProvider provider) {
-		boolean isContainer = provider.isFolder(fileSystemObject);
-		String elementLabel = provider.getLabel(fileSystemObject);
+		final boolean isContainer = provider.isFolder(fileSystemObject);
+		final String elementLabel = provider.getLabel(fileSystemObject);
 
 		// Use an empty label so that display of the element's full name
 		// doesn't include a confusing label
-		MinimizedFileSystemElement dummyParent = new MinimizedFileSystemElement(
+		final MinimizedFileSystemElement dummyParent = new MinimizedFileSystemElement(
 				"", null, true);//$NON-NLS-1$
 		dummyParent.setPopulated();
-		MinimizedFileSystemElement result = new MinimizedFileSystemElement(
+		final MinimizedFileSystemElement result = new MinimizedFileSystemElement(
 				elementLabel, dummyParent, isContainer);
 		result.setFileSystemObject(fileSystemObject);
 
@@ -540,14 +542,14 @@ public class ErlangProjectImportWizardPage extends
 		initializeOperation(op);
 		try {
 			getContainer().run(true, true, op);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			return false;
-		} catch (InvocationTargetException e) {
+		} catch (final InvocationTargetException e) {
 			displayErrorDialog(e.getTargetException());
 			return false;
 		}
 
-		IStatus status = op.getStatus();
+		final IStatus status = op.getStatus();
 		if (!status.isOK()) {
 			ErrorDialog.openError(getContainer().getShell(),
 					ErlangDataTransferMessages.FileImport_importProblems, null, // no
@@ -574,7 +576,7 @@ public class ErlangProjectImportWizardPage extends
 
 		saveWidgetValues();
 
-		Iterator<?> resourcesEnum = getSelectedResources().iterator();
+		final Iterator<?> resourcesEnum = getSelectedResources().iterator();
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		while (resourcesEnum.hasNext()) {
 			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
@@ -649,7 +651,7 @@ public class ErlangProjectImportWizardPage extends
 	boolean linkToResources(List<Object> fileSystemObjects,
 			IProgressMonitor monitor) throws InvocationTargetException,
 			CoreException {
-		String projectName = getProjectName();
+		final String projectName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(projectName);
 
@@ -674,7 +676,7 @@ public class ErlangProjectImportWizardPage extends
 			project.create(description, new SubProgressMonitor(monitor, 30));
 			project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
 					monitor, 70));
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			throw new InvocationTargetException(e);
 		} finally {
 			monitor.done();
@@ -693,7 +695,7 @@ public class ErlangProjectImportWizardPage extends
 			@Override
 			public Object[] getChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					return element.getFiles(
 							FileSystemStructureProvider.INSTANCE).getChildren(
 							element);
@@ -710,7 +712,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected MinimizedFileSystemElement getFileSystemTree() {
 
-		File sourceDirectory = getSourceDirectory();
+		final File sourceDirectory = getSourceDirectory();
 		if (sourceDirectory == null) {
 			return null;
 		}
@@ -729,7 +731,7 @@ public class ErlangProjectImportWizardPage extends
 			@Override
 			public Object[] getChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					return element.getFolders(
 							FileSystemStructureProvider.INSTANCE).getChildren(
 							element);
@@ -740,7 +742,7 @@ public class ErlangProjectImportWizardPage extends
 			@Override
 			public boolean hasChildren(Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					if (true) {
 						return getChildren(element).length > 0;
 					}
@@ -758,7 +760,7 @@ public class ErlangProjectImportWizardPage extends
 	 * if it exists as a valid directory, or <code>null</code> otherwise.
 	 */
 	protected File getSourceDirectory() {
-		return getSourceDirectory(this.sourceNameField.getText());
+		return getSourceDirectory(sourceNameField.getText());
 	}
 
 	/**
@@ -769,7 +771,7 @@ public class ErlangProjectImportWizardPage extends
 	 *            a String not yet formatted for java.io.File compatability
 	 */
 	private File getSourceDirectory(String path) {
-		File sourceDirectory = new File(getSourceDirectoryName(path));
+		final File sourceDirectory = new File(getSourceDirectoryName(path));
 		if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
 			return null;
 		}
@@ -783,7 +785,7 @@ public class ErlangProjectImportWizardPage extends
 	 * java treats it as a proper directory
 	 */
 	private String getSourceDirectoryName() {
-		return getSourceDirectoryName(this.sourceNameField.getText());
+		return getSourceDirectoryName(sourceNameField.getText());
 	}
 
 	/**
@@ -831,17 +833,17 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void handleSourceBrowseButtonPressed() {
 
-		String currentSource = this.sourceNameField.getText();
-		DirectoryDialog dialog = new DirectoryDialog(
-				sourceNameField.getShell(), SWT.SAVE);
+		final String currentSource = sourceNameField.getText();
+		final DirectoryDialog dialog = new DirectoryDialog(sourceNameField
+				.getShell(), SWT.SAVE);
 		dialog.setText(SELECT_SOURCE_TITLE);
 		dialog.setMessage(SELECT_SOURCE_MESSAGE);
 		dialog.setFilterPath(getSourceDirectoryName(currentSource));
 
-		String selectedDirectory = dialog.open();
+		final String selectedDirectory = dialog.open();
 		if (selectedDirectory != null) {
 			// Just quit if the directory is not valid
-			if ((getSourceDirectory(selectedDirectory) == null)
+			if (getSourceDirectory(selectedDirectory) == null
 					|| selectedDirectory.equals(currentSource)) {
 				return;
 			}
@@ -868,9 +870,9 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected boolean importResources(List<Object> fileSystemObjects) {
 
-		ImportOperation operation = new ImportOperation(getContainerFullPath(),
-				getSourceDirectory(), FileSystemStructureProvider.INSTANCE,
-				this, fileSystemObjects);
+		final ImportOperation operation = new ImportOperation(
+				getContainerFullPath(), getSourceDirectory(),
+				FileSystemStructureProvider.INSTANCE, this, fileSystemObjects);
 
 		operation.setContext(getShell());
 		return executeImportOperation(operation);
@@ -902,7 +904,7 @@ public class ErlangProjectImportWizardPage extends
 			return true;
 		}
 
-		Iterator<?> itr = selectedTypes.iterator();
+		final Iterator<?> itr = selectedTypes.iterator();
 		while (itr.hasNext()) {
 			if (extension.equalsIgnoreCase((String) itr.next())) {
 				return true;
@@ -917,8 +919,8 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected void resetSelection() {
 
-		MinimizedFileSystemElement currentRoot = getFileSystemTree();
-		this.selectionGroup.setRoot(currentRoot);
+		final MinimizedFileSystemElement currentRoot = getFileSystemTree();
+		selectionGroup.setRoot(currentRoot);
 
 	}
 
@@ -928,9 +930,10 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	@Override
 	protected void restoreWidgetValues() {
-		IDialogSettings settings = getDialogSettings();
+		final IDialogSettings settings = getDialogSettings();
 		if (settings != null) {
-			String[] sourceNames = settings.getArray(STORE_SOURCE_NAMES_ID);
+			final String[] sourceNames = settings
+					.getArray(STORE_SOURCE_NAMES_ID);
 			if (sourceNames == null) {
 				return; // ie.- no values stored, so stop
 			}
@@ -959,7 +962,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	@Override
 	protected void saveWidgetValues() {
-		IDialogSettings settings = getDialogSettings();
+		final IDialogSettings settings = getDialogSettings();
 		if (settings != null) {
 			// update source names history
 			String[] sourceNames = settings.getArray(STORE_SOURCE_NAMES_ID);
@@ -1025,7 +1028,7 @@ public class ErlangProjectImportWizardPage extends
 
 		if (path.length() > 0) {
 
-			String[] currentItems = this.sourceNameField.getItems();
+			final String[] currentItems = sourceNameField.getItems();
 			int selectionIndex = -1;
 			for (int i = 0; i < currentItems.length; i++) {
 				if (currentItems[i].equals(path)) {
@@ -1033,14 +1036,14 @@ public class ErlangProjectImportWizardPage extends
 				}
 			}
 			if (selectionIndex < 0) {
-				int oldLength = currentItems.length;
-				String[] newItems = new String[oldLength + 1];
+				final int oldLength = currentItems.length;
+				final String[] newItems = new String[oldLength + 1];
 				System.arraycopy(currentItems, 0, newItems, 0, oldLength);
 				newItems[oldLength] = path;
-				this.sourceNameField.setItems(newItems);
+				sourceNameField.setItems(newItems);
 				selectionIndex = oldLength;
 			}
-			this.sourceNameField.select(selectionIndex);
+			sourceNameField.select(selectionIndex);
 
 			resetSelection();
 		}
@@ -1102,7 +1105,7 @@ public class ErlangProjectImportWizardPage extends
 		};
 
 		@SuppressWarnings("unused")
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(final IProgressMonitor monitor)
 					throws InterruptedException {
 				monitor.beginTask(
@@ -1145,7 +1148,7 @@ public class ErlangProjectImportWizardPage extends
 		super.setVisible(visible);
 		resetSelection();
 		if (visible) {
-			this.sourceNameField.setFocus();
+			sourceNameField.setFocus();
 		}
 	}
 
@@ -1178,7 +1181,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	@Override
 	protected boolean validateSourceGroup() {
-		File sourceDirectory = getSourceDirectory();
+		final File sourceDirectory = getSourceDirectory();
 		if (sourceDirectory == null) {
 			setMessage(SOURCE_EMPTY_MESSAGE);
 			enableButtonGroup(false);
@@ -1193,7 +1196,8 @@ public class ErlangProjectImportWizardPage extends
 		// if (!isCopyFiles()) {
 		// selectionGroup.setAllSelections(true);
 		// }
-		List<?> resourcesToExport = selectionGroup.getAllWhiteCheckedItems();
+		final List<?> resourcesToExport = selectionGroup
+				.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
 			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
 			return false;
@@ -1211,13 +1215,13 @@ public class ErlangProjectImportWizardPage extends
 	 * @return
 	 */
 	public String getProjectName() {
-		Iterator<?> resourcesEnum = getSelectedResources().iterator();
-		List<Object> fileSystemObjects = new ArrayList<Object>();
+		final Iterator<?> resourcesEnum = getSelectedResources().iterator();
+		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		while (resourcesEnum.hasNext()) {
 			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
 					.getFileSystemObject());
 		}
-		return this.projectName;
+		return projectName;
 	}
 
 	public IPath getLocationPath() {
@@ -1226,11 +1230,11 @@ public class ErlangProjectImportWizardPage extends
 	}
 
 	public boolean isCopyFiles() {
-		return this.copyFiles;
+		return copyFiles;
 	}
 
 	public Path getProjectPath() {
-		return this.projectPath;
+		return projectPath;
 	}
 
 	// public boolean createLinkedProject (final ProjectRecord record,

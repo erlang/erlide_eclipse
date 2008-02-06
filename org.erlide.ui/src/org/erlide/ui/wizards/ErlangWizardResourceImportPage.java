@@ -25,7 +25,7 @@ import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.model.WorkbenchViewerSorter;
+import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.erlide.ui.util.DialogUtil;
 import org.erlide.ui.util.IElementFilter;
 import org.erlide.ui.util.ResourceTreeAndListGroup;
@@ -52,11 +52,14 @@ public abstract class ErlangWizardResourceImportPage extends
 
 	// messages
 
-//	private static final String EMPTY_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyFolder;
-//
-//	private static final String EMPTY_PROJECT_MESSAGE = ErlangDataTransferMessages.WizardImportPage_specifyProject;
-//
-//	private static final String INACCESSABLE_FOLDER_MESSAGE = ErlangDataTransferMessages.WizardImportPage_folderMustExist;
+	// private static final String EMPTY_FOLDER_MESSAGE =
+	// ErlangDataTransferMessages.WizardImportPage_specifyFolder;
+	//
+	// private static final String EMPTY_PROJECT_MESSAGE =
+	// ErlangDataTransferMessages.WizardImportPage_specifyProject;
+	//
+	// private static final String INACCESSABLE_FOLDER_MESSAGE =
+	// ErlangDataTransferMessages.WizardImportPage_folderMustExist;
 
 	/**
 	 * Creates an import wizard page. If the initial resource selection contains
@@ -75,9 +78,9 @@ public abstract class ErlangWizardResourceImportPage extends
 		// Initialize to null
 		currentResourceSelection = null;
 		if (selection.size() == 1) {
-			Object firstElement = selection.getFirstElement();
+			final Object firstElement = selection.getFirstElement();
 			if (firstElement instanceof IAdaptable) {
-				Object resource = ((IAdaptable) firstElement)
+				final Object resource = ((IAdaptable) firstElement)
 						.getAdapter(IResource.class);
 				if (resource != null) {
 					currentResourceSelection = (IResource) resource;
@@ -114,17 +117,16 @@ public abstract class ErlangWizardResourceImportPage extends
 
 		initializeDialogUnits(parent);
 
-		//Browse
-		Composite composite = new Composite(parent, SWT.NULL);
+		// Browse
+		final Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		
 		createSourceGroup(composite);
-		
+
 		// createDestinationGroup(composite);
 
 		createOptionsGroup(composite);
@@ -180,7 +182,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	//
 	// initialPopulateContainerField();
 	// }
-	
+
 	/**
 	 * Create the import source selection widget
 	 */
@@ -188,26 +190,25 @@ public abstract class ErlangWizardResourceImportPage extends
 	protected void createFileSelectionGroup(Composite parent) {
 
 		// Just create with a dummy root.
-		this.selectionGroup = new ResourceTreeAndListGroup(
+		selectionGroup = new ResourceTreeAndListGroup(
 				parent,
 				new FileSystemElement("Dummy", null, true),//$NON-NLS-1$
 				getFolderProvider(), new WorkbenchLabelProvider(),
 				getFileProvider(), new WorkbenchLabelProvider(), SWT.NONE,
 				DialogUtil.inRegularFontMode(parent));
 
-		ICheckStateListener listener = new ICheckStateListener() {
+		final ICheckStateListener listener = new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				updateWidgetEnablements();
 			}
 		};
 
-		WorkbenchViewerSorter sorter = new WorkbenchViewerSorter();
-		this.selectionGroup.setTreeSorter(sorter);
-		this.selectionGroup.setListSorter(sorter);
-		this.selectionGroup.addCheckStateListener(listener);
+		final WorkbenchViewerComparator comparator = new WorkbenchViewerComparator();
+		selectionGroup.setTreeComparator(comparator);
+		selectionGroup.setListComparator(comparator);
+		selectionGroup.addCheckStateListener(listener);
 
 	}
-	
 
 	/**
 	 * Creates the import source specification controls.
@@ -219,7 +220,6 @@ public abstract class ErlangWizardResourceImportPage extends
 	 *            the parent control
 	 */
 	protected abstract void createSourceGroup(Composite parent);
-	
 
 	/*
 	 * @see WizardDataTransferPage.getErrorDialogTitle()
@@ -241,10 +241,10 @@ public abstract class ErlangWizardResourceImportPage extends
 	 *         container name entry field, or <code>null</code>
 	 */
 	protected IPath getContainerFullPath() {
-		//IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
+		// IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
 
 		// make the path absolute to allow for optional leading slash
-		IPath testPath = getResourcePath();
+		final IPath testPath = getResourcePath();
 
 		return testPath;
 
@@ -281,7 +281,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	@SuppressWarnings("unchecked")
 	protected java.util.List getSelectedResources() {
-		return this.selectionGroup.getAllCheckedListItems();
+		return selectionGroup.getAllCheckedListItems();
 	}
 
 	/**
@@ -291,7 +291,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	protected void getSelectedResources(IElementFilter filter,
 			IProgressMonitor monitor) throws InterruptedException {
-		this.selectionGroup.getAllCheckedListItems(filter, monitor);
+		selectionGroup.getAllCheckedListItems(filter, monitor);
 	}
 
 	/**
@@ -304,9 +304,9 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	protected IContainer getSpecifiedContainer() {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IPath path = getContainerFullPath();
+		final IPath path = getContainerFullPath();
 		if (root.exists(path)) {
-			IResource resource = root.findMember(path);
+			final IResource resource = root.findMember(path);
 			if (resource.getType() == IResource.FILE) {
 				return null;
 			}
@@ -364,14 +364,14 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	protected void handleTypesEditButtonPressed() {
 
-		TypeFilteringDialog dialog = new TypeFilteringDialog(getContainer()
-				.getShell(), getTypesToImport());
+		final TypeFilteringDialog dialog = new TypeFilteringDialog(
+				getContainer().getShell(), getTypesToImport());
 		dialog.open();
-		Object[] newSelectedTypes = dialog.getResult();
+		final Object[] newSelectedTypes = dialog.getResult();
 		if (newSelectedTypes != null) { // ie.- did not press Cancel
-			this.selectedTypes = new ArrayList<Object>(newSelectedTypes.length);
+			selectedTypes = new ArrayList<Object>(newSelectedTypes.length);
 			for (int i = 0; i < newSelectedTypes.length; i++) {
-				this.selectedTypes.add(newSelectedTypes[i]);
+				selectedTypes.add(newSelectedTypes[i]);
 			}
 			setupSelectionsBasedOnSelectedTypes();
 		}
@@ -426,7 +426,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	protected void updateSelections(final Map<Object, List<Object>> map) {
 
-		Runnable runnable = new Runnable() {
+		final Runnable runnable = new Runnable() {
 			public void run() {
 				selectionGroup.updateSelections(map);
 			}
@@ -441,7 +441,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	@Override
 	protected void updateWidgetEnablements() {
 
-		boolean pageComplete = determinePageCompletion();
+		final boolean pageComplete = determinePageCompletion();
 		setPageComplete(pageComplete);
 		if (pageComplete) {
 			setMessage(null);
@@ -510,7 +510,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * destination.
 	 */
 	protected final String getSourceConflictMessage() {
-		return (ErlangDataTransferMessages.WizardImportPage_importOnReceiver);
+		return ErlangDataTransferMessages.WizardImportPage_importOnReceiver;
 	}
 
 	/**
@@ -540,19 +540,19 @@ public abstract class ErlangWizardResourceImportPage extends
 		return super.determinePageCompletion();
 	}
 
-//		/**
-//	 * Returns whether or not the passed workspace has any open projects
-//	 * 
-//	 * @return boolean
-//	 */
-//	private boolean noOpenProjects() {
-//		IProject[] projects = IDEWorkbenchPlugin.getPluginWorkspace().getRoot()
-//				.getProjects();
-//		for (int i = 0; i < projects.length; i++) {
-//			if (projects[i].isOpen()) {
-//				return false;
-//			}
-//		}
-//		return true;
-//	}
+	// /**
+	// * Returns whether or not the passed workspace has any open projects
+	// *
+	// * @return boolean
+	// */
+	// private boolean noOpenProjects() {
+	// IProject[] projects = IDEWorkbenchPlugin.getPluginWorkspace().getRoot()
+	// .getProjects();
+	// for (int i = 0; i < projects.length; i++) {
+	// if (projects[i].isOpen()) {
+	// return false;
+	// }
+	// }
+	// return true;
+	// }
 }
