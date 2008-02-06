@@ -21,7 +21,6 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.IBuffer;
 import org.erlide.core.erlang.util.Util;
 
 /**
@@ -143,29 +142,30 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * @see IErlElement
 	 */
 	public IResource getResource() {
-		return this.getParent().getResource();
+		return getParent().getResource();
 	}
 
 	/**
 	 * @see ISourceReference
 	 */
 	public String getSource() throws ErlModelException {
-		final IOpenable openable = getOpenableParent();
-		final IBuffer buffer = openable.getBuffer();
-		if (buffer == null) {
-			return null;
-		}
-		final ISourceRange range = getSourceRange();
-		final int offset = range.getOffset();
-		final int length = range.getLength();
-		if (offset == -1 || length == 0) {
-			return null;
-		}
-		try {
-			return buffer.getText(offset, length);
-		} catch (final RuntimeException e) {
-			return null;
-		}
+		// final IOpenable openable = getOpenableParent();
+		// final IBuffer buffer = openable.getBuffer();
+		// if (buffer == null) {
+		// return null;
+		// }
+		// final ISourceRange range = getSourceRange();
+		// final int offset = range.getOffset();
+		// final int length = range.getLength();
+		// if (offset == -1 || length == 0) {
+		// return null;
+		// }
+		// try {
+		// return buffer.getText(offset, length);
+		// } catch (final RuntimeException e) {
+		// return null;
+		// }
+		return "";
 	}
 
 	/**
@@ -226,7 +226,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 			throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
 		}
 		final IErlElement[] elements = new IErlElement[] { this };
-		final IErlElement[] dests = new IErlElement[] { this.getParent() };
+		final IErlElement[] dests = new IErlElement[] { getParent() };
 		final String[] renamings = new String[] { newName };
 		getModel().rename(elements, dests, renamings, force, monitor);
 	}
@@ -256,11 +256,11 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	}
 
 	public int getLineStart() {
-		return this.lineStart;
+		return lineStart;
 	}
 
 	public int getLineEnd() {
-		return this.lineEnd;
+		return lineEnd;
 	}
 
 	protected void setLineEnd(int lineEnd) {

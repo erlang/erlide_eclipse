@@ -35,8 +35,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.BufferManager;
-import org.erlide.core.erlang.util.IBuffer;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
@@ -57,11 +55,13 @@ public class ErlModule extends Openable implements IErlModule {
 	// private IDocument fDoc;
 	private final List<IErlComment> comments;
 
-	private IErlScanner fScanner;
+	private final IErlScanner fScanner;
 
 	private final IFile fFile;
 
-	private boolean fFirstInsert = true;
+	// These are needed to ignore the initial INSERT of all text and final
+	// DELETE of all text
+	private boolean fIgnoreNextReconcile = false;
 
 	protected ErlModule(IErlElement parent, String name, boolean isErl,
 			IFile file) {
@@ -73,25 +73,23 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
+		String initialText;
+		try {
+			initialText = new String(Util.getResourceContentsAsCharArray(file));
+		} catch (final ErlModelException e) {
+			initialText = "";
+		}
+		fScanner = new ErlScanner(this, initialText);
 	}
 
 	protected ErlModule(IErlElement parent, String name, String text,
 			boolean isErl, IFile file) {
 		this(parent, name, isErl, file);
-		final IBuffer b = BufferManager.getDefaultBufferManager().createBuffer(
-				this);
-		b.setContents(text);
-		b.addBufferChangedListener(this);
 	}
 
 	@Override
 	protected boolean buildStructure(IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
-		// get buffer contents
-		final IBuffer buffer = getBufferManager().getBuffer(this);
-		if (buffer == null) {
-			openBuffer(pm, this);
-		}
 
 		// generate structure and compute syntax problems if needed
 		final IErlProject project = getErlProject();
@@ -172,11 +170,11 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public String getSource() throws ErlModelException {
-		return getBuffer().getContents();
+		return ""; // return getBuffer().getContents();
 	}
 
 	public ISourceRange getSourceRange() throws ErlModelException {
-		return new SourceRange(0, getBuffer().getLength());
+		return new SourceRange(0, 0);
 	}
 
 	public void copy(IErlElement container, IErlElement sibling, String rename,
@@ -208,19 +206,19 @@ public class ErlModule extends Openable implements IErlModule {
 		return true;
 	}
 
-	@Override
-	protected IBuffer openBuffer(IProgressMonitor pm, Object info) {
-		final IBuffer b = BufferManager.getDefaultBufferManager().createBuffer(
-				this);
-		try {
-			final IFile f = (IFile) getUnderlyingResource();
-			b.setContents(Util.getResourceContentsAsCharArray(f));
-			b.addBufferChangedListener(this);
-		} catch (final ErlModelException e) {
-			// e.printStackTrace();
-		}
-		return b;
-	}
+	// @Override
+	// protected IBuffer openBuffer(IProgressMonitor pm, Object info) {
+	// final IBuffer b = BufferManager.getDefaultBufferManager().createBuffer(
+	// this);
+	// try {
+	// final IFile f = (IFile) getUnderlyingResource();
+	// b.setContents(Util.getResourceContentsAsCharArray(f));
+	// b.addBufferChangedListener(this);
+	// } catch (final ErlModelException e) {
+	// // e.printStackTrace();
+	// }
+	// return b;
+	// }
 
 	public void addMember(IErlMember elem) {
 		addChild(elem);
@@ -312,10 +310,11 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlScanner getScanner() {
-		if (fScanner == null) {
-			fScanner = new ErlScanner(this);
-			fScanner.insertText(0, getBuffer().getContents());
-		}
+		// if (fScanner == null) {
+		// fScanner = new ErlScanner(this);
+		// // FIXxcME: få tag på texten på annat sätt! fScanner.insertText(0,
+		// // getBuffer().getContents());
+		// }
 		return fScanner;
 	}
 
@@ -355,30 +354,41 @@ public class ErlModule extends Openable implements IErlModule {
 		return 0;
 	}
 
-	public void insertText(int offset, String text) {
-		// ErlLogger.debug("insertText " + getElementName() + " offset " +
-		// offset
-		// + " length " + text.length());
-		if (!fFirstInsert) {
-			getBuffer().replace(offset, 0, text);
-
+	public void reconcileText(int offset, int removeLength, String newText,
+			IProgressMonitor mon) {
+		// getScanner();
+		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
+				+ newText.length() + " ign " + fIgnoreNextReconcile);
+		if (fIgnoreNextReconcile) {
+			fIgnoreNextReconcile = false;
+			return;
 		}
-		getScanner();
-		if (!fFirstInsert) {
-			fScanner.insertText(offset, text);
+		if (removeLength != 0) {
+			fScanner.removeText(offset, removeLength);
 		}
-		fFirstInsert = false;
-		isStructureKnown = false;
+		if (newText.length() != 0) {
+			fScanner.insertText(offset, newText);
+		}
+		setIsStructureKnown(false);
+		try {
+			open(mon);
+		} catch (final ErlModelException e) {
+			// not much to do
+		}
 	}
 
-	public void removeText(int offset, int length) {
-		// ErlLogger.debug("removeText " + getElementName() + " offset " +
-		// offset
-		// + " length " + length);
-		getBuffer().replace(offset, length, "");
-		getScanner();
-		fScanner.removeText(offset, length);
-		isStructureKnown = false;
+	@Override
+	protected void closing(Object info) throws ErlModelException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void finalReconcile() {
+		fIgnoreNextReconcile = true;
+	}
+
+	public void initialReconcile() {
+		fIgnoreNextReconcile = true;
 	}
 
 }

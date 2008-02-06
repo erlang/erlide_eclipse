@@ -94,11 +94,11 @@ public class ErlModel extends Openable implements IErlModel {
 		// file or folder
 		IErlProject[] projects;
 		try {
-			projects = this.getErlangProjects();
+			projects = getErlangProjects();
 		} catch (final ErlModelException e) {
 			return false;
 		}
-		for (IErlProject element : projects) {
+		for (final IErlProject element : projects) {
 			final ErlProject project = (ErlProject) element;
 			if (!project.contains(resource)) {
 				return false;
@@ -164,7 +164,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public IErlProject findErlangProject(IProject project) {
 		try {
-			final IErlProject[] projects = this.getErlangProjects();
+			final IErlProject[] projects = getErlangProjects();
 			for (final IErlProject erlangProject : projects) {
 				if (project.equals(erlangProject.getProject())) {
 					return erlangProject;
@@ -203,7 +203,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see IErlModel
 	 */
 	public IErlProject getErlangProject(String projectName) {
-		for (IErlElement element : fChildren) {
+		for (final IErlElement element : fChildren) {
 			if (element.getElementName().equals(projectName)) {
 				return (IErlProject) element;
 			}
@@ -327,7 +327,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	@Override
 	protected void toStringInfo(int tab, StringBuffer buffer, Object info) {
-		buffer.append(this.tabString(tab));
+		buffer.append(tabString(tab));
 		buffer.append("Erlang Model"); //$NON-NLS-1$
 		if (info == null) {
 			buffer.append(" (not open)"); //$NON-NLS-1$
@@ -420,7 +420,7 @@ public class ErlModel extends Openable implements IErlModel {
 		// ErlLogger.debug("^> notifying change of " +
 		// element.getElementName());
 		for (int i = 0; i < fListeners.size(); i++) {
-			(fListeners.get(i)).elementChanged(element);
+			fListeners.get(i).elementChanged(element);
 		}
 	}
 
@@ -453,8 +453,8 @@ public class ErlModel extends Openable implements IErlModel {
 					final IErlElement el = mod.getChildren()[j];
 					if (el instanceof IErlFunction) {
 						final IErlFunction fun = (IErlFunction) el;
-						final boolean arityOk = (arity == UNKNOWN_ARITY)
-								|| (arity == fun.getArity());
+						final boolean arityOk = arity == UNKNOWN_ARITY
+								|| arity == fun.getArity();
 						if (arityOk && fun.getElementName().matches(function)) {
 							funs.add(fun);
 						}
@@ -491,6 +491,12 @@ public class ErlModel extends Openable implements IErlModel {
 		}
 
 		return mods.toArray(new IErlModule[mods.size()]);
+	}
+
+	@Override
+	protected void closing(Object info) throws ErlModelException {
+		// TODO Auto-generated method stub
+
 	}
 
 }

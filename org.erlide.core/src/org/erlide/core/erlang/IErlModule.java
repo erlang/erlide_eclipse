@@ -12,6 +12,7 @@
  * *******************************************************************************/
 package org.erlide.core.erlang;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 
@@ -92,8 +93,10 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 
 	IErlScanner getScanner();
 
-	void insertText(int offset, String text);
+	void initialReconcile();
 
-	void removeText(int offset, int length);
+	public void reconcileText(int offset, int removeLength, String newText, IProgressMonitor mon);
+
+	void finalReconcile();
 
 }

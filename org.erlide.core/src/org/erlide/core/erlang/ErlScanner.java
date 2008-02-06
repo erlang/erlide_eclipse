@@ -30,10 +30,11 @@ public class ErlScanner implements IErlScanner {
 
 	private final OtpErlangAtom fMod;
 
-	public ErlScanner(IErlModule module) {
+	public ErlScanner(IErlModule module, String initialText) {
 		fModule = module;
 		fMod = new OtpErlangAtom(createScannerModuleName());
 		create();
+		insertText(0, initialText);
 	}
 
 	/**

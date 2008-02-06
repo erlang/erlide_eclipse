@@ -11,7 +11,6 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.erlang.util.IBuffer;
 
 /**
  * Common protocol for Erlang elements that must be opened before they can be
@@ -47,18 +46,6 @@ public interface IOpenable {
 	 *                if an error occurs closing this element
 	 */
 	void close() throws ErlModelException;
-
-	/**
-	 * Returns the buffer opened for this element, or <code>null</code> if
-	 * this element does not have a buffer.
-	 * 
-	 * @exception ErlModelException
-	 *                if this element does not exist or if an exception occurs
-	 *                while accessing its corresponding resource.
-	 * @return the buffer opened for this element, or <code>null</code> if
-	 *         this element does not have a buffer
-	 */
-	IBuffer getBuffer() throws ErlModelException;
 
 	/**
 	 * Returns <code>true</code> if this element is open and:

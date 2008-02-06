@@ -355,8 +355,8 @@ public class Util implements ISuffixConstants {
 	@SuppressWarnings("null")
 	public static final boolean endsWithIgnoreCase(String str, String end) {
 
-		final int strLength = (str == null) ? 0 : str.length();
-		final int endLength = (end == null) ? 0 : end.length();
+		final int strLength = str == null ? 0 : str.length();
+		final int endLength = end == null ? 0 : end.length();
 
 		// return false if the string is smaller than the end.
 		if (endLength > strLength) {
@@ -535,12 +535,12 @@ public class Util implements ISuffixConstants {
 			char nextChar = text[0];
 			for (int i = 0; i < length; i++) {
 				final char currentChar = nextChar;
-				nextChar = (i < length - 1) ? text[i + 1] : ' ';
+				nextChar = i < length - 1 ? text[i + 1] : ' ';
 				switch (currentChar) {
 				case '\n':
 					return "\n"; //$NON-NLS-1$
 				case '\r':
-					return (nextChar == '\n') ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
+					return nextChar == '\n' ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
@@ -548,26 +548,27 @@ public class Util implements ISuffixConstants {
 		return null;
 	}
 
-	/**
-	 * Returns the line separator used by the given buffer. Uses the given text
-	 * if none found.
-	 * 
-	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-	 *         </code>
-	 */
-	private static String getLineSeparator(char[] text, char[] buffer) {
-		// search in this buffer's contents first
-		String lineSeparator = findLineSeparator(buffer);
-		if (lineSeparator == null) {
-			// search in the given text
-			lineSeparator = findLineSeparator(text);
-			if (lineSeparator == null) {
-				// default to system line separator
-				return "\n";
-			}
-		}
-		return lineSeparator;
-	}
+	// /**
+	// * Returns the line separator used by the given buffer. Uses the given
+	// text
+	// * if none found.
+	// *
+	// * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
+	// * </code>
+	// */
+	// private static String getLineSeparator(char[] text, char[] buffer) {
+	// // search in this buffer's contents first
+	// String lineSeparator = findLineSeparator(buffer);
+	// if (lineSeparator == null) {
+	// // search in the given text
+	// lineSeparator = findLineSeparator(text);
+	// if (lineSeparator == null) {
+	// // default to system line separator
+	// return "\n";
+	// }
+	// }
+	// return lineSeparator;
+	// }
 
 	/**
 	 * Returns the number of parameter types in a method signature.
@@ -824,7 +825,8 @@ public class Util implements ISuffixConstants {
 						// http://ant.apache.org/manual/dirtasks.html)
 						final int star = CharOperation.indexOf('*', pattern,
 								lastSlash);
-						if ((star == -1 || star >= pattern.length - 1 || pattern[star + 1] != '*')) {
+						if (star == -1 || star >= pattern.length - 1
+								|| pattern[star + 1] != '*') {
 							folderPattern = CharOperation.subarray(pattern, 0,
 									lastSlash);
 						}
@@ -896,77 +898,79 @@ public class Util implements ISuffixConstants {
 		// ErlangCore.getPlugin().getLog().log(status);
 	}
 
-	/**
-	 * Normalizes the cariage returns in the given text. They are all changed to
-	 * use the given buffer's line separator.
-	 */
-	public static char[] normalizeCRs(char[] text, char[] buffer) {
-		final CharArrayBuffer result = new CharArrayBuffer();
-		int lineStart = 0;
-		final int length = text.length;
-		if (length == 0) {
-			return text;
-		}
-		final String lineSeparator = getLineSeparator(text, buffer);
-		char nextChar = text[0];
-		for (int i = 0; i < length; i++) {
-			final char currentChar = nextChar;
-			nextChar = (i < length - 1) ? text[i + 1] : ' ';
-			switch (currentChar) {
-			case '\n':
-				int lineLength = i - lineStart;
-				char[] line = new char[lineLength];
-				System.arraycopy(text, lineStart, line, 0, lineLength);
-				result.append(line);
-				result.append(lineSeparator);
-				lineStart = i + 1;
-				break;
-			case '\r':
-				lineLength = i - lineStart;
-				if (lineLength >= 0) {
-					line = new char[lineLength];
-					System.arraycopy(text, lineStart, line, 0, lineLength);
-					result.append(line);
-					result.append(lineSeparator);
-					if (nextChar == '\n') {
-						nextChar = ' ';
-						lineStart = i + 2;
-					} else {
-						// when line separator are mixed in the same file
-						// \r might not be followed by a \n. If not, we
-						// should increment
-						// lineStart by one and not by two.
-						lineStart = i + 1;
-					}
-				} else {
-					// when line separator are mixed in the same file
-					// we need to prevent NegativeArraySizeException
-					lineStart = i + 1;
-				}
-				break;
-			}
-		}
-		char[] lastLine;
-		if (lineStart > 0) {
-			final int lastLineLength = length - lineStart;
-			if (lastLineLength > 0) {
-				lastLine = new char[lastLineLength];
-				System.arraycopy(text, lineStart, lastLine, 0, lastLineLength);
-				result.append(lastLine);
-			}
-			return result.getContents();
-		}
-		return text;
-	}
-
-	/**
-	 * Normalizes the cariage returns in the given text. They are all changed to
-	 * use given buffer's line sepatator.
-	 */
-	public static String normalizeCRs(String text, String buffer) {
-		return new String(
-				normalizeCRs(text.toCharArray(), buffer.toCharArray()));
-	}
+	// /**
+	// * Normalizes the cariage returns in the given text. They are all changed
+	// to
+	// * use the given buffer's line separator.
+	// */
+	// public static char[] normalizeCRs(char[] text, char[] buffer) {
+	// final CharArrayBuffer result = new CharArrayBuffer();
+	// int lineStart = 0;
+	// final int length = text.length;
+	// if (length == 0) {
+	// return text;
+	// }
+	// final String lineSeparator = getLineSeparator(text, buffer);
+	// char nextChar = text[0];
+	// for (int i = 0; i < length; i++) {
+	// final char currentChar = nextChar;
+	// nextChar = (i < length - 1) ? text[i + 1] : ' ';
+	// switch (currentChar) {
+	// case '\n':
+	// int lineLength = i - lineStart;
+	// char[] line = new char[lineLength];
+	// System.arraycopy(text, lineStart, line, 0, lineLength);
+	// result.append(line);
+	// result.append(lineSeparator);
+	// lineStart = i + 1;
+	// break;
+	// case '\r':
+	// lineLength = i - lineStart;
+	// if (lineLength >= 0) {
+	// line = new char[lineLength];
+	// System.arraycopy(text, lineStart, line, 0, lineLength);
+	// result.append(line);
+	// result.append(lineSeparator);
+	// if (nextChar == '\n') {
+	// nextChar = ' ';
+	// lineStart = i + 2;
+	// } else {
+	// // when line separator are mixed in the same file
+	// // \r might not be followed by a \n. If not, we
+	// // should increment
+	// // lineStart by one and not by two.
+	// lineStart = i + 1;
+	// }
+	// } else {
+	// // when line separator are mixed in the same file
+	// // we need to prevent NegativeArraySizeException
+	// lineStart = i + 1;
+	// }
+	// break;
+	// }
+	// }
+	// char[] lastLine;
+	// if (lineStart > 0) {
+	// final int lastLineLength = length - lineStart;
+	// if (lastLineLength > 0) {
+	// lastLine = new char[lastLineLength];
+	// System.arraycopy(text, lineStart, lastLine, 0, lastLineLength);
+	// result.append(lastLine);
+	// }
+	// return result.getContents();
+	// }
+	// return text;
+	// }
+	//
+	// /**
+	// * Normalizes the cariage returns in the given text. They are all changed
+	// to
+	// * use given buffer's line sepatator.
+	// */
+	// public static String normalizeCRs(String text, String buffer) {
+	// return new String(
+	// normalizeCRs(text.toCharArray(), buffer.toCharArray()));
+	// }
 
 	/**
 	 * Returns the length of the common prefix between s1 and s2.
@@ -1260,7 +1264,7 @@ public class Util implements ISuffixConstants {
 				if ((char2 & 0xC0) != 0x80) {
 					throw new UTFDataFormatException();
 				}
-				str[strlen++] = (char) (((c & 0x1F) << 6) | (char2 & 0x3F));
+				str[strlen++] = (char) ((c & 0x1F) << 6 | char2 & 0x3F);
 				break;
 			case 14:
 				// 1110 xxxx 10xx xxxx 10xx xxxx
@@ -1270,11 +1274,10 @@ public class Util implements ISuffixConstants {
 				}
 				char2 = in.readUnsignedByte();
 				char3 = in.readUnsignedByte();
-				if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
+				if ((char2 & 0xC0) != 0x80 || (char3 & 0xC0) != 0x80) {
 					throw new UTFDataFormatException();
 				}
-				str[strlen++] = (char) (((c & 0x0F) << 12)
-						| ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
+				str[strlen++] = (char) ((c & 0x0F) << 12 | (char2 & 0x3F) << 6 | (char3 & 0x3F) << 0);
 				break;
 			default:
 				// 10xx xxxx, 1111 xxxx
@@ -1434,7 +1437,7 @@ public class Util implements ISuffixConstants {
 		int start = 0;
 		for (int i = 0; i < segCount; ++i) {
 			final int dot = s.indexOf('.', start);
-			final int end = ((dot == -1) ? s.length() : dot);
+			final int end = dot == -1 ? s.length() : dot;
 			segs[i] = new char[end - start];
 			s.getChars(start, end, segs[i], 0);
 			start = end + 1;
@@ -1472,7 +1475,7 @@ public class Util implements ISuffixConstants {
 			return new String(d);
 		}
 		final StringBuffer sb = new StringBuffer();
-		for (char[] element : c) {
+		for (final char[] element : c) {
 			sb.append(element);
 			sb.append('.');
 		}
@@ -1490,7 +1493,7 @@ public class Util implements ISuffixConstants {
 			final int end = log.indexOf('\n', start);
 			printStream.print(Thread.currentThread());
 			printStream.print(" "); //$NON-NLS-1$
-			printStream.print(log.substring(start, (end == -1) ? log.length()
+			printStream.print(log.substring(start, end == -1 ? log.length()
 					: end + 1));
 			start = end + 1;
 		} while (start != 0);
@@ -1519,7 +1522,7 @@ public class Util implements ISuffixConstants {
 		int utflen = 0;
 		for (int i = 0; i < strlen; i++) {
 			final int c = str[i];
-			if ((c >= 0x0001) && (c <= 0x007F)) {
+			if (c >= 0x0001 && c <= 0x007F) {
 				utflen++;
 			} else if (c > 0x07FF) {
 				utflen += 3;
@@ -1530,8 +1533,8 @@ public class Util implements ISuffixConstants {
 		if (utflen > 65535) {
 			throw new UTFDataFormatException();
 		}
-		out.write((utflen >>> 8) & 0xFF);
-		out.write((utflen >>> 0) & 0xFF);
+		out.write(utflen >>> 8 & 0xFF);
+		out.write(utflen >>> 0 & 0xFF);
 		if (strlen == utflen) {
 			for (int i = 0; i < strlen; i++) {
 				out.write(str[i]);
@@ -1539,15 +1542,15 @@ public class Util implements ISuffixConstants {
 		} else {
 			for (int i = 0; i < strlen; i++) {
 				final int c = str[i];
-				if ((c >= 0x0001) && (c <= 0x007F)) {
+				if (c >= 0x0001 && c <= 0x007F) {
 					out.write(c);
 				} else if (c > 0x07FF) {
-					out.write(0xE0 | ((c >> 12) & 0x0F));
-					out.write(0x80 | ((c >> 6) & 0x3F));
-					out.write(0x80 | ((c >> 0) & 0x3F));
+					out.write(0xE0 | c >> 12 & 0x0F);
+					out.write(0x80 | c >> 6 & 0x3F);
+					out.write(0x80 | c >> 0 & 0x3F);
 				} else {
-					out.write(0xC0 | ((c >> 6) & 0x1F));
-					out.write(0x80 | ((c >> 0) & 0x3F));
+					out.write(0xC0 | c >> 6 & 0x1F);
+					out.write(0x80 | c >> 0 & 0x3F);
 				}
 			}
 		}
@@ -1685,7 +1688,7 @@ public class Util implements ISuffixConstants {
 			contents = new byte[length];
 			int len = 0;
 			int readSize = 0;
-			while ((readSize != -1) && (len != length)) {
+			while (readSize != -1 && len != length) {
 				// See PR 1FMS89U
 				// We record first the read size. In this case len is the actual
 				// read size.
@@ -1726,7 +1729,7 @@ public class Util implements ISuffixConstants {
 	public static char[] getInputStreamAsCharArray(InputStream stream,
 			int length, String encoding) throws IOException {
 		InputStreamReader reader = null;
-		reader = (encoding == null) ? new InputStreamReader(stream)
+		reader = encoding == null ? new InputStreamReader(stream)
 				: new InputStreamReader(stream, encoding);
 		char[] contents;
 		if (length == -1) {
@@ -1774,7 +1777,7 @@ public class Util implements ISuffixConstants {
 			contents = new char[length];
 			int len = 0;
 			int readSize = 0;
-			while ((readSize != -1) && (len != length)) {
+			while (readSize != -1 && len != length) {
 				// See PR 1FMS89U
 				// We record first the read size. In this case len is the actual
 				// read size.
@@ -1808,7 +1811,7 @@ public class Util implements ISuffixConstants {
 	 */
 	@SuppressWarnings("null")
 	public static final boolean isErlangFileName(String name) {
-		final int nameLength = (name == null) ? 0 : name.length();
+		final int nameLength = name == null ? 0 : name.length();
 		final int suffixLength = SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;
@@ -1830,7 +1833,7 @@ public class Util implements ISuffixConstants {
 	 */
 	@SuppressWarnings("null")
 	public static final boolean isErlangFileName(char[] name) {
-		final int nameLength = (name == null) ? 0 : name.length;
+		final int nameLength = name == null ? 0 : name.length;
 		final int suffixLength = SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;

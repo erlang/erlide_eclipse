@@ -183,7 +183,7 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	private void buildStructure(IResource[] elems, List<IErlModule> modules) {
-		for (IResource element : elems) {
+		for (final IResource element : elems) {
 			// ErlLogger.debug("---< " + elems[fi].getName());
 			if (element instanceof IFolder) {
 				final IFolder ff = (IFolder) element;
@@ -210,10 +210,10 @@ public class ErlProject extends Openable implements IErlProject,
 
 	}
 
-	@Override
-	protected void closing(Object info) {
-		super.closing(info);
-	}
+	// @Override
+	// protected void closing(Object info) {
+	// super.closing(info);
+	// }
 
 	/**
 	 * Computes the collection of modules (local ones) and set it on the given
@@ -715,8 +715,8 @@ public class ErlProject extends Openable implements IErlProject,
 			return; // ignore
 		}
 
-		if (preferences == null
-				|| (!preferences.needsSaving() && preferences.propertyNames().length != 0)) {
+		if (preferences == null || !preferences.needsSaving()
+				&& preferences.propertyNames().length != 0) {
 			// nothing to save
 			return;
 		}
@@ -806,7 +806,7 @@ public class ErlProject extends Openable implements IErlProject,
 			final Iterator<Map.Entry<String, String>> entries = newOptions
 					.entrySet().iterator();
 			while (entries.hasNext()) {
-				Entry<String, String> entry = entries.next();
+				final Entry<String, String> entry = entries.next();
 				final String key = entry.getKey();
 				if (!ErlangCore.getModelManager().getOptionNames()
 						.contains(key)) {
@@ -969,7 +969,7 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!hasChildren()) {
 			open(null);
 		}
-		for (IErlElement element : fChildren) {
+		for (final IErlElement element : fChildren) {
 			final IErlModule m = (IErlModule) element;
 			if (m != null && m.getElementName().equals(name)) {
 				return m;
@@ -980,6 +980,12 @@ public class ErlProject extends Openable implements IErlProject,
 
 	public boolean isVisibleInOutline() {
 		return false;
+	}
+
+	@Override
+	protected void closing(Object info) throws ErlModelException {
+		// TODO Auto-generated method stub
+
 	}
 
 }
