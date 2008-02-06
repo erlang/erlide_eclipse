@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.ErlangBuilder;
+import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlElementDelta;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -748,7 +749,7 @@ public class ErlModelManager implements IErlModelManager {
 					if (in.readBoolean()) {
 						return ErlangBuilder.readState(project, in);
 					}
-					if (ErlangBuilder.isDebugging()) {
+					if (BuilderUtils.isDebugging()) {
 						System.out
 								.println("Saved state thinks last build failed for "
 										+ project.getName());
