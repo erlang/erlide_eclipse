@@ -14,8 +14,6 @@ import java.io.InputStreamReader;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -140,17 +138,17 @@ public class ResourceUtil {
 		return result;
 	}
 
-	private static IResource recursiveFindNamedResource(String name) {
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
-				.getRoot();
-		try {
-			return recursiveFindNamedResource(workspaceRoot, name);
-		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+	// private static IResource recursiveFindNamedResource(String name) {
+	// final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+	// .getRoot();
+	// try {
+	// return recursiveFindNamedResource(workspaceRoot, name);
+	// } catch (final CoreException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// return null;
+	// }
 
 	private static IResource recursiveFindNamedResource(IContainer container,
 			String name) throws CoreException {
@@ -174,13 +172,20 @@ public class ResourceUtil {
 		return null;
 	}
 
-	public static IResource recursiveFindNamedResourceTryRoot(
+	public static IResource recursiveFindNamedResourceWithReferences(
 			IContainer container, String name) throws CoreException {
 		final IResource r = recursiveFindNamedResource(container, name);
 		if (r != null) {
 			return r;
 		}
-		return recursiveFindNamedResource(name);
+		final IProject project = container.getProject();
+		for (final IProject p : project.getReferencedProjects()) {
+			final IResource r1 = recursiveFindNamedResource(p, name);
+			if (r1 != null) {
+				return r1;
+			}
+		}
+		return null;
 	}
 
 	/**
