@@ -667,10 +667,11 @@ public class DefaultErlangFoldingStructureProvider implements
 				final ISourceReference reference = (ISourceReference) element;
 				final ISourceRange range = reference.getSourceRange();
 
-				final String contents = reference.getSource();
-				if (contents == null) {
-					return null;
-				}
+				// TODO is this meaningful att all?
+				// final String contents = reference.getSource();
+				// if (contents == null) {
+				// return null;
+				// }
 
 				return new Region(range.getOffset(), range.getLength());
 			}

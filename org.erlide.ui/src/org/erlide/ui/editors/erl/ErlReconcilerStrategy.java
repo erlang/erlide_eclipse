@@ -19,7 +19,6 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
@@ -70,19 +69,12 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
 		Assert.isNotNull(fModule);
 		if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-			fModule.insertText(dirtyRegion.getOffset(), dirtyRegion.getText());
+			fModule.reconcileText(dirtyRegion.getOffset(), 0, dirtyRegion
+					.getText(), mon);
 		} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
-			fModule
-					.removeText(dirtyRegion.getOffset(), dirtyRegion
-							.getLength());
+			fModule.reconcileText(dirtyRegion.getOffset(), dirtyRegion
+					.getLength(), "", mon);
 		}
-		try {
-			fModule.open(null);
-		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// fModule.reconcile(fDoc, dirtyRegion);
 		mon.done();
 	}
 
@@ -95,6 +87,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		// fModule.getScanner();
 		// ErlLogger.debug("## module:: " + fModule.getElementName());
 		// }
+		fModule.initialReconcile();
 		notify(new OtpErlangAtom("initialReconcile"));
 	}
 
@@ -104,6 +97,10 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	public void setProgressMonitor(IProgressMonitor monitor) {
 		mon = monitor;
+	}
+
+	public void uninstall() {
+		fModule.finalReconcile();
 	}
 
 }

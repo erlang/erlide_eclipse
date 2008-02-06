@@ -635,11 +635,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			try {
 				if (reconcile) {
 					module.open(null);
-					synchronized (module) {
-						fullReconcileModule(module, getSourceViewer()
-								.getDocument());
-						module.open(null);
-					}
+					// synchronized (module) {
+					// fullReconcileModule(module, getSourceViewer()
+					// .getDocument());
+					// module.open(null);
+					// }
 					return module.getElementAt(offset);
 				} else if (module.isConsistent()) {
 					return module.getElementAt(offset);
@@ -650,9 +650,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return null;
 	}
 
-	private void fullReconcileModule(IErlModule module, IDocument document) {
-		module.insertText(0, document.get());
-	}
+	// private void fullReconcileModule(IErlModule module, IDocument document) {
+	// module.insertText(0, document.get());
+	// }
 
 	protected abstract class AbstractSelectionChangedListener implements
 			ISelectionChangedListener {
