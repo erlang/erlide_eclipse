@@ -88,14 +88,14 @@ public final class BackendManager implements IResourceChangeListener {
 		final AbstractBackend b = bt.create();
 		b.setLabel(name);
 
-		ILaunch launch = b.initialize();
+		final ILaunch launch = b.initialize();
 		b.connect();
 		if (debug) {
 			final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
 			launch.addDebugTarget(target);
 		}
 
-		for (Object element0 : fPlugins) {
+		for (final Object element0 : fPlugins) {
 			final Plugin element = (Plugin) element0;
 			b.getCodeManager().addPlugin(element);
 		}
@@ -112,7 +112,7 @@ public final class BackendManager implements IResourceChangeListener {
 		final AbstractBackend b = bt.create();
 		b.setLabel(name);
 
-		ILaunch launch = b.initialize();
+		final ILaunch launch = b.initialize();
 		b.connect();
 		if (launch != null) {
 			final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
@@ -149,7 +149,7 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		String prjLabel = prefs.getBackendNodeName();
+		final String prjLabel = prefs.getBackendNodeName();
 		if (prjLabel.length() == 0) {
 			// we use the ide backend in this case
 			return DEFAULT_BACKEND_LABEL;
@@ -236,7 +236,7 @@ public final class BackendManager implements IResourceChangeListener {
 			fChanged = b;
 			fType = type;
 			final Object[] copiedListeners = fListeners.toArray();
-			for (Object element : copiedListeners) {
+			for (final Object element : copiedListeners) {
 				fListener = (IBackendListener) element;
 				SafeRunner.run(this);
 			}
@@ -279,7 +279,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachLocal(IBackendVisitor visitor) {
 		synchronized (fLocalBackendsLock) {
-			for (Object element : fLocalBackends.values()) {
+			for (final Object element : fLocalBackends.values()) {
 				final IBackend b = (IBackend) element;
 				try {
 					visitor.run(b);
@@ -291,7 +291,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachRemote(IBackendVisitor visitor) {
 		synchronized (fRemoteBackendsLock) {
-			for (Object element : fRemoteBackends.values()) {
+			for (final Object element : fRemoteBackends.values()) {
 				final IBackend b = (IBackend) element;
 				try {
 					visitor.run(b);
@@ -327,7 +327,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 			synchronized (fLocalBackendsLock) {
 				final IBackend bl = fLocalBackends.get(parts[0]);
-				return (bl == null) || (!bl.getLabel().equals(label));
+				return bl == null || !bl.getLabel().equals(label);
 			}
 
 		} catch (final Exception e) {
@@ -382,29 +382,31 @@ public final class BackendManager implements IResourceChangeListener {
 					}
 				}
 
-				final Set<String> keySet = fRemoteBackends.keySet();
-				for (final String key : keySet) {
-					boolean found = false;
+				synchronized (fRemoteBackendsLock) {
+					final Set<String> keySet = fRemoteBackends.keySet();
+					for (final String key : keySet) {
+						boolean found = false;
 
-					for (Object element : labels) {
-						final String label = (String) element;
+						for (final Object element : labels) {
+							final String label = (String) element;
 
-						if (isExtErlideLabel(label) && label.equals(key)) {
-							found = true;
-							break;
+							if (isExtErlideLabel(label) && label.equals(key)) {
+								found = true;
+								break;
+							}
 						}
-					}
 
-					if (!found) {
-						final IBackend b = fRemoteBackends.get(key);
-						if (b != null) {
-							fRemoteBackends.remove(key);
-							fireUpdate(b, REMOVED);
+						if (!found) {
+							final IBackend b = fRemoteBackends.get(key);
+							if (b != null) {
+								fRemoteBackends.remove(key);
+								fireUpdate(b, REMOVED);
+							}
 						}
 					}
 				}
 
-				for (Object element : labels) {
+				for (final Object element : labels) {
 					final String label = (String) element;
 
 					if (isExtErlideLabel(label)) {
