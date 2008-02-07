@@ -324,11 +324,11 @@ public class OpenAction extends SelectionDispatchAction {
 				final String fun = ((OtpErlangAtom) mf.elementAt(1))
 						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(2)).intValue();
+				String path = "";
 				if (mf.elementAt(3) instanceof OtpErlangString) {
-					final String path = ((OtpErlangString) mf.elementAt(3))
-							.stringValue();
-					openExternalFunction(mod, fun, arity, path);
+					path = ((OtpErlangString) mf.elementAt(3)).stringValue();
 				}
+				openExternalFunction(mod, fun, arity, path);
 			} else if (external.equals("include")) {
 				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
 				final String mod = s.stringValue();
@@ -355,8 +355,7 @@ public class OpenAction extends SelectionDispatchAction {
 					return;
 				}
 				final IEditorPart editor = page.getActiveEditor();
-				if (!open(fun, arity, editor)) { // not local, so check
-					// imports
+				if (!open(fun, arity, editor)) { // not local, imports
 					if (module == null) {
 						return;
 					}
@@ -483,9 +482,10 @@ public class OpenAction extends SelectionDispatchAction {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
-	private void openExternalFunction(String mod, String fun, int arity, String path)
-			throws CoreException {
+	private void openExternalFunction(String mod, String fun, int arity,
+			String path) throws CoreException {
 		final String modFileName = mod + ".erl";
+		ErlLogger.debug("open ex mod" + modFileName);
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
 		IResource r = null;
 		if (m != null) {
@@ -538,14 +538,13 @@ public class OpenAction extends SelectionDispatchAction {
 			return false;
 		}
 		final IErlModule m = ErlModelUtils.getModule(editor.getEditorInput());
+		ErlLogger.debug("open fun m" + fun + "/" + arity + " " + m);
 		if (m == null) {
 			return false;
 		}
-		if (!m.isStructureKnown()) {
-			m.open(null); // FIXME vi måste kolla så att den inte
-			// dubbel-parsas... kanske sätta nån flagga på
-			// modulen?
-		}
+		m.open(null); // FIXME vi måste kolla så att den inte
+		// dubbel-parsas... kanske sätta nån flagga på
+		// modulen? funkar isStructureKnown() ??
 		final IErlFunction function = ErlModelUtils.findFunction(m, fun, arity);
 		if (function == null) {
 			return false;
