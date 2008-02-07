@@ -327,7 +327,7 @@ public class OpenAction extends SelectionDispatchAction {
 				if (mf.elementAt(3) instanceof OtpErlangString) {
 					final String path = ((OtpErlangString) mf.elementAt(3))
 							.stringValue();
-					open(mod, fun, arity, path);
+					openExternalFunction(mod, fun, arity, path);
 				}
 			} else if (external.equals("include")) {
 				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
@@ -373,7 +373,7 @@ public class OpenAction extends SelectionDispatchAction {
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
-						open(mod, fun, arity, path);
+						openExternalFunction(mod, fun, arity, path);
 					}
 				}
 				// } else if (external.equals("variable")) {
@@ -422,9 +422,17 @@ public class OpenAction extends SelectionDispatchAction {
 				if (pd == null) {
 					final ErlangIncludeFile[] includes = m.getIncludedFiles();
 					for (final ErlangIncludeFile element : includes) {
-						final IResource re = ResourceUtil
+						IResource re = ResourceUtil
 								.recursiveFindNamedResourceWithReferences(
 										project, element.getFilenameLastPart());
+						if (re == null) {
+							try {
+								re = EditorUtility.openExternal(element
+										.getFilename());
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
+						}
 						if (re != null && re instanceof IFile) {
 							m = ErlModelUtils.getModule((IFile) re);
 							if (m != null) {
@@ -475,7 +483,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
-	private void open(String mod, String fun, int arity, String path)
+	private void openExternalFunction(String mod, String fun, int arity, String path)
 			throws CoreException {
 		final String modFileName = mod + ".erl";
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());

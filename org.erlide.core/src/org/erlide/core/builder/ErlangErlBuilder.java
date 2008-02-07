@@ -33,13 +33,14 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 
-		IResourceDelta delta = getDelta(getProject());
-		if (kind == FULL_BUILD)
+		final IResourceDelta delta = getDelta(getProject());
+		if (kind == FULL_BUILD) {
 			start_builder();
-		else
+		} else {
 			start_builder(delta);
-//		OtpErlangPid builder = (kind == FULL_BUILD) ? start_builder()
-//				: start_builder(delta);
+			// OtpErlangPid builder = (kind == FULL_BUILD) ? start_builder()
+			// : start_builder(delta);
+		}
 
 		// ?????
 		BackendManager.getDefault().getIdeBackend().addEventListener("build",
@@ -47,20 +48,20 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 
 		while (!monitor.isCanceled()) {
 
-			OtpErlangObject msg = receive_msg();
+			final OtpErlangObject msg = receive_msg();
 			if (msg == null) {
 				continue;
 			}
 
 			if (msg instanceof OtpErlangAtom) {
-				OtpErlangAtom cmd = (OtpErlangAtom) msg;
+				final OtpErlangAtom cmd = (OtpErlangAtom) msg;
 				if ("done".equals(cmd.atomValue())) {
 					monitor.done();
 					break;
 				}
 			}
 			if (msg instanceof OtpErlangTuple) {
-				//OtpErlangTuple event = (OtpErlangTuple) msg;
+				// OtpErlangTuple event = (OtpErlangTuple) msg;
 
 			}
 

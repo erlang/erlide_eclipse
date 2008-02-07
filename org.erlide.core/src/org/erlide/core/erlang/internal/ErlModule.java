@@ -80,6 +80,11 @@ public class ErlModule extends Openable implements IErlModule {
 			initialText = "";
 		}
 		fScanner = new ErlScanner(this, initialText);
+		try {
+			open(null);
+		} catch (final ErlModelException e) {
+			// not much to do
+		}
 	}
 
 	protected ErlModule(IErlElement parent, String name, String text,

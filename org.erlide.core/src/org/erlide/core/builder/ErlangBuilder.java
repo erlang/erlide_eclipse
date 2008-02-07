@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.net.bsd.RLoginClient;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -548,6 +549,15 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 			final String msg = ((OtpErlangString) data.elementAt(2))
 					.stringValue();
+			final String fileName = ((OtpErlangString) data.elementAt(1))
+					.stringValue();
+			IResource res = resource;
+			if (!resource.getLocation().toString().equals(fileName)) {
+				res = findResource(resource.getProject(), fileName);
+				if (res == null) {
+					res = resource;
+				}
+			}
 			int line = 0;
 			if (data.elementAt(0) instanceof OtpErlangLong) {
 				try {
@@ -573,8 +583,28 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				;
 			}
 
-			mg.addMarker(resource, msg, line, sev, "");
+			mg.addMarker(res, msg, line, sev, "");
 		}
+	}
+
+	private static IResource findResource(IContainer container, String fileName) {
+		try {
+			for (final IResource r : container.members()) {
+				if (r.getLocation().toString().equals(fileName)) {
+					return r;
+				}
+				if (r instanceof IContainer) {
+					final IResource res = findResource((IContainer) r, fileName);
+					if (res != null) {
+						return res;
+					}
+				}
+			}
+		} catch (final CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private static void distributeModule(final String beamf,
