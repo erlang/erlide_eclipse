@@ -44,9 +44,9 @@ public class ErrorParserManager extends OutputStream {
 
 	private int nOpens;
 
-	private IProject fProject;
+	private final IProject fProject;
 
-	private IMarkerGenerator fMarkerGenerator;
+	private final IMarkerGenerator fMarkerGenerator;
 
 	private Map<String, IFile> fFilesInProject;
 
@@ -90,7 +90,7 @@ public class ErrorParserManager extends OutputStream {
 		} else {
 			fErrorParsers = new LinkedHashMap<String, IErrorParser[]>(
 					parsersIDs.length);
-			for (String element : parsersIDs) {
+			for (final String element : parsersIDs) {
 				final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
 						.getErrorParser(element);
 				fErrorParsers.put(element, parsers);
@@ -107,8 +107,9 @@ public class ErrorParserManager extends OutputStream {
 		fErrors = new ArrayList<Problem>();
 
 		final List<IFile> collectedFiles = new ArrayList<IFile>();
-		fBaseDirectory = (workingDirectory == null || workingDirectory
-				.isEmpty()) ? fProject.getLocation() : workingDirectory;
+		fBaseDirectory = workingDirectory == null || workingDirectory.isEmpty() ? fProject
+				.getLocation()
+				: workingDirectory;
 		collectFiles(fProject, collectedFiles);
 
 		for (int i = 0; i < collectedFiles.size(); i++) {
@@ -159,7 +160,7 @@ public class ErrorParserManager extends OutputStream {
 		fErrorParsers = new LinkedHashMap<String, IErrorParser[]>();
 		final String[] parserIDs = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
-		for (String element : parserIDs) {
+		for (final String element : parserIDs) {
 			final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
 					.getErrorParser(element);
 			fErrorParsers.put(element, parsers);
@@ -172,7 +173,7 @@ public class ErrorParserManager extends OutputStream {
 	private void initErrorParsersMap() {
 		final String[] parserIDs = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
-		for (String element : parserIDs) {
+		for (final String element : parserIDs) {
 			final IErrorParser[] parsers = ErlideErlcPlugin.getDefault()
 					.getErrorParser(element);
 			fErrorParsers.put(element, parsers);
@@ -210,7 +211,7 @@ public class ErrorParserManager extends OutputStream {
 			parserIDs[i] = items.next();
 		}
 
-		for (String element : parserIDs) {
+		for (final String element : parserIDs) {
 			final IErrorParser[] parsers = fErrorParsers.get(element);
 			for (final IErrorParser curr : parsers) {
 				if (curr.processLines(line, this)) {
@@ -259,7 +260,7 @@ public class ErrorParserManager extends OutputStream {
 			// It may be a link resource so we must check it also.
 			if (file == null) {
 				final IFile[] files = root.findFilesForLocation(path);
-				for (IFile element : files) {
+				for (final IFile element : files) {
 					if (element.getProject().equals(fProject)) {
 						file = element;
 						break;
@@ -318,12 +319,14 @@ public class ErrorParserManager extends OutputStream {
 			} catch (final IOException e1) {
 			}
 		}
-		return (file != null && file.exists()) ? file : null;
+		return file != null && file.exists() ? file : null;
 	}
 
 	protected static class Problem {
 
 		protected IResource file;
+
+		protected IResource compiledFile;
 
 		protected int lineNumber;
 
@@ -333,9 +336,10 @@ public class ErrorParserManager extends OutputStream {
 
 		protected String variableName;
 
-		public Problem(IResource file, int lineNumber, String descr,
-				int severity, String variableName) {
+		public Problem(IResource file, IResource compiledFile, int lineNumber,
+				String descr, int severity, String variableName) {
 			this.file = file;
+			this.compiledFile = compiledFile;
 			this.lineNumber = lineNumber;
 			description = descr;
 			this.severity = severity;
@@ -346,10 +350,10 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Called by the error parsers.
 	 */
-	public void generateMarker(IResource file, int lineNumber, String desc,
-			int severity, String varName) {
-		final Problem problem = new Problem(file, lineNumber, desc, severity,
-				varName);
+	public void generateMarker(IResource file, IResource compiledFile,
+			int lineNumber, String desc, int severity, String varName) {
+		final Problem problem = new Problem(file, compiledFile, lineNumber,
+				desc, severity, varName);
 		fErrors.add(problem);
 
 		if (severity == IMarker.SEVERITY_ERROR) {
@@ -365,10 +369,10 @@ public class ErrorParserManager extends OutputStream {
 			fErrorParserManager = epm;
 		}
 
-		public void addMarker(IResource file, String errorDesc, int lineNumber,
-				int severity, String errorVar) {
-			fErrorParserManager.generateMarker(file, lineNumber, errorDesc,
-					severity, errorVar);
+		public void addMarker(IResource file, IResource compiledFiled,
+				String errorDesc, int lineNumber, int severity, String errorVar) {
+			fErrorParserManager.generateMarker(file, compiledFiled, lineNumber,
+					errorDesc, severity, errorVar);
 		}
 
 	}
@@ -449,7 +453,7 @@ public class ErrorParserManager extends OutputStream {
 			throws IOException {
 		if (b == null) {
 			throw new NullPointerException();
-		} else if (off != 0 || (len < 0) || (len > b.length)) {
+		} else if (off != 0 || len < 0 || len > b.length) {
 			throw new IndexOutOfBoundsException();
 		} else if (len == 0) {
 			return;
@@ -498,13 +502,14 @@ public class ErrorParserManager extends OutputStream {
 					reset = true;
 				}
 				if (problem.file == null) {
-					fMarkerGenerator.addMarker(fProject, problem.description,
-							problem.lineNumber, problem.severity,
-							problem.variableName);
-				} else {
-					fMarkerGenerator.addMarker(problem.file,
+					fMarkerGenerator.addMarker(fProject, fProject,
 							problem.description, problem.lineNumber,
 							problem.severity, problem.variableName);
+				} else {
+					fMarkerGenerator.addMarker(problem.file,
+							problem.compiledFile, problem.description,
+							problem.lineNumber, problem.severity,
+							problem.variableName);
 				}
 			}
 			fErrors.clear();

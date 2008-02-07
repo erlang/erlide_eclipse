@@ -141,7 +141,8 @@ public class ErrorPattern {
 			}
 		}
 
-		eoParser.generateMarker(file, lineNum, desc, severity, varName);
+		// FIXME: we need to find out the compiled file
+		eoParser.generateMarker(file, file, lineNum, desc, severity, varName);
 		return true;
 	}
 }

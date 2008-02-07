@@ -80,11 +80,12 @@ public class ErlModule extends Openable implements IErlModule {
 			initialText = "";
 		}
 		fScanner = new ErlScanner(this, initialText);
-		try {
-			open(null);
-		} catch (final ErlModelException e) {
-			// not much to do
-		}
+		setIsStructureKnown(false);
+		// try {
+		// open(null);
+		// } catch (final ErlModelException e) {
+		// // not much to do
+		// }
 	}
 
 	protected ErlModule(IErlElement parent, String name, String text,
@@ -364,17 +365,16 @@ public class ErlModule extends Openable implements IErlModule {
 		// getScanner();
 		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
-		if (fIgnoreNextReconcile) {
-			fIgnoreNextReconcile = false;
-			return;
+		if (!fIgnoreNextReconcile) {
+			if (removeLength != 0) {
+				fScanner.removeText(offset, removeLength);
+			}
+			if (newText.length() != 0) {
+				fScanner.insertText(offset, newText);
+			}
+			setIsStructureKnown(false);
 		}
-		if (removeLength != 0) {
-			fScanner.removeText(offset, removeLength);
-		}
-		if (newText.length() != 0) {
-			fScanner.insertText(offset, newText);
-		}
-		setIsStructureKnown(false);
+		fIgnoreNextReconcile = false;
 		try {
 			open(mon);
 		} catch (final ErlModelException e) {

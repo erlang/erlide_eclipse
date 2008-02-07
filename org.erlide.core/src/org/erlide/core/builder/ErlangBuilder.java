@@ -84,9 +84,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	static class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 
-		public void addMarker(final IResource file, final String errorDesc,
+		public void addMarker(final IResource file,
+				final IResource compiledFile, final String errorDesc,
 				final int lineNumber, final int severity, final String errorVar) {
-			ErlangBuilder.addMarker(file, errorDesc, lineNumber, severity);
+			ErlangBuilder.addMarker(file, compiledFile, errorDesc, lineNumber,
+					severity);
 		}
 	};
 
@@ -94,12 +96,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return new ErlangBuilder.ErlangBuilderMarkerGenerator();
 	}
 
-	static void addMarker(final IResource file, final String message,
-			int lineNumber, final int severity) {
+	static void addMarker(final IResource file, final IResource compiledFile,
+			final String message, int lineNumber, final int severity) {
 		try {
 			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
+			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath());
 			if (lineNumber == -1) {
 				lineNumber = 1;
 			}
@@ -185,8 +188,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				addMarker(getProject(), "Code clash between " + f1 + " and "
-						+ f2, 0, IMarker.SEVERITY_WARNING, "");
+				addMarker(getProject(), getProject(), "Code clash between "
+						+ f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING, "");
 			}
 
 		} catch (final Exception e) {
@@ -208,8 +211,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				addMarker(getProject(), "Duplicated module name in " + f1
-						+ " and " + f2, 0, IMarker.SEVERITY_ERROR, "");
+				addMarker(getProject(), getProject(),
+						"Duplicated module name in " + f1 + " and " + f2, 0,
+						IMarker.SEVERITY_ERROR, "");
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -334,6 +338,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				&& !isInCodePath(resource, project)) {
 			addMarker(
 					resource,
+					resource,
 					resource.getName()
 							+ " is not directly on source path (packages are not supported yet)",
 					0, IMarker.SEVERITY_WARNING, "");
@@ -447,6 +452,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
 			addMarker(
+					resource,
 					resource,
 					resource.getName()
 							+ " is not directly on source path (packages are not supported yet)",
@@ -583,7 +589,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				;
 			}
 
-			mg.addMarker(res, msg, line, sev, "");
+			mg.addMarker(res, res, msg, line, sev, "");
 		}
 	}
 
@@ -948,7 +954,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-    protected static OtpErlangObject compileYrlFile(final IProject project,
+	protected static OtpErlangObject compileYrlFile(final IProject project,
 			final String fn, final String output) {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
@@ -1292,9 +1298,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	// job.schedule();
 	// }
 
-	public void addMarker(final IResource file, final String errorDesc,
-			final int lineNumber, final int severity, final String errorVar) {
-		addMarker(file, errorDesc, lineNumber, severity);
+	public void addMarker(final IResource file, final IResource compiledFile,
+			final String errorDesc, final int lineNumber, final int severity,
+			final String errorVar) {
+		addMarker(file, compiledFile, errorDesc, lineNumber, severity);
 	}
 
 }
