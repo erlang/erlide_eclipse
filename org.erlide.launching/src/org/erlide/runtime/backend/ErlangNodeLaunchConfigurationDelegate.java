@@ -112,7 +112,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 				MessageDialog dialog = new MessageDialog(new Shell(Display
 						.getCurrent()), "Starting OTP", null,
-						"could not start Erlang OTP, pease check your path",
+						"could not start Erlang OTP, please check your path",
 						MessageDialog.ERROR, new String[] { "OK" }, 0);
 				dialog.open();
 			}

@@ -13,14 +13,8 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
-import org.erlide.basiccore.ErlLogger;
 
 public class StandaloneBackend extends AbstractBackend {
-
-	@Override
-	public void addProject(String project) {
-		ErlLogger.debug("$ add project " + project + " to remote " + getLabel());
-	}
 
 	@Override
 	public void connect() {
@@ -43,11 +37,6 @@ public class StandaloneBackend extends AbstractBackend {
 	public void addStdListener(IStreamListener dsp) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public boolean isManaged() {
-		return false;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="backends" name="backends" schema="schema/backends.exsd"/>
    <extension-point id="javaRpcStubs" name="javaRpcStubs" schema="schema/javaRpcStubs.exsd"/>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
@@ -43,17 +42,6 @@
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
-   </extension>
-   <extension
-         point="org.erlide.launching.backends">
-      <backend
-            class="org.erlide.runtime.backend.internal.ManagedBackend"
-            id="managed"
-            name="Managed backend"/>
-      <backend
-            class="org.erlide.runtime.backend.internal.StandaloneBackend"
-            id="standalone"
-            name="Standalone backend"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.processFactories">

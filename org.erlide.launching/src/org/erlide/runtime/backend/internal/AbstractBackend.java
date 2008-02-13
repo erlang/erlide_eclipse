@@ -56,7 +56,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
 
-	private ICodeManager fCodeManager;
+	private final ICodeManager fCodeManager;
 
 	private boolean fConnected = false;
 
@@ -111,8 +111,6 @@ public abstract class AbstractBackend implements IBackend {
 		fShellManager = new BackendShellManager(this);
 
 	}
-
-	public abstract void addProject(String project);
 
 	public abstract void connect();
 
@@ -472,8 +470,6 @@ public abstract class AbstractBackend implements IBackend {
 	public abstract void sendToShell(String str);
 
 	public abstract void addStdListener(IStreamListener dsp);
-
-	public abstract boolean isManaged();
 
 	public String getLabel() {
 		return fLabel;

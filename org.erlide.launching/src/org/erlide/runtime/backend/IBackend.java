@@ -27,12 +27,6 @@ public interface IBackend {
 
 	public static final String ERL_BACKEND = "erlide_backend";
 
-	public static final String MANAGED_BACKEND = "managed";
-
-	public static final String STANDALONE_BACKEND = "standalone";
-
-	void addProject(String project);
-
 	/**
 	 * Method dispose
 	 */
@@ -141,8 +135,6 @@ public interface IBackend {
 	void sendToShell(String str);
 
 	void addStdListener(IStreamListener dsp);
-
-	boolean isManaged();
 
 	String getLabel();
 

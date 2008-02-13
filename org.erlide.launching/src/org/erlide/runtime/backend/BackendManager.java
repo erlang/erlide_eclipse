@@ -33,6 +33,8 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
+import org.erlide.runtime.backend.internal.ManagedBackend;
+import org.erlide.runtime.backend.internal.StandaloneBackend;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 
 import com.ericsson.otp.erlang.OtpEpmd;
@@ -84,8 +86,8 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend createManaged(String name, boolean debug) {
 		ErlLogger.debug("create managed backend " + name + ".");
-		final BackendType bt = BackendSupport.getType(IBackend.MANAGED_BACKEND);
-		final AbstractBackend b = bt.create();
+		
+		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);
 
 		final ILaunch launch = b.initialize();
@@ -95,8 +97,7 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (final Object element0 : fPlugins) {
-			final Plugin element = (Plugin) element0;
+		for (final Plugin element : fPlugins) {
 			b.getCodeManager().addPlugin(element);
 		}
 
@@ -107,9 +108,8 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend createStandalone(String name) {
 		ErlLogger.debug("create standalone backend " + name + ".");
-		final BackendType bt = BackendSupport
-				.getType(IBackend.STANDALONE_BACKEND);
-		final AbstractBackend b = bt.create();
+		
+		final AbstractBackend b = new StandaloneBackend();
 		b.setLabel(name);
 
 		final ILaunch launch = b.initialize();
