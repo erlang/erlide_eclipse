@@ -1215,12 +1215,12 @@ public class ErlangProjectImportWizardPage extends
 	 * @return
 	 */
 	public String getProjectName() {
-		final Iterator<?> resourcesEnum = getSelectedResources().iterator();
-		final List<Object> fileSystemObjects = new ArrayList<Object>();
-		while (resourcesEnum.hasNext()) {
-			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
-					.getFileSystemObject());
-		}
+		// final Iterator<?> resourcesEnum = getSelectedResources().iterator();
+		// final List<Object> fileSystemObjects = new ArrayList<Object>();
+		// while (resourcesEnum.hasNext()) {
+		// fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
+		// .getFileSystemObject());
+		// }
 		return projectName;
 	}
 
