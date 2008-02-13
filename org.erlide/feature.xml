@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.3.37.921"
+      version="0.3.37.93"
       provider-name="Erlide project"
       image="erlang120.gif">
    <install-handler/>
@@ -249,48 +249,48 @@ litigation.
          id="org.erlide.jinterface"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.core"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.ui"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.launching"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.help"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.erlc"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.debug.ui"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
    <plugin
          id="org.erlide.basic"
          download-size="0"
          install-size="0"
-         version="0.3.37.921"/>
+         version="0.3.37.93"/>
 
 </feature>

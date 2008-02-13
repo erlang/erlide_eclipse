@@ -102,7 +102,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
-			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath());
+			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
+					.toString());
 			if (lineNumber == -1) {
 				lineNumber = 1;
 			}
@@ -233,10 +234,36 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return v.hasAny;
 	}
 
-	protected void deleteMarkers(final IFile file) {
+	protected void deleteMarkers(final IResource resource) {
 		try {
-			file.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+			resource.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+			if (resource instanceof IFile) {
+				deleteMarkersWithCompiledFile(resource.getProject(),
+						(IFile) resource);
+			}
 		} catch (final CoreException ce) {
+		}
+	}
+
+	private void deleteMarkersWithCompiledFile(IProject project, IFile file) {
+		if (!project.isAccessible()) {
+			return;
+		}
+		try {
+			for (final IMarker m : project.findMarkers(PROBLEM_MARKER, true,
+					IResource.DEPTH_INFINITE)) {
+				final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
+				if (source_id != null && source_id instanceof String
+						&& source_id.equals(file.getFullPath().toString())) {
+					try {
+						m.delete();
+					} catch (final CoreException e) {
+						// not much to do
+					}
+				}
+			}
+		} catch (final CoreException e) {
+			// not much to do
 		}
 	}
 
@@ -329,11 +356,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 
-		try {
-			resource.deleteMarkers(PROBLEM_MARKER, true,
-					IResource.DEPTH_INFINITE);
-		} catch (final CoreException e1) {
-		}
+		deleteMarkers(resource);
+		// try {
+		// resource.deleteMarkers(PROBLEM_MARKER, true,
+		// IResource.DEPTH_INFINITE);
+		// } catch (final CoreException e1) {
+		// }
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
 			addMarker(
@@ -444,11 +472,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// final ErlangProjectProperties prefs = new
 		// ErlangProjectProperties(project);
 
-		try {
-			resource.deleteMarkers(PROBLEM_MARKER, true,
-					IResource.DEPTH_INFINITE);
-		} catch (final CoreException e1) {
-		}
+		deleteMarkers(resource);
+		// try {
+		// resource.deleteMarkers(PROBLEM_MARKER, true,
+		// IResource.DEPTH_INFINITE);
+		// } catch (final CoreException e1) {
+		// }
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
 			addMarker(
@@ -589,7 +618,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				;
 			}
 
-			mg.addMarker(res, res, msg, line, sev, "");
+			mg.addMarker(res, resource, msg, line, sev, "");
 		}
 	}
 
@@ -692,7 +721,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					break;
 				case IResourceDelta.REMOVED:
 					// handle removed resource
-					deleteMarkers((IFile) resource);
+					deleteMarkers(resource);
 
 					IPath beam = new Path(prefs.getOutputDir());
 					final IPath module = beam.append(resource.getName())
@@ -739,7 +768,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					break;
 				case IResourceDelta.REMOVED:
 					// handle removed resource
-					deleteMarkers((IFile) resource);
+					deleteMarkers(resource);
 
 					IPath erl = resource.getProjectRelativePath()
 							.removeFileExtension();

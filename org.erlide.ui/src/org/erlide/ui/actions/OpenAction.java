@@ -277,7 +277,7 @@ public class OpenAction extends SelectionDispatchAction {
 	@SuppressWarnings("boxing")
 	@Override
 	public void run() {
-		int window = 5;
+		int window = 15;
 
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
 		final TokenWindow w = fEditor.getTokenWindow(window);
@@ -426,8 +426,19 @@ public class OpenAction extends SelectionDispatchAction {
 										project, element.getFilenameLastPart());
 						if (re == null) {
 							try {
-								re = EditorUtility.openExternal(element
-										.getFilename());
+								String s = element.getFilename();
+								if (element.isSystemInclude()) {
+									final OtpErlangObject t = b
+											.rpcx("erlide_open",
+													"get_include_lib", s);
+									if (t instanceof OtpErlangTuple) {
+										final OtpErlangObject es = ((OtpErlangTuple) t)
+												.elementAt(1);
+										s = ((OtpErlangString) es)
+												.stringValue();
+									}
+								}
+								re = EditorUtility.openExternal(s);
 							} catch (final Exception e) {
 								e.printStackTrace();
 							}

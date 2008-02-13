@@ -12,9 +12,10 @@
 %%
 -export([open_info/4,
          find_first_var/2,
-         get_source_from_module/3]).
+         get_source_from_module/3,
+         get_include_lib/1]).
 
-%%-define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -95,22 +96,22 @@ open_info(L, W, ExternalModules, PathVars) ->
         {include_lib, D, F} ->
             ?D({D,F}),
             {include, filename:join(find_lib_dir(D), F)};
-        {ok, F, Rest} -> {local, {F, erlide_text:guess_arity(Rest)}};
+        %%         {ok, F, Rest} ->{local, {F, erlide_text:guess_arity(Rest)}};
         _ ->
-            case erlide_text:check_function_call(CL, CW) of
-                {ok, M, F, Rest} = _Xx ->
-                    ?D(_Xx),
-                    {external, {M, F, erlide_text:guess_arity(Rest), 
-                                get_source_from_module(M, ExternalModules, PathVars)}};
-                {ok, F, Rest} -> 
-                    ?D(F),
-                    {local, {F, erlide_text:guess_arity(Rest)}};
+            case erlide_text:check_variable_macro_or_record(CL, CW) of
+                {ok, M, R} ->
+                    {M, {R}};
                 _ ->
-                    ?D(CL),
-                    case erlide_text:check_variable_macro_or_record(CL, CW) of
-                        {ok, M, R} -> 
-                            {M, {R}};
+                    case erlide_text:check_function_call(CL, CW) of
+                        {ok, M, F, Rest} = _Xx ->
+                            ?D(_Xx),
+                            {external, {M, F, erlide_text:guess_arity(Rest),
+                                        get_source_from_module(M, ExternalModules, PathVars)}};
+                        {ok, F, Rest} ->
+                            ?D(F),
+                            {local, {F, erlide_text:guess_arity(Rest)}};
                         _ ->
+                            ?D(CL),
                             none
                     end
             end
@@ -166,8 +167,7 @@ get_ext_aux([L | Rest], PathVars, Acc0) ->
      end.
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
-    ?D(ExternalModules),
-    ?D(PathVars),
+    ?D({ExternalModules, PathVars}),
     L = get_external_modules_file(ExternalModules, PathVars),
     select_external(L, atom_to_list(Mod)).
 
