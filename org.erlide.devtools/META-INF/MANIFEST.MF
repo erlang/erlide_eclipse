@@ -6,8 +6,9 @@ Bundle-Version: 0.0.1
 Bundle-Activator: org.erlide.devtools.Activator
 Bundle-Vendor: Erlide team
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.erlide.jinterface,
- org.eclipse.jface.text
+ org.eclipse.core.resources,
+ org.eclipse.ui
 Eclipse-LazyStart: true
 Export-Package: org.erlide.devtools
+Bundle-ClassPath: lib/javassist.jar,
+ .

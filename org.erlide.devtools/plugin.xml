@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension
+         id="jebridgeBuilder"
+         name="Java Erlang Bridge Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="false">
+         <run
+               class="org.erlide.devtools.builder.JavaErlangBridgeBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="jebProblem"
+         name="Java-Erlang bridge Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
 
 </plugin>
