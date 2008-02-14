@@ -1,8 +1,12 @@
 package org.erlide.devtools.builder;
 
+import java.io.IOException;
 import java.util.Map;
 
-import javax.xml.parsers.SAXParserFactory;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -13,10 +17,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 
@@ -54,40 +56,15 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	class XMLErrorHandler extends DefaultHandler {
-
-		private final IFile file;
-
-		public XMLErrorHandler(IFile file) {
-			this.file = file;
-		}
-
-		private void addMarker(SAXParseException e, int severity) {
-			JavaErlangBridgeBuilder.this.addMarker(file, e.getMessage(), e
-					.getLineNumber(), severity);
-		}
-
-		@Override
-		public void error(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_ERROR);
-		}
-
-		@Override
-		public void fatalError(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_ERROR);
-		}
-
-		@Override
-		public void warning(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_WARNING);
-		}
-	}
-
 	public static final String BUILDER_ID = "org.erlide.devtools.jebridgeBuilder";
 
 	private static final String MARKER_TYPE = "org.erlide.devtools.xmlProblem";
 
-	private SAXParserFactory parserFactory;
+	private String rootPackage;
+
+	private String source;
+
+	private String destination;
 
 	private void addMarker(IFile file, String message, int lineNumber,
 			int severity) {
@@ -125,13 +102,57 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
+	@Override
+	public void setInitializationData(IConfigurationElement config,
+			String propertyName, Object data) throws CoreException {
+		super.setInitializationData(config, propertyName, data);
+		if ("org.erlide.devtools.builder.package".equals(propertyName)) {
+			rootPackage = (String) data;
+		}
+		if ("org.erlide.devtools.builder.source".equals(propertyName)) {
+			source = (String) data;
+		}
+		if ("org.erlide.devtools.builder.destination".equals(propertyName)) {
+			destination = (String) data;
+		}
+	}
+
 	void buildFile(IResource resource) {
+		System.out.println("**" + resource.getProjectRelativePath());
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
-			System.out.println("**" + resource.getProjectRelativePath());
+			System.out.println(" *" + resource.getProjectRelativePath());
+			/*
+			 * if this is a java file in the right package,<br> locate the
+			 * class file, <br> load it in javassist and process it,<br>
+			 * overwrite the class file with the new data
+			 */
+			if (resource.getProjectRelativePath().toPortableString().contains(
+					rootPackage)) {
+				String srcPath = resource.getProjectRelativePath()
+						.toPortableString();
+				String destPath = srcPath;
+				String className = srcPath;
+				ClassPool pool = ClassPool.getDefault();
+				try {
+					CtClass cc = pool.get("org.erlide.devtools.otp.Erlang");
+					process(cc);
+					cc.writeFile();
+				} catch (NotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (CannotCompileException e) {
+					e.printStackTrace();
+				}
+			}
 
-			deleteMarkers(file);
 		}
+	}
+
+	private void process(CtClass cc) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private void deleteMarkers(IFile file) {

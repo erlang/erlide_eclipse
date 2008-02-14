@@ -6,9 +6,22 @@
          name="Java Erlang Bridge Builder"
          point="org.eclipse.core.resources.builders">
       <builder
-            hasNature="false">
+            hasNature="true"
+            isConfigurable="true">
          <run
                class="org.erlide.devtools.builder.JavaErlangBridgeBuilder">
+            <parameter
+                  name="org.erlide.devtools.builder.package"
+                  value="org.erlide.devtools.otp">
+            </parameter>
+            <parameter
+                  name="org.erlide.devtools.builder.source"
+                  value="src">
+            </parameter>
+            <parameter
+                  name="org.erlide.devtools.builder.destination"
+                  value="bin">
+            </parameter>
          </run>
       </builder>
    </extension>
@@ -22,6 +35,35 @@
       <persistent
             value="true">
       </persistent>
+   </extension>
+   <extension
+         id="sampleNature"
+         name="Sample Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.erlide.devtools.builder.SampleNature">
+         </run>
+      </runtime>
+      <builder
+            id="org.erlide.devtools.jebridgeBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.erlide.devtools.contribution1"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.erlide.devtools.builder.ToggleNatureAction"
+               enablesFor="+"
+               id="org.erlide.devtools.addRemoveNatureAction"
+               label="Add/Remove Sample Nature"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>
