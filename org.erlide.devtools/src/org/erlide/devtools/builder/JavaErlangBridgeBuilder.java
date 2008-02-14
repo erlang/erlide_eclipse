@@ -118,7 +118,7 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 	}
 
 	void buildFile(IResource resource) {
-		System.out.println("**" + resource.getProjectRelativePath());
+		System.err.println("**" + resource.getProjectRelativePath());
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
 			System.out.println(" *" + resource.getProjectRelativePath());
@@ -127,8 +127,8 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 			 * class file, <br> load it in javassist and process it,<br>
 			 * overwrite the class file with the new data
 			 */
-			if (resource.getProjectRelativePath().toPortableString().contains(
-					rootPackage)) {
+			if (true || resource.getProjectRelativePath().toPortableString()
+					.contains(rootPackage)) {
 				String srcPath = resource.getProjectRelativePath()
 						.toPortableString();
 				String destPath = srcPath;

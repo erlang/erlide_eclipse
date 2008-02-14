@@ -67,13 +67,11 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ScratchEditor extends AbstractDecoratedTextEditor {
 
-	public final static int RESULT_DISPLAY = 1;
+	public enum Result {
+		DISPLAY, RUN, INSPECT;
+	}
 
-	public final static int RESULT_RUN = 2;
-
-	public final static int RESULT_INSPECT = 3;
-
-	private int fResultMode; // one of the RESULT_* constants
+	private Result fResultMode; // one of the RESULT_* constants
 
 	List<IScratchStateChangedListener> fScratchStateListeners;
 
@@ -145,7 +143,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		return fEvaluating;
 	}
 
-	public void evalSelection(int resultMode) {
+	public void evalSelection(Result resultMode) {
 		if (!isInErlProject()) {
 			reportNotInErlProjectError();
 			return;
@@ -274,13 +272,13 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		if (r.isOk()) {
 			fBindings = r.getBindings();
 			switch (fResultMode) {
-			case RESULT_DISPLAY:
+			case DISPLAY:
 				displayResult(r.getValue());
 				break;
-			case RESULT_INSPECT:
+			case INSPECT:
 				// String res = formatInspect(r.getValue());
 				break;
-			case RESULT_RUN:
+			case RUN:
 				// no action
 				break;
 			}

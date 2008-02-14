@@ -41,7 +41,7 @@ public class EvaluateAction extends ScratchAction {
 	 */
 	@Override
 	public void run() {
-		getEditor().evalSelection(ScratchEditor.RESULT_DISPLAY);
+		getEditor().evalSelection(ScratchEditor.Result.DISPLAY);
 	}
 
 	/**
