@@ -10,18 +10,6 @@
             isConfigurable="true">
          <run
                class="org.erlide.devtools.builder.JavaErlangBridgeBuilder">
-            <parameter
-                  name="org.erlide.devtools.builder.package"
-                  value="org.erlide.devtools.otp">
-            </parameter>
-            <parameter
-                  name="org.erlide.devtools.builder.source"
-                  value="src">
-            </parameter>
-            <parameter
-                  name="org.erlide.devtools.builder.destination"
-                  value="bin">
-            </parameter>
          </run>
       </builder>
    </extension>

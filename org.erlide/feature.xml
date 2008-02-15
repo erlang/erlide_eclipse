@@ -293,11 +293,4 @@ litigation.
          install-size="0"
          version="0.3.38.qualifier"/>
 
-   <plugin
-         id="org.erlide.devtools"
-         download-size="0"
-         install-size="0"
-         version="0.3.38.qualifier"
-         unpack="false"/>
-
 </feature>
