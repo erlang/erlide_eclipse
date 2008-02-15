@@ -105,7 +105,7 @@ public class ResourceUtil {
 	 * </p>
 	 */
 	public static String readStream(final InputStream is) throws IOException {
-		final StringBuffer sbResult = new StringBuffer();
+		final StringBuilder sbResult = new StringBuilder();
 		final BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String line = br.readLine();
 		while (line != null) {

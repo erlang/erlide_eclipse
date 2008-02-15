@@ -92,7 +92,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 
 	class XMLErrorHandler extends DefaultHandler {
 
-		private IFile file;
+		private final IFile file;
 
 		public XMLErrorHandler(IFile file) {
 			this.file = file;
@@ -359,8 +359,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 						.size());
 				while (iter.hasNext()) {
 					final Map.Entry<Object, Object> entry = iter.next();
-					final StringBuffer buffer = new StringBuffer((String) entry
-							.getKey());
+					final StringBuilder buffer = new StringBuilder(
+							(String) entry.getKey());
 					buffer.append('=').append((String) entry.getValue());
 					strings.add(buffer.toString());
 				}
@@ -460,7 +460,8 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 								streamMon.getWorkDone()) : null);
 
 				if (errMsg != null) {
-					StringBuffer buf = new StringBuffer(buildCommand.toString()
+					StringBuilder buf = new StringBuilder(buildCommand
+							.toString()
 							+ " "); //$NON-NLS-1$
 					for (String element : buildArguments) {
 						buf.append(element);
@@ -469,7 +470,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 
 					final String errorDesc = "Error launching builder ("
 							+ buf.toString() + ")";
-					buf = new StringBuffer(errorDesc);
+					buf = new StringBuilder(errorDesc);
 					buf.append(System.getProperty("line.separator", "\n")); //$NON-NLS-1$ //$NON-NLS-2$
 					buf.append("(").append(errMsg).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
 					cos.write(buf.toString().getBytes());
@@ -498,7 +499,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 		string = string.trim();
 		final char[] array = string.toCharArray();
 		final ArrayList<String> aList = new ArrayList<String>();
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		boolean inComment = false;
 		for (int i = 0; i < array.length; i++) {
 			final char c = array[i];
@@ -511,7 +512,7 @@ public class ErlcMakeBuilder extends ErlangBuilder { // public class
 			}
 			if (c == ' ' && !inComment) {
 				aList.add(buffer.toString());
-				buffer = new StringBuffer();
+				buffer = new StringBuilder();
 			} else {
 				buffer.append(c);
 			}

@@ -212,7 +212,7 @@ public class ErlangProjectProperties {
 	}
 
 	public String buildIncludeDirs(String[] dirs) {
-		final StringBuffer incs = new StringBuffer();
+		final StringBuilder incs = new StringBuilder();
 		for (String element : dirs) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
@@ -236,7 +236,7 @@ public class ErlangProjectProperties {
 	}
 
 	public static String pack(String[] strs) {
-		final StringBuffer b = new StringBuffer();
+		final StringBuilder b = new StringBuilder();
 		for (int i = 0; i < strs.length; i++) {
 			b.append(strs[i]);
 			if (i < strs.length - 1) {

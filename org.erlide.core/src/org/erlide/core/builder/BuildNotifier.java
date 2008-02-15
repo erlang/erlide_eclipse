@@ -146,7 +146,7 @@ public class BuildNotifier {
 		}
 
 		final boolean displayBoth = numNew > 0 && numFixed > 0;
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		buffer.append('(');
 		if (numNew > 0) {
 			// (Found x errors + y warnings)

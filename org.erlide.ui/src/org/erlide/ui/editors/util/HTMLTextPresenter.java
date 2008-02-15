@@ -77,7 +77,7 @@ public class HTMLTextPresenter implements
 		}
 	}
 
-	private void append(StringBuffer buffer, String string,
+	private void append(StringBuilder buffer, String string,
 			TextPresentation presentation) {
 
 		final int length = string.length();
@@ -115,7 +115,7 @@ public class HTMLTextPresenter implements
 		final GC gc = new GC(drawable);
 		try {
 
-			final StringBuffer buffer = new StringBuffer();
+			final StringBuilder buffer = new StringBuilder();
 			long maxNumberOfLines = Math.round(maxHeight * 1.0
 					/ gc.getFontMetrics().getHeight());
 
@@ -180,7 +180,7 @@ public class HTMLTextPresenter implements
 		}
 	}
 
-	private String trim(StringBuffer buffer, TextPresentation presentation) {
+	private String trim(StringBuilder buffer, TextPresentation presentation) {
 
 		final int length = buffer.length();
 

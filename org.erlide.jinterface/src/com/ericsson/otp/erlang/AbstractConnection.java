@@ -1042,7 +1042,7 @@ public abstract class AbstractConnection extends Thread {
 	}
 
 	static String hex(byte[] b) {
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		try {
 			int i;
 			for (i = 0; i < b.length; ++i) {

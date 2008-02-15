@@ -66,7 +66,7 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	// specified in the constructor.
 	@Override
 	public String toString() {
-		StringBuffer result = new StringBuffer(open);
+		StringBuilder result = new StringBuilder(open);
 		Iterator<Object> it = elements.iterator();
 		while (it.hasNext()) {
 			result.append(it.next());

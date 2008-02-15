@@ -33,7 +33,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	/** The maximun allowed length of an atom, in characters */
 	public static final int maxAtomLength = 0xff; // one byte length
 
-	private String atom;
+	private final String atom;
 
 	/**
 	 * Create an atom from the given string.
@@ -203,7 +203,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 */
 	private String escapeSpecialChars(String s) {
 		char c;
-		final StringBuffer so = new StringBuffer();
+		final StringBuilder so = new StringBuilder();
 
 		final int len = s.length();
 		for (int i = 0; i < len; i++) {

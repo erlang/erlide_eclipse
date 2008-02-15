@@ -37,7 +37,7 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
 	 */
 	@Override
 	protected String resolve(TemplateContext context) {
-		final StringBuffer buff = new StringBuffer();
+		final StringBuilder buff = new StringBuilder();
 		buff.append((fArity != 0) ? "_Arg0" : "");
 		for (int i = 1; i < fArity; i++) {
 			buff.append(", _Arg" + i);

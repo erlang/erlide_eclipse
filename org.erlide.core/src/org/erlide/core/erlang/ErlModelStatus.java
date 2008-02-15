@@ -220,7 +220,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 								"status.invalidDestination", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
 			case INVALID_ELEMENT_TYPES:
-				final StringBuffer buff = new StringBuffer(Util
+				final StringBuilder buff = new StringBuilder(Util
 						.bind("operation.notSupported")); //$NON-NLS-1$
 				for (int i = 0; i < fElements.length; i++) {
 					if (i > 0) {
@@ -436,7 +436,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 		if (this == VERIFIED_OK) {
 			return "ErlModelStatus[OK]"; //$NON-NLS-1$
 		}
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		buffer.append("Erlang Model Status ["); //$NON-NLS-1$
 		buffer.append(getMessage());
 		buffer.append("]"); //$NON-NLS-1$

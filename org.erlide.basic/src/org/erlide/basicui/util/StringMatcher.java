@@ -40,9 +40,9 @@ public class StringMatcher {
 
 	public static class Position {
 
-		private int fStart; // inclusive
+		private final int fStart; // inclusive
 
-		private int fEnd; // exclusive
+		private final int fEnd; // exclusive
 
 		public Position(int start, int end) {
 			fStart = start;
@@ -303,7 +303,7 @@ public class StringMatcher {
 		final Vector<String> temp = new Vector<String>();
 
 		int pos = 0;
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		while (pos < fLength) {
 			final char c = fPattern.charAt(pos++);
 			switch (c) {

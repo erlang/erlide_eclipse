@@ -216,7 +216,7 @@ public class SettingsBlock extends AbstractErlOptionPage {
 		});
 		if (fBuildInfo.getBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND,
 				null) != null) {
-			final StringBuffer cmd = new StringBuffer(fBuildInfo
+			final StringBuilder cmd = new StringBuilder(fBuildInfo
 					.getBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND, "")); //$NON-NLS-1$
 			if (!fBuildInfo.isDefaultBuildCmd()) {
 				final String args = fBuildInfo.getBuildAttribute(
@@ -388,7 +388,7 @@ public class SettingsBlock extends AbstractErlOptionPage {
 
 	private static class ControlAccessibleListener extends AccessibleAdapter {
 
-		private String controlName;
+		private final String controlName;
 
 		ControlAccessibleListener(String name) {
 			controlName = name;
@@ -611,7 +611,7 @@ public class SettingsBlock extends AbstractErlOptionPage {
 			stopOnErrorButton.setSelection(false);
 		}
 		if (info.getBuildCommand() != null) {
-			final StringBuffer cmd = new StringBuffer(info.getBuildCommand()
+			final StringBuilder cmd = new StringBuilder(info.getBuildCommand()
 					.toOSString());
 			if (!info.isDefaultBuildCmd()) {
 				final String args = info.getBuildArguments();

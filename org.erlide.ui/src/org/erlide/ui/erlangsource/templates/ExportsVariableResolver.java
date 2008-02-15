@@ -64,7 +64,7 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	 */
 	@Override
 	public void resolve(TemplateVariable variable, TemplateContext context) {
-		final StringBuffer buff = new StringBuffer();
+		final StringBuilder buff = new StringBuilder();
 
 		for (final Iterator<Object[]> iter = functions.iterator(); iter
 				.hasNext();) {

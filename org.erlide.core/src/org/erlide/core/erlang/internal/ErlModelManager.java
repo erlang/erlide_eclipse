@@ -49,8 +49,8 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.erlang.ErlElementDelta;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -454,7 +454,7 @@ public class ErlModelManager implements IErlModelManager {
 
 		@Override
 		public String toString() {
-			final StringBuffer buffer = new StringBuffer();
+			final StringBuilder buffer = new StringBuilder();
 			buffer.append("Info for "); //$NON-NLS-1$
 			buffer.append(fProject.getFullPath());
 			// buffer.append("\nRaw classpath:\n"); //$NON-NLS-1$

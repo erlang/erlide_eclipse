@@ -55,7 +55,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 			}
 		}
 
-		final StringBuffer buff = new StringBuffer();
+		final StringBuilder buff = new StringBuilder();
 
 		for (Object[] element : functions) {
 			arg_var.setArity(((Integer) element[1]).intValue());

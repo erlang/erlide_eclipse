@@ -71,15 +71,15 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 		/**
 		 * Identifier of the stream written to.
 		 */
-		private BuildConsoleStream fStream;
+		private final BuildConsoleStream fStream;
 
 		/**
 		 * The text written
 		 */
-		private StringBuffer fText = null;
+		private StringBuilder fText = null;
 
 		StreamEntry(String text, BuildConsoleStream stream) {
-			fText = new StringBuffer(text);
+			fText = new StringBuilder(text);
 			fStream = stream;
 		}
 
@@ -238,8 +238,8 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 			final ITypedRegion partition = fPartitions.get(i);
 			final int partitionStart = partition.getOffset();
 			final int partitionEnd = partitionStart + partition.getLength();
-			if ((offset >= partitionStart && offset <= partitionEnd) ||
-					(offset < partitionStart && end >= partitionStart)) {
+			if ((offset >= partitionStart && offset <= partitionEnd)
+					|| (offset < partitionStart && end >= partitionStart)) {
 				list.add(partition);
 			}
 		}
@@ -303,10 +303,10 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 				// update partitions
 				final List<ITypedRegion> newParitions = new ArrayList<ITypedRegion>(
 						fPartitions.size());
-				final Iterator<ITypedRegion> partitions = fPartitions.iterator();
+				final Iterator<ITypedRegion> partitions = fPartitions
+						.iterator();
 				while (partitions.hasNext()) {
-					final ITypedRegion region = partitions
-							.next();
+					final ITypedRegion region = partitions.next();
 					if (region instanceof BuildConsolePartition) {
 						final BuildConsolePartition messageConsolePartition = (BuildConsolePartition) region;
 
@@ -326,8 +326,8 @@ public class BuildConsolePartitioner implements IDocumentPartitioner,
 							// modify parition offset
 							newPartition = messageConsolePartition
 									.createNewPartition(messageConsolePartition
-											.getOffset() -
-											overflow, messageConsolePartition
+											.getOffset()
+											- overflow, messageConsolePartition
 											.getLength());
 						}
 						if (newPartition != null) {

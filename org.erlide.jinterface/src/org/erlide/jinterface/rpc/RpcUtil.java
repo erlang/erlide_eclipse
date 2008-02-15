@@ -339,7 +339,7 @@ public class RpcUtil {
 
 			return RpcConverter.java2erlang(o);
 		} catch (NoSuchMethodException e) {
-			StringBuffer paramstr = new StringBuffer();
+			StringBuilder paramstr = new StringBuilder();
 			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
@@ -356,7 +356,7 @@ public class RpcUtil {
 							"invocation of %s failed: %s", method.name, cause
 									.getMessage())));
 		} catch (IllegalArgumentException x) {
-			StringBuffer paramstr = new StringBuffer();
+			StringBuilder paramstr = new StringBuilder();
 			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
@@ -367,7 +367,7 @@ public class RpcUtil {
 							"invocation of %s failed: %s", method.name, x
 									.getMessage())));
 		} catch (InstantiationException e) {
-			StringBuffer paramstr = new StringBuffer();
+			StringBuilder paramstr = new StringBuilder();
 			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}

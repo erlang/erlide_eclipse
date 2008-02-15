@@ -40,9 +40,9 @@ public class ErlStructureCreator implements IStructureCreator {
 
 	private static final String NAME = "ErlStructureCreator.name"; //$NON-NLS-1$
 
-	private IErlProject fProject;
+	private final IErlProject fProject;
 
-	private String fName;
+	private final String fName;
 
 	public ErlStructureCreator(String title) {
 		this();
@@ -179,7 +179,7 @@ public class ErlStructureCreator implements IStructureCreator {
 		}
 		BufferedReader reader = null;
 		try {
-			final StringBuffer buffer = new StringBuffer();
+			final StringBuilder buffer = new StringBuilder();
 			final char[] part = new char[2048];
 			int read = 0;
 			reader = new BufferedReader(new InputStreamReader(is));

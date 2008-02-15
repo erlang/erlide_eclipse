@@ -163,7 +163,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return false;
 	}
 
-	protected void escapeMementoName(StringBuffer buffer, String mementoName) {
+	protected void escapeMementoName(StringBuilder buffer, String mementoName) {
 		for (int i = 0, length = mementoName.length(); i < length; i++) {
 			final char character = mementoName.charAt(i);
 			switch (character) {
@@ -412,7 +412,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	protected String tabString(int tab) {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		for (int i = tab; i > 0; i--) {
 			buffer.append("  "); //$NON-NLS-1$
 		}
@@ -423,7 +423,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Debugging purposes
 	 */
 	public String toDebugString() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		this.toStringInfo(0, buffer, NO_INFO);
 		return buffer.toString();
 	}
@@ -433,7 +433,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 */
 	@Override
 	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		toString(0, buffer);
 		return buffer.toString();
 	}
@@ -441,7 +441,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toString(int tab, StringBuffer buffer) {
+	protected void toString(int tab, StringBuilder buffer) {
 		final Object info = this.toStringInfo(tab, buffer);
 		if (tab == 0) {
 			this.toStringAncestors(buffer);
@@ -453,7 +453,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Debugging purposes
 	 */
 	public String toStringWithAncestors() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		this.toStringInfo(0, buffer, NO_INFO);
 		this.toStringAncestors(buffer);
 		return buffer.toString();
@@ -462,7 +462,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringAncestors(StringBuffer buffer) {
+	protected void toStringAncestors(StringBuilder buffer) {
 		final ErlElement parentElement = (ErlElement) this.getParent();
 		if (parentElement != null && parentElement.getParent() != null) {
 			buffer.append(" [in "); //$NON-NLS-1$
@@ -475,7 +475,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringChildren(int tab, StringBuffer buffer, Object info) {
+	protected void toStringChildren(int tab, StringBuilder buffer, Object info) {
 		if (info == null || !(info instanceof ErlElement)) {
 			return;
 		}
@@ -488,7 +488,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	public Object toStringInfo(int tab, StringBuffer buffer) {
+	public Object toStringInfo(int tab, StringBuilder buffer) {
 		final Object info = ErlangCore.getModelManager().getInfo(this);
 		this.toStringInfo(tab, buffer, info);
 		return info;
@@ -497,7 +497,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringInfo(int tab, StringBuffer buffer, Object info) {
+	protected void toStringInfo(int tab, StringBuilder buffer, Object info) {
 		buffer.append(this.tabString(tab));
 		toStringName(buffer);
 		if (info == null) {
@@ -508,7 +508,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringName(StringBuffer buffer) {
+	protected void toStringName(StringBuilder buffer) {
 		buffer.append(getElementName());
 		if (fOccurrenceCount > 1) {
 			buffer.append("#"); //$NON-NLS-1$

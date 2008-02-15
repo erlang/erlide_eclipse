@@ -17,9 +17,9 @@ import org.erlide.core.erlang.ISourceRange;
  */
 public class SourceRange implements ISourceRange {
 
-	private int fOffset;
+	private final int fOffset;
 
-	private int fLength;
+	private final int fLength;
 
 	public SourceRange(int offset, int length) {
 		fOffset = offset;
@@ -42,7 +42,7 @@ public class SourceRange implements ISourceRange {
 
 	@Override
 	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		buffer.append("[offset="); //$NON-NLS-1$
 		buffer.append(fOffset);
 		buffer.append(", length="); //$NON-NLS-1$

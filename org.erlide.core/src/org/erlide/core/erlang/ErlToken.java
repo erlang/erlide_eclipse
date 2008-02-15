@@ -29,7 +29,7 @@ public class ErlToken {
 
 	private static final boolean TRACE = false;
 
-	private String kind;
+	private final String kind;
 
 	private int length;
 
@@ -72,8 +72,8 @@ public class ErlToken {
 		}
 		if (ee != null) {
 			if (TRACE) {
-				ErlLogger.debug("   -" + ee.toString() + " " +
-						ee.getClass().getName());
+				ErlLogger.debug("   -" + ee.toString() + " "
+						+ ee.getClass().getName());
 			}
 			if (ee instanceof OtpErlangString) {
 				text = ((OtpErlangString) ee).stringValue();
@@ -86,7 +86,7 @@ public class ErlToken {
 						.doubleValue());
 			} else if (ee instanceof OtpErlangChar) {
 				try {
-					text = new StringBuffer().append(
+					text = new StringBuilder().append(
 							((OtpErlangChar) ee).charValue()).toString();
 				} catch (final OtpErlangRangeException e1) {
 					text = "";
@@ -95,7 +95,7 @@ public class ErlToken {
 			// might be a list of ints instead of a string
 			{
 				final OtpErlangObject[] ems = ((OtpErlangList) ee).elements();
-				final StringBuffer buf = new StringBuffer(ems.length);
+				final StringBuilder buf = new StringBuilder(ems.length);
 				for (OtpErlangObject element : ems) {
 					try {
 						buf.append(((OtpErlangLong) element).intValue());
@@ -109,8 +109,8 @@ public class ErlToken {
 			text = kind;
 		}
 		if (TRACE) {
-			ErlLogger.debug("mkTok " + kind + " - " + text + " " + offset + ":" +
-					text.length() + " " + (offset + text.length()));
+			ErlLogger.debug("mkTok " + kind + " - " + text + " " + offset + ":"
+					+ text.length() + " " + (offset + text.length()));
 		}
 	}
 
@@ -148,9 +148,9 @@ public class ErlToken {
 		}
 
 		if (TRACE) {
-			ErlLogger.debug("mkTok " + kind + " - " + text + " " + line + "/" +
-					offset + ":" + text.length() + " " +
-					(offset + text.length()));
+			ErlLogger.debug("mkTok " + kind + " - " + text + " " + line + "/"
+					+ offset + ":" + text.length() + " "
+					+ (offset + text.length()));
 		}
 	}
 

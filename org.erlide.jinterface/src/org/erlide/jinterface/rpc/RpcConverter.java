@@ -155,7 +155,7 @@ public class RpcConverter {
 				}
 				if (obj instanceof OtpErlangList) {
 					OtpErlangObject[] els = ((OtpErlangList) obj).elements();
-					StringBuffer res = new StringBuffer();
+					StringBuilder res = new StringBuilder();
 					for (OtpErlangObject el : els) {
 						if (el instanceof OtpErlangLong) {
 							long l = ((OtpErlangLong) el).longValue();

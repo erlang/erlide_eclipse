@@ -52,7 +52,7 @@ public abstract class SingleCharReader extends Reader {
 	 * Gets the content as a String
 	 */
 	public String getString() throws IOException {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		int ch;
 		while ((ch = read()) != -1) {
 			buf.append((char) ch);

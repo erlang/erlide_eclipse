@@ -61,7 +61,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
 	private int fCounter = 0;
 
-	private TextPresentation fTextPresentation;
+	private final TextPresentation fTextPresentation;
 
 	private int fBold = 0;
 
@@ -235,7 +235,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	 */
 	private String processHTMLTag() throws IOException {
 
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		int ch;
 		do {
 
@@ -265,8 +265,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			final int tagLen = buf.length();
 			// needs special treatment for comments
 			if ((tagLen >= 3 && "!--".equals(buf.substring(0, 3))) //$NON-NLS-1$
-					&&
-					!(tagLen >= 5 && "--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
+					&& !(tagLen >= 5 && "--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
 				// unfinished comment
 				buf.append(ch);
 			} else {
@@ -313,7 +312,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	 * A '&' has been read. Process a entity
 	 */
 	private String processEntity() throws IOException {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		int ch = nextChar();
 		while (Character.isLetterOrDigit((char) ch) || ch == '#') {
 			buf.append((char) ch);

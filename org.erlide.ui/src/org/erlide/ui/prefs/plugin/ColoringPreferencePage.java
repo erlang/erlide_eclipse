@@ -115,26 +115,26 @@ public class ColoringPreferencePage extends PreferencePage implements
 	private static class HighlightingColorListItem {
 
 		/** Display name */
-		private String fDisplayName;
+		private final String fDisplayName;
 
 		/** Color preference key */
-		private String fColorKey;
+		private final String fColorKey;
 
 		/** Bold preference key */
-		private String fBoldKey;
+		private final String fBoldKey;
 
 		/** Italic preference key */
-		private String fItalicKey;
+		private final String fItalicKey;
 
 		/**
 		 * Strikethrough preference key.
 		 */
-		private String fStrikethroughKey;
+		private final String fStrikethroughKey;
 
 		/**
 		 * Underline preference key.
 		 */
-		private String fUnderlineKey;
+		private final String fUnderlineKey;
 
 		/**
 		 * Initialize the item with the given values.
@@ -863,7 +863,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	private String loadPreviewContentFromFile(String filename) {
 		String line;
 		final String separator = System.getProperty("line.separator"); //$NON-NLS-1$
-		final StringBuffer buffer = new StringBuffer(512);
+		final StringBuilder buffer = new StringBuilder(512);
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(getClass()

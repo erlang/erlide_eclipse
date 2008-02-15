@@ -61,7 +61,7 @@ public class HTMLPrinter {
 			return text;
 		}
 
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		while (current > -1) {
 			buffer.append(text.substring(previous, current));
 			buffer.append(s);
@@ -82,7 +82,7 @@ public class HTMLPrinter {
 
 	public static String read(Reader rd) {
 
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		final char[] readBuffer = new char[2048];
 
 		try {
@@ -98,13 +98,13 @@ public class HTMLPrinter {
 		return null;
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position,
+	public static void insertPageProlog(StringBuilder buffer, int position,
 			RGB bgRGB, URL styleSheetURL) {
 
 		if (bgRGB == null) {
 			insertPageProlog(buffer, position, styleSheetURL);
 		} else {
-			final StringBuffer pageProlog = new StringBuffer(300);
+			final StringBuilder pageProlog = new StringBuilder(300);
 
 			pageProlog.append("<html>"); //$NON-NLS-1$
 
@@ -118,12 +118,12 @@ public class HTMLPrinter {
 		}
 	}
 
-	public static void insertStyles(StringBuffer buffer, String[] styles) {
+	public static void insertStyles(StringBuilder buffer, String[] styles) {
 		if (styles == null || styles.length == 0) {
 			return;
 		}
 
-		final StringBuffer styleBuf = new StringBuffer(10 * styles.length);
+		final StringBuilder styleBuf = new StringBuilder(10 * styles.length);
 		for (String element : styles) {
 			styleBuf.append(" style=\""); //$NON-NLS-1$
 			styleBuf.append(element);
@@ -139,12 +139,12 @@ public class HTMLPrinter {
 		buffer.insert(index + 5, styleBuf);
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position,
+	public static void insertPageProlog(StringBuilder buffer, int position,
 			RGB bgRGB) {
 		if (bgRGB == null) {
 			insertPageProlog(buffer, position);
 		} else {
-			final StringBuffer pageProlog = new StringBuffer(60);
+			final StringBuilder pageProlog = new StringBuilder(60);
 			pageProlog.append("<html><body text=\"#000000\" bgcolor=\""); //$NON-NLS-1$
 			appendColor(pageProlog, bgRGB);
 			pageProlog.append("\"><font size=-1>"); //$NON-NLS-1$
@@ -152,7 +152,7 @@ public class HTMLPrinter {
 		}
 	}
 
-	private static void appendStyleSheetURL(StringBuffer buffer,
+	private static void appendStyleSheetURL(StringBuilder buffer,
 			URL styleSheetURL) {
 		if (styleSheetURL == null) {
 			return;
@@ -167,18 +167,18 @@ public class HTMLPrinter {
 		buffer.append("</head>"); //$NON-NLS-1$
 	}
 
-	private static void appendColor(StringBuffer buffer, RGB rgb) {
+	private static void appendColor(StringBuilder buffer, RGB rgb) {
 		buffer.append('#');
 		buffer.append(Integer.toHexString(rgb.red));
 		buffer.append(Integer.toHexString(rgb.green));
 		buffer.append(Integer.toHexString(rgb.blue));
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position) {
+	public static void insertPageProlog(StringBuilder buffer, int position) {
 		insertPageProlog(buffer, position, getBgColor());
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position,
+	public static void insertPageProlog(StringBuilder buffer, int position,
 			URL styleSheetURL) {
 		insertPageProlog(buffer, position, getBgColor(), styleSheetURL);
 	}
@@ -192,23 +192,23 @@ public class HTMLPrinter {
 
 	}
 
-	public static void addPageProlog(StringBuffer buffer) {
+	public static void addPageProlog(StringBuilder buffer) {
 		insertPageProlog(buffer, buffer.length());
 	}
 
-	public static void addPageEpilog(StringBuffer buffer) {
+	public static void addPageEpilog(StringBuilder buffer) {
 		buffer.append("</font></body></html>"); //$NON-NLS-1$
 	}
 
-	public static void startBulletList(StringBuffer buffer) {
+	public static void startBulletList(StringBuilder buffer) {
 		buffer.append("<ul>"); //$NON-NLS-1$
 	}
 
-	public static void endBulletList(StringBuffer buffer) {
+	public static void endBulletList(StringBuilder buffer) {
 		buffer.append("</ul>"); //$NON-NLS-1$
 	}
 
-	public static void addBullet(StringBuffer buffer, String bullet) {
+	public static void addBullet(StringBuilder buffer, String bullet) {
 		if (bullet != null) {
 			buffer.append("<li>"); //$NON-NLS-1$
 			buffer.append(bullet);
@@ -216,7 +216,7 @@ public class HTMLPrinter {
 		}
 	}
 
-	public static void addSmallHeader(StringBuffer buffer, String header) {
+	public static void addSmallHeader(StringBuilder buffer, String header) {
 		if (header != null) {
 			buffer.append("<h5>"); //$NON-NLS-1$
 			buffer.append(header);
@@ -224,14 +224,14 @@ public class HTMLPrinter {
 		}
 	}
 
-	public static void addParagraph(StringBuffer buffer, String paragraph) {
+	public static void addParagraph(StringBuilder buffer, String paragraph) {
 		if (paragraph != null) {
 			buffer.append("<p>"); //$NON-NLS-1$
 			buffer.append(paragraph);
 		}
 	}
 
-	public static void addParagraph(StringBuffer buffer, Reader paragraphReader) {
+	public static void addParagraph(StringBuilder buffer, Reader paragraphReader) {
 		if (paragraphReader != null) {
 			addParagraph(buffer, read(paragraphReader));
 		}

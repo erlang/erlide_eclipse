@@ -201,18 +201,18 @@ public class ErlangElementLabels {
 	/**
 	 * Qualify all elements
 	 */
-	public static final int ALL_FULLY_QUALIFIED = F_FULLY_QUALIFIED |
-			M_FULLY_QUALIFIED | I_FULLY_QUALIFIED | T_FULLY_QUALIFIED |
-			D_QUALIFIED | CF_QUALIFIED | CU_QUALIFIED | P_QUALIFIED |
-			ROOT_QUALIFIED;
+	public static final int ALL_FULLY_QUALIFIED = F_FULLY_QUALIFIED
+			| M_FULLY_QUALIFIED | I_FULLY_QUALIFIED | T_FULLY_QUALIFIED
+			| D_QUALIFIED | CF_QUALIFIED | CU_QUALIFIED | P_QUALIFIED
+			| ROOT_QUALIFIED;
 
 	/**
 	 * Post qualify all elements
 	 */
-	public static final int ALL_POST_QUALIFIED = F_POST_QUALIFIED |
-			M_POST_QUALIFIED | I_POST_QUALIFIED | T_POST_QUALIFIED |
-			D_POST_QUALIFIED | CF_POST_QUALIFIED | CU_POST_QUALIFIED |
-			P_POST_QUALIFIED | ROOT_POST_QUALIFIED;
+	public static final int ALL_POST_QUALIFIED = F_POST_QUALIFIED
+			| M_POST_QUALIFIED | I_POST_QUALIFIED | T_POST_QUALIFIED
+			| D_POST_QUALIFIED | CF_POST_QUALIFIED | CU_POST_QUALIFIED
+			| P_POST_QUALIFIED | ROOT_POST_QUALIFIED;
 
 	/**
 	 * Default options (M_PARAMETER_TYPES enabled)
@@ -222,16 +222,16 @@ public class ErlangElementLabels {
 	/**
 	 * Default qualify options (All except Root and Package)
 	 */
-	public static final int DEFAULT_QUALIFIED = F_FULLY_QUALIFIED |
-			M_FULLY_QUALIFIED | I_FULLY_QUALIFIED | T_FULLY_QUALIFIED |
-			D_QUALIFIED | CF_QUALIFIED | CU_QUALIFIED;
+	public static final int DEFAULT_QUALIFIED = F_FULLY_QUALIFIED
+			| M_FULLY_QUALIFIED | I_FULLY_QUALIFIED | T_FULLY_QUALIFIED
+			| D_QUALIFIED | CF_QUALIFIED | CU_QUALIFIED;
 
 	/**
 	 * Default post qualify options (All except Root and Package)
 	 */
-	public static final int DEFAULT_POST_QUALIFIED = F_POST_QUALIFIED |
-			M_POST_QUALIFIED | I_POST_QUALIFIED | T_POST_QUALIFIED |
-			D_POST_QUALIFIED | CF_POST_QUALIFIED | CU_POST_QUALIFIED;
+	public static final int DEFAULT_POST_QUALIFIED = F_POST_QUALIFIED
+			| M_POST_QUALIFIED | I_POST_QUALIFIED | T_POST_QUALIFIED
+			| D_POST_QUALIFIED | CF_POST_QUALIFIED | CU_POST_QUALIFIED;
 
 	/**
 	 * User-readable string for separating post qualified names (e.g. " - ").
@@ -291,7 +291,7 @@ public class ErlangElementLabels {
 	 * Returns the label for a Erlang element. Flags as defined above.
 	 */
 	public static String getElementLabel(IErlElement element, int flags) {
-		final StringBuffer buf = new StringBuffer(60);
+		final StringBuilder buf = new StringBuilder(60);
 		getElementLabel(element, flags, buf);
 		return buf.toString();
 	}
@@ -300,7 +300,7 @@ public class ErlangElementLabels {
 	 * Returns the label for a Erlang element. Flags as defined above.
 	 */
 	public static void getElementLabel(IErlElement element, int flags,
-			StringBuffer buf) {
+			StringBuilder buf) {
 		/*
 		 * int type= element.getElementType(); IPackageFragmentRoot root= null;
 		 * 
@@ -340,11 +340,11 @@ public class ErlangElementLabels {
 		 */}
 
 	/**
-	 * Appends the label for a method to a StringBuffer. Considers the M_*
+	 * Appends the label for a method to a StringBuilder. Considers the M_*
 	 * flags.
 	 */
 	public static void getMethodLabel(IErlFunction method, int flags,
-			StringBuffer buf) {
+			StringBuilder buf) {
 		/*
 		 * try { // return type if (getFlag(flags, M_PRE_RETURNTYPE) &&
 		 * method.exists() && !method.isConstructor()) {
@@ -387,11 +387,11 @@ public class ErlangElementLabels {
 		 */}
 
 	/**
-	 * Appends the label for a compilation unit to a StringBuffer. Considers the
-	 * CU_* flags.
+	 * Appends the label for a compilation unit to a StringBuilder. Considers
+	 * the CU_* flags.
 	 */
 	public static void getCompilationUnitLabel(IErlModule cu, int flags,
-			StringBuffer buf) {
+			StringBuilder buf) {
 		/*
 		 * if (getFlag(flags, CU_QUALIFIED)) { IPackageFragment pack=
 		 * (IPackageFragment) cu.getParent(); if (!pack.isDefaultPackage()) {
@@ -403,12 +403,12 @@ public class ErlangElementLabels {
 		 */}
 
 	/**
-	 * Appends the label for a package fragment to a StringBuffer. Considers the
-	 * P_* flags.
+	 * Appends the label for a package fragment to a StringBuilder. Considers
+	 * the P_* flags.
 	 */
 	/*
 	 * public static void getPackageFragmentLabel(IPackageFragment pack, int
-	 * flags, StringBuffer buf) { if (getFlag(flags, P_QUALIFIED)) {
+	 * flags, StringBuilder buf) { if (getFlag(flags, P_QUALIFIED)) {
 	 * getPackageFragmentRootLabel((IPackageFragmentRoot) pack.getParent(),
 	 * ROOT_QUALIFIED, buf); buf.append('/'); } refreshPackageNamePattern(); if
 	 * (pack.isDefaultPackage()) { buf.append(DEFAULT_PACKAGE); } else if
@@ -426,12 +426,12 @@ public class ErlangElementLabels {
 	 * ROOT_QUALIFIED, buf); } }
 	 */
 	/**
-	 * Appends the label for a package fragment root to a StringBuffer.
+	 * Appends the label for a package fragment root to a StringBuilder.
 	 * Considers the ROOT_* flags.
 	 */
 	/*
 	 * public static void getPackageFragmentRootLabel(IPackageFragmentRoot root,
-	 * int flags, StringBuffer buf) { if (root.isArchive())
+	 * int flags, StringBuilder buf) { if (root.isArchive())
 	 * getArchiveLabel(root, flags, buf); else getFolderLabel(root, flags, buf); }
 	 */
 

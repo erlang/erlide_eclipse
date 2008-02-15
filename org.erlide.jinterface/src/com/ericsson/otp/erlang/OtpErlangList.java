@@ -191,7 +191,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public String toString() {
-		final StringBuffer s = new StringBuffer();
+		final StringBuilder s = new StringBuilder();
 		final int arity = arity();
 
 		s.append("[");

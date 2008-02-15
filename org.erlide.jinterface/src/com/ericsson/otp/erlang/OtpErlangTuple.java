@@ -165,7 +165,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 	@Override
 	public String toString() {
 		int i;
-		final StringBuffer s = new StringBuffer();
+		final StringBuilder s = new StringBuilder();
 		final int arity = elems.length;
 
 		s.append("{");

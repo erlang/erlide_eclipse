@@ -12,9 +12,9 @@ package org.erlide.jinterface.rpc.generator;
 import java.io.IOException;
 import java.util.List;
 
+import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
-import org.erlide.jinterface.rpc.RpcConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -66,8 +66,8 @@ public class RpcInterfaceGenerator {
 			res = r.elementAt(1);
 			List<OtpErlangObject> l = null;
 			try {
-				l = (List<OtpErlangObject>) RpcConverter
-						.erlang2java(res, List.class);
+				l = (List<OtpErlangObject>) RpcConverter.erlang2java(res,
+						List.class);
 				System.out.println(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
 
@@ -82,7 +82,7 @@ public class RpcInterfaceGenerator {
 
 	public static String generate(OtpNode node, String module, String pkg,
 			boolean convert, List<OtpErlangObject> l) {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		try {
 			generate(b, module, pkg, convert, l);
 		} catch (OtpErlangRangeException e) {
@@ -91,7 +91,7 @@ public class RpcInterfaceGenerator {
 		return b.toString();
 	}
 
-	private static void generate(StringBuffer b, String module, String pkg,
+	private static void generate(StringBuilder b, String module, String pkg,
 			boolean convert, List<OtpErlangObject> l)
 			throws OtpErlangRangeException {
 		String cls = toJavaClassName(module);

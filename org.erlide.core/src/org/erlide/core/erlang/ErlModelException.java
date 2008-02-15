@@ -174,7 +174,7 @@ public class ErlModelException extends CoreException {
 	 */
 	@Override
 	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		buffer.append("Erlang Model Exception: "); //$NON-NLS-1$
 		if (getException() != null) {
 			if (getException() instanceof CoreException) {

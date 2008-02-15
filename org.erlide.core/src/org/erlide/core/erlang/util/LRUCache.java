@@ -505,7 +505,7 @@ public class LRUCache implements Cloneable {
 	 */
 	@SuppressWarnings("unchecked")
 	protected String toStringContents() {
-		final StringBuffer result = new StringBuffer();
+		final StringBuilder result = new StringBuilder();
 		final int length = fEntryTable.size();
 		final Object[] unsortedKeys = new Object[length];
 		final String[] unsortedToStrings = new String[length];

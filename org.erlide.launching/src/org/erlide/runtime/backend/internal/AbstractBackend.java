@@ -67,7 +67,7 @@ public abstract class AbstractBackend implements IBackend {
 			final Object res = fNode.createMbox();
 			if (res == null) {
 				final String[] ss = fNode.getNames();
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				for (String element : ss) {
 					sb.append(element).append(" ");
 				}

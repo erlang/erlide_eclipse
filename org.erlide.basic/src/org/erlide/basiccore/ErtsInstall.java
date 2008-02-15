@@ -98,7 +98,7 @@ public class ErtsInstall {
 	}
 
 	public static String encodeList(List<String> l) {
-		final StringBuffer r = new StringBuffer();
+		final StringBuilder r = new StringBuilder();
 		for (Object element : l) {
 			r.append(element);
 			r.append((char) 0);
@@ -121,8 +121,8 @@ public class ErtsInstall {
 	}
 
 	public static String retrieveVersion(String path) {
-		final File boot = new File(path + File.separator + "bin" +
-				File.separator + "start.boot");
+		final File boot = new File(path + File.separator + "bin"
+				+ File.separator + "start.boot");
 		try {
 			final FileInputStream is = new FileInputStream(boot);
 			is.skip(14);

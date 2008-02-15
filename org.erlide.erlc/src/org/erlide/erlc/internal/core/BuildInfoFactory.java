@@ -376,7 +376,7 @@ public class BuildInfoFactory {
 		}
 
 		public void setErrorParsers(String[] parsers) throws CoreException {
-			final StringBuffer buf = new StringBuffer();
+			final StringBuilder buf = new StringBuilder();
 			for (String element : parsers) {
 				buf.append(element).append(';');
 			}
@@ -411,7 +411,7 @@ public class BuildInfoFactory {
 		protected Map<String, String> decodeMap(String value) {
 			final Map<String, String> map = new HashMap<String, String>();
 			if (value != null) {
-				final StringBuffer envStr = new StringBuffer(value);
+				final StringBuilder envStr = new StringBuilder(value);
 				final String escapeChars = "|\\"; //$NON-NLS-1$
 				final char escapeChar = '\\';
 				try {
@@ -432,7 +432,7 @@ public class BuildInfoFactory {
 							}
 							ndx++;
 						}
-						final StringBuffer line = new StringBuffer(envStr
+						final StringBuilder line = new StringBuilder(envStr
 								.substring(0, ndx));
 						int lndx = 0;
 						while (lndx < line.length()) {
@@ -457,7 +457,7 @@ public class BuildInfoFactory {
 		}
 
 		protected String encodeMap(Map<String, String> values) {
-			final StringBuffer str = new StringBuffer();
+			final StringBuilder str = new StringBuilder();
 			final Iterator<Map.Entry<String, String>> entries = values
 					.entrySet().iterator();
 			while (entries.hasNext()) {
@@ -472,7 +472,7 @@ public class BuildInfoFactory {
 
 		protected String escapeChars(String string, String escapeChars,
 				char escapeChar) {
-			final StringBuffer str = new StringBuffer(string);
+			final StringBuilder str = new StringBuilder(string);
 			for (int i = 0; i < str.length(); i++) {
 				if (escapeChars.indexOf(str.charAt(i)) != -1) {
 					str.insert(i, escapeChar);
@@ -490,11 +490,11 @@ public class BuildInfoFactory {
 
 	private static class BuildInfoPreference extends AbstractBuildInfo {
 
-		private Preferences prefs;
+		private final Preferences prefs;
 
-		private String builderID;
+		private final String builderID;
 
-		private boolean useDefaults;
+		private final boolean useDefaults;
 
 		BuildInfoPreference(Preferences prefs, String builderID,
 				boolean useDefaults) {
@@ -537,11 +537,11 @@ public class BuildInfoFactory {
 
 	private static class BuildInfoProject extends AbstractBuildInfo {
 
-		private IProject project;
+		private final IProject project;
 
-		private String builderID;
+		private final String builderID;
 
-		private Map<String, String> args;
+		private final Map<String, String> args;
 
 		@SuppressWarnings("unchecked")
 		BuildInfoProject(IProject project, String builderID)
@@ -600,9 +600,9 @@ public class BuildInfoFactory {
 
 	private static class BuildInfoMap extends AbstractBuildInfo {
 
-		private Map<String, String> args;
+		private final Map<String, String> args;
 
-		private String builderID;
+		private final String builderID;
 
 		BuildInfoMap(Map<String, String> args, String builderID) {
 			this.args = args;
@@ -648,7 +648,7 @@ public class BuildInfoFactory {
 	public static void initDefaults(IPreferenceStore store) {
 		final String[] parsers = ErlideErlcPlugin.getDefault()
 				.getAllErrorParsersIDs();
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		for (String element : parsers) {
 			buf.append(element).append(';');
 		}

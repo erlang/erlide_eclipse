@@ -1,12 +1,9 @@
 package org.erlide.devtools.builder;
 
-import java.io.IOException;
 import java.util.Map;
 
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.NotFoundException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -60,12 +57,6 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "org.erlide.devtools.xmlProblem";
 
-	private String rootPackage;
-
-	private String source;
-
-	private String destination;
-
 	private void addMarker(IFile file, String message, int lineNumber,
 			int severity) {
 		try {
@@ -106,19 +97,10 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 	public void setInitializationData(IConfigurationElement config,
 			String propertyName, Object data) throws CoreException {
 		super.setInitializationData(config, propertyName, data);
-		if ("org.erlide.devtools.builder.package".equals(propertyName)) {
-			rootPackage = (String) data;
-		}
-		if ("org.erlide.devtools.builder.source".equals(propertyName)) {
-			source = (String) data;
-		}
-		if ("org.erlide.devtools.builder.destination".equals(propertyName)) {
-			destination = (String) data;
-		}
 	}
 
 	void buildFile(IResource resource) {
-		System.err.println("**" + resource.getProjectRelativePath());
+		System.out.println("**" + resource.getProjectRelativePath());
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
 			System.out.println(" *" + resource.getProjectRelativePath());
@@ -128,7 +110,7 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 			 * overwrite the class file with the new data
 			 */
 			if (true || resource.getProjectRelativePath().toPortableString()
-					.contains(rootPackage)) {
+					.contains("rootPackage")) {
 				String srcPath = resource.getProjectRelativePath()
 						.toPortableString();
 				String destPath = srcPath;
@@ -138,12 +120,8 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 					CtClass cc = pool.get("org.erlide.devtools.otp.Erlang");
 					process(cc);
 					cc.writeFile();
-				} catch (NotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (CannotCompileException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("ERR: " + e.getMessage());
 				}
 			}
 

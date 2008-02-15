@@ -119,7 +119,7 @@ public class Cookie {
 
 		// Get the range of ascii alphabet
 		final char start = ((char) ((ran.nextDouble() * LOWER_RANGE) + LOWER_START_INT));
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		buffer.append(start);
 
 		// generate a 25 char string

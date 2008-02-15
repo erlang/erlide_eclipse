@@ -338,7 +338,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		final IDocument document = getSourceViewer().getDocument();
 		final String delimiter = document.getLegalLineDelimiters()[0];
 
-		final StringBuffer errorString = new StringBuffer();
+		final StringBuilder errorString = new StringBuilder();
 		for (String element : errors) {
 			errorString.append(element).append(delimiter);
 		}

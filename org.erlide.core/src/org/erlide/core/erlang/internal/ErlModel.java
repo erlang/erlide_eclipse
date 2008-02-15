@@ -326,7 +326,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @private Debugging purposes
 	 */
 	@Override
-	protected void toStringInfo(int tab, StringBuffer buffer, Object info) {
+	protected void toStringInfo(int tab, StringBuilder buffer, Object info) {
 		buffer.append(tabString(tab));
 		buffer.append("Erlang Model"); //$NON-NLS-1$
 		if (info == null) {

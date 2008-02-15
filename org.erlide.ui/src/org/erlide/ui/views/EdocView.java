@@ -444,7 +444,7 @@ public class EdocView extends AbstractInfoView {
 			if (javadocHtml != null && javadocHtml.length() > 0) {
 				final boolean RTL = (getSite().getShell().getStyle() & SWT.RIGHT_TO_LEFT) != 0;
 				if (RTL) {
-					final StringBuffer buffer = new StringBuffer(javadocHtml);
+					final StringBuilder buffer = new StringBuilder(javadocHtml);
 					HTMLPrinter.insertStyles(buffer,
 							new String[] { "direction:rtl" }); //$NON-NLS-1$
 					javadocHtml = buffer.toString();
@@ -475,7 +475,7 @@ public class EdocView extends AbstractInfoView {
 	// * @return a string with the Javadoc in HTML format.
 	// */
 	// private String getJavadocHtml(IJavaElement[] result) {
-	// StringBuffer buffer= new StringBuffer();
+	// StringBuilder buffer= new StringBuilder();
 	// int nResults= result.length;
 	//
 	// if (nResults == 0)

@@ -64,7 +64,7 @@ public class RpcStubGenerator {
 	@SuppressWarnings("boxing")
 	private static String generate(Class<?> clazz, String moduleName,
 			boolean onlyDeclared) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append(String.format("-module(%s).%n-compile(export_all).%n%n",
 				moduleName));
 
@@ -176,14 +176,14 @@ public class RpcStubGenerator {
 
 	}
 
-	private static void printClause(Class<?> clazz, StringBuffer buf,
+	private static void printClause(Class<?> clazz, StringBuilder buf,
 			Constructor<?> constructor) {
 		Class<?>[] params = constructor.getParameterTypes();
 
 		buf.append("  'new'(");
 
 		printParams(true, buf, params);
-		StringBuffer guards = new StringBuffer();
+		StringBuilder guards = new StringBuilder();
 		Class<?>[] p = constructor.getParameterTypes();
 		for (int i = 0; i < p.length; i++) {
 			String name = "P" + i;
@@ -194,14 +194,14 @@ public class RpcStubGenerator {
 			}
 		}
 		if (guards.length() != 0) {
-			guards = new StringBuffer("when ").append(guards);
+			guards = new StringBuilder("when ").append(guards);
 		}
 		buf.append(") " + guards + " ->\n");
 
 		buf.append("    jrpc:call(");
 		buf.append("<<\"" + clazz.getName() + "\">>, ");
 
-		StringBuffer args = new StringBuffer();
+		StringBuilder args = new StringBuilder();
 		Class<?>[] at = constructor.getParameterTypes();
 		for (int i = 0; i < at.length; i++) {
 			args.append("<<\"" + at[i].getName() + "\">>");
@@ -227,7 +227,7 @@ public class RpcStubGenerator {
 		return p1;
 	}
 
-	private static void printClause(Class<?> clazz, StringBuffer buf,
+	private static void printClause(Class<?> clazz, StringBuilder buf,
 			Method method) {
 		int mod = method.getModifiers();
 		boolean statik = Modifier.isStatic(mod);
@@ -266,7 +266,7 @@ public class RpcStubGenerator {
 			} else {
 				buf.append("Obj, ");
 			}
-			StringBuffer args = new StringBuffer();
+			StringBuilder args = new StringBuilder();
 			Class<?>[] at = method.getParameterTypes();
 			for (int i = 0; i < at.length; i++) {
 				args.append("<<\"" + at[i].getName() + "\">>");
@@ -308,7 +308,7 @@ public class RpcStubGenerator {
 		return "";
 	}
 
-	private static void printParams(boolean nohdr, StringBuffer buf,
+	private static void printParams(boolean nohdr, StringBuilder buf,
 			Class<?>[] params) {
 		if (!nohdr && params.length > 0) {
 			buf.append(", ");

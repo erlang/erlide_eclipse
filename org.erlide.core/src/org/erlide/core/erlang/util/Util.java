@@ -133,12 +133,12 @@ public class Util implements ISuffixConstants {
 		final int length = messageWithNoDoubleQuotes.length;
 		int start = 0;
 		int end = length;
-		StringBuffer output = null;
+		StringBuilder output = null;
 		while (true) {
 			if ((end = CharOperation.indexOf('{', messageWithNoDoubleQuotes,
 					start)) > -1) {
 				if (output == null) {
-					output = new StringBuffer(length + bindings.length * 20);
+					output = new StringBuilder(length + bindings.length * 20);
 				}
 				output.append(messageWithNoDoubleQuotes, start, end - start);
 				if ((start = CharOperation.indexOf('}',
@@ -295,7 +295,7 @@ public class Util implements ISuffixConstants {
 
 	/**
 	 * Concatenate two strings. Much faster than using +, which: - creates a
-	 * StringBuffer, - which is synchronized, - of default size, so the
+	 * StringBuilder, - which is synchronized, - of default size, so the
 	 * resulting char array is often larger than needed. This implementation
 	 * creates an extra char array, since the String constructor copies its
 	 * argument, but there's no way around this.
@@ -604,7 +604,7 @@ public class Util implements ISuffixConstants {
 	 * Put all the arguments in one String.
 	 */
 	public static String getProblemArgumentsForMarker(String[] arguments) {
-		final StringBuffer args = new StringBuffer(10);
+		final StringBuilder args = new StringBuilder(10);
 
 		args.append(arguments.length);
 		args.append(':');
@@ -1456,7 +1456,7 @@ public class Util implements ISuffixConstants {
 	 * Converts a char[][] to String, where segments are separated by '.'.
 	 */
 	public static String toString(char[][] c) {
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		for (int i = 0, max = c.length; i < max; ++i) {
 			if (i != 0) {
 				sb.append('.');
@@ -1474,7 +1474,7 @@ public class Util implements ISuffixConstants {
 		if (c == null) {
 			return new String(d);
 		}
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		for (final char[] element : c) {
 			sb.append(element);
 			sb.append('.');
@@ -1870,7 +1870,7 @@ public class Util implements ISuffixConstants {
 		if (objects == null) {
 			return ""; //$NON-NLS-1$
 		}
-		final StringBuffer buffer = new StringBuffer(10);
+		final StringBuilder buffer = new StringBuilder(10);
 		for (int i = 0; i < objects.length; i++) {
 			if (i > 0) {
 				buffer.append(", "); //$NON-NLS-1$

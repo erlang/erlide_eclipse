@@ -370,7 +370,7 @@ public class BrowserInformationControl implements IInformationControl,
 			}
 
 			if (styles != null) {
-				final StringBuffer buffer = new StringBuffer(content);
+				final StringBuilder buffer = new StringBuilder(content);
 				insertStyles(buffer, styles);
 				content = buffer.toString();
 			}
@@ -380,12 +380,12 @@ public class BrowserInformationControl implements IInformationControl,
 		fBrowser.setSize(Math.min(200, fMaxWidth), Math.min(fMaxHeight, 50));
 	}
 
-	private void insertStyles(StringBuffer buffer, String[] styles) {
+	private void insertStyles(StringBuilder buffer, String[] styles) {
 		if (styles == null || styles.length == 0) {
 			return;
 		}
 
-		final StringBuffer styleBuf = new StringBuffer(10 * styles.length);
+		final StringBuilder styleBuf = new StringBuilder(10 * styles.length);
 		for (String element : styles) {
 			styleBuf.append(" style=\""); //$NON-NLS-1$
 			styleBuf.append(element);

@@ -39,7 +39,7 @@ public class CommandLauncher {
 
 	protected String fErrorMessage = ""; //$NON-NLS-1$
 
-	private String lineSeparator;
+	private final String lineSeparator;
 
 	/**
 	 * The number of milliseconds to pause between polling.
@@ -191,7 +191,7 @@ public class CommandLauncher {
 	}
 
 	protected String getCommandLine(String[] commandArgs) {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		if (fCommandArgs != null) {
 			for (String element : commandArgs) {
 				buf.append(element);

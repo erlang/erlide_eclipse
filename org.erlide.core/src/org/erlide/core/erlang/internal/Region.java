@@ -144,7 +144,7 @@ public class Region implements IRegion {
 	 */
 	@Override
 	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		final IErlElement[] roots = getElements();
 		buffer.append('[');
 		for (int i = 0; i < roots.length; i++) {
