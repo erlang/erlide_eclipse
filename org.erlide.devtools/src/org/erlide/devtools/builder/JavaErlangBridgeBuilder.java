@@ -6,7 +6,6 @@ import javassist.ClassPool;
 import javassist.CtClass;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -57,20 +56,6 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "org.erlide.devtools.xmlProblem";
 
-	private void addMarker(IFile file, String message, int lineNumber,
-			int severity) {
-		try {
-			IMarker marker = file.createMarker(MARKER_TYPE);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-			if (lineNumber == -1) {
-				lineNumber = 1;
-			}
-			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		} catch (CoreException e) {
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -100,7 +85,6 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 	}
 
 	void buildFile(IResource resource) {
-		System.out.println("**" + resource.getProjectRelativePath());
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
 			System.out.println(" *" + resource.getProjectRelativePath());
@@ -121,7 +105,8 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 					process(cc);
 					cc.writeFile();
 				} catch (Exception e) {
-					System.err.println("ERR: " + e.getMessage());
+					System.err.println("ERR: " + e.getClass().getName()
+							+ " -- " + e.getMessage());
 				}
 			}
 

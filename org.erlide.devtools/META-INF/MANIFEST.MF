@@ -3,17 +3,18 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Devtools Plug-in
 Bundle-SymbolicName: org.erlide.devtools;singleton:=true
 Bundle-Version: 0.3.38.qualifier
-Bundle-Activator: org.erlide.devtools.Activator
 Bundle-Vendor: Erlide team
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.eclipse.ui
-Eclipse-LazyStart: true
+Eclipse-LazyStart: false
 Export-Package: org.erlide.devtools.builder;
   uses:="org.eclipse.jface.action,
    org.eclipse.core.runtime,
    org.eclipse.ui,
    org.eclipse.core.resources,
-   org.eclipse.jface.viewers"
+   org.eclipse.jface.viewers",
+ org.erlide.devtools.otp
 Bundle-ClassPath: .,
  lib/javassist.jar
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.erlide.jinterface
