@@ -1,6 +1,5 @@
 package org.erlide.devtools.otp;
 
-import org.erlide.devtools.Atom;
 import org.erlide.devtools.ErlType;
 import org.erlide.devtools.Spec;
 
@@ -15,8 +14,7 @@ public class Erlang {
 
 	@Spec(m = "erlang", f = "register", r = ErlType.BOOLEAN, a = {
 			ErlType.ATOM, ErlType.PID })
-	public boolean register(@Atom
-	String name, OtpErlangPid pid) {
+	public boolean register(String name, OtpErlangPid pid) {
 		return false;
 	}
 
