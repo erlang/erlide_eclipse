@@ -226,7 +226,7 @@ public class RpcConverter {
 			}
 			if (obj instanceof OtpErlangRef) {
 				if (!((OtpErlangRef) obj).node().equals(RpcUtil.REF_NODE)) {
-					return RpcUtil.getTarget((OtpErlangRef) obj);
+					return ObjRefCache.getTarget((OtpErlangRef) obj);
 				}
 				throw new RpcException("wrong arg type "
 						+ obj.getClass().getName() + ", can't convert to "
@@ -349,7 +349,7 @@ public class RpcConverter {
 			}
 			return new OtpErlangList(vv);
 		}
-		return RpcUtil.registerTarget(obj);
+		return ObjRefCache.registerTarget(obj);
 	}
 
 	public static boolean isDeveloper() {

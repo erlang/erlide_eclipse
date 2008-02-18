@@ -9,15 +9,10 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -30,7 +25,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcUtil {
-
 	static final String REF_NODE = "jRPC";
 
 	private static class MethodDescription {
@@ -45,11 +39,6 @@ public class RpcUtil {
 
 	private static final boolean VERBOSE = false;
 
-	private static Map<OtpErlangRef, WeakReference<Object>> objects = new HashMap<OtpErlangRef, WeakReference<Object>>();
-	private static int refid0 = 0;
-	private static int refid1 = 0;
-	private static int refid2 = 0;
-
 	// eclipse uses different classloaders for each plugin. this one is non-ui
 	// so we have to set it from a ui one (when that one is initialized) so that
 	// we can access even the UI classes (which are actually most interesting)
@@ -63,48 +52,6 @@ public class RpcUtil {
 		final OtpErlangObject a = new OtpErlangList(args);
 		return new OtpErlangTuple(pid, new OtpErlangTuple(new OtpErlangAtom(
 				"call"), m, f, a, new OtpErlangAtom("user")));
-	}
-
-	public static OtpErlangRef registerTarget(Object obj) {
-		if (obj == null) {
-			return new OtpErlangRef(REF_NODE, new int[] { 0, 0, 0 }, 0);
-		}
-
-		Set<Entry<OtpErlangRef, WeakReference<Object>>> entries = objects
-				.entrySet();
-		for (Entry<OtpErlangRef, WeakReference<Object>> entry : entries) {
-			if (entry.getValue().get() == obj) {
-				return entry.getKey();
-			}
-		}
-		OtpErlangRef ref = mkref();
-		objects.put(ref, new WeakReference<Object>(obj));
-		return ref;
-	}
-
-	public static Object getTarget(OtpErlangRef ref) {
-		return objects.get(ref).get();
-	}
-
-	public static void unregisterTarget(OtpErlangRef ref) {
-		objects.remove(ref);
-	}
-
-	static OtpErlangRef mkref() {
-		final int max = 0x7fffffff;
-		if (refid2 < max) {
-			refid2++;
-		} else {
-			if (refid1 < max) {
-				refid1++;
-			} else {
-				refid0++;
-				refid1 = 0;
-			}
-			refid2 = 0;
-		}
-		return new OtpErlangRef(REF_NODE, new int[] { refid0, refid1, refid2 },
-				0);
 	}
 
 	public static void handleRequests(List<OtpErlangObject> msgs,
@@ -220,7 +167,7 @@ public class RpcUtil {
 
 		if (target instanceof OtpErlangRef) {
 			// object call
-			Object rcvr = getTarget((OtpErlangRef) target);
+			Object rcvr = ObjRefCache.getTarget((OtpErlangRef) target);
 			if (rcvr != null) {
 				try {
 					return callMethod(rcvr, description, parms);
