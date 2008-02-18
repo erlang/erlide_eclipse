@@ -54,8 +54,6 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "org.erlide.devtools.jebridgeBuilder";
 
-	private static final String MARKER_TYPE = "org.erlide.devtools.xmlProblem";
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -86,7 +84,7 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 
 	void buildFile(IResource resource) {
 		if (resource instanceof IFile) {
-			IFile file = (IFile) resource;
+			// IFile file = (IFile) resource;
 			System.out.println(" *" + resource.getProjectRelativePath());
 			/*
 			 * if this is a java file in the right package,<br> locate the
@@ -95,10 +93,10 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 			 */
 			if (true || resource.getProjectRelativePath().toPortableString()
 					.contains("rootPackage")) {
-				String srcPath = resource.getProjectRelativePath()
-						.toPortableString();
-				String destPath = srcPath;
-				String className = srcPath;
+				// String srcPath = resource.getProjectRelativePath()
+				// .toPortableString();
+				// String destPath = srcPath;
+				// String className = srcPath;
 				ClassPool pool = ClassPool.getDefault();
 				try {
 					CtClass cc = pool.get("org.erlide.devtools.otp.Erlang");
@@ -116,13 +114,6 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 	private void process(CtClass cc) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private void deleteMarkers(IFile file) {
-		try {
-			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
-		} catch (CoreException ce) {
-		}
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor)
