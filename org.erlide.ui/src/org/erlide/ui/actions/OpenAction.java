@@ -50,8 +50,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -61,7 +59,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -303,7 +300,7 @@ public class OpenAction extends SelectionDispatchAction {
 			final OtpErlangList pathVars = new OtpErlangList(pv
 					.toArray(new OtpErlangTuple[pv.size()]));
 			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
-					list, window, fExternalModules, pathVars);
+					"xisx", list, window, fExternalModules, pathVars);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
@@ -367,8 +364,8 @@ public class OpenAction extends SelectionDispatchAction {
 					final String mod = ei.getImportModule();
 					final OtpErlangAtom a = new OtpErlangAtom(mod);
 					final OtpErlangObject res2 = b.rpcx("erlide_open",
-							"get_source_from_module", a, fExternalModules,
-							pathVars);
+							"get_source_from_module", null, a,
+							fExternalModules, pathVars);
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
@@ -428,9 +425,9 @@ public class OpenAction extends SelectionDispatchAction {
 							try {
 								String s = element.getFilename();
 								if (element.isSystemInclude()) {
-									final OtpErlangObject t = b
-											.rpcx("erlide_open",
-													"get_include_lib", s);
+									final OtpErlangObject t = b.rpcx(
+											"erlide_open", "get_include_lib",
+											null, s);
 									if (t instanceof OtpErlangTuple) {
 										final OtpErlangObject es = ((OtpErlangTuple) t)
 												.elementAt(1);
@@ -462,19 +459,7 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 				EditorUtility.revealInEditor(editor, pd);
 			}
-		} catch (final ErlangRpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final OtpErlangRangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final ClassCastException e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

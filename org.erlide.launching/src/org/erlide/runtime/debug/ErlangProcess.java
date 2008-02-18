@@ -15,8 +15,6 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -37,11 +35,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public static final String STATUS_TERMINATED = "terminated";
 
-	private OtpErlangPid fPid;
+	private final OtpErlangPid fPid;
 
-	private ErlangDebugTarget fTarget;
+	private final ErlangDebugTarget fTarget;
 
-	private IBackend fBackend;
+	private final IBackend fBackend;
 
 	public ErlangProcess(ErlangDebugTarget target, OtpErlangPid pid) {
 		super(target);
@@ -171,14 +169,12 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 			String item) {
 		OtpErlangObject res;
 		try {
-			res = b
-					.rpcx("erlang", "process_info", pid,
-							new OtpErlangAtom(item));
+			res = b.rpcx("erlang", "process_info", "pa", pid, item);
 			if (res instanceof OtpErlangTuple) {
 				return ((OtpErlangTuple) res).elementAt(1);
 			}
 			return null;
-		} catch (final BackendException e) {
+		} catch (final Exception e) {
 			return null;
 		}
 
@@ -305,10 +301,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		boolean res = false;
 		try {
 			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("pman_process",
-					"is_system_process", fPid);
+					"is_system_process", "s", fPid);
 			res = "true".equals(eres.atomValue());
-		} catch (ErlangRpcException e) {
-		} catch (BackendException e) {
+		} catch (Exception e) {
 		}
 		return res;
 	}
@@ -317,10 +312,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		boolean res = false;
 		try {
 			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("erlide_debug",
-					"is_erlide_process", fPid);
+					"is_erlide_process", "p", fPid);
 			res = "true".equals(eres.atomValue());
-		} catch (ErlangRpcException e) {
-		} catch (BackendException e) {
+		} catch (Exception e) {
 		}
 		return res;
 	}

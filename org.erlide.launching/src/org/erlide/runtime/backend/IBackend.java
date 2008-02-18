@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
+import org.erlide.jinterface.rpc.ConversionError;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -37,10 +38,14 @@ public interface IBackend {
 	 * 
 	 * @param m
 	 * @param f
+	 * @param signature
+	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws ConversionError
 	 */
-	RpcResult rpc(String m, String f, Object... a) throws ErlangRpcException;
+	RpcResult rpc(String m, String f, String signature, Object... a)
+			throws ErlangRpcException, ConversionError;
 
 	/**
 	 * @throws ErlangRpcException
@@ -48,11 +53,14 @@ public interface IBackend {
 	 * @param m
 	 * @param f
 	 * @param timeout
+	 * @param signature
+	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws ConversionError
 	 */
-	RpcResult rpct(String m, String f, int timeout, Object... a)
-			throws ErlangRpcException;
+	RpcResult rpct(String m, String f, int timeout, String signature,
+			Object... a) throws ErlangRpcException, ConversionError;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -60,11 +68,14 @@ public interface IBackend {
 	 * 
 	 * @param m
 	 * @param f
+	 * @param signature
+	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws ConversionError
 	 */
-	OtpErlangObject rpcx(String m, String f, Object... a)
-			throws ErlangRpcException, BackendException;
+	OtpErlangObject rpcx(String m, String f, String signature, Object... a)
+			throws ErlangRpcException, BackendException, ConversionError;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -73,11 +84,15 @@ public interface IBackend {
 	 * @param m
 	 * @param f
 	 * @param timeout
+	 * @param signature
+	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws ConversionError
 	 */
-	OtpErlangObject rpcxt(String m, String f, int timeout, Object... a)
-			throws ErlangRpcException, BackendException;
+	OtpErlangObject rpcxt(String m, String f, int timeout, String signature,
+			Object... a) throws ErlangRpcException, BackendException,
+			ConversionError;
 
 	/**
 	 * 
@@ -126,7 +141,7 @@ public interface IBackend {
 			OtpErlangDecodeException;
 
 	OtpErlangObject execute(String fun, OtpErlangObject... args)
-			throws ErlangRpcException;
+			throws Exception;
 
 	BackendShellManager getShellManager();
 

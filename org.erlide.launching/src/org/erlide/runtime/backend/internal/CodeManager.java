@@ -34,7 +34,6 @@ import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.RpcResult;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -46,13 +45,13 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
-	private IBackend fBackend;
+	private final IBackend fBackend;
 
-	private List<PathItem> pathA;
+	private final List<PathItem> pathA;
 
-	private List<PathItem> pathZ;
+	private final List<PathItem> pathZ;
 
-	private List<Plugin> plugins;
+	private final List<Plugin> plugins;
 
 	// only to be called by AbstractBackend
 	CodeManager(IBackend backend) {
@@ -79,8 +78,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
 			try {
-				fBackend.rpc("code", "add_patha", path);
-			} catch (final ErlangRpcException e) {
+				fBackend.rpc("code", "add_patha", "s", path);
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -92,8 +91,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private void addPathZ(String path) {
 		if (addPath(pathZ, path)) {
 			try {
-				fBackend.rpc("code", "add_pathz", path);
-			} catch (final ErlangRpcException e) {
+				fBackend.rpc("code", "add_pathz", "s", path);
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -120,14 +119,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		if (removePath(pathA, path)) {
 			try {
 				// workaround for bug in code:del_path
-				RpcResult rr = fBackend.rpc("filename", "join",
+				RpcResult rr = fBackend.rpc("filename", "join", "ls",
 						new OtpErlangList(new OtpErlangString(path)));
 				if (rr.isOk()) {
 					path = ((OtpErlangString) rr.getValue()).stringValue();
 				}
 
-				fBackend.rpc("code", "del_path", path);
-			} catch (final ErlangRpcException e) {
+				fBackend.rpc("code", "del_path", "s", path);
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -140,14 +139,15 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		if (removePath(pathZ, path)) {
 			try {
 				// workaround for bug in code:del_path
-				RpcResult rr = fBackend.rpc("filename", "join",
+				RpcResult rr = fBackend.rpc("filename", "join", "x",
 						new OtpErlangList(new OtpErlangString(path)));
 				if (rr.isOk()) {
 					path = ((OtpErlangString) rr.getValue()).stringValue();
 				}
 
-				fBackend.rpc("code", "del_path", new OtpErlangString(path));
-			} catch (final ErlangRpcException e) {
+				fBackend.rpc("code", "del_path", null,
+						new OtpErlangString(path));
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -206,15 +206,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 		OtpErlangObject r = null;
 		try {
-			r = fBackend.rpcx("code", "is_sticky",
-					new OtpErlangAtom(moduleName));
+			r = fBackend.rpcx("code", "is_sticky", "a", moduleName);
 			if (!((OtpErlangAtom) r).booleanValue()
 					|| !BackendManager.isDeveloper()) {
-				r = fBackend.rpcx("code", "load_binary", new OtpErlangAtom(
-						moduleName), moduleName + ".erl", bin);
+				r = fBackend.rpcx("code", "load_binary", "asb", moduleName,
+						moduleName + ".erl", bin);
 				if (BackendManager.isDeveloper()) {
-					fBackend.rpc("code", "stick_mod", new OtpErlangAtom(
-							moduleName));
+					fBackend.rpc("code", "stick_mod", "a", moduleName);
 				}
 			} else {
 				return false;
@@ -437,8 +435,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	private void unloadBeam(String moduleName) {
 		try {
-			fBackend.rpc("code", "delete", new OtpErlangAtom(moduleName));
-		} catch (final ErlangRpcException e) {
+			fBackend.rpc("code", "delete", "a", moduleName);
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}

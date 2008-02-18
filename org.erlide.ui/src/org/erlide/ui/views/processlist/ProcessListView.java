@@ -47,12 +47,11 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IBackendVisitor;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -361,7 +360,8 @@ public class ProcessListView extends ViewPart {
 
 				// final ErlangConsole c = ErlangConsole.getDefault();
 				// if (c != null) {
-				final OtpErlangObject pid = ((OtpErlangTuple) obj).elementAt(0);
+				final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
+						.elementAt(0);
 
 				final OtpErlangObject r = getProcessInfo(getBackend(), pid);
 				if (r instanceof OtpErlangList) {
@@ -420,26 +420,25 @@ public class ProcessListView extends ViewPart {
 
 	public static void processListInit(IBackend b) {
 		try {
-			b.rpc(MODULE_NAME, "process_list_init");
-		} catch (final ErlangRpcException e) {
+			b.rpc(MODULE_NAME, "process_list_init", null);
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static OtpErlangList getProcessList(IBackend b) {
 		try {
-			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list");
-		} catch (final BackendException e) {
+			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", null);
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return new OtpErlangList();
 		}
 	}
 
-	public static OtpErlangObject getProcessInfo(IBackend b,
-			OtpErlangObject object) {
+	public static OtpErlangObject getProcessInfo(IBackend b, OtpErlangPid pid) {
 		try {
-			return b.rpcx(MODULE_NAME, "get_process_info", object);
-		} catch (final BackendException e) {
+			return b.rpcx(MODULE_NAME, "get_process_info", "p", pid);
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return new OtpErlangAtom("error");
 		}

@@ -24,7 +24,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -32,7 +31,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -46,19 +44,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		fEditor = editor;
 	}
 
-	private OtpErlangList getDocumentationFor(OtpErlangList list,
-			OtpErlangAtom mod) {
+	private OtpErlangList getDocumentationFor(OtpErlangList list, String mod) {
 		try {
 			final String s = ErlideUIPlugin.getDefault().getStateLocation()
 					.toString();
 			final OtpErlangObject r1 = BackendManager.getDefault()
 					.getIdeBackend().rpcx("erlide_otp_doc",
-							"get_doc_from_fun_arity_list", mod, list, s);
+							"get_doc_from_fun_arity_list", "axs", mod, list, s);
 			if (r1 instanceof OtpErlangList) {
 				return (OtpErlangList) r1;
 			}
 			return null;
-		} catch (final BackendException e) {
+		} catch (final Exception e) {
 
 		}
 		return null;
@@ -86,14 +83,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final String mod = prefix.substring(0, k);
 			prefix = prefix.substring(k + 1);
 			final IErlProject project = ErlModelUtils.getErlProject(fEditor);
-			final OtpErlangAtom modAtom = new OtpErlangAtom(mod);
 			final IBackend b = BackendManager.getDefault().get(
 					project.getProject());
 			final OtpErlangObject res = b.rpcx("erlide_otp_doc",
-					"get_exported", modAtom, prefix);
+					"get_exported", "as", mod, prefix);
 			if (res instanceof OtpErlangList) {
 				final OtpErlangList resl = (OtpErlangList) res;
-				final OtpErlangList docl = getDocumentationFor(resl, modAtom);
+				final OtpErlangList docl = getDocumentationFor(resl, mod);
 				for (int i = 0; i < resl.arity(); i++) {
 					final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
 					final String fstr = ((OtpErlangAtom) f.elementAt(0))
@@ -120,9 +116,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				return result.toArray(new ICompletionProposal[result.size()]);
 			}
 			return NO_COMPLETIONS;
-		} catch (final BackendException e) {
-			return NO_COMPLETIONS;
-		} catch (final OtpErlangRangeException e) {
+		} catch (final Exception e) {
 			return NO_COMPLETIONS;
 		}
 	}

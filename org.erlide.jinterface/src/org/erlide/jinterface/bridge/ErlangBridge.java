@@ -63,12 +63,10 @@ public class ErlangBridge {
 	public static class ErlangBridgeHandler implements InvocationHandler {
 
 		private String module;
-		private String node;
 		private OtpNode lnode;
-		private OtpMbox mbox;
+		private final OtpMbox mbox;
 
 		public ErlangBridgeHandler(String intf, String node, String module) {
-			this.node = node;
 			this.module = module;
 			if (module == null) {
 				this.module = intf;
@@ -100,6 +98,7 @@ public class ErlangBridge {
 			}
 			return res.elementAt(1);
 		}
+
 	}
 
 }

@@ -15,7 +15,6 @@ import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -28,11 +27,11 @@ public class ErlScanner implements IErlScanner {
 
 	private final IErlModule fModule;
 
-	private final OtpErlangAtom fMod;
+	private final String fMod;
 
 	public ErlScanner(IErlModule module, String initialText) {
 		fModule = module;
-		fMod = new OtpErlangAtom(createScannerModuleName());
+		fMod = createScannerModuleName();
 		create();
 		insertText(0, initialText);
 	}
@@ -55,7 +54,7 @@ public class ErlScanner implements IErlScanner {
 	private void create() {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"create", fMod);
+					"create", "a", fMod);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -64,7 +63,7 @@ public class ErlScanner implements IErlScanner {
 	public void dispose() {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
-					"destroy", fMod);
+					"destroy", "a", fMod);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -75,7 +74,7 @@ public class ErlScanner implements IErlScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scanner", "do_getTokenAt", fMod, offset + 1);
+					"erlide_scanner", "do_getTokenAt", "ai", fMod, offset + 1);
 		} catch (final Exception e) {
 			// e.printStackTrace();
 			return null;
@@ -96,8 +95,8 @@ public class ErlScanner implements IErlScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scanner", "do_getTokensAround", fMod,
-					new OtpErlangLong(offset + 1));
+					"erlide_scanner", "do_getTokensAround", "ai", fMod,
+					offset + 1);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -142,7 +141,7 @@ public class ErlScanner implements IErlScanner {
 		// + text.length());
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"insertText", fMod, offset + 1, text);
+					"insertText", "ais", fMod, offset + 1, text);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -153,7 +152,7 @@ public class ErlScanner implements IErlScanner {
 		// length);
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"removeText", fMod, offset + 1, length);
+					"removeText", "ais", fMod, offset + 1, length);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -163,7 +162,7 @@ public class ErlScanner implements IErlScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scanner", "do_getTokens", fMod);
+					"erlide_scanner", "do_getTokens", "a", fMod);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -189,9 +188,9 @@ public class ErlScanner implements IErlScanner {
 	public TokenWindow getTokenWindow(int offset, int window) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getIdeBackend()
-					.rpcx("erlide_scanner", "do_getTokenWindow", fMod, offset,
-							window);
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scanner", "do_getTokenWindow", "aii", fMod, offset,
+					window);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -215,7 +214,7 @@ public class ErlScanner implements IErlScanner {
 		return null;
 	}
 
-	public OtpErlangAtom getScannerModuleName() {
+	public String getScannerModuleName() {
 		return fMod;
 	}
 }

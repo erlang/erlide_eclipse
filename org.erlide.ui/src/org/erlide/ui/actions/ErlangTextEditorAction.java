@@ -117,13 +117,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			} else {
 				runnable.run();
 			}
-		} catch (final BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final ErlangRpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final BackendException e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -139,9 +133,10 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	@SuppressWarnings("boxing")
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
-			throws BackendException, ErlangRpcException {
+			throws Exception {
 		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
-				.rpcx(fErlModule, fErlFunction, text, selection.getOffset());
+				.rpcx(fErlModule, fErlFunction, "si", text,
+						selection.getOffset());
 		return r1;
 	}
 

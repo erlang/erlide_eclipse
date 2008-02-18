@@ -36,7 +36,6 @@ import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -608,10 +607,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		} else if (e instanceof OtpErlangTuple) {
 			try {
 				IBackend b = BackendManager.getDefault().getIdeBackend();
-				OtpErlangObject p = b.rpcx("erlide_pp", "expr", e);
-				p = b.rpcx("lists", "flatten", p);
+				OtpErlangObject p = b.rpcx("erlide_pp", "expr", "x", e);
+				p = b.rpcx("lists", "flatten", null, p);
 				return ((OtpErlangString) p).stringValue();
-			} catch (final BackendException e1) {
+			} catch (final Exception e1) {
 				return "?";
 			}
 		} else {

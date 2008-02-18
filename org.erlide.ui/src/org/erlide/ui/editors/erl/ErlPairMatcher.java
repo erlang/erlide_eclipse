@@ -15,11 +15,9 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 
 /**
  * Helper class for match pairs of characters.
@@ -61,7 +59,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_pair_match", "match", fOffset,
+					"erlide_pair_match", "match", "ia", fOffset,
 					fScanner.getScannerModuleName());
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
@@ -77,10 +75,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 				}
 				return true;
 			}
-		} catch (BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (OtpErlangRangeException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

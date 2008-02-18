@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.rpc.ConversionError;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -171,33 +172,46 @@ public abstract class AbstractBackend implements IBackend {
 		fRpcDaemon.stop();
 	}
 
-	public RpcResult rpc(String m, String f, Object... a)
-			throws ErlangRpcException {
-		return rpct(m, f, 5000, a);
+	/**
+	 * typed RPC
+	 * 
+	 * @throws ConversionError
+	 */
+	public RpcResult rpc(String m, String f, String signature, Object... a)
+			throws ErlangRpcException, ConversionError {
+		return rpct(m, f, 5000, signature, a);
 	}
 
 	/**
-	 * RPC with timeout
+	 * typed RPC with timeout
+	 * 
+	 * @throws ConversionError
 	 */
-	public RpcResult rpct(String m, String f, int timeout, Object... a)
-			throws ErlangRpcException {
-		return sendRpc(m, f, timeout, a);
+	public RpcResult rpct(String m, String f, int timeout, String signature,
+			Object... a) throws ErlangRpcException, ConversionError {
+		return sendRpc(m, f, timeout, signature, a);
 	}
 
 	/**
-	 * RPC , throws Exception
+	 * typed RPC , throws Exception
+	 * 
+	 * @throws ConversionError
 	 */
-	public OtpErlangObject rpcx(String m, String f, Object... a)
-			throws ErlangRpcException, BackendException {
-		return rpcxt(m, f, 5000, a);
+	public OtpErlangObject rpcx(String m, String f, String signature,
+			Object... a) throws ErlangRpcException, BackendException,
+			ConversionError {
+		return rpcxt(m, f, 5000, signature, a);
 	}
 
 	/**
-	 * RPC with timeout, throws Exception
+	 * typed RPC with timeout, throws Exception
+	 * 
+	 * @throws ConversionError
 	 */
-	public OtpErlangObject rpcxt(String m, String f, int timeout, Object... a)
-			throws ErlangRpcException, BackendException {
-		return checkRpc(rpct(m, f, timeout, a));
+	public OtpErlangObject rpcxt(String m, String f, int timeout,
+			String signature, Object... a) throws ErlangRpcException,
+			BackendException, ConversionError {
+		return checkRpc(rpct(m, f, timeout, signature, a));
 	}
 
 	private static OtpErlangObject checkRpc(RpcResult r)
@@ -312,17 +326,19 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	private RpcResult sendRpc(String module, String fun, int timeout,
-			Object... args0) {
+			String signature, Object... args0) throws ConversionError {
 		if (!fConnected) {
 			return null;
 		}
 		if (args0 == null) {
 			args0 = new OtpErlangObject[] {};
 		}
-		OtpErlangObject[] args = null;
-		args = new OtpErlangObject[args0.length];
+
+		String[] type = parseTypes(signature, args0.length);
+
+		OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
-			args[i] = RpcConverter.java2erlang(args0[i]);
+			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
 		}
 
 		RpcResult result = null;
@@ -353,7 +369,6 @@ public abstract class AbstractBackend implements IBackend {
 			}
 
 			res = ((OtpErlangTuple) res).elementAt(1);
-			// res = erlang2java(res); // ??
 			result = new RpcResult(res);
 		} catch (final OtpErlangExit e) {
 			e.printStackTrace();
@@ -363,6 +378,18 @@ public abstract class AbstractBackend implements IBackend {
 			ErlangLaunchPlugin.log(e);
 		}
 		return result;
+	}
+
+	private String[] parseTypes(String signature, int length) {
+		String[] type = new String[length];
+		for (int i = 0, j = 0; i < length; i++, j++) {
+			type[i] = (signature == null ? "x" : signature.substring(j, j + 1));
+			if (type[i].equals("l") || type[i].equals("t")) {
+				j++;
+				type[i] = type[i] + signature.substring(j, j + 1);
+			}
+		}
+		return type;
 	}
 
 	private OtpMbox getMbox() {
@@ -386,15 +413,14 @@ public abstract class AbstractBackend implements IBackend {
 			fCurrentVersion = "";
 			OtpErlangObject r;
 			try {
-				r = rpcx("init", "script_id");
+				r = rpcx("init", "script_id", null);
 				if (r instanceof OtpErlangTuple) {
 					OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
 					if (rr instanceof OtpErlangString) {
 						fCurrentVersion = ((OtpErlangString) rr).stringValue();
 					}
 				}
-			} catch (ErlangRpcException e) {
-			} catch (BackendException e) {
+			} catch (Exception e) {
 			}
 		}
 		return fCurrentVersion;
@@ -456,9 +482,9 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	public OtpErlangObject execute(String fun, OtpErlangObject... args)
-			throws ErlangRpcException {
-		return rpc(ERL_BACKEND, "execute", new OtpErlangString(fun),
-				new OtpErlangList(args)).getValue();
+			throws Exception {
+		return rpc(ERL_BACKEND, "execute", "sx", fun, new OtpErlangList(args))
+				.getValue();
 	}
 
 	public BackendShellManager getShellManager() {
@@ -484,8 +510,8 @@ public abstract class AbstractBackend implements IBackend {
 	public void init_erlang() {
 		fRpcDaemon = new ErlRpcDaemon(this);
 		try {
-			rpc(ERL_BACKEND, "init", new OtpErlangAtom(fNode.node()));
-		} catch (ErlangRpcException e) {
+			rpc(ERL_BACKEND, "init", "a", fNode.node());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -504,7 +530,7 @@ public abstract class AbstractBackend implements IBackend {
 			throws ErlangParseException {
 		OtpErlangObject r = null;
 		try {
-			r = rpcx(ERL_BACKEND, "parse_term", new OtpErlangString(string));
+			r = rpcx(ERL_BACKEND, "parse_term", "s", string);
 			ErlLogger.debug("PARSE=" + r);
 		} catch (final Exception e) {
 			e.printStackTrace();

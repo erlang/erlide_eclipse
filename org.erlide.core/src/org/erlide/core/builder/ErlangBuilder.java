@@ -52,7 +52,6 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendVisitor;
 import org.erlide.runtime.backend.RpcResult;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -182,7 +181,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
 			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
-					"code_clash");
+					"code_clash", null);
 			for (int i = 0; i < res.arity(); i++) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -205,7 +204,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						+ "/" + sd[i];
 			}
 			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
-					"source_clash", (Object) dirList);
+					"source_clash", "ls", (Object) dirList);
 			for (int i = 0; i < res.arity(); i++) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -650,12 +649,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				try {
 					if (b != BackendManager.getDefault().getIdeBackend()) {
 						final RpcResult result = b.rpc("code", "load_binary",
-								new OtpErlangAtom(beamf), new OtpErlangString(
-										beamf), code);
+								"asb", beamf, beamf, code);
 						ErlLogger.debug("  $ distribute " + beamf + " to "
 								+ b.getLabel() + "  - " + result.getValue());
 					}
-				} catch (final ErlangRpcException e) {
+				} catch (final Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -974,9 +972,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 			final OtpErlangList includeList = new OtpErlangList(includes);
 			return BackendManager.getDefault().get(project).rpcxt(MODULE,
-					"compile", 20000, fn, outputdir, includeList
+					"compile", 20000, "ssxx", fn,
+					outputdir
 					// FIXME add an option for this
-					, new OtpErlangList(new OtpErlangAtom("debug_info")));
+					, includeList,
+					new OtpErlangList(new OtpErlangAtom("debug_info")));
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
@@ -990,7 +990,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		try {
 			final RpcResult r = BackendManager.getDefault().get(project).rpct(
-					MODULE, "compile_yrl", 30000, fn, output);
+					MODULE, "compile_yrl", 30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
@@ -1005,8 +1005,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final String module) {
 		try {
 			return BackendManager.getDefault().get(project).rpcx(MODULE,
-					"load", new OtpErlangAtom(module));
-		} catch (final BackendException e) {
+					"load", "a", module);
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
 		}

@@ -16,8 +16,6 @@ import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.erlc.core.ErrorParserManager;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -32,17 +30,15 @@ public class ErlcErrorParser implements IErrorParser {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangObject res;
 		try {
-			res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors",
-					new OtpErlangString(lines));
+			res = b
+					.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s",
+							lines);
 			if (!(res instanceof OtpErlangList)) {
 				return false;
 			}
 
 			addErrorMarkersForMultipleFiles(epm, (OtpErlangList) res);
-		} catch (final ErlangRpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final BackendException e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

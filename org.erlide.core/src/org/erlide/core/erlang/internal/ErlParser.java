@@ -17,8 +17,6 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -109,14 +107,15 @@ public class ErlParser {
 		try {
 			ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
 			final OtpErlangTuple res = (OtpErlangTuple) b.rpcx(
-					"erlide_noparse", "parse", scanner.getScannerModuleName());
+					"erlide_noparse", "parse", "a", scanner
+							.getScannerModuleName());
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				forms = (OtpErlangList) res.elementAt(1);
 				comments = (OtpErlangList) res.elementAt(2);
 			} else {
 				ErlLogger.debug("rpc err:: " + res);
 			}
-		} catch (final BackendException e1) {
+		} catch (final Exception e1) {
 			e1.printStackTrace();
 		}
 		final ErlModule mm = (ErlModule) module;
@@ -405,11 +404,11 @@ public class ErlParser {
 		String res;
 		try {
 			RpcResult r = BackendManager.getDefault().getIdeBackend().rpc(
-					mod.atomValue(), "format_error", arg);
+					mod.atomValue(), "format_error", "x", arg);
 			r = BackendManager.getDefault().getIdeBackend().rpc("lists",
-					"flatten", r.getValue());
+					"flatten", "x", r.getValue());
 			res = ((OtpErlangString) r.getValue()).stringValue();
-		} catch (final ErlangRpcException e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			res = err.toString();
 		}
@@ -473,8 +472,8 @@ public class ErlParser {
 		}
 		try {
 			return BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_syntax", "concrete", val);
-		} catch (final BackendException e) {
+					"erlide_syntax", "concrete", "x", val);
+		} catch (final Exception e) {
 			return val;
 		}
 	}

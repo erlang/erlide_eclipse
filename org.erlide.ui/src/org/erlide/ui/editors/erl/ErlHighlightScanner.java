@@ -345,8 +345,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scan", "string", string);
-		} catch (final ErlangRpcException e) {
+					"erlide_scan", "string", "s", string);
+		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
 		}

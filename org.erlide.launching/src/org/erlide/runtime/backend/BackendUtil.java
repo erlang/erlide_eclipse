@@ -20,7 +20,6 @@ import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -37,15 +36,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class BackendUtil {
 
 	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
-		final OtpErlangObject[] args1 = new OtpErlangObject[2];
-		args1[0] = new OtpErlangString(fmt);
-		args1[1] = new OtpErlangList(args);
-
 		try {
-			final String r = b.rpc(IBackend.ERL_BACKEND, "format",
-					(Object) args1).toString();
+			final String r = b.rpc(IBackend.ERL_BACKEND, "format", "sx", fmt,
+					new OtpErlangList(args)).toString();
 			return r.substring(1, r.length() - 1);
-		} catch (final ErlangRpcException e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return "error";
@@ -60,8 +55,7 @@ public class BackendUtil {
 			throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_term",
-					new OtpErlangString(string));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_term", "s", string);
 		} catch (final Exception e) {
 			throw new ErlangParseException("Could not parse term \"" + string
 					+ "\"");
@@ -84,8 +78,7 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "scan_string",
-					new OtpErlangString(string));
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "scan_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not tokenize string \"" + string
 					+ "\": " + e.getMessage());
@@ -108,9 +101,8 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_string",
-					new OtpErlangString(string));
-		} catch (final BackendException e) {
+			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_string", "s", string);
+		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
 		}
@@ -139,9 +131,8 @@ public class BackendUtil {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx("erlide_backend", "pretty_print", new OtpErlangString(
-					text + "."));
-		} catch (final BackendException e) {
+			r1 = b.rpcx("erlide_backend", "pretty_print", "s", text + ".");
+		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + text
 					+ "\": " + e.getMessage());
 		}
@@ -170,9 +161,10 @@ public class BackendUtil {
 		try {
 			// ErlLogger.debug("eval %s %s", string, bindings);
 			if (bindings == null) {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", string);
+				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "s", string);
 			} else {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", string, bindings);
+				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "sx", string,
+						bindings);
 			}
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
@@ -211,7 +203,7 @@ public class BackendUtil {
 			IBackend b) {
 		try {
 			String s = RpcStubGenerator.generate(cls, onlyDeclared);
-			RpcResult r = b.rpc("erlide_backend", "compile_string", s);
+			RpcResult r = b.rpc("erlide_backend", "compile_string", "s", s);
 			if (!r.isOk()) {
 				ErlLogger.debug("rpcstub::" + r.toString());
 			}

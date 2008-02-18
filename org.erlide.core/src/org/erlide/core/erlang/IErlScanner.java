@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 
 public interface IErlScanner {
 
@@ -26,5 +25,5 @@ public interface IErlScanner {
 
 	TokenWindow getTokenWindow(int offset, int window);
 
-	OtpErlangAtom getScannerModuleName();
+	String getScannerModuleName();
 }

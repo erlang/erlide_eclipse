@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -66,14 +65,14 @@ public class ErlTextHover implements ITextHover,
 			String s = ErlideUIPlugin.getDefault().getStateLocation()
 					.toString();
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_otp_doc", "get_doc_from_scan_tuples",
+					"erlide_otp_doc", "get_doc_from_scan_tuples", "ailxs",
 					fModule.getScanner().getScannerModuleName(), offset,
 					fImports, s);
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				return s1.stringValue();
 			}
-		} catch (final BackendException e) {
+		} catch (final Exception e) {
 			// e.printStackTrace();
 		}
 		return null;

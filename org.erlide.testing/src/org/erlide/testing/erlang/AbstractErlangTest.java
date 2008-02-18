@@ -14,8 +14,6 @@ import static org.junit.Assert.fail;
 
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.junit.After;
 import org.junit.Before;
 
@@ -44,10 +42,8 @@ public abstract class AbstractErlangTest {
 	public OtpErlangObject runErlangTest(String m, String f,
 			OtpErlangObject... args) {
 		try {
-			return getBackend().rpcx(m, f, (Object[]) args);
-		} catch (ErlangRpcException e) {
-			fail("RPC failed: " + e.getMessage());
-		} catch (BackendException e) {
+			return getBackend().rpcx(m, f, null, (Object[]) args);
+		} catch (Exception e) {
 			fail("RPC failed: " + e.getMessage());
 		}
 		return null;

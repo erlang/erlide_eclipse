@@ -151,9 +151,6 @@ public class RpcUtil {
 		if (args != null) {
 			parms = new Object[args.length];
 			for (int i = 0; i < args.length; i++) {
-				// parms[i] = args[i];
-				// TODO: we can do it better, we have the expected java types in
-				// 'description'
 				try {
 					parms[i] = RpcConverter.erlang2java(args[i],
 							description.argTypes[i]);

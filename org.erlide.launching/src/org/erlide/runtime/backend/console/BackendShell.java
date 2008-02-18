@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class BackendShell {
 
-	private IBackend fBackend;
+	private final IBackend fBackend;
 
 	/* Not used */
 	// private String fId;
@@ -36,7 +36,8 @@ public class BackendShell {
 		// fId = id;
 
 		try {
-			final OtpErlangObject r = fBackend.rpcx("erlide_reshd", "start", 0);
+			final OtpErlangObject r = fBackend.rpcx("erlide_reshd", "start",
+					"i", 0);
 			final int port = ((OtpErlangLong) BackendUtil.ok(r)).intValue();
 			// TODO use backend.getHost()
 			fSocket = new Socket("localhost", port);
