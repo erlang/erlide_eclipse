@@ -109,9 +109,10 @@ get_between2([T | Rest], B, Acc) ->
     get_between2(Rest, B, [T | Acc]).
 
 reverse2(L) ->
-    lists:foldl(fun(E, Acc) ->
-                        [lists:reverse(E) | Acc]
-                end, [], L).
+    lists:reverse([lists:reverse(A) || A <- L]).
+%%     lists:foldl(fun(E, Acc) ->
+%%                         [lists:reverse(E) | Acc]
+%%                 end, [], L).
 
 split_after_dots([], Acc, []) ->
     reverse2(Acc);
