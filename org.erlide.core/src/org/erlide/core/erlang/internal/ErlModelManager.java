@@ -261,7 +261,7 @@ public class ErlModelManager implements IErlModelManager {
 		final String ext = file.getFileExtension();
 		if (ext.equals("erl") || ext.equals("hrl")) {
 			final IErlModule module = new ErlModule(project, file.getName(),
-					ext.equals("erl"), file);
+					ext.equals("erl"), file, null);
 			project.addChild(module);
 			// project.setIsStructureKnown(false);
 			// IProgressMonitor
@@ -292,8 +292,8 @@ public class ErlModelManager implements IErlModelManager {
 		if (!(ext.equals("erl") || ext.equals("hrl"))) {
 			return null;
 		}
-		final IErlModule module = new ErlModule(project, name, text, ext
-				.equals("erl"), file);
+		final IErlModule module = new ErlModule(project, name, ext
+				.equals("erl"), file, text);
 		elements.put(key, module);
 		return module;
 	}
@@ -519,9 +519,9 @@ public class ErlModelManager implements IErlModelManager {
 			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 				return;
 			}
-			IResourceDelta rootDelta = event.getDelta();
+			final IResourceDelta rootDelta = event.getDelta();
 			final ArrayList<IResource> changed = new ArrayList<IResource>();
-			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+			final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) {
 					// only interested in changed resources (not added or
 					// removed)
@@ -539,7 +539,7 @@ public class ErlModelManager implements IErlModelManager {
 			};
 			try {
 				rootDelta.accept(visitor);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -561,8 +561,8 @@ public class ErlModelManager implements IErlModelManager {
 	private ErlModelManager() {
 		// singleton: prevent others from creating a new instance
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceChangeListener listener = new ResourceChangeListener();
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IResourceChangeListener listener = new ResourceChangeListener();
 		workspace.addResourceChangeListener(listener);
 	}
 
@@ -1291,7 +1291,7 @@ public class ErlModelManager implements IErlModelManager {
 			// flush now so as to keep listener reactions to post their own
 			// deltas for
 			// subsequent iteration
-			this.flush();
+			flush();
 			notifyListeners(deltaToNotify, ElementChangedEvent.POST_CHANGE,
 					listeners, listenerMask, listenerCount);
 		}
@@ -1329,7 +1329,7 @@ public class ErlModelManager implements IErlModelManager {
 					.println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
 		}
 		if (deltaToNotify != null) {
-			this.flush();
+			flush();
 			notifyListeners(deltaToNotify, ElementChangedEvent.POST_SHIFT,
 					listeners, listenerMask, listenerCount);
 		}
@@ -1358,7 +1358,7 @@ public class ErlModelManager implements IErlModelManager {
 				if (cRoot.equals(element)) {
 					final IErlElementDelta[] children = delta
 							.getChildren(IErlElementDelta.ALL);
-					for (IErlElementDelta element0 : children) {
+					for (final IErlElementDelta element0 : children) {
 						final ErlElementDelta projectDelta = (ErlElementDelta) element0;
 						rootDelta.insertDeltaTree(projectDelta.getElement(),
 								projectDelta);
@@ -1367,7 +1367,7 @@ public class ErlModelManager implements IErlModelManager {
 					final IResourceDelta[] resourceDeltas = delta
 							.getResourceDeltas();
 					if (resourceDeltas != null) {
-						for (IResourceDelta element0 : resourceDeltas) {
+						for (final IResourceDelta element0 : resourceDeltas) {
 							rootDelta.addResourceDelta(element0);
 							insertedTree = true;
 						}

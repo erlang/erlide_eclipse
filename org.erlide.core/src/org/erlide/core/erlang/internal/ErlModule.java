@@ -64,7 +64,7 @@ public class ErlModule extends Openable implements IErlModule {
 	private boolean fIgnoreNextReconcile = false;
 
 	protected ErlModule(IErlElement parent, String name, boolean isErl,
-			IFile file) {
+			IFile file, String initialText) {
 		super(parent, name);
 		fFile = file;
 		if (ErlModelManager.verbose) {
@@ -73,11 +73,13 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
-		String initialText;
-		try {
-			initialText = new String(Util.getResourceContentsAsCharArray(file));
-		} catch (final ErlModelException e) {
-			initialText = "";
+		if (initialText == null) {
+			try {
+				initialText = new String(Util
+						.getResourceContentsAsCharArray(file));
+			} catch (final ErlModelException e) {
+				initialText = "";
+			}
 		}
 		fScanner = new ErlScanner(this, initialText);
 		setIsStructureKnown(false);
@@ -86,11 +88,6 @@ public class ErlModule extends Openable implements IErlModule {
 		// } catch (final ErlModelException e) {
 		// // not much to do
 		// }
-	}
-
-	protected ErlModule(IErlElement parent, String name, String text,
-			boolean isErl, IFile file) {
-		this(parent, name, isErl, file);
 	}
 
 	@Override
