@@ -11,7 +11,6 @@
 package org.erlide.ui.editors.erl;
 
 // import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -67,13 +66,14 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
-		Assert.isNotNull(fModule);
-		if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-			fModule.reconcileText(dirtyRegion.getOffset(), 0, dirtyRegion
-					.getText(), mon);
-		} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
-			fModule.reconcileText(dirtyRegion.getOffset(), dirtyRegion
-					.getLength(), "", mon);
+		if (fModule != null) {
+			if (dirtyRegion.getType() == DirtyRegion.INSERT) {
+				fModule.reconcileText(dirtyRegion.getOffset(), 0, dirtyRegion
+						.getText(), mon);
+			} else if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
+				fModule.reconcileText(dirtyRegion.getOffset(), dirtyRegion
+						.getLength(), "", mon);
+			}
 		}
 		mon.done();
 	}
@@ -82,12 +82,14 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		// ErlLogger.debug("## initial reconcile ");
 		// initialInsert = true;
 		fModule = ErlModelUtils.getModule(fEditor);
-		Assert.isNotNull(fModule);
+		// Assert.isNotNull(fModule);
 		// if (fModule != null) {
 		// fModule.getScanner();
 		// ErlLogger.debug("## module:: " + fModule.getElementName());
 		// }
-		fModule.initialReconcile();
+		if (fModule != null) {
+			fModule.initialReconcile();
+		}
 		notify(new OtpErlangAtom("initialReconcile"));
 	}
 
