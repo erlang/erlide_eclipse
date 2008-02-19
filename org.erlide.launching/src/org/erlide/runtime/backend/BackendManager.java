@@ -86,7 +86,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend createManaged(String name, boolean debug) {
 		ErlLogger.debug("create managed backend " + name + ".");
-		
+
 		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);
 
@@ -108,7 +108,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend createStandalone(String name) {
 		ErlLogger.debug("create standalone backend " + name + ".");
-		
+
 		final AbstractBackend b = new StandaloneBackend();
 		b.setLabel(name);
 
@@ -382,26 +382,24 @@ public final class BackendManager implements IResourceChangeListener {
 					}
 				}
 
-				synchronized (fRemoteBackendsLock) {
-					final Set<String> keySet = fRemoteBackends.keySet();
-					for (final String key : keySet) {
-						boolean found = false;
+				final Set<String> keySet = fRemoteBackends.keySet();
+				for (final String key : keySet) {
+					boolean found = false;
 
-						for (final Object element : labels) {
-							final String label = (String) element;
+					for (final Object element : labels) {
+						final String label = (String) element;
 
-							if (isExtErlideLabel(label) && label.equals(key)) {
-								found = true;
-								break;
-							}
+						if (isExtErlideLabel(label) && label.equals(key)) {
+							found = true;
+							break;
 						}
+					}
 
-						if (!found) {
-							final IBackend b = fRemoteBackends.get(key);
-							if (b != null) {
-								fRemoteBackends.remove(key);
-								fireUpdate(b, REMOVED);
-							}
+					if (!found) {
+						final IBackend b = fRemoteBackends.get(key);
+						if (b != null) {
+							fRemoteBackends.remove(key);
+							fireUpdate(b, REMOVED);
 						}
 					}
 				}

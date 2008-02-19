@@ -17,14 +17,17 @@ import java.util.List;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBigLong;
 import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangByte;
 import com.ericsson.otp.erlang.OtpErlangChar;
 import com.ericsson.otp.erlang.OtpErlangDouble;
 import com.ericsson.otp.erlang.OtpErlangFloat;
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRef;
+import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -238,7 +241,7 @@ public class RpcConverter {
 
 	public static OtpErlangObject java2erlang(Object obj) {
 		try {
-			return java2erlang(obj, "_");
+			return java2erlang(obj, "x");
 		} catch (Exception e) {
 			// can't fail for 'any'
 			e.printStackTrace();
@@ -251,27 +254,29 @@ public class RpcConverter {
 	 * @param obj
 	 * @param type
 	 * @return
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
-	@SuppressWarnings( { "boxing", "null" })
 	public static OtpErlangObject java2erlang(Object obj, String type)
-			throws ConversionError {
+			throws RpcException {
+		if ("x".equals(type)) {
+			return java2erlang_0(obj);
+		}
 		if (obj instanceof String) {
 			if ("s".equals(type)) {
 				return new OtpErlangString((String) obj);
 			} else if ("a".equals(type)) {
 				return new OtpErlangAtom((String) obj);
 			} else if ("b".equals(type)) {
-				return new OtpErlangBinary(obj);
+				return new OtpErlangBinary(((String) obj).getBytes());
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof Character) {
 			if ("i".equals(type)) {
 				return new OtpErlangChar((Character) obj);
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof Number) {
@@ -279,32 +284,32 @@ public class RpcConverter {
 				if ("d".equals(type)) {
 					return new OtpErlangFloat((Float) obj);
 				} else {
-					throw new ConversionError(obj, type);
+					failConversion(obj, type);
 				}
 			} else if (obj instanceof Double) {
 				if ("d".equals(type)) {
 					return new OtpErlangDouble((Double) obj);
 				} else {
-					throw new ConversionError(obj, type);
+					failConversion(obj, type);
 				}
 			} else if ("i".equals(type)) {
 				return new OtpErlangLong(((Number) obj).longValue());
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof BigInteger) {
 			if ("i".equals(type)) {
 				return new OtpErlangBigLong((BigInteger) obj);
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof Boolean) {
 			if ("o".equals(type)) {
 				return new OtpErlangAtom((Boolean) obj ? "true" : "false");
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof List<?>) {
@@ -316,16 +321,136 @@ public class RpcConverter {
 				}
 				return new OtpErlangList(vv);
 			} else {
-				throw new ConversionError(obj, type);
+				failConversion(obj, type);
 			}
 		}
 
 		if (obj instanceof OtpErlangPid) {
-			if ("o".equals(type)) {
-				return (OtpErlangPid) obj;
-			} else {
-				throw new ConversionError(obj, type);
+			return (OtpErlangPid) obj;
+		}
+		if (obj instanceof OtpErlangRef) {
+			return (OtpErlangObject) obj;
+		}
+		if (obj instanceof OtpErlangBinary) {
+			return (OtpErlangObject) obj;
+		}
+		if (obj instanceof OtpErlangObject) {
+			if (RpcConverter.isDeveloper()) {
+				StackTraceElement el = null;
+				StackTraceElement[] st = null;
+				try {
+					throw new Exception("");
+				} catch (Exception e) {
+					boolean found = false;
+					st = e.getStackTrace();
+					for (StackTraceElement ste : st) {
+						if (found) {
+							if (!((ste.getMethodName().equals("send")
+									|| ste.getMethodName().equals("sendRpc")
+									|| ste.getMethodName().equals("rpc")
+									|| ste.getMethodName().equals("rpct")
+									|| ste.getMethodName().equals("rpcx") || ste
+									.getMethodName().equals("rpcxt")) && ste
+									.getClassName().endsWith("AbstractBackend"))) {
+								el = ste;
+								break;
+							}
+						}
+						if ((ste.getMethodName().equals("send")
+								|| ste.getMethodName().equals("sendRpc")
+								|| ste.getMethodName().equals("rpc")
+								|| ste.getMethodName().equals("rpct")
+								|| ste.getMethodName().equals("rpcx") || ste
+								.getMethodName().equals("rpcxt"))
+								&& ste.getClassName().endsWith(
+										"AbstractBackend")) {
+							found = true;
+
+						}
+					}
+				}
+				System.out.println(" *** deprecated use of java2erlang: "
+						+ obj.getClass().getSimpleName() + " " + el);
+				if (el == null) {
+					System.out.println("$$$");
+					for (StackTraceElement ste : st) {
+						System.out.println("   " + ste);
+					}
+				}
 			}
+			return (OtpErlangObject) obj;
+		}
+
+		if (obj != null && obj.getClass().isArray()) {
+			int len = Array.getLength(obj);
+			Class<?> component = obj.getClass().getComponentType();
+			if ("b".equals(type)) {
+				// TODO
+				return new OtpErlangBinary(obj);
+			} else {
+				OtpErlangObject[] vv = new OtpErlangObject[len];
+				for (int i = 0; i < len; i++) {
+					vv[i] = java2erlang(Array.get(obj, i), type.substring(1));
+				}
+				if (type.startsWith("l")) {
+					return new OtpErlangList(vv);
+				} else if (type.startsWith("t")) {
+					return new OtpErlangTuple(vv);
+				} else {
+					failConversion(obj, type);
+				}
+			}
+		}
+		if ("j".equals(type)) {
+			return ObjRefCache.registerTarget(obj);
+		} else {
+			failConversion(obj, type);
+		}
+		return null;
+	}
+
+	public static OtpErlangObject java2erlang_0(Object obj) {
+		if (obj instanceof String) {
+			return new OtpErlangString((String) obj);
+		}
+		if (obj instanceof Character) {
+			return new OtpErlangChar((Character) obj);
+		}
+		if (obj instanceof Byte) {
+			return new OtpErlangByte((Byte) obj);
+		}
+		if (obj instanceof Short) {
+			return new OtpErlangShort((Short) obj);
+		}
+		if (obj instanceof Integer) {
+			return new OtpErlangInt((Integer) obj);
+		}
+		if (obj instanceof Long) {
+			return new OtpErlangLong((Long) obj);
+		}
+		if (obj instanceof BigInteger) {
+			return new OtpErlangBigLong((BigInteger) obj);
+		}
+		if (obj instanceof Float) {
+			return new OtpErlangFloat((Float) obj);
+		}
+		if (obj instanceof Double) {
+			return new OtpErlangDouble((Double) obj);
+		}
+		if (obj instanceof Boolean) {
+			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
+		}
+		if (obj instanceof List<?>) {
+			Object[] v = ((List<?>) obj).toArray(new Object[] {});
+			OtpErlangObject[] vv = new OtpErlangObject[v.length];
+			for (int i = 0; i < v.length; i++) {
+				vv[i] = java2erlang(v[i]);
+			}
+			return new OtpErlangList(vv);
+		}
+
+		if (obj instanceof OtpErlangPid) {
+			return (OtpErlangPid) obj;
 		}
 		if (obj instanceof OtpErlangRef) {
 			return (OtpErlangObject) obj;
@@ -388,15 +513,22 @@ public class RpcConverter {
 			int len = Array.getLength(obj);
 			OtpErlangObject[] vv = new OtpErlangObject[len];
 			for (int i = 0; i < len; i++) {
-				vv[i] = java2erlang(Array.get(obj, i), type.substring(1));
+				vv[i] = java2erlang(Array.get(obj, i));
 			}
 			return new OtpErlangList(vv);
 		}
 		return ObjRefCache.registerTarget(obj);
 	}
 
+	private static void failConversion(Object obj, String type)
+			throws RpcException {
+		throw new RpcException(String.format(
+				"Bad conversion required: %s(%s) - %s", obj.getClass()
+						.getName(), obj.toString(), type));
+	}
+
 	public static boolean isDeveloper() {
-		final String dev = System.getProperty("erlide.devel");
+		final String dev = System.getProperty("erlide.test");
 		return dev != null && "true".equals(dev);
 	}
 

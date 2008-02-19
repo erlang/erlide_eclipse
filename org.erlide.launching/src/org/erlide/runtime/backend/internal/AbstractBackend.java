@@ -19,8 +19,8 @@ import java.util.List;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.jinterface.rpc.ConversionError;
 import org.erlide.jinterface.rpc.RpcConverter;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
@@ -175,42 +175,42 @@ public abstract class AbstractBackend implements IBackend {
 	/**
 	 * typed RPC
 	 * 
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	public RpcResult rpc(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, ConversionError {
+			throws ErlangRpcException, RpcException {
 		return rpct(m, f, 5000, signature, a);
 	}
 
 	/**
 	 * typed RPC with timeout
 	 * 
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	public RpcResult rpct(String m, String f, int timeout, String signature,
-			Object... a) throws ErlangRpcException, ConversionError {
+			Object... a) throws ErlangRpcException, RpcException {
 		return sendRpc(m, f, timeout, signature, a);
 	}
 
 	/**
 	 * typed RPC , throws Exception
 	 * 
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	public OtpErlangObject rpcx(String m, String f, String signature,
 			Object... a) throws ErlangRpcException, BackendException,
-			ConversionError {
+			RpcException {
 		return rpcxt(m, f, 5000, signature, a);
 	}
 
 	/**
 	 * typed RPC with timeout, throws Exception
 	 * 
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	public OtpErlangObject rpcxt(String m, String f, int timeout,
 			String signature, Object... a) throws ErlangRpcException,
-			BackendException, ConversionError {
+			BackendException, RpcException {
 		return checkRpc(rpct(m, f, timeout, signature, a));
 	}
 
@@ -227,15 +227,27 @@ public abstract class AbstractBackend implements IBackend {
 
 	/**
 	 * 
-	 * @param dbgPid
 	 * @param msg
+	 * @param dbgPid
+	 * @throws ConversionException
 	 */
 	public void send(OtpErlangPid pid, Object msg) {
-		getMbox().send(pid, RpcConverter.java2erlang(msg));
+		try {
+			getMbox().send(pid, RpcConverter.java2erlang(msg, "x"));
+		} catch (RpcException e) {
+			// shouldn't happen
+			e.printStackTrace();
+		}
 	}
 
 	public void send(String name, Object msg) {
-		getMbox().send(name, fPeer.node(), RpcConverter.java2erlang(msg));
+		try {
+			getMbox().send(name, fPeer.node(),
+					RpcConverter.java2erlang(msg, "x"));
+		} catch (RpcException e) {
+			// shouldn't happen
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -326,7 +338,7 @@ public abstract class AbstractBackend implements IBackend {
 	}
 
 	private RpcResult sendRpc(String module, String fun, int timeout,
-			String signature, Object... args0) throws ConversionError {
+			String signature, Object... args0) throws RpcException {
 		if (!fConnected) {
 			return null;
 		}
@@ -334,7 +346,7 @@ public abstract class AbstractBackend implements IBackend {
 			args0 = new OtpErlangObject[] {};
 		}
 
-		String[] type = parseTypes(signature, args0.length);
+		String[] type = parseSignature(signature, args0.length);
 
 		OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
@@ -380,10 +392,22 @@ public abstract class AbstractBackend implements IBackend {
 		return result;
 	}
 
-	private String[] parseTypes(String signature, int length) {
+	private String[] parseSignature(String signature, int length)
+			throws RpcException {
 		String[] type = new String[length];
+		if (signature == null) {
+			for (int i = 0; i < length; i++) {
+				type[i] = "x";
+			}
+			return type;
+		}
 		for (int i = 0, j = 0; i < length; i++, j++) {
-			type[i] = (signature == null ? "x" : signature.substring(j, j + 1));
+			if (j >= signature.length()) {
+				throw new RpcException(String.format(
+						"Malformed signature {0} for length {1}", signature,
+						length));
+			}
+			type[i] = signature.substring(j, j + 1);
 			if (type[i].equals("l") || type[i].equals("t")) {
 				j++;
 				type[i] = type[i] + signature.substring(j, j + 1);

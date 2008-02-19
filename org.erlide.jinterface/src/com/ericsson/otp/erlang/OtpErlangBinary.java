@@ -149,7 +149,15 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 */
 	@Override
 	public String toString() {
-		return "#Bin<" + bin.length + ">";
+		StringBuilder bytes = new StringBuilder();
+		int len = bin.length;
+		if (len > 10) {
+			len = 10;
+		}
+		for (int i = 0; i < len; i++) {
+			bytes.append(Integer.toString(0xff & bin[i])).append(',');
+		}
+		return "#Bin<" + bin.length + ":" + bytes + ">";
 	}
 
 	/**

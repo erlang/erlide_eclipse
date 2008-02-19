@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
-import org.erlide.jinterface.rpc.ConversionError;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -42,10 +42,11 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
-	 * @throws ConversionError
+	 * @throws RpcException
+	 * @throws ConversionException
 	 */
 	RpcResult rpc(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, ConversionError;
+			throws ErlangRpcException, RpcException;
 
 	/**
 	 * @throws ErlangRpcException
@@ -57,10 +58,10 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	RpcResult rpct(String m, String f, int timeout, String signature,
-			Object... a) throws ErlangRpcException, ConversionError;
+			Object... a) throws ErlangRpcException, RpcException;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -72,10 +73,10 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	OtpErlangObject rpcx(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, BackendException, ConversionError;
+			throws ErlangRpcException, BackendException, RpcException;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -88,16 +89,19 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
-	 * @throws ConversionError
+	 * @throws ConversionException
 	 */
 	OtpErlangObject rpcxt(String m, String f, int timeout, String signature,
 			Object... a) throws ErlangRpcException, BackendException,
-			ConversionError;
+			RpcException;
 
 	/**
 	 * 
 	 * @param pid
 	 * @param msg
+	 * @param signature
+	 *            TODO
+	 * @throws ConversionException
 	 */
 	void send(OtpErlangPid pid, Object msg);
 
