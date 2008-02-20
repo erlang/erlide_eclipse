@@ -537,11 +537,6 @@ public class OpenAction extends SelectionDispatchAction {
 	}
 
 	/**
-	 * @param path
-	 * @return
-	 * @throws CoreException
-	 */
-	/**
 	 * Activate editor and select erlang function
 	 * 
 	 * @param fun
@@ -559,8 +554,8 @@ public class OpenAction extends SelectionDispatchAction {
 		if (m == null) {
 			return false;
 		}
-		m.open(null); // FIXME vi måste kolla så att den inte
-		// dubbel-parsas... kanske sätta nån flagga på
+		m.open(null); // FIXME vi mÂste kolla sÂ att den inte
+		// dubbel-parsas... kanske s‰tta nÂn flagga pÂ
 		// modulen? funkar isStructureKnown() ??
 		final IErlFunction function = ErlModelUtils.findFunction(m, fun, arity);
 		if (function == null) {
