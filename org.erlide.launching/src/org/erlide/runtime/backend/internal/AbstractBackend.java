@@ -346,7 +346,7 @@ public abstract class AbstractBackend implements IBackend {
 			args0 = new OtpErlangObject[] {};
 		}
 
-		String[] type = parseSignature(signature, args0.length);
+		String[] type = RpcConverter.parseSignature(signature, args0.length);
 
 		OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
@@ -390,30 +390,6 @@ public abstract class AbstractBackend implements IBackend {
 			ErlangLaunchPlugin.log(e);
 		}
 		return result;
-	}
-
-	private String[] parseSignature(String signature, int length)
-			throws RpcException {
-		String[] type = new String[length];
-		if (signature == null) {
-			for (int i = 0; i < length; i++) {
-				type[i] = "x";
-			}
-			return type;
-		}
-		for (int i = 0, j = 0; i < length; i++, j++) {
-			if (j >= signature.length()) {
-				throw new RpcException(String.format(
-						"Malformed signature {0} for length {1}", signature,
-						length));
-			}
-			type[i] = signature.substring(j, j + 1);
-			if (type[i].equals("l") || type[i].equals("t")) {
-				j++;
-				type[i] = type[i] + signature.substring(j, j + 1);
-			}
-		}
-		return type;
 	}
 
 	private OtpMbox getMbox() {

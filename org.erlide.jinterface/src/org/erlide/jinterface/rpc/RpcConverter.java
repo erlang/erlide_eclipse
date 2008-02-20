@@ -256,6 +256,7 @@ public class RpcConverter {
 	 * @return
 	 * @throws ConversionException
 	 */
+	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang(Object obj, String type)
 			throws RpcException {
 		if ("x".equals(type)) {
@@ -380,7 +381,7 @@ public class RpcConverter {
 
 		if (obj != null && obj.getClass().isArray()) {
 			int len = Array.getLength(obj);
-			Class<?> component = obj.getClass().getComponentType();
+			// Class<?> component = obj.getClass().getComponentType();
 			if ("b".equals(type)) {
 				// TODO
 				return new OtpErlangBinary(obj);
@@ -406,6 +407,7 @@ public class RpcConverter {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang_0(Object obj) {
 		if (obj instanceof String) {
 			return new OtpErlangString((String) obj);
@@ -527,6 +529,30 @@ public class RpcConverter {
 	public static boolean isDeveloper() {
 		final String dev = System.getProperty("erlide.test");
 		return dev != null && "true".equals(dev);
+	}
+
+	public static String[] parseSignature(String signature, int length)
+			throws RpcException {
+		String[] type = new String[length];
+		if (signature == null) {
+			for (int i = 0; i < length; i++) {
+				type[i] = "x";
+			}
+			return type;
+		}
+		for (int i = 0, j = 0; i < length; i++, j++) {
+			if (j >= signature.length()) {
+				throw new RpcException(String.format(
+						"Malformed signature {0} for length {1}", signature,
+						length));
+			}
+			type[i] = signature.substring(j, j + 1);
+			if (type[i].equals("l") || type[i].equals("t")) {
+				j++;
+				type[i] = type[i] + signature.substring(j, j + 1);
+			}
+		}
+		return type;
 	}
 
 }
