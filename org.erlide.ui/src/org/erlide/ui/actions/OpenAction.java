@@ -401,8 +401,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final boolean macro = external.equals("macro");
 				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final OtpErlangAtom defined = (OtpErlangAtom) mf.elementAt(0);
-				IErlModule m = ErlModelUtils
-						.getModule(fEditor.getEditorInput());
+				final IErlModule m = ErlModelUtils.getModule(fEditor
+						.getEditorInput());
 				String definedName = defined.atomValue();
 				if (definedName.length() == 0) {
 					return;
@@ -412,57 +412,78 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
 						: IErlElement.ErlElementType.RECORD_DEF;
-				IErlPreprocessorDef pd = m.findPreprocessorDef(definedName,
-						type);
-				IEditorPart editor = page.getActiveEditor();
-				if (pd == null) {
-					final ErlangIncludeFile[] includes = m.getIncludedFiles();
-					for (final ErlangIncludeFile element : includes) {
-						IResource re = ResourceUtil
-								.recursiveFindNamedResourceWithReferences(
-										project, element.getFilenameLastPart());
-						if (re == null) {
-							try {
-								String s = element.getFilename();
-								if (element.isSystemInclude()) {
-									final OtpErlangObject t = b.rpcx(
-											"erlide_open", "get_include_lib",
-											null, s);
-									if (t instanceof OtpErlangTuple) {
-										final OtpErlangObject es = ((OtpErlangTuple) t)
-												.elementAt(1);
-										s = ((OtpErlangString) es)
-												.stringValue();
-									}
-								}
-								re = EditorUtility.openExternal(s);
-							} catch (final Exception e) {
-								e.printStackTrace();
-							}
-						}
-						if (re != null && re instanceof IFile) {
-							m = ErlModelUtils.getModule((IFile) re);
-							if (m != null) {
-								m.open(null);
-								pd = m.findPreprocessorDef(definedName, type);
-								if (pd != null) {
-									editor = EditorUtility.openInEditor(re,
-											true);
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (pd == null) {
-					return;
-				}
-				EditorUtility.revealInEditor(editor, pd);
+				openPreprocessorDef(project, page, m, definedName, type,
+						new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @param b
+	 * @param project
+	 * @param page
+	 * @param m
+	 * @param definedName
+	 * @param type
+	 * @throws CoreException
+	 * @throws ErlModelException
+	 * @throws PartInitException
+	 */
+	private boolean openPreprocessorDef(IProject project,
+			final IWorkbenchPage page, IErlModule m, String definedName,
+			final IErlElement.ErlElementType type, List<IErlModule> modulesDone)
+			throws CoreException, ErlModelException, PartInitException {
+		if (m == null) {
+			return false;
+		}
+		modulesDone.add(m);
+		m.open(null);
+		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
+		if (pd == null) {
+			final ErlangIncludeFile[] includes = m.getIncludedFiles();
+			for (final ErlangIncludeFile element : includes) {
+				IResource re = ResourceUtil
+						.recursiveFindNamedResourceWithReferences(project,
+								element.getFilenameLastPart());
+				if (re == null) {
+					try {
+						String s = element.getFilename();
+						if (element.isSystemInclude()) {
+							final IBackend b = BackendManager.getDefault()
+									.getIdeBackend();
+							final OtpErlangObject t = b.rpcx("erlide_open",
+									"get_include_lib", null, s);
+							if (t instanceof OtpErlangTuple) {
+								final OtpErlangObject es = ((OtpErlangTuple) t)
+										.elementAt(1);
+								s = ((OtpErlangString) es).stringValue();
+							}
+						}
+						re = EditorUtility.openExternal(s);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (re != null && re instanceof IFile) {
+					m = ErlModelUtils.getModule((IFile) re);
+					if (m != null && !modulesDone.contains(m)) {
+						if (openPreprocessorDef(project, page, m, definedName,
+								type, modulesDone)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		if (pd != null) {
+			final IEditorPart editor = EditorUtility.openInEditor(m);
+			EditorUtility.revealInEditor(editor, pd);
+			return true;
+		}
+		return false;
 	}
 
 	/**
