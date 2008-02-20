@@ -254,7 +254,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 		}
 
 		final OtpErlangBigLong l = (OtpErlangBigLong) o;
-		return this.bigIntValue() == l.bigIntValue();
+		return this.bigIntValue().equals(l.bigIntValue());
 	}
 
 	@Override

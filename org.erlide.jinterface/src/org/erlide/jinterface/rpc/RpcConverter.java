@@ -293,14 +293,11 @@ public class RpcConverter {
 					failConversion(obj, type);
 				}
 			} else if ("i".equals(type)) {
-				return new OtpErlangLong(((Number) obj).longValue());
-			} else {
-				failConversion(obj, type);
-			}
-		}
-		if (obj instanceof BigInteger) {
-			if ("i".equals(type)) {
-				return new OtpErlangBigLong((BigInteger) obj);
+				if (obj instanceof BigInteger) {
+					return new OtpErlangBigLong((BigInteger) obj);
+				} else {
+					return new OtpErlangLong(((Number) obj).longValue());
+				}
 			} else {
 				failConversion(obj, type);
 			}
