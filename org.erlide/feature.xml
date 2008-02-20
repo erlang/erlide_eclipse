@@ -229,8 +229,6 @@ litigation.
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -238,59 +236,66 @@ litigation.
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.erlide.jinterface"/>
+      <import plugin="org.erlide.launching"/>
+      <import plugin="org.erlide.basic"/>
+      <import plugin="org.erlide.core"/>
+      <import plugin="org.erlide.ui"/>
    </requires>
-
-   <plugin
-         id="org.erlide.jinterface"
-         download-size="0"
-         install-size="0"
-         version="0.3.38.qualifier"/>
 
    <plugin
          id="org.erlide.core"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.ui"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.launching"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.help"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.erlc"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.debug.ui"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.basic"
          download-size="0"
          install-size="0"
-         version="0.3.38.qualifier"/>
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.jinterface"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
