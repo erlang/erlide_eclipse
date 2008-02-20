@@ -346,8 +346,16 @@ public abstract class AbstractBackend implements IBackend {
 			args0 = new OtpErlangObject[] {};
 		}
 
-		String[] type = RpcConverter.parseSignature(signature, args0.length);
-
+		String[] type = RpcConverter.parseSignature(signature);
+		if (type == null) {
+			type = new String[args0.length];
+			for (int i = 0; i < type.length; i++) {
+				type[i] = "x";
+			}
+		}
+		if (type.length != args0.length) {
+			throw new RpcException("Signature doesn't match parameter number");
+		}
 		OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
 			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
@@ -413,7 +421,7 @@ public abstract class AbstractBackend implements IBackend {
 			fCurrentVersion = "";
 			OtpErlangObject r;
 			try {
-				r = rpcx("init", "script_id", null);
+				r = rpcx("init", "script_id", "");
 				if (r instanceof OtpErlangTuple) {
 					OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
 					if (rr instanceof OtpErlangString) {

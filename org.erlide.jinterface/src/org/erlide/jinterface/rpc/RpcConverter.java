@@ -11,6 +11,7 @@ package org.erlide.jinterface.rpc;
 
 import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -521,6 +522,10 @@ public class RpcConverter {
 
 	private static void failConversion(Object obj, String type)
 			throws RpcException {
+		// System.out.println("+++++++ "
+		// + String.format("Bad conversion required: %s(%s) - %s", obj
+		// .getClass().getName(), obj.toString(), type));
+
 		throw new RpcException(String.format(
 				"Bad conversion required: %s(%s) - %s", obj.getClass()
 						.getName(), obj.toString(), type));
@@ -531,28 +536,43 @@ public class RpcConverter {
 		return dev != null && "true".equals(dev);
 	}
 
-	public static String[] parseSignature(String signature, int length)
-			throws RpcException {
-		String[] type = new String[length];
-		if (signature == null) {
-			for (int i = 0; i < length; i++) {
-				type[i] = "x";
+	private static String parseOne(String signature) throws RpcException {
+		char crt = signature.charAt(0);
+		if ("xidabrjfpso".indexOf(crt) >= 0) {
+			return signature.substring(0, 1);
+		} else if (crt == 'l') {
+			String sub = parseOne(signature.substring(1));
+			return "" + crt + sub;
+		} else if ("0123456789".indexOf(crt) >= 0) {
+			int i = 0;
+			while ("0123456789".indexOf(signature.charAt(i)) >= 0) {
+				i++;
 			}
-			return type;
+			int n = Integer.parseInt(signature.substring(0, i));
+			String s = signature.substring(i);
+			StringBuilder res = new StringBuilder();
+			for (i = 0; i < n; i++) {
+				final String it = parseOne(s);
+				res.append(it);
+				s = s.substring(it.length());
+			}
+			return "t" + res.toString();
+		} else {
+			throw new RpcException("unknown signature code: " + crt);
 		}
-		for (int i = 0, j = 0; i < length; i++, j++) {
-			if (j >= signature.length()) {
-				throw new RpcException(String.format(
-						"Malformed signature {0} for length {1}", signature,
-						length));
-			}
-			type[i] = signature.substring(j, j + 1);
-			if (type[i].equals("l") || type[i].equals("t")) {
-				j++;
-				type[i] = type[i] + signature.substring(j, j + 1);
-			}
-		}
-		return type;
 	}
 
+	public static String[] parseSignature(String signature) throws RpcException {
+		List<String> type = new ArrayList<String>();
+		if (signature == null) {
+			return null;
+			// throw new RpcException("Signature is null");
+		}
+		while (signature.length() > 0) {
+			String e = parseOne(signature);
+			type.add(e);
+			signature = signature.substring(e.length());
+		}
+		return type.toArray(new String[type.size()]);
+	}
 }

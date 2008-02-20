@@ -122,9 +122,16 @@ public class RpcConverterTest {
 	}
 
 	@Test
+	public void parseSignature_0() throws RpcException {
+		String sig = null;
+		String[] result = RpcConverter.parseSignature(sig);
+		assertTrue(result == null);
+	}
+
+	@Test
 	public void parseSignature_1() throws RpcException {
 		String sig = "aslsilpfd";
-		String[] result = RpcConverter.parseSignature(sig, 7);
+		String[] result = RpcConverter.parseSignature(sig);
 		String[] expect = new String[] { "a", "s", "ls", "i", "lp", "f", "d" };
 		assertTrue(Arrays.equals(expect, result));
 	}
@@ -132,20 +139,24 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_2() throws RpcException {
 		String sig = "llxi";
-		String[] result = RpcConverter.parseSignature(sig, 2);
+		String[] result = RpcConverter.parseSignature(sig);
 		String[] expect = new String[] { "llx", "i" };
-		System.out.println(Arrays.toString(result));
-		System.out.println(Arrays.toString(expect));
 		assertTrue(Arrays.equals(expect, result));
 	}
 
 	@Test
 	public void parseSignature_3() throws RpcException {
-		String sig = "tax.d";
-		String[] result = RpcConverter.parseSignature(sig, 2);
+		String sig = "2axd";
+		String[] result = RpcConverter.parseSignature(sig);
 		String[] expect = new String[] { "tax", "d" };
-		System.out.println(Arrays.toString(result));
-		System.out.println(Arrays.toString(expect));
+		assertTrue(Arrays.equals(expect, result));
+	}
+
+	@Test
+	public void parseSignature_4() throws RpcException {
+		String sig = "l3axl2sad";
+		String[] result = RpcConverter.parseSignature(sig);
+		String[] expect = new String[] { "ltaxltsa", "d" };
 		assertTrue(Arrays.equals(expect, result));
 	}
 

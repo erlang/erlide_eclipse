@@ -420,7 +420,7 @@ public class ProcessListView extends ViewPart {
 
 	public static void processListInit(IBackend b) {
 		try {
-			b.rpc(MODULE_NAME, "process_list_init", null);
+			b.rpc(MODULE_NAME, "process_list_init", "");
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -428,7 +428,7 @@ public class ProcessListView extends ViewPart {
 
 	public static OtpErlangList getProcessList(IBackend b) {
 		try {
-			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", null);
+			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", "");
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return new OtpErlangList();
