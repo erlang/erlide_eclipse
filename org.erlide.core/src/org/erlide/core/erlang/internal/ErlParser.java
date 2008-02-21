@@ -16,7 +16,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.RpcResult;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -25,6 +24,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideBackend;
 
 public class ErlParser {
 
@@ -202,7 +203,7 @@ public class ErlParser {
 		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-			final String msg = format_error(er);
+			final String msg = ErlideBackend.format_error(er);
 
 			final ErlError e = new ErlError(parent, msg);
 			setPos(e, er.elementAt(0));
@@ -394,25 +395,6 @@ public class ErlParser {
 		a.setParseTree(val);
 		return a;
 
-	}
-
-	private String format_error(final OtpErlangObject object) {
-		final OtpErlangTuple err = (OtpErlangTuple) object;
-		final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
-		final OtpErlangObject arg = err.elementAt(2);
-
-		String res;
-		try {
-			RpcResult r = BackendManager.getDefault().getIdeBackend().rpc(
-					mod.atomValue(), "format_error", "x", arg);
-			r = BackendManager.getDefault().getIdeBackend().rpc("lists",
-					"flatten", "x", r.getValue());
-			res = ((OtpErlangString) r.getValue()).stringValue();
-		} catch (final Exception e) {
-			e.printStackTrace();
-			res = err.toString();
-		}
-		return res;
 	}
 
 	private boolean setPos(final SourceRefElement e, final OtpErlangObject pos) {

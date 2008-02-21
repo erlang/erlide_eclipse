@@ -47,6 +47,8 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpPeer;
 
+import erlang.ErlideBackend;
+
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
@@ -491,8 +493,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	public OtpErlangObject execute(String fun, OtpErlangObject... args)
 			throws Exception {
-		return rpc(ERL_BACKEND, "execute", "sx", fun, new OtpErlangList(args))
-				.getValue();
+		return ErlideBackend.execute(this, fun, args);
 	}
 
 	public BackendShellManager getShellManager() {
@@ -517,11 +518,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	public void init_erlang() {
 		fRpcDaemon = new ErlRpcDaemon(this);
-		try {
-			rpc(ERL_BACKEND, "init", "a", fNode.node());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ErlideBackend.init(this, fNode.node());
 	}
 
 	public List<IBackendEventListener> getEventListeners(String event) {

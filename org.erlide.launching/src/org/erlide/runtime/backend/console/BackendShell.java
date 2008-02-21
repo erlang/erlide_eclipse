@@ -16,11 +16,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import org.eclipse.debug.core.IStreamListener;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
+import erlang.ErlideReshd;
 
 public class BackendShell {
 
@@ -36,9 +34,7 @@ public class BackendShell {
 		// fId = id;
 
 		try {
-			final OtpErlangObject r = fBackend.rpcx("erlide_reshd", "start",
-					"i", 0);
-			final int port = ((OtpErlangLong) BackendUtil.ok(r)).intValue();
+			final int port = ErlideReshd.start(fBackend);
 			// TODO use backend.getHost()
 			fSocket = new Socket("localhost", port);
 		} catch (final Exception e) {

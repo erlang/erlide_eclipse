@@ -70,6 +70,8 @@ import org.erlide.ui.views.SourceViewerInformationControl;
 
 import com.ericsson.otp.erlang.OtpErlangString;
 
+import erlang.ErlideBackend;
+
 /**
  * @author Vlad Dumitrescu
  */
@@ -161,7 +163,7 @@ public class LiveExpressionsView extends ViewPart implements
 			if (index == 0) {
 				return e.fExpr;
 			}
-			final BackendEvalResult r = BackendUtil.eval(BackendManager
+			final BackendEvalResult r = ErlideBackend.eval(BackendManager
 					.getDefault().getIdeBackend(), e.fExpr + ".", null);
 			if (r.isOk()) {
 				return r.getValue().toString();

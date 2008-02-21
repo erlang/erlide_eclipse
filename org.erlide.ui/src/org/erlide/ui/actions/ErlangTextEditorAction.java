@@ -16,7 +16,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -24,6 +23,8 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+
+import erlang.ErlideSupport;
 
 public class ErlangTextEditorAction extends TextEditorAction {
 	protected String fErlModule;
@@ -131,12 +132,10 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * @throws BackendException
 	 * @throws ErlangRpcException
 	 */
-	@SuppressWarnings("boxing")
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
 			throws Exception {
-		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
-				.rpcx(fErlModule, fErlFunction, "si", text,
-						selection.getOffset());
+		final OtpErlangObject r1 = ErlideSupport.call(fErlModule, fErlFunction,
+				selection, text);
 		return r1;
 	}
 

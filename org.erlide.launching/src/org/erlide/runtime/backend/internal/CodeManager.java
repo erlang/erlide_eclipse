@@ -29,19 +29,15 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlangLaunchPlugin;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.ICodeManager;
-import org.erlide.runtime.backend.RpcResult;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.Code;
+import erlang.ErlideBackend;
 
 public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
@@ -77,11 +73,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
-			try {
-				fBackend.rpc("code", "add_patha", "s", path);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+			Code.addPathA(fBackend, path);
 		}
 	}
 
@@ -90,11 +82,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void addPathZ(String path) {
 		if (addPath(pathZ, path)) {
-			try {
-				fBackend.rpc("code", "add_pathz", "s", path);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+			Code.addPathZ(fBackend, path);
 		}
 	}
 
@@ -117,18 +105,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
-			try {
-				// workaround for bug in code:del_path
-				RpcResult rr = fBackend.rpc("filename", "join", "ls",
-						new OtpErlangList(new OtpErlangString(path)));
-				if (rr.isOk()) {
-					path = ((OtpErlangString) rr.getValue()).stringValue();
-				}
-
-				fBackend.rpc("code", "del_path", "s", path);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+			Code.removePathA_(fBackend, path);
 		}
 	}
 
@@ -137,21 +114,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
-			try {
-				// workaround for bug in code:del_path
-				RpcResult rr = fBackend.rpc("filename", "join", "x",
-						new OtpErlangList(new OtpErlangString(path)));
-				if (rr.isOk()) {
-					path = ((OtpErlangString) rr.getValue()).stringValue();
-				}
-
-				fBackend.rpc("code", "del_path", null,
-						new OtpErlangString(path));
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+			Code.removePathZ_(fBackend, path);
 		}
-
 	}
 
 	private boolean removePath(List<PathItem> l, String path) {
@@ -204,34 +168,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		if (bin == null) {
 			return false;
 		}
-		OtpErlangObject r = null;
-		try {
-			r = fBackend.rpcx("code", "is_sticky", "a", moduleName);
-			if (!((OtpErlangAtom) r).booleanValue()
-					|| !BackendManager.isDeveloper()) {
-				r = fBackend.rpcx("code", "load_binary", "asb", moduleName,
-						moduleName + ".erl", bin);
-				if (BackendManager.isDeveloper()) {
-					fBackend.rpc("code", "stick_mod", "a", moduleName);
-				}
-			} else {
-				return false;
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-		if (r != null) {
-			final OtpErlangTuple t = (OtpErlangTuple) r;
-			if (((OtpErlangAtom) t.elementAt(0)).atomValue()
-					.compareTo("module") == 0) {
-				return true;
-			}
-			// code couldn't be loaded
-			// maybe here we should throw exception?
-			return false;
-		}
-		// binary couldn't be extracted
-		return false;
+		return ErlideBackend.loadBeam(fBackend, moduleName, bin);
 	}
 
 	protected boolean loadBootstrap(String moduleName, URL beamPath) {
@@ -434,11 +371,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	private void unloadBeam(String moduleName) {
-		try {
-			fBackend.rpc("code", "delete", "a", moduleName);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		Code.delete(fBackend, moduleName);
 	}
 
 	private static class PathItem {

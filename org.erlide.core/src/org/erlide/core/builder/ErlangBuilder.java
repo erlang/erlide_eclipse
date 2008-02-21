@@ -63,6 +63,9 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.Code;
+import erlang.ErlideBuilder;
+
 /**
  * @author Vlad Dumitrescu
  */
@@ -75,7 +78,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".taskmarker";
 
-	private static final String MODULE = "erlide_builder";
+	public static final String MODULE = "erlide_builder";
 
 	// TODO how do we configure builder?
 	// use the internal builder
@@ -648,8 +651,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			public void run(final IBackend b) {
 				try {
 					if (b != BackendManager.getDefault().getIdeBackend()) {
-						final RpcResult result = b.rpc("code", "load_binary",
-								"asb", beamf, beamf, code);
+						final RpcResult result = Code.loadBinary(beamf, code, b);
 						ErlLogger.debug("  $ distribute " + beamf + " to "
 								+ b.getLabel() + "  - " + result.getValue());
 					}
@@ -658,6 +660,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					e.printStackTrace();
 				}
 			}
+
 		});
 	}
 
@@ -965,22 +968,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
-		try {
-			final OtpErlangString[] includes = new OtpErlangString[includedirs.length];
-			for (int i = 0; i < includedirs.length; i++) {
-				includes[i] = new OtpErlangString(includedirs[i]);
-			}
-			final OtpErlangList includeList = new OtpErlangList(includes);
-			return BackendManager.getDefault().get(project).rpcxt(MODULE,
-					"compile", 20000, "ssxx", fn,
-					outputdir
-					// FIXME add an option for this
-					, includeList,
-					new OtpErlangList(new OtpErlangAtom("debug_info")));
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		return ErlideBuilder.compileErl(project, fn, outputdir, includedirs);
 	}
 
 	protected static OtpErlangObject compileYrlFile(final IProject project,
@@ -988,17 +976,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
-		try {
-			final RpcResult r = BackendManager.getDefault().get(project).rpct(
-					MODULE, "compile_yrl", 30000, "ss", fn, output);
-			if (BuilderUtils.isDebugging()) {
-				ErlLogger.debug("!!! r== " + r);
-			}
-			return r.getValue();
-		} catch (final Exception e) {
-			// e.printStackTrace();
-			return null;
-		}
+		return ErlideBuilder.compileYrl(project, fn, output);
 	}
 
 	protected static OtpErlangObject loadModule(final IProject project,

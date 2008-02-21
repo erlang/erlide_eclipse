@@ -55,12 +55,13 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendEvalResult;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.IContextMenuConstants;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+
+import erlang.ErlideBackend;
 
 /**
  * An editor for Erlang scratchs.
@@ -267,7 +268,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		}
 
 		// FIXME IBackend
-		final BackendEvalResult r = BackendUtil.eval(null, scratch, fBindings);
+		final BackendEvalResult r = ErlideBackend.eval(null, scratch, fBindings);
 
 		if (r.isOk()) {
 			fBindings = r.getBindings();
@@ -284,7 +285,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			}
 		} else {
 			// FIXME IBackend
-			final String msg = BackendUtil.format(null, "~p", r
+			final String msg = ErlideBackend.format(null, "~p", r
 					.getErrorReason());
 			showError("Evaluation failed. Reason: \n" + msg);
 		}
@@ -326,7 +327,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 
 	protected void displayResult(OtpErlangObject result) {
 		// FIXME IBackend
-		final String message = BackendUtil.format(null, "~p", result);// result.toString();
+		final String message = ErlideBackend.format(null, "~p", result);// result.toString();
 		try {
 			getSourceViewer().getDocument().replace(fScratchEnd, 0, message);
 			selectAndReveal(fScratchEnd, message.length());

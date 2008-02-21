@@ -48,12 +48,13 @@ import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IBackendVisitor;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideProclist;
 
 /**
  * 
@@ -101,8 +102,6 @@ public class ProcessListView extends ViewPart {
 
 	public static final String ID = "org.erlide.ui.views.processlist.ProcessListView";
 
-	private static final String MODULE_NAME = "erlide_proclist";
-
 	private Label label;
 
 	private ComboViewer backends;
@@ -134,7 +133,7 @@ public class ProcessListView extends ViewPart {
 			final IBackend bk = getBackend();
 			bk.addEventListener("processlist", this);
 
-			final OtpErlangList r = getProcessList(bk);
+			final OtpErlangList r = ErlideProclist.getProcessList(bk);
 			final OtpErlangObject[] ss = new OtpErlangObject[r.elements().length];
 
 			for (int i = 0; i < r.elements().length; i++) {
@@ -278,7 +277,7 @@ public class ProcessListView extends ViewPart {
 		BackendManager.getDefault().forEachLocal(new IBackendVisitor() {
 
 			public void run(IBackend b) {
-				processListInit(b);
+				ErlideProclist.processListInit(b);
 			}
 		});
 
@@ -363,7 +362,8 @@ public class ProcessListView extends ViewPart {
 				final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
 						.elementAt(0);
 
-				final OtpErlangObject r = getProcessInfo(getBackend(), pid);
+				final OtpErlangObject r = ErlideProclist.getProcessInfo(
+						getBackend(), pid);
 				if (r instanceof OtpErlangList) {
 					final OtpErlangList l = (OtpErlangList) r;
 					String s = "";
@@ -416,32 +416,6 @@ public class ProcessListView extends ViewPart {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		backends.setSelection(new StructuredSelection(b));
 		return b;
-	}
-
-	public static void processListInit(IBackend b) {
-		try {
-			b.rpc(MODULE_NAME, "process_list_init", "");
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static OtpErlangList getProcessList(IBackend b) {
-		try {
-			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", "");
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return new OtpErlangList();
-		}
-	}
-
-	public static OtpErlangObject getProcessInfo(IBackend b, OtpErlangPid pid) {
-		try {
-			return b.rpcx(MODULE_NAME, "get_process_info", "p", pid);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return new OtpErlangAtom("error");
-		}
 	}
 
 }

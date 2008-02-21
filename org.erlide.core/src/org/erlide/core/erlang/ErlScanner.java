@@ -18,6 +18,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideScanner;
+
 /**
  * Erlang syntax scanner
  * 
@@ -52,12 +54,7 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	private void create() {
-		try {
-			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"create", "a", fMod);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		ErlideScanner.create(fMod);
 	}
 
 	public void dispose() {
@@ -139,23 +136,13 @@ public class ErlScanner implements IErlScanner {
 	public void insertText(int offset, String text) {
 		// ErlLogger.debug("scanner insert offset" + offset + " text.length "
 		// + text.length());
-		try {
-			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"insertText", "ais", fMod, offset + 1, text);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		ErlideScanner.insertText(fMod, offset, text);
 	}
 
 	public void removeText(int offset, int length) {
 		// ErlLogger.debug("scanner remove offset" + offset + " length " +
 		// length);
-		try {
-			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"removeText", "ais", fMod, offset + 1, length);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		ErlideScanner.removeText(fMod, offset, length);
 	}
 
 	public ErlToken[] getTokens() {
