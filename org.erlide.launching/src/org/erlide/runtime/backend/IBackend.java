@@ -26,8 +26,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IBackend {
 
-	public static final String ERL_BACKEND = "erlide_backend";
-
 	/**
 	 * Method dispose
 	 */

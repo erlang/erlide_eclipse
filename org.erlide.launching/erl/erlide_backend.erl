@@ -65,8 +65,12 @@ parse_term(Str) ->
     end.
 
 parse_term_raw(Str) ->
+    erlang:display(Str),
     {ok, Tokens, _} = erl_scan:string(Str),
-    erl_parse:parse_term(Tokens++[{dot,9999}]).
+    erlang:display(Tokens),
+        R=erl_parse:parse_term(Tokens),
+    erlang:display(R),
+        R.
 
 eval(Str) ->
     eval(Str, erl_eval:new_bindings()).
@@ -130,7 +134,7 @@ scan_string(S, Res, N) ->
 parse_string(S) ->
     {ok, L} = scan_string(S),
     case catch {ok, lists:map(fun(X) ->
-                 {ok, Form} = erl_parse:parse_form(X),
+                 {ok, Form} = erl_parse:parse_exprs(X),
                  Form
              end,
              L)} of

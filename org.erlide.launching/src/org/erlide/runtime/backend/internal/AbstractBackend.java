@@ -32,7 +32,6 @@ import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -514,17 +513,6 @@ public abstract class AbstractBackend implements IBackend {
 
 	public List<IBackendEventListener> getEventListeners(String event) {
 		return fEventListeners.get(event);
-	}
-
-	/**
-	 * @param string
-	 * @return OtpErlangobject
-	 * @throws ErlangParseException
-	 */
-	@SuppressWarnings("unused")
-	private OtpErlangObject parseTerm(String string)
-			throws ErlangParseException {
-		return ErlideBackend.parseTerm(this, string);
 	}
 
 }

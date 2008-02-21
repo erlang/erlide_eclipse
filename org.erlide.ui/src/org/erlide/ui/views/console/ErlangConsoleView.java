@@ -46,11 +46,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -65,11 +63,15 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.prefs.PreferenceConstants;
 
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+
+import erlang.ErlideBackend;
 
 public class ErlangConsoleView extends ViewPart implements
 		IBackendEventListener {
@@ -253,7 +255,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == 13 && (e.stateMask & SWT.CTRL) == SWT.CTRL) {
+				if (e.keyCode == 13 && isInputComplete()) {
 					ErlangConsoleView.this.sendInput();
 					e.doit = false;
 				} else if ((e.keyCode == SWT.ARROW_UP)
@@ -279,6 +281,7 @@ public class ErlangConsoleView extends ViewPart implements
 					info.setFocus();
 				}
 			}
+
 		});
 		consoleInput.setFont(JFaceResources.getTextFont());
 		consoleInput.setWordWrap(true);
@@ -286,26 +289,6 @@ public class ErlangConsoleView extends ViewPart implements
 		int lh = consoleInput.getLineHeight();
 		gd.heightHint = lh * 4;
 		consoleInput.setLayoutData(gd);
-
-		final Composite composite_1 = new Composite(composite, SWT.NONE);
-		composite_1.setLayout(new GridLayout());
-
-		final Button sendBtn = new Button(composite_1, SWT.NONE);
-		sendBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ErlangConsoleView.this.sendInput();
-			}
-		});
-		sendBtn.setLayoutData(new GridData(65, 34));
-		sendBtn.setToolTipText("Ctrl+Enter");
-		sendBtn.setText("Send!");
-
-		final Label sendLabel = new Label(composite_1, SWT.NONE);
-		sendLabel.setAlignment(SWT.CENTER);
-		sendLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
-				false));
-		sendLabel.setText("Ctrl+Enter");
 
 		final TabItem tracerTab = new TabItem(tabFolder, SWT.NONE);
 		tracerTab.setText("Tracer");
@@ -322,6 +305,20 @@ public class ErlangConsoleView extends ViewPart implements
 		tbl.setLinesVisible(true);
 		// initializeToolBar();
 
+	}
+
+	boolean isInputComplete() {
+		try {
+			OtpErlangObject o = ErlideBackend.parseString(fBackend,
+					consoleInput.getText());
+			// TODO check if last expression is incomplete and keep it in the
+			// input field
+			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0)
+				return false;
+		} catch (BackendException e) {
+			return false;
+		}
+		return true;
 	}
 
 	protected void sendInput() {

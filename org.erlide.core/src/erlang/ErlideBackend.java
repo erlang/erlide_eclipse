@@ -19,6 +19,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
+	private static final String ERL_BACKEND = "erlide_backend";
+
 	public static OtpErlangObject execute(IBackend backend, String fun,
 			OtpErlangObject... args) throws ErlangRpcException, RpcException {
 		return backend.rpc("erlide_backend", "execute", "sx", fun,
@@ -46,7 +48,7 @@ public class ErlideBackend {
 
 	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
 		try {
-			final String r = b.rpc(IBackend.ERL_BACKEND, "format", "sx", fmt,
+			final String r = b.rpc(ERL_BACKEND, "format", "sx", fmt,
 					new OtpErlangList(args)).toString();
 			return r.substring(1, r.length() - 1);
 		} catch (final Exception e) {
@@ -64,7 +66,7 @@ public class ErlideBackend {
 			throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_term", "s", string);
+			r1 = b.rpcx(ERL_BACKEND, "parse_term", "s", string);
 		} catch (final Exception e) {
 			throw new ErlangParseException("Could not parse term \"" + string
 					+ "\"");
@@ -87,7 +89,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "scan_string", "s", string);
+			r1 = b.rpcx(ERL_BACKEND, "scan_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not tokenize string \"" + string
 					+ "\": " + e.getMessage());
@@ -110,7 +112,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_string", "s", string);
+			r1 = b.rpcx("erlide_backend", "parse_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -148,10 +150,9 @@ public class ErlideBackend {
 		try {
 			// ErlLogger.debug("eval %s %s", string, bindings);
 			if (bindings == null) {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "s", string);
+				r1 = b.rpcx(ERL_BACKEND, "eval", "s", string);
 			} else {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "sx", string,
-						bindings);
+				r1 = b.rpcx(ERL_BACKEND, "eval", "sx", string, bindings);
 			}
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
