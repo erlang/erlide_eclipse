@@ -12,10 +12,11 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 
 public class ErlideReshd {
 
-	public static int start(IBackend fBackend) throws ErlangRpcException, BackendException,
-			RpcException, OtpErlangRangeException {
-		final OtpErlangObject r = fBackend.rpcx("erlide_reshd", "start",
-				"i", 0);
+	@SuppressWarnings("boxing")
+	public static int start(IBackend fBackend) throws ErlangRpcException,
+			BackendException, RpcException, OtpErlangRangeException {
+		final OtpErlangObject r = fBackend
+				.rpcx("erlide_reshd", "start", "i", 0);
 		final int port = ((OtpErlangLong) BackendUtil.ok(r)).intValue();
 		return port;
 	}
