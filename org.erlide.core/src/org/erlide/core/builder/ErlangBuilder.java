@@ -651,7 +651,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				try {
 					if (b != BackendManager.getDefault().getIdeBackend()) {
 						final RpcResult result = Code
-								.loadBinary(beamf, code, b);
+								.loadBinary(b, beamf, code);
 						ErlLogger.debug("  $ distribute " + beamf + " to "
 								+ b.getLabel() + "  - " + result.getValue());
 					}

@@ -85,7 +85,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IErlProject project = ErlModelUtils.getErlProject(fEditor);
 			final IBackend b = BackendManager.getDefault().get(
 					project.getProject());
-			final OtpErlangObject res = ErlideDoc.getExported(prefix, mod, b);
+			final OtpErlangObject res = ErlideDoc.getExported(b, prefix, mod);
 			if (res instanceof OtpErlangList) {
 				final OtpErlangList resl = (OtpErlangList) res;
 				final OtpErlangList docl = getDocumentationFor(resl, mod);

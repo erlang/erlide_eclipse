@@ -301,7 +301,7 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			final OtpErlangList pathVars = new OtpErlangList(pv
 					.toArray(new OtpErlangTuple[pv.size()]));
-			final OtpErlangObject res = ErlideOpen.getOpenInfo(window, list, b,
+			final OtpErlangObject res = ErlideOpen.getOpenInfo(b, window, list,
 					pathVars, fExternalModules);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore

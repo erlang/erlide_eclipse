@@ -58,7 +58,7 @@ public class ErlideDebug {
 		return res;
 	}
 
-	public static boolean isSystemProcess_(IBackend b, OtpErlangPid pid) {
+	public static boolean isSystemProcess(IBackend b, OtpErlangPid pid) {
 		boolean res = false;
 		try {
 			OtpErlangAtom eres = (OtpErlangAtom) b.rpcx("pman_process",

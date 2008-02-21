@@ -276,14 +276,14 @@ public class ErlideBackend {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
-	public static String prettyPrint(OtpErlangObject e, IBackend b)
+	public static String prettyPrint(IBackend b, OtpErlangObject e)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject p = b.rpcx("erlide_pp", "expr", "x", e);
 		p = b.rpcx("lists", "flatten", null, p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
-	public static OtpErlangObject convertErrors(String lines, final IBackend b)
+	public static OtpErlangObject convertErrors(final IBackend b, String lines)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject res;
 		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);

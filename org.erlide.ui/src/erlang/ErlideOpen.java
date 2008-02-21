@@ -39,8 +39,8 @@ public class ErlideOpen {
 
 	@SuppressWarnings("boxing")
 	public
-	static OtpErlangObject getOpenInfo(int window,
-			final OtpErlangList list, final IBackend b,
+	static OtpErlangObject getOpenInfo(final IBackend b,
+			int window, final OtpErlangList list,
 			final OtpErlangList pathVars, String fExternalModules)
 			throws ErlangRpcException, BackendException, RpcException {
 		final OtpErlangObject res = b.rpcx("erlide_open", "open_info", "xisx",

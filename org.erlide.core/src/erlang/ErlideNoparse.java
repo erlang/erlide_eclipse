@@ -10,8 +10,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideNoparse {
 
-	public static OtpErlangTuple parse(final IErlScanner scanner,
-			final IBackend b) throws ErlangRpcException, BackendException,
+	public static OtpErlangTuple parse(final IBackend b,
+			final IErlScanner scanner) throws ErlangRpcException, BackendException,
 			RpcException {
 		final OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
 				"parse", "a", scanner.getScannerModuleName());

@@ -32,7 +32,7 @@ public class ErlcErrorParser implements IErrorParser {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangObject res;
 		try {
-			res = ErlideBackend.convertErrors(lines, b);
+			res = ErlideBackend.convertErrors(b, lines);
 			if (!(res instanceof OtpErlangList)) {
 				return false;
 			}

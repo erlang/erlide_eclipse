@@ -11,8 +11,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
 
-	public static  OtpErlangObject getExported(String prefix, final String mod,
-			final IBackend b) throws ErlangRpcException, BackendException,
+	public static  OtpErlangObject getExported(final IBackend b, String prefix,
+			final String mod) throws ErlangRpcException, BackendException,
 			RpcException {
 		final OtpErlangObject res = b.rpcx("erlide_otp_doc",
 				"get_exported", "as", mod, prefix);

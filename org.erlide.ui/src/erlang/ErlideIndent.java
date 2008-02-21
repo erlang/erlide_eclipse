@@ -10,7 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class ErlideIndent {
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject indentNextLine(String txt, final IBackend b,
+	public static OtpErlangObject indentNextLine(final IBackend b, String txt,
 			int tabw) throws ErlangRpcException, BackendException, RpcException {
 		final OtpErlangObject r1 = b.rpcx("erlide_indent", "indent_next_line",
 				"si", txt, tabw);

@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-import erlang.ErlideSupport;
+import erlang.ErlideBackend;
 
 public class ErlangTextEditorAction extends TextEditorAction {
 	protected String fErlModule;
@@ -134,8 +134,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	protected OtpErlangObject callErlang(ITextSelection selection, String text)
 			throws Exception {
-		final OtpErlangObject r1 = ErlideSupport.call(fErlModule, fErlFunction,
-				selection, text);
+		final OtpErlangObject r1 = ErlideBackend.call(fErlModule, fErlFunction,
+				selection.getOffset(), text);
 		return r1;
 	}
 

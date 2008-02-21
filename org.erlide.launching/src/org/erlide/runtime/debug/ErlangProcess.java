@@ -301,7 +301,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public boolean isSystemProcess() {
-		return ErlideDebug.isSystemProcess_(fBackend, fPid);
+		return ErlideDebug.isSystemProcess(fBackend, fPid);
 	}
 
 	public boolean isErlideProcess() {

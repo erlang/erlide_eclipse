@@ -108,7 +108,7 @@ public class ErlParser {
 		OtpErlangList forms = null, comments = null;
 		try {
 			ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
-			final OtpErlangTuple res = ErlideNoparse.parse(scanner, b);
+			final OtpErlangTuple res = ErlideNoparse.parse(b, scanner);
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				forms = (OtpErlangList) res.elementAt(1);
 				comments = (OtpErlangList) res.elementAt(2);

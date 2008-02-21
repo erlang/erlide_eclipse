@@ -107,7 +107,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 			final OtpErlangObject r1 = ErlideIndent
-					.indentNextLine(txt, b, tabw);
+					.indentNextLine(b, txt, tabw);
 			// OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
 			// "indent_next_line",
 			// new OtpErlangLong(offset)));

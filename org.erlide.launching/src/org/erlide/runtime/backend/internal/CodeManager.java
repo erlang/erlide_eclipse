@@ -105,7 +105,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
-			Code.removePathA_(fBackend, path);
+			Code.removePathA(fBackend, path);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
-			Code.removePathZ_(fBackend, path);
+			Code.removePathZ(fBackend, path);
 		}
 	}
 

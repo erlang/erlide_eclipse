@@ -27,7 +27,7 @@ public class Code {
 		}
 	}
 
-	public static void removePathZ_(IBackend fBackend, String path) {
+	public static void removePathZ(IBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			RpcResult rr = fBackend.rpc("filename", "join", "x",
@@ -35,14 +35,14 @@ public class Code {
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
-	
+
 			fBackend.rpc("code", "del_path", null, new OtpErlangString(path));
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void removePathA_(IBackend fBackend, String path) {
+	public static void removePathA(IBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			RpcResult rr = fBackend.rpc("filename", "join", "ls",
@@ -50,16 +50,15 @@ public class Code {
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
-	
+
 			fBackend.rpc("code", "del_path", "s", path);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static RpcResult loadBinary(final String beamf,
-			final OtpErlangBinary code, final IBackend b)
-			throws ErlangRpcException, RpcException {
+	public static RpcResult loadBinary(final IBackend b, final String beamf,
+			final OtpErlangBinary code) throws ErlangRpcException, RpcException {
 		final RpcResult result = b.rpc("code", "load_binary", "asb", beamf,
 				beamf, code);
 		return result;
