@@ -19,6 +19,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
+	private static final String ERL_BACKEND = "erlide_backend";
+
 	public static OtpErlangObject execute(IBackend backend, String fun,
 			OtpErlangObject... args) throws ErlangRpcException, RpcException {
 		return backend.rpc("erlide_backend", "execute", "sx", fun,
@@ -46,7 +48,7 @@ public class ErlideBackend {
 
 	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
 		try {
-			final String r = b.rpc(IBackend.ERL_BACKEND, "format", "sx", fmt,
+			final String r = b.rpc(ERL_BACKEND, "format", "sx", fmt,
 					new OtpErlangList(args)).toString();
 			return r.substring(1, r.length() - 1);
 		} catch (final Exception e) {
@@ -64,7 +66,7 @@ public class ErlideBackend {
 			throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_term", "s", string);
+			r1 = b.rpcx(ERL_BACKEND, "parse_term", "s", string);
 		} catch (final Exception e) {
 			throw new ErlangParseException("Could not parse term \"" + string
 					+ "\"");
@@ -87,7 +89,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "scan_string", "s", string);
+			r1 = b.rpcx(ERL_BACKEND, "scan_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not tokenize string \"" + string
 					+ "\": " + e.getMessage());
@@ -110,7 +112,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx(IBackend.ERL_BACKEND, "parse_string", "s", string);
+			r1 = b.rpcx("erlide_backend", "parse_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -148,10 +150,9 @@ public class ErlideBackend {
 		try {
 			// ErlLogger.debug("eval %s %s", string, bindings);
 			if (bindings == null) {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "s", string);
+				r1 = b.rpcx(ERL_BACKEND, "eval", "s", string);
 			} else {
-				r1 = b.rpcx(IBackend.ERL_BACKEND, "eval", "sx", string,
-						bindings);
+				r1 = b.rpcx(ERL_BACKEND, "eval", "sx", string, bindings);
 			}
 			// value may be something else if exception is thrown...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
@@ -218,5 +219,89 @@ public class ErlideBackend {
 		// binary couldn't be extracted
 		return false;
 	}
+
+	@SuppressWarnings("boxing")
+	public static OtpErlangObject call(String module, String fun, int offset,
+			String text) throws ErlangRpcException, BackendException,
+			RpcException {
+		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
+				.rpcx(module, fun, "si", text, offset);
+		return r1;
+	}
+
+	public static OtpErlangObject concreteSyntax(final OtpErlangObject val)
+			throws ErlangRpcException, BackendException, RpcException {
+		return BackendManager.getDefault().getIdeBackend().rpcx(
+				"erlide_syntax", "concrete", "x", val);
+	}
+
+	public static String getScriptId(IBackend b) throws ErlangRpcException,
+			BackendException, RpcException {
+		OtpErlangObject r;
+		r = b.rpcx("init", "script_id", "");
+		if (r instanceof OtpErlangTuple) {
+			OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
+			if (rr instanceof OtpErlangString) {
+				return ((OtpErlangString) rr).stringValue();
+			}
+		}
+		return "";
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 * @throws BackendException
+	 */
+	public static OtpErlangObject lightScanString(String string)
+			throws BackendException {
+		OtpErlangObject r1 = null;
+		try {
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scan", "string", "s", string);
+		} catch (final Exception e) {
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": " + e.getMessage());
+		}
+		if (r1 == null) {
+			return null;
+		}
+
+		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
+
+		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+			return t1.elementAt(1);
+		}
+		throw new BackendException("Could not parse string \"" + string
+				+ "\": " + t1.elementAt(1).toString());
+	}
+
+	public static String prettyPrint(OtpErlangObject e, IBackend b)
+			throws ErlangRpcException, BackendException, RpcException {
+		OtpErlangObject p = b.rpcx("erlide_pp", "expr", "x", e);
+		p = b.rpcx("lists", "flatten", null, p);
+		return ((OtpErlangString) p).stringValue();
+	}
+
+	public static OtpErlangObject convertErrors(String lines, final IBackend b)
+			throws ErlangRpcException, BackendException, RpcException {
+		OtpErlangObject res;
+		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
+		return res;
+	}
+
+	// public static OtpErlangObject parseTerm(IBackend b, String string)
+	// throws ErlangParseException {
+	// OtpErlangObject r = null;
+	// try {
+	// r = b.rpcx("erlide_backend", "parse_term", "s", string);
+	// ErlLogger.debug("PARSE=" + r);
+	// } catch (final Exception e) {
+	// e.printStackTrace();
+	// throw new ErlangParseException("Could not parse term \"" + string
+	// + "\"");
+	// }
+	// return r;
+	// }
 
 }
