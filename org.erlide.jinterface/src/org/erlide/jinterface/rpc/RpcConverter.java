@@ -240,42 +240,69 @@ public class RpcConverter {
 		}
 	}
 
-	public static OtpErlangObject java2erlang(Object obj) {
-		try {
-			return java2erlang(obj, "x");
-		} catch (Exception e) {
-			// can't fail for 'any'
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	/**
+	 * Converts Java objects to Erlang terms.<br/>
+	 * <dl>
+	 * <dt>x</dt>
+	 * <dd>Uses simple conversion, complex types are expected to be
+	 * OtpErlangObjecs already.</dd>
+	 * <dt>i</dt>
+	 * <dd>integer</dd>
+	 * <dt>s</dt>
+	 * <dd>string</dd>
+	 * <dt>a</dt>
+	 * <dd>atom</dd>
+	 * <dt>d</dt>
+	 * <dd>float</dd>
+	 * <dt>p</dt>
+	 * <dd>pid</dd>
+	 * <dt>r</dt>
+	 * <dd>reference</dd>
+	 * <dt>j</dt>
+	 * <dd>java reference (a distinguished reference, to be used with e->j
+	 * rpcs)</dd>
+	 * <dt>l*</dt>
+	 * <dd>list, the next type descriptor specifies the items' type</dd>
+	 * <dt>f</dt>
+	 * <dd>fun -- currently not implemented</dd>
+	 * <dt>o</dt>
+	 * <dd>boolean (the atoms true/false)</dd>
+	 * <dt>0-9</dt>
+	 * <dd>tuple, the number is the arity and the types of the elements follow
+	 * in order. Only arities between 0 and 9 are supported.</dd>
+	 * </dl>
 	 * 
 	 * @param obj
+	 *            the object to be converted
 	 * @param type
+	 *            the desired result's type
 	 * @return
 	 * @throws ConversionException
 	 */
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang(Object obj, String type)
 			throws RpcException {
-		if ("x".equals(type)) {
-			return java2erlang_0(obj);
+		return java2erlang(obj, parseOne(type).sign);
+	}
+
+	public static OtpErlangObject java2erlang(Object obj, Signature type)
+			throws RpcException {
+		if (type.kind == 'x') {
+			return java2erlang(obj);
 		}
 		if (obj instanceof String) {
-			if ("s".equals(type)) {
+			if (type.kind == 's') {
 				return new OtpErlangString((String) obj);
-			} else if ("a".equals(type)) {
+			} else if (type.kind == 'a') {
 				return new OtpErlangAtom((String) obj);
-			} else if ("b".equals(type)) {
+			} else if (type.kind == 'b') {
 				return new OtpErlangBinary(((String) obj).getBytes());
 			} else {
 				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof Character) {
-			if ("i".equals(type)) {
+			if (type.kind == 'i') {
 				return new OtpErlangChar((Character) obj);
 			} else {
 				failConversion(obj, type);
@@ -283,18 +310,18 @@ public class RpcConverter {
 		}
 		if (obj instanceof Number) {
 			if (obj instanceof Float) {
-				if ("d".equals(type)) {
+				if (type.kind == 'd') {
 					return new OtpErlangFloat((Float) obj);
 				} else {
 					failConversion(obj, type);
 				}
 			} else if (obj instanceof Double) {
-				if ("d".equals(type)) {
+				if (type.kind == 'd') {
 					return new OtpErlangDouble((Double) obj);
 				} else {
 					failConversion(obj, type);
 				}
-			} else if ("i".equals(type)) {
+			} else if (type.kind == 'i') {
 				if (obj instanceof BigInteger) {
 					return new OtpErlangBigLong((BigInteger) obj);
 				} else {
@@ -305,18 +332,18 @@ public class RpcConverter {
 			}
 		}
 		if (obj instanceof Boolean) {
-			if ("o".equals(type)) {
-				return new OtpErlangAtom((Boolean) obj ? "true" : "false");
+			if (type.kind == 'o') {
+				return new OtpErlangAtom(((Boolean) obj) ? "true" : "false");
 			} else {
 				failConversion(obj, type);
 			}
 		}
 		if (obj instanceof List<?>) {
-			if (type.startsWith("l")) {
+			if (type.kind == 'l') {
 				Object[] v = ((List<?>) obj).toArray(new Object[] {});
 				OtpErlangObject[] vv = new OtpErlangObject[v.length];
 				for (int i = 0; i < v.length; i++) {
-					vv[i] = java2erlang(v[i], type.substring(1));
+					vv[i] = java2erlang(v[i], type.content[0]);
 				}
 				return new OtpErlangList(vv);
 			} else {
@@ -383,17 +410,21 @@ public class RpcConverter {
 		if (obj != null && obj.getClass().isArray()) {
 			int len = Array.getLength(obj);
 			// Class<?> component = obj.getClass().getComponentType();
-			if ("b".equals(type)) {
+			if (type.kind == 'b') {
 				// TODO
 				return new OtpErlangBinary(obj);
 			} else {
-				OtpErlangObject[] vv = new OtpErlangObject[len];
-				for (int i = 0; i < len; i++) {
-					vv[i] = java2erlang(Array.get(obj, i), type.substring(1));
-				}
-				if (type.startsWith("l")) {
+				if (type.kind == 'l') {
+					OtpErlangObject[] vv = new OtpErlangObject[len];
+					for (int i = 0; i < len; i++) {
+						vv[i] = java2erlang(Array.get(obj, i), type.content[0]);
+					}
 					return new OtpErlangList(vv);
-				} else if (type.startsWith("t")) {
+				} else if (type.kind == 't') {
+					OtpErlangObject[] vv = new OtpErlangObject[len];
+					for (int i = 0; i < len; i++) {
+						vv[i] = java2erlang(Array.get(obj, i), type.content[i]);
+					}
 					return new OtpErlangTuple(vv);
 				} else {
 					failConversion(obj, type);
@@ -408,8 +439,15 @@ public class RpcConverter {
 		return null;
 	}
 
+	/**
+	 * Old style java->erlang conversion, used when "x" is given as an argument.
+	 * TODO Could be polished a little.
+	 * 
+	 * @param obj
+	 * @return
+	 */
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject java2erlang_0(Object obj) {
+	private static OtpErlangObject java2erlang(Object obj) {
 		if (obj instanceof String) {
 			return new OtpErlangString((String) obj);
 		}
@@ -520,7 +558,7 @@ public class RpcConverter {
 		return ObjRefCache.registerTarget(obj);
 	}
 
-	private static void failConversion(Object obj, String type)
+	private static void failConversion(Object obj, Signature type)
 			throws RpcException {
 		// System.out.println("+++++++ "
 		// + String.format("Bad conversion required: %s(%s) - %s", obj
@@ -528,7 +566,7 @@ public class RpcConverter {
 
 		throw new RpcException(String.format(
 				"Bad conversion required: %s(%s) - %s", obj.getClass()
-						.getName(), obj.toString(), type));
+						.getName(), obj.toString(), type.toString()));
 	}
 
 	public static boolean isDeveloper() {
@@ -536,43 +574,82 @@ public class RpcConverter {
 		return dev != null && "true".equals(dev);
 	}
 
-	private static String parseOne(String signature) throws RpcException {
-		char crt = signature.charAt(0);
-		if ("xidabrjfpso".indexOf(crt) >= 0) {
-			return signature.substring(0, 1);
-		} else if (crt == 'l') {
-			String sub = parseOne(signature.substring(1));
-			return "" + crt + sub;
-		} else if ("0123456789".indexOf(crt) >= 0) {
-			int i = 0;
-			while ("0123456789".indexOf(signature.charAt(i)) >= 0) {
-				i++;
+	public static class Signature {
+		public char kind = 'x';
+		public Signature[] content = null;
+
+		public Signature(char str) {
+			kind = str;
+		}
+
+		public Signature(char crt, Signature sub) {
+			kind = crt;
+			content = new Signature[] { sub };
+		}
+
+		public Signature(char crt, Signature[] sub) {
+			kind = crt;
+			content = sub;
+		}
+
+		@Override
+		public String toString() {
+			String res = "";
+			if (content != null) {
+				res = "(";
+				for (Signature s : content) {
+					res += s.toString() + ",";
+				}
+				res = res.substring(0, res.length() - 1) + ")";
 			}
-			int n = Integer.parseInt(signature.substring(0, i));
-			String s = signature.substring(i);
-			StringBuilder res = new StringBuilder();
-			for (i = 0; i < n; i++) {
-				final String it = parseOne(s);
-				res.append(it);
-				s = s.substring(it.length());
-			}
-			return "t" + res.toString();
-		} else {
-			throw new RpcException("unknown signature code: " + crt);
+			return kind + res;
 		}
 	}
 
-	public static String[] parseSignature(String signature) throws RpcException {
-		List<String> type = new ArrayList<String>();
+	public static Signature[] parseSignature(String signature)
+			throws RpcException {
+		List<Signature> type = new ArrayList<Signature>();
 		if (signature == null) {
 			return null;
 			// throw new RpcException("Signature is null");
 		}
 		while (signature.length() > 0) {
-			String e = parseOne(signature);
-			type.add(e);
-			signature = signature.substring(e.length());
+			State e = parseOne(signature);
+			type.add(e.sign);
+			signature = e.rest;
 		}
-		return type.toArray(new String[type.size()]);
+		return type.toArray(new Signature[type.size()]);
+	}
+
+	private static class State {
+		public State(Signature signature, String substring) {
+			sign = signature;
+			rest = substring;
+		}
+
+		Signature sign;
+		String rest;
+	}
+
+	private static State parseOne(String signature) throws RpcException {
+		char crt = signature.charAt(0);
+		if ("xidabrjfpso".indexOf(crt) >= 0) {
+			return new State(new Signature(crt), signature.substring(1));
+		} else if (crt == 'l') {
+			State sub = parseOne(signature.substring(1));
+			return new State(new Signature(crt, sub.sign), sub.rest);
+		} else if ("0123456789".indexOf(crt) >= 0) {
+			int n = Integer.parseInt(signature.substring(0, 1));
+			Signature[] sub = new Signature[n];
+			String s = signature.substring(1);
+			for (int i = 0; i < n; i++) {
+				State state = parseOne(s);
+				sub[i] = state.sign;
+				s = state.rest;
+			}
+			return new State(new Signature('t', sub), s);
+		} else {
+			throw new RpcException("unknown signature code: " + crt);
+		}
 	}
 }

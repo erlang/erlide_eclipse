@@ -22,6 +22,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;
@@ -346,11 +347,11 @@ public abstract class AbstractBackend implements IBackend {
 			args0 = new OtpErlangObject[] {};
 		}
 
-		String[] type = RpcConverter.parseSignature(signature);
+		Signature[] type = RpcConverter.parseSignature(signature);
 		if (type == null) {
-			type = new String[args0.length];
+			type = new Signature[args0.length];
 			for (int i = 0; i < type.length; i++) {
-				type[i] = "x";
+				type[i] = new Signature('x');
 			}
 		}
 		if (type.length != args0.length) {

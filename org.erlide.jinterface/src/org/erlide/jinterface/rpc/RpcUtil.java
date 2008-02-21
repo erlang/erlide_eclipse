@@ -273,7 +273,7 @@ public class RpcUtil {
 				Object o = ctr.newInstance(args);
 				debug(String.format("** %s() returned %s", ctr, o));
 
-				return RpcConverter.java2erlang(o);
+				return RpcConverter.java2erlang(o, "x");
 			}
 			Method meth;
 			meth = cls.getMethod(method.name, method.argTypes);
@@ -281,7 +281,7 @@ public class RpcUtil {
 			Object o = meth.invoke(rcvr, args);
 			debug(String.format("** %s() returned %s", meth, o));
 
-			return RpcConverter.java2erlang(o);
+			return RpcConverter.java2erlang(o, "x");
 		} catch (NoSuchMethodException e) {
 			StringBuilder paramstr = new StringBuilder();
 			for (Class<?> param : params) {
@@ -322,6 +322,10 @@ public class RpcUtil {
 							"invocation of %s failed: %s", cls.getName(), e
 									.getMessage())));
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		} catch (RpcException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

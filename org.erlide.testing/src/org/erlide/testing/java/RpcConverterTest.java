@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -31,7 +32,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class RpcConverterTest {
 
-	public void test(Object o, String sig, OtpErlangObject expect)
+	private void test(Object o, String sig, OtpErlangObject expect)
 			throws RpcException {
 		OtpErlangObject result = java2erlang(o, sig);
 		assertTrue(expect.equals(result));
@@ -124,40 +125,62 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_0() throws RpcException {
 		String sig = null;
-		String[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = RpcConverter.parseSignature(sig);
 		assertTrue(result == null);
 	}
 
 	@Test
 	public void parseSignature_1() throws RpcException {
 		String sig = "aslsilpfd";
-		String[] result = RpcConverter.parseSignature(sig);
-		String[] expect = new String[] { "a", "s", "ls", "i", "lp", "f", "d" };
-		assertTrue(Arrays.equals(expect, result));
+		Signature[] result = RpcConverter.parseSignature(sig);
+		String expect = "[a, s, l(s), i, l(p), f, d]";
+		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_2() throws RpcException {
 		String sig = "llxi";
-		String[] result = RpcConverter.parseSignature(sig);
-		String[] expect = new String[] { "llx", "i" };
-		assertTrue(Arrays.equals(expect, result));
+		Signature[] result = RpcConverter.parseSignature(sig);
+		String expect = "[l(l(x)), i]";
+		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_3() throws RpcException {
 		String sig = "2axd";
-		String[] result = RpcConverter.parseSignature(sig);
-		String[] expect = new String[] { "tax", "d" };
-		assertTrue(Arrays.equals(expect, result));
+		Signature[] result = RpcConverter.parseSignature(sig);
+		String expect = "[t(a,x), d]";
+		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_4() throws RpcException {
 		String sig = "l3axl2sad";
-		String[] result = RpcConverter.parseSignature(sig);
-		String[] expect = new String[] { "ltaxltsa", "d" };
-		assertTrue(Arrays.equals(expect, result));
+		Signature[] result = RpcConverter.parseSignature(sig);
+		String expect = "[l(t(a,x,l(t(s,a)))), d]";
+		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
+	@Test
+	public void parseSignature_5() throws RpcException {
+		String sig = "32sadax";
+		Signature[] result = RpcConverter.parseSignature(sig);
+		String expect = "[t(t(s,a),d,a), x]";
+		assertTrue(Arrays.toString(result).equals(expect));
+	}
+
+	@Test
+	public void cvtBoolOk_1() throws RpcException {
+		test(true, "o", new OtpErlangAtom("true"));
+	}
+
+	@Test
+	public void cvtBoolOk_2() throws RpcException {
+		test(false, "o", new OtpErlangAtom("false"));
+	}
+
+	@Test(expected = RpcException.class)
+	public void cvtBoolFail_1() throws RpcException {
+		test(true, "i", new OtpErlangAtom("true"));
+	}
 }
