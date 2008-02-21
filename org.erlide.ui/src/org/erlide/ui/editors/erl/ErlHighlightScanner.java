@@ -24,17 +24,16 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.IColorManager;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideBackend;
 
 /**
  * Erlang syntax fScanner
@@ -266,7 +265,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			final String str = document;
 			OtpErlangList l;
 			List<ErlToken> toks;
-			l = (OtpErlangList) lightScanString(str);
+			l = (OtpErlangList) ErlideBackend.lightScanString(str);
 			if (l == null) {
 				toks = null;
 			} else {
@@ -333,34 +332,6 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return ErlToken.EOF;
 		}
 		return fTokens.get(fCrtToken);
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 * @throws BackendException
-	 */
-	public static OtpErlangObject lightScanString(String string)
-			throws BackendException {
-		OtpErlangObject r1 = null;
-		try {
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scan", "string", "s", string);
-		} catch (final Exception e) {
-			throw new BackendException("Could not parse string \"" + string
-					+ "\": " + e.getMessage());
-		}
-		if (r1 == null) {
-			return null;
-		}
-
-		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
-			return t1.elementAt(1);
-		}
-		throw new BackendException("Could not parse string \"" + string
-				+ "\": " + t1.elementAt(1).toString());
 	}
 
 }

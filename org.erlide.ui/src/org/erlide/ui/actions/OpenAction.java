@@ -62,6 +62,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideOpen;
+
 /**
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
@@ -299,8 +301,8 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			final OtpErlangList pathVars = new OtpErlangList(pv
 					.toArray(new OtpErlangTuple[pv.size()]));
-			final OtpErlangObject res = b.rpcx("erlide_open", "open_info",
-					"xisx", list, window, fExternalModules, pathVars);
+			final OtpErlangObject res = ErlideOpen.getOpenInfo(window, list, b,
+					pathVars, fExternalModules);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
@@ -362,10 +364,9 @@ public class OpenAction extends SelectionDispatchAction {
 						return;
 					}
 					final String mod = ei.getImportModule();
-					final OtpErlangAtom a = new OtpErlangAtom(mod);
-					final OtpErlangObject res2 = b.rpcx("erlide_open",
-							"get_source_from_module", null, a,
-							fExternalModules, pathVars);
+					final OtpErlangObject res2 = ErlideOpen
+							.getSourceFromModule(b, pathVars, mod,
+									fExternalModules);
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
@@ -452,15 +453,7 @@ public class OpenAction extends SelectionDispatchAction {
 					try {
 						String s = element.getFilename();
 						if (element.isSystemInclude()) {
-							final IBackend b = BackendManager.getDefault()
-									.getIdeBackend();
-							final OtpErlangObject t = b.rpcx("erlide_open",
-									"get_include_lib", null, s);
-							if (t instanceof OtpErlangTuple) {
-								final OtpErlangObject es = ((OtpErlangTuple) t)
-										.elementAt(1);
-								s = ((OtpErlangString) es).stringValue();
-							}
+							s = ErlideOpen.getIncludeLib(s);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {

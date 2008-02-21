@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -30,6 +29,8 @@ import org.erlide.ui.util.ErlModelUtils;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+
+import erlang.ErlideDoc;
 
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
@@ -58,16 +59,13 @@ public class ErlTextHover implements ITextHover,
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
-		OtpErlangObject r1 = null;
 		try {
-
+			OtpErlangObject r1 = null;
 			int offset = hoverRegion.getOffset();
 			String s = ErlideUIPlugin.getDefault().getStateLocation()
 					.toString();
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_otp_doc", "get_doc_from_scan_tuples", "ailxs",
-					fModule.getScanner().getScannerModuleName(), offset,
-					fImports, s);
+			r1 = ErlideDoc.getDocFromScan(offset, s, fModule.getScanner()
+					.getScannerModuleName(), fImports);
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				return s1.stringValue();

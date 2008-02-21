@@ -34,6 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideDoc;
+
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
@@ -48,9 +50,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			final String s = ErlideUIPlugin.getDefault().getStateLocation()
 					.toString();
-			final OtpErlangObject r1 = BackendManager.getDefault()
-					.getIdeBackend().rpcx("erlide_otp_doc",
-							"get_doc_from_fun_arity_list", "axs", mod, list, s);
+			final OtpErlangObject r1 = ErlideDoc.getFunDoc(list, mod, s);
 			if (r1 instanceof OtpErlangList) {
 				return (OtpErlangList) r1;
 			}
@@ -85,8 +85,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IErlProject project = ErlModelUtils.getErlProject(fEditor);
 			final IBackend b = BackendManager.getDefault().get(
 					project.getProject());
-			final OtpErlangObject res = b.rpcx("erlide_otp_doc",
-					"get_exported", "as", mod, prefix);
+			final OtpErlangObject res = ErlideDoc.getExported(prefix, mod, b);
 			if (res instanceof OtpErlangList) {
 				final OtpErlangList resl = (OtpErlangList) res;
 				final OtpErlangList docl = getDocumentationFor(resl, mod);
@@ -120,15 +119,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			return NO_COMPLETIONS;
 		}
 	}
-
-	/* NOT USED */
-	/*
-	 * private String lastWord(IDocument doc, int offset) { try { for (int n =
-	 * offset - 1; n >= 0; n--) { if
-	 * (!Character.isJavaIdentifierPart(doc.getChar(n))) { return doc.get(n + 1,
-	 * offset - n - 1); } } } catch (final BadLocationException e) { } return
-	 * ""; }
-	 */
 
 	private String lastText(IDocument doc, int offset) {
 		try {

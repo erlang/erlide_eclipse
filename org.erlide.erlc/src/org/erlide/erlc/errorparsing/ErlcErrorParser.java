@@ -22,6 +22,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideBackend;
+
 public class ErlcErrorParser implements IErrorParser {
 
 	public final static String ID = "erlcerrorparser";
@@ -30,13 +32,10 @@ public class ErlcErrorParser implements IErrorParser {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangObject res;
 		try {
-			res = b
-					.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s",
-							lines);
+			res = ErlideBackend.convertErrors(lines, b);
 			if (!(res instanceof OtpErlangList)) {
 				return false;
 			}
-
 			addErrorMarkersForMultipleFiles(epm, (OtpErlangList) res);
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block

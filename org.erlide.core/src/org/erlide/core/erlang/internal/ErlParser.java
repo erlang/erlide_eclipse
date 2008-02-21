@@ -26,6 +26,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideBackend;
+import erlang.ErlideNoparse;
 
 public class ErlParser {
 
@@ -107,9 +108,7 @@ public class ErlParser {
 		OtpErlangList forms = null, comments = null;
 		try {
 			ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
-			final OtpErlangTuple res = (OtpErlangTuple) b.rpcx(
-					"erlide_noparse", "parse", "a", scanner
-							.getScannerModuleName());
+			final OtpErlangTuple res = ErlideNoparse.parse(scanner, b);
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				forms = (OtpErlangList) res.elementAt(1);
 				comments = (OtpErlangList) res.elementAt(2);
@@ -453,8 +452,7 @@ public class ErlParser {
 			return new OtpErlangList(res);
 		}
 		try {
-			return BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_syntax", "concrete", "x", val);
+			return ErlideBackend.concreteSyntax(val);
 		} catch (final Exception e) {
 			return val;
 		}

@@ -24,6 +24,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideDebug;
+
 public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public static final String STATUS_WAITING = "waiting";
 
@@ -49,7 +51,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public String getRegisteredName() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "registered_name");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"registered_name");
 		if (res != null) {
 			return res.toString();
 		}
@@ -57,12 +60,14 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public OtpErlangTuple getCurrentFunction() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "current_function");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"current_function");
 		return (OtpErlangTuple) res;
 	}
 
 	public long getReductions() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "reductions");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"reductions");
 		if (res != null) {
 			try {
 				return ((OtpErlangLong) res).longValue();
@@ -73,59 +78,68 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public OtpErlangObject getDictionary() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "dictionary");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"dictionary");
 		return res;
 	}
 
 	public OtpErlangObject getErrorHandler() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "error_handler");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"error_handler");
 		return res;
 	}
 
 	public OtpErlangObject getGroupLeader() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "group_leader");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"group_leader");
 		return res;
 	}
 
 	public OtpErlangObject getHeapSize() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "heap_size");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"heap_size");
 		return res;
 	}
 
 	public OtpErlangObject getInitialCall() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "initial_call");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"initial_call");
 		return res;
 	}
 
 	public OtpErlangObject getLinks() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "links");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"links");
 		return res;
 	}
 
 	public OtpErlangObject getMessageQueueLen() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid,
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
 				"message_queue_len");
 		return res;
 	}
 
 	public OtpErlangObject getMessages() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "messages");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"messages");
 		return res;
 	}
 
 	public OtpErlangObject getErlPriority() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "priority");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"priority");
 		return res;
 	}
 
 	public OtpErlangObject getStackSize() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "stack_size");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"stack_size");
 		return res;
 	}
 
 	public String getStatus() {
-		OtpErlangAtom res = (OtpErlangAtom) getProcessInfo(fBackend, fPid,
-				"status");
+		OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
+				fBackend, fPid, "status");
 		if (res != null) {
 			return res.atomValue();
 		}
@@ -133,51 +147,40 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public boolean getTrapExit() {
-		OtpErlangAtom res = (OtpErlangAtom) getProcessInfo(fBackend, fPid,
-				"trap_exit");
+		OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
+				fBackend, fPid, "trap_exit");
 		return "true".equals(res.atomValue());
 	}
 
 	public OtpErlangObject getBacktrace() {
-		OtpErlangBinary res = (OtpErlangBinary) getProcessInfo(fBackend, fPid,
-				"backtrace");
+		OtpErlangBinary res = (OtpErlangBinary) ErlideDebug.getProcessInfo(
+				fBackend, fPid, "backtrace");
 		// byte[] r = res.binaryValue();
 		return res;
 	}
 
 	public OtpErlangObject getLastCalls() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "last_calls");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"last_calls");
 		return res;
 	}
 
 	public OtpErlangObject getMemory() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "memory");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"memory");
 		return res;
 	}
 
 	public OtpErlangObject getMonitoredBy() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "monitored_by");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"monitored_by");
 		return res;
 	}
 
 	public OtpErlangObject getMonitors() {
-		OtpErlangObject res = getProcessInfo(fBackend, fPid, "monitors");
+		OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
+				"monitors");
 		return res;
-	}
-
-	private static OtpErlangObject getProcessInfo(IBackend b, OtpErlangPid pid,
-			String item) {
-		OtpErlangObject res;
-		try {
-			res = b.rpcx("erlang", "process_info", "pa", pid, item);
-			if (res instanceof OtpErlangTuple) {
-				return ((OtpErlangTuple) res).elementAt(1);
-			}
-			return null;
-		} catch (final Exception e) {
-			return null;
-		}
-
 	}
 
 	public IStackFrame[] getStackFrames() throws DebugException {
@@ -298,25 +301,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public boolean isSystemProcess() {
-		boolean res = false;
-		try {
-			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("pman_process",
-					"is_system_process", "s", fPid);
-			res = "true".equals(eres.atomValue());
-		} catch (Exception e) {
-		}
-		return res;
+		return ErlideDebug.isSystemProcess_(fBackend, fPid);
 	}
 
 	public boolean isErlideProcess() {
-		boolean res = false;
-		try {
-			OtpErlangAtom eres = (OtpErlangAtom) fBackend.rpcx("erlide_debug",
-					"is_erlide_process", "p", fPid);
-			res = "true".equals(eres.atomValue());
-		} catch (Exception e) {
-		}
-		return res;
+		return ErlideDebug.isErlideProcess(fBackend, fPid);
 	}
 
 }

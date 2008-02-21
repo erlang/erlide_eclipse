@@ -86,10 +86,10 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 								: new NullProgressMonitor());
 
 						try {
-							final IWorkbench workbench = ErlideUIPlugin
+							final IWorkbench wbench = ErlideUIPlugin
 									.getDefault().getWorkbench();
-							workbench.showPerspective(ErlangPerspective.ID,
-									workbench.getActiveWorkbenchWindow());
+							wbench.showPerspective(ErlangPerspective.ID,
+									wbench.getActiveWorkbenchWindow());
 						} catch (final WorkbenchException we) {
 							// ignore
 						}

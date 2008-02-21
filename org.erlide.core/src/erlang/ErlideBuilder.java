@@ -4,8 +4,12 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.builder.ErlangBuilder;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
+import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -43,6 +47,32 @@ public class ErlideBuilder {
 					// FIXME add an option for this
 					, includeList,
 					new OtpErlangList(new OtpErlangAtom("debug_info")));
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static OtpErlangList getSourceClashes(final IBackend b,
+			final String[] dirList) throws ErlangRpcException,
+			BackendException, RpcException {
+		final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+				"source_clash", "ls", (Object) dirList);
+		return res;
+	}
+
+	public static OtpErlangList getCodeClashes(final IBackend b)
+			throws ErlangRpcException, BackendException, RpcException {
+		final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
+				"code_clash", null);
+		return res;
+	}
+
+	public static OtpErlangObject loadModule(final IProject project,
+			final String module) {
+		try {
+			return BackendManager.getDefault().get(project).rpcx(ErlangBuilder.MODULE,
+					"load", "a", module);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;

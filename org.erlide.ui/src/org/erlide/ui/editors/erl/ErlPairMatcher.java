@@ -14,10 +14,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.erlide.core.erlang.IErlScanner;
-import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+
+import erlang.ErlidePairMatch;
 
 /**
  * Helper class for match pairs of characters.
@@ -50,17 +51,14 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 		return null;
 	}
 
-	// @SuppressWarnings("boxing")
-	@SuppressWarnings("boxing")
 	private boolean matchPairsAt() {
 		if (fScanner == null) {
 			return false;
 		}
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_pair_match", "match", "ia", fOffset,
-					fScanner.getScannerModuleName());
+			r1 = ErlidePairMatch
+					.match(fOffset, fScanner.getScannerModuleName());
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
 				final int pos = s1.intValue() - 1, offset = fOffset - 1;

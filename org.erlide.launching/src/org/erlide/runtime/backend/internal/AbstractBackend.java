@@ -41,7 +41,6 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
@@ -420,16 +419,8 @@ public abstract class AbstractBackend implements IBackend {
 
 	public String getCurrentVersion() {
 		if (fCurrentVersion == null) {
-			fCurrentVersion = "";
-			OtpErlangObject r;
 			try {
-				r = rpcx("init", "script_id", "");
-				if (r instanceof OtpErlangTuple) {
-					OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-					if (rr instanceof OtpErlangString) {
-						fCurrentVersion = ((OtpErlangString) rr).stringValue();
-					}
-				}
+				fCurrentVersion = ErlideBackend.getScriptId(this);
 			} catch (Exception e) {
 			}
 		}
@@ -533,16 +524,7 @@ public abstract class AbstractBackend implements IBackend {
 	@SuppressWarnings("unused")
 	private OtpErlangObject parseTerm(String string)
 			throws ErlangParseException {
-		OtpErlangObject r = null;
-		try {
-			r = rpcx(ERL_BACKEND, "parse_term", "s", string);
-			ErlLogger.debug("PARSE=" + r);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			throw new ErlangParseException("Could not parse term \"" + string
-					+ "\"");
-		}
-		return r;
+		return ErlideBackend.parseTerm(this, string);
 	}
 
 }

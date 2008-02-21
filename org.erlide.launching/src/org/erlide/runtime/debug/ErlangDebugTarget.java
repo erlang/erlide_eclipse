@@ -19,7 +19,6 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -27,6 +26,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideDebug;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements
 		IDebugTarget {
@@ -54,10 +55,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fLaunch = launch;
 		fTerminated = false;
 
-		OtpErlangObject res;
 		try {
-			res = b.rpcx("erlide_debug", "start_debug", "aa", mod, func);
-			final OtpErlangPid pid = (OtpErlangPid) BackendUtil.ok(res);
+			final OtpErlangPid pid = ErlideDebug.startDebug(b, mod, func);
 
 			// start debugger listener job
 			fDbgListener = new DebuggerListener("Erlang debugger listener",
@@ -91,9 +90,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 		OtpErlangList procs = null;
 		try {
-			procs = (OtpErlangList) BackendUtil.ok(fBackend.rpcx(
-					"erlide_debug", "processes", "bb", fShowSystemProcesses,
-					fShowErlideProcesses));
+			procs = ErlideDebug.getProcesses(fBackend, fShowSystemProcesses,
+					fShowErlideProcesses);
 
 			fBackend.send("erlide_dbg_mon", new OtpErlangAtom("dumpState"));
 		} catch (final Exception e) {

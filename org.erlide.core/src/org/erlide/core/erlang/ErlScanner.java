@@ -58,12 +58,7 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void dispose() {
-		try {
-			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
-					"destroy", "a", fMod);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
+		ErlideScanner.destroy(fMod);
 	}
 
 	@SuppressWarnings("boxing")
@@ -88,6 +83,7 @@ public class ErlScanner implements IErlScanner {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public ErlToken[] getTokensAround(int offset) {
 		OtpErlangObject r1 = null;
 		try {

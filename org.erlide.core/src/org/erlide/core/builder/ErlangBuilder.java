@@ -183,8 +183,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
-			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
-					"code_clash", null);
+			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -206,8 +205,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				dirList[i] = getProject().getLocation().toPortableString()
 						+ "/" + sd[i];
 			}
-			final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
-					"source_clash", "ls", (Object) dirList);
+			final OtpErlangList res = ErlideBuilder
+					.getSourceClashes(b, dirList);
 			for (int i = 0; i < res.arity(); i++) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -436,7 +435,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					}
 				} else {
 					// ErlLogger.debug(">>>>> normal");
-					loadModule(project, beamf);
+					ErlideBuilder.loadModule(project, beamf);
 				}
 			} else {
 				ErlLogger.debug(">>>> compile error..." + resource.getName());
@@ -651,7 +650,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			public void run(final IBackend b) {
 				try {
 					if (b != BackendManager.getDefault().getIdeBackend()) {
-						final RpcResult result = Code.loadBinary(beamf, code, b);
+						final RpcResult result = Code
+								.loadBinary(beamf, code, b);
 						ErlLogger.debug("  $ distribute " + beamf + " to "
 								+ b.getLabel() + "  - " + result.getValue());
 					}
@@ -978,19 +978,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		return ErlideBuilder.compileYrl(project, fn, output);
 	}
-
-	protected static OtpErlangObject loadModule(final IProject project,
-			final String module) {
-		try {
-			return BackendManager.getDefault().get(project).rpcx(MODULE,
-					"load", "a", module);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	// /////////////////////////////////////////////////////
 
 	IProject currentProject;
 

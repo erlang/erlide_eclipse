@@ -651,12 +651,12 @@ public class ErlangProjectImportWizardPage extends
 	boolean linkToResources(List<Object> fileSystemObjects,
 			IProgressMonitor monitor) throws InvocationTargetException,
 			CoreException {
-		final String projectName = getProjectName();
+		final String prjName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		final IProject project = workspace.getRoot().getProject(projectName);
+		final IProject project = workspace.getRoot().getProject(prjName);
 
 		final IProjectDescription description = workspace
-				.newProjectDescription(projectName);
+				.newProjectDescription(prjName);
 		description.setLocation(getProjectPath());
 
 		final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];

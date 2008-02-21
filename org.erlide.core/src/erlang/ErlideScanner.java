@@ -33,4 +33,13 @@ public class ErlideScanner {
 		}
 	}
 
+	public static void destroy(String module) {
+		try {
+			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
+					"destroy", "a", module);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
