@@ -323,7 +323,7 @@ public class OpenAction extends SelectionDispatchAction {
 				final String fun = ((OtpErlangAtom) mf.elementAt(1))
 						.atomValue();
 				final int arity = ((OtpErlangLong) mf.elementAt(2)).intValue();
-				String path = "";
+				String path = null;
 				if (mf.elementAt(3) instanceof OtpErlangString) {
 					path = ((OtpErlangString) mf.elementAt(3)).stringValue();
 				}
