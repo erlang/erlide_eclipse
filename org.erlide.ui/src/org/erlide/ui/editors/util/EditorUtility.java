@@ -515,6 +515,9 @@ public class EditorUtility {
 		if (!project.isOpen()) {
 			project.open(null);
 		}
+		if (path == null) {
+			return null;
+		}
 		final IPath location = new Path(path);
 		final IFile file = project.getFile(location.lastSegment());
 		if (!file.isLinked()) {
