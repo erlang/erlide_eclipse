@@ -7,6 +7,7 @@
 	
 	<property file="build_local.properties" />
 	<property name="eclipse.installation.dir" value="${eclipseDir}"/>
+	<property name="buildSystemProperty.erlRoot" value="${erlRoot}"/>
 	<import file="build-files/build_shared.xml"/>
 	
 	<target name="-properties">		
