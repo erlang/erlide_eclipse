@@ -1,0 +1,9 @@
+feature@org.erlide=COPY,C:/Programs/erlide32,org.erlide
+plugin@org.erlide.core=COPY,C:/Programs/erlide32,org.erlide.core
+plugin@org.erlide.ui=COPY,C:/Programs/erlide32,org.erlide.ui
+plugin@org.erlide.launching=COPY,C:/Programs/erlide32,org.erlide.launching
+plugin@org.erlide.help=COPY,C:/Programs/erlide32,org.erlide.help
+plugin@org.erlide.erlc=COPY,C:/Programs/erlide32,org.erlide.erlc
+plugin@org.erlide.debug.ui=COPY,C:/Programs/erlide32,org.erlide.debug.ui
+plugin@org.erlide.basic=COPY,C:/Programs/erlide32,org.erlide.basic
+plugin@org.erlide.jinterface=COPY,C:/Programs/erlide32,org.erlide.jinterface

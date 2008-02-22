@@ -4,8 +4,6 @@
 <!-- ===================================================================== -->
 <project name="Build specific targets and properties" default="noDefault">
 
-  <property name="builder" value="${basedir}/../erlide-build" />
-
   <!-- ===================================================================== -->
   <!-- Default target                                                        -->
   <!-- ===================================================================== -->
@@ -19,7 +17,8 @@
   <!--   build.result.folder - folder to contain the build results           -->
   <!-- ===================================================================== -->
   <target name="pre.build.jars">
-    <erlang prj="${basedir}" action="build" />
+    <taskdef name="erlang" classname="org.erlide.build.ErlcTask" classpath="${builder}/erlc.jar"/>
+  	    <erlang prj="${basedir}" action="build" erlRoot="c:\programs\erl5.5.5"/>
   </target>
 
   <!-- ===================================================================== -->
