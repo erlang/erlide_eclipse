@@ -63,14 +63,18 @@ cac(function, Tokens) ->
     #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
 cac(attribute, Attribute) ->
     case Attribute of
-        [_, #token{kind=atom, value=Name, line=Line,
-                   offset=Offset, length=Length},
-         _, #token{value=Args, line=LastLine} | _] = Attribute ->
-            #attribute{pos={{Line, LastLine, Offset}, Length},
+        [_, #token{kind=atom, value=Name, line=Line, offset=Offset},
+         _, #token{value=Args} | _] = Attribute ->
+            #token{line=LastLine, offset=LastOffset, 
+                   length=LastLength} = lists:last(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
                        name=Name, args=Args};
-        [_, #token{kind=atom, value=Name, line=Line,
-                   offset=Offset, length=Length} | _] ->
-            #attribute{pos={{Line, Line, Offset}, Length},
+        [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
+            #token{line=LastLine, offset=LastOffset, 
+                   length=LastLength} = lists:last(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
                        name=Name, args=[]}
     end;
 cac(other, [#token{value=Name, line=Line,
