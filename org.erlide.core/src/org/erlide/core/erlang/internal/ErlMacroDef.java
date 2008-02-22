@@ -37,4 +37,16 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 				.hashCode());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.erlide.core.erlang.internal.ErlElement#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof ErlMacroDef) {
+			final ErlMacroDef other = (ErlMacroDef) o;
+			return super.equals(o) && macro == other.macro; 
+		}
+		return false;
+	}
+
 }
