@@ -52,6 +52,6 @@ public class SourceRange implements ISourceRange {
 	}
 
 	public boolean hasPosition(int position) {
-		return position >= fOffset && position < fOffset + fLength;
+		return position >= fOffset && position <= fOffset + fLength;
 	}
 }
