@@ -169,16 +169,19 @@ public class RpcConverterTest {
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
+	@SuppressWarnings("boxing")
 	@Test
 	public void cvtBoolOk_1() throws RpcException {
 		test(true, "o", new OtpErlangAtom("true"));
 	}
 
+	@SuppressWarnings("boxing")
 	@Test
 	public void cvtBoolOk_2() throws RpcException {
 		test(false, "o", new OtpErlangAtom("false"));
 	}
 
+	@SuppressWarnings("boxing")
 	@Test(expected = RpcException.class)
 	public void cvtBoolFail_1() throws RpcException {
 		test(true, "i", new OtpErlangAtom("true"));

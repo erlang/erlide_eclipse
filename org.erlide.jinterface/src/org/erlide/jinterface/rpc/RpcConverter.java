@@ -285,6 +285,7 @@ public class RpcConverter {
 		return java2erlang(obj, parseOne(type).sign);
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang(Object obj, Signature type)
 			throws RpcException {
 		if (type.kind == 'x') {
