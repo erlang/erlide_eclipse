@@ -523,6 +523,10 @@ public class DefaultErlangFoldingStructureProvider implements
 			fElementListener = new ElementChangedListener();
 			ErlangCore.getModelManager().addElementChangedListener(
 					fElementListener);
+			final IErlElementDelta d = new ErlElementDelta(
+					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+					fModule);
+			processDelta(d);
 		}
 	}
 
