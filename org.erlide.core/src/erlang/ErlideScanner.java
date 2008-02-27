@@ -27,7 +27,7 @@ public class ErlideScanner {
 	public static void removeText(String module, int offset, int length) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"removeText", "ais", module, offset + 1, length);
+					"removeText", "aii", module, offset + 1, length);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
