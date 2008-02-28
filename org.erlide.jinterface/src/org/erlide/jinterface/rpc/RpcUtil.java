@@ -12,6 +12,8 @@ package org.erlide.jinterface.rpc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -328,6 +330,106 @@ public class RpcUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+
+	}
+
+	/**
+	 * This is a generic alternative to callMethod. Tests if an argument is
+	 * assignable to the declared method's type. It isn't yet adapted to
+	 * java-rpc.<br/> Based on the paper at
+	 * http://www.jgroups.org/javagroupsnew/docs/papers/MethodResolution.ps.gz
+	 * 
+	 * @param message
+	 * @param target
+	 * @param args
+	 * @return
+	 */
+	@SuppressWarnings( { "unused", "unchecked" })
+	private static Object sendMessage(String message, Object target,
+			Object[] args) {
+		try {
+			// Is this an argumentless method call?
+			if (args == null) {
+				// Get the method.
+				return target.getClass().getMethod(message, (Class[]) null)
+						.invoke(target, (Object[]) null);
+			} else {
+
+				// Get all methods from the target.
+				Method[] allMethods = target.getClass().getMethods();
+				List<Method> candidateMethods = new ArrayList<Method>();
+
+				for (int i = 0; i < allMethods.length; i++) {
+					// Filter methods by name and length of arguments.
+					Method m = allMethods[i];
+					if (m.getName().equals(message)
+							&& m.getParameterTypes().length == args.length) {
+						candidateMethods.add(m);
+					}
+				}
+
+				if (candidateMethods.size() == 0) {
+					throw new RuntimeException("");
+				}
+
+				Method callableMethod = null;
+				for (Iterator<Method> itr = candidateMethods.iterator(); itr
+						.hasNext();) {
+					boolean callable = true;
+					Method m = itr.next();
+					Class[] argFormalTypes = m.getParameterTypes();
+					for (int i = 0; i < argFormalTypes.length; i++) {
+						if (!argFormalTypes[i].isAssignableFrom(args[i]
+								.getClass())) {
+							callable = false;
+						}
+					}
+					if (callable) {
+						callableMethod = m;
+					}
+				}
+
+				if (callableMethod != null) {
+					return callableMethod.invoke(target, args);
+				} else {
+					throw new RuntimeException("No such method found: "
+							+ message);
+				}
+			}
+		} catch (Exception e) {
+			StringBuffer sb = new StringBuffer();
+			// Build a helpful message to debug reflection issues.
+			try {
+				sb.append("ERROR: Could not send message '" + message
+						+ "' to target of type " + target.getClass().toString()
+						+ " \n");
+
+				sb.append("\ttarget implements : \n");
+				Class[] interfaces = target.getClass().getInterfaces();
+				for (int j = 0; j < interfaces.length; j++) {
+					sb.append("\t\t" + interfaces[j].getName() + "\n");
+				}
+				sb.append("\n");
+
+				sb.append("\ttarget methods: \n");
+				Method[] methods = target.getClass().getMethods();
+				for (int j = 0; j < methods.length; j++) {
+					sb.append("\t\t" + methods[j].getName() + "\n");
+				}
+				sb.append("\n");
+
+				if (args != null) {
+					sb.append("\tArgument types: \n");
+					for (int j = 0; j < args.length; j++) {
+						sb.append("\t\t" + args[j].getClass().getName() + "\n");
+					}
+				}
+			} catch (Exception e2) {
+				throw new RuntimeException(
+						"ERROR: Could not create detailed error message for failed sendMessage() call.");
+			}
+			throw new RuntimeException(sb.toString());
 		}
 
 	}
