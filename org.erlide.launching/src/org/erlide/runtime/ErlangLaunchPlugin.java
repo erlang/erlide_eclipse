@@ -52,7 +52,6 @@ public class ErlangLaunchPlugin extends Plugin {
 			resourceBundle = null;
 		}
 
-		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
 		if (BackendManager.isDeveloper()) {
 			// new EpmdWatchJob().schedule();
 		}
@@ -70,6 +69,7 @@ public class ErlangLaunchPlugin extends Plugin {
 		BackendManager.getDefault().addPlugin(this);
 
 		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
+		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
 	}
 
 	/**
