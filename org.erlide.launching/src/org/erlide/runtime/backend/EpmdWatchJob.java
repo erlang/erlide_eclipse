@@ -36,7 +36,7 @@ public class EpmdWatchJob extends Job {
 					IStatus.OK, "", null); //$NON-NLS-1$
 		}
 
-		BackendManager.getDefault().checkEpmd();
+		// BackendManager.getDefault().checkEpmd();
 
 		this.schedule(2000);
 		return Status.OK_STATUS;

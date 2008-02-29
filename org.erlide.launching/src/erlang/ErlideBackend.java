@@ -290,6 +290,10 @@ public class ErlideBackend {
 		return res;
 	}
 
+	public static void init(IBackend ideBackend) {
+		init(ideBackend, ideBackend.getName());
+	}
+
 	// public static OtpErlangObject parseTerm(IBackend b, String string)
 	// throws ErlangParseException {
 	// OtpErlangObject r = null;

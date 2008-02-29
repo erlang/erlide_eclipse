@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -37,19 +36,17 @@ import org.erlide.runtime.backend.internal.ManagedBackend;
 import org.erlide.runtime.backend.internal.StandaloneBackend;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 
-import com.ericsson.otp.erlang.OtpEpmd;
-
 public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
 
-	private final Map<String, IBackend> fLocalBackends;
+	private IBackend fLocalBackend;
 
-	private final Object fLocalBackendsLock = new Object();
+	private final Map<String, IBackend> fProjectBackends;
 
-	private final Map<String, IBackend> fRemoteBackends;
+	private final Object fProjectBackendsLock = new Object();
 
-	private final Object fRemoteBackendsLock = new Object();
+	private IBackend fRemoteBackend;
 
 	protected List<IBackendListener> fListeners;
 
@@ -68,8 +65,9 @@ public final class BackendManager implements IResourceChangeListener {
 	private BackendManager() {
 		fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
 
-		fLocalBackends = new HashMap<String, IBackend>(5);
-		fRemoteBackends = new HashMap<String, IBackend>(5);
+		fLocalBackend = null;
+		fRemoteBackend = null;
+		fProjectBackends = new HashMap<String, IBackend>(5);
 		fListeners = new ArrayList<IBackendListener>(5);
 		fPlugins = new ArrayList<Plugin>(5);
 
@@ -126,17 +124,17 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend get(IProject project) {
-		synchronized (fLocalBackendsLock) {
+		synchronized (fProjectBackendsLock) {
 
 			final String name = getBackendName(project);
-			IBackend b = fLocalBackends.get(name);
+			IBackend b = fProjectBackends.get(name);
 			if (b != null && !b.ping()) {
-				fLocalBackends.remove(name);
+				fProjectBackends.remove(name);
 				b = null;
 			}
 			if (b == null) {
 				b = createManaged(name, false);
-				fLocalBackends.put(name, b);
+				fProjectBackends.put(name, b);
 				fireUpdate(b, ADDED);
 			}
 			return b;
@@ -166,7 +164,10 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend getIdeBackend() {
-		return get(null);
+		if (fLocalBackend == null) {
+			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false);
+		}
+		return fLocalBackend;
 	}
 
 	public static boolean isDeveloper() {
@@ -245,10 +246,10 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public AbstractBackend[] getBackends() {
+	public AbstractBackend[] getProjectBackends() {
 		// getDefaultBackend();
-		synchronized (fLocalBackendsLock) {
-			final Object[] ob = fLocalBackends.values().toArray();
+		synchronized (fProjectBackendsLock) {
+			final Object[] ob = fProjectBackends.values().toArray();
 			final AbstractBackend[] res = new AbstractBackend[ob.length];
 			System.arraycopy(ob, 0, res, 0, ob.length);
 			return res;
@@ -258,8 +259,8 @@ public final class BackendManager implements IResourceChangeListener {
 	public void addPlugin(final Plugin p) {
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
-			forEachLocal(new IBackendVisitor() {
-
+			getIdeBackend().getCodeManager().addPlugin(p);
+			forEachProjectBackend(new IBackendVisitor() {
 				public void run(IBackend b) {
 					b.getCodeManager().addPlugin(p);
 				}
@@ -269,29 +270,17 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void removePlugin(final Plugin p) {
 		fPlugins.remove(p);
-		forEachLocal(new IBackendVisitor() {
-
+		getIdeBackend().getCodeManager().removePlugin(p);
+		forEachProjectBackend(new IBackendVisitor() {
 			public void run(IBackend b) {
 				b.getCodeManager().removePlugin(p);
 			}
 		});
 	}
 
-	public void forEachLocal(IBackendVisitor visitor) {
-		synchronized (fLocalBackendsLock) {
-			for (final Object element : fLocalBackends.values()) {
-				final IBackend b = (IBackend) element;
-				try {
-					visitor.run(b);
-				} catch (final Exception e) {
-				}
-			}
-		}
-	}
-
-	public void forEachRemote(IBackendVisitor visitor) {
-		synchronized (fRemoteBackendsLock) {
-			for (final Object element : fRemoteBackends.values()) {
+	public void forEachProjectBackend(IBackendVisitor visitor) {
+		synchronized (fProjectBackendsLock) {
+			for (final Object element : fProjectBackends.values()) {
 				final IBackend b = (IBackend) element;
 				try {
 					visitor.run(b);
@@ -325,8 +314,8 @@ public final class BackendManager implements IResourceChangeListener {
 		try {
 			/* final long n = */Long.parseLong(parts[1], 16);
 
-			synchronized (fLocalBackendsLock) {
-				final IBackend bl = fLocalBackends.get(parts[0]);
+			synchronized (fProjectBackendsLock) {
+				final IBackend bl = fProjectBackends.get(parts[0]);
 				return bl == null || !bl.getLabel().equals(label);
 			}
 
@@ -364,65 +353,8 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public void checkEpmd() {
-		synchronized (fLocalBackendsLock) {
-			if (!isDeveloper() || fLocalBackends.size() == 0) {
-				return;
-			}
-
-			try {
-				final String[] names = OtpEpmd.lookupNames();
-				final List<String> labels = new ArrayList<String>(names.length);
-				for (String label : names) {
-					// label is "name X at port N"
-					final String[] parts = label.split(" ");
-					if (parts.length == 5) {
-						label = parts[1];
-						labels.add(label);
-					}
-				}
-
-				final Set<String> keySet = fRemoteBackends.keySet();
-				for (final String key : keySet) {
-					boolean found = false;
-
-					for (final Object element : labels) {
-						final String label = (String) element;
-
-						if (isExtErlideLabel(label) && label.equals(key)) {
-							found = true;
-							break;
-						}
-					}
-
-					if (!found) {
-						final IBackend b = fRemoteBackends.get(key);
-						if (b != null) {
-							fRemoteBackends.remove(key);
-							fireUpdate(b, REMOVED);
-						}
-					}
-				}
-
-				for (final Object element : labels) {
-					final String label = (String) element;
-
-					if (isExtErlideLabel(label)) {
-						IBackend b = fRemoteBackends.get(label);
-						if (b == null) {
-							// ErlLogger.debug("$ Added external backend:: "
-							// + label);
-							b = createStandalone(label);
-							fRemoteBackends.put(label, b);
-							fireUpdate(b, ADDED);
-						}
-					}
-				}
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-
-		}
+	public IBackend getRemoteBackend() {
+		return fRemoteBackend;
 	}
 
 }

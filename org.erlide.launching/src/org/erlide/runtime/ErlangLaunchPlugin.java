@@ -20,8 +20,9 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.EpmdWatchJob;
 import org.osgi.framework.BundleContext;
+
+import erlang.ErlideBackend;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -51,8 +52,9 @@ public class ErlangLaunchPlugin extends Plugin {
 			resourceBundle = null;
 		}
 
+		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
 		if (BackendManager.isDeveloper()) {
-			new EpmdWatchJob().schedule();
+			// new EpmdWatchJob().schedule();
 		}
 
 	}

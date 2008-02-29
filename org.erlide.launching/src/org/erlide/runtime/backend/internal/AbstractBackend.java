@@ -509,11 +509,15 @@ public abstract class AbstractBackend implements IBackend {
 
 	public void init_erlang() {
 		fRpcDaemon = new ErlRpcDaemon(this);
-		ErlideBackend.init(this, fNode.node());
+		// ErlideBackend.init(this, fNode.node());
 	}
 
 	public List<IBackendEventListener> getEventListeners(String event) {
 		return fEventListeners.get(event);
+	}
+
+	public String getName() {
+		return fNode.node();
 	}
 
 }

@@ -77,7 +77,13 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return BackendManager.getDefault().getBackends();
+			IBackend[] projectBackends = BackendManager.getDefault()
+					.getProjectBackends();
+			IBackend[] result = new IBackend[projectBackends.length + 1];
+			result[0] = BackendManager.getDefault().getIdeBackend();
+			System.arraycopy(projectBackends, 0, result, 1,
+					projectBackends.length);
+			return result;
 		}
 	}
 
@@ -134,6 +140,9 @@ public class ProcessListView extends ViewPart {
 			bk.addEventListener("processlist", this);
 
 			final OtpErlangList r = ErlideProclist.getProcessList(bk);
+			if (r.arity() == 0) {
+				return new OtpErlangObject[] {};
+			}
 			final OtpErlangObject[] ss = new OtpErlangObject[r.elements().length];
 
 			for (int i = 0; i < r.elements().length; i++) {
@@ -274,12 +283,15 @@ public class ProcessListView extends ViewPart {
 		label.setText("Erlang backend node");
 
 		// TODO this is wrong - all backends should be inited
-		BackendManager.getDefault().forEachLocal(new IBackendVisitor() {
+		ErlideProclist.processListInit(BackendManager.getDefault()
+				.getIdeBackend());
+		BackendManager.getDefault().forEachProjectBackend(
+				new IBackendVisitor() {
 
-			public void run(IBackend b) {
-				ErlideProclist.processListInit(b);
-			}
-		});
+					public void run(IBackend b) {
+						ErlideProclist.processListInit(b);
+					}
+				});
 
 		backends.setContentProvider(new BackendContentProvider());
 		backends.setLabelProvider(new BackendLabelProvider());

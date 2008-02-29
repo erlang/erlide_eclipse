@@ -12,7 +12,7 @@ public class ErlideProclist {
 
 	public static void processListInit(IBackend b) {
 		try {
-			b.rpc("erlide_proclist", "process_list_init", "");
+			b.rpc(MODULE_NAME, "process_list_init", "");
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

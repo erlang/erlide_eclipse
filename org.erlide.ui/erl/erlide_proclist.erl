@@ -67,7 +67,7 @@ process_list_init() ->
 	    ok;
 	_ ->
 	    put(process_list_init, true),
-	    spawn(fun  process_list_updater/0)
+	    spawn(fun process_list_updater/0)
     end.
 
 process_list_updater() ->
@@ -75,7 +75,7 @@ process_list_updater() ->
 	stop -> ok;
 	_ -> process_list_updater()
     after 5000 ->
-	    jrpc:event(processlist, {erlang:now(), self()}),
+	jrpc:event(processlist, {erlang:now(), self()}),
         process_list_updater()
     end.
 

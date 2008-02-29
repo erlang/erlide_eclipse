@@ -32,17 +32,21 @@
 ]).
 
 init(JavaNode) ->
+    erlang:display(JavaNode),
     spawn(fun()->
+        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
+        erlang:display(RpcPid),
+        register(erlide_rex, RpcPid),
+        
         Pid = spawn(fun() -> io_event_loop() end),
         erlide_io_server:start(),
         erlide_io_server:add(Pid),
         
         watch_eclipse(JavaNode),
         
-        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
-        register(erlide_rex, RpcPid)
+        application:start(sasl)
         
-     end),
+    end),
                 
     ok.
 

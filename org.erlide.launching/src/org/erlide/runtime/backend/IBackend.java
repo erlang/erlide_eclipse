@@ -158,4 +158,6 @@ public interface IBackend {
 	boolean ping();
 
 	List<IBackendEventListener> getEventListeners(String event);
+
+	String getName();
 }

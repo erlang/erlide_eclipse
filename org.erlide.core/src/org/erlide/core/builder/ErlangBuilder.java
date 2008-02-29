@@ -50,7 +50,6 @@ import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IBackendVisitor;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -645,23 +644,16 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	private static void distributeModule(final String beamf,
 			final OtpErlangBinary code) {
-		BackendManager.getDefault().forEachRemote(new IBackendVisitor() {
-
-			public void run(final IBackend b) {
-				try {
-					if (b != BackendManager.getDefault().getIdeBackend()) {
-						final RpcResult result = Code
-								.loadBinary(b, beamf, code);
-						ErlLogger.debug("  $ distribute " + beamf + " to "
-								+ b.getLabel() + "  - " + result.getValue());
-					}
-				} catch (final Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		});
+		IBackend b = BackendManager.getDefault().getRemoteBackend();
+		if (b == null)
+			return;
+		try {
+			final RpcResult result = Code.loadBinary(b, beamf, code);
+			ErlLogger.debug("  $ distribute " + beamf + " to " + b.getLabel()
+					+ "  - " + result.getValue());
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	static class HrlDeltaVisitor implements IResourceDeltaVisitor {
