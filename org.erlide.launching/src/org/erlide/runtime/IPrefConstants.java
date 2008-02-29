@@ -58,9 +58,13 @@ public interface IPrefConstants {
 
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
-	String PROJECT_BACKEND_NODE_NAME = "backend_name";
+	String PROJECT_BACKEND_NAME = "backend_name";
 
-	String DEFAULT_BACKEND_NODE_NAME = "";
+	String DEFAULT_BACKEND_NAME = "";
+
+	String PROJECT_BACKEND_COOKIE = "backend_cookie";
+
+	String DEFAULT_BACKEND_COOKIE = "";
 
 	String PROJECT_USE_PATHZ = "use_pathz";
 

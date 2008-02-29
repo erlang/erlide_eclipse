@@ -35,20 +35,14 @@ import org.erlide.ui.properties.internal.MockupPreferenceStore;
 public class ErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
+	private Text backendCookie;
+	private Text backendName;
 	private ErlangProjectProperties prefs;
-
 	private Text output;
-
 	private Text source;
-
 	private Text include;
-
 	private MockupPreferenceStore mockPrefs;
-
-	// private PathEditor fextinc;
-
 	private Button uz;
-
 	private Text externalModules;
 	private Button externalModulesBrowse;
 
@@ -81,9 +75,10 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
 		final Label outLabel = new Label(composite, SWT.NONE);
-		final GridData gd_asadasdasdLabel = new GridData();
-		gd_asadasdasdLabel.minimumWidth = 50;
-		outLabel.setLayoutData(gd_asadasdasdLabel);
+		outLabel.setText("output Dir");
+		final GridData gd_Label = new GridData();
+		gd_Label.minimumWidth = 50;
+		outLabel.setLayoutData(gd_Label);
 		outLabel.setText(resourceString + ":");
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -95,12 +90,13 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		// TODO use resource!
 		uz = new Button(composite, SWT.CHECK);
 		this.uz.setToolTipText("place at end of code:path");
-		this.uz.setText("place last in code:path");
+		this.uz.setText("place last in path");
 		this.uz.setLayoutData(new GridData());
 		uz.setSelection(prefs.getUsePathZ());
 		uz.addListener(SWT.Modify, nameModifyListener);
 
 		Label l1 = new Label(composite, SWT.NONE);
+		l1.setText("sources");
 		String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
@@ -113,7 +109,9 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 
 		String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
-		new Label(composite, SWT.NONE).setText(resourceString3 + ":");
+		final Label includesLabel = new Label(composite, SWT.NONE);
+		includesLabel.setText("includes");
+		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
 		this.include.setToolTipText("enter a list of folders");
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -123,15 +121,25 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 
 		createExternalModuleEditor(composite);
 
-		// Composite composite1 = new Composite(composite, SWT.NONE);
-		// gd = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
-		// gd.heightHint = 135;
-		// gd.widthHint = 459;
-		// composite1.setLayoutData(gd);
-		// fextinc = new PathEditor("ext include", "ext inc", "New",
-		// composite1);
-		// fextinc.setPreferenceStore(mockPrefs);
-		// new Label(composite, SWT.NONE);
+		final Label nodeNameLabel = new Label(composite, SWT.NONE);
+		nodeNameLabel.setText("Node name");
+
+		backendName = new Text(composite, SWT.BORDER);
+		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		backendName.setLayoutData(gd_backendName);
+		backendName.setText(prefs.getBackendName());
+		new Label(composite, SWT.NONE);
+
+		final Label nodeCookieLabel = new Label(composite, SWT.NONE);
+		nodeCookieLabel.setText("Node cookie");
+
+		backendCookie = new Text(composite, SWT.BORDER);
+		final GridData gd_backendCookie = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		backendCookie.setLayoutData(gd_backendCookie);
+		backendCookie.setText(prefs.getBackendCookie());
+		new Label(composite, SWT.NONE);
 
 		setValid(testPageComplete());
 
@@ -206,6 +214,8 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
 		prefs.setExternalModules(externalModules.getText());
+		prefs.setBackendName(backendName.getText());
+		prefs.setBackendCookie(backendCookie.getText());
 		prefs.store();
 		return true;
 	}

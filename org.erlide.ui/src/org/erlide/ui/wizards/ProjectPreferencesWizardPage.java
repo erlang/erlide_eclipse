@@ -20,11 +20,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -38,11 +41,14 @@ import org.erlide.ui.ErlideUIPlugin;
  */
 public class ProjectPreferencesWizardPage extends WizardPage {
 
-	Text output;
-
-	Text source;
-
-	Text include;
+	private Text output;
+	private Text source;
+	private Text include;
+	private Text backendCookie;
+	private Text backendName;
+	private Button uz;
+	private Text externalModules;
+	private Button externalModulesBrowse;
 
 	ErlangProjectProperties prefs;
 
@@ -78,36 +84,78 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		// create the desired layout for this wizard page
 		final GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
+		gl.numColumns = 3;
 		composite.setLayout(gl);
 
+		String resourceString = ErlideUIPlugin
+				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
-		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.buildoutput")
-				+ ":");
+		final Label outLabel = new Label(composite, SWT.NONE);
+		outLabel.setText("output Dir");
+		final GridData gd_Label = new GridData();
+		gd_Label.minimumWidth = 50;
+		outLabel.setLayoutData(gd_Label);
+		outLabel.setText(resourceString + ":");
 		output = new Text(composite, SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gd.minimumWidth = 50;
+		gd.widthHint = 384;
 		output.setLayoutData(gd);
 		output.setText(prefs.getOutputDir());
 		output.addListener(SWT.Modify, nameModifyListener);
+		// TODO use resource!
+		uz = new Button(composite, SWT.CHECK);
+		this.uz.setToolTipText("place at end of code:path");
+		this.uz.setText("place last in path");
+		this.uz.setLayoutData(new GridData());
+		uz.setSelection(prefs.getUsePathZ());
+		uz.addListener(SWT.Modify, nameModifyListener);
 
-		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.source")
-				+ ":");
+		Label l1 = new Label(composite, SWT.NONE);
+		l1.setText("sources");
+		String resourceString2 = ErlideUIPlugin
+				.getResourceString("wizards.labels.source");
+		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+		this.source.setToolTipText("enter a list of folders");
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		source.setLayoutData(gd);
 		source.setText(prefs.getSourceDirsString());
 		source.addListener(SWT.Modify, nameModifyListener);
 
-		new Label(composite, SWT.NONE).setText(ErlideUIPlugin
-				.getResourceString("wizards.labels.include")
-				+ ":");
+		String resourceString3 = ErlideUIPlugin
+				.getResourceString("wizards.labels.include");
+		final Label includesLabel = new Label(composite, SWT.NONE);
+		includesLabel.setText("includes");
+		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+		this.include.setToolTipText("enter a list of folders");
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		include.setLayoutData(gd);
 		include.setText(prefs.getIncludeDirsString());
 		include.addListener(SWT.Modify, nameModifyListener);
+
+		createExternalModuleEditor(composite);
+
+		final Label nodeNameLabel = new Label(composite, SWT.NONE);
+		nodeNameLabel.setText("Node name");
+
+		backendName = new Text(composite, SWT.BORDER);
+		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		backendName.setLayoutData(gd_backendName);
+		backendName.setText(prefs.getBackendName());
+		new Label(composite, SWT.NONE);
+
+		final Label nodeCookieLabel = new Label(composite, SWT.NONE);
+		nodeCookieLabel.setText("Node cookie");
+
+		backendCookie = new Text(composite, SWT.BORDER);
+		final GridData gd_backendCookie = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		backendCookie.setLayoutData(gd_backendCookie);
+		backendCookie.setText(prefs.getBackendCookie());
+		new Label(composite, SWT.NONE);
 
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
 		discoverBtn.setText("Discover paths...");
@@ -211,6 +259,61 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 	public ErlangProjectProperties getPrefs() {
 		return prefs;
+	}
+
+	private void createExternalModuleEditor(final Composite parent) {
+		Composite composite = parent;
+		// Composite composite = new Composite(parent, SWT.NONE);
+		// GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		// composite.setLayoutData(gd);
+		// GridLayout layout = new GridLayout(2, false);
+		// composite.setLayout(layout);
+
+		String resourceString4 = "External Modules File";
+		new Label(composite, SWT.NONE).setText(resourceString4 + ":");
+		externalModules = new Text(composite, SWT.BORDER);
+		externalModules.setToolTipText("enter a list of folders");
+		// gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		// externalModules.setLayoutData(gd);
+		externalModules.setText(prefs.getExternalModules());
+		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gd.minimumWidth = 50;
+		gd.widthHint = 384;
+		externalModules.setLayoutData(gd);
+		externalModules.addListener(SWT.Modify, nameModifyListener);
+		externalModulesBrowse = new Button(composite, SWT.BORDER);
+		externalModulesBrowse.setText("Browse...");
+		// externalModulesBrowse.setLayoutData(new GridData());
+		// externalModulesBrowse.setFont(font);
+		externalModulesBrowse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent evt) {
+				handleExternalModulesBrowseSelected();
+			}
+
+		});
+	}
+
+	protected void handleExternalModulesBrowseSelected() {
+		String last = externalModules.getText();
+		// if (last.length() == 0) {
+		// last =
+		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		// }
+		if (last == null) {
+			last = ""; //$NON-NLS-1$
+		} else {
+			last = last.trim();
+		}
+		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+		dialog.setText("Select file with external modules");
+		dialog.setFileName(last);
+		dialog.setFilterExtensions(new String[] { "*.erlidex" });
+		String result = dialog.open();
+		if (result == null) {
+			return;
+		}
+		externalModules.setText(result);
 	}
 
 }

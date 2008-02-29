@@ -149,7 +149,7 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final String prjLabel = prefs.getBackendNodeName();
+		final String prjLabel = prefs.getBackendName();
 		if (prjLabel.length() == 0) {
 			// we use the ide backend in this case
 			return DEFAULT_BACKEND_LABEL;

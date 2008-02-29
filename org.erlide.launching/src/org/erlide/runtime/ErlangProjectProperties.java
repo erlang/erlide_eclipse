@@ -33,20 +33,14 @@ public class ErlangProjectProperties {
 	private IProject project;
 
 	private boolean fOtpProjectStructure = IPrefConstants.DEFAULT_OTP_PROJECT_STRUCTURE;
-
 	private String fSourceDirs = IPrefConstants.DEFAULT_SOURCE_DIRS;
-
 	private String fIncludeDirs = IPrefConstants.DEFAULT_INCLUDE_DIRS;
-
 	private String fOutputDir = IPrefConstants.DEFAULT_OUTPUT_DIR;
-
 	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
-
-	private String fBackendNodeName = IPrefConstants.DEFAULT_BACKEND_NODE_NAME;
-
 	private String fUsePathZ = IPrefConstants.DEFAULT_USE_PATHZ;
-
 	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
+	private String fBackendName = IPrefConstants.DEFAULT_BACKEND_NAME;;
+	private String fBackendCookie = IPrefConstants.DEFAULT_BACKEND_COOKIE;
 
 	private List<IPropertyChangeListener> fListeners;
 
@@ -96,9 +90,11 @@ public class ErlangProjectProperties {
 		fExternalIncludes = prefs.getProperty(
 				IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 				IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-		fBackendNodeName = prefs.getProperty(
-				IPrefConstants.PROJECT_BACKEND_NODE_NAME,
-				IPrefConstants.DEFAULT_BACKEND_NODE_NAME);
+		fBackendName = prefs.getProperty(IPrefConstants.PROJECT_BACKEND_NAME,
+				IPrefConstants.DEFAULT_BACKEND_NAME);
+		fBackendCookie = prefs.getProperty(
+				IPrefConstants.PROJECT_BACKEND_COOKIE,
+				IPrefConstants.DEFAULT_BACKEND_COOKIE);
 		fExternalModules = prefs.getProperty(
 				IPrefConstants.PROJECT_EXTERNAL_MODULES,
 				IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -120,7 +116,8 @@ public class ErlangProjectProperties {
 		prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
 		prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 		prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
-		prefs.put(IPrefConstants.PROJECT_BACKEND_NODE_NAME, fBackendNodeName);
+		prefs.put(IPrefConstants.PROJECT_BACKEND_NAME, fBackendName);
+		prefs.put(IPrefConstants.PROJECT_BACKEND_COOKIE, fBackendCookie);
 		prefs.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
@@ -232,7 +229,8 @@ public class ErlangProjectProperties {
 		fSourceDirs = bprefs.fSourceDirs;
 		fOutputDir = bprefs.fOutputDir;
 		fOtpProjectStructure = bprefs.fOtpProjectStructure;
-		fBackendNodeName = bprefs.fBackendNodeName;
+		fBackendName = bprefs.fBackendName;
+		fBackendCookie = bprefs.fBackendCookie;
 	}
 
 	public static String pack(String[] strs) {
@@ -287,12 +285,9 @@ public class ErlangProjectProperties {
 		// }
 	}
 
-	public String getBackendNodeName() {
-		return fBackendNodeName;
-	}
-
-	public void setBackendNodeName(String backendNodeName) {
-		fBackendNodeName = backendNodeName;
+	public void setBackendName(String backendName) {
+		// TODO validate!
+		fBackendName = backendName;
 	}
 
 	public void setExternalModules(String fExternalModules) {
@@ -301,6 +296,18 @@ public class ErlangProjectProperties {
 
 	public String getExternalModules() {
 		return fExternalModules;
+	}
+
+	public String getBackendName() {
+		return this.fBackendName;
+	}
+
+	public String getBackendCookie() {
+		return this.fBackendCookie;
+	}
+
+	public void setBackendCookie(String text) {
+		fBackendCookie = text;
 	}
 
 }
