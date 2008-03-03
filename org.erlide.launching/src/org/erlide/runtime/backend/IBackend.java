@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.runtime.backend.console.BackendShellManager;
+import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -25,11 +25,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IBackend {
-
-	/**
-	 * Method dispose
-	 */
-	void dispose();
 
 	/**
 	 * @throws ErlangRpcException
@@ -142,7 +137,7 @@ public interface IBackend {
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
-	BackendShellManager getShellManager();
+	IShellManager getShellManager();
 
 	void sendToDefaultShell(String msg) throws IOException;
 

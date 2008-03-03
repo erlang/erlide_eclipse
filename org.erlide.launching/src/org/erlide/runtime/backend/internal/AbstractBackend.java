@@ -24,6 +24,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErlRpcDaemon;
@@ -32,6 +33,7 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
+import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -51,7 +53,7 @@ import erlang.ErlideBackend;
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public abstract class AbstractBackend implements IBackend {
+public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = false;
@@ -98,7 +100,7 @@ public abstract class AbstractBackend implements IBackend {
 
 	protected OtpPeer fPeer;
 
-	protected BackendShellManager fShellManager;
+	protected IShellManager fShellManager;
 
 	private ErlRpcDaemon fRpcDaemon;
 
@@ -169,7 +171,9 @@ public abstract class AbstractBackend implements IBackend {
 			fNode.close();
 		}
 
-		fShellManager.dispose();
+		if (fShellManager instanceof IDisposable) {
+			((IDisposable) fShellManager).dispose();
+		}
 		fRpcDaemon.stop();
 	}
 
@@ -487,7 +491,7 @@ public abstract class AbstractBackend implements IBackend {
 		return ErlideBackend.execute(this, fun, args);
 	}
 
-	public BackendShellManager getShellManager() {
+	public IShellManager getShellManager() {
 		return fShellManager;
 	}
 

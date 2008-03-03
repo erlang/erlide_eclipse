@@ -60,6 +60,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public static final String JAVA_NODE_LABEL = "jerlide";
 
+	// TODO this smells bad!
 	private static String fUniqueId;
 
 	private BackendManager() {
