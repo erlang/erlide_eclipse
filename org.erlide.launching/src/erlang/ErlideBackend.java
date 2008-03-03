@@ -21,9 +21,21 @@ public class ErlideBackend {
 
 	private static final String ERL_BACKEND = "erlide_backend";
 
+	public static void init(IBackend ideBackend) {
+		init(ideBackend, ideBackend.getName());
+	}
+
+	public static void init(IBackend backend, String node) {
+		try {
+			backend.rpc(ERL_BACKEND, "init", "a", node);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static OtpErlangObject execute(IBackend backend, String fun,
 			OtpErlangObject... args) throws ErlangRpcException, RpcException {
-		return backend.rpc("erlide_backend", "execute", "sx", fun,
+		return backend.rpc(ERL_BACKEND, "execute", "sx", fun,
 				new OtpErlangList(args)).getValue();
 	}
 
@@ -112,7 +124,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx("erlide_backend", "parse_string", "s", string);
+			r1 = b.rpcx(ERL_BACKEND, "parse_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -130,7 +142,7 @@ public class ErlideBackend {
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = b.rpcx("erlide_backend", "pretty_print", "s", text + ".");
+			r1 = b.rpcx(ERL_BACKEND, "pretty_print", "s", text + ".");
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + text
 					+ "\": " + e.getMessage());
@@ -171,18 +183,10 @@ public class ErlideBackend {
 
 	public static void generateRpcStub(IBackend b, String s) {
 		try {
-			RpcResult r = b.rpc("erlide_backend", "compile_string", "s", s);
+			RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 			if (!r.isOk()) {
 				ErlLogger.debug("rpcstub::" + r.toString());
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void init(IBackend backend, String node) {
-		try {
-			backend.rpc("erlide_backend", "init", "a", node);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -289,23 +293,5 @@ public class ErlideBackend {
 		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;
 	}
-
-	public static void init(IBackend ideBackend) {
-		init(ideBackend, ideBackend.getName());
-	}
-
-	// public static OtpErlangObject parseTerm(IBackend b, String string)
-	// throws ErlangParseException {
-	// OtpErlangObject r = null;
-	// try {
-	// r = b.rpcx("erlide_backend", "parse_term", "s", string);
-	// ErlLogger.debug("PARSE=" + r);
-	// } catch (final Exception e) {
-	// e.printStackTrace();
-	// throw new ErlangParseException("Could not parse term \"" + string
-	// + "\"");
-	// }
-	// return r;
-	// }
 
 }

@@ -302,27 +302,27 @@ public final class BackendManager implements IResourceChangeListener {
 		return label;
 	}
 
-	private boolean isExtErlideLabel(String label) {
-		final String[] parts = label.split("_");
-		if (parts.length != 2) {
-			return false;
-		}
-
-		if (JAVA_NODE_LABEL.equals(parts[0])) {
-			return false;
-		}
-		try {
-			/* final long n = */Long.parseLong(parts[1], 16);
-
-			synchronized (fProjectBackendsLock) {
-				final IBackend bl = fProjectBackends.get(parts[0]);
-				return bl == null || !bl.getLabel().equals(label);
-			}
-
-		} catch (final Exception e) {
-			return false;
-		}
-	}
+	// private boolean isExtErlideLabel(String label) {
+	// final String[] parts = label.split("_");
+	// if (parts.length != 2) {
+	// return false;
+	// }
+	//
+	// if (JAVA_NODE_LABEL.equals(parts[0])) {
+	// return false;
+	// }
+	// try {
+	// /* final long n = */Long.parseLong(parts[1], 16);
+	//
+	// synchronized (fProjectBackendsLock) {
+	// final IBackend bl = fProjectBackends.get(parts[0]);
+	// return bl == null || !bl.getLabel().equals(label);
+	// }
+	//
+	// } catch (final Exception e) {
+	// return false;
+	// }
+	// }
 
 	public static String getHost() {
 		String host;
