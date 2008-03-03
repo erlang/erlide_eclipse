@@ -31,6 +31,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
@@ -43,7 +44,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class ErlideUIPlugin extends AbstractUIPlugin {
+public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 	/**
 	 * The plugin id
@@ -104,8 +105,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		RpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
-		BackendManager.getDefault().addPlugin(ErlangPlugin.getDefault());
-		BackendManager.getDefault().addPlugin(this);
+		BackendManager.getDefault().register(ErlangPlugin.getDefault());
+		BackendManager.getDefault().register(this);
 
 		new InitializeAfterLoadJob().schedule();
 
@@ -352,6 +353,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}
+	}
+
+	public void start() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

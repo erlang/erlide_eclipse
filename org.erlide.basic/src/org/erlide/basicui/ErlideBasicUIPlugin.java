@@ -272,6 +272,7 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 		fLaunchBundle = b;
 	}
 
+	// TODO can't we restart the backend another way?
 	public void restartBundle() {
 		if (fLaunchBundle != null) {
 			try {

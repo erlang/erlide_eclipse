@@ -39,6 +39,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.osgi.framework.BundleContext;
@@ -50,7 +51,7 @@ import org.osgi.framework.BundleContext;
  * @author Eric Merritt [cyberlync at gmail dot com]
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public class ErlangPlugin extends Plugin {
+public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 	/**
 	 * The plugin id
@@ -674,7 +675,7 @@ public class ErlangPlugin extends Plugin {
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 
-		BackendManager.getDefault().addPlugin(this);
+		BackendManager.getDefault().register(this);
 
 		registerOpenProjects();
 
@@ -838,6 +839,11 @@ public class ErlangPlugin extends Plugin {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}
+	}
+
+	public void start() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -49,7 +49,7 @@
          <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  specify the relaive path inside the plugin&apos;s bundle of the directory containing .beam files
+                  specify the relative path inside the plugin&apos;s bundle of the directory containing .beam files
                </documentation>
             </annotation>
          </attribute>

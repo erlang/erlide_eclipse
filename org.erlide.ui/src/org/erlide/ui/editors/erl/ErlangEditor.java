@@ -218,9 +218,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 		super.handlePreferenceStoreChanged(event);
-		ErlLogger.debug("prefs changed");
 		final String name = event.getProperty();
 		if (name.startsWith(PreferenceConstants.EDITOR_PREFIX)) {
+			ErlLogger.debug("prefs changed");
 			final RGB rgb = getRGB(event.getNewValue());
 
 			if (null != rgb) {

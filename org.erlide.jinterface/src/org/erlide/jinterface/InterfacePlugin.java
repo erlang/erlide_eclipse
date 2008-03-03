@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class InterfacePlugin extends Plugin {
+public class InterfacePlugin extends Plugin implements ICodeBundle {
 
 	public static final String PLUGIN_ID = "org.erlide.jinterface";
 
@@ -84,5 +84,10 @@ public class InterfacePlugin extends Plugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+
+	public void start() {
+		// TODO Auto-generated method stub
+
 	}
 }

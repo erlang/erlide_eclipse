@@ -24,9 +24,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendUtil;
@@ -36,7 +36,7 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-import erlang.Code;
+import erlang.ErlangCode;
 import erlang.ErlideBackend;
 
 public class CodeManager implements ICodeManager, IRegistryChangeListener {
@@ -47,14 +47,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	private final List<PathItem> pathZ;
 
-	private final List<Plugin> plugins;
+	private final List<ICodeBundle> plugins;
 
 	// only to be called by AbstractBackend
 	CodeManager(IBackend backend) {
 		fBackend = backend;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
-		plugins = new ArrayList<Plugin>(10);
+		plugins = new ArrayList<ICodeBundle>(10);
 	}
 
 	private PathItem findItem(List<PathItem> l, String p) {
@@ -73,7 +73,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void addPathA(String path) {
 		if (addPath(pathA, path)) {
-			Code.addPathA(fBackend, path);
+			ErlangCode.addPathA(fBackend, path);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void addPathZ(String path) {
 		if (addPath(pathZ, path)) {
-			Code.addPathZ(fBackend, path);
+			ErlangCode.addPathZ(fBackend, path);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
-			Code.removePathA(fBackend, path);
+			ErlangCode.removePathA(fBackend, path);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 */
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
-			Code.removePathZ(fBackend, path);
+			ErlangCode.removePathZ(fBackend, path);
 		}
 	}
 
@@ -255,7 +255,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadPluginCode(Plugin p) {
+	private void loadPluginCode(ICodeBundle p) {
 		if (fBackend instanceof StandaloneBackend) {
 			return;
 		}
@@ -323,25 +323,26 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#addPlugin(org.eclipse.core.runtime.Plugin)
+	 * @see org.erlide.runtime.backend.ICodeManager#register(ICodeBundle)
 	 */
-	public void addPlugin(Plugin p) {
+	public void register(ICodeBundle p) {
 		if (plugins.indexOf(p) < 0) {
 			plugins.add(p);
 			loadPluginCode(p);
+			p.start();
 		}
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#removePlugin(org.eclipse.core.runtime.Plugin)
+	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
 	 */
-	public void removePlugin(Plugin p) {
+	public void unregister(ICodeBundle p) {
 		plugins.remove(p);
 		unloadPluginCode(p);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void unloadPluginCode(Plugin p) {
+	private void unloadPluginCode(ICodeBundle p) {
 		if (fBackend instanceof StandaloneBackend) {
 			return;
 		}
@@ -371,7 +372,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	private void unloadBeam(String moduleName) {
-		Code.delete(fBackend, moduleName);
+		ErlangCode.delete(fBackend, moduleName);
 	}
 
 	private static class PathItem {

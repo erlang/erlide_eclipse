@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.osgi.framework.BundleContext;
@@ -27,7 +28,7 @@ import erlang.ErlideBackend;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class ErlangLaunchPlugin extends Plugin {
+public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 
 	public static final String PLUGIN_ID = "org.erlide.launching";
 
@@ -65,8 +66,8 @@ public class ErlangLaunchPlugin extends Plugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 
-		BackendManager.getDefault().addPlugin(InterfacePlugin.getDefault());
-		BackendManager.getDefault().addPlugin(this);
+		BackendManager.getDefault().register(InterfacePlugin.getDefault());
+		BackendManager.getDefault().register(this);
 
 		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
 		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
@@ -155,6 +156,10 @@ public class ErlangLaunchPlugin extends Plugin {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}
+	}
+
+	public void start() {
+		// ErlideBackend.init(ideBackend);
 	}
 
 }

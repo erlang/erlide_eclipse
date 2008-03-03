@@ -11,7 +11,8 @@ package org.erlide.runtime.backend;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.Plugin;
+import org.erlide.jinterface.ICodeBundle;
+
 
 public interface ICodeManager {
 
@@ -19,9 +20,9 @@ public interface ICodeManager {
 
 	List<String> getPathZ();
 
-	void addPlugin(Plugin p);
+	void register(ICodeBundle p);
 
-	void removePlugin(Plugin p);
+	void unregister(ICodeBundle p);
 
 	void addPath(boolean usePathZ, String path);
 

@@ -62,7 +62,7 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.Code;
+import erlang.ErlangCode;
 import erlang.ErlideBuilder;
 
 /**
@@ -648,7 +648,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		if (b == null)
 			return;
 		try {
-			final RpcResult result = Code.loadBinary(b, beamf, code);
+			final RpcResult result = ErlangCode.loadBinary(b, beamf, code);
 			ErlLogger.debug("  $ distribute " + beamf + " to " + b.getLabel()
 					+ "  - " + result.getValue());
 		} catch (final Exception e) {

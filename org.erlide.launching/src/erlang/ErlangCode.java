@@ -9,7 +9,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-public class Code {
+public class ErlangCode {
 
 	public static void addPathA(IBackend fBackend, String path) {
 		try {

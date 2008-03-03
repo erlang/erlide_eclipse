@@ -23,12 +23,12 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
@@ -50,7 +50,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	protected List<IBackendListener> fListeners;
 
-	private final List<Plugin> fPlugins;
+	private final List<ICodeBundle> fPlugins;
 
 	private static final int ADDED = 1;
 
@@ -70,7 +70,7 @@ public final class BackendManager implements IResourceChangeListener {
 		fRemoteBackend = null;
 		fProjectBackends = new HashMap<String, IBackend>(5);
 		fListeners = new ArrayList<IBackendListener>(5);
-		fPlugins = new ArrayList<Plugin>(5);
+		fPlugins = new ArrayList<ICodeBundle>(5);
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				this,
@@ -96,8 +96,8 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (final Plugin element : fPlugins) {
-			b.getCodeManager().addPlugin(element);
+		for (final ICodeBundle element : fPlugins) {
+			b.getCodeManager().register(element);
 		}
 
 		b.init_erlang();
@@ -118,8 +118,8 @@ public final class BackendManager implements IResourceChangeListener {
 			launch.addDebugTarget(target);
 		}
 
-		for (final Plugin element : fPlugins) {
-			b.getCodeManager().addPlugin(element);
+		for (final ICodeBundle element : fPlugins) {
+			b.getCodeManager().register(element);
 		}
 		return b;
 	}
@@ -257,24 +257,24 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public void addPlugin(final Plugin p) {
+	public void register(final ICodeBundle p) {
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
-			getIdeBackend().getCodeManager().addPlugin(p);
+			getIdeBackend().getCodeManager().register(p);
 			forEachProjectBackend(new IBackendVisitor() {
 				public void run(IBackend b) {
-					b.getCodeManager().addPlugin(p);
+					b.getCodeManager().register(p);
 				}
 			});
 		}
 	}
 
-	public void removePlugin(final Plugin p) {
+	public void removePlugin(final ICodeBundle p) {
 		fPlugins.remove(p);
-		getIdeBackend().getCodeManager().removePlugin(p);
+		getIdeBackend().getCodeManager().unregister(p);
 		forEachProjectBackend(new IBackendVisitor() {
 			public void run(IBackend b) {
-				b.getCodeManager().removePlugin(p);
+				b.getCodeManager().unregister(p);
 			}
 		});
 	}
