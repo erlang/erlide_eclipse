@@ -142,9 +142,6 @@ public interface IBackend {
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
-	OtpErlangObject execute(String fun, OtpErlangObject... args)
-			throws Exception;
-
 	BackendShellManager getShellManager();
 
 	void sendToDefaultShell(String msg) throws IOException;
