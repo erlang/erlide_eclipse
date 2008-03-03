@@ -128,6 +128,9 @@ public final class BackendManager implements IResourceChangeListener {
 		synchronized (fProjectBackendsLock) {
 
 			final String name = getBackendName(project);
+			if (name.equals(DEFAULT_BACKEND_LABEL)) {
+				return fLocalBackend;
+			}
 			IBackend b = fProjectBackends.get(name);
 			if (b != null && !b.ping()) {
 				fProjectBackends.remove(name);
