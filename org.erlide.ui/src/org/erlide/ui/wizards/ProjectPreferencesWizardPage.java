@@ -41,13 +41,13 @@ import org.erlide.ui.ErlideUIPlugin;
  */
 public class ProjectPreferencesWizardPage extends WizardPage {
 
-	private Text output;
-	private Text source;
-	private Text include;
-	private Text backendCookie;
-	private Text backendName;
+	Text output;
+	Text source;
+	Text include;
+	Text backendCookie;
+	Text backendName;
 	private Button uz;
-	private Text externalModules;
+	Text externalModules;
 	private Button externalModulesBrowse;
 
 	ErlangProjectProperties prefs;
@@ -252,6 +252,9 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setOutputDir(output.getText());
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
+			prefs.setBackendName(backendName.getText());
+			prefs.setBackendCookie(backendCookie.getText());
+			prefs.setExternalModules(externalModules.getText());
 
 			setPageComplete(testPageComplete());
 		}
