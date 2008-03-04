@@ -3,6 +3,7 @@
 %%% File    : reshd.erl
 %%% Author  : Tomas Abrahamsson <tab@lysator.liu.se>
 %%% Created : 12 Apr 2001 by Tomas Abrahamsson <tab@lysator.liu.se>
+%%% Modified: by Vlad Dumitrescu, adapted to erlide
 %%%
 %%% COPYRIGHT
 %%%
@@ -10,7 +11,7 @@
 %%% anything you like with them, including modifying them and selling
 %%% the binaries without source for ridiculous amounts of money without
 %%% saying who made them originally.
-%%%
+%%% 
 %%% However, I would be happy if you release your works with complete
 %%% source for free use.
 %%%----------------------------------------------------------------------
@@ -22,7 +23,7 @@
 -export([stop/1, stop/2]).
 -export([build_regname/1, build_regname/2]).
 
-%% exports due to spawns
+%% exports due to spawns/rpcs
 -export([server_init/3]).
 -export([clienthandler_init/3]).
 
@@ -65,8 +66,8 @@ start(IP, PortNumber) ->
 %%   Portnumber = UsedPortNumber = integer(0..65535)
 %%   IP = any | {Byte,Byte,Byte,Byte}
 %%   Byte = integer(0..255)
-%%
-%% Stops the reshd server and any open connections associated to it.
+%% 
+%% Stops the reshd server and any open connections associated to it. 
 %% ----------------------------------------------------------------------
 stop(PortNumber) ->
     stop(any, PortNumber).
@@ -80,7 +81,7 @@ stop(IP, PortNumber) ->
 %%   Portnumber = UsedPortNumber = integer(0..65535)
 %%   IP = any | {Byte,Byte,Byte,Byte}
 %%   Byte = integer(0..255)
-%%
+%% 
 %% Build a name under which the reshd server may be registered.
 %% ----------------------------------------------------------------------
 build_regname(PortNumber) ->
@@ -91,10 +92,10 @@ build_regname(any, PortNumber) ->
     list_to_atom(Name);
 build_regname({IP1, IP2, IP3, IP4}, PortNumber) ->
     Name = atom_to_list(?MODULE) ++ "_" ++
-	list_to_integer(IP1) ++ "_" ++
-	list_to_integer(IP2) ++ "_" ++
-	list_to_integer(IP3) ++ "_" ++
-	list_to_integer(IP4) ++ "_" ++
+	integer_to_list(IP1) ++ "_" ++
+	integer_to_list(IP2) ++ "_" ++
+	integer_to_list(IP3) ++ "_" ++
+	integer_to_list(IP4) ++ "_" ++
 	"_" ++ integer_to_list(PortNumber),
     list_to_atom(Name);
 build_regname(HostNameOrIP, PortNumber) ->
@@ -110,7 +111,7 @@ build_regname(HostNameOrIP, PortNumber) ->
 %% ----------------------------------------------------------------------
 %% ----------------------------------------------------------------------
 server_start(IP, PortNumber) ->
-    Server = spawn(?MODULE, server_init, [self(), IP, PortNumber]),
+    Server = proc_lib:spawn(?MODULE, server_init, [self(), IP, PortNumber]),
     receive
 	{ok, UsedPortNumber} ->
 	    RegName = build_regname(IP, UsedPortNumber),
@@ -202,7 +203,7 @@ server_loop(From, ServerSocket, Clients) ->
 %% ----------------------------------------------------------------------
 %% ----------------------------------------------------------------------
 clienthandler_start(From, Server, ClientSocket) ->
-    spawn_link(?MODULE, clienthandler_init, [From, Server, ClientSocket]).
+    proc_lib:spawn_link(?MODULE, clienthandler_init, [From, Server, ClientSocket]).
 
 -record(io_request,
 	{
@@ -210,7 +211,7 @@ clienthandler_start(From, Server, ClientSocket) ->
 	  mod, fn, args,
 	  from, reply_as
 	 }).
-
+	  
 
 clienthandler_init(_From, Server, ClientSocket) ->
     %% Announce ourself as group leader.
@@ -225,20 +226,28 @@ clienthandler_init(_From, Server, ClientSocket) ->
     link(Reshd),
 
     %% Go ahead and take care of user input!
-    _R = (catch clienthandler_loop(idle, Reshd, Server, ClientSocket)),
-    exit(Reshd, kill).
+    case catch clienthandler_loop(idle, Reshd, Server, ClientSocket) of
+	{'EXIT', Reason} ->
+	    %% This is not a very good way of relaying a crash, but it
+	    %% is the best we know
+	    exit(Reshd, kill),
+	    exit(Reason);
+	_ ->
+	    exit(Reshd, kill)
+    end.
+    
 
 clienthandler_loop(State, Reshd, Server, ClientSocket) ->
     receive
 	{tcp, _Socket, Input} ->
 	    NativeInput = nl_network_to_native(Input),
-	    case handle_input(ClientSocket, State, NativeInput) of
-		{ok, NewState} ->
-		    clienthandler_loop(NewState, Reshd, Server, ClientSocket);
-		close ->
-		    gen_tcp:close(ClientSocket)
-	    end;
-
+               case handle_input(ClientSocket, State, NativeInput) of
+                   {ok, NewState} ->
+                       clienthandler_loop(NewState, Reshd, Server, ClientSocket);
+                   close ->
+                       gen_tcp:close(ClientSocket)
+                   end;
+        
 	{tcp_closed, _Socket} ->
 	    Server ! {client_stop, self()},
 	    done;
@@ -287,7 +296,7 @@ handle_input(ClientSocket, State, Input) ->
 			args = Args} = FirstReq,
 	    case catch apply(Mod, Fun, [Cont, Input|Args]) of
 		{more, NewCont} ->
-		    print_prompt(ClientSocket, Prompt),
+		    print_prompt(ClientSocket, Prompt, self()),
 		    {ok, {pending_request, NewCont, Requests}};
 		{done, Result, []} ->
 		    #io_request{from = From,
@@ -298,7 +307,7 @@ handle_input(ClientSocket, State, Input) ->
 			    {ok, idle};
 			_N ->
 			    [#io_request{prompt = NextPrompt}|_] = RestReqs,
-			    print_prompt(ClientSocket, NextPrompt),
+			    print_prompt(ClientSocket, NextPrompt, self()),
 			    InitCont = init_cont(),
 			    {ok, {pending_request, InitCont, RestReqs}}
 		    end;
@@ -321,25 +330,30 @@ handle_input(ClientSocket, State, Input) ->
 	    end
     end.
 
+
 %% Returns:
 %%   {ok, NewState} |
 %%   close
 handle_io_request(ClientSocket, State, From, ReplyAs, IoRequest) ->
-    case IoRequest of
+        case IoRequest of
 	{put_chars, Mod, Fun, Args} ->
 	    Text = case catch apply(Mod, Fun, Args) of
 		      {'EXIT', _Reason} -> "";
 		      Txt -> Txt
 		   end,
-	    NWText = nl_native_to_network(lists:flatten(Text)),
+            FlatText = string_flatten(Text),
+	    NWText = nl_native_to_network(FlatText),
 	    gen_tcp:send(ClientSocket, NWText),
-	    io_reply(From, ReplyAs, ok),
+            send_event(FlatText, From),
+            io_reply(From, ReplyAs, ok),
 	    {ok, State};
 
-	{put_chars, Text}  ->
-	    %%_NWText = nl_native_to_network(lists:flatten(Text)),
-	    gen_tcp:send(ClientSocket, Text),
-	    io_reply(From, ReplyAs, ok),
+	{put_chars, Text} ->
+            FlatText = string_flatten(Text),
+	    NWText = nl_native_to_network(FlatText),
+	    gen_tcp:send(ClientSocket, NWText),
+            send_event(FlatText, From),
+            io_reply(From, ReplyAs, ok),
 	    {ok, State};
 
 	{get_until, Prompt, Mod, Fun, Args} ->
@@ -355,7 +369,7 @@ handle_io_request(ClientSocket, State, From, ReplyAs, IoRequest) ->
 		    {ok, NewState};
 
 		idle ->
-		    print_prompt(ClientSocket, Prompt),
+		    print_prompt(ClientSocket, Prompt, From),
 		    InitContinuation = init_cont(),
 		    NewState = {pending_request, InitContinuation, [NewReq]},
 		    {ok, NewState};
@@ -366,39 +380,70 @@ handle_io_request(ClientSocket, State, From, ReplyAs, IoRequest) ->
 		    handle_input(ClientSocket, TmpState, Input)
 	    end;
 
+	{get_geometry, _} ->
+	    io_reply(From, ReplyAs, {error,enotsup}),
+	    {ok, State};
+
+	{requests, IoReqests} ->
+	    handle_io_requests(ClientSocket, State, From, ReplyAs, IoReqests);
+
 	UnexpectedIORequest ->
 	    loginfo("~p:handle_io_request: Unexpected IORequest:~p~n",
 		    [?MODULE, UnexpectedIORequest]),
 	    io_reply(From, ReplyAs, ok),
 	    {ok, State}
     end.
+    
+send_event(String, From) ->
+    %%erlide_log:log({String, group_leader(), From, erlang:now()}),
+    jrpc:event(io_server, {String, group_leader(), From, erlang:now()}).
+
+
+handle_io_requests(ClientSocket, State0, From, ReplyAs, [LastIoReq]) ->
+    handle_io_request(ClientSocket, State0, From, ReplyAs, LastIoReq);
+handle_io_requests(ClientSocket, State0, From, ReplyAs, [IoReq|Rest]) ->
+    case handle_io_request(ClientSocket, State0, none, ReplyAs, IoReq) of
+	{ok, State1} ->
+	    handle_io_requests(ClientSocket, State1, From, ReplyAs, Rest);
+	close ->
+	    close
+    end;
+handle_io_requests(_ClientSocket, State, _From, _ReplyAs, []) ->
+    {ok, State}.
 
 
 init_cont() ->
     [].
 
+io_reply(none, _ReplyAs, _Result) ->
+    ok;
 io_reply(From, ReplyAs, Result) ->
     From ! {io_reply, ReplyAs, Result}.
 
-print_prompt(ClientSocket, Prompt) ->
+print_prompt(ClientSocket, Prompt, From) ->
     PromptText = case Prompt of
-		     TxtAtom when atom(TxtAtom) ->
-			 io_lib:format('~s', [TxtAtom]);
-		     {IoFun, PromptFmtStr, PromptArgs} ->
-			 case catch io_lib:IoFun(PromptFmtStr, PromptArgs) of
-			     {'EXIT',_} -> "???";
-			     T -> T
-			 end;
-		     {IoFun, PromptFmtStr} ->
-			 case catch io_lib:IoFun(PromptFmtStr, []) of
-			     {'EXIT',_} -> "???";
-			     T -> T
-			 end;
-		     Term ->
-			 io_lib:write(Term)
-		 end,
-    NWPromptText = nl_native_to_network(lists:flatten(PromptText)),
-    gen_tcp:send(ClientSocket, NWPromptText).
+                  TxtAtom when atom(TxtAtom) ->
+                         io_lib:format('~s', [TxtAtom]);
+                   {IoFun, PromptFmtStr, PromptArgs} ->
+                         case catch io_lib:IoFun(PromptFmtStr, PromptArgs) of
+                             {'EXIT',Err} ->     
+                                                 "???";
+                             T ->
+                                 T
+                             end;
+                         {IoFun, PromptFmtStr} ->
+                             case catch io_lib:IoFun(PromptFmtStr, []) of
+                                 {'EXIT',_} -> "???";
+                                 T -> T
+                                 end;
+                             Term ->
+                                 io_lib:write(Term)
+                             end,
+                 FlatText = string_flatten(PromptText),
+                 NWPromptText = nl_native_to_network(FlatText),
+                 R=gen_tcp:send(ClientSocket, NWPromptText),  
+                 send_event(FlatText, From),
+                 R.
 
 %% Convert network newline (cr,lf) to native (\n)
 nl_network_to_native(Input) ->
@@ -412,7 +457,7 @@ nl_network_to_native([C | Rest], Acc) ->
 nl_network_to_native("", Acc) ->
     lists:reverse(Acc).
 
-
+				    
 
 %% Convert native newline \n to network (cr,lf)
 nl_native_to_network(Input) ->
@@ -434,7 +479,7 @@ loginfo(FmtStr, Args) ->
     %% FIXME: Invent a way to log info.
     %% Can't use the error_log module since someone may
     %% add a log handler that does io:format. Then there
-    %% will be a deadlock, I think, if this function
+    %% will be a deadlock, I think, if this is function
     %% is called from within code that handles the client.
     Txt = fmt(FmtStr, Args),
     error_logger:info_msg("~s", [Txt]),
@@ -448,9 +493,11 @@ logerror(FmtStr, Args) ->
 fmt(FmtStr, Args) ->
     case catch io_lib:format(FmtStr, Args) of
 	{'EXIT', _Reason} ->
-	    lists:flatten(io_lib:format("Badly formatted text: ~p, ~p~n",
+	    string_flatten(io_lib:format("Badly formatted text: ~p, ~p~n",
 					[FmtStr, Args]));
 	DeepText ->
-	    lists:flatten(DeepText)
+	    string_flatten(DeepText)
     end.
 
+string_flatten(IoList) ->
+    binary_to_list(list_to_binary([IoList])).

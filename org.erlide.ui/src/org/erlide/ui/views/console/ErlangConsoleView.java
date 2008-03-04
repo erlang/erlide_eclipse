@@ -322,7 +322,7 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	protected void sendInput() {
-		String s = consoleInput.getText() + "\n";
+		String s = consoleInput.getText();
 		input(s);
 		consoleInput.setText("");
 		consoleInput.setSelection(0);

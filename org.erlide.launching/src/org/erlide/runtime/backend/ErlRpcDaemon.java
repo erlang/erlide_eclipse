@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcHandler;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -87,6 +88,9 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	}
 
 	public void rpcEvent(String id, OtpErlangObject event) {
+		if ("log".equals(id)) {
+			ErlLogger.debug("%s: %s", id, event.toString());
+		}
 		List<IBackendEventListener> list = fBackend.getEventListeners(id);
 		if (list != null) {
 			for (IBackendEventListener client : list) {
@@ -96,8 +100,8 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	}
 
 	public void rpcReply(OtpErlangPid from, OtpErlangObject result) {
-		fBackend.send(from, new OtpErlangTuple(
-				new OtpErlangAtom("reply"), result));
+		fBackend.send(from, new OtpErlangTuple(new OtpErlangAtom("reply"),
+				result));
 	}
 
 	public void executeRpc(final Runnable runnable) {

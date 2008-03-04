@@ -72,7 +72,11 @@ public class IoRequest {
 			}
 
 			leader = (OtpErlangPid) obj.elementAt(1);
-			sender = (OtpErlangPid) obj.elementAt(2);
+			OtpErlangObject s = obj.elementAt(2);
+			if (s instanceof OtpErlangPid)
+				sender = (OtpErlangPid) s;
+			else
+				sender = new OtpErlangPid("s", 0, 0, 0);
 			tstamp = new Timestamp((OtpErlangTuple) obj.elementAt(3));
 		} catch (Exception e) {
 			message = null;

@@ -84,7 +84,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createManaged(String name, boolean debug) {
-		ErlLogger.debug("create managed backend " + name + ".");
+		ErlLogger.debug("create managed backend '" + name + "'.");
 
 		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);

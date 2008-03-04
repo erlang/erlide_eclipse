@@ -36,10 +36,6 @@ init(JavaNode) ->
         RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
         register(erlide_rex, RpcPid),
         
-        Pid = spawn(fun() -> io_event_loop() end),
-        erlide_io_server:start(),
-        erlide_io_server:add(Pid),
-        
         watch_eclipse(JavaNode)
         
     end),
