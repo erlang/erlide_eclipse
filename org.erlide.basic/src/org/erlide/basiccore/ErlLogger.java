@@ -26,11 +26,25 @@ public class ErlLogger {
 		minLevel = level;
 	}
 
+	public static Level levelFromName(String levelName) {
+		if ("info".equals(levelName)) {
+			return Level.INFO;
+		} else if ("debug".equals(levelName)) {
+			return Level.DEBUG;
+		} else if ("warn".equals(levelName)) {
+			return Level.WARN;
+		} else if ("error".equals(levelName)) {
+			return Level.ERROR;
+		} else {
+			return minLevel;
+		}
+	}
+
 	private static StackTraceElement getCaller() {
 		StackTraceElement[] st = null;
 		try {
 			throw new Exception("");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			st = e.getStackTrace();
 		}
 		StackTraceElement el = null;
@@ -45,12 +59,24 @@ public class ErlLogger {
 		if (kind.compareTo(minLevel) < 0) {
 			return;
 		}
-		StackTraceElement el = getCaller();
-		String str = String.format(fmt, o);
-		Date time = Calendar.getInstance().getTime();
-		String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		final StackTraceElement el = getCaller();
+		final String str = String.format(fmt, o);
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
 				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
+	}
+
+	public static void erlangLog(String module, int line, Level kind,
+			String fmt, Object... o) {
+		if (kind.compareTo(minLevel) < 0) {
+			return;
+		}
+		final String str = String.format(fmt, o);
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
+				+ module + ":" + line + ") : " + str);
 	}
 
 	public static void debug(String fmt, Object... o) {
@@ -68,4 +94,5 @@ public class ErlLogger {
 	public static void error(String fmt, Object... o) {
 		log(Level.ERROR, fmt, o);
 	}
+
 }
