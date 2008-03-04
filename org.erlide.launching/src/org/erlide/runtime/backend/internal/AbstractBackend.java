@@ -524,4 +524,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		return fNode.node();
 	}
 
+	public String getHost() {
+		// TODO fix Backend.getHost()
+		return "localhost";
+	}
+
 }

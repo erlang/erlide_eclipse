@@ -152,4 +152,6 @@ public interface IBackend {
 	List<IBackendEventListener> getEventListeners(String event);
 
 	String getName();
+
+	String getHost();
 }
