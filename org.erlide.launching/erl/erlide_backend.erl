@@ -85,15 +85,6 @@ eval_raw(Str, Bindings) ->
     {ok, Result} = erl_parse:parse_exprs(Tokens),
     erl_eval:exprs(Result, Bindings).
 
-
-
-io_event_loop() ->
-    receive
-    Msg ->
-        jrpc:event(io_server, Msg),
-        io_event_loop()
-    end.
-
 format(Fmt, Args) ->
     lists:flatten(io_lib:format(Fmt, Args)).
 

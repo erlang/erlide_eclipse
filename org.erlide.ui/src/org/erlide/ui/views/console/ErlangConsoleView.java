@@ -10,7 +10,6 @@ package org.erlide.ui.views.console;
  *     Vlad Dumitrescu
  *******************************************************************************/
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -378,19 +377,8 @@ public class ErlangConsoleView extends ViewPart implements
 	public void input(String data) {
 		data = data.trim();
 		fDoc.input(data + "\n");
+		fShell.send(data + "\n");
 		addToHistory(data);
-
-		final char[] strb = data.toCharArray();
-		final byte[] buff = new byte[data.length() + 1];
-		for (int i = 0; i < data.length(); i++) {
-			buff[i] = (byte) strb[i];
-		}
-		buff[data.length()] = '\n';
-		try {
-			fShell.getOutputStream().write(buff);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	void refreshView() {

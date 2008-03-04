@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.console;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
-import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.IBackend;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideReshd;
 
 public class BackendShell {
 
 	private final IBackend fBackend;
-
-	/* Not used */
-	// private String fId;
-	Socket fSocket = null;
+	private OtpErlangPid server;
 
 	@SuppressWarnings("boxing")
 	public BackendShell(IBackend backend, String id) {
@@ -34,49 +31,19 @@ public class BackendShell {
 		// fId = id;
 
 		try {
-			final int port = ErlideReshd.start(fBackend);
-			fSocket = new Socket(backend.getHost(), port);
+			server = ErlideReshd.start(fBackend);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void close() {
-		if (fSocket == null) {
-			return;
-		}
-		try {
-			fSocket.close();
-		} catch (final IOException e) {
-		}
+		fBackend.send(server, new OtpErlangAtom("stop"));
 	}
 
-	public OutputStream getOutputStream() {
-		if (fSocket == null) {
-			return null;
-		}
-		try {
-			return fSocket.getOutputStream();
-		} catch (final IOException e) {
-			return null;
-		}
-	}
-
-	public InputStream getInputStream() {
-		if (fSocket == null) {
-			return null;
-		}
-		try {
-			return fSocket.getInputStream();
-		} catch (final IOException e) {
-			return null;
-		}
-	}
-
-	public void setHandler(IStreamListener stdHandler) {
-		final OutputStreamMonitor m = new OutputStreamMonitor(getInputStream());
-		m.addListener(stdHandler);
-		m.startMonitoring();
+	public void send(String string) {
+		fBackend.send(server, new OtpErlangTuple(new OtpErlangObject[] {
+				new OtpErlangAtom("input"), new OtpErlangString(string) }));
 	}
 
 }

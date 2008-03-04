@@ -1,6 +1,7 @@
 package org.erlide.ui.views.console;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -40,13 +41,18 @@ public class ErlConsoleDocument {
 		}
 
 		// TODO use a configuration for this
+		// TODO maybe we should count text lines?
 		synchronized (requests) {
 			if (requests.size() > 5000) {
 				for (int i = 0; i < 1000; i++) {
 					requests.remove(0);
 				}
 			}
-			requests.add(req);
+			// insert at the proper place
+			int index = Collections.binarySearch(requests, req);
+			if (index < 0) {
+				requests.add(-index - 1, req);
+			}
 		}
 		return req.getLength();
 	}

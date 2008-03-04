@@ -17,19 +17,9 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class IoRequest {
+public class IoRequest implements Comparable<IoRequest> {
 
-	private OtpErlangPid leader;
-
-	private OtpErlangPid sender;
-
-	private String message;
-
-	private Timestamp tstamp;
-
-	private int start;
-
-	public static class Timestamp {
+	public static class Timestamp implements Comparable<Timestamp> {
 		public long megasecs;
 
 		public long secs;
@@ -52,7 +42,42 @@ public class IoRequest {
 		public String toString() {
 			return "{" + megasecs + "," + secs + "," + microsecs + "}";
 		}
+
+		public int compareTo(Timestamp ts) {
+			if (ts == null)
+				return -1;
+			if (ts.megasecs > megasecs) {
+				return -1;
+			} else if (ts.megasecs < megasecs) {
+				return 1;
+			} else {
+				if (ts.secs > secs) {
+					return -1;
+				} else if (ts.secs < secs) {
+					return 1;
+				} else {
+					if (ts.microsecs > microsecs) {
+						return -1;
+					} else if (ts.microsecs < microsecs) {
+						return 1;
+					} else {
+					}
+				}
+			}
+			return 0;
+		}
+
 	}
+
+	private OtpErlangPid leader;
+
+	private OtpErlangPid sender;
+
+	private String message;
+
+	private Timestamp tstamp;
+
+	private int start;
 
 	public IoRequest(OtpErlangTuple obj) {
 
@@ -138,6 +163,12 @@ public class IoRequest {
 
 	public int getLength() {
 		return message.length();
+	}
+
+	public int compareTo(IoRequest io) {
+		if (io == null)
+			return -1;
+		return tstamp.compareTo(io.getTstamp());
 	}
 
 }
