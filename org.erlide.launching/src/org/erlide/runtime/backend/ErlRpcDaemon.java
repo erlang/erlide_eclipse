@@ -15,8 +15,10 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
@@ -33,7 +35,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 
 		BackendManager.getDefault().addBackendListener(this);
 
-		Job handlerJob = new Job("Erlang RPC daemon") {
+		final Job handlerJob = new Job("Erlang RPC daemon") {
 			private List<OtpErlangObject> msgs = new ArrayList<OtpErlangObject>(
 					10);
 
@@ -90,10 +92,24 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	public void rpcEvent(String id, OtpErlangObject event) {
 		if ("log".equals(id)) {
 			ErlLogger.debug("%s: %s", id, event.toString());
+		} else if ("erlang_log".equals(id)) {
+			final OtpErlangTuple t = (OtpErlangTuple) event;
+			final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);
+			final OtpErlangLong line = (OtpErlangLong) t.elementAt(1);
+			final OtpErlangAtom level = (OtpErlangAtom) t.elementAt(2);
+			final OtpErlangObject logEvent = t.elementAt(3);
+			try {
+				ErlLogger.erlangLog(module.atomValue() + ".erl", line
+						.uIntValue(), ErlLogger
+						.levelFromName(level.atomValue()), "%s", logEvent
+						.toString());
+			} catch (final OtpErlangRangeException e) {
+				e.printStackTrace();
+			}
 		}
-		List<IBackendEventListener> list = fBackend.getEventListeners(id);
+		final List<IBackendEventListener> list = fBackend.getEventListeners(id);
 		if (list != null) {
-			for (IBackendEventListener client : list) {
+			for (final IBackendEventListener client : list) {
 				client.eventReceived(event);
 			}
 		}
@@ -105,7 +121,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	}
 
 	public void executeRpc(final Runnable runnable) {
-		Job job = new Job("rpc") {
+		final Job job = new Job("rpc") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				runnable.run();
