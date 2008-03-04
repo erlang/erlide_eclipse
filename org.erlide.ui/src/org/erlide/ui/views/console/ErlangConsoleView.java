@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -27,6 +28,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusAdapter;
@@ -198,23 +200,17 @@ public class ErlangConsoleView extends ViewPart implements
 		final TabItem plainTab = new TabItem(tabFolder, SWT.NONE);
 		plainTab.setText("Plain");
 
-		final Composite composite = new Composite(tabFolder, SWT.NONE);
+		final SashForm composite = new SashForm(tabFolder, SWT.VERTICAL);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 		plainTab.setControl(composite);
 
 		consoleText = new StyledText(composite, SWT.V_SCROLL | SWT.MULTI
 				| SWT.READ_ONLY | SWT.BORDER);
-		consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
-				| SWT.V_SCROLL);
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
-		GridData gd1 = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		int lh1 = consoleText.getLineHeight();
-		gd1.minimumHeight = lh1 * 6;
-		consoleText.setLayoutData(gd1);
 		consoleText.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -250,6 +246,8 @@ public class ErlangConsoleView extends ViewPart implements
 				consoleInput.setFocus();
 			}
 		});
+		consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL);
 
 		consoleInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -284,10 +282,8 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 		consoleInput.setFont(JFaceResources.getTextFont());
 		consoleInput.setWordWrap(true);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		int lh = consoleInput.getLineHeight();
-		gd.heightHint = lh * 4;
-		consoleInput.setLayoutData(gd);
+		composite.setWeights(new int[] { 200, 100 });
 
 		final TabItem tracerTab = new TabItem(tabFolder, SWT.NONE);
 		tracerTab.setText("Tracer");
@@ -302,6 +298,7 @@ public class ErlangConsoleView extends ViewPart implements
 		Table tbl = (Table) consoleTable.getControl();
 		tbl.setFont(JFaceResources.getTextFont());
 		tbl.setLinesVisible(true);
+		initializeToolBar();
 		// initializeToolBar();
 
 	}
@@ -312,8 +309,9 @@ public class ErlangConsoleView extends ViewPart implements
 					consoleInput.getText());
 			// TODO check if last expression is incomplete and keep it in the
 			// input field
-			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0)
+			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
+			}
 		} catch (BackendException e) {
 			return false;
 		}
@@ -542,6 +540,11 @@ public class ErlangConsoleView extends ViewPart implements
 				}
 			}
 		});
+	}
+
+	private void initializeToolBar() {
+		IToolBarManager toolBarManager = getViewSite().getActionBars()
+				.getToolBarManager();
 	}
 
 	// private void initializeToolBar() {
