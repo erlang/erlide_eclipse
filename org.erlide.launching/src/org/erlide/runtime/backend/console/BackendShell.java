@@ -35,8 +35,7 @@ public class BackendShell {
 
 		try {
 			final int port = ErlideReshd.start(fBackend);
-			// TODO use backend.getHost()
-			fSocket = new Socket("localhost", port);
+			fSocket = new Socket(backend.getHost(), port);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
