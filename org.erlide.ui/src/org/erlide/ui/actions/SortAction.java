@@ -12,6 +12,7 @@ package org.erlide.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -21,11 +22,13 @@ public class SortAction extends Action {
 
 	private boolean fSorted;
 
-	private StructuredViewer fViewer;
+	private final StructuredViewer fViewer;
 
-	private ViewerComparator fComparator;
+	private final ViewerComparator fComparator;
 
-	private ViewerComparator fDefaultComparator;
+	private final ViewerComparator fDefaultComparator;
+
+	private final IPreferenceStore fStore;
 
 	/**
 	 * @param viewer
@@ -36,8 +39,8 @@ public class SortAction extends Action {
 	 * @param useMiniImage
 	 */
 	public SortAction(StructuredViewer viewer, String tooltipText,
-			ViewerComparator sorter, ViewerComparator defaultSorter,
-			IPropertyChangeListener listener, boolean useMiniImage) {
+			ViewerComparator comparator, IPropertyChangeListener listener,
+			boolean useMiniImage, IPreferenceStore store) {
 
 		super(tooltipText, IAction.AS_CHECK_BOX);
 		// Set the tooltip
@@ -51,22 +54,23 @@ public class SortAction extends Action {
 			setImageDescriptor(ErlideUIPluginImages.DESC_ALPHAB_SORT);
 		}
 		// Set the default comparator
-		fDefaultComparator = defaultSorter;
+		fDefaultComparator = null;
 		// Set the viewer
 		fViewer = viewer;
+		// Set prefs store
+		fStore = store;
 		// Set the comparator
-		// If one was not specified, use the default
-		if (sorter == null) {
+		if (comparator == null) {
 			fComparator = new ViewerComparator();
 		} else {
-			fComparator = sorter;
+			fComparator = comparator;
 		}
 		// Determine if the viewer is already sorted
-		// Note: Most likely the default comparator is null
-		if (viewer.getComparator() == fDefaultComparator) {
-			fSorted = false;
+		fSorted = fStore != null && fStore.getBoolean("erlide.sortedOutline");
+		if (fSorted) {
+			viewer.setComparator(fComparator);
 		} else {
-			fSorted = true;
+			viewer.setComparator(fDefaultComparator);
 		}
 		// Set the status of this action depending on whether it is sorted or
 		// not
@@ -95,6 +99,9 @@ public class SortAction extends Action {
 			// Turn it on
 			fViewer.setComparator(fComparator);
 			fSorted = true;
+		}
+		if (fStore != null) {
+			fStore.setValue("erlide.sortedOutline", fSorted);
 		}
 	}
 

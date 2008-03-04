@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -52,6 +51,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.StringMatcher;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
+import org.erlide.ui.navigator.ErlElementSorter;
 
 /**
  * AbstractInfoPopupDialog
@@ -63,9 +63,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 
 	TreeViewer fTreeViewer;
 
-	private IOutlineContentCreator fOutlineContentCreator;
+	private final IOutlineContentCreator fOutlineContentCreator;
 
-	private IOutlineSelectionHandler fOutlineSelectionHandler;
+	private final IOutlineSelectionHandler fOutlineSelectionHandler;
 
 	private Text fFilterText;
 
@@ -79,9 +79,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 
 	private ILabelProvider fTreeLabelProvider;
 
-	private ViewerComparator fTreeViewerComparator;
-
-	private ViewerComparator fTreeViewerDefaultComparator;
+	// private ViewerComparator fTreeViewerComparator;
+	//
+	// private ViewerComparator fTreeViewerDefaultComparator;
 
 	public QuickOutlinePopupDialog(Shell parent, int shellStyle,
 			IOutlineContentCreator creator, IOutlineSelectionHandler handler) {
@@ -110,8 +110,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		fSortAction = null;
 		fTreeContentProvider = null;
 		fTreeLabelProvider = null;
-		fTreeViewerComparator = null;
-		fTreeViewerDefaultComparator = null;
+		// fTreeViewerComparator = null;
+		// fTreeViewerDefaultComparator = null;
 	}
 
 	/*
@@ -123,8 +123,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	protected Control createDialogArea(Composite parent) {
 		// Applies only to dialog body - not title. See createTitleControl
 		// Create an empty dialog area, if the source page is not defined
-		if ((fOutlineContentCreator == null)
-				|| (fOutlineSelectionHandler == null)) {
+		if (fOutlineContentCreator == null || fOutlineSelectionHandler == null) {
 			return super.createDialogArea(parent);
 		}
 		// Create the tree viewer
@@ -147,8 +146,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		fSortAction = new SortAction(
 				fTreeViewer,
 				ErlideUIMessages.PDEMultiPageContentOutline_SortingAction_tooltip,
-				fTreeViewerComparator, fTreeViewerDefaultComparator, null,
-				false);
+				new ErlElementSorter(), null, false, null);
 	}
 
 	/*
@@ -171,11 +169,11 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
 	private void createUIWidgetTreeViewer(Composite parent) {
 
-		int style = SWT.H_SCROLL | SWT.V_SCROLL;
+		final int style = SWT.H_SCROLL | SWT.V_SCROLL;
 		// Create the tree
-		Tree widget = new Tree(parent, style);
+		final Tree widget = new Tree(parent, style);
 		// Configure the layout
-		GridData data = new GridData(GridData.FILL_BOTH);
+		final GridData data = new GridData(GridData.FILL_BOTH);
 		data.heightHint = widget.getItemHeight() * 12;
 		widget.setLayoutData(data);
 		// Create the tree viewer
@@ -192,15 +190,15 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 				.createOutlineLabelProvider();
 		fTreeViewer.setLabelProvider(fTreeLabelProvider);
 		// Create the outline sorter (to be set on the sort action)
-		fTreeViewerComparator = fOutlineContentCreator
-				.createOutlineComparator();
+		// fTreeViewerComparator = fOutlineContentCreator
+		// .createOutlineComparator();
 		// Set the comparator to null (sort action will be disabled initially
 		// because of this)
 		// Create the default outline sorter (Most like this will just return
 		// null to indicate sorting disabled
-		fTreeViewerDefaultComparator = fOutlineContentCreator
-				.createDefaultOutlineComparator();
-		fTreeViewer.setComparator(fTreeViewerDefaultComparator);
+		// fTreeViewerDefaultComparator = fOutlineContentCreator
+		// .createDefaultOutlineComparator();
+		// fTreeViewer.setComparator(fTreeViewerDefaultComparator);
 		fTreeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
 		fTreeViewer.setUseHashlookup(true);
 		fTreeViewer.setInput(fOutlineContentCreator.getOutlineInput());
@@ -255,13 +253,13 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	void handleTreeViewerMouseUp(final Tree tree, MouseEvent e) {
 		// Ensure a selection was made, the first mouse button was
 		// used and the event happened in the tree
-		if ((tree.getSelectionCount() < 1) || (e.button != 1)
-				|| (tree.equals(e.getSource()) == false)) {
+		if (tree.getSelectionCount() < 1 || e.button != 1
+				|| tree.equals(e.getSource()) == false) {
 			return;
 		}
 		// Selection is made in the selection changed listener
-		Object object = tree.getItem(new Point(e.x, e.y));
-		TreeItem selection = tree.getSelection()[0];
+		final Object object = tree.getItem(new Point(e.x, e.y));
+		final TreeItem selection = tree.getSelection()[0];
 		if (selection.equals(object)) {
 			gotoSelectedElement();
 		}
@@ -404,7 +402,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		 * constrainShellSize in PopupDialog.open will still ensure that the
 		 * shell is entirely visible.
 		 */
-		if ((getPersistBounds() == false) || (getDialogSettings() == null)) {
+		if (getPersistBounds() == false || getDialogSettings() == null) {
 			getShell().setLocation(location);
 		}
 	}
@@ -448,7 +446,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @see org.eclipse.jface.text.IInformationControlExtension#hasContents()
 	 */
 	public boolean hasContents() {
-		if ((fTreeViewer == null) || (fTreeViewer.getInput() == null)) {
+		if (fTreeViewer == null || fTreeViewer.getInput() == null) {
 			return false;
 		}
 		return true;
@@ -503,12 +501,12 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		// Create the widget
 		fFilterText = new Text(parent, SWT.NONE);
 		// Set the font
-		GC gc = new GC(parent);
+		final GC gc = new GC(parent);
 		gc.setFont(parent.getFont());
-		FontMetrics fontMetrics = gc.getFontMetrics();
+		final FontMetrics fontMetrics = gc.getFontMetrics();
 		gc.dispose();
 		// Create the layout
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.heightHint = Dialog.convertHeightInCharsToPixels(fontMetrics, 1);
 		data.horizontalAlignment = GridData.FILL;
 		data.verticalAlignment = GridData.CENTER;
@@ -519,7 +517,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * 
 	 */
 	void gotoSelectedElement() {
-		Object selectedElement = getSelectedElement();
+		final Object selectedElement = getSelectedElement();
 		ErlLogger.debug("&&>> " + selectedElement);
 		if (selectedElement == null) {
 			return;
@@ -562,7 +560,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		fFilterText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String text = ((Text) e.widget).getText();
-				int length = text.length();
+				final int length = text.length();
 				if (length > 0) {
 					// Append a '*' pattern to the end of the text value if it
 					// does not have one already
@@ -625,8 +623,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * pattern.
 	 */
 	private void selectFirstMatch() {
-		Tree tree = fTreeViewer.getTree();
-		Object element = findFirstMatchToPattern(tree.getItems());
+		final Tree tree = fTreeViewer.getTree();
+		final Object element = findFirstMatchToPattern(tree.getItems());
 		if (element != null) {
 			fTreeViewer.setSelection(new StructuredSelection(element), true);
 		} else {
@@ -640,7 +638,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
 	private Object findFirstMatchToPattern(TreeItem[] items) {
 		// Match the string pattern against labels
-		ILabelProvider labelProvider = (ILabelProvider) fTreeViewer
+		final ILabelProvider labelProvider = (ILabelProvider) fTreeViewer
 				.getLabelProvider();
 		// Process each item in the tree
 		for (int i = 0; i < items.length; i++) {
@@ -651,7 +649,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 			}
 			// Return the element if it matches the pattern
 			if (element != null) {
-				String label = labelProvider.getText(element);
+				final String label = labelProvider.getText(element);
 				if (fStringMatcher.match(label)) {
 					return element;
 				}

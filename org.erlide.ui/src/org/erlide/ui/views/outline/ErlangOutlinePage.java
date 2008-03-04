@@ -17,11 +17,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Composite;
@@ -34,12 +32,14 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
@@ -207,26 +207,17 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
-	static class LexicalSortingAction extends SortAction {
-		public LexicalSortingAction(StructuredViewer viewer,
-				String tooltipText, ViewerComparator sorter,
-				ViewerComparator defaultSorter,
-				IPropertyChangeListener listener, boolean useMiniImage) {
-			super(viewer, tooltipText, sorter, defaultSorter, listener,
-					useMiniImage);
-		}
-	}
-
 	/**
 	 * @param actionBars
 	 */
 	private void registerToolbarActions(IActionBars actionBars) {
 		final IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		final ViewerComparator vc = new ErlElementSorter();
-		toolBarManager.add(new LexicalSortingAction(getTreeViewer(),
-				fToolTipText, vc, null, null, false));
+		toolBarManager.add(new SortAction(getTreeViewer(), fToolTipText, vc,
+				null, false, ErlideUIPlugin.getDefault().getPreferenceStore()));
 	}
 
 	public void sort(boolean sorting) {
+		ErlLogger.debug("sorting " + sorting);
 	}
 }
