@@ -24,8 +24,26 @@ public class ErlConsoleDocument {
 
 	public void input(String s) {
 		IoRequest req = new IoRequest(s);
+		req.setTstamp(new IoRequest.Timestamp());
+		insertSorted(req);
+	}
+
+	private void insertSorted(IoRequest req) {
 		synchronized (requests) {
-			requests.add(req);
+			int index = Collections.binarySearch(requests, req);
+			if (index < 0) {
+				int is = 0;
+				if ((-index - 1) <= 0)
+					is = 0;
+				else {
+					IoRequest r = requests.get(-index - 2);
+					is = r.getStart() + r.getLength();
+				}
+				req.setStart(is);
+				requests.add(-index - 1, req);
+			} else {
+				requests.add(index, req);
+			}
 		}
 	}
 
@@ -33,7 +51,6 @@ public class ErlConsoleDocument {
 		if (!(msg instanceof OtpErlangTuple))
 			return 0;
 		IoRequest req = new IoRequest((OtpErlangTuple) msg);
-		req.setStart(start);
 
 		// TODO this is to filter out process list events
 		if (req.getMessage() == null) {
@@ -48,12 +65,8 @@ public class ErlConsoleDocument {
 					requests.remove(0);
 				}
 			}
-			// insert at the proper place
-			int index = Collections.binarySearch(requests, req);
-			if (index < 0) {
-				requests.add(-index - 1, req);
-			}
 		}
+		insertSorted(req);
 		return req.getLength();
 	}
 

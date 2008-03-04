@@ -36,6 +36,12 @@ public class IoRequest implements Comparable<IoRequest> {
 		}
 
 		Timestamp() {
+			long ts = System.currentTimeMillis();
+			megasecs = ts / 1000000000;
+			ts = ts - megasecs * 1000000000;
+			secs = ts / 1000;
+			ts = ts - secs * 1000;
+			microsecs = ts * 1000;
 		}
 
 		@Override
