@@ -7,7 +7,8 @@
          get_doc_from_scan_tuples/4,
          get_doc_from_fun_arity_list/3,
          get_all_links_to_other/0,
-         get_exported/2]).
+         get_exported/2,
+         get_modules/2]).
 
 -include_lib("kernel/include/file.hrl").
 
@@ -29,6 +30,11 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
     	_ ->
             error
     end.
+
+get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
+    M = Modules++[atom_to_list(I) || {I, _} <- code:all_loaded()],
+	L = [I || I <- M, lists:prefix(Prefix, I)],
+    lists:usort(L).
 
 find_tags(L, Fun) ->
      lists:filter(Fun, L).        
