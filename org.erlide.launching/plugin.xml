@@ -11,10 +11,14 @@
             name="Erlang application"
             sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
-         <fileExtension
-               default="false"
-               extension="erl">
-         </fileExtension>
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.erlide.runtime.backend.ErlideNodeLaunchConfigurationDelegate"
+            id="org.erlide.core.launch.erlide"
+            modes="run"
+            name="erlide internal node"
+            sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
    <extension

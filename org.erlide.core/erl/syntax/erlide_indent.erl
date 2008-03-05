@@ -16,7 +16,7 @@
          indent_lines/2,
          indent_lines/3]).
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -29,6 +29,7 @@ indent_next_line(S) ->
 indent_next_line(S, Tablength) ->
     case erlide_scan:string(S) of
         {ok, T, _} ->
+            ?D(T),
             LineIndents = get_indents(S, Tablength),
             Tr = fix_scan_tuples(T),
             indent_after(Tr, LineIndents);
@@ -37,6 +38,8 @@ indent_next_line(S, Tablength) ->
     end.
 
 indent_lines(S, From) ->
+    ?D(S),
+    ?D(From),
     indent_lines(S, From, 8).
 
 indent_lines(S, From, Tablength) ->
@@ -355,6 +358,7 @@ skip_to_expr_start([{'}', _, _} | Before]) ->
 skip_to_expr_start([{']', _, _} | Before]) ->
     A = skip_paren(Before, '['),
     L = tail_if(A),
+    ?D(L),
     case erlide_text:is_op2(L) of
         true ->
             skip_to_expr_start(A);
