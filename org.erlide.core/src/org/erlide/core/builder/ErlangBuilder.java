@@ -454,7 +454,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					br.setDerived(true);
 				}
 
-				ErlLogger.debug("t = " + t);
+				// ErlLogger.debug("t = " + t);
 				// process compilation messages
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
 				addErrorMarkers(getMarkerGenerator(), resource, l);
