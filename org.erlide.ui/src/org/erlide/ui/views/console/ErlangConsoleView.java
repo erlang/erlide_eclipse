@@ -52,7 +52,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -66,7 +65,6 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
-import org.erlide.ui.prefs.PreferenceConstants;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -116,7 +114,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	BackendShell fShell;
 
-	private final List<String> history = new ArrayList<String>(10);
+	final List<String> history = new ArrayList<String>(10);
 
 	StyledText consoleInput;
 
@@ -250,39 +248,46 @@ public class ErlangConsoleView extends ViewPart implements
 				| SWT.V_SCROLL);
 
 		consoleInput.addKeyListener(new KeyAdapter() {
+			boolean historyMode = false;
+			int navIndex;
+			int lastPos = 0;
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == 13 && isInputComplete()) {
-					ErlangConsoleView.this.sendInput();
+				if (e.keyCode == 13 && isInputComplete(lastPos)) {
+					sendInput(lastPos);
 					e.doit = false;
-				} else if ((e.keyCode == SWT.ARROW_UP)
-						&& ((e.stateMask & SWT.CTRL) == SWT.CTRL)) {
-					ConsoleHistoryInformationControl info;
-					info = new ConsoleHistoryInformationControl(new Shell(),
-							SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI
-									| SWT.WRAP,
-							PreferenceConstants.EDITOR_TEXT_FONT, null,
-							ErlangConsoleView.this);
-					info.setForegroundColor(Display.getDefault()
-							.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-					info.setBackgroundColor(Display.getDefault()
-							.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-					info.setInput(ErlangConsoleView.this.getHistory());
-
-					final Point pt = consoleText.toDisplay(consoleText
-							.getLocation());
-					final Point s = consoleText.getSize();
-					info.setLocation(new Point(pt.x, pt.y));
-					info.setSize(s.x, s.y);
-					info.setVisible(true);
-					info.setFocus();
+				} else if ((e.keyCode == SWT.ARROW_UP) && historyMode) {
+					if (navIndex > 0)
+						navIndex--;
+					consoleInput.setText(history.get(navIndex));
+					consoleInput.setSelection(consoleInput.getText().length());
+				} else if ((e.keyCode == SWT.ARROW_DOWN) && historyMode) {
+					if (navIndex < history.size() - 1)
+						navIndex++;
+					else
+						navIndex = history.size() - 1;
+					consoleInput.setText(history.get(navIndex));
+					consoleInput.setSelection(consoleInput.getText().length());
+				} else if (e.keyCode == SWT.CTRL) {
+					historyMode = true;
+					navIndex = history.size();
 				}
+				lastPos = consoleInput.getSelection().x;
+				super.keyPressed(e);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.CTRL) {
+					historyMode = false;
+				}
+				super.keyReleased(e);
 			}
 
 		});
 		consoleInput.setFont(JFaceResources.getTextFont());
 		consoleInput.setWordWrap(true);
-		int lh = consoleInput.getLineHeight();
 		composite.setWeights(new int[] { 200, 100 });
 
 		final TabItem tracerTab = new TabItem(tabFolder, SWT.NONE);
@@ -303,12 +308,12 @@ public class ErlangConsoleView extends ViewPart implements
 
 	}
 
-	boolean isInputComplete() {
+	boolean isInputComplete(int lastPos) {
 		try {
-			OtpErlangObject o = ErlideBackend.parseString(fBackend,
-					consoleInput.getText());
-			// TODO check if last expression is incomplete and keep it in the
-			// input field
+			String str = consoleInput.getText();
+			str = str.substring(0, lastPos) + str.substring(lastPos + 1).trim()
+					+ "\n";
+			OtpErlangObject o = ErlideBackend.parseString(fBackend, str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
 			}
@@ -318,8 +323,9 @@ public class ErlangConsoleView extends ViewPart implements
 		return true;
 	}
 
-	protected void sendInput() {
+	protected void sendInput(int lastPos) {
 		String s = consoleInput.getText();
+		s = s.substring(0, lastPos) + s.substring(lastPos + 1).trim() + "\n";
 		input(s);
 		consoleInput.setText("");
 		consoleInput.setSelection(0);

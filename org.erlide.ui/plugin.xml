@@ -750,7 +750,7 @@
       <consolePatternMatchListener
             class="org.erlide.ui.ErlPatternMatchListenerDelegate"
             id="ErlPatternMatchListenerDelegate"
-            regex="[a-zA-Z0-9_]+\.erl:[0-9]+">
+            regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
          <enablement></enablement>
       </consolePatternMatchListener>
    </extension>
