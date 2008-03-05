@@ -4,32 +4,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.text.AbstractDocument;
+import org.eclipse.jface.text.DefaultLineTracker;
+import org.eclipse.jface.text.GapTextStore;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlConsoleDocument {
+//public class ErlConsoleDocument {
+public class ErlConsoleDocument extends AbstractDocument {
 
 	private final List<IoRequest> requests;
 
 	public ErlConsoleDocument() {
+		super();
 		requests = new ArrayList<IoRequest>(1000);
+		setLineTracker(new DefaultLineTracker());
+		setTextStore(new GapTextStore());
+		completeInitialization();
 	}
 
-	public List<IoRequest> getContent() {
+	public List<IoRequest> getContentList() {
 		synchronized (requests) {
 			return new ArrayList<IoRequest>(requests);
 		}
 	}
 
 	public void input(String s) {
-		IoRequest req = new IoRequest(s);
+		final IoRequest req = new IoRequest(s);
 		if (requests.size() > 0) {
-			IoRequest.Timestamp t = requests.get(requests.size() - 1)
+			final IoRequest.Timestamp t = requests.get(requests.size() - 1)
 					.getTstamp().next();
 			req.setTstamp(t);
-		} else
+		} else {
 			req.setTstamp(new IoRequest.Timestamp());
+		}
 		insertSorted(req);
 	}
 
@@ -39,10 +49,10 @@ public class ErlConsoleDocument {
 			if (index < 0) {
 				int is = 0;
 				index = -index - 1;
-				if ((index) <= 0)
+				if (index <= 0) {
 					is = 0;
-				else {
-					IoRequest r = requests.get(index - 1);
+				} else {
+					final IoRequest r = requests.get(index - 1);
 					is = r.getStart() + r.getLength();
 				}
 				req.setStart(is);
@@ -54,9 +64,10 @@ public class ErlConsoleDocument {
 	}
 
 	public int add(OtpErlangObject msg, int start) {
-		if (!(msg instanceof OtpErlangTuple))
+		if (!(msg instanceof OtpErlangTuple)) {
 			return 0;
-		IoRequest req = new IoRequest((OtpErlangTuple) msg);
+		}
+		final IoRequest req = new IoRequest((OtpErlangTuple) msg);
 
 		// TODO this is to filter out process list events
 		if (req.getMessage() == null) {
@@ -78,8 +89,8 @@ public class ErlConsoleDocument {
 
 	public IoRequest findAtPos(int pos) {
 		synchronized (requests) {
-			for (Object element : requests) {
-				IoRequest req = (IoRequest) element;
+			for (final Object element : requests) {
+				final IoRequest req = (IoRequest) element;
 				if (req.getStart() <= pos
 						&& req.getStart() + req.getLength() > pos) {
 					return req;
@@ -90,9 +101,9 @@ public class ErlConsoleDocument {
 	}
 
 	public List<IoRequest> getAllFrom(OtpErlangPid sender) {
-		List<IoRequest> result = new ArrayList<IoRequest>(10);
-		for (Object element0 : requests) {
-			IoRequest element = (IoRequest) element0;
+		final List<IoRequest> result = new ArrayList<IoRequest>(10);
+		for (final Object element0 : requests) {
+			final IoRequest element = (IoRequest) element0;
 			if (element.getSender().equals(sender)) {
 				result.add(element);
 			}
@@ -102,8 +113,8 @@ public class ErlConsoleDocument {
 
 	public void add(List<OtpErlangObject> msgs, int start) {
 		int ofs = start;
-		for (Object element0 : msgs) {
-			OtpErlangObject element = (OtpErlangObject) element0;
+		for (final Object element0 : msgs) {
+			final OtpErlangObject element = (OtpErlangObject) element0;
 			ofs += add(element, ofs);
 		}
 

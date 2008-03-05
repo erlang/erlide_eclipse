@@ -203,10 +203,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (getEditor() != null) {
 			final ContentAssistant asst = new ContentAssistant();
 
-			asst
-					.setContentAssistProcessor(new ErlContentAssistProcessor(
-							(ErlangEditor) getEditor()),
-							IDocument.DEFAULT_CONTENT_TYPE);
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(),
+					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);

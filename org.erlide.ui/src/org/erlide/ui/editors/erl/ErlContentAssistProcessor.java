@@ -21,15 +21,12 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -45,10 +42,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
-	private final ErlangEditor fEditor;
-
-	public ErlContentAssistProcessor(ErlangEditor editor) {
-		fEditor = editor;
+	public ErlContentAssistProcessor() {
 	}
 
 	private OtpErlangList getDocumentationFor(OtpErlangList list, String mod) {
@@ -74,22 +68,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			// final String indent = lastIndent(doc, offset);
 
 			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-			final IErlModule module = ErlModelUtils.getModule(fEditor
-					.getEditorInput());
-			if (module == null) {
-				return null;
-			}
 			final int k = prefix.indexOf(':');
-			final IErlProject project = ErlModelUtils.getErlProject(fEditor);
-			final IBackend b = BackendManager.getDefault().get(
-					project.getProject());
+			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			if (k >= 0) {
 				final String moduleName = prefix.substring(0, k);
 				externalCallCompletions(moduleName, offset, prefix
-						.substring(k + 1), result, k, b, project);
+						.substring(k + 1), result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			} else {
-				moduleCallCompletions(offset, prefix, result, k, b, project);
+				moduleCallCompletions(offset, prefix, result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			}
 		} catch (final Exception e) {
@@ -98,8 +85,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private void moduleCallCompletions(int offset, String prefix,
-			ArrayList<ICompletionProposal> result, int k, IBackend b,
-			IErlProject project) {
+			ArrayList<ICompletionProposal> result, int k, IBackend b) {
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
 		OtpErlangObject res = null;
@@ -126,9 +112,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private void externalCallCompletions(String moduleName, int offset,
 			String prefix, final ArrayList<ICompletionProposal> result,
-			final int k, IBackend b, IErlProject project)
-			throws ErlangRpcException, BackendException, RpcException,
-			OtpErlangRangeException {
+			final int k, IBackend b) throws ErlangRpcException,
+			BackendException, RpcException, OtpErlangRangeException {
 		// we have an external call
 		final OtpErlangObject res = ErlideDoc
 				.getExported(b, prefix, moduleName);
@@ -170,6 +155,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}
+			return doc.get(0, offset);
 		} catch (final BadLocationException e) {
 		}
 		return "";

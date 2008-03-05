@@ -19,8 +19,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.source.IAnnotationHover;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -52,12 +60,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
@@ -65,6 +75,9 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
+import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.ErlangAnnotationHover;
+import org.erlide.ui.editors.util.HTMLTextPresenter;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -118,13 +131,15 @@ public class ErlangConsoleView extends ViewPart implements
 
 	StyledText consoleInput;
 
+	SourceViewer consoleInputViewer;
+
 	public ErlangConsoleView() {
 		fDoc = new ErlConsoleDocument();
 		fBackend = BackendManager.getDefault().getIdeBackend();
 		fBackend.addEventListener("io_server", this);
 
 		try {
-			Job j = new Job("shell opener") {
+			final Job j = new Job("shell opener") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					fShell = fBackend.getShellManager().openShell("main");
@@ -212,15 +227,16 @@ public class ErlangConsoleView extends ViewPart implements
 			@Override
 			public void mouseDown(MouseEvent e) {
 				try {
-					int ofs = consoleText.getOffsetAtLocation(new Point(e.x,
-							e.y));
-					IoRequest req = fDoc.findAtPos(ofs);
+					final int ofs = consoleText.getOffsetAtLocation(new Point(
+							e.x, e.y));
+					final IoRequest req = fDoc.findAtPos(ofs);
 					clearMarks();
 					if (req.getSender() != null) {
-						List<IoRequest> reqs = fDoc.getAllFrom(req.getSender());
+						final List<IoRequest> reqs = fDoc.getAllFrom(req
+								.getSender());
 						markRequests(reqs);
 					}
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 				}
 			}
 		});
@@ -228,12 +244,12 @@ public class ErlangConsoleView extends ViewPart implements
 			@Override
 			public void mouseHover(MouseEvent e) {
 				try {
-					int ofs = consoleText.getOffsetAtLocation(new Point(e.x,
-							e.y));
-					IoRequest req = fDoc.findAtPos(ofs);
+					final int ofs = consoleText.getOffsetAtLocation(new Point(
+							e.x, e.y));
+					final IoRequest req = fDoc.findAtPos(ofs);
 					consoleText.setToolTipText("sent by "
 							+ ErlangProcess.toLocalPid(req.getSender()));
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 				}
 			}
 		});
@@ -243,9 +259,14 @@ public class ErlangConsoleView extends ViewPart implements
 				consoleInput.setFocus();
 			}
 		});
-		consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
-				| SWT.V_SCROLL);
+		// consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
+		// | SWT.V_SCROLL);
 
+		consoleInputViewer = new SourceViewer(composite, null, SWT.V_SCROLL);
+		consoleInputViewer.setDocument(fDoc);
+		consoleInput = (StyledText) consoleInputViewer.getControl();
+		consoleInputViewer
+				.configure(new ErlangConsoleSourceViewerConfiguration());
 		consoleInput.addKeyListener(new KeyAdapter() {
 			boolean historyMode = false;
 			int navIndex;
@@ -256,18 +277,20 @@ public class ErlangConsoleView extends ViewPart implements
 				if (e.keyCode == 13 && isInputComplete(lastPos)) {
 					sendInput(lastPos);
 					e.doit = false;
-				} else if ((e.keyCode == SWT.ARROW_UP) && historyMode) {
-					if (navIndex > 0)
+				} else if (e.keyCode == SWT.ARROW_UP && historyMode) {
+					if (navIndex > 0) {
 						navIndex--;
-					else
+					} else {
 						navIndex = history.size() - 1;
+					}
 					consoleInput.setText(history.get(navIndex));
 					consoleInput.setSelection(consoleInput.getText().length());
-				} else if ((e.keyCode == SWT.ARROW_DOWN) && historyMode) {
-					if (navIndex < history.size() - 1)
+				} else if (e.keyCode == SWT.ARROW_DOWN && historyMode) {
+					if (navIndex < history.size() - 1) {
 						navIndex++;
-					else
+					} else {
 						navIndex = 0;
+					}
 					consoleInput.setText(history.get(navIndex));
 					consoleInput.setSelection(consoleInput.getText().length());
 				} else if (e.keyCode == SWT.CTRL) {
@@ -301,7 +324,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleTable.setContentProvider(new IoRequestContentProvider());
 		consoleTable.setLabelProvider(new IoRequestLabelProvider());
 		consoleTable.setInput(fDoc);
-		Table tbl = (Table) consoleTable.getControl();
+		final Table tbl = (Table) consoleTable.getControl();
 		tbl.setFont(JFaceResources.getTextFont());
 		tbl.setLinesVisible(true);
 		initializeToolBar();
@@ -314,11 +337,11 @@ public class ErlangConsoleView extends ViewPart implements
 			String str = consoleInput.getText();
 			str = str.substring(0, lastPos) + str.substring(lastPos + 1).trim()
 					+ "\n";
-			OtpErlangObject o = ErlideBackend.parseString(fBackend, str);
+			final OtpErlangObject o = ErlideBackend.parseString(fBackend, str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
 			}
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			return false;
 		}
 		return true;
@@ -340,7 +363,7 @@ public class ErlangConsoleView extends ViewPart implements
 	private void updateConsoleView() {
 		consoleText.setRedraw(false);
 		consoleText.setText("");
-		for (IoRequest req : fDoc.getContent()) {
+		for (final IoRequest req : fDoc.getContentList()) {
 			consoleText.append(req.getMessage());
 			if (fColored) {
 				markRequest(req);
@@ -352,8 +375,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 	Color getColor(OtpErlangPid sender) {
 		int ix = 0;
-		for (Object element : pids) {
-			OtpErlangPid pid = (OtpErlangPid) element;
+		for (final Object element : pids) {
+			final OtpErlangPid pid = (OtpErlangPid) element;
 			if (pid.equals(sender)) {
 				break;
 			}
@@ -369,7 +392,7 @@ public class ErlangConsoleView extends ViewPart implements
 		item.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				if (event.detail == SWT.ARROW) {
-					Rectangle rect = item.getBounds();
+					final Rectangle rect = item.getBounds();
 					Point pt = new Point(rect.x, rect.y + rect.height);
 					pt = item.getParent().toDisplay(pt);
 					menu.setLocation(pt.x, pt.y);
@@ -393,7 +416,7 @@ public class ErlangConsoleView extends ViewPart implements
 		try {
 			updateConsoleView();
 			updateTableView();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -423,22 +446,22 @@ public class ErlangConsoleView extends ViewPart implements
 				return;
 			}
 
-			Table tbl = (Table) viewer.getControl();
+			final Table tbl = (Table) viewer.getControl();
 			tbl.setRedraw(false);
 			// TODO hmmm the flicker is still there....
 			try {
-				TableColumn[] cs = tbl.getColumns();
-				for (TableColumn cc : cs) {
+				final TableColumn[] cs = tbl.getColumns();
+				for (final TableColumn cc : cs) {
 					cc.dispose();
 				}
 
-				for (IoRequest req : fDoc.getContent()) {
-					OtpErlangPid pid = fGroupByLeader ? req.getLeader() : req
-							.getSender();
+				for (final IoRequest req : fDoc.getContentList()) {
+					final OtpErlangPid pid = fGroupByLeader ? req.getLeader()
+							: req.getSender();
 					pids.add(pid);
 				}
 
-				for (OtpErlangPid pid : pids) {
+				for (final OtpErlangPid pid : pids) {
 					TableColumn c;
 					c = new TableColumn(tbl, SWT.NONE);
 					c.setText(ErlangProcess.toLocalPid(pid));
@@ -452,7 +475,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return fDoc.getContent().toArray();
+			return fDoc.getContentList().toArray();
 		}
 	}
 
@@ -477,10 +500,10 @@ public class ErlangConsoleView extends ViewPart implements
 
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof IoRequest) {
-				IoRequest req = (IoRequest) element;
-				Table tbl = (Table) consoleTable.getControl();
-				TableColumn c = tbl.getColumn(columnIndex);
-				OtpErlangPid pid = fGroupByLeader ? req.getLeader() : req
+				final IoRequest req = (IoRequest) element;
+				final Table tbl = (Table) consoleTable.getControl();
+				final TableColumn c = tbl.getColumn(columnIndex);
+				final OtpErlangPid pid = fGroupByLeader ? req.getLeader() : req
 						.getSender();
 				if (c.getData().equals(pid)) {
 					return req.getMessage();
@@ -491,7 +514,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		public Color getBackground(Object element) {
-			IoRequest req = (IoRequest) element;
+			final IoRequest req = (IoRequest) element;
 			if (fColored) {
 				return getColor(fGroupByLeader ? req.getLeader() : req
 						.getSender());
@@ -507,14 +530,14 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	public void markRequests(List<IoRequest> reqs) {
-		for (Object element0 : reqs) {
-			IoRequest element = (IoRequest) element0;
+		for (final Object element0 : reqs) {
+			final IoRequest element = (IoRequest) element0;
 			markRequest(element);
 		}
 	}
 
 	public void markRequest(IoRequest req) {
-		StyleRange range = new StyleRange();
+		final StyleRange range = new StyleRange();
 		range.start = req.getStart();
 		range.length = req.getLength();
 		range.background = getColor(fGroupByLeader ? req.getLeader() : req
@@ -523,7 +546,7 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	public void clearMarks() {
-		StyleRange range = new StyleRange();
+		final StyleRange range = new StyleRange();
 		range.start = 0;
 		range.length = consoleText.getCharCount();
 		consoleText.setStyleRange(range);
@@ -550,8 +573,63 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	private void initializeToolBar() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
-				.getToolBarManager();
+		// IToolBarManager toolBarManager = getViewSite().getActionBars()
+		// .getToolBarManager();
+	}
+
+	final class ErlangConsoleSourceViewerConfiguration extends
+			TextSourceViewerConfiguration {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
+		 */
+		@Override
+		public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+
+			final ContentAssistant asst = new ContentAssistant();
+
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(),
+					IDocument.DEFAULT_CONTENT_TYPE);
+
+			asst.enableAutoActivation(true);
+			asst.setAutoActivationDelay(500);
+			asst.enableAutoInsert(true);
+			asst.enablePrefixCompletion(false);
+			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+
+			asst
+					.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+			asst
+					.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+			asst
+					.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+
+			return asst;
+		}
+
+		@Override
+		public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+			return new ErlangAnnotationHover();
+		}
+
+		/*
+		 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * @since 2.0
+		 */
+		@Override
+		public IInformationControlCreator getInformationControlCreator(
+				ISourceViewer sourceViewer) {
+			return new IInformationControlCreator() {
+
+				public IInformationControl createInformationControl(Shell parent) {
+					return new DefaultInformationControl(parent, SWT.NONE,
+							new HTMLTextPresenter(true));
+				}
+			};
+		}
+
 	}
 
 	// private void initializeToolBar() {
