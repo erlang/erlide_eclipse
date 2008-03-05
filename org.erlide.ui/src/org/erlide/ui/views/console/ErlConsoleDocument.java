@@ -24,7 +24,12 @@ public class ErlConsoleDocument {
 
 	public void input(String s) {
 		IoRequest req = new IoRequest(s);
-		req.setTstamp(new IoRequest.Timestamp());
+		if (requests.size() > 0) {
+			IoRequest.Timestamp t = requests.get(requests.size() - 1)
+					.getTstamp().next();
+			req.setTstamp(t);
+		} else
+			req.setTstamp(new IoRequest.Timestamp());
 		insertSorted(req);
 	}
 
@@ -33,14 +38,15 @@ public class ErlConsoleDocument {
 			int index = Collections.binarySearch(requests, req);
 			if (index < 0) {
 				int is = 0;
-				if ((-index - 1) <= 0)
+				index = -index - 1;
+				if ((index) <= 0)
 					is = 0;
 				else {
-					IoRequest r = requests.get(-index - 2);
+					IoRequest r = requests.get(index - 1);
 					is = r.getStart() + r.getLength();
 				}
 				req.setStart(is);
-				requests.add(-index - 1, req);
+				requests.add(index, req);
 			} else {
 				requests.add(index, req);
 			}

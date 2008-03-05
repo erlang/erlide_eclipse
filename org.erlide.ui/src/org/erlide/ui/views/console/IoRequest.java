@@ -44,6 +44,12 @@ public class IoRequest implements Comparable<IoRequest> {
 			microsecs = ts * 1000;
 		}
 
+		public Timestamp(Timestamp ts) {
+			megasecs = ts.megasecs;
+			secs = ts.secs;
+			microsecs = ts.microsecs;
+		}
+
 		@Override
 		public String toString() {
 			return "{" + megasecs + "," + secs + "," + microsecs + "}";
@@ -71,6 +77,12 @@ public class IoRequest implements Comparable<IoRequest> {
 				}
 			}
 			return 0;
+		}
+
+		public Timestamp next() {
+			Timestamp r = new Timestamp(this);
+			r.microsecs++;
+			return r;
 		}
 
 	}

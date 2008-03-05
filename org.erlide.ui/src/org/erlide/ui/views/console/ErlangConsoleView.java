@@ -208,7 +208,6 @@ public class ErlangConsoleView extends ViewPart implements
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
-		int lh1 = consoleText.getLineHeight();
 		consoleText.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -260,13 +259,15 @@ public class ErlangConsoleView extends ViewPart implements
 				} else if ((e.keyCode == SWT.ARROW_UP) && historyMode) {
 					if (navIndex > 0)
 						navIndex--;
+					else
+						navIndex = history.size() - 1;
 					consoleInput.setText(history.get(navIndex));
 					consoleInput.setSelection(consoleInput.getText().length());
 				} else if ((e.keyCode == SWT.ARROW_DOWN) && historyMode) {
 					if (navIndex < history.size() - 1)
 						navIndex++;
 					else
-						navIndex = history.size() - 1;
+						navIndex = 0;
 					consoleInput.setText(history.get(navIndex));
 					consoleInput.setSelection(consoleInput.getText().length());
 				} else if (e.keyCode == SWT.CTRL) {
