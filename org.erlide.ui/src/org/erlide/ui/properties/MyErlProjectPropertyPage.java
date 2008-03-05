@@ -20,28 +20,27 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class MyErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
+	private Text backendCookie;
+	private Text backendName;
 	private Text text;
 	private TabFolder tabFolder;
-	@SuppressWarnings("unused")
 	private ErlangProjectProperties prefs;
 	private MockupPreferenceStore mockPrefs;
-	@SuppressWarnings("unused")
 	private PathEditor fextinc;
-	@SuppressWarnings("unused")
 	private PathEditor fSourceEditor;
-	@SuppressWarnings("unused")
 	private PathEditor fIncludeEditor;
-	@SuppressWarnings("unused")
 	private PathEditor fExternalIncludeEditor;
 
 	public MyErlProjectPropertyPage() {
@@ -103,18 +102,26 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 				SWT.NONE);
 		sourceComposite.setBounds(0, 0, 443, 305);
 		final GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
 
 		sourceComposite.setLayout(gridLayout);
 		sourceTab.setControl(sourceComposite);
 
 		final Composite composite_2 = new Composite(sourceComposite, SWT.NONE);
 		final GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
+				true, false, 2, 1);
 		composite_2.setLayoutData(gd_composite_2);
 		composite_2.setLayout(new GridLayout());
 
-		fSourceEditor = new PathEditor("ext include",
+		fSourceEditor = new PathEditor("sources",
 				"Source directories for this project:", "New", composite_2);
+		fSourceEditor.setPreferenceStore(mockPrefs);
+
+		final Label outputDirectoryLabel = new Label(sourceComposite, SWT.NONE);
+		outputDirectoryLabel.setText("Output directory: ");
+		final GridData gd_outputDirectoryLabel = new GridData(SWT.CENTER,
+				SWT.TOP, false, false);
+		outputDirectoryLabel.setLayoutData(gd_outputDirectoryLabel);
 
 		this.text = new Text(sourceComposite, SWT.BORDER);
 		this.text
@@ -129,12 +136,41 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		final Button usePathzForButton = new Button(composite_4, SWT.CHECK);
 		usePathzForButton.setText("use pathz for the project");
+
+		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
+		backendTab.setText("Backend");
+
+		final Composite composite_6 = new Composite(this.tabFolder, SWT.NONE);
+		final GridLayout gridLayout_1 = new GridLayout();
+		gridLayout_1.numColumns = 2;
+		composite_6.setLayout(gridLayout_1);
+		backendTab.setControl(composite_6);
+
+		final Label nodeNameLabel = new Label(composite_6, SWT.NONE);
+		nodeNameLabel.setText("Node name");
+
+		this.backendName = new Text(composite_6, SWT.BORDER);
+		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		this.backendName.setLayoutData(gd_backendName);
+
+		final Label nodeCookieLabel = new Label(composite_6, SWT.NONE);
+		nodeCookieLabel.setText("Node cookie");
+
+		this.backendCookie = new Text(composite_6, SWT.BORDER);
+		final GridData gd_backendCookie = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		this.backendCookie.setLayoutData(gd_backendCookie);
+
+		final Button startupCheck = new Button(composite_6, SWT.CHECK);
+		startupCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+				false, 2, 1));
+		startupCheck.setText("Start it up");
 		return composite;
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
-
+		ErlLogger.debug("prop change::", event);
 	}
 
 }
