@@ -17,8 +17,8 @@ import org.eclipse.debug.core.IStreamListener;
 public class StandaloneBackend extends AbstractBackend {
 
 	@Override
-	public void connect() {
-		doConnect(getLabel());
+	public void connect(String cookie) {
+		doConnect(getLabel(), cookie);
 	}
 
 	@Override

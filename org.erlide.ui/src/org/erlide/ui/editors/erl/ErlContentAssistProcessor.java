@@ -84,7 +84,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IBackend b = BackendManager.getDefault().get(
 					project.getProject());
 			if (k >= 0) {
-				externalCallCompletions(offset, prefix, result, k, b, project);
+				final String moduleName = prefix.substring(0, k);
+				externalCallCompletions(moduleName, offset, prefix
+						.substring(k + 1), result, k, b, project);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			} else {
 				moduleCallCompletions(offset, prefix, result, k, b, project);
@@ -122,17 +124,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private void externalCallCompletions(int offset, String prefix,
-			final ArrayList<ICompletionProposal> result, final int k,
-			IBackend b, IErlProject project) throws ErlangRpcException,
-			BackendException, RpcException, OtpErlangRangeException {
+	private void externalCallCompletions(String moduleName, int offset,
+			String prefix, final ArrayList<ICompletionProposal> result,
+			final int k, IBackend b, IErlProject project)
+			throws ErlangRpcException, BackendException, RpcException,
+			OtpErlangRangeException {
 		// we have an external call
-		final String mod = prefix.substring(0, k);
-		prefix = prefix.substring(k + 1);
-		final OtpErlangObject res = ErlideDoc.getExported(b, prefix, mod);
+		final OtpErlangObject res = ErlideDoc
+				.getExported(b, prefix, moduleName);
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resl = (OtpErlangList) res;
-			final OtpErlangList docl = getDocumentationFor(resl, mod);
+			final OtpErlangList docl = getDocumentationFor(resl, moduleName);
 			for (int i = 0; i < resl.arity(); i++) {
 				final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
 				final String fstr = ((OtpErlangAtom) f.elementAt(0))

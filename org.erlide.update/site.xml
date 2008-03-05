@@ -10,6 +10,15 @@
    <feature url="features/org.erlide_0.3.38.qualifier.jar" id="org.erlide" version="0.3.38.qualifier">
       <category name="Unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.3.39.200803051027.jar" id="org.erlide" version="0.3.39.200803051027">
+      <category name="Unstable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.39.200803051418.jar" id="org.erlide" version="0.3.39.200803051418">
+      <category name="Unstable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.39.200803051447.jar" id="org.erlide" version="0.3.39.200803051447">
+      <category name="Unstable"/>
+   </feature>
    <category-def name="Stable" label="Stable builds"/>
    <category-def name="Unstable" label="Unstable builds"/>
 </site>

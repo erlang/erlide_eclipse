@@ -138,9 +138,10 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Erlang"
             class="org.erlide.ui.perspectives.ErlangPerspective"
-            id="org.erlide.ui.perspectives.ErlangPerspective">
+            icon="icons/perspective.gif"
+            id="org.erlide.ui.perspectives.ErlangPerspective"
+            name="Erlang">
       </perspective>
    </extension>
    <extension

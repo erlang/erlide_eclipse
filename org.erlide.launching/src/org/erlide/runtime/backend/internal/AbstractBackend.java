@@ -71,8 +71,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			final Object res = fNode.createMbox();
 			if (res == null) {
 				final String[] ss = fNode.getNames();
-				StringBuilder sb = new StringBuilder();
-				for (String element : ss) {
+				final StringBuilder sb = new StringBuilder();
+				for (final String element : ss) {
 					sb.append(element).append(" ");
 				}
 				ErlLogger.debug(sb.toString());
@@ -116,20 +116,30 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	}
 
-	public abstract void connect();
+	public void connect() {
+		connect(null);
+	}
+
+	public abstract void connect(String cookie);
 
 	public boolean ping() {
 		return fNode.ping(fPeer.node(), 500);
 	}
 
 	protected void doConnect(String label) {
+		doConnect(label, null);
+	}
+
+	protected void doConnect(String label, String cookie) {
 		ErlLogger.debug(">>:: " + label);
 		try {
 			wait_for_epmd();
 
+			if (cookie == null) {
+				cookie = Cookie.retrieveCookie();
+			}
 			fNode = new OtpNode(BackendManager
-					.buildNodeName(BackendManager.JAVA_NODE_LABEL), Cookie
-					.retrieveCookie());
+					.buildNodeName(BackendManager.JAVA_NODE_LABEL), cookie);
 			ErlLogger.debug("java node is " + fNode.node());
 
 			fPeer = new OtpPeer(BackendManager.buildNodeName(label));
@@ -239,7 +249,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	public void send(OtpErlangPid pid, Object msg) {
 		try {
 			getMbox().send(pid, RpcConverter.java2erlang(msg, "x"));
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			// shouldn't happen
 			e.printStackTrace();
 		}
@@ -249,7 +259,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		try {
 			getMbox().send(name, fPeer.node(),
 					RpcConverter.java2erlang(msg, "x"));
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			// shouldn't happen
 			e.printStackTrace();
 		}
@@ -302,7 +312,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 				ErlLogger.debug("handleReceiveEvent() - Event! "
 						+ msg.toString());
 				if (msg instanceof OtpErlangAtom) {
-					String sys = ((OtpErlangAtom) msg).atomValue();
+					final String sys = ((OtpErlangAtom) msg).atomValue();
 					if (sys.compareTo("stopped") == 0) {
 						break;
 					}
@@ -310,7 +320,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 							.println("handleReceiveEvent() - Unrecognized system event: "
 									+ sys);
 				} else {
-					OtpErlangTuple t = (OtpErlangTuple) msg;
+					final OtpErlangTuple t = (OtpErlangTuple) msg;
 					msg = t.elementAt(1);
 					String event = null;
 					if (msg instanceof OtpErlangAtom) {
@@ -319,10 +329,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 						event = ((OtpErlangTuple) msg).elementAt(0).toString();
 					}
 					if (event != null) {
-						ArrayList<IBackendEventListener> ls = fEventListeners
+						final ArrayList<IBackendEventListener> ls = fEventListeners
 								.get(event);
 						if (ls != null) {
-							for (IBackendEventListener l : ls) {
+							for (final IBackendEventListener l : ls) {
 								l.eventReceived(msg);
 							}
 						}
@@ -330,10 +340,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 				}
 			}
 			// ErlLogger.debug("exited event thread");
-		} catch (OtpErlangExit e) {
+		} catch (final OtpErlangExit e) {
 			ErlLogger.debug("Erlide backend: event source crashed.\n"
 					+ e.getMessage());
-		} catch (OtpErlangDecodeException e) {
+		} catch (final OtpErlangDecodeException e) {
 			e.printStackTrace();
 		}
 	}
@@ -361,7 +371,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		if (type.length != args0.length) {
 			throw new RpcException("Signature doesn't match parameter number");
 		}
-		OtpErlangObject[] args = new OtpErlangObject[args0.length];
+		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {
 			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
 		}
@@ -425,7 +435,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		if (fCurrentVersion == null) {
 			try {
 				fCurrentVersion = ErlideBackend.getScriptId(this);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			}
 		}
 		return fCurrentVersion;
@@ -470,7 +480,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public OtpErlangObject receiveEvent() throws OtpErlangExit,
 			OtpErlangDecodeException {
-		OtpMbox eventBox = getEventBox();
+		final OtpMbox eventBox = getEventBox();
 		if (eventBox != null) {
 			return eventBox.receive();
 		}
@@ -479,7 +489,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
-		OtpMbox eventBox = getEventBox();
+		final OtpMbox eventBox = getEventBox();
 		if (eventBox != null) {
 			return eventBox.receive(timeout);
 		}

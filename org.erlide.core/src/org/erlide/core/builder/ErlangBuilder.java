@@ -404,57 +404,63 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		IResource br = project.findMember(beam);
 
 		try {
-			if (br != null) {
-				br.delete(true, null);
-			}
+			if (br == null
+					|| br.getLocalTimeStamp() < resource.getLocalTimeStamp()) {
+				if (br != null) {
+					br.delete(true, null);
+				}
 
-			OtpErlangObject r;
+				OtpErlangObject r;
+				r = compileFile(project, resource.getLocation().toString(),
+						outputDir, includeDirs);
+				if (r == null) {
+					return;
+				}
+				final OtpErlangTuple t = (OtpErlangTuple) r;
+				// ErlLogger.debug("** " + r);
 
-			r = compileFile(project, resource.getLocation().toString(),
-					outputDir, includeDirs);
-			if (r == null) {
-				return;
-			}
-			final OtpErlangTuple t = (OtpErlangTuple) r;
-			// ErlLogger.debug("** " + r);
-
-			if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
-				final String beamf = resource.getFullPath()
-						.removeFileExtension().lastSegment();
-				// ErlLogger.debug(">>>>> " + project.getName() + ": " +
-				// beamf);
-				if (project.getName().startsWith("erlide")
-						|| beamf.startsWith("erlide")) {
-					// ErlLogger.debug(">>>>> is erlide");
-					if (BackendManager.isDeveloper()) {
-						// ErlLogger.debug(">>>>> is developer");
-						final OtpErlangBinary code = (OtpErlangBinary) t
-								.elementAt(2);
-						distributeModule(beamf, code);
+				if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
+					final String beamf = resource.getFullPath()
+							.removeFileExtension().lastSegment();
+					// ErlLogger.debug(">>>>> " + project.getName() + ": " +
+					// beamf);
+					if (project.getName().startsWith("erlide")
+							|| beamf.startsWith("erlide")) {
+						// ErlLogger.debug(">>>>> is erlide");
+						if (BackendManager.isDeveloper()) {
+							// ErlLogger.debug(">>>>> is developer");
+							final OtpErlangBinary code = (OtpErlangBinary) t
+									.elementAt(2);
+							distributeModule(beamf, code);
+						}
+					} else {
+						// ErlLogger.debug(">>>>> normal");
+						ErlideBuilder.loadModule(project, beamf);
 					}
 				} else {
-					// ErlLogger.debug(">>>>> normal");
-					ErlideBuilder.loadModule(project, beamf);
+					ErlLogger.debug(">>>> compile error..."
+							+ resource.getName());
 				}
+
+				if (br != null) {
+					br.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+				}
+				br = project.findMember(new Path(prefs.getOutputDir()));
+				if (br != null) {
+					br.refreshLocal(IResource.DEPTH_ONE, null);
+				}
+				br = project.findMember(beam);
+				if (br != null) {
+					br.setDerived(true);
+				}
+
+				ErlLogger.debug("t = " + t);
+				// process compilation messages
+				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+				addErrorMarkers(getMarkerGenerator(), resource, l);
 			} else {
-				ErlLogger.debug(">>>> compile error..." + resource.getName());
+				ErlLogger.debug("skipping %s (beam is newer)", resource);
 			}
-
-			if (br != null) {
-				br.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-			}
-			br = project.findMember(new Path(prefs.getOutputDir()));
-			if (br != null) {
-				br.refreshLocal(IResource.DEPTH_ONE, null);
-			}
-			br = project.findMember(beam);
-			if (br != null) {
-				br.setDerived(true);
-			}
-
-			// process compilation messages
-			final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-			addErrorMarkers(getMarkerGenerator(), resource, l);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -644,9 +650,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	private static void distributeModule(final String beamf,
 			final OtpErlangBinary code) {
-		IBackend b = BackendManager.getDefault().getRemoteBackend();
-		if (b == null)
+		final IBackend b = BackendManager.getDefault().getRemoteBackend();
+		if (b == null) {
 			return;
+		}
 		try {
 			final RpcResult result = ErlangCode.loadBinary(b, beamf, code);
 			ErlLogger.debug("  $ distribute " + beamf + " to " + b.getLabel()

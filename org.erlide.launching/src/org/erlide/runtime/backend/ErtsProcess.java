@@ -31,7 +31,7 @@ public class ErtsProcess extends RuntimeProcess {
 
 	private ErtsPreferences fConfiguration;
 
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings( { "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
 
 	@SuppressWarnings("unchecked")
@@ -42,6 +42,7 @@ public class ErtsProcess extends RuntimeProcess {
 	}
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
+	public static final String ERLIDE_CONFIGURATION_TYPE = "org.erlide.core.launch.erlide";
 
 	/**
 	 * @return Returns the started.
@@ -123,7 +124,7 @@ public class ErtsProcess extends RuntimeProcess {
 			try {
 				streamsProxy.write(string);
 				ErlLogger.debug("#>>#" + string);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}

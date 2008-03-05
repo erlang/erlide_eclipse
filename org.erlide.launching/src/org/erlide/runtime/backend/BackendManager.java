@@ -46,11 +46,16 @@ public final class BackendManager implements IResourceChangeListener {
 
 	private final Object fProjectBackendsLock = new Object();
 
-	private IBackend fRemoteBackend;
+	private final IBackend fRemoteBackend;
 
 	protected List<IBackendListener> fListeners;
 
 	private final List<ICodeBundle> fPlugins;
+
+	private final Map<String, IBackend> fExternalBackends = new HashMap<String, IBackend>(
+			2);
+
+	// private final Object fExternalBackendsLock = new Object();
 
 	private static final int ADDED = 1;
 
@@ -143,6 +148,25 @@ public final class BackendManager implements IResourceChangeListener {
 			}
 			return b;
 		}
+	}
+
+	public IBackend getExternal(String nodeName) {
+		// synchronized (fExternalBackendsLock) {
+		final IBackend b = fExternalBackends.get(nodeName);
+		return b;
+		// }
+	}
+
+	public IBackend createExternal(String nodeName, String cookie) {
+		final AbstractBackend b = new StandaloneBackend();
+		b.setLabel(nodeName);
+		b.connect(cookie);
+		// for (final ICodeBundle element : fPlugins) {
+		// b.getCodeManager().register(element);
+		// }
+		fExternalBackends.put(nodeName, b);
+		return b;
+
 	}
 
 	public static String getBackendName(IProject project) {

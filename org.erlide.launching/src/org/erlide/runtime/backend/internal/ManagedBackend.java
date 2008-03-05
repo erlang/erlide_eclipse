@@ -47,7 +47,7 @@ public class ManagedBackend extends AbstractBackend {
 			final ILaunchManager manager = DebugPlugin.getDefault()
 					.getLaunchManager();
 			final ILaunchConfigurationType type = manager
-					.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE);
+					.getLaunchConfigurationType(ErtsProcess.ERLIDE_CONFIGURATION_TYPE);
 			ILaunchConfigurationWorkingCopy wc;
 			wc = type.newInstance(null, getLabel());
 			wc.setAttribute(IProcess.ATTR_PROCESS_LABEL, getLabel());
@@ -57,7 +57,7 @@ public class ManagedBackend extends AbstractBackend {
 					ErtsProcessFactory.ID);
 			wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
 
-			final ILaunch ll = wc.launch(ILaunchManager.DEBUG_MODE,
+			final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
 					new NullProgressMonitor());
 			fErts = null;
 			if (ll.getProcesses().length == 1) {
@@ -76,20 +76,20 @@ public class ManagedBackend extends AbstractBackend {
 	static public String getCmdLine() {
 		final ErtsPreferences ertsPrefs = ErlideBasicUIPlugin.getDefault()
 				.getPreferences();
-		String otpHome = ErlideBasicUIPlugin.getDefault()
+		final String otpHome = ErlideBasicUIPlugin.getDefault()
 				.getPluginPreferences().getString(IPrefConstants.ERTS_OTP_HOME);
 		final String cmd = ertsPrefs.buildCommandLine(otpHome);
 		return cmd;
 	}
 
 	@Override
-	public void connect() {
+	public void connect(String cookie) {
 		if (fErts == null) {
 			return;
 		}
 
 		fLabel = BackendManager.buildNodeLabel(getLabel());
-		doConnect(getLabel());
+		doConnect(getLabel(), cookie);
 	}
 
 	/**
