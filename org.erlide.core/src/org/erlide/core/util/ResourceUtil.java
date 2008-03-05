@@ -10,10 +10,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -186,6 +190,34 @@ public class ResourceUtil {
 			}
 		}
 		return null;
+	}
+
+	private static void recursiveGetAllErlangFiles(List<String> erlangFiles,
+			IContainer container) {
+		try {
+			for (final IResource r : container.members()) {
+				if (r instanceof IContainer) {
+					final IContainer c = (IContainer) r;
+					if (c.isAccessible()) {
+						recursiveGetAllErlangFiles(erlangFiles, c);
+					}
+				} else if (r instanceof IFile) {
+					final IFile f = (IFile) r;
+					final String n = f.getName();
+					if (n.endsWith(".erl")) {
+						erlangFiles.add(n.substring(0, n.length() - 4));
+					}
+				}
+			}
+		} catch (final CoreException e) {
+		}
+	}
+
+	public static List<String> getAllErlangFiles() {
+		final List<String> result = new ArrayList<String>(100);
+		final IContainer root = ResourcesPlugin.getWorkspace().getRoot();
+		recursiveGetAllErlangFiles(result, root);
+		return result;
 	}
 
 	/**
