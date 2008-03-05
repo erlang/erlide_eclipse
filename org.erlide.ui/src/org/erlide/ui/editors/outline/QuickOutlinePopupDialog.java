@@ -367,6 +367,16 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.jface.dialogs.PopupDialog#getFocusControl()
+	 */
+	@Override
+	protected Control getFocusControl() {
+		return fFilterText;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.text.IInformationControl#setForegroundColor(org.eclipse.swt.graphics.Color)
 	 */
 	public void setForegroundColor(Color foreground) {
