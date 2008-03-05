@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.ui.perspectives;
 
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -48,7 +49,8 @@ public class ErlangPerspective implements IPerspectiveFactory {
 	 * @param layout
 	 */
 	private void defineActions(IPageLayout layout) {
-		// layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
+		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
+		layout.addActionSet(IDebugUIConstants.DEBUG_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 	}
 
