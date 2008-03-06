@@ -262,7 +262,8 @@ public class ErlangConsoleView extends ViewPart implements
 		// consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
 		// | SWT.V_SCROLL);
 
-		consoleInputViewer = new SourceViewer(composite, null, SWT.V_SCROLL);
+		consoleInputViewer = new SourceViewer(composite, null, SWT.V_SCROLL
+				| SWT.BORDER);
 		consoleInputViewer.setDocument(fDoc);
 		consoleInput = (StyledText) consoleInputViewer.getControl();
 		consoleInputViewer
