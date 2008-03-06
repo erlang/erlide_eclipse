@@ -59,6 +59,8 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private final IFile fFile;
 
+	private boolean parsed = false;
+
 	// These are needed to ignore the initial INSERT of all text and final
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
@@ -109,7 +111,8 @@ public class ErlModule extends Openable implements IErlModule {
 		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 
 		final ErlParser parser = new ErlParser();
-		isStructureKnown = parser.parse(this);
+		isStructureKnown = parser.parse(this, !parsed);
+		parsed = isStructureKnown;
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -391,6 +394,12 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void initialReconcile() {
 		fIgnoreNextReconcile = true;
+	}
+
+	public String getModuleName() {
+		final String s = getElementName();
+		final int i = s.lastIndexOf('.');
+		return s.substring(0, i);
 	}
 
 }

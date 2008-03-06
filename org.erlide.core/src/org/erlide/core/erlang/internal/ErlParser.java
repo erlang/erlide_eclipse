@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import org.eclipse.core.resources.IResource;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
@@ -102,16 +104,28 @@ public class ErlParser {
 	 * new ArrayList(50); } } return result; }
 	 */
 
-	public boolean parse(final IErlModule module) {
+	public boolean parse(final IErlModule module, boolean initialParse) {
 		final IErlScanner scanner = module.getScanner();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		try {
 			ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
-			final OtpErlangTuple res = ErlideNoparse.parse(b, scanner);
+			OtpErlangTuple res = null;
+			if (initialParse) {
+				final String name = module.getElementName();
+				final IResource resource = module.getResource();
+				final String moduleFileName = resource.getLocation().toString();
+				final String stateDir = ErlangPlugin.getDefault()
+						.getStateLocation().toString();
+				res = ErlideNoparse.initialParse(b, scanner, name,
+						moduleFileName, stateDir);
+			} else {
+				res = ErlideNoparse.reparse(b, scanner);
+			}
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
-				forms = (OtpErlangList) res.elementAt(1);
-				comments = (OtpErlangList) res.elementAt(2);
+				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
+				forms = (OtpErlangList) t.elementAt(0);
+				comments = (OtpErlangList) t.elementAt(1);
 			} else {
 				ErlLogger.debug("rpc err:: " + res);
 			}

@@ -62,6 +62,13 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 	boolean hasResourceChanged();
 
 	/**
+	 * Returns name without extension (useful for sending module atom to Erlang)
+	 * 
+	 * @return name without extension
+	 */
+	String getModuleName();
+
+	/**
 	 * Is this module a real one, or a header file?
 	 * 
 	 * @return true if .erl, false if .hrl
@@ -95,7 +102,8 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 
 	void initialReconcile();
 
-	public void reconcileText(int offset, int removeLength, String newText, IProgressMonitor mon);
+	public void reconcileText(int offset, int removeLength, String newText,
+			IProgressMonitor mon);
 
 	void finalReconcile();
 

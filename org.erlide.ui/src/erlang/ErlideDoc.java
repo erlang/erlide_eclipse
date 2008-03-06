@@ -39,13 +39,13 @@ public class ErlideDoc {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject getDocFromScan(int offset, String s,
+	public static OtpErlangObject getDocFromScan(int offset, String stateDir,
 			String module, OtpErlangList imports) throws ErlangRpcException,
 			BackendException, RpcException {
 		OtpErlangObject r1;
-		r1 = BackendManager.getDefault().getIdeBackend()
-				.rpcx("erlide_otp_doc", "get_doc_from_scan_tuples", "ailxs",
-						module, offset, imports, s);
+		r1 = BackendManager.getDefault().getIdeBackend().rpcx("erlide_otp_doc",
+				"get_doc_from_scan_tuples", "ailxs", module, offset, imports,
+				stateDir);
 		return r1;
 	}
 

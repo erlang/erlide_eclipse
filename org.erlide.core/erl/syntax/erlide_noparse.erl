@@ -8,14 +8,14 @@
 %% Exported Functions
 %%
 
--export([parse/1]). 
+-export([initial_parse/4, reparse/1]). 
 -compile(export_all).
 
 %%
 %% Include files
 %%
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -37,20 +37,37 @@
 %%             {error, Reason}
 %%     end.
 
-parse(ModuleName) ->
+initial_parse(ScannerName, ModuleName, ModuleFileName, StateDir) ->
     try
-        Toks = scan(ModuleName),
-        ?D(Toks),
-        {UncommentToks, Comments} = extract_comments(Toks),
-        F = split_after_dots(UncommentToks, [], []),
-        ?D(F),
-        Collected = [classify_and_collect(I) || I <- F],
-        ?D(Collected),
-        {ok, Collected, Comments, Toks}
+    	?D({StateDir, ModuleFileName}),
+    	CacheFileName = filename:join(StateDir, ModuleName ++ ".noparse"),
+        ?D(CacheFileName),
+		Renew = fun(_F) -> do_parse(ScannerName) end,
+		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, Renew),
+        {ok, Res}
     catch
         error:Reason ->
             {error, Reason}
     end.
+
+reparse(ScannerName) ->
+    try
+		Res = do_parse(ScannerName),
+        {ok, Res}
+    catch
+        error:Reason ->
+            {error, Reason}
+    end.
+
+do_parse(ModuleName) ->
+    Toks = scan(ModuleName),
+    ?D(Toks),
+    {UncommentToks, Comments} = extract_comments(Toks),
+    Functions = split_after_dots(UncommentToks, [], []),
+    ?D(Functions),
+    Collected = [classify_and_collect(I) || I <- Functions],
+    ?D(Collected),
+    {Collected, Comments, Toks}.
 
 classify_and_collect(C) ->
     cac(check_class(C), C).
