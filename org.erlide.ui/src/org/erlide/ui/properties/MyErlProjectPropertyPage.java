@@ -10,10 +10,13 @@
 package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -27,12 +30,23 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.basiccore.ErlLogger;
+import org.eclipse.ui.IWorkbench;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.ui.ErlideUIPlugin;
 
-public class MyErlProjectPropertyPage extends PropertyPage implements
-		IPropertyChangeListener {
+import com.bdaum.overlayPages.FieldEditorOverlayPage;
+import com.bdaum.overlayPages.OverlayPage;
+
+public class MyErlProjectPropertyPage extends OverlayPage {
+
+	public MyErlProjectPropertyPage() {
+		super();
+	}
+
+	@Override
+	protected IPreferenceStore doGetPreferenceStore() {
+		return ErlideUIPlugin.getDefault().getPreferenceStore();
+	}
 
 	private List list;
 	private Combo combo;
@@ -46,14 +60,9 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 	private PathEditor fIncludeEditor;
 	private PathEditor fExternalIncludeEditor;
 
-	public MyErlProjectPropertyPage() {
-		super();
-	}
-
 	@Override
-	protected Control createContents(Composite parent) {
-		final IProject prj = (IProject) getElement();
-		prefs = new ErlangProjectProperties(prj);
+	protected Control createContents(Composite aparent) {
+		Composite parent = (Composite) super.createContents(aparent);
 
 		// create the composite to hold the widgets
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -89,10 +98,8 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		fExternalIncludeEditor = new PathEditor("ext include",
 				"External include directories:", "New", composite_3);
-		fExternalIncludeEditor.setPropertyChangeListener(this);
 		fIncludeEditor = new PathEditor("ext include",
 				"Project include directories:", "New", composite_5);
-		fIncludeEditor.setPropertyChangeListener(this);
 
 		final TabItem t3 = new TabItem(this.tabFolder, SWT.NONE);
 		t3.setText("Dependencies");
@@ -117,15 +124,13 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		fSourceEditor = new PathEditor("sources",
 				"Source directories for this project:", "New", composite_2);
-		fSourceEditor.setPropertyChangeListener(this);
 
 		final Composite composite_8 = new Composite(sourceComposite, SWT.NONE);
 		composite_8
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		composite_8.setLayout(new GridLayout());
 
-		new StringFieldEditor("output", "Output directory:", composite_8)
-				.setPropertyChangeListener(this);
+		new StringFieldEditor("output", "Output directory:", composite_8);
 
 		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
 		backendTab.setText("Backend");
@@ -204,15 +209,56 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		final Button moveDownButton = new Button(composite_7, SWT.NONE);
 		moveDownButton.setText("Move down");
-		return composite;
+
+		return parent;
 	}
 
-	public void propertyChange(PropertyChangeEvent event) {
-		ErlLogger.debug("prop change::", event);
+	@Override
+	protected String getPageId() {
+		return "org.erlide.ui.properties.myErlangProjectPropertyPage";
+	}
+
+	public void init(IWorkbench workbench) {
+		setDescription("These values will be used as defaults for newly created Erlang projects.");
+	}
+
+	public static String getOverlayedPreferenceValue(IPreferenceStore store,
+			IResource resource, String pageId, String key) {
+		IProject project = resource.getProject();
+		String value = null;
+		if (useProjectSettings(project, pageId)) {
+			value = getProperty(resource, pageId, key);
+		}
+		if (value != null)
+			return value;
+		return store.getString(key);
+	}
+
+	private static boolean useProjectSettings(IResource resource, String pageId) {
+		String use = getProperty(resource, pageId,
+				FieldEditorOverlayPage.USEPROJECTSETTINGS);
+		return "true".equals(use);
+	}
+
+	private static String getProperty(IResource resource, String pageId,
+			String key) {
+		try {
+			return resource
+					.getPersistentProperty(new QualifiedName(pageId, key));
+		} catch (CoreException e) {
+		}
+		return null;
 	}
 
 	@Override
 	public boolean performOk() {
 		return super.performOk();
+	}
+
+	@Override
+	public IAdaptable getElement() {
+		final IProject prj = (IProject) super.getElement();
+		prefs = new ErlangProjectProperties(prj);
+		return prj;
 	}
 }

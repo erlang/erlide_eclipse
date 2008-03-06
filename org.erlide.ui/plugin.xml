@@ -218,6 +218,12 @@
             category="org.erlide.ui.preferences"
       class="org.erlide.ui.erlangsource.prefs.ErlangSourcePreferencePage"
             id="org.erlide.ui.preferences.codetemplate"/>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.properties.MyErlProjectPropertyPage"
+             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
+             name="new Erlang project default properties">
+       </page>
   </extension>
   <extension
          point="org.eclipse.ui.editors.templates">
