@@ -39,10 +39,16 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
+	String suffix;
 
 	private final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
 	public ErlContentAssistProcessor() {
+		this("");
+	}
+
+	public ErlContentAssistProcessor(String suffix) {
+		this.suffix = suffix;
 	}
 
 	private OtpErlangList getDocumentationFor(OtpErlangList list, String mod) {
@@ -76,7 +82,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						.substring(k + 1), result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			} else {
-				moduleCallCompletions(offset, prefix, result, k, b);
+				moduleCompletions(offset, prefix, result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			}
 		} catch (final Exception e) {
@@ -84,7 +90,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private void moduleCallCompletions(int offset, String prefix,
+	private void moduleCompletions(int offset, String prefix,
 			ArrayList<ICompletionProposal> result, int k, IBackend b) {
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
@@ -137,12 +143,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					}
 				}
 				final String cpl = fstr.substring(prefix.length()) + "("
-						+ args.toString() + ")";
-				result
-						.add(new CompletionProposal(cpl, offset, 0, cpl
-								.length()
-								- 1 - far * 2 + 2, null, fstr + "/" + far,
-								null, docStr));
+						+ args.toString() + ")" + suffix;
+				result.add(new CompletionProposal(cpl, offset, 0, cpl.length()
+						- 1 - suffix.length() - far * 2 + 2, null, fstr + "/"
+						+ far, null, docStr));
 			}
 		}
 	}

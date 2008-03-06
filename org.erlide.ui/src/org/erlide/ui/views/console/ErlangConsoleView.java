@@ -285,7 +285,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == 13 && isInputComplete(lastPos)) {
+				if (e.keyCode == 13 && isInputComplete(lastPos)
+						&& consoleInput.isFocusControl()) {
 					sendInput(lastPos);
 					e.doit = false;
 				} else if (e.keyCode == SWT.ARROW_UP && historyMode) {
@@ -613,7 +614,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 			final ContentAssistant asst = new ContentAssistant();
 
-			asst.setContentAssistProcessor(new ErlContentAssistProcessor(),
+			// TODO vi vill ha in en punkt här, men den får return till styledtext o skickar allt för tidigt...
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(""),
 					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);

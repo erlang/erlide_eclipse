@@ -61,11 +61,11 @@ public class ErlTextHover implements ITextHover,
 		}
 		try {
 			OtpErlangObject r1 = null;
-			int offset = hoverRegion.getOffset();
-			String s = ErlideUIPlugin.getDefault().getStateLocation()
-					.toString();
-			r1 = ErlideDoc.getDocFromScan(offset, s, fModule.getScanner()
-					.getScannerModuleName(), fImports);
+			final int offset = hoverRegion.getOffset();
+			final String stateDir = ErlideUIPlugin.getDefault()
+					.getStateLocation().toString();
+			r1 = ErlideDoc.getDocFromScan(offset, stateDir, fModule
+					.getScanner().getScannerModuleName(), fImports);
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				return s1.stringValue();
