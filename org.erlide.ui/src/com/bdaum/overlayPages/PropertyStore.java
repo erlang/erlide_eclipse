@@ -22,7 +22,7 @@ import org.eclipse.jface.preference.PreferenceStore;
 
 /**
  * @author Berthold Daum
- *
+ * 
  */
 public class PropertyStore extends PreferenceStore {
 
@@ -31,27 +31,32 @@ public class PropertyStore extends PreferenceStore {
 	private String pageId;
 	private boolean inserting = false;
 
-	public PropertyStore(
-		IResource resource,
-		IPreferenceStore workbenchStore,
-		String pageId) {
+	public PropertyStore(IResource resource, IPreferenceStore workbenchStore,
+			String pageId) {
 		this.resource = resource;
 		this.workbenchStore = workbenchStore;
 		this.pageId = pageId;
 	}
 
-	/*** Write modified values back to properties ***/
+	/** * Write modified values back to properties ** */
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPersistentPreferenceStore#save()
 	 */
+	@Override
 	public void save() throws IOException {
 		writeProperties();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.PreferenceStore#save(java.io.OutputStream, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.preference.PreferenceStore#save(java.io.OutputStream,
+	 *      java.lang.String)
 	 */
+	@Override
 	public void save(OutputStream out, String header) throws IOException {
 		writeProperties();
 	}
@@ -66,110 +71,151 @@ public class PropertyStore extends PreferenceStore {
 			try {
 				setProperty(name, getString(name));
 			} catch (CoreException e) {
-				throw new IOException(Messages.getString("PropertyStore.Cannot_write_resource_property") + name); //$NON-NLS-1$
+				throw new IOException(
+						Messages
+								.getString("PropertyStore.Cannot_write_resource_property") + name); //$NON-NLS-1$
 			}
 		}
 	}
 
 	/**
 	 * Convenience method to set a property
-	 * @param name - the preference name
-	 * @param value - the property value or null to delete the property
+	 * 
+	 * @param name -
+	 *            the preference name
+	 * @param value -
+	 *            the property value or null to delete the property
 	 * @throws CoreException
 	 */
 	private void setProperty(String name, String value) throws CoreException {
 		resource.setPersistentProperty(new QualifiedName(pageId, name), value);
 	}
 
-	/*** Get default values (Delegate to workbench store) ***/
+	/** * Get default values (Delegate to workbench store) ** */
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultBoolean(java.lang.String)
 	 */
+	@Override
 	public boolean getDefaultBoolean(String name) {
 		return workbenchStore.getDefaultBoolean(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultDouble(java.lang.String)
 	 */
+	@Override
 	public double getDefaultDouble(String name) {
 		return workbenchStore.getDefaultDouble(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultFloat(java.lang.String)
 	 */
+	@Override
 	public float getDefaultFloat(String name) {
 		return workbenchStore.getDefaultFloat(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultInt(java.lang.String)
 	 */
+	@Override
 	public int getDefaultInt(String name) {
 		return workbenchStore.getDefaultInt(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultLong(java.lang.String)
 	 */
+	@Override
 	public long getDefaultLong(String name) {
 		return workbenchStore.getDefaultLong(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultString(java.lang.String)
 	 */
+	@Override
 	public String getDefaultString(String name) {
 		return workbenchStore.getDefaultString(name);
 	}
 
-	/*** Get property values ***/
+	/** * Get property values ** */
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getBoolean(java.lang.String)
 	 */
+	@Override
 	public boolean getBoolean(String name) {
 		insertValue(name);
 		return super.getBoolean(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getDouble(java.lang.String)
 	 */
+	@Override
 	public double getDouble(String name) {
 		insertValue(name);
 		return super.getDouble(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getFloat(java.lang.String)
 	 */
+	@Override
 	public float getFloat(String name) {
 		insertValue(name);
 		return super.getFloat(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getInt(java.lang.String)
 	 */
+	@Override
 	public int getInt(String name) {
 		insertValue(name);
 		return super.getInt(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getLong(java.lang.String)
 	 */
+	@Override
 	public long getLong(String name) {
 		insertValue(name);
 		return super.getLong(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#getString(java.lang.String)
 	 */
+	@Override
 	public String getString(String name) {
 		insertValue(name);
 		return super.getString(name);
@@ -179,26 +225,32 @@ public class PropertyStore extends PreferenceStore {
 	 * @param name
 	 */
 	private synchronized void insertValue(String name) {
-		if (inserting)
+		if (inserting) {
 			return;
-		if (super.contains(name))
+		}
+		if (super.contains(name)) {
 			return;
+		}
 		inserting = true;
 		String prop = null;
 		try {
 			prop = getProperty(name);
 		} catch (CoreException e) {
 		}
-		if (prop == null)
+		if (prop == null) {
 			prop = workbenchStore.getString(name);
-		if (prop != null)
+		}
+		if (prop != null) {
 			setValue(name, prop);
+		}
 		inserting = false;
 	}
 
 	/**
 	 * Convenience method to fetch a property
-	 * @param name - the preference name
+	 * 
+	 * @param name -
+	 *            the preference name
 	 * @return - the property value
 	 * @throws CoreException
 	 */
@@ -206,28 +258,39 @@ public class PropertyStore extends PreferenceStore {
 		return resource.getPersistentProperty(new QualifiedName(pageId, name));
 	}
 
-	/*** Misc ***/
+	/** * Misc ** */
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#contains(java.lang.String)
 	 */
+	@Override
 	public boolean contains(String name) {
 		return workbenchStore.contains(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#setToDefault(java.lang.String)
 	 */
+	@Override
 	public void setToDefault(String name) {
-			setValue(name, getDefaultString(name));
+		setValue(name, getDefaultString(name));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.preference.IPreferenceStore#isDefault(java.lang.String)
 	 */
+	@Override
 	public boolean isDefault(String name) {
 		String defaultValue = getDefaultString(name);
-		if (defaultValue == null) return false;
+		if (defaultValue == null) {
+			return false;
+		}
 		return defaultValue.equals(getString(name));
 	}
 

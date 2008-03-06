@@ -91,9 +91,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			if (parent instanceof IErlModule) {
 				final IErlModule mod = (IErlModule) parent;
 				try {
-					if (mod != null) {
-						return mod.getCorrespondingResource();
-					}
+					return mod.getCorrespondingResource();
 				} catch (final ErlModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
