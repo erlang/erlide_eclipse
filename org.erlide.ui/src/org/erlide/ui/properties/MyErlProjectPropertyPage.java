@@ -11,6 +11,7 @@ package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -29,7 +30,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class MyErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
@@ -39,10 +39,8 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 	private Text text_1;
 	private Text backendCookie;
 	private Text backendName;
-	private Text text;
 	private TabFolder tabFolder;
 	private ErlangProjectProperties prefs;
-	private MockupPreferenceStore mockPrefs;
 	private PathEditor fextinc;
 	private PathEditor fSourceEditor;
 	private PathEditor fIncludeEditor;
@@ -56,9 +54,6 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 	protected Control createContents(Composite parent) {
 		final IProject prj = (IProject) getElement();
 		prefs = new ErlangProjectProperties(prj);
-		mockPrefs = new MockupPreferenceStore();
-		mockPrefs.addPropertyChangeListener(this);
-		this.setPreferenceStore(mockPrefs);
 
 		// create the composite to hold the widgets
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -94,8 +89,10 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		fExternalIncludeEditor = new PathEditor("ext include",
 				"External include directories:", "New", composite_3);
+		fExternalIncludeEditor.setPropertyChangeListener(this);
 		fIncludeEditor = new PathEditor("ext include",
 				"Project include directories:", "New", composite_5);
+		fIncludeEditor.setPropertyChangeListener(this);
 
 		final TabItem t3 = new TabItem(this.tabFolder, SWT.NONE);
 		t3.setText("Dependencies");
@@ -108,29 +105,27 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 				SWT.NONE);
 		sourceComposite.setBounds(0, 0, 443, 305);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
 
 		sourceComposite.setLayout(gridLayout);
 		sourceTab.setControl(sourceComposite);
 
 		final Composite composite_2 = new Composite(sourceComposite, SWT.NONE);
 		final GridData gd_composite_2 = new GridData(SWT.FILL, SWT.CENTER,
-				true, false, 2, 1);
+				true, false);
 		composite_2.setLayoutData(gd_composite_2);
 		composite_2.setLayout(new GridLayout());
 
 		fSourceEditor = new PathEditor("sources",
 				"Source directories for this project:", "New", composite_2);
+		fSourceEditor.setPropertyChangeListener(this);
 
-		final Label outputDirectoryLabel = new Label(sourceComposite, SWT.NONE);
-		outputDirectoryLabel.setText("Output directory: ");
-		final GridData gd_outputDirectoryLabel = new GridData(SWT.CENTER,
-				SWT.TOP, false, false);
-		outputDirectoryLabel.setLayoutData(gd_outputDirectoryLabel);
+		final Composite composite_8 = new Composite(sourceComposite, SWT.NONE);
+		composite_8
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		composite_8.setLayout(new GridLayout());
 
-		this.text = new Text(sourceComposite, SWT.BORDER);
-		this.text
-				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		new StringFieldEditor("output", "Output directory:", composite_8)
+				.setPropertyChangeListener(this);
 
 		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
 		backendTab.setText("Backend");
@@ -216,4 +211,8 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 		ErlLogger.debug("prop change::", event);
 	}
 
+	@Override
+	public boolean performOk() {
+		return super.performOk();
+	}
 }
