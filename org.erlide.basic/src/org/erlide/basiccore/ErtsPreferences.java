@@ -62,7 +62,7 @@ public class ErtsPreferences {
 				IPrefConstants.DEFAULT_PATH_A)));
 		defaultInstall.setPathZ(cvt(prefs.get(IPrefConstants.ERTS_PATH_Z,
 				IPrefConstants.DEFAULT_PATH_Z)));
-		defaultInstall.setExtraErtsArgs(prefs.get(
+		defaultInstall.setExtraArgs(prefs.get(
 				IPrefConstants.ERTS_EXTRA_ARGS,
 				IPrefConstants.DEFAULT_EXTRA_ARGS));
 	}
@@ -78,7 +78,7 @@ public class ErtsPreferences {
 		prefs.put(IPrefConstants.ERTS_PATH_A, cvt(defaultInstall.getPathA()));
 		prefs.put(IPrefConstants.ERTS_PATH_Z, cvt(defaultInstall.getPathZ()));
 		prefs.put(IPrefConstants.ERTS_EXTRA_ARGS, defaultInstall
-				.getExtraErtsArgs());
+				.getExtraArgs());
 		try {
 			prefs.flush();
 		} catch (final BackingStoreException e) {
@@ -94,11 +94,11 @@ public class ErtsPreferences {
 	}
 
 	public String getExtraErtsArgs() {
-		return defaultInstall.getExtraErtsArgs();
+		return defaultInstall.getExtraArgs();
 	}
 
 	public void setExtraErtsArgs(String extraErtsArgs) {
-		defaultInstall.setExtraErtsArgs(extraErtsArgs.trim());
+		defaultInstall.setExtraArgs(extraErtsArgs.trim());
 	}
 
 	public String getOtpHome() {
@@ -129,7 +129,7 @@ public class ErtsPreferences {
 		return otpHome + File.separator + "bin" + File.separator + "erl"
 				+ ifNotEmpty(" -pa ", getPathA())
 				+ ifNotEmpty(" -pz ", getPathZ()) + " "
-				+ defaultInstall.getExtraErtsArgs();
+				+ defaultInstall.getExtraArgs();
 	}
 
 	private String ifNotEmpty(String key, String str) {

@@ -207,7 +207,7 @@ public class AddVMDialog extends StatusDialog {
 			fOtpHome.setText(fEditedVM.getOtpHome());
 			fPathA.setElements(fEditedVM.getPathA());
 			fPathZ.setElements(fEditedVM.getPathZ());
-			fExtraArgs.setText(fEditedVM.getExtraErtsArgs());
+			fExtraArgs.setText(fEditedVM.getExtraArgs());
 		}
 		setVMNameStatus(validateVMName());
 		setVMLocationStatus(validateVMLocation());
@@ -296,13 +296,12 @@ public class AddVMDialog extends StatusDialog {
 	protected void setFieldValuesToVM(ErtsInstall vm) {
 		vm.setOtpHome(fOtpHome.getText());
 		vm.setName(fVMName.getText());
-		vm.setVersion(ErtsInstall.retrieveVersion(fOtpHome.getText()));
 
 		vm.setPathA(fPathA.getElements());
 		vm.setPathZ(fPathZ.getElements());
 
 		final String argString = fExtraArgs.getText().trim();
-		vm.setExtraErtsArgs(argString);
+		vm.setExtraArgs(argString);
 
 	}
 

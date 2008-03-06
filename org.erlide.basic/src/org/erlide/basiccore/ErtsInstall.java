@@ -31,7 +31,7 @@ public class ErtsInstall {
 
 	private List<String> fPathZ;
 
-	private String fExtraErtsArgs;
+	private String fExtraArgs;
 
 	public ErtsInstall() {
 		super();
@@ -54,19 +54,17 @@ public class ErtsInstall {
 	}
 
 	public String getVersion() {
+		if (fVersion == null)
+			retrieveVersion(fOtpHome);
 		return fVersion;
 	}
 
-	public void setVersion(String version) {
-		fVersion = version;
+	public String getExtraArgs() {
+		return fExtraArgs;
 	}
 
-	public String getExtraErtsArgs() {
-		return fExtraErtsArgs;
-	}
-
-	public void setExtraErtsArgs(String extraErtsArgs) {
-		fExtraErtsArgs = extraErtsArgs;
+	public void setExtraArgs(String extraArgs) {
+		fExtraArgs = extraArgs;
 	}
 
 	public String getOtpHome() {
@@ -75,6 +73,7 @@ public class ErtsInstall {
 
 	public void setOtpHome(String otpHome) {
 		fOtpHome = otpHome;
+		getVersion();
 	}
 
 	public List<String> getPathA() {
@@ -121,6 +120,8 @@ public class ErtsInstall {
 	}
 
 	public static String retrieveVersion(String path) {
+		if (path == null)
+			return null;
 		final File boot = new File(path + File.separator + "bin"
 				+ File.separator + "start.boot");
 		try {

@@ -18,9 +18,11 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -32,6 +34,9 @@ import org.erlide.ui.properties.internal.MockupPreferenceStore;
 public class MyErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
+	private List list;
+	private Combo combo;
+	private Text text_1;
 	private Text backendCookie;
 	private Text backendName;
 	private Text text;
@@ -53,6 +58,7 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 		prefs = new ErlangProjectProperties(prj);
 		mockPrefs = new MockupPreferenceStore();
 		mockPrefs.addPropertyChangeListener(this);
+		this.setPreferenceStore(mockPrefs);
 
 		// create the composite to hold the widgets
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -92,7 +98,7 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 				"Project include directories:", "New", composite_5);
 
 		final TabItem t3 = new TabItem(this.tabFolder, SWT.NONE);
-		t3.setText("Projects");
+		t3.setText("Dependencies");
 
 		final Composite composite_1 = new Composite(this.tabFolder, SWT.NONE);
 		composite_1.setLayout(new GridLayout());
@@ -115,7 +121,6 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 
 		fSourceEditor = new PathEditor("sources",
 				"Source directories for this project:", "New", composite_2);
-		fSourceEditor.setPreferenceStore(mockPrefs);
 
 		final Label outputDirectoryLabel = new Label(sourceComposite, SWT.NONE);
 		outputDirectoryLabel.setText("Output directory: ");
@@ -127,16 +132,6 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 		this.text
 				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		final TabItem orderTab = new TabItem(this.tabFolder, SWT.NONE);
-		orderTab.setText("Order");
-
-		final Composite composite_4 = new Composite(this.tabFolder, SWT.NONE);
-		composite_4.setLayout(new GridLayout());
-		orderTab.setControl(composite_4);
-
-		final Button usePathzForButton = new Button(composite_4, SWT.CHECK);
-		usePathzForButton.setText("use pathz for the project");
-
 		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
 		backendTab.setText("Backend");
 
@@ -145,6 +140,13 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 		gridLayout_1.numColumns = 2;
 		composite_6.setLayout(gridLayout_1);
 		backendTab.setControl(composite_6);
+
+		final Label runtimeLabel = new Label(composite_6, SWT.NONE);
+		runtimeLabel.setLayoutData(new GridData());
+		runtimeLabel.setText("Runtime");
+
+		combo = new Combo(composite_6, SWT.NONE);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		final Label nodeNameLabel = new Label(composite_6, SWT.NONE);
 		nodeNameLabel.setText("Node name");
@@ -162,10 +164,51 @@ public class MyErlProjectPropertyPage extends PropertyPage implements
 				true, false);
 		this.backendCookie.setLayoutData(gd_backendCookie);
 
-		final Button startupCheck = new Button(composite_6, SWT.CHECK);
-		startupCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-				false, 2, 1));
-		startupCheck.setText("Start it up");
+		final Label extraArgsLabel = new Label(composite_6, SWT.NONE);
+		extraArgsLabel.setText("Extra args");
+
+		text_1 = new Text(composite_6, SWT.BORDER);
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+		final TabItem codepathTabItem = new TabItem(tabFolder, SWT.NONE);
+		codepathTabItem.setText("Codepath");
+
+		final Composite composite_4 = new Composite(tabFolder, SWT.NONE);
+		final GridLayout gridLayout_2 = new GridLayout();
+		gridLayout_2.numColumns = 2;
+		composite_4.setLayout(gridLayout_2);
+		codepathTabItem.setControl(composite_4);
+
+		final Label codepathOrderLabel = new Label(composite_4, SWT.NONE);
+		codepathOrderLabel.setText("Code:path order");
+		new Label(composite_4, SWT.NONE);
+
+		list = new List(composite_4, SWT.BORDER);
+		final GridData gd_list = new GridData(SWT.FILL, SWT.CENTER, false,
+				false);
+		gd_list.heightHint = 189;
+		gd_list.widthHint = 383;
+		list.setLayoutData(gd_list);
+
+		final Composite composite_7 = new Composite(composite_4, SWT.NONE);
+		composite_7
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		composite_7.setLayout(new GridLayout());
+
+		final Button button = new Button(composite_7, SWT.NONE);
+		button.setLayoutData(new GridData(67, SWT.DEFAULT));
+		button.setText("Add...");
+
+		final Button removeButton = new Button(composite_7, SWT.NONE);
+		removeButton.setLayoutData(new GridData(67, SWT.DEFAULT));
+		removeButton.setText("Remove");
+
+		final Button moveUpButton = new Button(composite_7, SWT.NONE);
+		moveUpButton.setLayoutData(new GridData(67, SWT.DEFAULT));
+		moveUpButton.setText("Move up");
+
+		final Button moveDownButton = new Button(composite_7, SWT.NONE);
+		moveDownButton.setText("Move down");
 		return composite;
 	}
 

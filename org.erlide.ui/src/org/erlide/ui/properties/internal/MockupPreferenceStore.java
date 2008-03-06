@@ -179,7 +179,8 @@ public class MockupPreferenceStore implements IPreferenceStore {
 	 * {@inheritDoc}
 	 */
 	public boolean needsSaving() {
-		throw new UnsupportedOperationException();
+		return true;
+		// throw new UnsupportedOperationException();
 	}
 
 	/**
