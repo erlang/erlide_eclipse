@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.erlide.core.erlang.TokenWindow;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -335,7 +337,10 @@ public class OpenAction extends SelectionDispatchAction {
 						.recursiveFindNamedResourceWithReferences(project, mod);
 				if (r == null) {
 					try {
-						r = EditorUtility.openExternal(mod);
+						final String m = findIncludeFile(project, mod);
+						if (m != null) {
+							r = EditorUtility.openExternal(m);
+						}
 					} catch (final Exception e) {
 						e.printStackTrace();
 					}
@@ -454,6 +459,8 @@ public class OpenAction extends SelectionDispatchAction {
 						String s = element.getFilename();
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(s);
+						} else {
+							s = findIncludeFile(project, s);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
@@ -477,6 +484,19 @@ public class OpenAction extends SelectionDispatchAction {
 			return true;
 		}
 		return false;
+	}
+
+	private String findIncludeFile(IProject project, String s) {
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		for (final String includeDir : prefs.getIncludeDirs()) {
+			final String p = includeDir + File.separator + s;
+			final File f = new File(p);
+			if (f.exists()) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	/**
