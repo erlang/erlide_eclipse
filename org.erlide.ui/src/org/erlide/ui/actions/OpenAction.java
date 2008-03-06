@@ -23,7 +23,9 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -293,16 +295,12 @@ public class OpenAction extends SelectionDispatchAction {
 			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			final IPathVariableManager pvm = workspace.getPathVariableManager();
 			final String[] names = pvm.getPathVariableNames();
-			final List<OtpErlangTuple> pv = new ArrayList<OtpErlangTuple>(
+			final List<OtpErlangTuple> pathVars = new ArrayList<OtpErlangTuple>(
 					names.length);
 			for (final String name : names) {
-				final OtpErlangTuple t = new OtpErlangTuple(
-						new OtpErlangString(name), new OtpErlangString(pvm
-								.getValue(name).toOSString()));
-				pv.add(t);
+				pathVars.add(new OtpErlangTuple(new OtpErlangString(name),
+						new OtpErlangString(pvm.getValue(name).toOSString())));
 			}
-			final OtpErlangList pathVars = new OtpErlangList(pv
-					.toArray(new OtpErlangTuple[pv.size()]));
 			final OtpErlangObject res = ErlideOpen.getOpenInfo(b, window, list,
 					pathVars, fExternalModules);
 			if (!(res instanceof OtpErlangTuple)) {
@@ -337,7 +335,7 @@ public class OpenAction extends SelectionDispatchAction {
 						.recursiveFindNamedResourceWithReferences(project, mod);
 				if (r == null) {
 					try {
-						final String m = findIncludeFile(project, mod);
+						final String m = findIncludeFile(project, mod, pvm);
 						if (m != null) {
 							r = EditorUtility.openExternal(m);
 						}
@@ -419,7 +417,7 @@ public class OpenAction extends SelectionDispatchAction {
 				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
 						: IErlElement.ErlElementType.RECORD_DEF;
 				openPreprocessorDef(project, page, m, definedName, type,
-						new ArrayList<IErlModule>());
+						new ArrayList<IErlModule>(), pvm);
 			}
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
@@ -440,7 +438,8 @@ public class OpenAction extends SelectionDispatchAction {
 	 */
 	private boolean openPreprocessorDef(IProject project,
 			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.ErlElementType type, List<IErlModule> modulesDone)
+			final IErlElement.ErlElementType type,
+			List<IErlModule> modulesDone, IPathVariableManager pvm)
 			throws CoreException, ErlModelException, PartInitException {
 		if (m == null) {
 			return false;
@@ -460,7 +459,7 @@ public class OpenAction extends SelectionDispatchAction {
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(s);
 						} else {
-							s = findIncludeFile(project, s);
+							s = findIncludeFile(project, s, pvm);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
@@ -471,7 +470,7 @@ public class OpenAction extends SelectionDispatchAction {
 					m = ErlModelUtils.getModule((IFile) re);
 					if (m != null && !modulesDone.contains(m)) {
 						if (openPreprocessorDef(project, page, m, definedName,
-								type, modulesDone)) {
+								type, modulesDone, pvm)) {
 							return true;
 						}
 					}
@@ -486,14 +485,16 @@ public class OpenAction extends SelectionDispatchAction {
 		return false;
 	}
 
-	private String findIncludeFile(IProject project, String s) {
+	private String findIncludeFile(IProject project, String s,
+			IPathVariableManager pvm) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		for (final String includeDir : prefs.getIncludeDirs()) {
-			final String p = includeDir + File.separator + s;
-			final File f = new File(p);
+			IPath p = new Path(includeDir).append(s);
+			p = pvm.resolvePath(p);
+			final File f = new File(p.toOSString());
 			if (f.exists()) {
-				return p;
+				return p.toString();
 			}
 		}
 		return null;
@@ -525,7 +526,6 @@ public class OpenAction extends SelectionDispatchAction {
 						modFileName);
 			}
 		}
-		ErlLogger.debug("open after find w ref " + r);
 		if (r == null) {
 			try {
 				r = EditorUtility.openExternal(path);
@@ -533,17 +533,14 @@ public class OpenAction extends SelectionDispatchAction {
 				e.printStackTrace();
 			}
 		}
-		ErlLogger.debug("open after find external " + r);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
 				final IEditorPart editor = EditorUtility.openInEditor(f);
 				open(fun, arity, editor);
 			} catch (final PartInitException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (final ErlModelException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -557,7 +554,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 * @param editor
 	 * @throws ErlModelException
 	 */
-	private boolean open(String fun, int arity, IEditorPart editor)
+	private static boolean open(String fun, int arity, IEditorPart editor)
 			throws ErlModelException {
 		if (editor == null) {
 			return false;
