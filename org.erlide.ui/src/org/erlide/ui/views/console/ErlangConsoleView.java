@@ -24,9 +24,14 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.presentation.IPresentationReconciler;
+import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -75,7 +80,12 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
+import org.erlide.ui.editors.erl.ColorManager;
+import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.ErlDamagerRepairer;
+import org.erlide.ui.editors.erl.ErlHighlightScanner;
+import org.erlide.ui.editors.erl.ErlJavaPairMatcher;
 import org.erlide.ui.editors.erl.ErlangAnnotationHover;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 
@@ -281,22 +291,30 @@ public class ErlangConsoleView extends ViewPart implements
 				} else if (e.keyCode == SWT.ARROW_UP && historyMode) {
 					if (navIndex > 0) {
 						navIndex--;
-					} else {
-						navIndex = history.size() - 1;
 					}
+					// else {
+					// navIndex = history.size() - 1;
+					// }
 					consoleInput.setText(history.get(navIndex));
 					consoleInput.setSelection(consoleInput.getText().length());
 				} else if (e.keyCode == SWT.ARROW_DOWN && historyMode) {
-					if (navIndex < history.size() - 1) {
+					// if (navIndex < history.size() - 1) {
+					// navIndex++;
+					// } else {
+					// navIndex = 0;
+					// }
+					if (navIndex < history.size()) {
 						navIndex++;
-					} else {
-						navIndex = 0;
 					}
-					consoleInput.setText(history.get(navIndex));
+					final String s = navIndex < history.size() ? history
+							.get(navIndex) : "";
+					consoleInput.setText(s);
 					consoleInput.setSelection(consoleInput.getText().length());
 				} else if (e.keyCode == SWT.CTRL) {
 					historyMode = true;
 					navIndex = history.size();
+				} else if (e.keyCode == SWT.ESC) {
+					consoleInput.setText("");
 				}
 				lastPos = consoleInput.getSelection().x;
 				super.keyPressed(e);
@@ -581,6 +599,10 @@ public class ErlangConsoleView extends ViewPart implements
 	final class ErlangConsoleSourceViewerConfiguration extends
 			TextSourceViewerConfiguration {
 
+		private DoubleClickStrategy doubleClickStrategy;
+		private ErlHighlightScanner fHighlightScanner;
+		private ICharacterPairMatcher fBracketMatcher;
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -629,6 +651,66 @@ public class ErlangConsoleView extends ViewPart implements
 							new HTMLTextPresenter(true));
 				}
 			};
+		}
+
+		/**
+		 * The double click strategy
+		 * 
+		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
+		 *      java.lang.String)
+		 */
+		@Override
+		public ITextDoubleClickStrategy getDoubleClickStrategy(
+				ISourceViewer sourceViewer, String contentType) {
+			if (doubleClickStrategy == null) {
+				// doubleClickStrategy = new
+				// ErlDoubleClickSelector(getBracketMatcher());
+				doubleClickStrategy = new DoubleClickStrategy(
+						getBracketMatcher());
+			}
+			return doubleClickStrategy;
+		}
+
+		/**
+		 * Creates and returns the fHighlightScanner
+		 * 
+		 * @return the highlighting fHighlightScanner
+		 */
+		protected ErlHighlightScanner getHighlightScanner() {
+			if (fHighlightScanner == null) {
+				fHighlightScanner = new ErlHighlightScanner(new ColorManager());
+			}
+			return fHighlightScanner;
+		}
+
+		public ICharacterPairMatcher getBracketMatcher() {
+			if (fBracketMatcher == null) {
+				// TODO: get the ErlPairMatcher to work in some way
+				// final IErlScanner scanner = ErlModelUtils.getScanner(editor);
+				// fBracketMatcher = new ErlPairMatcher(scanner);
+				fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(",
+						")", "{", "}", "[", "]", "<<", ">>" });
+			}
+			return fBracketMatcher;
+		}
+
+		/**
+		 * Creates the reconciler
+		 * 
+		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
+		 */
+		@Override
+		public IPresentationReconciler getPresentationReconciler(
+				ISourceViewer sourceViewer) {
+			final PresentationReconciler reconciler = new PresentationReconciler();
+
+			final ErlHighlightScanner scan = getHighlightScanner();
+			if (scan != null) {
+				final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
+				reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+				reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+			}
+			return reconciler;
 		}
 
 	}
