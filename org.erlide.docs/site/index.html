@@ -39,7 +39,7 @@ development environment that will boost programmer efficiency even more.</p>
 <div class="clear"></div>
 
 <h3 class="headerstyle">Overview</h3>
-<p>The latest version is <strong>0.3.37</strong> and offers the
+<p>The latest version is <strong>0.3.38.3</strong> and offers the
 following features:</p>
 <ul>
   <li>works with <b>Eclipse 3.3, Java 1.5 and Erlang R12B</b>. The older versions targeting Eclipse 3.2, Java 1.4 and Erlang R11 are no longer available (but from the CVS). </li>
@@ -47,6 +47,8 @@ following features:</p>
   <li><img src="img/new.gif" /> Support for linked resources</li>
   <li>Improved Import, can now create links to projects</li>
   <li>Improved Erlang navigator, Tree model even for .hrl files</li>
+  <li>Support for starting Erlang projects</li>
+  <li>Improved Erlang Console</li>
 	
 </ul>
 <p>The IDE is functional even if I still
@@ -59,7 +61,24 @@ versions of the documentation are known to produce erroneous printouts,
 but we're working on that. Also only tested on Windows and a Ubuntu
 Linux.</p>
 
-<p class="internallink">[ <a href="#top">Back to top</a> ]</p>
+<h3 class="headerstyle" id="installation">Installation</h3>
+
+<p>To use ErlIDE you need the freeware IDE Eclipse, version 3.3 or later. You can download 
+Eclipse from <a href="http://www.eclipse.org/downloads/">eclipse.org/downloads</a>, the version
+called "Eclipse IDE for Java Developers" is the smallest download there, but any of the
+versions listed can be used.</p>
+<p>An Erlang runtime also has to be installed, go to <a href="http://www.erlang.org/download.html">
+http://www.erlang.org/download.html</a>, we recommend the version R11B-5, but any later version
+can be used. If you are running on Windows, just install the version downloaded, in other cases
+you will have to build an Erlang OTP first, please refer to the Erlang README.</p>
+<p>The ErlIDE plug-in for Eclipse is available through an update site: start Eclipse
+and select "Help/Software Updates/Find and Install..." from the menu. Click "Search for
+new features to install" and "Next>" and then "New remote site". The name of the site should be
+"ErlIDE" and the URL is "http://erlide.sourceforge.net/update", if you proceed, Eclipse will download
+and install the ErlIDE plug-in.</p>
+<p>When Eclipse is restarted, you will be prompted to point out where ErlIDE can find the Erlang
+installation. On a Unix/Linux/Mac system this is typically /usr/local/lib/erlang, on windows
+it is C:\\Program Files\\erl5.5.5. (With other numbers for other releases.)</p>
 
 <h3 class="headerstyle" id="faq">FAQ</h3>
 
@@ -96,8 +115,10 @@ already under development.</p>
 
 <p class="block"><strong>What is your timeplan?</strong></p>
 
-<p>The nearest milestone is in December 2007, when we would like to be ready with enough
-stability and features as to offer a viable alternative to Emacs. </p>
+<p>The nearest milestone is in April 2008, when we expect to have basic
+debugging support and decent indentation and code formatting. </p>
+<p>Later in 2008, we plan to support Refactoring, EDoc documenation, and
+structured search in Erlang code.</p>
 
 <p class="block"><strong>Why isn't Emacs (or vim) good enough?</strong></p>
 
@@ -124,6 +145,7 @@ module and you'll remember what I mean.</p>
 
 <h2 class="sidelink menuheader"><a id="sitemenu"></a>Site menu:</h2>
 <a class="sidelink" href="index.html">Overview</a> <span class="hide"> |</span>
+<a class="sidelink" href="#installation">Installation</a>
 <a class="sidelink" href="#faq">FAQ</a> <span class="hide"> | </span> <a
   class="sidelink" href="http://sourceforge.net/projects/erlide">Project
 site</a> <span class="hide"> | </span> <a class="sidelink"

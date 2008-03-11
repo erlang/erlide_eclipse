@@ -21,10 +21,10 @@ public class ErlideNoparse {
 	}
 
 	public static OtpErlangTuple reparse(final IBackend b,
-			final IErlScanner scanner) throws ErlangRpcException,
-			BackendException, RpcException {
+			final IErlScanner scanner, final String moduleName)
+			throws ErlangRpcException, BackendException, RpcException {
 		final OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
-				"reparse", "a", scanner.getScannerModuleName());
+				"reparse", "as", scanner.getScannerModuleName(), moduleName);
 		return res;
 	}
 

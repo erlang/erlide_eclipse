@@ -109,7 +109,7 @@ public class ErlParser {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		try {
-			ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
+			// ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
 			OtpErlangTuple res = null;
 			if (initialParse) {
 				final String name = module.getElementName();
@@ -120,7 +120,8 @@ public class ErlParser {
 				res = ErlideNoparse.initialParse(b, scanner, name,
 						moduleFileName, stateDir);
 			} else {
-				res = ErlideNoparse.reparse(b, scanner);
+				res = ErlideNoparse
+						.reparse(b, scanner, module.getElementName());
 			}
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);

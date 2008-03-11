@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,10 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -42,16 +38,12 @@ import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.TokenWindow;
 import org.erlide.core.util.ErlangFunction;
-import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -211,7 +203,7 @@ public class OpenAction extends SelectionDispatchAction {
 				element = getElementToOpen(element);
 				final boolean activateOnOpen = fEditor != null ? true
 						: OpenStrategy.activateOnOpen();
-				open(element, activateOnOpen);
+				ErlModelUtils.openElementInNewEditor(element, activateOnOpen);
 			} catch (final ErlModelException e) {
 				ErlangPlugin.log(new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID,
@@ -306,16 +298,14 @@ public class OpenAction extends SelectionDispatchAction {
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
-			ErlLogger.debug("open res " + res);
+			ErlLogger.debug("open " + res);
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
 			final String external = ((OtpErlangAtom) tres.elementAt(0))
 					.atomValue();
-			IProject project = null;
 			final IErlModule module = ErlModelUtils.getModule(fEditor
 					.getEditorInput());
-			if (module != null) {
-				project = module.getErlProject().getProject();
-			}
+			final IProject project = module == null ? null : module
+					.getErlProject().getProject();
 			if (external.equals("external")) {
 				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				final String mod = ((OtpErlangAtom) mf.elementAt(0))
@@ -327,7 +317,8 @@ public class OpenAction extends SelectionDispatchAction {
 				if (mf.elementAt(3) instanceof OtpErlangString) {
 					path = ((OtpErlangString) mf.elementAt(3)).stringValue();
 				}
-				openExternalFunction(mod, fun, arity, path);
+				ErlModelUtils.openExternalFunction(mod, fun, arity, path,
+						project);
 			} else if (external.equals("include")) {
 				final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
 				final String mod = s.stringValue();
@@ -335,7 +326,8 @@ public class OpenAction extends SelectionDispatchAction {
 						.recursiveFindNamedResourceWithReferences(project, mod);
 				if (r == null) {
 					try {
-						final String m = findIncludeFile(project, mod, pvm);
+						final String m = ErlModelUtils.findIncludeFile(project,
+								mod, pvm);
 						if (m != null) {
 							r = EditorUtility.openExternal(m);
 						}
@@ -357,7 +349,9 @@ public class OpenAction extends SelectionDispatchAction {
 					return;
 				}
 				final IEditorPart editor = page.getActiveEditor();
-				if (!open(fun, arity, editor)) { // not local, imports
+				if (!ErlModelUtils.openFunctionInEditor(fun, arity, editor)) { // not
+					// local,
+					// imports
 					if (module == null) {
 						return;
 					}
@@ -373,7 +367,8 @@ public class OpenAction extends SelectionDispatchAction {
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
-						openExternalFunction(mod, fun, arity, path);
+						ErlModelUtils.openExternalFunction(mod, fun, arity,
+								path, project);
 					}
 				}
 				// } else if (external.equals("variable")) {
@@ -416,173 +411,12 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
 						: IErlElement.ErlElementType.RECORD_DEF;
-				openPreprocessorDef(project, page, m, definedName, type,
-						new ArrayList<IErlModule>(), pvm);
+				ErlModelUtils.openPreprocessorDef(project, page, m,
+						definedName, type, new ArrayList<IErlModule>(), pvm);
 			}
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @param b
-	 * @param project
-	 * @param page
-	 * @param m
-	 * @param definedName
-	 * @param type
-	 * @throws CoreException
-	 * @throws ErlModelException
-	 * @throws PartInitException
-	 */
-	private boolean openPreprocessorDef(IProject project,
-			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.ErlElementType type,
-			List<IErlModule> modulesDone, IPathVariableManager pvm)
-			throws CoreException, ErlModelException, PartInitException {
-		if (m == null) {
-			return false;
-		}
-		modulesDone.add(m);
-		m.open(null);
-		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
-		if (pd == null) {
-			final ErlangIncludeFile[] includes = m.getIncludedFiles();
-			for (final ErlangIncludeFile element : includes) {
-				IResource re = ResourceUtil
-						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart());
-				if (re == null) {
-					try {
-						String s = element.getFilename();
-						if (element.isSystemInclude()) {
-							s = ErlideOpen.getIncludeLib(s);
-						} else {
-							s = findIncludeFile(project, s, pvm);
-						}
-						re = EditorUtility.openExternal(s);
-					} catch (final Exception e) {
-						e.printStackTrace();
-					}
-				}
-				if (re != null && re instanceof IFile) {
-					m = ErlModelUtils.getModule((IFile) re);
-					if (m != null && !modulesDone.contains(m)) {
-						if (openPreprocessorDef(project, page, m, definedName,
-								type, modulesDone, pvm)) {
-							return true;
-						}
-					}
-				}
-			}
-		}
-		if (pd != null) {
-			final IEditorPart editor = EditorUtility.openInEditor(m);
-			EditorUtility.revealInEditor(editor, pd);
-			return true;
-		}
-		return false;
-	}
-
-	private String findIncludeFile(IProject project, String s,
-			IPathVariableManager pvm) {
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
-		for (final String includeDir : prefs.getIncludeDirs()) {
-			IPath p = new Path(includeDir).append(s);
-			p = pvm.resolvePath(p);
-			final File f = new File(p.toOSString());
-			if (f.exists()) {
-				return p.toString();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Open an editor on the given module and select the given erlang function
-	 * 
-	 * @param mod
-	 *            module name (without .erl)
-	 * @param fun
-	 *            function name
-	 * @param arity
-	 *            function arity
-	 * @param path
-	 *            path to module (including .erl)
-	 * @throws CoreException
-	 */
-	private void openExternalFunction(String mod, String fun, int arity,
-			String path) throws CoreException {
-		final String modFileName = mod + ".erl";
-		ErlLogger.debug("open ex mod" + modFileName);
-		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
-		IResource r = null;
-		if (m != null) {
-			final IProject p = m.getErlProject().getProject();
-			if (p != null) {
-				r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
-						modFileName);
-			}
-		}
-		if (r == null) {
-			try {
-				r = EditorUtility.openExternal(path);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if (r != null && r instanceof IFile) {
-			final IFile f = (IFile) r;
-			try {
-				final IEditorPart editor = EditorUtility.openInEditor(f);
-				open(fun, arity, editor);
-			} catch (final PartInitException e) {
-				e.printStackTrace();
-			} catch (final ErlModelException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Activate editor and select erlang function
-	 * 
-	 * @param fun
-	 * @param arity
-	 * @param editor
-	 * @throws ErlModelException
-	 */
-	private static boolean open(String fun, int arity, IEditorPart editor)
-			throws ErlModelException {
-		if (editor == null) {
-			return false;
-		}
-		final IErlModule m = ErlModelUtils.getModule(editor.getEditorInput());
-		ErlLogger.debug("open fun m" + fun + "/" + arity + " " + m);
-		if (m == null) {
-			return false;
-		}
-		m.open(null); // FIXME vi måste kolla så att den inte
-		// dubbel-parsas... kanske sätta nån flagga på
-		// modulen? funkar isStructureKnown() ??
-		final IErlFunction function = ErlModelUtils.findFunction(m, fun, arity);
-		if (function == null) {
-			return false;
-		}
-		EditorUtility.revealInEditor(editor, function);
-		return true;
-	}
-
-	/**
-	 * Opens the editor on the given element and subsequently selects it.
-	 */
-	private static void open(Object element, boolean activate)
-			throws ErlModelException, PartInitException {
-		final IEditorPart part = EditorUtility.openInEditor(element, activate);
-		if (element instanceof IErlElement) {
-			EditorUtility.revealInEditor(part, (IErlElement) element);
 		}
 	}
 }

@@ -8,14 +8,13 @@
 %% Exported Functions
 %%
 
--export([initial_parse/4, reparse/1]). 
--compile(export_all).
+-export([initial_parse/4, reparse/2]). 
 
 %%
 %% Include files
 %%
 
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -42,7 +41,7 @@ initial_parse(ScannerName, ModuleName, ModuleFileName, StateDir) ->
     	?D({StateDir, ModuleFileName}),
     	CacheFileName = filename:join(StateDir, ModuleName ++ ".noparse"),
         ?D(CacheFileName),
-		Renew = fun(_F) -> do_parse(ScannerName) end,
+		Renew = fun(_F) -> do_parse(ScannerName, ModuleName) end,
 		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, Renew),
         {ok, Res}
     catch
@@ -50,17 +49,18 @@ initial_parse(ScannerName, ModuleName, ModuleFileName, StateDir) ->
             {error, Reason}
     end.
 
-reparse(ScannerName) ->
+reparse(ScannerName, ModuleName) ->
     try
-		Res = do_parse(ScannerName),
+		Res = do_parse(ScannerName, ModuleName),
         {ok, Res}
     catch
         error:Reason ->
             {error, Reason}
     end.
 
-do_parse(ModuleName) ->
-    Toks = scan(ModuleName),
+do_parse(ScannerName, ModuleName) ->
+    ?Info({noparse, ModuleName}),
+    Toks = scan(ScannerName),
     ?D(Toks),
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
