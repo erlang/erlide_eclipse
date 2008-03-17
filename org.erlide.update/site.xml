@@ -31,6 +31,12 @@
    <feature url="features/org.erlide_0.3.39.305.jar" id="org.erlide" version="0.3.39.305">
       <category name="Unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.3.39.306.jar" id="org.erlide" version="0.3.39.306">
+      <category name="Unstable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.39.307.jar" id="org.erlide" version="0.3.39.307">
+      <category name="Unstable"/>
+   </feature>
    <category-def name="Stable" label="Stable builds"/>
    <category-def name="Unstable" label="Unstable builds"/>
 </site>
