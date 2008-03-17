@@ -102,7 +102,9 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void uninstall() {
-		fModule.finalReconcile();
+		if (fModule != null) {
+			fModule.finalReconcile();
+		}
 	}
 
 }
