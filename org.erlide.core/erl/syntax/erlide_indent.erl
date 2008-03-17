@@ -16,7 +16,7 @@
          indent_lines/2,
          indent_lines/3]).
 
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
