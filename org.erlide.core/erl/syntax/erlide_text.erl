@@ -21,7 +21,9 @@
          is_op2/1,
          is_block_start_token/1,
          guess_arity/1,
-         clean_tokens/2]).
+         clean_tokens/2,
+         get_line_offsets/1,
+         detab/2]).
 
 %% -define(DEBUG, 1).
 
@@ -271,7 +273,48 @@ clean_tokens([#token{kind='#'} = Q, #token{kind=Kind, value=Value} | Rest], W, I
 clean_tokens([T | Rest], W, I, Acc) ->
     clean_tokens(Rest, W, I+1, [T | Acc]).
 
+%% detab(string(), integer()) -> string()
+%% replace tabs (\t) with spaces
+detab(S, Tablength) ->
+	detab(S, Tablength, 0, "").
 
+detab("", _, _, Acc) ->
+	lists:reverse(Acc);
+detab("\t"++Rest, Tablength, I, Acc) ->
+    S = get_tab_spaces(I, Tablength),
+	detab(Rest, Tablength, I+length(S), S ++ Acc);
+detab([EOL | Rest], Tablength, _I, Acc) when EOL =:= $\n; EOL =:= $\r ->
+	detab(Rest, Tablength, 0, [EOL | Acc]);
+detab([C | Rest], Tablength, I, Acc) ->
+	detab(Rest, Tablength, I+1, [C | Acc]).
 
+get_tab_spaces(I, Tablength) ->
+	Rest = Tablength - I rem Tablength,
+	string:chars($ , Rest).
 
+%% get_line_offsets/1
+%%
+get_line_offsets("") ->
+    {0, 0};
+get_line_offsets(S) ->
+    get_line_offsets(S, 0, true, []).
 
+get_line_offsets("", _, _, Acc) ->
+    list_to_tuple(lists:reverse(Acc));
+get_line_offsets(" " ++ Rest, O, B, Acc) ->
+    get_line_offsets(Rest, O+1, B, Acc);
+get_line_offsets("\r\n" ++ Rest, O, true, Acc) ->
+	O2 = O+2,
+    get_line_offsets(Rest, O2, true, [O2 | Acc]);
+get_line_offsets([EOL|Rest], O, true, Acc) when EOL =:= $\n; EOL =:= $\r ->
+    O1 = O+1,
+    get_line_offsets(Rest, O1, true, [O1 | Acc]);
+get_line_offsets("\r\n"++Rest, O, false, Acc) ->
+    get_line_offsets(Rest, O+2, true, Acc);
+get_line_offsets([EOL|Rest], O, false, Acc) when EOL =:= $\n; EOL =:= $\r ->
+    get_line_offsets(Rest, O+1, true, Acc);
+get_line_offsets([_|Rest], O, true, Acc) ->
+	O1 = O+1,
+    get_line_offsets(Rest, O1, false, [O1 | Acc]);
+get_line_offsets([_|Rest], O, false, Acc) ->
+    get_line_offsets(Rest, O+1, false, Acc).
