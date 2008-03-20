@@ -55,7 +55,9 @@ public class ErlModule extends Openable implements IErlModule {
 	// private IDocument fDoc;
 	private final List<IErlComment> comments;
 
-	private final IErlScanner fScanner;
+	private String cacheInitialText;
+
+	private IErlScanner scanner;
 
 	private final IFile fFile;
 
@@ -69,27 +71,15 @@ public class ErlModule extends Openable implements IErlModule {
 			IFile file, String initialText) {
 		super(parent, name);
 		fFile = file;
+		isModule = isErl;
+		comments = new ArrayList<IErlComment>(0);
+		scanner = null;
+		cacheInitialText = initialText;
+		setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getElementName() + "/"
 					+ name + " " + isErl);
 		}
-		isModule = isErl;
-		comments = new ArrayList<IErlComment>(0);
-		if (initialText == null) {
-			try {
-				initialText = new String(Util
-						.getResourceContentsAsCharArray(file));
-			} catch (final ErlModelException e) {
-				initialText = "";
-			}
-		}
-		fScanner = new ErlScanner(this, initialText);
-		setIsStructureKnown(false);
-		// try {
-		// open(null);
-		// } catch (final ErlModelException e) {
-		// // not much to do
-		// }
 	}
 
 	@Override
@@ -316,12 +306,27 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlScanner getScanner() {
-		// if (fScanner == null) {
-		// fScanner = new ErlScanner(this);
-		// // FIXxcME: få tag på texten på annat sätt! fScanner.insertText(0,
-		// // getBuffer().getContents());
-		// }
-		return fScanner;
+		if (scanner == null) {
+			scanner = getNewScanner();
+		}
+		return scanner;
+	}
+
+	private IErlScanner getNewScanner() {
+		String s = cacheInitialText;
+		cacheInitialText = null;
+		if (s == null) {
+			if (fFile != null) {
+				try {
+					s = new String(Util.getResourceContentsAsCharArray(fFile));
+				} catch (final ErlModelException e) {
+					s = "";
+				}
+			} else {
+				s = "";
+			}
+		}
+		return new ErlScanner(this, s);
 	}
 
 	public void fixExportedFunctions() {
@@ -367,10 +372,10 @@ public class ErlModule extends Openable implements IErlModule {
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
 			if (removeLength != 0) {
-				fScanner.removeText(offset, removeLength);
+				scanner.removeText(offset, removeLength);
 			}
 			if (newText.length() != 0) {
-				fScanner.insertText(offset, newText);
+				scanner.insertText(offset, newText);
 			}
 			setIsStructureKnown(false);
 		}
