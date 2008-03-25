@@ -46,7 +46,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.OtpPeer;
 
 import erlang.ErlideBackend;
 
@@ -98,7 +97,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	protected OtpNode fNode;
 
-	protected OtpPeer fPeer;
+	protected String fPeer;
 
 	protected IShellManager fShellManager;
 
@@ -123,7 +122,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	public abstract void connect(String cookie);
 
 	public boolean ping() {
-		return fNode.ping(fPeer.node(), 500);
+		return fNode.ping(fPeer, 500);
 	}
 
 	protected void doConnect(String label) {
@@ -142,17 +141,16 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 					.buildNodeName(BackendManager.JAVA_NODE_LABEL), cookie);
 			ErlLogger.debug("java node is " + fNode.node());
 
-			fPeer = new OtpPeer(BackendManager.buildNodeName(label));
+			fPeer = BackendManager.buildNodeName(label);
 			ErlLogger.debug("erlang peer is " + label + " ("
-					+ BackendManager.buildNodeName(label) + ")-- "
-					+ fPeer.node());
+					+ BackendManager.buildNodeName(label) + ")-- " + fPeer);
 
 			int tries = Integer.parseInt(System.getProperty(
 					"erlide.backend.retries", "50"));
 			boolean conn = false;
 			while (!conn && tries > 0) {
 				System.out.print("#");
-				conn = fNode.ping(fPeer.node(), 500);
+				conn = fNode.ping(fPeer, 500);
 				tries--;
 			}
 			ftMBox = new ThreadLocalMbox();
@@ -257,8 +255,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public void send(String name, Object msg) {
 		try {
-			getMbox().send(name, fPeer.node(),
-					RpcConverter.java2erlang(msg, "x"));
+			getMbox().send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
 		} catch (final RpcException e) {
 			// shouldn't happen
 			e.printStackTrace();
