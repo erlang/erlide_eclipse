@@ -12,7 +12,6 @@ package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -91,11 +90,11 @@ public class ErlModule extends Openable implements IErlModule {
 		boolean computeProblems = ErlangCore.hasErlangNature(project
 				.getProject());
 
-		final Map<String, String> options = project.getOptions(true);
-		if (!computeProblems) {
-			// disable task tags checking to speed up parsing
-			options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-		}
+		// final Map<String, String> options = project.getOptions(true);
+		// if (!computeProblems) {
+		// // disable task tags checking to speed up parsing
+		// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
+		// }
 
 		// ErlLogger.debug("* build structure " + this.fName);
 		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);

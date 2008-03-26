@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.internal.ErlElement;
 import org.erlide.core.erlang.internal.ErlModel;
-import org.erlide.core.erlang.internal.ErlModelManager.PerProjectInfo;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 
@@ -230,27 +229,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	Object getLastBuiltState(IProject project, IProgressMonitor monitor);
 
 	/*
-	 * Returns the per-project info for the given project. If specified, create
-	 * the info if the info doesn't exist.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getPerProjectInfo(org.eclipse.core.resources.IProject,
-	 *      boolean)
-	 */
-	PerProjectInfo getPerProjectInfo(IProject project, boolean create);
-
-	/*
-	 * Returns the per-project info for the given project. If the info doesn't
-	 * exist, check for the project existence and create the info. @throws
-	 * ErlModelException if the project doesn't exist.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getPerProjectInfoCheckExistence(org.eclipse.core.resources.IProject)
-	 */
-	PerProjectInfo getPerProjectInfoCheckExistence(IProject project)
-			throws ErlModelException;
-
-	/*
 	 * Removes all cached info for the given element (including all children)
 	 * from the cache. Returns the info for the given element, or null if it was
 	 * closed.
@@ -259,11 +237,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
 	 */
 	Object removeInfoAndChildren(ErlElement element) throws ErlModelException;
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#removePerProjectInfo(org.erlide.core.erlang.internal.ErlProject)
-	 */
-	void removePerProjectInfo(IErlProject erlangProject);
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#setLastBuiltState(org.eclipse.core.resources.IProject,

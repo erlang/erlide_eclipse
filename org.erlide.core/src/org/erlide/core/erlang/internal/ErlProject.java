@@ -10,21 +10,10 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -41,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -55,6 +43,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ISuffixConstants;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.runtime.ErlangProjectProperties;
 
 /**
  * Handle for an Erlang Project.
@@ -99,13 +88,6 @@ public class ErlProject extends Openable implements IErlProject,
 	 * PackageFragment
 	 */
 	private IResource[] nonErlangResources;
-
-	/**
-	 * Name of file containing custom project preferences
-	 */
-	public static final String PREF_FILENAME = ".eprefs"; //$NON-NLS-1$
-
-	private static final String CUSTOM_DEFAULT_OPTION_VALUE = "#\r\n\r#custom-non-empty-default-value#\r\n\r#"; //$NON-NLS-1$
 
 	/**
 	 * Constructor needed for <code>IProject.getNature()</code> and
@@ -473,56 +455,6 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	/**
-	 * @see org.erlide.core.erlang.IErlProject#getOption(String, boolean)
-	 */
-	public String getOption(String optionName, boolean inheritErlangCoreOptions) {
-
-		final String propertyName = optionName;
-		if (ErlangCore.getModelManager().getOptionNames()
-				.contains(propertyName)) {
-			final Preferences preferences = getPreferences();
-			if (preferences == null || preferences.isDefault(propertyName)) {
-				return inheritErlangCoreOptions ? ErlangPlugin
-						.getOption(propertyName) : null;
-			}
-			return preferences.getString(propertyName).trim();
-		}
-		return null;
-	}
-
-	/**
-	 * @see org.erlide.core.erlang.IErlProject#getOptions(boolean)
-	 */
-	public Map<String, String> getOptions(boolean inheritErlangCoreOptions) {
-
-		// initialize to the defaults from ErlangCore options pool
-		final Map<String, String> options = inheritErlangCoreOptions ? ErlangPlugin
-				.getOptions()
-				: new Hashtable<String, String>(5);
-
-		final Preferences preferences = getPreferences();
-		if (preferences == null) {
-			return options; // cannot do better (non-Erlang project)
-		}
-		final HashSet<String> optionNames = ErlangCore.getModelManager()
-				.getOptionNames();
-
-		// project cannot hold custom preferences set to their default, as it
-		// uses CUSTOM_DEFAULT_OPTION_VALUE
-
-		// get custom preferences not set to their default
-		final String[] propertyNames = preferences.propertyNames();
-		for (final String propertyName : propertyNames) {
-			final String value = preferences.getString(propertyName).trim();
-			if (optionNames.contains(propertyName)) {
-				options.put(propertyName, value);
-			}
-		}
-
-		return options;
-	}
-
-	/**
 	 * @see IErlProject
 	 */
 	public IPath getOutputLocation() throws ErlModelException {
@@ -541,25 +473,9 @@ public class ErlProject extends Openable implements IErlProject,
 	public IPath getOutputLocation(boolean createMarkers, boolean logProblems)
 			throws ErlModelException {
 
-		final ErlModelManager.PerProjectInfo perProjectInfo = getPerProjectInfo();
-		IPath outputLocation = perProjectInfo.outputLocation;
-		if (outputLocation != null) {
-			return outputLocation;
-		}
-
-		// force to read classpath - will position output location as well
-		// this.getRawClasspath(createMarkers, logProblems);
-		outputLocation = perProjectInfo.outputLocation;
-		if (outputLocation == null) {
-			return defaultOutputLocation();
-		}
-		return outputLocation;
-	}
-
-	public ErlModelManager.PerProjectInfo getPerProjectInfo()
-			throws ErlModelException {
-		return ErlangCore.getModelManager().getPerProjectInfoCheckExistence(
-				fProject);
+		ErlangProjectProperties props = new ErlangProjectProperties(
+				getProject());
+		return new Path(props.getOutputDir());
 	}
 
 	/**
@@ -567,30 +483,6 @@ public class ErlProject extends Openable implements IErlProject,
 	 */
 	public IProject getProject() {
 		return fProject;
-	}
-
-	/**
-	 * Returns the project custom preference pool. Project preferences may
-	 * include custom encoding.
-	 * 
-	 * @return Preferences
-	 */
-	protected Preferences getPreferences() {
-		if (!ErlangCore.hasErlangNature(fProject)) {
-			return null;
-		}
-		final ErlModelManager.PerProjectInfo perProjectInfo = ErlModelManager
-				.getDefault().getPerProjectInfo(fProject, true);
-		Preferences preferences = perProjectInfo.preferences;
-		if (preferences != null) {
-			return preferences;
-		}
-		preferences = loadPreferences();
-		if (preferences == null) {
-			preferences = new Preferences();
-		}
-		perProjectInfo.preferences = preferences;
-		return preferences;
 	}
 
 	/**
@@ -640,42 +532,6 @@ public class ErlProject extends Openable implements IErlProject,
 		return fProject.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
 	}
 
-	/*
-	 * load preferences from a shareable format (VCM-wise)
-	 */
-	public Preferences loadPreferences() {
-
-		final Preferences preferences = new Preferences();
-
-		// File prefFile =
-		// this.project.getLocation().append(PREF_FILENAME).toFile();
-		final IPath projectMetaLocation = getPluginWorkingLocation();
-		if (projectMetaLocation != null) {
-			final File prefFile = projectMetaLocation.append(PREF_FILENAME)
-					.toFile();
-			if (prefFile.exists()) { // load preferences from file
-				InputStream in = null;
-				try {
-					in = new BufferedInputStream(new FileInputStream(prefFile));
-					preferences.load(in);
-					return preferences;
-				} catch (final IOException e) { // problems loading preference
-					// store
-					// - quietly ignore
-				} finally {
-					if (in != null) {
-						try {
-							in.close();
-						} catch (final IOException e) { // ignore problems with
-							// close
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Removes the given builder from the build spec for the given project.
 	 */
@@ -707,56 +563,6 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	/**
-	 * Save project custom preferences to shareable file (.jprefs)
-	 */
-	private void savePreferences(Preferences preferences) {
-
-		if (!ErlangCore.hasErlangNature(fProject)) {
-			return; // ignore
-		}
-
-		if (preferences == null || !preferences.needsSaving()
-				&& preferences.propertyNames().length != 0) {
-			// nothing to save
-			return;
-		}
-
-		// preferences need to be saved
-		// the preferences file is located in the plug-in's state area
-		// at a well-known name (.jprefs)
-		// File prefFile =
-		// this.project.getLocation().append(PREF_FILENAME).toFile();
-		final File prefFile = getPluginWorkingLocation().append(PREF_FILENAME)
-				.toFile();
-		if (preferences.propertyNames().length == 0) {
-			// there are no preference settings
-			// rather than write an empty file, just delete any existing file
-			if (prefFile.exists()) {
-				prefFile.delete(); // don't worry if delete unsuccessful
-			}
-			return;
-		}
-
-		// write file, overwriting an existing one
-		OutputStream out = null;
-		try {
-			// do it as carefully as we know how so that we don't lose/mangle
-			// the setting in times of stress
-			out = new BufferedOutputStream(new FileOutputStream(prefFile));
-			preferences.store(out, null);
-		} catch (final IOException e) { // problems saving preference store -
-			// quietly ignore
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (final IOException e) { // ignore problems with close
-				}
-			}
-		}
-	}
-
-	/**
 	 * Update the Erlang command in the build spec (replace existing one if
 	 * present, add one first if none).
 	 */
@@ -783,59 +589,6 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	/**
-	 * @see org.erlide.core.erlang.IErlProject#setOption(java.lang.String,
-	 *      java.lang.String)
-	 */
-	public void setOption(String optionName, String optionValue) {
-		if (!ErlangCore.getModelManager().getOptionNames().contains(optionName)) {
-			return; // unrecognized option
-		}
-		final Preferences preferences = getPreferences();
-		preferences.setDefault(optionName, CUSTOM_DEFAULT_OPTION_VALUE);
-		preferences.setValue(optionName, optionValue);
-		savePreferences(preferences);
-	}
-
-	/**
-	 * @see org.erlide.core.erlang.IErlProject#setOptions(Map)
-	 */
-	public void setOptions(Map<String, String> newOptions) {
-
-		final Preferences preferences = getPreferences();
-		if (newOptions != null) {
-			final Iterator<Map.Entry<String, String>> entries = newOptions
-					.entrySet().iterator();
-			while (entries.hasNext()) {
-				final Entry<String, String> entry = entries.next();
-				final String key = entry.getKey();
-				if (!ErlangCore.getModelManager().getOptionNames()
-						.contains(key)) {
-					continue; // unrecognized option
-				}
-				// no filtering for encoding (custom encoding for project is
-				// allowed)
-				final String value = entry.getValue();
-				preferences.setDefault(key, CUSTOM_DEFAULT_OPTION_VALUE);
-				preferences.setValue(key, value);
-			}
-		}
-
-		// reset to default all options not in new map
-		final String[] pNames = preferences.propertyNames();
-		final int ln = pNames.length;
-		for (int i = 0; i < ln; i++) {
-			final String key = pNames[i];
-			if (newOptions == null || !newOptions.containsKey(key)) {
-				preferences.setToDefault(key); // set default => remove from
-				// preferences table
-			}
-		}
-
-		// persist options
-		savePreferences(preferences);
-	}
-
-	/**
 	 * @see IErlProject
 	 */
 	public void setOutputLocation(IPath path, IProgressMonitor monitor)
@@ -848,18 +601,6 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 		// this.setRawClasspath(SetClasspathOperation.ReuseClasspath, path,
 		// monitor);
-	}
-
-	/*
-	 * Set cached preferences, no preference file is saved, only info is updated
-	 */
-	public void setPreferences(Preferences preferences) {
-		if (!ErlangCore.hasErlangNature(fProject)) {
-			return; // ignore
-		}
-		final ErlModelManager.PerProjectInfo perProjectInfo = ErlModelManager
-				.getDefault().getPerProjectInfo(fProject, true);
-		perProjectInfo.preferences = preferences;
 	}
 
 	/**

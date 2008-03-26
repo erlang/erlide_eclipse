@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.Map;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -96,48 +94,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 	IResource[] getNonErlangResources() throws ErlModelException;
 
 	/**
-	 * Helper method for returning one option value only. Equivalent to
-	 * <code>(String)this.getOptions(inheritErlangCoreOptions).get(optionName)</code>
-	 * Note that it may answer <code>null</code> if this option does not
-	 * exist, or if there is no custom value for it.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>ErlangCore#getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param optionName
-	 *            the name of an option
-	 * @param inheritErlangCoreOptions -
-	 *            boolean indicating whether ErlangCore options should be
-	 *            inherited as well
-	 * @return the String value of a given option
-	 * @see ErlangCore#getDefaultOptions()
-	 * 
-	 */
-	String getOption(String optionName, boolean inheritErlangCoreOptions);
-
-	/**
-	 * Returns the table of the current custom options for this project.
-	 * Projects remember their custom options, in other words, only the options
-	 * different from the the ErlangCore global options for the workspace. A
-	 * boolean argument allows to directly merge the project options with global
-	 * ones from <code>ErlangCore</code>.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>ErlangCore#getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param inheritErlangCoreOptions -
-	 *            boolean indicating whether ErlangCore options should be
-	 *            inherited as well
-	 * @return table of current settings of all options (key type:
-	 *         <code>String</code>; value type: <code>String</code>)
-	 * @see ErlangCore#getDefaultOptions()
-	 * 
-	 */
-	Map<String, String> getOptions(boolean inheritErlangCoreOptions);
-
-	/**
 	 * Returns the default output location for this project as a workspace-
 	 * relative absolute path.
 	 * <p>
@@ -190,42 +146,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 	 *         otherwise
 	 */
 	boolean hasBuildState();
-
-	/**
-	 * Helper method for setting one option value only. Equivalent to
-	 * <code>Map options = this.getOptions(false); map.put(optionName, optionValue); this.setOptions(map)</code>
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>ErlangCore#getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param optionName
-	 *            the name of an option
-	 * @param optionValue
-	 *            the value of the option to set
-	 * @see ErlangCore#getDefaultOptions()
-	 * 
-	 */
-	void setOption(String optionName, String optionValue);
-
-	/**
-	 * Sets the project custom options. All and only the options explicitly
-	 * included in the given table are remembered; all previous option settings
-	 * are forgotten, including ones not explicitly mentioned.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>ErlangCore#getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param newOptions
-	 *            the new options (key type: <code>String</code>; value type:
-	 *            <code>String</code>), or <code>null</code> to flush all
-	 *            custom options (clients will automatically get the global
-	 *            ErlangCore options).
-	 * @see ErlangCore#getDefaultOptions()
-	 * 
-	 */
-	void setOptions(Map<String, String> newOptions);
 
 	/**
 	 * Sets the default output location of this project to the location

@@ -14,14 +14,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
@@ -42,8 +39,6 @@ public class ErlangProjectProperties {
 	private String fBackendName = IPrefConstants.DEFAULT_BACKEND_NAME;;
 	private String fBackendCookie = IPrefConstants.DEFAULT_BACKEND_COOKIE;
 
-	private List<IPropertyChangeListener> fListeners;
-
 	/**
 	 * Name of file containing project classpath
 	 */
@@ -54,7 +49,6 @@ public class ErlangProjectProperties {
 
 	public ErlangProjectProperties(IProject prj) {
 		project = prj;
-		fListeners = new ArrayList<IPropertyChangeListener>(5);
 		load();
 	}
 
@@ -268,23 +262,6 @@ public class ErlangProjectProperties {
 		return project;
 	}
 
-	void addPropertyChangeListener(IPropertyChangeListener listener) {
-		if (!fListeners.contains(listener)) {
-			fListeners.add(listener);
-		}
-	}
-
-	void removePropertyChangeListener(IPropertyChangeListener listener) {
-		fListeners.remove(listener);
-	}
-
-	void notifyListeners() {
-		// for (IPropertyChangeListener listener : fListeners) {
-		// listener.propertyChange(new PropertyChangeEvent(null, null, null,
-		// null));
-		// }
-	}
-
 	public void setBackendName(String backendName) {
 		// TODO validate!
 		fBackendName = backendName;
@@ -309,5 +286,4 @@ public class ErlangProjectProperties {
 	public void setBackendCookie(String text) {
 		fBackendCookie = text;
 	}
-
 }

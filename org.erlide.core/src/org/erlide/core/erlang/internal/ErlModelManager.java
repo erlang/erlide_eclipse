@@ -427,79 +427,6 @@ public class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * Table from IProject to PerProjectInfo. NOTE: this object itself is used
-	 * as a lock to synchronize creation/removal of per project infos
-	 */
-	protected Map<IProject, PerProjectInfo> perProjectInfos = new HashMap<IProject, PerProjectInfo>(
-			5);
-
-	public static class PerProjectInfo {
-
-		public IProject fProject;
-
-		public Object fSavedState;
-
-		public boolean fTriedRead;
-
-		public IPath outputLocation;
-
-		public Preferences preferences;
-
-		public PerProjectInfo(IProject project) {
-
-			fTriedRead = false;
-			fSavedState = null;
-			fProject = project;
-		}
-
-		@Override
-		public String toString() {
-			final StringBuilder buffer = new StringBuilder();
-			buffer.append("Info for "); //$NON-NLS-1$
-			buffer.append(fProject.getFullPath());
-			// buffer.append("\nRaw classpath:\n"); //$NON-NLS-1$
-			// if (this.rawClasspath == null)
-			// {
-			// buffer.append(" <null>\n"); //$NON-NLS-1$
-			// }
-			// else
-			// {
-			// for (int i = 0, length = this.rawClasspath.length; i < length;
-			// i++)
-			// {
-			// buffer.append(" "); //$NON-NLS-1$
-			// buffer.append(this.rawClasspath[i]);
-			// buffer.append('\n');
-			// }
-			// }
-			// buffer.append("Resolved classpath:\n"); //$NON-NLS-1$
-			// IClasspathEntry[] resolvedCP = this.resolvedClasspath;
-			// if (resolvedCP == null)
-			// {
-			// buffer.append(" <null>\n"); //$NON-NLS-1$
-			// }
-			// else
-			// {
-			// for (int i = 0, length = resolvedCP.length; i < length; i++)
-			// {
-			// buffer.append(" "); //$NON-NLS-1$
-			// buffer.append(resolvedCP[i]);
-			// buffer.append('\n');
-			// }
-			// }
-			buffer.append("Output location:\n  "); //$NON-NLS-1$
-			if (outputLocation == null) {
-				buffer.append("<null>"); //$NON-NLS-1$
-			} else {
-				buffer.append(outputLocation);
-			}
-			return buffer.toString();
-		}
-	}
-
-	// public static boolean CP_RESOLVE_VERBOSE = false;
-
-	/**
 	 * Update the classpath variable cache
 	 */
 	public static class PluginPreferencesListener implements
@@ -610,60 +537,22 @@ public class ErlModelManager implements IErlModelManager {
 			return null;
 		}
 
-		final PerProjectInfo info = getPerProjectInfo(project, true);
-		// create if missing
-		if (!info.fTriedRead) {
-			info.fTriedRead = true;
-			try {
-				if (monitor != null) {
-					monitor.subTask(Util.bind(
-							"build.readStateProgress", project.getName())); //$NON-NLS-1$
-				}
-				info.fSavedState = readState(project);
-			} catch (final CoreException e) {
-				e.printStackTrace();
-			}
-		}
-		return info.fSavedState;
-	}
-
-	/*
-	 * Returns the per-project info for the given project. If specified, create
-	 * the info if the info doesn't exist.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getPerProjectInfo(org.eclipse.core.resources.IProject,
-	 *      boolean)
-	 */
-	public PerProjectInfo getPerProjectInfo(IProject project, boolean create) {
-		synchronized (perProjectInfos) {
-			PerProjectInfo info = perProjectInfos.get(project);
-			if (info == null && create) {
-				info = new PerProjectInfo(project);
-				perProjectInfos.put(project, info);
-			}
-			return info;
-		}
-	}
-
-	/*
-	 * Returns the per-project info for the given project. If the info doesn't
-	 * exist, check for the project existence and create the info. @throws
-	 * ErlModelException if the project doesn't exist.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getPerProjectInfoCheckExistence(org.eclipse.core.resources.IProject)
-	 */
-	public PerProjectInfo getPerProjectInfoCheckExistence(IProject project)
-			throws ErlModelException {
-		PerProjectInfo info = getPerProjectInfo(project, false);
-		if (info == null) {
-			if (!ErlangCore.hasErlangNature(project)) {
-				throw ((ErlProject) create(project)).newNotPresentException();
-			}
-			info = getPerProjectInfo(project, true);
-		}
-		return info;
+		// final PerProjectInfo info = getPerProjectInfo(project, true);
+		// // create if missing
+		// if (!info.fTriedRead) {
+		// info.fTriedRead = true;
+		// try {
+		// if (monitor != null) {
+		// monitor.subTask(Util.bind(
+		// "build.readStateProgress", project.getName())); //$NON-NLS-1$
+		// }
+		// info.fSavedState = readState(project);
+		// } catch (final CoreException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// return info.fSavedState;
+		return null;
 	}
 
 	/**
@@ -825,20 +714,6 @@ public class ErlModelManager implements IErlModelManager {
 		// return info;
 		// }
 		return null;
-	}
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#removePerProjectInfo(org.erlide.core.erlang.internal.ErlProject)
-	 */
-	public void removePerProjectInfo(IErlProject erlangProject) {
-		synchronized (perProjectInfos) { // use the perProjectInfo collection
-			// as its own lock
-			final IProject project = erlangProject.getProject();
-			final PerProjectInfo info = perProjectInfos.get(project);
-			if (info != null) {
-				perProjectInfos.remove(project);
-			}
-		}
 	}
 
 	/**
@@ -1064,10 +939,10 @@ public class ErlModelManager implements IErlModelManager {
 	public void setLastBuiltState(IProject project, Object state) {
 		if (ErlangCore.hasErlangNature(project)) {
 			// should never be requested on non-Erlang projects
-			final PerProjectInfo info = getPerProjectInfo(project, true);
-			info.fTriedRead = true; // no point trying to re-read once using
-			// setter
-			info.fSavedState = state;
+			// final PerProjectInfo info = getPerProjectInfo(project, true);
+			// info.fTriedRead = true; // no point trying to re-read once using
+			// // setter
+			// info.fSavedState = state;
 		}
 		if (state == null) {
 			// delete state file to ensure a full build happens if the workspace
