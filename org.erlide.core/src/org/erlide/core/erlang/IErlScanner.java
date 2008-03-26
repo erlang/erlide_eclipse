@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import org.erlide.runtime.IDisposable;
 
-public interface IErlScanner {
+public interface IErlScanner extends IDisposable {
 
 	ErlToken getTokenAt(int offset);
 
@@ -26,4 +27,5 @@ public interface IErlScanner {
 	TokenWindow getTokenWindow(int offset, int window);
 
 	String getScannerModuleName();
+
 }

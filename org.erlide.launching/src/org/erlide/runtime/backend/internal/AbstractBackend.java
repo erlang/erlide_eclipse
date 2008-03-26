@@ -142,8 +142,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			ErlLogger.debug("java node is " + fNode.node());
 
 			fPeer = BackendManager.buildNodeName(label);
-			ErlLogger.debug("erlang peer is " + label + " ("
-					+ BackendManager.buildNodeName(label) + ")-- " + fPeer);
+			ErlLogger.debug("erlang peer is " + label + " " + fPeer);
 
 			int tries = Integer.parseInt(System.getProperty(
 					"erlide.backend.retries", "50"));
