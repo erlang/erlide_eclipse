@@ -33,8 +33,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IErlModule extends IErlElement, ISourceReference, IParent,
-		IOpenable, ISourceManipulation {
+public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	/**
 	 * Returns the smallest element within this module that includes the given
