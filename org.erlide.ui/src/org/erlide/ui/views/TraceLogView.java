@@ -1,6 +1,7 @@
 package org.erlide.ui.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
@@ -315,15 +316,15 @@ public class TraceLogView extends ViewPart {
 			public void run() {
 				// testing
 				final IErlModel mdl = ErlangCore.getModel();
-				final IErlModule[] ms = mdl.findModule("test", ".*");
-				ErlLogger.debug("found(\"*\") " + ms.length);
+				final List<IErlModule> ms = mdl.findModule("test", ".*");
+				ErlLogger.debug("found(\"*\") " + ms.size());
 				for (IErlModule element : ms) {
 					ErlLogger.debug("  " + element.getElementName());
 				}
 
-				final IErlFunction[] fs = mdl.findFunction("test", ".*",
+				final List<IErlFunction> fs = mdl.findFunction("test", ".*",
 						"st.*", IErlModel.UNKNOWN_ARITY);
-				ErlLogger.debug("found(\"*\") " + ms.length);
+				ErlLogger.debug("found(\"*\") " + fs.size());
 				for (IErlFunction element : fs) {
 					ErlLogger.debug("  " + element.getElementName() + "/"
 							+ element.getArity());

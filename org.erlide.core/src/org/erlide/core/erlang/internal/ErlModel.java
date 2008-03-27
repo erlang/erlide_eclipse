@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -92,7 +93,7 @@ public class ErlModel extends Openable implements IErlModel {
 			return true;
 		}
 		// file or folder
-		IErlProject[] projects;
+		List<IErlProject> projects;
 		try {
 			projects = getErlangProjects();
 		} catch (final ErlModelException e) {
@@ -164,7 +165,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public IErlProject findErlangProject(IProject project) {
 		try {
-			final IErlProject[] projects = getErlangProjects();
+			final List<IErlProject> projects = getErlangProjects();
 			for (final IErlProject erlangProject : projects) {
 				if (project.equals(erlangProject.getProject())) {
 					return erlangProject;
@@ -235,9 +236,9 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see IErlModel
 	 */
 	@SuppressWarnings("unchecked")
-	public IErlProject[] getErlangProjects() throws ErlModelException {
+	public List<IErlProject> getErlangProjects() throws ErlModelException {
 		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(ErlElementType.PROJECT);
-		return list.toArray(new IErlProject[list.size()]);
+		return list;
 	}
 
 	/*
@@ -442,11 +443,11 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see org.erlide.core.erlang.IErlModel#findFunction(java.lang.String,
 	 *      java.lang.String, int)
 	 */
-	public IErlFunction[] findFunction(String project, String module,
+	public List<IErlFunction> findFunction(String project, String module,
 			String function, int arity) {
 		final ArrayList<IErlFunction> funs = new ArrayList<IErlFunction>(20);
 
-		final IErlModule[] modules = findModule(project, module);
+		final List<IErlModule> modules = findModule(project, module);
 		for (final IErlModule mod : modules) {
 			try {
 				for (IErlElement el : mod.getChildren()) {
@@ -464,10 +465,10 @@ public class ErlModel extends Openable implements IErlModel {
 			}
 		}
 
-		return funs.toArray(new IErlFunction[funs.size()]);
+		return funs;
 	}
 
-	public IErlModule[] findModule(String project, String module) {
+	public List<IErlModule> findModule(String project, String module) {
 		final ArrayList<IErlModule> mods = new ArrayList<IErlModule>(20);
 
 		if (module == UNKNOWN_MODULE) {
@@ -488,7 +489,7 @@ public class ErlModel extends Openable implements IErlModel {
 			e.printStackTrace();
 		}
 
-		return mods.toArray(new IErlModule[mods.size()]);
+		return mods;
 	}
 
 	@Override

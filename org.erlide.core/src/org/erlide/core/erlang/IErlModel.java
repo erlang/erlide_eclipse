@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -175,7 +177,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * @throws ErlModelException
 	 *             if this request fails.
 	 */
-	IErlProject[] getErlangProjects() throws ErlModelException;
+	List<IErlProject> getErlangProjects() throws ErlModelException;
 
 	/**
 	 * Returns an array of non-Erlang resources (that is, non-Erlang projects)
@@ -327,8 +329,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * @param arity
 	 * @return
 	 */
-	IErlFunction[] findFunction(String project, String module, String function,
-			int arity);
+	List<IErlFunction> findFunction(String project, String module,
+			String function, int arity);
 
-	IErlModule[] findModule(String project, String module);
+	List<IErlModule> findModule(String project, String module);
 }
