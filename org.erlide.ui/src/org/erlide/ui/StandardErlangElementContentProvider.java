@@ -152,9 +152,10 @@ public class StandardErlangElementContentProvider implements
 				return getResources((IFolder) element);
 			}
 
-			if (getProvideMembers() && element instanceof ISourceReference &&
-					element instanceof IParent) {
-				return ((IParent) element).getChildren();
+			if (getProvideMembers() && element instanceof ISourceReference
+					&& element instanceof IParent) {
+				return ((IParent) element).getChildren().toArray(
+						new IErlElement[0]);
 			}
 		} catch (final ErlModelException e) {
 			return NO_CHILDREN;

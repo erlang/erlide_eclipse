@@ -10,6 +10,7 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
@@ -38,14 +39,14 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		fArity = arity;
 	}
 
-	public IErlFunctionClause[] getClauses() {
-		ArrayList<IErlFunctionClause> FC = new ArrayList<IErlFunctionClause>();
+	public List<IErlFunctionClause> getClauses() {
+		ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
 		for (IErlElement el : fChildren) {
 			if (el instanceof IErlFunctionClause) {
-				FC.add((IErlFunctionClause) el);
+				fc.add((IErlFunctionClause) el);
 			}
 		}
-		return FC.toArray(new IErlFunctionClause[FC.size()]);
+		return fc;
 	}
 
 	public ErlElementType getElementType() {

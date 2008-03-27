@@ -9,12 +9,12 @@
  *******************************************************************************/
 package org.erlide.testing.java;
 
-import static org.erlide.jinterface.rpc.RpcConverter.java2erlang;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.erlide.jinterface.rpc.IConvertible;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
@@ -34,7 +34,7 @@ public class RpcConverterTest {
 
 	private void test(Object o, String sig, OtpErlangObject expect)
 			throws RpcException {
-		OtpErlangObject result = java2erlang(o, sig);
+		OtpErlangObject result = RpcConverter.java2erlang(o, sig);
 		assertTrue(expect.equals(result));
 	}
 
@@ -186,4 +186,29 @@ public class RpcConverterTest {
 	public void cvtBoolFail_1() throws RpcException {
 		test(true, "i", new OtpErlangAtom("true"));
 	}
+
+	@Test
+	public void cvtConvertible_1() throws RpcException {
+		IConvertible x = new IConvertible() {
+			public OtpErlangObject toErlangObject() {
+				return new OtpErlangAtom("__kalle__");
+			}
+		};
+		test(x, "j", new OtpErlangAtom("__kalle__"));
+	}
+
+	static class Cvt {
+		public static String fromErlangObject(OtpErlangObject obj) {
+			return "hej";
+		}
+	}
+
+	@Test
+	public void cvtConvertible_2() throws RpcException {
+		Object x = "hej";
+		OtpErlangObject obj = new OtpErlangAtom("hej då");
+		Object y = RpcConverter.erlang2java(obj, Cvt.class);
+		assertTrue(x.equals(y));
+	}
+
 }

@@ -37,15 +37,13 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
-import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.editors.util.EditorUtility;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideOpen;
@@ -103,7 +101,7 @@ public class ErlModelUtils {
 
 	public static IErlFunction findFunction(IErlModule module, String function,
 			int arity) throws ErlModelException {
-		final IErlElement[] children = module.getChildren();
+		final List<IErlElement> children = module.getChildren();
 		for (final IErlElement element : children) {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;
@@ -122,18 +120,11 @@ public class ErlModelUtils {
 			return new OtpErlangList();
 		}
 
-		final IErlImport[] imports = mod.getImports();
-		final OtpErlangTuple rImports[] = new OtpErlangTuple[imports.length];
-		for (int i = 0; i < imports.length; ++i) {
-			final IErlImport imp = imports[i];
-			final ErlangFunction[] impFuncs = imp.getFunctions();
-			final OtpErlangTuple rImpFuncs[] = new OtpErlangTuple[impFuncs.length];
-			for (final ErlangFunction f : impFuncs) {
-				rImpFuncs[i] = new OtpErlangTuple(new OtpErlangAtom(f.name),
-						new OtpErlangLong(f.arity));
-			}
-			rImports[i] = new OtpErlangTuple(new OtpErlangAtom(imp
-					.getImportModule()), new OtpErlangList(rImpFuncs));
+		final List<IErlImport> imports = mod.getImports();
+		final OtpErlangObject rImports[] = new OtpErlangTuple[imports.size()];
+		for (int i = 0; i < imports.size(); ++i) {
+			final IErlImport imp = imports.get(i);
+			rImports[i] = imp.toErlangObject();
 		}
 		return new OtpErlangList(rImports);
 	}
@@ -175,7 +166,7 @@ public class ErlModelUtils {
 		m.open(null);
 		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
 		if (pd == null) {
-			final ErlangIncludeFile[] includes = m.getIncludedFiles();
+			final List<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,

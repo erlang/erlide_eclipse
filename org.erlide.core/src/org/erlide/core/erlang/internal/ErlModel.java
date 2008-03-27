@@ -449,8 +449,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlModule[] modules = findModule(project, module);
 		for (final IErlModule mod : modules) {
 			try {
-				for (int j = 0; j < mod.getChildren().length; j++) {
-					final IErlElement el = mod.getChildren()[j];
+				for (IErlElement el : mod.getChildren()) {
 					if (el instanceof IErlFunction) {
 						final IErlFunction fun = (IErlFunction) el;
 						final boolean arityOk = arity == UNKNOWN_ARITY
@@ -477,8 +476,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlProject prj = getErlangProject(project);
 
 		try {
-			for (int i = 0; i < prj.getChildren().length; i++) {
-				final IErlElement el = prj.getChildren()[i];
+			for (IErlElement el : prj.getChildren()) {
 				if (el instanceof IErlModule) {
 					final IErlModule mod = (IErlModule) el;
 					if (mod.getElementName().matches(module)) {

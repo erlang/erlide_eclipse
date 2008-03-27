@@ -191,7 +191,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 */
 	@Override
 	public boolean hasChildren() {
-		return getChildren().length > 0;
+		return getChildren().size() > 0;
 	}
 
 	/**

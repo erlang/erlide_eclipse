@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -176,7 +178,7 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
 
-	IErlModule[] getModules() throws ErlModelException;
+	List<IErlModule> getModules() throws ErlModelException;
 
 	IErlModule getModule(String name) throws ErlModelException;
 

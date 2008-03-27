@@ -547,8 +547,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		}
 	}
 
-	public IErlElement[] getChildren() {
-		return fChildren.toArray(new IErlElement[fChildren.size()]);
+	public List<IErlElement> getChildren() {
+		return fChildren;
 	}
 
 	/**

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.erlide.core.util.ErlangFunction;
 
 /**
@@ -22,7 +24,7 @@ public interface IErlFunction extends IErlMember, IParent {
 
 	boolean isExported();
 
-	IErlFunctionClause[] getClauses();
+	List<IErlFunctionClause> getClauses();
 
 	ErlangFunction getFunction();
 }

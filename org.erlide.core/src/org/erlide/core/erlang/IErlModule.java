@@ -12,6 +12,8 @@
  * *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
@@ -91,12 +93,12 @@ public interface IErlModule extends IErlElement, ISourceReference, IParent,
 
 	IErlImport findImport(ErlangFunction function);
 
-	IErlImport[] getImports();
+	List<IErlImport> getImports();
 
 	IErlPreprocessorDef findPreprocessorDef(String definedName,
 			ErlElementType type);
 
-	ErlangIncludeFile[] getIncludedFiles();
+	List<ErlangIncludeFile> getIncludedFiles();
 
 	IErlScanner getScanner();
 

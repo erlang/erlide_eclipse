@@ -9,7 +9,10 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlangFunction;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -63,12 +66,24 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 		return fFunctions.contains(f);
 	}
 
-	public ErlangFunction[] getFunctions() {
-		return fFunctions.toArray(new ErlangFunction[fFunctions.size()]);
+	public List<ErlangFunction> getFunctions() {
+		return fFunctions;
 	}
 
 	@Override
 	public String toString() {
 		return getElementName() + ": " + getImportModule();
+	}
+
+	public OtpErlangObject toErlangObject() {
+		final List<ErlangFunction> impFuncs = getFunctions();
+		final OtpErlangObject[] rImpFuncs = new OtpErlangObject[impFuncs.size()];
+		int i = 0;
+		for (final ErlangFunction f : impFuncs) {
+			rImpFuncs[i++] = new OtpErlangTuple(new OtpErlangAtom(f.name),
+					new OtpErlangLong(f.arity));
+		}
+		return new OtpErlangTuple(new OtpErlangAtom(getImportModule()),
+				new OtpErlangList(rImpFuncs));
 	}
 }

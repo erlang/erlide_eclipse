@@ -594,7 +594,8 @@ public class DefaultErlangFoldingStructureProvider implements
 			return;
 		}
 		try {
-			computeAdditions(parent.getChildren(), map);
+			computeAdditions(parent.getChildren().toArray(new IErlElement[0]),
+					map);
 		} catch (final ErlModelException x) {
 			x.printStackTrace();
 		}
@@ -611,7 +612,8 @@ public class DefaultErlangFoldingStructureProvider implements
 				computeAdditions(element, map);
 				if (element instanceof IParent) {
 					final IParent parent = (IParent) element;
-					computeAdditions(parent.getChildren(), map);
+					computeAdditions(parent.getChildren().toArray(
+							new IErlElement[0]), map);
 				}
 			}
 		}

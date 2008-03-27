@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.
  * <p>
@@ -28,7 +30,7 @@ public interface IParent {
 	 *                while accessing its corresponding resource
 	 * @return the immediate children of this element
 	 */
-	IErlElement[] getChildren() throws ErlModelException;
+	List<IErlElement> getChildren() throws ErlModelException;
 
 	/**
 	 * Returns whether this element has one or more immediate children. This is

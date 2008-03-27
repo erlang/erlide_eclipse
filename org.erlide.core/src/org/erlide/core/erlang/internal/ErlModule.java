@@ -125,8 +125,8 @@ public class ErlModule extends Openable implements IErlModule {
 		for (final IErlElement child : fChildren) {
 			if (child instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) child;
-				final IErlFunctionClause[] clauses = f.getClauses();
-				if (clauses.length == 1
+				final List<IErlFunctionClause> clauses = f.getClauses();
+				if (clauses.size() == 1
 						&& f.getSourceRange().hasPosition(position)) {
 					return f;
 				}
@@ -275,7 +275,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
-	public ErlangIncludeFile[] getIncludedFiles() {
+	public List<ErlangIncludeFile> getIncludedFiles() {
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlAttribute) {
@@ -291,17 +291,17 @@ public class ErlModule extends Openable implements IErlModule {
 				}
 			}
 		}
-		return r.toArray(new ErlangIncludeFile[r.size()]);
+		return r;
 	}
 
-	public IErlImport[] getImports() {
+	public List<IErlImport> getImports() {
 		final List<IErlImport> r = new ArrayList<IErlImport>();
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				r.add((IErlImport) m);
 			}
 		}
-		return r.toArray(new IErlImport[r.size()]);
+		return r;
 	}
 
 	public IErlScanner getScanner() {

@@ -298,7 +298,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		IErlModel m = mm.getErlangModel();
 		IErlElement[] projects;
 		try {
-			projects = m.getChildren();
+			projects = m.getChildren().toArray(new IErlElement[0]);
 		} catch (ErlModelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

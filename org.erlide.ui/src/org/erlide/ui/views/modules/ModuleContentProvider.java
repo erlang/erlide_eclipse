@@ -126,11 +126,12 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 */
 	private Object[] getProjectChildren(IErlProject project)
 			throws CoreException {
-		final IErlModule[] resources = project.getModules();
+		final IErlModule[] resources = project.getModules().toArray(
+				new IErlModule[0]);
 		final IResource[] nonerl = project.getNonErlangResources();
 
-		final List<IResource> lst = new ArrayList<IResource>(resources.length +
-				nonerl.length);
+		final List<IResource> lst = new ArrayList<IResource>(resources.length
+				+ nonerl.length);
 		for (IErlModule element : resources) {
 			ErlLogger.debug("> " + element.getElementName());
 		}
@@ -218,7 +219,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 			if (element instanceof IWorkspaceRoot) {
 				return ((IWorkspaceRoot) element).members().length != 0;
 			} else if (element instanceof IErlProject) {
-				return ((IErlProject) element).getChildren().length != 0;
+				return ((IErlProject) element).getChildren().size() != 0;
 			} else if (element instanceof IErlProject) {
 				return ((IProject) element).members().length != 0;
 			} else if (element instanceof IContainer) {
@@ -358,8 +359,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 					.getAffectedChildren(IResourceDelta.ADDED);
 			final IResourceDelta[] removedChildren = delta
 					.getAffectedChildren(IResourceDelta.REMOVED);
-			addedAndRemoved = addedChildren.length > 0 &
-					removedChildren.length > 0;
+			addedAndRemoved = addedChildren.length > 0
+					& removedChildren.length > 0;
 
 			// Disable redraw until the operation is finished so we don't get a
 			// flash of both the new and old item (in the case of rename)

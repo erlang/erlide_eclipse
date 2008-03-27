@@ -10,6 +10,7 @@
 package org.erlide.jinterface.rpc;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +112,15 @@ public class RpcConverter {
 		try {
 			if (cls == obj.getClass()) {
 				return obj;
+			}
+			// if the conversion method exists, use it
+			try {
+				Method method = cls.getMethod("fromErlangObject",
+						new Class<?>[] { OtpErlangObject.class });
+				method.setAccessible(true);
+				Object o = method.invoke(null, obj);
+				return o;
+			} catch (NoSuchMethodException e) {
 			}
 
 			if (cls.isArray()) {
@@ -407,6 +417,9 @@ public class RpcConverter {
 			}
 			return (OtpErlangObject) obj;
 		}
+		if (obj instanceof IConvertible) {
+			return ((IConvertible) obj).toErlangObject();
+		}
 
 		if (obj != null && obj.getClass().isArray()) {
 			int len = Array.getLength(obj);
@@ -653,4 +666,5 @@ public class RpcConverter {
 			throw new RpcException("unknown signature code: " + crt);
 		}
 	}
+
 }

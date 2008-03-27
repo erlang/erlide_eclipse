@@ -44,7 +44,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		if (parent instanceof IParent) {
 			final IParent c = (IParent) parent;
 			try {
-				IErlElement[] res = c.getChildren();
+				IErlElement[] res = c.getChildren().toArray(new IErlElement[0]);
 				if (fDetailed) {
 					return res;
 				}
@@ -72,7 +72,8 @@ public class ErlangContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object parent) {
 		if (parent instanceof IParent) {
 			try {
-				IErlElement[] res = ((IParent) parent).getChildren();
+				IErlElement[] res = ((IParent) parent).getChildren().toArray(
+						new IErlElement[0]);
 				if (fDetailed) {
 					return res;
 				}
@@ -97,7 +98,8 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		if (parent instanceof IParent) {
 			final IParent c = (IParent) parent;
 			try {
-				final IErlElement[] children = c.getChildren();
+				final IErlElement[] children = c.getChildren().toArray(
+						new IErlElement[0]);
 				return (children != null && children.length > 0);
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {

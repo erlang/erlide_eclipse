@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IStreamContentAccessor;
@@ -109,7 +110,7 @@ public class ErlStructureCreator implements IStructureCreator {
 				.getElementName(), doc, 0, 0);
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
-			final IErlElement[] children = p.getChildren();
+			final List<IErlElement> children = p.getChildren();
 			for (IErlElement element0 : children) {
 				recursiveMakeErlNodes(element0, n, doc);
 			}

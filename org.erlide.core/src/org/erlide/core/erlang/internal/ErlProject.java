@@ -615,8 +615,10 @@ public class ErlProject extends Openable implements IErlProject,
 		fName = project.getName();
 	}
 
-	public IErlModule[] getModules() {
-		return (IErlModule[]) getChildren();
+	public List<IErlModule> getModules() {
+		// TODO fix this!
+		return null;
+		// return getChildren();
 	}
 
 	/**

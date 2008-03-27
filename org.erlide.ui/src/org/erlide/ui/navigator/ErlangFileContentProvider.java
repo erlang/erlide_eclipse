@@ -63,11 +63,11 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 						.getModule((IFile) parentElement);
 				if (mod != null) {
 					mod.open(null);
-					result = mod.getChildren();
+					result = mod.getChildren().toArray(new IErlElement[0]);
 				}
 			} else if (parentElement instanceof IParent) {
 				final IParent parent = (IParent) parentElement;
-				result = parent.getChildren();
+				result = parent.getChildren().toArray(new IErlElement[0]);
 			}
 		} catch (final ErlModelException e) {
 			// TODO Auto-generated catch block
