@@ -60,7 +60,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IRegion;
 import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
@@ -115,7 +114,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * created as translations of <code>IResourceDeltas</code> are to be
 	 * registered with <code>#registerResourceDelta</code>.
 	 */
-	public void registerErlModelDelta(IErlElementDelta delta) {
+	public void registerModelDelta(IErlElementDelta delta) {
 		erlModelDeltas.add(delta);
 		// TODO
 	}
@@ -210,7 +209,7 @@ public class ErlModelManager implements IErlModelManager {
 		if (file.getFileExtension() != null) {
 			final String name = file.getName();
 			if (Util.isErlangFileName(name)) {
-				return MANAGER.createModuleFrom(file, project);
+				return createModuleFrom(file, project);
 			}
 		}
 		return null;
@@ -330,10 +329,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * <ul>
 	 * <li>a <code>.Erlang</code> file - the element returned is the
 	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.class</code> file - the element returned is the
-	 * corresponding <code>IClassFile</code></li>
-	 * <li>a <code>.jar</code> file - the element returned is the
-	 * corresponding <code>IPackageFragmentRoot</code></li>
+	 * <li>a <code>.beam</code> file - the element returned is the
+	 * corresponding <code>IBeamFile</code></li>
 	 * </ul>
 	 * <p>
 	 * Creating a Erlang element has the side effect of creating and opening all
@@ -1008,15 +1005,6 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	public void removeElementChangedListener(IElementChangedListener listener) {
 		// getDefault().removeElementChangedListener(listener);
-	}
-
-	/**
-	 * Returns a new empty region.
-	 * 
-	 * @return a new empty region
-	 */
-	public IRegion newRegion() {
-		return new Region();
 	}
 
 	/**

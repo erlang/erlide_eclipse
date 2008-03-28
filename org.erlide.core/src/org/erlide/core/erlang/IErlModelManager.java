@@ -290,13 +290,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	void removeElementChangedListener(IElementChangedListener listener);
 
 	/**
-	 * Returns a new empty region.
-	 * 
-	 * @return a new empty region
-	 */
-	IRegion newRegion();
-
-	/**
 	 * Adds the given listener for changes to Erlang elements. Has no effect if
 	 * an identical listener is already registered.
 	 * 
@@ -320,9 +313,9 @@ public interface IErlModelManager extends ISaveParticipant {
 	Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers();
 
 	/**
-	 * @see org.erlide.core.erlang.ErlModelManager#registerErlModelDelta(IErlElementDelta)
+	 * @see org.erlide.core.erlang.ErlModelManager#registerModelDelta(IErlElementDelta)
 	 */
-	void registerErlModelDelta(IErlElementDelta delta);
+	void registerModelDelta(IErlElementDelta delta);
 
 	/**
 	 * @see org.erlide.core.erlang.ErlModelManager#fire(int)

@@ -50,8 +50,8 @@ public class ErlStructureCreator implements IStructureCreator {
 	}
 
 	public ErlStructureCreator() {
-		this(ErlangCore.getModelManager().createEmptyProject(), "comptemp.erl"); // FIXME
-		// title??
+		this(ErlangCore.getModelManager().createEmptyProject(), "comptemp.erl");
+		// FIXME title??
 	}
 
 	/**
