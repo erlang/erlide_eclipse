@@ -174,7 +174,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			colorManager = null;
 		}
 
-		getScanner().dispose();
+		IErlScanner s = getScanner();
+		if (s != null)
+			s.dispose();
 
 		super.dispose();
 	}
