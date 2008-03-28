@@ -49,7 +49,7 @@ public class ErlScanner implements IErlScanner {
 		} else {
 			resName = "res";
 		}
-		return "_erlide_" + fModule.getErlProject().getElementName() + "_"
+		return "_erlide_" + fModule.getErlProject().getName() + "_"
 				+ resName;
 	}
 

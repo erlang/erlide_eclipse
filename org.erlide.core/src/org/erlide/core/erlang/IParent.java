@@ -43,4 +43,7 @@ public interface IParent {
 	 * @return true if the immediate children of this element, false otherwise
 	 */
 	boolean hasChildren();
+
+	public void addChild(IErlElement child);
+
 }

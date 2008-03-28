@@ -145,7 +145,7 @@ public class TraceLogView extends ViewPart {
 				invisibleRoot = new TreeParent("");
 				for (final IErlModule module : x) {
 					invisibleRoot.addChild(new TreeObject(module
-							.getElementName()));
+							.getName()));
 				}
 			}
 		}
@@ -319,14 +319,14 @@ public class TraceLogView extends ViewPart {
 				final List<IErlModule> ms = mdl.findModule("test", ".*");
 				ErlLogger.debug("found(\"*\") " + ms.size());
 				for (IErlModule element : ms) {
-					ErlLogger.debug("  " + element.getElementName());
+					ErlLogger.debug("  " + element.getName());
 				}
 
 				final List<IErlFunction> fs = mdl.findFunction("test", ".*",
 						"st.*", IErlModel.UNKNOWN_ARITY);
 				ErlLogger.debug("found(\"*\") " + fs.size());
 				for (IErlFunction element : fs) {
-					ErlLogger.debug("  " + element.getElementName() + "/"
+					ErlLogger.debug("  " + element.getName() + "/"
 							+ element.getArity());
 				}
 

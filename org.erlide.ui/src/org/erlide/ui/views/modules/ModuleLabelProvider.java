@@ -67,7 +67,7 @@ public class ModuleLabelProvider implements ILabelProvider {
 		if (element instanceof IWorkspaceRoot) {
 			return "";
 		} else if (element instanceof IErlProject) {
-			return "EP " + ((IErlProject) element).getElementName();
+			return "EP " + ((IErlProject) element).getName();
 		} else if (element instanceof IProject) {
 			return "P " + ((IProject) element).getName();
 		} else if (element instanceof IContainer) {

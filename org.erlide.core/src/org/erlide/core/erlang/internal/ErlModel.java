@@ -180,15 +180,15 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlElement
 	 */
-	public ErlElementType getElementType() {
-		return ErlElementType.MODEL;
+	public Kind getKind() {
+		return Kind.MODEL;
 	}
 
 	/**
 	 * @see ErlElement#getHandleMemento()
 	 */
 	public String getHandleMemento() {
-		return getElementName();
+		return getName();
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public IErlProject getErlangProject(String projectName) {
 		for (final IErlElement element : fChildren) {
-			if (element.getElementName().equals(projectName)) {
+			if (element.getName().equals(projectName)) {
 				return (IErlProject) element;
 			}
 		}
@@ -237,7 +237,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<IErlProject> getErlangProjects() throws ErlModelException {
-		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(ErlElementType.PROJECT);
+		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(Kind.PROJECT);
 		return list;
 	}
 
@@ -455,7 +455,7 @@ public class ErlModel extends Openable implements IErlModel {
 						final IErlFunction fun = (IErlFunction) el;
 						final boolean arityOk = arity == UNKNOWN_ARITY
 								|| arity == fun.getArity();
-						if (arityOk && fun.getElementName().matches(function)) {
+						if (arityOk && fun.getName().matches(function)) {
 							funs.add(fun);
 						}
 					}
@@ -480,7 +480,7 @@ public class ErlModel extends Openable implements IErlModel {
 			for (IErlElement el : prj.getChildren()) {
 				if (el instanceof IErlModule) {
 					final IErlModule mod = (IErlModule) el;
-					if (mod.getElementName().matches(module)) {
+					if (mod.getName().matches(module)) {
 						mods.add(mod);
 					}
 				}

@@ -419,8 +419,8 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see IErlElement
 	 */
-	public ErlElementType getElementType() {
-		return ErlElementType.PROJECT;
+	public Kind getKind() {
+		return Kind.PROJECT;
 	}
 
 	/**
@@ -714,7 +714,7 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 		for (final IErlElement element : fChildren) {
 			final IErlModule m = (IErlModule) element;
-			if (m != null && m.getElementName().equals(name)) {
+			if (m != null && m.getName().equals(name)) {
 				return m;
 			}
 		}

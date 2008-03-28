@@ -66,7 +66,7 @@ public class ErlModule extends Openable implements IErlModule {
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
 
-	protected ErlModule(IErlElement parent, String name, boolean isErl,
+	protected ErlModule(IErlProject parent, String name, boolean isErl,
 			IFile file, String initialText) {
 		super(parent, name);
 		fFile = file;
@@ -76,8 +76,8 @@ public class ErlModule extends Openable implements IErlModule {
 		cacheInitialText = initialText;
 		setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
-			ErlLogger.debug("...creating " + parent.getElementName() + "/"
-					+ name + " " + isErl);
+			ErlLogger.debug("...creating " + parent.getName() + "/" + name
+					+ " " + isErl);
 		}
 	}
 
@@ -151,8 +151,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return false;
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.MODULE;
+	public Kind getKind() {
+		return Kind.MODULE;
 	}
 
 	public IResource getResource() {
@@ -261,12 +261,11 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
-	public IErlPreprocessorDef findPreprocessorDef(String definedName,
-			ErlElementType type) {
+	public IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type) {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-				if (pd.getElementType().equals(type)
+				if (pd.getKind().equals(type)
 						&& pd.getDefinedName().equals(definedName)) {
 					return pd;
 				}
@@ -283,9 +282,9 @@ public class ErlModule extends Openable implements IErlModule {
 				final OtpErlangObject v = a.getValue();
 				if (v instanceof OtpErlangString) {
 					final String s = ((OtpErlangString) v).stringValue();
-					if ("include".equals(a.getElementName())) {
+					if ("include".equals(a.getName())) {
 						r.add(new ErlangIncludeFile(false, s));
-					} else if ("include_lib".equals(a.getElementName())) {
+					} else if ("include_lib".equals(a.getName())) {
 						r.add(new ErlangIncludeFile(true, s));
 					}
 				}
@@ -401,9 +400,23 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public String getModuleName() {
-		final String s = getElementName();
+		final String s = getName();
 		final int i = s.lastIndexOf('.');
 		return s.substring(0, i);
+	}
+
+	public void disposeScanner() {
+		// TODO use reference counting to know if there are any editors on the
+		// module
+		if (scanner == null) {
+			return;
+		}
+		scanner.dispose();
+		scanner = null;
+	}
+
+	public IErlProject getProject() {
+		return (IErlProject) getParent();
 	}
 
 }

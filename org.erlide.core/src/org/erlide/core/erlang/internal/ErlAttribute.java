@@ -32,10 +32,10 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	}
 
 	/**
-	 * @see org.erlide.core.erlang.IErlElement#getElementType()
+	 * @see org.erlide.core.erlang.IErlElement#getKind()
 	 */
-	public ErlElementType getElementType() {
-		return ErlElementType.ATTRIBUTE;
+	public Kind getKind() {
+		return Kind.ATTRIBUTE;
 	}
 
 	public OtpErlangObject getValue() {
@@ -49,11 +49,6 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	}
 
 	@Override
-	public String getHoverHelp() {
-		return super.getHoverHelp();
-	}
-
-	@Override
 	public String toString() {
 		String sval;
 		if (fValue != null) {
@@ -61,6 +56,6 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 		} else {
 			sval = "";
 		}
-		return getElementName() + sval;
+		return getName() + sval;
 	}
 }

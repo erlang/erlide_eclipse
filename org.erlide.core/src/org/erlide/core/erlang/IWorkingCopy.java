@@ -16,12 +16,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * <p>
- * A working copy of a C element acts just like a regular element (handle),
+ * A working copy of a Erlang element acts just like a regular element (handle),
  * except it is not attached to an underlying resource. A working copy is not
- * visible to the rest of the C model. Changes in a working copy's buffer are
- * not realized in a resource. To bring the C model up-to-date with a working
- * copy's contents, an explicit commit must be performed on the working copy.
- * Other operations performed on a working copy update the contents of the
+ * visible to the rest of the Erlang model. Changes in a working copy's buffer
+ * are not realized in a resource. To bring the Erlang model up-to-date with a
+ * working copy's contents, an explicit commit must be performed on the working
+ * copy. Other operations performed on a working copy update the contents of the
  * working copy's buffer but do not commit the contents of the working copy.
  * </p>
  * <p>
@@ -33,12 +33,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  * <p>
  * The client that creates a working copy is responsible for destroying the
- * working copy. The C model will never automatically destroy or close a working
- * copy. (Note that destroying a working copy does not commit it to the model,
- * it only frees up the memory occupied by the element). After a working copy is
- * destroyed, the working copy cannot be accessed again. Non- handle methods
- * will throw a <code>CModelException</code> indicating the C element does not
- * exist.
+ * working copy. The Erlang model will never automatically destroy or close a
+ * working copy. (Note that destroying a working copy does not commit it to the
+ * model, it only frees up the memory occupied by the element). After a working
+ * copy is destroyed, the working copy cannot be accessed again. Non- handle
+ * methods will throw a <code>ErlModelException</code> indicating the Erlang
+ * element does not exist.
  * </p>
  * <p>
  * A working copy cannot be created from another working copy. Calling
@@ -49,8 +49,8 @@ public interface IWorkingCopy extends IErlModule {
 
 	/**
 	 * Commits the contents of this working copy to its original element and
-	 * underlying resource, bringing the C model up-to-date with the current
-	 * contents of the working copy.
+	 * underlying resource, bringing the Erlang model up-to-date with the
+	 * current contents of the working copy.
 	 * 
 	 * <p>
 	 * It is possible that the contents of the original resource have changed
@@ -61,7 +61,7 @@ public interface IWorkingCopy extends IErlModule {
 	 * <li> <code>true</code> - in this case the contents of this working copy
 	 * are applied to the underlying resource even though this working copy was
 	 * created before a subsequent change in the resource</li>
-	 * <li> <code>false</code> - in this case a <code>CModelException</code>
+	 * <li> <code>false</code> - in this case a <code>ErlModelException</code>
 	 * is thrown</li>
 	 * </ul>
 	 */

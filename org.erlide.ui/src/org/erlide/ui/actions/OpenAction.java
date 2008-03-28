@@ -219,7 +219,7 @@ public class OpenAction extends SelectionDispatchAction {
 				String name = null;
 
 				if (element instanceof IErlElement) {
-					name = ((IErlElement) element).getElementName();
+					name = ((IErlElement) element).getName();
 				} else if (element instanceof IStorage) {
 					name = ((IStorage) element).getName();
 				} else if (element instanceof IResource) {
@@ -262,12 +262,6 @@ public class OpenAction extends SelectionDispatchAction {
 	private String getDialogTitle() {
 		return ActionMessages.OpenAction_error_title;
 	}
-
-	// private void showError(CoreException e)
-	// {
-	// ExceptionHandler.handle(e, getShell(), getDialogTitle(),
-	// ActionMessages.OpenAction_error_message);
-	// }
 
 	@SuppressWarnings("boxing")
 	@Override
@@ -409,8 +403,8 @@ public class OpenAction extends SelectionDispatchAction {
 				if (definedName.charAt(0) == '?') {
 					definedName = definedName.substring(1);
 				}
-				final IErlElement.ErlElementType type = macro ? IErlElement.ErlElementType.MACRO_DEF
-						: IErlElement.ErlElementType.RECORD_DEF;
+				final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
+						: IErlElement.Kind.RECORD_DEF;
 				ErlModelUtils.openPreprocessorDef(project, page, m,
 						definedName, type, new ArrayList<IErlModule>(), pvm);
 			}

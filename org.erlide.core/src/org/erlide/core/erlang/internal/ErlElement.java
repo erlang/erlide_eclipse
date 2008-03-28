@@ -192,11 +192,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * @see IErlElement
 	 */
-	public IErlElement getAncestor(ErlElementType ancestorType) {
+	public IErlElement getAncestor(Kind ancestorType) {
 
 		IErlElement element = this;
 		while (element != null) {
-			if (element.getElementType() == ancestorType) {
+			if (element.getKind() == ancestorType) {
 				return element;
 			}
 			element = element.getParent();
@@ -212,10 +212,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 *            one of the constants defined by IErlElement
 	 */
 	public ArrayList<? extends IErlElement> getChildrenOfType(
-			ErlElementType type) throws ErlModelException {
+			Kind type) throws ErlModelException {
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
 		for (IErlElement i : getChildren()) {
-			if (i.getElementType() == type) {
+			if (i.getKind() == type) {
 				list.add(i);
 			}
 		}
@@ -232,7 +232,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * @see IErlElement
 	 */
-	public String getElementName() {
+	public String getName() {
 		return fName;
 	}
 
@@ -408,7 +408,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 */
 	public String readableName() {
-		return this.getElementName();
+		return this.getName();
 	}
 
 	protected String tabString(int tab) {
@@ -509,7 +509,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Debugging purposes
 	 */
 	protected void toStringName(StringBuilder buffer) {
-		buffer.append(getElementName());
+		buffer.append(getName());
 		if (fOccurrenceCount > 1) {
 			buffer.append("#"); //$NON-NLS-1$
 			buffer.append(fOccurrenceCount);

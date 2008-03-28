@@ -179,26 +179,26 @@ public class ErlangElementImageProvider {
 			int renderFlags) {
 
 		// try {
-		if (element.getElementType() == IErlElement.ErlElementType.FUNCTION) {
+		if (element.getKind() == IErlElement.Kind.FUNCTION) {
 			final IErlFunction fun = (IErlFunction) element;
 			// int flags= method.getFlags();
 			if (fun.isExported()) {
 				return ErlideUIPluginImages.DESC_FUNCTION_EXPORTED;
 			}
 			return ErlideUIPluginImages.DESC_FUNCTION_DEFAULT;
-		} else if (element.getElementType() == IErlElement.ErlElementType.ATTRIBUTE) {
+		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
 			return ErlideUIPluginImages.DESC_ATTRIBUTE;
-		} else if (element.getElementType() == IErlElement.ErlElementType.CLAUSE) {
+		} else if (element.getKind() == IErlElement.Kind.CLAUSE) {
 			return ErlideUIPluginImages.DESC_FUNCTION_CLAUSE;
-		} else if (element.getElementType() == IErlElement.ErlElementType.EXPORT) {
+		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
 			return ErlideUIPluginImages.DESC_EXPORT;
-		} else if (element.getElementType() == IErlElement.ErlElementType.RECORD_DEF) {
+		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
 			return ErlideUIPluginImages.DESC_RECORD_DEF;
-		} else if (element.getElementType() == IErlElement.ErlElementType.MACRO_DEF) {
+		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
 			return ErlideUIPluginImages.DESC_MACRO_DEF;
-		} else if (element.getElementType() == IErlElement.ErlElementType.IMPORT) {
+		} else if (element.getKind() == IErlElement.Kind.IMPORT) {
 			return ErlideUIPluginImages.DESC_IMPORT;
-		} else if (element.getElementType() == IErlElement.ErlElementType.ERROR) {
+		} else if (element.getKind() == IErlElement.Kind.ERROR) {
 			return ErlideUIPluginImages.DESC_UNKNOWN;
 		}
 

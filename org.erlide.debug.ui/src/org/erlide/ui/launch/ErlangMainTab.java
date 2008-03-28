@@ -283,7 +283,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		if (project == null) {
 			return;
 		}
-		String projectName = project.getElementName();
+		String projectName = project.getName();
 		fProjText.setText(projectName);
 	}
 
@@ -331,7 +331,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		}
 
 		public String getText(Object element) {
-			return ((IErlProject) element).getElementName();
+			return ((IErlProject) element).getName();
 		}
 
 		public void addListener(ILabelProviderListener listener) {

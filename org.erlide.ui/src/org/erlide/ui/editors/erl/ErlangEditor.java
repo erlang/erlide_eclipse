@@ -206,6 +206,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return ErlModelUtils.getScanner(this);
 	}
 
+	public void disposeScanner() {
+		ErlModelUtils.disposeScanner(this);
+	}
+
 	public ICharacterPairMatcher getBracketMatcher() {
 		return ((EditorConfiguration) getSourceViewerConfiguration())
 				.getBracketMatcher();
@@ -567,6 +571,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
+		disposeScanner();
+
 		super.doSetInput(input);
 
 		if (myOutlinePage != null) {
@@ -1349,7 +1355,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final ISelection sel = getSelectionProvider().getSelection();
 		final ITextSelection s = (ITextSelection) sel;
 
-		return scanner.getTokenWindow(s.getOffset(), window);
+		final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(), window);
+		return tokenWindow;
 	}
 
 	public final ISourceViewer getViewer() {

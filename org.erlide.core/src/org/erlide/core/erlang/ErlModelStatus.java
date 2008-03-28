@@ -291,7 +291,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 
 			case READ_ONLY:
 				final IErlElement element = fElements[0];
-				final String name = element.getElementName();
+				final String name = element.getName();
 				return Util.bind("status.readOnly", name); //$NON-NLS-1$
 
 			case RELATIVE_PATH:

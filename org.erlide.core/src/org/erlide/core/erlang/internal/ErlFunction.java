@@ -49,8 +49,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		return fc;
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.FUNCTION;
+	public Kind getKind() {
+		return Kind.FUNCTION;
 	}
 
 	public int getArity() {
@@ -76,17 +76,12 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	@Override
-	public String getHoverHelp() {
-		return super.getHoverHelp();
-	}
-
-	@Override
 	public String toString() {
-		return getElementName() + "/" + getArity();
+		return getName() + "/" + getArity();
 	}
 
 	public ErlangFunction getFunction() {
-		return new ErlangFunction(getElementName(), getArity());
+		return new ErlangFunction(getName(), getArity());
 	}
 
 	@Override

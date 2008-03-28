@@ -514,7 +514,7 @@ public class LRUCache implements Cloneable {
 			final Object key = e.nextElement();
 			unsortedKeys[i] = key;
 			unsortedToStrings[i] = (key instanceof ErlElement) ? ((ErlElement) key)
-					.getElementName()
+					.getName()
 					: key.toString();
 		}
 		// ToStringSorter sorter = new ToStringSorter();

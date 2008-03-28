@@ -325,7 +325,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		@Override
 		public String toString() {
 			return "ErlangElementPosition " + offset + " " + length + " "
-					+ fMember.getElementName();
+					+ fMember.getName();
 
 		}
 
@@ -624,10 +624,10 @@ public class DefaultErlangFoldingStructureProvider implements
 		boolean createProjection = false;
 		boolean collapse = false;
 
-		if (element.getElementType() == IErlElement.ErlElementType.CLAUSE) {
+		if (element.getKind() == IErlElement.Kind.CLAUSE) {
 			collapse = fAllowCollapsing && fCollapseClauses;
 			createProjection = true;
-		} else if (element.getElementType() == IErlElement.ErlElementType.COMMENT) {
+		} else if (element.getKind() == IErlElement.Kind.COMMENT) {
 			final IErlComment c = (IErlComment) element;
 			if (c.isHeader()) {
 				collapse = fAllowCollapsing && fCollapseHeaderComments;

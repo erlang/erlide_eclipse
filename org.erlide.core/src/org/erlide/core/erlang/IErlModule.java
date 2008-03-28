@@ -76,6 +76,8 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	 */
 	boolean isModule();
 
+	IErlProject getProject();
+
 	IErlComment[] getComments();
 
 	OtpErlangObject getParseTree();
@@ -94,8 +96,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	List<IErlImport> getImports();
 
-	IErlPreprocessorDef findPreprocessorDef(String definedName,
-			ErlElementType type);
+	IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type);
 
 	List<ErlangIncludeFile> getIncludedFiles();
 
@@ -107,5 +108,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 			IProgressMonitor mon);
 
 	void finalReconcile();
+
+	void disposeScanner();
 
 }

@@ -10,13 +10,13 @@ public class ErlExport extends ErlMember implements IErlExport, IParent {
 		super(parent, "export");
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.EXPORT;
+	public Kind getKind() {
+		return Kind.EXPORT;
 	}
 
 	@Override
 	public String toString() {
-		return getElementName();
+		return getName();
 	}
 
 }

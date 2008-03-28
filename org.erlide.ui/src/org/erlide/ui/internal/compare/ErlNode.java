@@ -16,7 +16,7 @@ import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.core.erlang.IErlElement.ErlElementType;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
@@ -27,9 +27,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 
 	private ErlNode fParent;
 
-	private ErlElementType fType;
+	private Kind fType;
 
-	public ErlNode(ErlNode parent, ErlElementType type, String id, IDocument doc,
+	public ErlNode(ErlNode parent, Kind type, String id, IDocument doc,
 			int start, int length) {
 		super(type.hashCode(), id, doc, start, length);
 		fParent = parent;
@@ -39,7 +39,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 		}
 	}
 
-	public ErlNode(ErlNode parent, ErlElementType type, String id, int start,
+	public ErlNode(ErlNode parent, Kind type, String id, int start,
 			int length) {
 		this(parent, type, id, parent.getDocument(), start, length);
 	}
@@ -54,7 +54,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 	/**
 	 * @see ITypedInput#getNodeType
 	 */
-	public ErlElementType getNodeType() {
+	public Kind getNodeType() {
 		return fType;
 	}
 

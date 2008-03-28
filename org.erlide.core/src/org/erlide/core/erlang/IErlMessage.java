@@ -9,10 +9,16 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-public interface IErlError extends IErlMember {
+public interface IErlMessage extends IErlMember {
 
 	String getMessage();
 
 	String getData();
+
+	enum MessageKind {
+		INFO, WARNING, ERROR
+	};
+
+	MessageKind getMessageKind();
 
 }

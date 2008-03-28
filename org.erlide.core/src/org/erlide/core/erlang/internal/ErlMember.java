@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.internal;
 
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
@@ -26,12 +25,6 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
 	public OtpErlangObject getParseTree() {
 		return fTree;
-	}
-
-	public String getHoverHelp() {
-		ErlLogger.debug("> hover help: " + this.getElementName());
-
-		return toString();
 	}
 
 	public boolean isVisibleInOutline() {

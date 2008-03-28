@@ -10,23 +10,25 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlError;
+import org.erlide.core.erlang.IErlMessage;
 import org.erlide.core.erlang.ISourceRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlError extends ErlMember implements IErlError {
+public class ErlMessage extends ErlMember implements IErlMessage {
 
 	private String message;
+	private MessageKind fKind;
 
-	protected ErlError(IErlElement parent, String name)
+	protected ErlMessage(IErlElement parent, MessageKind kind, String name)
 			throws IllegalArgumentException {
 		super(parent, name);
+		fKind = kind;
 		message = name;
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.ERROR;
+	public Kind getKind() {
+		return Kind.ERROR;
 	}
 
 	public String getMessage() {
@@ -34,13 +36,11 @@ public class ErlError extends ErlMember implements IErlError {
 	}
 
 	public String getData() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public OtpErlangObject getParseTree() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -50,12 +50,11 @@ public class ErlError extends ErlMember implements IErlError {
 	}
 
 	@Override
-	public String getHoverHelp() {
-		return super.getHoverHelp();
-	}
-
-	@Override
 	public String toString() {
 		return "ERR: " + getMessage();
+	}
+
+	public MessageKind getMessageKind() {
+		return fKind;
 	}
 }

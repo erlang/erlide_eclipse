@@ -106,8 +106,8 @@ public class ErlStructureCreator implements IStructureCreator {
 
 	private ErlNode recursiveMakeErlNodes(IErlElement element, ErlNode parent,
 			Document doc) throws ErlModelException {
-		final ErlNode n = new ErlNode(parent, element.getElementType(), element
-				.getElementName(), doc, 0, 0);
+		final ErlNode n = new ErlNode(parent, element.getKind(), element
+				.getName(), doc, 0, 0);
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
 			final List<IErlElement> children = p.getChildren();

@@ -18,8 +18,8 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 		this.record = record;
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.RECORD_DEF;
+	public Kind getKind() {
+		return Kind.RECORD_DEF;
 	}
 
 	public String getDefinedName() {
@@ -28,7 +28,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
 	@Override
 	public String toString() {
-		return getElementName() + ": " + getDefinedName();
+		return getName() + ": " + getDefinedName();
 	}
 
 	@Override

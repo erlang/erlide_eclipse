@@ -112,7 +112,7 @@ public class ErlParser {
 			// ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
 			OtpErlangTuple res = null;
 			if (initialParse) {
-				final String name = module.getElementName();
+				final String name = module.getName();
 				final IResource resource = module.getResource();
 				final String moduleFileName = resource.getLocation().toString();
 				final String stateDir = ErlangPlugin.getDefault()
@@ -121,7 +121,7 @@ public class ErlParser {
 						moduleFileName, stateDir);
 			} else {
 				res = ErlideNoparse
-						.reparse(b, scanner, module.getElementName());
+						.reparse(b, scanner, module.getName());
 			}
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
@@ -219,7 +219,8 @@ public class ErlParser {
 
 			final String msg = ErlideBackend.format_error(er);
 
-			final ErlError e = new ErlError(parent, msg);
+			final ErlMessage e = new ErlMessage(parent, ErlMessage.MessageKind.ERROR,
+					msg);
 			setPos(e, er.elementAt(0));
 			e.setParseTree(el);
 			return e;
@@ -384,7 +385,7 @@ public class ErlParser {
 						// what do we do here? the define isn't correct
 						// Erlang...
 						ErlLogger.warn("Strange macro definition in %s: %s",
-								parent.getElementName(), o.toString());
+								parent.getName(), o.toString());
 						r = new ErlMacroDef(parent, o.toString());
 					}
 					setPos(r, pos);

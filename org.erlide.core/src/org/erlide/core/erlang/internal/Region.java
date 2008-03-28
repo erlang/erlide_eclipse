@@ -148,7 +148,7 @@ public class Region implements IRegion {
 		final IErlElement[] roots = getElements();
 		buffer.append('[');
 		for (int i = 0; i < roots.length; i++) {
-			buffer.append(roots[i].getElementName());
+			buffer.append(roots[i].getName());
 			if (i < (roots.length - 1)) {
 				buffer.append(", "); //$NON-NLS-1$
 			}

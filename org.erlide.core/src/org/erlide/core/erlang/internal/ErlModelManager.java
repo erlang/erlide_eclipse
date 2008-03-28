@@ -253,7 +253,7 @@ public class ErlModelManager implements IErlModelManager {
 			project = create(file.getProject());
 		}
 
-		final String key = project.getElementName() + "/" + file.getName();
+		final String key = project.getName() + "/" + file.getName();
 		if (elements.containsKey(key)) {
 			return (IErlModule) elements.get(key);
 		}
@@ -282,7 +282,7 @@ public class ErlModelManager implements IErlModelManager {
 			return null;
 		}
 
-		final String key = project.getElementName() + "/" + name;
+		final String key = project.getName() + "/" + name;
 		if (elements.containsKey(key)) {
 			return (IErlModule) elements.get(key);
 		}

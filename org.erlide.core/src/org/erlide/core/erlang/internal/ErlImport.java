@@ -54,8 +54,8 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 		}
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.IMPORT;
+	public Kind getKind() {
+		return Kind.IMPORT;
 	}
 
 	public String getImportModule() {
@@ -72,7 +72,7 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 
 	@Override
 	public String toString() {
-		return getElementName() + ": " + getImportModule();
+		return getName() + ": " + getImportModule();
 	}
 
 	public OtpErlangObject toErlangObject() {

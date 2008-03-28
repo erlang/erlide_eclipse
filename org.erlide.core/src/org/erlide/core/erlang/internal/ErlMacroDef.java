@@ -18,8 +18,8 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 		this.macro = macro;
 	}
 
-	public ErlElementType getElementType() {
-		return ErlElementType.MACRO_DEF;
+	public Kind getKind() {
+		return Kind.MACRO_DEF;
 	}
 
 	public String getDefinedName() {
@@ -28,7 +28,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 
 	@Override
 	public String toString() {
-		return getElementName() + ": " + getDefinedName();
+		return getName() + ": " + getDefinedName();
 	}
 
 	@Override

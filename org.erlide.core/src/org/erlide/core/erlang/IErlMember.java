@@ -31,6 +31,6 @@ public interface IErlMember extends IErlElement, ISourceReference,
 
 	ISourceRange getNameRange();
 
-	String getHoverHelp();
+	// String getHoverHelp();
 
 }

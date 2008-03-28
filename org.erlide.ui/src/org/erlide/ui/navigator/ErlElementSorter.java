@@ -27,10 +27,10 @@ public class ErlElementSorter extends ViewerSorter {
 	public int category(Object element) {
 		if (element instanceof IErlElement) {
 			final IErlElement e = (IErlElement) element;
-			if (e.getElementType() == IErlElement.ErlElementType.FUNCTION) {
+			if (e.getKind() == IErlElement.Kind.FUNCTION) {
 				return 1000;
 			}
-			return e.getElementType().ordinal();
+			return e.getKind().ordinal();
 		}
 		return super.category(element);
 	}

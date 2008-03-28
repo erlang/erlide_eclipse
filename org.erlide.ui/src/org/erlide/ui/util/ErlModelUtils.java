@@ -40,6 +40,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -106,7 +107,7 @@ public class ErlModelUtils {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;
 				if (arity == -1 || f.getArity() == arity) {
-					if (f.getElementName().equals(function)) {
+					if (f.getName().equals(function)) {
 						return f;
 					}
 				}
@@ -156,7 +157,7 @@ public class ErlModelUtils {
 	 */
 	public static boolean openPreprocessorDef(IProject project,
 			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.ErlElementType type,
+			final IErlElement.Kind type,
 			List<IErlModule> modulesDone, IPathVariableManager pvm)
 			throws CoreException, ErlModelException, PartInitException {
 		if (m == null) {
@@ -308,6 +309,13 @@ public class ErlModelUtils {
 		final IEditorPart part = EditorUtility.openInEditor(element, activate);
 		if (element instanceof IErlElement) {
 			EditorUtility.revealInEditor(part, (IErlElement) element);
+		}
+	}
+
+	public static void disposeScanner(ErlangEditor editor) {
+		final IErlModule mod = getModule(editor);
+		if (mod != null) {
+			getModule(editor).disposeScanner();
 		}
 	}
 

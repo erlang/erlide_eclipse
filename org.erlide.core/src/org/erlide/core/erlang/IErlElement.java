@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 public interface IErlElement extends IAdaptable {
 
-	enum ErlElementType {
+	enum Kind {
 		ERROR, MODEL, PROJECT, MODULE, ATTRIBUTE, FUNCTION, CLAUSE, EXPORT, IMPORT, EXPORTFUNCTION, HEADERCOMMENT, COMMENT, RECORD_DEF, MACRO_DEF
 	}
 
@@ -65,7 +65,7 @@ public interface IErlElement extends IAdaptable {
 	 * @return the first ancestor of this Erlang element that has the given
 	 *         type, null if no such an ancestor can be found
 	 */
-	IErlElement getAncestor(ErlElementType ancestorType);
+	IErlElement getAncestor(Kind ancestorType);
 
 	/**
 	 * Returns the enclosing IErlProject if there is one
@@ -95,7 +95,7 @@ public interface IErlElement extends IAdaptable {
 	 * 
 	 * @return the element name
 	 */
-	String getElementName();
+	String getName();
 
 	/**
 	 * Returns this element's kind encoded as an integer. This is a handle-only
@@ -105,7 +105,7 @@ public interface IErlElement extends IAdaptable {
 	 *         <code>IErlElement</code>
 	 * @see IErlElement
 	 */
-	ErlElementType getElementType();
+	Kind getKind();
 
 	/**
 	 * Returns the Erlang model. This is a handle-only method.
@@ -184,5 +184,4 @@ public interface IErlElement extends IAdaptable {
 	 */
 	boolean isStructureKnown() throws ErlModelException;
 
-	public void addChild(IErlElement child);
 }
