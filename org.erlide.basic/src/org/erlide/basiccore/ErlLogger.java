@@ -41,14 +41,9 @@ public class ErlLogger {
 	}
 
 	private static StackTraceElement getCaller() {
-		StackTraceElement[] st = null;
-		try {
-			throw new Exception("");
-		} catch (final Exception e) {
-			st = e.getStackTrace();
-		}
+		StackTraceElement[] st = Thread.currentThread().getStackTrace();
 		StackTraceElement el = null;
-		int i = 0;
+		int i = 2;
 		do {
 			el = st[i++];
 		} while (el.getClassName().equals(ErlLogger.class.getName()));
