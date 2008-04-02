@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
@@ -86,9 +85,9 @@ public class ErlModule extends Openable implements IErlModule {
 			IResource underlyingResource) throws ErlModelException {
 
 		// generate structure and compute syntax problems if needed
-		final IErlProject project = getErlProject();
-		boolean computeProblems = ErlangCore.hasErlangNature(project
-				.getProject());
+		// final IErlProject project = getErlProject();
+		// boolean computeProblems = ErlangCore.hasErlangNature(project
+		// .getProject());
 
 		// final Map<String, String> options = project.getOptions(true);
 		// if (!computeProblems) {
@@ -365,14 +364,15 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void reconcileText(int offset, int removeLength, String newText,
 			IProgressMonitor mon) {
-		// getScanner();
 		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
 			if (removeLength != 0) {
+				getScanner();
 				scanner.removeText(offset, removeLength);
 			}
 			if (newText.length() != 0) {
+				getScanner();
 				scanner.insertText(offset, newText);
 			}
 			setIsStructureKnown(false);

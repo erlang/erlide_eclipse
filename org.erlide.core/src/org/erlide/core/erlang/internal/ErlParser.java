@@ -12,10 +12,10 @@ package org.erlide.core.erlang.internal;
 import org.eclipse.core.resources.IResource;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 
@@ -105,9 +105,10 @@ public class ErlParser {
 	 */
 
 	public boolean parse(final IErlModule module, boolean initialParse) {
-		final IErlScanner scanner = module.getScanner();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
+		final String scannerModuleName = ErlScanner
+				.createScannerModuleName(module);
 		try {
 			// ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
 			OtpErlangTuple res = null;
@@ -117,11 +118,11 @@ public class ErlParser {
 				final String moduleFileName = resource.getLocation().toString();
 				final String stateDir = ErlangPlugin.getDefault()
 						.getStateLocation().toString();
-				res = ErlideNoparse.initialParse(b, scanner, name,
+				res = ErlideNoparse.initialParse(b, scannerModuleName, name,
 						moduleFileName, stateDir);
 			} else {
-				res = ErlideNoparse
-						.reparse(b, scanner, module.getName());
+				res = ErlideNoparse.reparse(b, scannerModuleName, module
+						.getName());
 			}
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
@@ -220,8 +221,8 @@ public class ErlParser {
 
 			final String msg = ErlideBackend.format_error(er);
 
-			final ErlMessage e = new ErlMessage(parent, ErlMessage.MessageKind.ERROR,
-					msg);
+			final ErlMessage e = new ErlMessage(parent,
+					ErlMessage.MessageKind.ERROR, msg);
 			setPos(e, er.elementAt(0));
 			e.setParseTree(el);
 			return e;

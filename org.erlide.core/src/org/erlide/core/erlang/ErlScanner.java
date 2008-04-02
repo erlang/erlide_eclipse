@@ -35,7 +35,7 @@ public class ErlScanner implements IErlScanner {
 
 	public ErlScanner(IErlModule module, String initialText) {
 		fModule = module;
-		fMod = createScannerModuleName();
+		fMod = createScannerModuleName(fModule);
 		create();
 		insertText(0, initialText);
 	}
@@ -43,16 +43,16 @@ public class ErlScanner implements IErlScanner {
 	/**
 	 * @return
 	 */
-	public String createScannerModuleName() {
-		final IResource res = fModule.getResource();
+
+	static public String createScannerModuleName(IErlModule module) {
+		final IResource res = module.getResource();
 		String resName;
 		if (res != null) {
 			resName = res.getFullPath().toPortableString();
 		} else {
 			resName = "res";
 		}
-		return "_erlide_" + fModule.getErlProject().getName() + "_"
-				+ resName;
+		return "_erlide_" + module.getErlProject().getName() + "_" + resName;
 	}
 
 	private void create() {

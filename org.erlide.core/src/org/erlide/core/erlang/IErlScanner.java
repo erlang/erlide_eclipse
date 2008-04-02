@@ -25,7 +25,4 @@ public interface IErlScanner extends IDisposable {
 	ErlToken[] getTokens();
 
 	TokenWindow getTokenWindow(int offset, int window);
-
-	String getScannerModuleName();
-
 }

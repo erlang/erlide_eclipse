@@ -473,7 +473,7 @@ public class ErlProject extends Openable implements IErlProject,
 	public IPath getOutputLocation(boolean createMarkers, boolean logProblems)
 			throws ErlModelException {
 
-		ErlangProjectProperties props = new ErlangProjectProperties(
+		final ErlangProjectProperties props = new ErlangProjectProperties(
 				getProject());
 		return new Path(props.getOutputDir());
 	}
@@ -528,9 +528,9 @@ public class ErlProject extends Openable implements IErlProject,
 		return fProject.hashCode();
 	}
 
-	private IPath getPluginWorkingLocation() {
-		return fProject.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
-	}
+	// private IPath getPluginWorkingLocation() {
+	// return fProject.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
+	// }
 
 	/**
 	 * Removes the given builder from the build spec for the given project.
