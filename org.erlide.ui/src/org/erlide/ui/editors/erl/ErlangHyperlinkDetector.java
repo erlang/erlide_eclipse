@@ -60,9 +60,11 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		fModule = ErlModelUtils.getModule(editor);
 		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 
+		if (token == null)
+			return null;
 		final String tokenKind = token.getKind();
-		if (token == null || !tokenKind.equals("atom")
-				&& !tokenKind.equals("string") && !tokenKind.equals("macro")) {
+		if (!tokenKind.equals("atom") && !tokenKind.equals("string")
+				&& !tokenKind.equals("macro")) {
 			return null;
 		}
 

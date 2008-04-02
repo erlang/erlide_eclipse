@@ -3,11 +3,9 @@ package erlang;
 import org.eclipse.core.resources.IProject;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.builder.BuilderUtils;
-import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -21,15 +19,14 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final IProject project,
 			final String fn, final String output) {
 		try {
-			final RpcResult r = BackendManager.getDefault().get(project).rpct(
-					ErlangBuilder.MODULE, "compile_yrl", 30000, "ss", fn,
-					output);
+			OtpErlangObject r = BackendManager.getDefault().get(project).rpcx(
+					"erlide_builder", "compile_yrl", 30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
-			return r.getValue();
+			return r;
 		} catch (final Exception e) {
-			// e.printStackTrace();
+			ErlLogger.debug(e);
 			return null;
 		}
 	}
@@ -42,15 +39,14 @@ public class ErlideBuilder {
 				includes[i] = new OtpErlangString(includedirs[i]);
 			}
 			final OtpErlangList includeList = new OtpErlangList(includes);
-			return BackendManager.getDefault().get(project).rpcxt(
-					ErlangBuilder.MODULE, "compile", 20000, "ssxx",
-					fn,
+			return BackendManager.getDefault().get(project).rpcx(
+					"erlide_builder", "compile", 20000, "ssxx", fn,
 					outputdir
 					// FIXME add an option for this
 					, includeList,
 					new OtpErlangList(new OtpErlangAtom("debug_info")));
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 			return null;
 		}
 	}
@@ -74,9 +70,9 @@ public class ErlideBuilder {
 			final String module) {
 		try {
 			return BackendManager.getDefault().get(project).rpcx(
-					ErlangBuilder.MODULE, "load", "a", module);
+					"erlide_builder", "load", "a", module);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 			return null;
 		}
 	}

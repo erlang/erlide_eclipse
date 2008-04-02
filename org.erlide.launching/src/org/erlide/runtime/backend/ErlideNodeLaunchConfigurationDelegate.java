@@ -20,11 +20,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.basicui.util.PopupDialog;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
 public class ErlideNodeLaunchConfigurationDelegate extends
@@ -51,37 +48,30 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 			// If ATTR_CMDLINE is set, it's an launch for internal ErlIde
 			String cmd;
 			// ErlIDE internal node
+			cmd = ManagedBackend.getCmdLine() + nameAndCookie;
 			cmd = configuration.getAttribute(IProcess.ATTR_CMDLINE, "")
 					+ " -noshell " + nameAndCookie + " ";
 			ErlLogger.debug("RUN> " + cmd);
 			final File workingDirectory = new File(".");
 			Process vm = null;
-			int tries = 3;
 
-			// TODO this should retrieve new values every time
-			// and maybe reset the workspace instead of closing it
-			while (vm == null && tries > 1) {
-				try {
-					vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
+			try {
+				vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
 
-					final IProcess process = DebugPlugin.newProcess(launch, vm,
-							label);
+				final IProcess process = DebugPlugin.newProcess(launch, vm,
+						label);
 
-					launch.addProcess(process);
-				} catch (final Exception e) {
-					tries--;
-					ErlideBasicUIPlugin.showErtsPreferencesDialog(tries - 1);
-				}
-				cmd = ManagedBackend.getCmdLine() + nameAndCookie;
+				launch.addProcess(process);
+			} catch (final Exception e) {
 			}
 
 			if (vm == null) {
+				PopupDialog
+						.showDialog(
+								"Starting Erlang backend",
+								"Could not start, please check your preferences!",
+								4000);
 
-				final MessageDialog dialog = new MessageDialog(new Shell(
-						Display.getCurrent()), "Starting OTP", null,
-						"could not start Erlang OTP, please check your path",
-						MessageDialog.ERROR, new String[] { "OK" }, 0);
-				dialog.open();
 			}
 
 		} catch (final Exception e) {

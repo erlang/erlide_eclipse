@@ -35,7 +35,7 @@ import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -56,11 +56,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = false;
+	// private static final boolean TRACE = false;
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
-
 	private final ICodeManager fCodeManager;
-
 	private boolean fConnected = false;
 
 	class ThreadLocalMbox extends ThreadLocal<Object> {
@@ -112,7 +111,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 				10);
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
-
 	}
 
 	public void connect() {
@@ -187,11 +185,13 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	/**
 	 * typed RPC
 	 * 
+	 * @throws NoBackendException
+	 * 
 	 * @throws ConversionException
 	 */
 	public RpcResult rpc(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, RpcException {
-		return rpct(m, f, 5000, signature, a);
+			throws RpcException {
+		return rpc(m, f, 5000, signature, a);
 	}
 
 	/**
@@ -199,20 +199,21 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public RpcResult rpct(String m, String f, int timeout, String signature,
-			Object... a) throws ErlangRpcException, RpcException {
+	public RpcResult rpc(String m, String f, int timeout, String signature,
+			Object... a) throws RpcException {
 		return sendRpc(m, f, timeout, signature, a);
 	}
 
 	/**
 	 * typed RPC , throws Exception
 	 * 
+	 * @throws BackendException
+	 * 
 	 * @throws ConversionException
 	 */
 	public OtpErlangObject rpcx(String m, String f, String signature,
-			Object... a) throws ErlangRpcException, BackendException,
-			RpcException {
-		return rpcxt(m, f, 5000, signature, a);
+			Object... a) throws RpcException, BackendException {
+		return rpcx(m, f, 5000, signature, a);
 	}
 
 	/**
@@ -220,19 +221,19 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public OtpErlangObject rpcxt(String m, String f, int timeout,
-			String signature, Object... a) throws ErlangRpcException,
-			BackendException, RpcException {
-		return checkRpc(rpct(m, f, timeout, signature, a));
+	public OtpErlangObject rpcx(String m, String f, int timeout,
+			String signature, Object... a) throws BackendException,
+			RpcException {
+		return checkRpc(rpc(m, f, timeout, signature, a));
 	}
 
 	private static OtpErlangObject checkRpc(RpcResult r)
-			throws BackendException {
+			throws BackendException, NoBackendException {
 		if (r != null && r.isOk()) {
 			return r.getValue();
 		}
 		if (r == null) {
-			throw new BackendException("RPC error: null response (timeout?)");
+			throw new NoBackendException();
 		}
 		throw new BackendException("RPC error: " + r.getValue());
 	}
@@ -245,7 +246,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	 */
 	public void send(OtpErlangPid pid, Object msg) {
 		try {
-			getMbox().send(pid, RpcConverter.java2erlang(msg, "x"));
+			OtpMbox mbox = getMbox();
+			if (mbox != null)
+				mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
 		} catch (final RpcException e) {
 			// shouldn't happen
 			e.printStackTrace();
@@ -254,7 +257,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public void send(String name, Object msg) {
 		try {
-			getMbox().send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
+			OtpMbox mbox = getMbox();
+			if (mbox != null)
+				mbox.send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
 		} catch (final RpcException e) {
 			// shouldn't happen
 			e.printStackTrace();
@@ -376,6 +381,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		OtpErlangObject res = null;
 		try {
 			final OtpMbox mbox = getMbox();
+			if (mbox == null) {
+				return null;
+			}
 			res = RpcUtil.buildRpcCall(module, fun, args, mbox.self());
 			send("rex", res);
 			if (CHECK_RPC) {
@@ -412,6 +420,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	}
 
 	private OtpMbox getMbox() {
+		if (ftMBox == null)
+			return null;
 		return ftMBox.getMbox();
 	}
 
@@ -420,11 +430,17 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	}
 
 	public OtpErlangPid getEventPid() {
-		return getEventBox().self();
+		OtpMbox eventBox = getEventBox();
+		if (eventBox == null)
+			return null;
+		return eventBox.self();
 	}
 
 	public OtpErlangPid getRpcPid() {
-		return getMbox().self();
+		OtpMbox mbox = getMbox();
+		if (mbox == null)
+			return new OtpErlangPid("", 0, 0, 0);
+		return mbox.self();
 	}
 
 	public String getCurrentVersion() {
@@ -471,7 +487,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public OtpErlangObject receive(int timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
-		return getMbox().receive(timeout);
+		OtpMbox mbox = getMbox();
+		if (mbox == null)
+			return null;
+		return mbox.receive(timeout);
 	}
 
 	public OtpErlangObject receiveEvent() throws OtpErlangExit,
@@ -490,11 +509,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			return eventBox.receive(timeout);
 		}
 		return null;
-	}
-
-	public OtpErlangObject execute(String fun, OtpErlangObject... args)
-			throws Exception {
-		return ErlideBackend.execute(this, fun, args);
 	}
 
 	public IShellManager getShellManager() {
@@ -527,6 +541,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	}
 
 	public String getName() {
+		if (fNode == null)
+			return "<not connected>";
 		return fNode.node();
 	}
 

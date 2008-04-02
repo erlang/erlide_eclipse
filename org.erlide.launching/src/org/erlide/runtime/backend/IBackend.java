@@ -18,6 +18,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -39,7 +40,7 @@ public interface IBackend {
 	 * @throws ConversionException
 	 */
 	RpcResult rpc(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, RpcException;
+			throws RpcException;
 
 	/**
 	 * @throws ErlangRpcException
@@ -51,10 +52,11 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws NoBackendException
 	 * @throws ConversionException
 	 */
-	RpcResult rpct(String m, String f, int timeout, String signature,
-			Object... a) throws ErlangRpcException, RpcException;
+	RpcResult rpc(String m, String f, int timeout, String signature,
+			Object... a) throws RpcException;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -66,10 +68,11 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws BackendException
 	 * @throws ConversionException
 	 */
 	OtpErlangObject rpcx(String m, String f, String signature, Object... a)
-			throws ErlangRpcException, BackendException, RpcException;
+			throws RpcException, BackendException;
 
 	/**
 	 * @throws ErlangRpcException,
@@ -82,11 +85,11 @@ public interface IBackend {
 	 *            TODO
 	 * @param a
 	 * @return OtpErlangObject
+	 * @throws BackendException
 	 * @throws ConversionException
 	 */
-	OtpErlangObject rpcxt(String m, String f, int timeout, String signature,
-			Object... a) throws ErlangRpcException, BackendException,
-			RpcException;
+	OtpErlangObject rpcx(String m, String f, int timeout, String signature,
+			Object... a) throws RpcException, BackendException;
 
 	/**
 	 * 

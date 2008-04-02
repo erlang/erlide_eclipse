@@ -20,10 +20,17 @@ public class RpcResult {
 
 	private boolean fOk = true;
 
+	private RpcResult(boolean ok) {
+		fOk = ok;
+		fValue = new OtpErlangAtom("undefined");
+	}
+
+	public final static RpcResult ERROR = new RpcResult(false);
+
 	public RpcResult(OtpErlangObject res) {
-		if ((res instanceof OtpErlangTuple) &&
-				(((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom) &&
-				("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
+		if ((res instanceof OtpErlangTuple)
+				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
+				&& ("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
 						.elementAt(0))).atomValue()) || "EXIT"
 						.equals(((OtpErlangAtom) (((OtpErlangTuple) res)
 								.elementAt(0))).atomValue()))) {

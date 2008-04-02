@@ -18,21 +18,10 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.preference.IPreferenceNode;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.basiccore.ErtsPreferences;
-import org.erlide.basicui.prefs.ErtsPreferencePage;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.osgi.framework.Bundle;
@@ -227,45 +216,6 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 			fImageDescriptorRegistry = new ImageDescriptorRegistry();
 		}
 		return fImageDescriptorRegistry;
-	}
-
-	// this is synchronous: we don't want anything to proceed before erlang path
-	// is fixed!
-	public static void showErtsPreferencesDialog(int tries) {
-		try {
-			final IWorkbench workbench = PlatformUI.getWorkbench();
-			final IWorkbenchWindow window = workbench
-					.getActiveWorkbenchWindow();
-			final Shell shell = window.getShell();
-
-			final IPreferenceNode targetNode = new PreferenceNode(
-					ErtsPreferencePage.ID + ".2", new ErtsPreferencePage());
-			final PreferenceManager manager = new PreferenceManager();
-			manager.addToRoot(targetNode);
-
-			final PreferenceDialog dialog = new PreferenceDialog(shell, manager);
-			dialog.create();
-			dialog.setMessage("Please configure your Erlang installation! ("
-					+ tries + " more tries");
-			dialog.open();
-		} catch (final Exception e) {
-			System.out
-					.println("Couldn't show preference dialog, and Erlang isn't configured...");
-		}
-		;
-	}
-
-	public static void closeWorkbench() {
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		final Shell shell = window.getShell();
-		final MessageBox box = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR
-				| SWT.APPLICATION_MODAL);
-		box.setMessage("Could not find an Erlang installation. Giving up...");
-		box.setText("Fatal Error");
-		box.open();
-		// TODO what do we do?
-		workbench.close();
 	}
 
 	public void setLaunchBundle(Bundle b) {

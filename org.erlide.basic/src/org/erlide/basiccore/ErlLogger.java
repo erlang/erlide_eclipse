@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.basiccore;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +23,11 @@ public class ErlLogger {
 	};
 
 	private static Level minLevel = Level.DEBUG;
+
+	{
+		String lvl = System.getProperty("erlide.logger.level");
+		minLevel = lvl == null ? Level.INFO : Level.valueOf(lvl.toUpperCase());
+	}
 
 	public static void setLevel(Level level) {
 		minLevel = level;
@@ -62,6 +69,24 @@ public class ErlLogger {
 				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
 	}
 
+	private static void log(Level kind, Exception e) {
+		if (kind.compareTo(minLevel) < 0) {
+			return;
+		}
+		final StackTraceElement el = getCaller();
+		final String str = e.getMessage();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		e.printStackTrace(new PrintStream(stream));
+		final String stack = kind == Level.DEBUG ? "" : "\n"
+				+ stream.toString();
+
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
+				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str
+				+ stack);
+	}
+
 	public static void erlangLog(String module, int line, Level kind,
 			String fmt, Object... o) {
 		if (kind.compareTo(minLevel) < 0) {
@@ -88,6 +113,22 @@ public class ErlLogger {
 
 	public static void error(String fmt, Object... o) {
 		log(Level.ERROR, fmt, o);
+	}
+
+	public static void debug(Exception e) {
+		log(Level.DEBUG, e);
+	}
+
+	public static void info(Exception e) {
+		log(Level.INFO, e);
+	}
+
+	public static void warn(Exception e) {
+		log(Level.WARN, e);
+	}
+
+	public static void error(Exception e) {
+		log(Level.ERROR, e);
 	}
 
 }

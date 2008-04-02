@@ -38,12 +38,14 @@ public class BackendShell {
 	}
 
 	public void close() {
-		fBackend.send(server, new OtpErlangAtom("stop"));
+		if (server != null)
+			fBackend.send(server, new OtpErlangAtom("stop"));
 	}
 
 	public void send(String string) {
-		fBackend.send(server, new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("input"), new OtpErlangString(string) }));
+		if (server != null)
+			fBackend.send(server, new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom("input"), new OtpErlangString(string) }));
 	}
 
 }

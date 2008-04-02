@@ -4,37 +4,10 @@
    <description url="http://erlide.sourceforge.net/update/site.xml">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2 and later.
    </description>
-   <feature url="features/org.erlide_0.3.38.jar" id="org.erlide" version="0.3.38">
+   <feature url="features/org.erlide_0.3.40.jar" id="org.erlide" version="0.3.40">
       <category name="Stable"/>
    </feature>
-   <feature url="features/org.erlide_0.3.38.qualifier.jar" id="org.erlide" version="0.3.38.qualifier">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.200803051027.jar" id="org.erlide" version="0.3.39.200803051027">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.200803051418.jar" id="org.erlide" version="0.3.39.200803051418">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.200803051447.jar" id="org.erlide" version="0.3.39.200803051447">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.301.jar" id="org.erlide" version="0.3.39.301">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.302.jar" id="org.erlide" version="0.3.39.302">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.304.jar" id="org.erlide" version="0.3.39.304">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.305.jar" id="org.erlide" version="0.3.39.305">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.306.jar" id="org.erlide" version="0.3.39.306">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.39.307.jar" id="org.erlide" version="0.3.39.307">
+   <feature url="features/org.erlide_0.3.41.jar" id="org.erlide" version="0.3.41">
       <category name="Unstable"/>
    </feature>
    <category-def name="Stable" label="Stable builds"/>

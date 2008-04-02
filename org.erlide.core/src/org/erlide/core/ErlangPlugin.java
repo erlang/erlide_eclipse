@@ -744,7 +744,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			manager.shutdown();
 			throw e;
 		}
-
 	}
 
 	private static void registerOpenProjects() {

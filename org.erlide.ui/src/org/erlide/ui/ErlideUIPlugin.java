@@ -113,7 +113,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		if (BackendManager.isDeveloper()) {
 			BackendManagerPopup.init();
 		}
-
 	}
 
 	/**

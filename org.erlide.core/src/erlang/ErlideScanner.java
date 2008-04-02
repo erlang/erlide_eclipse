@@ -1,5 +1,6 @@
 package erlang;
 
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 
 public class ErlideScanner {
@@ -9,7 +10,7 @@ public class ErlideScanner {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"create", "a", module);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -19,7 +20,7 @@ public class ErlideScanner {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"insertText", "ais", module, offset + 1, text);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -29,7 +30,7 @@ public class ErlideScanner {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
 					"removeText", "aii", module, offset + 1, length);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -38,7 +39,7 @@ public class ErlideScanner {
 			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
 					"destroy", "a", module);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 

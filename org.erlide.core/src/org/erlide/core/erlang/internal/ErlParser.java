@@ -130,8 +130,9 @@ public class ErlParser {
 			} else {
 				ErlLogger.debug("rpc err:: " + res);
 			}
+			// } catch (final NoBackendException e1) {
 		} catch (final Exception e1) {
-			e1.printStackTrace();
+			ErlLogger.debug(e1);
 		}
 		final ErlModule mm = (ErlModule) module;
 		mm.reset();

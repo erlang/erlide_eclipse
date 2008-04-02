@@ -1,9 +1,11 @@
 package erlang;
 
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -15,7 +17,7 @@ public class ErlangCode {
 		try {
 			fBackend.rpc("code", "add_patha", "s", path);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -23,7 +25,7 @@ public class ErlangCode {
 		try {
 			fBackend.rpc("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -38,7 +40,7 @@ public class ErlangCode {
 
 			fBackend.rpc("code", "del_path", null, new OtpErlangString(path));
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -53,14 +55,18 @@ public class ErlangCode {
 
 			fBackend.rpc("code", "del_path", "s", path);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
 	public static RpcResult loadBinary(final IBackend b, final String beamf,
 			final OtpErlangBinary code) throws ErlangRpcException, RpcException {
-		final RpcResult result = b.rpc("code", "load_binary", "asb", beamf,
-				beamf, code);
+		RpcResult result;
+		try {
+			result = b.rpc("code", "load_binary", "asb", beamf, beamf, code);
+		} catch (NoBackendException e) {
+			return RpcResult.ERROR;
+		}
 		return result;
 	}
 
@@ -68,7 +74,7 @@ public class ErlangCode {
 		try {
 			fBackend.rpc("code", "delete", "a", moduleName);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 

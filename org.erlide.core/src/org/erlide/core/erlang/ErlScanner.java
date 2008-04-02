@@ -11,7 +11,9 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -174,8 +176,10 @@ public class ErlScanner implements IErlScanner {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_scanner", "do_getTokenWindow", "aii", fMod, offset,
 					window);
+		} catch (final NoBackendException e) {
+			ErlLogger.debug(e);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return null;
 		}
 		if (r1 == null) {

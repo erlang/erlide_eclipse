@@ -77,8 +77,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".taskmarker";
 
-	public static final String MODULE = "erlide_builder";
-
 	// TODO how do we configure builder?
 	// use the internal builder
 	private final boolean fInternal = true;
@@ -217,7 +215,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						IMarker.SEVERITY_ERROR, "");
 			}
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 

@@ -9,10 +9,10 @@ import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -29,14 +29,8 @@ public class ErlideBackend {
 		try {
 			backend.rpc(ERL_BACKEND, "init", "a", node);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
-	}
-
-	public static OtpErlangObject execute(IBackend backend, String fun,
-			OtpErlangObject... args) throws ErlangRpcException, RpcException {
-		return backend.rpc(ERL_BACKEND, "execute", "sx", fun,
-				new OtpErlangList(args)).getValue();
 	}
 
 	public static String format_error(final OtpErlangObject object) {
@@ -60,11 +54,13 @@ public class ErlideBackend {
 
 	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
 		try {
-			final String r = b.rpc(ERL_BACKEND, "format", "sx", fmt,
-					new OtpErlangList(args)).toString();
+			final String r = b.rpc(ERL_BACKEND, "format", "slx", fmt, args)
+					.toString();
 			return r.substring(1, r.length() - 1);
+		} catch (final NoBackendException e) {
+			return "error";
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 		return "error";
 	}
@@ -188,7 +184,7 @@ public class ErlideBackend {
 				ErlLogger.debug("rpcstub::" + r.toString());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErlLogger.debug(e);
 		}
 	}
 
@@ -207,8 +203,10 @@ public class ErlideBackend {
 			} else {
 				r = null;
 			}
+		} catch (final NoBackendException e) {
+			ErlLogger.debug(e);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		if (r != null) {
 			final OtpErlangTuple t = (OtpErlangTuple) r;
@@ -226,17 +224,24 @@ public class ErlideBackend {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject call(String module, String fun, int offset,
-			String text) throws ErlangRpcException, BackendException,
-			RpcException {
-		final OtpErlangObject r1 = BackendManager.getDefault().getIdeBackend()
-				.rpcx(module, fun, "si", text, offset);
-		return r1;
+			String text) throws BackendException, RpcException {
+		try {
+			final OtpErlangObject r1 = BackendManager.getDefault()
+					.getIdeBackend().rpcx(module, fun, "si", text, offset);
+			return r1;
+		} catch (NoBackendException e) {
+			return new OtpErlangString("");
+		}
 	}
 
 	public static OtpErlangObject concreteSyntax(final OtpErlangObject val)
-			throws ErlangRpcException, BackendException, RpcException {
-		return BackendManager.getDefault().getIdeBackend().rpcx(
-				"erlide_syntax", "concrete", "x", val);
+			throws BackendException, RpcException {
+		try {
+			return BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_syntax", "concrete", "x", val);
+		} catch (NoBackendException e) {
+			return null;
+		}
 	}
 
 	public static String getScriptId(IBackend b) throws ErlangRpcException,

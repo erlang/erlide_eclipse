@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.util.BalloonPopupDialog;
+import org.erlide.basicui.util.PopupDialog;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendListener;
@@ -39,7 +39,7 @@ public class BackendManagerPopup implements IBackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Added " +
+				PopupDialog.showBalloon("Backend notification", "Added " +
 						b.getLabel(), DELAY);
 			}
 		});
@@ -52,7 +52,7 @@ public class BackendManagerPopup implements IBackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				BalloonPopupDialog.show("Backend notification", "Removed " +
+				PopupDialog.showBalloon("Backend notification", "Removed " +
 						b.getLabel(), DELAY);
 			}
 		});
