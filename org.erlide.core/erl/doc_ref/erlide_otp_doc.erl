@@ -27,8 +27,8 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
         Val when is_list(Val) ->
             Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
             lists:filter(Fun, Val);
-    	Error ->
-            ?D(Error),
+    	_Error ->
+            ?D(_Error),
             error
     end.
 
