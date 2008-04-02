@@ -20,6 +20,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.ErlideUIPlugin;
@@ -64,8 +65,8 @@ public class ErlTextHover implements ITextHover,
 			final int offset = hoverRegion.getOffset();
 			final String stateDir = ErlideUIPlugin.getDefault()
 					.getStateLocation().toString();
-			r1 = ErlideDoc.getDocFromScan(offset, stateDir, fModule
-					.getScanner().getScannerModuleName(), fImports);
+			r1 = ErlideDoc.getDocFromScan(offset, stateDir, ErlScanner
+					.createScannerModuleName(fModule), fImports);
 			if (r1 instanceof OtpErlangString) {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				return s1.stringValue();
