@@ -13,7 +13,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.erlide.core.erlang.IErlScanner;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -25,7 +24,7 @@ import erlang.ErlidePairMatch;
  */
 public class ErlPairMatcher implements ICharacterPairMatcher {
 
-	protected final IErlScanner fScanner;
+	protected final String scannerModuleName;
 
 	protected int fOffset;
 
@@ -35,8 +34,8 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 
 	protected int fAnchor;
 
-	private ErlPairMatcher(IErlScanner scanner) {
-		fScanner = scanner;
+	private ErlPairMatcher(String scannerModuleName) {
+		this.scannerModuleName = scannerModuleName;
 	}
 
 	/*
@@ -52,13 +51,12 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 	}
 
 	private boolean matchPairsAt() {
-		if (fScanner == null) {
+		if (scannerModuleName == null) {
 			return false;
 		}
 		OtpErlangObject r1 = null;
 		try {
-			r1 = ErlidePairMatch
-					.match(fOffset, fScanner.getScannerModuleName());
+			r1 = ErlidePairMatch.match(fOffset, scannerModuleName);
 			if (r1 instanceof OtpErlangLong) {
 				final OtpErlangLong s1 = (OtpErlangLong) r1;
 				final int pos = s1.intValue() - 1, offset = fOffset - 1;
@@ -73,7 +71,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 				}
 				return true;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
