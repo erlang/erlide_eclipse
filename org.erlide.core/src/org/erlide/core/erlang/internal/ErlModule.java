@@ -364,6 +364,8 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void reconcileText(int offset, int removeLength, String newText,
 			IProgressMonitor mon) {
+		if (scanner == null)
+			return;
 		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
