@@ -21,7 +21,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.util.PopupDialog;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
 public class ErlideNodeLaunchConfigurationDelegate extends
@@ -66,12 +65,11 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 			}
 
 			if (vm == null) {
-				PopupDialog
-						.showDialog(
-								"Starting Erlang backend",
-								"Could not start, please check your preferences!",
-								4000);
-
+				// PopupDialog
+				// .showDialog(
+				// "Starting Erlang backend",
+				// "Could not start, please check your preferences!",
+				// 4000);
 			}
 
 		} catch (final Exception e) {
