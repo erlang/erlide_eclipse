@@ -15,7 +15,7 @@
 
 -include_lib("stdlib/include/ms_transform.hrl").
 
--export([isScanned/1]).
+-export([initialScan/4, isScanned/1]).
 
 %%-include_lib("eunit/include/eunit.hrl").
 %%-include_lib("eunit/include/eunit_test.hrl").
@@ -23,11 +23,39 @@
 %-define(DEBUG, 1).
 
 -include("erlide.hrl").
-
-
 -include("erlide_scanner.hrl").
 
 -define(SERVER, erlide_scanner).
+
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
+    ?D({ScannerName, ModuleFileName, StateDir}),
+    try
+    	case isScanned(ScannerName) of
+            true ->
+                ok;
+            false ->
+                CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
+                RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
+        		CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
+				erlide_util:check_cached(ModuleFileName, CacheFileName, RenewFun, CacheFun)
+%%                 do_scan(ScannerName, InitialText)
+        end,
+        do_getTokens(ScannerName)
+    catch
+        error:Reason ->
+            {error, Reason}
+    end.
+
+do_scan(ScannerName, InitialText) ->
+    ?D(ScannerName),
+    create(ScannerName),
+    ?D(b),
+    insertText(ScannerName, 1, InitialText),
+    ?D(i),
+    ets:tab2list(ScannerName).
+
+do_add_cached(ScannerName, List) ->
+    ets:insert_new(ScannerName, List).
 
 spawn_owner() ->
     case whereis(?SERVER) of
@@ -158,7 +186,6 @@ getTokensAround(Module, Offset) ->
 isScanned(Module) ->
     lists:member(Module, ets:all()).
 
-
 insertText(Module, Offset, Text) ->
     Z = getTokensAround(Module, Offset),
     ?D({"*> insert at ~p: ~p~n", [Offset, Z]}),
@@ -196,7 +223,7 @@ insertText(Module, Offset, Text) ->
     ?D(d),
     %% update offsets of tokens following the insertion point
     {ok, Tks, {LL, _LO}} = erlide_scan:string_ws(Text2),
-    ?D({sCAN, Text2, Tks}),
+    %%?D({sCAN, Text2, Tks}),
     %%io:format(">>> ~p ~p ~p/~p   ~n", [Ofs, Text2, L, LL-XL-1]),
     %%io:format("1 &&& ~p~n", [getWsTokens(Module)]),
     update_after(Module, Ofs, length(Text), LL-XL-1),

@@ -1,14 +1,19 @@
 package erlang;
 
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.backend.BackendManager;
 
 public class ErlideScanner {
 
-	public static void create(String module) {
+	public static void initialScan(String module, String moduleFileName,
+			String initialText) {
+		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
+				.toString();
 		try {
 			BackendManager.getDefault().getIdeBackend().rpc("erlide_scanner",
-					"create", "a", module);
+					"initialScan", "asss", module, moduleFileName, initialText,
+					stateDir);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}

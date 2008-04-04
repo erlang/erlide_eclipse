@@ -104,25 +104,23 @@ public class ErlParser {
 	 * new ArrayList(50); } } return result; }
 	 */
 
-	public boolean parse(final IErlModule module, boolean initialParse) {
+	public boolean parse(final IErlModule module, String initialText,
+			boolean initialParse) {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
 		try {
-			// ErlLogger.debug("noparsing " + scanner.getScannerModuleName());
 			OtpErlangTuple res = null;
 			if (initialParse) {
-				final String name = module.getName();
 				final IResource resource = module.getResource();
 				final String moduleFileName = resource.getLocation().toString();
 				final String stateDir = ErlangPlugin.getDefault()
 						.getStateLocation().toString();
-				res = ErlideNoparse.initialParse(b, scannerModuleName, name,
-						moduleFileName, stateDir);
+				res = ErlideNoparse.initialParse(b, scannerModuleName,
+						moduleFileName, initialText, stateDir);
 			} else {
-				res = ErlideNoparse.reparse(b, scannerModuleName, module
-						.getName());
+				res = ErlideNoparse.reparse(b, scannerModuleName);
 			}
 			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);

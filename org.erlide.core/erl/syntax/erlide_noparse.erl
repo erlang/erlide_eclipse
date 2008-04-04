@@ -8,7 +8,7 @@
 %% Exported Functions
 %%
 
--export([initial_parse/4, reparse/2]). 
+-export([initial_parse/4, reparse/1]). 
 
 %%
 %% Include files
@@ -24,24 +24,12 @@
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
 
-%% parse(String, ModuleName) ->
-%%     try
-%%         Toks = scan(String, ModuleName),
-%%         {UncommentToks, Comments} = extract_comments(Toks),
-%%         F = split_after_dots(UncommentToks, [], []),
-%%         Collected = [classify_and_collect(I) || I <- F],
-%%         {ok, Collected, Comments, String, Toks}
-%%     catch
-%%         error:Reason ->
-%%             {error, Reason}
-%%     end.
-
-initial_parse(ScannerName, ModuleName, ModuleFileName, StateDir) ->
+initial_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     try
     	?D({StateDir, ModuleFileName}),
-    	CacheFileName = filename:join(StateDir, ModuleName ++ ".noparse"),
+		Renew = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitalText, StateDir) end,
+    	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-		Renew = fun(_F) -> do_parse(ScannerName, ModuleName) end,
 		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, Renew),
         {ok, Res}
     catch
@@ -49,18 +37,18 @@ initial_parse(ScannerName, ModuleName, ModuleFileName, StateDir) ->
             {error, Reason}
     end.
 
-reparse(ScannerName, ModuleName) ->
+reparse(ScannerName) ->
     try
-		Res = do_parse(ScannerName, ModuleName),
+        Res = do_parse(ScannerName, "", "", ""),
         {ok, Res}
     catch
         error:Reason ->
             {error, Reason}
     end.
 
-do_parse(ScannerName, ModuleName) ->
-    ?Info({noparse, ModuleName}),
-    Toks = scan(ScannerName),
+do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
+    ?Info({noparse, ScannerName}),
+    {ok, Toks} = scan(ScannerName, ModuleFileName, InitalText, StateDir),
     ?D(Toks),
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
@@ -181,8 +169,8 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 %%         true ->
 %%             ok
 %%     end,
-scan(Name) ->
-    erlide_scanner:getTokens(Name).
+scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
+    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir).
 
 %% %% fixa in line-offset i tokens
 %% %% invariant: first-line-offset alltid =< tokenoffset

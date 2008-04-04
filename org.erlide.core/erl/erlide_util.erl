@@ -16,7 +16,7 @@
 %% Exported Functions
 %%
 %% -export([newer_file/2]).
--export([check_cached/3]).
+-export([check_cached/3, check_cached/4]).
 
 %%
 %% API Functions
@@ -57,23 +57,26 @@
 %%             read_cache(CacheFileName)
 %%     end.
 
-check_cached(SourceFileName, CacheFileName, Renew) ->
+check_cached(SourceFileName, CacheFileName, RenewFun) ->
+    check_cached(SourceFileName, CacheFileName, RenewFun, fun(D) -> D end).
+
+check_cached(SourceFileName, CacheFileName, RenewFun, CacheFun) ->
     {ok, Info} = file:read_file_info(SourceFileName),
     SourceModDate = Info#file_info.mtime,
     case read_cache_date(CacheFileName) of
         SourceModDate ->
-            read_cache(CacheFileName);
+            read_cache(CacheFileName, CacheFun);
         _ ->
-            renew_cache(SourceFileName, SourceModDate, CacheFileName, Renew)
+            renew_cache(SourceFileName, SourceModDate, CacheFileName, RenewFun)
     end.
 
 %%
 %% Local Functions
 %%
 
-renew_cache(SourceFileName, SourceFileModDate, CacheFileName, Renew) ->
+renew_cache(SourceFileName, SourceFileModDate, CacheFileName, RenewFun) ->
     BinDate = date_to_bin(SourceFileModDate),
-    T = Renew(SourceFileName),
+    T = RenewFun(SourceFileName),
     B = term_to_binary(T),
     file:delete(CacheFileName),
     file:write_file(CacheFileName, <<BinDate/binary, B/binary>>),
@@ -94,8 +97,8 @@ read_cache_date(CacheFileName) ->
             {{0, 0, 0}, {0, 0, 0}}
     end.
 
-read_cache(CacheFileName) ->
+read_cache(CacheFileName, CacheFun) ->
     {ok, B} = file:read_file(CacheFileName),
     <<_:7/binary, BinTerm/binary>> = B,
-    binary_to_term(BinTerm).
+    CacheFun(binary_to_term(BinTerm)).
 

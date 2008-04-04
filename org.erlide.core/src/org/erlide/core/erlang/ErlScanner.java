@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -25,7 +26,7 @@ import erlang.ErlideScanner;
 /**
  * Erlang syntax scanner
  * 
- * @author Eric Merritt
+ * @author Vlad
  */
 public class ErlScanner implements IErlScanner {
 
@@ -36,8 +37,15 @@ public class ErlScanner implements IErlScanner {
 	public ErlScanner(IErlModule module, String initialText) {
 		fModule = module;
 		fMod = createScannerModuleName(fModule);
-		create();
-		insertText(0, initialText);
+		String moduleFileName = "";
+		final IResource r = module.getResource();
+		if (r instanceof IFile) {
+			final IFile f = (IFile) r;
+			moduleFileName = f.getLocation().toString();
+		}
+		ErlideScanner.initialScan(fMod, moduleFileName, initialText);
+		// create();
+		// insertText(0, initialText);
 	}
 
 	/**
@@ -48,16 +56,19 @@ public class ErlScanner implements IErlScanner {
 		final IResource res = module.getResource();
 		String resName;
 		if (res != null) {
-			resName = res.getFullPath().toPortableString();
+			resName = "mod" + res.getFullPath().toPortableString().hashCode()
+					+ "_" + res.getName();
 		} else {
-			resName = "res";
+			// This is not used more than temporarily, so it's ok to have
+			// a name that's temporary, as long as it's unique
+			resName = "mod" + module.hashCode() + "_";
 		}
-		return "_erlide_" + module.getErlProject().getName() + "_" + resName;
+		return resName;
 	}
 
-	private void create() {
-		ErlideScanner.create(fMod);
-	}
+	// private void create() {
+	// ErlideScanner.create(fMod);
+	// }
 
 	public void dispose() {
 		ErlideScanner.destroy(fMod);

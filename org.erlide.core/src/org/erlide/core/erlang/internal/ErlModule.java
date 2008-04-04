@@ -53,7 +53,7 @@ public class ErlModule extends Openable implements IErlModule {
 	// private IDocument fDoc;
 	private final List<IErlComment> comments;
 
-	private String cacheInitialText;
+	private String initialText;
 
 	private IErlScanner scanner;
 
@@ -74,7 +74,16 @@ public class ErlModule extends Openable implements IErlModule {
 		isModule = isErl;
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
-		cacheInitialText = initialText;
+		if (initialText == null && fFile.exists()) {
+			try {
+				this.initialText = new String(Util
+						.getResourceContentsAsCharArray(fFile));
+			} catch (final ErlModelException e) {
+				this.initialText = "";
+			}
+		} else {
+			this.initialText = initialText;
+		}
 		setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getName() + "/" + name
@@ -101,7 +110,9 @@ public class ErlModule extends Openable implements IErlModule {
 		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 
 		final ErlParser parser = new ErlParser();
-		isStructureKnown = parser.parse(this, !parsed);
+		if (initialText != null) {
+			isStructureKnown = parser.parse(this, initialText, !parsed);
+		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
 		if (model != null) {
@@ -312,20 +323,21 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	private IErlScanner getNewScanner() {
-		String s = cacheInitialText;
-		cacheInitialText = null;
-		if (s == null) {
-			if (fFile != null) {
-				try {
-					s = new String(Util.getResourceContentsAsCharArray(fFile));
-				} catch (final ErlModelException e) {
-					s = "";
-				}
-			} else {
-				s = "";
-			}
-		}
-		return new ErlScanner(this, s);
+		// String s = initialText;
+		// initialText = null;
+		// if (s == null) {
+		// if (fFile != null) {
+		// try {
+		// s = new String(Util.getResourceContentsAsCharArray(fFile));
+		// } catch (final ErlModelException e) {
+		// s = "";
+		// }
+		// } else {
+		// s = "";
+		// }
+		// }
+		// return new ErlScanner(this, s);
+		return new ErlScanner(this, initialText);
 	}
 
 	public void fixExportedFunctions() {

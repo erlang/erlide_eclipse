@@ -194,20 +194,20 @@ guess_arity(Tokens, N) ->
 skip_expr([#token{kind=T} | Before]) when T =:= '{'; T =:= '['; T =:= '(' ->
     A = skip_paren(Before, erlide_text:matching_paren(T)),
     ?D(A),
-    case erlide_text:is_op2(A) of
+    case is_op2(A) of
         true ->
             skip_expr(A);
         false ->
             A
     end;
 skip_expr([Tup | Rest]) ->
-    case erlide_text:is_block_start_token(Tup) of
+    case is_block_start_token(Tup) of
         true ->
             skip_block_end(Rest);
         false ->
             case Rest of
                 [{Op,_, _} | R] ->
-                    case erlide_text:is_op2(Op) of
+                    case is_op2(Op) of
                         true ->
                             skip_expr(R);
                         false ->
@@ -295,26 +295,17 @@ get_tab_spaces(I, Tablength) ->
 %% get_line_offsets/1
 %%
 get_line_offsets("") ->
-    {0, 0};
+    {0};
 get_line_offsets(S) ->
-    get_line_offsets(S, 0, true, []).
+    get_line_offsets(S, 1, [1]).
 
-get_line_offsets("", _, _, Acc) ->
+get_line_offsets("", _, Acc) ->
     list_to_tuple(lists:reverse(Acc));
-get_line_offsets(" " ++ Rest, O, B, Acc) ->
-    get_line_offsets(Rest, O+1, B, Acc);
-get_line_offsets("\r\n" ++ Rest, O, true, Acc) ->
+get_line_offsets("\r\n" ++ Rest, O, Acc) ->
 	O2 = O+2,
-    get_line_offsets(Rest, O2, true, [O2 | Acc]);
-get_line_offsets([EOL|Rest], O, true, Acc) when EOL =:= $\n; EOL =:= $\r ->
+    get_line_offsets(Rest, O2, [O2 | Acc]);
+get_line_offsets([EOL|Rest], O, Acc) when EOL =:= $\n; EOL =:= $\r ->
     O1 = O+1,
-    get_line_offsets(Rest, O1, true, [O1 | Acc]);
-get_line_offsets("\r\n"++Rest, O, false, Acc) ->
-    get_line_offsets(Rest, O+2, true, Acc);
-get_line_offsets([EOL|Rest], O, false, Acc) when EOL =:= $\n; EOL =:= $\r ->
-    get_line_offsets(Rest, O+1, true, Acc);
-get_line_offsets([_|Rest], O, true, Acc) ->
-	O1 = O+1,
-    get_line_offsets(Rest, O1, false, [O1 | Acc]);
-get_line_offsets([_|Rest], O, false, Acc) ->
-    get_line_offsets(Rest, O+1, false, Acc).
+    get_line_offsets(Rest, O1, [O1 | Acc]);
+get_line_offsets([_|Rest], O, Acc) ->
+    get_line_offsets(Rest, O+1, Acc).
