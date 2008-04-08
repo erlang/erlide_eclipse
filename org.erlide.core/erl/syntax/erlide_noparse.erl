@@ -14,7 +14,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
