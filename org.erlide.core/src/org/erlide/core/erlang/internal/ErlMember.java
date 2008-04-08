@@ -4,8 +4,6 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 /**
  * 
  * @author Vlad Dumitrescu
@@ -17,15 +15,15 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 		super(parent, name);
 	}
 
-	private OtpErlangObject fTree;
+	// private OtpErlangObject fTree;
 
-	public void setParseTree(OtpErlangObject tree) {
-		fTree = tree;
-	}
+	// public void setParseTree(OtpErlangObject tree) {
+	// fTree = tree;
+	// }
 
-	public OtpErlangObject getParseTree() {
-		return fTree;
-	}
+	// public OtpErlangObject getParseTree() {
+	// return fTree;
+	// }
 
 	public boolean isVisibleInOutline() {
 		return true;
@@ -38,9 +36,8 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
 	public ISourceRange getNameRange() {
 		if (fNameRangeStart == 0 && fNameRangeEnd == 0) {
-			return new SourceRange(this.getSourceRangeStart(), this
-					.getSourceRangeEnd()
-					- this.getSourceRangeStart() + 1);
+			return new SourceRange(getSourceRangeStart(), getSourceRangeEnd()
+					- getSourceRangeStart() + 1);
 		}
 		return new SourceRange(fNameRangeStart, fNameRangeEnd - fNameRangeStart);
 	}

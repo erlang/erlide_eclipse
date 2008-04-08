@@ -13,12 +13,10 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMessage;
 import org.erlide.core.erlang.ISourceRange;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 public class ErlMessage extends ErlMember implements IErlMessage {
 
-	private String message;
-	private MessageKind fKind;
+	private final String message;
+	private final MessageKind fKind;
 
 	protected ErlMessage(IErlElement parent, MessageKind kind, String name)
 			throws IllegalArgumentException {
@@ -39,10 +37,10 @@ public class ErlMessage extends ErlMember implements IErlMessage {
 		return null;
 	}
 
-	@Override
-	public OtpErlangObject getParseTree() {
-		return null;
-	}
+	// @Override
+	// public OtpErlangObject getParseTree() {
+	// return null;
+	// }
 
 	@Override
 	public ISourceRange getNameRange() {

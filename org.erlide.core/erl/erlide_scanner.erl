@@ -20,7 +20,7 @@
 %%-include_lib("eunit/include/eunit.hrl").
 %%-include_lib("eunit/include/eunit_test.hrl").
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -35,6 +35,7 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
                 ok;
             false ->
                 CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
+                ?D(CacheFileName),
                 RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
         		CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
 				erlide_util:check_cached(ModuleFileName, CacheFileName, RenewFun, CacheFun)
@@ -55,7 +56,8 @@ do_scan(ScannerName, InitialText) ->
     ets:tab2list(ScannerName).
 
 do_add_cached(ScannerName, List) ->
-    ets:insert_new(ScannerName, List).
+    create(ScannerName),
+    ets:insert(ScannerName, List).
 
 spawn_owner() ->
     case whereis(?SERVER) of
@@ -86,6 +88,7 @@ create(Module) ->
   ok.
 
 destroy(Module) ->
+    ?D(Module),
     catch ets:delete(Module),
     ok.
 

@@ -14,7 +14,7 @@
 %% Include files
 %%
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -170,7 +170,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 %%             ok
 %%     end,
 scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
-    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir).
+    ?D(ets:info(ScannerName)),
+    S = erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
+    ?D(ets:info(ScannerName)),
+    S.
 
 %% %% fixa in line-offset i tokens
 %% %% invariant: first-line-offset alltid =< tokenoffset

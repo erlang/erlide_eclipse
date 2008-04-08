@@ -14,41 +14,57 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
 	protected ErlFunctionClause(IErlElement parent, String name) {
 		super(parent, name);
+		arguments = null;
+		guards = null;
 	}
+
+	OtpErlangList arguments;
+	OtpErlangList guards;
 
 	public OtpErlangList getArguments() {
-		final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
-		if (tree == null) {
-			return null;
-		}
-		return (OtpErlangList) tree.elementAt(3);
+		return arguments;
 	}
 
-	public OtpErlangObject getBody() {
-		final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
-		if (tree == null) {
-			return null;
-		}
-		return tree.elementAt(5);
-	}
+	// public OtpErlangObject getBody() {
+	// final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
+	// if (tree == null) {
+	// return null;
+	// }
+	// return tree.elementAt(5);
+	// }
 
 	public OtpErlangList getGuards() {
-		final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
-		if (tree == null) {
-			return null;
-		}
-		return (OtpErlangList) tree.elementAt(4);
+		return guards;
+		// final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
+		// if (tree == null) {
+		// return null;
+		// }
+		// return (OtpErlangList) tree.elementAt(4);
 	}
 
 	public Kind getKind() {
 		return Kind.CLAUSE;
+	}
+
+	/**
+	 * @param arguments
+	 *            the arguments to set
+	 */
+	public void setArguments(OtpErlangList arguments) {
+		this.arguments = arguments;
+	}
+
+	/**
+	 * @param guards
+	 *            the guards to set
+	 */
+	public void setGuards(OtpErlangList guards) {
+		this.guards = guards;
 	}
 
 	@Override

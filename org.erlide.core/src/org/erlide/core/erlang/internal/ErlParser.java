@@ -222,7 +222,7 @@ public class ErlParser {
 			final ErlMessage e = new ErlMessage(parent,
 					ErlMessage.MessageKind.ERROR, msg);
 			setPos(e, er.elementAt(0));
-			e.setParseTree(el);
+			// e.setParseTree(el);
 			return e;
 		} else if ("tree".equals(type.atomValue())) {
 			final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
@@ -253,19 +253,23 @@ public class ErlParser {
 				final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
 						.arity()];
 				for (int i = 0; i < clauses.arity(); i++) {
-					cls[i] = new ErlFunctionClause(f, "#" + i);
+					final ErlFunctionClause cl = new ErlFunctionClause(f, "#"
+							+ i);
 					final OtpErlangTuple clause = (OtpErlangTuple) clauses
 							.elementAt(i);
 					final OtpErlangTuple cpos = (OtpErlangTuple) clause
 							.elementAt(1);
 					final OtpErlangTuple cnamePos = (OtpErlangTuple) clause
 							.elementAt(6);
-					cls[i].setParseTree(clauses.elementAt(i));
-					setNamePos(cls[i], cnamePos);
-					setPos(cls[i], cpos);
+					cl.setArguments((OtpErlangList) clause.elementAt(3));
+					cl.setGuards((OtpErlangList) clause.elementAt(4));
+					// cl.setParseTree(clauses.elementAt(i));
+					setNamePos(cl, cnamePos);
+					setPos(cl, cpos);
+					cls[i] = cl;
 				}
 				f.setChildren(cls);
-				f.setParseTree(el);
+				// f.setParseTree(el);
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
 			}
@@ -308,7 +312,7 @@ public class ErlParser {
 					final ErlImport imp = new ErlImport(parent, importModule
 							.atomValue(), functionList);
 					setPos(imp, pos);
-					imp.setParseTree(val);
+					// imp.setParseTree(val);
 					return imp;
 				}
 			}
@@ -337,7 +341,7 @@ public class ErlParser {
 			// }
 			// ex.setChildren(funs);
 			setPos(ex, pos);
-			ex.setParseTree(val);
+			// ex.setParseTree(val);
 			return ex;
 		} else if ("record".equals(name.atomValue())) {
 			if (val instanceof OtpErlangTuple) {
@@ -347,7 +351,7 @@ public class ErlParser {
 							.elementAt(0)).atomValue();
 					final ErlRecordDef r = new ErlRecordDef(parent, recordName);
 					setPos(r, pos);
-					r.setParseTree(val);
+					// r.setParseTree(val);
 					return r;
 				}
 			}
@@ -356,7 +360,7 @@ public class ErlParser {
 				final String recordName = nameA.atomValue();
 				final ErlRecordDef r = new ErlRecordDef(parent, recordName);
 				setPos(r, pos);
-				r.setParseTree(val);
+				// r.setParseTree(val);
 				return r;
 			}
 		} else if ("define".equals(name.atomValue())) {
@@ -364,7 +368,7 @@ public class ErlParser {
 				final OtpErlangAtom o = (OtpErlangAtom) val;
 				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue());
 				setPos(r, pos);
-				r.setParseTree(val);
+				// r.setParseTree(val);
 				return r;
 			}
 			if (val instanceof OtpErlangList) {
@@ -389,7 +393,7 @@ public class ErlParser {
 						r = new ErlMacroDef(parent, o.toString());
 					}
 					setPos(r, pos);
-					r.setParseTree(val);
+					// r.setParseTree(val);
 					return r;
 				}
 			}
@@ -407,7 +411,7 @@ public class ErlParser {
 		final ErlAttribute a = new ErlAttribute((ErlElement) parent, name
 				.atomValue(), val1);
 		setPos(a, pos);
-		a.setParseTree(val);
+		// a.setParseTree(val);
 		return a;
 
 	}

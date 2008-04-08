@@ -11,13 +11,12 @@
 package org.erlide.core.erlang;
 
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface IErlFunctionClause extends IErlMember {
 
 	public OtpErlangList getArguments();
 
-	public OtpErlangObject getBody();
+	// public OtpErlangObject getBody();
 
 	public OtpErlangList getGuards();
 

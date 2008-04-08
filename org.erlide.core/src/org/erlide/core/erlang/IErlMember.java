@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface IErlMember extends IErlElement, ISourceReference,
 		ISourceManipulation {
@@ -25,7 +24,7 @@ public interface IErlMember extends IErlElement, ISourceReference,
 	 */
 	IErlModule getModule();
 
-	OtpErlangObject getParseTree();
+	// OtpErlangObject getParseTree();
 
 	void setNameRangeStartEnd(int start, int end);
 

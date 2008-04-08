@@ -42,11 +42,11 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 		return fValue;
 	}
 
-	@Override
-	public OtpErlangObject getParseTree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// @Override
+	// public OtpErlangObject getParseTree() {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
 
 	@Override
 	public String toString() {

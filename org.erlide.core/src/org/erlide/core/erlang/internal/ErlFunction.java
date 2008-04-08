@@ -18,8 +18,6 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlangFunction;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 /**
  * 
  * @author Vlad Dumitrescu
@@ -40,8 +38,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	public List<IErlFunctionClause> getClauses() {
-		ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
-		for (IErlElement el : fChildren) {
+		final ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
+		for (final IErlElement el : fChildren) {
 			if (el instanceof IErlFunctionClause) {
 				fc.add((IErlFunctionClause) el);
 			}
@@ -69,11 +67,11 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		fExported = exported;
 	}
 
-	@Override
-	public OtpErlangObject getParseTree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// @Override
+	// public OtpErlangObject getParseTree() {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
 
 	@Override
 	public String toString() {
