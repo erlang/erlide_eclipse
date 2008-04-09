@@ -16,10 +16,25 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.erlide.basicui.ErlideBasicUIPlugin;
+
 public class ErlLogger {
 
 	public enum Level {
-		DEBUG, INFO, WARN, ERROR
+		DEBUG(IStatus.INFO), INFO(IStatus.INFO), WARN(IStatus.WARNING), ERROR(
+				IStatus.ERROR);
+
+		private int lvl;
+
+		private Level(int lvl) {
+			this.lvl = lvl;
+		}
+
+		public int asInt() {
+			return lvl;
+		}
 	};
 
 	private static Level minLevel = Level.DEBUG;
@@ -65,8 +80,10 @@ public class ErlLogger {
 		final String str = String.format(fmt, o);
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
-				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
+		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
+				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
+						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
+						+ str));
 	}
 
 	private static void log(Level kind, Exception e) {
@@ -82,9 +99,10 @@ public class ErlLogger {
 
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
-				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str
-				+ stack);
+		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
+				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
+						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
+						+ str + stack));
 	}
 
 	public static void erlangLog(String module, int line, Level kind,
@@ -95,8 +113,9 @@ public class ErlLogger {
 		final String str = String.format(fmt, o);
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println("[" + kind.toString() + "] [" + stime + "] ("
-				+ module + ":" + line + ") : " + str);
+		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
+				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
+						+ module + ":" + line + ") : " + str));
 	}
 
 	public static void debug(String fmt, Object... o) {

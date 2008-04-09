@@ -7,6 +7,9 @@
    <feature url="features/org.erlide_0.3.45.jar" id="org.erlide" version="0.3.45">
       <category name="Unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.3.47.jar" id="org.erlide" version="0.3.47">
+      <category name="Unstable"/>
+   </feature>
    <category-def name="Stable" label="Stable builds"/>
    <category-def name="Unstable" label="Unstable builds"/>
 </site>
