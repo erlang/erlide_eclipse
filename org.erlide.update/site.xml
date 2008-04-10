@@ -4,10 +4,7 @@
    <description url="http://erlide.sourceforge.net/update/site.xml">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2 and later.
    </description>
-   <feature url="features/org.erlide_0.3.45.jar" id="org.erlide" version="0.3.45">
-      <category name="Unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.47.jar" id="org.erlide" version="0.3.47">
+   <feature url="features/org.erlide_0.3.48.jar" id="org.erlide" version="0.3.48">
       <category name="Unstable"/>
    </feature>
    <category-def name="Stable" label="Stable builds"/>

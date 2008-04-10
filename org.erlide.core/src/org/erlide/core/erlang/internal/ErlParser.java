@@ -129,7 +129,6 @@ public class ErlParser {
 			} else {
 				ErlLogger.debug("rpc err:: " + res);
 			}
-			// } catch (final NoBackendException e1) {
 		} catch (final Exception e1) {
 			ErlLogger.debug(e1);
 		}

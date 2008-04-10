@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 

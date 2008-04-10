@@ -6,10 +6,9 @@ Bundle-Version: 0.3.48
 Bundle-Activator: org.erlide.runtime.ErlangLaunchPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.eclipse.debug.core,
  org.erlide.jinterface,
  org.erlide.basic,
+ org.eclipse.debug.ui,
  org.eclipse.ui
 Eclipse-LazyStart: true
 Export-Package: erlang,

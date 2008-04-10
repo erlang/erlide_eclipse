@@ -14,6 +14,7 @@ import org.erlide.runtime.ErlangLaunchPlugin;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -98,11 +99,19 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 			final OtpErlangLong line = (OtpErlangLong) t.elementAt(1);
 			final OtpErlangAtom level = (OtpErlangAtom) t.elementAt(2);
 			final OtpErlangObject logEvent = t.elementAt(3);
+			String ss = "";
+			if (t.arity() == 5) {
+				final OtpErlangTuple backtrace_0 = (OtpErlangTuple) t
+						.elementAt(4);
+				final OtpErlangBinary backtrace = (OtpErlangBinary) backtrace_0
+						.elementAt(1);
+				ss = new String(backtrace.binaryValue());
+			}
 			try {
 				ErlLogger.erlangLog(module.atomValue() + ".erl", line
 						.uIntValue(), ErlLogger
-						.levelFromName(level.atomValue()), "%s", logEvent
-						.toString());
+						.levelFromName(level.atomValue()), "%s %s", logEvent
+						.toString(), ss);
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
 			}

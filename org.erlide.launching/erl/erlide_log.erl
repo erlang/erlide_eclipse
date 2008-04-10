@@ -14,7 +14,7 @@
 
 -module(erlide_log).
 
--export([log/1, log/2, erlangLog/4]).
+-export([log/1, log/2, erlangLog/4, erlangLogStack/4]).
 
 -define(DEFAULT_LEVEL, info).
 
@@ -26,3 +26,7 @@ log(Level, Msg) ->
 
 erlangLog(Module, Line, Level, Msg) ->
     jrpc:event(erlang_log, {Module, Line, Level, Msg}).
+
+erlangLogStack(Module, Line, Level, Msg) ->
+    jrpc:event(erlang_log, {Module, Line, Level, Msg, erlang:process_info(self(), backtrace)}).
+

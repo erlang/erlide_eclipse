@@ -12,9 +12,6 @@ package org.erlide.basiccore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -49,13 +46,13 @@ public class ErlLogger {
 	}
 
 	public static Level levelFromName(String levelName) {
-		if ("info".equals(levelName)) {
+		if ("info".equalsIgnoreCase(levelName)) {
 			return Level.INFO;
-		} else if ("debug".equals(levelName)) {
+		} else if ("debug".equalsIgnoreCase(levelName)) {
 			return Level.DEBUG;
-		} else if ("warn".equals(levelName)) {
+		} else if ("warn".equalsIgnoreCase(levelName)) {
 			return Level.WARN;
-		} else if ("error".equals(levelName)) {
+		} else if ("error".equalsIgnoreCase(levelName)) {
 			return Level.ERROR;
 		} else {
 			return minLevel;
@@ -78,8 +75,9 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = String.format(fmt, o);
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		// final Date time = Calendar.getInstance().getTime();
+		// final String stime = new
+		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
 				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
 						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
@@ -92,17 +90,14 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = e.getMessage();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		e.printStackTrace(new PrintStream(stream));
-		final String stack = kind == Level.DEBUG ? "" : "\n"
-				+ stream.toString();
 
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		// final Date time = Calendar.getInstance().getTime();
+		// final String stime = new
+		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
 				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
 						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str + stack));
+						+ str, e));
 	}
 
 	public static void erlangLog(String module, int line, Level kind,
@@ -111,8 +106,9 @@ public class ErlLogger {
 			return;
 		}
 		final String str = String.format(fmt, o);
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		// final Date time = Calendar.getInstance().getTime();
+		// final String stime = new
+		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
 				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
 						+ module + ":" + line + ") : " + str));

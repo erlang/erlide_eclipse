@@ -1,4 +1,5 @@
 -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, debug, T)).
+-define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, debug, T)).
 -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 -ifdef(DEBUG).
