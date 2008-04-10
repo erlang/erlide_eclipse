@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.erlide.basiccore;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.basicui.ErlideBasicUIPlugin;

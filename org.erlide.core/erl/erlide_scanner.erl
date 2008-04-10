@@ -16,11 +16,11 @@
 -include_lib("stdlib/include/ms_transform.hrl").
 
 -export([initialScan/4, isScanned/1]).
-
+ 
 %%-include_lib("eunit/include/eunit.hrl").
 %%-include_lib("eunit/include/eunit_test.hrl").
 
-%-define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -111,14 +111,17 @@ getTokenWindow(Module, Offset, Window) ->
     T = getTokenAt(Module, Offset),
     Tp = getPrevTokenWs(Module, T, Window),
     Tn = getNextTokenWs(Module, T, Window),
-    clean(lists:reverse(Tp)++[T|Tn]).
+    ?Debug({tp, Tp}),
+    ?Debug({t, T}),
+        ?Debug({tn, Tn}),
+        clean(lists:reverse(Tp)++[T|Tn]).
 
 getPrevTokenWs(Module, Token) ->
     Ofs = Token#token.offset-1,
     R=getTokenAt(Module, Ofs),
     R.
 
-getNextToken(Module, Token) ->
+getNextTokenWs(Module, Token) ->
     Ofs = Token#token.offset+Token#token.length,
     getTokenAt(Module, Ofs).
 
@@ -142,10 +145,10 @@ getNextTokenWs(Module, Token, N) ->
     T = getNextTokenWs(Module, Token),
     [T | getNextTokenWs(Module, T, N-1)].
 
-getNextTokenWs(Module, Token) ->
-    case getNextToken(Module, Token) of
+getNextToken(Module, Token) ->
+    case getNextTokenWs(Module, Token) of
         #token{kind=ws}=T ->
-            getNextTokenWs(Module, T);
+            getNextToken(Module, T);
         T ->
             T
     end.
@@ -164,7 +167,7 @@ getTokenAt(Module, Offset) when Offset =< 0 ->
             A
     end;
 getTokenAt(Module, Offset) ->
-    MS = ets:fun2ms(fun(#token{offset=Ofs, length=Len}=T)
+     MS = ets:fun2ms(fun(#token{offset=Ofs, length=Len}=T)
            when Ofs =< Offset, Ofs+Len>Offset ->
           T
         end),
