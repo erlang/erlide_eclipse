@@ -192,7 +192,21 @@ getTokensAround(Module, Offset) ->
 isScanned(Module) ->
     lists:member(Module, ets:all()).
 
+
 insertText(Module, Offset, Text) ->
+     MS = ets:fun2ms(fun(#token{kind=eof}=T) ->
+          T#token.offset
+        end),
+    [Eof] = ets:select(Module, MS), 
+    if Offset < 1 ->
+        {error, bad_offset, Offset};
+       Offset > Eof ->
+        {error, bad_offset, Offset, Eof};
+       true ->
+         do_insertText(Module, Offset, Text)
+    end.           
+
+do_insertText(Module, Offset, Text) ->
     Z = getTokensAround(Module, Offset),
     ?D({"*> insert at ~p: ~p~n", [Offset, Z]}),
     {Ofs, L, XL, Text2} = case Z of
@@ -240,18 +254,33 @@ insertText(Module, Offset, Text) ->
     ok.
 
 removeText(Module, Offset, Length) ->
-    T1 = findTokenLeft(Module, Offset),
+     MS = ets:fun2ms(fun(#token{kind=eof}=T) ->
+          T#token.offset
+        end),
+    [Eof] = ets:select(Module, MS), 
+    if Offset < 1 ->
+        {error, bad_offset, Offset};
+       Offset+Length > Eof-1 ->
+        {error, bad_offset, Offset, Length, Eof};
+       true ->
+        do_removeText(Module, Offset, Length)
+     end.
+
+do_removeText(Module, Offset, Length) ->
+        T1 = findTokenLeft(Module, Offset),
     T2 = getTokenAt(Module, Offset+Length),
     %%io:format("R> ~p ~p::~n >  ~p~n >  ~p~n", [Offset, Length, T1, T2]),
     %% split T1 and T2 texts, remove all between T1 and T2, rescan and insert T1'+T2'
     {_Ofs, DeletedLines, NewText} = case {T1, T2} of
+               {#token{kind=eof}, #token{kind=eof}} ->
+                   {0, 0, ""};
                {#token{kind=eof}, _} ->
-             {T1#token.offset, 0, ""};
+                                {T1#token.offset, 0, ""};
                {T1, T1} ->
              ets:delete_object(Module, T1),
              {T1#token.offset, 0, cut(get_text(T1), Offset-T1#token.offset+1, Length)};
-               {_, #token{kind=eof}} ->
-             delete_between(Module, Offset, Length-1),
+               {_, #token{kind=eof, offset=Ofs}} ->
+             delete_between(Module, Offset, Ofs-Offset-1),
              LX = Offset-T1#token.offset,
              Txt1 = cut(get_text(T1), LX+1, Length),
              {T1#token.offset, T2#token.line-T1#token.line, Txt1};
@@ -396,6 +425,48 @@ filter_ws(L) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+do_test({Before, {F, Arg1, Arg2}, After}=Cmd) ->
+    erlide_log:log("--------------------"),
+    destroy(xx_before),
+    create(xx_before),
+    insertText(xx_before, 1, Before),
+    Fun = case F of
+        insert -> fun insertText/3;
+        remove -> fun removeText/3
+          end,
+    X = Fun(xx_before, Arg1, Arg2),
+    erlide_log:log(X),
+    
+    case X of
+        ok ->
+    L1 = ets:tab2list(xx_before),
+    destroy(xx_after),
+    create(xx_after),
+    insertText(xx_after, 1, After),
+    L2 = ets:tab2list(xx_after),
+    %%erlide_log:log({L1, L2}),
+    if L1==L2 ->
+      [];
+       true ->
+      [{error, L1, L2}]
+    end;
+        Err ->
+            [Err]
+        end.
+    
+test() ->
+    Tests = [
+     {"", {insert, 1, "hej"}, "hej"},
+     {"hej", {insert, 4, "ha"}, "hejha"},
+     {"hej", {insert, 3, "ha"}, "hehaj"},
+               
+          
+     
+     {"", {insert, 1, "hej"}, "hej"}
+     ],
+    lists:flatten([do_test(X) || X<-Tests]).
+
 
 %% create_test_() ->
 %%     destroy(xx),

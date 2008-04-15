@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.erlide.basiccore;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.erlide.basicui.ErlideBasicUIPlugin;
 
 public class ErlLogger {
 
@@ -72,13 +74,10 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = String.format(fmt, o);
-		// final Date time = Calendar.getInstance().getTime();
-		// final String stime = new
-		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
-				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
-						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str));
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		System.out.println(stime + " [" + kind.toString() + "] ("
+				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
 	}
 
 	private static void log(Level kind, Exception e) {
@@ -88,13 +87,11 @@ public class ErlLogger {
 		final StackTraceElement el = getCaller();
 		final String str = e.getMessage();
 
-		// final Date time = Calendar.getInstance().getTime();
-		// final String stime = new
-		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
-				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
-						+ el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str, e));
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		System.out.println(stime + " [" + kind.toString() + "] ("
+				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
+		e.printStackTrace();
 	}
 
 	public static void erlangLog(String module, int line, Level kind,
@@ -103,12 +100,10 @@ public class ErlLogger {
 			return;
 		}
 		final String str = String.format(fmt, o);
-		// final Date time = Calendar.getInstance().getTime();
-		// final String stime = new
-		// SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		ErlideBasicUIPlugin.log(new Status(kind.asInt(),
-				ErlideBasicUIPlugin.PLUGIN_ID, "[" + kind.toString() + "] ("
-						+ module + ":" + line + ") : " + str));
+		final Date time = Calendar.getInstance().getTime();
+		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
+		System.out.println(stime + " [" + kind.toString() + "] (" + module
+				+ ":" + line + ") : " + str);
 	}
 
 	public static void debug(String fmt, Object... o) {
