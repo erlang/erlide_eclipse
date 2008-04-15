@@ -65,7 +65,7 @@ public class ErlModule extends Openable implements IErlModule {
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
 
-	// private boolean disposed = false;
+	private boolean scannerDisposed = false;
 
 	protected ErlModule(IErlProject parent, String name, boolean isErl,
 			IFile file, String initialText) {
@@ -378,11 +378,10 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void reconcileText(int offset, int removeLength, String newText,
 			IProgressMonitor mon) {
-		// if (disposed) {
-		// return;
-		// }
+		if (scannerDisposed) {
+			return;
+		}
 
-		// getScanner();
 		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
@@ -432,7 +431,11 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		scanner.dispose();
 		scanner = null;
-		// disposed = true;
+		scannerDisposed = true;
+	}
+
+	public void reenableScanner() {
+		scannerDisposed = false;
 	}
 
 	public IErlProject getProject() {

@@ -157,9 +157,9 @@ public class ErlModelUtils {
 	 */
 	public static boolean openPreprocessorDef(IProject project,
 			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.Kind type,
-			List<IErlModule> modulesDone, IPathVariableManager pvm)
-			throws CoreException, ErlModelException, PartInitException {
+			final IErlElement.Kind type, List<IErlModule> modulesDone,
+			IPathVariableManager pvm) throws CoreException, ErlModelException,
+			PartInitException {
 		if (m == null) {
 			return false;
 		}
@@ -316,6 +316,13 @@ public class ErlModelUtils {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
 			getModule(editor).disposeScanner();
+		}
+	}
+
+	public static void reenableScanner(ErlangEditor editor) {
+		final IErlModule mod = getModule(editor);
+		if (mod != null) {
+			getModule(editor).reenableScanner();
 		}
 	}
 

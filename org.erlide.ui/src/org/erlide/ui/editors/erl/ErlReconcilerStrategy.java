@@ -50,8 +50,6 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		ErlLogger.debug("## reconcile " + dirtyRegion.getOffset() + "-"
-				+ dirtyRegion.getLength() + " : " + dirtyRegion.getType());
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
 	}
@@ -67,6 +65,9 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
 		if (fModule != null) {
+			ErlLogger.debug("## reconcile " + fModule.getName() + "  "
+					+ dirtyRegion.getOffset() + "-" + dirtyRegion.getLength()
+					+ " : " + dirtyRegion.getType());
 			if (dirtyRegion.getType() == DirtyRegion.INSERT) {
 				fModule.reconcileText(dirtyRegion.getOffset(), 0, dirtyRegion
 						.getText(), mon);
