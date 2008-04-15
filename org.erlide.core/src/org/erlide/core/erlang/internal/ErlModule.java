@@ -65,7 +65,7 @@ public class ErlModule extends Openable implements IErlModule {
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
 
-	private boolean disposed;
+	private boolean disposed = false;
 
 	protected ErlModule(IErlProject parent, String name, boolean isErl,
 			IFile file, String initialText) {
