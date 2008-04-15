@@ -260,7 +260,7 @@ removeText(Module, Offset, Length) ->
     [Eof] = ets:select(Module, MS), 
     if Offset < 1 ->
         {error, bad_offset, Offset};
-       Offset+Length > Eof-1 ->
+       Offset+Length > Eof ->
         {error, bad_offset, Offset, Length, Eof};
        true ->
         do_removeText(Module, Offset, Length)
@@ -426,44 +426,76 @@ filter_ws(L) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-do_test({Before, {F, Arg1, Arg2}, After}=Cmd) ->
-    erlide_log:log("--------------------"),
+do_test({Before, {F, Arg1, Arg2}, Expect}=Cmd) ->
+    %erlide_log:log({"----- test ", Cmd}),
     destroy(xx_before),
     create(xx_before),
     insertText(xx_before, 1, Before),
     Fun = case F of
-        insert -> fun insertText/3;
-        remove -> fun removeText/3
+              insert -> fun insertText/3;
+              remove -> fun removeText/3
           end,
-    X = Fun(xx_before, Arg1, Arg2),
-    erlide_log:log(X),
-    
+    X = (catch Fun(xx_before, Arg1, Arg2)),
+          
     case X of
-        ok ->
-    L1 = ets:tab2list(xx_before),
-    destroy(xx_after),
-    create(xx_after),
-    insertText(xx_after, 1, After),
-    L2 = ets:tab2list(xx_after),
-    %%erlide_log:log({L1, L2}),
-    if L1==L2 ->
-      [];
-       true ->
-      [{error, L1, L2}]
-    end;
-        Err ->
-            [Err]
-        end.
-    
+          ok ->
+		    Fun2 = case F of
+        		       	insert -> fun ins/3;
+               			remove -> fun del/3
+           			end,
+    		After = (catch Fun2(Before, Arg1, Arg2)),      
+    		%%erlide_log:log({"    - ", Cmd, After}),
+                     
+              destroy(xx_after),
+              create(xx_after),
+              insertText(xx_after, 1, After),
+                   
+              L1 = ets:tab2list(xx_before),
+              L2 = ets:tab2list(xx_after),
+              if L1==L2 ->
+                   [];
+                 true ->
+                   [{mismatch, Cmd, After, L1, L2}]
+            end;
+          Other ->
+              case Expect of
+                  Other ->
+                      [];
+                  _ ->
+                      [{unexpected, Cmd, Other}]
+              end
+    end.
+   
+ins(Src, Ofs, Ins) ->
+     {A, B} = if Ofs<1 -> {[], Src};
+                 true ->lists:split(Ofs-1, Src) end,
+     A++Ins++B.
+
+del(Src, Ofs, Len) ->
+     case Len of 
+         0 -> Src; 
+         _ -> cut(Src, Ofs, Len) 
+     end.
+
 test() ->
     Tests = [
-     {"", {insert, 1, "hej"}, "hej"},
-     {"hej", {insert, 4, "ha"}, "hejha"},
-     {"hej", {insert, 3, "ha"}, "hehaj"},
-               
-          
+     {"", {insert, 1, "hej"}, ok},
+     {"hej", {insert, 0, "ha"}, {error, bad_offset, 0}},
+     {"hej", {insert, 1, "ha"}, ok},
+     {"hej", {insert, 3, "ha"}, ok},
+     {"hej", {insert, 5, "ha"}, {error, bad_offset, 5, 4}},
+     {"%hej\n", {insert, 3, "ha"}, ok},
+     {"\"hej\"", {insert, 3, "ha"}, ok},
+     {"hej\n", {insert, 1, "%"}, ok},
+     {"hej\n", {insert, 2, "%"}, ok},
+         
+     {"hej", {remove, 2, 1}, ok},                
+     {"hej", {remove, 1, 3}, ok},                
+     {"hej", {remove, 2, 3}, {error, bad_offset, 2, 3, 4}},                
+     {"%hej\n", {remove, 1, 1}, ok},                
+                  
      
-     {"", {insert, 1, "hej"}, "hej"}
+     {"", {insert, 1, ""}, ok}
      ],
     lists:flatten([do_test(X) || X<-Tests]).
 
