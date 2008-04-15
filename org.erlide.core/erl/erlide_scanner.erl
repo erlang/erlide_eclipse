@@ -111,10 +111,10 @@ getTokenWindow(Module, Offset, Window) ->
     T = getTokenAt(Module, Offset),
     Tp = getPrevTokenWs(Module, T, Window),
     Tn = getNextTokenWs(Module, T, Window),
-    ?Debug({tp, Tp}),
-    ?Debug({t, T}),
-        ?Debug({tn, Tn}),
-        clean(lists:reverse(Tp)++[T|Tn]).
+    %%?Debug({tp, Tp}),
+    %%?Debug({t, T}),
+    %%    ?Debug({tn, Tn}),
+    clean(lists:reverse(Tp)++[T|Tn]).
 
 getPrevTokenWs(Module, Token) ->
     Ofs = Token#token.offset-1,

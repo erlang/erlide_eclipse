@@ -10,17 +10,24 @@
  *******************************************************************************/
 package org.erlide.basicui;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
@@ -82,6 +89,33 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+
+		Handler fh;
+		try {
+			final ErlLogger.ErlSimpleFormatter erlSimpleFormatter = new ErlLogger.ErlSimpleFormatter();
+			final Logger logger = Logger.getLogger("org.erlide");
+
+			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+					.toPortableString();
+			dir = dir == null ? "c:/" : dir;
+			fh = new FileHandler(dir + "erlide.log");
+			fh.setFormatter(erlSimpleFormatter);
+			logger.addHandler(fh);
+
+			final ConsoleHandler consoleHandler = new ConsoleHandler();
+			consoleHandler.setFormatter(erlSimpleFormatter);
+			consoleHandler.setLevel(java.util.logging.Level.FINEST);
+			logger.addHandler(consoleHandler);
+
+			logger.setLevel(java.util.logging.Level.FINEST);
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

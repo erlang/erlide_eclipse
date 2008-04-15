@@ -670,8 +670,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		if (BackendManager.isDeveloper()) {
 			dev = " erlide developer version ***";
 		}
-		System.out
-				.println("*** starting Erlide v"
+		ErlLogger
+				.info("*** starting Erlide v"
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 

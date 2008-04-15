@@ -109,9 +109,8 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 			}
 			try {
 				ErlLogger.erlangLog(module.atomValue() + ".erl", line
-						.uIntValue(), ErlLogger
-						.levelFromName(level.atomValue()), "%s %s", logEvent
-						.toString(), ss);
+						.uIntValue(), level.atomValue().toUpperCase(), "%s %s",
+						logEvent.toString(), ss);
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
 			}

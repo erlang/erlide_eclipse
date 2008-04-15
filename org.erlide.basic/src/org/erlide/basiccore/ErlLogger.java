@@ -10,52 +10,25 @@
  *******************************************************************************/
 package org.erlide.basiccore;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.eclipse.core.runtime.IStatus;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 public class ErlLogger {
 
-	public enum Level {
-		DEBUG(IStatus.INFO), INFO(IStatus.INFO), WARN(IStatus.WARNING), ERROR(
-				IStatus.ERROR);
-
-		private int lvl;
-
-		private Level(int lvl) {
-			this.lvl = lvl;
-		}
-
-		public int asInt() {
-			return lvl;
-		}
-	};
-
-	private static Level minLevel = Level.DEBUG;
+	private static int minLevel;
 
 	{
 		String lvl = System.getProperty("erlide.logger.level");
-		minLevel = lvl == null ? Level.INFO : Level.valueOf(lvl.toUpperCase());
-	}
-
-	public static void setLevel(Level level) {
-		minLevel = level;
-	}
-
-	public static Level levelFromName(String levelName) {
-		if ("info".equalsIgnoreCase(levelName)) {
-			return Level.INFO;
-		} else if ("debug".equalsIgnoreCase(levelName)) {
-			return Level.DEBUG;
-		} else if ("warn".equalsIgnoreCase(levelName)) {
-			return Level.WARN;
-		} else if ("error".equalsIgnoreCase(levelName)) {
-			return Level.ERROR;
-		} else {
-			return minLevel;
-		}
+		minLevel = (lvl == null ? Level.INFO : Level.parse(lvl.toUpperCase()))
+				.intValue();
 	}
 
 	private static StackTraceElement getCaller() {
@@ -69,19 +42,20 @@ public class ErlLogger {
 	}
 
 	private static void log(Level kind, String fmt, Object... o) {
-		if (kind.compareTo(minLevel) < 0) {
+		if (kind.intValue() < minLevel) {
 			return;
 		}
 		final StackTraceElement el = getCaller();
 		final String str = String.format(fmt, o);
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println(stime + " [" + kind.toString() + "] ("
-				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
+		Logger.getLogger("org.erlide").finer(
+				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+						+ str);
 	}
 
 	private static void log(Level kind, Exception e) {
-		if (kind.compareTo(minLevel) < 0) {
+		if (kind.intValue() < minLevel) {
 			return;
 		}
 		final StackTraceElement el = getCaller();
@@ -89,25 +63,27 @@ public class ErlLogger {
 
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println(stime + " [" + kind.toString() + "] ("
-				+ el.getFileName() + ":" + el.getLineNumber() + ") : " + str);
-		e.printStackTrace();
+		Logger.getLogger("org.erlide").log(
+				java.util.logging.Level.FINER,
+				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+						+ str, e);
 	}
 
-	public static void erlangLog(String module, int line, Level kind,
+	public static void erlangLog(String module, int line, String skind,
 			String fmt, Object... o) {
-		if (kind.compareTo(minLevel) < 0) {
+		Level kind = Level.parse(skind);
+		if (kind.intValue() < minLevel) {
 			return;
 		}
 		final String str = String.format(fmt, o);
 		final Date time = Calendar.getInstance().getTime();
 		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
-		System.out.println(stime + " [" + kind.toString() + "] (" + module
-				+ ":" + line + ") : " + str);
+		Logger.getLogger("org.erlide").finer(
+				"(" + module + ":" + line + ") : " + str);
 	}
 
 	public static void debug(String fmt, Object... o) {
-		log(Level.DEBUG, fmt, o);
+		log(Level.FINEST, fmt, o);
 	}
 
 	public static void info(String fmt, Object... o) {
@@ -115,15 +91,15 @@ public class ErlLogger {
 	}
 
 	public static void warn(String fmt, Object... o) {
-		log(Level.WARN, fmt, o);
+		log(Level.WARNING, fmt, o);
 	}
 
 	public static void error(String fmt, Object... o) {
-		log(Level.ERROR, fmt, o);
+		log(Level.SEVERE, fmt, o);
 	}
 
 	public static void debug(Exception e) {
-		log(Level.DEBUG, e);
+		log(Level.FINEST, e);
 	}
 
 	public static void info(Exception e) {
@@ -131,11 +107,53 @@ public class ErlLogger {
 	}
 
 	public static void warn(Exception e) {
-		log(Level.WARN, e);
+		log(Level.WARNING, e);
 	}
 
 	public static void error(Exception e) {
-		log(Level.ERROR, e);
+		log(Level.SEVERE, e);
+	}
+
+	public static class ErlSimpleFormatter extends Formatter {
+
+		Date dat = new Date();
+		private final static String format = "{0,time,HH:mm:ss,SSS}";
+		private MessageFormat formatter;
+
+		private Object args[] = new Object[1];
+
+		private String lineSeparator = System.getProperty("line.separator");
+
+		@Override
+		public synchronized String format(LogRecord record) {
+			StringBuffer sb = new StringBuffer();
+			// Minimize memory allocations here.
+			dat.setTime(record.getMillis());
+			args[0] = dat;
+			StringBuffer text = new StringBuffer();
+			if (formatter == null) {
+				formatter = new MessageFormat(format);
+			}
+			formatter.format(args, text, null);
+			sb.append(text);
+			sb.append(" ");
+			String message = formatMessage(record);
+			sb.append(record.getLevel());
+			sb.append(": ");
+			sb.append(message);
+			sb.append(lineSeparator);
+			if (record.getThrown() != null) {
+				try {
+					StringWriter sw = new StringWriter();
+					PrintWriter pw = new PrintWriter(sw);
+					record.getThrown().printStackTrace(pw);
+					pw.close();
+					sb.append(sw.toString());
+				} catch (Exception ex) {
+				}
+			}
+			return sb.toString();
+		}
 	}
 
 }
