@@ -37,19 +37,19 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 */
 	public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection)
 			throws CoreException {
-		ITextEditor textEditor = getEditor(part);
+		final ITextEditor textEditor = getEditor(part);
 		if (textEditor != null) {
-			IResource resource = (IResource) textEditor.getEditorInput()
+			final IResource resource = (IResource) textEditor.getEditorInput()
 					.getAdapter(IResource.class);
-			ITextSelection textSelection = (ITextSelection) selection;
-			int lineNumber = textSelection.getStartLine();
-			IBreakpoint[] breakpoints = DebugPlugin.getDefault()
+			final ITextSelection textSelection = (ITextSelection) selection;
+			final int lineNumber = textSelection.getStartLine();
+			final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
 					.getBreakpointManager().getBreakpoints(
 							IErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
-			for (IBreakpoint breakpoint : breakpoints) {
+			for (final IBreakpoint breakpoint : breakpoints) {
 				if (resource.equals(breakpoint.getMarker().getResource())) {
 					if (breakpoint instanceof ILineBreakpoint) {
-						ILineBreakpoint lineBr = (ILineBreakpoint) breakpoint;
+						final ILineBreakpoint lineBr = (ILineBreakpoint) breakpoint;
 						if (lineBr.getLineNumber() == lineNumber + 1) {
 							breakpoint.delete();
 							return;
