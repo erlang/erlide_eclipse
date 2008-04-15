@@ -13,8 +13,6 @@ package org.erlide.basiccore;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -23,9 +21,10 @@ import java.util.logging.Logger;
 
 public class ErlLogger {
 
-	private static int minLevel;
+	private static int minLevel = Level.FINEST.intValue();
 
 	{
+		// This is not run?!?
 		String lvl = System.getProperty("erlide.logger.level");
 		minLevel = (lvl == null ? Level.INFO : Level.parse(lvl.toUpperCase()))
 				.intValue();
@@ -47,8 +46,6 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = String.format(fmt, o);
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		Logger.getLogger("org.erlide").finer(
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
 						+ str);
@@ -61,8 +58,6 @@ public class ErlLogger {
 		final StackTraceElement el = getCaller();
 		final String str = e.getMessage();
 
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		Logger.getLogger("org.erlide").log(
 				java.util.logging.Level.FINER,
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
@@ -76,8 +71,6 @@ public class ErlLogger {
 			return;
 		}
 		final String str = String.format(fmt, o);
-		final Date time = Calendar.getInstance().getTime();
-		final String stime = new SimpleDateFormat("HH:mm:ss,SSS").format(time);
 		Logger.getLogger("org.erlide").finer(
 				"(" + module + ":" + line + ") : " + str);
 	}
