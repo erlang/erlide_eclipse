@@ -1,6 +1,7 @@
 %% Author: jakob
 %% Created: 2006-jan-28
-%% Description: TODO: Add description to erlide_indent
+%% Description: 
+%% TODO: Add description to erlide_indent
 -module(erlide_indent).
 
 %%
@@ -16,7 +17,7 @@
          indent_lines/3]).
 
 %-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").

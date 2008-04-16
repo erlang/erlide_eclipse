@@ -11,11 +11,12 @@
 %%
 -module(erlide_scanner).
 
--compile(export_all).
-
 -include_lib("stdlib/include/ms_transform.hrl").
 
--export([initialScan/4, isScanned/1]).
+-export([initialScan/4, insertText/3, removeText/3, destroy/1, mktoken/3, create/1, 
+         getTokens/1, revert_token/1, getTokenWindow/3, getTokenAt/2,
+         getNextToken/2, getPrevToken/2]).
+-export([test/0]).
  
 %%-include_lib("eunit/include/eunit.hrl").
 %%-include_lib("eunit/include/eunit_test.hrl").
@@ -347,8 +348,8 @@ revert_token(#token{}=T) ->
 
 
 
-findTokenLeft(_Module, Offset) when Offset =< 0 ->
-    bof;
+findTokenLeft(Module, Offset) when Offset =< 0 ->
+    findTokenLeft(Module, 1);
 findTokenLeft(Module, Offset) ->
     getTokenAt(Module, Offset-1).
 
@@ -462,7 +463,7 @@ del(Src, Ofs, Len) ->
      end.
 
 test() ->
-    Tests = [
+    Tests = [ 
      {"", {insert, 1, "hej"}, ok},
      {"hej", {insert, 0, "ha"}, {error, bad_offset, 0}},
      {"hej", {insert, 1, "ha"}, ok},
