@@ -143,13 +143,13 @@ public class ErlScanner implements IErlScanner {
 	// }
 
 	public void insertText(int offset, String text) {
-		// ErlLogger.debug("scanner insert offset" + offset + " text.length "
+		// ErlLogger.debug("scanner insert offset=" + offset + " text.length="
 		// + text.length());
 		ErlideScanner.insertText(fMod, offset, text);
 	}
 
 	public void removeText(int offset, int length) {
-		// ErlLogger.debug("scanner remove offset" + offset + " length " +
+		// ErlLogger.debug("scanner remove offset=" + offset + " length=" +
 		// length);
 		ErlideScanner.removeText(fMod, offset, length);
 	}

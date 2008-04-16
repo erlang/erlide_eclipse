@@ -14,12 +14,15 @@
 
 -module(erlide_log).
 
--export([log/1, log/2, erlangLog/4, erlangLogStack/4]).
+-export([log/1, logp/1, log/2, erlangLog/4, erlangLogStack/4]).
 
 -define(DEFAULT_LEVEL, info).
 
 log(Msg) ->
     log(?DEFAULT_LEVEL, Msg).
+
+logp(Msg) ->
+    log(?DEFAULT_LEVEL, lists:flatten(io_lib:format("~n~p", [Msg]))).
 
 log(Level, Msg) ->
     jrpc:event(log, {Level, Msg}).

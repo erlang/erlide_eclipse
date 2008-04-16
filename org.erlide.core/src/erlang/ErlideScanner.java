@@ -2,7 +2,10 @@ package erlang;
 
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -29,10 +32,12 @@ public class ErlideScanner {
 					.rpcx("erlide_scanner", "insertText", "ais", module,
 							offset + 1, text);
 			if (r instanceof OtpErlangTuple) {
-				ErlLogger.error(r.toString());
+				ErlLogger.error("GOT::" + r.toString());
 			}
-		} catch (final Exception e) {
+		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
+		} catch (RpcException e) {
+		} catch (BackendException e) {
 		}
 	}
 
@@ -43,10 +48,12 @@ public class ErlideScanner {
 					.rpcx("erlide_scanner", "removeText", "aii", module,
 							offset + 1, length);
 			if (r instanceof OtpErlangTuple) {
-				ErlLogger.error(r.toString());
+				ErlLogger.error("GOT::" + r.toString());
 			}
-		} catch (final Exception e) {
+		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
+		} catch (RpcException e) {
+		} catch (BackendException e) {
 		}
 	}
 

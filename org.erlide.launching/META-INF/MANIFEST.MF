@@ -8,8 +8,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
  org.erlide.basic,
- org.eclipse.debug.ui,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.debug.ui
 Eclipse-LazyStart: true
 Export-Package: erlang,
  org.erlide.runtime,
