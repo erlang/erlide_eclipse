@@ -288,7 +288,6 @@ public class ErlModelUtils {
 			return false;
 		}
 		final IErlModule module = getModule(editor.getEditorInput());
-		ErlLogger.debug("open fun m" + fun + "/" + arity + " " + module);
 		if (module == null) {
 			return false;
 		}
