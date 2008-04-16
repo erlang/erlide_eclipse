@@ -26,9 +26,6 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
 
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 import erlang.ErlideIndent;
 
 /**
@@ -85,7 +82,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			try {
 				start = member.getSourceRange().getOffset();
 				txt = d.get(start, offset - start);
-			} catch (ErlModelException e) {
+			} catch (final ErlModelException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -93,6 +90,10 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		if (txt == null) {
 			txt = d.get(0, offset);
 		}
+		final int lineN = d.getLineOfOffset(offset);
+		final int lineOffset = d.getLineOffset(lineN);
+		final int lineLength = d.getLineLength(lineN);
+		final String line = d.get(offset, lineLength + lineOffset - offset);
 		try {
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			int tabw = ErlideUIPlugin
@@ -106,50 +107,38 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 						.getInt(
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
-			final OtpErlangObject r1 = ErlideIndent
-					.indentNextLine(b, txt, tabw);
-			// OtpErlangObject r1 = BackendUtil.checkRpc(b.rpc("erlide_indent",
-			// "indent_next_line",
-			// new OtpErlangLong(offset)));
-			final int depth = ((OtpErlangLong) r1).intValue();
 
-			c.text += getIndent(depth);
-			// int cntr = 0;
-			// int depth = INDENT_DEPTH;
-			// char val;
-			// boolean end = false;
-			// for (int i = c.offset - c.text.length() + 1; (i >= 0) && (!end);
-			// i--)
-			// {
-			// val = d.getChar(i);
-			//
-			// switch (val)
-			// {
-			// case '"':
-			// i = findStringStart(d, i - 1);
-			// break;
-			// case ';':
-			// case '.':
-			// cntr++;
-			// break;
-			// case '>':
-			// if ((i > 0) && (d.getChar(i - 1) == '-'))
-			// {
-			// cntr--;
-			//
-			// if (cntr < 0)
-			// {
-			// depth += findIndentDepth(d, i);
-			// end = true;
-			// }
-			// }
-			// break;
-			// }
-			//
-			// }
-			// c.text += getIndent(depth);
+			final int indents[] = ErlideIndent.indentLine(b, line, txt, -1,
+					tabw);
+
+			c.text += getIndent(indents[0]);
+			c.length += indents[1];
+			// FIXME fixa sŒ att den INDENTERAR aktuell rad, inte bara pytsar in
+			// TODO blanka (jaja, pŒ gŒng ju!)
 		} catch (final Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+	// private int getLastLineIndent(String txt) {
+	// int offset = txt.lastIndexOf('\n');
+	// if (offset == -1) {
+	// offset = 0;
+	// }
+	// int r = 0;
+	// while (offset < txt.length()
+	// && Character.isWhitespace(txt.charAt(offset))) {
+	// ++r;
+	// }
+	// return r;
+	// }
+
+	private int getIndent(String line) {
+		int i = 0;
+		while (i < line.length() && line.charAt(i) == ' ') {
+			++i;
+		}
+		return i;
 	}
 
 	/**

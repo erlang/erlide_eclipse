@@ -22,7 +22,7 @@
 
 toggle_comment(Text, From) ->
     ?D({Text, From}),
-    {_, Lines} = erlide_text:get_text_and_lines(Text, From),
+    {_, _, Lines} = erlide_text:get_text_and_lines(Text, From),
     ?D(Lines),
     LineF = case lists:all(fun(L) -> is_comment_line(L) end, Lines) of
                    true ->

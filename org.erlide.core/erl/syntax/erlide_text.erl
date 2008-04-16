@@ -92,7 +92,7 @@ check_variable_macro_or_record(_, _) ->
 get_text_and_lines([], _From, Acc) ->
     {"", Acc};
 get_text_and_lines([{Pos, Line} | Rest], From, Acc) when Pos =< From ->
-    {text_from_r_lines(Rest), [Line | Acc]};
+    {text_from_r_lines(Rest), length(Rest)+1, [Line | Acc]};
 get_text_and_lines([{_, Line} | Rest], From, Acc) ->
     get_text_and_lines(Rest, From, [Line | Acc]).
 
@@ -154,7 +154,7 @@ is_op2(Op) ->
                       'band', 'and', 'bor', 'bxor', 'bsl',
                       'bsr', 'or', 'xor', '<-', '=', '==', '/=',
                       '=/=', '=:=', ':', '+', '-', '*', '/', '!',
-                      '++', '--', '.', '#']).
+                      '++', '--', '.', '#', '|']).
 
 %% is_op1(atom()) -> boolean()
 %%

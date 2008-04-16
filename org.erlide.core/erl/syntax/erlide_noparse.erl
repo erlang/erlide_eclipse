@@ -68,7 +68,8 @@ cac(function, Tokens) ->
     #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
 cac(attribute, Attribute) ->
     case Attribute of
-        [_, #token{kind=atom, value=Name, line=Line, offset=Offset},
+        [#token{kind='-', offset=Offset, line=Line}, 
+         #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = lists:last(Attribute),
