@@ -198,6 +198,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final EditorConfiguration cfg = new EditorConfiguration(
 				getPreferenceStore(), this, colorManager);
 		setSourceViewerConfiguration(cfg);
+		ErlModelUtils.reenableScanner(this);
 	}
 
 	public IErlScanner getScanner() {
