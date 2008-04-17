@@ -22,7 +22,7 @@ public class ShowOutlineAction extends TextEditorAction {
 			QuickOutlinePopupDialog quickOutlinePopupDialog = new QuickOutlinePopupDialog(
 					getTextEditor().getSite().getShell(), SWT.NONE, editor,
 					editor);
-			quickOutlinePopupDialog.setSize(200, 200);
+			quickOutlinePopupDialog.setSize(400, 200);
 			quickOutlinePopupDialog.setVisible(true);
 		}
 	}
