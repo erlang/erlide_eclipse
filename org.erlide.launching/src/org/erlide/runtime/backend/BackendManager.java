@@ -197,7 +197,7 @@ public final class BackendManager implements IResourceChangeListener {
 		 */
 	}
 
-	public IBackend getIdeBackend() {
+	public synchronized IBackend getIdeBackend() {
 		if (fLocalBackend == null) {
 			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false);
 		}
