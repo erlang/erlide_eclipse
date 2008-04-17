@@ -7,11 +7,14 @@
 %%%
 %%%  Contributors:
 %%%      Vlad Dumitrescu
-%%% ******************************************************************************/
-%%
+%%% ******************************************************************************
+%%%
+
 -module(erlide_scanner).
 
 -include_lib("stdlib/include/ms_transform.hrl").
+
+-compile(export_all).
 
 -export([initialScan/4, insertText/3, removeText/3, destroy/1, mktoken/3, create/1, 
          getTokens/1, revert_token/1, getTokenWindow/3, getTokenAt/2,
@@ -319,7 +322,8 @@ update_after(Module, Offset, DOfs, DL) ->
             ok;
         _ ->
             [fix(Module, T, DOfs, DL) || T<-Z]
-    end.
+    end,
+    ok.
 
 fix(Module, Tok, DOfs, DL) ->
     Ofs = Tok#token.offset,
@@ -513,5 +517,4 @@ test() ->
      {"", {insert, 1, ""}, ok}
      ],
     lists:flatten([do_test(X) || X<-Tests]).
-
 
