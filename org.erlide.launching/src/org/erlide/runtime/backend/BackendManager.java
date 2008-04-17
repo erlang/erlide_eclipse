@@ -36,6 +36,8 @@ import org.erlide.runtime.backend.internal.ManagedBackend;
 import org.erlide.runtime.backend.internal.StandaloneBackend;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 
+import com.ericsson.otp.erlang.OtpEpmd;
+
 public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
@@ -46,7 +48,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	private final Object fProjectBackendsLock = new Object();
 
-	private final IBackend fRemoteBackend;
+	private IBackend fRemoteBackend;
 
 	protected List<IBackendListener> fListeners;
 
@@ -82,6 +84,9 @@ public final class BackendManager implements IResourceChangeListener {
 				IResourceChangeEvent.PRE_CLOSE
 						| IResourceChangeEvent.PRE_DELETE
 						| IResourceChangeEvent.POST_CHANGE);
+
+		EpmdWatchJob job = new EpmdWatchJob();
+		job.schedule(1000);
 	}
 
 	public static BackendManager getDefault() {
@@ -139,6 +144,7 @@ public final class BackendManager implements IResourceChangeListener {
 			IBackend b = fProjectBackends.get(name);
 			if (b != null && !b.ping()) {
 				fProjectBackends.remove(name);
+				fireUpdate(b, REMOVED);
 				b = null;
 			}
 			if (b == null) {
@@ -216,7 +222,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	/**
-	 * Notifies a console listener of additions or removals
+	 * Notifies a backend listener of additions or removals
 	 */
 	class BackendChangeNotifier implements ISafeRunnable {
 
@@ -383,6 +389,65 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend getRemoteBackend() {
 		return fRemoteBackend;
+	}
+
+	public void setRemoteBackend(IBackend b) {
+		fRemoteBackend = b;
+	}
+
+	public void checkEpmd() {
+		if (!isDeveloper()) {
+			return;
+		}
+
+		try {
+			final String[] names = OtpEpmd.lookupNames();
+			final List<String> labels = new ArrayList<String>(names.length);
+			for (String label : names) {
+				// label is "name X at port N"
+				final String[] parts = label.split(" ");
+				if (parts.length == 5) {
+					label = parts[1];
+					labels.add(label);
+				}
+			}
+
+			if (fRemoteBackend != null) {
+				boolean found = false;
+
+				for (String label : labels) {
+					if (isExtErlideLabel(label)
+							&& label.equals(fRemoteBackend.getLabel())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					ErlLogger.debug("$ Removed external backend:: "
+							+ fRemoteBackend.getLabel());
+					fireUpdate(fRemoteBackend, REMOVED);
+					fRemoteBackend = null;
+				}
+			} else {
+				for (String label : labels) {
+					if (isExtErlideLabel(label)) {
+						ErlLogger.debug("$ Added external backend:: " + label);
+						fRemoteBackend = createStandalone(label);
+						fireUpdate(fRemoteBackend, ADDED);
+						break;
+					}
+				}
+			}
+
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private boolean isExtErlideLabel(String label) {
+		return !label.equals(fLocalBackend.getLabel())
+				&& label.startsWith("erlide_");
 	}
 
 }

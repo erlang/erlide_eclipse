@@ -649,6 +649,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	private static void distributeModule(final String beamf,
 			final OtpErlangBinary code) {
 		final IBackend b = BackendManager.getDefault().getRemoteBackend();
+		ErlLogger.debug("  $ distribute " + beamf + " to " + b);
 		if (b == null) {
 			return;
 		}

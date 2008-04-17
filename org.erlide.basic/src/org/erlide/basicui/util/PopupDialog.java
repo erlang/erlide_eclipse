@@ -33,20 +33,20 @@ public class PopupDialog {
 	}
 
 	static BalloonWindow win;
-	
+
 	public static void show(final String title, final String message,
 			final int delay, final int anchor, final boolean centered) {
-//		if (Workbench.getInstance()==null)
-//			return;
+		// if (Workbench.getInstance()==null)
+		// return;
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		final Display display = window == null ? workbench.getDisplay()
 				: window.getShell().getDisplay();
-//		final Display display = PlatformUI.createDisplay();
+		// final Display display = PlatformUI.createDisplay();
 		display.syncExec(new Runnable() {
 			public void run() {
-				win = new BalloonWindow(display, SWT.ON_TOP
-						| SWT.TITLE | SWT.TOOL);
+				win = new BalloonWindow(display, SWT.ON_TOP | SWT.TITLE
+						| SWT.TOOL);
 				win.setText(title);
 
 				final Layout layout = new FillLayout();
@@ -80,13 +80,13 @@ public class PopupDialog {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				 if (!win.getContents().isDisposed())
-					 win.getContents().getShell().close();
-				// display.dispose();
+				if (!win.getContents().isDisposed()) {
+					win.getContents().getShell().close();
+					// display.dispose();
+				}
 
-				return new Status(IStatus.OK,
-						ErlideBasicUIPlugin.PLUGIN_ID, IStatus.OK, "",
-						null);
+				return new Status(IStatus.OK, ErlideBasicUIPlugin.PLUGIN_ID,
+						IStatus.OK, "", null);
 			}
 		};
 		job.schedule(delay);
