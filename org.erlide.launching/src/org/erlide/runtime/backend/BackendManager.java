@@ -85,7 +85,7 @@ public final class BackendManager implements IResourceChangeListener {
 						| IResourceChangeEvent.PRE_DELETE
 						| IResourceChangeEvent.POST_CHANGE);
 
-		EpmdWatchJob job = new EpmdWatchJob();
+		final EpmdWatchJob job = new EpmdWatchJob();
 		job.schedule(1000);
 	}
 
@@ -415,7 +415,7 @@ public final class BackendManager implements IResourceChangeListener {
 			if (fRemoteBackend != null) {
 				boolean found = false;
 
-				for (String label : labels) {
+				for (final String label : labels) {
 					if (isExtErlideLabel(label)
 							&& label.equals(fRemoteBackend.getLabel())) {
 						found = true;
@@ -429,7 +429,7 @@ public final class BackendManager implements IResourceChangeListener {
 					fRemoteBackend = null;
 				}
 			} else {
-				for (String label : labels) {
+				for (final String label : labels) {
 					if (isExtErlideLabel(label)) {
 						ErlLogger.debug("$ Added external backend:: " + label);
 						fRemoteBackend = createStandalone(label);
@@ -446,8 +446,9 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	private boolean isExtErlideLabel(String label) {
-		return !label.equals(fLocalBackend.getLabel())
-				&& label.startsWith("erlide_");
+		if (fLocalBackend != null && label.equals(fLocalBackend.getLabel())) {
+			return false;
+		}
+		return label.startsWith("erlide_");
 	}
-
 }
