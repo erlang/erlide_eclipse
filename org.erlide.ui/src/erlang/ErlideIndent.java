@@ -22,10 +22,11 @@ public class ErlideIndent {
 	// }
 
 	public static int[] indentLine(IBackend b, String line, String txt,
-			int lineNumber, int tabw) throws ErlangRpcException,
+			int lineNumber, int tabw, int[] prefs) throws ErlangRpcException,
 			BackendException, RpcException, OtpErlangRangeException {
 		final OtpErlangObject o = b.rpcx("erlide_indent", "indent_line",
-				"ssii", txt, line, lineNumber, tabw);
+				"ssiili", txt, line, lineNumber, tabw, prefs);
+
 		if (o instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) o;
 			final OtpErlangLong l0 = (OtpErlangLong) t.elementAt(0);
@@ -35,5 +36,4 @@ public class ErlideIndent {
 			return new int[] { 0, 0 };
 		}
 	}
-
 }

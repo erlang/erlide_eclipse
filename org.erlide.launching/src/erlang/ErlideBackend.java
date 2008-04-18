@@ -28,7 +28,7 @@ public class ErlideBackend {
 	public static void init(IBackend backend, String node) {
 		try {
 			backend.rpc(ERL_BACKEND, "init", "a", node);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
 	}
@@ -179,11 +179,11 @@ public class ErlideBackend {
 
 	public static void generateRpcStub(IBackend b, String s) {
 		try {
-			RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
+			final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 			if (!r.isOk()) {
 				ErlLogger.debug("rpcstub::" + r.toString());
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
 	}
@@ -229,7 +229,7 @@ public class ErlideBackend {
 			final OtpErlangObject r1 = BackendManager.getDefault()
 					.getIdeBackend().rpcx(module, fun, "si", text, offset);
 			return r1;
-		} catch (NoBackendException e) {
+		} catch (final NoBackendException e) {
 			return new OtpErlangString("");
 		}
 	}
@@ -239,7 +239,7 @@ public class ErlideBackend {
 		try {
 			return BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_syntax", "concrete", "x", val);
-		} catch (NoBackendException e) {
+		} catch (final NoBackendException e) {
 			return null;
 		}
 	}
@@ -249,7 +249,7 @@ public class ErlideBackend {
 		OtpErlangObject r;
 		r = b.rpcx("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {
-			OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
+			final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
 			if (rr instanceof OtpErlangString) {
 				return ((OtpErlangString) rr).stringValue();
 			}
@@ -296,6 +296,14 @@ public class ErlideBackend {
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject res;
 		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
+		return res;
+	}
+
+	public static OtpErlangObject indentLines(final IBackend b,
+			final int offset, final String text, final int tabw,
+			final int[] prefs) throws RpcException, BackendException {
+		final OtpErlangObject res = b.rpcx("erlide_indent", "indent_lines",
+				"siili", text, offset, tabw, new int[] {});
 		return res;
 	}
 

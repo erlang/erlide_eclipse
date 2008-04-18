@@ -12,20 +12,32 @@
 %% Exported Functions
 %%
 
--export([indent_line/4,
-         indent_lines/2,
-         indent_lines/3]).
+-export([indent_line/5,
+         indent_lines/4]).
 
 %-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
+default_indent_prefs() ->
+    [{before_binary_op, 4},
+     {after_binary_op, 4},
+     {before_arrow, 2},
+     {after_arrow, 4},
+     {after_unary_op, 4},
+     {clause, 4},
+     {'case', 4},
+     {'try', 4},
+     {'catch', 4},
+     {function_parameters, 2},
+     {'fun', 8}].
+
 %%
 %% API Functions
 %%
-indent_line(St, Line, N, Tablength) ->
+indent_line(St, Line, N, Tablength, Prefs) ->
     S = erlide_text:detab(St, Tablength),
     ?D(Line),
     case erlide_scan:string(S) of
@@ -38,7 +50,7 @@ indent_line(St, Line, N, Tablength) ->
                         _ ->
                             N
                     end,
-            I = indent(Tr, LineOffsets, LineN),
+            I = indent(Tr, LineOffsets, LineN, Prefs),
             ?D(Line),
             {I, initial_whitespace(Line)};
         _  ->
@@ -48,11 +60,21 @@ indent_line(St, Line, N, Tablength) ->
 fix_tokens(Tokens, NL) ->
     [erlide_scanner:mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
 
--record(i, {anchor, indent_line, current}).
+-record(i, {anchor, indent_line, current, prefs}).
 
-indent(Tokens, LineOffsets, LineN) ->
+get_prefs([], OldP, Acc) ->
+    Acc ++ OldP;
+get_prefs([{Key, Value} | Rest], OldP, Acc) ->
+    P = lists:keydelete(Key, 1, OldP),
+    get_prefs(Rest, P, [{Key, Value} | Acc]).
+
+get_prefs(Prefs) ->
+    get_prefs(Prefs, default_indent_prefs(), []).
+
+indent(Tokens, LineOffsets, LineN, Prefs) ->
     try
-        I = #i{anchor=hd(Tokens), indent_line=LineN, current=0},
+        P = get_prefs(Prefs),
+        I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P},
         ?D({I, LineOffsets}),
         i_form_list(Tokens, I),
         ?D(no_catch)
@@ -73,13 +95,10 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
     ?D({O, LO, C, _A}),
     TI+C.
 
-indent_lines(S, From) ->
-    %%?D({From, S}),
-    indent_lines(S, From, 8).
-
-indent_lines(S, From, Tablength) ->
+indent_lines(S, From, Tablength, Prefs) ->
+    ?D(S),
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From),
-    do_indent_lines(Lines, Tablength, First, FirstLineNum, "").
+    do_indent_lines(Lines, Tablength, First, Prefs, FirstLineNum, "").
 
 %%
 %% Local Functions
@@ -87,14 +106,14 @@ indent_lines(S, From, Tablength) ->
 
 %% TODO: Add description of asd/function_arity
 %%
-do_indent_lines([], _, _, _, A) ->
+do_indent_lines([], _, _, _, _, A) ->
     A;
-do_indent_lines([Line | Rest], Tablength, Text, N, Acc) ->
+do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
     ?D({Text++Acc, Line}),
-    {NewI, _OldI} = indent_line(Text ++ Acc, Line, N, Tablength),
+    {NewI, _OldI} = indent_line(Text ++ Acc, Line, N, Tablength, Prefs),
     NewLine = reindent_line(Line, NewI),
-    ?D({NewI, _OldI, NewLine}),
-    do_indent_lines(Rest, Tablength, Text, N+1, Acc ++ NewLine).
+    ?D({NewI, _OldI, Line, NewLine}),
+    do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
 
 %% TODO: Add description of asd/function_arity
 %%
@@ -124,27 +143,6 @@ initial_whitespace(_) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-indent_by(before_binary_op) ->
-    4;
-indent_by(after_binary_op) ->
-    4;
-indent_by(before_arrow) ->
-    2;
-indent_by(after_arrow) ->
-    4;
-indent_by(after_unary_op) ->
-    4;
-indent_by(clause) ->
-    4;
-indent_by('case') ->
-    4;
-indent_by('try') ->
-    4;
-indent_by('catch') ->
-    4;
-indent_by('fun') ->
-    8.
-
 i_check_aux(#token{line=K}, #i{indent_line=L, anchor=A, current=C}) when K >= L ->
     throw({indent, A, C});
 i_check_aux(eof, #i{anchor=A, current=C}) ->
@@ -164,17 +162,31 @@ i_check(T, I) ->
             throw(Throw)
     end.
 
+indent_by(Key, Prefs) ->
+    proplists:get_value(Key, Prefs, 0).
+
+%% indent_by(before_binary_op, Prefs) -> Prefs#indent_prefs.before_binary_op;
+%% indent_by(after_binary_op, Prefs) -> Prefs#indent_prefs.after_binary_op;
+%% indent_by(before_arrow, Prefs) -> Prefs#indent_prefs.before_arrow;
+%% indent_by(after_arrow, Prefs) -> Prefs#indent_prefs.after_arrow;
+%% indent_by(after_unary_op, Prefs) -> Prefs#indent_prefs.after_unary_op;
+%% indent_by(clause, Prefs) -> Prefs#indent_prefs.clause;
+%% indent_by('case', Prefs) -> Prefs#indent_prefs.'case';
+%% indent_by('try', Prefs) -> Prefs#indent_prefs.'try';
+%% indent_by('catch', Prefs) -> Prefs#indent_prefs.'catch';
+%% indent_by(function_parameters, Prefs) -> Prefs#indent_prefs.function_parameters;
+%% indent_by('fun', Prefs) -> Prefs#indent_prefs.'fun'.
+
 i_with(W, I) ->
-    I#i{current=indent_by(W)}.
+    I#i{current=indent_by(W, I#i.prefs)}.
 
 i_with(W, A, I) ->
-    I#i{current=indent_by(W), anchor=A}.
+    I#i{current=indent_by(W, I#i.prefs), anchor=A}.
 
-i_par_list([T | _] = R0, I0) ->
-    I1 = I0#i{current=1, anchor=T},
-    R1 = i_paren('(', R0, I1),
-    R2 = i_parameters(R1, I1),
-    i_end_paren(R2, I1).
+i_par_list(R0, I0) ->
+    R1 = i_paren('(', R0, I0),
+    R2 = i_parameters(R1, I0),
+    i_end_paren(R2, I0).
 
 i_expr([], _I) ->
     {[], eof};
@@ -189,12 +201,22 @@ i_expr(R, I) ->
 i_expr_rest(R0, I, A) ->
     case i_sniff(R0) of
         #token{kind='('} -> % function call
-            R1 = i_par_list(R0, I),
-            i_expr_rest(R1, I, A);
+		    I1 = i_with(function_parameters, A, I),
+            R1 = i_par_list(R0, I1),
+            i_expr_rest(R1, I1, A);
         eof ->
             {R0, A};
         #token{kind='#'} -> % record something
             i_record_something(R0, I);
+        #token{kind=':'} -> % external function call
+            ?D(R0),
+            R1 = i_kind(':', R0, I),
+            ?D(R1),
+            R2 = i_1_expr(R1, I),
+            ?D(R2),
+            {R3, _A1} = i_expr_rest(R2, I, A),
+            ?D(R3),
+            R3;
         O ->
             case is_binary_op(O) of
                 true ->
@@ -209,13 +231,14 @@ i_expr_list(R, I) ->
     i_check(R, I),
     R0 = i_comments(R, I),
     {R1, _A} = i_expr(R0, I),
-    ?D(R1),
-    case i_sniff(R1) of
+    R2 = i_comments(R1, I),
+    ?D(R2),
+    case i_sniff(R2) of
         #token{kind=','} ->
-            R2 = i_comma(R1, I),
-            i_expr_list(R2, I);
+            R3 = i_comma(R2, I),
+            i_expr_list(R3, I);
         _ ->
-            R1
+            R2
     end.
 
 i_binary_op(R0, I) ->
@@ -275,7 +298,7 @@ i_1_expr([#token{kind='case'}=T | R0], I) ->
     i_block_end(T#token.kind, R3, I);
 i_1_expr([#token{kind='fun'}=T | R0], I) ->
     %%?D(T),
-    I1 = i_with('fun', I#i{anchor=T}),
+    I1 = i_with(function_parameters, T, I),
     R1 = case i_sniff(R0) of
              #token{kind='('} ->
                  i_fun_clause_list(R0, I1);
@@ -286,18 +309,18 @@ i_1_expr([#token{kind='fun'}=T | R0], I) ->
     i_kind('end', R1, I);
 i_1_expr([#token{kind='try'}=T | R0], I) ->
     i_check(T, I),
-    I1 = i_with('try', I#i{anchor=T}),
+    I1 = i_with('try', T, I),
     R1 = i_kind('try', R0, I1),
     R2 = i_expr_list(R1, I1),
     R3 = i_kind('catch', R2, I1),
-    I2 = i_with('catch', I#i{anchor=hd(R2)}),
+    I2 = i_with('catch', hd(R2), I),
     R3 = i_clause_list(R3, I2),
     i_kind('end', R3, I2);
 i_1_expr([T | Rest], I) ->
     i_check(T, I),
     case is_unary_op(T) of
         true ->
-            i_1_expr(Rest, i_with(after_unary_op, I#i{anchor=T}));
+            i_1_expr(Rest, i_with(after_unary_op, T, I));
         false ->
             Rest
     end.
@@ -379,7 +402,6 @@ comment_kind(_) ->
 %%     [];
 
 i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
-	?D(V),
     case comment_kind(V) of
         comment_3 ->
             case i_check_aux(C, I) of

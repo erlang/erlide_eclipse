@@ -108,13 +108,13 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 
+			final int[] prefs = new int[] {}; // TODO hämta prefs (sista
+												// argumentet)
 			final int indents[] = ErlideIndent.indentLine(b, line, txt, -1,
-					tabw);
+					tabw, prefs);
 
 			c.text += getIndent(indents[0]);
 			c.length += indents[1];
-			// FIXME fixa så att den INDENTERAR aktuell rad, inte bara pytsar in
-			// TODO blanka (jaja, på gång ju!)
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

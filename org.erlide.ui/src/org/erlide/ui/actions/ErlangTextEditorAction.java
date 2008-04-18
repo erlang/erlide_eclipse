@@ -27,15 +27,21 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import erlang.ErlideBackend;
 
 public class ErlangTextEditorAction extends TextEditorAction {
-	protected String fErlModule;
-
-	protected String fErlFunction;
+	final protected String fErlModule;
+	final protected String fErlFunction;
+	private String text;
+	private ITextSelection selection;
 
 	public ErlangTextEditorAction(ResourceBundle bundle, String prefix,
 			ITextEditor editor, String erlModule, String erlFunction) {
 		super(bundle, prefix, editor);
 		fErlModule = erlModule;
 		fErlFunction = erlFunction;
+	}
+
+	public ErlangTextEditorAction(ResourceBundle bundle, String prefix,
+			ITextEditor editor) {
+		this(bundle, prefix, editor, null, null);
 	}
 
 	@Override
@@ -45,27 +51,27 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
 			return;
 		}
-		final ITextSelection selection = (ITextSelection) sel;
-		final int offset = selection.getOffset();
-		int length = selection.getLength();
-		final IDocument document = getTextEditor().getDocumentProvider()
-				.getDocument(getTextEditor().getEditorInput());
-		if (length == 0 && offset + length < document.getLength()) {
-			length = 1;
-		}
-		final int end = offset + length;
+		selection = (ITextSelection) sel;
+		final int startLine = selection.getStartLine();
+		final int endLine = selection.getEndLine();
+		final ITextEditor textEditor = getTextEditor();
+		final IDocument document = textEditor.getDocumentProvider()
+				.getDocument(textEditor.getEditorInput());
 		try {
-			final String text = document.get(0, offset + length);
+			final int startLineOffset = document.getLineOffset(startLine);
+			final int endTextOffset = document.getLineOffset(endLine)
+					+ document.getLineLength(endLine);
+			text = document.get(0, endTextOffset);
 			final OtpErlangObject r1 = callErlang(selection, text);
-			if (!((r1 instanceof OtpErlangString) || (r1 instanceof OtpErlangList && ((OtpErlangList) r1)
-					.arity() == 0))) {
+			if (!(r1 instanceof OtpErlangString || r1 instanceof OtpErlangList
+					&& ((OtpErlangList) r1).arity() == 0)) {
 				final String e = r1.toString();
 				ErlangPlugin.log(new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID,
 						IErlangStatusConstants.INTERNAL_ERROR,
 						"IndentAction_error_message" + e, null));
 
-				ErrorDialog.openError(getTextEditor().getSite().getShell(),
+				ErrorDialog.openError(textEditor.getSite().getShell(),
 						ActionMessages.IndentAction_error_message, e, null);
 				return;
 			}
@@ -77,15 +83,12 @@ public class ErlangTextEditorAction extends TextEditorAction {
 				final OtpErlangString s1 = (OtpErlangString) r1;
 				newText = s1.stringValue();
 			}
-			final int firstLine = document.getLineOfOffset(offset);
-			final int firstLineOffset = document.getLineOffset(firstLine);
-			final int lastLine = document.getLineOfOffset(end);
 			// final int lastLineOffset = document.getLineOffset(lastLine);
-			final int nLines = lastLine - firstLine + 1;
+			final int nLines = endLine - startLine + 1;
 			final Runnable runnable = new Runnable() {
 				@SuppressWarnings("synthetic-access")
 				public void run() {
-					IRewriteTarget target = (IRewriteTarget) getTextEditor()
+					IRewriteTarget target = (IRewriteTarget) textEditor
 							.getAdapter(IRewriteTarget.class);
 					if (target != null) {
 						target.beginCompoundChange();
@@ -95,9 +98,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 					}
 					try {
 						// ErlLogger.debug("'"+newText+"'");
-						document.replace(firstLineOffset,
-								end - firstLineOffset, newText);
-						selectAndReveal(firstLineOffset, newText.length());
+						document.replace(startLineOffset, endTextOffset
+								- startLineOffset, newText);
+						selectAndReveal(startLineOffset, newText.length());
 					} catch (BadLocationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -112,7 +115,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			};
 
 			if (nLines > 50) {
-				final Display display = getTextEditor().getEditorSite()
+				final Display display = textEditor.getEditorSite()
 						.getWorkbenchWindow().getShell().getDisplay();
 				BusyIndicator.showWhile(display, runnable);
 			} else {
@@ -154,7 +157,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	protected void selectAndReveal(int newOffset, int newLength) {
 		final ITextEditor editor = getTextEditor();
 		if (editor instanceof ErlangEditor) {
-			final ErlangEditor erlEditor = ((ErlangEditor) editor);
+			final ErlangEditor erlEditor = (ErlangEditor) editor;
 			erlEditor.selectAndReveal(newOffset, newLength);
 		} else {
 			// this is too intrusive, but will never get called anyway

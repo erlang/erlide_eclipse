@@ -2,8 +2,18 @@ package org.erlide.ui.actions;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IBackend;
+import org.erlide.ui.ErlideUIPlugin;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+import erlang.ErlideBackend;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -17,7 +27,35 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class IndentAction extends ErlangTextEditorAction {
 
 	public IndentAction(ResourceBundle bundle, String prefix, ITextEditor editor) {
-		super(bundle, prefix, editor, "erlide_indent", "indent_lines");
+		super(bundle, prefix, editor);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.ui.actions.ErlangTextEditorAction#callErlang(org.eclipse.jface.text.ITextSelection,
+	 *      java.lang.String)
+	 */
+	@Override
+	protected OtpErlangObject callErlang(ITextSelection selection, String text)
+			throws Exception {
+		int tabw = ErlideUIPlugin
+				.getDefault()
+				.getPreferenceStore()
+				.getInt(
+						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+		if (tabw == 0) {
+			tabw = EditorsUI
+					.getPreferenceStore()
+					.getInt(
+							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+		}
+
+		final int[] prefs = null; // TODO hämta prefs (sista argumentet)
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final OtpErlangObject r1 = ErlideBackend.indentLines(b, selection
+				.getOffset(), text, tabw, prefs);
+		return r1;
 	}
 
 }
