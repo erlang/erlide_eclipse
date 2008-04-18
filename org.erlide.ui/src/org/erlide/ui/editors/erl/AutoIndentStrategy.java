@@ -109,7 +109,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			}
 
 			final int[] prefs = new int[] {}; // TODO hämta prefs (sista
-												// argumentet)
+			// argumentet)
 			final int indents[] = ErlideIndent.indentLine(b, line, txt, -1,
 					tabw, prefs);
 
@@ -133,13 +133,13 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	// return r;
 	// }
 
-	private int getIndent(String line) {
-		int i = 0;
-		while (i < line.length() && line.charAt(i) == ' ') {
-			++i;
-		}
-		return i;
-	}
+	// private int getIndent(String line) {
+	// int i = 0;
+	// while (i < line.length() && line.charAt(i) == ' ') {
+	// ++i;
+	// }
+	// return i;
+	// }
 
 	/**
 	 * Override a DocumentCommand if it ends with a line delim (CR) to include
