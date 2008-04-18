@@ -214,9 +214,9 @@ i_expr_rest(R0, I, A) ->
             ?D(R1),
             R2 = i_1_expr(R1, I),
             ?D(R2),
-            {R3, _A1} = i_expr_rest(R2, I, A),
+            {R3, A1} = i_expr_rest(R2, I, A),
             ?D(R3),
-            R3;
+            {R3, A1};
         O ->
             case is_binary_op(O) of
                 true ->
@@ -230,9 +230,9 @@ i_expr_rest(R0, I, A) ->
 i_expr_list(R, I) ->
     i_check(R, I),
     R0 = i_comments(R, I),
+    ?D(R0),
     {R1, _A} = i_expr(R0, I),
     R2 = i_comments(R1, I),
-    ?D(R2),
     case i_sniff(R2) of
         #token{kind=','} ->
             R3 = i_comma(R2, I),
@@ -246,13 +246,15 @@ i_binary_op(R0, I) ->
     [_ | R1] = i_comments(R0, I),
     R1.
 
-i_end_paren_or_expr_list([#token{kind=Kind} | _] = R, I) when Kind=='}'; Kind==']'; Kind==')'->
-    i_check(R, I),
-    R;
 i_end_paren_or_expr_list(R, I) ->
 	i_check(R, I),
-    I1 = I#i{anchor=hd(R), current=0},
-    i_expr_list(R, I1).
+    case i_sniff(R) of
+        #token{kind=Kind} when Kind=='}'; Kind==']'; Kind==')' ->
+            i_kind(Kind, R, I);
+        _ ->
+            I1 = I#i{anchor=hd(R), current=0},
+            i_expr_list(R, I1)
+    end.
 
 i_1_expr([#token{kind=comment}=T | Rest], I) ->
     i_check(T, I),
