@@ -64,13 +64,24 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
+		ErlLogger.debug("Starting LAUNCHING");
 		super.start(context);
+
+		String dev = "";
+		if (BackendManager.isDeveloper()) {
+			dev = " erlide developer version ***";
+		}
+		ErlLogger
+				.info("*** starting Erlide v"
+						+ getBundle().getHeaders().get("Bundle-Version")
+						+ " ***" + dev);
 
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 
 		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
 		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
+		ErlLogger.debug("Started LAUNCHING");
 	}
 
 	/**

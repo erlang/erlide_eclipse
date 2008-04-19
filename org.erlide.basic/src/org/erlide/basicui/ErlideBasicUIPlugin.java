@@ -98,7 +98,7 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 					.toPortableString();
 			dir = dir == null ? "c:/" : dir;
-			fh = new FileHandler(dir + "erlide.log");
+			fh = new FileHandler(dir + "_erlide.log");
 			fh.setFormatter(erlSimpleFormatter);
 			logger.addHandler(fh);
 
@@ -115,7 +115,7 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		ErlLogger.debug("Started BASIC");
 	}
 
 	/**

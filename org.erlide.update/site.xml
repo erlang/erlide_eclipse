@@ -5,4 +5,5 @@
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2 and later.
    </description>
    <feature url="features/org.erlide_0.3.49.200804101552.jar" id="org.erlide" version="0.3.49.200804101552"/>
+   <feature url="features/org.erlide_0.3.49.200804172033.jar" id="org.erlide" version="0.3.49.200804172033"/>
 </site>

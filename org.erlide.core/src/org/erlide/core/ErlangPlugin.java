@@ -32,13 +32,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModelManager;
-import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
@@ -664,86 +660,79 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		ErlLogger.debug("Starting CORE");
 		super.start(context);
-
-		String dev = "";
-		if (BackendManager.isDeveloper()) {
-			dev = " erlide developer version ***";
-		}
-		ErlLogger
-				.info("*** starting Erlide v"
-						+ getBundle().getHeaders().get("Bundle-Version")
-						+ " ***" + dev);
 
 		BackendManager.getDefault().register(this);
 
 		registerOpenProjects();
 
-		final IErlModelManager manager = ErlangCore.getModelManager();
-		try {
-			// request state folder creation (workaround 19885)
-			getDefault().getStateLocation();
-
-			// retrieve variable values
-			getDefault().getPluginPreferences().addPropertyChangeListener(
-					new ErlModelManager.PluginPreferencesListener());
-
-			// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			// workspace.addResourceChangeListener(manager.deltaState,
-			// IResourceChangeEvent.PRE_BUILD
-			// | IResourceChangeEvent.POST_BUILD |
-			// IResourceChangeEvent.POST_CHANGE
-			// | IResourceChangeEvent.PRE_DELETE |
-			// IResourceChangeEvent.PRE_CLOSE);
-
-			// process deltas since last activated in indexer thread so that
-			// indexes are up-to-date.
-			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=38658
-			final Job processSavedState = new Job(Util
-					.bind("savedState.jobName")) { //$NON-NLS-1$
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					// try
-					// {
-					// // add save participant and process delta atomically
-					// // see
-					// // https://bugs.eclipse.org/bugs/show_bug.cgi?id=59937
-					// workspace.run(new IWorkspaceRunnable() {
-					//
-					// public void run(IProgressMonitor progress) throws
-					// CoreException
-					// {
-					// ISavedState savedState = workspace.addSaveParticipant(
-					// getDefault(), manager);
-					// if (savedState != null)
-					// {
-					// // the event type coming from the saved
-					// // state is always POST_AUTO_BUILD
-					// // force it to be POST_CHANGE so that the
-					// // delta processor can handle it
-					// //
-					// manager.deltaState.getDeltaProcessor().overridenEventType
-					// // = IResourceChangeEvent.POST_CHANGE;
-					// // savedState
-					// // .processResourceChangeEvents(manager.deltaState);
-					// }
-					// }
-					// }, monitor);
-					// } catch (CoreException e)
-					// {
-					// return e.getStatus();
-					// }
-					return Status.OK_STATUS;
-				}
-			};
-			processSavedState.setSystem(true);
-			processSavedState.setPriority(Job.SHORT); // process asap
-			processSavedState.schedule();
-		} catch (final RuntimeException e) {
-			manager.shutdown();
-			throw e;
-		}
+		// final IErlModelManager manager = ErlangCore.getModelManager();
+		// try {
+		// // request state folder creation (workaround 19885)
+		// getDefault().getStateLocation();
+		//
+		// // retrieve variable values
+		// getDefault().getPluginPreferences().addPropertyChangeListener(
+		// new ErlModelManager.PluginPreferencesListener());
+		//
+		// // final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		// // workspace.addResourceChangeListener(manager.deltaState,
+		// // IResourceChangeEvent.PRE_BUILD
+		// // | IResourceChangeEvent.POST_BUILD |
+		// // IResourceChangeEvent.POST_CHANGE
+		// // | IResourceChangeEvent.PRE_DELETE |
+		// // IResourceChangeEvent.PRE_CLOSE);
+		//
+		// // process deltas since last activated in indexer thread so that
+		// // indexes are up-to-date.
+		// // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=38658
+		// final Job processSavedState = new Job(Util
+		// .bind("savedState.jobName")) { //$NON-NLS-1$
+		//
+		// @Override
+		// protected IStatus run(IProgressMonitor monitor) {
+		// // try
+		// // {
+		// // // add save participant and process delta atomically
+		// // // see
+		// // // https://bugs.eclipse.org/bugs/show_bug.cgi?id=59937
+		// // workspace.run(new IWorkspaceRunnable() {
+		// //
+		// // public void run(IProgressMonitor progress) throws
+		// // CoreException
+		// // {
+		// // ISavedState savedState = workspace.addSaveParticipant(
+		// // getDefault(), manager);
+		// // if (savedState != null)
+		// // {
+		// // // the event type coming from the saved
+		// // // state is always POST_AUTO_BUILD
+		// // // force it to be POST_CHANGE so that the
+		// // // delta processor can handle it
+		// // //
+		// // manager.deltaState.getDeltaProcessor().overridenEventType
+		// // // = IResourceChangeEvent.POST_CHANGE;
+		// // // savedState
+		// // // .processResourceChangeEvents(manager.deltaState);
+		// // }
+		// // }
+		// // }, monitor);
+		// // } catch (CoreException e)
+		// // {
+		// // return e.getStatus();
+		// // }
+		// return Status.OK_STATUS;
+		// }
+		// };
+		// processSavedState.setSystem(true);
+		// processSavedState.setPriority(Job.SHORT); // process asap
+		// processSavedState.schedule();
+		// } catch (final RuntimeException e) {
+		// manager.shutdown();
+		// throw e;
+		// }
+		ErlLogger.debug("Started CORE");
 	}
 
 	private static void registerOpenProjects() {
@@ -841,8 +830,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public void start() {
-		// TODO Auto-generated method stub
-
 	}
 
 }
