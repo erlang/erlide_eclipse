@@ -16,7 +16,7 @@
          indent_lines/4]).
 
 %-define(IO_FORMAT_DEBUG, 1).
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -32,15 +32,19 @@ default_indent_prefs() ->
      {'try', 4},
      {'catch', 4},
      {function_parameters, 2},
-     {'fun', 8}].
+     {'fun', 3},
+     {fun_body, 5}].
 
 %%
 %% API Functions
 %%
-indent_line(St, Line, N, Tablength, Prefs) ->
+indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
+    indent_line(St, OldLine, CommandText, -1, Tablength, Prefs).
+
+indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
     S = erlide_text:detab(St, Tablength),
-    ?D(Line),
-    case erlide_scan:string(S) of
+    ?D(OldLine),
+    case erlide_scan:string(S ++ string:strip(CommandText, left)) of
         {ok, T, _} ->
             LineOffsets = erlide_text:get_line_offsets(S),
             Tr = fix_tokens(T, size(LineOffsets)),
@@ -51,8 +55,7 @@ indent_line(St, Line, N, Tablength, Prefs) ->
                             N
                     end,
             I = indent(Tr, LineOffsets, LineN, Prefs),
-            ?D(Line),
-            {I, initial_whitespace(Line)};
+            {I, initial_whitespace(OldLine)};
         _  ->
             error
     end.
@@ -73,7 +76,9 @@ get_prefs(Prefs) ->
 
 indent(Tokens, LineOffsets, LineN, Prefs) ->
     try
+        ?D(Prefs),
         P = get_prefs(Prefs),
+		?D(P),
         I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P},
         ?D({I, LineOffsets}),
         i_form_list(Tokens, I),
@@ -209,14 +214,14 @@ i_expr_rest(R0, I, A) ->
         #token{kind='#'} -> % record something
             i_record_something(R0, I);
         #token{kind=':'} -> % external function call
-            ?D(R0),
             R1 = i_kind(':', R0, I),
-            ?D(R1),
             R2 = i_1_expr(R1, I),
-            ?D(R2),
             {R3, A1} = i_expr_rest(R2, I, A),
-            ?D(R3),
             {R3, A1};
+        #token{kind='||'} -> % list comprehension
+            R1 = i_kind('||', R0, I),
+            R2 = i_expr_list(R1, I),
+            {R2, A};
         O ->
             case is_binary_op(O) of
                 true ->
@@ -267,7 +272,7 @@ i_1_expr([#token{kind=Kind}=T | Rest], I) when Kind=='{'; Kind=='[' ->
     ?D(Rest1),
     i_end_paren(Rest1, I1);
 i_1_expr([#token{kind='('}=T | Rest], I) ->
-    ?D(T),
+    ?D(Rest),
     i_check(T, I),
     I1 = I#i{anchor=T, current=1},
     Rest1 = i_1_expr(Rest, I1),
@@ -296,11 +301,9 @@ i_1_expr([#token{kind='case'}=T | R0], I) ->
     {R1, _A} = i_expr(R0, I1),
     R2 = i_of(R1, I1),
     R3 = i_clause_list(R2, I1),
-    %%?D(R3),
     i_block_end(T#token.kind, R3, I);
 i_1_expr([#token{kind='fun'}=T | R0], I) ->
-    %%?D(T),
-    I1 = i_with(function_parameters, T, I),
+    I1 = i_with('fun', T, I),
     R1 = case i_sniff(R0) of
              #token{kind='('} ->
                  i_fun_clause_list(R0, I1);
@@ -443,6 +446,7 @@ i_kind(Kind, T, I) ->
     Rest.
 
 i_end_paren([#token{kind=Kind} | Rest] = T, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>' ->
+    ?D(Rest),
     i_check(T, I),
     Rest;
 i_end_paren(R, I) ->
@@ -458,18 +462,19 @@ i_form_list(R0, I) ->
 
 i_form(R0, I) ->
     %%?D(R0),
-    case i_sniff(R0) of
+	R1 = i_comments(R0, I),
+    case i_sniff(R1) of
         #token{kind='-'} ->
-            i_declaration(R0, I);
+            i_declaration(R1, I);
         _ ->
-            R1 = i_clause(R0, I),
-            case i_sniff(R1) of
+            R2 = i_clause(R1, I),
+            case i_sniff(R2) of
                 #token{kind=dot} ->
-                    i_dot(R1, I);
+                    i_dot(R2, I);
                 #token{kind=';'} ->
-                    i_semicolon(R1, I);
+                    i_semicolon(R2, I);
                 _ ->
-                    R1
+                    R2
             end
     end.
 
@@ -480,11 +485,16 @@ i_declaration(R0, I) ->
     i_dot(R, I).
 
 i_fun_clause(R0, I) ->
-    R1 = i_par_list(R0, I),
-    R2 = i_kind('->', R1, I),
-    i_expr_list(R2, I).
+    ?D(R0),
+    R1 = i_comments(R0, I),
+    [A | _] = R1,
+    R2 = i_par_list(R1, I),
+    R3 = i_kind('->', R2, I),
+	I1 = i_with(fun_body, A, I),
+    i_expr_list(R3, I1).
 
 i_fun_clause_list(R, I) ->
+	?D(R),
     R0 = i_fun_clause(R, I),
     case i_sniff(R0) of
         #token{kind=';'} ->

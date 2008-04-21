@@ -299,12 +299,4 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static OtpErlangObject indentLines(final IBackend b,
-			final int offset, final String text, final int tabw,
-			final int[] prefs) throws RpcException, BackendException {
-		final OtpErlangObject res = b.rpcx("erlide_indent", "indent_lines",
-				"siili", text, offset, tabw, new int[] {});
-		return res;
-	}
-
 }

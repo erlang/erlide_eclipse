@@ -1,5 +1,6 @@
 package org.erlide.ui.actions;
 
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.eclipse.jface.text.ITextSelection;
@@ -10,10 +11,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-import erlang.ErlideBackend;
+import erlang.ErlideIndent;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -51,9 +53,10 @@ public class IndentAction extends ErlangTextEditorAction {
 							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 		}
 
-		final int[] prefs = null; // TODO hämta prefs (sista argumentet)
+		final Map<String, Integer> prefs = IndentationPreferencePage
+				.getKeysAndPrefs();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
-		final OtpErlangObject r1 = ErlideBackend.indentLines(b, selection
+		final OtpErlangObject r1 = ErlideIndent.indentLines(b, selection
 				.getOffset(), text, tabw, prefs);
 		return r1;
 	}

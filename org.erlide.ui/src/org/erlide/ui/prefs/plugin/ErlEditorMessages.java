@@ -60,6 +60,32 @@ public class ErlEditorMessages extends NLS {
 
 	public static String ErlangOutlinePage_error_NoTopLevelType;
 
+	public static String IndentationPrefs_0;
+
+	public static String IndentationPrefs_12;
+
+	public static String IndentationPrefs_15;
+
+	public static String IndentationPrefs_18;
+
+	public static String IndentationPrefs_21;
+
+	public static String IndentationPrefs_24;
+
+	public static String IndentationPrefs_27;
+
+	public static String IndentationPrefs_3;
+
+	public static String IndentationPrefs_30;
+
+	public static String IndentationPrefs_33;
+
+	public static String IndentationPrefs_36;
+
+	public static String IndentationPrefs_6;
+
+	public static String IndentationPrefs_9;
+
 	private ErlEditorMessages() {
 	}
 

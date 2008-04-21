@@ -82,6 +82,12 @@
             class="org.erlide.ui.prefs.plugin.FoldingPreferencePage"
             id="org.erlide.ui.preferences.editor.folding">
       </page>
+      <page
+            category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.IndentationPreferencePage"
+            id="org.erlide.ui.preferences.indentation"
+            name="Indentation">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">

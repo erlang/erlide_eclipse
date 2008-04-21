@@ -11,10 +11,11 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
+import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -25,6 +26,7 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import erlang.ErlideIndent;
 
@@ -34,7 +36,8 @@ import erlang.ErlideIndent;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
+public class AutoIndentStrategy implements IAutoEditStrategy {
+	// extends DefaultIndentLineAutoEditStrategy {
 
 	private final ErlangEditor fEditor;
 
@@ -61,7 +64,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		return new String(x);
 	}
 
-	protected void autoIndentAfterNewLine(IDocument d, DocumentCommand c) {
+	private void autoIndentAfterNewLine(IDocument d, DocumentCommand c) {
 		try {
 			indentAfterNewLine(d, c);
 		} catch (final BadLocationException e) {
@@ -93,7 +96,7 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 		final int lineN = d.getLineOfOffset(offset);
 		final int lineOffset = d.getLineOffset(lineN);
 		final int lineLength = d.getLineLength(lineN);
-		final String line = d.get(offset, lineLength + lineOffset - offset);
+		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			int tabw = ErlideUIPlugin
@@ -108,10 +111,10 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 
-			final int[] prefs = new int[] {}; // TODO hämta prefs (sista
-			// argumentet)
-			final int indents[] = ErlideIndent.indentLine(b, line, txt, -1,
-					tabw, prefs);
+			final Map<String, Integer> prefs = IndentationPreferencePage
+					.getKeysAndPrefs();
+			final int indents[] = ErlideIndent.indentLine(b, oldLine, txt,
+					c.text, tabw, prefs);
 
 			c.text += getIndent(indents[0]);
 			c.length += indents[1];
@@ -119,27 +122,6 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 			e.printStackTrace();
 		}
 	}
-
-	// private int getLastLineIndent(String txt) {
-	// int offset = txt.lastIndexOf('\n');
-	// if (offset == -1) {
-	// offset = 0;
-	// }
-	// int r = 0;
-	// while (offset < txt.length()
-	// && Character.isWhitespace(txt.charAt(offset))) {
-	// ++r;
-	// }
-	// return r;
-	// }
-
-	// private int getIndent(String line) {
-	// int i = 0;
-	// while (i < line.length() && line.charAt(i) == ' ') {
-	// ++i;
-	// }
-	// return i;
-	// }
 
 	/**
 	 * Override a DocumentCommand if it ends with a line delim (CR) to include
@@ -151,12 +133,34 @@ public class AutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	 *            the command
 	 */
 
-	@Override
+	// FIXME flytta en del av denna logik till erlang!! (t.ex. så vill man inte
+	// vara "elektrisk" i kommentarer)
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-		if (c.length == 0
-				&& c.text != null
-				&& TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
-			autoIndentAfterNewLine(d, c);
+		if (c.length == 0 && c.text != null) {
+			if (TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
+				autoIndentAfterNewLine(d, c);
+			} else if (IndentationPreferencePage.getElectricCommaPrefs()) {
+				if (c.text.endsWith(",")) {
+					c.text += "\n";
+					autoIndentAfterNewLine(d, c);
+				} else if (c.text.endsWith(";")) {
+					c.text += "\n";
+					autoIndentAfterNewLine(d, c);
+				} else if (c.text.endsWith(".")) {
+					c.text += "\n";
+					autoIndentAfterNewLine(d, c);
+				} else if (c.text.endsWith(">")) {
+					try {
+						if (c.offset > 0 && c.offset <= d.getLength()
+								&& d.getChar(c.offset - 1) == '-') {
+							c.text += "\n";
+							autoIndentAfterNewLine(d, c);
+						}
+					} catch (final BadLocationException e) {
+						// never mind...
+					}
+				}
+			}
 		}
 	}
 
