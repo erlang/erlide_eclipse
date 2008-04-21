@@ -115,7 +115,7 @@ do_indent_lines([], _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
     ?D({Text++Acc, Line}),
-    {NewI, _OldI} = indent_line(Text ++ Acc, Line, N, Tablength, Prefs),
+    {NewI, _OldI} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
     NewLine = reindent_line(Line, NewI),
     ?D({NewI, _OldI, Line, NewLine}),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
