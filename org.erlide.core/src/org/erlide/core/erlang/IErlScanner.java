@@ -24,5 +24,6 @@ public interface IErlScanner extends IDisposable {
 
 	ErlToken[] getTokens();
 
+	// the window is asymmetric, to allow finding number of arguments
 	TokenWindow getTokenWindow(int offset, int window);
 }

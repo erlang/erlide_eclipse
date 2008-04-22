@@ -108,13 +108,15 @@ do_getTokens(Module) ->
 getTokens(Module) ->
     filter_ws(getWsTokens(Module)).
 
+%% the window is asymmetric, to allow finding number of arguments
 do_getTokenWindow(Module, Offset, Window) ->
   {ok, getTokenWindow(Module, Offset, Window)}.
 
+%% the window is asymmetric, to allow finding number of arguments
 getTokenWindow(Module, Offset, Window) ->
     T = getTokenAt(Module, Offset),
     Tp = getPrevToken(Module, T, Window),
-    Tn = getNextToken(Module, T, Window),
+    Tn = getNextToken(Module, T, Window*10),
     %%?Debug({tp, Tp}),
     %%?Debug({t, T}),
     %%    ?Debug({tn, Tn}),

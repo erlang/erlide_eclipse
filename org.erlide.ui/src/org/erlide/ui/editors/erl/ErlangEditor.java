@@ -1348,13 +1348,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
+	// the window is asymmetric, to allow finding number of arguments
 	public TokenWindow getTokenWindow(int window) {
 		final IErlScanner scanner = getScanner();
 
 		final ISelection sel = getSelectionProvider().getSelection();
 		final ITextSelection s = (ITextSelection) sel;
 
-		final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(), window);
+		final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(),
+				window);
 		return tokenWindow;
 	}
 
