@@ -1,6 +1,9 @@
-feature@org.erlide=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide
-plugin@org.erlide.launching=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide.launching
-plugin@org.erlide.help=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide.help
-plugin@org.erlide.erlc=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide.erlc
-plugin@org.erlide.debug.ui=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide.debug.ui
-plugin@org.erlide.basic=COPY,C:/Users/Vlad/Documents/erlide/trunk,org.erlide.basic
+feature@org.erlide=COPY,C:/Programs/erlide.trunk,org.erlide
+plugin@org.erlide.core=COPY,C:/Programs/erlide.trunk,org.erlide.core
+plugin@org.erlide.ui=COPY,C:/Programs/erlide.trunk,org.erlide.ui
+plugin@org.erlide.launching=COPY,C:/Programs/erlide.trunk,org.erlide.launching
+plugin@org.erlide.help=COPY,C:/Programs/erlide.trunk,org.erlide.help
+plugin@org.erlide.erlc=COPY,C:/Programs/erlide.trunk,org.erlide.erlc
+plugin@org.erlide.debug.ui=COPY,C:/Programs/erlide.trunk,org.erlide.debug.ui
+plugin@org.erlide.basic=COPY,C:/Programs/erlide.trunk,org.erlide.basic
+plugin@org.erlide.jinterface=COPY,C:/Programs/erlide.trunk,org.erlide.jinterface
