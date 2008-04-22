@@ -266,7 +266,7 @@ public class OpenAction extends SelectionDispatchAction {
 	@SuppressWarnings("boxing")
 	@Override
 	public void run() {
-		int window = 3;
+		int window = 150;
 
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
 		final TokenWindow w = fEditor.getTokenWindow(window);
