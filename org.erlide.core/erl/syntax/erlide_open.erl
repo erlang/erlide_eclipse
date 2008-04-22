@@ -107,8 +107,8 @@ open_info(L, W, ExternalModules, PathVars) ->
                             ?D(_Xx),
                             {external, {M, F, erlide_text:guess_arity(Rest),
                                         get_source_from_module(M, ExternalModules, PathVars)}};
-                        {ok, F, Rest} ->
-                            ?D(F),
+                        {ok, F, Rest}=_Zz ->
+                            ?D(_Zz),
                             {local, {F, erlide_text:guess_arity(Rest)}};
                         _ ->
                             ?D(CL),

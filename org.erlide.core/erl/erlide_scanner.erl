@@ -38,7 +38,7 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
             true ->
                 ok;
             false ->
-                CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
+		CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
                 ?D(CacheFileName),
                 RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
         		CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
@@ -65,11 +65,11 @@ do_add_cached(ScannerName, List) ->
 
 spawn_owner() ->
     case whereis(?SERVER) of
-      undefined ->
+        undefined ->
             Pid = spawn(fun loop/0),
-            erlang:register(?SERVER, Pid);
-        _ ->
-            ok
+	    erlang:register(?SERVER, Pid);
+	_ ->
+	    ok
     end.
 
 loop() ->
@@ -113,8 +113,8 @@ do_getTokenWindow(Module, Offset, Window) ->
 
 getTokenWindow(Module, Offset, Window) ->
     T = getTokenAt(Module, Offset),
-    Tp = getPrevTokenWs(Module, T, Window),
-    Tn = getNextTokenWs(Module, T, Window),
+    Tp = getPrevToken(Module, T, Window),
+    Tn = getNextToken(Module, T, Window),
     %%?Debug({tp, Tp}),
     %%?Debug({t, T}),
     %%    ?Debug({tn, Tn}),
@@ -129,6 +129,12 @@ getNextTokenWs(Module, Token) ->
     Ofs = Token#token.offset+Token#token.length,
     getTokenAt(Module, Ofs).
 
+getPrevToken(_Module, _Token, 0) ->
+    [];
+getPrevToken(Module, Token, N) ->
+    T = getPrevToken(Module, Token),
+    [T | getPrevToken(Module, T, N-1)].
+
 getPrevTokenWs(_Module, _Token, 0) ->
     [];
 getPrevTokenWs(Module, Token, N) ->
@@ -142,6 +148,12 @@ getPrevToken(Module, Token) ->
         T ->
             T
     end.
+
+getNextToken(_Module, _Token, 0) ->
+    [];
+getNextToken(Module, Token, N) ->
+    T = getNextToken(Module, Token),
+    [T | getNextToken(Module, T, N-1)].
 
 getNextTokenWs(_Module, _Token, 0) ->
     [];
