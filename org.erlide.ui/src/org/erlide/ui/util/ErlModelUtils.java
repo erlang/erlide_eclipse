@@ -248,7 +248,6 @@ public class ErlModelUtils {
 	public static void openExternalFunction(String mod, String fun, int arity,
 			String path, IProject p) throws CoreException {
 		final String modFileName = mod + ".erl";
-		ErlLogger.debug("open ex mod" + modFileName);
 		IResource r = null;
 		if (p != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,

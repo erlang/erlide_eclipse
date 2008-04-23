@@ -323,47 +323,10 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	private IErlScanner getNewScanner() {
-		// String s = initialText;
-		// initialText = null;
-		// if (s == null) {
-		// if (fFile != null) {
-		// try {
-		// s = new String(Util.getResourceContentsAsCharArray(fFile));
-		// } catch (final ErlModelException e) {
-		// s = "";
-		// }
-		// } else {
-		// s = "";
-		// }
-		// }
-		// return new ErlScanner(this, s);
 		return new ErlScanner(this, initialText);
 	}
 
 	public void fixExportedFunctions() {
-		// final List<ErlangFunction> exports = new
-		// ArrayList<ErlangFunction>(10);
-		// for (final IErlElement m : fChildren) {
-		// if (m instanceof IErlExport) {
-		// // final OtpErlangList l = (OtpErlangList) ((IErlExport) m)
-		// // .getParseTree();
-		// // for (int j = 0; j < l.arity(); ++j) {
-		// // TODO removed temporarily
-		// // try {
-		// // exports.add(new ErlangFunction((OtpErlangTuple)
-		// // l.elementAt(j)));
-		// // } catch (OtpErlangRangeException e) {
-		// // e.printStackTrace();
-		// // }
-		// // }
-		// }
-		// }
-		// for (final IErlElement m : fChildren) {
-		// if (m instanceof ErlFunction) {
-		// final ErlFunction f = (ErlFunction) m;
-		// f.setExported(exports.contains(f.getFunction()));
-		// }
-		// }
 	}
 
 	public int getLineEnd() {
