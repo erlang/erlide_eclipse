@@ -60,19 +60,19 @@ public class IndentationPreferencePage extends PreferencePage implements
 			ErlEditorMessages.IndentationPrefs_24,
 			ErlEditorMessages.IndentationPrefs_27,
 			ErlEditorMessages.IndentationPrefs_30,
-			ErlEditorMessages.IndentationPrefs_33 };
+			ErlEditorMessages.IndentationPrefs_33, "comma_nl desc",
+			"semicolon_nl desc", "dot_nl desc", "arrow_nl desc" };
 
 	private static final String INDENT_KEYS[] = new String[] {
 			"before_binary_op", "after_binary_op", "before_arrow",
 			"after_arrow", "after_unary_op", "clause", "case", "try", "catch",
-			"function_parameters", "fun", "fun_body" };
+			"function_parameters", "fun", "fun_body", "comma_nl",
+			"semicolon_nl", "dot_nl", "arrow_nl" };
 
-	private static final String ELECTRIC_COMMA_KEY = "electricComma";//$NON-NLS-1$
-
-	private static final boolean ELECTRIC_COMMA_DEFAULT = true;
+	private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
 
 	private static final int INDENT_DEFAULTS[] = new int[] { 4, 4, 2, 4, 4, 4,
-			4, 4, 4, 2, 3, 5 };
+			4, 4, 4, 2, 3, 5, 0, 0, 0, 0 };
 
 	public IndentationPreferencePage() {
 		setDescription(ErlEditorMessages.IndentationPrefs_36);
@@ -85,7 +85,7 @@ public class IndentationPreferencePage extends PreferencePage implements
 	}
 
 	List<Text> textFields = new ArrayList<Text>();
-	Button electricCommaButton;
+	List<Button> buttons = new ArrayList<Button>();
 
 	/**
 	 * Tells whether the fields are initialized.
@@ -100,7 +100,7 @@ public class IndentationPreferencePage extends PreferencePage implements
 		final Composite c = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
-		layout.marginHeight = 5;
+		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		c.setLayout(layout);
 		createMyControls(c);
@@ -112,20 +112,24 @@ public class IndentationPreferencePage extends PreferencePage implements
 		for (int i = 0; i < INDENT_FIELDS.length; ++i) {
 			final String desc = INDENT_FIELDS[i];
 			final Composite c = parent;
-			final Label label = new Label(c, SWT.NONE);
-			label.setText(desc);
-			GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			gd.horizontalIndent = 3;
-			label.setLayoutData(gd);
-			final Text text = new Text(c, SWT.BORDER | SWT.SINGLE);
-			gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			gd.widthHint = convertWidthInCharsToPixels(3);
-			text.setLayoutData(gd);
-			textFields.add(text);
-			text.addModifyListener(fNumberFieldListener);
+			if (i < N_NUMERIC_KEYS) {
+				final Label label = new Label(c, SWT.NONE);
+				label.setText(desc);
+				GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+				gd.horizontalIndent = 3;
+				label.setLayoutData(gd);
+				final Text text = new Text(c, SWT.BORDER | SWT.SINGLE);
+				gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+				gd.widthHint = convertWidthInCharsToPixels(3);
+				text.setLayoutData(gd);
+				textFields.add(text);
+				text.addModifyListener(fNumberFieldListener);
+			} else {
+				final Button button = new Button(c, SWT.CHECK);
+				button.setText(desc);
+				buttons.add(button);
+			}
 		}
-		electricCommaButton = new Button(parent, SWT.CHECK);
-		electricCommaButton.setText("Automatic newline on , ; ->");
 	}
 
 	static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
@@ -141,11 +145,15 @@ public class IndentationPreferencePage extends PreferencePage implements
 
 	private void setToPreferences() {
 		final List<Integer> l = getPreferences();
-		for (int i = 0; i < textFields.size(); ++i) {
-			final String s = Integer.toString(l.get(i));
-			textFields.get(i).setText(s);
+		for (int i = 0; i < l.size(); ++i) {
+			final int n = l.get(i);
+			if (i < N_NUMERIC_KEYS) {
+				final String s = Integer.toString(n);
+				textFields.get(i).setText(s);
+			} else {
+				buttons.get(i - N_NUMERIC_KEYS).setSelection(n != 0);
+			}
 		}
-		electricCommaButton.setSelection(getElectricCommaPrefs());
 		fieldsInitialized = true;
 	}
 
@@ -177,20 +185,17 @@ public class IndentationPreferencePage extends PreferencePage implements
 		return m;
 	}
 
-	public static boolean getElectricCommaPrefs() {
-		final Preferences node = getPrefsNode();
-		return node.getBoolean(
-				INDENT_KEY + "/" + ELECTRIC_COMMA_KEY, ELECTRIC_COMMA_DEFAULT); //$NON-NLS-1$
-	}
-
 	private void putPreferences() {
 		final Preferences node = getPrefsNode();
-		for (int i = 0; i < textFields.size(); ++i) {
-			final int n = Integer.parseInt(textFields.get(i).getText());
+		for (int i = 0; i < INDENT_KEYS.length; ++i) {
+			int n;
+			if (i < N_NUMERIC_KEYS) {
+				n = Integer.parseInt(textFields.get(i).getText());
+			} else {
+				n = buttons.get(i - N_NUMERIC_KEYS).getSelection() ? 1 : 0;
+			}
 			node.putInt(INDENT_KEY + "/" + INDENT_KEYS[i], n); //$NON-NLS-1$
 		}
-		node.putBoolean(INDENT_KEY + "/" + ELECTRIC_COMMA_KEY,
-				electricCommaButton.getSelection());
 		try {
 			node.flush();
 		} catch (final BackingStoreException e) {
@@ -203,11 +208,15 @@ public class IndentationPreferencePage extends PreferencePage implements
 	 */
 	@Override
 	protected void performDefaults() {
-		for (int i = 0; i < textFields.size(); ++i) {
-			final String s = Integer.toString(INDENT_DEFAULTS[i]);
-			textFields.get(i).setText(s);
+		for (int i = 0; i < INDENT_KEYS.length; ++i) {
+			if (i < N_NUMERIC_KEYS) {
+				final String s = Integer.toString(INDENT_DEFAULTS[i]);
+				textFields.get(i).setText(s);
+			} else {
+				buttons.get(i - N_NUMERIC_KEYS).setSelection(
+						INDENT_DEFAULTS[i] != 0);
+			}
 		}
-		electricCommaButton.setSelection(ELECTRIC_COMMA_DEFAULT);
 		super.performDefaults();
 	}
 

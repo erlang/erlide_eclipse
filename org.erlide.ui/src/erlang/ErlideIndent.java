@@ -17,15 +17,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideIndent {
 
-	// @SuppressWarnings("boxing")
-	// public static OtpErlangObject indentNextLine(final IBackend b, String
-	// txt,
-	// int tabw) throws ErlangRpcException, BackendException, RpcException {
-	// final OtpErlangObject r1 = b.rpcx("erlide_indent", "indent_next_line",
-	// "si", txt, tabw);
-	// return r1;
-	// }
-
 	private static OtpErlangList fixIndentPrefs(final Map<String, Integer> m) {
 		final OtpErlangObject[] o = new OtpErlangObject[m.size()];
 		final Iterator<Map.Entry<String, Integer>> im = m.entrySet().iterator();
@@ -40,30 +31,23 @@ public class ErlideIndent {
 		return new OtpErlangList(o);
 	}
 
-	public static int[] indentLine(final IBackend b, final String oldLine,
-			final String txt, String insertedText, final int tabw,
-			final Map<String, Integer> prefs) throws ErlangRpcException,
-			BackendException, RpcException, OtpErlangRangeException {
+	public static IndentResult indentLine(final IBackend b,
+			final String oldLine, final String txt, String insertedText,
+			final int tabw, final Map<String, Integer> prefs)
+			throws ErlangRpcException, BackendException, RpcException,
+			OtpErlangRangeException {
 		final OtpErlangObject o = b.rpcx("erlide_indent", "indent_line",
 				"sssix", txt, oldLine, insertedText, tabw,
 				fixIndentPrefs(prefs));
-
-		if (o instanceof OtpErlangTuple) {
-			final OtpErlangTuple t = (OtpErlangTuple) o;
-			final OtpErlangLong l0 = (OtpErlangLong) t.elementAt(0);
-			final OtpErlangLong l1 = (OtpErlangLong) t.elementAt(1);
-			return new int[] { l0.intValue(), l1.intValue() };
-		} else {
-			return new int[] { 0, 0 };
-		}
+		return new IndentResult(o);
 	}
 
 	public static OtpErlangObject indentLines(final IBackend b,
 			final int offset, final String text, final int tabw,
 			final Map<String, Integer> prefs) throws RpcException,
 			BackendException {
-		final OtpErlangObject res = b.rpcx("erlide_indent", "indent_lines",
+		final OtpErlangObject o = b.rpcx("erlide_indent", "indent_lines",
 				"siix", text, offset, tabw, fixIndentPrefs(prefs));
-		return res;
+		return o;
 	}
 }

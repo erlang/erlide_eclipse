@@ -29,6 +29,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import erlang.ErlideIndent;
+import erlang.IndentResult;
 
 /**
  * The erlang auto indent strategy
@@ -113,11 +114,14 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 
 			final Map<String, Integer> prefs = IndentationPreferencePage
 					.getKeysAndPrefs();
-			final int indents[] = ErlideIndent.indentLine(b, oldLine, txt,
+			final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
 					c.text, tabw, prefs);
 
-			c.text += getIndent(indents[0]);
-			c.length += indents[1];
+			if (res.addNewLine) {
+				c.text += "\n";
+			}
+			c.text += getIndent(res.indentWith);
+			c.length += res.removeNext;
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -139,29 +143,22 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		if (c.length == 0 && c.text != null) {
 			if (TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
 				autoIndentAfterNewLine(d, c);
-			} else if (IndentationPreferencePage.getElectricCommaPrefs()) {
-				if (c.text.endsWith(",")) {
-					c.text += "\n";
-					autoIndentAfterNewLine(d, c);
-				} else if (c.text.endsWith(";")) {
-					c.text += "\n";
-					autoIndentAfterNewLine(d, c);
-				} else if (c.text.endsWith(".")) {
-					c.text += "\n";
-					autoIndentAfterNewLine(d, c);
-				} else if (c.text.endsWith(">")) {
-					try {
-						if (c.offset > 0 && c.offset <= d.getLength()
-								&& d.getChar(c.offset - 1) == '-') {
-							c.text += "\n";
-							autoIndentAfterNewLine(d, c);
-						}
-					} catch (final BadLocationException e) {
-						// never mind...
+			} else if (c.text.endsWith(",")) {
+				autoIndentAfterNewLine(d, c);
+			} else if (c.text.endsWith(";")) {
+				autoIndentAfterNewLine(d, c);
+			} else if (c.text.endsWith(".")) {
+				autoIndentAfterNewLine(d, c);
+			} else if (c.text.endsWith(">")) {
+				try {
+					if (c.offset > 0 && c.offset <= d.getLength()
+							&& d.getChar(c.offset - 1) == '-') {
+						autoIndentAfterNewLine(d, c);
 					}
+				} catch (final BadLocationException e) {
+					// never mind...
 				}
 			}
 		}
 	}
-
 }
