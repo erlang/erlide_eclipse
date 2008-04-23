@@ -43,8 +43,7 @@ indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
 
 indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
     S = erlide_text:detab(St, Tablength),
-    ?D(OldLine),
-    put(b, 0),
+    ?D(put(b, 0)),
     StrippedCommandText = string:strip(CommandText, left),
     {Indent, AddNL} = check_add_newline(StrippedCommandText, Prefs),
     case Indent of
@@ -59,9 +58,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                                 _ ->
                                     N
                             end,
-                    %user_default:da(?MODULE),
                     I = indent(Tr, LineOffsets, LineN, Prefs),
-                    %user_default:ds(),
                     {I, initial_whitespace(OldLine), AddNL};
                 _  ->
                     error
@@ -107,13 +104,17 @@ indent(Tokens, LineOffsets, LineN, Prefs) ->
 		?D(P),
         I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P},
         ?D({I, LineOffsets}),
+        %user_default:da(?MODULE),
         i_form_list(Tokens, I),
+        %user_default:ds(),
         ?D(no_catch)
     catch
         throw:{indent, A, C} ->
+            %user_default:ds(),
             ?D({indent, A, C}),
             get_indent_of(A, C, LineOffsets);
         throw:{indent, N} ->
+            %user_default:ds(),
             ?D(N),
             N
     end.
@@ -141,7 +142,7 @@ do_indent_lines([], _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
     ?D({Text++Acc, Line}),
-    {NewI, _OldI} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
+    {NewI, _OldI, _AddNL} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
     NewLine = reindent_line(Line, NewI),
     ?D({NewI, _OldI, Line, NewLine}),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
@@ -241,7 +242,8 @@ i_expr_rest(R0, I, A) ->
             case is_binary_op(O) of
                 true ->
                     R1 = i_binary_op(R0, i_with(before_binary_op, I)),
-                    i_expr(R1, i_with(after_binary_op, I));
+                    {R2, _A} = i_expr(R1, i_with(after_binary_op, I)),
+                    {R2, A};
                 false ->
                     {R0, A}
             end
@@ -472,7 +474,6 @@ i_form_list(R0, I) ->
     i_form_list(R, I).
 
 i_form(R0, I) ->
-    %%?D(R0),
 	R1 = i_comments(R0, I),
     case i_sniff(R1) of
         #token{kind='-'} ->
@@ -542,13 +543,10 @@ i_clause_list(R, I) ->
     end.
      
 i_catch_clause(R0, I0) ->
-    ?D({b(), "----------------"}),
     R1 = i_comments(R0, I0),
-    ?D({b(), "----------------"}),
     R2 = i_kind(atom, R1, I0),
     R3 = i_kind(':', R2, I0),
     {R4, _A} = i_expr(R3, I0),
-    ?D({b(), "----------------"}),
     I1 = i_with(before_arrow, R1, I0),
     R5 = case i_sniff(R4) of
              #token{kind='when'} ->
@@ -558,11 +556,8 @@ i_catch_clause(R0, I0) ->
                  R4
          end,
     R6 = i_kind('->', R5, I1),
-    ?D({b(), "----------------"}),
     I2 = i_with(clause, R1, I0),
-    ?D(I2),
     R = i_expr_list(R6, I2),
-    ?D({b(), "----------------"}),
     R. 
 
 i_catch_clause_list(R, I) ->
@@ -969,6 +964,8 @@ i_sniff(L) ->
 %% tail_if([_ | Tail]) -> Tail;
 %% tail_if(L) -> L.
 
+-ifdef(DEBUG).
 b() ->
 	put(b, get(b)+1).
+-endif().
 
