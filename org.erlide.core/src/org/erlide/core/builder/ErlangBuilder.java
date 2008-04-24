@@ -332,11 +332,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		// delete beam files
 		final IFolder bf = getProject().getFolder(prefs.getOutputDir());
-		final IResource[] beams = bf.members();
-		for (final IResource element : beams) {
-			if ("beam".equals(element.getFileExtension())) {
-				element.delete(true, monitor);
+		try {
+			final IResource[] beams = bf.members();
+			for (final IResource element : beams) {
+				if ("beam".equals(element.getFileExtension())) {
+					element.delete(true, monitor);
+				}
 			}
+		} catch (CoreException e) {
 		}
 
 	}
