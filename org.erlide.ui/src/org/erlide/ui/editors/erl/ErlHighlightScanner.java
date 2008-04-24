@@ -29,8 +29,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.IColorManager;
 
-import com.ericsson.otp.erlang.OtpErlangList;
-
 import erlang.ErlideScanner;
 
 /**
@@ -261,8 +259,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			fCrtToken = -1;
 
 			final String str = document;
-			OtpErlangList l;
-			List<ErlToken> toks = ErlideScanner.lightScanString(str,
+			final List<ErlToken> toks = ErlideScanner.lightScanString(str,
 					rangeOffset);
 			fTokens = toks;
 
@@ -314,7 +311,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 		}
 
 		final ErlToken tk = fTokens.get(fCrtToken);
-		if ((tk.getKind() == null)) {
+		if (tk.getKind() == null) {
 			return ErlToken.EOF;
 		}
 		return fTokens.get(fCrtToken);
