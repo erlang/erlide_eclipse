@@ -1,5 +1,6 @@
 package erlang;
 
+
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendEvalResult;
@@ -255,34 +256,6 @@ public class ErlideBackend {
 			}
 		}
 		return "";
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 * @throws BackendException
-	 */
-	public static OtpErlangObject lightScanString(String string)
-			throws BackendException {
-		OtpErlangObject r1 = null;
-		try {
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_scan", "string", "s", string);
-		} catch (final Exception e) {
-			throw new BackendException("Could not parse string \"" + string
-					+ "\": " + e.getMessage());
-		}
-		if (r1 == null) {
-			return null;
-		}
-
-		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
-			return t1.elementAt(1);
-		}
-		throw new BackendException("Could not parse string \"" + string
-				+ "\": " + t1.elementAt(1).toString());
 	}
 
 	public static String prettyPrint(IBackend b, OtpErlangObject e)

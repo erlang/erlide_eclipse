@@ -1,5 +1,8 @@
 package erlang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
@@ -179,6 +182,49 @@ public class ErlideScanner {
 
 		}
 		return null;
+	}
+
+	/**
+	 * @param string
+	 * @param offset
+	 * @return
+	 * @throws BackendException
+	 */
+	public static List<ErlToken> lightScanString(String string, int offset)
+			throws BackendException {
+		OtpErlangObject r1 = null;
+		try {
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					"erlide_scan", "string", "s", string);
+		} catch (final Exception e) {
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": " + e.getMessage());
+		}
+		if (r1 == null) {
+			return null;
+		}
+
+		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
+
+		List<ErlToken> toks = null;
+		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+			if (t1.elementAt(1) instanceof OtpErlangList) {
+				OtpErlangList l = (OtpErlangList) t1.elementAt(1);
+				if (l != null) {
+					toks = new ArrayList<ErlToken>(l.arity() + 1);
+					for (int i = 0; i < l.arity(); i++) {
+						final OtpErlangTuple e = (OtpErlangTuple) l
+								.elementAt(i);
+						final ErlToken tk = new ErlToken(e);
+						tk.fixOffset(offset);
+						toks.add(tk);
+					}
+					return toks;
+				}
+			}
+		}
+		throw new BackendException("Could not parse string \"" + string
+				+ "\": " + t1.elementAt(1).toString());
 	}
 
 }

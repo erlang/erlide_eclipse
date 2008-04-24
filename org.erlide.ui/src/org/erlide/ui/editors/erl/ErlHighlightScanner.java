@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -31,9 +30,8 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.IColorManager;
 
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideBackend;
+import erlang.ErlideScanner;
 
 /**
  * Erlang syntax fScanner
@@ -264,20 +262,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 
 			final String str = document;
 			OtpErlangList l;
-			List<ErlToken> toks;
-			l = (OtpErlangList) ErlideBackend.lightScanString(str);
-			if (l == null) {
-				toks = null;
-			} else {
-				toks = new ArrayList<ErlToken>(l.arity() + 1);
-				for (int i = 0; i < l.arity(); i++) {
-					final OtpErlangTuple e = (OtpErlangTuple) l.elementAt(i);
-					final ErlToken tk = new ErlToken(e);
-					tk.fixOffset(rangeOffset);
-					toks.add(tk);
-				}
-			}
-
+			List<ErlToken> toks = ErlideScanner.lightScanString(str,
+					rangeOffset);
 			fTokens = toks;
 
 		} catch (final ErlangRpcException e) {
