@@ -134,9 +134,6 @@ public interface IBackend {
 	OtpErlangObject receive(int i) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
-	OtpErlangObject receiveEvent() throws OtpErlangExit,
-			OtpErlangDecodeException;
-
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 

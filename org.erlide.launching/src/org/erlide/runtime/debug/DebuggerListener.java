@@ -39,9 +39,9 @@ public class DebuggerListener {
 
 		// TODO use the new event router job!
 
-		final IErlEventHandler r = new DebuggerJob();
-		loop = new ErlEventLoop(r);
-		loop.start();
+		// final IErlEventHandler r = new DebuggerJob();
+		// loop = new ErlEventLoop(r);
+		// loop.start();
 
 	}
 
@@ -70,7 +70,7 @@ public class DebuggerListener {
 				OtpErlangDecodeException {
 			if (timeout < 0) {
 				// TODO how to handle stopping, if it's blocked in a receive?
-				return fBackend.receiveEvent();
+				return fBackend.receiveRpc(60000);
 			}
 			return fBackend.receiveRpc(timeout);
 		}

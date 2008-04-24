@@ -27,11 +27,26 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
 
-	IBackend fBackend;
+	IBackend fBackend = null;
 
 	boolean fStopJob = false;
 
-	public ErlRpcDaemon(IBackend b) {
+	private static ErlRpcDaemon instance = new ErlRpcDaemon();
+
+	public static ErlRpcDaemon getInstance() {
+		return instance;
+	}
+
+	private ErlRpcDaemon() {
+	}
+
+	public void start(IBackend b) {
+		if (fBackend != null) {
+			ErlLogger.error(
+					"Trying to start ErlRpcDaemon twice! Got '%s', had '%s'.",
+					b.getLabel(), fBackend.getLabel());
+			return;
+		}
 		fBackend = b;
 
 		BackendManager.getDefault().addBackendListener(this);

@@ -100,8 +100,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	protected IShellManager fShellManager;
 
-	private ErlRpcDaemon fRpcDaemon;
-
 	private String fCurrentVersion;
 
 	public AbstractBackend() {
@@ -183,7 +181,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		if (fShellManager instanceof IDisposable) {
 			((IDisposable) fShellManager).dispose();
 		}
-		fRpcDaemon.stop();
+		ErlRpcDaemon.getInstance().stop();
 	}
 
 	/**
@@ -494,12 +492,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			tries--;
 		} while (!ok && tries > 0);
 		if (!ok) {
-			ErlLogger
-					.error("Couldn't contact epmd - erlang backend is probably not working\n"
-							+ "  Possibly your host's entry in /etc/hosts is wrong.");
-			throw new BackendException(
-					"Couldn't contact epmd - erlang backend is probably not working\n"
-							+ "  Possibly your host's entry in /etc/hosts is wrong.");
+			String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
+					+ "  Possibly your host's entry in /etc/hosts is wrong.";
+			ErlLogger.error(msg);
+			throw new BackendException(msg);
 		}
 	}
 
@@ -510,15 +506,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			return null;
 		}
 		return mbox.receive(timeout);
-	}
-
-	public OtpErlangObject receiveEvent() throws OtpErlangExit,
-			OtpErlangDecodeException {
-		final OtpMbox eventBox = getEventBox();
-		if (eventBox != null) {
-			return eventBox.receive();
-		}
-		return null;
 	}
 
 	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
@@ -551,7 +538,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	public abstract ILaunch initialize();
 
 	public void init_erlang() {
-		fRpcDaemon = new ErlRpcDaemon(this);
+		ErlRpcDaemon.getInstance().start(this);
 		// ErlideBackend.init(this, fNode.node());
 	}
 
