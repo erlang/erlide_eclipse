@@ -8,7 +8,8 @@ Bundle-ClassPath: erlide-core.jar,
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.apache.commons.net,
+Export-Package: erlang,
+ org.apache.commons.net,
  org.apache.commons.net.bsd,
  org.erlide.core,
  org.erlide.core.builder,
