@@ -187,7 +187,6 @@ i_check_aux(_, _) ->
     not_yet.
 
 i_check(T, I) ->
-    ?D({b(), T, I}),
     case i_check_aux(T, I) of
         not_yet ->
             not_yet;
@@ -198,13 +197,18 @@ i_check(T, I) ->
 indent_by(Key, Prefs) ->
     proplists:get_value(Key, Prefs, 0).
 
+head([H | _]) -> H;
+head(H) -> H.
+
 i_with(W, I) ->
     I#i{current=indent_by(W, I#i.prefs)}.
 
-i_with(W, [A | _], I) ->
-    i_with(W, A, I);
 i_with(W, A, I) ->
-    I#i{current=indent_by(W, I#i.prefs), anchor=A}.
+    I#i{current=indent_by(W, I#i.prefs), anchor=head(A)}.
+
+i_with(W1, W2, A, I) ->
+    I#i{current=indent_by(W1, I#i.prefs)+indent_by(W2, I#i.prefs),
+        anchor=head(A)}.
 
 i_par_list(R0, I0) ->
     R1 = i_kind('(', R0, I0),
@@ -313,25 +317,51 @@ i_1_expr([#token{kind='#'} | _] = L, I) ->
     ?D(b()),
     {R, _A} = i_record_something(L, I),
     R;
-i_1_expr([#token{kind='case'}=T | R0] = R, I) ->
-    ?D(b()),
-    i_check(R, I),
-    I1 = i_with('case', I#i{anchor=T}),
-    {R1, _A} = i_expr(R0, I1),
-    R2 = i_kind('of', R1, I1),
-    R3 = i_clause_list(R2, I1),
-    i_block_end(T#token.kind, R3, I);
+i_1_expr([#token{kind='case'}=T | _] = R0, I0) ->
+    R1 = i_kind('case', R0, I0),
+    I1 = i_with('case', R0, I0),
+    {R2, _A} = i_expr(R1, I1),
+    R3 = i_kind('of', R2, I1),
+    R4 = i_clause_list(R3, I1),
+    i_block_end(T#token.kind, R4, I0);
+i_1_expr([#token{kind='if'}=T | _] = R0, I0) ->
+    R1 = i_kind('if', R0, I0),
+    I1 = i_with('case', R0, I0),
+    R2 = i_clause_list(R1, I1),
+    i_block_end(T#token.kind, R2, I0);
+i_1_expr([#token{kind='receive'}=T | _] = R0, I0) ->
+    R1 = i_kind('receive', R0, I0),
+    I1 = i_with('case', R0, I0),
+    R2 = case i_sniff(R1) of
+		     #token{kind='after'} ->
+                  R1;
+             _ ->
+                  i_clause_list(R1, I1)
+         end,
+	R4 = case i_sniff(R2) of
+			 #token{kind='after'} ->
+                 ?D(b()),
+				 R3 = i_kind('after', R2, I1),
+				 I2 = i_with('case', clause, R0, I0),
+				 i_after_clause(R3, I2);
+ 			 _ ->
+                 ?D(b()),
+				 R2
+		 end,
+    i_block_end(T#token.kind, R4, I0);
 i_1_expr([#token{kind='fun'}=T | R0], I) ->
     ?D(b()),
     I1 = i_with('fun', T, I),
-    R1 = case i_sniff(R0) of
-             #token{kind='('} ->
-                 i_fun_clause_list(R0, I1);
-             _ ->
-                 {R01, _a} = i_expr(R0, I1),
-                 R01
-         end,
-    i_kind('end', R1, I);
+    case i_sniff(R0) of
+        #token{kind='('} ->
+            R1 = i_fun_clause_list(R0, I1),
+            i_kind('end', R1, I);
+        _ ->
+            ?D(b()),
+            {R1, _A} = i_expr(R0, I1),
+            ?D(b()),
+            R1
+    end;
 i_1_expr([#token{kind='try'} | _] = R, I) ->
     i_try(R, I);
 i_1_expr(R0, I) ->
@@ -458,6 +488,7 @@ skip_comments(Rest) ->
     Rest.
 
 i_kind(Kind, R0, I) ->
+    ?D({b(), Kind, R0}),
     R1 = i_comments(R0, I),
     %i_check(R1, I),
     [#token{kind=Kind} | R2] = R1,
@@ -496,14 +527,20 @@ i_declaration(R0, I) ->
     {R, _A} = i_expr(R1, I),
     i_kind(dot, R, I).
 
-i_fun_clause(R0, I) ->
-    ?D(R0),
-    R1 = i_comments(R0, I),
-    [A | _] = R1,
-    R2 = i_par_list(R1, I),
-    R3 = i_kind('->', R2, I),
-	I1 = i_with(fun_body, A, I),
-    i_expr_list(R3, I1).
+i_fun_clause(R0, I0) ->
+    R1 = i_comments(R0, I0),
+    R2 = i_par_list(R1, I0),
+    I1 = i_with(before_arrow, R0, I0),
+    R3 = case i_sniff(R2) of
+             #token{kind='when'} ->
+                 R21 = i_kind('when', R2, I1),
+                 i_predicate_list(R21, I1);
+             _ ->
+                 R2
+         end,
+    R4 = i_kind('->', R3, I1),
+	I2 = i_with(fun_body, R1, I0),
+    i_expr_list(R4, I2).
 
 i_fun_clause_list(R, I) ->
 	?D(R),
@@ -516,9 +553,13 @@ i_fun_clause_list(R, I) ->
             R0
     end.
 
+i_after_clause(R0, I0) ->
+    {R1, _A} = i_expr(R0, I0),
+    R2 = i_kind('->', R1, I0),
+    i_expr_list(R2, I0).
+
 i_clause(R0, I) ->
     {R1, A} = i_expr(R0, I),
-    %%?D(R1),
     I1 = i_with(before_arrow, A, I),
     R2 = case i_sniff(R1) of
              #token{kind='when'} ->
@@ -965,7 +1006,10 @@ i_sniff(L) ->
 %% tail_if(L) -> L.
 
 -ifdef(DEBUG).
+
 b() ->
 	put(b, get(b)+1).
--endif().
+
+-endif.
+
 
