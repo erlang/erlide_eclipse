@@ -17,6 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideIndent {
 
+	@SuppressWarnings("boxing")
 	private static OtpErlangList fixIndentPrefs(final Map<String, Integer> m) {
 		final OtpErlangObject[] o = new OtpErlangObject[m.size()];
 		final Iterator<Map.Entry<String, Integer>> im = m.entrySet().iterator();
@@ -31,6 +32,7 @@ public class ErlideIndent {
 		return new OtpErlangList(o);
 	}
 
+	@SuppressWarnings("boxing")
 	public static IndentResult indentLine(final IBackend b,
 			final String oldLine, final String txt, String insertedText,
 			final int tabw, final Map<String, Integer> prefs)
@@ -42,6 +44,7 @@ public class ErlideIndent {
 		return new IndentResult(o);
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangObject indentLines(final IBackend b,
 			final int offset, final String text, final int tabw,
 			final Map<String, Integer> prefs) throws RpcException,

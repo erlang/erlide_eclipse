@@ -143,6 +143,7 @@ public class IndentationPreferencePage extends PreferencePage implements
 		return true;
 	}
 
+	@SuppressWarnings("boxing")
 	private void setToPreferences() {
 		final List<Integer> l = getPreferences();
 		for (int i = 0; i < l.size(); ++i) {
@@ -157,6 +158,7 @@ public class IndentationPreferencePage extends PreferencePage implements
 		fieldsInitialized = true;
 	}
 
+	@SuppressWarnings("boxing")
 	private static List<Integer> getPreferences() {
 		final List<Integer> l = new ArrayList<Integer>(INDENT_KEYS.length);
 		final Preferences node = getPrefsNode();
