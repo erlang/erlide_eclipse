@@ -19,8 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.Platform;
+
 public class ErlLogger {
 
+	private static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.launching/debug";
 	private static int minLevel = Level.FINEST.intValue();
 
 	{
@@ -146,6 +149,20 @@ public class ErlLogger {
 				}
 			}
 			return sb.toString();
+		}
+	}
+
+	public static void trace(String traceOption, String fmt, Object... args) {
+		if (!Platform.inDebugMode()) {
+			return;
+		}
+		String globalTraceValue = Platform
+				.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
+		String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/"
+				+ traceOption);
+		if (null != globalTraceValue && globalTraceValue.equals("true")
+				&& null != value && value.equals("true")) {
+			debug(fmt, args);
 		}
 	}
 
