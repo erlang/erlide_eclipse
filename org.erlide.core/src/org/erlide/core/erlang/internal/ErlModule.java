@@ -348,14 +348,8 @@ public class ErlModule extends Openable implements IErlModule {
 		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
 				+ newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
-			if (removeLength != 0) {
-				getScanner();
-				scanner.removeText(offset, removeLength);
-			}
-			if (newText.length() != 0) {
-				getScanner();
-				scanner.insertText(offset, newText);
-			}
+			getScanner();
+			scanner.replaceText(offset, removeLength, newText);
 			setIsStructureKnown(false);
 		}
 		fIgnoreNextReconcile = false;

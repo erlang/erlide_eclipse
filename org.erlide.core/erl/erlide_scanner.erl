@@ -16,7 +16,10 @@
 
 -compile(export_all).
 
--export([initialScan/4, insertText/3, removeText/3, destroy/1, mktoken/3, create/1, 
+-export([initialScan/4, 
+%%          insertText/3, removeText/3,
+         replaceText/4,
+         destroy/1, mktoken/3, create/1, 
          getTokens/1, revert_token/1, getTokenWindow/3, getTokenAt/2,
          getNextToken/2, getPrevToken/2]).
 -export([test/0]).
@@ -223,6 +226,11 @@ insertText(Module, Offset, Text) ->
        true ->
          do_insertText(Module, Offset, Text)
     end.           
+
+replaceText(Module, Offset, RemoveLength, NewText) ->
+    removeText(Module, Offset, RemoveLength),
+    insertText(Module, Offset, NewText).
+
 
 do_insertText(Module, Offset, Text) ->
     T1 = findTokenLeft(Module, Offset),
@@ -532,3 +540,13 @@ test() ->
      ],
     lists:flatten([do_test(X) || X<-Tests]).
 
+getTokensAtLine(Module, Line) ->
+     MS = ets:fun2ms(fun(#token{line=L}=T) when L == Line -> T end),
+     case ets:select(Module, MS) of
+         [X] ->
+             X;
+         [] ->
+             [];
+         A ->
+             A
+     end.

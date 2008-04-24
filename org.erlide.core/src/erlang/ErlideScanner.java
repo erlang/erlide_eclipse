@@ -32,37 +32,37 @@ public class ErlideScanner {
 		}
 	}
 
-	@SuppressWarnings("boxing")
-	public static void insertText(String module, int offset, String text) {
-		try {
-			OtpErlangObject r = BackendManager.getDefault().getIdeBackend()
-					.rpcx("erlide_scanner", "insertText", "ais", module,
-							offset + 1, text);
-			if (r instanceof OtpErlangTuple) {
-				ErlLogger.error("GOT::" + r.toString());
-			}
-		} catch (final NoBackendException e) {
-			ErlLogger.debug(e);
-		} catch (RpcException e) {
-		} catch (BackendException e) {
-		}
-	}
-
-	@SuppressWarnings("boxing")
-	public static void removeText(String module, int offset, int length) {
-		try {
-			OtpErlangObject r = BackendManager.getDefault().getIdeBackend()
-					.rpcx("erlide_scanner", "removeText", "aii", module,
-							offset + 1, length);
-			if (r instanceof OtpErlangTuple) {
-				ErlLogger.error("GOT::" + r.toString());
-			}
-		} catch (final NoBackendException e) {
-			ErlLogger.debug(e);
-		} catch (RpcException e) {
-		} catch (BackendException e) {
-		}
-	}
+	// @SuppressWarnings("boxing")
+	// public static void insertText(String module, int offset, String text) {
+	// try {
+	// final OtpErlangObject r = BackendManager.getDefault()
+	// .getIdeBackend().rpcx("erlide_scanner", "insertText",
+	// "ais", module, offset + 1, text);
+	// if (r instanceof OtpErlangTuple) {
+	// ErlLogger.error("GOT::" + r.toString());
+	// }
+	// } catch (final NoBackendException e) {
+	// ErlLogger.debug(e);
+	// } catch (final RpcException e) {
+	// } catch (final BackendException e) {
+	// }
+	// }
+	//
+	// @SuppressWarnings("boxing")
+	// public static void removeText(String module, int offset, int length) {
+	// try {
+	// final OtpErlangObject r = BackendManager.getDefault()
+	// .getIdeBackend().rpcx("erlide_scanner", "removeText",
+	// "aii", module, offset + 1, length);
+	// if (r instanceof OtpErlangTuple) {
+	// ErlLogger.error("GOT::" + r.toString());
+	// }
+	// } catch (final NoBackendException e) {
+	// ErlLogger.debug(e);
+	// } catch (final RpcException e) {
+	// } catch (final BackendException e) {
+	// }
+	// }
 
 	public static void destroy(String module) {
 		try {
@@ -184,6 +184,22 @@ public class ErlideScanner {
 		return null;
 	}
 
+	public static void replaceText(String module, int offset, int removeLength,
+			String newText) {
+		try {
+			final OtpErlangObject r = BackendManager.getDefault()
+					.getIdeBackend().rpcx("erlide_scanner", "replaceText",
+							"aiis", module, offset + 1, removeLength, newText);
+			if (r instanceof OtpErlangTuple) {
+				ErlLogger.error("GOT::" + r.toString());
+			}
+		} catch (final NoBackendException e) {
+			ErlLogger.debug(e);
+		} catch (final RpcException e) {
+		} catch (final BackendException e) {
+		}
+	}
+
 	/**
 	 * @param string
 	 * @param offset
@@ -209,7 +225,7 @@ public class ErlideScanner {
 		List<ErlToken> toks = null;
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
 			if (t1.elementAt(1) instanceof OtpErlangList) {
-				OtpErlangList l = (OtpErlangList) t1.elementAt(1);
+				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {
 					toks = new ArrayList<ErlToken>(l.arity() + 1);
 					for (int i = 0; i < l.arity(); i++) {

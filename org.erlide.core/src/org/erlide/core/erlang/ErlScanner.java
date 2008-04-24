@@ -66,33 +66,20 @@ public class ErlScanner implements IErlScanner {
 		ErlideScanner.destroy(fMod);
 	}
 
-	// public void modifyText(IDocument doc, DirtyRegion dirtyRegion) {
-	// if (doc == null) {
-	// return;
-	// }
-	// if (dirtyRegion == null) {
-	// dirtyRegion = new DirtyRegion(0, doc.getLength(),
-	// DirtyRegion.INSERT, doc.get());
-	// }
-	//
-	// if (dirtyRegion.getType() == DirtyRegion.REMOVE) {
-	// removeText(doc, dirtyRegion.getOffset() + 1, dirtyRegion
-	// .getLength());
-	// } else if (dirtyRegion.getType() == DirtyRegion.INSERT) {
-	// insertText(doc, dirtyRegion.getOffset() + 1, dirtyRegion.getText());
-	// }
+	// public void insertText(int offset, String text) {
+	// // ErlLogger.debug("scanner insert offset=" + offset + " text.length="
+	// // + text.length());
+	// ErlideScanner.insertText(fMod, offset, text);
 	// }
 
-	public void insertText(int offset, String text) {
-		// ErlLogger.debug("scanner insert offset=" + offset + " text.length="
-		// + text.length());
-		ErlideScanner.insertText(fMod, offset, text);
-	}
+	// public void removeText(int offset, int length) {
+	// // ErlLogger.debug("scanner remove offset=" + offset + " length=" +
+	// // length);
+	// ErlideScanner.removeText(fMod, offset, length);
+	// }
 
-	public void removeText(int offset, int length) {
-		// ErlLogger.debug("scanner remove offset=" + offset + " length=" +
-		// length);
-		ErlideScanner.removeText(fMod, offset, length);
+	public void replaceText(int offset, int removeLength, String newText) {
+		ErlideScanner.replaceText(fMod, offset, removeLength, newText);
 	}
 
 	public ErlToken getTokenAt(int offset) {
