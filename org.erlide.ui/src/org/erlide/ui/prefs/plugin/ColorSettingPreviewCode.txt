@@ -1,15 +1,19 @@
 %% Test module
 
 -module(test).
-
 -export([a/1, b/0]).
 
 -define(X, super).
-
 -record(state, {name}).
 
 a(Z) ->
-	Z#state.name.
+    Z#state.name.
 
-b() ->
-	?X.
+b(X) ->
+    case erlang:now() of
+        X ->
+            a(?X);
+        _ ->
+            ok
+    end.
+    

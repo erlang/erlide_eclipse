@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.preference.PreferencePage;
@@ -298,7 +299,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			if (parentElement instanceof String) {
 				final String entry = (String) parentElement;
 				if (fErlangCategory.equals(entry)) {
-					return fListModel.subList(4, fListModel.size()).toArray();
+					return fListModel.toArray();
 				}
 				// if (fEdocCategory.equals(entry)) {
 				// return fListModel.subList(0, 4).toArray();
@@ -324,20 +325,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 	}
 
 	private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
-
-	/**
-	 * Preference key suffix for italic preferences.
-	 */
 	private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
-
-	/**
-	 * Preference key suffix for strikethrough preferences.
-	 */
 	private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
-
-	/**
-	 * Preference key suffix for underline preferences.
-	 */
 	private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
 	private static final String COMPILER_TASK_TAGS = ErlangCore.COMPILER_TASK_TAGS;
@@ -347,37 +336,35 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 */
 	private final String[][] fSyntaxColorListModel = new String[][] {
 			{ PreferencesMessages.ErlEditorPreferencePage_comment,
-					PreferenceConstants.EDITOR_COMMENT_COLOR },
+					PreferenceConstants.COMMENT },
 			{ PreferencesMessages.ErlEditorPreferencePage_attribute,
-					PreferenceConstants.EDITOR_ATTRIBUTE_COLOR },
+					PreferenceConstants.ATTRIBUTE },
 			{ PreferencesMessages.ErlEditorPreferencePage_string,
-					PreferenceConstants.EDITOR_STRING_COLOR },
+					PreferenceConstants.STRING },
 			{ PreferencesMessages.ErlEditorPreferencePage_default,
-					PreferenceConstants.EDITOR_DEFAULT_COLOR },
+					PreferenceConstants.DEFAULT },
 			{ PreferencesMessages.ErlEditorPreferencePage_keyword,
-					PreferenceConstants.EDITOR_KEYWORD_COLOR },
+					PreferenceConstants.KEYWORD },
 			{ PreferencesMessages.ErlEditorPreferencePage_variable,
-					PreferenceConstants.EDITOR_VARIABLE_COLOR },
-			{ PreferencesMessages.ErlEditorPreferencePage_function,
-					PreferenceConstants.EDITOR_FUNCTION_COLOR },
+					PreferenceConstants.VARIABLE },
 			{ PreferencesMessages.ErlEditorPreferencePage_guard,
-					PreferenceConstants.EDITOR_GUARD_COLOR },
+					PreferenceConstants.GUARD },
 			{ PreferencesMessages.ErlEditorPreferencePage_macro,
-					PreferenceConstants.EDITOR_MACRO_COLOR },
+					PreferenceConstants.MACRO },
 			{ PreferencesMessages.ErlEditorPreferencePage_record,
-					PreferenceConstants.EDITOR_RECORD_COLOR },
+					PreferenceConstants.RECORD },
 			{ PreferencesMessages.ErlEditorPreferencePage_bif,
-					PreferenceConstants.EDITOR_BIF_COLOR },
+					PreferenceConstants.BIF },
 			{ PreferencesMessages.ErlEditorPreferencePage_char,
-					PreferenceConstants.EDITOR_CHAR_COLOR },
+					PreferenceConstants.CHAR },
 			{ PreferencesMessages.ErlEditorPreferencePage_atom,
-					PreferenceConstants.EDITOR_ATOM_COLOR },
+					PreferenceConstants.ATOM },
 			{ PreferencesMessages.ErlEditorPreferencePage_arrow,
-					PreferenceConstants.EDITOR_ARROW_COLOR },
+					PreferenceConstants.ARROW },
 			{ PreferencesMessages.ErlEditorPreferencePage_integer,
-					PreferenceConstants.EDITOR_INTEGER_COLOR },
+					PreferenceConstants.INTEGER },
 			{ PreferencesMessages.ErlEditorPreferencePage_float,
-					PreferenceConstants.EDITOR_FLOAT_COLOR }
+					PreferenceConstants.FLOAT }
 
 	};
 
@@ -499,6 +486,19 @@ public class ColoringPreferencePage extends PreferencePage implements
 		handleSyntaxColorListSelection();
 
 		fPreviewViewer.invalidateTextPresentation();
+	}
+
+	@Override
+	public boolean performOk() {
+		IPreferenceStore store = getPreferenceStore();
+		if (store instanceof IPersistentPreferenceStore) {
+			try {
+				((IPersistentPreferenceStore) store).save();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return super.performOk();
 	}
 
 	@Override
@@ -701,7 +701,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 		label = new Label(colorComposite, SWT.LEFT);
 		label.setText(PreferencesMessages.ErlEditorPreferencePage_preview);
-		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		final Control previewer = createPreviewer(colorComposite);
 		gd = new GridData(GridData.FILL_BOTH);
@@ -843,11 +843,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 		fPreviewViewer.setEditable(false);
 
 		final String content = loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
-		@SuppressWarnings("unused")
 		final IDocument document = new Document(content);
-
-		// FIXME
-		// fPreviewViewer.setDocument(document);
+		fPreviewViewer.setDocument(document);
 
 		return fPreviewViewer.getControl();
 	}

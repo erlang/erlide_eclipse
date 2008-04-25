@@ -12,6 +12,8 @@ package org.erlide.ui.editors.erl;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
@@ -36,37 +38,38 @@ import erlang.ErlideScanner;
  * 
  * @author Eric Merritt
  */
-public class ErlHighlightScanner implements ITokenScanner {
+public class ErlHighlightScanner implements ITokenScanner,
+		IPreferenceChangeListener {
 
-	private final Token t_def;
+	private Token t_def;
 
-	private final Token t_atom;
+	private Token t_atom;
 
-	private final Token t_attribute;
+	private Token t_attribute;
 
-	private final Token t_string;
+	private Token t_string;
 
-	private final Token t_keyword;
+	private Token t_keyword;
 
-	private final Token t_var;
+	private Token t_var;
 
-	private final Token t_char;
+	private Token t_char;
 
-	private final Token t_arrow;
+	private Token t_arrow;
 
-	private final Token t_guard;
+	private Token t_guard;
 
-	private final Token t_bif;
+	private Token t_bif;
 
-	private final Token t_macro;
+	private Token t_macro;
 
-	private final Token t_record;
+	private Token t_record;
 
-	private final Token t_integer;
+	private Token t_integer;
 
-	private final Token t_float;
+	private Token t_float;
 
-	private final Token t_comment;
+	private Token t_comment;
 
 	private final IColorManager fColorManager;
 
@@ -90,6 +93,11 @@ public class ErlHighlightScanner implements ITokenScanner {
 		final IPreferenceStore store = ErlideUIPlugin.getDefault()
 				.getPreferenceStore();
 
+		updateTokenColors(store);
+
+	}
+
+	private void updateTokenColors(final IPreferenceStore store) {
 		t_attribute = new Token(fColorManager == null ? null
 				: new TextAttribute(fColorManager.getColor(PreferenceConverter
 						.getColor(store, PreferenceConstants.ATTRIBUTE)), null,
@@ -150,7 +158,6 @@ public class ErlHighlightScanner implements ITokenScanner {
 		t_comment = new Token(fColorManager == null ? null : new TextAttribute(
 				fColorManager.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.COMMENT)), null, SWT.NORMAL));
-
 	}
 
 	public IToken convert(ErlToken tk) {
@@ -315,6 +322,12 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return ErlToken.EOF;
 		}
 		return fTokens.get(fCrtToken);
+	}
+
+	public void preferenceChange(PreferenceChangeEvent event) {
+		final IPreferenceStore store = ErlideUIPlugin.getDefault()
+				.getPreferenceStore();
+		updateTokenColors(store);
 	}
 
 }
