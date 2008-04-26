@@ -5,4 +5,4 @@ external_includes=
 use_pathz=true
 include_dirs=include
 backend_name=
-source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax
+source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing
