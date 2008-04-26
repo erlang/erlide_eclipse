@@ -25,7 +25,7 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
-			IResource resource = delta.getResource();
+			final IResource resource = delta.getResource();
 			switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
 				// handle added resource
@@ -61,12 +61,13 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		if (kind == FULL_BUILD) {
 			fullBuild(monitor);
 		} else {
-			IResourceDelta delta = getDelta(getProject());
+			final IResourceDelta delta = getDelta(getProject());
 			if (delta == null) {
 				fullBuild(monitor);
 			} else {
@@ -97,12 +98,13 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 				// .toPortableString();
 				// String destPath = srcPath;
 				// String className = srcPath;
-				ClassPool pool = ClassPool.getDefault();
+				final ClassPool pool = ClassPool.getDefault();
 				try {
-					CtClass cc = pool.get("org.erlide.devtools.otp.Erlang");
+					final CtClass cc = pool
+							.get("org.erlide.devtools.otp.Erlang");
 					process(cc);
 					cc.writeFile();
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					System.err.println("ERR: " + e.getClass().getName()
 							+ " -- " + e.getMessage());
 				}
@@ -120,7 +122,7 @@ public class JavaErlangBridgeBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		try {
 			getProject().accept(new SampleResourceVisitor());
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 		}
 	}
 
