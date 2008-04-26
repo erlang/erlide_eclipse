@@ -10,6 +10,7 @@
 package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -58,8 +59,14 @@ public class ErlProjectPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		final Object prj = getElement();
-		prefs = new ErlangProjectProperties((IProject) prj);
+		final Object oprj = getElement();
+		IProject prj = null;
+		if (oprj instanceof IProject) {
+			prj = (IProject) oprj;
+		} else if (oprj instanceof IAdaptable) {
+			prj = (IProject) ((IAdaptable) oprj).getAdapter(IProject.class);
+		}
+		prefs = new ErlangProjectProperties(prj);
 		mockPrefs = new MockupPreferenceStore();
 		mockPrefs.addPropertyChangeListener(this);
 
