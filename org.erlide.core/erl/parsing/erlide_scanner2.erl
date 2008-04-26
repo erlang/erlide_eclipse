@@ -7,6 +7,8 @@
 %% Include files
 %%
 
+%-define(DEBUG, 1).
+
 -include("erlide.hrl").
 
 %%
@@ -19,7 +21,7 @@
 %% API Functions
 %%
 
-%-define(DEBUG, 1).
+-define(CACHE_VERSION, 2). %% odd numbers for scanner, even numbers for scanner2
 
 -define(SERVER, ?MODULE).
 
@@ -77,6 +79,14 @@ modules() ->
     ?SERVER ! {modules, self()},
     receive
         {modules, _Pid, Result} ->
+            Result
+    end.
+
+dump_module(Module) ->
+    spawn_server(),
+    ?SERVER ! {dump_module, self(), Module},
+    receive
+        {dump_module, _Pid, Result} ->
             Result
     end.
 
@@ -222,6 +232,14 @@ loop(Modules) ->
         {modules, From} ->
             From ! {modules, self(), Modules},
             ?MODULE:loop(Modules);
+		{dump_module, From, Mod} ->
+            case lists:keysearch(Mod, #module.name, Modules) of
+                {value, Module} ->
+                    From ! {dump_module, self(), Module};
+                false ->
+                    From ! {dump_module, self(), module_not_found}
+            end,
+            ?MODULE:loop(Modules);
         {get_token_at, From, Mod, Offset} ->
             case lists:keysearch(Mod, #module.name, Modules) of
                 {value, Module} ->
@@ -268,7 +286,12 @@ loop(Modules) ->
             ?MODULE:loop(Modules)
     end.
 
-initial_scan(ScannerName, _ModuleFileName, InitialText, _StateDir) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
+    CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
+    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
+    erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
+
+do_scan(ScannerName, InitialText) ->
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.

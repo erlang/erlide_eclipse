@@ -19,6 +19,8 @@
 %-define(SCANNER, erlide_scanner).
 -define(SCANNER, erlide_scanner2).
 
+-define(CACHE_VERSION, 1).
+
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
@@ -33,7 +35,7 @@ initial_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
 		Renew = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitalText, StateDir) end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, Renew),
+		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, Renew),
         {ok, Res}
     catch
         error:Reason ->

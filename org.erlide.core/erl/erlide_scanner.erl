@@ -29,6 +29,8 @@
 
 %%-define(DEBUG, 1).
 
+-define(CACHE_VERSION, 1). %% odd numbers for scanner, even numbers for scanner2
+
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
@@ -45,7 +47,7 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
                 ?D(CacheFileName),
                 RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
                 CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
-                erlide_util:check_cached(ModuleFileName, CacheFileName, RenewFun, CacheFun)
+                erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun)
         end
     catch
         error:Reason ->

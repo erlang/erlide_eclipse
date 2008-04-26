@@ -17,6 +17,8 @@
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
+-define(CACHE_VERSION, 1).
+
 %% recursively return tags for which Fun returns true
 %%
 %% recu_find_tags(L, Fun) ->
@@ -410,7 +412,7 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
 		?D({DocFileName, IndexFileName, Renew}),
-        Doc = erlide_util:check_cached(DocFileName, IndexFileName, Renew),
+        Doc = erlide_util:check_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
         ?D({doc, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)

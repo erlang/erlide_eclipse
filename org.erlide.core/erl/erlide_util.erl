@@ -16,89 +16,61 @@
 %% Exported Functions
 %%
 %% -export([newer_file/2]).
--export([check_cached/3, check_cached/4]).
+-export([check_cached/4, check_cached/5]).
 
 %%
 %% API Functions
 %%
 
-%% newer_file(F1, F2) when is_list(F1), is_list(F2) ->
-%%     case file:read_file_info(F1) of
-%%         {ok, Info1} ->
-%%             case file:read_file_info(F2) of
-%%                 {ok, Info2} ->
-%%                     ?D({Info1#file_info.mtime, Info2#file_info.mtime, Info1#file_info.mtime > Info2#file_info.mtime}),
-%%                     Info1#file_info.mtime > Info2#file_info.mtime;
-%%                 _ ->
-%%                     true
-%%             end;
-%%         _ ->
-%%             false
-%%     end;
-%% newer_file(Module, F2) when is_atom(Module) ->
-%%     case lists:keysearch(time, 1, Module:module_info(compile)) of
-%%         {value, time, ModTime} ->
-%%             case file:read_file_info(F2) of
-%%                 {ok, Info2} ->
-%%                     ModTime > Info2#file_info.mtime;
-%%                 _ ->
-%%                     true
-%%             end;
-%%         _ ->
-%%             false
-%%     end.
+check_cached(SourceFileName, CacheFileName, Version, RenewFun) ->
+    check_cached(SourceFileName, CacheFileName, Version, RenewFun, fun(D) -> D end).
 
-%% check_cached(SourceFileName, CacheFileName, Renew) ->
-%%     case erlide_util:newer_file(SourceFileName, CacheFileName)
-%%          orelse erlide_util:newer_file(?MODULE, CacheFileName) of
-%%         true ->
-%%             renew_cache(SourceFileName, CacheFileName, Renew);
-%%         _ ->
-%%             read_cache(CacheFileName)
-%%     end.
-
-check_cached(SourceFileName, CacheFileName, RenewFun) ->
-    check_cached(SourceFileName, CacheFileName, RenewFun, fun(D) -> D end).
-
-check_cached(SourceFileName, CacheFileName, RenewFun, CacheFun) ->
+check_cached(SourceFileName, CacheFileName, Version, RenewFun, CacheFun) ->
     {ok, Info} = file:read_file_info(SourceFileName),
     SourceModDate = Info#file_info.mtime,
-    case read_cache_date(CacheFileName) of
-        SourceModDate ->
+    case read_cache_date_and_version(CacheFileName) of
+        {SourceModDate, Version} ->
             read_cache(CacheFileName, CacheFun);
         _ ->
-            renew_cache(SourceFileName, SourceModDate, CacheFileName, RenewFun)
+            renew_cache(SourceFileName, SourceModDate, Version, CacheFileName, RenewFun)
     end.
 
 %%
 %% Local Functions
 %%
 
-renew_cache(SourceFileName, SourceFileModDate, CacheFileName, RenewFun) ->
+renew_cache(SourceFileName, SourceFileModDate, Version, CacheFileName, RenewFun) ->
+    ?D({SourceFileModDate, CacheFileName, Version}),
     BinDate = date_to_bin(SourceFileModDate),
+    ?D({Version, BinDate}),
     T = RenewFun(SourceFileName),
+    %?D(T),
     B = term_to_binary(T),
-    file:delete(CacheFileName),
-    file:write_file(CacheFileName, <<BinDate/binary, B/binary>>),
+    ?D({Version, B}),
+    _Delete = file:delete(CacheFileName),
+    ?D({Version, _Delete}),
+    _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>),
+    ?D({Version, _Write}),
     T.
 
-bin_to_date(<<Y:16/integer-big, Mo, D, H, M, S>>) ->
-    {{Y, Mo, D}, {H, M, S}}.
+bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
+    {{Y, Mo, D}, {H, M, S*2}}.
 date_to_bin({{Y, Mo, D}, {H, M, S}}) ->
-    <<Y:16/integer-big, Mo, D, H, M, S>>.
+    <<Y:15/integer-big, Mo:4, D:5, H:5, M:6, (S div 2):5>>.
 
-read_cache_date(CacheFileName) ->
+read_cache_date_and_version(CacheFileName) ->
     case file:open(CacheFileName, [read, binary]) of
         {ok, F} ->
-            {ok, BinDate} = file:read(F, 7),
+            {ok, BinDateAndVersion} = file:read(F, 7),
             file:close(F),
-            bin_to_date(BinDate);
+            <<BinDate:5/binary, Version:16/integer-big>> = BinDateAndVersion,
+            {bin_to_date(BinDate), Version};
         _ ->
-            {{0, 0, 0}, {0, 0, 0}}
+            {{{0, 0, 0}, {0, 0, 0}}, 0}
     end.
 
 read_cache(CacheFileName, CacheFun) ->
     {ok, B} = file:read_file(CacheFileName),
-    <<_:7/binary, BinTerm/binary>> = B,
+    <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     CacheFun(binary_to_term(BinTerm)).
 
