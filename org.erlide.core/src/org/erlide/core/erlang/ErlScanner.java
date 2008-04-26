@@ -27,7 +27,7 @@ public class ErlScanner implements IErlScanner {
 
 	private final String fMod;
 
-	private final static boolean UseScanner2 = true;
+	private final static boolean UseScanner2 = false;
 
 	public ErlScanner(IErlModule module, String initialText) {
 		fModule = module;

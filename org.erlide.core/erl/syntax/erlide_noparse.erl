@@ -16,8 +16,8 @@
 
 %-define(DEBUG, 1).
 
-%-define(SCANNER, erlide_scanner).
--define(SCANNER, erlide_scanner2).
+-define(SCANNER, erlide_scanner).
+%-define(SCANNER, erlide_scanner2).
 
 -define(CACHE_VERSION, 1).
 

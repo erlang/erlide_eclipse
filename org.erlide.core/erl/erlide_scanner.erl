@@ -116,7 +116,7 @@ do_getTokenWindow(Module, Offset, Window) ->
 getTokenWindow(Module, Offset, Window) ->
     T = getTokenAt(Module, Offset),
     Tp = getPrevToken(Module, T, Window),
-    Tn = getNextToken(Module, T, Window*10),
+    Tn = getNextToken(Module, T, Window+10),
     %%?Debug({tp, Tp}),
     %%?Debug({t, T}),
     %%    ?Debug({tn, Tn}),
@@ -228,11 +228,10 @@ replaceText(Module, Offset, RemoveLength, NewText) ->
     removeText(Module, Offset, RemoveLength),
     insertText(Module, Offset, NewText).
 
-
 do_insertText(Module, Offset, Text) ->
     T1 = findTokenLeft(Module, Offset),
     T2 = getTokenAt(Module, Offset),
-        {Ofs, L, XL, Text2} = case {T1, T2} of
+    {Ofs, L, XL, Text2} = case {T1, T2} of
                               {#token{kind=eof}, #token{kind=eof}} ->
                                   {T1#token.offset, T1#token.line, 0, Text};
                               {T1, #token{kind=eof}} ->
@@ -253,7 +252,7 @@ do_insertText(Module, Offset, Text) ->
                                   ets:delete(Module, T2#token.offset),
                                   {T1#token.offset, T1#token.line, nl(T1)+nl(T2), get_text(T1)++Text++get_text(T2)}
                           end,
-    %% update offsets of tokens following the insertion point
+	%% update offsets of tokens following the insertion point
     {ok, Tks0, {LL, _LO}} = erlide_scan:string_ws(Text2++"\n"),
     Tks = lists:reverse(tl(lists:reverse(Tks0))),
     update_after(Module, Ofs, length(Text), LL-XL-2),
@@ -276,7 +275,7 @@ removeText(Module, Offset, Length) ->
 do_removeText(Module, Offset, Length) ->
     T1 = findTokenLeft(Module, Offset),
     T2 = getTokenAt(Module, Offset+Length),
-    %%io:format("R> ~p ~p::~n >  ~p~n >  ~p~n", [Offset, Length, T1, T2]),
+    %%erlide_log:logp("R> ~p ~p::~n >  ~p~n >  ~p~n", [Offset, Length, T1, T2]),
     %% split T1 and T2 texts, remove all between T1 and T2, rescan and insert T1'+T2'
     {_Ofs, DeletedLines, NewText} = case {T1, T2} of
                {#token{kind=eof}, #token{kind=eof}} ->
@@ -351,16 +350,20 @@ fix(Module, Tok, DOfs, DL) ->
     ets:delete_object(Module, Tok),
     ets:insert(Module, Tok#token{offset = Ofs + DOfs, line=LL + DL}).
 
-mktoken({K, {{L, O}, G}}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
+mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
 mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
     #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
+mktoken({K, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
 mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
 mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
 
 revert_token(#token{text=undefined, value=undefined}=T) ->
+    {T#token.kind, {{T#token.line, T#token.offset}, T#token.length}};
+revert_token(#token{kind=dot}=T) ->
     {T#token.kind, {{T#token.line, T#token.offset}, T#token.length}};
 revert_token(#token{text=undefined}=T) ->
     {T#token.kind, {{T#token.line, T#token.offset}, T#token.length}, T#token.value};
@@ -507,6 +510,9 @@ test() ->
      
      {"12", {insert, 2, "+"}, ok},
      {"aabb", {insert, 3, " "}, ok},
+     {"aa. ff", {insert, 3, "m"}, ok},
+     {"aa. ff", {insert, 4, "m"}, ok},
+     {"aa. ff", {insert, 5, "m"}, ok},
      
      {"a\"a b\"b", {insert, 1, "x\"y\""}, ok},
      {"a\"a b\"b", {insert, 2, "x\"y\""}, ok},
