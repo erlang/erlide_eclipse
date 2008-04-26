@@ -296,8 +296,13 @@ public class ErlangConsoleView extends ViewPart implements
 					// else {
 					// navIndex = history.size() - 1;
 					// }
-					consoleInput.setText(history.get(navIndex));
-					consoleInput.setSelection(consoleInput.getText().length());
+					if (history.size() > navIndex) {
+						consoleInput.setText(history.get(navIndex));
+						consoleInput.setSelection(consoleInput.getText()
+								.length());
+					} else {
+						consoleInput.setText("");
+					}
 				} else if (e.keyCode == SWT.ARROW_DOWN && historyMode) {
 					// if (navIndex < history.size() - 1) {
 					// navIndex++;
@@ -614,7 +619,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 			final ContentAssistant asst = new ContentAssistant();
 
-			// TODO vi vill ha in en punkt hŠr, men den fŒr return till styledtext o skickar allt fšr tidigt...
+			// TODO vi vill ha in en punkt hŠr, men den fŒr return till
+			// styledtext o skickar allt fšr tidigt...
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(""),
 					IDocument.DEFAULT_CONTENT_TYPE);
 
