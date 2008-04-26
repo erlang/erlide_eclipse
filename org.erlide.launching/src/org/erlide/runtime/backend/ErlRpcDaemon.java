@@ -107,7 +107,8 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 
 	public void rpcEvent(String id, OtpErlangObject event) {
 		if ("log".equals(id)) {
-			ErlLogger.debug("%s: %s", id, event.toString());
+			OtpErlangTuple t = (OtpErlangTuple) event;
+			ErlLogger.debug("%s", t.elementAt(1).toString());
 		} else if ("erlang_log".equals(id)) {
 			final OtpErlangTuple t = (OtpErlangTuple) event;
 			final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);

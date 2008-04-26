@@ -22,7 +22,7 @@ log(Msg) ->
     log(?DEFAULT_LEVEL, Msg).
 
 logp(Msg) ->
-    logp("~n~p", [Msg]).
+    logp("~p", [Msg]).
 
 logp(Fmt, Msgs) ->
     log(?DEFAULT_LEVEL, lists:flatten(io_lib:format(Fmt, Msgs))).

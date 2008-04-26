@@ -511,10 +511,10 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	public OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
 		final OtpMbox eventBox = getEventBox();
-		if (eventBox != null) {
-			return eventBox.receive(timeout);
+		if (eventBox == null) {
+			return null;
 		}
-		return null;
+		return eventBox.receive(timeout);
 	}
 
 	public IShellManager getShellManager() {
