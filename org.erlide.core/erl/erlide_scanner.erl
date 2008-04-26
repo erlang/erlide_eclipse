@@ -37,29 +37,24 @@
 initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
     ?D({ScannerName, ModuleFileName, StateDir}),
     try
-    	case isScanned(ScannerName) of
+        case isScanned(ScannerName) of
             true ->
                 ok;
             false ->
-		CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
+                CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
                 ?D(CacheFileName),
                 RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
-        		CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
-				erlide_util:check_cached(ModuleFileName, CacheFileName, RenewFun, CacheFun)
-%%                 do_scan(ScannerName, InitialText)
-        end,
-        do_getTokens(ScannerName)
+                CacheFun = fun(B) -> do_add_cached(ScannerName, B) end,
+                erlide_util:check_cached(ModuleFileName, CacheFileName, RenewFun, CacheFun)
+        end
     catch
         error:Reason ->
             {error, Reason}
     end.
 
 do_scan(ScannerName, InitialText) ->
-    ?D(ScannerName),
     create(ScannerName),
-    ?D(b),
     insertText(ScannerName, 1, InitialText),
-    ?D(i),
     ets:tab2list(ScannerName).
 
 do_add_cached(ScannerName, List) ->

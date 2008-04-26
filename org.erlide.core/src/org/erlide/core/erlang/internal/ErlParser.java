@@ -112,6 +112,8 @@ public class ErlParser {
 				.createScannerModuleName(module);
 		try {
 			OtpErlangTuple res = null;
+			ErlLogger.debug("parse " + module.getName() + " init len "
+					+ initialText.length() + " initialParse " + initialParse);
 			if (initialParse) {
 				final IResource resource = module.getResource();
 				final String moduleFileName = resource.getLocation().toString();

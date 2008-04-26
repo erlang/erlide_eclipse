@@ -16,6 +16,9 @@
 
 %-define(DEBUG, 1).
 
+%-define(SCANNER, erlide_scanner).
+-define(SCANNER, erlide_scanner2).
+
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
@@ -48,7 +51,7 @@ reparse(ScannerName) ->
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     ?Info({noparse, ScannerName}),
-    {ok, Toks} = scan(ScannerName, ModuleFileName, InitalText, StateDir),
+    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir),
     ?D(Toks),
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
@@ -172,27 +175,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 %%     end,
 scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
     ?D(ets:info(ScannerName)),
-    S = erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
+    ?SCANNER:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
+    S = ?SCANNER:getTokens(ScannerName),
     ?D(ets:info(ScannerName)),
     S.
-
-%% %% fixa in line-offset i tokens
-%% %% invariant: first-line-offset alltid =< tokenoffset
-%% %% offset ut ett-baserat (som tokens)
-%% fix_tokens_w_line_offset(Toks, S) ->
-%%     L = lists:reverse(erlide_text:split_lines(S)),
-%%     [{FirstLineOffset, _} | Rest] = L,
-%%     fix_twlo(Toks, Rest, FirstLineOffset, []).
-
-%% fix_twlo([], _, _, Acc) ->    
-%%     lists:reverse(Acc);
-%% fix_twlo([T = #token{offset=TOffset} | TRest], [], CurLOffset, Acc) ->
-%%     fix_twlo(TRest, [], CurLOffset, [{TOffset - CurLOffset, T} | Acc]);
-%% fix_twlo([#token{offset=TOffset} | _] = Tokens, [{LOffset, _} | LRest], _, Acc)
-%%   when TOffset >= LOffset ->
-%%     fix_twlo(Tokens, LRest, LOffset, Acc);
-%% fix_twlo([T = #token{offset=TOffset} | TRest], Lines, CurLOffset, Acc) ->
-%%     fix_twlo(TRest, Lines, CurLOffset, [{TOffset - CurLOffset, T} | Acc]).
 
 extract_comments(Tokens) ->
     extract_comments(Tokens, -1, [], []).

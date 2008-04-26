@@ -14,18 +14,18 @@ import org.erlide.runtime.IDisposable;
 
 public interface IErlScanner extends IDisposable {
 
+	// ErlToken[] getTokens();
+
+	// the window is asymmetric, to allow finding number of arguments
+	TokenWindow getTokenWindow(int offset, int window);
+
 	ErlToken getTokenAt(int offset);
 
-	ErlToken[] getTokensAround(int offset);
+	// ErlToken[] getTokensAround(int offset);
 
 	// public void removeText(int offset, int length);
 	// public void insertText(int offset, String text);
 
 	public void replaceText(int offset, int removeLength, String newText);
-
-	ErlToken[] getTokens();
-
-	// the window is asymmetric, to allow finding number of arguments
-	TokenWindow getTokenWindow(int offset, int window);
 
 }

@@ -125,7 +125,7 @@ public class ErlModelManager implements IErlModelManager {
 	protected Map<IErlElement, IErlElement> elementsOutOfSynchWithBuffers = new HashMap<IErlElement, IErlElement>(
 			11);
 
-	public static boolean verbose = true;
+	public static boolean verbose = !true;
 
 	/**
 	 * Turns delta firing on/off. By default it is on.
