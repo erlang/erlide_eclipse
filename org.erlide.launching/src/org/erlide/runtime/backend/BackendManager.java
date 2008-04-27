@@ -94,7 +94,8 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public IBackend createManaged(String name, boolean debug) {
-		ErlLogger.debug("create managed backend '" + name + "'.");
+		ErlLogger.debug("create managed backend '" + name + "'."
+				+ Thread.currentThread());
 
 		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);
@@ -136,7 +137,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public IBackend get(IProject project) {
 		synchronized (fProjectBackendsLock) {
-
+			ErlLogger.debug("** connect: " + project.getName() + " "
+					+ Thread.currentThread());
+			// Thread.dumpStack();
 			final String name = getBackendName(project);
 			if (name.equals(DEFAULT_BACKEND_LABEL)) {
 				return fLocalBackend;
@@ -198,6 +201,8 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public synchronized IBackend getIdeBackend() {
+		ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
+		// Thread.dumpStack();
 		if (fLocalBackend == null) {
 			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false);
 		}
