@@ -404,6 +404,9 @@ public final class BackendManager implements IResourceChangeListener {
 		if (!isDeveloper()) {
 			return;
 		}
+		if (fLocalBackend == null) {
+			return;
+		}
 
 		try {
 			final String[] names = OtpEpmd.lookupNames();
