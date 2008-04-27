@@ -126,7 +126,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	}
 
 	protected void doConnect(String label, String cookie) {
-		ErlLogger.debug("connect to :: " + label);
+		ErlLogger
+				.debug("connect to :: " + label + " " + Thread.currentThread());
 		try {
 			wait_for_epmd();
 
