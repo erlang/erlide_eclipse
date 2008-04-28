@@ -6,9 +6,9 @@ Bundle-Version: 0.3.49.qualifier
 Bundle-Activator: org.erlide.basicui.ErlideBasicUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
+ org.eclipse.ui,
  org.eclipse.ui.views
 Eclipse-LazyStart: true
 Export-Package: com.novocode.naf.swt.custom,

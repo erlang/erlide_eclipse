@@ -34,38 +34,6 @@ public class ErlideScanner {
 		}
 	}
 
-	// @SuppressWarnings("boxing")
-	// public static void insertText(String module, int offset, String text) {
-	// try {
-	// final OtpErlangObject r = BackendManager.getDefault()
-	// .getIdeBackend().rpcx("erlide_scanner", "insertText",
-	// "ais", module, offset + 1, text);
-	// if (r instanceof OtpErlangTuple) {
-	// ErlLogger.error("GOT::" + r.toString());
-	// }
-	// } catch (final NoBackendException e) {
-	// ErlLogger.debug(e);
-	// } catch (final RpcException e) {
-	// } catch (final BackendException e) {
-	// }
-	// }
-	//
-	// @SuppressWarnings("boxing")
-	// public static void removeText(String module, int offset, int length) {
-	// try {
-	// final OtpErlangObject r = BackendManager.getDefault()
-	// .getIdeBackend().rpcx("erlide_scanner", "removeText",
-	// "aii", module, offset + 1, length);
-	// if (r instanceof OtpErlangTuple) {
-	// ErlLogger.error("GOT::" + r.toString());
-	// }
-	// } catch (final NoBackendException e) {
-	// ErlLogger.debug(e);
-	// } catch (final RpcException e) {
-	// } catch (final BackendException e) {
-	// }
-	// }
-
 	public static void destroy(String module) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
