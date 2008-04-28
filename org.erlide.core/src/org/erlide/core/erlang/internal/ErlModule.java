@@ -176,9 +176,9 @@ public class ErlModule extends Openable implements IErlModule {
 		return fFile;
 	}
 
-	public String getSource() throws ErlModelException {
-		return ""; // return getBuffer().getContents();
-	}
+	// public String getSource() throws ErlModelException {
+	// return ""; // return getBuffer().getContents();
+	// }
 
 	public ISourceRange getSourceRange() throws ErlModelException {
 		return new SourceRange(0, 0);

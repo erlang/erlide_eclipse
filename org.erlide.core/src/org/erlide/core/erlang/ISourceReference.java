@@ -51,8 +51,7 @@ public interface ISourceReference {
 	 *                if an exception occurs while accessing its corresponding
 	 *                resource
 	 */
-	String getSource() throws ErlModelException;
-
+	// String getSource() throws ErlModelException;
 	/**
 	 * Returns the source range associated with this element.
 	 * <p>
