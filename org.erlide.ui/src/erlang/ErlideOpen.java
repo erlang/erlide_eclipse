@@ -47,4 +47,12 @@ public class ErlideOpen {
 		return res;
 	}
 
+	public static OtpErlangObject open(final IBackend b, String scannerName,
+			int offset, String externalModules, List<OtpErlangTuple> pathVars)
+			throws RpcException, BackendException {
+		final OtpErlangObject res = b.rpcx("erlide_open", "open", "aislx",
+				scannerName, offset, externalModules, pathVars);
+		return res;
+	}
+
 }

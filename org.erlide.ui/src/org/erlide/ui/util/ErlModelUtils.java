@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -156,9 +157,8 @@ public class ErlModelUtils {
 	 */
 	public static boolean openPreprocessorDef(IProject project,
 			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.Kind type, List<IErlModule> modulesDone,
-			IPathVariableManager pvm) throws CoreException, ErlModelException,
-			PartInitException {
+			final IErlElement.Kind type, List<IErlModule> modulesDone)
+			throws CoreException, ErlModelException, PartInitException {
 		if (m == null) {
 			return false;
 		}
@@ -177,7 +177,7 @@ public class ErlModelUtils {
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(s);
 						} else {
-							s = findIncludeFile(project, s, pvm);
+							s = findIncludeFile(project, s);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
@@ -188,7 +188,7 @@ public class ErlModelUtils {
 					m = getModule((IFile) re);
 					if (m != null && !modulesDone.contains(m)) {
 						if (openPreprocessorDef(project, page, m, definedName,
-								type, modulesDone, pvm)) {
+								type, modulesDone)) {
 							return true;
 						}
 					}
@@ -212,12 +212,11 @@ public class ErlModelUtils {
 	 *            the project with include dirs
 	 * @param filePath
 	 *            the path to the include file
-	 * @param pvm
-	 *            The global IPathVariableManager of the workbench
 	 * @return the path to the include file
 	 */
-	public static String findIncludeFile(IProject project, String filePath,
-			IPathVariableManager pvm) {
+	public static String findIncludeFile(IProject project, String filePath) {
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		for (final String includeDir : prefs.getIncludeDirs()) {

@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,6 +26,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.OpenStrategy;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -37,11 +37,11 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.TokenWindow;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.backend.BackendManager;
@@ -52,7 +52,6 @@ import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -77,6 +76,7 @@ public class OpenAction extends SelectionDispatchAction {
 
 	private ErlangEditor fEditor;
 	private String fExternalModules;
+	private List<OtpErlangTuple> pathVars;
 
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
@@ -95,6 +95,7 @@ public class OpenAction extends SelectionDispatchAction {
 		setText(ActionMessages.OpenAction_label);
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
+		initPathVars();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
 
 	}
@@ -103,7 +104,19 @@ public class OpenAction extends SelectionDispatchAction {
 		this(editor.getEditorSite(), externalModules);
 		fEditor = editor;
 		fExternalModules = externalModules;
+		initPathVars();
 		setText(ActionMessages.OpenAction_declaration_label);
+	}
+
+	private void initPathVars() {
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		final String[] names = pvm.getPathVariableNames();
+		pathVars = new ArrayList<OtpErlangTuple>(names.length);
+		for (final String name : names) {
+			pathVars.add(new OtpErlangTuple(new OtpErlangString(name),
+					new OtpErlangString(pvm.getValue(name).toOSString())));
+		}
 	}
 
 	/*
@@ -266,33 +279,20 @@ public class OpenAction extends SelectionDispatchAction {
 	@SuppressWarnings("boxing")
 	@Override
 	public void run() {
-		int window = 3;
 
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
-		final TokenWindow w = fEditor.getTokenWindow(window);
-		if (w == null) {
-			ErlLogger.debug("open::: null token window " + fEditor);
-			return;
-		}
-		final OtpErlangList list = w.getList();
-		window = w.getPos();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final ISelection sel = getSelection();
+		final ITextSelection textSel = (ITextSelection) sel;
+		final int offset = textSel.getOffset();
 		try {
-			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			final IPathVariableManager pvm = workspace.getPathVariableManager();
-			final String[] names = pvm.getPathVariableNames();
-			final List<OtpErlangTuple> pathVars = new ArrayList<OtpErlangTuple>(
-					names.length);
-			for (final String name : names) {
-				pathVars.add(new OtpErlangTuple(new OtpErlangString(name),
-						new OtpErlangString(pvm.getValue(name).toOSString())));
-			}
-			final OtpErlangObject res = ErlideOpen.getOpenInfo(b, window, list,
-					pathVars, fExternalModules);
+			final OtpErlangObject res = ErlideOpen.open(b, ErlScanner
+					.createScannerModuleName(fEditor.getModule()), offset,
+					fExternalModules, pathVars);
+			ErlLogger.debug("open " + res);
 			if (!(res instanceof OtpErlangTuple)) {
 				return; // not a call, ignore
 			}
-			ErlLogger.debug("open " + res);
 			final OtpErlangTuple tres = (OtpErlangTuple) res;
 			final String external = ((OtpErlangAtom) tres.elementAt(0))
 					.atomValue();
@@ -301,15 +301,16 @@ public class OpenAction extends SelectionDispatchAction {
 			final IProject project = module == null ? null : module
 					.getErlProject().getProject();
 			if (external.equals("external")) {
-				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-				final String mod = ((OtpErlangAtom) mf.elementAt(0))
+				final String mod = ((OtpErlangAtom) tres.elementAt(1))
 						.atomValue();
-				final String fun = ((OtpErlangAtom) mf.elementAt(1))
+				final String fun = ((OtpErlangAtom) tres.elementAt(2))
 						.atomValue();
-				final int arity = ((OtpErlangLong) mf.elementAt(2)).intValue();
+				final int arity = ((OtpErlangLong) tres.elementAt(3))
+						.intValue();
 				String path = null;
-				if (mf.elementAt(3) instanceof OtpErlangString) {
-					path = ((OtpErlangString) mf.elementAt(3)).stringValue();
+				if (tres.arity() > 4
+						&& tres.elementAt(4) instanceof OtpErlangString) {
+					path = ((OtpErlangString) tres.elementAt(4)).stringValue();
 				}
 				ErlModelUtils.openExternalFunction(mod, fun, arity, path,
 						project);
@@ -321,7 +322,7 @@ public class OpenAction extends SelectionDispatchAction {
 				if (r == null) {
 					try {
 						final String m = ErlModelUtils.findIncludeFile(project,
-								mod, pvm);
+								mod);
 						if (m != null) {
 							r = EditorUtility.openExternal(m);
 						}
@@ -334,10 +335,10 @@ public class OpenAction extends SelectionDispatchAction {
 					EditorUtility.openInEditor(f);
 				}
 			} else if (external.equals("local")) { // local call
-				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-				final String fun = ((OtpErlangAtom) mf.elementAt(0))
+				final String fun = ((OtpErlangAtom) tres.elementAt(1))
 						.atomValue();
-				final int arity = ((OtpErlangLong) mf.elementAt(1)).intValue();
+				final int arity = ((OtpErlangLong) tres.elementAt(2))
+						.intValue();
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {
 					return;
@@ -392,8 +393,7 @@ public class OpenAction extends SelectionDispatchAction {
 					return;
 				}
 				final boolean macro = external.equals("macro");
-				final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-				final OtpErlangAtom defined = (OtpErlangAtom) mf.elementAt(0);
+				final OtpErlangAtom defined = (OtpErlangAtom) tres.elementAt(1);
 				final IErlModule m = ErlModelUtils.getModule(fEditor
 						.getEditorInput());
 				String definedName = defined.atomValue();
@@ -406,7 +406,7 @@ public class OpenAction extends SelectionDispatchAction {
 				final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 						: IErlElement.Kind.RECORD_DEF;
 				ErlModelUtils.openPreprocessorDef(project, page, m,
-						definedName, type, new ArrayList<IErlModule>(), pvm);
+						definedName, type, new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
