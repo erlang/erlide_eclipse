@@ -20,7 +20,7 @@
 %%          insertText/3, removeText/3,
          replaceText/4,
          destroy/1, mktoken/3, create/1, 
-         getTokens/1, revert_token/1, getTokenWindow/3, getTokenAt/2,
+         getTokens/1, revert_token/1, getTokenWindow/3, getTokenWindow/4, getTokenAt/2,
          getNextToken/2, getPrevToken/2]).
 -export([test/0]).
  
@@ -114,13 +114,13 @@ do_getTokenWindow(Module, Offset, Window) ->
 
 %% the window is asymmetric, to allow finding number of arguments
 getTokenWindow(Module, Offset, Window) ->
+    getTokenWindow(Module, Offset, Window, Window+10).
+
+getTokenWindow(Module, Offset, Before, After) ->
     T = getTokenAt(Module, Offset),
-    Tp = getPrevToken(Module, T, Window),
-    Tn = getNextToken(Module, T, Window+10),
-    %%?Debug({tp, Tp}),
-    %%?Debug({t, T}),
-    %%    ?Debug({tn, Tn}),
-    clean(lists:reverse(Tp)++[T|Tn]).
+    Tp = getPrevToken(Module, T, Before),
+    Tn = getNextToken(Module, T, After),
+    clean(lists:reverse(Tp, [T|Tn])).
 
 getPrevTokenWs(Module, Token) ->
     Ofs = Token#token.offset-1,
