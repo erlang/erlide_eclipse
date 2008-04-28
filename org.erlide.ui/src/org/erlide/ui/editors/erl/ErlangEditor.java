@@ -231,7 +231,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (name.startsWith(PreferenceConstants.EDITOR_PREFIX)) {
 			ErlLogger.debug("prefs changed");
 			final RGB rgb = getRGB(event.getNewValue());
-
+			// TODO handle text style changes too!
 			if (null != rgb) {
 				final ErlHighlightScanner scanner = ((EditorConfiguration) getSourceViewerConfiguration())
 						.getHighlightScanner();

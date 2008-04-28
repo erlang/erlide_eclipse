@@ -12,8 +12,6 @@ package org.erlide.ui.editors.erl;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
@@ -38,47 +36,28 @@ import erlang.ErlideScanner;
  * 
  * @author Eric Merritt
  */
-public class ErlHighlightScanner implements ITokenScanner,
-		IPreferenceChangeListener {
+public class ErlHighlightScanner implements ITokenScanner {
 
 	private Token t_def;
-
 	private Token t_atom;
-
 	private Token t_attribute;
-
 	private Token t_string;
-
 	private Token t_keyword;
-
 	private Token t_var;
-
 	private Token t_char;
-
 	private Token t_arrow;
-
 	private Token t_guard;
-
 	private Token t_bif;
-
 	private Token t_macro;
-
 	private Token t_record;
-
 	private Token t_integer;
-
 	private Token t_float;
-
 	private Token t_comment;
 
 	private final IColorManager fColorManager;
-
 	protected List<ErlToken> fTokens;
-
 	protected int fCrtToken;
-
 	private int rangeLength;
-
 	private int rangeOffset;
 
 	/**
@@ -93,70 +72,64 @@ public class ErlHighlightScanner implements ITokenScanner,
 		final IPreferenceStore store = ErlideUIPlugin.getDefault()
 				.getPreferenceStore();
 
-		updateTokenColors(store);
+		t_attribute = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
+						PreferenceConstants.ATTRIBUTE)), null, SWT.NORMAL));
 
-	}
-
-	private void updateTokenColors(final IPreferenceStore store) {
-		t_attribute = new Token(fColorManager == null ? null
-				: new TextAttribute(fColorManager.getColor(PreferenceConverter
-						.getColor(store, PreferenceConstants.ATTRIBUTE)), null,
-						SWT.NORMAL));
-
-		t_string = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_string = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.STRING)), null, SWT.NORMAL));
 
-		t_keyword = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_keyword = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.KEYWORD)), null, SWT.BOLD));
 
-		t_var = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_var = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.VARIABLE)), null, SWT.NORMAL));
 
-		t_def = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_def = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.DEFAULT)), null, SWT.NORMAL));
 
-		t_arrow = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_arrow = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.ARROW)), null, SWT.BOLD));
 
-		t_char = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_char = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.CHAR)), null, SWT.NORMAL));
 
-		t_bif = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_bif = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.BIF)), null, SWT.BOLD));
 
-		t_guard = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_guard = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.GUARD)), null, SWT.NORMAL));
 
-		t_macro = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_macro = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.MACRO)), null, SWT.NORMAL));
 
-		t_record = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_record = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.RECORD)), null, SWT.NORMAL));
 
-		t_atom = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_atom = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.ATOM)), null, SWT.NORMAL));
 
-		t_integer = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_integer = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.INTEGER)), null, SWT.NORMAL));
 
-		t_float = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_float = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.FLOAT)), null, SWT.NORMAL));
 
-		t_comment = new Token(fColorManager == null ? null : new TextAttribute(
-				fColorManager.getColor(PreferenceConverter.getColor(store,
+		t_comment = new Token(new TextAttribute(fColorManager
+				.getColor(PreferenceConverter.getColor(store,
 						PreferenceConstants.COMMENT)), null, SWT.NORMAL));
 	}
 
@@ -208,33 +181,49 @@ public class ErlHighlightScanner implements ITokenScanner,
 	 *            the new value of the color
 	 */
 	public void handleColorChange(String id, RGB newValue) {
+		Token token = getToken(id);
+		fixTokenData(token, newValue);
+	}
 
+	private Token getToken(String id) {
 		if (PreferenceConstants.ATTRIBUTE.equals(id)) {
-			final TextAttribute attr = (TextAttribute) t_attribute.getData();
-			t_attribute
-					.setData(new TextAttribute(
-							fColorManager.getColor(newValue), attr
-									.getBackground(), attr.getStyle()));
+			return t_attribute;
 		} else if (PreferenceConstants.DEFAULT.equals(id)) {
-			final TextAttribute defa = (TextAttribute) t_def.getData();
-			t_def.setData(new TextAttribute(fColorManager.getColor(newValue),
-					defa.getBackground(), defa.getStyle()));
-
+			return t_def;
 		} else if (PreferenceConstants.KEYWORD.equals(id)) {
-			final TextAttribute key = (TextAttribute) t_keyword.getData();
-			t_keyword.setData(new TextAttribute(fColorManager
-					.getColor(newValue), key.getBackground(), key.getStyle()));
-
+			return t_keyword;
 		} else if (PreferenceConstants.STRING.equals(id)) {
-			final TextAttribute str = (TextAttribute) t_string.getData();
-			t_string.setData(new TextAttribute(
-					fColorManager.getColor(newValue), str.getBackground(), str
-							.getStyle()));
+			return t_string;
 		} else if (PreferenceConstants.VARIABLE.equals(id)) {
-			final TextAttribute v = (TextAttribute) t_var.getData();
-			t_var.setData(new TextAttribute(fColorManager.getColor(newValue), v
-					.getBackground(), v.getStyle()));
+			return t_var;
+		} else if (PreferenceConstants.COMMENT.equals(id)) {
+			return t_comment;
+		} else if (PreferenceConstants.CHAR.equals(id)) {
+			return t_char;
+		} else if (PreferenceConstants.ATOM.equals(id)) {
+			return t_atom;
+		} else if (PreferenceConstants.ARROW.equals(id)) {
+			return t_arrow;
+		} else if (PreferenceConstants.RECORD.equals(id)) {
+			return t_record;
+		} else if (PreferenceConstants.FLOAT.equals(id)) {
+			return t_float;
+		} else if (PreferenceConstants.BIF.equals(id)) {
+			return t_bif;
+		} else if (PreferenceConstants.INTEGER.equals(id)) {
+			return t_integer;
+		} else if (PreferenceConstants.GUARD.equals(id)) {
+			return t_guard;
+		} else if (PreferenceConstants.MACRO.equals(id)) {
+			return t_macro;
 		}
+		return null;
+	}
+
+	private void fixTokenData(Token token, RGB newValue) {
+		final TextAttribute attr = (TextAttribute) token.getData();
+		token.setData(new TextAttribute(fColorManager.getColor(newValue), attr
+				.getBackground(), attr.getStyle()));
 	}
 
 	public void setRange(IDocument document, int offset, int length) {
@@ -322,12 +311,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return ErlToken.EOF;
 		}
 		return fTokens.get(fCrtToken);
-	}
-
-	public void preferenceChange(PreferenceChangeEvent event) {
-		final IPreferenceStore store = ErlideUIPlugin.getDefault()
-				.getPreferenceStore();
-		updateTokenColors(store);
 	}
 
 }
