@@ -102,9 +102,6 @@ replaceText(Module, Offset, RemoveLength, NewText) ->
 %% Local Functions
 %%
 
-replace_between2(From, Length, With, In) ->
-    string:substr(In, 1, From)++With++string:substr(In, From+Length+1).
-
 replace_between(From, Length, With, In) ->
     {A, B} = lists:split(From, In),
     {_, C} = lists:split(Length, B),
@@ -171,6 +168,9 @@ replace_between_lines(From, Length, With, Lines) ->
 	{LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 
+replace_between2(From, Length, With, In) ->
+    string:substr(In, 1, From)++With++string:substr(In, From+Length+1).
+
 lines_to_text(Lines) ->
 	lists:append([L || {_, L} <- Lines]).
 
@@ -196,10 +196,6 @@ u(S, From, Length) ->
 	R = replace_between_lines(From, Length, S, L),
 	user_default:ds(),
     R.
-
-
-a() ->
-	ok.
 
 -record(module, {name,
                  lines = [], % [{Length, String}]
@@ -322,9 +318,6 @@ get_token_at(Module, Offset) ->
 fix_tokens(Tokens, Offset, Line) ->
     [erlide_scanner:mktoken(T, Offset, Line) || T <- Tokens].
 
-token_pos({_, Pos}) -> Pos;
-token_pos({_, Pos, _}) -> Pos;
-token_pos({_, Pos, _, _}) ->Pos.
 
 get_token_at_aux([], _) ->
     token_not_found;
@@ -352,3 +345,6 @@ get_token_window(Module, Offset, _Before, _After) ->
 
 
 
+token_pos({_, Pos}) -> Pos;
+token_pos({_, Pos, _}) -> Pos;
+token_pos({_, Pos, _, _}) ->Pos.

@@ -25,7 +25,7 @@
          get_line_offsets/1,
          detab/2]).
 
-%% -define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 

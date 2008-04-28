@@ -7,113 +7,141 @@
 %% Include files
 %%
 
+-define(DEBUG, 1).
+
+-include("erlide.hrl").
+-include("erlide_scanner.hrl").
+
+
 %%
 %% Exported Functions
 %%
--export([open_info/4,
+-export([open/4,
+         open_info/4,
          find_first_var/2,
          get_source_from_module/3,
          get_include_lib/1]).
-
-%-define(DEBUG, 1).
-
--include("erlide.hrl").
-
--include("erlide_scanner.hrl").
 
 %%
 %% API Functions
 %%
 
-get_include(Tokens, T) ->
-    case lists:keysearch(string, #token.kind, Tokens) of
-    	{value, Token} ->
-            case T of
-                include_lib ->
-                    get_include_lib(Token#token.value);
-                _ ->
-	            	{include, Token#token.value}
-            end;
-		_ ->
-            none
+
+%% b.rpcx("erlide_open", "open", "ailx", scannerName, offset, pathVars);
+open(Mod, Offset, ExternalModules, PathVars) ->
+    ?D({Mod, Offset, PathVars}),
+    Limit = 5,
+   	try
+        [try_open(Mod, Offset, I, ExternalModules, PathVars) || I <- lists:seq(0, Limit)],
+        error
+    catch
+        throw:{open, Res} ->
+			Res;
+        throw:_ ->
+            error;
+        error:_ ->
+            error
     end.
+
+try_open(Mod, Offset, TokenOffset, ExternalModules, PathVars) ->
+	TokensWComments  = erlide_scanner:getTokenWindow(Mod, Offset, TokenOffset, 50),
+    ?D(TokensWComments),
+    Tokens = strip_comments(TokensWComments),
+	?D(Tokens),
+    o_tokens(Tokens, Mod, ExternalModules, PathVars).
+
+consider_local(M, T) ->
+    (getPrevNonCommentToken(M, T))#token.kind =/= ':'.
+    
+getPrevNonCommentToken(M, T) ->
+	case erlide_scanner:getPrevToken(M, T) of
+		T ->
+            T;
+        #token{kind=comment}=T2 ->
+            getPrevNonCommentToken(M, T2);
+        T3 ->
+            T3
+    end.
+		
+
+strip_comments(Tokens) ->
+    [T || T <- Tokens, T#token.kind =/= comment].
+
+o_tokens([#token{kind='-'}, #token{kind=atom, value=include} | Rest], _, _, _) ->
+    o_include(Rest);
+o_tokens([#token{kind='-'}, #token{kind=atom, value=include_lib} | Rest], _, _, _) ->
+    o_include_lib(Rest);
+o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
+    o_macro(Value);
+o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _, _) ->
+    o_record(Value);
+o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
+         _, ExternalModules, PathVars) ->
+    o_external(Module, Function, Rest, ExternalModules, PathVars);
+o_tokens([#token{kind=atom, value=Function}=T, #token{kind='('} | Rest], Module, _, _) ->
+    ?D(Module),
+	case consider_local(Module, T) of
+        true ->
+            ?D(true),
+            throw({open, {local, Function, erlide_text:guess_arity(Rest)}});
+        false ->
+            continue
+    end;
+o_tokens(_, _, _, _) ->
+    no.
+
+o_include([#token{kind='('}, #token{kind=string, value=File} | _]) ->
+    throw({open, {include, File}});
+o_include(_) ->
+	no.
+
+o_include_lib([#token{kind='('}, #token{kind=string, value=Path} | _]) ->
+	{include, File} = get_include_lib(Path),
+    throw({open, {include, File}});
+o_include_lib(_) ->
+	no.
+
+o_macro(Value) ->
+    throw({open, {macro, Value}}).
+
+o_record(Value) ->
+    throw({open, {record, Value}}).
+
+o_external(Module, Function, [_ | ParameterListTokens], ExternalModules, PathVars) ->
+    ?D({Module, Function, ParameterListTokens}),
+	N = erlide_text:guess_arity(ParameterListTokens),
+    ?D(N),
+    P = get_source_from_module(Module, ExternalModules, PathVars),
+    throw({open, {external, Module, Function, N, P}}).
 
 get_include_lib(Path) ->
     {Lib, Rest} = find_lib_dir(Path),
-    {include, filename:join([Lib | Rest])}
-                    .
-    
+    {include, filename:join([Lib | Rest])}.
 
 find_lib_dir(Dir) ->
     [Lib | Rest] = filename:split(Dir),
     {code:lib_dir(Lib), Rest}.
     
-%%     ?D({str, S}),
-%%     {LibDir, Rest} = find_lib_dir(S),
-%%      ?D({libdir,LibDir,Rest}),
-%%     R = filename:join([LibDir | Rest]),
-%%     ?D({fn,R}),
-%%     R.
-
-key_after(K, N, List) ->
-    case lists:keysearch(K, N, List) of
-        {value, T} ->
-            list_after(T, List);
-        _ ->
-            []
-    end.
-
-list_after(_, []) ->
-    [];
-list_after(T, [T | Rest]) ->
-    Rest;
-list_after(T, [_ | Rest]) ->
-    list_after(T, Rest).
-    
-
-check_include(Tokens, Window) ->
-    T = lists:nthtail(Window-2, Tokens),
-    case key_after(include, #token.value, T) of
-        [] -> 
-            case key_after(include_lib, #token.value, Tokens) of
-                [] ->
-                    none;
-                Rest1 ->
-                    get_include(Rest1, include_lib)
-            end;
-        Rest2 ->
-            get_include(Rest2, include)
-    end.  
 
 open_info(L, W, ExternalModules, PathVars) ->
     ?D({open_info, W, L}),
     {CL, CW} = erlide_text:clean_tokens(L, W),
     ?D({open_info, CW, CL}),
-    case check_include(CL, CW) of
-        {include, F} ->
-            ?D(F),
-            {include, F};
-        {include_lib, D, F} ->
-            ?D({D,F}),
-            {include, filename:join(find_lib_dir(D), F)};
-        %%         {ok, F, Rest} ->{local, {F, erlide_text:guess_arity(Rest)}};
+    case erlide_text:check_variable_macro_or_record(CL, CW) of
+        {ok, M, R} ->
+            {M, {R}};
         _ ->
-            case erlide_text:check_variable_macro_or_record(CL, CW) of
-                {ok, M, R} ->
-                    {M, {R}};
+            case erlide_text:check_function_call(CL, CW) of
+                {ok, M, F, Rest} = _Xx ->
+                    ?D(_Xx),
+                    {external, {M, F, erlide_text:guess_arity(Rest),
+                                get_source_from_module(M, ExternalModules, PathVars)}};
+                {ok, F, Rest}=_Zz ->
+                    ?D(_Zz),
+                    {local, {F, erlide_text:guess_arity(Rest)}};
                 _ ->
-                    case erlide_text:check_function_call(CL, CW) of
-                        {ok, M, F, Rest} = _Xx ->
-                            ?D(_Xx),
-                            {external, {M, F, erlide_text:guess_arity(Rest),
-                                        get_source_from_module(M, ExternalModules, PathVars)}};
-                        {ok, F, Rest}=_Zz ->
-                            ?D(_Zz),
-                            {local, {F, erlide_text:guess_arity(Rest)}};
-                        _ ->
-                            ?D(CL),
-                            none
-                    end
+                    ?D(CL),
+                    none
             end
     end.
 
