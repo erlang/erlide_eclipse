@@ -6,8 +6,8 @@ Bundle-Version: 0.3.49.qualifier
 Bundle-Activator: org.erlide.runtime.ErlangLaunchPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.debug.ui,
  org.eclipse.ui,
+ org.eclipse.debug.ui,
  org.erlide.jinterface,
  org.erlide.basic
 Eclipse-LazyStart: true

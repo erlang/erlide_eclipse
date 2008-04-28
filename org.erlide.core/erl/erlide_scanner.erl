@@ -242,7 +242,7 @@ do_insertText(Module, Offset, Text) ->
                                           {T1#token.offset, T1#token.line, nl(T1), get_text(T1)++Text};
                                       _ ->
                                           {Offset, T1#token.line, 0, Text}
-                                      end;
+                                  end;
                               {T1, T1} -> %% delete T, split the text and paste it to Text
                                   ets:delete(Module, T1#token.offset),
                                   {A, B} = split(T1, Offset),
@@ -252,7 +252,7 @@ do_insertText(Module, Offset, Text) ->
                                   ets:delete(Module, T2#token.offset),
                                   {T1#token.offset, T1#token.line, nl(T1)+nl(T2), get_text(T1)++Text++get_text(T2)}
                           end,
-	%% update offsets of tokens following the insertion point
+    %% update offsets of tokens following the insertion point
     {ok, Tks0, {LL, _LO}} = erlide_scan:string_ws(Text2++"\n"),
     Tks = lists:reverse(tl(lists:reverse(Tks0))),
     update_after(Module, Ofs, length(Text), LL-XL-2),
@@ -260,51 +260,67 @@ do_insertText(Module, Offset, Text) ->
     ok.
 
 removeText(Module, Offset, Length) ->
-     MS = ets:fun2ms(fun(#token{kind=eof}=T) ->
-          T#token.offset
-        end),
+    MS = ets:fun2ms(fun(#token{kind=eof}=T) ->
+                            T#token.offset
+                    end),
     [Eof] = ets:select(Module, MS), 
     if Offset < 1 ->
-        {error, bad_offset, Offset};
-       Offset+Length > Eof ->
-        {error, bad_offset, Offset, Length, Eof};
-       true ->
-        do_removeText(Module, Offset, Length)
-     end.
+           {error, bad_offset, Offset};
+        Offset+Length > Eof ->
+            {error, bad_offset, Offset, Length, Eof};
+        true ->
+            do_removeText(Module, Offset, Length)
+    end.
 
 do_removeText(Module, Offset, Length) ->
     T1 = findTokenLeft(Module, Offset),
     T2 = getTokenAt(Module, Offset+Length),
     %%erlide_log:logp("R> ~p ~p::~n >  ~p~n >  ~p~n", [Offset, Length, T1, T2]),
     %% split T1 and T2 texts, remove all between T1 and T2, rescan and insert T1'+T2'
-    {_Ofs, DeletedLines, NewText} = case {T1, T2} of
-               {#token{kind=eof}, #token{kind=eof}} ->
-                   {0, 0, ""};
-               {#token{kind=eof}, _} ->
-                                {T1#token.offset, 0, ""};
-               {T1, T1} ->
-             ets:delete_object(Module, T1),
-             {T1#token.offset, 0, cut(get_text(T1), Offset-T1#token.offset+1, Length)};
-               {_, #token{kind=eof, offset=Ofs}} ->
-             delete_between(Module, Offset, Ofs-Offset-1),
-             LX = Offset-T1#token.offset,
-             Txt1 = cut(get_text(T1), LX+1, Length),
-             {T1#token.offset, T2#token.line-T1#token.line, Txt1};
-               {T1, T2} ->
-             delete_between(Module, T1#token.offset, Length+Offset-T1#token.offset),
-             Txt1 = cut(get_text(T1), Offset-T1#token.offset+1, Length),
-             Txt2 = cut(get_text(T2), 1, Offset+Length-T2#token.offset),
-             NL = case T2 of
-                #token{kind=ws, text="\n"} ->1;
-                _ -> 0
-            end,
-             {T1#token.offset, T2#token.line-T1#token.line+NL, Txt1++Txt2}
-           end,
-    {ok, Tks0, {NewLines, _LO}} = erlide_scan:string_ws(NewText++"\n"),
-    Tks = lists:reverse(tl(lists:reverse(Tks0))),
-    update_after(Module, Offset+Length, -Length, NewLines-2-DeletedLines),
+    RR = case {T1, T2} of
+             {#token{kind=eof}, #token{kind=eof}} ->
+                 {0, 0, ""};
+             {#token{kind=eof}, _} ->
+                 {T1#token.offset, 0, ""};
+             {T1, T1} ->
+                 ets:delete_object(Module, T1),
+                 {T1#token.offset, 0, cut(get_text(T1), Offset-T1#token.offset+1, Length)};
+             {_, #token{kind=eof, offset=Ofs}} ->
+                 delete_between(Module, Offset, Ofs-Offset-1),
+                 LX = Offset-T1#token.offset,
+                 Txt1 = cut(get_text(T1), LX+1, Length),
+                 {T1#token.offset, T2#token.line-T1#token.line, Txt1};
+             {#token{kind=comment}, _} ->
+                 {T3, Text} = getFirstNlAfter(Module, T2#token.offset, get_text(T1)),
+                 %%erlide_log:logp("CMT ~p", [T3]),
+                 delete_between(Module, T1#token.offset, T3#token.offset-T1#token.offset-1), 
+                 {T1#token.offset, T3#token.line-T1#token.line, Text};
+             {T1, T2} ->
+                 delete_between(Module, T1#token.offset, Length+Offset-T1#token.offset), 
+                 Txt1 = cut(get_text(T1), Offset-T1#token.offset+1, Length), 
+                 Txt2 = cut(get_text(T2), 1, Offset+Length-T2#token.offset), 
+                 NL = case T2 of 
+                          #token{kind=ws, text="\n"} -> 1;
+                          _ -> 0 
+                      end, 
+                 {T1#token.offset, T2#token.line-T1#token.line+NL, Txt1++Txt2} 
+         end, 
+    {_Ofs, DeletedLines, NewText} = RR, 
+    %%erlide_log:logp("New: ~p", [NewText]),
+    {ok, Tks0, {NewLines, _LO}} = erlide_scan:string_ws(NewText++"\n"), 
+    Tks = lists:reverse(tl(lists:reverse(Tks0))), 
+    update_after(Module, Offset+Length, -Length, NewLines-2-DeletedLines), 
     lists:foreach(fun(X)-> ets:insert(Module, mktoken(X, T1#token.offset-1, T1#token.line-1)) end, Tks),
     ok.
+
+getFirstNlAfter(Module, Offset, Txt) ->
+    T = getTokenAt(Module, Offset),
+    case T of
+        #token{kind=ws, text="\n"} ->
+            {T, Txt};
+        _ ->
+            getFirstNlAfter(Module, Offset+T#token.length, Txt++get_text(T))
+    end.
 
 clean([]) ->
     [];
@@ -534,10 +550,10 @@ test() ->
      {"hej", {remove, 2, 3}, {error, bad_offset, 2, 3, 4}},                
      {"hej", {remove, 0, 1}, {error, bad_offset, 0}},                
      
-     {"ba\n%hej\nba", {remove, 6, 1}, ok},                
+     {"%rxy\n  qw\n", {remove, 5, 1}, ok},                
      {"ba\n%hej\nba", {remove, 2, 6}, ok},                
      
-     {"aa bb", {remove, 3, 1}, ok},
+     {"aa bb\n", {remove, 3, 1}, ok},
      
      {"", {insert, 1, ""}, ok}
      ],
