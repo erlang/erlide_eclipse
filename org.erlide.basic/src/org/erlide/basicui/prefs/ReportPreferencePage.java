@@ -29,6 +29,7 @@ public class ReportPreferencePage extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite panel = new Composite(parent, SWT.NONE);
+		panel.setEnabled(false);
 
 		final Label titleLabel = new Label(panel, SWT.NONE);
 		titleLabel.setText("Title");
