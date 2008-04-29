@@ -38,6 +38,25 @@ import erlang.ErlideScanner;
  */
 public class ErlHighlightScanner implements ITokenScanner {
 
+	public enum MyErlToken {
+		t_def(PreferenceConstants.DEFAULT), t_atom(PreferenceConstants.ATOM), t_attribute(
+				PreferenceConstants.ATTRIBUTE), t_string(
+				PreferenceConstants.STRING), t_keyword(
+				PreferenceConstants.KEYWORD), t_var(
+				PreferenceConstants.VARIABLE), t_char(PreferenceConstants.CHAR), t_arrow(
+				PreferenceConstants.ARROW), t_guard(PreferenceConstants.GUARD), t_bif(
+				PreferenceConstants.BIF), t_macro(PreferenceConstants.MACRO), t_record(
+				PreferenceConstants.RECORD), t_integer(
+				PreferenceConstants.INTEGER), t_float(PreferenceConstants.FLOAT), t_comment(
+				PreferenceConstants.COMMENT), ;
+
+		private String pref;
+
+		MyErlToken(String apref) {
+			pref = apref;
+		}
+	};
+
 	private Token t_def;
 	private Token t_atom;
 	private Token t_attribute;
@@ -227,22 +246,23 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	public void setRange(IDocument document, int offset, int length) {
-		// ErlLogger.debug(" @@ Hsc setRange " + document + " " + offset +
-		// ":" +
-		// length);
-
 		if (document == null) {
 			return;
 		}
-
-		rangeOffset = offset;
-		rangeLength = length;
-
 		try {
+			int line1 = document.getLineOfOffset(offset);
+			int line2 = document.getLineOfOffset(offset + length);
+			rangeOffset = document.getLineOffset(line1);
+			rangeLength = document.getLineOffset(line2) - rangeOffset
+					+ document.getLineLength(line2);
+
+			// ErlLogger.debug("§§§ setRange %s %d:%d (%d:%d)", document,
+			// rangeOffset, rangeLength, offset, length);
+
 			final String str = document.get(rangeOffset, rangeLength);
 			setText(str);
 		} catch (final BadLocationException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 

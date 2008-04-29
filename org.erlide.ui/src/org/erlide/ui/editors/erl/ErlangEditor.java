@@ -15,8 +15,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -120,7 +118,7 @@ import org.erlide.ui.views.outline.ErlangOutlinePage;
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
 public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
-		IOutlineSelectionHandler, IPreferenceChangeListener {
+		IOutlineSelectionHandler {
 
 	private ColorManager colorManager;
 
@@ -1425,10 +1423,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	public Object getSelection() {
 		return fSelection;
-	}
-
-	public void preferenceChange(PreferenceChangeEvent event) {
-
 	}
 
 	// @Override
