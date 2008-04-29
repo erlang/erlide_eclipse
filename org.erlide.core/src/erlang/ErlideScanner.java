@@ -154,6 +154,7 @@ public class ErlideScanner {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public static void replaceText(String module, int offset, int removeLength,
 			String newText) {
 		ErlLogger.debug("replaceText " + module + " (" + offset + ":"

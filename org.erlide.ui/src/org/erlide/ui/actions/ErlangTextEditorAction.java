@@ -129,16 +129,16 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	}
 
 	/**
-	 * @param selection
-	 * @param text
+	 * @param aSelection
+	 * @param aText
 	 * @return
 	 * @throws BackendException
 	 * @throws ErlangRpcException
 	 */
-	protected OtpErlangObject callErlang(ITextSelection selection, String text)
+	protected OtpErlangObject callErlang(ITextSelection aSelection, String aText)
 			throws Exception {
 		final OtpErlangObject r1 = ErlideBackend.call(fErlModule, fErlFunction,
-				selection.getOffset(), text);
+				aSelection.getOffset(), aText);
 		return r1;
 	}
 

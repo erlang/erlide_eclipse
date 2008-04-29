@@ -1,8 +1,10 @@
 package erlang;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -28,12 +30,17 @@ public class ErlideOpen {
 	}
 
 	public static OtpErlangObject getSourceFromModule(final IBackend b,
-			final List<OtpErlangTuple> pathVars, final String mod,
+			final List<Tuple> pathVars, final String mod,
 			String fExternalModules) throws ErlangRpcException,
 			BackendException, RpcException {
+		List<OtpErlangTuple> pathVars2 = new ArrayList<OtpErlangTuple>();
+		for (Tuple t : pathVars) {
+			pathVars2.add(new OtpErlangTuple(new OtpErlangObject[] {
+					(OtpErlangObject) t.get(0), (OtpErlangObject) t.get(1) }));
+		}
 		final OtpErlangObject res2 = b.rpcx("erlide_open",
 				"get_source_from_module", "aslx", mod, fExternalModules,
-				pathVars);
+				pathVars2);
 		return res2;
 	}
 
@@ -47,12 +54,18 @@ public class ErlideOpen {
 		return res;
 	}
 
-	public static OtpErlangObject open(final IBackend b, String scannerName,
-			int offset, String externalModules, List<OtpErlangTuple> pathVars)
+	@SuppressWarnings("boxing")
+	public static OpenResult open(final IBackend b, String scannerName,
+			int offset, String externalModules, List<Tuple> pathVars)
 			throws RpcException, BackendException {
+		List<OtpErlangTuple> pathVars2 = new ArrayList<OtpErlangTuple>();
+		for (Tuple t : pathVars) {
+			pathVars2.add(new OtpErlangTuple(new OtpErlangObject[] {
+					(OtpErlangObject) t.get(0), (OtpErlangObject) t.get(1) }));
+		}
 		final OtpErlangObject res = b.rpcx("erlide_open", "open", "aislx",
-				scannerName, offset, externalModules, pathVars);
-		return res;
+				scannerName, offset, externalModules, pathVars2);
+		return new OpenResult(res);
 	}
 
 }

@@ -350,13 +350,16 @@ public class ErlModule extends Openable implements IErlModule {
 		if (!fIgnoreNextReconcile) {
 			getScanner();
 			scanner.replaceText(offset, removeLength, newText);
+			if (mon != null) {
+				mon.worked(1);
+			}
 			setIsStructureKnown(false);
 		}
 		fIgnoreNextReconcile = false;
 		try {
 			open(mon);
 		} catch (final ErlModelException e) {
-			// not much to do
+			e.printStackTrace();
 		}
 	}
 

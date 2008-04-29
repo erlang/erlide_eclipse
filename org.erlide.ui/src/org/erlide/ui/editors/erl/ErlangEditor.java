@@ -96,7 +96,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.TokenWindow;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
@@ -144,7 +143,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 
-	private InformationPresenter fInformationPresenter;
+	InformationPresenter fInformationPresenter;
 
 	private ShowOutlineAction fShowOutline;
 
@@ -1350,17 +1349,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
-	// the window is asymmetric, to allow finding number of arguments
-	public TokenWindow getTokenWindow(int window) {
-		final IErlScanner scanner = getScanner();
-
-		final ISelection sel = getSelectionProvider().getSelection();
-		final ITextSelection s = (ITextSelection) sel;
-
-		final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(),
-				window);
-		return tokenWindow;
-	}
+	// // the window is asymmetric, to allow finding number of arguments
+	// public TokenWindow getTokenWindow(int window) {
+	// final IErlScanner scanner = getScanner();
+	//
+	// final ISelection sel = getSelectionProvider().getSelection();
+	// final ITextSelection s = (ITextSelection) sel;
+	//
+	// final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(),
+	// window);
+	// return tokenWindow;
+	// }
 
 	public final ISourceViewer getViewer() {
 		return getSourceViewer();

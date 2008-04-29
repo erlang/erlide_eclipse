@@ -94,6 +94,7 @@ public class ErlideScanner2 {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public static void replaceText(String module, int offset, int removeLength,
 			String newText) {
 		try {

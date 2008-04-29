@@ -48,6 +48,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideOpen;
+import erlang.OpenResult;
 
 public class ErlModelUtils {
 
@@ -243,12 +244,18 @@ public class ErlModelUtils {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
+	public static void openExternalFunction(OpenResult res, IProject project)
+			throws CoreException {
+		openExternalFunction(res.getName(), res.getFun(), res.getArity(), res
+				.getPath(), project);
+	}
+
 	public static void openExternalFunction(String mod, String fun, int arity,
-			String path, IProject p) throws CoreException {
+			String path, IProject project) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
-		if (p != null) {
-			r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
+		if (project != null) {
+			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName);
 		}
 		if (r == null) {

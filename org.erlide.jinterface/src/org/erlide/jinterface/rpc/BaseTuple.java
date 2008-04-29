@@ -26,6 +26,10 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 		return this;
 	}
 
+	public Object get(int i) {
+		return elements.get(i);
+	}
+
 	protected BaseTuple addElement(int i) {
 		return addElement(Integer.valueOf(i));
 	}
