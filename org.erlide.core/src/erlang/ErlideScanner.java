@@ -51,12 +51,13 @@ public class ErlideScanner {
 					.rpcx("erlide_scanner", "do_getTokenAt", "ai", module,
 							offset + 1);
 		} catch (final Exception e) {
-			// e.printStackTrace();
+			ErlLogger.debug(e);
 			return null;
 		}
 		if (r1 == null) {
 			return null;
 		}
+		ErlLogger.debug("getTokenAt got %s", r1);
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
