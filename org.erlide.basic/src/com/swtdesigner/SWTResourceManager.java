@@ -384,9 +384,14 @@ public class SWTResourceManager {
      * Dispose all of the cached fonts
      */
     public static void disposeFonts() {
+		// clear fonts
         for (Iterator<Font> iter = m_FontMap.values().iterator(); iter.hasNext();)
              iter.next().dispose();
         m_FontMap.clear();
+		// clear bold fonts
+        for (Iterator<Font> iter = m_FontToBoldFontMap.values().iterator(); iter.hasNext();)
+        	iter.next().dispose();
+        m_FontToBoldFontMap.clear();
     }
 
 	//////////////////////////////
