@@ -26,6 +26,10 @@ public class ReportPreferencePage extends PreferencePage implements
 	private Text description;
 	private Text title;
 
+	final private String URL = "https://shibumi.fogbugz.com/ScoutSubmit.asp?"
+			+ "ScoutUserName=field_tester&ScoutProject=erlide&ScoutArea=Misc&"
+			+ "Extra=%s&Description=%s&Email=%s";
+
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite panel = new Composite(parent, SWT.NONE);
