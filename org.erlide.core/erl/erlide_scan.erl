@@ -458,8 +458,11 @@ scan_string([$"|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$"|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     scan(Cs, [], [{string,{StartPos, length(SS)+2},VS,[$"|SS]++[$"]}|Toks], inc(Pos,length(SS)+2), State, Errors);
-scan_string([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
-    scan_string(Cs, [{$\n,"\n"}|Stack], Toks, incrow0(Pos), State, Errors);
+scan_string([$\n|_]=Cs, Stack, Toks, Pos, State, Errors) ->
+%%    scan_string(Cs, [{$\n,"\n"}|Stack], Toks, incrow0(Pos), State, Errors);
+    [StartPos, $"|S] = reverse(Stack),
+    {VS, SS} = unstack(S),
+    scan(Cs, [], [{string,{StartPos, length(SS)+1},VS,[$"|SS]}|Toks], inc(Pos,length(SS)+1), State, Errors);
 scan_string([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
     {Rest, Val, StrVal, _NewPos} ->
@@ -479,17 +482,6 @@ scan_string(Eof, Stack, _Toks, Pos, State, Errors) ->
     SS1 = string:substr(SS, 1, 16),
     done(Eof, [{{string,$",SS1},StartPos}|Errors], [], inc(Pos,length(Stack)), State).
 
-scan_qatom([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
-    scan_qatom(Cs, [{$\n,"\n"}|Stack], Toks, incrow(Pos), State, Errors);
-scan_qatom([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
-    case sub_scan_escape(Cs, Pos) of
-    {Rest, Val, StrVal, _NewPos} ->
-        scan_qatom(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
-    more ->
-        more(Cs, Stack, Toks, Pos, State, Errors, fun scan_qatom/6);
-    continue ->
-        scan(Cs, Stack, Toks, Pos, State, Errors)
-    end;
 scan_qatom([$'|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$'|S] = reverse(Stack),
     {VS, SS} = unstack(S),
@@ -499,6 +491,26 @@ scan_qatom([$'|Cs], Stack, Toks, Pos, State, Errors) ->
         scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
+    end;
+scan_qatom([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
+%    scan_qatom(Cs, [{$\n,"\n"}|Stack], Toks, incrow(Pos), State, Errors);
+    [StartPos,$'|S] = reverse(Stack),
+    {VS, SS} = unstack(S),
+    case catch list_to_atom(VS) of
+    A when atom(A) ->
+        StrVal = [$'|SS],
+        scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
+    _ ->
+        scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
+    end;
+scan_qatom([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
+    case sub_scan_escape(Cs, Pos) of
+    {Rest, Val, StrVal, _NewPos} ->
+        scan_qatom(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
+    more ->
+        more(Cs, Stack, Toks, Pos, State, Errors, fun scan_qatom/6);
+    continue ->
+        scan(Cs, Stack, Toks, Pos, State, Errors)
     end;
 scan_qatom([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_qatom(Cs, [{C,[C]}|Stack], Toks, Pos, State, Errors);
@@ -608,8 +620,9 @@ scan_comment([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_comment(Cs, [C|Stack], Toks, Pos, State, Errors);
 scan_comment([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_comment/6);
-scan_comment(Eof, _Stack, Toks, Pos, State, Errors) ->
-    done(Eof, Errors, Toks, Pos, State).
+scan_comment(Eof, Stack, Toks, Pos, State, Errors) ->
+%    done(Eof, Errors, Toks, Pos, State).
+    done(Eof, Errors, [{comment, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos,length(Stack)), State).
 
 
 scan_dot([$%|_]=Cs, _Stack, Toks, Pos, State, Errors) ->
