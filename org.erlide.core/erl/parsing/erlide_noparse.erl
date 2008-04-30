@@ -14,10 +14,10 @@
 %% Include files
 %%
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
--define(SCANNER, erlide_scanner).
-%-define(SCANNER, erlide_scanner2).
+%-define(SCANNER, erlide_scanner).
+-define(SCANNER, erlide_scanner2).
 
 -define(CACHE_VERSION, 1).
 
@@ -54,22 +54,29 @@ reparse(ScannerName) ->
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     ?Info({noparse, ScannerName}),
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir),
-    ?D(Toks),
+    ?D(length(Toks)),
     {UncommentToks, Comments} = extract_comments(Toks),
+    ?D({length(UncommentToks), length(Comments)}),
     Functions = split_after_dots(UncommentToks, [], []),
-    ?D(Functions),
-    Collected = [classify_and_collect(I) || I <- Functions],
-    ?D(Collected),
+    ?D(length(Functions)),
+    Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
+    ?D(length(Collected)),
     {Collected, Comments, Toks}.
 
 classify_and_collect(C) ->
-    cac(check_class(C), C).
+    ?D(C),
+    R = cac(check_class(C), C),
+    ?D(R),
+    R.
 
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
+	?D(ClauseList),
     Clauses = [fix_clause(C) || C <- ClauseList],
+	?D(length(Clauses)),
     [#clause{pos=P, name=N, args=A, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
+	?D(Arity),
     #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
 cac(attribute, Attribute) ->
     case Attribute of
@@ -77,26 +84,30 @@ cac(attribute, Attribute) ->
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
             #token{line=LastLine, offset=LastOffset, 
-                   length=LastLength} = lists:last(Attribute),
+                   length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
                        name=Name, args=Args};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
-                   length=LastLength} = lists:last(Attribute),
+                   length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
                        name=Name, args=[]}
     end;
 cac(other, [#token{value=Name, line=Line,
                          offset=Offset, length=Length} | _]) ->
-    #other{pos={{Line, Line, Offset}, Length}, name=Name}.
+    #other{pos={{Line, Line, Offset}, Length}, name=Name};
+cac(_, _D) ->
+	?D(_D),
+	eof.
 
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
     attribute;
 check_class(_) ->
+	?D(ok),
     other.
 
 get_args(T) ->
@@ -108,6 +119,15 @@ get_guards(T) ->
 get_between_pars(T) ->
     get_between(T, '(', ')').
 
+last_not_eof(L) -> 
+    case lists:reverse(L) of
+        [eof, Last | _] ->
+            Last;
+        [Last | _] ->
+            Last;
+        _ ->
+            error
+    end.    
 
 get_between([], _A, _B) ->
     [];
@@ -161,7 +181,7 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
     end.
 
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
-    #token{line=LastLine, offset=LastOffset, length=LastLength} = lists:last(Rest),
+    #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
     #clause{pos={{Line, LastLine, Offset}, PosLength},
             name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
@@ -176,10 +196,8 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 %%             ok
 %%     end,
 scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
-    ?D(ets:info(ScannerName)),
     ?SCANNER:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
     S = ?SCANNER:getTokens(ScannerName),
-    ?D(ets:info(ScannerName)),
     S.
 
 extract_comments(Tokens) ->

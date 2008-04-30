@@ -637,6 +637,10 @@ public class DefaultErlangFoldingStructureProvider implements
 				collapse = fAllowCollapsing && fCollapseComments;
 			}
 			createProjection = true;
+		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
+			createProjection = true;
+		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
+			createProjection = true;
 		}
 		if (createProjection) {
 			final IRegion region = computeProjectionRanges(element);

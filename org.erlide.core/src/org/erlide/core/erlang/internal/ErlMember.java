@@ -1,5 +1,6 @@
 package org.erlide.core.erlang.internal;
 
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
@@ -36,8 +37,9 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
 	public ISourceRange getNameRange() {
 		if (fNameRangeStart == 0 && fNameRangeEnd == 0) {
+			final int d = ErlScanner.UseScanner2 ? 0 : 1;
 			return new SourceRange(getSourceRangeStart(), getSourceRangeEnd()
-					- getSourceRangeStart() + 1);
+					- getSourceRangeStart() + d);
 		}
 		return new SourceRange(fNameRangeStart, fNameRangeEnd - fNameRangeStart);
 	}

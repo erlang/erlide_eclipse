@@ -7,21 +7,26 @@
 %% Include files
 %%
 
-%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
+-include("erlide_scanner.hrl").
 
 %%
 %% Exported Functions
 %%
--export([create/1, destroy/1, getText/1, initialScan/4, getTokenAt/2, getTokenWindow/4]).
+-export([create/1, destroy/1, getTextLine/2, initialScan/4, getTokenAt/2, getTokenWindow/4]).
+
+%% just for testing
+-export([all/0, modules/0, getText/1]).
+
 -compile(export_all).
 
 %%
 %% API Functions
 %%
 
--define(CACHE_VERSION, 2). %% odd numbers for scanner, even numbers for scanner2
+-define(CACHE_VERSION, 4). %% odd numbers for scanner, even numbers for scanner2
 
 -define(SERVER, ?MODULE).
 
@@ -43,6 +48,14 @@ getText(Module) ->
             Result
     end.
 
+getTextLine(Module, Line) ->
+    spawn_server(),
+    ?SERVER ! {get_text_line, self(), Module, Line},
+    receive
+        {get_text_line, _Pid, Result} ->
+            Result
+    end.
+
 getTokens(Module) ->
     spawn_server(),
     ?SERVER ! {get_tokens, self(), Module},
@@ -51,7 +64,6 @@ getTokens(Module) ->
             Result
     end.
 
-%% Currently, only after is used, and only upto a full line......
 getTokenWindow(Module, Offset, Before, After) ->
     spawn_server(),
     ?SERVER ! {get_token_window, self(), Module, Offset, Before, After},
@@ -82,6 +94,14 @@ modules() ->
             Result
     end.
 
+all() ->
+    spawn_server(),
+    ?SERVER ! {all, self()},
+    receive
+        {all, _Pid, Result} ->
+            Result
+    end.
+
 dump_module(Module) ->
     spawn_server(),
     ?SERVER ! {dump_module, self(), Module},
@@ -107,28 +127,7 @@ replace_between(From, Length, With, In) ->
     {_, C} = lists:split(Length, B),
     A++With++C.
 
-%% [{Offset, Text}, ...]
-split_lines_w_offsets(Text) ->
-    split_lines_w_offsets(Text, 0, 0, [], []).
-
-
-split_lines_w_offsets("", _Offset, _LineOffset, [], Acc) ->
-    lists:reverse(Acc);
-split_lines_w_offsets("", _Offset, LineOffset, LineAcc, Acc) ->
-    lists:reverse(Acc, [{LineOffset, lists:reverse(LineAcc)}]);
-split_lines_w_offsets("\n\r" ++ Text, Offset, LineOffset, LineAcc, Acc) ->
-    split_lines_w_offsets(Text, Offset+2, Offset+2, [], 
-                          [{LineOffset, lists:reverse(LineAcc, "\n\r")} | Acc]);
-split_lines_w_offsets("\n" ++ Text, Offset, LineOffset, LineAcc, Acc) ->
-    split_lines_w_offsets(Text, Offset+1, Offset+1, [], 
-                          [{LineOffset, lists:reverse(LineAcc, "\n")} | Acc]);
-split_lines_w_offsets("\r" ++ Text, Offset, LineOffset, LineAcc, Acc) ->
-    split_lines_w_offsets(Text, Offset+1, Offset+1, [], 
-                          [{LineOffset, lists:reverse(LineAcc, "\r")} | Acc]);
-split_lines_w_offsets([C | Text], Offset, LineOffset, LineAcc, Acc) ->
-    split_lines_w_offsets(Text, Offset+1, LineOffset, [C | LineAcc], Acc).
-
-
+%% [{Length, TextIncNL}...]
 split_lines_w_lengths(Text) ->
     split_lines_w_lengths(Text, 0, [], []).
 
@@ -160,19 +159,23 @@ find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offs
 
 replace_between_lines(From, Length, With, Lines) ->
     {LineNo1, Pos1, _Length1, Line1} = find_line_w_offset(From, Lines),
-    {LineNo2, Pos2, _Length2, Line2} = find_line_w_offset(From+Length, Lines),
     FirstPiece = string:substr(Line1, 1, From-Pos1),
-    LastPiece = string:substr(Line2, From+Length-Pos2+1),
-	WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
+    {LineNo2, Pos2, _Length2, Line2} = find_line_w_offset(From+Length, Lines),
+	LastPiece = string:substr(Line2, From+Length-Pos2+1),
+%%     io:format("LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece ~p \n",
+              ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece]),
+    WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
     NOldLines = LineNo2-LineNo1+1,
-	{LineNo1, NOldLines, WLines,
+%%     io:format("LineNo1, NOldLines, length(Lines) WLines ~p \n",
+              ?D([LineNo1, NOldLines, length(Lines), WLines]),
+    {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 
 replace_between2(From, Length, With, In) ->
     string:substr(In, 1, From)++With++string:substr(In, From+Length+1).
 
 lines_to_text(Lines) ->
-	lists:append([L || {_, L} <- Lines]).
+	lists:append([L || {_, L} <- Lines, [L] =/= [eof]]).
 
 replace_start_ends(New1, New2, []) ->
     [New1, New2];
@@ -225,9 +228,13 @@ loop(Modules) ->
             NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
             NewMods = [NewMod | lists:keydelete(Mod, #module.name, Modules)],
             ?MODULE:loop(NewMods);
-        {modules, From} ->
-            From ! {modules, self(), Modules},
+        {all, From} ->
+            From ! {all, self(), Modules},
             ?MODULE:loop(Modules);
+		{modules, From} ->
+			Mods = [M#module.name || M <- Modules],
+			From ! {modules, self(), Mods},
+			?MODULE:loop(Modules);
 		{dump_module, From, Mod} ->
             case lists:keysearch(Mod, #module.name, Modules) of
                 {value, Module} ->
@@ -258,9 +265,20 @@ loop(Modules) ->
         {get_text, From, Mod} ->
             case lists:keysearch(Mod, #module.name, Modules) of
                 {value, Module} ->
-                    From ! {get_text, self(), lines_to_text(Module#module.lines)};
+                    ?D(a),
+                    From ! {get_text, self(), lines_to_text(Module#module.lines)},
+                    ?D(b);
                 false ->
                     From ! {get_text, self(), module_not_found}
+            end,
+            ?MODULE:loop(Modules);
+        {get_text_line, From, Mod, Line} ->
+            case lists:keysearch(Mod, #module.name, Modules) of
+                {value, Module} ->
+                    L = (catch lists:nth(Line+1, Module#module.lines)),
+                    From ! {get_text_line, self(), L};
+                false ->
+                    From ! {get_text_line, self(), module_not_found}
             end,
             ?MODULE:loop(Modules);
         {get_tokens, From, Mod} ->
@@ -288,17 +306,19 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
     erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
 
 do_scan(ScannerName, InitialText) ->
-    Lines = split_lines_w_lengths(InitialText),
+    Lines = split_lines_w_lengths(InitialText) ++ [{1, [eof]}],
     LineTokens = [scan_line(L) || L <- Lines],
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
+scan_line({1, [eof]} = T) ->
+	T;
 scan_line({Length, S}) ->
-    {ok, T, _} = erlide_scan:string(S),
-    {Length, T}.
-
+    {ok, T, _} = erlide_scan:string(S, {0, 0}),
+    {Length, erlide_scan:filter_ws(T)}.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
-    ?D({Module, Offset, RemoveLength, NewText}),
+    ?D({text_length, length(lines_to_text(Module#module.lines))}),
+    ?D({Module#module.name, Offset, RemoveLength, length(NewText)}),
     {Line, NOldLines, AffectedLines, NewLines} = 
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
     LineTokens = [scan_line(L) || L <- AffectedLines],
@@ -308,15 +328,68 @@ replace_text(Module, Offset, RemoveLength, NewText) ->
 get_token_at(Module, Offset) ->
     case find_line_w_offset(Offset, Module#module.tokens) of
         {N, Pos, _Length, Tokens} ->
-            T = get_token_at_aux(Tokens, Offset - Pos),
-            M = erlide_scanner:mktoken(T, Pos, N),
-            {ok, M};
+            case get_token_at_aux(Tokens, Offset - Pos) of
+                token_not_found ->
+                    token_not_found;
+                T ->
+                    M = mktoken(T, Pos, N),
+                    {ok, M}
+            end;
         not_found ->
             line_not_found
     end.
 
-fix_tokens(Tokens, Offset, Line) ->
-    [erlide_scanner:mktoken(T, Offset, Line) || T <- Tokens].
+get_tokens_at(Module, Offset, N) -> 
+    get_tokens_at(Module, Offset, N, []).
+
+get_tokens_at(_Module, _Offset, 0, Acc) ->
+    lists:reverse(Acc);
+get_tokens_at(Module, Offset, N, Acc0) ->
+    case find_line_w_offset(Offset, Module#module.tokens) of
+        {LineNo, Pos, Length, Tokens} ->
+            {M, Ts} = get_tokens_at_aux(Tokens, Offset - Pos, N),
+            Acc1 = 
+                lists:foldl(fun(T, LAcc) ->
+                                    [mktoken(T, Pos, LineNo) | LAcc]
+                            end, Acc0, Ts),
+            get_tokens_at(Module, Pos+Length, N-M, Acc1);
+        not_found ->
+            lists:reverse(Acc0)
+    end.
+
+%% get tokens _before_ an offset, quite complicated...
+get_tokens_before(Module, Offset, N) ->
+    Lines = get_lines_before_and_upto(Module#module.tokens, Offset),
+    R = get_tokens_before_aux(Lines, Offset, N, []),
+    lists:reverse(R).
+
+get_lines_before_and_upto(Lines, Offset) -> 
+    get_lines_before_and_upto(Lines, 0, 0, Offset, []).
+
+get_lines_before_and_upto(L, CurOfs, _, Offset, Acc) when L == []; CurOfs >= Offset ->
+    Acc;
+get_lines_before_and_upto([{Length, L} | Rest], CurOfs, N, Offset, Acc) ->
+	get_lines_before_and_upto(Rest, CurOfs+Length, N+1, Offset, [{CurOfs, N, L} | Acc]).
+
+get_tokens_before_aux(L, _, N, Acc) when L == []; N == 0 ->
+	Acc;
+get_tokens_before_aux([{LineOfs, LineNo, Tokens} | Rest], Offset, N0, Acc0) ->
+	{N1, Acc1} = get_tokens_before_aux2(lists:reverse(Tokens), Offset, LineOfs, LineNo, N0, Acc0),
+	get_tokens_before_aux(Rest, Offset, N1, Acc1).
+
+get_tokens_before_aux2(L, _, _, _, N, Acc) when L == []; N == 0 ->
+	{N, Acc};
+get_tokens_before_aux2([T | Rest], Offset, LineOfs, LineNo, N, Acc) ->
+    case token_pos(T) of
+        {{_, Ofs}, Len}
+          when Offset > LineOfs+Ofs+Len ->
+            get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N-1, [mktoken(T, LineOfs, LineNo) | Acc]);
+        _ ->
+            get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N, Acc)
+    end.
+
+mktokens(Tokens, Offset, Line) ->
+    [mktoken(T, Offset, Line) || T <- Tokens].
 
 
 get_token_at_aux([], _) ->
@@ -330,21 +403,50 @@ get_token_at_aux([T | Rest], Offset) ->
             get_token_at_aux(Rest, Offset)
     end.
 
+get_tokens_at_aux(Tokens, Offset, N) -> 
+    get_tokens_at_aux(Tokens, Offset, 0, N, []).
+
+get_tokens_at_aux([], _, M, _, Acc) ->
+	{M, lists:reverse(Acc)};
+get_tokens_at_aux(_, _, M, N, Acc) when M == N ->
+    {M, lists:reverse(Acc)};
+get_tokens_at_aux([T | Rest], Offset, M, N, Acc) ->
+	case token_pos(T) of
+        {{_, Ofs}, Len}
+          when Offset < Ofs+Len ->
+            get_tokens_at_aux(Rest, Offset, M+1, N, [T | Acc]);
+		_ ->
+            get_tokens_at_aux(Rest, Offset, M, N, Acc)
+	end.
+
+
 get_all_tokens(#module{tokens=Tokens}) ->
 	get_all_tokens(Tokens, 0, 0, []).
 
 get_all_tokens([], _, _, Acc) ->
     lists:flatten(Acc); % instead of append(reverse())
 get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
-	T = fix_tokens(Tokens, Pos, Line),
+	T = mktokens(Tokens, Pos, Line),
 	get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
-get_token_window(Module, Offset, _Before, _After) ->
-    {get_token_at(Module, Offset), 0}.
-
-
-
+get_token_window(Module, Offset, Before, After) ->
+    {get_tokens_at(Module, Offset, After), get_tokens_before(Module, Offset, Before)}.
 
 token_pos({_, Pos}) -> Pos;
 token_pos({_, Pos, _}) -> Pos;
-token_pos({_, Pos, _, _}) ->Pos.
+token_pos({_, Pos, _, _}) ->Pos;
+token_pos(eof) -> 1000000000.
+
+mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
+mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
+    #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
+mktoken({K, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
+mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
+mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T};
+mktoken(eof, _, _) ->
+    eof.
+

@@ -44,12 +44,13 @@ public class ErlideScanner2 {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(MODULE,
-					"getTokenAt", "ai", module, offset + 1);
+					"getTokenAt", "ai", module, offset);
+			ErlLogger.debug("getTokenAt -> " + r1);
 		} catch (final Exception e) {
 			// e.printStackTrace();
 			return null;
 		}
-		if (r1 == null) {
+		if (r1 == null || !(r1 instanceof OtpErlangTuple)) {
 			return null;
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
@@ -94,13 +95,12 @@ public class ErlideScanner2 {
 		return null;
 	}
 
-	@SuppressWarnings("boxing")
 	public static void replaceText(String module, int offset, int removeLength,
 			String newText) {
 		try {
 			final OtpErlangObject r = BackendManager.getDefault()
 					.getIdeBackend().rpcx(MODULE, "replaceText", "aiis",
-							module, offset + 1, removeLength, newText);
+							module, offset, removeLength, newText);
 			if (r instanceof OtpErlangTuple) {
 				ErlLogger.error("GOT::" + r.toString());
 			}

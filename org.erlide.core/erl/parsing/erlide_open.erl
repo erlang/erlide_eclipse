@@ -12,6 +12,9 @@
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
+%-define(SCANNER, erlide_scanner).
+-define(SCANNER, erlide_scanner2).
+
 
 %%
 %% Exported Functions
@@ -27,12 +30,14 @@
 %%
 
 
-%% b.rpcx("erlide_open", "open", "ailx", scannerName, offset, pathVars);
 open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
-    Limit = 5,
    	try
-        [try_open(Mod, Offset, I, ExternalModules, PathVars) || I <- lists:seq(0, Limit)],
+        {TokensWComments, BeforeReversed} = 
+            ?SCANNER:getTokenWindow(Mod, Offset, 5, 50),
+		?D({TokensWComments, BeforeReversed}),
+        try_open(Mod, Offset, TokensWComments, BeforeReversed, 
+                 ExternalModules, PathVars),
         error
     catch
         throw:{open, Res} ->
@@ -43,26 +48,24 @@ open(Mod, Offset, ExternalModules, PathVars) ->
             error
     end.
 
-try_open(Mod, Offset, TokenOffset, ExternalModules, PathVars) ->
-	TokensWComments  = erlide_scanner:getTokenWindow(Mod, Offset, TokenOffset, 50),
+try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars) ->
     ?D(TokensWComments),
     Tokens = strip_comments(TokensWComments),
 	?D(Tokens),
-    o_tokens(Tokens, Mod, ExternalModules, PathVars).
-
-consider_local(M, T) ->
-    (getPrevNonCommentToken(M, T))#token.kind =/= ':'.
-    
-getPrevNonCommentToken(M, T) ->
-	case erlide_scanner:getPrevToken(M, T) of
-		T ->
-            T;
-        #token{kind=comment}=T2 ->
-            getPrevNonCommentToken(M, T2);
-        T3 ->
-            T3
+    o_tokens(Tokens, ExternalModules, PathVars, BeforeReversed),
+	case BeforeReversed of
+		[] ->
+			not_found;
+		[B | Rest] ->
+			try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
     end.
-		
+
+consider_local([]) ->
+	true;
+consider_local([#token{kind=':'} | _]) ->
+	false;
+consider_local([#token{kind=comment} | More]) ->
+	consider_local(More).
 
 strip_comments(Tokens) ->
     [T || T <- Tokens, T#token.kind =/= comment].
@@ -76,13 +79,11 @@ o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
 o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _, _) ->
     o_record(Value);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
-         _, ExternalModules, PathVars) ->
+         ExternalModules, PathVars, _) ->
     o_external(Module, Function, Rest, ExternalModules, PathVars);
-o_tokens([#token{kind=atom, value=Function}=T, #token{kind='('} | Rest], Module, _, _) ->
-    ?D(Module),
-	case consider_local(Module, T) of
+o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest], _, _, BeforeReversed) ->
+	case consider_local(BeforeReversed) of
         true ->
-            ?D(true),
             throw({open, {local, Function, erlide_text:guess_arity(Rest)}});
         false ->
             continue
