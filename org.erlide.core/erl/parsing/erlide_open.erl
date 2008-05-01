@@ -81,6 +81,10 @@ o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _, _) ->
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
          ExternalModules, PathVars, _) ->
     o_external(Module, Function, Rest, ExternalModules, PathVars);
+o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, _) ->
+    throw({open, {local, Function, Arity}});
+o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, [#token{kind=atom, value=Function} | _]) ->
+    throw({open, {local, Function, Arity}});
 o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest], _, _, BeforeReversed) ->
 	case consider_local(BeforeReversed) of
         true ->

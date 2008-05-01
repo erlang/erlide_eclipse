@@ -8,6 +8,7 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.actions.OpenAction;
@@ -60,8 +61,9 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		fModule = ErlModelUtils.getModule(editor);
 		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 
-		if (token == null)
+		if (token == null) {
 			return null;
+		}
 		final String tokenKind = token.getKind();
 		if (!tokenKind.equals("atom") && !tokenKind.equals("string")
 				&& !tokenKind.equals("macro")) {
@@ -162,7 +164,9 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		public ErlangSubHyperlink(ErlangEditor editor, String subName,
 				ErlPartition partion) {
 			this.editor = editor;
-			partion.setOffset(partion.getOffset() - 1);
+			if (!ErlScanner.UseScanner2) {
+				partion.setOffset(partion.getOffset() - 1);
+			}
 			subNameRegion = partion;
 		}
 

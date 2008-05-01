@@ -45,20 +45,35 @@ public class ErlToken {
 
 	public ErlToken(OtpErlangTuple e) {
 		fTuple = e;
-		kind = ((OtpErlangAtom) (e.elementAt(0))).atomValue();
+		kind = ((OtpErlangAtom) e.elementAt(0)).atomValue();
 		if (TRACE) {
 			ErlLogger.debug("    =" + e.toString());
 		}
 		try {
-			if (e.elementAt(1) instanceof OtpErlangTuple) {
-				OtpErlangTuple pos;
-				pos = (OtpErlangTuple) e.elementAt(1);
-				// length = ((OtpErlangLong) pos.elementAt(1)).intValue() - 1;
-				length = ((OtpErlangLong) pos.elementAt(1)).intValue();
-				pos = (OtpErlangTuple) pos.elementAt(0);
-				offset = ((OtpErlangLong) pos.elementAt(1)).intValue() - 1;
+			if (ErlScanner.UseScanner2) {
+				if (e.elementAt(1) instanceof OtpErlangTuple) {
+					OtpErlangTuple pos;
+					pos = (OtpErlangTuple) e.elementAt(1);
+					// length = ((OtpErlangLong) pos.elementAt(1)).intValue() -
+					// 1;
+					length = ((OtpErlangLong) pos.elementAt(1)).intValue();
+					pos = (OtpErlangTuple) pos.elementAt(0);
+					offset = ((OtpErlangLong) pos.elementAt(1)).intValue();
+				} else {
+					offset = ((OtpErlangLong) e.elementAt(1)).intValue();
+				}
 			} else {
-				offset = ((OtpErlangLong) e.elementAt(1)).intValue() - 1;
+				if (e.elementAt(1) instanceof OtpErlangTuple) {
+					OtpErlangTuple pos;
+					pos = (OtpErlangTuple) e.elementAt(1);
+					// length = ((OtpErlangLong) pos.elementAt(1)).intValue() -
+					// 1;
+					length = ((OtpErlangLong) pos.elementAt(1)).intValue();
+					pos = (OtpErlangTuple) pos.elementAt(0);
+					offset = ((OtpErlangLong) pos.elementAt(1)).intValue() - 1;
+				} else {
+					offset = ((OtpErlangLong) e.elementAt(1)).intValue() - 1;
+				}
 			}
 		} catch (final OtpErlangRangeException e1) {
 			e1.printStackTrace();
@@ -96,7 +111,7 @@ public class ErlToken {
 			{
 				final OtpErlangObject[] ems = ((OtpErlangList) ee).elements();
 				final StringBuilder buf = new StringBuilder(ems.length);
-				for (OtpErlangObject element : ems) {
+				for (final OtpErlangObject element : ems) {
 					try {
 						buf.append(((OtpErlangLong) element).intValue());
 					} catch (final OtpErlangRangeException e1) {

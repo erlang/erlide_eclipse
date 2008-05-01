@@ -22,6 +22,7 @@ import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -30,6 +31,7 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.IColorManager;
 
 import erlang.ErlideScanner;
+import erlang.ErlideScanner2;
 
 /**
  * Erlang syntax fScanner
@@ -57,21 +59,21 @@ public class ErlHighlightScanner implements ITokenScanner {
 		}
 	};
 
-	private Token t_def;
-	private Token t_atom;
-	private Token t_attribute;
-	private Token t_string;
-	private Token t_keyword;
-	private Token t_var;
-	private Token t_char;
-	private Token t_arrow;
-	private Token t_guard;
-	private Token t_bif;
-	private Token t_macro;
-	private Token t_record;
-	private Token t_integer;
-	private Token t_float;
-	private Token t_comment;
+	private final Token t_def;
+	private final Token t_atom;
+	private final Token t_attribute;
+	private final Token t_string;
+	private final Token t_keyword;
+	private final Token t_var;
+	private final Token t_char;
+	private final Token t_arrow;
+	private final Token t_guard;
+	private final Token t_bif;
+	private final Token t_macro;
+	private final Token t_record;
+	private final Token t_integer;
+	private final Token t_float;
+	private final Token t_comment;
 
 	private final IColorManager fColorManager;
 	protected List<ErlToken> fTokens;
@@ -200,7 +202,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 *            the new value of the color
 	 */
 	public void handleColorChange(String id, RGB newValue) {
-		Token token = getToken(id);
+		final Token token = getToken(id);
 		fixTokenData(token, newValue);
 	}
 
@@ -250,8 +252,8 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return;
 		}
 		try {
-			int line1 = document.getLineOfOffset(offset);
-			int line2 = document.getLineOfOffset(offset + length);
+			final int line1 = document.getLineOfOffset(offset);
+			final int line2 = document.getLineOfOffset(offset + length);
 			rangeOffset = document.getLineOffset(line1);
 			rangeLength = document.getLineOffset(line2) - rangeOffset
 					+ document.getLineLength(line2);
@@ -275,9 +277,11 @@ public class ErlHighlightScanner implements ITokenScanner {
 			fCrtToken = -1;
 
 			final String str = document;
-			final List<ErlToken> toks = ErlideScanner.lightScanString(str,
-					rangeOffset);
-			fTokens = toks;
+			if (ErlScanner.UseScanner2) {
+				fTokens = ErlideScanner2.lightScanString(str, rangeOffset);
+			} else {
+				fTokens = ErlideScanner.lightScanString(str, rangeOffset);
+			}
 
 		} catch (final ErlangRpcException e) {
 			// e.printStackTrace();

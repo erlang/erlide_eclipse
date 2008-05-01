@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 4). %% odd numbers for scanner, even numbers for scanner2
+-define(CACHE_VERSION, 6). %% odd numbers for scanner, even numbers for scanner2
 
 -define(SERVER, ?MODULE).
 
@@ -382,7 +382,7 @@ get_tokens_before_aux2(L, _, _, _, N, Acc) when L == []; N == 0 ->
 get_tokens_before_aux2([T | Rest], Offset, LineOfs, LineNo, N, Acc) ->
     case token_pos(T) of
         {{_, Ofs}, Len}
-          when Offset > LineOfs+Ofs+Len ->
+          when Offset >= LineOfs+Ofs+Len ->
             get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N-1, [mktoken(T, LineOfs, LineNo) | Acc]);
         _ ->
             get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N, Acc)

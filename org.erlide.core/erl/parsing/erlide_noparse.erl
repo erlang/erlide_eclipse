@@ -19,7 +19,7 @@
 %-define(SCANNER, erlide_scanner).
 -define(SCANNER, erlide_scanner2).
 
--define(CACHE_VERSION, 1).
+-define(CACHE_VERSION, 2).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
