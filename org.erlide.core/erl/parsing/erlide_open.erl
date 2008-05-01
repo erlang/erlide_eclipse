@@ -7,7 +7,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -65,7 +65,9 @@ consider_local([]) ->
 consider_local([#token{kind=':'} | _]) ->
 	false;
 consider_local([#token{kind=comment} | More]) ->
-	consider_local(More).
+	consider_local(More);
+consider_local(_) ->
+    true.
 
 strip_comments(Tokens) ->
     [T || T <- Tokens, T#token.kind =/= comment].
@@ -88,6 +90,7 @@ o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, [#toke
 o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest], _, _, BeforeReversed) ->
 	case consider_local(BeforeReversed) of
         true ->
+            ?D(Rest),
             throw({open, {local, Function, erlide_text:guess_arity(Rest)}});
         false ->
             continue

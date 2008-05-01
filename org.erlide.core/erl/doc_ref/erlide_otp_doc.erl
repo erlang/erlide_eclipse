@@ -17,7 +17,10 @@
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
--define(CACHE_VERSION, 1).
+-define(CACHE_VERSION, 2).
+
+%-define(SCANNER, erlide_scanner).
+-define(SCANNER, erlide_scanner2).
 
 %% recursively return tags for which Fun returns true
 %%
@@ -383,22 +386,18 @@ get_all_links_to_other() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
-    Window = 12,
-    List = erlide_scanner:getTokenWindow(Module, Offset, Window),
-    ?D({get_doc, List}),
-    D = case erlide_text:check_function_call(List, Window) of
-            {ok, M, F, Rest} ->
-                get_doc_for_external(StateDir, M, [{F, erlide_text:guess_arity(Rest)}]);
-            {ok, F, Rest} ->
-                ?D({F, Rest}),
-                 get_doc_for_local(StateDir, F, erlide_text:guess_arity(Rest),
-                                                Imports);
-            _ ->
-                {_Left, Right} = lists:split(2, List),
-                [Token | _] = Right,
-                [Token]
-        end,
-    lists:flatten(D).
+    case erlide_open:open(Module, Offset, "", []) of
+        {external, M, Function, N, _P} ->
+            ?D({open, {external, M, Function, N, _P}}),
+            D = get_doc_for_external(StateDir, M, [{Function, N}]),
+            lists:flatten(D);
+        {local, Function, N} ->
+            D = get_doc_for_local(StateDir, Function, N, Imports),
+			lists:flatten(D);
+        _D ->
+            ?D(_D),
+            error
+    end.
 
 get_doc_for_external(StateDir, Mod, FuncList) ->
     try
