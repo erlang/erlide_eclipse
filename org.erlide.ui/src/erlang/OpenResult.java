@@ -51,7 +51,7 @@ public class OpenResult {
 				isRecord = kind.equals("record");
 				name = ((OtpErlangAtom) tres.elementAt(1)).atomValue();
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -92,4 +92,29 @@ public class OpenResult {
 		return isInclude;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder b = new StringBuilder("OpenResult {");
+		if (isRecord) {
+			b.append("record ").append(name);
+		} else if (isInclude) {
+			b.append("include \"").append(name).append("\"");
+		} else if (isMacro) {
+			b.append("macro ").append(name);
+		} else if (isRecord) {
+			b.append("record ").append(name);
+		} else if (isExternalCall) {
+			b.append("external ");
+			b.append(name).append(":").append(fun).append("/").append(arity);
+		} else if (isLocalCall) {
+			b.append("local ").append(fun).append("/").append(arity);
+		}
+		b.append("}");
+		return b.toString();
+	}
 }
