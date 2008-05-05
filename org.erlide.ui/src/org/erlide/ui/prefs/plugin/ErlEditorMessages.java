@@ -82,6 +82,14 @@ public class ErlEditorMessages extends NLS {
 
 	public static String IndentationPrefs_36;
 
+	public static String IndentationPrefs_50;
+
+	public static String IndentationPrefs_51;
+
+	public static String IndentationPrefs_52;
+
+	public static String IndentationPrefs_53;
+
 	public static String IndentationPrefs_6;
 
 	public static String IndentationPrefs_9;

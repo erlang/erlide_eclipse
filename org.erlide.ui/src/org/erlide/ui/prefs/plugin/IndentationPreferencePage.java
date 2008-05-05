@@ -60,14 +60,17 @@ public class IndentationPreferencePage extends PreferencePage implements
 			ErlEditorMessages.IndentationPrefs_24,
 			ErlEditorMessages.IndentationPrefs_27,
 			ErlEditorMessages.IndentationPrefs_30,
-			ErlEditorMessages.IndentationPrefs_33, "comma_nl desc",
-			"semicolon_nl desc", "dot_nl desc", "arrow_nl desc" };
+			ErlEditorMessages.IndentationPrefs_33,
+			ErlEditorMessages.IndentationPrefs_50,
+			ErlEditorMessages.IndentationPrefs_51,
+			ErlEditorMessages.IndentationPrefs_52,
+			ErlEditorMessages.IndentationPrefs_53 };
 
 	private static final String INDENT_KEYS[] = new String[] {
-			"before_binary_op", "after_binary_op", "before_arrow",
-			"after_arrow", "after_unary_op", "clause", "case", "try", "catch",
-			"function_parameters", "fun", "fun_body", "comma_nl",
-			"semicolon_nl", "dot_nl", "arrow_nl" };
+			"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			"after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"function_parameters", "fun", "fun_body", "comma_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"semicolon_nl", "dot_nl", "arrow_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
 
