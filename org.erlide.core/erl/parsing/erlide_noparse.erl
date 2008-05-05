@@ -29,13 +29,14 @@
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
 
-initial_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
+initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
     try
     	?D({StateDir, ModuleFileName}),
-		Renew = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitalText, StateDir) end,
+		RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir) end,
+        CacheFun = fun(D) -> ?SCANNER:initialScan(ScannerName, ModuleFileName, InitialText, StateDir), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, Renew),
+		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
         {ok, Res}
     catch
         error:Reason ->

@@ -161,9 +161,9 @@ find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offs
 find_line_w_offset(_Offset, Pos, N, [{Length, Line}]) ->
     case ends_with_newline(Line) of
         true ->
-            {N+1, Pos+Length, 0, "", true};
+            {N+1, Pos+Length, 0, "", beyond_eof};
         false ->
-            {N, Pos+Length, Length, Line, false}
+            {N, Pos+Length, Length, Line, on_eof}
     end.
 
 ends_with_newline("") -> false;
@@ -447,7 +447,12 @@ get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
 	get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
 get_token_window(Module, Offset, Before, After) ->
-    {get_tokens_at(Module, Offset, After), get_tokens_before(Module, Offset, Before)}.
+    ?D({Module, Offset, Before, After}),
+    A = get_tokens_at(Module, Offset, After),
+    ?D(A),
+    B = get_tokens_before(Module, Offset, Before),
+    ?D(B),
+    {A, B}.
 
 token_pos({_, Pos}) -> Pos;
 token_pos({_, Pos, _}) -> Pos;

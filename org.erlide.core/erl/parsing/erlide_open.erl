@@ -72,9 +72,9 @@ consider_local(_) ->
 strip_comments(Tokens) ->
     [T || T <- Tokens, T#token.kind =/= comment].
 
-o_tokens([#token{kind='-'}, #token{kind=atom, value=include} | Rest], _, _, _) ->
+o_tokens([#token{kind=atom, value=include} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_include(Rest);
-o_tokens([#token{kind='-'}, #token{kind=atom, value=include_lib} | Rest], _, _, _) ->
+o_tokens([#token{kind=atom, value=include_lib} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_include_lib(Rest);
 o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
     o_macro(Value);
