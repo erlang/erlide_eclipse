@@ -152,11 +152,20 @@ public class ErlangProjectProperties {
 		if (!fOutputDir.equals(outputDir)) {
 			IBackend b = BackendManager.getDefault().get(project);
 
-			String p = project.getLocation().append(fOutputDir).toString();
-			b.getCodeManager().removePath(getUsePathZ(), p);
+			assert (project != null);
+			final IPath location = project.getLocation();
+			if (location == null) {
+				ErlLogger.debug("### project.getLocation() is null for %s. "
+						+ "URI='%s', old='%s', new='%s'", project.getName(),
+						project.getLocationURI().toString(), fOutputDir,
+						outputDir);
+			} else {
+				String p = location.append(fOutputDir).toString();
+				b.getCodeManager().removePath(getUsePathZ(), p);
 
-			p = project.getLocation().append(outputDir).toString();
-			b.getCodeManager().addPath(getUsePathZ(), p);
+				p = location.append(outputDir).toString();
+				b.getCodeManager().addPath(getUsePathZ(), p);
+			}
 		}
 		fOutputDir = outputDir;
 	}

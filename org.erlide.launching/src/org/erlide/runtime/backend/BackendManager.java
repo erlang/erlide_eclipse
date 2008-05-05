@@ -137,7 +137,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public synchronized IBackend get(IProject project) {
 		synchronized (fProjectBackendsLock) {
-			ErlLogger.debug("** connect: " + project.getName() + " "
+			ErlLogger.debug("** getBackend: " + project.getName() + " "
 					+ Thread.currentThread());
 			// Thread.dumpStack();
 			final String name = getBackendName(project);
