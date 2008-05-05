@@ -7,7 +7,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 6). %% odd numbers for scanner, even numbers for scanner2
+-define(CACHE_VERSION, 8). %% odd numbers for scanner, even numbers for scanner2
 
 -define(SERVER, ?MODULE).
 
@@ -147,27 +147,45 @@ split_lines_w_lengths("\r" ++ Text, Length, LineAcc, Acc) ->
 split_lines_w_lengths([C | Text], Length, LineAcc, Acc) ->
     split_lines_w_lengths(Text, Length+1, [C | LineAcc], Acc).
 
+%% Find a line from [{Length, Line
+
 find_line_w_offset(Offset, Lines) ->
     find_line_w_offset(Offset, 0, 0, Lines).
 
 find_line_w_offset(_Offset, _Pos, _N, []) ->
     not_found;
-find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos+Length ->
+find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos+Length, Lines =/= [] ->
 	find_line_w_offset(Offset, Pos+Length, N+1, Lines);
 find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offset < Pos + Length ->
-	{N, Pos, Length, Line}.
+	{N, Pos, Length, Line, false};
+find_line_w_offset(_Offset, Pos, N, [{Length, Line}]) ->
+    case ends_with_newline(Line) of
+        true ->
+            {N+1, Pos+Length, 0, "", true};
+        false ->
+            {N, Pos+Length, Length, Line, false}
+    end.
+
+ends_with_newline("") -> false;
+ends_with_newline("\n") -> true;
+ends_with_newline("\r") -> true;
+ends_with_newline("\r\n") -> true;
+ends_with_newline([_C | R]) -> ends_with_newline(R).
 
 replace_between_lines(From, Length, With, Lines) ->
-    {LineNo1, Pos1, _Length1, Line1} = find_line_w_offset(From, Lines),
+    {LineNo1, Pos1, _Length1, Line1, Beyond} = find_line_w_offset(From, Lines),
+    ?D({LineNo1, Pos1, _Length1, Line1, Beyond}),
     FirstPiece = string:substr(Line1, 1, From-Pos1),
-    {LineNo2, Pos2, _Length2, Line2} = find_line_w_offset(From+Length, Lines),
+    {LineNo2, Pos2, _Length2, Line2, _Beyond} = find_line_w_offset(From+Length, Lines),
+    ?D({LineNo2, Pos2, _Length2, Line2, _Beyond}),
 	LastPiece = string:substr(Line2, From+Length-Pos2+1),
-%%     io:format("LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece ~p \n",
-              ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece]),
+    ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece]),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
-    NOldLines = LineNo2-LineNo1+1,
-%%     io:format("LineNo1, NOldLines, length(Lines) WLines ~p \n",
-              ?D([LineNo1, NOldLines, length(Lines), WLines]),
+    NOldLines = case Beyond of
+                    true -> 0;
+                    false -> LineNo2-LineNo1+1
+                end,
+    ?D([LineNo1, NOldLines, WLines, Lines]),
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 
@@ -175,7 +193,7 @@ replace_between2(From, Length, With, In) ->
     string:substr(In, 1, From)++With++string:substr(In, From+Length+1).
 
 lines_to_text(Lines) ->
-	lists:append([L || {_, L} <- Lines, [L] =/= [eof]]).
+    lists:append([L || {_, L} <- Lines]).
 
 replace_start_ends(New1, New2, []) ->
     [New1, New2];
@@ -306,12 +324,10 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
     erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
 
 do_scan(ScannerName, InitialText) ->
-    Lines = split_lines_w_lengths(InitialText) ++ [{1, [eof]}],
+    Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
-scan_line({1, [eof]} = T) ->
-	T;
 scan_line({Length, S}) ->
     {ok, T, _} = erlide_scan:string(S, {0, 0}),
     {Length, erlide_scan:filter_ws(T)}.
@@ -321,13 +337,14 @@ replace_text(Module, Offset, RemoveLength, NewText) ->
     ?D({Module#module.name, Offset, RemoveLength, length(NewText)}),
     {Line, NOldLines, AffectedLines, NewLines} = 
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
+    ?D(AffectedLines),
     LineTokens = [scan_line(L) || L <- AffectedLines],
     NewTokens = replace_between(Line, NOldLines, LineTokens, Module#module.tokens),
     Module#module{lines=NewLines, tokens=NewTokens}.
 
 get_token_at(Module, Offset) ->
     case find_line_w_offset(Offset, Module#module.tokens) of
-        {N, Pos, _Length, Tokens} ->
+        {N, Pos, _Length, Tokens, false} ->
             case get_token_at_aux(Tokens, Offset - Pos) of
                 token_not_found ->
                     token_not_found;
@@ -335,7 +352,7 @@ get_token_at(Module, Offset) ->
                     M = mktoken(T, Pos, N),
                     {ok, M}
             end;
-        not_found ->
+        _ ->
             line_not_found
     end.
 
@@ -346,14 +363,14 @@ get_tokens_at(_Module, _Offset, 0, Acc) ->
     lists:reverse(Acc);
 get_tokens_at(Module, Offset, N, Acc0) ->
     case find_line_w_offset(Offset, Module#module.tokens) of
-        {LineNo, Pos, Length, Tokens} ->
+        {LineNo, Pos, Length, Tokens, false} ->
             {M, Ts} = get_tokens_at_aux(Tokens, Offset - Pos, N),
             Acc1 = 
                 lists:foldl(fun(T, LAcc) ->
                                     [mktoken(T, Pos, LineNo) | LAcc]
                             end, Acc0, Ts),
             get_tokens_at(Module, Pos+Length, N-M, Acc1);
-        not_found ->
+        _ ->
             lists:reverse(Acc0)
     end.
 
@@ -434,8 +451,7 @@ get_token_window(Module, Offset, Before, After) ->
 
 token_pos({_, Pos}) -> Pos;
 token_pos({_, Pos, _}) -> Pos;
-token_pos({_, Pos, _, _}) ->Pos;
-token_pos(eof) -> 1000000000.
+token_pos({_, Pos, _, _}) ->Pos.
 
 mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
     #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
@@ -446,7 +462,4 @@ mktoken({K, {{L, O}, G}}, Ofs, NL) ->
 mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
 mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T};
-mktoken(eof, _, _) ->
-    eof.
-
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.

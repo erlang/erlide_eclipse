@@ -88,7 +88,7 @@ check_add_newline(S, Prefs) ->
 fix_tokens(Tokens, NL) ->
     [erlide_scanner:mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
 
--record(i, {anchor, indent_line, current, prefs}).
+-record(i, {anchor, indent_line, current, in_block, prefs}).
 
 get_prefs([], OldP, Acc) ->
     Acc ++ OldP;
@@ -112,6 +112,10 @@ indent(Tokens, LineOffsets, LineN, Prefs) ->
         throw:{indent, A, C} ->
             trace_stop(),
             ?D({indent, A, C}),
+            get_indent_of(A, C, LineOffsets);
+        throw:{indent_eof, A, C} ->
+            trace_stop(),
+            ?D({indent_eof, A, C}),
             get_indent_of(A, C, LineOffsets);
         throw:{indent, N} ->
             trace_stop(),

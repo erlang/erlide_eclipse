@@ -96,7 +96,7 @@ cac(attribute, Attribute) ->
                        name=Name, args=[]}
     end;
 cac(other, [#token{value=Name, line=Line,
-                         offset=Offset, length=Length} | _]) ->
+                   offset=Offset, length=Length} | _]) ->
     #other{pos={{Line, Line, Offset}, Length}, name=Name};
 cac(_, _D) ->
 	?D(_D),
@@ -145,9 +145,6 @@ get_between2([T | Rest], B, Acc) ->
 
 reverse2(L) ->
     lists:reverse([lists:reverse(A) || A <- L]).
-%%     lists:foldl(fun(E, Acc) ->
-%%                         [lists:reverse(E) | Acc]
-%%                 end, [], L).
 
 split_after_dots([], Acc, []) ->
     reverse2(Acc);

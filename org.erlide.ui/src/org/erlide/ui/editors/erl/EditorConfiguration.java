@@ -194,7 +194,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		final ErlReconciler reconciler = new ErlReconciler(strategy, true);
 		// reconciler.setIsIncrementalReconciler(false);
 		reconciler.setProgressMonitor(new NullProgressMonitor());
-		reconciler.setDelay(500);
+		reconciler.setDelay(100);
 		return reconciler;
 	}
 
