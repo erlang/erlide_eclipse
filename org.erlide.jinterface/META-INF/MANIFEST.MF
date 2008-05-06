@@ -14,3 +14,4 @@ Export-Package: com.ericsson.otp.erlang,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources
 Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

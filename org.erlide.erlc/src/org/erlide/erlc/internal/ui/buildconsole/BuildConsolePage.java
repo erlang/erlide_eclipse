@@ -177,7 +177,9 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite
+	 * )
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -204,8 +206,10 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 				fTextListener);
 
 		// JFaceResources.getFontRegistry().addListener(this);
-		// setFont(JFaceResources.getFont(BuildConsolePreferencePage.PREF_BUILDCONSOLE_FONT));
-		// setTabs(CUIPlugin.getDefault().getPluginPreferences().getInt(BuildConsolePreferencePage.PREF_BUILDCONSOLE_TAB_WIDTH));
+		// setFont(JFaceResources.getFont(BuildConsolePreferencePage.
+		// PREF_BUILDCONSOLE_FONT));
+		// setTabs(CUIPlugin.getDefault().getPluginPreferences().getInt(
+		// BuildConsolePreferencePage.PREF_BUILDCONSOLE_TAB_WIDTH));
 
 		getConsole().addPropertyChangeListener(this);
 
@@ -217,7 +221,7 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 * Fill the context menu
 	 * 
 	 * @param menu
-	 *            menu
+	 * 		menu
 	 */
 	protected void contextMenuAboutToShow(IMenuManager menu) {
 		menu.add(fGlobalActions.get(ActionFactory.COPY.getId()));
@@ -232,7 +236,9 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 * @see
+	 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse
+	 * .jface.util.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent event) {
 		// final Object source = event.getSource();
@@ -254,11 +260,14 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 		// } else if
 		// (property.equals(BuildConsolePreferencePage.PREF_BUILDCONSOLE_FONT))
 		// {
-		// setFont(JFaceResources.getFont(BuildConsolePreferencePage.PREF_BUILDCONSOLE_FONT));
+		// setFont(JFaceResources.getFont(BuildConsolePreferencePage.
+		// PREF_BUILDCONSOLE_FONT));
 		// } else if
-		// (property.equals(BuildConsolePreferencePage.PREF_BUILDCONSOLE_TAB_WIDTH))
+		// (property.equals(BuildConsolePreferencePage.
+		// PREF_BUILDCONSOLE_TAB_WIDTH))
 		// {
-		// setTabs(CUIPlugin.getDefault().getPluginPreferences().getInt(BuildConsolePreferencePage.PREF_BUILDCONSOLE_TAB_WIDTH));
+		// setTabs(CUIPlugin.getDefault().getPluginPreferences().getInt(
+		// BuildConsolePreferencePage.PREF_BUILDCONSOLE_TAB_WIDTH));
 		// }
 	}
 
@@ -479,7 +488,7 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 * Sets the font for this page.
 	 * 
 	 * @param font
-	 *            font
+	 * 		font
 	 */
 	protected void setFont(Font font) {
 		getViewer().getTextWidget().setFont(font);
@@ -489,7 +498,7 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	 * Sets the tab width for this page.
 	 * 
 	 * @param int
-	 *            tab width
+	 * 		tab width
 	 */
 	protected void setTabs(int tabs) {
 		getViewer().getTextWidget().setTabs(tabs);
@@ -527,7 +536,9 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
+	 * @see
+	 * org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text
+	 * .TextEvent)
 	 */
 	public void textChanged(TextEvent event) {
 		// update the find replace action if the document length is > 0

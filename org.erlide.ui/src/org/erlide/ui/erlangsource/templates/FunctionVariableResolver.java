@@ -30,8 +30,10 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable,
-	 *      org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateVariable,
+	 * org.eclipse.jface.text.templates.TemplateContext)
 	 */
 	@SuppressWarnings("null")
 	@Override
@@ -41,7 +43,6 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 				.getDefault().resolvers();
 		FunctionNameVariableResolver name_var = null;
 		// !TODO: Use BodyVariableResolver
-		@SuppressWarnings("unused")
 		BodyVariableResolver body_var = null;
 		ArgumentsVariableResolver arg_var = null;
 		while (it.hasNext()) {

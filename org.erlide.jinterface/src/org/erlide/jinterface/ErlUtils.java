@@ -24,7 +24,7 @@ public class ErlUtils {
 	 * @param term
 	 * @param pattern
 	 * @return Map of matched variables. Null means no match, an empty list
-	 *         means no variables were bound.
+	 * 	means no variables were bound.
 	 */
 	public static HashMap<String, OtpErlangObject> match(
 			OtpErlangObject pattern, OtpErlangObject term,

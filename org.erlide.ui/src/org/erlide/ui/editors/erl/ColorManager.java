@@ -50,11 +50,10 @@ public class ColorManager implements IColorManager {
 	 * Creates a new Java color manager.
 	 * 
 	 * @param autoDisposeOnDisplayDispose
-	 *            if <code>true</code> the color manager automatically
-	 *            disposes all managed colors when the current display gets
-	 *            disposed and all calls to
-	 *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
-	 *            are ignored.
+	 * 		if <code>true</code> the color manager automatically disposes all
+	 * 		managed colors when the current display gets disposed and all calls
+	 * 		to {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
+	 * 		are ignored.
 	 * 
 	 */
 	public ColorManager(boolean autoDisposeOnDisplayDispose) {
@@ -84,7 +83,6 @@ public class ColorManager implements IColorManager {
 		}
 
 		final Display display = Display.getCurrent();
-		@SuppressWarnings("unchecked")
 		Map<RGB, Color> colorTable = fDisplayTable.get(display);
 		if (colorTable == null) {
 			colorTable = new HashMap<RGB, Color>(10);

@@ -64,8 +64,8 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                         {I, true} ->
                             ?D(I),
                             {I, initial_whitespace(OldLine), AddNL};
-                        {I, false} ->
-                            ?D(I),
+                        {_I, false} ->
+                            ?D(_I),
                             {0, 0, false}
                     end;
                 _  ->

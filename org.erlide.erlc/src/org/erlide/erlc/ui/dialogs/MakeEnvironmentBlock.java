@@ -190,7 +190,6 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	protected class EnvironmentVariableContentProvider implements
 			IStructuredContentProvider {
 
-		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object inputElement) {
 			EnvironmentVariable[] elements = new EnvironmentVariable[0];
 			final IMakeCommonBuildInfo info = (IMakeCommonBuildInfo) inputElement;
@@ -387,7 +386,8 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		setControl(composite);
 
 		// FIXME help system
-		// ErlideErlcPlugin.getDefault().getWorkbench().getHelpSystem().setHelp(getControl(),
+		// ErlideErlcPlugin.getDefault().getWorkbench().getHelpSystem().setHelp(
+		// getControl(),
 		// IMakeHelpContextIds.MAKE_BUILDER_SETTINGS);
 
 		if (fBuildInfo == null) {
@@ -485,7 +485,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * Responds to a selection changed event in the environment table
 	 * 
 	 * @param event
-	 *            the selection change event
+	 * 		the selection change event
 	 */
 	protected void handleTableSelectionChanged(SelectionChangedEvent event) {
 		final int size = ((IStructuredSelection) event.getSelection()).size();
@@ -508,7 +508,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * Creates the add/edit/remove buttons for the environment table
 	 * 
 	 * @param parent
-	 *            the composite in which the buttons should be created
+	 * 		the composite in which the buttons should be created
 	 */
 	protected void createTableButtons(Composite parent) {
 		// Create button composite
@@ -604,7 +604,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * variable).
 	 * 
 	 * @param variable
-	 *            the variable to add
+	 * 		the variable to add
 	 * @return whether the variable was added
 	 */
 	protected boolean addVariable(EnvironmentVariable variable) {
@@ -637,7 +637,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * Gets native environment variable. Creates EnvironmentVariable objects.
 	 * 
 	 * @return Map of name - EnvironmentVariable pairs based on native
-	 *         environment.
+	 * 	environment.
 	 */
 	private Map<Object, Object> getNativeEnvironment() {
 		final Map<Object, Object> stringVars = EnvironmentReader.getEnvVars();
@@ -691,7 +691,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * selection dialog.
 	 * 
 	 * @return A label provider for the native native environment variable
-	 *         selection dialog.
+	 * 	selection dialog.
 	 */
 	private ILabelProvider createSelectionDialogLabelProvider() {
 		return new ILabelProvider() {
@@ -727,7 +727,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * selection dialog.
 	 * 
 	 * @return A content provider for the native native environment variable
-	 *         selection dialog.
+	 * 	selection dialog.
 	 */
 	private IStructuredContentProvider createSelectionDialogContentProvider() {
 		return new IStructuredContentProvider() {
@@ -848,7 +848,9 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt.graphics.Point)
+		 * @see
+		 * org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt
+		 * .graphics.Point)
 		 */
 		@Override
 		protected Point getInitialLocation(Point initialSize) {
@@ -891,7 +893,7 @@ public class MakeEnvironmentBlock extends AbstractErlOptionPage {
 	 * if it should completely replace it.
 	 * 
 	 * @param parent
-	 *            the composite in which the widgets should be created
+	 * 		the composite in which the widgets should be created
 	 */
 	protected void createAppendReplace(Composite parent) {
 		final Composite appendReplaceComposite = new Composite(parent, SWT.NONE);

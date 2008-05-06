@@ -56,6 +56,7 @@ public class ReportPreferencePage extends PreferencePage implements
 			+ "ScoutUserName=field_tester&ScoutProject=erlide&ScoutArea=Misc&"
 			+ "Extra=%s&Description=%s&Email=%s";
 	private Label responseLabel;
+	private Button attachTechnicalDataButton;
 
 	@Override
 	protected Control createContents(Composite parent) {
@@ -72,19 +73,15 @@ public class ReportPreferencePage extends PreferencePage implements
 				| SWT.BORDER | SWT.WRAP);
 		this.description.setBounds(46, 31, 416, 188);
 
-		String plog = fetchPlatformLog();
-		String elog = fetchErlideLog();
-		this.description.setText("(enter error description here)\n"
-				+ "\n\n==================================\n\n" + plog
-				+ "\n\n==================================\n" + elog);
+		this.description.setText("(enter error description here, paste any relevant code too)");
 
 		this.contact = new Text(panel, SWT.BORDER);
 		this.contact.setBounds(152, 225, 310, 25);
 
-		final Button attachTechnicalDataButton = new Button(panel, SWT.CHECK);
-		attachTechnicalDataButton.setVisible(false);
-		attachTechnicalDataButton.setText("Attach technical data");
-		attachTechnicalDataButton.setBounds(46, 256, 135, 20);
+		attachTechnicalDataButton = new Button(panel, SWT.CHECK);
+		attachTechnicalDataButton.setSelection(true);
+		attachTechnicalDataButton.setText("Attach technical data (eclipse and erlide logs)");
+		attachTechnicalDataButton.setBounds(46, 256, 260, 20);
 
 		final Button sendButton = new Button(panel, SWT.NONE);
 		sendButton.addSelectionListener(new SelectionAdapter() {
@@ -105,43 +102,58 @@ public class ReportPreferencePage extends PreferencePage implements
 		responseLabel.setText("The report is being sent now, you can close this window.");
 		responseLabel.setBounds(47, 315, 415, 20);
 
-		File dir = new File(getLocation());
-		panel.setEnabled(dir.exists());
-
 		noDefaultAndApplyButton();
 
 		return panel;
 	}
 
 	protected void postReport() {
+		Job j = new Job("send error report") {;
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
 		sendToDisk(getLocation());
+		return Status.OK_STATUS;
+		}};
+		j.setPriority(Job.SHORT);
+		j.setSystem(true);
+		j.schedule();
+		
 		responseLabel.setVisible(true);
 	}
 
-	private String getLocation() {
+	String getLocation() {
+		String s;
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			return "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
 		} else {
-			return "/proj/tecsas/SHADE/erlide/reports";
+			s="/proj/tecsas/SHADE/erlide/reports";
 		}
+		File dir = new File(s);
+		if (!dir.exists()){
+			return System.getProperty("user.home");
+		}
+		return s;
 	}
 
-	private void sendToDisk(String location) {
-		File dir = new File(location);
-		if (!dir.exists()){
-			return;
-		}
-		
+	void sendToDisk(String location) {
 		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		File report = new File(location+"/"+System.getProperty("user.name")+"_"+tstamp);
+		File report = new File(location+"/"+System.getProperty("user.name")+"_"+tstamp+".txt");
 		try {
 			report.createNewFile();
 			OutputStream out = new FileOutputStream(report);
 			PrintWriter pw = new PrintWriter(out);
 			try{
 				pw.println(title.getText());
-				pw.println(contact.getText());
+				pw.println(contact.getText()); 
 				pw.println(description.getText());
+				if (attachTechnicalDataButton.getSelection()){
+					String plog = fetchPlatformLog();
+					String elog = fetchErlideLog();
+					pw.println("\n==================================\n");
+					pw.println(plog);
+					pw.println("\n==================================\n");
+					pw.println(elog);
+				}
 			}finally{
 				pw.flush();
 				out.close();
@@ -241,7 +253,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		StringBuffer result = new StringBuffer();
 		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString();
-		dir = dir == null ? "c:/" : dir;
+		dir = (dir == null) ? "c:/" : dir;
 		File log = new File(dir + "_erlide.log");
 
 		try {

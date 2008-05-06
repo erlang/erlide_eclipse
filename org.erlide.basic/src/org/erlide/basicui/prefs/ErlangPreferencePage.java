@@ -14,29 +14,31 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.DeviceResourceException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.basicui.IErlideBasicUIConstants;
-import org.erlide.basicui.util.SFProjectSupport;
 
 public class ErlangPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
+	private IWorkbench wb;
+
 	@Override
 	protected Control createContents(Composite parent) {
-		Link l;
 		noDefaultAndApplyButton();
 		final Composite panel = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
@@ -81,35 +83,17 @@ public class ErlangPreferencePage extends PreferencePage implements
 		final GridLayout layout2 = new GridLayout();
 		panel2.setLayout(layout2);
 
-		text = new Label(panel2, SWT.NONE);
-		text.setText(PreferenceMessages.getString("ErlangPreferencePage.3")); //$NON-NLS-1$
-
-		l = new Link(panel2, SWT.NONE | SWT.WRAP);
-		l.setLayoutData(new GridData());
-		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.4"), //$NON-NLS-1$
-				SFProjectSupport.HOME_URL));
-		l.addSelectionListener(linkListener);
-
-		l = new Link(panel2, SWT.NONE | SWT.WRAP);
-		l.setSize(panel2.getSize().x, 20);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.5"), //$NON-NLS-1$
-				SFProjectSupport.BUGS_URL));
-		l.addSelectionListener(linkListener);
-
-		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.6"), //$NON-NLS-1$
-				SFProjectSupport.SUPPORT_URL));
-		l.addSelectionListener(linkListener);
-
-		l = new Link(panel2, SWT.NONE);
-		l.setText(String.format(PreferenceMessages
-				.getString("ErlangPreferencePage.7"), //$NON-NLS-1$
-				SFProjectSupport.FEATURES_URL));
-		l.addSelectionListener(linkListener);
+		final Button reportButton = new Button(panel2, SWT.NONE);
+		reportButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				PreferencesUtil.createPreferenceDialogOn(getShell(),
+						"org.erlide.basic.reporting", null, null);
+			}
+		});
+		reportButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false,
+				false));
+		reportButton.setText("Report problems");
 
 		final Group group = new Group(panel2, SWT.NONE);
 		group.setLayoutData(new GridData(421, SWT.DEFAULT));
@@ -131,6 +115,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 	}
 
 	public void init(IWorkbench workbench) {
+		wb = workbench;
 	}
 
 }

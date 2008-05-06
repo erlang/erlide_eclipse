@@ -69,7 +69,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	 * determining the structure of this element.
 	 * 
 	 * @param dirtyRegion
-	 *            TODO
+	 * 		TODO
 	 */
 	protected abstract boolean buildStructure(IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException;
@@ -279,7 +279,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	/**
 	 * @see IOpenable
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean hasUnsavedChanges() throws ErlModelException {
 
 		if (isReadOnly() || !isOpen()) {
@@ -292,8 +291,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		// for packages and projects must check open buffers
 		// to see if they have an child with unsaved changes
 		final Kind elementType = getKind();
-		if (elementType == Kind.PROJECT
-				|| elementType == Kind.MODEL) {
+		if (elementType == Kind.PROJECT || elementType == Kind.MODEL) {
 			// final Enumeration openBuffers =
 			// getBufferManager().getOpenBuffers();
 			// while (openBuffers.hasMoreElements()) {

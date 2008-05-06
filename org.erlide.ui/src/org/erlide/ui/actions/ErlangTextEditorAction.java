@@ -86,7 +86,6 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			// final int lastLineOffset = document.getLineOffset(lastLine);
 			final int nLines = endLine - startLine + 1;
 			final Runnable runnable = new Runnable() {
-				@SuppressWarnings("synthetic-access")
 				public void run() {
 					IRewriteTarget target = (IRewriteTarget) textEditor
 							.getAdapter(IRewriteTarget.class);
@@ -150,9 +149,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * Selects the given range on the editor.
 	 * 
 	 * @param newOffset
-	 *            the selection offset
+	 * 		the selection offset
 	 * @param newLength
-	 *            the selection range
+	 * 		the selection range
 	 */
 	protected void selectAndReveal(int newOffset, int newLength) {
 		final ITextEditor editor = getTextEditor();

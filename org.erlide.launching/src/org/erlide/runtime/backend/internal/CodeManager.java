@@ -101,7 +101,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
+	 * @see
+	 * 	org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
 	 */
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
@@ -110,7 +111,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
+	 * @see
+	 * 	org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
 	 */
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
@@ -202,11 +204,11 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 * Method getBeam
 	 * 
 	 * @param moduleName
-	 *            String
+	 * 		String
 	 * @param beamPath
-	 *            String
+	 * 		String
 	 * @param bufSize
-	 *            int
+	 * 		int
 	 * @return OtpErlangBinary
 	 */
 	private OtpErlangBinary getBeam(String moduleName, URL beamPath, int bufSize) {

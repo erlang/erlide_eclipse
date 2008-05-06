@@ -20,3 +20,4 @@ Export-Package: com.novocode.naf.swt.custom,
  org.erlide.basicui.util,
  org.erlide.basicui.views
 Bundle-ClassPath: org.erlide.basic.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

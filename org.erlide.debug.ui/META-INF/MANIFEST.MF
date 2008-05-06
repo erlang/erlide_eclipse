@@ -25,3 +25,4 @@ Bundle-ClassPath: erlide-debug-ui.jar
 Export-Package: org.erlide.debug.ui,
  org.erlide.debug.ui.model,
  org.erlide.ui.launch;uses:="org.eclipse.debug.ui,org.eclipse.ui,org.eclipse.jface.viewers"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

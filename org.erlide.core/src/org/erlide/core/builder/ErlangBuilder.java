@@ -135,7 +135,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -312,7 +312,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * Method clean
 	 * 
 	 * @param monitor
-	 *            IProgressMonitor
+	 * 		IProgressMonitor
 	 * @throws CoreException
 	 */
 	@Override
@@ -348,9 +348,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * Method compileFile
 	 * 
 	 * @param project
-	 *            IProject
+	 * 		IProject
 	 * @param resource
-	 *            IResource
+	 * 		IResource
 	 */
 	protected void compileFile(final IProject project, final IResource resource) {
 		final IPath projectPath = project.getLocation();
@@ -672,7 +672,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -700,7 +702,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();

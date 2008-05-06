@@ -741,6 +741,6 @@ inc({L,P}, N) ->
 incrow({L, P}) ->
     {L+1, P+1}.
 
-incrow0({L, P}) ->
-    {L+1, P}.
+%incrow0({L, P}) ->
+%    {L+1, P}.
 
