@@ -12,8 +12,11 @@ package org.erlide.basicui.prefs;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -21,6 +24,8 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,7 +60,6 @@ public class ReportPreferencePage extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite panel = new Composite(parent, SWT.NONE);
-		panel.setEnabled(false);
 
 		final Label titleLabel = new Label(panel, SWT.NONE);
 		titleLabel.setText("Title");
@@ -71,13 +75,14 @@ public class ReportPreferencePage extends PreferencePage implements
 		String plog = fetchPlatformLog();
 		String elog = fetchErlideLog();
 		this.description.setText("(enter error description here)\n"
-				+ "\n\n------------------------------\n" + plog
-				+ "\n\n------------------------------\n" + elog);
+				+ "\n\n==================================\n\n" + plog
+				+ "\n\n==================================\n" + elog);
 
 		this.contact = new Text(panel, SWT.BORDER);
 		this.contact.setBounds(152, 225, 310, 25);
 
 		final Button attachTechnicalDataButton = new Button(panel, SWT.CHECK);
+		attachTechnicalDataButton.setVisible(false);
 		attachTechnicalDataButton.setText("Attach technical data");
 		attachTechnicalDataButton.setBounds(46, 256, 135, 20);
 
@@ -99,12 +104,59 @@ public class ReportPreferencePage extends PreferencePage implements
 		responseLabel.setVisible(false);
 		responseLabel.setText("The report is being sent now, you can close this window.");
 		responseLabel.setBounds(47, 315, 415, 20);
+
+		File dir = new File(getLocation());
+		panel.setEnabled(dir.exists());
+
 		noDefaultAndApplyButton();
 
 		return panel;
 	}
 
 	protected void postReport() {
+		sendToDisk(getLocation());
+		responseLabel.setVisible(true);
+	}
+
+	private String getLocation() {
+		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+			return "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+		} else {
+			return "/proj/tecsas/SHADE/erlide/reports";
+		}
+	}
+
+	private void sendToDisk(String location) {
+		File dir = new File(location);
+		if (!dir.exists()){
+			return;
+		}
+		
+		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		File report = new File(location+"/"+System.getProperty("user.name")+"_"+tstamp);
+		try {
+			report.createNewFile();
+			OutputStream out = new FileOutputStream(report);
+			PrintWriter pw = new PrintWriter(out);
+			try{
+				pw.println(title.getText());
+				pw.println(contact.getText());
+				pw.println(description.getText());
+			}finally{
+				pw.flush();
+				out.close();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
+	@SuppressWarnings("unused")
+	private void sendToFogBugz() {
 		String extra;
 		String descr;
 		String email;
@@ -157,7 +209,6 @@ public class ReportPreferencePage extends PreferencePage implements
 		j.setPriority(Job.SHORT);
 		j.setSystem(true);
 		// j.schedule();
-		responseLabel.setVisible(true);
 	}
 
 	public void init(IWorkbench workbench) {
