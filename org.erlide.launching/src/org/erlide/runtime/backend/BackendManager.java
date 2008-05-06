@@ -59,9 +59,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 	// private final Object fExternalBackendsLock = new Object();
 
-	private static final int ADDED = 1;
-
-	private static final int REMOVED = 2;
+	public enum BackendEvent {
+		ADDED, REMOVED
+	};
 
 	private static final String DEFAULT_BACKEND_LABEL = "erlide";
 
@@ -147,13 +147,13 @@ public final class BackendManager implements IResourceChangeListener {
 			IBackend b = fProjectBackends.get(name);
 			if (b != null && !b.ping()) {
 				fProjectBackends.remove(name);
-				fireUpdate(b, REMOVED);
+				fireUpdate(b, BackendEvent.REMOVED);
 				b = null;
 			}
 			if (b == null) {
 				b = createManaged(name, false);
 				fProjectBackends.put(name, b);
-				fireUpdate(b, ADDED);
+				fireUpdate(b, BackendEvent.ADDED);
 			}
 			return b;
 		}
@@ -222,7 +222,7 @@ public final class BackendManager implements IResourceChangeListener {
 		fListeners.remove(listener);
 	}
 
-	private void fireUpdate(IBackend b, int type) {
+	private void fireUpdate(IBackend b, BackendEvent type) {
 		new BackendChangeNotifier().notify(b, type);
 	}
 
@@ -233,7 +233,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 		private IBackendListener fListener;
 
-		private int fType;
+		private BackendEvent fType;
 
 		private IBackend fChanged;
 
@@ -268,7 +268,7 @@ public final class BackendManager implements IResourceChangeListener {
 		/**
 		 * Notifies the given listener of the adds/removes
 		 */
-		public void notify(IBackend b, int type) {
+		public void notify(IBackend b, BackendEvent type) {
 			if (fListeners == null) {
 				return;
 			}
@@ -433,7 +433,7 @@ public final class BackendManager implements IResourceChangeListener {
 				if (!found) {
 					ErlLogger.debug("$ Removed external backend:: "
 							+ fRemoteBackend.getLabel());
-					fireUpdate(fRemoteBackend, REMOVED);
+					fireUpdate(fRemoteBackend, BackendEvent.REMOVED);
 					fRemoteBackend = null;
 				}
 			} else {
@@ -441,7 +441,7 @@ public final class BackendManager implements IResourceChangeListener {
 					if (isExtErlideLabel(label)) {
 						ErlLogger.debug("$ Added external backend:: " + label);
 						fRemoteBackend = createStandalone(label);
-						fireUpdate(fRemoteBackend, ADDED);
+						fireUpdate(fRemoteBackend, BackendEvent.ADDED);
 						break;
 					}
 				}
