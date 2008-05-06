@@ -398,6 +398,10 @@
       <command
             id="org.erlide.ui.actions.togglecomment"
             name="Toggle Comment"/>
+      <command
+            id="org.erlide.ui.actions.test"
+            name="Test">
+      </command>
             
  </extension>
  <extension

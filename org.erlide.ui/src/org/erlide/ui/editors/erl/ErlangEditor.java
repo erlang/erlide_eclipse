@@ -95,11 +95,13 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.actions.ShowOutlineAction;
 import org.erlide.ui.actions.ToggleCommentAction;
+import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
@@ -135,6 +137,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private IndentAction indentAction;
 
 	private ToggleCommentAction toggleCommentAction;
+
+	private TestAction testAction;
 
 	/** The selection changed listeners */
 	private EditorSelectionChangedListener fEditorSelectionChangedListener;
@@ -316,19 +320,32 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
 				IErlangHelpContextIds.INDENT_ACTION);
 
+		if (BackendManager.isDeveloper()) {
+			testAction = new TestAction(ErlangEditorMessages
+					.getBundleForConstructedKeys(), "Indent.", this,
+					getModule());
+			testAction
+					.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
+			setAction("Test", testAction);
+			markAsStateDependentAction("Test", true);
+			markAsSelectionDependentAction("Test", true);
+			// PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
+			// IErlangHelpContextIds.INDENT_ACTION);
+		}
+
 		final Action action = new IndentAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "Indent.", this); //$NON-NLS-1$
-		setAction("IndentOnTab", action); //$NON-NLS-1$
-		markAsStateDependentAction("IndentOnTab", true); //$NON-NLS-1$
-		markAsSelectionDependentAction("IndentOnTab", true); //$NON-NLS-1$
+				.getBundleForConstructedKeys(), "Indent.", this);
+		setAction("IndentOnTab", action);
+		markAsStateDependentAction("IndentOnTab", true);
+		markAsSelectionDependentAction("IndentOnTab", true);
 
 		toggleCommentAction = new ToggleCommentAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "ToggleComment.", this); //$NON-NLS-1$
+				.getBundleForConstructedKeys(), "ToggleComment.", this);
 		toggleCommentAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
-		setAction("ToggleComment", toggleCommentAction); //$NON-NLS-1$
-		markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
-		markAsSelectionDependentAction("ToggleComment", true); //$NON-NLS-1$
+		setAction("ToggleComment", toggleCommentAction);
+		markAsStateDependentAction("ToggleComment", true);
+		markAsSelectionDependentAction("ToggleComment", true);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(toggleCommentAction,
 				IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
@@ -346,6 +363,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 
+		if (BackendManager.isDeveloper()) {
+			menu.prependToGroup("group.open", testAction);
+		}
 		menu.prependToGroup("group.open", fShowOutline);
 		menu.prependToGroup("group.open", toggleCommentAction);
 		menu.prependToGroup("group.open", indentAction);

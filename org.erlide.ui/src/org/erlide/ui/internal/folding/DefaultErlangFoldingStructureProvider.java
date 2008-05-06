@@ -641,6 +641,8 @@ public class DefaultErlangFoldingStructureProvider implements
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
 			createProjection = true;
+		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+			createProjection = true;
 		}
 		if (createProjection) {
 			final IRegion region = computeProjectionRanges(element);
