@@ -182,8 +182,8 @@ replace_between_lines(From, Length, With, Lines) ->
     ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece]),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
     NOldLines = case Beyond of
-                    true -> 0;
-                    false -> LineNo2-LineNo1+1
+                    beyond_eof -> 0;
+                    _ -> LineNo2-LineNo1+1
                 end,
     ?D([LineNo1, NOldLines, WLines, Lines]),
     {LineNo1, NOldLines, WLines,
