@@ -322,8 +322,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		if (BackendManager.isDeveloper()) {
 			testAction = new TestAction(ErlangEditorMessages
-					.getBundleForConstructedKeys(), "Indent.", this,
-					getModule());
+					.getBundleForConstructedKeys(), "Test.", this, getModule());
 			testAction
 					.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
 			setAction("Test", testAction);
@@ -370,7 +369,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		menu.prependToGroup("group.open", toggleCommentAction);
 		menu.prependToGroup("group.open", indentAction);
 		menu.prependToGroup("group.open", openAction);
-
 	}
 
 	@SuppressWarnings("unchecked")
