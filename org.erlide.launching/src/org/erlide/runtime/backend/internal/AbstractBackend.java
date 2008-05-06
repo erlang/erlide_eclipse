@@ -371,7 +371,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		// }
 		// }
 		if (!fConnected) {
-			return null;
+			return RpcResult.ERROR;
 		}
 		if (args0 == null) {
 			args0 = new OtpErlangObject[] {};
@@ -397,7 +397,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		try {
 			final OtpMbox mbox = getMbox();
 			if (mbox == null) {
-				return null;
+				return RpcResult.ERROR;
 			}
 			res = RpcUtil.buildRpcCall(module, fun, args, mbox.self());
 			send("rex", res);
@@ -419,7 +419,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 					ErlLogger.debug("    timed out: " + module + ":" + fun
 							+ "(" + new OtpErlangList(args) + ")");
 				}
-				return null;
+				return RpcResult.ERROR;
 			}
 
 			res = ((OtpErlangTuple) res).elementAt(1);
