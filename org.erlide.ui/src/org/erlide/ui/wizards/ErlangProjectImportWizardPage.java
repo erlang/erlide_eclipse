@@ -58,7 +58,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -77,7 +76,7 @@ import org.erlide.ui.util.IElementFilter;
 import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public class ErlangProjectImportWizardPage extends
-		ErlangWizardResourceImportPage implements Listener {
+		ErlangWizardResourceImportPage {
 	// widgets
 	protected Combo sourceNameField;
 
@@ -139,9 +138,9 @@ public class ErlangProjectImportWizardPage extends
 	 * Creates an instance of this class
 	 * 
 	 * @param aWorkbench
-	 * 		IWorkbench
+	 *            IWorkbench
 	 * @param selection
-	 * 		IStructuredSelection
+	 *            IStructuredSelection
 	 */
 	public ErlangProjectImportWizardPage(IWorkbench aWorkbench,
 			IStructuredSelection selection) {
@@ -153,8 +152,8 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Creates a new button with the given id.
 	 * <p>
-	 * The <code>Dialog</code> implementation of this framework method creates a
-	 * standard push button, registers for selection events including button
+	 * The <code>Dialog</code> implementation of this framework method creates
+	 * a standard push button, registers for selection events including button
 	 * presses and registers default buttons with its shell. The button id is
 	 * stored as the buttons client data. Note that the parent's layout is
 	 * assumed to be a GridLayout and the number of columns in this layout is
@@ -162,15 +161,15 @@ public class ErlangProjectImportWizardPage extends
 	 * </p>
 	 * 
 	 * @param parent
-	 * 		the parent composite
+	 *            the parent composite
 	 * @param id
-	 * 		the id of the button (see <code>IDialogConstants.*_ID</code>
-	 * 		constants for standard dialog button ids)
+	 *            the id of the button (see <code>IDialogConstants.*_ID</code>
+	 *            constants for standard dialog button ids)
 	 * @param label
-	 * 		the label from the button
+	 *            the label from the button
 	 * @param defaultButton
-	 * 		<code>true</code> if the button is to be the default button, and
-	 * 		<code>false</code> otherwise
+	 *            <code>true</code> if the button is to be the default button,
+	 *            and <code>false</code> otherwise
 	 */
 	protected Button createButton(Composite parent, int id, String label,
 			boolean defaultButton) {
@@ -201,7 +200,7 @@ public class ErlangProjectImportWizardPage extends
 	 * of the elements.
 	 * 
 	 * @param parent
-	 * 		the parent control
+	 *            the parent control
 	 */
 	protected final void createButtonsGroup(Composite parent) {
 		// top level group
@@ -628,7 +627,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Displays an error that occured during the .project file creation. *
 	 * 
 	 * @param x
-	 * 		details on the error
+	 *            details on the error
 	 */
 	private void reportError(InterruptedException x) {
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
@@ -769,7 +768,7 @@ public class ErlangProjectImportWizardPage extends
 	 * if it exists as a valid directory, or <code>null</code> otherwise.
 	 * 
 	 * @param path
-	 * 		a String not yet formatted for java.io.File compatability
+	 *            a String not yet formatted for java.io.File compatability
 	 */
 	private File getSourceDirectory(String path) {
 		final File sourceDirectory = new File(getSourceDirectoryName(path));
@@ -818,7 +817,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Handle all events and enablements for widgets in this dialog
 	 * 
 	 * @param event
-	 * 		Event
+	 *            Event
 	 */
 	public void handleEvent(Event event) {
 		if (event.widget == sourceBrowseButton) {
@@ -896,9 +895,9 @@ public class ErlangProjectImportWizardPage extends
 	 * specified for export by the user.
 	 * 
 	 * @param extension
-	 * 		the resource name
+	 *            the resource name
 	 * @return <code>true</code> if the resource name is suitable for export
-	 * 	based upon its extension
+	 *         based upon its extension
 	 */
 	protected boolean isExportableExtension(String extension) {
 		if (selectedTypes == null) {
@@ -1011,7 +1010,7 @@ public class ErlangProjectImportWizardPage extends
 	 * here to provide access for inner classes.
 	 * 
 	 * @param value
-	 * 		boolean
+	 *            boolean
 	 */
 	@Override
 	protected void setAllSelections(boolean value) {
@@ -1023,7 +1022,7 @@ public class ErlangProjectImportWizardPage extends
 	 * of the path to the list of items in the source combo and selects it.
 	 * 
 	 * @param path
-	 * 		the path to be added
+	 *            the path to be added
 	 */
 	protected void setSourceName(String path) {
 
@@ -1157,7 +1156,7 @@ public class ErlangProjectImportWizardPage extends
 	 * class visibility
 	 * 
 	 * @param map
-	 * 		Map - key tree elements, values Lists of list elements
+	 *            Map - key tree elements, values Lists of list elements
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1300,9 +1299,9 @@ public class ErlangProjectImportWizardPage extends
 	 * resource. This will occur if the source is already under the destination.
 	 * 
 	 * @param sourcePath
-	 * 		the path to check
-	 * @return <code>true</code> if there is a conflict, <code>false</code> if
-	 * 	not
+	 *            the path to check
+	 * @return <code>true</code> if there is a conflict, <code>false</code>
+	 *         if not
 	 */
 	// protected boolean sourceConflictsWithDestination(IPath sourcePath) {
 	//

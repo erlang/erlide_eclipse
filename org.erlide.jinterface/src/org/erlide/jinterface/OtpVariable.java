@@ -22,7 +22,7 @@ import com.ericsson.otp.erlang.OtpOutputStream;
  * Provides a Java representation of Erlang variables. !!! These are to NOT to
  * be sent to an Erlang node !!!! Their use is in pattern matching only.
  */
-public class OtpVariable extends OtpErlangObject implements Cloneable {
+public class OtpVariable extends OtpErlangObject {
 
 	private static final long serialVersionUID = -6099217323357230588L;
 
@@ -51,7 +51,7 @@ public class OtpVariable extends OtpErlangObject implements Cloneable {
 	 * same value.
 	 * 
 	 * @param o
-	 *            the number to compare to.
+	 * 		the number to compare to.
 	 * 
 	 * @return true if the numbers have the same value.
 	 */
@@ -71,7 +71,9 @@ public class OtpVariable extends OtpErlangObject implements Cloneable {
 	}
 
 	/**
-	 * @see com.ericsson.otp.erlang.OtpErlangObject#encode(com.ericsson.otp.erlang.OtpOutputStream)
+	 * @see
+	 * 	com.ericsson.otp.erlang.OtpErlangObject#encode(com.ericsson.otp.erlang
+	 * 	.OtpOutputStream)
 	 */
 	@Override
 	public void encode(OtpOutputStream arg0) {

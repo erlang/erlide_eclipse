@@ -19,14 +19,12 @@ package com.ericsson.otp.erlang;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang binaries. Anything that can be
  * represented as a sequence of bytes can be made into an Erlang binary.
  */
-public class OtpErlangBinary extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangBinary extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = -3781009633593609217L;
@@ -38,7 +36,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * Create a binary from a byte array
 	 * 
 	 * @param bin
-	 *            the array of bytes from which to create the binary.
+	 * 		the array of bytes from which to create the binary.
 	 */
 	public OtpErlangBinary(byte[] bin) {
 		this.bin = new byte[bin.length];
@@ -50,11 +48,11 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded binary.
+	 * 		the stream containing the encoded binary.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang binary.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang binary.
 	 */
 	public OtpErlangBinary(OtpInputStream buf) throws OtpErlangDecodeException {
 		bin = buf.read_binary();
@@ -65,7 +63,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * java.io.Serializable or java.io.Externalizable.
 	 * 
 	 * @param o
-	 *            the object to serialize and create this binary from.
+	 * 		the object to serialize and create this binary from.
 	 */
 	public OtpErlangBinary(Object o) {
 		try {
@@ -135,7 +133,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * 
 	 * 
 	 * @return the java Object represented by this binary, or null if the binary
-	 *         does not represent a Java Object.
+	 * 	does not represent a Java Object.
 	 */
 	public Object getObject() {
 		return fromByteArray(bin);
@@ -164,8 +162,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * Convert this binary to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded binary should be
-	 *            written.
+	 * 		an output stream to which the encoded binary should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -177,7 +174,7 @@ public class OtpErlangBinary extends OtpErlangObject implements Serializable,
 	 * same length and the array of bytes is identical.
 	 * 
 	 * @param o
-	 *            the binary to compare to.
+	 * 		the binary to compare to.
 	 * 
 	 * @return true if the byte arrays contain the same bytes, false otherwise.
 	 */

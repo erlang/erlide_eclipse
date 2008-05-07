@@ -17,15 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang atoms. Atoms can be created from
  * strings whose length is not more than {@link #maxAtomLength maxAtomLength}
  * characters.
  */
-public class OtpErlangAtom extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangAtom extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = -3204386396807876641L;
@@ -39,11 +37,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * Create an atom from the given string.
 	 * 
 	 * @param atom
-	 *            the string to create the atom from.
+	 * 		the string to create the atom from.
 	 * 
 	 * @exception java.lang.IllegalArgumentException
-	 *                if the string is empty ("") or contains more than
-	 *                {@link #maxAtomLength maxAtomLength} characters.
+	 * 		if the string is empty ("") or contains more than {@link
+	 * 		#maxAtomLength maxAtomLength} characters.
 	 */
 	public OtpErlangAtom(String atom) {
 		if (atom == null || atom.length() < 1) {
@@ -63,11 +61,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded atom.
+	 * 		the stream containing the encoded atom.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang atom.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang atom.
 	 */
 	public OtpErlangAtom(OtpInputStream buf) throws OtpErlangDecodeException {
 		atom = buf.read_atom();
@@ -84,7 +82,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * Get the actual string contained in this object.
 	 * 
 	 * @return the raw string contained in this object, without regard to Erlang
-	 *         quoting rules.
+	 * 	quoting rules.
 	 * 
 	 * @see #toString
 	 */
@@ -96,8 +94,8 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * The boolean value of this atom.
 	 * 
 	 * @return the value of this atom expressed as a boolean value. If the atom
-	 *         consists of the characters "true" (independent of case) the value
-	 *         will be true. For any other values, the value will be false.
+	 * 	consists of the characters "true" (independent of case) the value will
+	 * 	be true. For any other values, the value will be false.
 	 * 
 	 */
 	public boolean booleanValue() {
@@ -126,7 +124,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * Determine if two atoms are equal.
 	 * 
 	 * @param o
-	 *            the other object to compare to.
+	 * 		the other object to compare to.
 	 * 
 	 * @return true if the atoms are equal, false otherwise.
 	 */
@@ -150,7 +148,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	 * Convert this atom to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded atom should be written.
+	 * 		an output stream to which the encoded atom should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -264,7 +262,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 			default:
 				// some other character classes
 				if (c < 027) {
-					// control chars show as "\^@", "\^A" etc
+					// control chars show as \^@", "\^A" etc
 					so.append("\\^" + (char) (('A' - 1) + c));
 				} else if (c > 126) {
 					// 8-bit chars show as \345 \344 \366 etc

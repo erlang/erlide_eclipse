@@ -11,7 +11,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class ErlideReshd {
 
-	@SuppressWarnings("boxing")
 	public static OtpErlangPid start(IBackend fBackend)
 			throws BackendException, RpcException {
 		try {

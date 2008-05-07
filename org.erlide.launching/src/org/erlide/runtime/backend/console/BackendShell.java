@@ -25,7 +25,6 @@ public class BackendShell {
 	private final IBackend fBackend;
 	private OtpErlangPid server;
 
-	@SuppressWarnings("boxing")
 	public BackendShell(IBackend backend, String id) {
 		fBackend = backend;
 		// fId = id;
@@ -38,14 +37,16 @@ public class BackendShell {
 	}
 
 	public void close() {
-		if (server != null)
+		if (server != null) {
 			fBackend.send(server, new OtpErlangAtom("stop"));
+		}
 	}
 
 	public void send(String string) {
-		if (server != null)
+		if (server != null) {
 			fBackend.send(server, new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom("input"), new OtpErlangString(string) }));
+		}
 	}
 
 }

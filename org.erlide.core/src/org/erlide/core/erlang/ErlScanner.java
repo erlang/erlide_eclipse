@@ -100,9 +100,8 @@ public class ErlScanner implements IErlScanner {
 	public ErlToken getTokenAt(int offset) {
 		if (!UseScanner2) {
 			return ErlideScanner.getTokenAt(fMod, offset);
-		} else {
-			return ErlideScanner2.getTokenAt(fMod, offset);
 		}
+		return ErlideScanner2.getTokenAt(fMod, offset);
 	}
 
 	// public ErlToken[] getTokensAround(int offset) {
@@ -116,9 +115,8 @@ public class ErlScanner implements IErlScanner {
 	public TokenWindow getTokenWindow(int offset, int window) {
 		if (!UseScanner2) {
 			return ErlideScanner.getTokenWindow(fMod, offset, window);
-		} else {
-			return ErlideScanner2.getTokenWindow(fMod, offset, window);
 		}
+		return ErlideScanner2.getTokenWindow(fMod, offset, window);
 	}
 
 	public String getScannerModuleName() {

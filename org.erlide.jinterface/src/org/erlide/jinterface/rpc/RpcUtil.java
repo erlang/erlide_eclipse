@@ -349,49 +349,44 @@ public class RpcUtil {
 				// Get the method.
 				return target.getClass().getMethod(message, (Class[]) null)
 						.invoke(target, (Object[]) null);
-			} else {
+			}
+			// Get all methods from the target.
+			Method[] allMethods = target.getClass().getMethods();
+			List<Method> candidateMethods = new ArrayList<Method>();
 
-				// Get all methods from the target.
-				Method[] allMethods = target.getClass().getMethods();
-				List<Method> candidateMethods = new ArrayList<Method>();
-
-				for (int i = 0; i < allMethods.length; i++) {
-					// Filter methods by name and length of arguments.
-					Method m = allMethods[i];
-					if (m.getName().equals(message)
-							&& m.getParameterTypes().length == args.length) {
-						candidateMethods.add(m);
-					}
-				}
-
-				if (candidateMethods.size() == 0) {
-					throw new RuntimeException("");
-				}
-
-				Method callableMethod = null;
-				for (Iterator<Method> itr = candidateMethods.iterator(); itr
-						.hasNext();) {
-					boolean callable = true;
-					Method m = itr.next();
-					Class[] argFormalTypes = m.getParameterTypes();
-					for (int i = 0; i < argFormalTypes.length; i++) {
-						if (!argFormalTypes[i].isAssignableFrom(args[i]
-								.getClass())) {
-							callable = false;
-						}
-					}
-					if (callable) {
-						callableMethod = m;
-					}
-				}
-
-				if (callableMethod != null) {
-					return callableMethod.invoke(target, args);
-				} else {
-					throw new RuntimeException("No such method found: "
-							+ message);
+			for (int i = 0; i < allMethods.length; i++) {
+				// Filter methods by name and length of arguments.
+				Method m = allMethods[i];
+				if (m.getName().equals(message)
+						&& m.getParameterTypes().length == args.length) {
+					candidateMethods.add(m);
 				}
 			}
+
+			if (candidateMethods.size() == 0) {
+				throw new RuntimeException("");
+			}
+
+			Method callableMethod = null;
+			for (Iterator<Method> itr = candidateMethods.iterator(); itr
+					.hasNext();) {
+				boolean callable = true;
+				Method m = itr.next();
+				Class[] argFormalTypes = m.getParameterTypes();
+				for (int i = 0; i < argFormalTypes.length; i++) {
+					if (!argFormalTypes[i].isAssignableFrom(args[i].getClass())) {
+						callable = false;
+					}
+				}
+				if (callable) {
+					callableMethod = m;
+				}
+			}
+
+			if (callableMethod != null) {
+				return callableMethod.invoke(target, args);
+			}
+			throw new RuntimeException("No such method found: " + message);
 		} catch (Exception e) {
 			StringBuffer sb = new StringBuffer();
 			// Build a helpful message to debug reflection issues.

@@ -1,6 +1,5 @@
 package org.erlide.ui.navigator;
 
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -10,7 +9,7 @@ import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.erlide.core.erlang.IErlElement;
 
 public class ErlangFileLabelProvider extends LabelProvider implements
-		ILabelProvider, IDescriptionProvider {
+		IDescriptionProvider {
 
 	@SuppressWarnings("unused")
 	private final NavigatorProblemsDecorator fProblemDecorator;

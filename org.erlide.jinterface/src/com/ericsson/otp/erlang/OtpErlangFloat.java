@@ -17,13 +17,11 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang floats and doubles.
  */
-public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
-		Cloneable {
+public class OtpErlangFloat extends OtpErlangDouble {
 
 	// don't change this!
 	static final long serialVersionUID = -2231546377289456934L;
@@ -40,14 +38,14 @@ public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
 	 * external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded value.
+	 * 		the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang float.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang float.
 	 * 
 	 * @exception OtpErlangRangeException
-	 *                if the value cannot be represented as a Java float.
+	 * 		if the value cannot be represented as a Java float.
 	 */
 	public OtpErlangFloat(OtpInputStream buf) throws OtpErlangDecodeException,
 			OtpErlangRangeException {

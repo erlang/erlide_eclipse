@@ -432,7 +432,6 @@ public class BuildConsolePage extends Page implements ISelectionListener,
 		}
 	}
 
-	@SuppressWarnings("null")
 	IProject convertSelectionToProject(ISelection selection) {
 		IProject project = null;
 		if (selection == null || !(selection instanceof IStructuredSelection)) {

@@ -269,8 +269,8 @@ public class RpcConverter {
 	 * <dt>r</dt>
 	 * <dd>reference</dd>
 	 * <dt>j</dt>
-	 * <dd>java reference (a distinguished reference, to be used with e->j
-	 * rpcs)</dd>
+	 * <dd>java reference (a distinguished reference, to be used with e->j rpcs)
+	 * </dd>
 	 * <dt>l*</dt>
 	 * <dd>list, the next type descriptor specifies the items' type</dd>
 	 * <dt>f</dt>
@@ -283,13 +283,12 @@ public class RpcConverter {
 	 * </dl>
 	 * 
 	 * @param obj
-	 *            the object to be converted
+	 * 		the object to be converted
 	 * @param type
-	 *            the desired result's type
+	 * 		the desired result's type
 	 * @return
 	 * @throws ConversionException
 	 */
-	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang(Object obj, String type)
 			throws RpcException {
 		return java2erlang(obj, parseOne(type).sign);
@@ -315,29 +314,25 @@ public class RpcConverter {
 		if (obj instanceof Character) {
 			if (type.kind == 'i') {
 				return new OtpErlangChar((Character) obj);
-			} else {
-				failConversion(obj, type);
 			}
+			failConversion(obj, type);
 		}
 		if (obj instanceof Number) {
 			if (obj instanceof Float) {
 				if (type.kind == 'd') {
 					return new OtpErlangFloat((Float) obj);
-				} else {
-					failConversion(obj, type);
 				}
+				failConversion(obj, type);
 			} else if (obj instanceof Double) {
 				if (type.kind == 'd') {
 					return new OtpErlangDouble((Double) obj);
-				} else {
-					failConversion(obj, type);
 				}
+				failConversion(obj, type);
 			} else if (type.kind == 'i') {
 				if (obj instanceof BigInteger) {
 					return new OtpErlangBigLong((BigInteger) obj);
-				} else {
-					return new OtpErlangLong(((Number) obj).longValue());
 				}
+				return new OtpErlangLong(((Number) obj).longValue());
 			} else {
 				failConversion(obj, type);
 			}
@@ -345,9 +340,8 @@ public class RpcConverter {
 		if (obj instanceof Boolean) {
 			if (type.kind == 'o') {
 				return new OtpErlangAtom(((Boolean) obj) ? "true" : "false");
-			} else {
-				failConversion(obj, type);
 			}
+			failConversion(obj, type);
 		}
 		if (obj instanceof List<?>) {
 			if (type.kind == 'l') {
@@ -357,9 +351,8 @@ public class RpcConverter {
 					vv[i] = java2erlang(v[i], type.content[0]);
 				}
 				return new OtpErlangList(vv);
-			} else {
-				failConversion(obj, type);
 			}
+			failConversion(obj, type);
 		}
 
 		if (obj instanceof OtpErlangPid) {
@@ -427,29 +420,27 @@ public class RpcConverter {
 			if (type.kind == 'b') {
 				// TODO
 				return new OtpErlangBinary(obj);
-			} else {
-				if (type.kind == 'l') {
-					OtpErlangObject[] vv = new OtpErlangObject[len];
-					for (int i = 0; i < len; i++) {
-						vv[i] = java2erlang(Array.get(obj, i), type.content[0]);
-					}
-					return new OtpErlangList(vv);
-				} else if (type.kind == 't') {
-					OtpErlangObject[] vv = new OtpErlangObject[len];
-					for (int i = 0; i < len; i++) {
-						vv[i] = java2erlang(Array.get(obj, i), type.content[i]);
-					}
-					return new OtpErlangTuple(vv);
-				} else {
-					failConversion(obj, type);
+			}
+			if (type.kind == 'l') {
+				OtpErlangObject[] vv = new OtpErlangObject[len];
+				for (int i = 0; i < len; i++) {
+					vv[i] = java2erlang(Array.get(obj, i), type.content[0]);
 				}
+				return new OtpErlangList(vv);
+			} else if (type.kind == 't') {
+				OtpErlangObject[] vv = new OtpErlangObject[len];
+				for (int i = 0; i < len; i++) {
+					vv[i] = java2erlang(Array.get(obj, i), type.content[i]);
+				}
+				return new OtpErlangTuple(vv);
+			} else {
+				failConversion(obj, type);
 			}
 		}
 		if ("j".equals(type)) {
 			return ObjRefCache.registerTarget(obj);
-		} else {
-			failConversion(obj, type);
 		}
+		failConversion(obj, type);
 		return null;
 	}
 

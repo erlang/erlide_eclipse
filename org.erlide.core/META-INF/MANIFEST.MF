@@ -21,5 +21,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
  org.erlide.launching,
  org.erlide.basic
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

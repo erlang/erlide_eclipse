@@ -4,7 +4,7 @@ Bundle-Name: Devtools Plug-in
 Bundle-SymbolicName: org.erlide.devtools;singleton:=true
 Bundle-Version: 0.3.38.qualifier
 Bundle-Vendor: Erlide team
-Eclipse-LazyStart: false
+Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.devtools.builder;
   uses:="org.eclipse.jface.action,
    org.eclipse.core.runtime,

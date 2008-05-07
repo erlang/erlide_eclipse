@@ -17,13 +17,11 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang strings.
  */
-public class OtpErlangString extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangString extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = -7053595217604929233L;
@@ -42,11 +40,11 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded string.
+	 * 		the stream containing the encoded string.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang string.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang string.
 	 */
 	public OtpErlangString(OtpInputStream buf) throws OtpErlangDecodeException {
 		str = buf.read_string();
@@ -56,7 +54,7 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	 * Get the actual string contained in this object.
 	 * 
 	 * @return the raw string contained in this object, without regard to Erlang
-	 *         quoting rules.
+	 * 	quoting rules.
 	 * 
 	 * @see #toString
 	 */
@@ -80,8 +78,7 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	 * Convert this string to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded string should be
-	 *            written.
+	 * 		an output stream to which the encoded string should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -94,10 +91,10 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	 * OtpErlangStrings with each other and with Strings.
 	 * 
 	 * @param o
-	 *            the OtpErlangString or String to compare to.
+	 * 		the OtpErlangString or String to compare to.
 	 * 
 	 * @return true if the strings consist of the same sequence of characters,
-	 *         false otherwise.
+	 * 	false otherwise.
 	 */
 	@Override
 	public boolean equals(Object o) {

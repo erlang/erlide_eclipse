@@ -17,7 +17,6 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang floats and doubles. Erlang defines
@@ -25,8 +24,7 @@ import java.io.Serializable;
  * {@link OtpErlangFloat} are used to provide representations corresponding to
  * the Java types Double and Float.
  */
-public class OtpErlangDouble extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangDouble extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = 132947104811974021L;
@@ -45,11 +43,11 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded value.
+	 * 		the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang float.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang float.
 	 */
 	public OtpErlangDouble(OtpInputStream buf) throws OtpErlangDecodeException {
 		d = buf.read_double();
@@ -70,7 +68,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 * @return the value of this object, as a float.
 	 * 
 	 * @exception OtpErlangRangeException
-	 *                if the value cannot be represented as a float.
+	 * 		if the value cannot be represented as a float.
 	 */
 	public float floatValue() throws OtpErlangRangeException {
 		final float f = (float) d;
@@ -96,7 +94,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 * Convert this double to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded value should be written.
+	 * 		an output stream to which the encoded value should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -108,7 +106,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	 * same value.
 	 * 
 	 * @param o
-	 *            the float to compare to.
+	 * 		the float to compare to.
 	 * 
 	 * @return true if the floats have the same value.
 	 */

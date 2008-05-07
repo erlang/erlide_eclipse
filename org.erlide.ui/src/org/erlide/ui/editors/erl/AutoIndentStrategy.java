@@ -55,7 +55,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 * Get the actual indent itself
 	 * 
 	 * @param depth
-	 *            the depth of the indent;
+	 * 		the depth of the indent;
 	 * @return the indent
 	 */
 	private String getIndent(int depth) {
@@ -74,7 +74,6 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		}
 	}
 
-	@SuppressWarnings("boxing")
 	protected void indentAfterNewLine(IDocument d, DocumentCommand c)
 			throws BadLocationException {
 		final int offset = c.offset;
@@ -132,9 +131,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 * space characters for autoindentation
 	 * 
 	 * @param d
-	 *            the document
+	 * 		the document
 	 * @param c
-	 *            the command
+	 * 		the command
 	 */
 
 	// FIXME flytta en del av denna logik till erlang!! (t.ex. så vill man inte

@@ -77,6 +77,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				.setText("(enter error description here, paste any relevant code too)");
 
 		this.contact = new Text(panel, SWT.BORDER);
+		contact.setText(System.getProperty("user.name"));
 		this.contact.setBounds(152, 225, 310, 25);
 
 		attachTechnicalDataButton = new Button(panel, SWT.CHECK);
@@ -96,7 +97,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		sendButton.setBounds(217, 284, 45, 25);
 
 		final Label contactoptionalLabel = new Label(panel, SWT.NONE);
-		contactoptionalLabel.setText("Contact (optional)");
+		contactoptionalLabel.setText("Contact email (optional)");
 		contactoptionalLabel.setBounds(46, 228, 100, 15);
 
 		responseLabel = new Label(panel, SWT.CENTER);

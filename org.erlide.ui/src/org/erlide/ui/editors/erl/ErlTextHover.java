@@ -55,7 +55,6 @@ public class ErlTextHover implements ITextHover,
 		return new Region(token.getOffset(), token.getLength());
 	}
 
-	@SuppressWarnings("boxing")
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);

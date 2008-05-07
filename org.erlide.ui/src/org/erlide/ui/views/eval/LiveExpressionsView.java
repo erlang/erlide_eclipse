@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
@@ -76,7 +75,7 @@ import erlang.ErlideBackend;
  * @author Vlad Dumitrescu
  */
 public class LiveExpressionsView extends ViewPart implements
-		IResourceChangeListener, IViewPart {
+		IResourceChangeListener {
 
 	public static final String ID = "org.erlide.ui.views.eval.LiveExpressionsView";
 

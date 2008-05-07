@@ -20,14 +20,12 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * Provides a Java representation of Erlang large integral types.
  */
-public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
-		Cloneable {
+public class OtpErlangBigLong extends OtpErlangLong {
 
 	// don't change this!
 	private static final long serialVersionUID = 1610466859236755097L;
@@ -38,7 +36,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * Create an Erlang integer from the given value.
 	 * 
 	 * @param l
-	 *            the long value to use.
+	 * 		the long value to use.
 	 */
 	public OtpErlangBigLong(long l) {
 		super(l);
@@ -48,7 +46,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * Create an Erlang integer from the given value.
 	 * 
 	 * @param l
-	 *            the BigInteger value to use.
+	 * 		the BigInteger value to use.
 	 */
 	public OtpErlangBigLong(BigInteger l) {
 		super(l.longValue());
@@ -60,11 +58,11 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded value.
+	 * 		the stream containing the encoded value.
 	 * 
 	 * @throws OtpErlangDecodeException
-	 *             if the buffer does not contain a valid external
-	 *             representation of an Erlang integer.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang integer.
 	 */
 	public OtpErlangBigLong(OtpInputStream buf) throws OtpErlangDecodeException {
 		super(0);
@@ -94,7 +92,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the value of this number, as an int.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as an int.
+	 * 		if the value is too large to be represented as an int.
 	 */
 	@Override
 	public int intValue() throws OtpErlangRangeException {
@@ -113,8 +111,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the value of this number, as an int.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as an int, or if
-	 *             the value is negative.
+	 * 		if the value is too large to be represented as an int, or if the
+	 * 		value is negative.
 	 */
 	@Override
 	public int uIntValue() throws OtpErlangRangeException {
@@ -135,7 +133,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the value of this number, as a short.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as a short.
+	 * 		if the value is too large to be represented as a short.
 	 */
 	@Override
 	public short shortValue() throws OtpErlangRangeException {
@@ -155,8 +153,8 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the value of this number, as a short.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as a short, or if
-	 *             the value is negative.
+	 * 		if the value is too large to be represented as a short, or if the
+	 * 		value is negative.
 	 */
 	@Override
 	public short uShortValue() throws OtpErlangRangeException {
@@ -178,7 +176,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the char value of this number.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as a char.
+	 * 		if the value is too large to be represented as a char.
 	 */
 	@Override
 	public char charValue() throws OtpErlangRangeException {
@@ -198,7 +196,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * @return the byte value of this number.
 	 * 
 	 * @throws OtpErlangRangeException
-	 *             if the value is too large to be represented as a byte.
+	 * 		if the value is too large to be represented as a byte.
 	 */
 	@Override
 	public byte byteValue() throws OtpErlangRangeException {
@@ -230,8 +228,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * Convert this number to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded number should be
-	 *            written.
+	 * 		an output stream to which the encoded number should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -243,7 +240,7 @@ public class OtpErlangBigLong extends OtpErlangLong implements Serializable,
 	 * same value.
 	 * 
 	 * @param o
-	 *            the number to compare to.
+	 * 		the number to compare to.
 	 * 
 	 * @return true if the numbers have the same value.
 	 */

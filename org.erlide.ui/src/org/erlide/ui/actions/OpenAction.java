@@ -62,8 +62,7 @@ import erlang.OpenResult;
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>ICompilationUnit</code>, <code>IMember</code> or
- * <code>IFile</code>.
+ * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -83,10 +82,10 @@ public class OpenAction extends SelectionDispatchAction {
 	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
 	 * 
 	 * @param site
-	 *            the site providing context information for this action
+	 * 		the site providing context information for this action
 	 * @param externalModules
-	 *            the externalModules file that can be searched for references
-	 *            to external modules
+	 * 		the externalModules file that can be searched for references to
+	 * 		external modules
 	 */
 	public OpenAction(IWorkbenchSite site, String externalModules) {
 		super(site);
@@ -204,7 +203,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 * method.
 	 * 
 	 * @param elements
-	 *            the elements to process
+	 * 		the elements to process
 	 */
 	public void run(Object[] elements) {
 		if (elements == null) {
@@ -262,10 +261,10 @@ public class OpenAction extends SelectionDispatchAction {
 	 * method.
 	 * 
 	 * @param object
-	 *            the element to open
+	 * 		the element to open
 	 * @return the real element to open
 	 * @throws ErlangModelException
-	 *             if an error occurs while accessing the Erlang model
+	 * 		if an error occurs while accessing the Erlang model
 	 */
 	public Object getElementToOpen(Object object) throws ErlModelException {
 		return object;
@@ -275,7 +274,6 @@ public class OpenAction extends SelectionDispatchAction {
 		return ActionMessages.OpenAction_error_title;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public void run() {
 

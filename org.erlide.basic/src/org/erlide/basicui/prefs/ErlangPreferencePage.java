@@ -64,7 +64,6 @@ public class ErlangPreferencePage extends PreferencePage implements
 		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2")); //$NON-NLS-1$
 
 		final SelectionListener linkListener = new SelectionListener() {
-
 			public void widgetSelected(SelectionEvent e) {
 				Program.launch(e.text);
 			}

@@ -17,13 +17,11 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang ports.
  */
-public class OtpErlangPort extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangPort extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = 4037115468007644704L;
@@ -56,11 +54,11 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	 * external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded port.
+	 * 		the stream containing the encoded port.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang port.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang port.
 	 */
 	public OtpErlangPort(OtpInputStream buf) throws OtpErlangDecodeException {
 		final OtpErlangPort p = buf.read_port();
@@ -74,14 +72,13 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	 * Create an Erlang port from its components.
 	 * 
 	 * @param node
-	 *            the nodename.
+	 * 		the nodename.
 	 * 
 	 * @param id
-	 *            an arbitrary number. Only the low order 28 bits will be used.
+	 * 		an arbitrary number. Only the low order 28 bits will be used.
 	 * 
 	 * @param creation
-	 *            another arbitrary number. Only the low order 2 bits will be
-	 *            used.
+	 * 		another arbitrary number. Only the low order 2 bits will be used.
 	 */
 	public OtpErlangPort(String node, int id, int creation) {
 		this.node = node;
@@ -131,7 +128,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	 * Convert this port to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded port should be written.
+	 * 		an output stream to which the encoded port should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -143,7 +140,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 	 * equal.
 	 * 
 	 * @param o
-	 *            the other port to compare to.
+	 * 		the other port to compare to.
 	 * 
 	 * @return true if the ports are equal, false otherwise.
 	 */

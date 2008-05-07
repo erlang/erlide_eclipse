@@ -17,15 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang PIDs. PIDs represent Erlang
  * processes and consist of a nodename and a number of integers.
  */
 @SuppressWarnings("unchecked")
-public class OtpErlangPid extends OtpErlangObject implements Serializable,
-		Cloneable, Comparable {
+public class OtpErlangPid extends OtpErlangObject implements Comparable {
 
 	// don't change this!
 	static final long serialVersionUID = 1664394142301803659L;
@@ -42,7 +40,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 * Create a unique Erlang PID belonging to the local node.
 	 * 
 	 * @param self
-	 *            the local node.
+	 * 		the local node.
 	 * 
 	 * @deprecated use OtpLocalNode:createPid() instead
 	 */
@@ -61,11 +59,11 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 * external format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded PID.
+	 * 		the stream containing the encoded PID.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang PID.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang PID.
 	 */
 	public OtpErlangPid(OtpInputStream buf) throws OtpErlangDecodeException {
 		final OtpErlangPid p = buf.read_pid();
@@ -80,18 +78,17 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 * Create an Erlang pid from its components.
 	 * 
 	 * @param node
-	 *            the nodename.
+	 * 		the nodename.
 	 * 
 	 * @param id
-	 *            an arbitrary number. Only the low order 15 bits will be used.
+	 * 		an arbitrary number. Only the low order 15 bits will be used.
 	 * 
 	 * @param serial
-	 *            another arbitrary number. Only the low order 13 bits will be
-	 *            used.
+	 * 		another arbitrary number. Only the low order 13 bits will be used.
 	 * 
 	 * @param creation
-	 *            yet another arbitrary number. Only the low order 2 bits will
-	 *            be used.
+	 * 		yet another arbitrary number. Only the low order 2 bits will be
+	 * 		used.
 	 */
 	public OtpErlangPid(String node, int id, int serial, int creation) {
 		this.node = node;
@@ -151,7 +148,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 * Convert this PID to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 *            an output stream to which the encoded PID should be written.
+	 * 		an output stream to which the encoded PID should be written.
 	 */
 	@Override
 	public void encode(OtpOutputStream buf) {
@@ -173,7 +170,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	 * equal.
 	 * 
 	 * @param port
-	 *            the other PID to compare to.
+	 * 		the other PID to compare to.
 	 * 
 	 * @return true if the PIDs are equal, false otherwise.
 	 */

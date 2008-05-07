@@ -81,10 +81,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				externalCallCompletions(moduleName, offset, prefix
 						.substring(k + 1), result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
-			} else {
-				moduleCompletions(offset, prefix, result, k, b);
-				return result.toArray(new ICompletionProposal[result.size()]);
 			}
+			moduleCompletions(offset, prefix, result, k, b);
+			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			return NO_COMPLETIONS;
 		}

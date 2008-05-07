@@ -17,7 +17,6 @@
  */
 package com.ericsson.otp.erlang;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -27,8 +26,7 @@ import java.util.Arrays;
  * <p>
  * The arity of the list is the number of elements it contains.
  */
-public class OtpErlangList extends OtpErlangObject implements Serializable,
-		Cloneable {
+public class OtpErlangList extends OtpErlangObject {
 
 	// don't change this!
 	static final long serialVersionUID = 5999112769036676548L;
@@ -53,7 +51,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create a list of characters.
 	 * 
 	 * @param str
-	 *            the characters from which to create the list.
+	 * 		the characters from which to create the list.
 	 */
 	public OtpErlangList(String str) {
 		int len = 0;
@@ -73,7 +71,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create a list containing one element.
 	 * 
 	 * @param elem
-	 *            the element to make the list from.
+	 * 		the element to make the list from.
 	 */
 	public OtpErlangList(OtpErlangObject elem) {
 		elems = new OtpErlangObject[1];
@@ -84,7 +82,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create a list from an array of arbitrary Erlang terms.
 	 * 
 	 * @param elems
-	 *            the array of terms from which to create the list.
+	 * 		the array of terms from which to create the list.
 	 */
 	public OtpErlangList(OtpErlangObject... elems) {
 		this(elems, 0, elems.length);
@@ -94,11 +92,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Create a list from an array of arbitrary Erlang terms.
 	 * 
 	 * @param elems
-	 *            the array of terms from which to create the list.
+	 * 		the array of terms from which to create the list.
 	 * @param start
-	 *            the offset of the first term to insert.
+	 * 		the offset of the first term to insert.
 	 * @param count
-	 *            the number of terms to insert.
+	 * 		the number of terms to insert.
 	 */
 	public OtpErlangList(OtpErlangObject[] elems, int start, int count) {
 		if ((elems != null) && (count > 0)) {
@@ -112,11 +110,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * format.
 	 * 
 	 * @param buf
-	 *            the stream containing the encoded list.
+	 * 		the stream containing the encoded list.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang list.
+	 * 		if the buffer does not contain a valid external representation of an
+	 * 		Erlang list.
 	 */
 	public OtpErlangList(OtpInputStream buf) throws OtpErlangDecodeException {
 		elems = null;
@@ -158,8 +156,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Get the specified element from the list.
 	 * 
 	 * @param i
-	 *            the index of the requested element. List elements are numbered
-	 *            as array elements, starting at 0.
+	 * 		the index of the requested element. List elements are numbered as
+	 * 		array elements, starting at 0.
 	 * 
 	 * @return the requested element, of null if i is not a valid element index.
 	 */
@@ -214,7 +212,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * to do so.
 	 * 
 	 * @param buf
-	 *            An output stream to which the encoded list should be written.
+	 * 		An output stream to which the encoded list should be written.
 	 * 
 	 */
 	@Override
@@ -237,10 +235,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * arity and all of the elements are equal.
 	 * 
 	 * @param o
-	 *            the list to compare to.
+	 * 		the list to compare to.
 	 * 
 	 * @return true if the lists have the same arity and all the elements are
-	 *         equal.
+	 * 	equal.
 	 */
 	@Override
 	public boolean equals(Object o) {
