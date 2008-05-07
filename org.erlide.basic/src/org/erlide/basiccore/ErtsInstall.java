@@ -54,8 +54,9 @@ public class ErtsInstall {
 	}
 
 	public String getVersion() {
-		if (fVersion == null)
+		if (fVersion == null) {
 			retrieveVersion(fOtpHome);
+		}
 		return fVersion;
 	}
 
@@ -120,8 +121,9 @@ public class ErtsInstall {
 	}
 
 	public static String retrieveVersion(String path) {
-		if (path == null)
+		if (path == null) {
 			return null;
+		}
 		final File boot = new File(path + File.separator + "bin"
 				+ File.separator + "start.boot");
 		try {

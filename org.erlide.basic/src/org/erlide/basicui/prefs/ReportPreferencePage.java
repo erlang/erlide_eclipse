@@ -73,14 +73,16 @@ public class ReportPreferencePage extends PreferencePage implements
 				| SWT.BORDER | SWT.WRAP);
 		this.description.setBounds(46, 31, 416, 188);
 
-		this.description.setText("(enter error description here, paste any relevant code too)");
+		this.description
+				.setText("(enter error description here, paste any relevant code too)");
 
 		this.contact = new Text(panel, SWT.BORDER);
 		this.contact.setBounds(152, 225, 310, 25);
 
 		attachTechnicalDataButton = new Button(panel, SWT.CHECK);
 		attachTechnicalDataButton.setSelection(true);
-		attachTechnicalDataButton.setText("Attach technical data (eclipse and erlide logs)");
+		attachTechnicalDataButton
+				.setText("Attach technical data (eclipse and erlide logs)");
 		attachTechnicalDataButton.setBounds(46, 256, 260, 20);
 
 		final Button sendButton = new Button(panel, SWT.NONE);
@@ -99,7 +101,8 @@ public class ReportPreferencePage extends PreferencePage implements
 
 		responseLabel = new Label(panel, SWT.CENTER);
 		responseLabel.setVisible(false);
-		responseLabel.setText("The report is being sent now, you can close this window.");
+		responseLabel
+				.setText("The report is being sent now, you can close this window.");
 		responseLabel.setBounds(47, 315, 415, 20);
 
 		noDefaultAndApplyButton();
@@ -108,16 +111,17 @@ public class ReportPreferencePage extends PreferencePage implements
 	}
 
 	protected void postReport() {
-		Job j = new Job("send error report") {;
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-		sendToDisk(getLocation());
-		return Status.OK_STATUS;
-		}};
+		Job j = new Job("send error report") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				sendToDisk(getLocation());
+				return Status.OK_STATUS;
+			}
+		};
 		j.setPriority(Job.SHORT);
 		j.setSystem(true);
 		j.schedule();
-		
+
 		responseLabel.setVisible(true);
 	}
 
@@ -126,27 +130,29 @@ public class ReportPreferencePage extends PreferencePage implements
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
 			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
 		} else {
-			s="/proj/tecsas/SHADE/erlide/reports";
+			s = "/proj/tecsas/SHADE/erlide/reports";
 		}
 		File dir = new File(s);
-		if (!dir.exists()){
+		if (!dir.exists()) {
 			return System.getProperty("user.home");
 		}
 		return s;
 	}
 
 	void sendToDisk(String location) {
-		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		File report = new File(location+"/"+System.getProperty("user.name")+"_"+tstamp+".txt");
+		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		File report = new File(location + "/" + System.getProperty("user.name")
+				+ "_" + tstamp + ".txt");
 		try {
 			report.createNewFile();
 			OutputStream out = new FileOutputStream(report);
 			PrintWriter pw = new PrintWriter(out);
-			try{
+			try {
 				pw.println(title.getText());
-				pw.println(contact.getText()); 
+				pw.println(contact.getText());
 				pw.println(description.getText());
-				if (attachTechnicalDataButton.getSelection()){
+				if (attachTechnicalDataButton.getSelection()) {
 					String plog = fetchPlatformLog();
 					String elog = fetchErlideLog();
 					pw.println("\n==================================\n");
@@ -154,7 +160,7 @@ public class ReportPreferencePage extends PreferencePage implements
 					pw.println("\n==================================\n");
 					pw.println(elog);
 				}
-			}finally{
+			} finally {
 				pw.flush();
 				out.close();
 			}
@@ -162,9 +168,7 @@ public class ReportPreferencePage extends PreferencePage implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
 
 	@SuppressWarnings("unused")
@@ -173,35 +177,36 @@ public class ReportPreferencePage extends PreferencePage implements
 		String descr;
 		String email;
 		try {
-			extra = URLEncoder.encode(description.getText(),
-					"UTF-8");
+			extra = URLEncoder.encode(description.getText(), "UTF-8");
 			descr = URLEncoder.encode(title.getText(), "UTF-8");
-			email = URLEncoder
-					.encode(contact.getText(), "UTF-8");
+			email = URLEncoder.encode(contact.getText(), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
-			extra="";
-			descr="";
-			email="";
+			extra = "";
+			descr = "";
+			email = "";
 		}
-		final String fe=extra;
-		final String fd=descr;
-		final String fm=email;
+		final String fe = extra;
+		final String fd = descr;
+		final String fm = email;
 
-		Job j = new Job("send error report") {;
+		Job j = new Job("send error report") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					Proxy proxy = Proxy.NO_PROXY;
-						if("true".equals(System.getProperty("proxySet"))){
-							proxy = new Proxy(Proxy.Type.HTTP, 
-									new InetSocketAddress(System.getProperty("proxyHost"),
-											Integer.parseInt(System.getProperty("proxyPort"))));
-						}
-					URLConnection c = new URL(String.format(URL, fe, fd, fm)).openConnection(proxy);
-					
+					if ("true".equals(System.getProperty("proxySet"))) {
+						proxy = new Proxy(Proxy.Type.HTTP,
+								new InetSocketAddress(System
+										.getProperty("proxyHost"), Integer
+										.parseInt(System
+												.getProperty("proxyPort"))));
+					}
+					URLConnection c = new URL(String.format(URL, fe, fd, fm))
+							.openConnection(proxy);
+
 					// TODO use POST!
-					
+
 					BufferedReader dis = new BufferedReader(
 							new InputStreamReader(c.getInputStream()));
 					String inputLine;
@@ -213,7 +218,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
-					e.printStackTrace(); 
+					e.printStackTrace();
 				}
 				return Status.OK_STATUS;
 			}

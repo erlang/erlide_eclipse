@@ -35,8 +35,6 @@ import org.erlide.basicui.IErlideBasicUIConstants;
 public class ErlangPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private IWorkbench wb;
-
 	@Override
 	protected Control createContents(Composite parent) {
 		noDefaultAndApplyButton();
@@ -115,7 +113,6 @@ public class ErlangPreferencePage extends PreferencePage implements
 	}
 
 	public void init(IWorkbench workbench) {
-		wb = workbench;
 	}
 
 }

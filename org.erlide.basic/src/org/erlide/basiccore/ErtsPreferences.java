@@ -62,8 +62,7 @@ public class ErtsPreferences {
 				IPrefConstants.DEFAULT_PATH_A)));
 		defaultInstall.setPathZ(cvt(prefs.get(IPrefConstants.ERTS_PATH_Z,
 				IPrefConstants.DEFAULT_PATH_Z)));
-		defaultInstall.setExtraArgs(prefs.get(
-				IPrefConstants.ERTS_EXTRA_ARGS,
+		defaultInstall.setExtraArgs(prefs.get(IPrefConstants.ERTS_EXTRA_ARGS,
 				IPrefConstants.DEFAULT_EXTRA_ARGS));
 	}
 
@@ -77,8 +76,9 @@ public class ErtsPreferences {
 		prefs.put(IPrefConstants.ERTS_OTP_HOME, defaultInstall.getOtpHome());
 		prefs.put(IPrefConstants.ERTS_PATH_A, cvt(defaultInstall.getPathA()));
 		prefs.put(IPrefConstants.ERTS_PATH_Z, cvt(defaultInstall.getPathZ()));
-		prefs.put(IPrefConstants.ERTS_EXTRA_ARGS, defaultInstall
-				.getExtraArgs());
+		prefs
+				.put(IPrefConstants.ERTS_EXTRA_ARGS, defaultInstall
+						.getExtraArgs());
 		try {
 			prefs.flush();
 		} catch (final BackingStoreException e) {
