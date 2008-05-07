@@ -102,7 +102,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 
 		new Label(group, SWT.NONE).setText("Other contributors:");
 		new Label(group, SWT.NONE).setText("  * Lukas Larsson");
-		new Label(group, SWT.NONE).setText("  * Mickaël Rémond");
+		new Label(group, SWT.NONE).setText("  * MickaÃ«l RÃ©mond");
 
 		final Label alsoManyThanksLabel = new Label(group, SWT.NONE);
 		alsoManyThanksLabel

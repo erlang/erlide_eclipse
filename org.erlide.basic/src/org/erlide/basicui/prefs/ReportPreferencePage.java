@@ -49,8 +49,27 @@ public class ReportPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
 	Text contact;
-	Text description;
+	Text body;
 	Text title;
+
+	class ReportData {
+		String title;
+		String contact;
+		String body;
+		String plog;
+		String elog;
+
+		public ReportData(String title, String body, String contact,
+				boolean attach) {
+			this.title = title;
+			this.contact = contact;
+			this.body = body;
+			if (attach) {
+				this.plog = fetchPlatformLog();
+				this.elog = fetchErlideLog();
+			}
+		}
+	}
 
 	final private String URL = "https://shibumi.fogbugz.com/ScoutSubmit.asp?"
 			+ "ScoutUserName=field_tester&ScoutProject=erlide&ScoutArea=Misc&"
@@ -69,11 +88,11 @@ public class ReportPreferencePage extends PreferencePage implements
 		this.title = new Text(panel, SWT.BORDER);
 		this.title.setBounds(46, 0, 416, 25);
 
-		this.description = new Text(panel, SWT.V_SCROLL | SWT.MULTI
-				| SWT.BORDER | SWT.WRAP);
-		this.description.setBounds(46, 31, 416, 188);
+		this.body = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER
+				| SWT.WRAP);
+		this.body.setBounds(46, 31, 416, 188);
 
-		this.description
+		this.body
 				.setText("(enter error description here, paste any relevant code too)");
 
 		this.contact = new Text(panel, SWT.BORDER);
@@ -113,9 +132,13 @@ public class ReportPreferencePage extends PreferencePage implements
 
 	protected void postReport() {
 		Job j = new Job("send error report") {
+			ReportData data = new ReportData(title.getText(),
+					contact.getText(), body.getText(),
+					attachTechnicalDataButton.getSelection());
+
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				sendToDisk(getLocation());
+				sendToDisk(getLocation(), data);
 				return Status.OK_STATUS;
 			}
 		};
@@ -140,7 +163,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		return s;
 	}
 
-	void sendToDisk(String location) {
+	void sendToDisk(String location, ReportData data) {
 		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 		File report = new File(location + "/" + System.getProperty("user.name")
@@ -150,17 +173,13 @@ public class ReportPreferencePage extends PreferencePage implements
 			OutputStream out = new FileOutputStream(report);
 			PrintWriter pw = new PrintWriter(out);
 			try {
-				pw.println(title.getText());
-				pw.println(contact.getText());
-				pw.println(description.getText());
-				if (attachTechnicalDataButton.getSelection()) {
-					String plog = fetchPlatformLog();
-					String elog = fetchErlideLog();
-					pw.println("\n==================================\n");
-					pw.println(plog);
-					pw.println("\n==================================\n");
-					pw.println(elog);
-				}
+				pw.println(data.title);
+				pw.println(data.contact);
+				pw.println(data.body);
+				pw.println("\n==================================\n");
+				pw.println(data.plog);
+				pw.println("\n==================================\n");
+				pw.println(data.elog);
 			} finally {
 				pw.flush();
 				out.close();
@@ -178,7 +197,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		String descr;
 		String email;
 		try {
-			extra = URLEncoder.encode(description.getText(), "UTF-8");
+			extra = URLEncoder.encode(body.getText(), "UTF-8");
 			descr = URLEncoder.encode(title.getText(), "UTF-8");
 			email = URLEncoder.encode(contact.getText(), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
