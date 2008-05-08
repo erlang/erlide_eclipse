@@ -16,7 +16,7 @@
          indent_lines/4]).
 
 %-define(IO_FORMAT_DEBUG, 1).
-%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 %-define(TRACE, 1).
 
 -include("erlide.hrl").
@@ -64,9 +64,12 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                         {I, true} ->
                             ?D(I),
                             {I, initial_whitespace(OldLine), AddNL};
-                        {_I, false} ->
-                            ?D(_I),
-                            {0, 0, false}
+                        {I, false} ->
+                            ?D(I),
+                            case AddNL of
+                                false -> {I, 0, false};
+                                true -> {0, 0, false}
+                            end
                     end;
                 _  ->
                     error
@@ -131,7 +134,9 @@ indent(Tokens, LineOffsets, LineN, Prefs) ->
         throw:{indent_checked, N, Inblock} ->
             trace_stop(),
             ?D(N),
-            {N, Inblock}
+            {N, Inblock};
+        error:_ ->
+            {0, true}
     end.
 
 get_indent_of(_A = #token{kind=eof}, C, _LineOffsets) ->
@@ -143,7 +148,6 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
     TI+C.
 
 indent_lines(S, From, Tablength, Prefs) ->
-    ?D(S),
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From),
     do_indent_lines(Lines, Tablength, First, Prefs, FirstLineNum, "").
 
@@ -156,10 +160,10 @@ indent_lines(S, From, Tablength, Prefs) ->
 do_indent_lines([], _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
-    ?D({Text++Acc, Line}),
+%%     ?D({Text++Acc, Line}),
     {NewI, _OldI, _AddNL} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
     NewLine = reindent_line(Line, NewI),
-    ?D({NewI, _OldI, Line, NewLine}),
+%%     ?D({NewI, _OldI, Line, NewLine}),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
 
 %% TODO: Add description of asd/function_arity
@@ -377,7 +381,7 @@ i_predicate_list(R0, I0, A0) ->
             R3 = i_kind(Kind, R2, I1),
             i_predicate_list(R3, I1, I1#i.anchor);
         _ ->
-            R2
+            {R2, A1}
     end.
 
 i_binary_op(R0, I) ->
@@ -404,7 +408,7 @@ i_end_or_expr_list(R, I0) ->
     end.
 
 i_1_expr([#token{kind=atom} | _] = R, I) ->
-    ?D(atom),
+    ?D(R),
     i_one(R, I);
 i_1_expr([#token{kind=integer} | _] = R, I) ->
     ?D(integer),
@@ -448,7 +452,8 @@ i_1_expr([#token{kind='case'}=T | _] = R0, I0) ->
 i_1_expr([#token{kind='if'}=T | _] = R0, I0) ->
     R1 = i_kind('if', R0, I0),
     I1 = i_with('case', R0, I0),
-    R2 = i_clause_list(R1, I1#i{in_block=true}),
+    ?D(I1),
+    R2 = i_if_clause_list(R1, I1#i{in_block=true}, none),
     i_block_end(T#token.kind, R2, I0);
 i_1_expr([#token{kind='begin'}=T | _] = R0, I0) ->
     R1 = i_kind('begin', R0, I0),
@@ -575,7 +580,7 @@ comment_kind(_) ->
 %%     [];
 
 i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
-    ?D(I),
+%%     ?D(I),
     case comment_kind(V) of
         comment_3 ->
             case i_check_aux([C], I) of
@@ -590,7 +595,7 @@ i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
     end,
     i_comments(Rest, I);
 i_comments(Rest, I) ->
-    ?D(Rest),
+%%     ?D(Rest),
     i_check(Rest, I),
     Rest.
 
@@ -602,14 +607,12 @@ skip_comments(Rest) ->
     Rest.
 
 i_kind(Kind, R0, I) ->
-    ?D({Kind, R0, I#i.in_block}),
     R1 = i_comments(R0, I),
-    ?D(I#i.in_block),
     %i_check(R1, I),
     [#token{kind=Kind} | R2] = R1,
     R2.
 
-i_end_paren([#token{kind=Kind} | _] = R, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>' ->
+i_end_paren([#token{kind=Kind} | _] = R, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>'; Kind==eof ->
     i_kind(Kind, R, I).
 
 i_form_list(R0, I) ->
@@ -646,7 +649,8 @@ i_fun_clause(R0, I0) ->
     R3 = case i_sniff(R2) of
              #token{kind='when'} ->
                  R21 = i_kind('when', R2, I1),
-                 i_predicate_list(R21, I1);
+                 {R22, _A} = i_predicate_list(R21, I1),
+                 R22;
              _ ->
                  R2
          end,
@@ -676,7 +680,8 @@ i_clause(R0, I) ->
     R2 = case i_sniff(R1) of
              #token{kind='when'} ->
                  R11 = i_kind('when', R1, I1),
-                 i_predicate_list(R11, I1);
+                 {R12, _A} = i_predicate_list(R11, I1),
+                 R12;
              _ ->
                  R1
          end,
@@ -688,14 +693,40 @@ i_clause(R0, I) ->
     R.
 
 i_clause_list(R, I) ->
-    ?D(I),
+    ?D(R),
     R0 = i_clause(R, I),
+    ?D(R0),
     case i_sniff(R0) of
         #token{kind=';'} ->
             R1 = i_kind(';', R0, I),
             i_clause_list(R1, I);
         _ ->
             R0
+    end.
+     
+i_if_clause(R0, I0) ->
+    {R1, A} = i_predicate_list(R0, I0),
+    I1 = i_with(before_arrow, A, I0),
+    I2 = I1#i{in_block=true},
+    R2 = i_kind('->', R1, I2),
+    I3 = i_with(after_arrow, I2),
+    R = i_expr_list(R2, I3),
+    ?D(R),
+    {R, A}.
+
+i_if_clause_list(R0, I0, A0) ->
+    {R1, A1} = i_if_clause(R0, I0),
+    ?D({A1, R1}),
+    I1 = i_with_old_or_new_anchor(A0, A1, I0),
+    ?D(I1),
+    case i_sniff(R1) of
+        #token{kind=';'} ->
+            ?D(a),
+            R2 = i_kind(';', R1, I0),
+            i_if_clause_list(R2, I1, A1);
+        _ ->
+            ?D(b),
+            R1
     end.
      
 i_catch_clause(R0, I0) ->
@@ -707,7 +738,8 @@ i_catch_clause(R0, I0) ->
     R5 = case i_sniff(R4) of
              #token{kind='when'} ->
                  R41 = i_kind('when', R4, I1),
-                 i_predicate_list(R41, I1);
+                 {R42, _A} = i_predicate_list(R41, I1),
+                 R42;
              _ ->
                  R4
          end,
@@ -1124,7 +1156,8 @@ i_sniff(L) ->
 trace_start() ->
     user_default:da(?MODULE).
 trace_stop() ->
-	user_default:dbgoff().
+	user_default:dbgoff(),
+    user_default:dbgtc("x.log", "x.txt").
 -else.
 trace_start() ->
 	nope.

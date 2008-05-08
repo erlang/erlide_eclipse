@@ -214,6 +214,11 @@ public final class BackendManager implements IResourceChangeListener {
 		return dev != null && "true".equals(dev);
 	}
 
+	public static boolean isTest() {
+		final String test = System.getProperty("erlide.test");
+		return test != null && "true".equals(test);
+	}
+
 	public void addBackendListener(IBackendListener listener) {
 		fListeners.add(listener);
 	}

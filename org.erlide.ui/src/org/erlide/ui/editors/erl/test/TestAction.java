@@ -5,9 +5,15 @@ package org.erlide.ui.editors.erl.test;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.basiccore.ErlLogger;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.runtime.backend.exceptions.BackendException;
+
+import erlang.ErlideScanner2;
 
 /**
  * @author jakob
@@ -21,6 +27,27 @@ public class TestAction extends TextEditorAction {
 			IErlModule module) {
 		super(bundle, prefix, editor);
 		this.module = module;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#run()
+	 */
+	@Override
+	public void run() {
+		super.run();
+		final ITextEditor textEditor = getTextEditor();
+		final IDocument document = textEditor.getDocumentProvider()
+				.getDocument(textEditor.getEditorInput());
+		final String text = document.get();
+		try {
+			final String s = ErlideScanner2.checkAll(ErlScanner
+					.createScannerModuleName(module), text);
+			ErlLogger.debug(s);
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

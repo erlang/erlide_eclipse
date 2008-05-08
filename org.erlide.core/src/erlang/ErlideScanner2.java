@@ -162,4 +162,16 @@ public class ErlideScanner2 {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
+	public static String checkAll(String module, String text)
+			throws BackendException {
+		try {
+			final OtpErlangObject o = BackendManager.getDefault()
+					.getIdeBackend().rpcx("erlide_scanner2", "check_all", "as",
+							module, text);
+			return o.toString();
+		} catch (final RpcException e) {
+			return "";
+		}
+
+	}
 }

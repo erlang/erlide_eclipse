@@ -7,7 +7,7 @@
 %% Include files
 %%
 
-%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -30,97 +30,70 @@
 
 -define(SERVER, ?MODULE).
 
-create(Module) ->
-    spawn_server(),
-    ?SERVER ! {create, Module},
-    ok.
+create(Module) when is_atom(Module) ->
+    server_cmd(create, Module).
 
-destroy(Module) ->
-    spawn_server(),
-    ?SERVER ! {destroy, Module},
-    ok.
+destroy(Module) when is_atom(Module) ->
+	server_cmd(destroy, Module).
 
-getText(Module) ->
-    spawn_server(),
-    ?SERVER ! {get_text, self(), Module},
-    receive
-        {get_text, _Pid, Result} ->
-            Result
-    end.
+getText(Module) when is_atom(Module) ->
+	server_cmd(get_text, Module).
 
-getTextLine(Module, Line) ->
-    spawn_server(),
-    ?SERVER ! {get_text_line, self(), Module, Line},
-    receive
-        {get_text_line, _Pid, Result} ->
-            Result
-    end.
+getTextLine(Module, Line) when is_atom(Module), is_integer(Line) ->
+	server_cmd(get_text_line, {Module, Line}).
 
-getTokens(Module) ->
-    spawn_server(),
-    ?SERVER ! {get_tokens, self(), Module},
-    receive
-        {get_tokens, _Pid, Result} ->
-            Result
-    end.
+getTokens(Module) when is_atom(Module) ->
+	server_cmd(get_tokens, Module).
 
-getTokenWindow(Module, Offset, Before, After) ->
-    spawn_server(),
-    ?SERVER ! {get_token_window, self(), Module, Offset, Before, After},
-    receive
-        {get_token_window, _Pid, Result} ->
-            Result
-    end.
+getTokenWindow(Module, Offset, Before, After) 
+  when is_atom(Module), is_integer(Offset), is_integer(Before), is_integer(After) ->
+    server_cmd(get_token_window, {Module, Offset, Before, After}).
 
-getTokenAt(Module, Offset) ->
-	spawn_server(),
-    ?SERVER ! {get_token_at, self(), Module, Offset},
-    receive
-        {get_token_at, _Pid, Result} ->
-            Result
-    end.
+getTokenAt(Module, Offset) when is_atom(Module), is_integer(Offset) ->
+    server_cmd(get_token_at, {Module, Offset}).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir) ->
-    spawn_server(),
-    ?SERVER ! {initial_scan, ScannerName, ModuleFileName, InitialText, 
-               StateDir},
-    ok.
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir) 
+  when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
+	server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir}).
 
 modules() ->
-    spawn_server(),
-    ?SERVER ! {modules, self()},
-    receive
-        {modules, _Pid, Result} ->
-            Result
-    end.
+	server_cmd(modules, []).
 
 all() ->
-    spawn_server(),
-    ?SERVER ! {all, self()},
-    receive
-        {all, _Pid, Result} ->
-            Result
-    end.
+    server_cmd(all, []).
 
-dump_module(Module) ->
-    spawn_server(),
-    ?SERVER ! {dump_module, self(), Module},
-    receive
-        {dump_module, _Pid, Result} ->
-            Result
-    end.
+dump_module(Module) when is_atom(Module) ->
+    server_cmd(dump_module, Module).
 
 stop() ->
-    ?SERVER ! stop.
+    server_cmd(stop, []).
 
-replaceText(Module, Offset, RemoveLength, NewText) ->
-    spawn_server(),
-	?SERVER ! {replace_text, Module, Offset, RemoveLength, NewText},
-	ok.
+replaceText(Module, Offset, RemoveLength, NewText)
+  when is_atom(Module), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
+    server_cmd(replace_text, {Module, Offset, RemoveLength, NewText}).
+
+check_all(Module, Text) when is_atom(Module), is_list(Text) ->
+    case getText(Module) of
+        Text ->
+            "match";
+        ModText -> 
+            "text mismatch!\n-----------------\""++ModText++"\"\n----------------\n\""++Text++"\""
+    end.
+
 
 %%
 %% Local Functions
 %%
+
+server_cmd(Command, Args) ->
+	spawn_server(),
+    ?SERVER ! {Command, self(), Args},
+	receive
+        {Command, _Pid, Result} ->
+            Result
+    end.
+
+
 
 replace_between(From, Length, With, In) ->
     {A, B} = lists:split(From, In),
@@ -152,6 +125,8 @@ split_lines_w_lengths([C | Text], Length, LineAcc, Acc) ->
 find_line_w_offset(Offset, Lines) ->
     find_line_w_offset(Offset, 0, 0, Lines).
 
+find_line_w_offset(0, _Pos, _N, []) ->
+    {0, 0, 0, "", on_eof};
 find_line_w_offset(_Offset, _Pos, _N, []) ->
     not_found;
 find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos+Length, Lines =/= [] ->
@@ -173,16 +148,17 @@ ends_with_newline("\r\n") -> true;
 ends_with_newline([_C | R]) -> ends_with_newline(R).
 
 replace_between_lines(From, Length, With, Lines) ->
-    {LineNo1, Pos1, _Length1, Line1, Beyond} = find_line_w_offset(From, Lines),
-    ?D({LineNo1, Pos1, _Length1, Line1, Beyond}),
+    ?D([From, Length, With, Lines]),
+    {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
     FirstPiece = string:substr(Line1, 1, From-Pos1),
-    {LineNo2, Pos2, _Length2, Line2, _Beyond} = find_line_w_offset(From+Length, Lines),
-    ?D({LineNo2, Pos2, _Length2, Line2, _Beyond}),
+    {LineNo2, Pos2, _Length2, Line2, Beyond2} = find_line_w_offset(From+Length, Lines),
 	LastPiece = string:substr(Line2, From+Length-Pos2+1),
-    ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece]),
+    ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece, Beyond1, Beyond2]),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
-    NOldLines = case Beyond of
-                    beyond_eof -> 0;
+    NOldLines = case {Beyond1, Beyond2} of
+                    {on_eof, on_eof} -> 0;
+                    {beyond_eof, _} -> 0;
+                    {_, beyond_eof} -> LineNo2-LineNo1;
                     _ -> LineNo2-LineNo1+1
                 end,
     ?D([LineNo1, NOldLines, WLines, Lines]),
@@ -234,88 +210,11 @@ spawn_server() ->
 
 loop(Modules) ->
     receive
-        {create, Mod} ->
-            NewMods = [#module{name=Mod} | lists:keydelete(Mod, #module.name, Modules)],
-            ?MODULE:loop(NewMods);
-        {destroy, Mod} ->
-            NewMods = lists:keydelete(Mod, #module.name, Modules),
-            ?MODULE:loop(NewMods);
-        {initial_scan, _Mod, _ModuleFileName, "", _StateDir} ->   % rescan, ignore
-            ?MODULE:loop(Modules);
-        {initial_scan, Mod, ModuleFileName, InitialText, StateDir} ->
-            NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
-            NewMods = [NewMod | lists:keydelete(Mod, #module.name, Modules)],
-            ?MODULE:loop(NewMods);
-        {all, From} ->
-            From ! {all, self(), Modules},
-            ?MODULE:loop(Modules);
-		{modules, From} ->
-			Mods = [M#module.name || M <- Modules],
-			From ! {modules, self(), Mods},
-			?MODULE:loop(Modules);
-		{dump_module, From, Mod} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    From ! {dump_module, self(), Module};
-                false ->
-                    From ! {dump_module, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules);
-        {get_token_at, From, Mod, Offset} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    From ! {get_token_at, self(), get_token_at(Module, Offset)};
-                false ->
-                    From ! {get_token_at, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules);
-		{replace_text, Mod, Offset, RemoveLength, NewText} ->
-			case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    NewMod = replace_text(Module, Offset, RemoveLength, NewText),
-                    NewMods = [NewMod | lists:keydelete(Mod, #module.name, Modules)],
-                    ?MODULE:loop(NewMods);
-                false ->
-                    ?MODULE:loop(Modules)
-            end;
-        stop ->
-			stop;
-        {get_text, From, Mod} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    ?D(a),
-                    From ! {get_text, self(), lines_to_text(Module#module.lines)},
-                    ?D(b);
-                false ->
-                    From ! {get_text, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules);
-        {get_text_line, From, Mod, Line} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    L = (catch lists:nth(Line+1, Module#module.lines)),
-                    From ! {get_text_line, self(), L};
-                false ->
-                    From ! {get_text_line, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules);
-        {get_tokens, From, Mod} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    From ! {get_tokens, self(), get_all_tokens(Module)};
-                false ->
-                    From ! {get_tokens, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules);
-        {get_token_window, From, Mod, Offset, Before, After} ->
-            case lists:keysearch(Mod, #module.name, Modules) of
-                {value, Module} ->
-                    From ! {get_token_window, self(), 
-                            get_token_window(Module, Offset, Before, After)};
-                false ->
-                    From ! {get_token_window, self(), module_not_found}
-            end,
-            ?MODULE:loop(Modules)
+        {stop, From, []} ->
+            reply(stop, From, stopped);
+        {Cmd, From, Args} ->
+            NewMods = cmd(Cmd, From, Args, Modules),
+            ?MODULE:loop(NewMods)
     end.
 
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
@@ -329,8 +228,12 @@ do_scan(ScannerName, InitialText) ->
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
 scan_line({Length, S}) ->
-    {ok, T, _} = erlide_scan:string(S, {0, 0}),
-    {Length, erlide_scan:filter_ws(T)}.
+    case erlide_scan:string(S, {0, 0}) of
+	    {ok, T, _} ->
+            {Length, erlide_scan:filter_ws(T)};
+        {error, _, _} ->
+            {Length, {string, {{0, 0}, length(S)}, S, S}}
+    end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
     ?D({text_length, length(lines_to_text(Module#module.lines))}),
@@ -468,3 +371,64 @@ mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
 mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
+
+cmd(Cmd, From, Args, Modules) ->
+    try
+        case do_cmd(Cmd, Args, Modules) of
+            {R, NewMods} ->
+                reply(Cmd, From, R),
+                NewMods;
+            NewMods ->
+                reply(Cmd, From, ok),
+                NewMods
+        end
+    catch
+        exit:Error ->
+			reply(Cmd, From, {exit, Error}),
+            Modules;
+        error:Error ->
+			reply(Cmd, From, {error, Error}),
+            Modules
+    end.
+
+reply(Cmd, From, R) ->
+	From ! {Cmd, self(), R}.
+
+do_cmd(create, Mod, Modules) ->
+	[#module{name=Mod} | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(destroy, Mod, Modules) ->
+    lists:keydelete(Mod, #module.name, Modules);
+do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
+	Modules;
+do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir}, Modules) ->
+	NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
+    [NewMod | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(all, [], Modules) ->
+    {Modules, Modules};
+do_cmd(modules, [], Modules) ->
+    Mods = [M#module.name || M <- Modules],
+    {Mods, Modules};
+do_cmd(dump_module, Mod, Modules) ->
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {Module, Modules};
+do_cmd(get_token_at, {Mod, Offset}, Modules) ->
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {get_token_at(Module, Offset), Modules};
+do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
+	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+	NewMod = replace_text(Module, Offset, RemoveLength, NewText),
+	[NewMod | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(get_text, Mod, Modules) ->
+	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+	{lines_to_text(Module#module.lines), Modules};
+do_cmd(get_text_line, {Mod, Line}, Modules) ->
+	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    L = lists:nth(Line+1, Module#module.lines),
+	{L, Modules};
+do_cmd(get_tokens, Mod, Modules) ->
+	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {get_all_tokens(Module), Modules};
+do_cmd(get_token_window, {Mod, Offset, Before, After}, Modules) ->
+	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+	{get_token_window(Module, Offset, Before, After), Modules}.
+

@@ -28,4 +28,6 @@ public interface IErlScanner extends IDisposable {
 
 	public void replaceText(int offset, int removeLength, String newText);
 
+	void rescan(String fullText);
+
 }

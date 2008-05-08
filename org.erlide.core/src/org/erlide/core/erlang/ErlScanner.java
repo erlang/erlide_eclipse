@@ -23,25 +23,27 @@ import erlang.ErlideScanner2;
  */
 public class ErlScanner implements IErlScanner {
 
-	private final IErlModule fModule;
+	// private final IErlModule module;
 
-	private final String fMod;
+	private final String moduleName;
 
 	public final static boolean UseScanner2 = true;
 
+	private String moduleFileName;
+
 	public ErlScanner(IErlModule module, String initialText) {
-		fModule = module;
-		fMod = createScannerModuleName(fModule);
-		String moduleFileName = "";
+		// this.module = module;
+		moduleName = createScannerModuleName(module);
+		moduleFileName = "";
 		final IResource r = module.getResource();
 		if (r instanceof IFile) {
 			final IFile f = (IFile) r;
 			moduleFileName = f.getLocation().toString();
 		}
 		if (!UseScanner2) {
-			ErlideScanner.initialScan(fMod, moduleFileName, initialText);
+			ErlideScanner.initialScan(moduleName, moduleFileName, initialText);
 		} else {
-			ErlideScanner2.initialScan(fMod, moduleFileName, initialText);
+			ErlideScanner2.initialScan(moduleName, moduleFileName, initialText);
 		}
 		// create();
 		// insertText(0, initialText);
@@ -71,9 +73,9 @@ public class ErlScanner implements IErlScanner {
 
 	public void dispose() {
 		if (!UseScanner2) {
-			ErlideScanner.destroy(fMod);
+			ErlideScanner.destroy(moduleName);
 		} else {
-			ErlideScanner2.destroy(fMod);
+			ErlideScanner2.destroy(moduleName);
 		}
 	}
 
@@ -91,17 +93,19 @@ public class ErlScanner implements IErlScanner {
 
 	public void replaceText(int offset, int removeLength, String newText) {
 		if (!UseScanner2) {
-			ErlideScanner.replaceText(fMod, offset, removeLength, newText);
+			ErlideScanner
+					.replaceText(moduleName, offset, removeLength, newText);
 		} else {
-			ErlideScanner2.replaceText(fMod, offset, removeLength, newText);
+			ErlideScanner2.replaceText(moduleName, offset, removeLength,
+					newText);
 		}
 	}
 
 	public ErlToken getTokenAt(int offset) {
 		if (!UseScanner2) {
-			return ErlideScanner.getTokenAt(fMod, offset);
+			return ErlideScanner.getTokenAt(moduleName, offset);
 		}
-		return ErlideScanner2.getTokenAt(fMod, offset);
+		return ErlideScanner2.getTokenAt(moduleName, offset);
 	}
 
 	// public ErlToken[] getTokensAround(int offset) {
@@ -114,12 +118,19 @@ public class ErlScanner implements IErlScanner {
 
 	public TokenWindow getTokenWindow(int offset, int window) {
 		if (!UseScanner2) {
-			return ErlideScanner.getTokenWindow(fMod, offset, window);
+			return ErlideScanner.getTokenWindow(moduleName, offset, window);
 		}
-		return ErlideScanner2.getTokenWindow(fMod, offset, window);
+		return ErlideScanner2.getTokenWindow(moduleName, offset, window);
 	}
 
 	public String getScannerModuleName() {
-		return fMod;
+		return moduleName;
+	}
+
+	public void rescan(String fullText) {
+		if (!UseScanner2) {
+			return;
+		}
+		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText);
 	}
 }

@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -319,8 +320,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
 				IErlangHelpContextIds.INDENT_ACTION);
-
-		if (BackendManager.isDeveloper()) {
+		if (BackendManager.isTest()) {
 			testAction = new TestAction(ErlangEditorMessages
 					.getBundleForConstructedKeys(), "Test.", this, getModule());
 			testAction
@@ -362,7 +362,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 
-		if (BackendManager.isDeveloper()) {
+		if (BackendManager.isTest()) {
 			menu.prependToGroup("group.open", testAction);
 		}
 		menu.prependToGroup("group.open", fShowOutline);
@@ -1443,16 +1443,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return fSelection;
 	}
 
-	// @Override
-	// public void doSave(IProgressMonitor progressMonitor) {
-	// super.doSave(progressMonitor);
-	//
-	// // Refresh the Erlang Navigator
-	// final CommonNavigator cv = (CommonNavigator) PlatformUI.getWorkbench()
-	// .getActiveWorkbenchWindow().getActivePage().findView(
-	// IErlideUIConstants.NAVIGATOR_VIEW_ID);
-	// cv.getCommonViewer().refresh();
-	//
-	// }
+	@Override
+	public void doSave(IProgressMonitor progressMonitor) {
+		super.doSave(progressMonitor);
+		final IDocument document = getDocumentProvider().getDocument(
+				getEditorInput());
+		getScanner().rescan(document.get());
+	}
 
 }
