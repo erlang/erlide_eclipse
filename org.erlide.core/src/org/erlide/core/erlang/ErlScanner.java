@@ -116,12 +116,12 @@ public class ErlScanner implements IErlScanner {
 	// return ErlideScanner.getTokens(fMod);
 	// }
 
-	public TokenWindow getTokenWindow(int offset, int window) {
-		if (!UseScanner2) {
-			return ErlideScanner.getTokenWindow(moduleName, offset, window);
-		}
-		return ErlideScanner2.getTokenWindow(moduleName, offset, window);
-	}
+	// public TokenWindow getTokenWindow(int offset, int window) {
+	// if (!UseScanner2) {
+	// return ErlideScanner.getTokenWindow(moduleName, offset, window);
+	// }
+	// return ErlideScanner2.getTokenWindow(moduleName, offset, window);
+	// }
 
 	public String getScannerModuleName() {
 		return moduleName;

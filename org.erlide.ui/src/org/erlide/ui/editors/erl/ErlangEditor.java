@@ -11,7 +11,9 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,14 +23,20 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension4;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -40,6 +48,13 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.jface.text.information.InformationPresenter;
+import org.eclipse.jface.text.link.ILinkedModeListener;
+import org.eclipse.jface.text.link.LinkedModeModel;
+import org.eclipse.jface.text.link.LinkedModeUI;
+import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.link.LinkedPositionGroup;
+import org.eclipse.jface.text.link.LinkedModeUI.ExitFlags;
+import org.eclipse.jface.text.link.LinkedModeUI.IExitPolicy;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
@@ -59,6 +74,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -83,10 +100,13 @@ import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
+import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -97,6 +117,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
@@ -113,6 +134,9 @@ import org.erlide.ui.views.ErlangPropertySource;
 import org.erlide.ui.views.outline.ErlangContentProvider;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
 import org.erlide.ui.views.outline.ErlangOutlinePage;
+
+import erlang.ErlideScanner;
+import erlang.ErlideScanner2;
 
 /**
  * The actual editor itself
@@ -158,6 +182,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/** Preference key for matching brackets color */
 	protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
 
+	/** The bracket inserter. */
+	private final BracketInserter fBracketInserter = new BracketInserter();
+
 	/**
 	 * Simple constructor
 	 * 
@@ -179,6 +206,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		disposeScanner();
+
+		final ISourceViewer sourceViewer = getSourceViewer();
+		if (sourceViewer instanceof ITextViewerExtension) {
+			((ITextViewerExtension) sourceViewer)
+					.removeVerifyKeyListener(fBracketInserter);
+		}
 
 		super.dispose();
 	}
@@ -990,6 +1023,23 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
+		// final IPreferenceStore preferenceStore = getPreferenceStore();
+		final boolean closeBrackets = true; // preferenceStore.getBoolean(CLOSE_BRACKETS);
+		final boolean closeStrings = true; // preferenceStore.getBoolean(CLOSE_STRINGS);
+		// final boolean closeAngularBrackets = true; //
+		// JavaCore.VERSION_1_5.compareTo(preferenceStore.getString(JavaCore.COMPILER_SOURCE))
+		// <= 0;
+
+		fBracketInserter.setCloseBracketsEnabled(closeBrackets);
+		fBracketInserter.setCloseStringsEnabled(closeStrings);
+		// fBracketInserter.setCloseAngularBracketsEnabled(closeAngularBrackets);
+
+		final ISourceViewer sourceViewer = getSourceViewer();
+		if (sourceViewer instanceof ITextViewerExtension) {
+			((ITextViewerExtension) sourceViewer)
+					.prependVerifyKeyListener(fBracketInserter);
+		}
+
 		final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
 		v.doOperation(ProjectionViewer.TOGGLE);
 
@@ -1449,6 +1499,448 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IDocument document = getDocumentProvider().getDocument(
 				getEditorInput());
 		getScanner().rescan(document.get());
+	}
+
+	private static class ExclusivePositionUpdater implements IPositionUpdater {
+
+		/** The position category. */
+		private final String fCategory;
+
+		/**
+		 * Creates a new updater for the given <code>category</code>.
+		 * 
+		 * @param category
+		 *            the new category.
+		 */
+		public ExclusivePositionUpdater(String category) {
+			fCategory = category;
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.text.DocumentEvent)
+		 */
+		public void update(DocumentEvent event) {
+
+			final int eventOffset = event.getOffset();
+			final int eventOldLength = event.getLength();
+			final int eventNewLength = event.getText() == null ? 0 : event
+					.getText().length();
+			final int deltaLength = eventNewLength - eventOldLength;
+
+			try {
+				final Position[] positions = event.getDocument().getPositions(
+						fCategory);
+
+				for (int i = 0; i != positions.length; i++) {
+
+					final Position position = positions[i];
+
+					if (position.isDeleted()) {
+						continue;
+					}
+
+					final int offset = position.getOffset();
+					final int length = position.getLength();
+					final int end = offset + length;
+
+					if (offset >= eventOffset + eventOldLength) {
+						// position comes
+						// after change - shift
+						position.setOffset(offset + deltaLength);
+					} else if (end <= eventOffset) {
+						// position comes way before change -
+						// leave alone
+					} else if (offset <= eventOffset
+							&& end >= eventOffset + eventOldLength) {
+						// event completely internal to the position - adjust
+						// length
+						position.setLength(length + deltaLength);
+					} else if (offset < eventOffset) {
+						// event extends over end of position - adjust length
+						final int newEnd = eventOffset;
+						position.setLength(newEnd - offset);
+					} else if (end > eventOffset + eventOldLength) {
+						// event extends from before position into it - adjust
+						// offset
+						// and length
+						// offset becomes end of event, length adjusted
+						// accordingly
+						final int newOffset = eventOffset + eventNewLength;
+						position.setOffset(newOffset);
+						position.setLength(end - newOffset);
+					} else {
+						// event consumes the position - delete it
+						position.delete();
+					}
+				}
+			} catch (final BadPositionCategoryException e) {
+				// ignore and return
+			}
+		}
+
+		/**
+		 * Returns the position category.
+		 * 
+		 * @return the position category
+		 */
+		public String getCategory() {
+			return fCategory;
+		}
+
+	}
+
+	private static class BracketLevel {
+		int fOffset;
+		int fLength;
+		LinkedModeUI fUI;
+		Position fFirstPosition;
+		Position fSecondPosition;
+	}
+
+	private class BracketInserter implements VerifyKeyListener,
+			ILinkedModeListener {
+
+		private boolean fCloseBrackets = true;
+		private boolean fCloseStrings = true;
+		// private boolean fCloseAngularBrackets = true;
+		private final String CATEGORY = toString();
+		private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(
+				CATEGORY);
+		private final Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
+
+		public void setCloseBracketsEnabled(boolean enabled) {
+			fCloseBrackets = enabled;
+		}
+
+		public void setCloseStringsEnabled(boolean enabled) {
+			fCloseStrings = enabled;
+		}
+
+		// public void setCloseAngularBracketsEnabled(boolean enabled) {
+		// fCloseAngularBrackets = enabled;
+		// }
+
+		// private boolean isAngularIntroducer(String identifier) {
+		// return identifier.length() > 0
+		// && (Character.isUpperCase(identifier.charAt(0))
+		// || identifier.startsWith("final") //$NON-NLS-1$
+		// || identifier.startsWith("public") //$NON-NLS-1$
+		// || identifier.startsWith("public") //$NON-NLS-1$
+		// || identifier.startsWith("protected") //$NON-NLS-1$
+		// || identifier.startsWith("private")); //$NON-NLS-1$
+		// }
+
+		/*
+		 * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
+		 */
+		public void verifyKey(VerifyEvent event) {
+
+			// early pruning to slow down normal typing as little as possible
+			if (!event.doit || getInsertMode() != SMART_INSERT) {
+				return;
+			}
+			switch (event.character) {
+			case '(':
+			case '{':
+			case '[':
+			case '\'':
+			case '\"':
+				break;
+			default:
+				return;
+			}
+
+			final ISourceViewer sourceViewer = getSourceViewer();
+			final IDocument document = sourceViewer.getDocument();
+
+			final Point selection = sourceViewer.getSelectedRange();
+			final int offset = selection.x;
+			final int length = selection.y;
+
+			try {
+				// final IRegion startLine = document
+				// .getLineInformationOfOffset(offset);
+				final IRegion endLine = document
+						.getLineInformationOfOffset(offset + length);
+
+				List<ErlToken> tokens = null;
+				final int getOffset = offset + length, getLength = endLine
+						.getOffset()
+						+ endLine.getLength() - getOffset;
+				final String str = getDocument().get(getOffset, getLength);
+				try {
+					if (ErlScanner.UseScanner2) {
+						tokens = ErlideScanner2.lightScanString(str, 0);
+					} else {
+						tokens = ErlideScanner.lightScanString(str, 0);
+					}
+				} catch (final BackendException e) {
+				}
+
+				String kind = "";
+				if (tokens != null && tokens.size() > 0) {
+					kind = tokens.get(0).getKind();
+				} else if (str.length() > 0) {
+					kind = str.substring(0, 1);
+				}
+
+				switch (event.character) {
+				case '(':
+					if (!fCloseBrackets || kind.equals(")")) {
+						return;
+					}
+					break;
+
+				case '[':
+					if (!fCloseBrackets || kind.equals("]")) {
+						return;
+					}
+					break;
+				case '{':
+					if (!fCloseBrackets || kind.equals("}")) {
+						return;
+					}
+					break;
+				case '\'':
+					if (!fCloseStrings || kind.equals("'")) {
+						return;
+					}
+					break;
+				case '"':
+					if (!fCloseStrings || kind.equals("\"")) {
+						return;
+					}
+					break;
+
+				default:
+					return;
+				}
+
+				if (!validateEditorInputState()) {
+					return;
+				}
+
+				final char character = event.character;
+				final char closingCharacter = getPeerCharacter(character);
+				final StringBuffer buffer = new StringBuffer();
+				buffer.append(character);
+				buffer.append(closingCharacter);
+
+				document.replace(offset, length, buffer.toString());
+
+				final BracketLevel level = new BracketLevel();
+				fBracketLevelStack.push(level);
+
+				final LinkedPositionGroup group = new LinkedPositionGroup();
+				group.addPosition(new LinkedPosition(document, offset + 1, 0,
+						LinkedPositionGroup.NO_STOP));
+
+				final LinkedModeModel model = new LinkedModeModel();
+				model.addLinkingListener(this);
+				model.addGroup(group);
+				model.forceInstall();
+
+				level.fOffset = offset;
+				level.fLength = 2;
+
+				// set up position tracking for our magic peers
+				if (fBracketLevelStack.size() == 1) {
+					document.addPositionCategory(CATEGORY);
+					document.addPositionUpdater(fUpdater);
+				}
+				level.fFirstPosition = new Position(offset, 1);
+				level.fSecondPosition = new Position(offset + 1, 1);
+				document.addPosition(CATEGORY, level.fFirstPosition);
+				document.addPosition(CATEGORY, level.fSecondPosition);
+
+				level.fUI = new EditorLinkedModeUI(model, sourceViewer);
+				level.fUI.setSimpleMode(true);
+				level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
+						getEscapeCharacter(closingCharacter),
+						fBracketLevelStack));
+				level.fUI.setExitPosition(sourceViewer, offset + 2, 0,
+						Integer.MAX_VALUE);
+				level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
+				level.fUI.enter();
+
+				final IRegion newSelection = level.fUI.getSelectedRegion();
+				sourceViewer.setSelectedRange(newSelection.getOffset(),
+						newSelection.getLength());
+
+				event.doit = false;
+
+			} catch (final BadLocationException e) {
+				ErlLogger.error(e);
+			} catch (final BadPositionCategoryException e) {
+				ErlLogger.error(e);
+			}
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.jface.text.link.LinkedModeModel,
+		 *      int)
+		 */
+		public void left(LinkedModeModel environment, int flags) {
+
+			final BracketLevel level = fBracketLevelStack.pop();
+
+			if (flags != ILinkedModeListener.EXTERNAL_MODIFICATION) {
+				return;
+			}
+
+			// remove brackets
+			final ISourceViewer sourceViewer = getSourceViewer();
+			final IDocument document = sourceViewer.getDocument();
+			if (document instanceof IDocumentExtension) {
+				final IDocumentExtension extension = (IDocumentExtension) document;
+				extension.registerPostNotificationReplace(null,
+						new IDocumentExtension.IReplace() {
+
+							public void perform(IDocument d,
+									IDocumentListener owner) {
+								if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
+										&& !level.fSecondPosition.isDeleted
+										&& level.fSecondPosition.offset == level.fFirstPosition.offset) {
+									try {
+										document.replace(
+												level.fSecondPosition.offset,
+												level.fSecondPosition.length,
+												""); //$NON-NLS-1$
+									} catch (final BadLocationException e) {
+										ErlLogger.error(e);
+									}
+								}
+
+								if (fBracketLevelStack.size() == 0) {
+									document.removePositionUpdater(fUpdater);
+									try {
+										document
+												.removePositionCategory(CATEGORY);
+									} catch (final BadPositionCategoryException e) {
+										ErlLogger.error(e);
+									}
+								}
+							}
+						});
+			}
+
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse.jface.text.link.LinkedModeModel)
+		 */
+		public void suspend(LinkedModeModel environment) {
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse.jface.text.link.LinkedModeModel,
+		 *      int)
+		 */
+		public void resume(LinkedModeModel environment, int flags) {
+		}
+	}
+
+	private static char getPeerCharacter(char character) {
+		switch (character) {
+		case '(':
+			return ')';
+
+		case ')':
+			return '(';
+
+		case '{':
+			return '}';
+
+		case '}':
+			return '{';
+
+		case '[':
+			return ']';
+
+		case ']':
+			return '[';
+
+		case '"':
+			return character;
+
+		case '\'':
+			return character;
+
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private static char getEscapeCharacter(char character) {
+		switch (character) {
+		case '"':
+		case '\'':
+			return '\\';
+		default:
+			return 0;
+		}
+	}
+
+	private class ExitPolicy implements IExitPolicy {
+
+		final char fExitCharacter;
+		final char fEscapeCharacter;
+		final Stack<BracketLevel> fStack;
+		final int fSize;
+
+		public ExitPolicy(char exitCharacter, char escapeCharacter,
+				Stack<BracketLevel> stack) {
+			fExitCharacter = exitCharacter;
+			fEscapeCharacter = escapeCharacter;
+			fStack = stack;
+			fSize = fStack.size();
+		}
+
+		/*
+		 * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy#doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
+		 *      org.eclipse.swt.events.VerifyEvent, int, int)
+		 */
+		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event,
+				int offset, int length) {
+
+			if (fSize == fStack.size() && !isMasked(offset)) {
+				if (event.character == fExitCharacter) {
+					final BracketLevel level = fStack.peek();
+					if (level.fFirstPosition.offset > offset
+							|| level.fSecondPosition.offset < offset) {
+						return null;
+					}
+					if (level.fSecondPosition.offset == offset && length == 0) {
+						// don't enter the character if if its the closing peer
+						return new ExitFlags(ILinkedModeListener.UPDATE_CARET,
+								false);
+					}
+				}
+				// when entering an anonymous class between the parenthesis', we
+				// don't want
+				// to jump after the closing parenthesis when return is pressed
+				if (event.character == SWT.CR && offset > 0) {
+					final IDocument document = getSourceViewer().getDocument();
+					try {
+						if (document.getChar(offset - 1) == '{') {
+							return new ExitFlags(ILinkedModeListener.EXIT_ALL,
+									true);
+						}
+					} catch (final BadLocationException e) {
+					}
+				}
+			}
+			return null;
+		}
+
+		private boolean isMasked(int offset) {
+			final IDocument document = getSourceViewer().getDocument();
+			try {
+				return fEscapeCharacter == document.getChar(offset - 1);
+			} catch (final BadLocationException e) {
+			}
+			return false;
+		}
 	}
 
 }
