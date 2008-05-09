@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 8). %% odd numbers for scanner, even numbers for scanner2
+-define(CACHE_VERSION, 10). %% odd numbers for scanner, even numbers for scanner2
 
 -define(SERVER, ?MODULE).
 
@@ -93,8 +93,6 @@ server_cmd(Command, Args) ->
             Result
     end.
 
-
-
 replace_between(From, Length, With, In) ->
     {A, B} = lists:split(From, In),
     {_, C} = lists:split(Length, B),
@@ -108,9 +106,9 @@ split_lines_w_lengths("", _Length, [], Acc) ->
     lists:reverse(Acc);
 split_lines_w_lengths("", Length, LineAcc, Acc) ->
     lists:reverse(Acc, [{Length, lists:reverse(LineAcc)}]);
-split_lines_w_lengths("\n\r" ++ Text, Length, LineAcc, Acc) ->
+split_lines_w_lengths("\r\n" ++ Text, Length, LineAcc, Acc) ->
     split_lines_w_lengths(Text, 0, [], 
-                          [{Length+2, lists:reverse(LineAcc, "\n\r")} | Acc]);
+                          [{Length+2, lists:reverse(LineAcc, "\r\n")} | Acc]);
 split_lines_w_lengths("\n" ++ Text, Length, LineAcc, Acc) ->
     split_lines_w_lengths(Text, 0, [], 
                           [{Length+1, lists:reverse(LineAcc, "\n")} | Acc]);
@@ -225,6 +223,7 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
 do_scan(ScannerName, InitialText) ->
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
+    ?D([ScannerName, InitialText, LineTokens]),
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
 scan_line({Length, S}) ->
