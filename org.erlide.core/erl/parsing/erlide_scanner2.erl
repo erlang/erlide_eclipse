@@ -15,12 +15,11 @@
 %%
 %% Exported Functions
 %%
--export([create/1, destroy/1, getTextLine/2, initialScan/4, getTokenAt/2, getTokenWindow/4]).
+-export([create/1, destroy/1, initialScan/4, getTokenAt/2, getTokenWindow/4, 
+         getTokens/1]).
 
 %% just for testing
--export([all/0, modules/0, getText/1]).
-
--compile(export_all).
+-export([all/0, modules/0, getTextLine/2, getText/1]).
 
 %%
 %% API Functions
@@ -176,21 +175,21 @@ replace_start_ends(New1, New2, [_]) ->
 replace_start_ends(New1, New2, List) ->
 	[New1] ++ string:substr(List, 2, length(List)-2) ++ [New2].
 
-t() ->
-	{ok, B} = file:read_file("/Users/jakob/Utveckling/erl/indent/in.erl"),
-	T = binary_to_list(B),
-	L = split_lines_w_lengths(T),
-	{T, L}.
+%% t() ->
+%% 	{ok, B} = file:read_file("/Users/jakob/Utveckling/erl/indent/in.erl"),
+%% 	T = binary_to_list(B),
+%% 	L = split_lines_w_lengths(T),
+%% 	{T, L}.
 
-u() ->
-	u("apapapa", 50, 50).
+%% u() ->
+%% 	u("apapapa", 50, 50).
 
-u(S, From, Length) ->
-	{_T, L} = t(),
-	user_default:da(?MODULE),
-	R = replace_between_lines(From, Length, S, L),
-	user_default:ds(),
-    R.
+%% u(S, From, Length) ->
+%% 	{_T, L} = t(),
+%% 	user_default:da(?MODULE),
+%% 	R = replace_between_lines(From, Length, S, L),
+%% 	user_default:ds(),
+%%     R.
 
 -record(module, {name,
                  lines = [], % [{Length, String}]
