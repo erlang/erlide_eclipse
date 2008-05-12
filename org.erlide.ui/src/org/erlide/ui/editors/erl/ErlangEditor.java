@@ -18,6 +18,9 @@ import java.util.Stack;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -129,6 +132,8 @@ import org.erlide.ui.editors.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.ui.prefs.plugin.ErlidePreferencePage;
+import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.views.ErlangPropertySource;
 import org.erlide.ui.views.outline.ErlangContentProvider;
@@ -185,6 +190,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/** The bracket inserter. */
 	private final BracketInserter fBracketInserter = new BracketInserter();
 
+	private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
+
 	/**
 	 * Simple constructor
 	 * 
@@ -212,7 +219,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			((ITextViewerExtension) sourceViewer)
 					.removeVerifyKeyListener(fBracketInserter);
 		}
-
+		final IEclipsePreferences node = ErlidePreferencePage.getPrefsNode();
+		node.removePreferenceChangeListener(fPreferenceChangeListener);
 		super.dispose();
 	}
 
@@ -291,6 +299,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			return StringConverter.asRGB((String) value);
 		}
 		return null;
+	}
+
+	private class PreferenceChangeListener implements IPreferenceChangeListener {
+		public void preferenceChange(PreferenceChangeEvent event) {
+			final String key = event.getKey();
+			if (key.indexOf('/') != -1
+					&& key.split("/")[0]
+							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
+				getSmartTypingPrefs();
+			}
+		}
 	}
 
 	/**
@@ -1023,16 +1042,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
-		// final IPreferenceStore preferenceStore = getPreferenceStore();
-		final boolean closeBrackets = true; // preferenceStore.getBoolean(CLOSE_BRACKETS);
-		final boolean closeStrings = true; // preferenceStore.getBoolean(CLOSE_STRINGS);
-		// final boolean closeAngularBrackets = true; //
-		// JavaCore.VERSION_1_5.compareTo(preferenceStore.getString(JavaCore.COMPILER_SOURCE))
-		// <= 0;
-
-		fBracketInserter.setCloseBracketsEnabled(closeBrackets);
-		fBracketInserter.setCloseStringsEnabled(closeStrings);
-		// fBracketInserter.setCloseAngularBracketsEnabled(closeAngularBrackets);
+		getSmartTypingPrefs();
 
 		final ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension) {
@@ -1061,6 +1071,23 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		fInformationPresenter.setSizeConstraints(60, 10, true, true);
 		fInformationPresenter.install(getSourceViewer());
 
+		final IEclipsePreferences node = ErlidePreferencePage.getPrefsNode();
+		node.addPreferenceChangeListener(fPreferenceChangeListener);
+	}
+
+	private void getSmartTypingPrefs() {
+		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
+				.getPreferences();
+		fBracketInserter.setCloseAtomsEnabled(autoClosePrefs
+				.get(SmartTypingPreferencePage.ATOMS));
+		fBracketInserter.setCloseBracketsEnabled(autoClosePrefs
+				.get(SmartTypingPreferencePage.BRACKETS));
+		fBracketInserter.setCloseStringsEnabled(autoClosePrefs
+				.get(SmartTypingPreferencePage.STRINGS));
+		fBracketInserter.setCloseBracesEnabled(autoClosePrefs
+				.get(SmartTypingPreferencePage.BRACES));
+		fBracketInserter.setCloseParensEnabled(autoClosePrefs
+				.get(SmartTypingPreferencePage.PARENS));
 	}
 
 	protected boolean isActivePart() {
@@ -1600,9 +1627,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private class BracketInserter implements VerifyKeyListener,
 			ILinkedModeListener {
 
-		private boolean fCloseBrackets = true;
-		private boolean fCloseStrings = true;
-		// private boolean fCloseAngularBrackets = true;
+		private boolean fCloseBraces = false;
+		private boolean fCloseBrackets = false;
+		private boolean fCloseStrings = false;
+		private boolean fCloseParens = false;
+		private boolean fCloseAtoms = false;
+
 		private final String CATEGORY = toString();
 		private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(
 				CATEGORY);
@@ -1612,13 +1642,21 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			fCloseBrackets = enabled;
 		}
 
+		public void setCloseAtomsEnabled(boolean enabled) {
+			fCloseAtoms = enabled;
+		}
+
+		public void setCloseParensEnabled(boolean enabled) {
+			fCloseParens = enabled;
+		}
+
+		public void setCloseBracesEnabled(boolean enabled) {
+			fCloseBraces = enabled;
+		}
+
 		public void setCloseStringsEnabled(boolean enabled) {
 			fCloseStrings = enabled;
 		}
-
-		// public void setCloseAngularBracketsEnabled(boolean enabled) {
-		// fCloseAngularBrackets = enabled;
-		// }
 
 		// private boolean isAngularIntroducer(String identifier) {
 		// return identifier.length() > 0
@@ -1686,7 +1724,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 				switch (event.character) {
 				case '(':
-					if (!fCloseBrackets || kind.equals(")")) {
+					if (!fCloseParens || kind.equals(")")) {
 						return;
 					}
 					break;
@@ -1697,12 +1735,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					}
 					break;
 				case '{':
-					if (!fCloseBrackets || kind.equals("}")) {
+					if (!fCloseBraces || kind.equals("}")) {
 						return;
 					}
 					break;
 				case '\'':
-					if (!fCloseStrings || kind.equals("'")) {
+					if (!fCloseAtoms || kind.equals("'")) {
 						return;
 					}
 					break;

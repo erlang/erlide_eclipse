@@ -13,15 +13,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +30,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.basiccore.StatusInfo;
-import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -45,7 +39,7 @@ import org.osgi.service.prefs.Preferences;
  * 
  * @author Vlad Dumitrescu
  */
-public class IndentationPreferencePage extends PreferencePage implements
+public class IndentationPreferencePage extends ErlidePreferencePage implements
 		IWorkbenchPreferencePage {
 
 	private static final String INDENT_FIELDS[] = new String[] {
@@ -72,12 +66,14 @@ public class IndentationPreferencePage extends PreferencePage implements
 			"function_parameters", "fun", "fun_body", "comma_nl", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			"semicolon_nl", "dot_nl", "arrow_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+	private static final String INDENT_DEFAULTS[] = new String[] { "4", "4",
+			"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "0", "0", "0",
+			"0" };
+
 	private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
 
-	private static final int INDENT_DEFAULTS[] = new int[] { 4, 4, 2, 4, 4, 4,
-			4, 4, 4, 2, 3, 5, 0, 0, 0, 0 };
-
 	public IndentationPreferencePage() {
+		super();
 		setDescription(ErlEditorMessages.IndentationPrefs_36);
 	}
 
@@ -137,60 +133,24 @@ public class IndentationPreferencePage extends PreferencePage implements
 
 	static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
-	/*
-	 * @see PreferencePage#performOk()
-	 */
-	@Override
-	public boolean performOk() {
-		putPreferences();
-		return true;
-	}
-
 	@SuppressWarnings("boxing")
 	private void setToPreferences() {
-		final List<Integer> l = getPreferences();
+		final List<String> l = getPreferences(INDENT_KEY, INDENT_KEYS,
+				INDENT_DEFAULTS);
 		for (int i = 0; i < l.size(); ++i) {
-			final int n = l.get(i);
+			final String s = l.get(i);
 			if (i < N_NUMERIC_KEYS) {
-				final String s = Integer.toString(n);
 				textFields.get(i).setText(s);
 			} else {
-				buttons.get(i - N_NUMERIC_KEYS).setSelection(n != 0);
+				buttons.get(i - N_NUMERIC_KEYS).setSelection(
+						s != null && !s.equals("0"));
 			}
 		}
 		fieldsInitialized = true;
 	}
 
-	@SuppressWarnings("boxing")
-	private static List<Integer> getPreferences() {
-		final List<Integer> l = new ArrayList<Integer>(INDENT_KEYS.length);
-		final Preferences node = getPrefsNode();
-		for (int i = 0; i < INDENT_KEYS.length; ++i) {
-			final int n = node.getInt(INDENT_KEY + "/" + INDENT_KEYS[i], //$NON-NLS-1$
-					INDENT_DEFAULTS[i]);
-			l.add(n);
-		}
-		return l;
-	}
-
-	private static Preferences getPrefsNode() {
-		final String qualifier = ErlideUIPlugin.PLUGIN_ID;
-		final IEclipsePreferences root = Platform.getPreferencesService()
-				.getRootNode();
-		final Preferences node = root.node(InstanceScope.SCOPE).node(qualifier);
-		return node;
-	}
-
-	public static Map<String, Integer> getKeysAndPrefs() {
-		final List<Integer> prefs = getPreferences();
-		final Map<String, Integer> m = new TreeMap<String, Integer>();
-		for (int i = 0; i < INDENT_KEYS.length; ++i) {
-			m.put(INDENT_KEYS[i], prefs.get(i));
-		}
-		return m;
-	}
-
-	private void putPreferences() {
+	@Override
+	protected void putPreferences() {
 		final Preferences node = getPrefsNode();
 		for (int i = 0; i < INDENT_KEYS.length; ++i) {
 			int n;
@@ -215,11 +175,11 @@ public class IndentationPreferencePage extends PreferencePage implements
 	protected void performDefaults() {
 		for (int i = 0; i < INDENT_KEYS.length; ++i) {
 			if (i < N_NUMERIC_KEYS) {
-				final String s = Integer.toString(INDENT_DEFAULTS[i]);
+				final String s = INDENT_DEFAULTS[i];
 				textFields.get(i).setText(s);
 			} else {
 				buttons.get(i - N_NUMERIC_KEYS).setSelection(
-						INDENT_DEFAULTS[i] != 0);
+						!INDENT_DEFAULTS[i].equals("0"));
 			}
 		}
 		super.performDefaults();
@@ -302,5 +262,9 @@ public class IndentationPreferencePage extends PreferencePage implements
 			page.setErrorMessage(message);
 			break;
 		}
+	}
+
+	public static Map<String, String> getKeysAndPrefs() {
+		return getKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS);
 	}
 }

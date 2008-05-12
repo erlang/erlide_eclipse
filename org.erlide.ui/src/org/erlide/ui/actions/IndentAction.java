@@ -53,7 +53,7 @@ public class IndentAction extends ErlangTextEditorAction {
 							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 		}
 
-		final Map<String, Integer> prefs = IndentationPreferencePage
+		final Map<String, String> prefs = IndentationPreferencePage
 				.getKeysAndPrefs();
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		final OtpErlangObject r1 = ErlideIndent.indentLines(b, selection

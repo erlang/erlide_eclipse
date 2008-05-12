@@ -88,6 +88,12 @@
             id="org.erlide.ui.preferences.indentation"
             name="Indentation">
       </page>
+      <page
+            category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.SmartTypingPreferencePage"
+            id="org.erlide.ui.preferences.smartTyping"
+            name="%editorSmartTypingPage">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">

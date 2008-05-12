@@ -55,7 +55,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 * Get the actual indent itself
 	 * 
 	 * @param depth
-	 * 		the depth of the indent;
+	 *            the depth of the indent;
 	 * @return the indent
 	 */
 	private String getIndent(int depth) {
@@ -111,7 +111,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 			}
 
-			final Map<String, Integer> prefs = IndentationPreferencePage
+			final Map<String, String> prefs = IndentationPreferencePage
 					.getKeysAndPrefs();
 			final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
 					c.text, tabw, prefs);
@@ -131,9 +131,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 * space characters for autoindentation
 	 * 
 	 * @param d
-	 * 		the document
+	 *            the document
 	 * @param c
-	 * 		the command
+	 *            the command
 	 */
 
 	// FIXME flytta en del av denna logik till erlang!! (t.ex. så vill man inte

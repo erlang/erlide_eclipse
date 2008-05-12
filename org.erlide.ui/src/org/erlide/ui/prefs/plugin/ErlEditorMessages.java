@@ -94,6 +94,18 @@ public class ErlEditorMessages extends NLS {
 
 	public static String IndentationPrefs_9;
 
+	public static String SmartTypingPrefs_0;
+
+	public static String SmartTypingPrefs_2;
+
+	public static String SmartTypingPrefs_3;
+
+	public static String SmartTypingPrefs_4;
+
+	public static String SmartTypingPrefs_5;
+
+	public static String SmartTypingPrefs_6;
+
 	private ErlEditorMessages() {
 	}
 
