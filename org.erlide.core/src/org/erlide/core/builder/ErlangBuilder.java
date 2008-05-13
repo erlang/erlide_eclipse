@@ -135,7 +135,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -268,18 +268,19 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	@SuppressWarnings("unchecked")
 	protected void fullBuild(final Map args, final IProgressMonitor monitor)
 			throws CoreException {
+		int n = getErlangResourcesCount(getProject());
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("full build...");
+			ErlLogger.debug("full build..." + getProject() + " " + n);
 		}
-		monitor.beginTask("Performing full build", 100);
+
+		monitor.beginTask("Performing full build", n);
 		try {
 			// IWorkspaceRunnable op = new
 			// CleanOutFoldersOperation(getProject());
-			// ResourcesPlugin.getWorkspace().run(op, new
-			// SubProgressMonitor(monitor,
-			// 15));
+			// ResourcesPlugin.getWorkspace().run(op,
+			// new SubProgressMonitor(monitor, 15));
 
-			final IProgressMonitor subMon = new SubProgressMonitor(monitor, 100);
+			final IProgressMonitor subMon = new SubProgressMonitor(monitor, n);
 			subMon.beginTask("Compiling", IProgressMonitor.UNKNOWN);
 			try {
 				getProject().accept(new ErlangResourceVisitor(subMon));
@@ -291,6 +292,20 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
+	private int getErlangResourcesCount(IProject project) {
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		String[] dirs = prefs.getSourceDirs();
+		int n = 0;
+		for (String dir : dirs) {
+			IFile f = project.getFile(dir);
+			final String dirstr = f.getLocation().toString();
+			final String[] list = new File(dirstr).list();
+			n += list == null ? 0 : list.length;
+		}
+		return n;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected void incrementalBuild(final Map args, final IResourceDelta delta,
 			final IProgressMonitor monitor) throws CoreException {
@@ -298,7 +313,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			ErlLogger.debug("incr build...");
 		}
 		final IResourceDelta[] chd = delta.getAffectedChildren();
-		final int n = chd.length * 100;
+		final int n = chd.length;
 		monitor.beginTask("Compiling Erlang files", n);
 		try {
 			// the visitor does the work.
@@ -312,13 +327,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * Method clean
 	 * 
 	 * @param monitor
-	 * 		IProgressMonitor
+	 *            IProgressMonitor
 	 * @throws CoreException
 	 */
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("cleaning...");
+			ErlLogger.debug("cleaning... " + getProject());
 		}
 
 		super.clean(monitor);
@@ -348,9 +363,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * Method compileFile
 	 * 
 	 * @param project
-	 * 		IProject
+	 *            IProject
 	 * @param resource
-	 * 		IResource
+	 *            IResource
 	 */
 	protected void compileFile(final IProject project, final IResource resource) {
 		final IPath projectPath = project.getLocation();
@@ -672,9 +687,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -702,11 +716,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
+			if (mon.isCanceled()) {
+				return false;
+			}
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -756,6 +772,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						compileFile(my_project, resource);
 					}
 					break;
+				}
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("...worked... " + resource);
 				}
 				mon.worked(1);
 			}
@@ -832,6 +851,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 
 		public boolean visit(final IResource resource) {
+			if (monitor.isCanceled()) {
+				return false;
+			}
 			final IProject my_project = resource.getProject();
 			// final ErlangProjectProperties prefs = new
 			// ErlangProjectProperties(my_project);
@@ -870,6 +892,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 									+ " " + moduletimestamp);
 						}
 						compileFile(resource.getProject(), resource);
+						if (BuilderUtils.isDebugging()) {
+							ErlLogger.debug("...worked... " + resource);
+						}
 						monitor.worked(1);
 					}
 				} catch (final Exception e) {

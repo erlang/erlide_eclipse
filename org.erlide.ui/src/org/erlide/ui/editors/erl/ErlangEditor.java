@@ -1075,7 +1075,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 	}
 
-	private void getSmartTypingPrefs() {
+	void getSmartTypingPrefs() {
 		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
 				.getPreferences();
 		fBracketInserter.setCloseAtomsEnabled(autoClosePrefs
@@ -1671,6 +1671,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/*
 		 * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
 		 */
+		@SuppressWarnings("synthetic-access")
 		public void verifyKey(VerifyEvent event) {
 
 			// early pruning to slow down normal typing as little as possible
@@ -1818,6 +1819,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.jface.text.link.LinkedModeModel,
 		 *      int)
 		 */
+		@SuppressWarnings("synthetic-access")
 		public void left(LinkedModeModel environment, int flags) {
 
 			final BracketLevel level = fBracketLevelStack.pop();
@@ -1878,7 +1880,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	private static char getPeerCharacter(char character) {
+	static char getPeerCharacter(char character) {
 		switch (character) {
 		case '(':
 			return ')';
@@ -1909,7 +1911,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	private static char getEscapeCharacter(char character) {
+	static char getEscapeCharacter(char character) {
 		switch (character) {
 		case '"':
 		case '\'':
@@ -1938,6 +1940,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy#doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
 		 *      org.eclipse.swt.events.VerifyEvent, int, int)
 		 */
+		@SuppressWarnings("synthetic-access")
 		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event,
 				int offset, int length) {
 
@@ -1971,6 +1974,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			return null;
 		}
 
+		@SuppressWarnings("synthetic-access")
 		private boolean isMasked(int offset) {
 			final IDocument document = getSourceViewer().getDocument();
 			try {

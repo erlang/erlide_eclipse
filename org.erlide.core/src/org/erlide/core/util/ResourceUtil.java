@@ -64,7 +64,7 @@ public class ResourceUtil {
 	/**
 	 * <p>
 	 * returns the output folder of the passed project as resource. The project
-	 * must have the OCaml nature.
+	 * must have the Erlang nature.
 	 * </p>
 	 */
 	public static IContainer getOutFolder(final IProject project)

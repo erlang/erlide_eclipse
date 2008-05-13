@@ -13,7 +13,7 @@ import org.erlide.core.util.ResourceUtil;
 
 /**
  * <p>
- * Operation for cleaning output and binary folders of an OCaml project.
+ * Operation for cleaning output and binary folders of an Erlang project.
  * </p>
  * 
  * @author Leif Frenzel
