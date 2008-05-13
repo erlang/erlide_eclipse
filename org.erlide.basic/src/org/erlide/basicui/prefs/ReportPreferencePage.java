@@ -75,7 +75,7 @@ public class ReportPreferencePage extends PreferencePage implements
 			+ "ScoutUserName=field_tester&ScoutProject=erlide&ScoutArea=Misc&"
 			+ "Extra=%s&Description=%s&Email=%s";
 	private Label responseLabel;
-	private Button attachTechnicalDataButton;
+	Button attachTechnicalDataButton;
 
 	@Override
 	protected Control createContents(Composite parent) {
@@ -251,7 +251,7 @@ public class ReportPreferencePage extends PreferencePage implements
 	public void init(IWorkbench workbench) {
 	}
 
-	private String fetchPlatformLog() {
+	String fetchPlatformLog() {
 		StringBuffer result = new StringBuffer();
 		File log = Platform.getLogFileLocation().toFile();
 		try {
@@ -274,7 +274,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		return result.toString();
 	}
 
-	private String fetchErlideLog() {
+	String fetchErlideLog() {
 		StringBuffer result = new StringBuffer();
 		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString();
