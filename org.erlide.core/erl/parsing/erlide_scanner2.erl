@@ -21,6 +21,8 @@
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1]).
 
+-export([loop/1]).
+
 %%
 %% API Functions
 %%
