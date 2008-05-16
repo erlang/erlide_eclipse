@@ -1,13 +1,13 @@
 %% Author: jakob
 %% Created: 24 apr 2008
-%% Description: TODO: Add description to erlide_scan2.erl
+%% Description: 
 -module(erlide_scanner2).
 
 %%
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -15,12 +15,15 @@
 %%
 %% Exported Functions
 %%
+
 -export([create/1, destroy/1, initialScan/4, getTokenAt/2, getTokenWindow/4, 
-         getTokens/1]).
+         getTokens/1, replaceText/4, stop/0]).
 
 %% just for testing
--export([all/0, modules/0, getTextLine/2, getText/1]).
+-export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
+ 		 dump_module/1]).
 
+%% internal exports 
 -export([loop/1]).
 
 %%
@@ -164,34 +167,8 @@ replace_between_lines(From, Length, With, Lines) ->
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 
-replace_between2(From, Length, With, In) ->
-    string:substr(In, 1, From)++With++string:substr(In, From+Length+1).
-
 lines_to_text(Lines) ->
     lists:append([L || {_, L} <- Lines]).
-
-replace_start_ends(New1, New2, []) ->
-    [New1, New2];
-replace_start_ends(New1, New2, [_]) ->
-    [New1, New2];
-replace_start_ends(New1, New2, List) ->
-	[New1] ++ string:substr(List, 2, length(List)-2) ++ [New2].
-
-%% t() ->
-%% 	{ok, B} = file:read_file("/Users/jakob/Utveckling/erl/indent/in.erl"),
-%% 	T = binary_to_list(B),
-%% 	L = split_lines_w_lengths(T),
-%% 	{T, L}.
-
-%% u() ->
-%% 	u("apapapa", 50, 50).
-
-%% u(S, From, Length) ->
-%% 	{_T, L} = t(),
-%% 	user_default:da(?MODULE),
-%% 	R = replace_between_lines(From, Length, S, L),
-%% 	user_default:ds(),
-%%     R.
 
 -record(module, {name,
                  lines = [], % [{Length, String}]
@@ -232,7 +209,7 @@ scan_line({Length, S}) ->
 	    {ok, T, _} ->
             {Length, erlide_scan:filter_ws(T)};
         {error, _, _} ->
-            {Length, {string, {{0, 0}, length(S)}, S, S}}
+            {Length, [{string, {{0, 0}, length(S)}, S, "\"" ++ S ++ "\""}]}
     end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->

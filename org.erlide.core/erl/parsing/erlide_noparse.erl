@@ -14,10 +14,7 @@
 %% Include files
 %%
 
-%-define(DEBUG, 1).
-
-%-define(SCANNER, erlide_scanner).
--define(SCANNER, erlide_scanner2).
+%% -define(DEBUG, 1).
 
 -define(CACHE_VERSION, 2).
 
@@ -33,7 +30,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
     try
     	?D({StateDir, ModuleFileName}),
 		RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir) end,
-        CacheFun = fun(D) -> ?SCANNER:initialScan(ScannerName, ModuleFileName, InitialText, StateDir), D end,
+        CacheFun = fun(D) -> erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
 		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
@@ -185,18 +182,15 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
             name_pos={{Line, Offset}, Length}}.
 
-%% scan(String, Name) ->
-%%     case erlide_scanner:isScanned(Name) of
-%%         false ->
-%% 		    erlide_scanner:create(Name),
-%% 		    erlide_scanner:insertText(Name, 1, String);
-%%         true ->
-%%             ok
-%%     end,
 scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
-    ?SCANNER:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
-    S = ?SCANNER:getTokens(ScannerName),
+    erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
+    S = erlide_scanner2:getTokens(ScannerName),
     S.
+
+%% @spec (Tokens::tokens()) -> {tokens(), tokens()}
+%% @type tokens() = [#token]
+%%
+%% @doc extract comments from tokens, and concatenate multiline comments to one token
 
 extract_comments(Tokens) ->
     extract_comments(Tokens, -1, [], []).
