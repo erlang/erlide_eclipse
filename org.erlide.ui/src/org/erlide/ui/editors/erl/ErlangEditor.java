@@ -268,7 +268,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
 	@Override
-	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+	protected void handlePreferenceStoreChanged(final PropertyChangeEvent event) {
 		super.handlePreferenceStoreChanged(event);
 		final String name = event.getProperty();
 		if (name.startsWith(PreferenceConstants.EDITOR_PREFIX)) {
@@ -292,7 +292,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the object
 	 * @return
 	 */
-	private static RGB getRGB(Object value) {
+	private static RGB getRGB(final Object value) {
 		if (value instanceof RGB) {
 			return (RGB) value;
 		} else if (value instanceof String) {
@@ -302,7 +302,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private class PreferenceChangeListener implements IPreferenceChangeListener {
-		public void preferenceChange(PreferenceChangeEvent event) {
+		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if (key.indexOf('/') != -1
 					&& key.split("/")[0]
@@ -411,7 +411,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	protected void editorContextMenuAboutToShow(IMenuManager menu) {
+	protected void editorContextMenuAboutToShow(final IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 
 		if (BackendManager.isTest()) {
@@ -425,7 +425,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class required) {
+	public Object getAdapter(final Class required) {
 		if (IContentOutlinePage.class.equals(required)) {
 			if (myOutlinePage == null) {
 				myOutlinePage = createOutlinePage();
@@ -456,8 +456,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	protected ISourceViewer createSourceViewer(Composite parent,
-			IVerticalRuler ruler, int styles) {
+	protected ISourceViewer createSourceViewer(final Composite parent,
+			final IVerticalRuler ruler, final int styles) {
 		// return new ErlangSourceViewer(parent, ruler, styles);
 		final ISourceViewer viewer = new ProjectionViewer(parent, ruler,
 				getOverviewRuler(), true, styles);
@@ -501,7 +501,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@Override
 	protected void configureSourceViewerDecorationSupport(
-			SourceViewerDecorationSupport support) {
+			final SourceViewerDecorationSupport support) {
 		support.setCharacterPairMatcher(getBracketMatcher());
 		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS,
 				MATCHING_BRACKETS_COLOR);
@@ -594,7 +594,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @return a region denoting the current signed selection, for a resulting
 	 *         RtoL selections length is < 0
 	 */
-	protected IRegion getSignedSelection(ISourceViewer sourceViewer) {
+	protected IRegion getSignedSelection(final ISourceViewer sourceViewer) {
 		final StyledText text = sourceViewer.getTextWidget();
 		final Point selection = text.getSelectionRange();
 
@@ -615,7 +615,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            message to be set
 	 */
 	@Override
-	protected void setStatusLineErrorMessage(String msg) {
+	protected void setStatusLineErrorMessage(final String msg) {
 		final IEditorStatusLine statusLine = (IEditorStatusLine) getAdapter(IEditorStatusLine.class);
 		if (statusLine != null) {
 			statusLine.setMessage(true, msg, null);
@@ -630,7 +630,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @since 3.0
 	 */
 	@Override
-	protected void setStatusLineMessage(String msg) {
+	protected void setStatusLineMessage(final String msg) {
 		final IEditorStatusLine statusLine = (IEditorStatusLine) getAdapter(IEditorStatusLine.class);
 		if (statusLine != null) {
 			statusLine.setMessage(false, msg, null);
@@ -638,7 +638,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	protected void doSetInput(IEditorInput input) throws CoreException {
+	protected void doSetInput(final IEditorInput input) throws CoreException {
 		disposeScanner();
 
 		super.doSetInput(input);
@@ -650,7 +650,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	protected void doSetSelection(ISelection selection) {
+	protected void doSetSelection(final ISelection selection) {
 		super.doSetSelection(selection);
 		synchronizeOutline();
 	}
@@ -707,7 +707,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @return the most narrow element which includes the given offset
 	 * @throws ErlModelException
 	 */
-	public IErlElement getElementAt(int offset, boolean reconcile) {
+	public IErlElement getElementAt(final int offset, final boolean reconcile) {
 		final IErlModule module = getModule();
 		if (module != null) {
 			try {
@@ -743,7 +743,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * 
 		 * @param selectionProvider
 		 */
-		public void install(ISelectionProvider selectionProvider) {
+		public void install(final ISelectionProvider selectionProvider) {
 			if (selectionProvider == null) {
 				return;
 			}
@@ -763,7 +763,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * @param selectionProvider
 		 *            the selection provider
 		 */
-		public void uninstall(ISelectionProvider selectionProvider) {
+		public void uninstall(final ISelectionProvider selectionProvider) {
 			if (selectionProvider == null) {
 				return;
 			}
@@ -788,7 +788,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/*
 		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
-		public void selectionChanged(SelectionChangedEvent event) {
+		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
 		}
 	}
@@ -800,12 +800,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	class OutlineSelectionChangedListener extends
 			AbstractSelectionChangedListener {
 
-		public void selectionChanged(SelectionChangedEvent event) {
+		public void selectionChanged(final SelectionChangedEvent event) {
 			doSelectionChanged(event);
 		}
 	}
 
-	protected void doSelectionChanged(SelectionChangedEvent event) {
+	protected void doSelectionChanged(final SelectionChangedEvent event) {
 		ISourceReference reference = null;
 
 		final ISelection selection = event.getSelection();
@@ -865,7 +865,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 */
-	protected void synchronizeOutlinePage(ISourceReference element) {
+	protected void synchronizeOutlinePage(final ISourceReference element) {
 		synchronizeOutlinePage(element, true);
 	}
 
@@ -879,8 +879,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            <code>true</code> if check for active outline page needs to
 	 *            be done
 	 */
-	protected void synchronizeOutlinePage(ISourceReference element,
-			boolean checkIfOutlinePageActive) {
+	protected void synchronizeOutlinePage(final ISourceReference element,
+			final boolean checkIfOutlinePageActive) {
 		if (myOutlinePage != null // && element != null
 		// && !(checkIfOutlinePageActive && isErlangOutlinePageActive())
 		) {
@@ -899,7 +899,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@SuppressWarnings("null")
-	public void setSelection(ISourceReference reference, boolean moveCursor) {
+	public void setSelection(final ISourceReference reference,
+			boolean moveCursor) {
 		if (getSelectionProvider() == null) {
 			return;
 		}
@@ -999,7 +1000,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	public void setSelection(IErlElement element) {
+	public void setSelection(final IErlElement element) {
 
 		if (element == null || element instanceof IErlModule) {
 			return;
@@ -1039,7 +1040,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		super.createPartControl(parent);
 
 		getSmartTypingPrefs();
@@ -1116,8 +1117,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * @param textOperationAction
 		 *            the text operation action
 		 */
-		public InformationDispatchAction(ResourceBundle resourceBundle,
-				String prefix, final TextOperationAction textOperationAction) {
+		public InformationDispatchAction(final ResourceBundle resourceBundle,
+				final String prefix,
+				final TextOperationAction textOperationAction) {
 			super(resourceBundle, prefix, ErlangEditor.this);
 			if (textOperationAction == null) {
 				throw new IllegalArgumentException();
@@ -1147,8 +1149,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 				private final IInformationControlCreator fControlCreator;
 
-				InformationProvider(IRegion hoverRegion, String hoverInfo,
-						IInformationControlCreator controlCreator) {
+				InformationProvider(final IRegion hoverRegion,
+						final String hoverInfo,
+						final IInformationControlCreator controlCreator) {
 					fHoverRegion = hoverRegion;
 					fHoverInfo = hoverInfo;
 					fControlCreator = controlCreator;
@@ -1158,13 +1161,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				 * @see org.eclipse.jface.text.information.IInformationProvider#getSubject(org.eclipse.jface.text.ITextViewer,
 				 *      int)
 				 */
-				public IRegion getSubject(ITextViewer textViewer,
-						int invocationOffset) {
+				public IRegion getSubject(final ITextViewer textViewer,
+						final int invocationOffset) {
 					return fHoverRegion;
 				}
 
-				public Object getInformation2(ITextViewer textViewer,
-						IRegion subject) {
+				public Object getInformation2(final ITextViewer textViewer,
+						final IRegion subject) {
 					return fHoverInfo;
 				}
 
@@ -1177,8 +1180,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				@Deprecated
-				public String getInformation(ITextViewer textViewer,
-						IRegion subject) {
+				public String getInformation(final ITextViewer textViewer,
+						final IRegion subject) {
 					return null;
 				}
 			}
@@ -1257,7 +1260,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		// modified version from TextViewer
-		private int computeOffsetAtLocation(ITextViewer textViewer, int x, int y) {
+		private int computeOffsetAtLocation(final ITextViewer textViewer,
+				final int x, final int y) {
 
 			final StyledText styledText = textViewer.getTextWidget();
 			final IDocument document = textViewer.getDocument();
@@ -1300,7 +1304,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 */
 	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
-			boolean forward, Position annotationPosition) {
+			boolean forward, final Position annotationPosition) {
 
 		Annotation nextAnnotation = null;
 		Position nextAnnotationPosition = null;
@@ -1402,7 +1406,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @since 3.0
 	 */
 	@Override
-	protected boolean isNavigationTarget(Annotation annotation) {
+	protected boolean isNavigationTarget(final Annotation annotation) {
 		final Preferences preferences = EditorsUI.getPluginPreferences();
 		final AnnotationPreference preference = getAnnotationPreferenceLookup()
 				.getAnnotationPreference(annotation);
@@ -1415,7 +1419,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	public Annotation gotoAnnotation(boolean forward) {
+	public Annotation gotoAnnotation(final boolean forward) {
 		final ITextSelection selection = (ITextSelection) getSelectionProvider()
 				.getSelection();
 		final Position position = new Position(0, 0);
@@ -1437,7 +1441,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return annotation;
 	}
 
-	private void updateAnnotationViews(Annotation annotation) {
+	private void updateAnnotationViews(final Annotation annotation) {
 		// TODO Auto-generated method stub
 
 	}
@@ -1490,7 +1494,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return myOutlinePage;
 	}
 
-	public void updateSelection(SelectionChangedEvent event) {
+	public void updateSelection(final SelectionChangedEvent event) {
 		final ISelection sel = event.getSelection();
 		if (sel instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) sel;
@@ -1498,10 +1502,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	public void updateSelection(Object sel) {
+	public void updateSelection(final Object sel) {
 	}
 
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		if (event.getSource() == getSelectionProvider()) {
 			return;
 		}
@@ -1521,11 +1525,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@Override
-	public void doSave(IProgressMonitor progressMonitor) {
+	public void doSave(final IProgressMonitor progressMonitor) {
+		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
 		final IDocument document = getDocumentProvider().getDocument(
 				getEditorInput());
-		getScanner().rescan(document.get());
+		final IErlScanner scanner = getScanner();
+		if (scanner != null) {
+			scanner.rescan(document.get());
+		}
 	}
 
 	private static class ExclusivePositionUpdater implements IPositionUpdater {
@@ -1539,14 +1547,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * @param category
 		 *            the new category.
 		 */
-		public ExclusivePositionUpdater(String category) {
+		public ExclusivePositionUpdater(final String category) {
 			fCategory = category;
 		}
 
 		/*
 		 * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.text.DocumentEvent)
 		 */
-		public void update(DocumentEvent event) {
+		public void update(final DocumentEvent event) {
 
 			final int eventOffset = event.getOffset();
 			final int eventOldLength = event.getLength();
@@ -1638,41 +1646,38 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				CATEGORY);
 		private final Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
 
-		public void setCloseBracketsEnabled(boolean enabled) {
+		public void setCloseBracketsEnabled(final boolean enabled) {
 			fCloseBrackets = enabled;
 		}
 
-		public void setCloseAtomsEnabled(boolean enabled) {
+		public void setCloseAtomsEnabled(final boolean enabled) {
 			fCloseAtoms = enabled;
 		}
 
-		public void setCloseParensEnabled(boolean enabled) {
+		public void setCloseParensEnabled(final boolean enabled) {
 			fCloseParens = enabled;
 		}
 
-		public void setCloseBracesEnabled(boolean enabled) {
+		public void setCloseBracesEnabled(final boolean enabled) {
 			fCloseBraces = enabled;
 		}
 
-		public void setCloseStringsEnabled(boolean enabled) {
+		public void setCloseStringsEnabled(final boolean enabled) {
 			fCloseStrings = enabled;
 		}
 
-		// private boolean isAngularIntroducer(String identifier) {
-		// return identifier.length() > 0
-		// && (Character.isUpperCase(identifier.charAt(0))
-		// || identifier.startsWith("final") //$NON-NLS-1$
-		// || identifier.startsWith("public") //$NON-NLS-1$
-		// || identifier.startsWith("public") //$NON-NLS-1$
-		// || identifier.startsWith("protected") //$NON-NLS-1$
-		// || identifier.startsWith("private")); //$NON-NLS-1$
-		// }
+		private boolean isStopper(final String kind) {
+			return kind.equals("(") || kind.equals(")") || kind.equals("{")
+					|| kind.equals("}") || kind.equals("[") || kind.equals("]")
+					|| kind.equals("'") || kind.equals("\"")
+					|| kind.equals("atom");
+		}
 
 		/*
 		 * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
 		 */
 		@SuppressWarnings("synthetic-access")
-		public void verifyKey(VerifyEvent event) {
+		public void verifyKey(final VerifyEvent event) {
 
 			// early pruning to slow down normal typing as little as possible
 			if (!event.doit || getInsertMode() != SMART_INSERT) {
@@ -1721,6 +1726,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					kind = tokens.get(0).getKind();
 				} else if (str.length() > 0) {
 					kind = str.substring(0, 1);
+				}
+				if (isStopper(kind)) {
+					return;
 				}
 
 				switch (event.character) {
@@ -1820,7 +1828,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 *      int)
 		 */
 		@SuppressWarnings("synthetic-access")
-		public void left(LinkedModeModel environment, int flags) {
+		public void left(final LinkedModeModel environment, final int flags) {
 
 			final BracketLevel level = fBracketLevelStack.pop();
 
@@ -1836,8 +1844,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				extension.registerPostNotificationReplace(null,
 						new IDocumentExtension.IReplace() {
 
-							public void perform(IDocument d,
-									IDocumentListener owner) {
+							public void perform(final IDocument d,
+									final IDocumentListener owner) {
 								if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
 										&& !level.fSecondPosition.isDeleted
 										&& level.fSecondPosition.offset == level.fFirstPosition.offset) {
@@ -1869,18 +1877,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/*
 		 * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse.jface.text.link.LinkedModeModel)
 		 */
-		public void suspend(LinkedModeModel environment) {
+		public void suspend(final LinkedModeModel environment) {
 		}
 
 		/*
 		 * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse.jface.text.link.LinkedModeModel,
 		 *      int)
 		 */
-		public void resume(LinkedModeModel environment, int flags) {
+		public void resume(final LinkedModeModel environment, final int flags) {
 		}
 	}
 
-	static char getPeerCharacter(char character) {
+	private static char getPeerCharacter(final char character) {
 		switch (character) {
 		case '(':
 			return ')';
@@ -1911,7 +1919,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	static char getEscapeCharacter(char character) {
+	static char getEscapeCharacter(final char character) {
 		switch (character) {
 		case '"':
 		case '\'':
@@ -1928,8 +1936,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final Stack<BracketLevel> fStack;
 		final int fSize;
 
-		public ExitPolicy(char exitCharacter, char escapeCharacter,
-				Stack<BracketLevel> stack) {
+		public ExitPolicy(final char exitCharacter, final char escapeCharacter,
+				final Stack<BracketLevel> stack) {
 			fExitCharacter = exitCharacter;
 			fEscapeCharacter = escapeCharacter;
 			fStack = stack;
@@ -1941,8 +1949,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 *      org.eclipse.swt.events.VerifyEvent, int, int)
 		 */
 		@SuppressWarnings("synthetic-access")
-		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event,
-				int offset, int length) {
+		public ExitFlags doExit(final LinkedModeModel model,
+				final VerifyEvent event, final int offset, final int length) {
 
 			if (fSize == fStack.size() && !isMasked(offset)) {
 				if (event.character == fExitCharacter) {
@@ -1975,7 +1983,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		@SuppressWarnings("synthetic-access")
-		private boolean isMasked(int offset) {
+		private boolean isMasked(final int offset) {
 			final IDocument document = getSourceViewer().getDocument();
 			try {
 				return fEscapeCharacter == document.getChar(offset - 1);
