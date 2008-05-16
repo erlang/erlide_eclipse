@@ -17,13 +17,13 @@
          check_variable_macro_or_record/2,
          matching_paren/1,
          is_paren/1,
-         is_op1/1,
-         is_op2/1,
+         is_op1/1, is_op2/1,
          is_block_start_token/1,
          guess_arity/1,
          clean_tokens/2,
          get_line_offsets/1,
-         detab/2]).
+         detab/2,
+         left_strip/1, right_strip/1, strip/1]).
 
 %-define(DEBUG, 1).
 
@@ -40,7 +40,7 @@
 %%
 %% @doc Given text and a From position, return a tuple with
 %% the text upto From and a list of the rest of the lines
-%% @spec get_text_and_lines(S::string(), From::integer()) -> [{string()}]
+%% @spec get_text_and_lines(S::string(), From::integer()) -> {First::string(), Rest::[{string()}]}
 get_text_and_lines(S, From) ->
     L = split_lines(S),
     get_text_and_lines(L, From, []).
@@ -298,7 +298,7 @@ get_tab_spaces(I, Tablength) ->
 get_line_offsets("") ->
     {0};
 get_line_offsets(S) ->
-    get_line_offsets(S, 1, [1]).
+    get_line_offsets(S, 0, [0]).
 
 get_line_offsets("", _, Acc) ->
     list_to_tuple(lists:reverse(Acc));
@@ -310,3 +310,26 @@ get_line_offsets([EOL|Rest], O, Acc) when EOL =:= $\n; EOL =:= $\r ->
     get_line_offsets(Rest, O1, [O1 | Acc]);
 get_line_offsets([_|Rest], O, Acc) ->
     get_line_offsets(Rest, O+1, Acc).
+
+%% @doc Strip initial tabs and spaces from string
+%% @spec (S::string()) -> T::string
+
+left_strip(" "++S) ->
+    S;
+left_strip("\t"++S) ->
+    S;
+left_strip(S) -> 
+    S.
+
+%% @doc Strip ending tabs and spaces from string
+%% @spec (S::string()) -> T::string
+
+right_strip(S) ->
+    lists:reverse(left_strip(lists:reverse(S))).
+
+%% @doc Strip tabs and spaces from string in both the end and the beginning
+%% @spec (S::string()) -> T::string
+
+strip(S) ->
+    right_strip(left_strip(S)).
+
