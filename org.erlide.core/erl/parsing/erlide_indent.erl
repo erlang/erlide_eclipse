@@ -45,13 +45,12 @@ indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
 
 indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
     S = erlide_text:detab(St, Tablength),
-    ?D(put(b, 0)),
-    StrippedCommandText = string:strip(CommandText, left),
+    StrippedCommandText = erlide_text:left_strip(CommandText),
     {Indent, AddNL} = check_add_newline(StrippedCommandText, Prefs),
     case Indent of
         true ->
-            case erlide_scan:string(S ++ StrippedCommandText) of
-                {ok, T, _} ->
+            case scan(S ++ StrippedCommandText) of
+                {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
                     Tr = fix_tokens(T, size(LineOffsets)),
                     LineN = case N of
@@ -60,7 +59,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                                 _ ->
                                     N
                             end,
-                    case indent(Tr, LineOffsets, LineN, Prefs) of
+                    case indent(Tr, LineOffsets, LineN, Prefs, erlide_text:left_strip(OldLine)) of
                         {I, true} ->
                             ?D(I),
                             {I, initial_whitespace(OldLine), AddNL};
@@ -71,8 +70,8 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                                 true -> {0, 0, false}
                             end
                     end;
-                _  ->
-                    error
+                Error  ->
+                    Error
             end;
         false ->
             ok
@@ -101,7 +100,7 @@ check_add_newline(S, Prefs) ->
 fix_tokens(Tokens, NL) ->
     [erlide_scanner:mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
 
--record(i, {anchor, indent_line, current, in_block, prefs}).
+-record(i, {anchor, indent_line, current, in_block, prefs, old_line}).
 
 get_prefs([], OldP, Acc) ->
     Acc ++ OldP;
@@ -112,9 +111,9 @@ get_prefs([{Key, Value} | Rest], OldP, Acc) ->
 get_prefs(Prefs) ->
     get_prefs(Prefs, default_indent_prefs(), []).
 
-indent(Tokens, LineOffsets, LineN, Prefs) ->
+indent(Tokens, LineOffsets, LineN, Prefs, OldLine) ->
     P = get_prefs(Prefs),
-    I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P, in_block=true},
+    I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P, in_block=true, old_line=OldLine},
     ?D({I, LineOffsets}),
     try
         trace_start(),
@@ -135,14 +134,15 @@ indent(Tokens, LineOffsets, LineN, Prefs) ->
             trace_stop(),
             ?D(N),
             {N, Inblock};
-        error:_ ->
+        error:_E ->
+            ?D(_E),
             {0, true}
     end.
 
 get_indent_of(_A = #token{kind=eof}, C, _LineOffsets) ->
     C;
 get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
-    LO = element(N, LineOffsets),
+    LO = element(N+1, LineOffsets),
     TI = O - LO,
     ?D({O, LO, C, _A}),
     TI+C.
@@ -175,16 +175,6 @@ reindent_line("\t" ++ S, I) ->
 reindent_line(S, I) ->
     lists:duplicate(I, $ )++S.
 
-%% indent_of(S, Tablength) ->
-%%     indent_of(S, Tablength, 0).
-%% 
-%% indent_of("\t"++S, Tablength, I) ->
-%%     indent_of(S, Tablength, I + Tablength - I rem Tablength);
-%% indent_of(" "++S, Tablength, I) ->
-%%    	indent_of(S, Tablength, I + 1);
-%% indent_of(_, _, I) ->
-%% 	I.
- 
 initial_whitespace(" " ++ S) ->
     1 + initial_whitespace(S);
 initial_whitespace("\t" ++ S) ->
@@ -196,20 +186,6 @@ initial_whitespace(_) ->
 
 i_check_aux([#token{line=K} | _], #i{indent_line=L, anchor=A, current=C, in_block=Inblock}) when K >= L ->
     {indent, A, C, Inblock};
-%% i_check_aux([#token{line=K, kind=Kind} | _], #i{indent_line=L, anchor=A, current=C, in_block=Inblock,
-%%                                                 prefs=Prefs}) 
-%%   when Inblock==true, K == L-1 ->
-%%     case Kind of
-%%         Kind when Kind==';'; Kind==','; Kind=='->'; Kind=='.' ->
-%%             case check_add_newline(Kind, Prefs) of
-%%                 {true, true} ->
-%%                     {indent, A, C, Inblock};
-%%                 _ ->
-%%                     not_yet
-%%             end;
-%%         _ ->
-%%             not_yet
-%% 	end;
 i_check_aux([eof | _], #i{anchor=A, current=C, in_block=Inblock}) ->
     {indent_eof, A, C, Inblock};
 i_check_aux([#token{kind=eof} | _], #i{anchor=A, current=C, in_block=Inblock}) ->
@@ -408,7 +384,6 @@ i_end_or_expr_list(R, I0) ->
     end.
 
 i_1_expr([#token{kind=atom} | _] = R, I) ->
-    ?D(R),
     i_one(R, I);
 i_1_expr([#token{kind=integer} | _] = R, I) ->
     ?D(integer),
@@ -528,12 +503,6 @@ is_unary_op([T | _]) ->
 is_unary_op(#token{kind=Kind}) ->
     erlide_text:is_op1(Kind).
 
-%% is_block_begin(#token{kind=Kind}) ->
-%%     erlide_text:is_block_start_token(Kind).
-
-%% i_block_begin(L, I) ->
-%%     i_one(L, I).
-
 i_block_end(_Begin, R, I) ->
     i_one(R, I).
 
@@ -576,9 +545,6 @@ comment_kind("%" ++ _) ->
 comment_kind(_) ->
     comment_0.
 
-%% i_comments([], _I) ->
-%%     [];
-
 i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
 %%     ?D(I),
     case comment_kind(V) of
@@ -608,11 +574,14 @@ skip_comments(Rest) ->
 
 i_kind(Kind, R0, I) ->
     R1 = i_comments(R0, I),
-    %i_check(R1, I),
     [#token{kind=Kind} | R2] = R1,
     R2.
 
-i_end_paren([#token{kind=Kind} | _] = R, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>'; Kind==eof ->
+i_end_paren(R0, I) ->
+    R1 = i_comments(R0, I),
+    i_end_paren_1(R1, I).
+
+i_end_paren_1([#token{kind=Kind} | _] = R, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>'; Kind==eof ->
     i_kind(Kind, R, I).
 
 i_form_list(R0, I) ->
@@ -766,391 +735,15 @@ i_sniff(L) ->
             T
     end.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% get_indents/2
-%%
-%% get_indents("", _) ->
-%%     {0};
-%% get_indents(S, Tablength) ->
-%%     get_indents(S, 0, true, Tablength, []).
-
-%% get_indents("", _, _, _, Acc) ->
-%%     list_to_tuple(lists:reverse(Acc));
-%% get_indents(" " ++ Rest, I, B, T, Acc) ->
-%%     get_indents(Rest, I+1, B, T, Acc);
-%% get_indents("\t" ++ Rest, I, B, Tablength, Acc) ->
-%%     J = I + Tablength - (I rem Tablength),
-%%     get_indents(Rest, J, B, Tablength, Acc);
-%% get_indents("\r\n" ++ Rest, _I, true, T, Acc) ->
-%%     get_indents(Rest, 0, true, T, [0 | Acc]);
-%% get_indents([EOL|Rest], _I, true, T, Acc) when EOL =:= $\n; EOL =:= $\r ->
-%%     get_indents(Rest, 0, true, T, [0 | Acc]);
-%% get_indents("\r\n"++Rest, _I, false, T, Acc) ->
-%%     get_indents(Rest, 0, true, T, Acc);
-%% get_indents([EOL|Rest], _I, false, T, Acc) when EOL =:= $\n; EOL =:= $\r ->
-%%     get_indents(Rest, 0, true, T, Acc);
-%% get_indents([_|Rest], I, true, T, Acc) ->
-%%     get_indents(Rest, 0, false, T, [I | Acc]);
-%% get_indents([_|Rest], _I, false, T, Acc) ->
-%%     get_indents(Rest, 0, false, T, Acc).
-
-%% TODO: Add description of asd/function_arity
-%%
-%% check_partial_expr(L) ->
-%%     case erlide_text:is_op2(L) of
-%%         true ->
-%%             A = skip_to_expr_start(tail_if(L)),
-%%             {partial, A};
-%%         false ->
-%%             check_paren_list(L)
-%%     end.
-
-%% check_paren_list([{T, _, _} | _] = L) when T =:= '('; T =:= '{'; T =:= '(' ->
-%%     {paren, L};
-%% check_paren_list([{',',_ ,_}|Before]) ->
-%%      Start = skip_to_expr_start(Before),
-%%      check_paren_list(tail_if(Start));
-%% check_paren_list(_) ->
-%%      false.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% skip_to_block_start([], _Semi) ->
-%%     [];
-%% skip_to_block_start([{';', _, _} | Before], Semi) ->
-%%      Start = Before, %Start = skip_to_block_start(Before),
-%%      skip_to_block_start(Start, Semi);
-%% skip_to_block_start([{'end', _, _} | Before], Semi) ->
-%%     Start0 = skip_to_block_start(Before, false),
-%%     Start1 = tail_if(Start0),
-%%     skip_to_block_start(Start1, Semi);
-%% skip_to_block_start([{'->', _, _} | Before], Semi) ->
-%%     case Semi of
-%%         true ->
-%%         %%?D(Before),
-%%             A = skip_guard(Before),
-%%         %%?D(A),
-%%         A;
-%%         false ->
-%%             Before
-%%     end;
-%%     case is_function_declaration(Before) of
-%%         true ->
-%%             skip_to_fn_start(Before);
-%%         false ->
-%%             case Semi of
-%%                 true ->
-%%                     skip_guard(Before);
-%%                 false ->
-%%                     A = skip_to_expr_start(Before),
-%%                     B = tail_if(A),
-%%                     skip_to_block_start(B, Semi)
-%%             end
-%%     end;
-%% skip_to_block_start([{'when', _, _} | Before], Semi) ->
-%%     case Semi orelse is_function_declaration(Before) of
-%%         true ->
-%%             skip_to_fn_start_without_guards(Before);
-%%         false ->
-%%             A = skip_to_expr_start(Before),
-%%             B = tail_if(A),
-%%             skip_to_block_start(B, Semi)
-%%     end;
-%% skip_to_block_start([{',', _, _} | Before], Semi) ->
-%%     Start = skip_to_expr_start(Before),
-%%     B = tail_if(Start),
-%%     skip_to_block_start(B, Semi);
-%% skip_to_block_start([{'of', _, _} | Before], _Semi) ->
-%%     Start0 = skip_to_expr_start(Before),
-%%     _Start1 = tail_if(Start0);
-%% skip_to_block_start([{T, _, _V} | _Before] = L, Semi) ->
-%%     case erlide_text:is_block_start_token(T) of
-%%         true ->
-%%             L;
-%%         false ->
-%%             A = skip_to_expr_start(L),
-%%             B = skip_to_block_start(tail_if(A), Semi),
-%%             B
-%%     end.
-
-%% skip_to_fn_start_without_guards([{')', _, _} | _] = L) ->
-%%     A = skip_to_expr_start(L),
-%%     A; %% tail_if(A);
-%% skip_to_fn_start_without_guards(L) ->
-%%     tail_if(L).
-
-%% skip to beginning of clause (containing ->)
-%% to_clause_start([{'->', _, _V} | Before]) ->
-%%     B = skip_guard(Before),
-%%     to_expr_start(B);
-%% to_clause_start([{T, _, _V} | _Before] = L) ->
-%%     case erlide_text:is_block_start_token(T) of
-%%         true ->
-%%             L;
-%%         false ->
-%%             A = to_expr_start(L),
-%%             ?D(A),
-%%             to_clause_start(tail_if(A))
-%%         end.
-
-%% to_block_start([_, {'of', _, _} | Rest]) ->
-%%     A = to_expr_start(Rest),
-%%     tail_if(A);
-
-%% to_block_start(L) ->    
-%%     ?D(L),
-%%     A = tail_if(L),
-%%     [{T, _, _V} | _] = A,
-%%     case erlide_text:is_block_start_token(T) of
-%%     true ->
-%%         A;
-%%     false ->
-%%         B = to_clause_start(A),
-%%         to_block_start(B)
-%%     end.
-
-%% to_expr_start([{_T, _, _V} | _Before] = L) ->
-%%        skip_to_expr_start(L).
-
-%% TODO: Add description of asd/function_arity
-%%
-%% skip_to_fn_start([{')', _, _} | _] = L) ->
-%%     skip_guard(L);
-%% %%    skip_guard(L, L);
-%% skip_to_fn_start(L) ->
-%%     L.
-
-%% skip past guards
-%% skip_guard(L) ->
-%%     A = skip_to_expr_start(L),
-%%     skip_guard(A, L).
-
-%% skip past guards
-%% skip_guard([_, {',', _, _} | A], Old) ->
-%%     B = skip_to_expr_start(A),
-%%     skip_guard(B, Old);
-%% skip_guard([_, {';', _, _} | A], Old) ->
-%%     B = skip_to_expr_start(A),
-%%     skip_guard(B, Old);
-%% skip_guard([_, {'when', _, _} | A], _Old) ->
-%%     skip_to_expr_start(A);
-%% skip_guard(_A, Old) ->
-%%     Old.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% is_function_declaration([{')', _, _} | _]) ->
-%%     true;
-%% is_function_declaration(_) ->
-%%     false.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% skip_to_token(_T, []) ->
-%%     [];
-%% skip_to_token(T, [{T, _, _} | _] = L) ->
-%%     L;
-%% skip_to_token(T, [_ | R]) ->
-%%     skip_to_token(T, R).
-
-%% TODO: Add description of asd/function_arity
-%%
-%% get_token_indent([{T, _, _} | _]) ->
-%%     get_token_indent(T);
-%% get_token_indent('begin') ->
-%%     4;
-%% get_token_indent('of') ->
-%%     4;
-%% get_token_indent(op2) ->
-%%     8;
-%% get_token_indent('->') ->
-%%     4;
-%% get_token_indent(dot) ->
-%%     0;
-%% get_token_indent(';') ->
-%%     0;
-%% get_token_indent('(') ->
-%%     1;
-%% get_token_indent(_) ->
-%%     0.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% indent_with(I, D) ->
-%%     I+D.
-
-%% indent_next_line(S, Tablength) ->
-%%     case erlide_scan:string(S) of
-%%         {ok, T, _} ->
-%%             ?D(T),
-%%             LineIndents = get_indents(S, Tablength),
-%%             Tr = fix_scan_tuples(T),
-%%             indent_after(Tr, LineIndents);
-%%         _  ->
-%%             0
-%%     end.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% indent_after([{'->', _, _} | Before], Indents) ->
-%%     Start = skip_guard(Before),
-%%     indent_with(get_indent(Start, Indents), get_token_indent('->'));
-%% indent_after([{dot, _, _} | _Before], _Indents) ->
-%%     0; %    skip_and_indent('->', dot, Before, Indents);
-%% indent_after([{';', _, _} | Before], Indents) ->
-%%     Start = to_clause_start(Before),
-%%     get_column(Start, Indents);
-%%%%     Start = skip_to_block_start(Before, true),
-%%%%     get_column(Start, Indents); %% skip_and_indent('->', ';', Before, Indents);
-%% indent_after([{'of', _, _} | Before], Indents) ->
-%%     Start0 = skip_to_expr_start(Before),
-%%     Start1 = tail_if(Start0),
-%%     Start2 = skip_to_token('case', Start1),
-%%     indent_with(get_column(Start2, Indents), get_token_indent('of'));
-%% indent_after([{',', _, _} | Before], Indents) ->
-%%     case skip_to_expr_start(Before) of
-%%         [_ | [{',', _, _} | _] = Rest] ->
-%%             indent_after(Rest, Indents);
-%%         Start ->
-%%             get_column(Start, Indents)
-%%     end;
-%% indent_after([{T, _, _} | _] = L, Indents) ->
-%%     case erlide_text:is_block_start_token(T) of
-%%         true ->
-%%             indent_with(get_column(L, Indents),
-%%                         get_token_indent(L));
-%%         false ->
-%%             other_indent(L, Indents)
-%%     end;
-%% indent_after(L, Indents) ->
-%%     other_indent(L, Indents).
-
-%% other_indent(L, Indents) ->
-%%     case check_partial_expr(L) of
-%%         {partial, A} ->
-%%             indent_with(get_column(A, Indents), get_token_indent(op2));
-%%         {paren, B} -> % Can it really get here?
-%%             indent_with(get_column(B, Indents), get_token_indent('('));
-%%         _ ->
-%%             Start = skip_to_block_start(L, false),
-%%             get_column(Start, Indents)
-%%     end.
-
-
-%% TODO: Add description of asd/function_arity
-%%
-%% get_indent(Line, Indents) when is_integer(Line) ->
-%%     element(Line, Indents);
-%% get_indent([{_, {{Line, _}, _}, _} | _], Indents) ->
-%%     element(Line, Indents).
-
-%% skip_fn_call([_, {T, _, _} | _] = L)
-%%   when T == ','; T == 'of'; T == '.'; T == 'after'; T == 'receive' ->
-%%     L;
-%% skip_fn_call([_|L]) ->
-%%     skip_to_expr_start(L).
-
-%% skip to the start of an expression, checking parens, operators etc
-%%
-%% skip_to_expr_start([{'end', _, _} | Before]) ->
-%%     to_block_start(Before);
-%% skip_to_expr_start([{')', _, _} | Before]) ->
-%%     A = skip_paren(Before, '('),
-%%     L = tail_if(A),
-%%     case erlide_text:is_op2(L) of
-%%         true ->
-%%             skip_to_expr_start(A);
-%%         false ->
-%%             skip_fn_call(A)
-%%     end;
-%% skip_to_expr_start([{'}', _, _} | Before]) ->
-%%     A = skip_paren(Before, '{'),
-%%     case tail_if(A) of
-%%         [{atom, _, _}, {'#', _, _} | Rest] ->  % handle record definitions
-%%             skip_to_expr_start(Rest);
-%%         L ->
-%%             case erlide_text:is_op2(L) of
-%%                 true ->
-%%                     skip_to_expr_start(A);
-%%                 false ->
-%%                     A
-%%             end
-%%     end;
-%% skip_to_expr_start([{']', _, _} | Before]) ->
-%%     A = skip_paren(Before, '['),
-%%     L = tail_if(A),
-%%     ?D(L),
-%%     case erlide_text:is_op2(L) of
-%%         true ->
-%%             skip_to_expr_start(A);
-%%         false ->
-%%             A
-%%     end;
-%% skip_to_expr_start([_Tup, {'->',_, _} | _] = L) ->
-%%     L;
-%% skip_to_expr_start([_Tup, {';',_, _} | _] = L) ->
-%%     L;
-%% skip_to_expr_start([_Tup, {',',_, _} | _] = L) ->
-%%     L;
-%% skip_to_expr_start([_Tup, {Op,_, _} | Before] = L) ->
-%%     case erlide_text:is_op2(Op) of
-%%         true ->
-%%             skip_to_expr_start(Before);
-%%         false ->
-%%             L
-%%     end;
-%% skip_to_expr_start(L) ->
-%%     L.
-
-%% TODO: Add description of asd/function_arity
-%%
-%% skip_paren([], _) ->
-%%     [];
-%% skip_paren([{P, _, _} | _] = L, P) ->
-%%     L;
-%% skip_paren([{T, _, _} | Before], P) when T =:= '}'; T =:= ')'; T =:= ']' ->
-%%     skip_paren(tail_if(skip_paren(Before, erlide_text:matching_paren(T))), P);
-%% skip_paren([_ | Before], P) ->
-%%     skip_paren(Before, P).
-
-%% get_column for an element given as list
-%%
-%% get_column([], Indents) ->
-%%     element(1, Indents);
-%% get_column([{_, {{Line, Offs}, _}, _} = _T | _] = L, Indents) ->
-%%     get_column(L, Line, Offs, Offs, Indents).
-
-%% get_column([], Line, FirstOffs, PrevOffs, Indents) ->
-%%     R = get_indent(Line, Indents) + FirstOffs - PrevOffs,
-%%     R; % nore more lines, done
-%% get_column([{_, {{Line, Offs}, _}, _} | Rest], Line, FirstOffs, _PrevOffs, Indents) ->
-%%     get_column(Rest, Line, FirstOffs, Offs, Indents); % same line, iter
-%% get_column(_, Line, FirstOffs, PrevOffs, Indents) ->
-%%     R = get_indent(Line, Indents) + FirstOffs - PrevOffs,
-%%     R. % new line, done
-
-
-%% TODO: Add description of asd/function_arity
-%%
-%% fix_scan_tuples(L) ->
-%%     fix_scan_tuples(L, []).
-
-%% fix_scan_tuples([], Acc) ->
-%%     Acc;
-%% fix_scan_tuples([{T, P} | Rest], Acc) ->
-%%     fix_scan_tuples(Rest, [{T, P, T} | Acc]);
-%% fix_scan_tuples([{T, P, I, _S} | Rest], Acc) ->
-%%     fix_scan_tuples(Rest, [{T, P, I} | Acc]);
-%% fix_scan_tuples([{comment, _, _} | Rest], Acc) ->
-%%     fix_scan_tuples(Rest, Acc);
-%% fix_scan_tuples([{T, P, V} | Rest], Acc) ->
-%%     fix_scan_tuples(Rest, [{T, P, V} | Acc]).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% tail_if([_ | Tail]) -> Tail;
-%% tail_if(L) -> L.
+scan(S) ->
+    case erlide_scan:string(S, {0, 0}) of
+	    {ok, T, _} ->
+            ?D(T),
+            ?D(erlide_scan:filter_ws(T)),
+            {ok, erlide_scan:filter_ws(T)};
+        Error ->
+            Error
+     end.
 
 -ifdef(TRACE).
 trace_start() ->
