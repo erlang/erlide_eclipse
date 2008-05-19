@@ -257,8 +257,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return timestamp;
 	}
 
-	public IErlComment[] getComments() {
-		return comments.toArray(new IErlComment[comments.size()]);
+	public List<IErlComment> getComments() {
+		return comments;
 	}
 
 	public IErlImport findImport(ErlangFunction function) {

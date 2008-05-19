@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.erlide.runtime.IDisposable;
 
 public interface IErlScanner extends IDisposable {
@@ -29,4 +31,6 @@ public interface IErlScanner extends IDisposable {
 	public void replaceText(int offset, int removeLength, String newText);
 
 	void rescan(String fullText);
+
+	List<IErlComment> getComments();
 }

@@ -78,7 +78,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	IErlProject getProject();
 
-	IErlComment[] getComments();
+	List<IErlComment> getComments();
 
 	OtpErlangObject getParseTree();
 

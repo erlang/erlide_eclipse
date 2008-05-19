@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.net.bsd.RLoginClient;
@@ -42,9 +43,11 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -86,8 +89,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		public void addMarker(final IResource file,
 				final IResource compiledFile, final String errorDesc,
 				final int lineNumber, final int severity, final String errorVar) {
-			ErlangBuilder.addMarker(file, compiledFile, errorDesc, lineNumber,
-					severity);
+			ErlangBuilder.addProblemMarker(file, compiledFile, errorDesc,
+					lineNumber, severity);
 		}
 	};
 
@@ -95,12 +98,30 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return new ErlangBuilder.ErlangBuilderMarkerGenerator();
 	}
 
-	static void addMarker(final IResource file, final IResource compiledFile,
-			final String message, int lineNumber, final int severity) {
+	static void addProblemMarker(final IResource file,
+			final IResource compiledFile, final String message, int lineNumber,
+			final int severity) {
 		try {
 			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
+			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
+					.toString());
+			if (lineNumber == -1) {
+				lineNumber = 1;
+			}
+			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+		} catch (final CoreException e) {
+		}
+	}
+
+	static void addTaskMarker(final IResource file,
+			final IResource compiledFile, final String message, int lineNumber,
+			final int priority) {
+		try {
+			final IMarker marker = file.createMarker(TASK_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, message);
+			marker.setAttribute(IMarker.PRIORITY, priority);
 			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
 					.toString());
 			if (lineNumber == -1) {
@@ -235,6 +256,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected void deleteMarkers(final IResource resource) {
 		try {
 			resource.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+			resource.deleteMarkers(TASK_MARKER, false, IResource.DEPTH_ZERO);
 			if (resource instanceof IFile) {
 				deleteMarkersWithCompiledFile(resource.getProject(),
 						(IFile) resource);
@@ -249,6 +271,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		try {
 			for (final IMarker m : project.findMarkers(PROBLEM_MARKER, true,
+					IResource.DEPTH_INFINITE)) {
+				final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
+				if (source_id != null && source_id instanceof String
+						&& source_id.equals(file.getFullPath().toString())) {
+					try {
+						m.delete();
+					} catch (final CoreException e) {
+						// not much to do
+					}
+				}
+			}
+			for (final IMarker m : project.findMarkers(TASK_MARKER, true,
 					IResource.DEPTH_INFINITE)) {
 				final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
 				if (source_id != null && source_id instanceof String
@@ -339,6 +373,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		super.clean(monitor);
 		getProject().deleteMarkers(PROBLEM_MARKER, true,
 				IResource.DEPTH_INFINITE);
+		getProject().deleteMarkers(TASK_MARKER, true, IResource.DEPTH_INFINITE);
 
 		// TODO also delete beam files
 
@@ -388,6 +423,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
+
+		createTaskMarkers(project, resource);
 
 		final String outputDir = projectPath.append(prefs.getOutputDir())
 				.toString();
@@ -481,6 +518,42 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			e.printStackTrace();
 		}
 
+	}
+
+	private void createTaskMarkers(IProject project, IResource resource) {
+		IErlProject p = ErlangCore.getModel().findErlangProject(project);
+		if (p != null) {
+			IErlModule m;
+			try {
+				m = p.getModule(resource.getName());
+				IErlScanner s = m.getScanner();
+				List<IErlComment> cl = s.getComments();
+				for (IErlComment c : cl) {
+					String name = c.getName();
+					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
+				}
+			} catch (ErlModelException e) {
+			}
+		}
+
+	}
+
+	private void mkMarker(IResource resource, IErlComment c, String name,
+			String tag, int prio) {
+		if (name.contains(tag)) {
+			int ix = name.indexOf(tag);
+			String msg = name.substring(ix);
+			int dl = 0;
+			for (int i = 0; i < ix; i++) {
+				if (name.charAt(i) == '\n') {
+					dl++;
+				}
+			}
+			addTaskMarker(resource, resource, msg, c.getLineStart() + 1 + dl,
+					prio);
+		}
 	}
 
 	private void ensureDirExists(final String outputDir) {
@@ -1325,7 +1398,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	public void addMarker(final IResource file, final IResource compiledFile,
 			final String errorDesc, final int lineNumber, final int severity,
 			final String errorVar) {
-		addMarker(file, compiledFile, errorDesc, lineNumber, severity);
+		addProblemMarker(file, compiledFile, errorDesc, lineNumber, severity);
 	}
 
 }

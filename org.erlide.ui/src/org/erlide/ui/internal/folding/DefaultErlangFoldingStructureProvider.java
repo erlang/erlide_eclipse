@@ -582,7 +582,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 		try {
 			computeAdditions((IParent) erlModule, map);
-			computeAdditions(erlModule.getComments(), map);
+			computeAdditions(erlModule.getComments().toArray(
+					new IErlComment[] {}), map);
 		} catch (final ErlModelException x) {
 			x.printStackTrace();
 		}

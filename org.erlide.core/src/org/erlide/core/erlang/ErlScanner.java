@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
@@ -23,7 +25,7 @@ import erlang.ErlideScanner2;
  */
 public class ErlScanner implements IErlScanner {
 
-	// private final IErlModule module;
+	private final IErlModule module;
 
 	private final String moduleName;
 
@@ -32,7 +34,7 @@ public class ErlScanner implements IErlScanner {
 	private String moduleFileName;
 
 	public ErlScanner(IErlModule module, String initialText) {
-		// this.module = module;
+		this.module = module;
 		moduleName = createScannerModuleName(module);
 		moduleFileName = "";
 		final IResource r = module.getResource();
@@ -132,5 +134,9 @@ public class ErlScanner implements IErlScanner {
 			return;
 		}
 		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText);
+	}
+
+	public List<IErlComment> getComments() {
+		return module.getComments();
 	}
 }

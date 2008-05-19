@@ -171,7 +171,7 @@ public class ErlParser {
 	 *            c
 	 * @return IErlComment
 	 */
-	private IErlComment createComment(final IErlModule parent,
+	public IErlComment createComment(final IErlModule parent,
 			final OtpErlangTuple c) {
 		// from erlide_scanner.hrl:
 		// -record(token, {kind, line = {Line, LastLine}, offset, length, value,
