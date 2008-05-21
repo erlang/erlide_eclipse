@@ -404,7 +404,10 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
     catch
-        exit:E -> E
+        exit:E -> 
+            E;
+		error:E ->
+			E
     end.
 
 get_doc_for_local(StateDir, F, A, Imports) ->
@@ -454,7 +457,12 @@ get_sublist([_ | Rest], [F | FRest], Acc) ->
 get_proposals(Mod, Prefix, StateDir) ->
 	case get_exported(Mod, Prefix) of
         L when is_list(L) ->
-            DocList = get_doc_from_fun_arity_list(Mod, L, StateDir),
+            DocList = case get_doc_from_fun_arity_list(Mod, L, StateDir) of
+                          S when is_list(S) ->
+                              S;
+                          _ ->
+                              lists:duplicate(length(L), "")
+                      end,
             fix_proposals(L, DocList, length(Prefix));
         Error ->
             Error
