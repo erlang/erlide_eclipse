@@ -1624,7 +1624,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
-	private static class BracketLevel {
+	public static class BracketLevel {
 		int fOffset;
 		int fLength;
 		LinkedModeUI fUI;

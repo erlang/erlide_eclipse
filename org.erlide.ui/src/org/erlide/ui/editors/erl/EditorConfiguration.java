@@ -76,8 +76,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * @param lcolorManager
 	 *            the color manager
 	 */
-	public EditorConfiguration(IPreferenceStore store, ErlangEditor leditor,
-			IColorManager lcolorManager) {
+	public EditorConfiguration(final IPreferenceStore store,
+			final ErlangEditor leditor, final IColorManager lcolorManager) {
 		super(store);
 		colorManager = lcolorManager;
 		editor = leditor;
@@ -89,7 +89,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredContentTypes(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	@Override
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+	public String[] getConfiguredContentTypes(final ISourceViewer sourceViewer) {
 		return IErlangPartitions.LEGAL_PARTITIONS;
 	}
 
@@ -101,7 +101,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
-			ISourceViewer sourceViewer, String contentType) {
+			final ISourceViewer sourceViewer, final String contentType) {
 		if (doubleClickStrategy == null) {
 			// doubleClickStrategy = new
 			// ErlDoubleClickSelector(getBracketMatcher());
@@ -140,7 +140,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	@Override
 	public IPresentationReconciler getPresentationReconciler(
-			ISourceViewer sourceViewer) {
+			final ISourceViewer sourceViewer) {
 		final PresentationReconciler reconciler = new PresentationReconciler();
 
 		final ErlHighlightScanner scan = getHighlightScanner();
@@ -158,15 +158,15 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
-			ISourceViewer sourceViewer, String contentType) {
+			final ISourceViewer sourceViewer, final String contentType) {
 		// final String partitioning =
 		// getConfiguredDocumentPartitioning(sourceViewer);
 		return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
 	}
 
 	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer,
-			String contentType) {
+	public ITextHover getTextHover(final ISourceViewer sourceViewer,
+			final String contentType) {
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module != null) {
 			return new ErlTextHover(module);
@@ -184,12 +184,13 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	@Override
-	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
+	public String getConfiguredDocumentPartitioning(
+			final ISourceViewer sourceViewer) {
 		return IErlangPartitions.ERLANG_PARTITIONING;
 	}
 
 	@Override
-	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+	public IReconciler getReconciler(final ISourceViewer sourceViewer) {
 		final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
 		final ErlReconciler reconciler = new ErlReconciler(strategy, true);
 		// reconciler.setIsIncrementalReconciler(false);
@@ -199,12 +200,13 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	@Override
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+	public IContentAssistant getContentAssistant(
+			final ISourceViewer sourceViewer) {
 		if (getEditor() != null) {
 			final ContentAssistant asst = new ContentAssistant();
 
-			asst.setContentAssistProcessor(new ErlContentAssistProcessor(),
-					IDocument.DEFAULT_CONTENT_TYPE);
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
+					sourceViewer, ""), IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);
@@ -225,7 +227,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	@Override
-	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+	public IAnnotationHover getAnnotationHover(final ISourceViewer sourceViewer) {
 		return new ErlangAnnotationHover();
 	}
 
@@ -235,10 +237,11 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	@Override
 	public IInformationControlCreator getInformationControlCreator(
-			ISourceViewer sourceViewer) {
+			final ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
 
-			public IInformationControl createInformationControl(Shell parent) {
+			public IInformationControl createInformationControl(
+					final Shell parent) {
 				return new DefaultInformationControl(parent, SWT.NONE,
 						new HTMLTextPresenter(true));
 			}
@@ -246,7 +249,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	@Override
-	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+	public IHyperlinkDetector[] getHyperlinkDetectors(
+			final ISourceViewer sourceViewer) {
 		if (editor == null) {
 			return null;
 		}
@@ -287,9 +291,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * style, new HTMLTextPresenter(false)); } }; }
 	 */
 	private IInformationControlCreator getOutlinePresenterControlCreator(
-			ISourceViewer sourceViewer, final String commandId) {
+			final ISourceViewer sourceViewer, final String commandId) {
 		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
+			public IInformationControl createInformationControl(
+					final Shell parent) {
 				final int shellStyle = SWT.RESIZE;
 				final QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
 						parent, shellStyle, editor, editor);
@@ -298,7 +303,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		};
 	}
 
-	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer) {
+	public IInformationPresenter getOutlinePresenter(
+			final ISourceViewer sourceViewer) {
 		// Ensure the source page is defined
 		if (editor == null) {
 			return null;

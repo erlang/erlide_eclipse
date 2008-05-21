@@ -165,7 +165,7 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		parent.setLayout(new GridLayout());
 		final ToolBar toolbar = new ToolBar(parent, SWT.FLAT);
 		toolbar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -174,7 +174,7 @@ public class ErlangConsoleView extends ViewPart implements
 		final ToolItem refreshBtn = new ToolItem(toolbar, SWT.PUSH);
 		refreshBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				refreshView();
 			}
 
@@ -185,7 +185,7 @@ public class ErlangConsoleView extends ViewPart implements
 		final ToolItem colorCheck = new ToolItem(toolbar, SWT.CHECK);
 		colorCheck.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				fColored = !fColored;
 				refreshView();
 			}
@@ -196,7 +196,7 @@ public class ErlangConsoleView extends ViewPart implements
 		groupChk.setText("group");
 		groupChk.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				fGroupByLeader = !fGroupByLeader;
 				groupChk.setText(fGroupByLeader ? "leader" : "sender");
 				consoleTable.setInput(fDoc);
@@ -235,7 +235,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.setEditable(false);
 		consoleText.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDown(MouseEvent e) {
+			public void mouseDown(final MouseEvent e) {
 				try {
 					final int ofs = consoleText.getOffsetAtLocation(new Point(
 							e.x, e.y));
@@ -252,7 +252,7 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 		consoleText.addMouseTrackListener(new MouseTrackAdapter() {
 			@Override
-			public void mouseHover(MouseEvent e) {
+			public void mouseHover(final MouseEvent e) {
 				try {
 					final int ofs = consoleText.getOffsetAtLocation(new Point(
 							e.x, e.y));
@@ -265,7 +265,7 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 		consoleText.addFocusListener(new FocusAdapter() {
 			@Override
-			public void focusGained(FocusEvent e) {
+			public void focusGained(final FocusEvent e) {
 				consoleInput.setFocus();
 			}
 		});
@@ -284,7 +284,7 @@ public class ErlangConsoleView extends ViewPart implements
 			int lastPos = 0;
 
 			@Override
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(final KeyEvent e) {
 				if (e.keyCode == 13 && isInputComplete(lastPos)
 						&& consoleInput.isFocusControl()) {
 					sendInput(lastPos);
@@ -327,7 +327,7 @@ public class ErlangConsoleView extends ViewPart implements
 			}
 
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(final KeyEvent e) {
 				if (e.keyCode == SWT.CTRL) {
 					historyMode = false;
 				}
@@ -357,7 +357,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	}
 
-	boolean isInputComplete(int lastPos) {
+	boolean isInputComplete(final int lastPos) {
 		try {
 			String str = consoleInput.getText();
 			str = str.substring(0, lastPos) + str.substring(lastPos + 1).trim()
@@ -372,7 +372,7 @@ public class ErlangConsoleView extends ViewPart implements
 		return true;
 	}
 
-	protected void sendInput(int lastPos) {
+	protected void sendInput(final int lastPos) {
 		String s = consoleInput.getText();
 		s = s.substring(0, lastPos) + s.substring(lastPos + 1).trim() + "\n";
 		input(s);
@@ -398,7 +398,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.setSelection(consoleText.getCharCount() - 1);
 	}
 
-	Color getColor(OtpErlangPid sender) {
+	Color getColor(final OtpErlangPid sender) {
 		int ix = 0;
 		for (final Object element : pids) {
 			final OtpErlangPid pid = (OtpErlangPid) element;
@@ -415,7 +415,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	private static void addDropDown(final ToolItem item, final Menu menu) {
 		item.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (event.detail == SWT.ARROW) {
 					final Rectangle rect = item.getBounds();
 					Point pt = new Point(rect.x, rect.y + rect.height);
@@ -446,7 +446,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 	}
 
-	public void addToHistory(String in) {
+	public void addToHistory(final String in) {
 		if (history.indexOf(in) != -1) {
 			history.remove(in);
 		}
@@ -464,7 +464,8 @@ public class ErlangConsoleView extends ViewPart implements
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
 			fDoc = (ErlConsoleDocument) newInput;
 
 			if (fDoc == null) {
@@ -499,31 +500,32 @@ public class ErlangConsoleView extends ViewPart implements
 
 		}
 
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			return fDoc.getContentList().toArray();
 		}
 	}
 
 	final class IoRequestLabelProvider implements ITableLabelProvider,
 			IColorProvider {
-		public void addListener(ILabelProviderListener listener) {
+		public void addListener(final ILabelProviderListener listener) {
 		}
 
 		public void dispose() {
 		}
 
-		public boolean isLabelProperty(Object element, String property) {
+		public boolean isLabelProperty(final Object element,
+				final String property) {
 			return true;
 		}
 
-		public void removeListener(ILabelProviderListener listener) {
+		public void removeListener(final ILabelProviderListener listener) {
 		}
 
-		public Image getColumnImage(Object element, int columnIndex) {
+		public Image getColumnImage(final Object element, final int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object element, int columnIndex) {
+		public String getColumnText(final Object element, final int columnIndex) {
 			if (element instanceof IoRequest) {
 				final IoRequest req = (IoRequest) element;
 				final Table tbl = (Table) consoleTable.getControl();
@@ -538,7 +540,7 @@ public class ErlangConsoleView extends ViewPart implements
 			return null;
 		}
 
-		public Color getBackground(Object element) {
+		public Color getBackground(final Object element) {
 			final IoRequest req = (IoRequest) element;
 			if (fColored) {
 				return getColor(fGroupByLeader ? req.getLeader() : req
@@ -547,21 +549,21 @@ public class ErlangConsoleView extends ViewPart implements
 			return null;
 		}
 
-		public Color getForeground(Object element) {
+		public Color getForeground(final Object element) {
 			// IoRequest req = (IoRequest) element;
 			return null;
 		}
 
 	}
 
-	public void markRequests(List<IoRequest> reqs) {
+	public void markRequests(final List<IoRequest> reqs) {
 		for (final Object element0 : reqs) {
 			final IoRequest element = (IoRequest) element0;
 			markRequest(element);
 		}
 	}
 
-	public void markRequest(IoRequest req) {
+	public void markRequest(final IoRequest req) {
 		final StyleRange range = new StyleRange();
 		range.start = req.getStart();
 		range.length = req.getLength();
@@ -577,7 +579,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.setStyleRange(range);
 	}
 
-	public void setInput(String str) {
+	public void setInput(final String str) {
 		consoleInput.setText(str);
 		consoleInput.setSelection(str.length());
 	}
@@ -615,14 +617,15 @@ public class ErlangConsoleView extends ViewPart implements
 		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
 		 */
 		@Override
-		public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		public IContentAssistant getContentAssistant(
+				final ISourceViewer sourceViewer) {
 
 			final ContentAssistant asst = new ContentAssistant();
 
 			// TODO vi vill ha in en punkt här, men den får return till
 			// styledtext o skickar allt för tidigt...
-			asst.setContentAssistProcessor(new ErlContentAssistProcessor(""),
-					IDocument.DEFAULT_CONTENT_TYPE);
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
+					sourceViewer, ""), IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);
@@ -641,7 +644,8 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		@Override
-		public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		public IAnnotationHover getAnnotationHover(
+				final ISourceViewer sourceViewer) {
 			return new ErlangAnnotationHover();
 		}
 
@@ -651,10 +655,11 @@ public class ErlangConsoleView extends ViewPart implements
 		 */
 		@Override
 		public IInformationControlCreator getInformationControlCreator(
-				ISourceViewer sourceViewer) {
+				final ISourceViewer sourceViewer) {
 			return new IInformationControlCreator() {
 
-				public IInformationControl createInformationControl(Shell parent) {
+				public IInformationControl createInformationControl(
+						final Shell parent) {
 					return new DefaultInformationControl(parent, SWT.NONE,
 							new HTMLTextPresenter(true));
 				}
@@ -669,7 +674,7 @@ public class ErlangConsoleView extends ViewPart implements
 		 */
 		@Override
 		public ITextDoubleClickStrategy getDoubleClickStrategy(
-				ISourceViewer sourceViewer, String contentType) {
+				final ISourceViewer sourceViewer, final String contentType) {
 			if (doubleClickStrategy == null) {
 				// doubleClickStrategy = new
 				// ErlDoubleClickSelector(getBracketMatcher());
@@ -709,7 +714,7 @@ public class ErlangConsoleView extends ViewPart implements
 		 */
 		@Override
 		public IPresentationReconciler getPresentationReconciler(
-				ISourceViewer sourceViewer) {
+				final ISourceViewer sourceViewer) {
 			final PresentationReconciler reconciler = new PresentationReconciler();
 
 			final ErlHighlightScanner scan = getHighlightScanner();

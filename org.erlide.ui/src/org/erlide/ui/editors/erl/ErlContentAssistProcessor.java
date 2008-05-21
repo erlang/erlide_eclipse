@@ -21,6 +21,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.graphics.Point;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
@@ -28,7 +30,6 @@ import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -39,35 +40,36 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
-	String suffix;
+	private final ISourceViewer sourceViewer;
+	String prefix;
 
-	private final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
+	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
-	public ErlContentAssistProcessor() {
-		this("");
+	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
+			final String prefix) {
+		this.sourceViewer = sourceViewer;
+		this.prefix = prefix;
 	}
 
-	public ErlContentAssistProcessor(String suffix) {
-		this.suffix = suffix;
-	}
+	// @Deprecated
+	// private OtpErlangList getDocumentationFor(final OtpErlangList list,
+	// final String mod) {
+	// try {
+	// final String s = ErlideUIPlugin.getDefault().getStateLocation()
+	// .toString();
+	// final OtpErlangObject r1 = ErlideDoc.getFunDoc(list, mod, s);
+	// if (r1 instanceof OtpErlangList) {
+	// return (OtpErlangList) r1;
+	// }
+	// return null;
+	// } catch (final Exception e) {
+	//
+	// }
+	// return null;
+	// }
 
-	private OtpErlangList getDocumentationFor(OtpErlangList list, String mod) {
-		try {
-			final String s = ErlideUIPlugin.getDefault().getStateLocation()
-					.toString();
-			final OtpErlangObject r1 = ErlideDoc.getFunDoc(list, mod, s);
-			if (r1 instanceof OtpErlangList) {
-				return (OtpErlangList) r1;
-			}
-			return null;
-		} catch (final Exception e) {
-
-		}
-		return null;
-	}
-
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
-			int offset) {
+	public ICompletionProposal[] computeCompletionProposals(
+			final ITextViewer viewer, final int offset) {
 		try {
 			final IDocument doc = viewer.getDocument();
 			final String prefix = lastText(doc, offset);
@@ -85,22 +87,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			moduleCompletions(offset, prefix, result, k, b);
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
+			e.printStackTrace();
 			return NO_COMPLETIONS;
 		}
 	}
 
-	private void moduleCompletions(int offset, String prefix,
-			ArrayList<ICompletionProposal> result, int k, IBackend b) {
+	private void moduleCompletions(final int offset, final String prefix,
+			final List<ICompletionProposal> result, final int k,
+			final IBackend b) {
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
 		OtpErlangObject res = null;
-		try {
-			res = ErlideDoc.getModules(b, prefix, allErlangFiles);
-		} catch (final BackendException e) {
-			e.printStackTrace();
-		} catch (final RpcException e) {
-			e.printStackTrace();
-		}
+		res = ErlideDoc.getModules(b, prefix, allErlangFiles);
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resList = (OtpErlangList) res;
 			for (int i = 0; i < resList.arity(); ++i) {
@@ -115,42 +113,73 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private void externalCallCompletions(String moduleName, int offset,
-			String prefix, final ArrayList<ICompletionProposal> result,
-			final int k, IBackend b) throws ErlangRpcException,
-			BackendException, RpcException, OtpErlangRangeException {
+	private void externalCallCompletions(final String moduleName,
+			final int offset, final String prefix,
+			final List<ICompletionProposal> result, final int k,
+			final IBackend b) throws ErlangRpcException, BackendException,
+			RpcException, OtpErlangRangeException {
 		// we have an external call
-		final OtpErlangObject res = ErlideDoc
-				.getExported(b, prefix, moduleName);
+		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
+				.toString();
+		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+				moduleName, prefix, stateDir);
+		// final OtpErlangObject res = ErlideDoc
+		// .getExported(b, prefix, moduleName);
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resl = (OtpErlangList) res;
-			final OtpErlangList docl = getDocumentationFor(resl, moduleName);
 			for (int i = 0; i < resl.arity(); i++) {
+				// {FunWithArity, FunWithParameters, [{Offset, Length}], Doc}
 				final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
-				final String fstr = ((OtpErlangAtom) f.elementAt(0))
-						.atomValue();
-				final int far = ((OtpErlangLong) f.elementAt(1)).intValue();
-				final StringBuilder args = new StringBuilder(far * 2);
-				for (int j = 0; j < far - 1; j++) {
-					args.append(", ");
-				}
+				final String funWithArity = ((OtpErlangString) f.elementAt(0))
+						.stringValue();
+				final String funWithParameters = ((OtpErlangString) f
+						.elementAt(1)).stringValue();
+				final OtpErlangList parOffsets = (OtpErlangList) f.elementAt(2);
+				final int nPars = parOffsets.arity();
 				String docStr = null;
-				if (docl != null) {
-					final OtpErlangObject elt = docl.elementAt(i);
+				if (f.arity() > 3) {
+					final OtpErlangObject elt = f.elementAt(3);
 					if (elt instanceof OtpErlangString) {
 						docStr = ((OtpErlangString) elt).stringValue();
 					}
 				}
-				final String cpl = fstr.substring(prefix.length()) + "("
-						+ args.toString() + ")" + suffix;
-				result.add(new CompletionProposal(cpl, offset, 0, cpl.length()
-						- 1 - suffix.length() - far * 2 + 2, null, fstr + "/"
-						+ far, null, docStr));
+				final String cpl = funWithParameters.substring(prefix.length());
+				final List<Point> offsetsAndLengths = getOffsetsAndLengths(
+						parOffsets, offset);
+				int offs = cpl.length();
+				if (nPars > 0) {
+					offs = offsetsAndLengths.get(0).x;
+				}
+				// final ICompletionProposal c = new CompletionProposal(cpl,
+				// offset, 0, offs, null, funWithArity, null, docStr);
+
+				final ICompletionProposal c = new ErlCompletionProposal(
+						offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
+						null, null, docStr, sourceViewer);
+
+				result.add(c);
 			}
 		}
 	}
 
-	private String lastText(IDocument doc, int offset) {
+	private List<Point> getOffsetsAndLengths(final OtpErlangList parOffsets,
+			final int replacementOffset) {
+		final int arity = parOffsets.arity();
+		final List<Point> result = new ArrayList<Point>(arity);
+		for (int i = 0; i < arity; i++) {
+			final OtpErlangTuple t = (OtpErlangTuple) parOffsets.elementAt(i);
+			final OtpErlangLong offset = (OtpErlangLong) t.elementAt(0);
+			final OtpErlangLong length = (OtpErlangLong) t.elementAt(1);
+			try {
+				result.add(new Point(offset.intValue() + replacementOffset,
+						length.intValue()));
+			} catch (final OtpErlangRangeException e) {
+			}
+		}
+		return result;
+	}
+
+	private String lastText(final IDocument doc, final int offset) {
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
 				final char c = doc.getChar(n);
@@ -164,32 +193,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return "";
 	}
 
-	static private boolean isErlangIdentifierChar(char char1) {
+	static private boolean isErlangIdentifierChar(final char char1) {
 		return Character.isJavaIdentifierPart(char1);
 	}
 
-	// private String lastIndent(IDocument doc, int offset) {
-	// try {
-	// int start = offset - 1;
-	// while (start >= 0 && doc.getChar(start) != '\n') {
-	// start--;
-	// }
-	// int end = start + 1;
-	// while (end < offset && isspace(doc.getChar(end))) {
-	// end++;
-	// }
-	// return doc.get(start + 1, end - start - 1);
-	// } catch (final BadLocationException e) {
-	// }
-	// return "";
-	// }
-
-	// private boolean isspace(char ch) {
-	// return ch == ' ' || ch == '\t';
-	// }
-
-	public IContextInformation[] computeContextInformation(ITextViewer viewer,
-			int offset) {
+	public IContextInformation[] computeContextInformation(
+			final ITextViewer viewer, final int offset) {
 		return null;
 	}
 
@@ -208,5 +217,4 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	public IContextInformationValidator getContextInformationValidator() {
 		return null;
 	}
-
 }

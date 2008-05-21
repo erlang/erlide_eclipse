@@ -41,12 +41,12 @@ public class ErlTextHover implements ITextHover,
 
 	private final IErlModule fModule;
 
-	public ErlTextHover(IErlModule module) {
+	public ErlTextHover(final IErlModule module) {
 		fImports = null;
 		fModule = module;
 	}
 
-	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
+	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
 		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 		if (token == null) {
 			return null;
@@ -55,23 +55,20 @@ public class ErlTextHover implements ITextHover,
 		return new Region(token.getOffset(), token.getLength());
 	}
 
-	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+	public String getHoverInfo(final ITextViewer textViewer,
+			final IRegion hoverRegion) {
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
-		try {
-			OtpErlangObject r1 = null;
-			final int offset = hoverRegion.getOffset();
-			final String stateDir = ErlideUIPlugin.getDefault()
-					.getStateLocation().toString();
-			r1 = ErlideDoc.getDocFromScan(offset, stateDir, ErlScanner
-					.createScannerModuleName(fModule), fImports);
-			if (r1 instanceof OtpErlangString) {
-				final OtpErlangString s1 = (OtpErlangString) r1;
-				return s1.stringValue();
-			}
-		} catch (final Exception e) {
-			// e.printStackTrace();
+		OtpErlangObject r1 = null;
+		final int offset = hoverRegion.getOffset();
+		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
+				.toString();
+		r1 = ErlideDoc.getDocFromScan(offset, stateDir, ErlScanner
+				.createScannerModuleName(fModule), fImports);
+		if (r1 instanceof OtpErlangString) {
+			final OtpErlangString s1 = (OtpErlangString) r1;
+			return s1.stringValue();
 		}
 		return null;
 	}
@@ -79,7 +76,8 @@ public class ErlTextHover implements ITextHover,
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new IInformationControlCreator() {
 
-			public IInformationControl createInformationControl(Shell parent) {
+			public IInformationControl createInformationControl(
+					final Shell parent) {
 				final int shellStyle = SWT.RESIZE | SWT.TOOL;
 				final int style = SWT.V_SCROLL | SWT.H_SCROLL;
 
@@ -93,14 +91,16 @@ public class ErlTextHover implements ITextHover,
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {
 
-			public IInformationControl createInformationControl(Shell parent) {
+			public IInformationControl createInformationControl(
+					final Shell parent) {
 				return new DefaultInformationControl(parent, SWT.NONE,
 						new HTMLTextPresenter(true), "Press 'F2' for focus");
 			}
 		};
 	}
 
-	public static String getHoverTextForOffset(int offset, ErlangEditor editor) {
+	public static String getHoverTextForOffset(final int offset,
+			final ErlangEditor editor) {
 		final ErlTextHover h = new ErlTextHover(ErlModelUtils.getModule(editor));
 		final ITextViewer tv = editor.getViewer();
 		final IRegion r = h.getHoverRegion(tv, offset);

@@ -8,11 +8,12 @@
          get_doc_from_fun_arity_list/3,
          get_all_links_to_other/0,
          get_exported/2,
-         get_modules/2]).
+         get_modules/2,
+         get_proposals/3]).
 
 -include_lib("kernel/include/file.hrl").
 
-%-define(DEBUG, 1). 
+%-define(DEBUG, 1).  
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -30,8 +31,9 @@
 get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
     case catch M:module_info(exports) of
         Val when is_list(Val) ->
-            Fun = fun({N,_A}) -> lists:prefix(Prefix,atom_to_list(N)) end,
-            lists:filter(Fun, Val);
+            lists:filter(fun({N,_A}) ->
+                                 lists:prefix(Prefix,atom_to_list(N))
+                         end, Val);
     	_Error ->
             ?D(_Error),
             error
@@ -44,20 +46,6 @@ get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
 
 find_tags(L, Fun) ->
      lists:filter(Fun, L).        
-
-%%recu_find_tags([], _Tags, Acc) ->
-%%     Acc;
-%% recu_find_tags([{_,_,_,L,_}=Tag | Rest], Fun, Acc0) ->
-%%     Acc1 = recu_find_tags(L, Fun, Acc0),
-%%     Acc2 = case Fun(Tag) of
-%%                true ->
-%%                    [Tag | Acc1];
-%%                false ->
-%%                    Acc1
-%%            end,
-%%     recu_find_tags(Rest, Fun, Acc2);
-%% recu_find_tags([_ | Rest], Fun, Acc) ->
-%%     recu_find_tags(Rest, Fun, Acc).
 
 %% return true for tags which is either <div> or <a name=...>
 %% (used for extracting those with recu_find_tags in extract_from_file)
@@ -458,3 +446,42 @@ get_sublist([], Flat, Acc) ->
     {lists:reverse(Acc), Flat};
 get_sublist([_ | Rest], [F | FRest], Acc) ->
     get_sublist(Rest, FRest, [F | Acc]).
+
+
+%% Get exported functions with documentation
+%% [{FunWithArity, FunWithParameters, [{Offset, Length}, Doc]}]
+
+get_proposals(Mod, Prefix, StateDir) ->
+	case get_exported(Mod, Prefix) of
+        L when is_list(L) ->
+            DocList = get_doc_from_fun_arity_list(Mod, L, StateDir),
+            fix_proposals(L, DocList, length(Prefix));
+        Error ->
+            Error
+    end.
+
+fix_proposals(FunArityList, DocList, PrefixLength) -> 
+    erlide_log:log(io_lib:format("PrefixLength ~p", [PrefixLength])),
+    fix_proposals(FunArityList, DocList, PrefixLength, []).
+
+fix_proposals([], _, _, Acc) ->
+    lists:reverse(Acc);
+fix_proposals([{FunctionName, Arity} | FALRest], [Doc | DLRest], PrefixLength, Acc) ->
+    FunName = atom_to_list(FunctionName),
+    FunWithArity = FunName++"/"++integer_to_list(Arity),
+    FunWithParameters = FunName++"("++make_parameters(Arity)++")",
+    Pars = make_par_offs_length(0, Arity, length(FunName)+1-PrefixLength),
+    fix_proposals(FALRest, DLRest, PrefixLength,
+                  [{FunWithArity, FunWithParameters, Pars, Doc} | Acc]).
+
+make_parameters(0) ->
+    "";
+make_parameters(1) ->
+    "_";
+make_parameters(N) ->
+    "_, " ++ make_parameters(N-1).
+
+make_par_offs_length(N, N, _) ->
+    [];
+make_par_offs_length(I, N, Offset) ->
+    [{I*3+Offset, 1} | make_par_offs_length(I+1, N, Offset)].
