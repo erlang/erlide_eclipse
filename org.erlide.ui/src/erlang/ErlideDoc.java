@@ -2,12 +2,12 @@ package erlang;
 
 import java.util.List;
 
+import org.erlide.core.erlang.IErlImport;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
@@ -41,12 +41,12 @@ public class ErlideDoc {
 
 	public static OtpErlangObject getDocFromScan(final int offset,
 			final String stateDir, final String module,
-			final OtpErlangList imports) {
+			final List<IErlImport> imports) {
 		OtpErlangObject res = null;
 		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
 			res = BackendManager.getDefault().getIdeBackend().rpcx(
-					"erlide_otp_doc", "get_doc_from_scan_tuples", "ailxs",
+					"erlide_otp_doc", "get_doc_from_scan_tuples", "ailos",
 					module, offset, imports, stateDir);
 		} catch (final RpcException e) {
 			e.printStackTrace();
