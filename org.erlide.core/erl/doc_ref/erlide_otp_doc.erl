@@ -13,7 +13,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%-define(DEBUG, 1).  
+%% -define(DEBUG, 1).  
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -374,17 +374,32 @@ get_all_links_to_other() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
-    case erlide_open:open(Module, Offset, "", []) of
-        {external, M, Function, N, _P} ->
-            ?D({open, {external, M, Function, N, _P}}),
-            D = get_doc_for_external(StateDir, M, [{Function, N}]),
-            lists:flatten(D);
-        {local, Function, N} ->
-            D = get_doc_for_local(StateDir, Function, N, Imports),
-			lists:flatten(D);
-        _D ->
-            ?D(_D),
-            error
+    try
+        case erlide_open:open(Module, Offset, "", []) of
+            {external, M, Function, N, _P} ->
+                ?D({open, {external, M, Function, N, _P}}),
+                case get_doc_for_external(StateDir, M, [{Function, N}]) of
+                    D when is_list(D) ->
+                        lists:flatten(D);
+                    Error ->
+                        Error
+                end;
+            {local, Function, N} ->
+                case get_doc_for_local(StateDir, Function, N, Imports) of
+                    D when is_list(D) ->
+                        lists:flatten(D);
+                    Error ->
+                        Error
+                end;
+            Error ->
+                ?D(Error),
+                Error
+        end
+    catch
+    	error:E ->
+            E;
+        exit:E ->
+            E
     end.
 
 get_doc_for_external(StateDir, Mod, FuncList) ->
@@ -404,10 +419,12 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
     catch
-        exit:E -> 
+        exit:E ->
+            ?D(E),
             E;
 		error:E ->
-			E
+			?D(E),
+            E
     end.
 
 get_doc_for_local(StateDir, F, A, Imports) ->
