@@ -11,6 +11,7 @@
 package org.erlide.ui.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -43,23 +44,19 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
-
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
 public class ErlModelUtils {
 
-	public static IErlModule getModule(ITextEditor editor) {
+	public static IErlModule getModule(final ITextEditor editor) {
 		if (editor == null) {
 			return null;
 		}
 		return getModule(editor.getEditorInput());
 	}
 
-	public static IErlModule getModule(IEditorInput editorInput) {
+	public static IErlModule getModule(final IEditorInput editorInput) {
 
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
@@ -68,7 +65,7 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlModule getModule(IFile file) {
+	public static IErlModule getModule(final IFile file) {
 		final String prj = file.getProject().getName();
 		final IErlModel mdl = ErlangCore.getModel();
 
@@ -80,11 +77,11 @@ public class ErlModelUtils {
 		}
 	}
 
-	public static IErlProject getErlProject(ITextEditor editor) {
+	public static IErlProject getErlProject(final ITextEditor editor) {
 		return getErlProject(editor.getEditorInput());
 	}
 
-	public static IErlProject getErlProject(IEditorInput editorInput) {
+	public static IErlProject getErlProject(final IEditorInput editorInput) {
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
 			final IErlModel mdl = ErlangCore.getModel();
@@ -101,8 +98,8 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlFunction findFunction(IErlModule module, String function,
-			int arity) throws ErlModelException {
+	public static IErlFunction findFunction(final IErlModule module,
+			final String function, final int arity) throws ErlModelException {
 		final List<IErlElement> children = module.getChildren();
 		for (final IErlElement element : children) {
 			if (element instanceof IErlFunction) {
@@ -117,21 +114,15 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static OtpErlangList getImportsAsList(IErlModule mod) {
+	public static List<IErlImport> getImportsAsList(final IErlModule mod) {
 		if (mod == null) {
-			return new OtpErlangList();
+			return new ArrayList<IErlImport>(0);
+		} else {
+			return mod.getImports();
 		}
-
-		final List<IErlImport> imports = mod.getImports();
-		final OtpErlangObject rImports[] = new OtpErlangTuple[imports.size()];
-		for (int i = 0; i < imports.size(); ++i) {
-			final IErlImport imp = imports.get(i);
-			rImports[i] = imp.toErlangObject();
-		}
-		return new OtpErlangList(rImports);
 	}
 
-	public static IErlScanner getScanner(ITextEditor editor) {
+	public static IErlScanner getScanner(final ITextEditor editor) {
 		final IErlModule mod = getModule(editor);
 		// ErlLogger.debug("getScanner:: " + editor + " = " + mod);
 		if (mod != null) {
@@ -140,7 +131,8 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlFunction findFunctionFromPos(IErlModule module, int offset) {
+	public static IErlFunction findFunctionFromPos(final IErlModule module,
+			final int offset) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -156,9 +148,9 @@ public class ErlModelUtils {
 	 * @throws ErlModelException
 	 * @throws PartInitException
 	 */
-	public static boolean openPreprocessorDef(IProject project,
-			final IWorkbenchPage page, IErlModule m, String definedName,
-			final IErlElement.Kind type, List<IErlModule> modulesDone)
+	public static boolean openPreprocessorDef(final IProject project,
+			final IWorkbenchPage page, IErlModule m, final String definedName,
+			final IErlElement.Kind type, final List<IErlModule> modulesDone)
 			throws CoreException, ErlModelException, PartInitException {
 		if (m == null) {
 			return false;
@@ -215,7 +207,8 @@ public class ErlModelUtils {
 	 *            the path to the include file
 	 * @return the path to the include file
 	 */
-	public static String findIncludeFile(IProject project, String filePath) {
+	public static String findIncludeFile(final IProject project,
+			final String filePath) {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -244,14 +237,15 @@ public class ErlModelUtils {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
-	public static void openExternalFunction(OpenResult res, IProject project)
-			throws CoreException {
+	public static void openExternalFunction(final OpenResult res,
+			final IProject project) throws CoreException {
 		openExternalFunction(res.getName(), res.getFun(), res.getArity(), res
 				.getPath(), project);
 	}
 
-	public static void openExternalFunction(String mod, String fun, int arity,
-			String path, IProject project) throws CoreException {
+	public static void openExternalFunction(final String mod, final String fun,
+			final int arity, final String path, final IProject project)
+			throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
@@ -286,8 +280,8 @@ public class ErlModelUtils {
 	 * @param editor
 	 * @throws ErlModelException
 	 */
-	public static boolean openFunctionInEditor(String fun, int arity,
-			IEditorPart editor) throws ErlModelException {
+	public static boolean openFunctionInEditor(final String fun,
+			final int arity, final IEditorPart editor) throws ErlModelException {
 		if (editor == null) {
 			return false;
 		}
@@ -307,22 +301,22 @@ public class ErlModelUtils {
 	/**
 	 * Opens the editor on the given element and subsequently selects it.
 	 */
-	public static void openElementInNewEditor(Object element, boolean activate)
-			throws ErlModelException, PartInitException {
+	public static void openElementInNewEditor(final Object element,
+			final boolean activate) throws ErlModelException, PartInitException {
 		final IEditorPart part = EditorUtility.openInEditor(element, activate);
 		if (element instanceof IErlElement) {
 			EditorUtility.revealInEditor(part, (IErlElement) element);
 		}
 	}
 
-	public static void disposeScanner(ErlangEditor editor) {
+	public static void disposeScanner(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
 			getModule(editor).disposeScanner();
 		}
 	}
 
-	public static void reenableScanner(ErlangEditor editor) {
+	public static void reenableScanner(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
 			getModule(editor).reenableScanner();
