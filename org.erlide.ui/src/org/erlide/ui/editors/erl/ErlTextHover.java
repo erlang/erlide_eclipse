@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.List;
+
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -22,12 +24,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
 
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
@@ -37,7 +39,7 @@ public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
 
 	// private ITextEditor fEditor;
-	private OtpErlangList fImports;
+	private List<IErlImport> fImports;
 
 	private final IErlModule fModule;
 
