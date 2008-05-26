@@ -338,7 +338,7 @@ public class RpcConverter {
 			}
 		}
 		if (obj instanceof Boolean) {
-			if (type.kind == 'o') {
+			if (type.kind == 'o' || type.kind == 'b') {
 				return new OtpErlangAtom(((Boolean) obj) ? "true" : "false");
 			}
 			failConversion(obj, type);
