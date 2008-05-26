@@ -55,8 +55,8 @@ import erlang.ErlideBackend;
 public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	// use this for debugging
-	private static final boolean CHECK_RPC = false;
-	// private static final boolean TRACE = false;
+	private static final boolean CHECK_RPC = "true".equals(System
+			.getProperty("org.erlide.checkrpc"));
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
 	private final ICodeManager fCodeManager;

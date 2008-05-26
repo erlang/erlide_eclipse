@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -72,7 +73,7 @@ public class EdocView extends AbstractInfoView {
 	 * 
 	 * @since 3.0
 	 */
-	private static final String DO_NOT_WARN_PREFERENCE_KEY = "JavadocView.error.doNotWarn"; //$NON-NLS-1$
+	private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
 	// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=73558
 	private static final boolean WARNING_DIALOG_ENABLED = false;
@@ -317,7 +318,7 @@ public class EdocView extends AbstractInfoView {
 
 	private void initStyleSheetURL() {
 		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		fStyleSheetURL = bundle.getEntry("/JavadocViewStyleSheet.css"); //$NON-NLS-1$
+		fStyleSheetURL = bundle.getEntry("/EdocViewStyleSheet.css"); //$NON-NLS-1$
 		if (fStyleSheetURL == null) {
 			return;
 		}
@@ -607,5 +608,10 @@ public class EdocView extends AbstractInfoView {
 			return ErlTextHover.getHoverTextForOffset(sel.getOffset(), editor);
 		}
 		return null;
+	}
+
+	private void initializeToolBar() {
+		IToolBarManager toolBarManager = getViewSite().getActionBars()
+				.getToolBarManager();
 	}
 }

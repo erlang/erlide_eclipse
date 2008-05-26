@@ -138,6 +138,10 @@ public class ErlideScanner2 {
 			return null;
 		}
 
+		if (!(r1 instanceof OtpErlangTuple)) {
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": weird return value " + r1);
+		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		List<ErlToken> toks = null;
