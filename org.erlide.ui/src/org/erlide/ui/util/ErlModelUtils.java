@@ -104,7 +104,7 @@ public class ErlModelUtils {
 		for (final IErlElement element : children) {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;
-				if (arity == -1 || f.getArity() == arity) {
+				if (arity == IErlModel.UNKNOWN_ARITY || f.getArity() == arity) {
 					if (f.getName().equals(function)) {
 						return f;
 					}
