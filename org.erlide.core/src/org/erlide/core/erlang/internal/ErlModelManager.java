@@ -114,7 +114,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * created as translations of <code>IResourceDeltas</code> are to be
 	 * registered with <code>#registerResourceDelta</code>.
 	 */
-	public void registerModelDelta(IErlElementDelta delta) {
+	public void registerModelDelta(final IErlElementDelta delta) {
 		erlModelDeltas.add(delta);
 		// TODO
 	}
@@ -159,7 +159,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(IResource resource, IErlProject project) {
+	public IErlElement create(final IResource resource,
+			final IErlProject project) {
 		if (resource == null) {
 			return null;
 		}
@@ -195,7 +196,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(IFile file, IErlProject project) {
+	public IErlElement create(final IFile file, IErlProject project) {
 		if (file == null) {
 			return null;
 		}
@@ -227,7 +228,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(IFolder folder, IErlProject project) {
+	public IErlElement create(final IFolder folder, IErlProject project) {
 		if (folder == null) {
 			return null;
 		}
@@ -243,7 +244,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
-	public IErlModule createModuleFrom(IFile file, IErlProject project) {
+	public IErlModule createModuleFrom(final IFile file, IErlProject project) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (file == null) {
 			return null;
@@ -258,9 +259,9 @@ public class ErlModelManager implements IErlModelManager {
 			return (IErlModule) elements.get(key);
 		}
 		final String ext = file.getFileExtension();
-		if (ext.equals("erl") || ext.equals("hrl")) {
+		if (ErlModule.isModuleExt(ext)) {
 			final IErlModule module = new ErlModule(project, file.getName(),
-					ext.equals("erl"), file, null);
+					ext, file, null);
 			project.addChild(module);
 			// project.setIsStructureKnown(false);
 			// IProgressMonitor
@@ -275,8 +276,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
-	public IErlModule createModuleFrom(String name, String text,
-			IErlProject project, IFile file) {
+	public IErlModule createModuleFrom(final String name, final String text,
+			final IErlProject project, final IFile file) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (name == null || text == null || project == null) {
 			return null;
@@ -288,13 +289,14 @@ public class ErlModelManager implements IErlModelManager {
 		}
 		final IPath path = new Path(key);
 		final String ext = path.getFileExtension();
-		if (!(ext.equals("erl") || ext.equals("hrl"))) {
+		if (ErlModule.isModuleExt(ext)) {
+			final IErlModule module = new ErlModule(project, name, ext, file,
+					text);
+			elements.put(key, module);
+			return module;
+		} else {
 			return null;
 		}
-		final IErlModule module = new ErlModule(project, name, ext
-				.equals("erl"), file, text);
-		elements.put(key, module);
-		return module;
 	}
 
 	/**
@@ -311,7 +313,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * @return the Erlang project corresponding to the given project, null if
 	 *         the given project is null
 	 */
-	public IErlProject create(IProject project) {
+	public IErlProject create(final IProject project) {
 		if (project == null) {
 			return null;
 		}
@@ -342,7 +344,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *         <code>null</code> if unable to associate the given file with a
 	 *         Erlang element
 	 */
-	public IErlElement create(IFile file) {
+	public IErlElement create(final IFile file) {
 		return create(file, null/* unknown Erlang project */);
 	}
 
@@ -363,7 +365,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *         the given folder, or <code>null</code> if unable to associate
 	 *         the given folder with a Erlang element
 	 */
-	public IErlElement create(IFolder folder) {
+	public IErlElement create(final IFolder folder) {
 		return create(folder, null/* unknown Erlang project */);
 	}
 
@@ -398,7 +400,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *         <code>null</code> if unable to associate the given resource
 	 *         with a Erlang element
 	 */
-	public IErlElement create(IResource resource) {
+	public IErlElement create(final IResource resource) {
 		return create(resource, null);
 	}
 
@@ -409,7 +411,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *            the given root
 	 * @return the Erlang model, or <code>null</code> if the root is null
 	 */
-	public IErlModel create(IWorkspaceRoot root) {
+	public IErlModel create(final IWorkspaceRoot root) {
 		if (root == null) {
 			return null;
 		}
@@ -419,7 +421,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile)
 	 */
-	public IErlModule createModuleFrom(IFile file) {
+	public IErlModule createModuleFrom(final IFile file) {
 		return createModuleFrom(file, null);
 	}
 
@@ -432,14 +434,14 @@ public class ErlModelManager implements IErlModelManager {
 		/**
 		 * @see org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(Preferences.PropertyChangeEvent)
 		 */
-		public void propertyChange(Preferences.PropertyChangeEvent event) {
+		public void propertyChange(final Preferences.PropertyChangeEvent event) {
 
 			// String propertyName = event.getProperty();
 		}
 	}
 
 	class ResourceChangeListener implements IResourceChangeListener {
-		public void resourceChanged(IResourceChangeEvent event) {
+		public void resourceChanged(final IResourceChangeEvent event) {
 			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 				return;
 			}
@@ -493,7 +495,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see ISaveParticipant
 	 */
-	public void doneSaving(ISaveContext context) {
+	public void doneSaving(final ISaveContext context) {
 		// nothing to do
 	}
 
@@ -507,7 +509,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
 	 */
-	public synchronized Object getInfo(IErlElement element) {
+	public synchronized Object getInfo(final IErlElement element) {
 		return element;
 	}
 
@@ -529,7 +531,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#getLastBuiltState(org.eclipse.core.resources.IProject,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public Object getLastBuiltState(IProject project, IProgressMonitor monitor) {
+	public Object getLastBuiltState(final IProject project,
+			final IProgressMonitor monitor) {
 		if (!ErlangCore.hasErlangNature(project)) {
 			return null;
 		}
@@ -556,7 +559,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Returns the File to use for saving and restoring the last built state for
 	 * the given project.
 	 */
-	private File getSerializationFile(IProject project) {
+	private File getSerializationFile(final IProject project) {
 		if (!project.exists()) {
 			return null;
 		}
@@ -568,7 +571,10 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#prepareToSave(org.eclipse.core.resources.ISaveContext)
 	 */
-	public void prepareToSave(ISaveContext context) /* throws CoreException */
+	public void prepareToSave(final ISaveContext context) /*
+															 * throws
+															 * CoreException
+															 */
 	{
 		// nothing to do
 	}
@@ -615,7 +621,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * Reads the build state for the relevant project.
 	 */
-	protected Object readState(IProject project) throws CoreException {
+	protected Object readState(final IProject project) throws CoreException {
 		final File file = getSerializationFile(project);
 		if (file != null && file.exists()) {
 			try {
@@ -664,7 +670,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
 	 */
-	public synchronized Object removeInfoAndChildren(ErlElement element)
+	public synchronized Object removeInfoAndChildren(final ErlElement element)
 			throws ErlModelException {
 		// Object info = this.cache.peekAtInfo(element);
 		// if (info != null)
@@ -716,7 +722,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see ISaveParticipant
 	 */
-	public void rollback(ISaveContext context) {
+	public void rollback(final ISaveContext context) {
 		// nothing to do
 	}
 
@@ -761,7 +767,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see ISaveParticipant
 	 */
-	public void saving(ISaveContext context) throws CoreException {
+	public void saving(final ISaveContext context) throws CoreException {
 
 		// // save container values on snapshot/full save
 		// Preferences preferences =
@@ -868,7 +874,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Record the order in which to build the Erlang projects (batch build).
 	 * This order is based on the projects classpath settings.
 	 */
-	protected void setBuildOrder(String[] erlangBuildOrder)
+	protected void setBuildOrder(final String[] erlangBuildOrder)
 			throws ErlModelException {
 
 		// optional behaviour
@@ -933,7 +939,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#setLastBuiltState(org.eclipse.core.resources.IProject,
 	 *      java.lang.Object)
 	 */
-	public void setLastBuiltState(IProject project, Object state) {
+	public void setLastBuiltState(final IProject project, final Object state) {
 		if (ErlangCore.hasErlangNature(project)) {
 			// should never be requested on non-Erlang projects
 			// final PerProjectInfo info = getPerProjectInfo(project, true);
@@ -991,8 +997,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see ElementChangedEvent
 	 * @see #removeElementChangedListener(IElementChangedListener)
 	 */
-	public void addElementChangedListener(IElementChangedListener listener,
-			int eventMask) {
+	public void addElementChangedListener(
+			final IElementChangedListener listener, final int eventMask) {
 		// getDefault().addElementChangedListener(listener, eventMask);
 	}
 
@@ -1003,7 +1009,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @param listener
 	 *            the listener
 	 */
-	public void removeElementChangedListener(IElementChangedListener listener) {
+	public void removeElementChangedListener(
+			final IElementChangedListener listener) {
 		// getDefault().removeElementChangedListener(listener);
 	}
 
@@ -1021,7 +1028,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *            the listener
 	 * @see ElementChangedEvent
 	 */
-	public void addElementChangedListener(IElementChangedListener listener) {
+	public void addElementChangedListener(final IElementChangedListener listener) {
 		addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE
 				| ElementChangedEvent.POST_RECONCILE);
 	}
@@ -1033,7 +1040,7 @@ public class ErlModelManager implements IErlModelManager {
 		return optionNames;
 	}
 
-	public IErlElement create(IPath path) {
+	public IErlElement create(final IPath path) {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		// Assume it is fullpath relative to workspace
 		IResource res = root.findMember(path);
@@ -1063,7 +1070,7 @@ public class ErlModelManager implements IErlModelManager {
 		return create(res, null);
 	}
 
-	public void fire(int eventType) {
+	public void fire(final int eventType) {
 		fire(null, eventType);
 	}
 
@@ -1071,7 +1078,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Fire C Model deltas, flushing them after the fact. If the firing mode has
 	 * been turned off, this has no effect.
 	 */
-	void fire(IErlElementDelta customDeltas, int eventType) {
+	void fire(final IErlElementDelta customDeltas, final int eventType) {
 		if (fFire) {
 			IErlElementDelta deltaToNotify;
 			if (customDeltas == null) {
@@ -1139,9 +1146,9 @@ public class ErlModelManager implements IErlModelManager {
 	// }
 	// }
 
-	private void firePostChangeDelta(IErlElementDelta deltaToNotify,
-			IElementChangedListener[] listeners, int[] listenerMask,
-			int listenerCount) {
+	private void firePostChangeDelta(final IErlElementDelta deltaToNotify,
+			final IElementChangedListener[] listeners,
+			final int[] listenerMask, final int listenerCount) {
 
 		// post change deltas
 		if (verbose) {
@@ -1160,8 +1167,8 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
-	private void fireReconcileDelta(IElementChangedListener[] listeners,
-			int[] listenerMask, int listenerCount) {
+	private void fireReconcileDelta(final IElementChangedListener[] listeners,
+			final int[] listenerMask, final int listenerCount) {
 		final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas
 				.values());
 		if (verbose) {
@@ -1180,9 +1187,9 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
-	private void fireShiftEvent(IErlElementDelta deltaToNotify,
-			IElementChangedListener[] listeners, int[] listenerMask,
-			int listenerCount) {
+	private void fireShiftEvent(final IErlElementDelta deltaToNotify,
+			final IElementChangedListener[] listeners,
+			final int[] listenerMask, final int listenerCount) {
 
 		// post change deltas
 		if (verbose) {
@@ -1198,7 +1205,8 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
-	private IErlElementDelta mergeDeltas(Collection<IErlElementDelta> deltas) {
+	private IErlElementDelta mergeDeltas(
+			final Collection<IErlElementDelta> deltas) {
 
 		synchronized (deltas) {
 			if (deltas.size() == 0) {
@@ -1254,9 +1262,9 @@ public class ErlModelManager implements IErlModelManager {
 		erlModelDeltas.clear();
 	}
 
-	public void notifyListeners(IErlElementDelta deltaToNotify, int eventType,
-			IElementChangedListener[] listeners, int[] listenerMask,
-			int listenerCount) {
+	public void notifyListeners(final IErlElementDelta deltaToNotify,
+			final int eventType, final IElementChangedListener[] listeners,
+			final int[] listenerMask, final int listenerCount) {
 
 		final ElementChangedEvent extraEvent = new ElementChangedEvent(
 				deltaToNotify, eventType);
@@ -1274,7 +1282,7 @@ public class ErlModelManager implements IErlModelManager {
 				// when some are causing grief
 				SafeRunner.run(new ISafeRunnable() {
 
-					public void handleException(Throwable exception) {
+					public void handleException(final Throwable exception) {
 						// CCorePlugin.log(exception, "Exception occurred in
 						// listener of C
 						// element change notification"); //$NON-NLS-1$

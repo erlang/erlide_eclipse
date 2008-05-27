@@ -28,13 +28,17 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	private int fArity;
 
+	private final String parameters;
+
 	/**
 	 * @param parent
 	 * @param name
 	 */
-	protected ErlFunction(ErlElement parent, String name, int arity) {
+	protected ErlFunction(final ErlElement parent, final String name,
+			final int arity, final String parameters) {
 		super(parent, name);
 		fArity = arity;
+		this.parameters = parameters;
 	}
 
 	public List<IErlFunctionClause> getClauses() {
@@ -59,23 +63,21 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		return fExported;
 	}
 
-	public void setArity(int i) {
+	public void setArity(final int i) {
 		fArity = i;
 	}
 
-	public void setExported(boolean exported) {
+	public void setExported(final boolean exported) {
 		fExported = exported;
 	}
 
-	// @Override
-	// public OtpErlangObject getParseTree() {
-	// // TODO Auto-generated method stub
-	// return null;
-	// }
-
 	@Override
 	public String toString() {
-		return getName() + "/" + getArity();
+		if (parameters != null && parameters != "") {
+			return getName() + parameters;
+		} else {
+			return getName() + "/" + getArity();
+		}
 	}
 
 	public ErlangFunction getFunction() {
@@ -91,7 +93,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}

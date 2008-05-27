@@ -14,14 +14,14 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -define(CACHE_VERSION, 2).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
--record(function, {pos, name, arity, clauses, name_pos}).
+-record(function, {pos, name, arity, args, clauses, name_pos}).
 -record(clause, {pos, name, args, guards, code, name_pos}).
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
@@ -75,7 +75,12 @@ cac(function, Tokens) ->
     [#clause{pos=P, name=N, args=A, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
 	?D(Arity),
-    #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP};
+    case Clauses of
+        [#clause{args=Args}] ->
+            #function{pos=P, name=N, arity=Arity, args=Args, clauses=[], name_pos=NP};
+        _ ->
+            #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
+    end;
 cac(attribute, Attribute) ->
     case Attribute of
         [#token{kind='-', offset=Offset, line=Line}, 
@@ -108,11 +113,14 @@ check_class(_) ->
 	?D(ok),
     other.
 
+to_string(Tokens) ->
+    erlide_scanner2:tokens_to_string(Tokens).
+
 get_args(T) ->
-    get_between_pars(T).
+    "("++to_string(get_between_pars(T))++")".
 
 get_guards(T) ->
-    get_between(T, 'when', '->'). 
+    to_string(get_between(T, 'when', '->')). 
 
 get_between_pars(T) ->
     get_between(T, '(', ')').

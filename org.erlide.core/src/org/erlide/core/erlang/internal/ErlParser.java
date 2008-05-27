@@ -32,80 +32,21 @@ import erlang.ErlideNoparse;
 
 public class ErlParser {
 
-	// public boolean parse_new(IErlModule module) {
-	// final IErlScanner scanner = module.getScanner();
-	// if (scanner == null) {
-	// return false;
-	// }
-	// final ErlToken[] tokens = scanner.getTokens();
-	//
-	// if (tokens == null) {
-	// return false;
-	// }
-	//
-	// final ErlModule mm = (ErlModule) module;
-	// mm.reset();
-	// // mm.setParseTree(forms);
-	//
-	// final List<ErlToken[]> sforms = splitForms(tokens);
-	// for (final Iterator<ErlToken[]> iter = sforms.iterator(); iter
-	// .hasNext();) {
-	// final ErlToken[] element = iter.next();
-	// final OtpErlangObject form = parseForm(element);
-	// final IErlMember elem = create(module, (OtpErlangTuple) form);
-	// if (elem != null) {
-	// mm.addMember(elem);
-	// }
-	// }
-	//
-	// final OtpErlangList comments = null;
-	//
-	// if (comments != null) {
-	// for (int i = 0; i < comments.arity(); i++) {
-	// final IErlComment c = createComment(module,
-	// (OtpErlangTuple) comments.elementAt(i));
-	// if (c != null) {
-	// mm.addComment(c);
-	// }
-	// }
-	// }
-	// mm.fixExportedFunctions();
-	//
-	// return true;
-	// }
-	//
-	// private OtpErlangObject parseForm(ErlToken[] element) {
-	// return null;
-	// }
-	//
-	// private List<ErlToken[]> splitForms(ErlToken[] tokens) {
-	// final List<ErlToken[]> result = new ArrayList<ErlToken[]>(10);
-	// List<ErlToken> tmp = new ArrayList<ErlToken>(50);
-	// for (final ErlToken token : tokens) {
-	// tmp.add(token);
-	// if ("dot".equals(token.getKind())) {
-	// final ErlToken[] tmpar = new ErlToken[tmp.size()];
-	// result.add(tmp.toArray(tmpar));
-	// tmp = new ArrayList<ErlToken>(50);
-	// }
-	// }
-	// return result;
-	// }
+	private static String stringValue(final OtpErlangObject o) {
+		if (o instanceof OtpErlangString) {
+			final OtpErlangString s = (OtpErlangString) o;
+			return s.stringValue();
+		} else if (o instanceof OtpErlangList) {
+			final OtpErlangList l = (OtpErlangList) o;
+			if (l.arity() == 0) {
+				return "";
+			}
+		}
+		return null;
+	}
 
-	/* NOT USED */
-	/*
-	 * private List splitFunction(ErlToken[] tokens) { // match "^ atom (" and ")
-	 * ->" to split
-	 * 
-	 * final List result = new ArrayList(10); List tmp = new ArrayList(50); for
-	 * (int i = 0; i < tokens.length; i++) { final ErlToken token = tokens[i];
-	 * tmp.add(token); if (token.getKind().equals("dot")) { final ErlToken[]
-	 * tmpar = new ErlToken[tmp.size()]; result.add(tmp.toArray(tmpar)); tmp =
-	 * new ArrayList(50); } } return result; }
-	 */
-
-	public boolean parse(final IErlModule module, String initialText,
-			boolean initialParse) {
+	public boolean parse(final IErlModule module, final String initialText,
+			final boolean initialParse) {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
@@ -177,7 +118,7 @@ public class ErlParser {
 		// -record(token, {kind, line = {Line, LastLine}, offset, length, value,
 		// text}).
 		final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(2);
-		final OtpErlangString s = (OtpErlangString) c.elementAt(5);
+		final OtpErlangObject s = c.elementAt(5);
 
 		int line;
 		int lastLine;
@@ -194,7 +135,7 @@ public class ErlParser {
 			}
 		} catch (final OtpErlangRangeException e1) {
 		}
-		final ErlComment comment = new ErlComment(parent, s.stringValue(),
+		final ErlComment comment = new ErlComment(parent, stringValue(s),
 				false, line == 1);
 		try {
 			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
@@ -239,46 +180,76 @@ public class ErlParser {
 			final OtpErlangObject val = el.elementAt(3);
 			return addAttribute(parent, pos, name, val);
 		} else if ("function".equals(type.atomValue())) {
-			final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
-			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
-			final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
-			final OtpErlangList clauses = (OtpErlangList) el.elementAt(4);
-			final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(5);
-			ErlFunction f = null;
-			try {
-				f = new ErlFunction((ErlElement) parent, name.atomValue(),
-						arity.intValue());
-				setPos(f, pos);
-				setNamePos(f, namePos);
-
-				final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
-						.arity()];
-				for (int i = 0; i < clauses.arity(); i++) {
-					final ErlFunctionClause cl = new ErlFunctionClause(f, "#"
-							+ i);
-					final OtpErlangTuple clause = (OtpErlangTuple) clauses
-							.elementAt(i);
-					final OtpErlangTuple cpos = (OtpErlangTuple) clause
-							.elementAt(1);
-					final OtpErlangTuple cnamePos = (OtpErlangTuple) clause
-							.elementAt(6);
-					cl.setArguments((OtpErlangList) clause.elementAt(3));
-					cl.setGuards((OtpErlangList) clause.elementAt(4));
-					// cl.setParseTree(clauses.elementAt(i));
-					setNamePos(cl, cnamePos);
-					setPos(cl, cpos);
-					cls[i] = cl;
-				}
-				f.setChildren(cls);
-				// f.setParseTree(el);
-			} catch (final OtpErlangRangeException e) {
-				e.printStackTrace();
+			final ErlFunction f = makeErlFunction(parent, el);
+			final OtpErlangList clauses = (OtpErlangList) el.elementAt(5);
+			final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
+					.arity()];
+			for (int i = 0; i < clauses.arity(); i++) {
+				final OtpErlangTuple clause = (OtpErlangTuple) clauses
+						.elementAt(i);
+				final ErlFunctionClause cl = makeErlFunctionClause(f, i, clause);
+				cls[i] = cl;
 			}
+			f.setChildren(cls);
 			return f;
 		} else {
 			ErlLogger.debug("unknown: " + el);
 		}
 		return null;
+	}
+
+	/**
+	 * @param parent
+	 * @param el
+	 * @return
+	 */
+	private ErlFunction makeErlFunction(final IErlModule parent,
+			final OtpErlangTuple el) {
+		final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
+		final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
+		final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
+		final OtpErlangObject parameters = el.elementAt(4);
+		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(6);
+		ErlFunction f = null;
+		try {
+			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
+					.intValue(), stringValue(parameters));
+		} catch (final OtpErlangRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setPos(f, pos);
+		try {
+			setNamePos(f, namePos);
+		} catch (final OtpErlangRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return f;
+	}
+
+	/**
+	 * @param f
+	 * @param i
+	 * @param clause
+	 * @return
+	 * @throws OtpErlangRangeException
+	 */
+	private ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
+			final int i, final OtpErlangTuple clause) {
+		final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
+		final OtpErlangObject arguments = clause.elementAt(3);
+		final OtpErlangObject guards = clause.elementAt(4);
+		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(6);
+		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i,
+				stringValue(arguments), stringValue(guards));
+		try {
+			setNamePos(cl, cnamePos);
+		} catch (final OtpErlangRangeException e) {
+			e.printStackTrace();
+		}
+		setPos(cl, cpos);
+		return cl;
 	}
 
 	private void setNamePos(final ErlMember f, final OtpErlangTuple namePos)

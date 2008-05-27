@@ -13,38 +13,24 @@ package org.erlide.core.erlang.internal;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 
-import com.ericsson.otp.erlang.OtpErlangList;
-
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
-	protected ErlFunctionClause(IErlElement parent, String name) {
+	String arguments;
+	String guards;
+
+	protected ErlFunctionClause(final IErlElement parent, final String name,
+			final String arguments, final String guards) {
 		super(parent, name);
-		arguments = null;
-		guards = null;
+		this.arguments = arguments;
+		this.guards = guards;
 	}
 
-	OtpErlangList arguments;
-	OtpErlangList guards;
-
-	public OtpErlangList getArguments() {
+	public String getArguments() {
 		return arguments;
 	}
 
-	// public OtpErlangObject getBody() {
-	// final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
-	// if (tree == null) {
-	// return null;
-	// }
-	// return tree.elementAt(5);
-	// }
-
-	public OtpErlangList getGuards() {
+	public String getGuards() {
 		return guards;
-		// final OtpErlangTuple tree = (OtpErlangTuple) getParseTree();
-		// if (tree == null) {
-		// return null;
-		// }
-		// return (OtpErlangList) tree.elementAt(4);
 	}
 
 	public Kind getKind() {
@@ -55,26 +41,29 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 	 * @param arguments
 	 *            the arguments to set
 	 */
-	public void setArguments(OtpErlangList arguments) {
-		this.arguments = arguments;
-	}
-
+	// public void setArguments(final String arguments) {
+	// this.arguments = arguments;
+	// }
 	/**
 	 * @param guards
 	 *            the guards to set
 	 */
-	public void setGuards(OtpErlangList guards) {
-		this.guards = guards;
-	}
-
+	// public void setGuards(final OtpErlangList guards) {
+	// this.guards = guards;
+	// }
 	@Override
 	public String toString() {
-		String result = pp_1(getGuards());
-		if (result.length() > 0) {
-			result = pp(getArguments()) + " when " + result;
+		if (guards != null && guards != "") {
+			return arguments + " when " + guards;
 		} else {
-			result = pp(getArguments());
+			return arguments;
+			// String result = pp_1(getGuards());
+			// if (result.length() > 0) {
+			// result = pp(getArguments()) + " when " + result;
+			// } else {
+			// result = pp(getArguments());
+			// }
+			// return result;
 		}
-		return result;
 	}
 }

@@ -35,6 +35,10 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public interface IErlModule extends IErlElement, IParent, IOpenable {
 
+	public enum ModuleKind {
+		BAD, HRL, ERL, YRL
+	}
+
 	/**
 	 * Returns the smallest element within this module that includes the given
 	 * source position (that is, a clause, attribute, etc.), or
@@ -74,7 +78,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	 * 
 	 * @return true if .erl, false if .hrl
 	 */
-	boolean isModule();
+	ModuleKind getModuleKind();
 
 	IErlProject getProject();
 

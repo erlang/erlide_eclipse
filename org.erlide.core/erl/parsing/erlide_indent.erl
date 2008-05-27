@@ -35,7 +35,9 @@ default_indent_prefs() ->
      {function_parameters, 2},
      {'fun', 3},
      {fun_body, 5},
-     {paren, 1}].
+     {paren, 1},
+     {'<<', 2},
+     {end_paren, 0}].
 
 %%
 %% API Functions
@@ -228,8 +230,9 @@ i_with_old_or_new_anchor(AOld, _ANew, I) ->
 i_par_list(R0, I0) ->
     I1 = I0#i{in_block=false},
     R1 = i_kind('(', R0, I1),
+    I2 = i_with(end_paren, R0, I1),
     R2 = i_parameters(R1, I1),
-    i_end_paren(R2, I1).
+    i_end_paren(R2, I2).
 
 i_expr([], _I) ->
     {[], eof};
@@ -289,14 +292,19 @@ i_binary_expr_list(R, I) ->
 
 i_binary_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
-    {R2, A1} = i_binary_expr(R1, I0),
-    I1 = i_with_old_or_new_anchor(A0, A1, I0),
-    case i_sniff(R2) of
-        #token{kind=','} ->
-            R3 = i_kind(',', R2, I1),
-            i_binary_expr_list(R3, I1, I1#i.anchor);
+    case i_sniff(R1) of
+        #token{kind='>>'} ->
+            R1;
         _ ->
-            R2
+            {R2, A1} = i_binary_expr(R1, I0),
+            I1 = i_with_old_or_new_anchor(A0, A1, I0),
+            case i_sniff(R2) of
+                #token{kind=','} ->
+                    R3 = i_kind(',', R2, I1),
+                    i_binary_expr_list(R3, I1, I1#i.anchor);
+                _ ->
+                    R2
+            end
     end.
 
 i_binary_expr(R0, I0) ->
@@ -407,12 +415,14 @@ i_1_expr([#token{kind=Kind} | _] = R0, I0) when Kind=='{'; Kind=='['; Kind=='(' 
     R1 = i_kind(Kind, R0, I0),
     I1 = i_with(paren, R0, I0),
     R2 = i_end_paren_or_expr_list(R1, I1#i{in_block=false}),
-    i_end_paren(R2, I1);
+    I2 = i_with(end_paren, R0, I0),
+    i_end_paren(R2, I2);
 i_1_expr([#token{kind='<<'} | _] = R0, I0) ->
     R1 = i_kind('<<', R0, I0),
     I1 = i_with('<<', R0, I0),
+    I2 = i_with(end_paren, R0, I0),
     R2 = i_binary_expr_list(R1, I1#i{in_block=false}),
-    i_kind('>>', R2, I1);
+    i_kind('>>', R2, I2);
 i_1_expr([#token{kind='#'} | _] = L, I) ->
     ?D('#'),
     {R, _A} = i_record_something(L, I#i{in_block=false}),

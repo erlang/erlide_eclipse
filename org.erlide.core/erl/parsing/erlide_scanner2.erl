@@ -7,7 +7,7 @@
 %% Include files
 %%
 
-%%-define(DEBUG, 1).
+-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -17,11 +17,11 @@
 %%
 
 -export([create/1, destroy/1, initialScan/4, getTokenAt/2, getTokenWindow/4, 
-         getTokens/1, replaceText/4, stop/0]).
+         getTokens/1, replaceText/4, stop/0, tokens_to_string/1]).
 
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
- 		 dump_module/1]).
+ 		 dump_module/1, logging/1, dump_log/0]).
 
 %% internal exports 
 -export([loop/1]).
@@ -63,6 +63,9 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir)
 modules() ->
 	server_cmd(modules, []).
 
+dump_log() ->
+    server_cmd(dump_log, []).
+
 all() ->
     server_cmd(all, []).
 
@@ -84,6 +87,8 @@ check_all(Module, Text) when is_atom(Module), is_list(Text) ->
             "text mismatch!\n-----------------\""++ModText++"\"\n----------------\n\""++Text++"\""
     end.
 
+logging(OnOff) ->
+    server_cmd(logging, OnOff).
 
 %%
 %% Local Functions
@@ -172,8 +177,9 @@ lines_to_text(Lines) ->
 
 -record(module, {name,
                  lines = [], % [{Length, String}]
-                 tokens = [],
-                 cachedTokens = []}). % [{Length, [Token]}]
+                 tokens = [], % [{Length, [Token]}]
+                 cachedTokens = [],
+                 log = []}).
 
 spawn_server() ->
     case whereis(?SERVER) of
@@ -351,6 +357,12 @@ mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
 
 cmd(Cmd, From, Args, Modules) ->
     try
+        case get(logging) of
+            on ->
+                put(log, get(log)++[{Cmd, Args}]);
+            _ ->
+                ok
+        end,
         case do_cmd(Cmd, Args, Modules) of
             {R, NewMods} ->
                 reply(Cmd, From, R),
@@ -405,7 +417,53 @@ do_cmd(get_text_line, {Mod, Line}, Modules) ->
 do_cmd(get_tokens, Mod, Modules) ->
 	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_all_tokens(Module), Modules};
+do_cmd(logging, OnOff, Modules) ->
+    put(log, []),
+    {put(logging, OnOff), Modules};
+do_cmd(dump_log, [], Modules) ->
+    {get(log), Modules};
 do_cmd(get_token_window, {Mod, Offset, Before, After}, Modules) ->
 	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
 	{get_token_window(Module, Offset, Before, After), Modules}.
+
+tokens_to_string(T) ->
+    ?D(T),
+    S = tokens_to_string(T, []),
+	?D(S),
+	S.
+
+token_to_string(#token{text=Text}) when is_list(Text) ->
+	Text;
+token_to_string(#token{value=Value}) when is_list(Value) ->
+	Value;
+token_to_string(#token{value=Value}) when Value =/= undefined ->
+    atom_to_list(Value);
+token_to_string(#token{kind=Kind}) ->
+    atom_to_list(Kind).
+
+tokens_to_string([], Acc) ->
+    lists:flatten(Acc);
+tokens_to_string([T], Acc) ->
+    S = token_to_string(T),
+	tokens_to_string([], [Acc, S]);
+tokens_to_string([T1 | [T2 | _] = Rest], Acc) ->
+    S = token_to_string(T1),
+    Sb = space_between(T1, T2),
+    tokens_to_string(Rest, [Acc, S, Sb]).
+
+space_between(#token{offset=O1, length=Len1}, #token{offset=O2}) ->
+    lists:duplicate(O2-O1-Len1, $ ).
+
+
+
+
+
+
+
+
+
+
+
+
+
 

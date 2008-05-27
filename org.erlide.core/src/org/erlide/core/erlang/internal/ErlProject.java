@@ -100,7 +100,7 @@ public class ErlProject extends Openable implements IErlProject,
 		nonErlangResources = null;
 	}
 
-	ErlProject(IProject project, ErlElement parent) {
+	ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
 		fProject = project;
 		nonErlangResources = null;
@@ -109,7 +109,7 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Adds a builder to the build spec for the given project.
 	 */
-	protected void addToBuildSpec(String builderID) throws CoreException {
+	protected void addToBuildSpec(final String builderID) throws CoreException {
 		final IProjectDescription description = fProject.getDescription();
 		final int erlangCommandIndex = getErlangCommandIndex(description
 				.getBuildSpec());
@@ -126,8 +126,8 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see Openable
 	 */
 	@Override
-	protected boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource) throws ErlModelException {
+	protected boolean buildStructure(final IProgressMonitor pm,
+			final IResource underlyingResource) throws ErlModelException {
 		// check whether the Erlang project can be opened
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
@@ -164,7 +164,8 @@ public class ErlProject extends Openable implements IErlProject,
 		return true;
 	}
 
-	private void buildStructure(IResource[] elems, List<IErlModule> modules) {
+	private void buildStructure(final IResource[] elems,
+			final List<IErlModule> modules) {
 		for (final IResource element : elems) {
 			// ErlLogger.debug("---< " + elems[fi].getName());
 			if (element instanceof IFolder) {
@@ -177,7 +178,7 @@ public class ErlProject extends Openable implements IErlProject,
 			} else if (element instanceof IFile) {
 				final IFile f = (IFile) element;
 				final String ext = f.getFileExtension();
-				if (ext != null && (ext.equals("erl") || ext.equals("hrl"))) {
+				if (ext != null && ErlModule.isModuleExt(ext)) {
 					// int l = f.getFileExtension().length();
 					// String mn = f.getName().substring(0, f.getName().length()
 					// - l - 1);
@@ -205,7 +206,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 *            ErlProjectElementInfo
 	 * @throws ErlModelException
 	 */
-	public void computeChildren(ErlProject info) throws ErlModelException {
+	public void computeChildren(final ErlProject info) throws ErlModelException {
 		// TODO fix this
 		info.setNonErlangResources(null);
 		info.setChildren(new ArrayList<IErlElement>());
@@ -224,7 +225,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * the non-Erlang resources of this project. Returns true if the resource is
 	 * not in the project. Assumes that the resource is a folder or a file.
 	 */
-	public boolean contains(IResource resource) {
+	public boolean contains(final IResource resource) {
 		//
 		// IClasspathEntry[] classpath;
 		// IPath output;
@@ -300,7 +301,7 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * TODO: Record a new marker denoting a classpath problem
 	 */
-	void createCodeProblemMarker(IErlModelStatus status) {
+	void createCodeProblemMarker(final IErlModelStatus status) {
 		/*
 		 * final IMarker marker = null; int severity; String[] arguments = new
 		 * String[0]; final boolean isCycleProblem = false,
@@ -347,7 +348,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see ErlElement#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 
 		if (this == o) {
 			return true;
@@ -370,7 +371,7 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see IErlProject
 	 */
-	public IErlElement findElement(IPath path) throws ErlModelException {
+	public IErlElement findElement(final IPath path) throws ErlModelException {
 
 		if (path == null || path.isAbsolute()) {
 			throw new ErlModelException(new ErlModelStatus(
@@ -395,8 +396,8 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Remove all markers denoting classpath problems
 	 */
-	protected void flushCodepathProblemMarkers(boolean flushCycleMarkers,
-			boolean flushCodepathFormatMarkers) {
+	protected void flushCodepathProblemMarkers(final boolean flushCycleMarkers,
+			final boolean flushCodepathFormatMarkers) {
 		try {
 			if (fProject.isAccessible()) {
 				final IMarker[] markers = fProject.findMarkers(
@@ -436,7 +437,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * Find the specific Erlang command amongst the given build spec and return
 	 * its index or -1 if not found.
 	 */
-	private int getErlangCommandIndex(ICommand[] buildSpec) {
+	private int getErlangCommandIndex(final ICommand[] buildSpec) {
 
 		for (int i = 0; i < buildSpec.length; ++i) {
 			if (ErlangPlugin.BUILDER_ID.equals(buildSpec[i].getBuilderName())) {
@@ -470,8 +471,8 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @return IPath
 	 * @throws ErlModelException
 	 */
-	public IPath getOutputLocation(boolean createMarkers, boolean logProblems)
-			throws ErlModelException {
+	public IPath getOutputLocation(final boolean createMarkers,
+			final boolean logProblems) throws ErlModelException {
 
 		final ErlangProjectProperties props = new ErlangProjectProperties(
 				getProject());
@@ -535,7 +536,8 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Removes the given builder from the build spec for the given project.
 	 */
-	protected void removeFromBuildSpec(String builderID) throws CoreException {
+	protected void removeFromBuildSpec(final String builderID)
+			throws CoreException {
 
 		final IProjectDescription description = fProject.getDescription();
 		final ICommand[] commands = description.getBuildSpec();
@@ -566,8 +568,8 @@ public class ErlProject extends Openable implements IErlProject,
 	 * Update the Erlang command in the build spec (replace existing one if
 	 * present, add one first if none).
 	 */
-	private void setErlangCommand(IProjectDescription description,
-			ICommand newCommand) throws CoreException {
+	private void setErlangCommand(final IProjectDescription description,
+			final ICommand newCommand) throws CoreException {
 		final ICommand[] oldBuildSpec = description.getBuildSpec();
 		final int oldErlangCommandIndex = getErlangCommandIndex(oldBuildSpec);
 		ICommand[] newCommands;
@@ -591,8 +593,8 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * @see IErlProject
 	 */
-	public void setOutputLocation(IPath path, IProgressMonitor monitor)
-			throws ErlModelException {
+	public void setOutputLocation(final IPath path,
+			final IProgressMonitor monitor) throws ErlModelException {
 		if (path == null) {
 			throw new IllegalArgumentException(Util.bind("path.nullPath")); //$NON-NLS-1$
 		}
@@ -609,7 +611,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * 
 	 * @see IProjectNature#setProject(IProject)
 	 */
-	public void setProject(IProject project) {
+	public void setProject(final IProject project) {
 		fProject = project;
 		fParent = ErlangCore.getModel();
 		fName = project.getName();
@@ -631,7 +633,7 @@ public class ErlProject extends Openable implements IErlProject,
 	 * @see java.io.File for the definition of a canonicalized path
 	 * @return IPath
 	 */
-	public static IPath canonicalizedPath(IPath externalPath) {
+	public static IPath canonicalizedPath(final IPath externalPath) {
 
 		if (externalPath == null) {
 			return null;
@@ -692,7 +694,7 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	IResource[] getNonErlangResources(ErlProject project) {
+	IResource[] getNonErlangResources(final ErlProject project) {
 
 		if (nonErlangResources == null) {
 			nonErlangResources = null;
@@ -703,12 +705,12 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Set the fNonErlangResources to res value
 	 */
-	void setNonErlangResources(IResource[] resources) {
+	void setNonErlangResources(final IResource[] resources) {
 
 		nonErlangResources = resources;
 	}
 
-	public IErlModule getModule(String name) throws ErlModelException {
+	public IErlModule getModule(final String name) throws ErlModelException {
 		if (!hasChildren()) {
 			open(null);
 		}
@@ -726,7 +728,7 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	@Override
-	protected void closing(Object info) throws ErlModelException {
+	protected void closing(final Object info) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}

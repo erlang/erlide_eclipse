@@ -47,8 +47,6 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private OtpErlangObject parseTree;
 
-	private final boolean isModule;
-
 	// the document last reconciled with
 	// private IDocument fDoc;
 	private final List<IErlComment> comments;
@@ -67,11 +65,13 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private boolean scannerDisposed = false;
 
-	protected ErlModule(IErlProject parent, String name, boolean isErl,
-			IFile file, String initialText) {
+	private final ModuleKind moduleKind;
+
+	protected ErlModule(final IErlProject parent, final String name,
+			final String ext, final IFile file, final String initialText) {
 		super(parent, name);
 		fFile = file;
-		isModule = isErl;
+		moduleKind = extToModuleKind(ext);
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
 		if (initialText == null && fFile.exists()) {
@@ -87,12 +87,12 @@ public class ErlModule extends Openable implements IErlModule {
 		setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getName() + "/" + name
-					+ " " + isErl);
+					+ " " + moduleKind);
 		}
 	}
 
 	@Override
-	protected boolean buildStructure(IProgressMonitor pm,
+	protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 
 		// generate structure and compute syntax problems if needed
@@ -133,12 +133,13 @@ public class ErlModule extends Openable implements IErlModule {
 		return isStructureKnown();
 	}
 
-	public IErlElement getElementAt(int position) throws ErlModelException {
+	public IErlElement getElementAt(final int position)
+			throws ErlModelException {
 		for (final IErlElement child : fChildren) {
 			if (child instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) child;
 				final List<IErlFunctionClause> clauses = f.getClauses();
-				if (clauses.size() == 1
+				if (clauses.size() <= 1
 						&& f.getSourceRange().hasPosition(position)) {
 					return f;
 				}
@@ -163,8 +164,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return false;
 	}
 
-	public Kind getKind() {
-		return Kind.MODULE;
+	public ModuleKind getModuleKind() {
+		return moduleKind;
 	}
 
 	public IResource getResource() {
@@ -184,26 +185,28 @@ public class ErlModule extends Openable implements IErlModule {
 		return new SourceRange(0, 0);
 	}
 
-	public void copy(IErlElement container, IErlElement sibling, String rename,
-			boolean replace, IProgressMonitor monitor) throws ErlModelException {
+	public void copy(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void delete(boolean force, IProgressMonitor monitor)
+	public void delete(final boolean force, final IProgressMonitor monitor)
 			throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void move(IErlElement container, IErlElement sibling, String rename,
-			boolean replace, IProgressMonitor monitor) throws ErlModelException {
+	public void move(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void rename(String aname, boolean replace, IProgressMonitor monitor)
-			throws ErlModelException {
+	public void rename(final String aname, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
@@ -227,11 +230,11 @@ public class ErlModule extends Openable implements IErlModule {
 	// return b;
 	// }
 
-	public void addMember(IErlMember elem) {
+	public void addMember(final IErlMember elem) {
 		addChild(elem);
 	}
 
-	public void addComment(IErlComment c) {
+	public void addComment(final IErlComment c) {
 		comments.add(c);
 	}
 
@@ -245,12 +248,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return parseTree;
 	}
 
-	public void setParseTree(OtpErlangList forms) {
+	public void setParseTree(final OtpErlangList forms) {
 		parseTree = forms;
-	}
-
-	public boolean isModule() {
-		return isModule;
 	}
 
 	public long getTimestamp() {
@@ -261,7 +260,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return comments;
 	}
 
-	public IErlImport findImport(ErlangFunction function) {
+	public IErlImport findImport(final ErlangFunction function) {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				final IErlImport ei = (IErlImport) m;
@@ -273,7 +272,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
-	public IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type) {
+	public IErlPreprocessorDef findPreprocessorDef(final String definedName,
+			final Kind type) {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
 				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
@@ -339,8 +339,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return 0;
 	}
 
-	public void reconcileText(int offset, int removeLength, String newText,
-			IProgressMonitor mon) {
+	public void reconcileText(final int offset, final int removeLength,
+			final String newText, final IProgressMonitor mon) {
 		if (scannerDisposed) {
 			return;
 		}
@@ -364,7 +364,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	@Override
-	protected void closing(Object info) throws ErlModelException {
+	protected void closing(final Object info) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
@@ -400,6 +400,26 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public IErlProject getProject() {
 		return (IErlProject) getParent();
+	}
+
+	private static ModuleKind extToModuleKind(final String ext) {
+		if (ext.equalsIgnoreCase("hrl")) {
+			return ModuleKind.HRL;
+		} else if (ext.equalsIgnoreCase("erl")) {
+			return ModuleKind.ERL;
+		} else if (ext.equalsIgnoreCase("yrl")) {
+			return ModuleKind.YRL;
+		} else {
+			return ModuleKind.BAD;
+		}
+	}
+
+	public static boolean isModuleExt(final String ext) {
+		return extToModuleKind(ext) != ModuleKind.BAD;
+	}
+
+	public Kind getKind() {
+		return Kind.MODULE;
 	}
 
 }
