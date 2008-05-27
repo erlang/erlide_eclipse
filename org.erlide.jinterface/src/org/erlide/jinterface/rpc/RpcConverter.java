@@ -35,7 +35,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcConverter {
 
-	public static Class<?> getClassByName(String arg) {
+	public static Class<?> getClassByName(final String arg) {
 		if (arg.equals("char")) {
 			return char.class;
 		}
@@ -62,13 +62,13 @@ public class RpcConverter {
 		}
 		try {
 			return Class.forName(arg, true, RpcUtil.loader);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			System.out.println("Rpc TypeConverter: can't find class " + arg);
 			return Object.class;
 		}
 	}
 
-	public static Class<?> javaType2erlang(Class<?> obj) {
+	public static Class<?> javaType2erlang(final Class<?> obj) {
 		if (obj.isArray()) {
 			return OtpErlangTuple.class;
 		}
@@ -107,20 +107,20 @@ public class RpcConverter {
 	}
 
 	@SuppressWarnings("boxing")
-	public static Object erlang2java(OtpErlangObject obj, Class<?> cls)
-			throws RpcException {
+	public static Object erlang2java(final OtpErlangObject obj,
+			final Class<?> cls) throws RpcException {
 		try {
 			if (cls == obj.getClass()) {
 				return obj;
 			}
 			// if the conversion method exists, use it
 			try {
-				Method method = cls.getMethod("fromErlangObject",
+				final Method method = cls.getMethod("fromErlangObject",
 						new Class<?>[] { OtpErlangObject.class });
 				method.setAccessible(true);
-				Object o = method.invoke(null, obj);
+				final Object o = method.invoke(null, obj);
 				return o;
-			} catch (NoSuchMethodException e) {
+			} catch (final NoSuchMethodException e) {
 			}
 
 			if (cls.isArray()) {
@@ -132,8 +132,8 @@ public class RpcConverter {
 					els = ((OtpErlangTuple) obj).elements();
 				}
 				if (els != null) {
-					Object arr = Array.newInstance(cls.getComponentType(),
-							els.length);
+					final Object arr = Array.newInstance(
+							cls.getComponentType(), els.length);
 					for (int i = 0; i < els.length; i++) {
 						Array.set(arr, i, erlang2java(els[i], cls
 								.getComponentType()));
@@ -141,9 +141,10 @@ public class RpcConverter {
 					return arr;
 				}
 				if (obj instanceof OtpErlangString) {
-					byte[] s = ((OtpErlangString) obj).stringValue().getBytes();
-					Object arr = Array.newInstance(cls.getComponentType(),
-							s.length);
+					final byte[] s = ((OtpErlangString) obj).stringValue()
+							.getBytes();
+					final Object arr = Array.newInstance(
+							cls.getComponentType(), s.length);
 
 					for (int i = 0; i < s.length; i++) {
 						Array.set(arr, i, s[i]);
@@ -164,11 +165,12 @@ public class RpcConverter {
 					return new String(((OtpErlangBinary) obj).binaryValue());
 				}
 				if (obj instanceof OtpErlangList) {
-					OtpErlangObject[] els = ((OtpErlangList) obj).elements();
-					StringBuilder res = new StringBuilder();
-					for (OtpErlangObject el : els) {
+					final OtpErlangObject[] els = ((OtpErlangList) obj)
+							.elements();
+					final StringBuilder res = new StringBuilder();
+					for (final OtpErlangObject el : els) {
 						if (el instanceof OtpErlangLong) {
-							long l = ((OtpErlangLong) el).longValue();
+							final long l = ((OtpErlangLong) el).longValue();
 							res.append((char) (l & 0xFFFF));
 						} else {
 							res.append(erlang2java(el, String.class));
@@ -186,7 +188,7 @@ public class RpcConverter {
 					|| cls == Short.class || cls == long.class
 					|| cls == Long.class) {
 				if (obj instanceof OtpErlangLong) {
-					long res = ((OtpErlangLong) obj).longValue();
+					final long res = ((OtpErlangLong) obj).longValue();
 					if (cls == char.class) {
 						return (char) res;
 					}
@@ -209,7 +211,7 @@ public class RpcConverter {
 			}
 			if (cls == boolean.class || cls == Boolean.class) {
 				if (obj instanceof OtpErlangAtom) {
-					String s = ((OtpErlangAtom) obj).atomValue();
+					final String s = ((OtpErlangAtom) obj).atomValue();
 					if (s.equals("true")) {
 						return true;
 					}
@@ -223,8 +225,9 @@ public class RpcConverter {
 			}
 			if (List.class.isAssignableFrom(cls)) {
 				if (obj instanceof OtpErlangList) {
-					OtpErlangObject[] list = ((OtpErlangList) obj).elements();
-					Object[] olist = new Object[list.length];
+					final OtpErlangObject[] list = ((OtpErlangList) obj)
+							.elements();
+					final Object[] olist = new Object[list.length];
 					for (int i = 0; i < list.length; i++) {
 						olist[i] = erlang2java(list[i], list[i].getClass());
 					}
@@ -243,9 +246,9 @@ public class RpcConverter {
 						+ cls.getCanonicalName());
 			}
 			return obj;
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			throw e;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RpcException(e);
 		}
 	}
@@ -269,8 +272,8 @@ public class RpcConverter {
 	 * <dt>r</dt>
 	 * <dd>reference</dd>
 	 * <dt>j</dt>
-	 * <dd>java reference (a distinguished reference, to be used with e->j rpcs)
-	 * </dd>
+	 * <dd>java reference (a distinguished reference, to be used with e->j
+	 * rpcs) </dd>
 	 * <dt>l*</dt>
 	 * <dd>list, the next type descriptor specifies the items' type</dd>
 	 * <dt>f</dt>
@@ -283,20 +286,20 @@ public class RpcConverter {
 	 * </dl>
 	 * 
 	 * @param obj
-	 * 		the object to be converted
+	 *            the object to be converted
 	 * @param type
-	 * 		the desired result's type
+	 *            the desired result's type
 	 * @return
 	 * @throws ConversionException
 	 */
-	public static OtpErlangObject java2erlang(Object obj, String type)
-			throws RpcException {
+	public static OtpErlangObject java2erlang(final Object obj,
+			final String type) throws RpcException {
 		return java2erlang(obj, parseOne(type).sign);
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject java2erlang(Object obj, Signature type)
-			throws RpcException {
+	public static OtpErlangObject java2erlang(final Object obj,
+			final Signature type) throws RpcException {
 		if (type.kind == 'x') {
 			return java2erlang(obj);
 		}
@@ -338,15 +341,15 @@ public class RpcConverter {
 			}
 		}
 		if (obj instanceof Boolean) {
-			if (type.kind == 'o' || type.kind == 'b') {
-				return new OtpErlangAtom(((Boolean) obj) ? "true" : "false");
+			if (type.kind == 'o') {
+				return new OtpErlangAtom((Boolean) obj ? "true" : "false");
 			}
 			failConversion(obj, type);
 		}
 		if (obj instanceof List<?>) {
 			if (type.kind == 'l') {
-				Object[] v = ((List<?>) obj).toArray(new Object[] {});
-				OtpErlangObject[] vv = new OtpErlangObject[v.length];
+				final Object[] v = ((List<?>) obj).toArray(new Object[] {});
+				final OtpErlangObject[] vv = new OtpErlangObject[v.length];
 				for (int i = 0; i < v.length; i++) {
 					vv[i] = java2erlang(v[i], type.content[0]);
 				}
@@ -370,10 +373,10 @@ public class RpcConverter {
 				StackTraceElement[] st = null;
 				try {
 					throw new Exception("");
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					boolean found = false;
 					st = e.getStackTrace();
-					for (StackTraceElement ste : st) {
+					for (final StackTraceElement ste : st) {
 						if (found) {
 							if (!((ste.getMethodName().equals("send")
 									|| ste.getMethodName().equals("sendRpc")
@@ -403,7 +406,7 @@ public class RpcConverter {
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
 					System.out.println("$$$");
-					for (StackTraceElement ste : st) {
+					for (final StackTraceElement ste : st) {
 						System.out.println("   " + ste);
 					}
 				}
@@ -415,20 +418,20 @@ public class RpcConverter {
 		}
 
 		if (obj != null && obj.getClass().isArray()) {
-			int len = Array.getLength(obj);
+			final int len = Array.getLength(obj);
 			// Class<?> component = obj.getClass().getComponentType();
 			if (type.kind == 'b') {
 				// TODO
 				return new OtpErlangBinary(obj);
 			}
 			if (type.kind == 'l') {
-				OtpErlangObject[] vv = new OtpErlangObject[len];
+				final OtpErlangObject[] vv = new OtpErlangObject[len];
 				for (int i = 0; i < len; i++) {
 					vv[i] = java2erlang(Array.get(obj, i), type.content[0]);
 				}
 				return new OtpErlangList(vv);
 			} else if (type.kind == 't') {
-				OtpErlangObject[] vv = new OtpErlangObject[len];
+				final OtpErlangObject[] vv = new OtpErlangObject[len];
 				for (int i = 0; i < len; i++) {
 					vv[i] = java2erlang(Array.get(obj, i), type.content[i]);
 				}
@@ -452,7 +455,7 @@ public class RpcConverter {
 	 * @return
 	 */
 	@SuppressWarnings("boxing")
-	private static OtpErlangObject java2erlang(Object obj) {
+	private static OtpErlangObject java2erlang(final Object obj) {
 		if (obj instanceof String) {
 			return new OtpErlangString((String) obj);
 		}
@@ -484,8 +487,8 @@ public class RpcConverter {
 			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
 		}
 		if (obj instanceof List<?>) {
-			Object[] v = ((List<?>) obj).toArray(new Object[] {});
-			OtpErlangObject[] vv = new OtpErlangObject[v.length];
+			final Object[] v = ((List<?>) obj).toArray(new Object[] {});
+			final OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
 			}
@@ -513,10 +516,10 @@ public class RpcConverter {
 				StackTraceElement[] st = null;
 				try {
 					throw new Exception("");
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					boolean found = false;
 					st = e.getStackTrace();
-					for (StackTraceElement ste : st) {
+					for (final StackTraceElement ste : st) {
 						if (found) {
 							if (!((ste.getMethodName().equals("send")
 									|| ste.getMethodName().equals("rpc")
@@ -544,7 +547,7 @@ public class RpcConverter {
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
 					System.out.println("$$$");
-					for (StackTraceElement ste : st) {
+					for (final StackTraceElement ste : st) {
 						System.out.println("   " + ste);
 					}
 				}
@@ -553,8 +556,8 @@ public class RpcConverter {
 		}
 
 		if (obj != null && obj.getClass().isArray()) {
-			int len = Array.getLength(obj);
-			OtpErlangObject[] vv = new OtpErlangObject[len];
+			final int len = Array.getLength(obj);
+			final OtpErlangObject[] vv = new OtpErlangObject[len];
 			for (int i = 0; i < len; i++) {
 				vv[i] = java2erlang(Array.get(obj, i));
 			}
@@ -563,7 +566,7 @@ public class RpcConverter {
 		return ObjRefCache.registerTarget(obj);
 	}
 
-	private static void failConversion(Object obj, Signature type)
+	private static void failConversion(final Object obj, final Signature type)
 			throws RpcException {
 		// System.out.println("+++++++ "
 		// + String.format("Bad conversion required: %s(%s) - %s", obj
@@ -583,16 +586,16 @@ public class RpcConverter {
 		public char kind = 'x';
 		public Signature[] content = null;
 
-		public Signature(char str) {
+		public Signature(final char str) {
 			kind = str;
 		}
 
-		public Signature(char crt, Signature sub) {
+		public Signature(final char crt, final Signature sub) {
 			kind = crt;
 			content = new Signature[] { sub };
 		}
 
-		public Signature(char crt, Signature[] sub) {
+		public Signature(final char crt, final Signature[] sub) {
 			kind = crt;
 			content = sub;
 		}
@@ -602,7 +605,7 @@ public class RpcConverter {
 			String res = "";
 			if (content != null) {
 				res = "(";
-				for (Signature s : content) {
+				for (final Signature s : content) {
 					res += s.toString() + ",";
 				}
 				res = res.substring(0, res.length() - 1) + ")";
@@ -613,13 +616,13 @@ public class RpcConverter {
 
 	public static Signature[] parseSignature(String signature)
 			throws RpcException {
-		List<Signature> type = new ArrayList<Signature>();
+		final List<Signature> type = new ArrayList<Signature>();
 		if (signature == null) {
 			return null;
 			// throw new RpcException("Signature is null");
 		}
 		while (signature.length() > 0) {
-			State e = parseOne(signature);
+			final State e = parseOne(signature);
 			type.add(e.sign);
 			signature = e.rest;
 		}
@@ -627,7 +630,7 @@ public class RpcConverter {
 	}
 
 	private static class State {
-		public State(Signature signature, String substring) {
+		public State(final Signature signature, final String substring) {
 			sign = signature;
 			rest = substring;
 		}
@@ -636,19 +639,19 @@ public class RpcConverter {
 		String rest;
 	}
 
-	private static State parseOne(String signature) throws RpcException {
-		char crt = signature.charAt(0);
+	private static State parseOne(final String signature) throws RpcException {
+		final char crt = signature.charAt(0);
 		if ("xidabrjfpso".indexOf(crt) >= 0) {
 			return new State(new Signature(crt), signature.substring(1));
 		} else if (crt == 'l') {
-			State sub = parseOne(signature.substring(1));
+			final State sub = parseOne(signature.substring(1));
 			return new State(new Signature(crt, sub.sign), sub.rest);
 		} else if ("0123456789".indexOf(crt) >= 0) {
-			int n = Integer.parseInt(signature.substring(0, 1));
-			Signature[] sub = new Signature[n];
+			final int n = Integer.parseInt(signature.substring(0, 1));
+			final Signature[] sub = new Signature[n];
 			String s = signature.substring(1);
 			for (int i = 0; i < n; i++) {
-				State state = parseOne(s);
+				final State state = parseOne(s);
 				sub[i] = state.sign;
 				s = state.rest;
 			}
