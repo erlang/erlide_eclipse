@@ -770,13 +770,4 @@
             state="true">
       </decorator>
    </extension>
-   <extension
-         point="org.eclipse.ui.console.consolePatternMatchListeners">
-      <consolePatternMatchListener
-            class="org.erlide.ui.ErlPatternMatchListenerDelegate"
-            id="ErlPatternMatchListenerDelegate"
-            regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
-         <enablement></enablement>
-      </consolePatternMatchListener>
-   </extension>
 </plugin>

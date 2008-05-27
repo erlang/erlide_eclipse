@@ -7,8 +7,9 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui;
+package org.erlide.runtime.backend.console;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -20,14 +21,13 @@ import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.console.IPatternMatchListenerDelegate;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
-import org.erlide.core.util.ResourceUtil;
 
 public class ErlPatternMatchListenerDelegate implements
 		IPatternMatchListenerDelegate {
 
 	private TextConsole fConsole;
 
-	public void connect(TextConsole console) {
+	public void connect(final TextConsole console) {
 		fConsole = console;
 	}
 
@@ -35,29 +35,28 @@ public class ErlPatternMatchListenerDelegate implements
 		fConsole = null;
 	}
 
-	public void matchFound(PatternMatchEvent event) {
+	public void matchFound(final PatternMatchEvent event) {
 		if (fConsole == null) {
 			return;
 		}
 		try {
-			String txt = fConsole.getDocument().get(event.getOffset(),
+			final String txt = fConsole.getDocument().get(event.getOffset(),
 					event.getLength());
-			String[] v = txt.split(":");
+			final String[] v = txt.split(":");
 
 			final IProject[] projects = ResourcesPlugin.getWorkspace()
 					.getRoot().getProjects();
 			IResource res = null;
-			for (IProject prj : projects) {
+			for (final IProject prj : projects) {
 				if (!prj.isOpen()) {
 					continue;
 				}
 				try {
-					res = ResourceUtil
-							.recursiveFindNamedResourceWithReferences(prj, v[0]);
+					res = recursiveFindNamedResourceWithReferences(prj, v[0]);
 					if (res != null) {
 						break;
 					}
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					e.printStackTrace();
 				}
 			}
@@ -65,12 +64,50 @@ public class ErlPatternMatchListenerDelegate implements
 			if (res != null && res instanceof IFile) {
 				file = (IFile) res;
 			}
-			IHyperlink link = new FileLink(file, null, -1, -1, Integer
+			final IHyperlink link = new FileLink(file, null, -1, -1, Integer
 					.parseInt(v[1]));
 			fConsole.addHyperlink(link, event.getOffset(), event.getLength());
-		} catch (BadLocationException e) {
+		} catch (final BadLocationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static IResource recursiveFindNamedResourceWithReferences(
+			final IContainer container, final String name) throws CoreException {
+		final IResource r = recursiveFindNamedResource(container, name);
+		if (r != null) {
+			return r;
+		}
+		final IProject project = container.getProject();
+		for (final IProject p : project.getReferencedProjects()) {
+			final IResource r1 = recursiveFindNamedResource(p, name);
+			if (r1 != null) {
+				return r1;
+			}
+		}
+		return null;
+	}
+
+	private static IResource recursiveFindNamedResource(
+			final IContainer container, final String name) throws CoreException {
+		if (!container.isAccessible()) {
+			return null;
+		}
+		IResource r = container.findMember(name);
+		if (r != null) {
+			return r;
+		}
+		final IResource members[] = container.members();
+		for (final IResource element : members) {
+			r = element;
+			if (r instanceof IContainer) {
+				r = recursiveFindNamedResource((IContainer) r, name);
+				if (r != null) {
+					return r;
+				}
+			}
+		}
+		return null;
 	}
 
 }

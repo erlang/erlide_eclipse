@@ -71,6 +71,15 @@
             onlyDeclared="false">
       </stub>
    </extension>
+    <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.erlide.runtime.backend.console.ErlPatternMatchListenerDelegate"
+            id="ErlPatternMatchListenerDelegate"
+            regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
+         <enablement></enablement>
+      </consolePatternMatchListener>
+   </extension>
  
 
 </plugin>

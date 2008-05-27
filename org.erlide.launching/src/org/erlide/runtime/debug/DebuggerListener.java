@@ -29,20 +29,19 @@ public class DebuggerListener {
 
 	OtpErlangPid fDbgPid;
 
-	private ErlEventLoop loop;
+	private final ErlEventLoop loop;
 
-	public DebuggerListener(String name, ErlangDebugTarget target, IBackend b,
-			OtpErlangPid dbgPid) {
+	public DebuggerListener(final String name, final ErlangDebugTarget target,
+			final IBackend b, final OtpErlangPid dbgPid) {
 		fTarget = target;
 		fBackend = b;
 		fDbgPid = dbgPid;
 
 		// TODO use the new event router job!
 
-		// final IErlEventHandler r = new DebuggerJob();
-		// loop = new ErlEventLoop(r);
-		// loop.start();
-
+		final IErlEventHandler r = new DebuggerJob();
+		loop = new ErlEventLoop(r);
+		loop.start();
 	}
 
 	public class DebuggerJob implements IErlEventHandler {
@@ -56,7 +55,7 @@ public class DebuggerListener {
 					"parent"), self));
 		}
 
-		public void handleEvent(OtpErlangObject msg) {
+		public void handleEvent(final OtpErlangObject msg) {
 			if (msg != null) {
 				ErlLogger.debug("### got msg: " + msg);
 			}
@@ -66,8 +65,8 @@ public class DebuggerListener {
 			return fTarget.isTerminated();
 		}
 
-		public OtpErlangObject receiveEvent(int timeout) throws OtpErlangExit,
-				OtpErlangDecodeException {
+		public OtpErlangObject receiveEvent(final int timeout)
+				throws OtpErlangExit, OtpErlangDecodeException {
 			if (timeout < 0) {
 				// TODO how to handle stopping, if it's blocked in a receive?
 				return fBackend.receiveRpc(60000);
@@ -79,7 +78,7 @@ public class DebuggerListener {
 			return 200;
 		}
 
-		public boolean exception(Exception e) {
+		public boolean exception(final Exception e) {
 			e.printStackTrace();
 			return false;
 		}

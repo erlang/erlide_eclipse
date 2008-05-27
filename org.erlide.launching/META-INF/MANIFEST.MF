@@ -8,9 +8,11 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.debug.ui,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
+ org.eclipse.ui.console,
  org.erlide.jinterface,
- org.erlide.basic,
- org.eclipse.ui
+ org.erlide.basic
 Bundle-ActivationPolicy: lazy
 Export-Package: erlang,
  org.erlide.runtime,
