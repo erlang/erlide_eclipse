@@ -22,14 +22,14 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
 	public SmartTypingPreferencePage() {
 		super();
-		setDescription(ErlEditorMessages.SmartTypingPrefs_0);
+		setDescription(ErlEditorMessages.SmartTypingPrefs_Desc);
 	}
 
 	public static final String SMART_TYPING_KEY = "smartTyping"; //$NON-NLS-1$
 
 	private static final String SMART_TYPING_KEYS[] = new String[] {
-			"strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			"parens", "pasteReindent" }; //$NON-NLS-1$
+			"strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"parens", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static int STRINGS = 0;
 	public static int ATOMS = 1;
@@ -39,13 +39,13 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
 	public static int PASTE_REINDENT = 5;
 
-	private static final String SMART_TYPING_DEFAULTS[] = new String[] { "1",
-			"0", "1", "1", "1", "1" };
+	private static final String SMART_TYPING_DEFAULTS[] = new String[] { "1", //$NON-NLS-1$
+			"0", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 	List<Button> buttons = new ArrayList<Button>();
 
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		final ScrolledPageContent scrolled = new ScrolledPageContent(parent,
 				SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolled.setExpandHorizontal(true);
@@ -60,7 +60,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		Composite composite;
 
 		composite = createSubsection(control,
-				ErlEditorMessages.SmartTypingPrefs_2);
+				ErlEditorMessages.SmartTypingPrefs_AutomaticallyClose);
 		addAutoclosingSection(composite);
 
 		// composite = createSubsection(control,"Automove");
@@ -69,7 +69,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		// composite = createSubsection(control, "Tabs");
 		// addTabSection(composite);
 
-		composite = createSubsection(control, "When pasting");
+		composite = createSubsection(control,
+				ErlEditorMessages.SmartTypingPrefs_WhenPasting);
 		addPasteSection(composite);
 
 		// composite = createSubsection(control, "strings");
@@ -89,8 +90,9 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 	//
 	// }
 
-	private void addPasteSection(Composite composite) {
-		buttons.add(addCheckBox(composite, "Adjust indentation"));
+	private void addPasteSection(final Composite composite) {
+		buttons.add(addCheckBox(composite,
+				ErlEditorMessages.SmartTypinngPrefs_AdjustIndentation));
 	}
 
 	// private void addTabSection(Composite composite) {
@@ -98,7 +100,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 	//
 	// }
 
-	protected Composite createSubsection(Composite parent, String label) {
+	protected Composite createSubsection(final Composite parent,
+			final String label) {
 		final Group group = new Group(parent, SWT.SHADOW_NONE);
 		group.setText(label);
 		final GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -109,30 +112,31 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		return group;
 	}
 
-	private void addAutoclosingSection(Composite composite) {
-		Button b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_3);
+	private void addAutoclosingSection(final Composite composite) {
+		Button b = addCheckBox(composite,
+				ErlEditorMessages.SmartTypingPrefs_Strings);
 		buttons.add(b);
 
-		b = addCheckBox(composite, "'atoms'");
+		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_atoms);
 		buttons.add(b);
 
-		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_4);
+		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_Braces);
 		buttons.add(b);
 
-		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_5);
+		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_Brackets);
 		buttons.add(b);
 
-		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_6);
+		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_Parens);
 		buttons.add(b);
 	}
 
-	private Button addCheckBox(Composite composite, String label) {
+	private Button addCheckBox(final Composite composite, final String label) {
 		final Button checkBox = new Button(composite, SWT.CHECK);
 		checkBox.setText(label);
 		return checkBox;
 	}
 
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 	/*
@@ -141,7 +145,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 	@Override
 	protected void performDefaults() {
 		for (int i = 0; i < SMART_TYPING_KEYS.length; ++i) {
-			buttons.get(i).setSelection(!SMART_TYPING_DEFAULTS[i].equals("0"));
+			buttons.get(i).setSelection(!SMART_TYPING_DEFAULTS[i].equals("0")); //$NON-NLS-1$
 		}
 		super.performDefaults();
 	}
@@ -161,10 +165,9 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 	}
 
 	private void setToPreferences() {
-		final List<String> l = getPreferences(SMART_TYPING_KEY,
-				SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS);
+		final List<Boolean> l = getPreferences();
 		for (int i = 0; i < l.size(); ++i) {
-			final boolean b = !l.get(i).equals("0");
+			final boolean b = l.get(i);
 			buttons.get(i).setSelection(b);
 		}
 	}
@@ -174,7 +177,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 				SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS);
 		final List<Boolean> l = new ArrayList<Boolean>(p.size());
 		for (final String i : p) {
-			l.add(!i.equals("0"));
+			l.add(!i.equals("0") && !i.equals("false")); //$NON-NLS-1$
 		}
 		return l;
 	}

@@ -44,25 +44,21 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		IWorkbenchPreferencePage {
 
 	private static final String INDENT_FIELDS[] = new String[] {
-			ErlEditorMessages.IndentationPrefs_0,
-			ErlEditorMessages.IndentationPrefs_3,
-			ErlEditorMessages.IndentationPrefs_6,
-			ErlEditorMessages.IndentationPrefs_9,
-			ErlEditorMessages.IndentationPrefs_12,
-			ErlEditorMessages.IndentationPrefs_15,
-			ErlEditorMessages.IndentationPrefs_18,
-			ErlEditorMessages.IndentationPrefs_21,
-			ErlEditorMessages.IndentationPrefs_24,
-			ErlEditorMessages.IndentationPrefs_27,
-			ErlEditorMessages.IndentationPrefs_30,
-			ErlEditorMessages.IndentationPrefs_33,
-			ErlEditorMessages.IndentationPrefs_56,
-			ErlEditorMessages.IndentationPrefs_55,
-			ErlEditorMessages.IndentationPrefs_54,
-			ErlEditorMessages.IndentationPrefs_50,
-			ErlEditorMessages.IndentationPrefs_51,
-			ErlEditorMessages.IndentationPrefs_52,
-			ErlEditorMessages.IndentationPrefs_53 };
+			ErlEditorMessages.Prefs_Before_binary_op,
+			ErlEditorMessages.Prefs_After_binary_op,
+			ErlEditorMessages.Prefs_Before_arrow,
+			ErlEditorMessages.Prefs_After_arrow,
+			ErlEditorMessages.Prefs_After_unary_op,
+			ErlEditorMessages.Prefs_Clause, ErlEditorMessages.Prefs_Case,
+			ErlEditorMessages.Prefs_Try, ErlEditorMessages.Prefs_Catch,
+			ErlEditorMessages.Prefs_Function_parameters,
+			ErlEditorMessages.Prefs_Fun, ErlEditorMessages.Prefs_Fun_body,
+			ErlEditorMessages.Prefs_Paren,
+			ErlEditorMessages.Prefs_Binary_begin,
+			ErlEditorMessages.Prefs_End_paren,
+			ErlEditorMessages.Prefs_Semicolon_nl,
+			ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
+			ErlEditorMessages.Prefs_Comma_nl };
 
 	private static final String INDENT_KEYS[] = new String[] {
 			"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

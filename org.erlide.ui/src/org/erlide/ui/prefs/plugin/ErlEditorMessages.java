@@ -60,57 +60,63 @@ public class ErlEditorMessages extends NLS {
 
 	public static String ErlangOutlinePage_error_NoTopLevelType;
 
-	public static String IndentationPrefs_54;
+	public static String Prefs_End_paren;
 
-	public static String IndentationPrefs_55;
+	public static String Prefs_Binary_begin;
 
-	public static String IndentationPrefs_56;
+	public static String Prefs_Paren;
 
-	public static String IndentationPrefs_0;
+	public static String Prefs_Before_binary_op;
 
-	public static String IndentationPrefs_12;
+	public static String Prefs_After_unary_op;
 
-	public static String IndentationPrefs_15;
+	public static String Prefs_Clause;
 
-	public static String IndentationPrefs_18;
+	public static String Prefs_Case;
 
-	public static String IndentationPrefs_21;
+	public static String Prefs_Try;
 
-	public static String IndentationPrefs_24;
+	public static String Prefs_Catch;
 
-	public static String IndentationPrefs_27;
+	public static String Prefs_Function_parameters;
 
-	public static String IndentationPrefs_3;
+	public static String Prefs_After_binary_op;
 
-	public static String IndentationPrefs_30;
+	public static String Prefs_Fun;
 
-	public static String IndentationPrefs_33;
+	public static String Prefs_Fun_body;
 
 	public static String IndentationPrefs_36;
 
-	public static String IndentationPrefs_50;
+	public static String Prefs_Semicolon_nl;
 
-	public static String IndentationPrefs_51;
+	public static String Prefs_Dot_nl;
 
-	public static String IndentationPrefs_52;
+	public static String Prefs_Arrow_nl;
 
-	public static String IndentationPrefs_53;
+	public static String Prefs_Comma_nl;
 
-	public static String IndentationPrefs_6;
+	public static String Prefs_Before_arrow;
 
-	public static String IndentationPrefs_9;
+	public static String Prefs_After_arrow;
 
-	public static String SmartTypingPrefs_0;
+	public static String SmartTypingPrefs_atoms;
 
-	public static String SmartTypingPrefs_2;
+	public static String SmartTypingPrefs_AutomaticallyClose;
 
-	public static String SmartTypingPrefs_3;
+	public static String SmartTypingPrefs_Braces;
 
-	public static String SmartTypingPrefs_4;
+	public static String SmartTypingPrefs_Brackets;
 
-	public static String SmartTypingPrefs_5;
+	public static String SmartTypingPrefs_Desc;
 
-	public static String SmartTypingPrefs_6;
+	public static String SmartTypingPrefs_Parens;
+
+	public static String SmartTypingPrefs_Strings;
+
+	public static String SmartTypingPrefs_WhenPasting;
+
+	public static String SmartTypinngPrefs_AdjustIndentation;
 
 	private ErlEditorMessages() {
 	}
