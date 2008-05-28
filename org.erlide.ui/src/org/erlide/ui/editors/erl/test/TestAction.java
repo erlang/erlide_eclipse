@@ -44,7 +44,7 @@ public class TestAction extends TextEditorAction {
 		try {
 			final String s = ErlideScanner2.checkAll(ErlScanner
 					.createScannerModuleName(module), text);
-			ErlLogger.debug(s);
+			ErlLogger.debug("%s", s);
 		} catch (final BackendException e) {
 			e.printStackTrace();
 		}
