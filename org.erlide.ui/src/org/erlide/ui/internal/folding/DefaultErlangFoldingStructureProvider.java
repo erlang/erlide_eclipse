@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -49,6 +50,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProviderExtension;
+import org.erlide.ui.internal.DocumentCharacterIterator;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -165,142 +167,135 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	}
 
-	// /**
-	// * Projection position that will return two foldable regions: one folding
-	// away the
-	// * region from after the '/**' to the beginning of the content, the other
-	// from after
-	// * the first content line until after the comment.
-	// *
-	// * @since 3.1
-	// */
-	// private static final class CommentPosition extends Position implements
-	// IProjectionPosition
-	// {
-	//
-	// CommentPosition(int off, int len)
-	// {
-	// super(off, len);
-	// }
-	//
-	// /*
-	// * @see
-	// org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
-	// */
-	// public IRegion[] computeProjectionRegions(IDocument document)
-	// throws BadLocationException
-	// {
-	// DocumentCharacterIterator sequence = new
-	// DocumentCharacterIterator(document,
-	// offset, offset + length);
-	// int prefixEnd = 0;
-	// int contentStart = findFirstContent(sequence, prefixEnd);
-	//
-	// int firstLine = document.getLineOfOffset(offset + prefixEnd);
-	// int captionLine = document.getLineOfOffset(offset + contentStart);
-	// int lastLine = document.getLineOfOffset(offset + length);
-	//
-	// Assert.isTrue(firstLine <= captionLine,
-	// "first folded line is greater than the caption line"); //$NON-NLS-1$
-	// Assert.isTrue(captionLine <= lastLine,
-	// "caption line is greater than the last folded line"); //$NON-NLS-1$
-	//
-	// IRegion preRegion;
-	// if (firstLine < captionLine)
-	// {
-	// // preRegion= new Region(offset + prefixEnd, contentStart - prefixEnd);
-	// int preOffset = document.getLineOffset(firstLine);
-	// IRegion preEndLineInfo = document.getLineInformation(captionLine);
-	// int preEnd = preEndLineInfo.getOffset();
-	// preRegion = new Region(preOffset, preEnd - preOffset);
-	// } else
-	// {
-	// preRegion = null;
-	// }
-	//
-	// if (captionLine < lastLine)
-	// {
-	// int postOffset = document.getLineOffset(captionLine + 1);
-	// IRegion postRegion = new Region(postOffset, offset + length -
-	// postOffset);
-	//
-	// if (preRegion == null)
-	// return new IRegion[] { postRegion };
-	//
-	// return new IRegion[] { preRegion, postRegion };
-	// }
-	//
-	// if (preRegion != null)
-	// return new IRegion[] { preRegion };
-	//
-	// return null;
-	// }
-	//
-	// /**
-	// * Finds the offset of the first identifier part within
-	// <code>content</code>.
-	// * Returns 0 if none is found.
-	// *
-	// * @param content
-	// * the content to search
-	// * @return the first index of a unicode identifier part, or zero if none
-	// can be
-	// * found
-	// */
-	// private int findFirstContent(final CharSequence content, int prefixEnd)
-	// {
-	// int lenght = content.length();
-	// for (int i = prefixEnd; i < lenght; i++)
-	// {
-	// if (Character.isUnicodeIdentifierPart(content.charAt(i)))
-	// return i;
-	// }
-	// return 0;
-	// }
-	//
-	// // /**
-	// // * Finds the offset of the first identifier part within
-	// <code>content</code>.
-	// // * Returns 0 if none is found.
-	// // *
-	// // * @param content the content to search
-	// // * @return the first index of a unicode identifier part, or zero if
-	// none can
-	// // * be found
-	// // */
-	// // private int findPrefixEnd(final CharSequence content) {
-	// // // return the index after the leading '/*' or '/**'
-	// // int len= content.length();
-	// // int i= 0;
-	// // while (i < len && isWhiteSpace(content.charAt(i)))
-	// // i++;
-	// // if (len >= i + 2 && content.charAt(i) == '/' && content.charAt(i + 1)
-	// == '*')
-	// // if (len >= i + 3 && content.charAt(i + 2) == '*')
-	// // return i + 3;
-	// // else
-	// // return i + 2;
-	// // else
-	// // return i;
-	// // }
-	// //
-	// // private boolean isWhiteSpace(char c) {
-	// // return c == ' ' || c == '\t';
-	// // }
-	//
-	// /*
-	// * @see
-	// org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
-	// */
-	// public int computeCaptionOffset(IDocument document)
-	// {
-	// // return 0;
-	// DocumentCharacterIterator sequence = new
-	// DocumentCharacterIterator(document,
-	// offset, offset + length);
-	// return findFirstContent(sequence, 0);
-	// }
-	// }
+	/**
+	 * Projection position that will return two foldable regions: one folding
+	 * away the region from after the '/**' to the beginning of the content, the
+	 * other from after the first content line until after the comment.
+	 * 
+	 * @since 3.1
+	 */
+	private static final class CommentPosition extends Position implements
+			IProjectionPosition {
+
+		CommentPosition(final int off, final int len) {
+			super(off, len);
+		}
+
+		/*
+		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
+		 */
+		public IRegion[] computeProjectionRegions(final IDocument document)
+				throws BadLocationException {
+			final DocumentCharacterIterator sequence = new DocumentCharacterIterator(
+					document, offset, offset + length);
+			final int prefixEnd = 0;
+			final int contentStart = findFirstContent(sequence, prefixEnd);
+
+			final int firstLine = document.getLineOfOffset(offset + prefixEnd);
+			final int captionLine = document.getLineOfOffset(offset
+					+ contentStart);
+			final int lastLine = document.getLineOfOffset(offset + length);
+
+			Assert.isTrue(firstLine <= captionLine,
+					"first folded line is greater than the caption line"); //$NON-NLS-1$
+			Assert.isTrue(captionLine <= lastLine,
+					"caption line is greater than the last folded line"); //$NON-NLS-1$
+
+			IRegion preRegion;
+			if (firstLine < captionLine) {
+				// preRegion= new Region(offset + prefixEnd, contentStart -
+				// prefixEnd);
+				final int preOffset = document.getLineOffset(firstLine);
+				final IRegion preEndLineInfo = document
+						.getLineInformation(captionLine);
+				final int preEnd = preEndLineInfo.getOffset();
+				preRegion = new Region(preOffset, preEnd - preOffset);
+			} else {
+				preRegion = null;
+			}
+
+			if (captionLine < lastLine) {
+				final int postOffset = document.getLineOffset(captionLine + 1);
+				final IRegion postRegion = new Region(postOffset, offset
+						+ length - postOffset);
+
+				if (preRegion == null) {
+					return new IRegion[] { postRegion };
+				}
+
+				return new IRegion[] { preRegion, postRegion };
+			}
+
+			if (preRegion != null) {
+				return new IRegion[] { preRegion };
+			}
+
+			return null;
+		}
+
+		/**
+		 * Finds the offset of the first identifier part within
+		 * <code>content</code>. Returns 0 if none is found.
+		 * 
+		 * @param content
+		 *            the content to search
+		 * @return the first index of a unicode identifier part, or zero if none
+		 *         can be found
+		 */
+		private int findFirstContent(final CharSequence content,
+				final int prefixEnd) {
+			final int lenght = content.length();
+			for (int i = prefixEnd; i < lenght; i++) {
+				if (Character.isUnicodeIdentifierPart(content.charAt(i))) {
+					return i;
+				}
+			}
+			return 0;
+		}
+
+		// /**
+		// * Finds the offset of the first identifier part within
+		// * <code>content</code>. Returns 0 if none is found.
+		// *
+		// * @param content
+		// * the content to search
+		// * @return the first index of a unicode identifier part, or zero if
+		// none
+		// * can be found
+		// */
+		// private int findPrefixEnd(final CharSequence content) {
+		// // return the index after the leading '/*' or '/**'
+		// final int len = content.length();
+		// int i = 0;
+		// while (i < len && isWhiteSpace(content.charAt(i))) {
+		// i++;
+		// }
+		// if (len >= i + 2 && content.charAt(i) == '/'
+		// && content.charAt(i + 1) == '*') {
+		// if (len >= i + 3 && content.charAt(i + 2) == '*') {
+		// return i + 3;
+		// } else {
+		// return i + 2;
+		// }
+		// } else {
+		// return i;
+		// }
+		// }
+
+		// private boolean isWhiteSpace(final char c) {
+		// return c == ' ' || c == '\t';
+		// }
+
+		/*
+		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
+		 */
+		public int computeCaptionOffset(final IDocument document) {
+			// return 0;
+			final DocumentCharacterIterator sequence = new DocumentCharacterIterator(
+					document, offset, offset + length);
+			return findFirstContent(sequence, 0);
+		}
+	}
 
 	/**
 	 * Projection position that will return two foldable regions: one folding
@@ -400,14 +395,9 @@ public class DefaultErlangFoldingStructureProvider implements
 		public int computeCaptionOffset(final IDocument document)
 				throws BadLocationException {
 			int nameStart = offset;
-			// try {
-			// need a reconcile here?
 			final ISourceRange nameRange = fMember.getNameRange();
 			if (nameRange != null) {
 				nameStart = nameRange.getOffset();
-				// } catch (ErlModelException e) {
-				// ignore and use default
-				// }
 			}
 
 			return nameStart - offset;
@@ -624,7 +614,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		boolean createProjection = false;
 		boolean collapse = false;
 
-		if (element.getKind() == IErlElement.Kind.CLAUSE) {
+		if (element.getKind() == IErlElement.Kind.CLAUSE
+				|| element.getKind() == IErlElement.Kind.FUNCTION) {
 			collapse = fAllowCollapsing && fCollapseClauses;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.COMMENT) {
@@ -718,11 +709,12 @@ public class DefaultErlangFoldingStructureProvider implements
 				} else {
 					return null;
 				}
+				if (element instanceof IErlComment) {
+					return new CommentPosition(offset, endOffset - offset);
+				}
 				if (element instanceof IErlMember) {
 					return new ErlangElementPosition(offset,
 							endOffset - offset, (IErlMember) element);
-					// else
-					// return new CommentPosition(offset, endOffset - offset);
 				}
 			}
 
