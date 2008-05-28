@@ -54,28 +54,28 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	protected void createFieldEditors() {
-		Composite fieldEditorParent = getFieldEditorParent();
+		final Composite fieldEditorParent = getFieldEditorParent();
 		home = new OtpDirectoryFieldEditor(IPrefConstants.ERTS_OTP_HOME,
 				"ERL_TOP", fieldEditorParent);
-		final Label zzzLabel = this.home.getLabelControl(fieldEditorParent);
+		final Label zzzLabel = home.getLabelControl(fieldEditorParent);
 		zzzLabel.setText(ErlideBasicUIPlugin
 				.getResourceString("prefs.system.home"));
 		addField(home);
 
 		pathA = new PathEditor(IPrefConstants.ERTS_PATH_A, "patha",
 				"Add a library directory to code:patha()", fieldEditorParent);
-		final List list = this.pathA.getListControl(fieldEditorParent);
+		final List list = pathA.getListControl(fieldEditorParent);
 		list.setEnabled(false);
-		final Label pathaLabel = this.pathA.getLabelControl(fieldEditorParent);
+		final Label pathaLabel = pathA.getLabelControl(fieldEditorParent);
 		pathaLabel.setText(ErlideBasicUIPlugin
 				.getResourceString("prefs.system.patha"));
 		addField(pathA);
 
 		pathZ = new PathEditor(IPrefConstants.ERTS_PATH_Z, "pathz",
 				"Add a library directory to code:pathz()", fieldEditorParent);
-		final List list_1 = this.pathZ.getListControl(fieldEditorParent);
+		final List list_1 = pathZ.getListControl(fieldEditorParent);
 		list_1.setEnabled(false);
-		final Label pathzLabel = this.pathZ.getLabelControl(fieldEditorParent);
+		final Label pathzLabel = pathZ.getLabelControl(fieldEditorParent);
 		pathzLabel.setText(ErlideBasicUIPlugin
 				.getResourceString("prefs.system.pathz"));
 		addField(pathZ);
@@ -96,7 +96,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 	@Override
@@ -112,13 +112,17 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	public boolean performOk() {
 		// setting eclipse preference store
-		Preferences pluginPreferences = ErlideBasicUIPlugin.getDefault()
+		final Preferences pluginPreferences = ErlideBasicUIPlugin.getDefault()
 				.getPluginPreferences();
-		pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, home
-				.getStringValue());
-		ErlideBasicUIPlugin.getDefault().savePluginPreferences();
+		final String newHome = home.getStringValue();
+		final String oldHome = pluginPreferences
+				.getString(IPrefConstants.ERTS_OTP_HOME);
+		if (!oldHome.equals(newHome)) {
+			pluginPreferences.setValue(IPrefConstants.ERTS_OTP_HOME, newHome);
+			ErlideBasicUIPlugin.getDefault().savePluginPreferences();
 
-		ErlideBasicUIPlugin.getDefault().restartBundle();
+			ErlideBasicUIPlugin.getDefault().restartBundle();
+		}
 		return super.performOk();
 	}
 
@@ -155,7 +159,7 @@ public class ErtsPreferencePage extends FieldEditorPreferencePage implements
 		super.initialize();
 		// final ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
 		// .getPreferences();
-		Preferences prefs = ErlideBasicUIPlugin.getDefault()
+		final Preferences prefs = ErlideBasicUIPlugin.getDefault()
 				.getPluginPreferences();
 		home.setStringValue(prefs.getString(IPrefConstants.ERTS_OTP_HOME));
 
