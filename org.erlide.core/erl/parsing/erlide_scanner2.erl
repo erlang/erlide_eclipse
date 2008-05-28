@@ -30,7 +30,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 10). %% odd numbers for scanner, even numbers for scanner2
+-define(CACHE_VERSION, 11).
 
 -define(SERVER, ?MODULE).
 
@@ -388,6 +388,7 @@ do_cmd(create, Mod, Modules) ->
 do_cmd(destroy, Mod, Modules) ->
     lists:keydelete(Mod, #module.name, Modules);
 do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
+	?Debug({rescan, _Mod}),
 	Modules;
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir}, Modules) ->
 	NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
@@ -404,6 +405,7 @@ do_cmd(get_token_at, {Mod, Offset}, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_token_at(Module, Offset), Modules};
 do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
+	?Debug({replace_text, Mod}),
 	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
 	NewMod = replace_text(Module, Offset, RemoveLength, NewText),
 	[NewMod | lists:keydelete(Mod, #module.name, Modules)];

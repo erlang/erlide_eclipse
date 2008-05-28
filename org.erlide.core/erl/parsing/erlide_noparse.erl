@@ -8,23 +8,53 @@
 %% Exported Functions
 %%
 
--export([initial_parse/4, reparse/1]). 
+-export([initial_parse/4, reparse/1]).
+
+%% server stuff, currently only for testing
+-export([modules/0, dump_module/1, dump_log/0, create/1, destroy/1, logging/1, all/0, stop/0]).
+
+%% internal exports 
+-export([loop/1]).
 
 %%
 %% Include files
 %%
 
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 2).
+-define(CACHE_VERSION, 4).
+-define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
--record(function, {pos, name, arity, args, head, clauses, name_pos}).
--record(clause, {pos, name, args, head, code, name_pos}).
--record(attribute, {pos, name, args}).
--record(other, {pos, name, tokens}).
+%%
+%% API Functions
+%%
+
+modules() ->
+	server_cmd(modules, []).
+
+create(Module) when is_atom(Module) ->
+    server_cmd(create, Module).
+
+destroy(Module) when is_atom(Module) ->
+	server_cmd(destroy, Module).
+
+dump_log() ->
+    server_cmd(dump_log, []).
+
+logging(OnOff) ->
+    server_cmd(logging, OnOff).
+
+all() ->
+    server_cmd(all, []).
+
+dump_module(Module) when is_atom(Module) ->
+    server_cmd(dump_module, Module).
+
+stop() ->
+    server_cmd(stop, []).
 
 initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
     try
@@ -34,6 +64,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
 		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
+        update_state(ScannerName, Res),
         {ok, Res}
     catch
         error:Reason ->
@@ -43,11 +74,23 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
 reparse(ScannerName) ->
     try
         Res = do_parse(ScannerName, "", "", ""),
+        update_state(ScannerName, Res),
         {ok, Res}
     catch
         error:Reason ->
             {error, Reason}
     end.
+
+%%
+%% Internal functions
+%%
+
+-record(model, {forms, comments}).
+
+-record(function, {pos, name, arity, args, head, clauses, name_pos}).
+-record(clause, {pos, name, args, head, code, name_pos}).
+-record(attribute, {pos, name, args}).
+-record(other, {pos, name, tokens}).
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     ?Info({noparse, ScannerName}),
@@ -59,7 +102,8 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     ?D(length(Functions)),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
     ?D(length(Collected)),
-    {Collected, Comments, Toks}.
+    %% {Collected, Comments, Toks}.
+    #model{forms=Collected, comments=Comments}.
 
 classify_and_collect(C) ->
     ?D(C),
@@ -251,9 +295,90 @@ extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
 extract_comments([T | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, -1, [T | TAcc], CAcc).
 
+%%
+%% Server
+%%
 
+update_state(ScannerName, Model) ->
+    server_cmd(update_state, {ScannerName, Model}).
 
+-record(module, {name,
+                 model=[]}).
 
+server_cmd(Command, Args) ->
+	spawn_server(),
+    ?SERVER ! {Command, self(), Args},
+	receive
+        {Command, _Pid, Result} ->
+            Result
+    end.
+
+spawn_server() ->
+    case whereis(?SERVER) of
+        undefined ->
+            Pid = spawn(fun() -> loop([]) end),
+            erlang:register(?SERVER, Pid);
+        _ ->
+            ok
+    end.
+
+loop(Modules) ->
+    receive
+        {stop, From, []} ->
+            reply(stop, From, stopped);
+        {Cmd, From, Args} ->
+            NewMods = cmd(Cmd, From, Args, Modules),
+            ?MODULE:loop(NewMods)
+    end.
+
+cmd(Cmd, From, Args, Modules) ->
+    try
+        case get(logging) of
+            on ->
+                put(log, get(log)++[{Cmd, Args}]);
+            _ ->
+                ok
+        end,
+        case do_cmd(Cmd, Args, Modules) of
+            {R, NewMods} ->
+                reply(Cmd, From, R),
+                NewMods;
+            NewMods ->
+                reply(Cmd, From, ok),
+                NewMods
+        end
+    catch
+        exit:Error ->
+			reply(Cmd, From, {exit, Error}),
+            Modules;
+        error:Error ->
+			reply(Cmd, From, {error, Error}),
+            Modules
+    end.
+
+reply(Cmd, From, R) ->
+	From ! {Cmd, self(), R}.
+
+do_cmd(create, Mod, Modules) ->
+	[#module{name=Mod} | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(destroy, Mod, Modules) ->
+    lists:keydelete(Mod, #module.name, Modules);
+do_cmd(update_state, {Mod, Model}, Modules) ->
+	NewMod = #module{name=Mod, model=Model},
+    [NewMod | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(all, [], Modules) ->
+    {Modules, Modules};
+do_cmd(modules, [], Modules) ->
+    Mods = [M#module.name || M <- Modules],
+    {Mods, Modules};
+do_cmd(dump_module, Mod, Modules) ->
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {Module, Modules};
+do_cmd(logging, OnOff, Modules) ->
+    put(log, []),
+    {put(logging, OnOff), Modules};
+do_cmd(dump_log, [], Modules) ->
+    {get(log), Modules}.
 
 
 

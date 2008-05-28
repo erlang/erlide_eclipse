@@ -45,35 +45,42 @@ public class ErlParser {
 		return null;
 	}
 
+	/**
+	 * @param module
+	 *            module to parse
+	 * @param initialText
+	 *            the initial text
+	 * @param initialParse
+	 *            true if first time parse
+	 * @return -record(model, {forms, comments}).
+	 */
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse) {
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
-		try {
-			OtpErlangTuple res = null;
-			ErlLogger.debug("parse " + module.getName() + " init len "
-					+ initialText.length() + " initialParse " + initialParse);
-			if (initialParse) {
-				final IResource resource = module.getResource();
-				final String moduleFileName = resource.getLocation().toString();
-				final String stateDir = ErlangPlugin.getDefault()
-						.getStateLocation().toString();
-				res = ErlideNoparse.initialParse(b, scannerModuleName,
-						moduleFileName, initialText, stateDir);
-			} else {
-				res = ErlideNoparse.reparse(b, scannerModuleName);
-			}
-			if (((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo("ok") == 0) {
-				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
-				forms = (OtpErlangList) t.elementAt(0);
-				comments = (OtpErlangList) t.elementAt(1);
-			} else {
-				ErlLogger.debug("rpc err:: " + res);
-			}
-		} catch (final Exception e1) {
-			ErlLogger.debug(e1);
+		OtpErlangTuple res = null;
+		ErlLogger.debug("parse " + module.getName() + " init len "
+				+ initialText.length() + " initialParse " + initialParse);
+		if (initialParse) {
+			final IResource resource = module.getResource();
+			final String moduleFileName = resource.getLocation().toString();
+			final String stateDir = ErlangPlugin.getDefault()
+					.getStateLocation().toString();
+			res = ErlideNoparse.initialParse(b, scannerModuleName,
+					moduleFileName, initialText, stateDir);
+		} else {
+			res = ErlideNoparse.reparse(b, scannerModuleName);
+		}
+		if (res != null
+				&& ((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
+						"ok") == 0) {
+			final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
+			forms = (OtpErlangList) t.elementAt(1);
+			comments = (OtpErlangList) t.elementAt(2);
+		} else {
+			ErlLogger.debug("rpc err:: " + res);
 		}
 		final ErlModule mm = (ErlModule) module;
 		mm.reset();

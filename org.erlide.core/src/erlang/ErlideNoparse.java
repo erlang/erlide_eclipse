@@ -3,7 +3,6 @@ package erlang;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -11,19 +10,31 @@ public class ErlideNoparse {
 
 	public static OtpErlangTuple initialParse(final IBackend b,
 			final String scannerModuleName, final String moduleFileName,
-			final String initialText, final String stateDir)
-			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
-				"initial_parse", "asss", scannerModuleName, moduleFileName,
-				initialText, stateDir);
+			final String initialText, final String stateDir) {
+		OtpErlangTuple res = null;
+		try {
+			res = (OtpErlangTuple) b.rpcx("erlide_noparse", "initial_parse",
+					"asss", scannerModuleName, moduleFileName, initialText,
+					stateDir);
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
 		return res;
 	}
 
 	public static OtpErlangTuple reparse(final IBackend b,
-			final String scannerModuleName) throws ErlangRpcException,
-			BackendException, RpcException {
-		final OtpErlangTuple res = (OtpErlangTuple) b.rpcx("erlide_noparse",
-				"reparse", "a", scannerModuleName);
+			final String scannerModuleName) {
+		OtpErlangTuple res = null;
+		try {
+			res = (OtpErlangTuple) b.rpcx("erlide_noparse", "reparse", "a",
+					scannerModuleName);
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
 		return res;
 	}
 
