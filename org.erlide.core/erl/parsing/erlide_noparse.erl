@@ -21,8 +21,8 @@
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 
--record(function, {pos, name, arity, args, clauses, name_pos}).
--record(clause, {pos, name, args, guards, code, name_pos}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos}).
+-record(clause, {pos, name, args, head, code, name_pos}).
 -record(attribute, {pos, name, args}).
 -record(other, {pos, name, tokens}).
 
@@ -72,12 +72,12 @@ cac(function, Tokens) ->
 	?D(ClauseList),
     Clauses = [fix_clause(C) || C <- ClauseList],
 	?D(length(Clauses)),
-    [#clause{pos=P, name=N, args=A, name_pos=NP} | _] = Clauses,
+    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
 	?D(Arity),
-    case Clauses of
-        [#clause{args=Args}] ->
-            #function{pos=P, name=N, arity=Arity, args=Args, clauses=[], name_pos=NP};
+    case Clauses of					% only show subclauses when more than one
+        [_] ->
+            #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
         _ ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
@@ -116,8 +116,27 @@ check_class(_) ->
 to_string(Tokens) ->
     erlide_scanner2:tokens_to_string(Tokens).
 
+get_head(T) ->
+    case get_args(T) of
+        "" ->
+            "";
+        A ->
+            case get_guards(T) of
+                "" ->
+                    A;
+                G ->
+                    A ++ " when " ++ G
+            end
+    end.
+
 get_args(T) ->
-    "("++to_string(get_between_pars(T))++")".
+    case get_between_pars(T) of
+        "" ->
+            "";
+        P ->
+            "("++to_string(P)++")"
+    end.
+
 
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
@@ -135,19 +154,34 @@ last_not_eof(L) ->
             error
     end.    
 
-get_between([], _A, _B) ->
-    [];
-get_between([#token{kind = A} | Rest], A, B) ->
-    get_between2(Rest, B, []);
-get_between([_ | Rest], A, B) ->
-    get_between(Rest, A, B).
 
-get_between2([], _B, Acc) ->
-    lists:reverse(Acc);
-get_between2([#token{kind = B} | _], B, Acc) ->
-    get_between2([], B, Acc);
-get_between2([T | Rest], B, Acc) ->
-    get_between2(Rest, B, [T | Acc]).
+get_between(L, A, B) ->
+    R = get_upto(L, B),
+    lists:reverse(get_upto(lists:reverse(R), A)).
+
+get_upto(L, Delim) ->
+	get_upto(L, Delim, []).
+
+get_upto([], _Delim, _Acc) ->
+    [];
+get_upto([#token{kind=Delim} | _], Delim, Acc) ->
+	lists:reverse(Acc);
+get_upto([T | Rest], Delim, Acc) ->
+    get_upto(Rest, Delim, [T | Acc]).
+
+%% get_between([], _A, _B) ->
+%%     [];
+%% get_between([#token{kind = A} | Rest], A, B) ->
+%%     get_between2(Rest, B, []);
+%% get_between([_ | Rest], A, B) ->
+%%     get_between(Rest, A, B).
+%% 
+%% get_between2([], _B, Acc) ->
+%%     lists:reverse(Acc);
+%% get_between2([#token{kind = B} | _], B, Acc) ->
+%%     get_between2([], B, Acc);
+%% get_between2([T | Rest], B, Acc) ->
+%%     get_between2(Rest, B, [T | Acc]).
 
 reverse2(L) ->
     lists:reverse([lists:reverse(A) || A <- L]).
@@ -187,7 +221,7 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
     #clause{pos={{Line, LastLine, Offset}, PosLength},
-            name=Name, args=get_args(Rest), guards=get_guards(Rest), code=[],
+            name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=[],
             name_pos={{Line, Offset}, Length}}.
 
 scan(ScannerName, ModuleFileName, InitialText, StateDir) ->

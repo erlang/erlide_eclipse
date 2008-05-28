@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-
 public interface IErlFunctionClause extends IErlMember {
 
-	public String getArguments();
-
-	public String getGuards();
+	public String getHead();
 
 }

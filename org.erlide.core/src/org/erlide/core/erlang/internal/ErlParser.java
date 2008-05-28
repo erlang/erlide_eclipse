@@ -181,7 +181,7 @@ public class ErlParser {
 			return addAttribute(parent, pos, name, val);
 		} else if ("function".equals(type.atomValue())) {
 			final ErlFunction f = makeErlFunction(parent, el);
-			final OtpErlangList clauses = (OtpErlangList) el.elementAt(5);
+			final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
 			final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
 					.arity()];
 			for (int i = 0; i < clauses.arity(); i++) {
@@ -200,49 +200,53 @@ public class ErlParser {
 
 	/**
 	 * @param parent
+	 *            module
 	 * @param el
-	 * @return
+	 *            -record(function, {pos, name, arity, args, head, clauses,
+	 *            name_pos}).
+	 * @return ErlFunction
 	 */
 	private ErlFunction makeErlFunction(final IErlModule parent,
 			final OtpErlangTuple el) {
 		final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
 		final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
 		final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
-		final OtpErlangObject parameters = el.elementAt(4);
-		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(6);
+		final OtpErlangObject head = el.elementAt(5);
+		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(7);
 		ErlFunction f = null;
 		try {
 			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), stringValue(parameters));
+					.intValue(), stringValue(head));
 		} catch (final OtpErlangRangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return f;
 		}
 		setPos(f, pos);
 		try {
 			setNamePos(f, namePos);
 		} catch (final OtpErlangRangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return f;
 		}
 		return f;
 	}
 
 	/**
 	 * @param f
+	 *            function
 	 * @param i
+	 *            clause number
 	 * @param clause
-	 * @return
-	 * @throws OtpErlangRangeException
+	 *            -record(clause, {pos, name, args, head, code, name_pos}).
+	 * @return ErlFunctionClause
+	 * 
+	 * 
 	 */
 	private ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
 			final int i, final OtpErlangTuple clause) {
 		final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
-		final OtpErlangObject arguments = clause.elementAt(3);
-		final OtpErlangObject guards = clause.elementAt(4);
+		final OtpErlangObject head = clause.elementAt(4);
 		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(6);
 		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i,
-				stringValue(arguments), stringValue(guards));
+				stringValue(head));
 		try {
 			setNamePos(cl, cnamePos);
 		} catch (final OtpErlangRangeException e) {

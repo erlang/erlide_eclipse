@@ -15,22 +15,16 @@ import org.erlide.core.erlang.IErlFunctionClause;
 
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
-	String arguments;
-	String guards;
+	String head;
 
 	protected ErlFunctionClause(final IErlElement parent, final String name,
-			final String arguments, final String guards) {
+			final String head) {
 		super(parent, name);
-		this.arguments = arguments;
-		this.guards = guards;
+		this.head = head;
 	}
 
-	public String getArguments() {
-		return arguments;
-	}
-
-	public String getGuards() {
-		return guards;
+	public String getHead() {
+		return head;
 	}
 
 	public Kind getKind() {
@@ -53,17 +47,6 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 	// }
 	@Override
 	public String toString() {
-		if (guards != null && guards != "") {
-			return arguments + " when " + guards;
-		} else {
-			return arguments;
-			// String result = pp_1(getGuards());
-			// if (result.length() > 0) {
-			// result = pp(getArguments()) + " when " + result;
-			// } else {
-			// result = pp(getArguments());
-			// }
-			// return result;
-		}
+		return head;
 	}
 }

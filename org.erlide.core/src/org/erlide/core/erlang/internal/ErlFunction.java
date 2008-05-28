@@ -26,19 +26,19 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	private boolean fExported;
 
-	private int fArity;
+	private int arity;
 
-	private final String parameters;
+	private final String head;
 
 	/**
 	 * @param parent
 	 * @param name
 	 */
 	protected ErlFunction(final ErlElement parent, final String name,
-			final int arity, final String parameters) {
+			final int arity, final String head) {
 		super(parent, name);
-		fArity = arity;
-		this.parameters = parameters;
+		this.arity = arity;
+		this.head = head;
 	}
 
 	public List<IErlFunctionClause> getClauses() {
@@ -56,7 +56,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	public int getArity() {
-		return fArity;
+		return arity;
 	}
 
 	public boolean isExported() {
@@ -64,7 +64,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	}
 
 	public void setArity(final int i) {
-		fArity = i;
+		arity = i;
 	}
 
 	public void setExported(final boolean exported) {
@@ -73,11 +73,12 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	@Override
 	public String toString() {
-		if (parameters != null && parameters != "") {
-			return getName() + parameters;
-		} else {
-			return getName() + "/" + getArity();
+		final StringBuilder b = new StringBuilder();
+		b.append(getName()).append("/").append(getArity());
+		if (head != null && head.length() != 0) {
+			b.append("  ").append(head);
 		}
+		return b.toString();
 	}
 
 	public ErlangFunction getFunction() {
@@ -88,7 +89,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
-		result = PRIME * result + fArity;
+		result = PRIME * result + arity;
 		return result;
 	}
 
@@ -104,7 +105,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 			return false;
 		}
 		final ErlFunction other = (ErlFunction) obj;
-		if (fArity != other.fArity) {
+		if (arity != other.arity) {
 			return false;
 		}
 		return true;
