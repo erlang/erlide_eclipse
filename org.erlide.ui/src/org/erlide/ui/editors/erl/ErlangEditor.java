@@ -1533,6 +1533,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IErlScanner scanner = getScanner();
 		if (scanner != null) {
 			scanner.rescan(document.get());
+			try {
+				getModule().open(progressMonitor);
+			} catch (final ErlModelException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
