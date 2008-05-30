@@ -1,19 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vlad Dumitrescu
+ *******************************************************************************/
 package org.erlide.core.builder;
 
-import org.erlide.core.ErlangPlugin;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.core.ErlangPlugin;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Vlad
- * Date: 2008-jan-30
- * Time: 21:25:50
- * To change this template use File | Settings | File Templates.
- */
 public class BuilderUtils {
-    public static boolean isDebugging() {
-        return ErlangPlugin.getDefault().isDebugging()
-                && Platform.getDebugOption("org.erlide.core/debug/builder")
-                        .equals("true");
-    }
+	private BuilderUtils() {
+	}
+
+	public static boolean isDebugging() {
+		return ErlangPlugin.getDefault().isDebugging()
+				&& Platform.getDebugOption("org.erlide.core/debug/builder")
+						.equals("true");
+	}
 }
