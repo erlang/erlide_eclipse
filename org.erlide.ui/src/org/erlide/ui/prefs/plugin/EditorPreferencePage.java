@@ -542,7 +542,8 @@ public class EditorPreferencePage extends PreferencePage implements
 	@Override
 	protected void performDefaults() {
 
-		fOverlayStore.loadDefaults();
+		// fOverlayStore.loadDefaults();
+		fOverlayStore.load();
 
 		initializeFields();
 
