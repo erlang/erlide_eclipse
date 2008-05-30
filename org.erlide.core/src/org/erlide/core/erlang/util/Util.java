@@ -34,6 +34,10 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModelStatusConstants;
 
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+
 /**
  * Provides convenient utility methods to other types in this package.
  */
@@ -83,7 +87,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Lookup the message with the given PLUGIN_ID in this catalog
 	 */
-	public static String bind(String id) {
+	public static String bind(final String id) {
 		return bind(id, (String[]) null);
 	}
 
@@ -91,7 +95,7 @@ public class Util implements ISuffixConstants {
 	 * Lookup the message with the given PLUGIN_ID in this catalog and bind its
 	 * substitution locations with the given string.
 	 */
-	public static String bind(String id, String binding) {
+	public static String bind(final String id, final String binding) {
 		return bind(id, new String[] { binding });
 	}
 
@@ -99,7 +103,8 @@ public class Util implements ISuffixConstants {
 	 * Lookup the message with the given PLUGIN_ID in this catalog and bind its
 	 * substitution locations with the given strings.
 	 */
-	public static String bind(String id, String binding1, String binding2) {
+	public static String bind(final String id, final String binding1,
+			final String binding2) {
 		return bind(id, new String[] { binding1, binding2 });
 	}
 
@@ -107,7 +112,7 @@ public class Util implements ISuffixConstants {
 	 * Lookup the message with the given PLUGIN_ID in this catalog and bind its
 	 * substitution locations with the given string values.
 	 */
-	public static String bind(String id, String[] bindings) {
+	public static String bind(final String id, final String[] bindings) {
 		if (id == null) {
 			return "No message available"; //$NON-NLS-1$
 		}
@@ -212,7 +217,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Combines two hash codes to make a new one.
 	 */
-	public static int combineHashCodes(int hashCode1, int hashCode2) {
+	public static int combineHashCodes(final int hashCode1, final int hashCode2) {
 		return hashCode1 * 17 + hashCode2;
 	}
 
@@ -222,7 +227,7 @@ public class Util implements ISuffixConstants {
 	 * if a byte in a is greater than the corresponding byte in b, or if a is
 	 * longer, or if b is null. Returns 0 if they are equal or both null.
 	 */
-	public static int compare(byte[] a, byte[] b) {
+	public static int compare(final byte[] a, final byte[] b) {
 		if (a == b) {
 			return 0;
 		}
@@ -257,7 +262,7 @@ public class Util implements ISuffixConstants {
 	 *         str2; and a value greater than <code>0</code> if str1 is
 	 *         lexicographically greater than str2.
 	 */
-	public static int compare(char[] str1, char[] str2) {
+	public static int compare(final char[] str1, final char[] str2) {
 		final int len1 = str1.length;
 		final int len2 = str2.length;
 		int n = Math.min(len1, len2);
@@ -277,7 +282,7 @@ public class Util implements ISuffixConstants {
 	 * 
 	 * @see #concat(String, String)
 	 */
-	public static String concat(String s1, char c, String s2) {
+	public static String concat(String s1, final char c, String s2) {
 		if (s1 == null) {
 			s1 = "null"; //$NON-NLS-1$
 		}
@@ -344,7 +349,7 @@ public class Util implements ISuffixConstants {
 	 * Converts a type signature from the IBinaryType representation to the DC
 	 * representation.
 	 */
-	public static String convertTypeSignature(char[] sig) {
+	public static String convertTypeSignature(final char[] sig) {
 		return new String(sig).replace('/', '.');
 	}
 
@@ -353,7 +358,8 @@ public class Util implements ISuffixConstants {
 	 * implementation is not creating extra strings.
 	 */
 	@SuppressWarnings("null")
-	public static final boolean endsWithIgnoreCase(String str, String end) {
+	public static final boolean endsWithIgnoreCase(final String str,
+			final String end) {
 
 		final int strLength = str == null ? 0 : str.length();
 		final int endLength = end == null ? 0 : end.length();
@@ -381,7 +387,7 @@ public class Util implements ISuffixConstants {
 	 * null. If both are arrays, returns true iff they have the same length and
 	 * all elements are equal.
 	 */
-	public static boolean equalArraysOrNull(int[] a, int[] b) {
+	public static boolean equalArraysOrNull(final int[] a, final int[] b) {
 		if (a == b) {
 			return true;
 		}
@@ -406,7 +412,7 @@ public class Util implements ISuffixConstants {
 	 * null. If both are arrays, returns true iff they have the same length and
 	 * all elements compare true with equals.
 	 */
-	public static boolean equalArraysOrNull(Object[] a, Object[] b) {
+	public static boolean equalArraysOrNull(final Object[] a, final Object[] b) {
 		if (a == b) {
 			return true;
 		}
@@ -500,7 +506,7 @@ public class Util implements ISuffixConstants {
 	 * Returns true if both are null. Returns false if only one is null.
 	 * Otherwise, return the result of comparing with equals().
 	 */
-	public static boolean equalOrNull(Object a, Object b) {
+	public static boolean equalOrNull(final Object a, final Object b) {
 		if (a == b) {
 			return true;
 		}
@@ -514,7 +520,7 @@ public class Util implements ISuffixConstants {
 	 * Given a qualified name, extract the last component. If the input is not
 	 * qualified, the same string is answered.
 	 */
-	public static String extractLastName(String qualifiedName) {
+	public static String extractLastName(final String qualifiedName) {
 		final int i = qualifiedName.lastIndexOf('.');
 		if (i == -1) {
 			return qualifiedName;
@@ -528,7 +534,7 @@ public class Util implements ISuffixConstants {
 	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
 	 *         </code>, or <code>null</code> if none found
 	 */
-	public static String findLineSeparator(char[] text) {
+	public static String findLineSeparator(final char[] text) {
 		// find the first line separator
 		final int length = text.length;
 		if (length > 0) {
@@ -573,7 +579,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Returns the number of parameter types in a method signature.
 	 */
-	public static int getParameterCount(char[] sig) {
+	public static int getParameterCount(final char[] sig) {
 		int i = CharOperation.indexOf('(', sig) + 1;
 		Assert.isTrue(i != 0);
 		int count = 0;
@@ -603,7 +609,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Put all the arguments in one String.
 	 */
-	public static String getProblemArgumentsForMarker(String[] arguments) {
+	public static String getProblemArgumentsForMarker(final String[] arguments) {
 		final StringBuilder args = new StringBuilder(10);
 
 		args.append(arguments.length);
@@ -670,7 +676,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Returns the given file's contents as a byte array.
 	 */
-	public static byte[] getResourceContentsAsByteArray(IFile file)
+	public static byte[] getResourceContentsAsByteArray(final IFile file)
 			throws ErlModelException {
 		InputStream stream = null;
 		try {
@@ -695,7 +701,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Returns the given file's contents as a character array.
 	 */
-	public static char[] getResourceContentsAsCharArray(IFile file)
+	public static char[] getResourceContentsAsCharArray(final IFile file)
 			throws ErlModelException {
 		// Get encoding from file
 		String encoding = null;
@@ -707,8 +713,8 @@ public class Util implements ISuffixConstants {
 		return getResourceContentsAsCharArray(file, encoding);
 	}
 
-	public static char[] getResourceContentsAsCharArray(IFile file,
-			String encoding) throws ErlModelException {
+	public static char[] getResourceContentsAsCharArray(final IFile file,
+			final String encoding) throws ErlModelException {
 		// Get resource contents
 		InputStream stream = null;
 		try {
@@ -735,8 +741,8 @@ public class Util implements ISuffixConstants {
 	 * Returns the index of the most specific argument paths which is strictly
 	 * enclosing the path to check
 	 */
-	public static int indexOfEnclosingPath(IPath checkedPath, IPath[] paths,
-			int pathCount) {
+	public static int indexOfEnclosingPath(final IPath checkedPath,
+			final IPath[] paths, final int pathCount) {
 
 		int bestMatch = -1, bestLength = -1;
 		for (int i = 0; i < pathCount; i++) {
@@ -758,8 +764,8 @@ public class Util implements ISuffixConstants {
 	 * Returns the index of the first argument paths which is equal to the path
 	 * to check
 	 */
-	public static int indexOfMatchingPath(IPath checkedPath, IPath[] paths,
-			int pathCount) {
+	public static int indexOfMatchingPath(final IPath checkedPath,
+			final IPath[] paths, final int pathCount) {
 
 		for (int i = 0; i < pathCount; i++) {
 			if (paths[i].equals(checkedPath)) {
@@ -773,8 +779,8 @@ public class Util implements ISuffixConstants {
 	 * Returns the index of the first argument paths which is strictly nested
 	 * inside the path to check
 	 */
-	public static int indexOfNestedPath(IPath checkedPath, IPath[] paths,
-			int pathCount) {
+	public static int indexOfNestedPath(final IPath checkedPath,
+			final IPath[] paths, final int pathCount) {
 
 		for (int i = 0; i < pathCount; i++) {
 			if (checkedPath.equals(paths[i])) {
@@ -787,8 +793,8 @@ public class Util implements ISuffixConstants {
 		return -1;
 	}
 
-	public static final boolean isExcluded(IPath resourcePath,
-			char[][] exclusionPatterns) {
+	public static final boolean isExcluded(final IPath resourcePath,
+			final char[][] exclusionPatterns) {
 		return isExcluded(resourcePath, null, exclusionPatterns, false);
 	}
 
@@ -800,9 +806,9 @@ public class Util implements ISuffixConstants {
 	 * @see IClasspathEntry#getInclusionPatterns
 	 * @see IClasspathEntry#getExclusionPatterns
 	 */
-	static final boolean isExcluded(IPath resourcePath,
-			char[][] inclusionPatterns, char[][] exclusionPatterns,
-			boolean isFolderPath) {
+	static final boolean isExcluded(final IPath resourcePath,
+			final char[][] inclusionPatterns, final char[][] exclusionPatterns,
+			final boolean isFolderPath) {
 		if (inclusionPatterns == null && exclusionPatterns == null) {
 			return false;
 		}
@@ -851,8 +857,8 @@ public class Util implements ISuffixConstants {
 	 * 
 	 * @see IClasspathEntry#getExclusionPatterns
 	 */
-	static final boolean isExcluded(IResource resource,
-			char[][] inclusionPatterns, char[][] exclusionPatterns) {
+	static final boolean isExcluded(final IResource resource,
+			final char[][] inclusionPatterns, final char[][] exclusionPatterns) {
 		final IPath path = resource.getFullPath();
 		// ensure that folders are only excluded if all of their children are
 		// excluded
@@ -874,12 +880,12 @@ public class Util implements ISuffixConstants {
 	 *            the name of a compilation unit
 	 * @return a boolean
 	 */
-	public static boolean isValidModuleFileName(String name) {
+	public static boolean isValidModuleFileName(final String name) {
 		// FIXME
 		return true;
 	}
 
-	public static boolean isValidModuleName(String name) {
+	public static boolean isValidModuleName(final String name) {
 		// FIXME
 		return true;
 	}
@@ -887,7 +893,7 @@ public class Util implements ISuffixConstants {
 	/*
 	 * Add a log entry
 	 */
-	public static void log(Throwable e, String message) {
+	public static void log(Throwable e, final String message) {
 		Throwable nestedException;
 		if (e instanceof ErlModelException
 				&& (nestedException = ((ErlModelException) e).getException()) != null) {
@@ -975,7 +981,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Returns the length of the common prefix between s1 and s2.
 	 */
-	public static int prefixLength(char[] s1, char[] s2) {
+	public static int prefixLength(final char[] s1, final char[] s2) {
 		int len = 0;
 		final int max = Math.min(s1.length, s2.length);
 		for (int i = 0; i < max && s1[i] == s2[i]; ++i) {
@@ -987,7 +993,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Returns the length of the common prefix between s1 and s2.
 	 */
-	public static int prefixLength(String s1, String s2) {
+	public static int prefixLength(final String s1, final String s2) {
 		int len = 0;
 		final int max = Math.min(s1.length(), s2.length());
 		for (int i = 0; i < max && s1.charAt(i) == s2.charAt(i); ++i) {
@@ -996,7 +1002,7 @@ public class Util implements ISuffixConstants {
 		return len;
 	}
 
-	private static void quickSort(char[][] list, int left, int right) {
+	private static void quickSort(final char[][] list, int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
 		final char[] mid = list[(left + right) / 2];
@@ -1026,8 +1032,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sort the comparable objects in the given collection.
 	 */
-	private static void quickSort(Comparable[] sortedCollection, int left,
-			int right) {
+	private static void quickSort(final Comparable[] sortedCollection,
+			int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
 		final Comparable mid = sortedCollection[(left + right) / 2];
@@ -1054,7 +1060,7 @@ public class Util implements ISuffixConstants {
 		}
 	}
 
-	private static void quickSort(int[] list, int left, int right) {
+	private static void quickSort(final int[] list, int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
 		final int mid = list[(left + right) / 2];
@@ -1084,8 +1090,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sort the objects in the given collection using the given comparer.
 	 */
-	private static void quickSort(Object[] sortedCollection, int left,
-			int right, Comparer comparer) {
+	private static void quickSort(final Object[] sortedCollection, int left,
+			int right, final Comparer comparer) {
 		final int original_left = left;
 		final int original_right = right;
 		final Object mid = sortedCollection[(left + right) / 2];
@@ -1115,8 +1121,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sort the objects in the given collection using the given sort order.
 	 */
-	private static void quickSort(Object[] sortedCollection, int left,
-			int right, int[] sortOrder) {
+	private static void quickSort(final Object[] sortedCollection, int left,
+			int right, final int[] sortOrder) {
 		final int original_left = left;
 		final int original_right = right;
 		final int mid = sortOrder[(left + right) / 2];
@@ -1149,7 +1155,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sort the strings in the given collection.
 	 */
-	private static void quickSort(String[] sortedCollection, int left, int right) {
+	private static void quickSort(final String[] sortedCollection, int left,
+			int right) {
 		final int original_left = left;
 		final int original_right = right;
 		final String mid = sortedCollection[(left + right) / 2];
@@ -1179,8 +1186,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sort the strings in the given collection in reverse alphabetical order.
 	 */
-	private static void quickSortReverse(String[] sortedCollection, int left,
-			int right) {
+	private static void quickSortReverse(final String[] sortedCollection,
+			int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
 		final String mid = sortedCollection[(left + right) / 2];
@@ -1232,7 +1239,7 @@ public class Util implements ISuffixConstants {
 	 *                Unicode string.
 	 * @see java.io.DataInputStream#readUnsignedShort()
 	 */
-	static final char[] readUTF(DataInput in) throws IOException {
+	static final char[] readUTF(final DataInput in) throws IOException {
 		final int utflen = in.readUnsignedShort();
 		char[] str = new char[utflen];
 		int count = 0;
@@ -1303,7 +1310,7 @@ public class Util implements ISuffixConstants {
 		}
 	}
 
-	public static void sort(char[][] list) {
+	public static void sort(final char[][] list) {
 		if (list.length > 1) {
 			quickSort(list, 0, list.length - 1);
 		}
@@ -1312,13 +1319,13 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sorts an array of Comparable objects in place.
 	 */
-	public static void sort(Comparable[] objects) {
+	public static void sort(final Comparable[] objects) {
 		if (objects.length > 1) {
 			quickSort(objects, 0, objects.length - 1);
 		}
 	}
 
-	public static void sort(int[] list) {
+	public static void sort(final int[] list) {
 		if (list.length > 1) {
 			quickSort(list, 0, list.length - 1);
 		}
@@ -1328,7 +1335,7 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of objects in place. The given comparer compares pairs of
 	 * items.
 	 */
-	public static void sort(Object[] objects, Comparer comparer) {
+	public static void sort(final Object[] objects, final Comparer comparer) {
 		if (objects.length > 1) {
 			quickSort(objects, 0, objects.length - 1, comparer);
 		}
@@ -1338,7 +1345,7 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of objects in place, using the sort order given for each
 	 * item.
 	 */
-	public static void sort(Object[] objects, int[] sortOrder) {
+	public static void sort(final Object[] objects, final int[] sortOrder) {
 		if (objects.length > 1) {
 			quickSort(objects, 0, objects.length - 1, sortOrder);
 		}
@@ -1347,7 +1354,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Sorts an array of strings in place using quicksort.
 	 */
-	public static void sort(String[] strings) {
+	public static void sort(final String[] strings) {
 		if (strings.length > 1) {
 			quickSort(strings, 0, strings.length - 1);
 		}
@@ -1357,7 +1364,7 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of Comparable objects, returning a new array with the
 	 * sorted items. The original array is left untouched.
 	 */
-	public static Comparable[] sortCopy(Comparable[] objects) {
+	public static Comparable[] sortCopy(final Comparable[] objects) {
 		final int len = objects.length;
 		final Comparable[] copy = new Comparable[len];
 		System.arraycopy(objects, 0, copy, 0, len);
@@ -1369,7 +1376,8 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of Strings, returning a new array with the sorted items.
 	 * The original array is left untouched.
 	 */
-	public static Object[] sortCopy(Object[] objects, Comparer comparer) {
+	public static Object[] sortCopy(final Object[] objects,
+			final Comparer comparer) {
 		final int len = objects.length;
 		final Object[] copy = new Object[len];
 		System.arraycopy(objects, 0, copy, 0, len);
@@ -1381,7 +1389,7 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of Strings, returning a new array with the sorted items.
 	 * The original array is left untouched.
 	 */
-	public static String[] sortCopy(String[] objects) {
+	public static String[] sortCopy(final String[] objects) {
 		final int len = objects.length;
 		final String[] copy = new String[len];
 		System.arraycopy(objects, 0, copy, 0, len);
@@ -1393,7 +1401,7 @@ public class Util implements ISuffixConstants {
 	 * Sorts an array of strings in place using quicksort in reverse
 	 * alphabetical order.
 	 */
-	public static void sortReverseOrder(String[] strings) {
+	public static void sortReverseOrder(final String[] strings) {
 		if (strings.length > 1) {
 			quickSortReverse(strings, 0, strings.length - 1);
 		}
@@ -1402,7 +1410,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts a String[] to char[][].
 	 */
-	public static char[][] toCharArrays(String[] a) {
+	public static char[][] toCharArrays(final String[] a) {
 		final int len = a.length;
 		final char[][] result = new char[len][];
 		for (int i = 0; i < len; ++i) {
@@ -1414,7 +1422,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts a String to char[].
 	 */
-	public static char[] toChars(String s) {
+	public static char[] toChars(final String s) {
 		final int len = s.length();
 		final char[] chars = new char[len];
 		s.getChars(0, len, chars, 0);
@@ -1424,7 +1432,7 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts a String to char[][], where segments are separate by '.'.
 	 */
-	public static char[][] toCompoundChars(String s) {
+	public static char[][] toCompoundChars(final String s) {
 		final int len = s.length();
 		if (len == 0) {
 			return CharOperation.NO_CHAR_CHAR;
@@ -1448,14 +1456,14 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts a char[] to String.
 	 */
-	public static String toString(char[] c) {
+	public static String toString(final char[] c) {
 		return new String(c);
 	}
 
 	/**
 	 * Converts a char[][] to String, where segments are separated by '.'.
 	 */
-	public static String toString(char[][] c) {
+	public static String toString(final char[][] c) {
 		final StringBuilder sb = new StringBuilder();
 		for (int i = 0, max = c.length; i < max; ++i) {
 			if (i != 0) {
@@ -1470,7 +1478,7 @@ public class Util implements ISuffixConstants {
 	 * Converts a char[][] and a char[] to String, where segments are separated
 	 * by '.'.
 	 */
-	public static String toString(char[][] c, char[] d) {
+	public static String toString(final char[][] c, final char[] d) {
 		if (c == null) {
 			return new String(d);
 		}
@@ -1483,11 +1491,12 @@ public class Util implements ISuffixConstants {
 		return sb.toString();
 	}
 
-	public static void verbose(String log) {
+	public static void verbose(final String log) {
 		verbose(log, System.out);
 	}
 
-	public static synchronized void verbose(String log, PrintStream printStream) {
+	public static synchronized void verbose(final String log,
+			final PrintStream printStream) {
 		int start = 0;
 		do {
 			final int end = log.indexOf('\n', start);
@@ -1517,7 +1526,8 @@ public class Util implements ISuffixConstants {
 	 *                if an I/O error occurs.
 	 * 
 	 */
-	public static int writeUTF(OutputStream out, char[] str) throws IOException {
+	public static int writeUTF(final OutputStream out, final char[] str)
+			throws IOException {
 		final int strlen = str.length;
 		int utflen = 0;
 		for (int i = 0; i < strlen; i++) {
@@ -1573,7 +1583,7 @@ public class Util implements ISuffixConstants {
 	 * Returns the given bytes as a char array using a given encoding (null
 	 * means platform default).
 	 */
-	public static char[] bytesToChar(byte[] bytes, String encoding)
+	public static char[] bytesToChar(final byte[] bytes, final String encoding)
 			throws IOException {
 		return getInputStreamAsCharArray(new ByteArrayInputStream(bytes),
 				bytes.length, encoding);
@@ -1585,7 +1595,7 @@ public class Util implements ISuffixConstants {
 	 * @throws IOException
 	 *             if a problem occured reading the file.
 	 */
-	public static byte[] getFileByteContent(File file) throws IOException {
+	public static byte[] getFileByteContent(final File file) throws IOException {
 		InputStream stream = null;
 		try {
 			stream = new BufferedInputStream(new FileInputStream(file));
@@ -1608,8 +1618,8 @@ public class Util implements ISuffixConstants {
 	 * @throws IOException
 	 *             if a problem occured reading the file.
 	 */
-	public static char[] getFileCharContent(File file, String encoding)
-			throws IOException {
+	public static char[] getFileCharContent(final File file,
+			final String encoding) throws IOException {
 		InputStream stream = null;
 		try {
 			stream = new BufferedInputStream(new FileInputStream(file));
@@ -1648,8 +1658,8 @@ public class Util implements ISuffixConstants {
 	 * @throws IOException
 	 *             if a problem occured reading the stream.
 	 */
-	public static byte[] getInputStreamAsByteArray(InputStream stream,
-			int length) throws IOException {
+	public static byte[] getInputStreamAsByteArray(final InputStream stream,
+			final int length) throws IOException {
 		byte[] contents;
 		if (length == -1) {
 			contents = new byte[0];
@@ -1726,8 +1736,8 @@ public class Util implements ISuffixConstants {
 	 * @throws IOException
 	 *             if a problem occured reading the stream.
 	 */
-	public static char[] getInputStreamAsCharArray(InputStream stream,
-			int length, String encoding) throws IOException {
+	public static char[] getInputStreamAsCharArray(final InputStream stream,
+			final int length, final String encoding) throws IOException {
 		InputStreamReader reader = null;
 		reader = encoding == null ? new InputStreamReader(stream)
 				: new InputStreamReader(stream, encoding);
@@ -1810,7 +1820,7 @@ public class Util implements ISuffixConstants {
 	 * not creating extra strings.
 	 */
 	@SuppressWarnings("null")
-	public static final boolean isErlangFileName(String name) {
+	public static final boolean isErlangFileName(final String name) {
 		final int nameLength = name == null ? 0 : name.length();
 		final int suffixLength = SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
@@ -1832,7 +1842,7 @@ public class Util implements ISuffixConstants {
 	 * not creating extra strings.
 	 */
 	@SuppressWarnings("null")
-	public static final boolean isErlangFileName(char[] name) {
+	public static final boolean isErlangFileName(final char[] name) {
 		final int nameLength = name == null ? 0 : name.length;
 		final int suffixLength = SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
@@ -1851,10 +1861,10 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts an array of Objects into String.
 	 */
-	public static String toString(Object[] objects) {
+	public static String toString(final Object[] objects) {
 		return toString(objects, new Displayable() {
 
-			public String displayString(Object o) {
+			public String displayString(final Object o) {
 				if (o == null) {
 					return "null"; //$NON-NLS-1$
 				}
@@ -1866,7 +1876,8 @@ public class Util implements ISuffixConstants {
 	/**
 	 * Converts an array of Objects into String.
 	 */
-	public static String toString(Object[] objects, Displayable renderer) {
+	public static String toString(final Object[] objects,
+			final Displayable renderer) {
 		if (objects == null) {
 			return ""; //$NON-NLS-1$
 		}
@@ -1887,11 +1898,24 @@ public class Util implements ISuffixConstants {
 	 *            The boolean to convert
 	 * @return The corresponding Boolean object (TRUE or FALSE).
 	 */
-	public static Boolean toBoolean(boolean bool) {
+	public static Boolean toBoolean(final boolean bool) {
 		if (bool) {
 			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;
+	}
+
+	public static String stringValue(final OtpErlangObject o) {
+		if (o instanceof OtpErlangString) {
+			final OtpErlangString s = (OtpErlangString) o;
+			return s.stringValue();
+		} else if (o instanceof OtpErlangList) {
+			final OtpErlangList l = (OtpErlangList) o;
+			if (l.arity() == 0) {
+				return "";
+			}
+		}
+		return null;
 	}
 
 }

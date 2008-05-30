@@ -16,6 +16,7 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 
@@ -24,26 +25,12 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideBackend;
 import erlang.ErlideNoparse;
 
 public class ErlParser {
-
-	private static String stringValue(final OtpErlangObject o) {
-		if (o instanceof OtpErlangString) {
-			final OtpErlangString s = (OtpErlangString) o;
-			return s.stringValue();
-		} else if (o instanceof OtpErlangList) {
-			final OtpErlangList l = (OtpErlangList) o;
-			if (l.arity() == 0) {
-				return "";
-			}
-		}
-		return null;
-	}
 
 	/**
 	 * @param module
@@ -142,7 +129,7 @@ public class ErlParser {
 			}
 		} catch (final OtpErlangRangeException e1) {
 		}
-		final ErlComment comment = new ErlComment(parent, stringValue(s),
+		final ErlComment comment = new ErlComment(parent, Util.stringValue(s),
 				false, line == 1);
 		try {
 			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
@@ -223,7 +210,7 @@ public class ErlParser {
 		ErlFunction f = null;
 		try {
 			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), stringValue(head));
+					.intValue(), Util.stringValue(head));
 		} catch (final OtpErlangRangeException e) {
 			return f;
 		}
@@ -252,8 +239,8 @@ public class ErlParser {
 		final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
 		final OtpErlangObject head = clause.elementAt(4);
 		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(6);
-		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i,
-				stringValue(head));
+		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i, Util
+				.stringValue(head));
 		try {
 			setNamePos(cl, cnamePos);
 		} catch (final OtpErlangRangeException e) {

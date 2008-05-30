@@ -11,6 +11,7 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -32,14 +33,19 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
+
+import erlang.ErlProjectImport;
+import erlang.ErlangImport;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
 	// {
@@ -52,9 +58,9 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 	@SuppressWarnings("deprecation")
 	public ErlangProjectImportWizard() {
-		AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
+		final AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
 				.getPlugin(PlatformUI.PLUGIN_ID);
-		IDialogSettings workbenchSettings = plugin.getDialogSettings();
+		final IDialogSettings workbenchSettings = plugin.getDialogSettings();
 		IDialogSettings section = workbenchSettings
 				.getSection("FileSystemImportWizard");//$NON-NLS-1$
 		if (section == null) {
@@ -75,6 +81,30 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			return false;
 		}
 
+		final List<?> selectedResources = mainPage.getSelectedResources();
+		final List<String> filesAndDirs = new ArrayList<String>(
+				selectedResources.size());
+		final FileSystemStructureProvider provider = FileSystemStructureProvider.INSTANCE;
+		for (final Object o : selectedResources) {
+			final FileSystemElement fse = (FileSystemElement) o;
+			final Object fso = fse.getFileSystemObject();
+			final String s = provider.getFullPath(fso);
+			filesAndDirs.add(s);
+		}
+		final String prefix = mainPage.getProjectPath().toString();
+		final ErlProjectImport epi = ErlangImport.importProject(prefix,
+				filesAndDirs);
+		final List<Object> fileSystemObjects = new ArrayList<Object>();
+		for (final Object o : selectedResources) {
+			final FileSystemElement fse = (FileSystemElement) o;
+			final Object fso = fse.getFileSystemObject();
+			final String s = provider.getFullPath(fso);
+			if (epi.getResources().contains(s)) {
+				fileSystemObjects.add(((FileSystemElement) o)
+						.getFileSystemObject());
+			}
+		}
+
 		if (mainPage.isCopyFiles()) {
 
 			try {
@@ -82,19 +112,23 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 					@Override
 					protected void execute(IProgressMonitor monitor) {
-						createProject((monitor != null) ? monitor
-								: new NullProgressMonitor());
+						if (monitor == null) {
+							monitor = new NullProgressMonitor();
+						}
+						createProject(monitor, epi.getIncludeDirs(), epi
+								.getSourceDirs());
 
 						try {
 							final IWorkbench wbench = ErlideUIPlugin
 									.getDefault().getWorkbench();
-							wbench.showPerspective(ErlangPerspective.ID,
-									wbench.getActiveWorkbenchWindow());
+							wbench.showPerspective(ErlangPerspective.ID, wbench
+									.getActiveWorkbenchWindow());
 						} catch (final WorkbenchException we) {
 							// ignore
 						}
 					}
 				});
+
 			} catch (final InvocationTargetException x) {
 				reportError(x);
 				return false;
@@ -107,7 +141,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 
 		}
 
-		return mainPage.finish();
+		return mainPage.finish(fileSystemObjects);
 	}
 
 	/**
@@ -126,13 +160,15 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void init(IWorkbench aWorkbench, IStructuredSelection aSelection) {
-		this.workbench = aWorkbench;
-		this.selection = aSelection;
+	public void init(final IWorkbench aWorkbench,
+			final IStructuredSelection aSelection) {
+		workbench = aWorkbench;
+		selection = aSelection;
 
-		List<?> selectedResources = IDE.computeSelectedResources(aSelection);
+		final List<?> selectedResources = IDE
+				.computeSelectedResources(aSelection);
 		if (!selectedResources.isEmpty()) {
-			this.selection = new StructuredSelection(selectedResources);
+			selection = new StructuredSelection(selectedResources);
 		}
 		setWindowTitle("Erlang Project Import Wizard"); // NON-NLS-1
 		setNeedsProgressMonitor(true);
@@ -194,7 +230,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @param x
 	 *            details on the error
 	 */
-	private void reportError(Exception x) {
+	private void reportError(final Exception x) {
 		x.printStackTrace();
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
 				.getResourceString("wizards.errors.projecterrordesc"),
@@ -223,7 +259,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * @param monitor
 	 *            reports progress on this object
 	 */
-	protected void createProject(IProgressMonitor monitor) {
+	protected void createProject(final IProgressMonitor monitor,
+			final List<String> includeDirs, final List<String> sourceDirs) {
 		monitor.beginTask(ErlideUIPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
 		try {
@@ -265,6 +302,10 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// directories = findHrlDirectories();
 			// prefs.setIncludeDirs(directories);
 			// prefs.copyFrom(bprefs);
+			prefs.setIncludeDirs(includeDirs.toArray(new String[includeDirs
+					.size()]));
+			prefs.setSourceDirs(sourceDirs
+					.toArray(new String[sourceDirs.size()]));
 			prefs.store();
 
 			// add code path to backend

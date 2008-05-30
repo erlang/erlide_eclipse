@@ -129,8 +129,8 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Creates an instance of this class
 	 */
-	protected ErlangProjectImportWizardPage(String name, IWorkbench aWorkbench,
-			IStructuredSelection selection) {
+	protected ErlangProjectImportWizardPage(final String name,
+			final IWorkbench aWorkbench, final IStructuredSelection selection) {
 		super(name, selection);
 	}
 
@@ -142,8 +142,8 @@ public class ErlangProjectImportWizardPage extends
 	 * @param selection
 	 *            IStructuredSelection
 	 */
-	public ErlangProjectImportWizardPage(IWorkbench aWorkbench,
-			IStructuredSelection selection) {
+	public ErlangProjectImportWizardPage(final IWorkbench aWorkbench,
+			final IStructuredSelection selection) {
 		this("alfa beta", aWorkbench, selection);//$NON-NLS-1$
 		setTitle(ErlangDataTransferMessages.DataTransfer_fileSystemTitle);
 		setDescription(ErlangDataTransferMessages.FileImport_importFileSystem);
@@ -171,8 +171,8 @@ public class ErlangProjectImportWizardPage extends
 	 *            <code>true</code> if the button is to be the default button,
 	 *            and <code>false</code> otherwise
 	 */
-	protected Button createButton(Composite parent, int id, String label,
-			boolean defaultButton) {
+	protected Button createButton(final Composite parent, final int id,
+			final String label, final boolean defaultButton) {
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
 
@@ -202,7 +202,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param parent
 	 *            the parent control
 	 */
-	protected final void createButtonsGroup(Composite parent) {
+	protected final void createButtonsGroup(final Composite parent) {
 		// top level group
 		final Composite buttonComposite = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
@@ -258,7 +258,7 @@ public class ErlangProjectImportWizardPage extends
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		validateSourceGroup();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
@@ -269,7 +269,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Create the import options specification widgets.
 	 */
 	@Override
-	protected void createOptionsGroupButtons(Group optionsGroup) {
+	protected void createOptionsGroupButtons(final Group optionsGroup) {
 
 		// // overwrite... checkbox
 		overwriteExistingResourcesCheckbox = new Button(optionsGroup, SWT.CHECK);
@@ -301,7 +301,7 @@ public class ErlangProjectImportWizardPage extends
 		copyProjectsIntoWorkspaceCheckbox
 				.addSelectionListener(new SelectionAdapter() {
 					@Override
-					public void widgetSelected(SelectionEvent e) {
+					public void widgetSelected(final SelectionEvent e) {
 						copyFiles = copyProjectsIntoWorkspaceCheckbox
 								.getSelection();
 						if (copyFiles) {
@@ -324,7 +324,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Create the group for creating the root directory
 	 */
-	protected void createRootDirectoryGroup(Composite parent) {
+	protected void createRootDirectoryGroup(final Composite parent) {
 		sourceContainerGroup = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -347,7 +347,7 @@ public class ErlangProjectImportWizardPage extends
 
 		sourceNameField.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				updateFromSourceField();
 				setAllSelections(true);
 			}
@@ -355,7 +355,7 @@ public class ErlangProjectImportWizardPage extends
 
 		sourceNameField.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				dialogChanged();
 			}
 
@@ -399,7 +399,7 @@ public class ErlangProjectImportWizardPage extends
 			/*
 			 * @see KeyListener.keyPressed
 			 */
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(final KeyEvent e) {
 				// If there has been a key pressed then mark as dirty
 				entryChanged = true;
 			}
@@ -407,7 +407,7 @@ public class ErlangProjectImportWizardPage extends
 			/*
 			 * @see KeyListener.keyReleased
 			 */
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(final KeyEvent e) {
 			}
 		});
 
@@ -415,14 +415,14 @@ public class ErlangProjectImportWizardPage extends
 			/*
 			 * @see FocusListener.focusGained(FocusEvent)
 			 */
-			public void focusGained(FocusEvent e) {
+			public void focusGained(final FocusEvent e) {
 				// Do nothing when getting focus
 			}
 
 			/*
 			 * @see FocusListener.focusLost(FocusEvent)
 			 */
-			public void focusLost(FocusEvent e) {
+			public void focusLost(final FocusEvent e) {
 				// Clear the flag to prevent constant update
 				if (entryChanged) {
 					entryChanged = false;
@@ -443,7 +443,7 @@ public class ErlangProjectImportWizardPage extends
 		setButtonLayoutData(sourceBrowseButton);
 	}
 
-	protected void setProjectName(String name) {
+	protected void setProjectName(final String name) {
 		projectName = name;
 		if (name.length() > 0) {
 			setContainerFieldValue(name);
@@ -468,7 +468,8 @@ public class ErlangProjectImportWizardPage extends
 	 * children.
 	 */
 	protected MinimizedFileSystemElement createRootElement(
-			Object fileSystemObject, IImportStructureProvider provider) {
+			final Object fileSystemObject,
+			final IImportStructureProvider provider) {
 		final boolean isContainer = provider.isFolder(fileSystemObject);
 		final String elementLabel = provider.getLabel(fileSystemObject);
 
@@ -491,7 +492,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Create the import source specification widgets
 	 */
 	@Override
-	protected void createSourceGroup(Composite parent) {
+	protected void createSourceGroup(final Composite parent) {
 
 		createRootDirectoryGroup(parent);
 		createFileSelectionGroup(parent);
@@ -501,7 +502,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Enable or disable the button group.
 	 */
-	protected void enableButtonGroup(boolean enable) {
+	protected void enableButtonGroup(final boolean enable) {
 		selectTypesButton.setEnabled(enable);
 		// selectAllButton.setEnabled(false);
 		// deselectAllButton.setEnabled(false);
@@ -510,14 +511,14 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * @param enable
 	 */
-	protected void enableResourceTreeGroup(boolean enable) {
+	protected void enableResourceTreeGroup(final boolean enable) {
 		ResourceTreeAndListGroup.enableFolderComposite(enable);
 	}
 
 	/**
 	 * Enable or disable the group.
 	 */
-	protected void enableSourceGroup(boolean enable) {
+	protected void enableSourceGroup(final boolean enable) {
 		sourceContainerGroup.setEnabled(enable);
 	}
 
@@ -538,7 +539,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Execute the passed import operation. Answer a boolean indicating success.
 	 */
-	protected boolean executeImportOperation(ImportOperation op) {
+	protected boolean executeImportOperation(final ImportOperation op) {
 		initializeOperation(op);
 		try {
 			getContainer().run(true, true, op);
@@ -569,19 +570,12 @@ public class ErlangProjectImportWizardPage extends
 	 * 
 	 * @return boolean
 	 */
-	public boolean finish() {
+	public boolean finish(final List<Object> fileSystemObjects) {
 		if (!ensureSourceIsValid()) {
 			return false;
 		}
 
 		saveWidgetValues();
-
-		final Iterator<?> resourcesEnum = getSelectedResources().iterator();
-		final List<Object> fileSystemObjects = new ArrayList<Object>();
-		while (resourcesEnum.hasNext()) {
-			fileSystemObjects.add(((FileSystemElement) resourcesEnum.next())
-					.getFileSystemObject());
-		}
 
 		if (fileSystemObjects.size() > 0) {
 			if (copyFiles) {
@@ -591,7 +585,7 @@ public class ErlangProjectImportWizardPage extends
 				getContainer().run(false, true, new WorkspaceModifyOperation() {
 
 					@Override
-					protected void execute(IProgressMonitor monitor)
+					protected void execute(final IProgressMonitor monitor)
 							throws InvocationTargetException, CoreException {
 						linkToResources(fileSystemObjects,
 								new SubProgressMonitor(monitor, 1));
@@ -629,7 +623,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param x
 	 *            details on the error
 	 */
-	private void reportError(InterruptedException x) {
+	private void reportError(final InterruptedException x) {
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
 				.getResourceString("wizards.errors.projectfileerrordesc"),
 				ErlideUIPlugin
@@ -648,8 +642,8 @@ public class ErlangProjectImportWizardPage extends
 								.getResourceString("wizards.errors.projectfileerrordesc"));
 	}
 
-	boolean linkToResources(List<Object> fileSystemObjects,
-			IProgressMonitor monitor) throws InvocationTargetException,
+	boolean linkToResources(final List<Object> fileSystemObjects,
+			final IProgressMonitor monitor) throws InvocationTargetException,
 			CoreException {
 		final String prjName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -693,7 +687,7 @@ public class ErlangProjectImportWizardPage extends
 	protected ITreeContentProvider getFileProvider() {
 		return new WorkbenchContentProvider() {
 			@Override
-			public Object[] getChildren(Object o) {
+			public Object[] getChildren(final Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					return element.getFiles(
@@ -729,7 +723,7 @@ public class ErlangProjectImportWizardPage extends
 	protected ITreeContentProvider getFolderProvider() {
 		return new WorkbenchContentProvider() {
 			@Override
-			public Object[] getChildren(Object o) {
+			public Object[] getChildren(final Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					return element.getFolders(
@@ -740,7 +734,7 @@ public class ErlangProjectImportWizardPage extends
 			}
 
 			@Override
-			public boolean hasChildren(Object o) {
+			public boolean hasChildren(final Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
 					if (true) {
@@ -770,7 +764,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param path
 	 *            a String not yet formatted for java.io.File compatability
 	 */
-	private File getSourceDirectory(String path) {
+	private File getSourceDirectory(final String path) {
 		final File sourceDirectory = new File(getSourceDirectoryName(path));
 		if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
 			return null;
@@ -793,7 +787,7 @@ public class ErlangProjectImportWizardPage extends
 	 * if it ends with a separator then the separator is first removed so that
 	 * java treats it as a proper directory
 	 */
-	private String getSourceDirectoryName(String sourceName) {
+	private String getSourceDirectoryName(final String sourceName) {
 		IPath result = new Path(sourceName.trim());
 
 		if (result.getDevice() != null && result.segmentCount() == 0) {
@@ -819,7 +813,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param event
 	 *            Event
 	 */
-	public void handleEvent(Event event) {
+	public void handleEvent(final Event event) {
 		if (event.widget == sourceBrowseButton) {
 			handleSourceBrowseButtonPressed();
 		}
@@ -868,7 +862,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Import the resources with extensions as specified by the user
 	 */
-	protected boolean importResources(List<Object> fileSystemObjects) {
+	protected boolean importResources(final List<Object> fileSystemObjects) {
 
 		final ImportOperation operation = new ImportOperation(
 				getContainerFullPath(), getSourceDirectory(),
@@ -881,7 +875,7 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Initializes the specified operation appropriately.
 	 */
-	protected void initializeOperation(ImportOperation op) {
+	protected void initializeOperation(final ImportOperation op) {
 
 		// op.setCreateContainerStructure(createContainerStructureButton
 		// .getSelection());
@@ -899,7 +893,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @return <code>true</code> if the resource name is suitable for export
 	 *         based upon its extension
 	 */
-	protected boolean isExportableExtension(String extension) {
+	protected boolean isExportableExtension(final String extension) {
 		if (selectedTypes == null) {
 			return true;
 		}
@@ -1013,7 +1007,7 @@ public class ErlangProjectImportWizardPage extends
 	 *            boolean
 	 */
 	@Override
-	protected void setAllSelections(boolean value) {
+	protected void setAllSelections(final boolean value) {
 		super.setAllSelections(value);
 	}
 
@@ -1024,7 +1018,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param path
 	 *            the path to be added
 	 */
-	protected void setSourceName(String path) {
+	protected void setSourceName(final String path) {
 
 		if (path.length() > 0) {
 
@@ -1143,7 +1137,7 @@ public class ErlangProjectImportWizardPage extends
 	 * it becomes visible.
 	 */
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		resetSelection();
 		if (visible) {
@@ -1160,7 +1154,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void updateSelections(Map map) {
+	protected void updateSelections(final Map map) {
 		super.updateSelections(map);
 	}
 
