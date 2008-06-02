@@ -301,7 +301,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return null;
 	}
 
-	private class PreferenceChangeListener implements IPreferenceChangeListener {
+	class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if (key.indexOf('/') != -1
@@ -1637,8 +1637,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		Position fSecondPosition;
 	}
 
-	private class BracketInserter implements VerifyKeyListener,
-			ILinkedModeListener {
+	class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
 		private boolean fCloseBraces = false;
 		private boolean fCloseBrackets = false;
