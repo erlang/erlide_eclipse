@@ -44,7 +44,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 	public boolean equals(Object o) {
 		if (o instanceof ErlMacroDef) {
 			final ErlMacroDef other = (ErlMacroDef) o;
-			return super.equals(o) && macro == other.macro; 
+			return super.equals(o) && macro.equals(other.macro); 
 		}
 		return false;
 	}
