@@ -22,24 +22,24 @@
 -define(BACKTRACE, 100).
 
 -record(pinfo, {pid,       % pid()
-		status     % break | exit | idle | running | waiting
-	       }).
+                status     % break | exit | idle | running | waiting
+                }).
 
 -record(state, {parent, %pid() remote
-		mode,      % local | global
-		starter,   % bool() 'true' if int was started by me
-
-		focus, % #pinfo()
-		intdir,    % string() Default dir
-		pinfos,    % [#pinfo{}] Debugged processes
-
-		backtrace, % integer() Number of call frames to fetch
-
-		attach,    % false | {Flags, Function}
-
-		sfile,     % default | string() Settings file
-		changed    % boolean() Settings have been changed
-	       }). 
+                mode,      % local | global
+                starter,   % bool() 'true' if int was started by me
+                
+                focus, % #pinfo()
+                intdir,    % string() Default dir
+                pinfos,    % [#pinfo{}] Debugged processes
+                
+                backtrace, % integer() Number of call frames to fetch
+                
+                attach,    % false | {Flags, Function}
+                
+                sfile,     % default | string() Settings file
+                changed    % boolean() Settings have been changed
+                }). 
 
 %%====================================================================
 %% External exports
@@ -54,17 +54,17 @@
 %%--------------------------------------------------------------------
 start(Mode, SFile) ->
     case whereis(?MODULE) of
-	undefined ->
-	    CallingPid = self(),
-	    Pid = spawn(fun () -> init(CallingPid, Mode, SFile) end),
-	    receive
-		{initialization_complete, Pid} ->
-		    {ok, Pid};
-		Error ->
-		    Error
-	    end;
-
-	Pid ->
+        undefined ->
+            CallingPid = self(),
+            Pid = spawn(fun () -> init(CallingPid, Mode, SFile) end),
+            receive
+                {initialization_complete, Pid} ->
+                    {ok, Pid};
+                Error ->
+                    Error
+            end;
+        
+        Pid ->
             {error, {already_started,Pid}}
     end.
 
@@ -73,17 +73,17 @@ start(Mode, SFile) ->
 %%--------------------------------------------------------------------
 stop() ->
     case whereis(?MODULE) of
-	undefined ->
-	    ok;
-	Pid ->
-	    Flag = process_flag(trap_exit, true),
-	    link(Pid),
-	    Pid ! stop,
-	    receive
-		{'EXIT', Pid, stop} ->
-		    process_flag(trap_exit, Flag),
-		    ok
-	    end
+        undefined ->
+            ok;
+        Pid ->
+            Flag = process_flag(trap_exit, true),
+            link(Pid),
+            Pid ! stop,
+            receive
+                {'EXIT', Pid, stop} ->
+                    process_flag(trap_exit, Flag),
+                    ok
+            end
     end.
 
 
@@ -98,39 +98,38 @@ init(CallingPid, Mode, SFile) ->
 init2(CallingPid, Mode, SFile) ->
     %% Start Int if necessary and subscribe to information from it
     Bool = case int:start() of
-	       {ok, _Int} -> true;
-	       {error, {already_started, _Int}} -> false
-	   end,
+               {ok, _Int} -> true;
+               {error, {already_started, _Int}} -> false
+           end,
     int:subscribe(),
 
     %% Initial process state
     State1 = #state{mode    = Mode,
-		    starter = Bool,
-
-		    intdir  = element(2, file:get_cwd()),
-		    pinfos  = [],
-
-		    sfile   = SFile,
-		    changed = false
-		   },
-
+                    starter = Bool,
+                    
+                    intdir  = element(2, file:get_cwd()),
+                    pinfos  = [],
+                    
+                    sfile   = SFile,
+                    changed = false
+                    },
+    
     State2 = init_options(int:auto_attach(),    % Auto Attach
-			  int:stack_trace(),    % Stack Trace
-			  ?BACKTRACE,           % Back Trace Size
-			  State1),
-
+                          int:stack_trace(),    % Stack Trace
+                          ?BACKTRACE,           % Back Trace Size
+                          State1),
+    
     State3 = init_contents(int:interpreted(),   % Modules
-			   int:all_breaks(),    % Breakpoints
-			   int:snapshot(),      % Processes
-			   State2),
-
+                           int:all_breaks(),    % Breakpoints
+                           int:snapshot(),      % Processes
+                           State2),
+    
     CallingPid ! {initialization_complete, self()},
-
-    if
-	SFile==default ->
-	    loop(State3);
-	true ->
-	    loop(load_settings(SFile, State3))
+    
+    if SFile==default ->
+           loop(State3);
+       true ->
+           loop(load_settings(SFile, State3))
     end.
 
 init_options(AutoAttach, _StackTrace, BackTrace, State) ->
@@ -138,8 +137,8 @@ init_options(AutoAttach, _StackTrace, BackTrace, State) ->
         false -> ignore;
         {Flags, _Function} ->
             lists:foreach(fun(_Flag) ->
-                %			  dbg_ui_mon_win:select(map(Flag), true)
-                ok
+                                  %			  dbg_ui_mon_win:select(map(Flag), true)
+                                  ok
                           end,
                           Flags)
     end,
@@ -147,10 +146,10 @@ init_options(AutoAttach, _StackTrace, BackTrace, State) ->
 
 init_contents(_Mods, _Breaks, Processes, State) ->
     lists:foldl(fun(PidTuple, State0) ->
-			int_cmd({new_process, PidTuple}, State0)
-		end,
-		State,
-		Processes).
+                        int_cmd({new_process, PidTuple}, State0)
+                end,
+                State,
+                Processes).
 
 
 %%====================================================================

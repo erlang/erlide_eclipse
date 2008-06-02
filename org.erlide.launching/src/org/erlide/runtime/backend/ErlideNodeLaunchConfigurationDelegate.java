@@ -26,17 +26,18 @@ import org.erlide.runtime.backend.internal.ManagedBackend;
 public class ErlideNodeLaunchConfigurationDelegate extends
 		LaunchConfigurationDelegate {
 
-	public void launch(ILaunchConfiguration configuration, String mode,
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	/**
+	 * 
+	 * launch for the internal erlide node
+	 */
+	public void launch(final ILaunchConfiguration configuration,
+			final String mode, final ILaunch launch,
+			final IProgressMonitor monitor) throws CoreException {
 		// final boolean separateNode = useSeparateNode(configuration);
 
 		// TODO define all launch config attributes
 
 		try {
-			// TODO split erts-launch for ErlIde needs and Erlang-launch into
-			// two separate LaunchConfigurations?
-
-			// We have two kind of launches to handle here
 			String label = configuration.getAttribute(
 					IProcess.ATTR_PROCESS_LABEL, "noname");
 			label = BackendManager.buildNodeName(label);
@@ -50,7 +51,7 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 			cmd = ManagedBackend.getCmdLine() + nameAndCookie;
 			cmd = configuration.getAttribute(IProcess.ATTR_CMDLINE, "")
 					+ " -noshell " + nameAndCookie + " ";
-			ErlLogger.debug("RUN> " + cmd);
+			ErlLogger.debug("RUN internal node> " + cmd);
 			final File workingDirectory = new File(".");
 			Process vm = null;
 
@@ -79,7 +80,7 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 
 	}
 
-	public String getCmdLine(ILaunchConfiguration configuration) {
+	public String getCmdLine(final ILaunchConfiguration configuration) {
 		try {
 			return configuration.getAttribute(IProcess.ATTR_CMDLINE, "");
 		} catch (final CoreException e) {
@@ -87,12 +88,12 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 		}
 	}
 
-	public IBackend getBackend(ILaunchConfiguration configuration) {
+	public IBackend getBackend(final ILaunchConfiguration configuration) {
 		// TODO use project backend
 		return BackendManager.getDefault().getIdeBackend();
 	}
 
-	protected String getAdditionalArgs(ILaunchConfiguration configuration) {
+	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {
 		return "";
 	}
 

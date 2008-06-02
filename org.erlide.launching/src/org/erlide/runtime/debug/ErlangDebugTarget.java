@@ -9,7 +9,11 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -20,6 +24,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -40,7 +45,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fDisconnected = false;
 
-	@SuppressWarnings("unused")
 	private DebuggerListener fDbgListener;
 
 	private boolean fTerminated;
@@ -49,7 +53,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fShowErlideProcesses = false;
 
-	public ErlangDebugTarget(ILaunch launch, IBackend b, String mod, String func) {
+	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
+			final String mod, final String func) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
@@ -92,38 +97,27 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		try {
 			procs = ErlideDebug.getProcesses(fBackend, fShowSystemProcesses,
 					fShowErlideProcesses);
-
 			fBackend.send("erlide_dbg_mon", new OtpErlangAtom("dumpState"));
 		} catch (final Exception e) {
 		}
 		if (procs == null) {
 			return NO_PROCS;
 		}
-
-		final OtpErlangObject[] obj = procs.elements();
-		final OtpErlangPid[] ps = new OtpErlangPid[obj.length];
-		System.arraycopy(obj, 0, ps, 0, ps.length);
-
-		final IThread[] res = new IThread[ps.length];
-
-		for (int i = 0; i < ps.length; i++) {
-			final ErlangProcess t = new ErlangProcess(this, ps[i]);
-			res[i] = t;
+		final int n = procs.arity();
+		final List<ErlangProcess> l = new ArrayList<ErlangProcess>(n);
+		for (int i = 0; i < n; ++i) {
+			l.add(new ErlangProcess(this, (OtpErlangPid) procs.elementAt(i)));
 		}
-		return res;
+		return l.toArray(new IThread[l.size()]);
 	}
 
 	@SuppressWarnings("unused")
-	private void cmd(String cmd, OtpErlangObject args) {
-		final OtpErlangObject[] ctl = new OtpErlangObject[2];
-		ctl[0] = new OtpErlangAtom(cmd);
-		ctl[1] = args;
-		final OtpErlangTuple ct = new OtpErlangTuple(ctl);
+	private void cmd(final String cmd, final OtpErlangObject args) {
+		final OtpErlangTuple ct = new OtpErlangTuple(new OtpErlangObject[] {
+				new OtpErlangAtom(cmd), args });
 
-		final OtpErlangObject[] msgl = new OtpErlangObject[2];
-		msgl[0] = new OtpErlangAtom("cmd");
-		msgl[1] = ct;
-		final OtpErlangTuple msg = new OtpErlangTuple(msgl);
+		final OtpErlangTuple msg = new OtpErlangTuple(new OtpErlangObject[] {
+				new OtpErlangAtom("cmd"), ct });
 
 		fBackend.send("erlide_dbg_mon", msg);
 	}
@@ -136,8 +130,19 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return fBackend.getLabel();
 	}
 
-	public boolean supportsBreakpoint(IBreakpoint breakpoint) {
-		// TODO Auto-generated method stub
+	public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
+		if (!isTerminated()
+				&& breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
+			try {
+				final String module = getLaunch()
+						.getLaunchConfiguration()
+						.getAttribute(
+								IErlangLaunchConfigurationAttributes.ATTR_ENODE_MODULE,
+								(String) null);
+				return module != null && module != ""; // TODO FIXME testa mer!
+			} catch (final CoreException e) {
+			}
+		}
 		return false;
 	}
 
@@ -158,7 +163,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
 
 		// FIXME this causes an exception... why?
-		// fDbgListener.stop();
+		fDbgListener.stop();
 
 		DebugPlugin.getDefault().getBreakpointManager()
 				.removeBreakpointListener(this);
@@ -182,16 +187,18 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public void suspend() throws DebugException {
 	}
 
-	public void breakpointAdded(IBreakpoint breakpoint) {
+	public void breakpointAdded(final IBreakpoint breakpoint) {
 		ErlLogger.debug("Breakpoint added: " + breakpoint);
 		// TODO Auto-generated method stub
 	}
 
-	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta) {
+	public void breakpointRemoved(final IBreakpoint breakpoint,
+			final IMarkerDelta delta) {
 		// TODO Auto-generated method stub
 	}
 
-	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
+	public void breakpointChanged(final IBreakpoint breakpoint,
+			final IMarkerDelta delta) {
 		// TODO Auto-generated method stub
 	}
 
@@ -212,8 +219,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return false;
 	}
 
-	public IMemoryBlock getMemoryBlock(long startAddress, long length)
-			throws DebugException {
+	public IMemoryBlock getMemoryBlock(final long startAddress,
+			final long length) throws DebugException {
 		return null;
 	}
 
@@ -225,7 +232,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return fShowErlideProcesses;
 	}
 
-	public void setShowErlideProcesses(boolean showErlideProcesses) {
+	public void setShowErlideProcesses(final boolean showErlideProcesses) {
 		fShowErlideProcesses = showErlideProcesses;
 	}
 
@@ -233,8 +240,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return fShowSystemProcesses;
 	}
 
-	public void setShowSystemProcesses(boolean showSystemProcesses) {
+	public void setShowSystemProcesses(final boolean showSystemProcesses) {
 		fShowSystemProcesses = showSystemProcesses;
 	}
-
 }

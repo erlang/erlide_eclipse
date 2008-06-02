@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IProcess;
+import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -147,6 +149,8 @@ public interface IBackend {
 
 	String getLabel();
 
+	void setLabel(final String label);
+
 	boolean ping();
 
 	List<IBackendEventListener> getEventListeners(String event);
@@ -154,4 +158,10 @@ public interface IBackend {
 	String getName();
 
 	String getHost();
+
+	public void setErts(final IProcess process);
+
+	public abstract void initializeErts();
+
+	public void connectAndInitErlang(final List<ICodeBundle> plugins);
 }

@@ -11,37 +11,43 @@ package org.erlide.runtime.backend.internal;
 
 import java.io.IOException;
 
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IProcess;
 
 public class StandaloneBackend extends AbstractBackend {
 
 	@Override
-	public void connect(String cookie) {
+	public void connect(final String cookie) {
 		doConnect(getLabel(), cookie);
 	}
 
 	@Override
-	public void sendToDefaultShell(String msg) throws IOException {
+	public void sendToDefaultShell(final String msg) throws IOException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void sendToShell(String str) {
+	public void sendToShell(final String str) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void addStdListener(IStreamListener dsp) {
+	public void addStdListener(final IStreamListener dsp) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public ILaunch initialize() {
-		return null;
+	public void initializeErts() {
+		// TODO
+	}
+
+	@Override
+	public void setErts(final IProcess process) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

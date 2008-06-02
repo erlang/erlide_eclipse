@@ -25,8 +25,6 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangLaunchPlugin;
@@ -34,7 +32,6 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 import org.erlide.runtime.backend.internal.StandaloneBackend;
-import org.erlide.runtime.debug.ErlangDebugTarget;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 
@@ -93,53 +90,42 @@ public final class BackendManager implements IResourceChangeListener {
 		return MANAGER;
 	}
 
-	public IBackend createManaged(String name, boolean debug) {
+	public IBackend createManaged(final String name, final boolean debug,
+			final boolean launchErlang) {
 		ErlLogger.debug("create managed backend '" + name + "'."
 				+ Thread.currentThread());
 
 		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);
 
-		final ILaunch launch = b.initialize();
-		b.connect();
-		if (debug) {
-			final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
-			launch.addDebugTarget(target);
+		if (launchErlang) {
+			b.initializeErts();
+			b.connectAndInitErlang(fPlugins);
 		}
-
-		for (final ICodeBundle element : fPlugins) {
-			b.getCodeManager().register(element);
-		}
-
-		b.init_erlang();
 
 		return b;
 	}
 
-	public IBackend createStandalone(String name) {
+	public IBackend createStandalone(final String name) {
 		ErlLogger.debug("create standalone backend " + name + ".");
 
 		final AbstractBackend b = new StandaloneBackend();
 		b.setLabel(name);
 
-		final ILaunch launch = b.initialize();
-		b.connect();
-		if (launch != null) {
-			final IDebugTarget target = new ErlangDebugTarget(launch, b, "", "");
-			launch.addDebugTarget(target);
-		}
-
-		for (final ICodeBundle element : fPlugins) {
-			b.getCodeManager().register(element);
-		}
+		b.initializeErts();
+		b.connectAndInitErlang(fPlugins);
 		return b;
 	}
 
-	public synchronized IBackend get(IProject project) {
+	public IBackend get(final IProject project) {
+		return get(project, true);
+	}
+
+	public synchronized IBackend get(final IProject project,
+			final boolean launchErlang) {
 		synchronized (fProjectBackendsLock) {
-			ErlLogger.debug("** getBackend: " + project.getName() + " "
+			ErlLogger.debug("**  getBackend: " + project.getName() + " "
 					+ Thread.currentThread());
-			// Thread.dumpStack();
 			final String name = getBackendName(project);
 			if (name.equals(DEFAULT_BACKEND_LABEL)) {
 				return fLocalBackend;
@@ -151,7 +137,8 @@ public final class BackendManager implements IResourceChangeListener {
 				b = null;
 			}
 			if (b == null) {
-				b = createManaged(name, false);
+				// b = createStandalone(name);
+				b = createManaged(name, false, launchErlang);
 				fProjectBackends.put(name, b);
 				fireUpdate(b, BackendEvent.ADDED);
 			}
@@ -159,14 +146,14 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public IBackend getExternal(String nodeName) {
+	public IBackend getExternal(final String nodeName) {
 		// synchronized (fExternalBackendsLock) {
 		final IBackend b = fExternalBackends.get(nodeName);
 		return b;
 		// }
 	}
 
-	public IBackend createExternal(String nodeName, String cookie) {
+	public IBackend createExternal(final String nodeName, final String cookie) {
 		final AbstractBackend b = new StandaloneBackend();
 		b.setLabel(nodeName);
 		b.connect(cookie);
@@ -178,7 +165,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	}
 
-	public static String getBackendName(IProject project) {
+	public static String getBackendName(final IProject project) {
 		if (project == null) {
 			return DEFAULT_BACKEND_LABEL;
 		}
@@ -187,12 +174,14 @@ public final class BackendManager implements IResourceChangeListener {
 		final String prjLabel = prefs.getBackendName();
 		if (prjLabel.length() == 0) {
 			// we use the ide backend in this case
-			return DEFAULT_BACKEND_LABEL;
+			return project.getName();
+			// return "test";
+			// return DEFAULT_BACKEND_LABEL;
 		}
 		return prjLabel;
 	}
 
-	public void remove(IProject project) {
+	public void remove(final IProject project) {
 		/*
 		 * final String name = getBackendName(project); // TODO if (not used
 		 * anymore) fLocalBackends.remove(name);
@@ -204,7 +193,7 @@ public final class BackendManager implements IResourceChangeListener {
 		ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
-			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false);
+			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false, true);
 		}
 		return fLocalBackend;
 	}
@@ -219,15 +208,15 @@ public final class BackendManager implements IResourceChangeListener {
 		return test != null && "true".equals(test);
 	}
 
-	public void addBackendListener(IBackendListener listener) {
+	public void addBackendListener(final IBackendListener listener) {
 		fListeners.add(listener);
 	}
 
-	public void removeBackendListener(IBackendListener listener) {
+	public void removeBackendListener(final IBackendListener listener) {
 		fListeners.remove(listener);
 	}
 
-	private void fireUpdate(IBackend b, BackendEvent type) {
+	private void fireUpdate(final IBackend b, final BackendEvent type) {
 		new BackendChangeNotifier().notify(b, type);
 	}
 
@@ -247,7 +236,7 @@ public final class BackendManager implements IResourceChangeListener {
 		 * 
 		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
 		 */
-		public void handleException(Throwable exception) {
+		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
 					ErlangLaunchPlugin.PLUGIN_ID, 1,
 					"backend listener exception", exception);
@@ -273,7 +262,7 @@ public final class BackendManager implements IResourceChangeListener {
 		/**
 		 * Notifies the given listener of the adds/removes
 		 */
-		public void notify(IBackend b, BackendEvent type) {
+		public void notify(final IBackend b, final BackendEvent type) {
 			if (fListeners == null) {
 				return;
 			}
@@ -305,7 +294,7 @@ public final class BackendManager implements IResourceChangeListener {
 			fPlugins.add(p);
 			getIdeBackend().getCodeManager().register(p);
 			forEachProjectBackend(new IBackendVisitor() {
-				public void run(IBackend b) {
+				public void run(final IBackend b) {
 					b.getCodeManager().register(p);
 				}
 			});
@@ -316,13 +305,13 @@ public final class BackendManager implements IResourceChangeListener {
 		fPlugins.remove(p);
 		getIdeBackend().getCodeManager().unregister(p);
 		forEachProjectBackend(new IBackendVisitor() {
-			public void run(IBackend b) {
+			public void run(final IBackend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
 	}
 
-	public void forEachProjectBackend(IBackendVisitor visitor) {
+	public void forEachProjectBackend(final IBackendVisitor visitor) {
 		synchronized (fProjectBackendsLock) {
 			for (final Object element : fProjectBackends.values()) {
 				final IBackend b = (IBackend) element;
@@ -334,12 +323,12 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public static String buildNodeName(String label) {
+	public static String buildNodeName(final String label) {
 		final String host = getHost();
 		return buildNodeLabel(label) + "@" + host;
 	}
 
-	public static String buildNodeLabel(String label) {
+	public static String buildNodeLabel(final String label) {
 		if (label.indexOf('_') < 0) {
 			return label + "_" + fUniqueId;
 		}
@@ -385,7 +374,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return host;
 	}
 
-	public void resourceChanged(IResourceChangeEvent event) {
+	public void resourceChanged(final IResourceChangeEvent event) {
 		// ErlLogger.debug("+BM: " + event.getType() + " " +
 		// event.getResource()
 		// + event.getDelta());
@@ -401,7 +390,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return fRemoteBackend;
 	}
 
-	public void setRemoteBackend(IBackend b) {
+	public void setRemoteBackend(final IBackend b) {
 		fRemoteBackend = b;
 	}
 
@@ -458,7 +447,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	}
 
-	private boolean isExtErlideLabel(String label) {
+	private boolean isExtErlideLabel(final String label) {
 		if (fLocalBackend != null && label.equals(fLocalBackend.getLabel())) {
 			return false;
 		}

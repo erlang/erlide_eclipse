@@ -83,7 +83,7 @@ public class ManagedBackend extends AbstractBackend {
 	}
 
 	@Override
-	public void connect(String cookie) {
+	public void connect(final String cookie) {
 		if (fErts == null) {
 			return;
 		}
@@ -114,7 +114,7 @@ public class ManagedBackend extends AbstractBackend {
 	 * @throws IOException
 	 */
 	@Override
-	public void sendToShell(String string) {
+	public void sendToShell(final String string) {
 		if (fErts == null) {
 			return;
 		}
@@ -127,7 +127,7 @@ public class ManagedBackend extends AbstractBackend {
 	 * @throws IOException
 	 */
 	@Override
-	public void sendToDefaultShell(String string) throws IOException {
+	public void sendToDefaultShell(final String string) throws IOException {
 		if (fErts == null) {
 			return;
 		}
@@ -144,13 +144,21 @@ public class ManagedBackend extends AbstractBackend {
 	}
 
 	@Override
-	public void addStdListener(IStreamListener dsp) {
+	public void addStdListener(final IStreamListener dsp) {
 		fErts.addStdListener(dsp);
 	}
 
 	@Override
-	public ILaunch initialize() {
-		return startErts();
+	public void initializeErts() {
+		startErts();
 	}
 
+	@Override
+	public void setErts(final IProcess process) {
+		if (process instanceof ErtsProcess) {
+			fErts = (ErtsProcess) process;
+
+			fShellManager = new BackendShellManager(this);
+		}
+	}
 }
