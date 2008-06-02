@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -127,8 +126,8 @@ public class EdocView extends AbstractInfoView {
 		 * @param selectionProvider
 		 *            the selection provider
 		 */
-		public SelectAllAction(Control control,
-				SelectionProvider selectionProvider) {
+		public SelectAllAction(final Control control,
+				final SelectionProvider selectionProvider) {
 			super("selectAll"); //$NON-NLS-1$
 
 			Assert.isNotNull(control);
@@ -183,7 +182,7 @@ public class EdocView extends AbstractInfoView {
 		 * @param control
 		 *            the widget
 		 */
-		public SelectionProvider(Control control) {
+		public SelectionProvider(final Control control) {
 			Assert.isNotNull(control);
 			fControl = control;
 			if (fControl instanceof StyledText) {
@@ -191,7 +190,7 @@ public class EdocView extends AbstractInfoView {
 						.addSelectionListener(new SelectionAdapter() {
 
 							@Override
-							public void widgetSelected(SelectionEvent e) {
+							public void widgetSelected(final SelectionEvent e) {
 								fireSelectionChanged();
 							}
 						});
@@ -215,7 +214,7 @@ public class EdocView extends AbstractInfoView {
 			final SelectionChangedEvent event = new SelectionChangedEvent(this,
 					selection);
 			final Object[] selectionChangedListeners = fListeners.toArray();
-			for (Object element : selectionChangedListeners) {
+			for (final Object element : selectionChangedListeners) {
 				((ISelectionChangedListener) element).selectionChanged(event);
 			}
 		}
@@ -224,7 +223,7 @@ public class EdocView extends AbstractInfoView {
 		 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
 		 */
 		public void addSelectionChangedListener(
-				ISelectionChangedListener listener) {
+				final ISelectionChangedListener listener) {
 			fListeners.add(listener);
 		}
 
@@ -246,14 +245,14 @@ public class EdocView extends AbstractInfoView {
 		 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
 		 */
 		public void removeSelectionChangedListener(
-				ISelectionChangedListener listener) {
+				final ISelectionChangedListener listener) {
 			fListeners.remove(listener);
 		}
 
 		/*
 		 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
 		 */
-		public void setSelection(ISelection selection) {
+		public void setSelection(final ISelection selection) {
 			// not supported
 		}
 	}
@@ -262,7 +261,7 @@ public class EdocView extends AbstractInfoView {
 	 * @see AbstractInfoView#internalCreatePartControl(Composite)
 	 */
 	@Override
-	protected void internalCreatePartControl(Composite parent) {
+	protected void internalCreatePartControl(final Composite parent) {
 		try {
 			fBrowser = new Browser(parent, SWT.NONE);
 			fIsUsingBrowserWidget = true;
@@ -306,7 +305,7 @@ public class EdocView extends AbstractInfoView {
 				 * @see org.eclipse.swt.events.ControlAdapter#controlResized(org.eclipse.swt.events.ControlEvent)
 				 */
 				@Override
-				public void controlResized(ControlEvent e) {
+				public void controlResized(final ControlEvent e) {
 					setInfo(fText.getText());
 				}
 			});
@@ -372,7 +371,7 @@ public class EdocView extends AbstractInfoView {
 	 * @see AbstractInfoView#setForeground(Color)
 	 */
 	@Override
-	protected void setForeground(Color color) {
+	protected void setForeground(final Color color) {
 		getControl().setForeground(color);
 	}
 
@@ -380,7 +379,7 @@ public class EdocView extends AbstractInfoView {
 	 * @see AbstractInfoView#setBackground(Color)
 	 */
 	@Override
-	protected void setBackground(Color color) {
+	protected void setBackground(final Color color) {
 		getControl().setBackground(color);
 	}
 
@@ -438,7 +437,7 @@ public class EdocView extends AbstractInfoView {
 	 * @see AbstractInfoView#setInfo(String)
 	 */
 	@Override
-	protected void setInfo(String info) {
+	protected void setInfo(final String info) {
 		String javadocHtml = info;
 
 		if (fIsUsingBrowserWidget) {
@@ -600,8 +599,8 @@ public class EdocView extends AbstractInfoView {
 	}
 
 	@Override
-	protected String getInfoForSelection(IWorkbenchPart part,
-			ISelection selection) {
+	protected String getInfoForSelection(final IWorkbenchPart part,
+			final ISelection selection) {
 		if (selection instanceof ITextSelection && part instanceof ErlangEditor) {
 			final ITextSelection sel = (ITextSelection) selection;
 			final ErlangEditor editor = (ErlangEditor) part;
@@ -610,8 +609,8 @@ public class EdocView extends AbstractInfoView {
 		return null;
 	}
 
-	private void initializeToolBar() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
-				.getToolBarManager();
-	}
+	// private void initializeToolBar() {
+	// IToolBarManager toolBarManager = getViewSite().getActionBars()
+	// .getToolBarManager();
+	// }
 }
