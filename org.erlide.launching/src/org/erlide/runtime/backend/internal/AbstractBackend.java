@@ -544,7 +544,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public void init_erlang() {
 		ErlRpcDaemon.getInstance().start(this);
-		// ErlideBackend.init(this, fNode.node());
 	}
 
 	public List<IBackendEventListener> getEventListeners(final String event) {

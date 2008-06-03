@@ -173,9 +173,8 @@ public final class BackendManager implements IResourceChangeListener {
 				project);
 		final String prjLabel = prefs.getBackendName();
 		if (prjLabel.length() == 0) {
-			// we use the ide backend in this case
-			return project.getName();
-			// return "test";
+			// return project.getName().replace(".", "__");
+			return "project";
 			// return DEFAULT_BACKEND_LABEL;
 		}
 		return prjLabel;

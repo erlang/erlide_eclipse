@@ -1,0 +1,5 @@
+bin
+ebin
+features
+plugins
+*.zip

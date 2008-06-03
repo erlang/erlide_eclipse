@@ -1076,6 +1076,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 	}
 
+	@SuppressWarnings("boxing")
 	void getSmartTypingPrefs() {
 		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
 				.getPreferences();

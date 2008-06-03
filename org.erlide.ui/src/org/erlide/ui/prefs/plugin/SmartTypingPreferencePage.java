@@ -31,13 +31,13 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 			"strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			"parens", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-	public static int STRINGS = 0;
-	public static int ATOMS = 1;
-	public static int BRACES = 2;
-	public static int BRACKETS = 3;
-	public static int PARENS = 4;
+	public static final int STRINGS = 0;
+	public static final int ATOMS = 1;
+	public static final int BRACES = 2;
+	public static final int BRACKETS = 3;
+	public static final int PARENS = 4;
 
-	public static int PASTE_REINDENT = 5;
+	public static final int PASTE_REINDENT = 5;
 
 	private static final String SMART_TYPING_DEFAULTS[] = new String[] { "1", //$NON-NLS-1$
 			"0", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -164,6 +164,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private void setToPreferences() {
 		final List<Boolean> l = getPreferences();
 		for (int i = 0; i < l.size(); ++i) {
@@ -172,6 +173,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	public static List<Boolean> getPreferences() {
 		final List<String> p = getPreferences(SMART_TYPING_KEY,
 				SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS);
