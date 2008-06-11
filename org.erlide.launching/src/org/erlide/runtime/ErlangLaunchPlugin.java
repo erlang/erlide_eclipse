@@ -71,6 +71,9 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		if (BackendManager.isDeveloper()) {
 			dev = " erlide developer version ***";
 		}
+		if (BackendManager.isTest()) {
+			dev += " test ***";
+		}
 		ErlLogger
 				.info("*** starting Erlide v"
 						+ getBundle().getHeaders().get("Bundle-Version")
@@ -88,7 +91,7 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		BackendManager.getDefault().removePlugin(this);
 
 		super.stop(context);
@@ -110,11 +113,11 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 *            The resource
 	 * @return The identified string
 	 */
-	public static String getResourceString(String key) {
+	public static String getResourceString(final String key) {
 		final ResourceBundle bundle = ErlangLaunchPlugin.getDefault()
 				.getResourceBundle();
 		try {
-			return (bundle != null) ? bundle.getString(key) : key;
+			return bundle != null ? bundle.getString(key) : key;
 		} catch (final MissingResourceException e) {
 			return key;
 		}
@@ -135,7 +138,7 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 * @param status
 	 *            status to log
 	 */
-	public static void log(IStatus status) {
+	public static void log(final IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
@@ -145,7 +148,7 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 * @param message
 	 *            the error message to log
 	 */
-	public static void logErrorMessage(String message) {
+	public static void logErrorMessage(final String message) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID, 150, message, null));
 	}
 
@@ -155,15 +158,15 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 * @param e
 	 *            the exception to be logged
 	 */
-	public static void log(Throwable e) {
+	public static void log(final Throwable e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID, 150, "internal error", e));
 	}
 
-	public static void log(String message, Exception e) {
+	public static void log(final String message, final Exception e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID, 150, message, e));
 	}
 
-	public static void debug(String message) {
+	public static void debug(final String message) {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}

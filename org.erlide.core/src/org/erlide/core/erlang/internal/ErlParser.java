@@ -256,11 +256,7 @@ public class ErlParser {
 		final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
 		final int ofs = ((OtpErlangLong) tpos1.elementAt(1)).intValue();
 		final int len = ((OtpErlangLong) tpos.elementAt(1)).intValue();
-		if (ErlScanner.UseScanner2) {
-			f.setNameRangeStartEnd(ofs, ofs + len);
-		} else {
-			f.setNameRangeStartEnd(ofs - 1, ofs + len - 1);
-		}
+		f.setNameRangeStartEnd(ofs, ofs + len);
 	}
 
 	/**
@@ -429,19 +425,11 @@ public class ErlParser {
 
 	private void setPos(final SourceRefElement e, final int line,
 			final int lastLine, final int ofs, final int len) {
-		if (ErlScanner.UseScanner2) {
-			e.setSourceRangeStart(ofs);
-			e.setSourceRangeEnd(ofs + len - 1); // FIXME: why is the token 1
-			// char too long?
-			e.setLineStart(line);
-			e.setLineEnd(lastLine);
-		} else {
-			e.setSourceRangeStart(ofs - 1);
-			e.setSourceRangeEnd(ofs + len - 2);
-			e.setLineStart(line);
-			e.setLineEnd(lastLine);
-			// parser (noparse)
-		}
+		e.setSourceRangeStart(ofs);
+		e.setSourceRangeEnd(ofs + len - 1); // FIXME: why is the token 1
+		// char too long?
+		e.setLineStart(line);
+		e.setLineEnd(lastLine);
 	}
 
 	private OtpErlangObject concreteTerm(final OtpErlangObject val) {

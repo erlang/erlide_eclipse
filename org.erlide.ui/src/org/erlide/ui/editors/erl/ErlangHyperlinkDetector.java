@@ -8,9 +8,9 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlScanner;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -18,12 +18,10 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 
 	private final ErlangEditor editor;
 
-	private IErlModule fModule;
-
 	/**
 	 * @param editor
 	 */
-	public ErlangHyperlinkDetector(ErlangEditor editor) {
+	public ErlangHyperlinkDetector(final ErlangEditor editor) {
 		this.editor = editor;
 	}
 
@@ -33,8 +31,8 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	 * @see org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(org.eclipse.jface.text.ITextViewer,
 	 *      org.eclipse.jface.text.IRegion, boolean)
 	 */
-	public IHyperlink[] detectHyperlinks(ITextViewer textViewer,
-			IRegion region, boolean canShowMultipleHyperlinks) {
+	public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
+			final IRegion region, final boolean canShowMultipleHyperlinks) {
 
 		if (region == null) {
 			return null;
@@ -53,13 +51,20 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	 * @param offset
 	 * @return
 	 */
-	private IHyperlink[] detectHyperlinks(IDocument doc, int offset) {
+	private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
 
 		ITypedRegion partition;
 		final ErlPartition aPartion = new ErlPartition();
 
-		fModule = ErlModelUtils.getModule(editor);
-		final ErlToken token = fModule.getScanner().getTokenAt(offset);
+		final IErlModule module = ErlModelUtils.getModule(editor);
+		if (module == null) {
+			return null;
+		}
+		final IErlScanner scanner = module.getScanner();
+		if (scanner == null) {
+			return null;
+		}
+		final ErlToken token = scanner.getTokenAt(offset);
 
 		if (token == null) {
 			return null;
@@ -112,7 +117,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		/**
 		 * @param length
 		 */
-		public void setLength(int length) {
+		public void setLength(final int length) {
 			this.length = length;
 		}
 
@@ -128,7 +133,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		/**
 		 * @param offset
 		 */
-		public void setOffset(int offset) {
+		public void setOffset(final int offset) {
 			this.offset = offset;
 		}
 
@@ -142,7 +147,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		/**
 		 * @param string
 		 */
-		public void setAType(String string) {
+		public void setAType(final String string) {
 			aType = string;
 		}
 
@@ -161,12 +166,9 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @param subName
 		 * @param partion
 		 */
-		public ErlangSubHyperlink(ErlangEditor editor, String subName,
-				ErlPartition partion) {
+		public ErlangSubHyperlink(final ErlangEditor editor,
+				final String subName, final ErlPartition partion) {
 			this.editor = editor;
-			if (!ErlScanner.UseScanner2) {
-				partion.setOffset(partion.getOffset() - 1);
-			}
 			subNameRegion = partion;
 		}
 
@@ -194,10 +196,8 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#open()
 		 */
 		public void open() {
-
 			final OpenAction action = (OpenAction) editor
 					.getAction("org.erlide.ui.actions.open");
-
 			if (action != null) {
 				action.run();
 			}
@@ -209,7 +209,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#getHyperlinkRegion()
 		 */
 		public IRegion getHyperlinkRegion() {
-
 			return subNameRegion;
 		}
 	}

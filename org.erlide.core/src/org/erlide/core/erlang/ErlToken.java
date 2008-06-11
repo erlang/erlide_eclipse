@@ -43,37 +43,23 @@ public class ErlToken {
 
 	public static final ErlToken EOF = new ErlToken();
 
-	public ErlToken(OtpErlangTuple e) {
+	public ErlToken(final OtpErlangTuple e) {
 		fTuple = e;
 		kind = ((OtpErlangAtom) e.elementAt(0)).atomValue();
 		if (TRACE) {
 			ErlLogger.debug("    =" + e.toString());
 		}
 		try {
-			if (ErlScanner.UseScanner2) {
-				if (e.elementAt(1) instanceof OtpErlangTuple) {
-					OtpErlangTuple pos;
-					pos = (OtpErlangTuple) e.elementAt(1);
-					// length = ((OtpErlangLong) pos.elementAt(1)).intValue() -
-					// 1;
-					length = ((OtpErlangLong) pos.elementAt(1)).intValue();
-					pos = (OtpErlangTuple) pos.elementAt(0);
-					offset = ((OtpErlangLong) pos.elementAt(1)).intValue();
-				} else {
-					offset = ((OtpErlangLong) e.elementAt(1)).intValue();
-				}
+			if (e.elementAt(1) instanceof OtpErlangTuple) {
+				OtpErlangTuple pos;
+				pos = (OtpErlangTuple) e.elementAt(1);
+				// length = ((OtpErlangLong) pos.elementAt(1)).intValue() -
+				// 1;
+				length = ((OtpErlangLong) pos.elementAt(1)).intValue();
+				pos = (OtpErlangTuple) pos.elementAt(0);
+				offset = ((OtpErlangLong) pos.elementAt(1)).intValue();
 			} else {
-				if (e.elementAt(1) instanceof OtpErlangTuple) {
-					OtpErlangTuple pos;
-					pos = (OtpErlangTuple) e.elementAt(1);
-					// length = ((OtpErlangLong) pos.elementAt(1)).intValue() -
-					// 1;
-					length = ((OtpErlangLong) pos.elementAt(1)).intValue();
-					pos = (OtpErlangTuple) pos.elementAt(0);
-					offset = ((OtpErlangLong) pos.elementAt(1)).intValue() - 1;
-				} else {
-					offset = ((OtpErlangLong) e.elementAt(1)).intValue() - 1;
-				}
+				offset = ((OtpErlangLong) e.elementAt(1)).intValue();
 			}
 		} catch (final OtpErlangRangeException e1) {
 			e1.printStackTrace();
@@ -129,7 +115,7 @@ public class ErlToken {
 		}
 	}
 
-	public ErlToken(OtpErlangTuple e, int x) {
+	public ErlToken(final OtpErlangTuple e, final int x) {
 		fTuple = e;
 		if (TRACE) {
 			ErlLogger.debug("    =" + e.toString());
@@ -206,7 +192,7 @@ public class ErlToken {
 		return fTuple;
 	}
 
-	public void fixOffset(int ofs) {
+	public void fixOffset(final int ofs) {
 		offset += ofs;
 	}
 

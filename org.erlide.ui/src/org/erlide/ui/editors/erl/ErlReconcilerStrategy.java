@@ -17,7 +17,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
@@ -38,36 +37,37 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 
 	// private boolean initialInsert;
 
-	public ErlReconcilerStrategy(ErlangEditor editor) {
+	public ErlReconcilerStrategy(final ErlangEditor editor) {
 		fEditor = editor;
 	}
 
-	public void setDocument(IDocument document) {
+	public void setDocument(final IDocument document) {
 		if (fEditor == null) {
 			return;
 		}
 		fDoc = document;
 	}
 
-	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
+	public void reconcile(final DirtyRegion dirtyRegion, final IRegion subRegion) {
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
 	}
 
-	private OtpErlangObject mkReconcileMsg(String string,
-			DirtyRegion dirtyRegion, IRegion subRegion) {
+	private OtpErlangObject mkReconcileMsg(final String string,
+			final DirtyRegion dirtyRegion, final IRegion subRegion) {
 		final OtpErlangAtom cmd = new OtpErlangAtom(string);
 		return cmd;
 	}
 
-	public void reconcile(IRegion partition) {
+	public void reconcile(final IRegion partition) {
 	}
 
-	private void reconcileModel(IDocument doc, DirtyRegion dirtyRegion) {
+	private void reconcileModel(final IDocument doc,
+			final DirtyRegion dirtyRegion) {
 		if (fModule != null) {
-			ErlLogger.debug("## reconcile " + fModule.getName() + "  "
-					+ dirtyRegion.getOffset() + "-" + dirtyRegion.getLength()
-					+ " : " + dirtyRegion.getType());
+			// ErlLogger.debug("## reconcile " + fModule.getName() + " "
+			// + dirtyRegion.getOffset() + "-" + dirtyRegion.getLength()
+			// + " : " + dirtyRegion.getType());
 			if (dirtyRegion.getType() == DirtyRegion.INSERT) {
 				fModule.reconcileText(dirtyRegion.getOffset(), 0, dirtyRegion
 						.getText(), mon);
@@ -94,11 +94,11 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		notify(new OtpErlangAtom("initialReconcile"));
 	}
 
-	private void notify(OtpErlangObject msg) {
+	private void notify(final OtpErlangObject msg) {
 		BackendManager.getDefault().getIdeBackend().send("erlide_code_db", msg);
 	}
 
-	public void setProgressMonitor(IProgressMonitor monitor) {
+	public void setProgressMonitor(final IProgressMonitor monitor) {
 		mon = monitor;
 	}
 

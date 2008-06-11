@@ -13,7 +13,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 	 * @param imports
 	 * @param module
 	 */
-	protected ErlRecordDef(IErlElement parent, String record) {
+	protected ErlRecordDef(final IErlElement parent, final String record) {
 		super(parent, "record_definition");
 		this.record = record;
 	}
@@ -36,4 +36,25 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 		return Util.combineHashCodes(super.hashCode(), getDefinedName()
 				.hashCode());
 	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null) {
+			return false;
+		}
+
+		// Erlang model parent is null
+		if (fParent == null) {
+			return super.equals(o);
+		}
+
+		if (o instanceof ErlElement) {
+			return toString().equals(o.toString());
+		}
+		return false;
+	}
+
 }

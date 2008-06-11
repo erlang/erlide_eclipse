@@ -36,6 +36,8 @@ public class ManagedBackend extends AbstractBackend {
 
 	private ErtsProcess fErts;
 
+	// ILaunch lll;
+
 	private ILaunch startErts() {
 		if (getLabel() == null) {
 			return null;
@@ -56,15 +58,32 @@ public class ManagedBackend extends AbstractBackend {
 			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
 					ErtsProcessFactory.ID);
 			wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
-
+			// final ILaunchConfigurationWorkingCopy wc2 = wc;
+			// lll = null;
+			// final Display display = new Display();
+			// display.syncExec(new Runnable() {
+			// public void run() {
+			// try {
+			// lll = wc2.launch(ILaunchManager.RUN_MODE,
+			// new NullProgressMonitor());
+			// } catch (final CoreException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			// }
+			// });
 			final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
 					new NullProgressMonitor());
 			fErts = null;
+			// if (lll.getProcesses().length == 1) {
+			// fErts = (ErtsProcess) lll.getProcesses()[0];
+			// }
 			if (ll.getProcesses().length == 1) {
 				fErts = (ErtsProcess) ll.getProcesses()[0];
 			}
 
 			fShellManager = new BackendShellManager(this);
+			// return lll;
 			return ll;
 
 		} catch (final Exception e) {

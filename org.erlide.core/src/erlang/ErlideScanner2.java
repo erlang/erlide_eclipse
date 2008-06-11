@@ -20,8 +20,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideScanner2 {
 	private final static String MODULE = "erlide_scanner2";
 
-	public static void initialScan(String module, String moduleFileName,
-			String initialText) {
+	public static void initialScan(final String module,
+			final String moduleFileName, final String initialText) {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
@@ -33,7 +33,7 @@ public class ErlideScanner2 {
 		}
 	}
 
-	public static void destroy(String module) {
+	public static void destroy(final String module) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpcx(MODULE, "destroy",
 					"a", module);
@@ -43,7 +43,7 @@ public class ErlideScanner2 {
 	}
 
 	@SuppressWarnings("boxing")
-	public static ErlToken getTokenAt(String module, int offset) {
+	public static ErlToken getTokenAt(final String module, final int offset) {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(MODULE,
@@ -59,8 +59,11 @@ public class ErlideScanner2 {
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
-			final OtpErlangTuple tt = (OtpErlangTuple) t1.elementAt(1);
-			return new ErlToken(tt, 0);
+			final OtpErlangObject ot = t1.elementAt(1);
+			if (ot instanceof OtpErlangTuple) {
+				final OtpErlangTuple tt = (OtpErlangTuple) ot;
+				return new ErlToken(tt, 0);
+			}
 		}
 		return null;
 	}
@@ -99,8 +102,8 @@ public class ErlideScanner2 {
 	// }
 
 	@SuppressWarnings("boxing")
-	public static void replaceText(String module, int offset, int removeLength,
-			String newText) {
+	public static void replaceText(final String module, final int offset,
+			final int removeLength, final String newText) {
 		try {
 			final OtpErlangObject r = BackendManager.getDefault()
 					.getIdeBackend().rpcx(MODULE, "replaceText", "aiis",
@@ -124,8 +127,8 @@ public class ErlideScanner2 {
 	private static final OtpErlangTuple TUPLE00 = new OtpErlangTuple(
 			new OtpErlangLong(0), new OtpErlangLong(0));
 
-	public static List<ErlToken> lightScanString(String string, int offset)
-			throws BackendException {
+	public static List<ErlToken> lightScanString(final String string,
+			final int offset) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
@@ -165,7 +168,7 @@ public class ErlideScanner2 {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
-	public static String checkAll(String module, String text)
+	public static String checkAll(final String module, final String text)
 			throws BackendException {
 		try {
 			final OtpErlangObject o = BackendManager.getDefault()

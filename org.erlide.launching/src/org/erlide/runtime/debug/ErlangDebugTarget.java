@@ -23,10 +23,14 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.jinterface.rpc.ErlEventLoop;
+import org.erlide.jinterface.rpc.IErlEventHandler;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -45,7 +49,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fDisconnected = false;
 
-	private DebuggerListener fDbgListener;
+	private final DebuggerListener fDbgListener;
 
 	private boolean fTerminated;
 
@@ -53,25 +57,19 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fShowErlideProcesses = false;
 
-	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-			final String mod, final String func) {
+	public ErlangDebugTarget(final ILaunch launch, final IBackend b) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
 		fTerminated = false;
 
-		try {
-			final OtpErlangPid pid = ErlideDebug.startDebug(b, mod, func);
+		final OtpErlangPid pid = ErlideDebug.startDebug(b, b.getEventPid());
 
-			// start debugger listener job
-			fDbgListener = new DebuggerListener("Erlang debugger listener",
-					this, b, pid);
-		} catch (final Exception e) {
-		}
+		// start debugger listener job
+		fDbgListener = new DebuggerListener("Erlang debugger listener", pid);
 
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
 				this);
-
 	}
 
 	@Override
@@ -154,7 +152,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return fTerminated;
 	}
 
-	public void terminate() throws DebugException {
+	public void terminate() {
 		if (fTerminated) {
 			return;
 		}
@@ -167,6 +165,32 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		DebugPlugin.getDefault().getBreakpointManager()
 				.removeBreakpointListener(this);
+	}
+
+	/**
+	 * Notification we have connected to the VM and it has started. Resume the
+	 * VM.
+	 */
+	private void started() {
+		fireCreationEvent();
+		installDeferredBreakpoints();
+		try {
+			resume();
+		} catch (final DebugException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Install breakpoints that are already registered with the breakpoint
+	 * manager.
+	 */
+	private void installDeferredBreakpoints() {
+		final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
+				.getBreakpointManager().getBreakpoints(getModelIdentifier());
+		for (int i = 0; i < breakpoints.length; i++) {
+			breakpointAdded(breakpoints[i]);
+		}
 	}
 
 	public boolean canResume() {
@@ -188,8 +212,19 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public void breakpointAdded(final IBreakpoint breakpoint) {
-		ErlLogger.debug("Breakpoint added: " + breakpoint);
-		// TODO Auto-generated method stub
+		if (supportsBreakpoint(breakpoint)) {
+			try {
+				if (breakpoint.isEnabled()
+						&& DebugPlugin.getDefault().getBreakpointManager()
+								.isEnabled() || !breakpoint.isRegistered()) {
+					final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
+					erlangLineBreakpoint.install(this);
+				}
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	public void breakpointRemoved(final IBreakpoint breakpoint,
@@ -199,7 +234,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	public void breakpointChanged(final IBreakpoint breakpoint,
 			final IMarkerDelta delta) {
-		// TODO Auto-generated method stub
+		if (supportsBreakpoint(breakpoint)) {
+			try {
+				if (breakpoint.isEnabled()
+						&& DebugPlugin.getDefault().getBreakpointManager()
+								.isEnabled()) {
+					breakpointAdded(breakpoint);
+				} else {
+					breakpointRemoved(breakpoint, null);
+				}
+			} catch (final CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public boolean canDisconnect() {
@@ -243,4 +291,78 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public void setShowSystemProcesses(final boolean showSystemProcesses) {
 		fShowSystemProcesses = showSystemProcesses;
 	}
+
+	private class DebuggerListener {
+		OtpErlangPid fDbgPid;
+
+		private final ErlEventLoop loop;
+
+		public DebuggerListener(final String name, final OtpErlangPid dbgPid) {
+			fDbgPid = dbgPid;
+
+			// TODO use the new event router job!
+
+			final IErlEventHandler r = new DebuggerJob();
+			loop = new ErlEventLoop(r);
+			loop.start();
+		}
+
+		private class DebuggerJob implements IErlEventHandler {
+
+			private OtpErlangPid self;
+
+			public void init() {
+				self = fBackend.getEventPid();
+
+				fBackend.send(fDbgPid, new OtpErlangTuple(new OtpErlangAtom(
+						"parent"), self));
+			}
+
+			public void handleEvent(final OtpErlangObject msg) {
+				if (msg != null) {
+					ErlLogger.debug("### got msg: " + msg);
+				}
+				// TODO Här ska vi väl ta emot events från antingen erlide_dbg
+				// eller erlide_dbg_mon...
+				final OtpErlangTuple t = (OtpErlangTuple) msg;
+				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
+				final String event = a.atomValue();
+				if (event.equals("started")) {
+					started();
+				} else if (event.equals("terminated")) {
+					terminate();
+				}
+			}
+
+			public boolean isTerminated() {
+				return fTerminated;
+			}
+
+			public OtpErlangObject receiveEvent(final int timeout)
+					throws OtpErlangExit, OtpErlangDecodeException {
+				if (timeout < 0) {
+					// TODO how to handle stopping, if it's blocked in a
+					// receive?
+					return fBackend.receiveRpc(60000);
+				}
+				return fBackend.receiveRpc(timeout);
+			}
+
+			public int getTimeout() {
+				return 200;
+			}
+
+			public boolean exception(final Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+
+		}
+
+		public void stop() {
+			loop.stop();
+		}
+
+	}
+
 }

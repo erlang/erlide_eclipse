@@ -4,7 +4,6 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -33,12 +32,19 @@ public class ErlideDebug {
 		return procs;
 	}
 
-	public static OtpErlangPid startDebug(final IBackend b, final String mod,
-			final String func) throws ErlangRpcException, BackendException,
-			RpcException {
-		OtpErlangObject res;
-		res = b.rpcx("erlide_debug", "start_debug", "aa", mod, func);
-		final OtpErlangPid pid = (OtpErlangPid) BackendUtil.ok(res);
+	public static OtpErlangPid startDebug(final IBackend b,
+			final OtpErlangPid jpid) {
+		OtpErlangObject res = null;
+		try {
+			res = b.rpcx("erlide_debug", "start_debug", "x", jpid);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		final OtpErlangPid pid = (OtpErlangPid) res;
 		return pid;
 	}
 
@@ -69,6 +75,19 @@ public class ErlideDebug {
 		return res;
 	}
 
+	public static boolean interpret(final IBackend b, final String module) {
+		try {
+			final OtpErlangAtom ok = (OtpErlangAtom) b.rpcx("erlide_debug",
+					"interpret", "a", module);
+			return ok.atomValue().equals("ok");
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public static boolean isSystemProcess(final IBackend b,
 			final OtpErlangPid pid) {
 		boolean res = false;
@@ -79,6 +98,19 @@ public class ErlideDebug {
 		} catch (final Exception e) {
 		}
 		return res;
+	}
+
+	public static void addLineBreakpoint(final IBackend b, final String module,
+			final int line) {
+		try {
+			b.rpcx("erlide_debug", "line_breakpoint", "si", module, line);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

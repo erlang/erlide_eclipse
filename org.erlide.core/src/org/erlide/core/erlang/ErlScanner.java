@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
-import erlang.ErlideScanner;
 import erlang.ErlideScanner2;
 
 /**
@@ -29,11 +28,9 @@ public class ErlScanner implements IErlScanner {
 
 	private final String moduleName;
 
-	public final static boolean UseScanner2 = true;
-
 	private String moduleFileName;
 
-	public ErlScanner(IErlModule module, String initialText) {
+	public ErlScanner(final IErlModule module, final String initialText) {
 		this.module = module;
 		moduleName = createScannerModuleName(module);
 		moduleFileName = "";
@@ -42,11 +39,7 @@ public class ErlScanner implements IErlScanner {
 			final IFile f = (IFile) r;
 			moduleFileName = f.getLocation().toString();
 		}
-		if (!UseScanner2) {
-			ErlideScanner.initialScan(moduleName, moduleFileName, initialText);
-		} else {
-			ErlideScanner2.initialScan(moduleName, moduleFileName, initialText);
-		}
+		ErlideScanner2.initialScan(moduleName, moduleFileName, initialText);
 		// create();
 		// insertText(0, initialText);
 	}
@@ -55,7 +48,7 @@ public class ErlScanner implements IErlScanner {
 	 * @return
 	 */
 
-	static public String createScannerModuleName(IErlModule module) {
+	static public String createScannerModuleName(final IErlModule module) {
 		final IResource res = module.getResource();
 		String resName;
 		if (res != null) {
@@ -74,11 +67,7 @@ public class ErlScanner implements IErlScanner {
 	// }
 
 	public void dispose() {
-		if (!UseScanner2) {
-			ErlideScanner.destroy(moduleName);
-		} else {
-			ErlideScanner2.destroy(moduleName);
-		}
+		ErlideScanner2.destroy(moduleName);
 	}
 
 	// public void insertText(int offset, String text) {
@@ -93,20 +82,12 @@ public class ErlScanner implements IErlScanner {
 	// ErlideScanner.removeText(fMod, offset, length);
 	// }
 
-	public void replaceText(int offset, int removeLength, String newText) {
-		if (!UseScanner2) {
-			ErlideScanner
-					.replaceText(moduleName, offset, removeLength, newText);
-		} else {
-			ErlideScanner2.replaceText(moduleName, offset, removeLength,
-					newText);
-		}
+	public void replaceText(final int offset, final int removeLength,
+			final String newText) {
+		ErlideScanner2.replaceText(moduleName, offset, removeLength, newText);
 	}
 
-	public ErlToken getTokenAt(int offset) {
-		if (!UseScanner2) {
-			return ErlideScanner.getTokenAt(moduleName, offset);
-		}
+	public ErlToken getTokenAt(final int offset) {
 		return ErlideScanner2.getTokenAt(moduleName, offset);
 	}
 
@@ -129,10 +110,7 @@ public class ErlScanner implements IErlScanner {
 		return moduleName;
 	}
 
-	public void rescan(String fullText) {
-		if (!UseScanner2) {
-			return;
-		}
+	public void rescan(final String fullText) {
 		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText);
 	}
 

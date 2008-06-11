@@ -344,9 +344,8 @@ public class ErlModule extends Openable implements IErlModule {
 		if (scannerDisposed) {
 			return;
 		}
-
-		ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
-				+ newText.length() + " ign " + fIgnoreNextReconcile);
+		// ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
+		// + newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
 			getScanner();
 			scanner.replaceText(offset, removeLength, newText);

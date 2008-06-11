@@ -108,7 +108,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
@@ -140,7 +139,6 @@ import org.erlide.ui.views.outline.ErlangContentProvider;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
 import org.erlide.ui.views.outline.ErlangOutlinePage;
 
-import erlang.ErlideScanner;
 import erlang.ErlideScanner2;
 
 /**
@@ -301,7 +299,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return null;
 	}
 
-	class PreferenceChangeListener implements IPreferenceChangeListener {
+	private class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if (key.indexOf('/') != -1
@@ -1076,7 +1074,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 	}
 
-	@SuppressWarnings("boxing")
 	void getSmartTypingPrefs() {
 		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
 				.getPreferences();
@@ -1638,7 +1635,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		Position fSecondPosition;
 	}
 
-	class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
+	private class BracketInserter implements VerifyKeyListener,
+			ILinkedModeListener {
 
 		private boolean fCloseBraces = false;
 		private boolean fCloseBrackets = false;
@@ -1718,11 +1716,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 						+ endLine.getLength() - getOffset;
 				final String str = getDocument().get(getOffset, getLength);
 				try {
-					if (ErlScanner.UseScanner2) {
-						tokens = ErlideScanner2.lightScanString(str, 0);
-					} else {
-						tokens = ErlideScanner.lightScanString(str, 0);
-					}
+					tokens = ErlideScanner2.lightScanString(str, 0);
 				} catch (final BackendException e) {
 				}
 

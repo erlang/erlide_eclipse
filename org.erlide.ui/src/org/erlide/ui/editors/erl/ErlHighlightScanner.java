@@ -22,7 +22,6 @@ import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -30,7 +29,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.IColorManager;
 
-import erlang.ErlideScanner;
 import erlang.ErlideScanner2;
 
 /**
@@ -54,7 +52,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 
 		private String pref;
 
-		MyErlToken(String apref) {
+		MyErlToken(final String apref) {
 			pref = apref;
 		}
 	};
@@ -88,7 +86,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 *            the color fColorManager
 	 * @param fScanner
 	 */
-	public ErlHighlightScanner(IColorManager lmanager) {
+	public ErlHighlightScanner(final IColorManager lmanager) {
 		fColorManager = lmanager;
 		final IPreferenceStore store = ErlideUIPlugin.getDefault()
 				.getPreferenceStore();
@@ -154,7 +152,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 						PreferenceConstants.COMMENT)), null, SWT.NORMAL));
 	}
 
-	public IToken convert(ErlToken tk) {
+	public IToken convert(final ErlToken tk) {
 		if (tk == ErlToken.EOF) {
 			return Token.EOF;
 		}
@@ -201,12 +199,12 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 * @param newValue
 	 *            the new value of the color
 	 */
-	public void handleColorChange(String id, RGB newValue) {
+	public void handleColorChange(final String id, final RGB newValue) {
 		final Token token = getToken(id);
 		fixTokenData(token, newValue);
 	}
 
-	private Token getToken(String id) {
+	private Token getToken(final String id) {
 		if (PreferenceConstants.ATTRIBUTE.equals(id)) {
 			return t_attribute;
 		} else if (PreferenceConstants.DEFAULT.equals(id)) {
@@ -241,13 +239,14 @@ public class ErlHighlightScanner implements ITokenScanner {
 		return null;
 	}
 
-	private void fixTokenData(Token token, RGB newValue) {
+	private void fixTokenData(final Token token, final RGB newValue) {
 		final TextAttribute attr = (TextAttribute) token.getData();
 		token.setData(new TextAttribute(fColorManager.getColor(newValue), attr
 				.getBackground(), attr.getStyle()));
 	}
 
-	public void setRange(IDocument document, int offset, int length) {
+	public void setRange(final IDocument document, final int offset,
+			final int length) {
 		if (document == null) {
 			return;
 		}
@@ -268,7 +267,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 		}
 	}
 
-	private void setText(String document) {
+	private void setText(final String document) {
 		if (document == null) {
 			return;
 		}
@@ -277,11 +276,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			fCrtToken = -1;
 
 			final String str = document;
-			if (ErlScanner.UseScanner2) {
-				fTokens = ErlideScanner2.lightScanString(str, rangeOffset);
-			} else {
-				fTokens = ErlideScanner.lightScanString(str, rangeOffset);
-			}
+			fTokens = ErlideScanner2.lightScanString(str, rangeOffset);
 
 		} catch (final ErlangRpcException e) {
 			// e.printStackTrace();

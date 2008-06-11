@@ -16,8 +16,13 @@
 
 -include_lib("kernel/include/file.hrl").
 
+
+-define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
+-define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
+-define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
+
 %% External exports
--export([start/2, stop/0]).
+-export([start/2, stop/0, interpret/1, line_breakpoint/2]).
 
 -define(BACKTRACE, 100).
 
@@ -38,8 +43,10 @@
                 attach,    % false | {Flags, Function}
                 
                 sfile,     % default | string() Settings file
-                changed    % boolean() Settings have been changed
-                }). 
+                changed,   % boolean() Settings have been changed
+                
+                interpreted% list of interpreted filenames
+               }). 
 
 %%====================================================================
 %% External exports
@@ -158,7 +165,6 @@ init_contents(_Mods, _Breaks, Processes, State) ->
 
 loop(State) ->
     receive
-    
         {parent, P} -> %% P is the remote mailbox
        	    loop(State#state{parent=P});
 
@@ -167,9 +173,10 @@ loop(State) ->
         	msg(State#state.parent, {dumpState, State, int:snapshot()}),
        	    loop(State);
 
-        {cmd, Args} = Msg ->
+        {cmd, From, Args} = Msg ->
 	    io:format("@ dbg_mon cmd: ~p~n", [Msg]),
-	    State1 = gui_cmd(Args, State),
+	    {Reply, State1} = gui_cmd(Args, State),
+            From ! Reply,
        	    loop(State1);
 
 	stop ->
@@ -195,7 +202,7 @@ loop(State) ->
 %% has been taken.
 
 gui_cmd(ignore, State) ->
-    State;
+    {ok, State};
 gui_cmd(stopped, State) ->
     if
 	State#state.starter==true -> int:stop();
@@ -226,13 +233,14 @@ gui_cmd(kill_all_processes, State) ->
 		  State#state.pinfos),
     State;
 
-gui_cmd({interpret, _Mod}, State) ->
+gui_cmd({interpret, Modules}, State) ->
+    Res = int:i(Modules),
 %    dbg_ui_interpret:start(State#state.gs, State#state.coords,
 %			   State#state.intdir, State#state.mode),
-    State;
+    {Res, State#state{interpreted=State#state.interpreted++Modules}};
 gui_cmd(delete_all, State) ->
     lists:foreach(fun(Mod) -> int:nn(Mod) end, int:interpreted()),
-    State;
+    {ok, State};
 gui_cmd({module, Mod, What}, State) ->
     case What of
 	delete -> int:nn(Mod)
@@ -248,22 +256,22 @@ gui_cmd(enable_all_breaks, State) ->
     State;
 gui_cmd(disable_all_breaks, State) ->
     Breaks = int:all_breaks(),
-    lists:foreach(fun ({{Mod, Line}, _Options}) ->
-			  int:disable_break(Mod, Line)
-		  end,
-		  Breaks),
+    lists:foreach(fun({{Mod, Line}, _Options}) ->
+                          int:disable_break(Mod, Line)
+                  end,
+                  Breaks),
     State;
 gui_cmd(delete_all_breaks, State) ->
     int:no_break(),
     State;
-gui_cmd({break, {Mod, Line}, What}, State) ->
-    case What of
-	delete -> int:delete_break(Mod, Line);
-	{status, inactive} -> int:disable_break(Mod, Line);
-	{status, active} -> int:enable_break(Mod, Line);
-	{trigger, Action} -> int:action_at_break(Mod, Line, Action)
-    end,
-    State;
+gui_cmd({break, {Mod, Line, What}}, State) ->
+    Res = case What of
+              delete -> int:delete_break(Mod, Line);
+              {status, inactive} -> int:disable_break(Mod, Line);
+              {status, active} -> int:enable_break(Mod, Line);
+              {trigger, Action} -> int:action_at_break(Mod, Line, Action)
+          end,
+    {Res, State};
 
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
@@ -350,6 +358,23 @@ int_cmd({stack_trace, _Flag}, State) ->
 int_cmd(_Other, State) ->
 	State.
 
+
+%%====================================================================
+%% Debugger API
+%%====================================================================
+interpret(Modules) ->
+    cmd(interpret, Modules).
+
+line_breakpoint(Module, Line) ->
+    cmd(break, {Module, Line, {status, active}}).
+
+cmd(Cmd, Args) ->
+    io:format("cmd ~p ~p\n", [Cmd, Args]),
+    ?MODULE ! {cmd, Cmd, self(), Args},
+    receive
+        Reply ->
+            Reply
+    end.
 
 %%====================================================================
 %% Debugger settings

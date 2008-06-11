@@ -114,7 +114,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 				backend.connectAndInitErlang(l);
 				// add debug target
 				final IDebugTarget target = new ErlangDebugTarget(launch,
-						backend, mod, fn);
+						backend);
 				launch.addDebugTarget(target);
 			}
 
