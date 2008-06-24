@@ -106,7 +106,7 @@ public class ErlideDebug {
 	public static boolean interpret(final IBackend backend, final String module) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
-					"interpret", "a", module);
+					"interpret", "s", module);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangObject o = t.elementAt(0);
