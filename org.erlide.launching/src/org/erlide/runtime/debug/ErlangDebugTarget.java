@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -25,6 +28,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.ErlEventLoop;
 import org.erlide.jinterface.rpc.IErlEventHandler;
+import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 
@@ -97,6 +101,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					fShowErlideProcesses);
 			fBackend.send("erlide_dbg_mon", new OtpErlangAtom("dumpState"));
 		} catch (final Exception e) {
+			final IStatus s = new Status(IStatus.ERROR,
+					ErlangLaunchPlugin.PLUGIN_ID, -1,
+					"couldn't get erlang proceses", e);
+			throw new DebugException(s);
 		}
 		if (procs == null) {
 			return NO_PROCS;
@@ -318,12 +326,16 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						"parent"), self));
 			}
 
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson.otp.erlang.OtpErlangObject)
+			 */
 			public void handleEvent(final OtpErlangObject msg) {
 				if (msg != null) {
 					ErlLogger.debug("### got msg: " + msg);
 				}
-				// TODO Här ska vi väl ta emot events från antingen erlide_dbg
-				// eller erlide_dbg_mon...
+				// TODO Fler events från erlide_dbg_mon...
 				final OtpErlangTuple t = (OtpErlangTuple) msg;
 				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
 				final String event = a.atomValue();
@@ -331,6 +343,30 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					started();
 				} else if (event.equals("terminated")) {
 					terminate();
+				} else if (event.equals("int")) {
+					handleIntEvent((OtpErlangTuple) t.elementAt(1));
+				}
+			}
+
+			private void handleIntEvent(final OtpErlangTuple intEvent) {
+				final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
+				final String event = a.atomValue();
+				if (event.equals("new_break")) {
+					// TODO ska vi göra nåt här? kanske inte ska fixa den i
+					// eclipse förrän detta kommer...
+				} else if (event.equals("new_status")) {
+					final OtpErlangPid pid = (OtpErlangPid) intEvent
+							.elementAt(1);
+					final ErlangProcess erlangProcess = new ErlangProcess(
+							ErlangDebugTarget.this, pid);
+					final OtpErlangAtom sa = (OtpErlangAtom) intEvent
+							.elementAt(2);
+					final String status = sa.atomValue();
+					if (status.equals("break")) { // TODO put check of status
+						// in erlangprocess...
+						ErlideDebug.attach(fBackend, pid, self);
+						erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
+					}
 				}
 			}
 
@@ -364,5 +400,4 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 
 	}
-
 }

@@ -19,7 +19,7 @@
 %%
 %% Exported Functions
 %%
--export([start_debug/1, line_breakpoint/2]).
+-export([start_debug/1, line_breakpoint/2, attach/2]).
 -compile(export_all).
 
 %%
@@ -31,6 +31,9 @@ start_debug(JPid) ->
 	{ok, Pid} = erlide_dbg_mon:start(local, default),
         JPid ! {started, Pid},
 	Pid.
+
+attach(Pid, JPid) ->
+    erlide_dbg:start(Pid, JPid, all).
 
 processes(ShowSys, ShowErlide) ->
     L = erlang:processes(),
@@ -55,27 +58,27 @@ is_erlide_process(Pid) when pid(Pid)->
                       lists:prefix("erlide_", atom_to_list(M1))
 %%                       string:equal(string:sub_string(atom_to_list(M1), 1, 7), "erlide_")
               end,
-              
     Current = case erlang:process_info(Pid, current_function) of
-                  undefined -> 
+                  undefined ->
                       false;
                   {current_function, {M2, _, _}} ->
                       lists:prefix("erlide_", atom_to_list(M2))
 %%                       string:equal(string:sub_string(atom_to_list(M2), 1, 7), "erlide_")
               end,
-    
     Started or Current.
 
 interpret(Files) ->
     erlide_dbg_mon:interpret(Files).
 
 line_breakpoint(File, Line) ->
-    io:format("before i\n", []),
-    erlide_log:log("before ii\n"),
     interpret([File]),
-    io:format("after i\n", []),
-    erlide_log:log("after ii\n"),
-    erlide_dbg_mon:line_breakpoint(File, Line).
+    ModuleName = filename:rootname(filename:basename(File)),
+    Module = list_to_atom(ModuleName),
+    erlang:display({?MODULE, ?LINE}),
+    Res = erlide_dbg_mon:line_breakpoint(Module, Line),
+    erlang:display({?MODULE, ?LINE}),
+    Res.
+
 
 %%
 %% Local Functions

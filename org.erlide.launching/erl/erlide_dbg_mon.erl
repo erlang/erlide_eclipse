@@ -24,7 +24,7 @@
 %% External exports
 -export([start/2, stop/0, interpret/1, line_breakpoint/2]).
 
--define(BACKTRACE, 100).
+-define(BACKTRACE, all).
 
 -record(pinfo, {pid,       % pid()
                 status     % break | exit | idle | running | waiting
@@ -46,7 +46,9 @@
                 changed,   % boolean() Settings have been changed
                 
                 interpreted% list of interpreted filenames
-               }). 
+               }).
+
+-define(SERVER, ?MODULE).
 
 %%====================================================================
 %% External exports
@@ -60,7 +62,7 @@
 %%   Reason = {already_started,Pid} | term()
 %%--------------------------------------------------------------------
 start(Mode, SFile) ->
-    case whereis(?MODULE) of
+    case whereis(?SERVER) of
         undefined ->
             CallingPid = self(),
             Pid = spawn(fun () -> init(CallingPid, Mode, SFile) end),
@@ -79,7 +81,7 @@ start(Mode, SFile) ->
 %% stop() -> ok
 %%--------------------------------------------------------------------
 stop() ->
-    case whereis(?MODULE) of
+    case whereis(?SERVER) of
         undefined ->
             ok;
         Pid ->
@@ -99,7 +101,7 @@ stop() ->
 %%====================================================================
 
 init(CallingPid, Mode, SFile) ->
-    register(?MODULE, self()),
+    register(?SERVER, self()),
     init2(CallingPid, Mode, SFile).
 
 init2(CallingPid, Mode, SFile) ->
@@ -118,21 +120,23 @@ init2(CallingPid, Mode, SFile) ->
                     pinfos  = [],
                     
                     sfile   = SFile,
-                    changed = false
+                    changed = false,
+                    
+                    interpreted = []
                     },
     
     State2 = init_options(int:auto_attach(),    % Auto Attach
                           int:stack_trace(),    % Stack Trace
                           ?BACKTRACE,           % Back Trace Size
                           State1),
-    
+
     State3 = init_contents(int:interpreted(),   % Modules
                            int:all_breaks(),    % Breakpoints
                            int:snapshot(),      % Processes
                            State2),
-    
+
     CallingPid ! {initialization_complete, self()},
-    
+
     if SFile==default ->
            loop(State3);
        true ->
@@ -173,9 +177,9 @@ loop(State) ->
         	msg(State#state.parent, {dumpState, State, int:snapshot()}),
        	    loop(State);
 
-        {cmd, From, Args} = Msg ->
+        {cmd, Cmd, From} = Msg ->
 	    io:format("@ dbg_mon cmd: ~p~n", [Msg]),
-	    {Reply, State1} = gui_cmd(Args, State),
+	    {Reply, State1} = gui_cmd(Cmd, State),
             From ! Reply,
        	    loop(State1);
 
@@ -265,7 +269,9 @@ gui_cmd(delete_all_breaks, State) ->
     int:no_break(),
     State;
 gui_cmd({break, {Mod, Line, What}}, State) ->
+    io:format("break Mod Line What ~p\n", [{Mod, Line, What}]),
     Res = case What of
+              add -> int:break(Mod, Line);
               delete -> int:delete_break(Mod, Line);
               {status, inactive} -> int:disable_break(Mod, Line);
               {status, active} -> int:enable_break(Mod, Line);
@@ -366,11 +372,13 @@ interpret(Modules) ->
     cmd(interpret, Modules).
 
 line_breakpoint(Module, Line) ->
-    cmd(break, {Module, Line, {status, active}}).
+    cmd(break, {Module, Line, add}).
 
 cmd(Cmd, Args) ->
-    io:format("cmd ~p ~p\n", [Cmd, Args]),
-    ?MODULE ! {cmd, Cmd, self(), Args},
+    cmd({Cmd, Args}).
+
+cmd(Cmd) ->
+    ?SERVER ! {cmd, Cmd, self()},
     receive
         Reply ->
             Reply
