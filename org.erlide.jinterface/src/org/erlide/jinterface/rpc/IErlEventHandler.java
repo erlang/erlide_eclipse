@@ -9,7 +9,11 @@ public interface IErlEventHandler {
 	void init();
 
 	/**
-	 * msg can't be null
+	 * Handle events from erlang
+	 * 
+	 * @param msg
+	 *            The term sent from erlang, can't be null
+	 * 
 	 */
 	void handleEvent(OtpErlangObject msg);
 
