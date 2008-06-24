@@ -38,11 +38,11 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 		// TODO define all launch config attributes
 
 		try {
-			String label = configuration.getAttribute(
+			final String label = configuration.getAttribute(
 					IProcess.ATTR_PROCESS_LABEL, "noname");
-			label = BackendManager.buildNodeName(label);
+			final String nodeName = BackendManager.buildNodeName(label);
 
-			final String nameAndCookie = "-name " + label + " -setcookie "
+			final String nameAndCookie = "-name " + nodeName + " -setcookie "
 					+ Cookie.retrieveCookie();
 
 			// If ATTR_CMDLINE is set, it's an launch for internal ErlIde
@@ -59,7 +59,7 @@ public class ErlideNodeLaunchConfigurationDelegate extends
 				vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
 
 				final IProcess process = DebugPlugin.newProcess(launch, vm,
-						label);
+						nodeName);
 
 				launch.addProcess(process);
 			} catch (final Exception e) {

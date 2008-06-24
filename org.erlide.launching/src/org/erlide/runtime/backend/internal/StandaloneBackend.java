@@ -27,11 +27,11 @@ public class StandaloneBackend extends AbstractBackend {
 
 	}
 
-	@Override
-	public void sendToShell(final String str) {
-		// TODO Auto-generated method stub
-
-	}
+	// @Override
+	// public void sendToShell(final String str) {
+	// // TODO Auto-generated method stub
+	//
+	// }
 
 	@Override
 	public void addStdListener(final IStreamListener dsp) {
@@ -48,6 +48,16 @@ public class StandaloneBackend extends AbstractBackend {
 	public void setErts(final IProcess process) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.runtime.backend.internal.AbstractBackend#init_erlang()
+	 */
+	@Override
+	public void initErlang() {
+		// super.init_erlang();
 	}
 
 }

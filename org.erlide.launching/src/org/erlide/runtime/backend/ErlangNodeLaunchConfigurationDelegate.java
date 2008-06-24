@@ -16,13 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.basiccore.ErlLogger;
@@ -31,6 +33,8 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.debug.ErlangDebugTarget;
+
+import erlang.ErlideDebug;
 
 public class ErlangNodeLaunchConfigurationDelegate extends
 		LaunchConfigurationDelegate {
@@ -79,10 +83,10 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 							" ").append(projOutputDir).append(" ");
 				}
 			}
-			if (mod.length() > 0 && fn.length() > 0) {
-				cmd.append("-s ").append(mod).append(" ").append(fn)
-						.append(" ");
-			}
+			// if (mod.length() > 0 && fn.length() > 0) {
+			// cmd.append("-s ").append(mod).append(" ").append(fn)
+			// .append(" ");
+			// }
 			ErlLogger.debug("RUN*> " + cmd.toString());
 			// launch an erlang process
 			final File workingDirectory = new File(".");
@@ -104,25 +108,65 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 								3000);
 			}
 			// make a nice little BackEnd for it
-			final IBackend backend = getBackend(project);
-			backend.setLabel(label);
+			final IBackend backend = getBackend(label);
+			// backend.setLabel(label);
 			backend.setErts(process);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load the debugger code on this erlang node
 				final List<ICodeBundle> l = new ArrayList<ICodeBundle>(1);
 				l.add(ErlangLaunchPlugin.getDefault());
-				backend.connectAndInitErlang(l);
+				backend.connectAndRegister(l);
 				// add debug target
-				final IDebugTarget target = new ErlangDebugTarget(launch,
+				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
 						backend);
 				launch.addDebugTarget(target);
+				if (project != null) {
+					interpretAll(backend, project);
+				}
 			}
-
+			if (mod.length() > 0 && fn.length() > 0) {
+				backend.rpc(mod, fn, "");
+			}
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
 		}
 
+	}
+
+	private void interpretAll(final IBackend backend, final IProject project) {
+		final List<String> beams = new ArrayList<String>();
+		final List<String> erls = new ArrayList<String>();
+		try {
+			project.accept(new IResourceVisitor() {
+				public boolean visit(final IResource resource)
+						throws CoreException {
+					final IPath fullPath = resource.getFullPath();
+					if (fullPath != null) {
+						final String ext = fullPath.getFileExtension();
+						if (ext != null) {
+							final String baseName = fullPath
+									.removeFileExtension().lastSegment();
+							if (ext.equals("beam")) {
+								beams.add(baseName);
+							} else if (ext.equals("erl")) {
+								erls.add(baseName);
+							}
+						}
+					}
+					return true;
+				}
+			}, IResource.DEPTH_INFINITE, 0);
+			for (final String erl : erls) {
+				if (beams.contains(erl)) {
+					ErlideDebug.interpret(backend, erl);
+				}
+			}
+
+		} catch (final CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getStartFunc(final ILaunchConfiguration configuration) {
@@ -154,9 +198,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		}
 	}
 
-	public IBackend getBackend(final IProject project) {
-		// return BackendManager.getDefault().getIdeBackend();
-		return BackendManager.getDefault().get(project, false);
+	public IBackend getBackend(final String name) {
+		return BackendManager.getDefault().getNamedBackend(name, false);
 	}
 
 	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {

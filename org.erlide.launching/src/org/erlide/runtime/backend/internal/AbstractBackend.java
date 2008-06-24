@@ -530,7 +530,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public abstract void sendToDefaultShell(String msg) throws IOException;
 
-	public abstract void sendToShell(String str);
+	// public abstract void sendToShell(String str);
 
 	public abstract void addStdListener(IStreamListener dsp);
 
@@ -542,7 +542,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		fLabel = lbl;
 	}
 
-	public void init_erlang() {
+	public void initErlang() {
 		ErlRpcDaemon.getInstance().start(this);
 	}
 
@@ -566,14 +566,13 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public abstract void setErts(final IProcess process);
 
-	public void connectAndInitErlang(final List<ICodeBundle> plugins) {
+	public void connectAndRegister(final List<ICodeBundle> plugins) {
 		connect();
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
 				getCodeManager().register(element);
 			}
 		}
-		init_erlang();
 	}
 
 }

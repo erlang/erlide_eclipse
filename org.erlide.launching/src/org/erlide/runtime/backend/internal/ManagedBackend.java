@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -21,10 +22,13 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.basiccore.ErlLogger;
 import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.basicui.prefs.IPrefConstants;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.ErtsProcessFactory;
 import org.erlide.runtime.backend.console.BackendShellManager;
@@ -35,8 +39,7 @@ import org.erlide.runtime.backend.console.BackendShellManager;
 public class ManagedBackend extends AbstractBackend {
 
 	private ErtsProcess fErts;
-
-	// ILaunch lll;
+	static private boolean dontUseLaunchConfigurationForInternalErts = true;
 
 	private ILaunch startErts() {
 		if (getLabel() == null) {
@@ -58,32 +61,15 @@ public class ManagedBackend extends AbstractBackend {
 			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
 					ErtsProcessFactory.ID);
 			wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
-			// final ILaunchConfigurationWorkingCopy wc2 = wc;
-			// lll = null;
-			// final Display display = new Display();
-			// display.syncExec(new Runnable() {
-			// public void run() {
-			// try {
-			// lll = wc2.launch(ILaunchManager.RUN_MODE,
-			// new NullProgressMonitor());
-			// } catch (final CoreException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// }
-			// });
+
 			final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
 					new NullProgressMonitor());
 			fErts = null;
-			// if (lll.getProcesses().length == 1) {
-			// fErts = (ErtsProcess) lll.getProcesses()[0];
-			// }
 			if (ll.getProcesses().length == 1) {
 				fErts = (ErtsProcess) ll.getProcesses()[0];
 			}
 
 			fShellManager = new BackendShellManager(this);
-			// return lll;
 			return ll;
 
 		} catch (final Exception e) {
@@ -103,7 +89,7 @@ public class ManagedBackend extends AbstractBackend {
 
 	@Override
 	public void connect(final String cookie) {
-		if (fErts == null) {
+		if (fErts == null && !dontUseLaunchConfigurationForInternalErts) {
 			return;
 		}
 
@@ -128,18 +114,18 @@ public class ManagedBackend extends AbstractBackend {
 		}
 	}
 
-	/**
-	 * @param string
-	 * @throws IOException
-	 */
-	@Override
-	public void sendToShell(final String string) {
-		if (fErts == null) {
-			return;
-		}
-
-		fErts.sendToShell(string);
-	}
+	// /**
+	// * @param string
+	// * @throws IOException
+	// */
+	// @Override
+	// public void sendToShell(final String string) {
+	// if (fErts == null) {
+	// return;
+	// }
+	//
+	// fErts.sendToShell(string);
+	// }
 
 	/**
 	 * @param string
@@ -147,11 +133,16 @@ public class ManagedBackend extends AbstractBackend {
 	 */
 	@Override
 	public void sendToDefaultShell(final String string) throws IOException {
-		if (fErts == null) {
-			return;
+		if (dontUseLaunchConfigurationForInternalErts) {
+			if (streamsProxy != null) {
+				streamsProxy.write(string);
+			}
+		} else {
+			if (fErts == null) {
+				return;
+			}
+			fErts.writeToErlang(string);
 		}
-
-		fErts.writeToErlang(string);
 	}
 
 	public ErtsPreferences getNodePrefs() {
@@ -169,7 +160,42 @@ public class ManagedBackend extends AbstractBackend {
 
 	@Override
 	public void initializeErts() {
-		startErts();
+		if (dontUseLaunchConfigurationForInternalErts) {
+			startErtsWOLC();
+		} else {
+			startErts();
+		}
+	}
+
+	IStreamsProxy streamsProxy;
+
+	private void startErtsWOLC() {
+		if (getLabel() == null) {
+			return;
+		}
+
+		String cmd = getCmdLine();
+
+		final String label = getLabel();
+		final String nodeName = BackendManager.buildNodeName(label);
+		final String nameAndCookie = "-name " + nodeName + " -setcookie "
+				+ Cookie.retrieveCookie();
+		cmd += nameAndCookie;
+		ErlLogger.debug("RUN internal node WOLC> " + cmd);
+		final File workingDirectory = new File(".");
+		Process vm = null;
+		try {
+			vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// final IProcess process = DebugPlugin.newProcess(launch, vm,
+		// nodeName);
+		// TODO kolla ErtsProcess' ärvda constructor!
+
+		streamsProxy = new StreamsProxy(vm, null);
+		fShellManager = new BackendShellManager(this);
 	}
 
 	@Override

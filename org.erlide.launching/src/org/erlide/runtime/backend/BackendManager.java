@@ -100,7 +100,8 @@ public final class BackendManager implements IResourceChangeListener {
 
 		if (launchErlang) {
 			b.initializeErts();
-			b.connectAndInitErlang(fPlugins);
+			b.connectAndRegister(fPlugins);
+			b.initErlang();
 		}
 
 		return b;
@@ -113,7 +114,8 @@ public final class BackendManager implements IResourceChangeListener {
 		b.setLabel(name);
 
 		b.initializeErts();
-		b.connectAndInitErlang(fPlugins);
+		b.connectAndRegister(fPlugins);
+		b.initErlang();
 		return b;
 	}
 
@@ -127,23 +129,33 @@ public final class BackendManager implements IResourceChangeListener {
 			ErlLogger.debug("**  getBackend: " + project.getName() + " "
 					+ Thread.currentThread());
 			final String name = getBackendName(project);
-			if (name.equals(DEFAULT_BACKEND_LABEL)) {
-				return fLocalBackend;
-			}
-			IBackend b = fProjectBackends.get(name);
-			if (b != null && !b.ping()) {
-				fProjectBackends.remove(name);
-				fireUpdate(b, BackendEvent.REMOVED);
-				b = null;
-			}
-			if (b == null) {
-				// b = createStandalone(name);
-				b = createManaged(name, false, launchErlang);
-				fProjectBackends.put(name, b);
-				fireUpdate(b, BackendEvent.ADDED);
-			}
-			return b;
+			return getNamedBackend(name, launchErlang);
 		}
+	}
+
+	/**
+	 * @param name
+	 * @param launchErlang
+	 * @return
+	 */
+	public IBackend getNamedBackend(final String name,
+			final boolean launchErlang) {
+		if (name.equals(DEFAULT_BACKEND_LABEL)) {
+			return fLocalBackend;
+		}
+		IBackend b = fProjectBackends.get(name);
+		if (b != null && !b.ping()) {
+			fProjectBackends.remove(name);
+			fireUpdate(b, BackendEvent.REMOVED);
+			b = null;
+		}
+		if (b == null) {
+			// b = createStandalone(name);
+			b = createManaged(name, false, launchErlang);
+			fProjectBackends.put(name, b);
+			fireUpdate(b, BackendEvent.ADDED);
+		}
+		return b;
 	}
 
 	public IBackend getExternal(final String nodeName) {
@@ -174,8 +186,8 @@ public final class BackendManager implements IResourceChangeListener {
 		final String prjLabel = prefs.getBackendName();
 		if (prjLabel.length() == 0) {
 			// return project.getName().replace(".", "__");
-			return "project";
-			// return DEFAULT_BACKEND_LABEL;
+			// return "project";
+			return DEFAULT_BACKEND_LABEL;
 		}
 		return prjLabel;
 	}

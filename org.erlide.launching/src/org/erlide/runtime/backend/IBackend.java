@@ -143,7 +143,7 @@ public interface IBackend {
 
 	void sendToDefaultShell(String msg) throws IOException;
 
-	void sendToShell(String str);
+	// void sendToShell(String str);
 
 	void addStdListener(IStreamListener dsp);
 
@@ -163,5 +163,5 @@ public interface IBackend {
 
 	public abstract void initializeErts();
 
-	public void connectAndInitErlang(final List<ICodeBundle> plugins);
+	public void connectAndRegister(final List<ICodeBundle> plugins);
 }
