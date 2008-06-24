@@ -17,9 +17,9 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final IProject project,
 			final String fn, final String output) {
 		try {
-			final OtpErlangObject r = BackendManager.getDefault().get(project)
-					.rpcx("erlide_builder", "compile_yrl", 30000, "ss", fn,
-							output);
+			final IBackend b = BackendManager.getDefault().get(project);
+			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
+					30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
@@ -33,19 +33,11 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileErl(final IProject project,
 			final String fn, final String outputdir, final String[] includedirs) {
 		try {
-			// final OtpErlangString[] includes = new
-			// OtpErlangString[includedirs.length];
-			// for (int i = 0; i < includedirs.length; i++) {
-			// includes[i] = new OtpErlangString(includedirs[i]);
-			// }
-			// final OtpErlangList includeList = new OtpErlangList(includes);
-			return BackendManager.getDefault().get(project).rpcx(
-					"erlide_builder", "compile", 20000, "sslsla", fn,
-					outputdir,
+			final IBackend b = BackendManager.getDefault().get(project);
+			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
+					outputdir, includedirs,
 					// FIXME add an option for this
-					// , includeList,
-					includedirs, new String[] { "debug_info" });
-			// new OtpErlangList(new OtpErlangAtom("debug_info")));
+					new String[] { "debug_info" });
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;
