@@ -14,6 +14,8 @@ package org.erlide.runtime.backend;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -137,6 +139,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	private void interpretAll(final IBackend backend, final IProject project) {
 		final List<String> beams = new ArrayList<String>();
 		final List<String> erls = new ArrayList<String>();
+		final Map<String, String> erlFullPaths = new TreeMap<String, String>();
 		try {
 			project.accept(new IResourceVisitor() {
 				public boolean visit(final IResource resource)
@@ -151,6 +154,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 								beams.add(baseName);
 							} else if (ext.equals("erl")) {
 								erls.add(baseName);
+								erlFullPaths.put(baseName, fullPath.toString());
 							}
 						}
 					}
@@ -159,10 +163,9 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			}, IResource.DEPTH_INFINITE, 0);
 			for (final String erl : erls) {
 				if (beams.contains(erl)) {
-					ErlideDebug.interpret(backend, erl);
+					ErlideDebug.interpret(backend, erlFullPaths.get(erl));
 				}
 			}
-
 		} catch (final CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

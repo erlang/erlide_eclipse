@@ -67,8 +67,8 @@ is_erlide_process(Pid) when pid(Pid)->
               end,
     Started or Current.
 
-interpret(Files) ->
-    erlide_dbg_mon:interpret(Files).
+interpret(File) ->
+    erlide_dbg_mon:interpret([File]).
 
 line_breakpoint(File, Line) ->
     interpret([File]),
