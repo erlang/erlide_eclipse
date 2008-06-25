@@ -47,10 +47,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.basicui.util.StringMatcher;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
+import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 
 /**
@@ -533,11 +538,18 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 			return;
 		}
 		dispose();
-		// Get the content outline page within the content outline view
-		// and select the item there to keep the quick outline in sync with the
-		// main outline and prevent duplicate selection events from occurring
-		fOutlineSelectionHandler.getContentOutline().setSelection(
-				new StructuredSelection(selectedElement));
+		IEditorPart part;
+		try {
+			part = EditorUtility.openInEditor(selectedElement, true);
+			if (part != null && selectedElement instanceof IErlElement) {
+				EditorUtility.revealInEditor(part,
+						(IErlElement) selectedElement);
+			}
+		} catch (PartInitException e) {
+			ErlLogger.info(e);
+		} catch (ErlModelException e) {
+			ErlLogger.info(e);
+		}
 	}
 
 	/**

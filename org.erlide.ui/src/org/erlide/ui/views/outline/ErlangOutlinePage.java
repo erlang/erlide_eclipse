@@ -49,10 +49,6 @@ import org.erlide.ui.util.ErlModelUtils;
 
 /**
  * 
- * 
- * 
- * 
- * 
  * @author Vlad Dumitrescu
  * 
  */
