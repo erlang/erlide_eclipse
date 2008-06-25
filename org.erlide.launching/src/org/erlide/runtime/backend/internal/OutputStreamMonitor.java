@@ -195,6 +195,9 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 * Starts a thread which reads from the stream
 	 */
 	protected void startMonitoring() {
+		if (!getNotifier().ensureLoaded()) {
+			return;
+		}
 		if (fThread == null) {
 			fThread = new Thread(new Runnable() {
 				public void run() {
@@ -263,6 +266,10 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			}
 			fListener = null;
 			fText = null;
+		}
+
+		public boolean ensureLoaded() {
+			return true;
 		}
 	}
 }
