@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -265,7 +266,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	private void deleteMarkersWithCompiledFile(IProject project, IFile file) {
+	private void deleteMarkersWithCompiledFile(final IProject project,
+			final IFile file) {
 		if (!project.isAccessible()) {
 			return;
 		}
@@ -302,7 +304,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	@SuppressWarnings("unchecked")
 	protected void fullBuild(final Map args, final IProgressMonitor monitor)
 			throws CoreException {
-		int n = getErlangResourcesCount(getProject());
+		final int n = getErlangResourcesCount(getProject());
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("full build..." + getProject() + " " + n);
 		}
@@ -326,13 +328,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	private int getErlangResourcesCount(IProject project) {
+	private int getErlangResourcesCount(final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		String[] dirs = prefs.getSourceDirs();
+		final String[] dirs = prefs.getSourceDirs();
 		int n = 0;
-		for (String dir : dirs) {
-			IFile f = project.getFile(dir);
+		for (final String dir : dirs) {
+			final IFile f = project.getFile(dir);
 			final String dirstr = f.getLocation().toString();
 			final String[] list = new File(dirstr).list();
 			n += list == null ? 0 : list.length;
@@ -389,7 +391,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					element.delete(true, monitor);
 				}
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 		}
 
 	}
@@ -435,18 +437,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// }
 		ensureDirExists(outputDir);
 
-		final String[] incs = prefs.getIncludeDirs();
-		final String[] includeDirs = new String[incs.length];
-		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
-		for (int i = 0; i < incs.length; i++) {
-			final IPath inc = pvm.resolvePath(new Path(incs[i]));
-			if (inc.isAbsolute()) {
-				includeDirs[i] = inc.toString();
-			} else {
-				includeDirs[i] = project.getFolder(incs[i]).getLocation()
-						.toString();
+		List<String> includeDirs = getIncludeDirs(project,
+				new ArrayList<String>());
+
+		try {
+			final IProject[] referencedProjects = project
+					.getReferencedProjects();
+			for (final IProject p : referencedProjects) {
+				includeDirs = getIncludeDirs(p, includeDirs);
 			}
+		} catch (final CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		// delete beam file
@@ -520,31 +522,56 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	private void createTaskMarkers(IProject project, IResource resource) {
-		IErlProject p = ErlangCore.getModel().findErlangProject(project);
+	/**
+	 * @param project
+	 * @param prefs
+	 * @return
+	 */
+	private List<String> getIncludeDirs(final IProject project,
+			final List<String> includeDirs) {
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		final String[] incs = prefs.getIncludeDirs();
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		for (int i = 0; i < incs.length; i++) {
+			final IPath inc = pvm.resolvePath(new Path(incs[i]));
+			if (inc.isAbsolute()) {
+				includeDirs.add(inc.toString());
+			} else {
+				includeDirs.add(project.getFolder(incs[i]).getLocation()
+						.toString());
+			}
+		}
+		return includeDirs;
+	}
+
+	private void createTaskMarkers(final IProject project,
+			final IResource resource) {
+		final IErlProject p = ErlangCore.getModel().findErlangProject(project);
 		if (p != null) {
 			IErlModule m;
 			try {
 				m = p.getModule(resource.getName());
-				IErlScanner s = m.getScanner();
-				List<IErlComment> cl = s.getComments();
-				for (IErlComment c : cl) {
-					String name = c.getName();
+				final IErlScanner s = m.getScanner();
+				final List<IErlComment> cl = s.getComments();
+				for (final IErlComment c : cl) {
+					final String name = c.getName();
 					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
 					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
 					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
 				}
-			} catch (ErlModelException e) {
+			} catch (final ErlModelException e) {
 			}
 		}
 
 	}
 
-	private void mkMarker(IResource resource, IErlComment c, String name,
-			String tag, int prio) {
+	private void mkMarker(final IResource resource, final IErlComment c,
+			final String name, final String tag, final int prio) {
 		if (name.contains(tag)) {
-			int ix = name.indexOf(tag);
-			String msg = name.substring(ix);
+			final int ix = name.indexOf(tag);
+			final String msg = name.substring(ix);
 			int dl = 0;
 			for (int i = 0; i < ix; i++) {
 				if (name.charAt(i) == '\n') {
@@ -717,7 +744,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	private static IResource findResource(IContainer container, String fileName) {
+	private static IResource findResource(final IContainer container,
+			final String fileName) {
 		try {
 			for (final IResource r : container.members()) {
 				if (r.getLocation().toString().equals(fileName)) {
@@ -1067,7 +1095,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @return OtpErlangObject
 	 */
 	protected static OtpErlangObject compileFile(final IProject project,
-			final String fn, final String outputdir, final String[] includedirs) {
+			final String fn, final String outputdir,
+			final List<String> includedirs) {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}

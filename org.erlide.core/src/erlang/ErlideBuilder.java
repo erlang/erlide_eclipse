@@ -1,5 +1,7 @@
 package erlang;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.builder.BuilderUtils;
@@ -31,7 +33,8 @@ public class ErlideBuilder {
 	}
 
 	public static OtpErlangObject compileErl(final IProject project,
-			final String fn, final String outputdir, final String[] includedirs) {
+			final String fn, final String outputdir,
+			final List<String> includedirs) {
 		try {
 			final IBackend b = BackendManager.getDefault().get(project);
 			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,

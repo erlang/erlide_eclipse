@@ -15,13 +15,12 @@ public class ErlideDebug {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangList getProcesses(final IBackend backend,
-			final boolean fShowSystemProcesses,
-			final boolean fShowErlideProcesses) {
+			final boolean showSystemProcesses, final boolean showErlideProcesses) {
 		OtpErlangList procs = null;
 		try {
-			procs = (OtpErlangList) BackendUtil.ok(backend.rpcx("erlide_debug",
-					"processes", "oo", fShowSystemProcesses,
-					fShowErlideProcesses));
+			procs = (OtpErlangList) BackendUtil.ok(backend
+					.rpcx("erlide_debug", "processes", "oo",
+							showSystemProcesses, showErlideProcesses));
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -13,7 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class ErlangCode {
 
-	public static void addPathA(IBackend fBackend, String path) {
+	public static void addPathA(final IBackend fBackend, final String path) {
 		try {
 			fBackend.rpc("code", "add_patha", "s", path);
 		} catch (final Exception e) {
@@ -21,7 +21,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void addPathZ(IBackend fBackend, String path) {
+	public static void addPathZ(final IBackend fBackend, final String path) {
 		try {
 			fBackend.rpc("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
@@ -29,10 +29,10 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathZ(IBackend fBackend, String path) {
+	public static void removePathZ(final IBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			RpcResult rr = fBackend.rpc("filename", "join", "x",
+			final RpcResult rr = fBackend.rpc("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
@@ -44,10 +44,10 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathA(IBackend fBackend, String path) {
+	public static void removePathA(final IBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			RpcResult rr = fBackend.rpc("filename", "join", "ls",
+			final RpcResult rr = fBackend.rpc("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
@@ -64,13 +64,13 @@ public class ErlangCode {
 		RpcResult result;
 		try {
 			result = b.rpc("code", "load_binary", "asb", beamf, beamf, code);
-		} catch (NoBackendException e) {
+		} catch (final NoBackendException e) {
 			return RpcResult.ERROR;
 		}
 		return result;
 	}
 
-	public static void delete(IBackend fBackend, String moduleName) {
+	public static void delete(final IBackend fBackend, final String moduleName) {
 		try {
 			fBackend.rpc("code", "delete", "a", moduleName);
 		} catch (final Exception e) {
