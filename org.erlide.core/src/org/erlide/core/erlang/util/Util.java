@@ -357,7 +357,6 @@ public class Util implements ISuffixConstants {
 	 * Returns true iff str.toLowerCase().endsWith(end.toLowerCase())
 	 * implementation is not creating extra strings.
 	 */
-	@SuppressWarnings("null")
 	public static final boolean endsWithIgnoreCase(final String str,
 			final String end) {
 
@@ -1819,7 +1818,6 @@ public class Util implements ISuffixConstants {
 	 * Returns true iff str.toLowerCase().endsWith(".java") implementation is
 	 * not creating extra strings.
 	 */
-	@SuppressWarnings("null")
 	public static final boolean isErlangFileName(final String name) {
 		final int nameLength = name == null ? 0 : name.length();
 		final int suffixLength = SUFFIX_ERL.length;
@@ -1841,7 +1839,6 @@ public class Util implements ISuffixConstants {
 	 * Returns true iff str.toLowerCase().endsWith(".java") implementation is
 	 * not creating extra strings.
 	 */
-	@SuppressWarnings("null")
 	public static final boolean isErlangFileName(final char[] name) {
 		final int nameLength = name == null ? 0 : name.length;
 		final int suffixLength = SUFFIX_ERL.length;

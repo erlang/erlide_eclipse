@@ -35,7 +35,6 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	 * .eclipse.jface.text.templates.TemplateVariable,
 	 * org.eclipse.jface.text.templates.TemplateContext)
 	 */
-	@SuppressWarnings("null")
 	@Override
 	public void resolve(TemplateVariable variable, TemplateContext context) {
 		@SuppressWarnings("unchecked")

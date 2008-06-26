@@ -896,7 +896,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		synchronizeOutlinePage(computeHighlightRangeSourceReference());
 	}
 
-	@SuppressWarnings("null")
 	public void setSelection(final ISourceReference reference,
 			boolean moveCursor) {
 		if (getSelectionProvider() == null) {
@@ -1300,7 +1299,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the position of the found annotation
 	 * @return the found annotation
 	 */
-	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
 			boolean forward, final Position annotationPosition) {
 

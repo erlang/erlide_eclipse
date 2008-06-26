@@ -23,6 +23,11 @@ package com.ericsson.otp.erlang;
 public abstract class OtpErlangException extends OtpException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Provides no message.
 	 */
 	public OtpErlangException() {

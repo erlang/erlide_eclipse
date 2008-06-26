@@ -263,7 +263,6 @@ public class EditorUtility {
 		return null;
 	}
 
-	@SuppressWarnings("null")
 	private static void initializeHighlightRange(IEditorPart editorPart) {
 		if (editorPart instanceof ITextEditor) {
 			final IAction toggleAction = editorPart
