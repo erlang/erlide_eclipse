@@ -1,7 +1,6 @@
 package org.erlide.ui.navigator;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.erlide.ui.internal.ProblemsLabelDecorator;
 
 public class NavigatorProblemsDecorator extends ProblemsLabelDecorator {
@@ -17,7 +16,8 @@ public class NavigatorProblemsDecorator extends ProblemsLabelDecorator {
 	}
 
 	protected int computeFolderAdornmentFlags(final IFolder folder) {
-		if (!fIsFlatLayout && !(folder instanceof IProject)) {
+		// if (!fIsFlatLayout && !(folder instanceof IProject)) {
+		if (!fIsFlatLayout) {
 			return super.computeAdornmentFlags(folder);
 		}
 		return super.computeAdornmentFlags(folder);
