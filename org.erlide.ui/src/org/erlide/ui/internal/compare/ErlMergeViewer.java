@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
-import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
+import org.erlide.ui.editors.erl.EditorConfiguration;
 
 public class ErlMergeViewer extends TextMergeViewer {
 
@@ -35,19 +35,20 @@ public class ErlMergeViewer extends TextMergeViewer {
 
 	private IPropertyChangeListener fPreferenceChangeListener;
 
-	private IPreferenceStore fPreferenceStore;
+	private final IPreferenceStore fPreferenceStore;
 
 	private boolean fUseSystemColors;
 
-	private SimpleEditorConfiguration fSourceViewerConfiguration;
+	private EditorConfiguration fSourceViewerConfiguration;
 
-	public ErlMergeViewer(Composite parent, int styles, CompareConfiguration mp) {
+	public ErlMergeViewer(final Composite parent, final int styles,
+			final CompareConfiguration mp) {
 		super(parent, styles, mp);
 		fPreferenceStore = ErlideUIPlugin.getDefault().getPreferenceStore();
 		if (fPreferenceStore != null) {
 			fPreferenceChangeListener = new IPropertyChangeListener() {
 
-				public void propertyChange(PropertyChangeEvent event) {
+				public void propertyChange(final PropertyChangeEvent event) {
 					handlePropertyChange(event);
 				}
 			};
@@ -69,7 +70,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 	}
 
 	@Override
-	protected void handleDispose(DisposeEvent event) {
+	protected void handleDispose(final DisposeEvent event) {
 		if (fPreferenceChangeListener != null) {
 			fPreferenceStore
 					.removePropertyChangeListener(fPreferenceChangeListener);
@@ -78,7 +79,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 		super.handleDispose(event);
 	}
 
-	protected void handlePropertyChange(PropertyChangeEvent event) {
+	protected void handlePropertyChange(final PropertyChangeEvent event) {
 
 		final String key = event.getProperty();
 
@@ -126,7 +127,8 @@ public class ErlMergeViewer extends TextMergeViewer {
 	 * store. Returns <code>null</code> if there is no such information
 	 * available.
 	 */
-	private static RGB createColor(IPreferenceStore store, String key) {
+	private static RGB createColor(final IPreferenceStore store,
+			final String key) {
 		if (!store.contains(key)) {
 			return null;
 		}
@@ -136,14 +138,14 @@ public class ErlMergeViewer extends TextMergeViewer {
 		return PreferenceConverter.getColor(store, key);
 	}
 
-	private SimpleEditorConfiguration getSourceViewerConfiguration() {
+	private EditorConfiguration getSourceViewerConfiguration() {
 		if (fSourceViewerConfiguration == null) {
-			fSourceViewerConfiguration = new SimpleEditorConfiguration(
+			fSourceViewerConfiguration = new EditorConfiguration(
 					fPreferenceStore, null, new ColorManager()) {
 
 				@Override
 				public String getConfiguredDocumentPartitioning(
-						ISourceViewer sourceViewer) {
+						final ISourceViewer sourceViewer) {
 					return IDocumentExtension3.DEFAULT_PARTITIONING;
 				}
 
@@ -158,7 +160,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 	}
 
 	@Override
-	protected void configureTextViewer(TextViewer textViewer) {
+	protected void configureTextViewer(final TextViewer textViewer) {
 		if (textViewer instanceof SourceViewer) {
 			((SourceViewer) textViewer)
 					.configure(getSourceViewerConfiguration());
