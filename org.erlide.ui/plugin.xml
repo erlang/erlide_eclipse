@@ -678,6 +678,16 @@
                         value="hrl">
                   </test>
                </and>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="yrl">
+                  </test>
+               </and>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -692,8 +702,8 @@
                id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
          </actionProvider>
          <commonSorter
-               class="org.erlide.ui.navigator.ErlElementSorter"
-               id="org.erlide.ui.navigator.ErlElementSorterId">
+               class="org.erlide.ui.navigator.ErlElementPositionSorter"
+               id="org.erlide.ui.navigator.ErlElementPositionSorterId">
          </commonSorter>
       </navigatorContent>
    </extension>
