@@ -51,8 +51,11 @@ public class ErlParser {
 		ErlLogger.debug("parse " + module.getName() + " init len "
 				+ initialText.length() + " initialParse " + initialParse);
 		if (initialParse) {
+			String moduleFileName = "";
 			final IResource resource = module.getResource();
-			final String moduleFileName = resource.getLocation().toString();
+			if (resource != null) {
+				moduleFileName = resource.getLocation().toString();
+			}
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
