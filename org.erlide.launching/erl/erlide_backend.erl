@@ -38,7 +38,7 @@ init(JavaNode, LinkPid) ->
         watch_eclipse(JavaNode)
     end),
     
-    F = dbg:trace_port(file, "log.bad"),
+    F = dbg:trace_port(file, "log.good"),
     dbg:tracer(port, F),
     dbg:p(all, [all]),
     

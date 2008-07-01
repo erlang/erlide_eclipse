@@ -22,7 +22,7 @@ public class ErlideBackend {
 	private static final String ERL_BACKEND = "erlide_backend";
 
 	public static void init(IBackend ideBackend) {
-		init(ideBackend, ideBackend.getInfo().getName());
+		init(ideBackend, ideBackend.getName());
 	}
 
 	public static void init(IBackend backend, String node) {
