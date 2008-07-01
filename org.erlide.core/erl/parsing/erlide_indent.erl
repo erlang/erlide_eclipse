@@ -16,7 +16,7 @@
          indent_lines/4]).
 
 %-define(IO_FORMAT_DEBUG, 1).
-%% -define(DEBUG, 1).
+-define(DEBUG, 1).
 %-define(TRACE, 1).
 
 -include("erlide.hrl").
@@ -234,13 +234,18 @@ i_par_list(R0, I0) ->
     R2 = i_parameters(R1, I1),
     i_end_paren(R2, I2).
 
-i_expr([], _I) ->
+i_expr([], _I, _A) ->
     {[], eof};
-i_expr(R0, I0) ->
+i_expr(R0, I0, A) ->
     R1 = i_comments(R0, I0),
-    I1 = i_with(none, R1, I0),
+    I1 = i_with_old_or_new_anchor(A, R1, I0),            
     R2 = i_1_expr(R1, I1),
-    i_expr_rest(R2, I1, I1#i.anchor).
+    case i_sniff(R1) of
+        #token{kind=string} ->
+            i_expr(R2, I1, A);
+        _ ->
+            i_expr_rest(R2, I1, I1#i.anchor)
+    end.
 
 i_expr_rest(R0, I, A) ->
     case i_sniff(R0) of
@@ -251,6 +256,7 @@ i_expr_rest(R0, I, A) ->
         eof ->
             {R0, A};
         #token{kind='#'} -> % record something
+	    ?D(I),
             i_record_something(R0, I);
         #token{kind=':'} -> % external function call
             R1 = i_kind(':', R0, I),
@@ -261,11 +267,14 @@ i_expr_rest(R0, I, A) ->
             R1 = i_kind('||', R0, I),
             R2 = i_expr_list(R1, I),
             {R2, A};
+%%         #token{kind=string} -> % possible string concat
+%% 	    ?D({R0, I, A}),
+%%             i_expr(R0, I, A);
         O ->
             case is_binary_op(O) of
                 true ->
                     R1 = i_binary_op(R0, i_with(before_binary_op, I)),
-                    {R2, _A} = i_expr(R1, i_with(after_binary_op, I)),
+                    {R2, _A} = i_expr(R1, i_with(after_binary_op, I), A),
                     {R2, A};
                 false ->
                     {R0, A}
@@ -277,8 +286,8 @@ i_expr_list(R, I) ->
 
 i_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
-    {R2, A1} = i_expr(R1, I0),
-	I1 = i_with_old_or_new_anchor(A0, A1, I0),
+    {R2, A1} = i_expr(R1, I0, A0),
+    I1 = i_with_old_or_new_anchor(A0, A1, I0),
     case i_sniff(R2) of
         #token{kind=','} ->
             R3 = i_kind(',', R2, I1),
@@ -323,7 +332,7 @@ i_binary_expr(R0, I0) ->
 i_binary_sub_expr(R0, I0) ->
     case i_sniff(R0) of
         #token{kind='('} ->
-            i_expr(R0, I0); % funkar detta med t.ex. (1+4):8? testa!
+            i_expr(R0, I0, none); % funkar detta med t.ex. (1+4):8? testa!
 		#token{kind=Kind} when Kind==var; Kind==string; Kind==integer ->
             R1 = i_comments(R0, I0),
 			R2 = i_kind(Kind, R1, I0),
@@ -345,7 +354,7 @@ i_binary_specifiers(R0, I) ->
 i_binary_specifier(R0, I) ->
     case i_sniff(R0) of
         #token{kind='('} ->
-            {R1, _A} = i_expr(R0, I), % funkar detta med t.ex. (1+4):8? testa!
+            {R1, _A} = i_expr(R0, I, none), % funkar detta med t.ex. (1+4):8? testa!
 			R1;
 		#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==atom ->
             R1 = i_comments(R0, I),
@@ -358,7 +367,7 @@ i_predicate_list(R, I) ->
 
 i_predicate_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
-    {R2, A1} = i_expr(R1, I0),
+    {R2, A1} = i_expr(R1, I0, A0),
     I1 = i_with_old_or_new_anchor(A0, A1, I0),
     case i_sniff(R2) of
         #token{kind=Kind} when Kind==','; Kind==';' ->
@@ -430,7 +439,7 @@ i_1_expr([#token{kind='#'} | _] = L, I) ->
 i_1_expr([#token{kind='case'}=T | _] = R0, I0) ->
     R1 = i_kind('case', R0, I0),
     I1 = i_with('case', R0, I0),
-    {R2, _A} = i_expr(R1, I1),
+    {R2, _A} = i_expr(R1, I1, none),
     R3 = i_kind('of', R2, I1),
     R4 = i_clause_list(R3, I1#i{in_block=true}),
     i_block_end(T#token.kind, R4, I0);
@@ -472,7 +481,7 @@ i_1_expr([#token{kind='fun'}=T | R0], I) ->
             R1 = i_fun_clause_list(R0, I1),
             i_kind('end', R1, I);
         _ ->
-            {R1, _A} = i_expr(R0, I1),
+            {R1, _A} = i_expr(R0, I1, none),
             R1
     end;
 i_1_expr([#token{kind='try'} | _] = R, I) ->
@@ -530,19 +539,19 @@ i_parameters(R, I) ->
     end.
 
 i_record_something([#token{kind='#'} | R0], I) ->
-	R1 = i_comments(R0, I),
-	A = hd(R1),
-	R2 = i_kind(atom, R1, I),
+    R1 = i_comments(R0, I),
+    A = hd(R1),
+    R2 = i_kind(atom, R1, I),
     ?D(R2),
-	case i_sniff(R2) of
-		#token{kind='.'} ->
+    case i_sniff(R2) of
+        #token{kind='.'} ->
             R3 = i_kind('.', R2, I),
-            {R4, _A} = i_expr(R3, I),
-			?D(R4),
-            {R4, A};
+            {R4, _A} = i_expr(R3, I, none),
+            ?D(R4),
+            {R4, I#i.anchor};
         #token{kind='{'} ->
-			i_expr(R2, I);
-		_ ->
+            i_expr(R2, I, none);
+        _ ->
             {R2, A}
     end.
 
@@ -556,7 +565,6 @@ comment_kind(_) ->
     comment_0.
 
 i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
-%%     ?D(I),
     case comment_kind(V) of
         comment_3 ->
             case i_check_aux([C], I) of
@@ -571,7 +579,6 @@ i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
     end,
     i_comments(Rest, I);
 i_comments(Rest, I) ->
-%%     ?D(Rest),
     i_check(Rest, I),
     Rest.
 
@@ -618,7 +625,7 @@ i_form(R0, I) ->
 i_declaration(R0, I) ->
     i_check(R0, I),
     R1 = i_kind('-', R0, I),
-    {R, _A} = i_expr(R1, I),
+    {R, _A} = i_expr(R1, I, none),
     i_kind(dot, R, I).
 
 i_fun_clause(R0, I0) ->
@@ -649,12 +656,12 @@ i_fun_clause_list(R, I) ->
     end.
 
 i_after_clause(R0, I0) ->
-    {R1, _A} = i_expr(R0, I0),
+    {R1, _A} = i_expr(R0, I0, none),
     R2 = i_kind('->', R1, I0),
     i_expr_list(R2, I0#i{in_block=true}).
 
 i_clause(R0, I) ->
-    {R1, A} = i_expr(R0, I),
+    {R1, A} = i_expr(R0, I, none),
     I1 = i_with(before_arrow, A, I),
     R2 = case i_sniff(R1) of
              #token{kind='when'} ->
@@ -712,7 +719,7 @@ i_catch_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
     R2 = i_kind(atom, R1, I0),
     R3 = i_kind(':', R2, I0),
-    {R4, _A} = i_expr(R3, I0),
+    {R4, _A} = i_expr(R3, I0, none),
     I1 = i_with(before_arrow, R1, I0),
     R5 = case i_sniff(R4) of
              #token{kind='when'} ->
