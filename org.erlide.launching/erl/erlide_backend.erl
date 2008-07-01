@@ -14,7 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/1,
+-export([init/2,
          
          parse_term/1,
          eval/1,
@@ -31,15 +31,17 @@
          compile_string/1
 ]).
 
-init(JavaNode) ->
+init(JavaNode, LinkPid) ->
     spawn(fun()->
-        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
+        RpcPid = spawn(fun() -> link(LinkPid), jrpc:rpc_loop(JavaNode) end),
         register(erlide_rex, RpcPid),
-        
         watch_eclipse(JavaNode)
-        
     end),
-                
+    
+    F = dbg:trace_port(file, "log.bad"),
+    dbg:tracer(port, F),
+    dbg:p(all, [all]),
+    
     ok.
 
 watch_eclipse(JavaNode) ->

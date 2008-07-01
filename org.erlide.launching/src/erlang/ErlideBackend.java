@@ -1,6 +1,5 @@
 package erlang;
 
-
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendEvalResult;
@@ -23,12 +22,12 @@ public class ErlideBackend {
 	private static final String ERL_BACKEND = "erlide_backend";
 
 	public static void init(IBackend ideBackend) {
-		init(ideBackend, ideBackend.getName());
+		init(ideBackend, ideBackend.getInfo().getName());
 	}
 
 	public static void init(IBackend backend, String node) {
 		try {
-			backend.rpc(ERL_BACKEND, "init", "a", node);
+			backend.rpc(ERL_BACKEND, "init", "ap", node, backend.getRpcPid());
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
