@@ -60,7 +60,7 @@ start(Pid, JPid) -> % Used by debugger:quick/3 (no monitor)
     
 start(Pid, JPid, BackTrace) ->
     %% Inform int about my existence and get the meta pid back
-    case int:attached(Pid) of
+    case erlide_int:attached(Pid) of
 	{ok, Meta} ->
 	    init(Pid, JPid, Meta, BackTrace);
 	error ->
@@ -79,7 +79,7 @@ init(Pid, JPid, Meta, _BackTrace) ->
 		    status={idle,null,null},
 		    stack={1,1}},
 
-    int:meta(Meta, trace, State1#state.trace),
+    erlide_int:meta(Meta, trace, State1#state.trace),
 
     loop(State1).
 
@@ -138,13 +138,13 @@ gui_cmd('Search...', State) ->
 
 %% Process menu
 gui_cmd(step, State) ->
-    int:meta(State#state.meta, step),
+    erlide_int:meta(State#state.meta, step),
     State;
 gui_cmd(next, State) ->
-    int:meta(State#state.meta, next),
+    erlide_int:meta(State#state.meta, next),
     State;
 gui_cmd(continue, State) ->
-    int:meta(State#state.meta, continue),
+    erlide_int:meta(State#state.meta, continue),
     {Status, Mod, Line} = State#state.status,
     if
 	Status==wait_break ->
@@ -153,16 +153,16 @@ gui_cmd(continue, State) ->
 	    State
     end;
 gui_cmd(finish, State) ->
-    int:meta(State#state.meta, finish),
+    erlide_int:meta(State#state.meta, finish),
     State;
 gui_cmd(skip, State) ->
-    int:meta(State#state.meta, skip),
+    erlide_int:meta(State#state.meta, skip),
     State;
 gui_cmd(timeout, State) ->
-    int:meta(State#state.meta, timeout),
+    erlide_int:meta(State#state.meta, timeout),
     State;
 gui_cmd(stop, State) ->
-    int:meta(State#state.meta, stop),
+    erlide_int:meta(State#state.meta, stop),
     {Status, Mod, Line} = State#state.status,
     if
 	Status==wait_running ->
@@ -200,15 +200,15 @@ gui_cmd('Enable All', State) ->
 gui_cmd('Disable All', State) ->
     State;
 gui_cmd(delete_all_breaks, State) ->
-    int:no_break(State#state.cm),
+    erlide_int:no_break(State#state.cm),
     State;
 gui_cmd({break, {Mod, Line}, What}, State) ->
     case What of
-	add -> int:break(Mod, Line);
-	delete -> int:delete_break(Mod, Line);
-	{status, inactive} -> int:disable_break(Mod, Line);
-	{status, active} -> int:enable_break(Mod, Line);
-	{trigger, Action} -> int:action_at_break(Mod, Line, Action)
+	add -> erlide_int:break(Mod, Line);
+	delete -> erlide_int:delete_break(Mod, Line);
+	{status, inactive} -> erlide_int:disable_break(Mod, Line);
+	{status, active} -> erlide_int:enable_break(Mod, Line);
+	{trigger, Action} -> erlide_int:action_at_break(Mod, Line, Action)
     end,
     State;
 
@@ -229,7 +229,7 @@ gui_cmd({user_command, Cmd}, State) ->
 		  end,
 
 	    %% Reply will be received as {Meta, {eval_rsp, Res}}
-	    int:meta(State#state.meta, eval, Arg);
+	    erlide_int:meta(State#state.meta, eval, Arg);
 	true ->
 	    Str = "Commands not allowed",
 	    State#state.jpid ! {message, Str}

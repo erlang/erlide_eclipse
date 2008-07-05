@@ -126,8 +126,8 @@ public final class BackendManager implements IResourceChangeListener {
 	public synchronized IBackend get(final IProject project,
 			final boolean launchErlang) {
 		synchronized (fProjectBackendsLock) {
-			ErlLogger.debug("**  getBackend: " + project.getName() + " "
-					+ Thread.currentThread());
+			// ErlLogger.debug("** getBackend: " + project.getName() + " "
+			// + Thread.currentThread());
 			final String name = getBackendName(project);
 			return getNamedBackend(name, launchErlang);
 		}
@@ -201,7 +201,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public synchronized IBackend getIdeBackend() {
-		ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
+		// ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
 			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false, true);

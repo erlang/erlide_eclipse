@@ -9,15 +9,20 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -37,19 +42,37 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public static final String STATUS_TERMINATED = "terminated";
 
+	public static final String STATUS_UNKNOWN = "unknown";
+
+	public static final String STATUS_BREAK = "break";
+
 	private final OtpErlangPid fPid;
 
-	private final ErlangDebugTarget fTarget;
+	private OtpErlangPid cachedMetaPid;
 
 	private final IBackend fBackend;
 
-	private OtpErlangPid meta;
+	private String fStatus;
+
+	// private ErlangStackFrame topFrame;
+	//
+	// private ErlangStackFrame fakeFrame;
+
+	private List<ErlangStackFrame> stackFrames;
+
+	private boolean stepping;
 
 	public ErlangProcess(final ErlangDebugTarget target, final OtpErlangPid pid) {
 		super(target);
 		fPid = pid;
-		fTarget = target;
 		fBackend = target.getBackend();
+		fStatus = STATUS_UNKNOWN;
+		// topFrame = null;
+		// fakeFrame = null;
+		stackFrames = new ArrayList<ErlangStackFrame>();
+		cachedMetaPid = null;
+		stepping = false;
+		// fakeFrame = new ErlangStackFrame("tester_server", this, target, 12);
 	}
 
 	public String getRegisteredName() {
@@ -68,11 +91,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public OtpErlangPid getMeta() {
-		return meta;
-	}
-
-	public void setMeta(final OtpErlangPid meta) {
-		this.meta = meta;
+		if (cachedMetaPid == null) {
+			cachedMetaPid = ((ErlangDebugTarget) getDebugTarget())
+					.getMetaForPid(fPid);
+		}
+		return cachedMetaPid;
 	}
 
 	public long getReductions() {
@@ -147,13 +170,21 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		return res;
 	}
 
+	// public String getStatus() {
+	// final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
+	// fBackend, fPid, "status");
+	// if (res != null) {
+	// return res.atomValue();
+	// }
+	// return STATUS_TERMINATED;
+	// }
+
 	public String getStatus() {
-		final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
-				fBackend, fPid, "status");
-		if (res != null) {
-			return res.atomValue();
-		}
-		return STATUS_TERMINATED;
+		return fStatus;
+	}
+
+	public void setStatus(final String status) {
+		fStatus = status;
 	}
 
 	public boolean getTrapExit() {
@@ -162,12 +193,46 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		return "true".equals(res.atomValue());
 	}
 
-	public OtpErlangObject getBacktrace() {
-		final OtpErlangBinary res = (OtpErlangBinary) ErlideDebug
-				.getProcessInfo(fBackend, fPid, "backtrace");
-		// byte[] r = res.binaryValue();
-		return res;
+	public void breakAt(String module, int line) {
+		// final OtpErlangList bindings = ErlideDebug.getBindings(fBackend,
+		// getMeta());
+		// ErlLogger.debug("bindings " + bindings);
+		final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
+				fBackend, getMeta());
+		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings
+				.elementAt(0);
+		OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);
+		stackFrames = new ArrayList<ErlangStackFrame>();
+		// [{{Mod, Fun, Arity}, {Mod, LineNo}, [Binding...]}...]
+		if (erlStackFrames.arity() > 0) {
+			for (final OtpErlangObject o : erlStackFrames.elements()) {
+				final OtpErlangTuple t = (OtpErlangTuple) o;
+				final OtpErlangTuple ml = (OtpErlangTuple) t.elementAt(1);
+				final OtpErlangAtom m = (OtpErlangAtom) ml.elementAt(0);
+				final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
+				stackFrames.add(new ErlangStackFrame(module, this,
+						getDebugTarget(), line, bs));
+				bs = (OtpErlangList) t.elementAt(2);
+				module = m.atomValue();
+				try {
+					line = l.intValue();
+				} catch (final OtpErlangRangeException e) {
+					line = -1;
+				}
+			}
+		}
+		// topFrame = new ErlangStackFrame(module, this, getDebugTarget(), line,
+		// bindings);
+		// fakeFrame = new ErlangStackFrame(module, this, getDebugTarget(), 12,
+		// new OtpErlangList());
 	}
+
+	// public OtpErlangObject getBacktrace() {
+	// final OtpErlangBinary res = (OtpErlangBinary) ErlideDebug
+	// .getProcessInfo(fBackend, fPid, "backtrace");
+	// // byte[] r = res.binaryValue();
+	// return res;
+	// }
 
 	public OtpErlangObject getLastCalls() {
 		final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
@@ -194,23 +259,20 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IStackFrame[] getStackFrames() throws DebugException {
-		ErlLogger.debug("** get stackframes for " + fPid);
-
-		if (!isSuspended() && !isStepping()) {
-			return new IStackFrame[] { new ErlangStackFrame("" + isSuspended()
-					+ "." + isStepping(), this, fTarget) };
-		}
-
-		return new IStackFrame[] {};
-
+		// if (topFrame == null) {
+		// return new IStackFrame[0];
+		// // if (!isSuspended() && !isStepping()) {
+		// // return new IStackFrame[] { new ErlangStackFrame("" +
+		// // isSuspended()
+		// // + "." + isStepping(), this, fTarget) };
+		// // }
+		// }
+		// return new IStackFrame[] { topFrame, fakeFrame };
+		return stackFrames.toArray(new IStackFrame[stackFrames.size()]);
 	}
 
 	public boolean hasStackFrames() throws DebugException {
-		return isDebugged();
-	}
-
-	private boolean isDebugged() {
-		return true;
+		return isSuspended();
 	}
 
 	public int getPriority() throws DebugException {
@@ -219,9 +281,10 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IStackFrame getTopStackFrame() throws DebugException {
-		// TODO Auto-generated method stub
-		ErlLogger.debug("get top stackframe");
-		return null;
+		if (stackFrames.isEmpty()) {
+			return null;
+		}
+		return stackFrames.get(0);
 	}
 
 	public String getName() throws DebugException {
@@ -236,66 +299,95 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IBreakpoint[] getBreakpoints() {
-		return new IBreakpoint[] {};
+		if (stackFrames.isEmpty()) {
+			return null;
+		}
+		final ErlangStackFrame topFrame = stackFrames.get(0);
+		if (topFrame != null) {
+			final IBreakpointManager breakpointManager = DebugPlugin
+					.getDefault().getBreakpointManager();
+			final IBreakpoint[] breakpoints = breakpointManager
+					.getBreakpoints();
+
+			for (final IBreakpoint breakpoint : breakpoints) {
+				if (breakpoint instanceof ErlangLineBreakpoint) {
+					final ErlangLineBreakpoint lineBreakpoint = (ErlangLineBreakpoint) breakpoint;
+					try {
+						if (lineBreakpoint.getModule().equals(
+								topFrame.getModule())
+								&& lineBreakpoint.getLineNumber() == topFrame
+										.getLineNumber()) {
+							return new IBreakpoint[] { lineBreakpoint };
+						}
+					} catch (final DebugException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (final CoreException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return new IBreakpoint[0];
 	}
 
 	public boolean canResume() {
-		// TODO Auto-generated method stub
-		return false;
+		return isSuspended();
 	}
 
 	public boolean canSuspend() {
-		// TODO Auto-generated method stub
-		return false;
+		return !isSuspended();
 	}
 
 	public boolean isSuspended() {
-		return getStatus() == STATUS_SUSPENDED;
+		return getStatus().equals(STATUS_SUSPENDED)
+				|| getStatus().equals(STATUS_BREAK);
 	}
 
 	public void resume() throws DebugException {
-		// TODO Auto-generated method stub
-
+		stepping = false;
+		ErlideDebug.resume(fBackend, getMeta());
 	}
 
 	public void suspend() throws DebugException {
-		// TODO Auto-generated method stub
-
+		stepping = false;
+		ErlideDebug.suspend(fBackend, getMeta());
 	}
 
 	public boolean canStepInto() {
-		// TODO Auto-generated method stub
-		return false;
+		return isSuspended();
 	}
 
 	public boolean canStepOver() {
-		// TODO Auto-generated method stub
-		return false;
+		return isSuspended();
 	}
 
 	public boolean canStepReturn() {
-		// TODO Auto-generated method stub
-		return false;
+		return isSuspended();
 	}
 
 	public boolean isStepping() {
-		// TODO Auto-generated method stub
-		return false;
+		return stepping;
+	}
+
+	public void setNotStepping() {
+		stepping = false;
 	}
 
 	public void stepInto() throws DebugException {
-		// TODO Auto-generated method stub
-
+		stepping = true;
+		ErlideDebug.stepInto(fBackend, getMeta());
 	}
 
 	public void stepOver() throws DebugException {
-		// TODO Auto-generated method stub
-
+		stepping = true;
+		ErlideDebug.stepOver(fBackend, getMeta());
 	}
 
 	public void stepReturn() throws DebugException {
-		// TODO Auto-generated method stub
-
+		stepping = true;
+		ErlideDebug.stepReturn(fBackend, getMeta());
 	}
 
 	public boolean canTerminate() {
@@ -316,6 +408,13 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public boolean isErlideProcess() {
 		return ErlideDebug.isErlideProcess(fBackend, fPid);
+	}
+
+	/**
+	 * @return the fPid
+	 */
+	public OtpErlangPid getPid() {
+		return fPid;
 	}
 
 }

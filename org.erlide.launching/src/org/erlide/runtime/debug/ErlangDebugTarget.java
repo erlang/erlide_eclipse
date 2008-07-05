@@ -10,12 +10,13 @@
 package org.erlide.runtime.debug;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -28,16 +29,15 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.ErlEventLoop;
 import org.erlide.jinterface.rpc.IErlEventHandler;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
-import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDebug;
@@ -46,6 +46,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		IDebugTarget {
 
 	private static final IThread[] NO_PROCS = new IThread[] {};
+
+	List<ErlangProcess> threads;
 
 	private final IBackend fBackend;
 
@@ -61,13 +63,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private boolean fShowErlideProcesses = false;
 
-	public ErlangDebugTarget(final ILaunch launch, final IBackend b) {
+	IProject project;
+
+	private final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
+
+	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
+			final IProject project) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
 		fTerminated = false;
+		this.project = project;
+		threads = new ArrayList<ErlangProcess>();
 
-		final OtpErlangPid pid = ErlideDebug.startDebug(b, b.getEventPid());
+		final OtpErlangPid pid = ErlideDebug.startDebug(b);
 
 		// start debugger listener job
 		fDbgListener = new DebuggerListener("Erlang debugger listener", pid);
@@ -95,38 +104,19 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		if (isTerminated()) {
 			return NO_PROCS;
 		}
-		OtpErlangList procs = null;
-		try {
-			procs = ErlideDebug.getProcesses(fBackend, fShowSystemProcesses,
-					fShowErlideProcesses);
-			fBackend.send("erlide_dbg_mon", new OtpErlangAtom("dumpState"));
-		} catch (final Exception e) {
-			final IStatus s = new Status(IStatus.ERROR,
-					ErlangLaunchPlugin.PLUGIN_ID, -1,
-					"couldn't get erlang proceses", e);
-			throw new DebugException(s);
-		}
-		if (procs == null) {
-			return NO_PROCS;
-		}
-		final int n = procs.arity();
-		final List<ErlangProcess> l = new ArrayList<ErlangProcess>(n);
-		for (int i = 0; i < n; ++i) {
-			l.add(new ErlangProcess(this, (OtpErlangPid) procs.elementAt(i)));
-		}
-		return l.toArray(new IThread[l.size()]);
+		return threads.toArray(new IThread[threads.size()]);
 	}
 
-	@SuppressWarnings("unused")
-	private void cmd(final String cmd, final OtpErlangObject args) {
-		final OtpErlangTuple ct = new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom(cmd), args });
-
-		final OtpErlangTuple msg = new OtpErlangTuple(new OtpErlangObject[] {
-				new OtpErlangAtom("cmd"), ct });
-
-		fBackend.send("erlide_dbg_mon", msg);
-	}
+	// @SuppressWarnings("unused")
+	// private void cmd(final String cmd, final OtpErlangObject args) {
+	// final OtpErlangTuple ct = new OtpErlangTuple(new OtpErlangObject[] {
+	// new OtpErlangAtom(cmd), args });
+	//
+	// final OtpErlangTuple msg = new OtpErlangTuple(new OtpErlangObject[] {
+	// new OtpErlangAtom("cmd"), ct });
+	//
+	// fBackend.send("erlide_dbg_mon", msg);
+	// }
 
 	public boolean hasThreads() throws DebugException {
 		return !isTerminated();
@@ -137,16 +127,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
+		// TODO we should ask the Erlang debugger too...
 		if (!isTerminated()
 				&& breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
-			try {
-				final String module = getLaunch()
-						.getLaunchConfiguration()
-						.getAttribute(
-								IErlangLaunchConfigurationAttributes.ATTR_ENODE_MODULE,
-								(String) null);
-				return module != null && module != ""; // TODO FIXME testa mer!
-			} catch (final CoreException e) {
+			if (project == null
+					|| project == breakpoint.getMarker().getResource()
+							.getProject()) {
+				return true;
 			}
 		}
 		return false;
@@ -321,7 +308,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 			public void init() {
 				self = fBackend.getEventPid();
-
 				fBackend.send(fDbgPid, new OtpErlangTuple(new OtpErlangAtom(
 						"parent"), self));
 			}
@@ -337,15 +323,28 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 				// TODO Fler events från erlide_dbg_mon...
 				final OtpErlangTuple t = (OtpErlangTuple) msg;
-				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
-				final String event = a.atomValue();
-				if (event.equals("started")) {
-					started();
-				} else if (event.equals("terminated")) {
-					terminate();
-				} else if (event.equals("int")) {
-					handleIntEvent((OtpErlangTuple) t.elementAt(1));
+				final OtpErlangObject el0 = t.elementAt(0);
+				if (el0 instanceof OtpErlangAtom) {
+					final OtpErlangAtom a = (OtpErlangAtom) el0;
+					final String event = a.atomValue();
+					if (event.equals("started")) {
+						started();
+					} else if (event.equals("terminated")) {
+						terminate();
+					} else if (event.equals("int")) {
+						handleIntEvent((OtpErlangTuple) t.elementAt(1));
+					}
+				} else if (el0 instanceof OtpErlangPid) { // meta event
+					final OtpErlangObject metaEvent = t.elementAt(1);
+					if (metaEvent instanceof OtpErlangTuple) {
+						final OtpErlangTuple metaEventTuple = (OtpErlangTuple) metaEvent;
+						handleMetaEvent(metaEventTuple);
+					}
 				}
+			}
+
+			private void handleMetaEvent(final OtpErlangTuple metaEvent) {
+				ErlLogger.debug("handleMetaEvent " + metaEvent);
 			}
 
 			private void handleIntEvent(final OtpErlangTuple intEvent) {
@@ -357,16 +356,67 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				} else if (event.equals("new_status")) {
 					final OtpErlangPid pid = (OtpErlangPid) intEvent
 							.elementAt(1);
-					final ErlangProcess erlangProcess = new ErlangProcess(
-							ErlangDebugTarget.this, pid);
+					ErlangProcess erlangProcess = getErlangProcess(pid);
+					if (erlangProcess == null) {
+						erlangProcess = addErlangProcess(pid);
+					}
 					final OtpErlangAtom sa = (OtpErlangAtom) intEvent
 							.elementAt(2);
 					final String status = sa.atomValue();
-					if (status.equals("break")) { // TODO put check of status
-						// in erlangprocess...
-						ErlideDebug.attach(fBackend, pid, self);
-						erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
+					if (status.equals("break")) {
+						erlangProcess.setStatus(status);
+						final OtpErlangTuple modLine = (OtpErlangTuple) intEvent
+								.elementAt(3);
+						final OtpErlangAtom mod = (OtpErlangAtom) modLine
+								.elementAt(0);
+						final OtpErlangLong lineL = (OtpErlangLong) modLine
+								.elementAt(1);
+						int line = 0;
+						try {
+							line = lineL.intValue();
+						} catch (final OtpErlangRangeException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						erlangProcess.breakAt(mod.atomValue(), line);
+						if (erlangProcess.isStepping()) {
+							erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
+						} else {
+							erlangProcess
+									.fireSuspendEvent(DebugEvent.BREAKPOINT);
+						}
+						erlangProcess.setNotStepping();
+					} else if (status.equals("exit")) {
+						removeErlangProcess(pid);
+						erlangProcess.fireTerminateEvent();
+					} else if (status.equals("running")) {
+						erlangProcess.setStatus(status);
+						if (erlangProcess.isStepping()) {
+							fireResumeEvent(DebugEvent.STEP_OVER);
+						} else {
+							fireResumeEvent(DebugEvent.RESUME);
+						}
+					} else {
+						erlangProcess.setStatus(status);
+						fireChangeEvent(DebugEvent.STATE | DebugEvent.CHANGE);
 					}
+				} else if (event.equals("new_process")) {
+					final OtpErlangTuple t = (OtpErlangTuple) intEvent
+							.elementAt(1);
+					final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
+					final ErlangProcess erlangProcess = addErlangProcess(pid);
+					final OtpErlangAtom statusA = (OtpErlangAtom) t
+							.elementAt(2);
+					final String status = statusA.atomValue();
+					erlangProcess.setStatus(status);
+					if (metaPids.get(pid) == null) {
+						final OtpErlangPid metaPid = ErlideDebug.attached(
+								fBackend, pid, self);
+						if (metaPid != null) {
+							metaPids.put(pid, metaPid);
+						}
+					}
+					erlangProcess.fireCreationEvent();
 				}
 			}
 
@@ -392,12 +442,60 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				e.printStackTrace();
 				return false;
 			}
-
 		}
 
 		public void stop() {
 			loop.stop();
 		}
+	}
 
+	private ErlangProcess addErlangProcess(final OtpErlangPid pid) {
+		final ErlangProcess p = new ErlangProcess(this, pid);
+		threads.add(p);
+		return p;
+	}
+
+	private ErlangProcess getErlangProcess(final OtpErlangPid pid) {
+		for (int i = 0; i < threads.size(); ++i) {
+			final ErlangProcess p = threads.get(i);
+			if (p.getPid().equals(pid)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	private void removeErlangProcess(final OtpErlangPid pid) {
+		final ErlangProcess p = getErlangProcess(pid);
+		if (p != null) {
+			threads.remove(p);
+			p.fireTerminateEvent();
+
+		}
+	}
+
+	// private void setErlangProcessStatus(final OtpErlangPid pid,
+	// final String status) {
+	// final ErlangProcess p = getErlangProcess(pid);
+	// if (p != null) {
+	// p.setStatus(status);
+	// p.fireChangeEvent(DebugEvent.STATE);
+	// }
+	// }
+
+	// private void setErlangProcessBreakAt(final OtpErlangPid pid,
+	// final String mod, final int line) {
+	// final ErlangProcess p = getErlangProcess(pid);
+	// if (p != null) {
+	// p.breakAt(mod, line);
+	// }
+	// }
+
+	public void sendStarted() {
+		ErlideDebug.sendStarted(fBackend, fBackend.getEventPid());
+	}
+
+	public OtpErlangPid getMetaForPid(final OtpErlangPid pid) {
+		return metaPids.get(pid);
 	}
 }

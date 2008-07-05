@@ -76,6 +76,9 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			if (projectName.length() > 0) {
 				project = ResourcesPlugin.getWorkspace().getRoot().getProject(
 						projectName);
+				if (project == null) {
+					return;
+				}
 				final ErlangProjectProperties prefs = new ErlangProjectProperties(
 						project);
 				final String projOutputDir = project.getLocation().append(
@@ -120,11 +123,14 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 				backend.connectAndRegister(l);
 				// add debug target
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-						backend);
+						backend, project);
 				launch.addDebugTarget(target);
+				// interpret everything we can
 				if (project != null) {
 					interpretAll(backend, project);
 				}
+				// send started to target
+				target.sendStarted();
 			}
 			if (mod.length() > 0 && fn.length() > 0) {
 				backend.rpc(mod, fn, "");
@@ -139,7 +145,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	private void interpretAll(final IBackend backend, final IProject project) {
 		final List<String> beams = new ArrayList<String>();
 		final List<String> erls = new ArrayList<String>();
-		final Map<String, String> erlFullPaths = new TreeMap<String, String>();
+		final Map<String, String> erlLocations = new TreeMap<String, String>();
 		try {
 			project.accept(new IResourceVisitor() {
 				public boolean visit(final IResource resource)
@@ -153,8 +159,12 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 							if (ext.equals("beam")) {
 								beams.add(baseName);
 							} else if (ext.equals("erl")) {
-								erls.add(baseName);
-								erlFullPaths.put(baseName, fullPath.toString());
+								final IPath location = resource.getLocation();
+								if (location != null) {
+									erls.add(baseName);
+									erlLocations.put(baseName, location
+											.toString());
+								}
 							}
 						}
 					}
@@ -163,7 +173,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			}, IResource.DEPTH_INFINITE, 0);
 			for (final String erl : erls) {
 				if (beams.contains(erl)) {
-					ErlideDebug.interpret(backend, erlFullPaths.get(erl));
+					ErlideDebug.interpret(backend, erlLocations.get(erl));
 				}
 			}
 		} catch (final CoreException e) {

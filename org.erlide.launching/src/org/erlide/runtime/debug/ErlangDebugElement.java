@@ -10,12 +10,11 @@
 package org.erlide.runtime.debug;
 
 import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 
 public class ErlangDebugElement extends DebugElement {
 
-	public ErlangDebugElement(IDebugTarget target) {
+	public ErlangDebugElement(final IDebugTarget target) {
 		super(target);
 	}
 
@@ -23,14 +22,14 @@ public class ErlangDebugElement extends DebugElement {
 		return "org.erlide.debug.model";
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getAdapter(Class adapter) {
-		if (adapter == IDebugElement.class) {
-			return this;
-		}
-
-		return super.getAdapter(adapter);
-	}
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public Object getAdapter(Class adapter) {
+	// if (adapter == IDebugElement.class) {
+	// return this;
+	// }
+	//
+	// return super.getAdapter(adapter);
+	// }
 
 }

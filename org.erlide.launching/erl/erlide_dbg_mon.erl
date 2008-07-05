@@ -23,6 +23,7 @@
 
 %% External exports
 -export([start/2, stop/0, interpret/1, line_breakpoint/2]).
+-export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1, step_into/1, step_return/1]).
 
 -define(BACKTRACE, all).
 
@@ -106,11 +107,11 @@ init(CallingPid, Mode, SFile) ->
 
 init2(CallingPid, Mode, SFile) ->
     %% Start Int if necessary and subscribe to information from it
-    Bool = case int:start() of
+    Bool = case erlide_int:start() of
                {ok, _Int} -> true;
                {error, {already_started, _Int}} -> false
            end,
-    int:subscribe(),
+    erlide_int:subscribe(),
 
     %% Initial process state
     State1 = #state{mode    = Mode,
@@ -125,14 +126,14 @@ init2(CallingPid, Mode, SFile) ->
                     interpreted = []
                     },
     
-    State2 = init_options(int:auto_attach(),    % Auto Attach
-                          int:stack_trace(),    % Stack Trace
+    State2 = init_options(erlide_int:auto_attach(),    % Auto Attach
+                          erlide_int:stack_trace(),    % Stack Trace
                           ?BACKTRACE,           % Back Trace Size
                           State1),
 
-    State3 = init_contents(int:interpreted(),   % Modules
-                           int:all_breaks(),    % Breakpoints
-                           int:snapshot(),      % Processes
+    State3 = init_contents(erlide_int:interpreted(),   % Modules
+                           erlide_int:all_breaks(),    % Breakpoints
+                           erlide_int:snapshot(),      % Processes
                            State2),
 
     CallingPid ! {initialization_complete, self()},
@@ -170,34 +171,34 @@ init_contents(_Mods, _Breaks, Processes, State) ->
 loop(State) ->
     receive
         {parent, P} -> %% P is the remote mailbox
-       	    loop(State#state{parent=P});
-
+            loop(State#state{parent=P});
+        
         dumpState ->
-        	io:format("dbg_mon state:: ~p~n", [State]),
-        	msg(State#state.parent, {dumpState, State, int:snapshot()}),
-       	    loop(State);
-
-        {cmd, Cmd, From} = Msg ->
-	    io:format("@ dbg_mon cmd: ~p~n", [Msg]),
-	    {Reply, State1} = gui_cmd(Cmd, State),
+            io:format("dbg_mon state:: ~p~n", [State]),
+            msg(State#state.parent, {dumpState, State, erlide_int:snapshot()}),
+            loop(State);
+        
+        {cmd, Cmd, From} = _Msg ->
+            %% 	    io:format("@ dbg_mon cmd: ~p~n", [_Msg]),
+            {Reply, State1} = gui_cmd(Cmd, State),
             From ! Reply,
-       	    loop(State1);
-
-	stop ->
-	    gui_cmd(stopped, State);
-
-	%% From the interpreter process
-	{int, Cmd} = Msg ->
-	    msg(State#state.parent, Msg),	    
-    	
-	    State2 = int_cmd(Cmd, State),
-	    loop(State2);
-
-	Msg ->
-    	    %%msg(State#state.parent, {unknown, Msg}),
-    	    io:format("dbg_mon: unknown ~p", [Msg]),
-	    loop(State)
-
+            loop(State1);
+        
+        stop ->
+            gui_cmd(stopped, State);
+        
+        %% From the interpreter process
+        {int, Cmd} = Msg ->
+            msg(State#state.parent, Msg),	    
+            
+            State2 = int_cmd(Cmd, State),
+            loop(State2);
+        
+        Msg ->
+            %%msg(State#state.parent, {unknown, Msg}),
+            io:format("dbg_mon: unknown ~p", [Msg]),
+            loop(State)
+    
     end.
 
 %%--Commands from the GUI---------------------------------------------
@@ -209,22 +210,22 @@ gui_cmd(ignore, State) ->
     {ok, State};
 gui_cmd(stopped, State) ->
     if
-	State#state.starter==true -> int:stop();
-	true -> int:auto_attach(false)
+	State#state.starter==true -> erlide_int:stop();
+	true -> erlide_int:auto_attach(false)
     end,
     exit(stop);
 
 gui_cmd(refresh, State) ->
-    int:clear(),
+    erlide_int:clear(),
     State2 = State#state{pinfos=[]},
     lists:foldl(fun(PidTuple, S) ->
 			int_cmd({new_process,PidTuple}, S)
 		end,
 		State2,
-		int:snapshot());
+		erlide_int:snapshot());
 
 gui_cmd({attach, Jproc, Dproc}, State) ->
-	int:attach(Dproc, {erlide_dbg, start, [Jproc, Dproc]}),
+	erlide_int:attach(Dproc, {erlide_dbg, start, [Jproc, Dproc]}),
 	State;
 
 gui_cmd(kill_all_processes, State) ->
@@ -238,45 +239,68 @@ gui_cmd(kill_all_processes, State) ->
     State;
 
 gui_cmd({interpret, Modules}, State) ->
-    Res = int:i(Modules),
+    Res = erlide_int:i(Modules),
 %    dbg_ui_interpret:start(State#state.gs, State#state.coords,
 %			   State#state.intdir, State#state.mode),
     {Res, State#state{interpreted=State#state.interpreted++Modules}};
 gui_cmd(delete_all, State) ->
-    lists:foreach(fun(Mod) -> int:nn(Mod) end, int:interpreted()),
+    lists:foreach(fun(Mod) -> erlide_int:nn(Mod) end, erlide_int:interpreted()),
     {ok, State};
 gui_cmd({module, Mod, What}, State) ->
     case What of
-	delete -> int:nn(Mod)
+	delete -> erlide_int:nn(Mod)
     end,
     State;
 
 gui_cmd(enable_all_breaks, State) ->
-    Breaks = int:all_breaks(),
+    Breaks = erlide_int:all_breaks(),
     lists:foreach(fun ({{Mod, Line}, _Options}) ->
-			  int:enable_break(Mod, Line)
+			  erlide_int:enable_break(Mod, Line)
 		  end,
 		  Breaks),
     State;
 gui_cmd(disable_all_breaks, State) ->
-    Breaks = int:all_breaks(),
+    Breaks = erlide_int:all_breaks(),
     lists:foreach(fun({{Mod, Line}, _Options}) ->
-                          int:disable_break(Mod, Line)
+                          erlide_int:disable_break(Mod, Line)
                   end,
                   Breaks),
     State;
+
 gui_cmd(delete_all_breaks, State) ->
-    int:no_break(),
+    erlide_int:no_break(),
     State;
 gui_cmd({break, {Mod, Line, What}}, State) ->
-    io:format("break Mod Line What ~p\n", [{Mod, Line, What}]),
+%%     io:format("break Mod Line What ~p\n", [{Mod, Line, What}]),
     Res = case What of
-              add -> int:break(Mod, Line);
-              delete -> int:delete_break(Mod, Line);
-              {status, inactive} -> int:disable_break(Mod, Line);
-              {status, active} -> int:enable_break(Mod, Line);
-              {trigger, Action} -> int:action_at_break(Mod, Line, Action)
+              add -> erlide_int:break(Mod, Line);
+              delete -> erlide_int:delete_break(Mod, Line);
+              {status, inactive} -> erlide_int:disable_break(Mod, Line);
+              {status, active} -> erlide_int:enable_break(Mod, Line);
+              {trigger, Action} -> erlide_int:action_at_break(Mod, Line, Action)
           end,
+    {Res, State};
+
+gui_cmd({resume, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:continue(MetaPid),
+    {Res, State};
+gui_cmd({suspend, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:stop(MetaPid),
+    {Res, State};
+gui_cmd({bindings, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:get(MetaPid, bindings, nostack),
+    {Res, State};
+gui_cmd({all_stack_frames, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:get(MetaPid, all_stack_frames, noargs),
+    {Res, State};
+gui_cmd({step_into, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:step(MetaPid),
+    {Res, State};
+gui_cmd({step_over, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:next(MetaPid),
+    {Res, State};
+gui_cmd({step_return, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:finish(MetaPid),
     {Res, State};
 
 %% Options Commands
@@ -287,7 +311,7 @@ gui_cmd({trace, JPid}, State) ->
 	    case trace_function(JPid, State) of
 		{_, _, StartFlags} -> ignore;
 		NewFunction -> % {_, _, NewStartFlags}
-		    int:auto_attach(Flags, NewFunction)
+		    erlide_int:auto_attach(Flags, NewFunction)
 	    end;
 	_AutoAttach -> ignore
     end,
@@ -295,7 +319,7 @@ gui_cmd({trace, JPid}, State) ->
 gui_cmd({auto_attach, _When}, State) ->
     State;
 gui_cmd({stack_trace, [_Name]}, State) ->
-%    int:stack_trace(map(Name)),
+%    erlide_int:stack_trace(map(Name)),
     State;
 gui_cmd(backtrace_size, State) ->
     State;
@@ -371,6 +395,27 @@ int_cmd(_Other, State) ->
 interpret(Modules) ->
     cmd(interpret, Modules).
 
+suspend(MetaPid) ->
+    cmd(suspend, MetaPid).
+
+resume(MetaPid) ->
+    cmd(resume, MetaPid).
+
+step_over(MetaPid) ->
+    cmd(step_over, MetaPid).
+
+step_into(MetaPid) ->
+    cmd(step_into, MetaPid).
+
+step_return(MetaPid) ->
+    cmd(step_return, MetaPid).
+
+bindings(MetaPid) ->
+    cmd(bindings, MetaPid).
+
+all_stack_frames(MetaPid) ->
+    cmd(all_stack_frames, MetaPid).
+
 line_breakpoint(Module, Line) ->
     cmd(break, {Module, Line, add}).
 
@@ -406,33 +451,33 @@ load_settings2(Settings, State) ->
 	Settings,
 
     case AutoAttach of
-	false -> int:auto_attach(false);
-	{Flags, Function} -> int:auto_attach(Flags, Function)
+	false -> erlide_int:auto_attach(false);
+	{Flags, Function} -> erlide_int:auto_attach(Flags, Function)
     end,
 
-    int:stack_trace(StackTrace),
+    erlide_int:stack_trace(StackTrace),
 
     case State#state.mode of
-	local -> lists:foreach(fun(File) -> int:i(File) end, Files);
-	global -> lists:foreach(fun(File) -> int:ni(File) end, Files)
+	local -> lists:foreach(fun(File) -> erlide_int:i(File) end, Files);
+	global -> lists:foreach(fun(File) -> erlide_int:ni(File) end, Files)
     end,
     lists:foreach(fun(Break) ->
 			  {{Mod, Line}, [Status, Action, _, Cond]} =
 			      Break,
-			  int:break(Mod, Line),
+			  erlide_int:break(Mod, Line),
 			  if
 			      Status==inactive ->
-				  int:disable_break(Mod, Line);
+				  erlide_int:disable_break(Mod, Line);
 			      true -> ignore
 			  end,
 			  if
 			      Action/=enable ->
-				  int:action_at_break(Mod,Line,Action);
+				  erlide_int:action_at_break(Mod,Line,Action);
 			      true -> ignore
 			  end,
 			  case Cond of
 			      CFunction when tuple(CFunction) ->
-				  int:test_at_break(Mod,Line,CFunction);
+				  erlide_int:test_at_break(Mod,Line,CFunction);
 			      null -> ignore
 			  end
 		  end,
@@ -442,14 +487,14 @@ load_settings2(Settings, State) ->
 
 % TODO: Use of save settings
 %% save_settings(SFile, State) ->
-%%     Settings = {int:auto_attach(),
-%% 		int:stack_trace(),
+%%     Settings = {erlide_int:auto_attach(),
+%% 		erlide_int:stack_trace(),
 %% 		State#state.backtrace,
 %% 		lists:map(fun(Mod) ->
-%% 				  int:file(Mod)
+%% 				  erlide_int:file(Mod)
 %% 			  end,
-%% 			  int:interpreted()),
-%% 		int:all_breaks()},
+%% 			  erlide_int:interpreted()),
+%% 		erlide_int:all_breaks()},
 %% 
 %%     Binary = term_to_binary({debugger_settings, Settings}),
 %%     case file:write_file(SFile, Binary) of
@@ -489,7 +534,7 @@ trace_function(Jpid, State) ->
 
 msg(Pid, Msg) ->
 	%% Pid may be 'undefined'
-	io:format("SEND:: ~p~n", [Msg]),
+%% 	io:format("SEND:: ~p~n", [Msg]),
     _Res = (catch(Pid ! Msg)),
     ok.
     

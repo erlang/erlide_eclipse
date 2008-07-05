@@ -14,55 +14,53 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 
-public class ErlangVariable extends ErlangDebugElement implements IVariable {
+import com.ericsson.otp.erlang.OtpErlangObject;
 
-	public ErlangVariable(IDebugTarget target) {
+public class ErlangVariable extends ErlangDebugElement implements IVariable {
+	String name;
+	ErlangValue value;
+
+	public ErlangVariable(final IDebugTarget target, final String name,
+			final OtpErlangObject value) {
 		super(target);
-		// TODO Auto-generated constructor stub
+		this.name = name;
+		this.value = new ErlangValue(getDebugTarget(), name, value);
 	}
 
 	public IValue getValue() throws DebugException {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	public String getName() throws DebugException {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	public String getReferenceTypeName() throws DebugException {
-		// TODO Auto-generated method stub
-		return null;
+		if (value == null) {
+			return null;
+		}
+		return value.getReferenceTypeName();
 	}
 
 	public boolean hasValueChanged() throws DebugException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void setValue(String expression) throws DebugException {
-		// TODO Auto-generated method stub
-
+	public void setValue(final String expression) throws DebugException {
 	}
 
-	public void setValue(IValue value) throws DebugException {
-		// TODO Auto-generated method stub
-
+	public void setValue(final IValue value) throws DebugException {
 	}
 
 	public boolean supportsValueModification() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean verifyValue(String expression) throws DebugException {
-		// TODO Auto-generated method stub
+	public boolean verifyValue(final String expression) throws DebugException {
 		return false;
 	}
 
-	public boolean verifyValue(IValue value) throws DebugException {
-		// TODO Auto-generated method stub
+	public boolean verifyValue(final IValue value) throws DebugException {
 		return false;
 	}
 

@@ -1,5 +1,5 @@
-#Mon Jun 02 22:27:29 CEST 2008
-source_dirs=erl
+#Sat Jul 05 11:29:32 CEST 2008
+source_dirs=erl;erl_debugger
 backend_cookie=
 otp_project_structure=false
 backend_name=

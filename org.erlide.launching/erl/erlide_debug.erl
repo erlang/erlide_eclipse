@@ -19,21 +19,28 @@
 %%
 %% Exported Functions
 %%
--export([start_debug/1, line_breakpoint/2, attach/2]).
--compile(export_all).
+-export([start_debug/0, attached/2, send_started/1]).
+-export([line_breakpoint/2, resume/1, suspend/1, bindings/1, step_over/1, step_into/1, step_return/1,
+         interpret/1, all_stack_frames/1]).
+
+%% -compile(export_all).
 
 %%
 %% API Functions
 %%
 
-start_debug(JPid) ->
+start_debug() ->
 	group_leader(whereis(init), self()),
 	{ok, Pid} = erlide_dbg_mon:start(local, default),
-        JPid ! {started, Pid},
 	Pid.
 
-attach(Pid, JPid) ->
-    erlide_dbg:start(Pid, JPid, all).
+send_started(JPid) ->
+    JPid ! {started, whereis(erlide_dbg_mon)}.
+
+attached(Pid, JPid) ->
+    %% We can't use erlide_int:attached here, because we want 
+    %% to use the JPid as meta-cmd receiver
+    erlide_dbg_iserver:call({attached, JPid, Pid}).
 
 processes(ShowSys, ShowErlide) ->
     L = erlang:processes(),
@@ -71,18 +78,32 @@ interpret(File) ->
     erlide_dbg_mon:interpret([File]).
 
 line_breakpoint(File, Line) ->
-    interpret([File]),
     ModuleName = filename:rootname(filename:basename(File)),
     Module = list_to_atom(ModuleName),
-    erlang:display({?MODULE, ?LINE}),
     Res = erlide_dbg_mon:line_breakpoint(Module, Line),
-    erlang:display({?MODULE, ?LINE}),
     Res.
 
+suspend(MetaPid) ->
+    erlide_dbg_mon:suspend(MetaPid).
+
+resume(MetaPid) ->
+    erlide_dbg_mon:resume(MetaPid).
+
+bindings(MetaPid) ->
+    erlide_dbg_mon:bindings(MetaPid).
+
+all_stack_frames(MetaPid) ->
+    erlide_dbg_mon:all_stack_frames(MetaPid).
+
+step_over(MetaPid) ->
+    erlide_dbg_mon:step_over(MetaPid).
+
+step_into(MetaPid) ->
+    erlide_dbg_mon:step_into(MetaPid).
+
+step_return(MetaPid) ->
+    erlide_dbg_mon:step_return(MetaPid).
 
 %%
 %% Local Functions
 %%
-
-foo() ->
-	ok.

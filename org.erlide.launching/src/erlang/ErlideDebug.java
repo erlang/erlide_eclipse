@@ -31,11 +31,10 @@ public class ErlideDebug {
 		return procs;
 	}
 
-	public static OtpErlangPid startDebug(final IBackend backend,
-			final OtpErlangPid jpid) {
+	public static OtpErlangPid startDebug(final IBackend backend) {
 		OtpErlangObject res = null;
 		try {
-			res = backend.rpcx("erlide_debug", "start_debug", "x", jpid);
+			res = backend.rpcx("erlide_debug", "start_debug", "");
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,11 +59,14 @@ public class ErlideDebug {
 	 *            java pseudo-pid
 	 * @return pid of meta process
 	 */
-	public static OtpErlangPid attach(final IBackend backend,
+	public static OtpErlangPid attached(final IBackend backend,
 			final OtpErlangPid pid, final OtpErlangPid jpid) {
 		OtpErlangObject res = null;
 		try {
-			res = backend.rpcx("erlide_debug", "attach", "xx", pid, jpid);
+			res = backend.rpcx("erlide_debug", "attached", "xx", pid, jpid);
+			final OtpErlangTuple t = (OtpErlangTuple) res;
+			final OtpErlangPid meta = (OtpErlangPid) t.elementAt(1);
+			return meta;
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +74,7 @@ public class ErlideDebug {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return (OtpErlangPid) res;
+		return null;
 	}
 
 	public static OtpErlangObject getProcessInfo(final IBackend backend,
@@ -149,4 +151,111 @@ public class ErlideDebug {
 		}
 	}
 
+	public static void sendStarted(final IBackend backend,
+			final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "send_started", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void resume(final IBackend backend, final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "resume", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void suspend(final IBackend backend, final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "suspend", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static OtpErlangList getBindings(final IBackend backend,
+			final OtpErlangPid meta) {
+		try {
+			final OtpErlangObject res = backend.rpcx("erlide_debug",
+					"bindings", "x", meta);
+			return (OtpErlangList) res;
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void stepOver(final IBackend backend, final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "step_over", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void stepReturn(final IBackend backend,
+			final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "step_return", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void stepInto(final IBackend backend, final OtpErlangPid meta) {
+		try {
+			backend.rpcx("erlide_debug", "step_into", "x", meta);
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static OtpErlangTuple getAllStackframes(final IBackend backend,
+			final OtpErlangPid meta) {
+		try {
+			final OtpErlangObject res = backend.rpcx("erlide_debug",
+					"all_stack_frames", "x", meta);
+			if (res instanceof OtpErlangTuple) {
+				return (OtpErlangTuple) res;
+			}
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.launching; singleton:=true
-Bundle-Version: 0.3.55.qualifier
+Bundle-Version: 0.3.56.qualifier
 Bundle-Activator: org.erlide.runtime.ErlangLaunchPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -14,13 +14,40 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
  org.erlide.basic
 Bundle-ActivationPolicy: lazy
-Export-Package: erlang,
- org.erlide.runtime,
- org.erlide.runtime.backend,
- org.erlide.runtime.backend.console,
- org.erlide.runtime.backend.exceptions,
+Export-Package: erlang;uses:="com.ericsson.otp.erlang,org.erlide.runtime.backend",
+ org.erlide.runtime;
+  uses:="org.eclipse.debug.core.sourcelookup,
+   org.erlide.jinterface,
+   org.osgi.framework,
+   org.eclipse.core.resources,
+   org.eclipse.core.runtime,
+   org.eclipse.debug.core",
+ org.erlide.runtime.backend;
+  uses:="com.ericsson.otp.erlang,
+   org.erlide.runtime.backend.console,
+   org.eclipse.core.resources,
+   org.erlide.jinterface.rpc,
+   org.eclipse.debug.core.model,
+   org.erlide.jinterface,
+   org.eclipse.core.runtime.jobs,
+   org.eclipse.core.runtime,
+   org.eclipse.debug.core,
+   org.erlide.basiccore",
+ org.erlide.runtime.backend.console;
+  uses:="org.eclipse.ui.console,
+   org.eclipse.debug.core.model,
+   org.erlide.runtime,
+   org.erlide.runtime.backend,
+   org.eclipse.core.runtime,
+   org.eclipse.debug.core",
+ org.erlide.runtime.backend.exceptions;uses:="org.erlide.jinterface.rpc",
  org.erlide.runtime.backend.internal;x-internal:=true,
- org.erlide.runtime.debug
+ org.erlide.runtime.debug;
+  uses:="com.ericsson.otp.erlang,
+   org.eclipse.debug.core.model,
+   org.erlide.runtime.backend,
+   org.eclipse.core.resources,
+   org.eclipse.debug.core"
 Bundle-Vendor: %providerName
 Bundle-ClassPath: erlide-launching.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

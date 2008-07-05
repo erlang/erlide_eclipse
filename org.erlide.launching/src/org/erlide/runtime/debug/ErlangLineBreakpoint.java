@@ -14,13 +14,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.LineBreakpoint;
+import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.erlide.runtime.backend.IBackend;
 
 import erlang.ErlideDebug;
 
-public class ErlangLineBreakpoint extends LineBreakpoint {
+public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint {
 	ErlangDebugTarget target = null;
 
 	public ErlangLineBreakpoint() {
@@ -74,4 +75,46 @@ public class ErlangLineBreakpoint extends LineBreakpoint {
 			ErlideDebug.addLineBreakpoint(b, module, line);
 		}
 	}
+
+	public String getModule() {
+		final IResource r = getMarker().getResource();
+		return r.getFullPath().removeFileExtension().lastSegment();
+	}
+
+	// copied these three from LineBreakpoint, because I think we should have
+	// class hierarchy around ErlangBreakpoint instead... (multiple inheritance,
+	// anyone? =) )
+	/**
+	 * @see ILineBreakpoint#getLineNumber()
+	 */
+	public int getLineNumber() throws CoreException {
+		final IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.LINE_NUMBER, -1);
+		}
+		return -1;
+	}
+
+	/**
+	 * @see ILineBreakpoint#getCharStart()
+	 */
+	public int getCharStart() throws CoreException {
+		final IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.CHAR_START, -1);
+		}
+		return -1;
+	}
+
+	/**
+	 * @see ILineBreakpoint#getCharEnd()
+	 */
+	public int getCharEnd() throws CoreException {
+		final IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.CHAR_END, -1);
+		}
+		return -1;
+	}
+
 }

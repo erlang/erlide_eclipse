@@ -9,24 +9,51 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
 public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame {
 
-	private String fModule;
+	private final String fModule;
 
-	private IThread fParent;
+	private final ErlangProcess fParent;
 
-	public ErlangStackFrame(String module, IThread parent, IDebugTarget target) {
+	private final int fLineNumber;
+
+	List<ErlangVariable> bindings;
+
+	public ErlangStackFrame(final String module, final ErlangProcess parent,
+			final IDebugTarget target, final int lineNumber,
+			final OtpErlangList bindings) {
 		super(target);
 		fParent = parent;
 		fModule = module;
+		fLineNumber = lineNumber;
+		final int arity = bindings.arity();
+		this.bindings = new ArrayList<ErlangVariable>(arity);
+		if (arity > 0) {
+			for (final OtpErlangObject o : bindings.elements()) {
+				if (o instanceof OtpErlangTuple) {
+					final OtpErlangTuple t = (OtpErlangTuple) o;
+					final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
+					final OtpErlangObject value = t.elementAt(1);
+					this.bindings.add(new ErlangVariable(target, nameA
+							.atomValue(), value));
+				}
+			}
+		}
 	}
 
 	public String getModule() {
@@ -38,142 +65,102 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 	}
 
 	public IVariable[] getVariables() throws DebugException {
-		// TODO Auto-generated method stub
-		return null;
+		// return new IVariable[] { new ErlangVariable(getDebugTarget(), "Var1",
+		// new OtpErlangTuple(new OtpErlangObject[] {
+		// new OtpErlangAtom("hej"),
+		// new OtpErlangList(new OtpErlangObject[] {
+		// new OtpErlangString("du"),
+		// new OtpErlangAtom("glade") }),
+		// new OtpErlangLong(1234) })) };
+		return bindings.toArray(new IVariable[bindings.size()]);
 	}
 
 	public boolean hasVariables() throws DebugException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public int getLineNumber() throws DebugException {
-		// TODO Auto-generated method stub
-		return 0;
+		return fLineNumber;
 	}
 
 	public int getCharStart() throws DebugException {
-		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
 	public int getCharEnd() throws DebugException {
-		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
 	public String getName() throws DebugException {
-		// TODO Auto-generated method stub
 		return "n:" + fModule;
 	}
 
 	public IRegisterGroup[] getRegisterGroups() throws DebugException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public boolean hasRegisterGroups() throws DebugException {
-		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public String getModelIdentifier() {
-		return IErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
-	}
-
-	@Override
-	public IDebugTarget getDebugTarget() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ILaunch getLaunch() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public boolean canStepInto() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canStepInto();
 	}
 
 	public boolean canStepOver() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canStepOver();
 	}
 
 	public boolean canStepReturn() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canStepReturn();
 	}
 
 	public boolean isStepping() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.isStepping();
 	}
 
 	public void stepInto() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.stepInto();
 	}
 
 	public void stepOver() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.stepOver();
 	}
 
 	public void stepReturn() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.stepReturn();
 	}
 
 	public boolean canResume() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canResume();
 	}
 
 	public boolean canSuspend() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canSuspend();
 	}
 
 	public boolean isSuspended() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.isSuspended();
 	}
 
 	public void resume() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.resume();
 	}
 
 	public void suspend() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.suspend();
 	}
 
 	public boolean canTerminate() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.canTerminate();
 	}
 
 	public boolean isTerminated() {
-		// TODO Auto-generated method stub
-		return false;
+		return fParent.isTerminated();
 	}
 
 	public void terminate() throws DebugException {
-		// TODO Auto-generated method stub
-
+		fParent.terminate();
 	}
 
 }

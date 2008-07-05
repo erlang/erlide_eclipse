@@ -12,12 +12,12 @@ public class ErlangSourceLookupParticipant extends
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getSourceName(Object object) throws CoreException {
+	public String getSourceName(final Object object) throws CoreException {
 		if (!(object instanceof ErlangStackFrame)) {
 			return null;
 		}
-		ErlangStackFrame f = (ErlangStackFrame) object;
-		return f.getModule();
+		final ErlangStackFrame f = (ErlangStackFrame) object;
+		return f.getModule() + ".erl";
 	}
 
 }
