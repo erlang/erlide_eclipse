@@ -12,15 +12,6 @@
             sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
       </launchConfigurationType>
-      <launchConfigurationType
-            delegate="org.erlide.runtime.backend.ErlideNodeLaunchConfigurationDelegate"
-            id="org.erlide.core.launch.erlide"
-            modes="run"
-            name="erlide internal node"
-            public="false"
-            sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
-      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
