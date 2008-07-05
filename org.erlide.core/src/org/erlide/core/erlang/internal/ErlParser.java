@@ -101,12 +101,12 @@ public class ErlParser {
 	}
 
 	/**
-	 * create a IErlComment from a tuple
+	 * create an IErlComment from a token record
 	 * 
 	 * @param IErlModule
-	 *            parent
+	 *            module containing comment
 	 * @param OtpErlangTuple
-	 *            c
+	 *            token record from noparse
 	 * @return IErlComment
 	 */
 	public IErlComment createComment(final IErlModule parent,
@@ -145,13 +145,13 @@ public class ErlParser {
 	}
 
 	/**
-	 * create a IErlMember from a erl_syntax tree
+	 * create an IErlMember from a tuple from noparse
 	 * 
 	 * @param el
+	 *            the tuple, either function or attribute
 	 * @return
 	 */
 	private IErlMember create(final IErlModule parent, final OtpErlangTuple el) {
-		// ErlLogger.debug("#! " + el.toString());
 		final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
 		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
@@ -161,7 +161,6 @@ public class ErlParser {
 			final ErlMessage e = new ErlMessage(parent,
 					ErlMessage.MessageKind.ERROR, msg);
 			setPos(e, er.elementAt(0));
-			// e.setParseTree(el);
 			return e;
 		} else if ("tree".equals(type.atomValue())) {
 			final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);

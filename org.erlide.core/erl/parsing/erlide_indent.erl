@@ -16,7 +16,7 @@
          indent_lines/4]).
 
 %-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 %-define(TRACE, 1).
 
 -include("erlide.hrl").

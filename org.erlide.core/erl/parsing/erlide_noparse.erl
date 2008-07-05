@@ -93,7 +93,7 @@ reparse(ScannerName) ->
 -record(other, {pos, name, tokens}).
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
-    ?Info({noparse, ScannerName}),
+%%     ?Info({noparse, ScannerName}),
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir),
     ?D(length(Toks)),
     {UncommentToks, Comments} = extract_comments(Toks),

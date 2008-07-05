@@ -405,7 +405,7 @@ do_cmd(get_token_at, {Mod, Offset}, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_token_at(Module, Offset), Modules};
 do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
-	?Debug({replace_text, Mod}),
+%% 	?Debug({replace_text, Mod}),
 	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
 	NewMod = replace_text(Module, Offset, RemoveLength, NewText),
 	[NewMod | lists:keydelete(Mod, #module.name, Modules)];
