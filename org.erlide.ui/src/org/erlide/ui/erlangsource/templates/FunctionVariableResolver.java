@@ -30,26 +30,26 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-	 * .eclipse.jface.text.templates.TemplateVariable,
-	 * org.eclipse.jface.text.templates.TemplateContext)
+	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 *      .eclipse.jface.text.templates.TemplateVariable,
+	 *      org.eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	public void resolve(TemplateVariable variable, TemplateContext context) {
+	public void resolve(final TemplateVariable variable,
+			final TemplateContext context) {
 		@SuppressWarnings("unchecked")
 		final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout
 				.getDefault().resolvers();
 		FunctionNameVariableResolver name_var = null;
 		// !TODO: Use BodyVariableResolver
-		BodyVariableResolver body_var = null;
+		// BodyVariableResolver body_var = null;
 		ArgumentsVariableResolver arg_var = null;
 		while (it.hasNext()) {
 			final TemplateVariableResolver element = it.next();
 			if (element instanceof FunctionNameVariableResolver) {
 				name_var = (FunctionNameVariableResolver) element;
 			} else if (element instanceof BodyVariableResolver) {
-				body_var = (BodyVariableResolver) element;
+				// body_var = (BodyVariableResolver) element;
 			} else if (element instanceof ArgumentsVariableResolver) {
 				arg_var = (ArgumentsVariableResolver) element;
 			}
@@ -57,7 +57,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 
 		final StringBuilder buff = new StringBuilder();
 
-		for (Object[] element : functions) {
+		for (final Object[] element : functions) {
 			arg_var.setArity(((Integer) element[1]).intValue());
 			name_var.setFunctionName((String) element[0]);
 
@@ -115,7 +115,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 		variable.setValue(buff.toString());
 	}
 
-	public void doAddFunction(String name, int arity) {
+	public void doAddFunction(final String name, final int arity) {
 		final Object[] data = { name, new Integer(arity) };
 		functions.add(data);
 	}

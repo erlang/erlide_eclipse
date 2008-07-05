@@ -50,10 +50,10 @@ public class ErlHighlightScanner implements ITokenScanner {
 				PreferenceConstants.INTEGER), t_float(PreferenceConstants.FLOAT), t_comment(
 				PreferenceConstants.COMMENT), ;
 
-		private String pref;
+		// private String pref;
 
 		MyErlToken(final String apref) {
-			pref = apref;
+			// pref = apref;
 		}
 	};
 
