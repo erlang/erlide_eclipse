@@ -17,7 +17,7 @@
 
 %-define(IO_FORMAT_DEBUG, 1).
 %% -define(DEBUG, 1).
-%-define(TRACE, 1).
+%% -define(TRACE, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -238,11 +238,16 @@ i_expr([], _I, _A) ->
     {[], eof};
 i_expr(R0, I0, A) ->
     R1 = i_comments(R0, I0),
-    I1 = i_with_old_or_new_anchor(A, R1, I0),            
+    I1 = i_with_old_or_new_anchor(A, R1, I0),
     R2 = i_1_expr(R1, I1),
-    case i_sniff(R1) of
-        #token{kind=string} ->
-            i_expr(R2, I1, A);
+    case R1 of
+        [#token{kind=string} | _] ->
+            case i_sniff(R2) of
+                #token{kind=Kind} when Kind=:=string; Kind=:=eof ->
+                     i_expr(R2, i_with(after_binary_op, I1), A);
+                _ ->
+                     i_expr_rest(R2, I1, I1#i.anchor)
+            end;
         _ ->
             i_expr_rest(R2, I1, I1#i.anchor)
     end.
@@ -250,7 +255,7 @@ i_expr(R0, I0, A) ->
 i_expr_rest(R0, I, A) ->
     case i_sniff(R0) of
         #token{kind='('} -> % function call
-		    I1 = i_with(function_parameters, A, I),
+            I1 = i_with(function_parameters, A, I),
             R1 = i_par_list(R0, I1),
             i_expr_rest(R1, I1, A);
         eof ->
@@ -267,16 +272,19 @@ i_expr_rest(R0, I, A) ->
             R1 = i_kind('||', R0, I),
             R2 = i_expr_list(R1, I),
             {R2, A};
-%%         #token{kind=string} -> % possible string concat
-%% 	    ?D({R0, I, A}),
-%%             i_expr(R0, I, A);
+        #token{kind='='} -> % match/assignment
+            R1 = i_binary_op(R0, i_with(before_binary_op, I)),
+            {R2, _A} = i_expr(R1, i_with(after_binary_op, I), none),
+            {R2, A};
         O ->
             case is_binary_op(O) of
                 true ->
+                    ?D({A, R0}),
                     R1 = i_binary_op(R0, i_with(before_binary_op, I)),
                     {R2, _A} = i_expr(R1, i_with(after_binary_op, I), A),
                     {R2, A};
                 false ->
+                    ?D({R0, A}),
                     {R0, A}
             end
     end.
@@ -286,7 +294,11 @@ i_expr_list(R, I) ->
 
 i_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
-    {R2, A1} = i_expr(R1, I0, A0),
+    ?D(R1),
+    X = i_expr(R1, I0, A0),
+    ?D(X),
+    {R2, A1} = X,
+    ?D({R2, A1}),
     I1 = i_with_old_or_new_anchor(A0, A1, I0),
     case i_sniff(R2) of
         #token{kind=','} ->
@@ -403,22 +415,16 @@ i_end_or_expr_list(R, I0) ->
 i_1_expr([#token{kind=atom} | _] = R, I) ->
     i_one(R, I);
 i_1_expr([#token{kind=integer} | _] = R, I) ->
-    ?D(integer),
     i_one(R, I);
 i_1_expr([#token{kind=string} | _] = R, I) ->
-    ?D(string),
     i_one(R, I);
 i_1_expr([#token{kind=macro} | _] = R, I) ->
-    ?D(macro),
     i_one(R, I);
 i_1_expr([#token{kind=float} | _] = R, I) ->
-    ?D(float),
     i_one(R, I);
 i_1_expr([#token{kind=var} | _] = R, I) ->
-    ?D(var),
     i_one(R, I);
 i_1_expr([#token{kind=char} | _] = R, I) ->
-    ?D(char),
     i_one(R, I);
 i_1_expr([#token{kind=Kind} | _] = R0, I0) when Kind=='{'; Kind=='['; Kind=='(' ->
     R1 = i_kind(Kind, R0, I0),
@@ -606,7 +612,7 @@ i_form_list(R0, I) ->
     i_form_list(R, I).
 
 i_form(R0, I) ->
-	R1 = i_comments(R0, I),
+    R1 = i_comments(R0, I),
     case i_sniff(R1) of
         #token{kind='-'} ->
             i_declaration(R1, I);
