@@ -21,11 +21,11 @@ public class ErlideBackend {
 
 	private static final String ERL_BACKEND = "erlide_backend";
 
-	public static void init(IBackend ideBackend) {
+	public static void init(final IBackend ideBackend) {
 		init(ideBackend, ideBackend.getName());
 	}
 
-	public static void init(IBackend backend, String node) {
+	public static void init(final IBackend backend, final String node) {
 		try {
 			backend.rpc(ERL_BACKEND, "init", "ap", node, backend.getRpcPid());
 		} catch (final Exception e) {
@@ -52,7 +52,8 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static String format(IBackend b, String fmt, OtpErlangObject... args) {
+	public static String format(final IBackend b, final String fmt,
+			final OtpErlangObject... args) {
 		try {
 			final String r = b.rpc(ERL_BACKEND, "format", "slx", fmt, args)
 					.toString();
@@ -70,8 +71,8 @@ public class ErlideBackend {
 	 * @return OtpErlangobject
 	 * @throws ErlangParseException
 	 */
-	public static OtpErlangObject parseTerm(IBackend b, String string)
-			throws ErlangParseException {
+	public static OtpErlangObject parseTerm(final IBackend b,
+			final String string) throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = b.rpcx(ERL_BACKEND, "parse_term", "s", string);
@@ -93,8 +94,8 @@ public class ErlideBackend {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static OtpErlangObject scanString(IBackend b, String string)
-			throws BackendException {
+	public static OtpErlangObject scanString(final IBackend b,
+			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = b.rpcx(ERL_BACKEND, "scan_string", "s", string);
@@ -116,8 +117,8 @@ public class ErlideBackend {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static OtpErlangObject parseString(IBackend b, String string)
-			throws BackendException {
+	public static OtpErlangObject parseString(final IBackend b,
+			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = b.rpcx(ERL_BACKEND, "parse_string", "s", string);
@@ -134,7 +135,7 @@ public class ErlideBackend {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
-	public static String prettyPrint(IBackend b, String text)
+	public static String prettyPrint(final IBackend b, final String text)
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
@@ -151,8 +152,8 @@ public class ErlideBackend {
 	 * @param bindings
 	 * @return
 	 */
-	public static BackendEvalResult eval(IBackend b, String string,
-			OtpErlangObject bindings) {
+	public static BackendEvalResult eval(final IBackend b, final String string,
+			final OtpErlangObject bindings) {
 		final BackendEvalResult result = new BackendEvalResult();
 		OtpErlangObject r1;
 		try {
@@ -177,7 +178,7 @@ public class ErlideBackend {
 		return result;
 	}
 
-	public static void generateRpcStub(IBackend b, String s) {
+	public static void generateRpcStub(final IBackend b, final String s) {
 		try {
 			final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 			if (!r.isOk()) {
@@ -188,8 +189,8 @@ public class ErlideBackend {
 		}
 	}
 
-	public static boolean loadBeam(IBackend backend, String moduleName,
-			final OtpErlangBinary bin) {
+	public static boolean loadBeam(final IBackend backend,
+			final String moduleName, final OtpErlangBinary bin) {
 		OtpErlangObject r = null;
 		try {
 			r = backend.rpcx("code", "is_sticky", "a", moduleName);
@@ -197,7 +198,7 @@ public class ErlideBackend {
 					|| !BackendManager.isDeveloper()) {
 				r = backend.rpcx("code", "load_binary", "asb", moduleName,
 						moduleName + ".erl", bin);
-				if (BackendManager.isDeveloper()) {
+				if (!BackendManager.isDeveloper()) {
 					backend.rpc("code", "stick_mod", "a", moduleName);
 				}
 			} else {
@@ -223,8 +224,9 @@ public class ErlideBackend {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject call(String module, String fun, int offset,
-			String text) throws BackendException, RpcException {
+	public static OtpErlangObject call(final String module, final String fun,
+			final int offset, final String text) throws BackendException,
+			RpcException {
 		try {
 			final OtpErlangObject r1 = BackendManager.getDefault()
 					.getIdeBackend().rpcx(module, fun, "si", text, offset);
@@ -244,8 +246,8 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String getScriptId(IBackend b) throws ErlangRpcException,
-			BackendException, RpcException {
+	public static String getScriptId(final IBackend b)
+			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject r;
 		r = b.rpcx("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {
@@ -257,15 +259,16 @@ public class ErlideBackend {
 		return "";
 	}
 
-	public static String prettyPrint(IBackend b, OtpErlangObject e)
+	public static String prettyPrint(final IBackend b, final OtpErlangObject e)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject p = b.rpcx("erlide_pp", "expr", "x", e);
 		p = b.rpcx("lists", "flatten", null, p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
-	public static OtpErlangObject convertErrors(final IBackend b, String lines)
-			throws ErlangRpcException, BackendException, RpcException {
+	public static OtpErlangObject convertErrors(final IBackend b,
+			final String lines) throws ErlangRpcException, BackendException,
+			RpcException {
 		OtpErlangObject res;
 		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;
