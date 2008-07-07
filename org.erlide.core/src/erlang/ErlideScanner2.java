@@ -48,7 +48,7 @@ public class ErlideScanner2 {
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(MODULE,
 					"getTokenAt", "ai", module, offset);
-			ErlLogger.debug("getTokenAt -> " + r1);
+			// ErlLogger.debug("getTokenAt -> " + r1);
 		} catch (final Exception e) {
 			// e.printStackTrace();
 			return null;
