@@ -137,16 +137,14 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 			}
 			fNode = new OtpNode(BackendManager
 					.buildNodeName(BackendManager.JAVA_NODE_LABEL), cookie);
-			ErlLogger.debug("java node is " + fNode.node());
-
 			fPeer = BackendManager.buildNodeName(label);
-			ErlLogger.debug("erlang peer is " + label + " " + fPeer);
+			ErlLogger.debug("java node is " + fNode.node() + " erlang peer is "
+					+ fPeer);
 
 			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
 
-			int tries = Integer.parseInt(System.getProperty(
-					"erlide.backend.retries", "50"));
+			int tries = BackendManager.getRetries();
 			boolean conn = false;
 			while (!conn && tries > 0) {
 				ErlLogger.debug("trying to connect...");

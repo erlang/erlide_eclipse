@@ -94,7 +94,6 @@ public final class BackendManager implements IResourceChangeListener {
 			final boolean launchErlang) {
 		ErlLogger.debug("create managed backend '" + name + "'."
 				+ Thread.currentThread());
-
 		final AbstractBackend b = new ManagedBackend();
 		b.setLabel(name);
 
@@ -204,9 +203,17 @@ public final class BackendManager implements IResourceChangeListener {
 		// ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
-			fLocalBackend = createManaged(DEFAULT_BACKEND_LABEL, false, true);
+			String label = getLabelProperty();
+			if (label == null || label.length() == 0) {
+				label = DEFAULT_BACKEND_LABEL;
+			}
+			fLocalBackend = createManaged(label, false, true);
 		}
 		return fLocalBackend;
+	}
+
+	public static String getLabelProperty() {
+		return System.getProperty("erlide.label");
 	}
 
 	public static boolean isDeveloper() {
@@ -217,6 +224,11 @@ public final class BackendManager implements IResourceChangeListener {
 	public static boolean isTest() {
 		final String test = System.getProperty("erlide.test");
 		return test != null && "true".equals(test);
+	}
+
+	public static int getRetries() {
+		return Integer.parseInt(System.getProperty("erlide.backend.retries",
+				"50"));
 	}
 
 	public void addBackendListener(final IBackendListener listener) {
