@@ -45,7 +45,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
 import erlang.ErlProjectImport;
-import erlang.ErlangImport;
+import erlang.ErlideImport;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
 	// {
@@ -92,7 +92,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			filesAndDirs.add(s);
 		}
 		final String prefix = mainPage.getProjectPath().toString();
-		final ErlProjectImport epi = ErlangImport.importProject(prefix,
+		final ErlProjectImport epi = ErlideImport.importProject(prefix,
 				filesAndDirs);
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		for (final Object o : selectedResources) {

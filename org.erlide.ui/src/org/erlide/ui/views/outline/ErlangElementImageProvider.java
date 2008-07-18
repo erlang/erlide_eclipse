@@ -11,6 +11,8 @@
 package org.erlide.ui.views.outline;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -21,8 +23,11 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.internal.ProblemsLabelDecorator;
 
 /**
  * Default strategy of the Java plugin for the construction of Java element
@@ -78,11 +83,11 @@ public class ErlangElementImageProvider {
 	 * @param flags
 	 *            Flags as defined by the JavaImageLabelProvider
 	 */
-	public Image getImageLabel(Object element, int flags) {
+	public Image getImageLabel(final Object element, final int flags) {
 		return getImageLabel(computeDescriptor(element, flags));
 	}
 
-	private Image getImageLabel(ImageDescriptor descriptor) {
+	private Image getImageLabel(final ImageDescriptor descriptor) {
 		if (descriptor == null) {
 			return null;
 		}
@@ -96,7 +101,8 @@ public class ErlangElementImageProvider {
 		return fRegistry;
 	}
 
-	private ImageDescriptor computeDescriptor(Object element, int flags) {
+	private ImageDescriptor computeDescriptor(final Object element,
+			final int flags) {
 		if (element instanceof IErlElement) {
 			return getErlImageDescriptor((IErlElement) element, flags);
 		} else if (element instanceof IFile) {
@@ -113,15 +119,15 @@ public class ErlangElementImageProvider {
 		return null;
 	}
 
-	private static boolean showOverlayIcons(int flags) {
+	private static boolean showOverlayIcons(final int flags) {
 		return (flags & OVERLAY_ICONS) != 0;
 	}
 
-	private static boolean useSmallSize(int flags) {
+	private static boolean useSmallSize(final int flags) {
 		return (flags & SMALL_ICONS) != 0;
 	}
 
-	private static boolean useLightIcons(int flags) {
+	private static boolean useLightIcons(final int flags) {
 		return (flags & LIGHT_TYPE_ICONS) != 0;
 	}
 
@@ -129,7 +135,8 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a module not on the class path. The
 	 * descriptor includes overlays, if specified.
 	 */
-	public ImageDescriptor getCUResourceImageDescriptor(IFile file, int flags) {
+	public ImageDescriptor getCUResourceImageDescriptor(final IFile file,
+			final int flags) {
 		final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
 		return new ErlangElementImageDescriptor(
 				ErlideUIPluginImages.DESC_MODULE_RESOURCE, 0, size);
@@ -139,8 +146,9 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a java element. The descriptor includes
 	 * overlays, if specified.
 	 */
-	public ImageDescriptor getErlImageDescriptor(IErlElement element, int flags) {
-		final int adornmentFlags = computeErlangAdornmentFlags(element, flags);
+	public ImageDescriptor getErlImageDescriptor(final IErlElement element,
+			final int flags) {
+		final int adornmentFlags = computeAdornmentFlags(element, flags);
 		final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
 		return new ErlangElementImageDescriptor(getBaseImageDescriptor(element,
 				flags), adornmentFlags, size);
@@ -151,8 +159,8 @@ public class ErlangElementImageProvider {
 	 * overlays, if specified (only error ticks apply). Returns
 	 * <code>null</code> if no image could be found.
 	 */
-	public ImageDescriptor getWorkbenchImageDescriptor(IAdaptable adaptable,
-			int flags) {
+	public ImageDescriptor getWorkbenchImageDescriptor(
+			final IAdaptable adaptable, final int flags) {
 		final IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) adaptable
 				.getAdapter(IWorkbenchAdapter.class);
 		if (wbAdapter == null) {
@@ -175,8 +183,8 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a java element. This is the base image,
 	 * no overlays.
 	 */
-	public ImageDescriptor getBaseImageDescriptor(IErlElement element,
-			int renderFlags) {
+	public ImageDescriptor getBaseImageDescriptor(final IErlElement element,
+			final int renderFlags) {
 
 		// try {
 		if (element.getKind() == IErlElement.Kind.FUNCTION) {
@@ -220,7 +228,8 @@ public class ErlangElementImageProvider {
 	// ---- Methods to compute the adornments flags
 	// ---------------------------------
 
-	private int computeErlangAdornmentFlags(IErlElement element, int renderFlags) {
+	protected int computeAdornmentFlags(final IErlElement element,
+			final int renderFlags) {
 		int flags = 0;
 		if (showOverlayIcons(renderFlags) && element instanceof IErlFunction) {
 			try {
@@ -234,11 +243,30 @@ public class ErlangElementImageProvider {
 				// do nothing. Can't compute runnable adornment or get flags
 			}
 		}
+		if (element instanceof ISourceReference) {
+			final ISourceReference sr = (ISourceReference) element;
+			try {
+				flags |= ProblemsLabelDecorator.getErrorTicksFromMarkers(
+						element.getResource(), IResource.DEPTH_INFINITE, sr);
+				if (element instanceof IParent) {
+					final IParent p = (IParent) element;
+					for (final IErlElement e : p.getChildren()) {
+						if (e instanceof ISourceReference) {
+							final ISourceReference esr = (ISourceReference) e;
+							flags |= ProblemsLabelDecorator
+									.getErrorTicksFromMarkers(e.getResource(),
+											IResource.DEPTH_INFINITE, esr);
+						}
+					}
+				}
+			} catch (final CoreException e) {
+			}
+		}
 		return flags;
 	}
 
-	public static Image getDecoratedImage(ImageDescriptor baseImage,
-			int adornments, Point size) {
+	public static Image getDecoratedImage(final ImageDescriptor baseImage,
+			final int adornments, final Point size) {
 		return ErlideUIPlugin.getImageDescriptorRegistry().get(
 				new ErlangElementImageDescriptor(baseImage, adornments, size));
 	}

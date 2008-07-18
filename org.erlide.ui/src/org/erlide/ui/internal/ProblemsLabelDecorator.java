@@ -99,8 +99,9 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		return 0;
 	}
 
-	private int getErrorTicksFromMarkers(final IResource res, final int depth,
-			final ISourceReference sourceElement) throws CoreException {
+	public static int getErrorTicksFromMarkers(final IResource res,
+			final int depth, final ISourceReference sourceElement)
+			throws CoreException {
 		if (res == null || !res.isAccessible()) {
 			return 0;
 		}
@@ -132,7 +133,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 		return 0;
 	}
 
-	private boolean isMarkerInRange(final IMarker marker,
+	private static boolean isMarkerInRange(final IMarker marker,
 			final ISourceReference sourceElement) throws CoreException {
 		final int pos = marker.getAttribute(IMarker.CHAR_START, -1);
 		if (pos != -1) {
@@ -150,7 +151,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	// return pos != null && isInside(pos.getOffset(), sourceElement);
 	// }
 
-	private boolean isInsideLines(final int line,
+	private static boolean isInsideLines(final int line,
 			final ISourceReference sourceElement) {
 		return line >= sourceElement.getLineStart()
 				&& line <= sourceElement.getLineEnd();
@@ -169,7 +170,7 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 	 *             Exception thrown if element range could not be accessed.
 	 * 
 	 */
-	protected boolean isInside(final int pos,
+	protected static boolean isInside(final int pos,
 			final ISourceReference sourceElement) throws CoreException {
 		// if (fCachedRange == null) {
 		// fCachedRange= sourceElement.getSourceRange();
