@@ -119,12 +119,6 @@ public class ErlModelManager implements IErlModelManager {
 		// TODO
 	}
 
-	/**
-	 * Set of elements which are out of sync with their buffers.
-	 */
-	protected Map<IErlElement, IErlElement> elementsOutOfSynchWithBuffers = new HashMap<IErlElement, IErlElement>(
-			11);
-
 	public static boolean verbose = !true;
 
 	/**
@@ -500,13 +494,6 @@ public class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * Returns the set of elements which are out of synch with their buffers.
-	 */
-	public Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers() {
-		return elementsOutOfSynchWithBuffers;
-	}
-
-	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
 	 */
 	public synchronized Object getInfo(final IErlElement element) {
@@ -572,9 +559,9 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#prepareToSave(org.eclipse.core.resources.ISaveContext)
 	 */
 	public void prepareToSave(final ISaveContext context) /*
-															 * throws
-															 * CoreException
-															 */
+	 * throws
+	 * CoreException
+	 */
 	{
 		// nothing to do
 	}

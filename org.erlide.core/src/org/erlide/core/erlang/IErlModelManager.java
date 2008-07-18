@@ -10,7 +10,6 @@
 package org.erlide.core.erlang;
 
 import java.util.HashSet;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -309,8 +308,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * @see org.erlide.core.erlang.ErlModelManager#getOptionNames()
 	 */
 	HashSet<String> getOptionNames();
-
-	Map<IErlElement, IErlElement> getElementsOutOfSynchWithBuffers();
 
 	/**
 	 * @see org.erlide.core.erlang.ErlModelManager#registerModelDelta(IErlElementDelta)

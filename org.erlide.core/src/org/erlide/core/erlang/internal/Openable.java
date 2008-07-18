@@ -36,7 +36,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
 	protected IResource findResult;
 
-	protected Openable(IErlElement parent, String name) {
+	protected Openable(final IErlElement parent, final String name) {
 		super(parent, name);
 	}
 
@@ -69,7 +69,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	 * determining the structure of this element.
 	 * 
 	 * @param dirtyRegion
-	 * 		TODO
+	 *            TODO
 	 */
 	protected abstract boolean buildStructure(IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException;
@@ -137,7 +137,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		return super.exists();
 	}
 
-	public void open(IProgressMonitor monitor) throws ErlModelException {
+	public void open(final IProgressMonitor monitor) throws ErlModelException {
 		// open the parent if necessary
 		openParent(monitor);
 		if (monitor != null && monitor.isCanceled()) {
@@ -155,42 +155,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		} catch (final ErlModelException e) {
 			throw e;
 		}
-
-		// remove out of sync buffer for this element
-		ErlangCore.getModelManager().getElementsOutOfSynchWithBuffers().remove(
-				this);
 	}
-
-	// /**
-	// * Note: a buffer with no unsaved changes can be closed by the Erlang
-	// Model
-	// * since it has a finite number of buffers allowed open at one time. If
-	// this
-	// * is the first time a request is being made for the buffer, an attempt is
-	// * made to create and fill this element's buffer. If the buffer has been
-	// * closed since it was first opened, the buffer is re-created.
-	// *
-	// * @see IOpenable
-	// */
-	// public IBuffer getBuffer() {
-	// if (hasBuffer()) {
-	// // ensure element is open
-	// IBuffer buffer = getBufferManager().getBuffer(this);
-	// if (buffer == null) {
-	// // try to (re)open a buffer
-	// buffer = openBuffer(null, this);
-	// }
-	// return buffer;
-	// }
-	// return null;
-	// }
-
-	// /**
-	// * Returns the buffer manager for this element.
-	// */
-	// protected BufferManager getBufferManager() {
-	// return BufferManager.getDefaultBufferManager();
-	// }
 
 	/**
 	 * Return my underlying resource. Elements that may not have a corresponding
@@ -236,11 +201,11 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
 		private final String aname;
 
-		public ErlangResourceVisitor(String name) {
+		public ErlangResourceVisitor(final String name) {
 			aname = name;
 		}
 
-		public boolean visit(IResource resource) {
+		public boolean visit(final IResource resource) {
 			if (resource.getType() == IResource.FILE
 					&& resource.getName().equals(aname)) {
 				findResult = resource;
@@ -251,7 +216,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		}
 	}
 
-	private IResource findFile(IContainer topfolder, String string) {
+	private IResource findFile(final IContainer topfolder, final String string) {
 		final IResource result = topfolder.findMember(string);
 		if (result != null) {
 			return result;
@@ -336,7 +301,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	/**
 	 * @see IOpenable
 	 */
-	public void makeConsistent(IProgressMonitor monitor)
+	public void makeConsistent(final IProgressMonitor monitor)
 			throws ErlModelException {
 		ErlLogger.debug("make consistent? ");
 		if (isConsistent()) {
@@ -357,7 +322,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	/**
 	 * Open the parent element if necessary.
 	 */
-	protected void openParent(IProgressMonitor pm) throws ErlModelException {
+	protected void openParent(final IProgressMonitor pm)
+			throws ErlModelException {
 
 		final Openable openableParent = (Openable) getOpenableParent();
 		if (openableParent != null && !openableParent.isOpen()) {
@@ -393,7 +359,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	/**
 	 * @see IOpenable
 	 */
-	public void save(IProgressMonitor pm, boolean force)
+	public void save(final IProgressMonitor pm, final boolean force)
 			throws ErlModelException {
 		if (isReadOnly()) {
 			throw new ErlModelException(new ErlModelStatus(
