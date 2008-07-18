@@ -17,11 +17,13 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Caret;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
@@ -55,7 +57,7 @@ public class SWTUtil {
 	 * 
 	 * @return the shell for the given widget
 	 */
-	public static Shell getShell(Widget widget) {
+	public static Shell getShell(final Widget widget) {
 		if (widget instanceof Control) {
 			return ((Control) widget).getShell();
 		}
@@ -81,7 +83,7 @@ public class SWTUtil {
 	/**
 	 * Returns a width hint for a button control.
 	 */
-	public static int getButtonWidthHint(Button button) {
+	public static int getButtonWidthHint(final Button button) {
 		final PixelConverter converter = new PixelConverter(button);
 		final int widthHint = converter
 				.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
@@ -92,7 +94,7 @@ public class SWTUtil {
 	/**
 	 * Returns a height hint for a button control.
 	 */
-	public static int getButtonHeightHint(Button button) {
+	public static int getButtonHeightHint(final Button button) {
 		return 30;
 	}
 
@@ -104,13 +106,14 @@ public class SWTUtil {
 	 * @param the
 	 *            button for which to set the dimension hint
 	 */
-	public static void setButtonDimensionHint(Button button) {
+	public static void setButtonDimensionHint(final Button button) {
 		Assert.isNotNull(button);
 		final Object gd = button.getLayoutData();
 		if (gd instanceof GridData) {
-			((GridData) gd).heightHint = getButtonHeightHint(button);
-			((GridData) gd).widthHint = getButtonWidthHint(button);
-			((GridData) gd).horizontalAlignment = GridData.FILL;
+			final GridData gridData = (GridData) gd;
+			gridData.heightHint = getButtonHeightHint(button);
+			gridData.widthHint = getButtonWidthHint(button);
+			gridData.horizontalAlignment = GridData.FILL;
 		}
 	}
 
@@ -126,8 +129,8 @@ public class SWTUtil {
 	 * 
 	 * @return a new push button
 	 */
-	public static Button createPushButton(Composite parent, String label,
-			Image image) {
+	public static Button createPushButton(final Composite parent,
+			final String label, final Image image) {
 		final Button button = new Button(parent, SWT.PUSH);
 		button.setFont(parent.getFont());
 		if (image != null) {
@@ -152,7 +155,8 @@ public class SWTUtil {
 	 * 
 	 * @return a new radio button
 	 */
-	public static Button createRadioButton(Composite parent, String label) {
+	public static Button createRadioButton(final Composite parent,
+			final String label) {
 		final Button button = new Button(parent, SWT.RADIO);
 		button.setFont(parent.getFont());
 		if (label != null) {
@@ -162,5 +166,35 @@ public class SWTUtil {
 		button.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(button);
 		return button;
+	}
+
+	/**
+	 * Creates and returns a group with the given characteristics
+	 * 
+	 * @param parent
+	 *            parent control
+	 * @param title
+	 *            title for group or <code>null</code>
+	 * @param numColumns
+	 *            number of columns in group layout
+	 * @param fill
+	 *            {@link GridData} fill style, horizontal, vertical, both or
+	 *            none
+	 * 
+	 * @return the group created
+	 */
+	public static Group createGroup(final Composite parent, final String title,
+			final int numColumns, final int fill) {
+		final Group group = new Group(parent, SWT.NONE);
+		final GridData gd = new GridData(fill);
+		group.setLayoutData(gd);
+		final GridLayout layout = new GridLayout();
+		layout.numColumns = numColumns;
+		group.setLayout(layout);
+		group.setFont(parent.getFont());
+		if (title != null) {
+			group.setText(title);
+		}
+		return group;
 	}
 }
