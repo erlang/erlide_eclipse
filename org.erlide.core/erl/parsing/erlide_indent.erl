@@ -507,15 +507,17 @@ i_try(R0, I0) ->
     R1 = i_kind('try', R0, I1),
     I2 = i_with('try', R0, I1),
     R2 = i_expr_list(R1, I2),
-    R3 = i_kind('catch', R2, I1),
-    I3 = i_with('catch', R2, I1),
-    R4 = i_catch_clause_list(R3, I3),
-    case i_sniff(R4) of
+    R3 = i_kind('of', R2, I1),
+    R4 = i_clause_list(R3, I2),
+    R5 = i_kind('catch', R4, I1),
+    I3 = i_with('catch', R4, I1),
+    R6 = i_catch_clause_list(R5, I3),
+    case i_sniff(R6) of
         #token{kind='end'} ->
-            i_kind('end', R4, I1);
+            i_kind('end', R6, I1);
         _ ->
-            i_check(R4, I1),
-            R4
+            i_check(R6, I1),
+            R6
     end.
 
 is_binary_op([T | _]) ->
