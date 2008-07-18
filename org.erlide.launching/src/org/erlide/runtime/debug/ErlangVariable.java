@@ -9,22 +9,34 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.runtime.ErlangLaunchPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+import erlang.ErlideDebug;
+
 public class ErlangVariable extends ErlangDebugElement implements IVariable {
-	String name;
-	ErlangValue value;
+	private final String name;
+	private final boolean subVariable;
+	private final ErlangValue value;
+	private final ErlangProcess process;
+	private final int stackFrameNo;
 
 	public ErlangVariable(final IDebugTarget target, final String name,
-			final OtpErlangObject value) {
+			final boolean subVariable, final OtpErlangObject value,
+			final ErlangProcess process, final int stackFrameNo) {
 		super(target);
 		this.name = name;
-		this.value = new ErlangValue(getDebugTarget(), name, value);
+		this.subVariable = subVariable;
+		this.value = new ErlangValue(getDebugTarget(), name, value, process);
+		this.process = process;
+		this.stackFrameNo = stackFrameNo;
 	}
 
 	public IValue getValue() throws DebugException {
@@ -47,21 +59,36 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 	}
 
 	public void setValue(final String expression) throws DebugException {
+		if (subVariable) {
+			throw new DebugException(new Status(IStatus.ERROR,
+					ErlangLaunchPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
+					"Can't set value of part of expression", null));
+		}
+		final ErlangDebugTarget edt = (ErlangDebugTarget) getDebugTarget();
+		if (!ErlideDebug.setVariableValue(edt.getBackend(), name, expression,
+				stackFrameNo, process.getMeta())) {
+			throw new DebugException(new Status(IStatus.ERROR,
+					ErlangLaunchPlugin.PLUGIN_ID,
+					DebugException.TARGET_REQUEST_FAILED, "Bad expression",
+					null));
+		}
+
 	}
 
 	public void setValue(final IValue value) throws DebugException {
+		setValue(value.toString());
 	}
 
 	public boolean supportsValueModification() {
-		return false;
+		return !subVariable;
 	}
 
 	public boolean verifyValue(final String expression) throws DebugException {
-		return false;
+		return true;
 	}
 
 	public boolean verifyValue(final IValue value) throws DebugException {
-		return false;
+		return verifyValue(value.toString());
 	}
 
 }

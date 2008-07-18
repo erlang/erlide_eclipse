@@ -27,20 +27,19 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame {
 
 	private final String fModule;
-
 	private final ErlangProcess fParent;
-
 	private final int fLineNumber;
-
 	List<ErlangVariable> bindings;
+	int stackFrameNo;
 
 	public ErlangStackFrame(final String module, final ErlangProcess parent,
 			final IDebugTarget target, final int lineNumber,
-			final OtpErlangList bindings) {
+			final OtpErlangList bindings, final int stackFrameNo) {
 		super(target);
 		fParent = parent;
 		fModule = module;
 		fLineNumber = lineNumber;
+		this.stackFrameNo = stackFrameNo;
 		final int arity = bindings.arity();
 		this.bindings = new ArrayList<ErlangVariable>(arity);
 		if (arity > 0) {
@@ -50,7 +49,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 					final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
 					final OtpErlangObject value = t.elementAt(1);
 					this.bindings.add(new ErlangVariable(target, nameA
-							.atomValue(), value));
+							.atomValue(), false, value, parent, stackFrameNo));
 				}
 			}
 		}

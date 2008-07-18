@@ -432,7 +432,7 @@ args2arity([]) ->
     [].
 
 all_frames() ->
-    [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs)} || {_, {{M, F, As}, Wh, Bs}} <- get(stack)].
+    [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs), X} || {X, {{M, F, As}, Wh, Bs}} <- get(stack)].
 
 %% bindings(SP) -> Bs
 %%   SP = Le  % stack pointer

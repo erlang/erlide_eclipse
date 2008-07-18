@@ -17,13 +17,14 @@
 -include_lib("kernel/include/file.hrl").
 
 
--define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
--define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
--define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
+%% -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
+%% -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
+%% -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %% External exports
 -export([start/2, stop/0, interpret/1, line_breakpoint/2]).
--export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1, step_into/1, step_return/1]).
+-export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
+-export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 
 -define(BACKTRACE, all).
 
@@ -173,10 +174,10 @@ loop(State) ->
         {parent, P} -> %% P is the remote mailbox
             loop(State#state{parent=P});
         
-        dumpState ->
-            io:format("dbg_mon state:: ~p~n", [State]),
-            msg(State#state.parent, {dumpState, State, erlide_int:snapshot()}),
-            loop(State);
+%%         dumpState ->
+%%             io:format("dbg_mon state:: ~p~n", [State]),
+%%             msg(State#state.parent, {dumpState, State, erlide_int:snapshot()}),
+%%             loop(State);
         
         {cmd, Cmd, From} = _Msg ->
             %% 	    io:format("@ dbg_mon cmd: ~p~n", [_Msg]),
@@ -302,6 +303,12 @@ gui_cmd({step_over, MetaPid}, State) ->
 gui_cmd({step_return, MetaPid}, State) ->
     Res = erlide_dbg_icmd:finish(MetaPid),
     {Res, State};
+gui_cmd({set_variable_value, {Variable, Value, SP, MetaPid}}, State) ->
+    Res = erlide_dbg_icmd:set_variable_value(MetaPid, Variable, Value, SP),
+    {Res, State};
+gui_cmd({eval, {Expr, MetaPid}}, State) ->
+    Res = erlide_dbg_icmd:eval(MetaPid, {dummy_mod, Expr}),
+    {Res, State};
 
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
@@ -393,6 +400,7 @@ int_cmd(_Other, State) ->
 %% Debugger API
 %%====================================================================
 interpret(Modules) ->
+%%     ?Debug({interpret, Modules}),
     cmd(interpret, Modules).
 
 suspend(MetaPid) ->
@@ -409,6 +417,12 @@ step_into(MetaPid) ->
 
 step_return(MetaPid) ->
     cmd(step_return, MetaPid).
+
+eval(Expr, MetaPid) ->
+    cmd(eval, {Expr, MetaPid}).
+
+set_variable_value(Variable, Value, SP, MetaPid) ->
+    cmd(set_variable_value, {Variable, Value, SP, MetaPid}).
 
 bindings(MetaPid) ->
     cmd(bindings, MetaPid).

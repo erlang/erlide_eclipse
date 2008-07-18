@@ -11,7 +11,12 @@ package org.erlide.runtime.backend;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
@@ -32,7 +37,7 @@ import erlang.ErlideBackend;
  */
 public class BackendUtil {
 
-	public static OtpErlangObject ok(OtpErlangObject v0) {
+	public static OtpErlangObject ok(final OtpErlangObject v0) {
 		if (!(v0 instanceof OtpErlangTuple)) {
 			return v0;
 		}
@@ -50,11 +55,11 @@ public class BackendUtil {
 	 * @return OtpErlangObject
 	 * @throws ErlangEvalException
 	 */
-	public static BackendEvalResult eval(IBackend b, String string) {
+	public static BackendEvalResult eval(final IBackend b, final String string) {
 		return ErlideBackend.eval(b, string, null);
 	}
 
-	public static String getLocalPath(String string) {
+	public static String getLocalPath(final String string) {
 		String dir = "?";
 		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
 		final URL url = b.getEntry(string);
@@ -67,15 +72,29 @@ public class BackendUtil {
 		return dir;
 	}
 
-	public static void generateRpcStub(String className, boolean onlyDeclared,
-			IBackend b) {
+	public static void generateRpcStub(final String className,
+			final boolean onlyDeclared, final IBackend b) {
 		generateRpcStub(RpcConverter.getClassByName(className), onlyDeclared, b);
 	}
 
-	public static void generateRpcStub(Class<?> cls, boolean onlyDeclared,
-			IBackend b) {
-		String s = RpcStubGenerator.generate(cls, onlyDeclared);
+	public static void generateRpcStub(final Class<?> cls,
+			final boolean onlyDeclared, final IBackend b) {
+		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		ErlideBackend.generateRpcStub(b, s);
 	}
 
+	public static IProject[] getProjects(final String attribute) {
+		final String[] otherProjectNames = attribute.split(";");
+		final List<IProject> otherProjects = new ArrayList<IProject>();
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		for (final String s : otherProjectNames) {
+			if (s != null && s.length() > 0) {
+				final IProject p = root.getProject(s);
+				if (p != null) {
+					otherProjects.add(p);
+				}
+			}
+		}
+		return otherProjects.toArray(new IProject[otherProjects.size()]);
+	}
 }

@@ -347,12 +347,15 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public static String buildNodeName(final String label) {
+		if (label.indexOf('@') > 0) {
+			return label;
+		}
 		final String host = getHost();
 		return buildNodeLabel(label) + "@" + host;
 	}
 
 	public static String buildNodeLabel(final String label) {
-		if (label.indexOf('_') < 0) {
+		if (label.indexOf('_') < 0 && label.indexOf('@') < 0) {
 			return label + "_" + fUniqueId;
 		}
 		return label;

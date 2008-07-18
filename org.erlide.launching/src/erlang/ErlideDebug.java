@@ -258,4 +258,47 @@ public class ErlideDebug {
 		}
 		return null;
 	}
+
+	public static OtpErlangObject eval(final IBackend backend,
+			final String expression, final OtpErlangPid meta) {
+		try {
+			final OtpErlangObject res = backend.rpcx("erlide_debug", "eval",
+					"sx", expression, meta);
+			if (res instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				final OtpErlangAtom ok = (OtpErlangAtom) t.elementAt(0);
+				if (ok.atomValue().equals("ok")) {
+					return t.elementAt(1);
+				}
+			}
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static boolean setVariableValue(final IBackend backend,
+			final String name, final String value, final int stackFrameNo,
+			final OtpErlangPid meta) {
+		try {
+			final OtpErlangObject res = backend.rpcx("erlide_debug",
+					"set_variable_value", "ssix", name, value,
+					stackFrameNo + 1, meta);
+			if (res instanceof OtpErlangAtom) {
+				final OtpErlangAtom ok = (OtpErlangAtom) res;
+				return ok.atomValue().equals("ok");
+			}
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

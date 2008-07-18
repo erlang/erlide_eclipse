@@ -44,38 +44,42 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	public void launch(final ILaunchConfiguration configuration,
 			final String mode, final ILaunch launch,
 			final IProgressMonitor monitor) throws CoreException {
-
-		// final boolean separateNode = useSeparateNode(configuration);
-
 		try {
 			final String projectName = configuration.getAttribute(
 					IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME, "");
-			// ( debugmodel? bäst kolla upp nu igen)
-			final String label = configuration.getAttribute(
-					IProcess.ATTR_PROCESS_LABEL, projectName);
-			final String nodeName = BackendManager.buildNodeName(label);
-
-			final String nameAndCookie = "-name " + nodeName + " -setcookie "
-					+ Cookie.retrieveCookie();
-
-			final String mod = getStartModule(configuration);
-			final String fn = getStartFunc(configuration);
-
-			// launch of erlang project
-
-			// build command string
-			final StringBuilder cmd = new StringBuilder();
-			cmd.append(configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME, ""));
-			if (cmd.length() > 0) {
-				cmd.append(File.separator).append("bin").append(File.separator)
-						.append("erl ");
+			String label = configuration.getAttribute(
+					IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME,
+					projectName);
+			if (label.length() == 0) {
+				label = projectName;
 			}
-			cmd.append(nameAndCookie).append(" ");
+			IProcess process = null;
 			IProject project = null;
 			if (projectName.length() > 0) {
 				project = ResourcesPlugin.getWorkspace().getRoot().getProject(
 						projectName);
+			}
+			if (configuration.getAttribute(
+					IErlangLaunchConfigurationAttributes.ATTR_START_NODE, true)) {
+				final String nodeName = BackendManager.buildNodeName(label);
+
+				final String nameAndCookie = "-name " + nodeName
+						+ " -setcookie " + Cookie.retrieveCookie();
+
+				// launch of erlang project
+
+				// build command string
+				final StringBuilder cmd = new StringBuilder();
+				cmd
+						.append(configuration
+								.getAttribute(
+										IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
+										""));
+				if (cmd.length() > 0) {
+					cmd.append(File.separator).append("bin").append(
+							File.separator).append("erl ");
+				}
+				cmd.append(nameAndCookie).append(" ");
 				if (project == null) {
 					return;
 				}
@@ -87,32 +91,24 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 					cmd.append((prefs.getUsePathZ() ? "-pz" : "-pa")).append(
 							" ").append(projOutputDir).append(" ");
 				}
-			}
-			// if (mod.length() > 0 && fn.length() > 0) {
-			// cmd.append("-s ").append(mod).append(" ").append(fn)
-			// .append(" ");
-			// }
-			ErlLogger.debug("RUN*> " + cmd.toString());
-			// launch an erlang process
-			final File workingDirectory = new File(".");
-			Process vm = null;
-			IProcess process = null;
-			try {
-				vm = Runtime.getRuntime().exec(cmd.toString(), null,
-						workingDirectory);
-				process = new ErtsProcess(launch, vm, label, null);
-				launch.addProcess(process);
-			} catch (final Exception e) {
-			}
+				ErlLogger.debug("RUN*> " + cmd.toString());
+				// launch an erlang process
+				final File workingDirectory = new File(".");
+				Process vm = null;
+				try {
+					vm = Runtime.getRuntime().exec(cmd.toString(), null,
+							workingDirectory);
+					process = new ErtsProcess(launch, vm, label, null);
+					launch.addProcess(process);
+				} catch (final Exception e) {
+				}
 
-			if (vm == null) {
-				PopupDialog
-						.showBalloon(
-								"Starting Erlang backend",
-								"Could not start, please check your preferences!",
-								3000);
-			}
-			// make a nice little BackEnd for it
+				if (vm == null) {
+					PopupDialog.showBalloon("Starting Erlang backend",
+							"Could not start, please check your preferences!",
+							3000);
+				}
+			}// make a nice little BackEnd for it
 			final IBackend backend = getBackend(label);
 			// backend.setLabel(label);
 			backend.setErts(process);
@@ -122,16 +118,28 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 				l.add(ErlangLaunchPlugin.getDefault());
 				backend.connectAndRegister(l);
 				// add debug target
+				final IProject[] otherProjects = BackendUtil
+						.getProjects(configuration
+								.getAttribute(
+										IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS,
+										""));
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-						backend, project);
+						backend, project, otherProjects);
 				launch.addDebugTarget(target);
 				// interpret everything we can
 				if (project != null) {
 					interpretAll(backend, project);
 				}
+				if (otherProjects != null) {
+					for (final IProject p : otherProjects) {
+						interpretAll(backend, p);
+					}
+				}
 				// send started to target
 				target.sendStarted();
 			}
+			final String mod = getStartModule(configuration);
+			final String fn = getStartFunc(configuration);
 			if (mod.length() > 0 && fn.length() > 0) {
 				backend.rpc(mod, fn, "");
 			}
@@ -173,6 +181,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			}, IResource.DEPTH_INFINITE, 0);
 			for (final String erl : erls) {
 				if (beams.contains(erl)) {
+					ErlLogger.debug("interpret " + erlLocations.get(erl));
 					ErlideDebug.interpret(backend, erlLocations.get(erl));
 				}
 			}

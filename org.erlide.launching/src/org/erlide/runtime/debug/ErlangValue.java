@@ -27,6 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangValue extends ErlangDebugElement implements IValue {
 	protected OtpErlangObject value;
 	protected String varName; // to use with getVariables
+	private final ErlangProcess process;
 
 	// public ErlangValue(final IDebugTarget target, ErlangVariable variable,
 	// final String stringValue) {
@@ -36,10 +37,11 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	// }
 
 	public ErlangValue(final IDebugTarget target, final String varName,
-			final OtpErlangObject value) {
+			final OtpErlangObject value, final ErlangProcess process) {
 		super(target);
 		this.value = value;
 		this.varName = varName;
+		this.process = process;
 	}
 
 	public String getReferenceTypeName() throws DebugException {
@@ -78,7 +80,7 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 			final IVariable[] result = new IVariable[arity];
 			for (int i = 0; i < arity; ++i) {
 				result[i] = new ErlangVariable(getDebugTarget(), varName + ":"
-						+ i, getElementAt(i));
+						+ i, true, getElementAt(i), process, -1);
 			}
 			return result;
 		}
@@ -111,5 +113,14 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 			return -1;
 		}
 
+	}
+
+	/**
+	 * The string rep. of the erlang value must be returned, it's used by
+	 * {@link ErlangVariable#setValue(IValue)}
+	 */
+	@Override
+	public String toString() {
+		return value.toString();
 	}
 }

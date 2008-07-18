@@ -16,7 +16,7 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.runtime.SourcePathComputerDelegate"
+            class="org.erlide.runtime.ErlangSourcePathComputerDelegate"
             id="org.erlide.launching.sourcepathcomputer"/>
    </extension>
    <extension

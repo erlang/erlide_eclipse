@@ -24,6 +24,7 @@
 -export([step/1, next/1, continue/1, finish/1, skip/1, timeout/1,
 	 stop/1]).
 -export([eval/2]).
+-export([set_variable_value/4]).
 -export([set/3, get/3]).
 -export([handle_msg/4]).
 
@@ -83,7 +84,7 @@ break_p(Mod, Line, Le, Bs) ->
     case lists:keysearch({Mod, Line}, 1, get(breakpoints)) of
 	{value, {_Point, [active, Action, _, Cond]}} ->
 	    case get(user_eval) of
-		[{Line, Le}|_] -> false;
+                [{Line, Le}|_] -> false;
 		_ ->
 		    Bool = case Cond of
 			       null -> true;
@@ -177,6 +178,13 @@ skip(Meta) ->     Meta ! {user, {cmd, skip}}.
 timeout(Meta) ->  Meta ! {user, timeout}.
 
 stop(Meta) ->     Meta ! {user, {cmd, stop}}.
+
+set_variable_value(Meta, Variable, Value, SP) ->
+    eval(Meta, {no_module, Variable++"="++Value, SP}),
+    receive
+        M ->
+            M
+    end.
 
 eval(Meta, {Mod, Cmd}) ->
     eval(Meta, {Mod, Cmd, nostack});

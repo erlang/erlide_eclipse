@@ -26,6 +26,12 @@ public interface IErlangLaunchConfigurationAttributes {
 
 	String ATTR_PROJECT_NAME = "project";
 
+	String ATTR_OTHER_PROJECTS = "otherProjects";
+
+	String ATTR_NODE_NAME = "nodeLabel";
+
+	String ATTR_START_NODE = "startNode";
+
 	// /
 	String ATTR_OTP_HOME = "otphome";
 

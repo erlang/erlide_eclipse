@@ -13,13 +13,8 @@ package org.erlide.runtime.backend.internal;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -30,7 +25,6 @@ import org.erlide.basicui.prefs.IPrefConstants;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErtsProcess;
-import org.erlide.runtime.backend.ErtsProcessFactory;
 import org.erlide.runtime.backend.console.BackendShellManager;
 
 /**
@@ -41,42 +35,42 @@ public class ManagedBackend extends AbstractBackend {
 	private ErtsProcess fErts;
 	static private boolean dontUseLaunchConfigurationForInternalErts = true;
 
-	private ILaunch startErts() {
-		if (getLabel() == null) {
-			return null;
-		}
-
-		final String cmd = getCmdLine();
-
-		try {
-			final ILaunchManager manager = DebugPlugin.getDefault()
-					.getLaunchManager();
-			final ILaunchConfigurationType type = manager
-					.getLaunchConfigurationType(ErtsProcess.ERLIDE_CONFIGURATION_TYPE);
-			ILaunchConfigurationWorkingCopy wc;
-			wc = type.newInstance(null, getLabel());
-			wc.setAttribute(IProcess.ATTR_PROCESS_LABEL, getLabel());
-			wc.setAttribute(IProcess.ATTR_PROCESS_TYPE, "erlang vm");
-			wc.setAttribute(IProcess.ATTR_CMDLINE, cmd);
-			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-					ErtsProcessFactory.ID);
-			wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
-
-			final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
-					new NullProgressMonitor());
-			fErts = null;
-			if (ll.getProcesses().length == 1) {
-				fErts = (ErtsProcess) ll.getProcesses()[0];
-			}
-
-			fShellManager = new BackendShellManager(this);
-			return ll;
-
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	// private ILaunch startErts() {
+	// if (getLabel() == null) {
+	// return null;
+	// }
+	//
+	// final String cmd = getCmdLine();
+	//
+	// try {
+	// final ILaunchManager manager = DebugPlugin.getDefault()
+	// .getLaunchManager();
+	// final ILaunchConfigurationType type = manager
+	// .getLaunchConfigurationType(ErtsProcess.ERLIDE_CONFIGURATION_TYPE);
+	// ILaunchConfigurationWorkingCopy wc;
+	// wc = type.newInstance(null, getLabel());
+	// wc.setAttribute(IProcess.ATTR_PROCESS_LABEL, getLabel());
+	// wc.setAttribute(IProcess.ATTR_PROCESS_TYPE, "erlang vm");
+	// wc.setAttribute(IProcess.ATTR_CMDLINE, cmd);
+	// wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
+	// ErtsProcessFactory.ID);
+	// wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
+	//
+	// final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
+	// new NullProgressMonitor());
+	// fErts = null;
+	// if (ll.getProcesses().length == 1) {
+	// fErts = (ErtsProcess) ll.getProcesses()[0];
+	// }
+	//
+	// fShellManager = new BackendShellManager(this);
+	// return ll;
+	//
+	// } catch (final Exception e) {
+	// e.printStackTrace();
+	// return null;
+	// }
+	// }
 
 	static public String getCmdLine() {
 		final ErtsPreferences ertsPrefs = ErlideBasicUIPlugin.getDefault()
@@ -163,7 +157,8 @@ public class ManagedBackend extends AbstractBackend {
 		if (dontUseLaunchConfigurationForInternalErts) {
 			startErtsWOLC();
 		} else {
-			startErts();
+			Assert.isTrue(dontUseLaunchConfigurationForInternalErts);
+			// startErts();
 		}
 	}
 
@@ -202,8 +197,7 @@ public class ManagedBackend extends AbstractBackend {
 	public void setErts(final IProcess process) {
 		if (process instanceof ErtsProcess) {
 			fErts = (ErtsProcess) process;
-
-			fShellManager = new BackendShellManager(this);
 		}
+		fShellManager = new BackendShellManager(this);
 	}
 }

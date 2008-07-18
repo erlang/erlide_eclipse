@@ -64,20 +64,22 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private boolean fShowErlideProcesses = false;
 
 	IProject project;
+	IProject[] otherProjects;
 
 	private final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
 	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-			final IProject project) {
+			final IProject project, final IProject[] otherProjects) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
 		fTerminated = false;
 		this.project = project;
+		this.otherProjects = otherProjects;
 		threads = new ArrayList<ErlangProcess>();
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b);
-
+		ErlLogger.debug("debug started " + pid);
 		// start debugger listener job
 		fDbgListener = new DebuggerListener("Erlang debugger listener", pid);
 
@@ -130,10 +132,16 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		// TODO we should ask the Erlang debugger too...
 		if (!isTerminated()
 				&& breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
-			if (project == null
-					|| project == breakpoint.getMarker().getResource()
-							.getProject()) {
+			final IProject bpProject = breakpoint.getMarker().getResource()
+					.getProject();
+			if (project == bpProject) {
 				return true;
+			} else {
+				for (final IProject p : otherProjects) {
+					if (p == bpProject) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -424,14 +432,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				return fTerminated;
 			}
 
-			public OtpErlangObject receiveEvent(final int timeout)
-					throws OtpErlangExit, OtpErlangDecodeException {
+			public OtpErlangObject receiveEvent(int timeout)
+					throws OtpErlangDecodeException {
 				if (timeout < 0) {
-					// TODO how to handle stopping, if it's blocked in a
-					// receive?
-					return fBackend.receiveRpc(60000);
+					timeout = 60000;
 				}
-				return fBackend.receiveRpc(timeout);
+				// TODO how to handle stopping, if it's blocked in a
+				// receive?
+				try {
+					return fBackend.receiveRpc(timeout);
+				} catch (final OtpErlangExit e) {
+					// TODO Auto-generated catch block
+					terminated();
+					return null;
+				}
 			}
 
 			public int getTimeout() {
@@ -498,4 +512,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public OtpErlangPid getMetaForPid(final OtpErlangPid pid) {
 		return metaPids.get(pid);
 	}
+
+	private void terminated() {
+		fireTerminateEvent();
+	}
+
 }

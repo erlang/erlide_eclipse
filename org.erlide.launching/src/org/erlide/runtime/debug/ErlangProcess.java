@@ -46,6 +46,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public static final String STATUS_BREAK = "break";
 
+	public static final String STATUS_IDLE = "idle";
+
 	private final OtpErlangPid fPid;
 
 	private OtpErlangPid cachedMetaPid;
@@ -210,8 +212,15 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 				final OtpErlangTuple ml = (OtpErlangTuple) t.elementAt(1);
 				final OtpErlangAtom m = (OtpErlangAtom) ml.elementAt(0);
 				final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
+				final OtpErlangLong n = (OtpErlangLong) t.elementAt(3);
+				int stackFrameNo;
+				try {
+					stackFrameNo = n.intValue();
+				} catch (final OtpErlangRangeException e) {
+					stackFrameNo = -1;
+				}
 				stackFrames.add(new ErlangStackFrame(module, this,
-						getDebugTarget(), line, bs));
+						getDebugTarget(), line, bs, stackFrameNo));
 				bs = (OtpErlangList) t.elementAt(2);
 				module = m.atomValue();
 				try {
@@ -259,15 +268,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IStackFrame[] getStackFrames() throws DebugException {
-		// if (topFrame == null) {
-		// return new IStackFrame[0];
-		// // if (!isSuspended() && !isStepping()) {
-		// // return new IStackFrame[] { new ErlangStackFrame("" +
-		// // isSuspended()
-		// // + "." + isStepping(), this, fTarget) };
-		// // }
-		// }
-		// return new IStackFrame[] { topFrame, fakeFrame };
 		return stackFrames.toArray(new IStackFrame[stackFrames.size()]);
 	}
 
@@ -276,7 +276,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public int getPriority() throws DebugException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -342,7 +341,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public boolean isSuspended() {
 		return getStatus().equals(STATUS_SUSPENDED)
-				|| getStatus().equals(STATUS_BREAK);
+				|| getStatus().equals(STATUS_BREAK)
+				|| getStatus().equals(STATUS_IDLE);
 	}
 
 	public void resume() throws DebugException {

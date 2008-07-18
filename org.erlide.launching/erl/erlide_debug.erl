@@ -15,13 +15,16 @@
 %%
 %% Include files
 %%
+%% -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
+%% -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
+%% -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %%
 %% Exported Functions
 %%
 -export([start_debug/0, attached/2, send_started/1]).
 -export([line_breakpoint/2, resume/1, suspend/1, bindings/1, step_over/1, step_into/1, step_return/1,
-         interpret/1, all_stack_frames/1]).
+         interpret/1, all_stack_frames/1, eval/2, set_variable_value/4]).
 
 %% -compile(export_all).
 
@@ -63,18 +66,19 @@ is_erlide_process(Pid) when pid(Pid)->
                       false;
                   {initial_call, {M1, _, _}} ->
                       lists:prefix("erlide_", atom_to_list(M1))
-%%                       string:equal(string:sub_string(atom_to_list(M1), 1, 7), "erlide_")
+              %%                       string:equal(string:sub_string(atom_to_list(M1), 1, 7), "erlide_")
               end,
     Current = case erlang:process_info(Pid, current_function) of
                   undefined ->
                       false;
                   {current_function, {M2, _, _}} ->
                       lists:prefix("erlide_", atom_to_list(M2))
-%%                       string:equal(string:sub_string(atom_to_list(M2), 1, 7), "erlide_")
+              %%                       string:equal(string:sub_string(atom_to_list(M2), 1, 7), "erlide_")
               end,
     Started or Current.
 
 interpret(File) ->
+%%     ?Debug({interpret, File}),
     erlide_dbg_mon:interpret([File]).
 
 line_breakpoint(File, Line) ->
@@ -92,6 +96,9 @@ resume(MetaPid) ->
 bindings(MetaPid) ->
     erlide_dbg_mon:bindings(MetaPid).
 
+eval(Expr, MetaPid) ->
+    erlide_dbg_mon:eval(Expr, MetaPid).
+
 all_stack_frames(MetaPid) ->
     erlide_dbg_mon:all_stack_frames(MetaPid).
 
@@ -104,6 +111,10 @@ step_into(MetaPid) ->
 step_return(MetaPid) ->
     erlide_dbg_mon:step_return(MetaPid).
 
+set_variable_value(Variable, Value, SP, MetaPid) ->
+    erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
+
+    
 %%
 %% Local Functions
 %%
