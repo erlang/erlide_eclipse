@@ -41,7 +41,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 /**
  * Provides convenient utility methods to other types in this package.
  */
-public class Util implements ISuffixConstants {
+public class Util {
 
 	public interface Comparable {
 
@@ -1815,12 +1815,12 @@ public class Util implements ISuffixConstants {
 	}
 
 	/**
-	 * Returns true iff str.toLowerCase().endsWith(".java") implementation is
-	 * not creating extra strings.
+	 * Returns true iff str.toLowerCase().endsWith(".erl") implementation is not
+	 * creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final String name) {
 		final int nameLength = name == null ? 0 : name.length();
-		final int suffixLength = SUFFIX_ERL.length;
+		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;
 		}
@@ -1828,7 +1828,8 @@ public class Util implements ISuffixConstants {
 		for (int i = 0; i < suffixLength; i++) {
 			final char c = name.charAt(nameLength - i - 1);
 			final int suffixIndex = suffixLength - i - 1;
-			if (c != SUFFIX_erl[suffixIndex] && c != SUFFIX_ERL[suffixIndex]) {
+			if (c != ISuffixConstants.SUFFIX_erl[suffixIndex]
+					&& c != ISuffixConstants.SUFFIX_ERL[suffixIndex]) {
 				return false;
 			}
 		}
@@ -1836,19 +1837,20 @@ public class Util implements ISuffixConstants {
 	}
 
 	/**
-	 * Returns true iff str.toLowerCase().endsWith(".java") implementation is
-	 * not creating extra strings.
+	 * Returns true iff str.toLowerCase().endsWith(".erl") implementation is not
+	 * creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final char[] name) {
 		final int nameLength = name == null ? 0 : name.length;
-		final int suffixLength = SUFFIX_ERL.length;
+		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;
 		}
 
 		for (int i = 0, offset = nameLength - suffixLength; i < suffixLength; i++) {
 			final char c = name[offset + i];
-			if (c != SUFFIX_erl[i] && c != SUFFIX_ERL[i]) {
+			if (c != ISuffixConstants.SUFFIX_erl[i]
+					&& c != ISuffixConstants.SUFFIX_ERL[i]) {
 				return false;
 			}
 		}
