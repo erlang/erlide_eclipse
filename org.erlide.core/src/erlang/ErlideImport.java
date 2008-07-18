@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author jakob
  * 
  */
-public class ErlangImport {
+public class ErlideImport {
 
 	/**
 	 * Filter import parameters for newly imported erlang project
