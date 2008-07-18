@@ -18,7 +18,8 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 public class ErlangNodeTabGroup extends AbstractLaunchConfigurationTabGroup {
 
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
+	public void createTabs(final ILaunchConfigurationDialog dialog,
+			final String mode) {
 		final ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new ErlangMainTab(), new EnvironmentTab(), new CommonTab() };
 		setTabs(tabs);
