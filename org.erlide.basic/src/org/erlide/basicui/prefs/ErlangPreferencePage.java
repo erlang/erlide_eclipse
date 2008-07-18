@@ -16,11 +16,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,7 +34,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		noDefaultAndApplyButton();
 		final Composite panel = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
@@ -59,18 +57,18 @@ public class ErlangPreferencePage extends PreferencePage implements
 			img.setText(PreferenceMessages.getString("ErlangPreferencePage.1")); //$NON-NLS-1$
 		}
 
-		Label text = new Label(panel, SWT.NONE);
+		final Label text = new Label(panel, SWT.NONE);
 		text.setLayoutData(new GridData(290, SWT.DEFAULT));
 		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2")); //$NON-NLS-1$
 
-		final SelectionListener linkListener = new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				Program.launch(e.text);
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		};
+		// final SelectionListener linkListener = new SelectionListener() {
+		// public void widgetSelected(SelectionEvent e) {
+		// Program.launch(e.text);
+		// }
+		//
+		// public void widgetDefaultSelected(SelectionEvent e) {
+		// }
+		// };
 
 		final Composite panel2 = new Composite(panel, SWT.NONE);
 		final GridData gd_panel2 = new GridData(SWT.LEFT, SWT.CENTER, false,
@@ -98,7 +96,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 		new Label(group, SWT.NONE).setText("The main developers are: ");
 		new Label(group, SWT.NONE).setText("  * Vlad Dumitrescu");
 		new Label(group, SWT.NONE).setText("  * Jakob Cederlund");
-		new Label(group, SWT.NONE).setText("  * Tomas Daarstad");
+		// new Label(group, SWT.NONE).setText(" * Tomas Daarstad");
 
 		new Label(group, SWT.NONE).setText("Other contributors:");
 		new Label(group, SWT.NONE).setText("  * Lukas Larsson");
@@ -111,7 +109,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 		return panel;
 	}
 
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 }
