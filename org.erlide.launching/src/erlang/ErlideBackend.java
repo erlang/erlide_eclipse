@@ -14,6 +14,7 @@ import org.erlide.runtime.backend.exceptions.NoBackendException;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -272,6 +273,14 @@ public class ErlideBackend {
 		OtpErlangObject res;
 		res = b.rpcx("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;
+	}
+
+	public static void startTracer(IBackend b, OtpErlangPid tracer) {
+		try {
+			b.rpcx("erlide_backend", "start_tracer", "p", tracer);
+		} catch (RpcException e) {
+		} catch (BackendException e) {
+		}
 	}
 
 }

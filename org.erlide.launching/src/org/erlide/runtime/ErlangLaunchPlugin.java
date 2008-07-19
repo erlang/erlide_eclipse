@@ -21,6 +21,7 @@ import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IBackend;
 import org.osgi.framework.BundleContext;
 
 import erlang.ErlideBackend;
@@ -83,7 +84,10 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		BackendManager.getDefault().register(this);
 
 		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
-		ErlideBackend.init(BackendManager.getDefault().getIdeBackend());
+		IBackend b = BackendManager.getDefault().getIdeBackend();
+		ErlideBackend.init(b);
+		if (System.getProperty("erlide.tracer", "false").equals("true"))
+			ErlideBackend.startTracer(b, b.getEventPid());
 		ErlLogger.debug("Started LAUNCHING");
 	}
 

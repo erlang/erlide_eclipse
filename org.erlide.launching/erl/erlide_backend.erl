@@ -15,20 +15,21 @@
 -module(erlide_backend).
 
 -export([init/2,
-         
+
          parse_term/1,
          eval/1,
          eval/2,
-         
+
          format/2,
          pretty_print/1,
-         
+
          scan_string/1,
          parse_string/1,
-         
+
          execute/2,
-         
-         compile_string/1
+
+         compile_string/1,
+         start_tracer/1
 ]).
 
 init(JavaNode, LinkPid) ->
@@ -134,21 +135,21 @@ parse_string(S) ->
 
 %%%%%%%%%%%%%%%%%%%%%%
 execute(StrFun, Args) ->
-  StrMod = "-module(erlide_execute_tmp).\n"
-      "-export([exec/1]).\n"
-      "exec(ZZArgs) -> Fun = "++StrFun++",\n"
-      " catch Fun(ZZArgs).\n",
-  catch case parse_string(StrMod) of
-    {ok, Mod} ->
-      {ok, erlide_execute_tmp,Bin} = compile:forms(Mod, [report,binary]),
-      code:load_binary(erlide_execute_tmp, "erlide_execute_tmp.erl", Bin),
-      Res = erlide_execute_tmp:exec(Args),
-      code:delete(erlide_execute_tmp),
-      code:purge(erlide_execute_tmp),
-      Res;
-    Err ->
-      Err
-  end.
+    StrMod = "-module(erlide_execute_tmp).\n"++
+                 "-export([exec/1]).\n"++
+                     "exec(ZZArgs) -> Fun = "++StrFun++",\n"++
+                                                           " catch Fun(ZZArgs).\n",
+    catch case parse_string(StrMod) of
+              {ok, Mod} ->
+                  {ok, erlide_execute_tmp,Bin} = compile:forms(Mod, [report,binary]),
+                  code:load_binary(erlide_execute_tmp, "erlide_execute_tmp.erl", Bin),
+                  Res = erlide_execute_tmp:exec(Args),
+                  code:delete(erlide_execute_tmp),
+                  code:purge(erlide_execute_tmp),
+                  Res;
+              Err ->
+                  Err
+              end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -156,13 +157,13 @@ execute(StrFun, Args) ->
 parse(Toks) ->
     Parts = split_dot(Toks),
     Fun = fun(E) ->
-		  case erl_parse:parse(E) of
-		      {ok, X} ->
-			  X;
-		      Err ->
-			  Err
-		  end
-	  end,
+                  case erl_parse:parse(E) of
+                      {ok, X} ->
+                          X;
+                      Err ->
+                          Err
+                  end
+          end,
     Res = lists:map(Fun, Parts),
     {ok, Res}.
 
@@ -188,6 +189,22 @@ compile_string(Str) ->
             code:load_binary(Mod, atom_to_list(Mod), Bin);
         {ok, Mod, Bin, _} ->
             code:load_binary(Mod, atom_to_list(Mod), Bin);
-         Err ->
+        Err ->
             Err
     end.
+
+start_tracer(Pid) ->
+    erlide_log:log("started tracer!!!"),
+
+    %Data = [{Name, whereis(Name)}||Name<-registered()],
+
+    Fun = fun %({trace, Pid2, exit, shutdown}=Msg, _) -> Pid!process_info(Pid2), Pid!Msg;
+             (Msg, _)-> Pid ! {trace, Msg}
+          end,
+    %%{ok, TPid} = dbg:tracer(process, {Fun, ok}),
+    Fun2 = dbg:trace_port(file, "log.1"),
+    {ok, TPid} = dbg:tracer(port, Fun2),
+
+    dbg:p(all, [all]),
+
+    TPid.
