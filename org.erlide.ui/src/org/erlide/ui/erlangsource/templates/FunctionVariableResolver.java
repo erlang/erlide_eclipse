@@ -55,6 +55,13 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 			}
 		}
 
+		if (arg_var == null || name_var == null
+		// || body_var == null
+		) {
+			// TODO throw exception?
+			return;
+		}
+
 		final StringBuilder buff = new StringBuilder();
 
 		for (final Object[] element : functions) {

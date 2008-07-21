@@ -138,6 +138,7 @@ public class ErlideDebug {
 		return res;
 	}
 
+	@SuppressWarnings("boxing")
 	public static void addLineBreakpoint(final IBackend backend,
 			final String module, final int line) {
 		try {
@@ -281,6 +282,7 @@ public class ErlideDebug {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public static boolean setVariableValue(final IBackend backend,
 			final String name, final String value, final int stackFrameNo,
 			final OtpErlangPid meta) {

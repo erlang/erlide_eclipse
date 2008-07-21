@@ -49,7 +49,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	List<ErlangProcess> threads;
 
-	private final IBackend fBackend;
+	final IBackend fBackend;
 
 	private final ILaunch fLaunch;
 
@@ -57,7 +57,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private final DebuggerListener fDbgListener;
 
-	private boolean fTerminated;
+	boolean fTerminated;
 
 	private boolean fShowSystemProcesses = false;
 
@@ -66,7 +66,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	IProject project;
 	IProject[] otherProjects;
 
-	private final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
+	final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
 	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
 			final IProject project, final IProject[] otherProjects) {
@@ -174,7 +174,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	 * Notification we have connected to the VM and it has started. Resume the
 	 * VM.
 	 */
-	private void started() {
+	void started() {
 		fireCreationEvent();
 		installDeferredBreakpoints();
 		try {
@@ -310,7 +310,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			loop.start();
 		}
 
-		private class DebuggerJob implements IErlEventHandler {
+		class DebuggerJob implements IErlEventHandler {
 
 			private OtpErlangPid self;
 
@@ -463,13 +463,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 	}
 
-	private ErlangProcess addErlangProcess(final OtpErlangPid pid) {
+	ErlangProcess addErlangProcess(final OtpErlangPid pid) {
 		final ErlangProcess p = new ErlangProcess(this, pid);
 		threads.add(p);
 		return p;
 	}
 
-	private ErlangProcess getErlangProcess(final OtpErlangPid pid) {
+	ErlangProcess getErlangProcess(final OtpErlangPid pid) {
 		for (int i = 0; i < threads.size(); ++i) {
 			final ErlangProcess p = threads.get(i);
 			if (p.getPid().equals(pid)) {
@@ -479,7 +479,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return null;
 	}
 
-	private void removeErlangProcess(final OtpErlangPid pid) {
+	void removeErlangProcess(final OtpErlangPid pid) {
 		final ErlangProcess p = getErlangProcess(pid);
 		if (p != null) {
 			threads.remove(p);
@@ -513,7 +513,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return metaPids.get(pid);
 	}
 
-	private void terminated() {
+	void terminated() {
 		fireTerminateEvent();
 	}
 

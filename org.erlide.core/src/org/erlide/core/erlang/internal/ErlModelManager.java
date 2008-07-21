@@ -288,9 +288,8 @@ public class ErlModelManager implements IErlModelManager {
 					text);
 			elements.put(key, module);
 			return module;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**

@@ -26,7 +26,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * A collection of listeners
 	 */
-	private ListenerList fListeners = new ListenerList();
+	ListenerList fListeners = new ListenerList();
 
 	/**
 	 * Whether content is being buffered
@@ -122,7 +122,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 * <code>Runnable</code> without publicly exposing a <code>run</code>
 	 * method.
 	 */
-	private void read() {
+	void read() {
 		lastSleep = System.currentTimeMillis();
 		long currentTime = lastSleep;
 		final byte[] bytes = new byte[BUFFER_SIZE];

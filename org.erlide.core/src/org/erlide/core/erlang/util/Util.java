@@ -360,8 +360,8 @@ public class Util {
 	public static final boolean endsWithIgnoreCase(final String str,
 			final String end) {
 
-		final int strLength = str == null ? 0 : str.length();
-		final int endLength = end == null ? 0 : end.length();
+		final int strLength = (str == null) ? 0 : str.length();
+		final int endLength = (end == null) ? 0 : end.length();
 
 		// return false if the string is smaller than the end.
 		if (endLength > strLength) {

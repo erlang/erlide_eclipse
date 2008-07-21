@@ -96,6 +96,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		startedNodeCheckbox = new Button(group, SWT.CHECK);
 		startedNodeCheckbox.setText("Connect to started node");
 		startedNodeCheckbox.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean startNew = !startedNodeCheckbox.getSelection();
@@ -228,6 +229,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		projectsTable.setContentProvider(new OtherProjectsContentProvider());
 		projectsTable.setLabelProvider(new OtherProjectsLabelProvider());
 		projectsTable.addCheckStateListener(new ICheckStateListener() {
+			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				updateLaunchConfigurationDialog();
 			}

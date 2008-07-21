@@ -299,7 +299,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return null;
 	}
 
-	private class PreferenceChangeListener implements IPreferenceChangeListener {
+	class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
 			if (key.indexOf('/') != -1
@@ -1073,6 +1073,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 	}
 
+	@SuppressWarnings("boxing")
 	void getSmartTypingPrefs() {
 		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
 				.getPreferences();
@@ -1334,7 +1335,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& p.offset + p.getLength() == offset + length) {// ||
 				// p.includes(offset))
 				// {
-				if (containingAnnotation == null || forward
+				if (containingAnnotation == null
+						|| containingAnnotationPosition == null || forward
 						&& p.length >= containingAnnotationPosition.length
 						|| !forward
 						&& p.length >= containingAnnotationPosition.length) {
@@ -1353,6 +1355,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 					if (currentDistance < distance
 							|| currentDistance == distance
+							&& nextAnnotationPosition != null
 							&& p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
@@ -1367,6 +1370,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 					if (currentDistance < distance
 							|| currentDistance == distance
+							&& nextAnnotationPosition != null
 							&& p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
@@ -1633,8 +1637,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		Position fSecondPosition;
 	}
 
-	private class BracketInserter implements VerifyKeyListener,
-			ILinkedModeListener {
+	class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
 		private boolean fCloseBraces = false;
 		private boolean fCloseBrackets = false;
