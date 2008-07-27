@@ -26,8 +26,8 @@ import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.IDisposable;
+import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
@@ -47,13 +47,15 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
+import com.ericsson.otp.erlang.OtpNodeStatus;
 
 import erlang.ErlideBackend;
 
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public abstract class AbstractBackend implements IBackend, IDisposable {
+public abstract class AbstractBackend extends OtpNodeStatus implements
+		IBackend, IDisposable {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = "true".equals(System
@@ -61,7 +63,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
 	private final ICodeManager fCodeManager;
-	boolean fConnected = false;
+	boolean fAvailable = false;
 
 	class ThreadLocalMbox extends ThreadLocal<Object> {
 
@@ -86,85 +88,53 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	}
 
 	private ThreadLocalMbox ftMBox; // outgoing rpc and send
-
 	private OtpMbox ftRpcBox; // ingoing rpc and events
-
-	// private static final boolean TRACE = false;
-
 	protected String fLabel;
-
 	protected static String fHost;
-
 	protected OtpNode fNode;
-
 	protected String fPeer;
-
 	protected IShellManager fShellManager;
-
 	private String fCurrentVersion;
+	private BackendInfo fInfo;
 
-	public AbstractBackend() {
+	public AbstractBackend(BackendInfo info) {
 		fLabel = null;
 
 		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>(
 				10);
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
+		fInfo = info;
 	}
 
-	public void connect() {
-		connect(null);
-	}
-
-	public abstract void connect(String cookie);
+	public abstract void connect();
 
 	public boolean ping() {
 		return fNode.ping(fPeer, 500);
 	}
 
 	protected void doConnect(final String label) {
-		doConnect(label, null);
-	}
-
-	protected void doConnect(final String label, String cookie) {
 		ErlLogger.debug("connect to:: " + label + " " + Thread.currentThread());
 		// Thread.dumpStack();
 		try {
 			wait_for_epmd();
 
-			if (cookie == null) {
-				cookie = Cookie.retrieveCookie();
-			}
 			fNode = new OtpNode(BackendManager
-					.buildNodeName(BackendManager.JAVA_NODE_LABEL), cookie);
+					.buildNodeName(BackendManager.JAVA_NODE_LABEL), getInfo()
+					.getCookie());
+			fNode.registerStatusHandler(this);
 			fPeer = BackendManager.buildNodeName(label);
 			ErlLogger.debug("java node is " + fNode.node() + " erlang peer is "
 					+ fPeer);
 
 			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
-
-			int tries = BackendManager.getRetries();
-			boolean conn = false;
-			while (!conn && tries > 0) {
-				ErlLogger.debug("trying to connect...");
-				conn = fNode.ping(fPeer, 500);
-				tries--;
-			}
-			if (tries > 0) {
-				ErlLogger.debug("connected to peer!");
-			} else {
-				ErlLogger.error("Couldn't connect!!!");
-			}
-			synchronized (this) {
-				fConnected = tries > 0;
-				notifyAll();
-			}
+			fNode.ping(fPeer, 5);
 
 		} catch (final Exception e) {
 			e.printStackTrace();
 			ErlangLaunchPlugin.log(e);
-			fConnected = false;
+			fAvailable = false;
 		}
 	}
 
@@ -202,8 +172,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	 * @throws ConversionException
 	 */
 	public RpcResult rpc(final String m, final String f, final int timeout,
-			final String signature, final Object... a) throws RpcException {
-		return sendRpc(m, f, timeout, signature, a);
+			String signature, Object... args) throws RpcException {
+		return sendRpc(m, f, timeout, signature, args);
 	}
 
 	/**
@@ -227,18 +197,20 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
 			throws BackendException, RpcException {
-		return checkRpc(rpc(m, f, timeout, signature, a));
-	}
-
-	private static OtpErlangObject checkRpc(final RpcResult r)
-			throws BackendException, NoBackendException {
+		RpcResult r = rpc(m, f, timeout, signature, a);
 		if (r != null && r.isOk()) {
 			return r.getValue();
 		}
 		if (r == null) {
 			throw new NoBackendException();
 		}
-		throw new BackendException("RPC error: " + r.getValue());
+		StringBuffer sa = new StringBuffer();
+		for (Object x : a) {
+			sa.append("'").append(x.toString()).append("',");
+		}
+		String ss = sa.toString().replaceAll("[\\r\\n]", " ");
+		String msg = String.format("%s <- %s:%s(%s)", r.getValue(), m, f, ss);
+		throw new BackendException(msg);
 	}
 
 	/**
@@ -251,6 +223,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		try {
 			final OtpMbox mbox = getMbox();
 			if (mbox != null) {
+				if (CHECK_RPC) {
+					ErlLogger.debug("SEND :: " + pid + " " + msg);
+				}
 				mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
 			}
 		} catch (final RpcException e) {
@@ -263,6 +238,9 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		try {
 			final OtpMbox mbox = getMbox();
 			if (mbox != null) {
+				if (CHECK_RPC) {
+					ErlLogger.debug("SEND :: " + name + " " + msg);
+				}
 				mbox.send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
 			}
 		} catch (final RpcException e) {
@@ -363,17 +341,8 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 	private RpcResult sendRpc(final String module, final String fun,
 			final int timeout, final String signature, Object... args0)
 			throws RpcException {
-		// synchronized (this) {
-		// while (!fConnected) {
-		// try {
-		// wait();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		if (!fConnected) {
-			return RpcResult.ERROR;
+		if (!fAvailable) {
+			return RpcResult.error("not connected");
 		}
 		if (args0 == null) {
 			args0 = new OtpErlangObject[] {};
@@ -399,7 +368,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		try {
 			final OtpMbox mbox = getMbox();
 			if (mbox == null) {
-				return RpcResult.ERROR;
+				return RpcResult.error("missing receive mailbox");
 			}
 			res = RpcUtil.buildRpcCall(module, fun, args, mbox.self());
 			send("rex", res);
@@ -413,7 +382,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 				res = getMbox().receive(timeout);
 			}
 			if (CHECK_RPC) {
-				ErlLogger.debug("    -> " + res);
+				ErlLogger.debug("    <= " + res);
 			}
 
 			if (res == null) {
@@ -421,7 +390,7 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 					ErlLogger.debug("    timed out: " + module + ":" + fun
 							+ "(" + new OtpErlangList(args) + ")");
 				}
-				return RpcResult.ERROR;
+				return RpcResult.error("timeout");
 			}
 
 			res = ((OtpErlangTuple) res).elementAt(1);
@@ -531,14 +500,6 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 
 	public abstract void addStdListener(IStreamListener dsp);
 
-	public String getLabel() {
-		return fLabel;
-	}
-
-	public void setLabel(final String lbl) {
-		fLabel = lbl;
-	}
-
 	public void initErlang() {
 		ErlRpcDaemon.getInstance().start(this);
 	}
@@ -547,11 +508,20 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		return fEventListeners.get(event);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.runtime.backend.IBackend#getInfo()
+	 */
+	public BackendInfo getInfo() {
+		return fInfo;
+	}
+
 	public String getName() {
-		if (fNode == null) {
-			return "<not connected>";
+		if (fInfo == null) {
+			return "<not_connected>";
 		}
-		return fNode.node();
+		return fInfo.getNodeName();
 	}
 
 	public String getHost() {
@@ -559,9 +529,16 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		return "localhost";
 	}
 
-	public abstract void initializeErts();
+	public abstract void initializeRuntime();
 
-	public abstract void setErts(final IProcess process);
+	public abstract void setRuntime(final IProcess process);
+
+	public void setRemoteRex(OtpErlangPid watchdog) {
+		try {
+			getEventBox().link(watchdog);
+		} catch (OtpErlangExit e) {
+		}
+	}
 
 	public void connectAndRegister(final List<ICodeBundle> plugins) {
 		connect();
@@ -572,4 +549,24 @@ public abstract class AbstractBackend implements IBackend, IDisposable {
 		}
 	}
 
+	@Override
+	public void remoteStatus(String node, boolean up, Object info) {
+		String dir = up ? "up" : "down";
+		ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
+		if (node.equals(fPeer)) {
+			setAvailable(up);
+		}
+	}
+
+	private void setAvailable(boolean up) {
+		// TODO notify others? BackendManager?
+		fAvailable = up;
+	}
+
+	@Override
+	public void connAttempt(String node, boolean incoming, Object info) {
+		String direction = incoming ? "incoming" : "outgoing";
+		ErlLogger.debug(String.format("@@: Connection attempt: %s %s %s", node,
+				direction, info));
+	}
 }

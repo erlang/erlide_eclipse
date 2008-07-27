@@ -97,7 +97,7 @@ public class ProcessListView extends ViewPart {
 		@Override
 		public String getText(Object element) {
 			final IBackend b = (IBackend) element;
-			final String s = b.getLabel();
+			final String s = b.getInfo().getName();
 			if (s == null) {
 				return "<default>";
 			}

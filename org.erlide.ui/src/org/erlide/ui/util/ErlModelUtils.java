@@ -117,9 +117,8 @@ public class ErlModelUtils {
 	public static List<IErlImport> getImportsAsList(final IErlModule mod) {
 		if (mod == null) {
 			return new ArrayList<IErlImport>(0);
-		} else {
-			return mod.getImports();
 		}
+		return mod.getImports();
 	}
 
 	public static IErlScanner getScanner(final ITextEditor editor) {

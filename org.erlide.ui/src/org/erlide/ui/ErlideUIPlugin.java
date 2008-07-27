@@ -99,7 +99,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		ErlLogger.debug("Starting UI");
+		ErlLogger.debug("Starting UI " + Thread.currentThread());
 		super.start(context);
 
 		// set this classloader to be used with erlang rpc

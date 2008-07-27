@@ -3,56 +3,56 @@
     <antcall target="svn.co">
       <param name="target" value="features"/>
       <param name="element.id" value="org.erlide"/>
-      <param name="project.name" value="/trunk/org.erlide"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.core"/>
-      <param name="project.name" value="/trunk/org.erlide.core"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.core"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.ui"/>
-      <param name="project.name" value="/trunk/org.erlide.ui"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.ui"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.launching"/>
-      <param name="project.name" value="/trunk/org.erlide.launching"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.launching"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.help"/>
-      <param name="project.name" value="/trunk/org.erlide.help"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.help"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.erlc"/>
-      <param name="project.name" value="/trunk/org.erlide.erlc"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.erlc"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.debug.ui"/>
-      <param name="project.name" value="/trunk/org.erlide.debug.ui"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.debug.ui"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.basic"/>
-      <param name="project.name" value="/trunk/org.erlide.basic"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.basic"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
     <antcall target="svn.co">
       <param name="target" value="plugins"/>
       <param name="element.id" value="org.erlide.jinterface"/>
-      <param name="project.name" value="/trunk/org.erlide.jinterface"/>
-      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide"/>
+      <param name="project.name" value="org.erlide.jinterface"/>
+      <param name="url" value="https://erlide.svn.sourceforge.net/svnroot/erlide/trunk"/>
     </antcall>
   </target>
 </project>

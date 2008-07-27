@@ -51,22 +51,15 @@ public class OtpEpmd {
 	private static final int epmdPort = 4369;
 
 	private static final byte stopReq = (byte) 115;
-
 	// version specific value
 	private static final byte port3req = (byte) 112;
-
 	private static final byte publish3req = (byte) 97;
-
 	private static final byte publish3ok = (byte) 89;
 
 	private static final byte port4req = (byte) 122;
-
 	private static final byte port4resp = (byte) 119;
-
 	private static final byte publish4req = (byte) 120;
-
 	private static final byte publish4resp = (byte) 121;
-
 	private static final byte names4req = (byte) 110;
 
 	private static int traceLevel = 0;
@@ -471,11 +464,15 @@ public class OtpEpmd {
 	}
 
 	public static String[] lookupNames() throws IOException {
+		return lookupNames(InetAddress.getLocalHost());
+	}
+
+	public static String[] lookupNames(InetAddress address) throws IOException {
 		Socket s = null;
 
 		try {
 			final OtpOutputStream obuf = new OtpOutputStream();
-			s = new Socket(InetAddress.getLocalHost(), epmdPort);
+			s = new Socket(address, epmdPort);
 
 			obuf.write2BE(1);
 			obuf.write1(names4req);

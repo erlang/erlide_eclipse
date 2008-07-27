@@ -16,6 +16,7 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -44,7 +45,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		if (fBackend != null) {
 			ErlLogger.error(
 					"Trying to start ErlRpcDaemon twice! Got '%s', had '%s'.",
-					b.getLabel(), fBackend.getLabel());
+					b.getInfo().getName(), fBackend.getInfo().getName());
 			return;
 		}
 		fBackend = b;
@@ -68,6 +69,11 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 								received++;
 								msgs.add(msg);
 							}
+						} catch (final OtpErlangExit e) {
+							// backend crashed -- restart?
+
+							ErlangLaunchPlugin.log(e);
+							e.printStackTrace();
 						} catch (final OtpErlangException e) {
 							ErlangLaunchPlugin.log(e);
 							e.printStackTrace();

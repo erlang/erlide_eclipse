@@ -147,16 +147,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		backendName.setText(prefs.getBackendName());
 		new Label(composite, SWT.NONE);
 
-		final Label nodeCookieLabel = new Label(composite, SWT.NONE);
-		nodeCookieLabel.setText("Node cookie");
-
-		backendCookie = new Text(composite, SWT.BORDER);
-		final GridData gd_backendCookie = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		backendCookie.setLayoutData(gd_backendCookie);
-		backendCookie.setText(prefs.getBackendCookie());
-		new Label(composite, SWT.NONE);
-
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
 		discoverBtn.setText("Discover paths...");
 		discoverBtn.addListener(SWT.Selection, new Listener() {
@@ -253,7 +243,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
 			prefs.setBackendName(backendName.getText());
-			prefs.setBackendCookie(backendCookie.getText());
 			prefs.setExternalModules(externalModules.getText());
 
 			setPageComplete(testPageComplete());

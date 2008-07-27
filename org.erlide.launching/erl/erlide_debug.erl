@@ -22,9 +22,22 @@
 %%
 %% Exported Functions
 %%
--export([start_debug/0, attached/2, send_started/1]).
--export([line_breakpoint/2, resume/1, suspend/1, bindings/1, step_over/1, step_into/1, step_return/1,
-         interpret/1, all_stack_frames/1, eval/2, set_variable_value/4]).
+-export([start_debug/0, 
+         attached/2, 
+         send_started/1]).
+-export([line_breakpoint/2, 
+         resume/1, 
+         suspend/1, 
+         bindings/1, 
+         step_over/1, 
+         step_into/1, 
+         step_return/1,
+         interpret/1, 
+         all_stack_frames/1, 
+         eval/2, 
+         set_variable_value/4, 
+         
+         processes/2]).
 
 %% -compile(export_all).
 

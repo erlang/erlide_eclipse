@@ -177,7 +177,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.erlide.ui.properties.ErlProjectPropertyPage"
+            class="org.erlide.ui.properties.OldErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
             name="Erlang properties">
          <filter
@@ -185,7 +185,7 @@
                value="org.erlide.core.erlnature"/>
       </page>
       <page
-            class="org.erlide.ui.properties.MyErlProjectPropertyPage"
+            class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang properties (work in progress)">
          <filter
@@ -232,9 +232,15 @@
             id="org.erlide.ui.preferences.codetemplate"/>
        <page
              category="org.erlide.ui.preferences"
-             class="org.erlide.ui.properties.MyErlProjectPropertyPage"
+             class="org.erlide.ui.properties.ErlProjectPropertyPage"
              id="org.erlide.ui.properties.myErlangProjectPropertyPage"
              name="new Erlang project default properties">
+       </page>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.BackendsPreferencePage"
+             id="org.erlide.ui.preferences.backends"
+             name="Backend definitions">
        </page>
   </extension>
   <extension
@@ -779,5 +785,29 @@
             location="BOTTOM_LEFT"
             state="true">
       </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferenceTransfer">
+      <transfer
+            icon="icons/erl/erlang-notext016.gif"
+            id="org.erlide.ui.transfer1"
+            name="Erlang preferences">
+         <mapping
+               scope="instance">
+            <entry
+                  node="org.erlide.basicui">
+            </entry>
+            <entry
+                  node="org.erlide.ui">
+            </entry>
+                        <entry
+                  node="org.erlide.core">
+            </entry>
+                        <entry
+                  node="org.erlide.launching">
+            </entry>
+            
+         </mapping>
+      </transfer>
    </extension>
 </plugin>

@@ -25,8 +25,6 @@ public class RpcResult {
 		fValue = new OtpErlangAtom("undefined");
 	}
 
-	public final static RpcResult ERROR = new RpcResult(false);
-
 	public RpcResult(OtpErlangObject res) {
 		if ((res instanceof OtpErlangTuple)
 				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
@@ -54,5 +52,11 @@ public class RpcResult {
 	@Override
 	public String toString() {
 		return "RPC:" + fOk + "=" + fValue.toString();
+	}
+
+	public static RpcResult error(String msg) {
+		RpcResult r = new RpcResult(false);
+		r.fValue = new OtpErlangAtom(msg);
+		return r;
 	}
 }

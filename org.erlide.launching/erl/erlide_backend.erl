@@ -14,7 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/2,
+-export([init/1,
 
          parse_term/1,
          eval/1,
@@ -32,44 +32,42 @@
          start_tracer/1
 ]).
 
-init(JavaNode, LinkPid) ->
+init(JavaNode) ->
     spawn(fun()->
-        RpcPid = spawn(fun() -> link(LinkPid), jrpc:rpc_loop(JavaNode) end),
+        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
         register(erlide_rex, RpcPid),
+        
         watch_eclipse(JavaNode)
+        
     end),
-    
-    F = dbg:trace_port(file, "log.good"),
-    dbg:tracer(port, F),
-    dbg:p(all, [all]),
-    
+                
     ok.
 
 watch_eclipse(JavaNode) ->
-        spawn(fun() ->
-            	monitor_node(JavaNode, true),
-           	    receive
-					{nodedown, JavaNode} ->
-        				init:stop()
-    			end
-              end).
+    spawn(fun() ->
+                  monitor_node(JavaNode, true),
+                  receive
+                      {nodedown, JavaNode} ->
+                          init:stop()
+                  end
+          end).
 
 
 parse_term(Str) ->
     case catch parse_term_raw(Str) of
-    {'EXIT', Reason} ->
-        {error, Reason};
-    Result ->
-        Result
+        {'EXIT', Reason} ->
+            {error, Reason};
+        Result ->
+            Result
     end.
 
 parse_term_raw(Str) ->
     erlang:display(Str),
     {ok, Tokens, _} = erl_scan:string(Str),
     erlang:display(Tokens),
-        R=erl_parse:parse_term(Tokens),
+    R=erl_parse:parse_term(Tokens),
     erlang:display(R),
-        R.
+    R.
 
 eval(Str) ->
     eval(Str, erl_eval:new_bindings()).
@@ -77,10 +75,10 @@ eval(Str) ->
 eval(Str, Bindings) ->
     %% TODO use try...catch here!
     case catch eval_raw(Str, Bindings) of
-    {'EXIT', Reason} ->
-        {error, Reason};
-    Result ->
-        Result
+        {'EXIT', Reason} ->
+            {error, Reason};
+        Result ->
+            Result
     end.
 
 eval_raw(Str, Bindings) ->
@@ -94,10 +92,10 @@ format(Fmt, Args) ->
 pretty_print(Str) ->
     {ok, L, _} = erl_scan:string(Str),
     case erl_parse:parse_term(L) of
-    {ok, Term} ->
-        lists:flatten(io_lib:format("~p", [Term]));
-    _ ->
-        Str
+        {ok, Term} ->
+            lists:flatten(io_lib:format("~p", [Term]));
+        _ ->
+            Str
     end.
 
 
@@ -109,27 +107,27 @@ scan_string([], Res, _) ->
     {ok, lists:reverse(Res)};
 scan_string(S, Res, N) ->
     case erl_scan:tokens([], S, N) of
-    {done, Result, Rest} ->
-        case Result of
-        {ok, Toks, End} ->
-            scan_string(Rest, [Toks | Res], End);
-        {eof, End} ->
-            scan_string([], Res, End)
-        end;
-    {more, _Cont} ->
-        scan_string([], Res, N)
+        {done, Result, Rest} ->
+            case Result of
+                {ok, Toks, End} ->
+                    scan_string(Rest, [Toks | Res], End);
+                {eof, End} ->
+                    scan_string([], Res, End)
+            end;
+        {more, _Cont} ->
+            scan_string([], Res, N)
     end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 parse_string(S) ->
     {ok, L} = scan_string(S),
     case catch {ok, lists:map(fun(X) ->
-                 {ok, Form} = erl_parse:parse_exprs(X),
-                 Form
-             end,
-             L)} of
-    {ok, Res} -> {ok, Res};
-    Err -> Err
+                                      {ok, Form} = erl_parse:parse_exprs(X),
+                                      Form
+                              end,
+                              L)} of
+        {ok, Res} -> {ok, Res};
+        Err -> Err
     end.
 
 
@@ -168,18 +166,18 @@ parse(Toks) ->
     {ok, Res}.
 
 split_dot(L) ->
-    split_dot(L, [], []).
+split_dot(L, [], []).
 
 split_dot([], R, []) ->
-    lists:reverse(R);
+lists:reverse(R);
 split_dot([], R, V) ->
-    lists:reverse([V|R]);
+lists:reverse([V|R]);
 split_dot([{eof}|T], R, V) ->
-    split_dot(T, R, V);
+split_dot(T, R, V);
 split_dot([{dot, _}=H|T], R, V) ->
-    split_dot(T, [lists:reverse([H|V])|R], []);
+split_dot(T, [lists:reverse([H|V])|R], []);
 split_dot([H|T], R, V) ->
-    split_dot(T, R, [H|V]).
+split_dot(T, R, [H|V]).
 
 compile_string(Str) ->
     {ok, T, _} = erl_scan:string(Str),
@@ -193,16 +191,21 @@ compile_string(Str) ->
             Err
     end.
 
-start_tracer(Pid) ->
+start_tracer(Pid) when is_pid(Pid) ->
     erlide_log:log("started tracer!!!"),
 
-    %Data = [{Name, whereis(Name)}||Name<-registered()],
-
-    Fun = fun %({trace, Pid2, exit, shutdown}=Msg, _) -> Pid!process_info(Pid2), Pid!Msg;
+    Fun = fun 
              (Msg, _)-> Pid ! {trace, Msg}
           end,
-    %%{ok, TPid} = dbg:tracer(process, {Fun, ok}),
-    Fun2 = dbg:trace_port(file, "log.1"),
+    {ok, TPid} = dbg:tracer(process, {Fun, ok}),
+
+    dbg:p(all, [all]),
+
+    TPid;
+start_tracer(Log) when is_list(Log) ->
+    erlide_log:log("started tracer!!!"),
+
+    Fun2 = dbg:trace_port(file, Log),
     {ok, TPid} = dbg:tracer(port, Fun2),
 
     dbg:p(all, [all]),

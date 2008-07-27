@@ -514,7 +514,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
 				addErrorMarkers(getMarkerGenerator(), resource, l);
 			} else {
-				ErlLogger.debug("skipping %s (beam is newer)", resource);
+				ErlLogger.debug("skipping %s (beam is newer)", resource
+						.getName());
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -774,8 +775,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		try {
 			final RpcResult result = ErlangCode.loadBinary(b, beamf, code);
-			ErlLogger.debug(" $ distribute " + beamf + " to " + b.getLabel()
-					+ " - " + result.getValue());
+			ErlLogger.debug(" $ distribute " + beamf + " to "
+					+ b.getInfo().getName() + " - " + result.getValue());
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.runtime.ErlangLaunchPlugin;
+
+import com.ericsson.otp.erlang.OtpEpmd;
 
 /**
  * Each 2 seconds, query epmd to see if there are any new nodes that have been
@@ -22,6 +28,11 @@ import org.erlide.runtime.ErlangLaunchPlugin;
  * 
  */
 public class EpmdWatchJob extends Job {
+
+	// TODO add a way to register several hosts to watch
+
+	// TODO maybe better to register node names we're interested in, to be
+	// notified when they go up/down?
 
 	public EpmdWatchJob() {
 		super("Checking EPMD for new backends");
@@ -31,14 +42,53 @@ public class EpmdWatchJob extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		if (ErlangLaunchPlugin.getDefault() == null) {
-			return new Status(IStatus.CANCEL, ErlangLaunchPlugin.PLUGIN_ID,
-					IStatus.OK, "", null); //$NON-NLS-1$
-		}
 
-		BackendManager.getDefault().checkEpmd();
+		checkEpmd();
 
-		this.schedule(2000);
+		this.schedule(5000);
 		return Status.OK_STATUS;
 	}
+
+	private List<String> nodes = new ArrayList<String>();
+
+	private void checkEpmd() {
+
+		try {
+			final String[] names = OtpEpmd.lookupNames();
+			final List<String> labels = Arrays.asList(names);
+
+			List<String> started = getDiff(labels, nodes);
+			List<String> stopped = getDiff(nodes, labels);
+
+			clean(started);
+			clean(stopped);
+
+			BackendManager.getDefault().setEpmdStatus(started, stopped);
+
+			nodes = labels;
+
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void clean(List<String> list) {
+		for (int i = 0; i < list.size(); i++) {
+			String label = list.get(i);
+			// label is "name X at port N"
+			final String[] parts = label.split(" ");
+			if (parts.length == 5) {
+				label = parts[1];
+				list.set(i, label);
+			}
+		}
+	}
+
+	private List<String> getDiff(List<String> list1, List<String> list2) {
+		List<String> result = new ArrayList<String>(list1);
+		result.removeAll(list2);
+		return result;
+	}
+
 }

@@ -74,8 +74,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	private ResourceBundle resourceBundle;
 
-	private ErlangPluginPreferences preferences;
-
 	/**
 	 * The constructor.
 	 */
@@ -125,16 +123,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
-	}
-
-	/**
-	 * @return
-	 */
-	public ErlangPluginPreferences getPreferences() {
-		if (preferences == null) {
-			preferences = new ErlangPluginPreferences();
-		}
-		return preferences;
 	}
 
 	/**

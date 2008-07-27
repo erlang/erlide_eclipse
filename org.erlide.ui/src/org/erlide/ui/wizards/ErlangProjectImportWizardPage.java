@@ -35,7 +35,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.swt.SWT;
@@ -152,8 +151,8 @@ public class ErlangProjectImportWizardPage extends
 	/**
 	 * Creates a new button with the given id.
 	 * <p>
-	 * The <code>Dialog</code> implementation of this framework method creates
-	 * a standard push button, registers for selection events including button
+	 * The <code>Dialog</code> implementation of this framework method creates a
+	 * standard push button, registers for selection events including button
 	 * presses and registers default buttons with its shell. The button id is
 	 * stored as the buttons client data. Note that the parent's layout is
 	 * assumed to be a GridLayout and the number of columns in this layout is
@@ -1098,15 +1097,15 @@ public class ErlangProjectImportWizardPage extends
 
 		};
 
-		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(final IProgressMonitor monitor)
-					throws InterruptedException {
-				monitor.beginTask(
-						ErlangDataTransferMessages.ImportPage_filterSelections,
-						IProgressMonitor.UNKNOWN);
-				getSelectedResources(filter, monitor);
-			}
-		};
+		// final IRunnableWithProgress runnable = new IRunnableWithProgress() {
+		// public void run(final IProgressMonitor monitor)
+		// throws InterruptedException {
+		// monitor.beginTask(
+		// ErlangDataTransferMessages.ImportPage_filterSelections,
+		// IProgressMonitor.UNKNOWN);
+		// getSelectedResources(filter, monitor);
+		// }
+		// };
 
 		// try {
 		// dialog.run(true, true, runnable);
@@ -1294,8 +1293,8 @@ public class ErlangProjectImportWizardPage extends
 	 * 
 	 * @param sourcePath
 	 *            the path to check
-	 * @return <code>true</code> if there is a conflict, <code>false</code>
-	 *         if not
+	 * @return <code>true</code> if there is a conflict, <code>false</code> if
+	 *         not
 	 */
 	// protected boolean sourceConflictsWithDestination(IPath sourcePath) {
 	//

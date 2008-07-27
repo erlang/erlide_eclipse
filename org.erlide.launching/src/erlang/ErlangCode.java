@@ -65,7 +65,7 @@ public class ErlangCode {
 		try {
 			result = b.rpc("code", "load_binary", "asb", beamf, beamf, code);
 		} catch (final NoBackendException e) {
-			return RpcResult.ERROR;
+			return RpcResult.error("no backend");
 		}
 		return result;
 	}

@@ -138,13 +138,10 @@ public class Util {
 		final int length = messageWithNoDoubleQuotes.length;
 		int start = 0;
 		int end = length;
-		StringBuilder output = null;
+		StringBuilder output = new StringBuilder();
 		while (true) {
-			if ((end = CharOperation.indexOf('{', messageWithNoDoubleQuotes,
-					start)) > -1) {
-				if (output == null) {
-					output = new StringBuilder(length + bindings.length * 20);
-				}
+			end = CharOperation.indexOf('{', messageWithNoDoubleQuotes, start);
+			if (end > -1) {
 				output.append(messageWithNoDoubleQuotes, start, end - start);
 				if ((start = CharOperation.indexOf('}',
 						messageWithNoDoubleQuotes, end + 1)) > -1) {
@@ -360,8 +357,18 @@ public class Util {
 	public static final boolean endsWithIgnoreCase(final String str,
 			final String end) {
 
-		final int strLength = (str == null) ? 0 : str.length();
-		final int endLength = (end == null) ? 0 : end.length();
+		if (str == end) {
+			return true;
+		}
+		if (str == null) {
+			return false;
+		}
+		if (end == null) {
+			return false;
+		}
+
+		final int strLength = str.length();
+		final int endLength = end.length();
 
 		// return false if the string is smaller than the end.
 		if (endLength > strLength) {
@@ -531,7 +538,7 @@ public class Util {
 	 * Finds the first line separator used by the given text.
 	 * 
 	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-	 *         </code>, or <code>null</code> if none found
+	 *                </code>, or <code>null</code> if none found
 	 */
 	public static String findLineSeparator(final char[] text) {
 		// find the first line separator
@@ -1513,10 +1520,10 @@ public class Util {
 	 * machine-independent manner.
 	 * <p>
 	 * First, two bytes are written to the output stream as if by the
-	 * <code>writeShort</code> method giving the number of bytes to follow.
-	 * This value is the number of bytes actually written out, not the length of
-	 * the string. Following the length, each character of the string is output,
-	 * in sequence, using the UTF-8 encoding for the character.
+	 * <code>writeShort</code> method giving the number of bytes to follow. This
+	 * value is the number of bytes actually written out, not the length of the
+	 * string. Following the length, each character of the string is output, in
+	 * sequence, using the UTF-8 encoding for the character.
 	 * 
 	 * @param str
 	 *            a string to be written.
@@ -1819,7 +1826,10 @@ public class Util {
 	 * creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final String name) {
-		final int nameLength = name == null ? 0 : name.length();
+		if (name == null) {
+			return false;
+		}
+		final int nameLength = name.length();
 		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;
@@ -1841,7 +1851,10 @@ public class Util {
 	 * creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final char[] name) {
-		final int nameLength = name == null ? 0 : name.length;
+		if (name == null) {
+			return false;
+		}
+		final int nameLength = name.length;
 		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
 		if (nameLength < suffixLength) {
 			return false;

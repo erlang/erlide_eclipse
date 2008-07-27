@@ -9,27 +9,19 @@
  *     IBM Corporation - initial API and implementation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.basicui.prefs;
+package org.erlide.ui.prefs;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -47,7 +39,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -61,9 +52,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -72,46 +63,45 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.basiccore.ErtsInstall;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.basicui.prefs.IAddDialogRequestor;
+import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.basicui.util.SWTUtil;
+import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.BackendInfoManager;
 
 /**
- * A composite that displays installed ERTS's in a table. ERTSs can be added,
- * removed, edited, and searched for.
+ * A preference page that displays installed runtimes in a table. Runtimes can
+ * be added, removed, edited, and searched for.
  * <p>
- * This block implements ISelectionProvider - it sends selection change events
- * when the checked ERTS in the table changes, or when the "use default" button
- * check state changes.
+ * It implements ISelectionProvider - it sends selection change events when the
+ * checked runtime in the table changes, or when the "use default" button check
+ * state changes.
  * </p>
  */
-public class ErtsInstallPreferencePage extends PreferencePage implements
-		IAddVMDialogRequestor, ISelectionProvider, IWorkbenchPreferencePage
+public class BackendsPreferencePage extends PreferencePage implements
+		IAddDialogRequestor<BackendInfo>, ISelectionProvider,
+		IWorkbenchPreferencePage {
 
-{
+	private Combo combo;
+	private static final String BACKENDS_PREFERENCE_PAGE = "BACKENDS_PREFERENCE_PAGE";
 
-	/**
-	 * VMs being displayed
-	 */
-	protected List<ErtsInstall> fVMs = new ArrayList<ErtsInstall>();
+	Collection<BackendInfo> backends;
+	BackendInfo defaultBackend;
+	BackendInfo erlideBackend;
 
 	/**
 	 * The main list control
 	 */
-	protected CheckboxTableViewer fVMList;
+	protected CheckboxTableViewer fBackendList;
 
 	// Action buttons
 	private Button fAddButton;
-
 	private Button fRemoveButton;
-
 	private Button fEditButton;
-
-	private Button fSearchButton;
 
 	// column weights
 	protected float fWeight1 = 1 / 3F;
-
 	protected float fWeight2 = 4 / 9F;
 
 	// ignore column re-sizing when the table is being resized
@@ -129,14 +119,15 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * Previous selection
 	 */
 	private ISelection fPrevSelection = new StructuredSelection();
+	private ComboViewer erlideBackendViewer;
 
 	/**
 	 * Content provider to show a list of ERTSs
 	 */
-	class ERTSsContentProvider implements IStructuredContentProvider {
+	class BackendContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object input) {
-			return fVMs.toArray();
+			return backends.toArray(new BackendInfo[backends.size()]);
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -148,24 +139,24 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Label provider for installed ERTSs table.
+	 * Label provider for installed runtimes table.
 	 */
-	static class VMLabelProvider extends LabelProvider implements
+	static class BackendLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
 		/**
 		 * @see ITableLabelProvider#getColumnText(Object, int)
 		 */
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof ErtsInstall) {
-				final ErtsInstall vm = (ErtsInstall) element;
+			if (element instanceof BackendInfo) {
+				final BackendInfo vm = (BackendInfo) element;
 				switch (columnIndex) {
 				case 0:
 					return vm.getName();
 				case 1:
-					return vm.getOtpHome();
+					return vm.getRuntime();
 				case 2:
-					return vm.getVersion();
+					return vm.getNodeName();
 				}
 			}
 			return element.toString();
@@ -178,18 +169,28 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 			return null;
 		}
 
+		@Override
+		public String getText(Object element) {
+			return getColumnText(element, 0);
+		}
 	}
 
-	public ErtsInstallPreferencePage() {
+	public BackendsPreferencePage() {
 		super();
-		setTitle(ErtsMessages.ERTSsPreferencePage_1);
-		setDescription(ErtsMessages.ERTSsPreferencePage_2);
+		setTitle("Installed Erlang backends ");
+		setDescription("Add, remove or edit backend definitions.\r\n"
+				+ "The checked backend will be used by default in new projects "
+				+ "to build and run the project's code.");
+
+		performDefaults();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionListeners.add(listener);
@@ -201,13 +202,15 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
 	 */
 	public ISelection getSelection() {
-		return new StructuredSelection(fVMList.getCheckedElements());
+		return new StructuredSelection(fBackendList.getCheckedElements());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
@@ -217,19 +220,21 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+	 * .jface.viewers.ISelection)
 	 */
 	public void setSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			if (!selection.equals(fPrevSelection)) {
 				fPrevSelection = selection;
-				final Object jre = ((IStructuredSelection) selection)
+				final Object vm = ((IStructuredSelection) selection)
 						.getFirstElement();
-				if (jre == null) {
-					fVMList.setCheckedElements(new Object[0]);
+				if (vm == null) {
+					fBackendList.setCheckedElements(new Object[0]);
 				} else {
-					fVMList.setCheckedElements(new Object[] { jre });
-					fVMList.reveal(jre);
+					fBackendList.setCheckedElements(new Object[] { vm });
+					fBackendList.reveal(vm);
 				}
 				fireSelectionChanged();
 			}
@@ -239,7 +244,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	/**
 	 * Fire current selection
 	 */
-	private void fireSelectionChanged() {
+	void fireSelectionChanged() {
 		final SelectionChangedEvent event = new SelectionChangedEvent(this,
 				getSelection());
 		final Object[] listeners = fSelectionListeners.getListeners();
@@ -250,46 +255,16 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Sorts by VM type, and name within type.
-	 */
-	protected void sortByVersion() {
-		fVMList.setSorter(new ViewerSorter() {
-
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof ErtsInstall) && (e2 instanceof ErtsInstall)) {
-					final ErtsInstall left = (ErtsInstall) e1;
-					final ErtsInstall right = (ErtsInstall) e2;
-					final String leftType = left.getVersion();
-					final String rightType = right.getVersion();
-					final int res = leftType.compareToIgnoreCase(rightType);
-					if (res != 0) {
-						return res;
-					}
-					return left.getName().compareToIgnoreCase(right.getName());
-				}
-				return super.compare(viewer, e1, e2);
-			}
-
-			@Override
-			public boolean isSorterProperty(Object element, String property) {
-				return true;
-			}
-		});
-		fSortColumn = 3;
-	}
-
-	/**
 	 * Sorts by VM name.
 	 */
 	protected void sortByName() {
-		fVMList.setSorter(new ViewerSorter() {
+		fBackendList.setSorter(new ViewerSorter() {
 
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof ErtsInstall) && (e2 instanceof ErtsInstall)) {
-					final ErtsInstall left = (ErtsInstall) e1;
-					final ErtsInstall right = (ErtsInstall) e2;
+				if ((e1 instanceof BackendInfo) && (e2 instanceof BackendInfo)) {
+					final BackendInfo left = (BackendInfo) e1;
+					final BackendInfo right = (BackendInfo) e2;
 					return left.getName().compareToIgnoreCase(right.getName());
 				}
 				return super.compare(viewer, e1, e2);
@@ -306,16 +281,16 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	/**
 	 * Sorts by VM location.
 	 */
-	protected void sortByLocation() {
-		fVMList.setSorter(new ViewerSorter() {
+	protected void sortByRuntime() {
+		fBackendList.setSorter(new ViewerSorter() {
 
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof ErtsInstall) && (e2 instanceof ErtsInstall)) {
-					final ErtsInstall left = (ErtsInstall) e1;
-					final ErtsInstall right = (ErtsInstall) e2;
-					return left.getOtpHome().compareToIgnoreCase(
-							right.getOtpHome());
+				if ((e1 instanceof BackendInfo) && (e2 instanceof BackendInfo)) {
+					final BackendInfo left = (BackendInfo) e1;
+					final BackendInfo right = (BackendInfo) e2;
+					return left.getRuntime().compareToIgnoreCase(
+							right.getRuntime());
 				}
 				return super.compare(viewer, e1, e2);
 			}
@@ -329,11 +304,11 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	protected void enableButtons() {
-		final int selectionCount = ((IStructuredSelection) fVMList
+		final int selectionCount = ((IStructuredSelection) fBackendList
 				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
 		fRemoveButton.setEnabled(selectionCount > 0
-				&& selectionCount < fVMList.getTable().getItemCount());
+				&& selectionCount < fBackendList.getTable().getItemCount());
 	}
 
 	protected Button createPushButton(Composite parent, String label) {
@@ -428,90 +403,70 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Sets the ERTSs to be displayed in this block
-	 * 
-	 * @param vms
-	 *            ERTSs to be displayed
-	 */
-	protected void setERTSs(ErtsInstall[] vms) {
-		fVMs.clear();
-		for (final ErtsInstall element : vms) {
-			fVMs.add(element);
-		}
-		fVMList.setInput(fVMs);
-		fVMList.refresh();
-	}
-
-	/**
 	 * Returns the ERTSs currently being displayed in this block
 	 * 
 	 * @return ERTSs currently being displayed in this block
 	 */
-	public ErtsInstall[] getERTSs() {
-		return fVMs.toArray(new ErtsInstall[fVMs.size()]);
+	public List<BackendInfo> getBackends() {
+		return new ArrayList<BackendInfo>(backends);
 	}
 
 	/**
-	 * Bring up a dialog that lets the user create a new VM definition.
+	 * Bring up a dialog that lets the user create a new backend definition.
 	 */
-	protected void addVM() {
-		fVMList.refresh();
+	protected void addBackend() {
+		fBackendList.refresh();
 
-		final AddVMDialog dialog = new AddVMDialog(this, getShell(), null);
-		dialog.setTitle(ErtsMessages.InstalledERTSsBlock_7);
+		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
+				null);
+		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_7);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
-		fVMList.refresh();
+		fBackendList.refresh();
+		erlideBackendViewer.refresh();
+	}
+
+	public void itemAdded(BackendInfo vm) {
+		backends.add(vm);
+		fBackendList.refresh();
+		erlideBackendViewer.refresh();
 	}
 
 	/**
-	 * @see IAddVMDialogRequestor#vmAdded(ErtsInstall)
-	 */
-	public void vmAdded(ErtsInstall vm) {
-		fVMs.add(vm);
-		fVMList.refresh();
-	}
-
-	/**
-	 * @see IAddVMDialogRequestor#isDuplicateName(String)
+	 * @see IAddRuntimeDialogRequestor#isDuplicateName(String)
 	 */
 	public boolean isDuplicateName(String name) {
-		for (int i = 0; i < fVMs.size(); i++) {
-			final ErtsInstall vm = fVMs.get(i);
-			if (vm.getName().equals(name)) {
-				return true;
-			}
-		}
-		return false;
+		return BackendInfoManager.getDefault().isDuplicateName(name);
 	}
 
-	protected void editVM() {
-		final IStructuredSelection selection = (IStructuredSelection) fVMList
+	protected void editBackend() {
+		final IStructuredSelection selection = (IStructuredSelection) fBackendList
 				.getSelection();
-		final ErtsInstall vm = (ErtsInstall) selection.getFirstElement();
+		final BackendInfo vm = (BackendInfo) selection.getFirstElement();
 		if (vm == null) {
 			return;
 		}
-		final AddVMDialog dialog = new AddVMDialog(this, getShell(), vm);
-		dialog.setTitle(ErtsMessages.InstalledERTSsBlock_8);
+		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
+				vm);
+		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_8);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
-		fVMList.refresh(vm);
+		fBackendList.refresh(vm);
 	}
 
-	protected void removeVMs() {
-		final IStructuredSelection selection = (IStructuredSelection) fVMList
+	protected void removeSelectedBackends() {
+		final IStructuredSelection selection = (IStructuredSelection) fBackendList
 				.getSelection();
-		final ErtsInstall[] vms = new ErtsInstall[selection.size()];
+		final BackendInfo[] vms = new BackendInfo[selection.size()];
 		final Iterator<?> iter = selection.iterator();
 		int i = 0;
 		while (iter.hasNext()) {
-			vms[i] = (ErtsInstall) iter.next();
+			vms[i] = (BackendInfo) iter.next();
 			i++;
 		}
-		removeERTSs(vms);
+		removeBackends(vms);
 	}
 
 	/**
@@ -519,94 +474,23 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * 
 	 * @param vms
 	 */
-	public void removeERTSs(ErtsInstall[] vms) {
+	public void removeBackends(BackendInfo[] vms) {
 		final IStructuredSelection prev = (IStructuredSelection) getSelection();
-		for (final ErtsInstall element : vms) {
-			fVMs.remove(element);
+		for (final BackendInfo element : vms) {
+			backends.remove(element);
 		}
-		fVMList.refresh();
+		fBackendList.refresh();
+		erlideBackendViewer.refresh();
 		final IStructuredSelection curr = (IStructuredSelection) getSelection();
 		if (!curr.equals(prev)) {
-			final ErtsInstall[] installs = getERTSs();
-			if (curr.size() == 0 && installs.length == 1) {
+			final List<BackendInfo> installs = getBackends();
+			if (curr.size() == 0 && installs.size() == 1) {
 				// pick a default VM automatically
-				setSelection(new StructuredSelection(installs[0]));
+				setSelection(new StructuredSelection(installs.get(0)));
 			} else {
 				fireSelectionChanged();
 			}
 		}
-	}
-
-	/**
-	 * Search for installed VMs in the file system
-	 */
-	protected void search() {
-
-		// choose a root directory for the search
-		final DirectoryDialog dialog = new DirectoryDialog(getShell());
-		dialog.setMessage(ErtsMessages.InstalledERTSsBlock_9);
-		dialog.setText(ErtsMessages.InstalledERTSsBlock_10);
-		final String path = dialog.open();
-		if (path == null) {
-			return;
-		}
-
-		// ignore installed locations
-		final Set<String> exstingLocations = new HashSet<String>();
-		{
-			Iterator<ErtsInstall> iter = fVMs.iterator();
-			while (iter.hasNext()) {
-				exstingLocations.add((iter.next()).getOtpHome());
-			}
-		}
-
-		// search
-		final File rootDir = new File(path);
-		final List<File> locations = new ArrayList<File>();
-
-		final IRunnableWithProgress r = new IRunnableWithProgress() {
-
-			public void run(IProgressMonitor monitor) {
-				monitor.beginTask(ErtsMessages.InstalledERTSsBlock_11,
-						IProgressMonitor.UNKNOWN);
-				search(rootDir, locations, exstingLocations, monitor);
-				monitor.done();
-			}
-		};
-
-		try {
-			final ProgressMonitorDialog progress = new ProgressMonitorDialog(
-					getShell());
-			progress.run(true, true, r);
-		} catch (final InvocationTargetException e) {
-			ErlideBasicUIPlugin.log(e);
-		} catch (final InterruptedException e) {
-			// cancelled
-			return;
-		}
-
-		if (locations.isEmpty()) {
-			MessageDialog.openInformation(getShell(),
-					ErtsMessages.InstalledERTSsBlock_12, MessageFormat.format(
-							ErtsMessages.InstalledERTSsBlock_13,
-							(Object[]) new String[] { path }));
-		} else {
-			Iterator<File> iter = locations.iterator();
-			while (iter.hasNext()) {
-				final File location = iter.next();
-				final ErtsInstall vm = new ErtsInstall();
-				final String name = location.getName();
-				String nameCopy = name;
-				int i = 1;
-				while (isDuplicateName(nameCopy)) {
-					nameCopy = name + '(' + i++ + ')';
-				}
-				vm.setName(nameCopy);
-				vm.setOtpHome(location.getAbsolutePath());
-				vmAdded(vm);
-			}
-		}
-
 	}
 
 	@Override
@@ -615,67 +499,12 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Searches the specified directory recursively for installed VMs, adding
-	 * each detected VM to the <code>found</code> list. Any directories
-	 * specified in the <code>ignore</code> are not traversed.
-	 * 
-	 * @param directory
-	 * @param found
-	 * @param types
-	 * @param ignore
-	 */
-	protected void search(File directory, List<File> found, Set<String> ignore,
-			IProgressMonitor monitor) {
-		if (monitor.isCanceled()) {
-			return;
-		}
-
-		final String[] names = directory.list();
-		if (names == null) {
-			return;
-		}
-		final List<File> subDirs = new ArrayList<File>();
-		for (final String element : names) {
-			if (monitor.isCanceled()) {
-				return;
-			}
-			final File file = new File(directory, element);
-			try {
-				monitor.subTask(MessageFormat.format("searching...",
-						(Object[]) new String[] {
-								Integer.toString(found.size()),
-								file.getCanonicalPath() }));
-			} catch (final IOException e) {
-			}
-			if (file.isDirectory()) {
-				if (!ignore.contains(file)) {
-					boolean validLocation = false;
-
-					// FIXME
-
-					if (!validLocation) {
-						subDirs.add(file);
-					}
-				}
-			}
-		}
-		while (!subDirs.isEmpty()) {
-			final File subDir = subDirs.remove(0);
-			search(subDir, found, ignore, monitor);
-			if (monitor.isCanceled()) {
-				return;
-			}
-		}
-
-	}
-
-	/**
 	 * Sets the checked ERTS, possible <code>null</code>
 	 * 
 	 * @param vm
 	 *            ERTS or <code>null</code>
 	 */
-	public void setCheckedERTS(ErtsInstall vm) {
+	public void setCheckedBackend(BackendInfo vm) {
 		if (vm == null) {
 			setSelection(new StructuredSelection());
 		} else {
@@ -688,12 +517,12 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	 * 
 	 * @return the checked ERTS or <code>null</code> if none
 	 */
-	public ErtsInstall getCheckedERTS() {
-		final Object[] objects = fVMList.getCheckedElements();
+	public BackendInfo getCheckedBackend() {
+		final Object[] objects = fBackendList.getCheckedElements();
 		if (objects.length == 0) {
 			return null;
 		}
-		return (ErtsInstall) objects[0];
+		return (BackendInfo) objects[0];
 	}
 
 	/**
@@ -714,7 +543,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	}
 
 	protected float getColumnWeight(int col) {
-		final Table table = fVMList.getTable();
+		final Table table = fBackendList.getTable();
 		final int tableWidth = table.getSize().x;
 		final int columnWidth = table.getColumn(col).getWidth();
 		if (tableWidth > columnWidth) {
@@ -734,7 +563,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 	public void restoreColumnSettings(IDialogSettings settings, String qualifier) {
 		fWeight1 = restoreColumnWeight(settings, qualifier, 0);
 		fWeight2 = restoreColumnWeight(settings, qualifier, 1);
-		fVMList.getTable().layout(true);
+		fBackendList.getTable().layout(true);
 		try {
 			fSortColumn = settings.getInt(qualifier + ".sortColumn"); //$NON-NLS-1$
 		} catch (final NumberFormatException e) {
@@ -745,10 +574,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 			sortByName();
 			break;
 		case 2:
-			sortByLocation();
-			break;
-		case 3:
-			sortByVersion();
+			sortByRuntime();
 			break;
 		}
 	}
@@ -763,18 +589,9 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 
 	}
 
-	/**
-	 * Populates the ERTS table with existing ERTSs defined in the workspace.
-	 */
-	protected void fillWithWorkspaceERTSs() {
-		setERTSs(new ErtsInstall[] {});
-	}
-
 	@Override
 	protected Control createContents(Composite parent) {
 		initializeDialogUnits(parent);
-
-		noDefaultAndApplyButton();
 
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
@@ -790,26 +607,20 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		addSelectionChangedListener(new ISelectionChangedListener() {
 
 			public void selectionChanged(SelectionChangedEvent event) {
-				final ErtsInstall install = getCheckedERTS();
-				if (install == null) {
-					setValid(false);
-					setErrorMessage(ErtsMessages.ERTSsPreferencePage_13);
-				} else {
-					setValid(true);
-					setErrorMessage(null);
-				}
+				checkValid();
 			}
 		});
+
+		checkValid();
 
 		applyDialogFont(parent);
 		return parent;
 	}
 
 	public void init(IWorkbench workbench) {
-
 	}
 
-	public Control createMyControl(Composite ancestor) {
+	private Control createMyControl(Composite ancestor) {
 		final Composite parent = new Composite(ancestor, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -821,8 +632,52 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 
 		GridData data;
 
+		final Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		final GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		composite.setLayout(gridLayout);
+
+		final Label erlideWillUseLabel = new Label(composite, SWT.NONE);
+		erlideWillUseLabel
+				.setToolTipText("The erlide backend is used for IDE purposes, not for running project code.");
+		erlideWillUseLabel
+				.setText("Erlide backend (requires restart to be effective!)");
+
+		erlideBackendViewer = new ComboViewer(composite, SWT.READ_ONLY);
+		erlideBackendViewer.setLabelProvider(new BackendLabelProvider());
+		erlideBackendViewer.setContentProvider(new BackendContentProvider());
+		erlideBackendViewer.setInput(backends);
+		combo = erlideBackendViewer.getCombo();
+		final GridData gd_combo = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd_combo.widthHint = 118;
+		combo.setLayoutData(gd_combo);
+		if (erlideBackend != null) {
+			erlideBackendViewer.setSelection(new StructuredSelection(
+					erlideBackend), true);
+		}
+		erlideBackendViewer
+				.addPostSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							final SelectionChangedEvent event) {
+						fireSelectionChanged();
+					}
+				});
+		erlideBackendViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent event) {
+						ISelection sel = event.getSelection();
+						if (sel instanceof IStructuredSelection) {
+							IStructuredSelection ssel = (IStructuredSelection) sel;
+							erlideBackend = (BackendInfo) ssel
+									.getFirstElement();
+						}
+
+					}
+				});
+
 		final Label tableLabel = new Label(parent, SWT.NONE);
-		tableLabel.setText(ErtsMessages.InstalledERTSsBlock_15);
+		tableLabel.setText("Installed backends:");
 		data = new GridData();
 		data.horizontalSpan = 2;
 		tableLabel.setLayoutData(data);
@@ -830,8 +685,18 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 
 		final Table table = new Table(parent, SWT.CHECK | SWT.BORDER
 				| SWT.MULTI | SWT.FULL_SELECTION);
+		table.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				if (e.detail == SWT.CHECK) {
+					BackendInfo ri = (BackendInfo) e.item.getData();
+					defaultBackend = ri;
+				}
+			}
+		});
 
-		data = new GridData(GridData.FILL_BOTH);
+		data = new GridData(SWT.FILL, SWT.FILL, true, true);
+		data.widthHint = 403;
 		table.setLayoutData(data);
 		table.setFont(font);
 
@@ -842,7 +707,9 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		table.setLayout(tableLayout);
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
-		column1.setText(ErtsMessages.InstalledERTSsBlock_0);
+		column1.setWidth(80);
+		column1.setText(PreferenceMessages.InstalledERTSsBlock_0);
+		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -852,55 +719,56 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		});
 
 		final TableColumn column2 = new TableColumn(table, SWT.NULL);
-		column2.setText(ErtsMessages.InstalledERTSsBlock_1);
+		column2.setWidth(150);
+		column2.setText("Runtime");
+		column2.setResizable(true);
 		column2.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				sortByLocation();
+				sortByRuntime();
 			}
 		});
 
 		final TableColumn column3 = new TableColumn(table, SWT.NULL);
-		column3.setText(ErtsMessages.InstalledERTSsBlock_2);
-		column3.addSelectionListener(new SelectionAdapter() {
+		column3.setWidth(80);
+		column3.setText("Node name");
+		column3.setResizable(false);
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sortByVersion();
-			}
-		});
-
-		fVMList = new CheckboxTableViewer(table);
-		fVMList.setLabelProvider(new VMLabelProvider());
-		fVMList.setContentProvider(new ERTSsContentProvider());
-		fVMList.setInput(fVMs);
+		fBackendList = new CheckboxTableViewer(table);
+		fBackendList.setLabelProvider(new BackendLabelProvider());
+		fBackendList.setContentProvider(new BackendContentProvider());
+		fBackendList.setInput(backends);
+		if (defaultBackend != null) {
+			fBackendList.setCheckedElements(new Object[] { defaultBackend });
+		}
 		// by default, sort by name
 		sortByName();
 
-		fVMList.addSelectionChangedListener(new ISelectionChangedListener() {
+		fBackendList
+				.addSelectionChangedListener(new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent evt) {
-				enableButtons();
-			}
-		});
+					public void selectionChanged(SelectionChangedEvent evt) {
+						enableButtons();
+					}
+				});
 
-		fVMList.addCheckStateListener(new ICheckStateListener() {
+		fBackendList.addCheckStateListener(new ICheckStateListener() {
 
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					setCheckedERTS((ErtsInstall) event.getElement());
+					setCheckedBackend((BackendInfo) event.getElement());
 				} else {
-					setCheckedERTS(null);
+					setCheckedBackend(null);
 				}
 			}
 		});
 
-		fVMList.addDoubleClickListener(new IDoubleClickListener() {
+		fBackendList.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent e) {
-				if (!fVMList.getSelection().isEmpty()) {
-					editVM();
+				if (!fBackendList.getSelection().isEmpty()) {
+					editBackend();
 				}
 			}
 		});
@@ -909,7 +777,7 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.character == SWT.DEL && event.stateMask == 0) {
-					removeVMs();
+					removeSelectedBackends();
 				}
 			}
 		});
@@ -923,54 +791,35 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 		buttons.setFont(font);
 
 		fAddButton = createPushButton(buttons,
-				ErtsMessages.InstalledERTSsBlock_3);
+				PreferenceMessages.InstalledERTSsBlock_3);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
-				addVM();
+				addBackend();
 			}
 		});
 
 		fEditButton = createPushButton(buttons,
-				ErtsMessages.InstalledERTSsBlock_4);
+				PreferenceMessages.InstalledERTSsBlock_4);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
-				editVM();
+				editBackend();
 			}
 		});
 
 		fRemoveButton = createPushButton(buttons,
-				ErtsMessages.InstalledERTSsBlock_5);
+				PreferenceMessages.InstalledERTSsBlock_5);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
-				removeVMs();
-			}
-		});
-
-		// copied from ListDialogField.CreateSeparator()
-		final Label separator = new Label(buttons, SWT.NONE);
-		separator.setVisible(false);
-		final GridData gd = new GridData();
-		gd.horizontalAlignment = GridData.FILL;
-		gd.verticalAlignment = GridData.BEGINNING;
-		gd.heightHint = 4;
-		separator.setLayoutData(gd);
-
-		fSearchButton = createPushButton(buttons,
-				ErtsMessages.InstalledERTSsBlock_6);
-		fSearchButton.addListener(SWT.Selection, new Listener() {
-
-			public void handleEvent(Event evt) {
-				search();
+				removeSelectedBackends();
 			}
 		});
 
 		configureTableResizing(parent, buttons, table, column1, column2,
 				column3);
 
-		fillWithWorkspaceERTSs();
 		enableButtons();
 
 		return parent;
@@ -978,30 +827,40 @@ public class ErtsInstallPreferencePage extends PreferencePage implements
 
 	@Override
 	public boolean performOk() {
-		final boolean[] canceled = new boolean[] { false };
-		BusyIndicator.showWhile(null, new Runnable() {
-
-			public void run() {
-				// ErtsInstall defaultVM = getCheckedERTS();
-				// ErtsInstall[] vms = getERTSs();
-				// JREsUpdater updater = new JREsUpdater();
-				// if (!updater.updateJRESettings(vms, defaultVM)) {
-				// canceled[0] = true;
-				// }
-			}
-		});
-
-		if (canceled[0]) {
-			return false;
-		}
+		BackendInfoManager.getDefault().setErlideBackend(erlideBackend);
+		BackendInfoManager.getDefault()
+				.setSelectedKey(defaultBackend.getName());
+		BackendInfoManager.getDefault().setElements(backends);
 
 		// save column widths
 		final IDialogSettings settings = ErlideBasicUIPlugin.getDefault()
 				.getDialogSettings();
-		// TODO fix arg
-		saveColumnSettings(settings, "ERTS_PREFERENCE_PAGE");
+		saveColumnSettings(settings, BACKENDS_PREFERENCE_PAGE);
 
 		return super.performOk();
 	}
 
+	@Override
+	public void performDefaults() {
+		backends = BackendInfoManager.getDefault().getElements();
+		defaultBackend = BackendInfoManager.getDefault().getDefaultBackend();
+		erlideBackend = BackendInfoManager.getDefault().getErlideBackend();
+	}
+
+	void checkValid() {
+		final BackendInfo def = getCheckedBackend();
+		StructuredSelection sel = (StructuredSelection) erlideBackendViewer
+				.getSelection();
+
+		if (def == null && getBackends().size() > 0) {
+			setValid(false);
+			setErrorMessage("Please select a default backend.");
+		} else if (sel.isEmpty() && getBackends().size() > 0) {
+			setValid(false);
+			setErrorMessage("Please select a backend to be used by erlide.");
+		} else {
+			setValid(true);
+			setErrorMessage(null);
+		}
+	}
 }

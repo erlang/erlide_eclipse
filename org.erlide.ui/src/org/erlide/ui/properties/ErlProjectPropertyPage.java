@@ -9,250 +9,236 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.jface.preference.ComboFieldEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.ui.IWorkbench;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
-public class ErlProjectPropertyPage extends PropertyPage implements
-		IPropertyChangeListener {
+import com.bdaum.overlayPages.FieldEditorOverlayPage;
+import com.bdaum.overlayPages.OverlayPage;
 
-	private Text backendCookie;
-	private Text backendName;
-	private ErlangProjectProperties prefs;
-	private Text output;
-	private Text source;
-	private Text include;
-	private MockupPreferenceStore mockPrefs;
-	private Button uz;
-	private Text externalModules;
-	private Button externalModulesBrowse;
+public class ErlProjectPropertyPage extends OverlayPage implements
+		IPreferenceChangeListener, IPropertyChangeListener {
 
-	/**
-	 * Constructor for ErlProjectPropertyPage.
-	 */
 	public ErlProjectPropertyPage() {
 		super();
 	}
 
-	/**
-	 * @see PreferencePage#createContents(Composite)
-	 */
 	@Override
-	protected Control createContents(Composite parent) {
-		final Object oprj = getElement();
-		IProject prj = null;
-		if (oprj instanceof IProject) {
-			prj = (IProject) oprj;
-		} else if (oprj instanceof IAdaptable) {
-			prj = (IProject) ((IAdaptable) oprj).getAdapter(IProject.class);
-		}
-		prefs = new ErlangProjectProperties(prj);
-		mockPrefs = new MockupPreferenceStore();
-		mockPrefs.addPropertyChangeListener(this);
+	protected IPreferenceStore doGetPreferenceStore() {
+		final IPreferenceStore store = ErlideUIPlugin.getDefault()
+				.getPreferenceStore();
+		store.addPropertyChangeListener(this);
+		return store;
+	}
 
-		// create the composite to hold the widgets
+	private TabFolder tabFolder;
+	private List<FieldEditor> editors = new ArrayList<FieldEditor>();
+
+	@Override
+	protected Control createContents(Composite aparent) {
+		Composite parent = (Composite) super.createContents(aparent);
+		parent.setLayout(new FillLayout());
+
 		final Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(new FillLayout());
+		this.tabFolder = new TabFolder(composite, SWT.NONE);
 
-		// create the desired layout for this wizard page
-		final GridLayout gl = new GridLayout();
-		gl.numColumns = 3;
-		composite.setLayout(gl);
+		// /////////////////////////////////////
+		final TabItem sourceTab = new TabItem(this.tabFolder, SWT.NONE);
+		sourceTab.setText("Source");
 
-		String resourceString = ErlideUIPlugin
-				.getResourceString("wizards.labels.buildoutput");
-		// create the widgets and their grid data objects
-		final Label outLabel = new Label(composite, SWT.NONE);
-		outLabel.setText("output Dir");
-		final GridData gd_Label = new GridData();
-		gd_Label.minimumWidth = 50;
-		outLabel.setLayoutData(gd_Label);
-		outLabel.setText(resourceString + ":");
-		output = new Text(composite, SWT.BORDER);
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gd.minimumWidth = 50;
-		gd.widthHint = 384;
-		output.setLayoutData(gd);
-		output.setText(prefs.getOutputDir());
-		output.addListener(SWT.Modify, nameModifyListener);
-		// TODO use resource!
-		uz = new Button(composite, SWT.CHECK);
-		this.uz.setToolTipText("place at end of code:path");
-		this.uz.setText("place last in path");
-		this.uz.setLayoutData(new GridData());
-		uz.setSelection(prefs.getUsePathZ());
-		uz.addListener(SWT.Modify, nameModifyListener);
+		final Composite sourceComposite = new Composite(this.tabFolder,
+				SWT.NONE);
+		sourceComposite.setBounds(0, 0, 443, 305);
+		final GridLayout gridLayout = new GridLayout();
+		sourceComposite.setLayout(gridLayout);
+		sourceTab.setControl(sourceComposite);
 
-		Label l1 = new Label(composite, SWT.NONE);
-		l1.setText("sources");
-		String resourceString2 = ErlideUIPlugin
-				.getResourceString("wizards.labels.source");
-		l1.setText(resourceString2 + ":");
-		source = new Text(composite, SWT.BORDER);
-		this.source.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		source.setLayoutData(gd);
-		source.setText(prefs.getSourceDirsString());
-		source.addListener(SWT.Modify, nameModifyListener);
+		editors.add(new PathEditor("sources",
+				"Source directories for this project:", "New",
+				createComposite(sourceComposite)));
 
-		String resourceString3 = ErlideUIPlugin
-				.getResourceString("wizards.labels.include");
-		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setText("includes");
-		includesLabel.setText(resourceString3 + ":");
-		include = new Text(composite, SWT.BORDER);
-		this.include.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		include.setLayoutData(gd);
-		include.setText(prefs.getIncludeDirsString());
-		include.addListener(SWT.Modify, nameModifyListener);
+		editors.add(new DirectoryFieldEditor("output", "Output directory:",
+				createComposite(sourceComposite)));
 
-		createExternalModuleEditor(composite);
+		// //////////////////////
 
-		final Label nodeNameLabel = new Label(composite, SWT.NONE);
-		nodeNameLabel.setText("Node name");
+		final TabItem t2 = new TabItem(this.tabFolder, SWT.NONE);
+		t2.setText("Include");
 
-		backendName = new Text(composite, SWT.BORDER);
-		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		backendName.setLayoutData(gd_backendName);
-		backendName.setText(prefs.getBackendName());
-		new Label(composite, SWT.NONE);
+		final Composite includeComposite = new Composite(this.tabFolder,
+				SWT.NONE);
+		includeComposite.setBounds(0, 0, 443, 305);
+		includeComposite.setLayout(new GridLayout());
+		t2.setControl(includeComposite);
 
-		final Label nodeCookieLabel = new Label(composite, SWT.NONE);
-		nodeCookieLabel.setText("Node cookie");
+		editors.add(new PathEditor("ext include",
+				"Project include directories:", "New",
+				createComposite(includeComposite)));
 
-		backendCookie = new Text(composite, SWT.BORDER);
-		final GridData gd_backendCookie = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		backendCookie.setLayoutData(gd_backendCookie);
-		backendCookie.setText(prefs.getBackendCookie());
-		new Label(composite, SWT.NONE);
+		editors.add(new PathEditor("ext include",
+				"External include directories:", "New",
+				createComposite(includeComposite)));
 
-		setValid(testPageComplete());
+		// ////////////////////////
 
-		return composite;
+		final TabItem t3 = new TabItem(this.tabFolder, SWT.NONE);
+		t3.setText("Dependencies");
+
+		final Composite dependenciesComposite = new Composite(this.tabFolder,
+				SWT.NONE);
+		dependenciesComposite.setLayout(new GridLayout());
+		t3.setControl(dependenciesComposite);
+
+		// //////////////////
+
+		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
+		backendTab.setText("Backend");
+
+		final Composite backendComposite = new Composite(this.tabFolder,
+				SWT.NONE);
+		backendComposite.setLayout(new GridLayout());
+		backendTab.setControl(backendComposite);
+
+		String[][] values = new String[][] { { "a", "a" }, { "b", "b" } };
+
+		final Composite rtComposite = createComposite(backendComposite);
+		editors.add(new ComboFieldEditor("runtimes", "Runtimes", values,
+				rtComposite));
+
+		editors.add(new StringFieldEditor("backendName", "Node name",
+				rtComposite));
+
+		editors.add(new StringFieldEditor("backendCookie", "Cookie",
+				rtComposite));
+
+		editors.add(new StringFieldEditor("extraArgs", "Extra arguments",
+				rtComposite));
+
+		// //////////////////////////////////////////////
+
+		final TabItem codepathTabItem = new TabItem(tabFolder, SWT.NONE);
+		codepathTabItem.setText("Codepath");
+
+		final Composite codepathComposite = new Composite(tabFolder, SWT.NONE);
+		codepathComposite.setLayout(new GridLayout());
+		codepathTabItem.setControl(codepathComposite);
+
+		editors.add(new CodePathEditor("codepath",
+				"Order the code:path of the backend",
+				createComposite(codepathComposite)));
+
+		// ///////////////////////////////////////////
+
+		for (FieldEditor editor : editors) {
+			editor.setPage(this);
+			editor.setPreferenceStore(getPreferenceStore());
+			editor.load();
+		}
+
+		return parent;
 	}
 
-	private void createExternalModuleEditor(final Composite parent) {
-		Composite composite = parent;
-		// Composite composite = new Composite(parent, SWT.NONE);
-		// GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		// composite.setLayoutData(gd);
-		// GridLayout layout = new GridLayout(2, false);
-		// composite.setLayout(layout);
-
-		String resourceString4 = "External Modules File";
-		new Label(composite, SWT.NONE).setText(resourceString4 + ":");
-		externalModules = new Text(composite, SWT.BORDER);
-		externalModules.setToolTipText("enter a list of folders");
-		// gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		// externalModules.setLayoutData(gd);
-		externalModules.setText(prefs.getExternalModules());
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gd.minimumWidth = 50;
-		gd.widthHint = 384;
-		externalModules.setLayoutData(gd);
-		externalModules.addListener(SWT.Modify, nameModifyListener);
-		externalModulesBrowse = new Button(composite, SWT.BORDER);
-		externalModulesBrowse.setText("Browse...");
-		// externalModulesBrowse.setLayoutData(new GridData());
-		// externalModulesBrowse.setFont(font);
-		externalModulesBrowse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent evt) {
-				handleExternalModulesBrowseSelected();
-			}
-
-		});
+	private Composite createComposite(final Composite parent) {
+		final Composite result = new Composite(parent, SWT.NONE);
+		final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		result.setLayoutData(gd);
+		return result;
 	}
 
-	protected void handleExternalModulesBrowseSelected() {
-		String last = externalModules.getText();
-		// if (last.length() == 0) {
-		// last =
-		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
-		// }
-		if (last == null) {
-			last = ""; //$NON-NLS-1$
-		} else {
-			last = last.trim();
+	@Override
+	protected String getPageId() {
+		return "org.erlide.ui.properties.myErlangProjectPropertyPage";
+	}
+
+	public void init(IWorkbench workbench) {
+		setDescription("These values will be used as defaults for newly created Erlang projects.");
+	}
+
+	public static String getOverlayedPreferenceValue(IPreferenceStore store,
+			IResource resource, String pageId, String key) {
+		IProject project = resource.getProject();
+		String value = null;
+		if (useProjectSettings(project, pageId)) {
+			value = getProperty(resource, pageId, key);
 		}
-		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
-		dialog.setText("Select file with external modules");
-		dialog.setFileName(last);
-		dialog.setFilterExtensions(new String[] { "*.erlidex" });
-		String result = dialog.open();
-		if (result == null) {
-			return;
+		if (value != null) {
+			return value;
 		}
-		externalModules.setText(result);
+		return store.getString(key);
+	}
+
+	private static boolean useProjectSettings(IResource resource, String pageId) {
+		String use = getProperty(resource, pageId,
+				FieldEditorOverlayPage.USEPROJECTSETTINGS);
+		return "true".equals(use);
+	}
+
+	private static String getProperty(IResource resource, String pageId,
+			String key) {
+		try {
+			return resource
+					.getPersistentProperty(new QualifiedName(pageId, key));
+		} catch (CoreException e) {
+		}
+		return null;
 	}
 
 	@Override
 	protected void performDefaults() {
-		// Populate the owner text field with the default value
+		for (FieldEditor editor : editors) {
+			editor.loadDefault();
+		}
+		super.performDefaults();
 	}
 
 	@Override
 	public boolean performOk() {
-		// store the value in the owner text field
-		prefs.setOutputDir(output.getText());
-		prefs.setUsePathZ(uz.getSelection());
-		prefs.setSourceDirsString(source.getText());
-		prefs.setIncludeDirsString(include.getText());
-		prefs.setExternalModules(externalModules.getText());
-		prefs.setBackendName(backendName.getText());
-		prefs.setBackendCookie(backendCookie.getText());
-		prefs.store();
-		return true;
+		for (FieldEditor editor : editors) {
+			editor.store();
+		}
+		return super.performOk();
 	}
 
-	private final Listener nameModifyListener = new Listener() {
-		public void handleEvent(Event e) {
-			setValid(testPageComplete());
-		}
-	};
+	@Override
+	public IAdaptable getElement() {
+		final IProject prj = (IProject) super.getElement();
+		return prj;
+	}
 
-	protected boolean testPageComplete() {
-		if ((output.getText() == null || output.getText().trim().length() == 0)) {
-			setErrorMessage(ErlideUIPlugin
-					.getResourceString("wizards.errors.outputrequired"));
-			return false;
-		}
-
-		if ((source.getText() == null || source.getText().trim().length() == 0)) {
-			setErrorMessage(ErlideUIPlugin
-					.getResourceString("wizards.errors.sourcerequired"));
-			return false;
-		}
-
-		setErrorMessage(null);
-		setMessage(null);
-		return true;
+	public void preferenceChange(PreferenceChangeEvent event) {
+		ErlLogger.debug("## change %s %s: %s -> %s", event.getNode(), event
+				.getKey(), event.getOldValue(), event.getNewValue());
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
-		ErlLogger.debug("*+> " + event);
+		ErlLogger.debug("#@ change %s: %s -> %s", event.getProperty(), event
+				.getOldValue(), event.getNewValue());
 	}
-
 }

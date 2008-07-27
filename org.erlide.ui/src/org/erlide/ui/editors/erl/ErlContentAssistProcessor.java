@@ -72,19 +72,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final ITextViewer viewer, final int offset) {
 		try {
 			final IDocument doc = viewer.getDocument();
-			final String prefix = lastText(doc, offset);
+			final String aprefix = lastText(doc, offset);
 			// final String indent = lastIndent(doc, offset);
 
 			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-			final int k = prefix.indexOf(':');
+			final int k = aprefix.indexOf(':');
 			final IBackend b = BackendManager.getDefault().getIdeBackend();
 			if (k >= 0) {
-				final String moduleName = prefix.substring(0, k);
-				externalCallCompletions(moduleName, offset, prefix
+				final String moduleName = aprefix.substring(0, k);
+				externalCallCompletions(moduleName, offset, aprefix
 						.substring(k + 1), result, k, b);
 				return result.toArray(new ICompletionProposal[result.size()]);
 			}
-			moduleCompletions(offset, prefix, result, k, b);
+			moduleCompletions(offset, aprefix, result, k, b);
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -92,13 +92,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private void moduleCompletions(final int offset, final String prefix,
+	private void moduleCompletions(final int offset, final String aprefix,
 			final List<ICompletionProposal> result, final int k,
 			final IBackend b) {
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
 		OtpErlangObject res = null;
-		res = ErlideDoc.getModules(b, prefix, allErlangFiles);
+		res = ErlideDoc.getModules(b, aprefix, allErlangFiles);
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resList = (OtpErlangList) res;
 			for (int i = 0; i < resList.arity(); ++i) {
@@ -106,15 +106,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				if (o instanceof OtpErlangString) {
 					final OtpErlangString s = (OtpErlangString) o;
 					final String cpl = s.stringValue() + ":";
-					result.add(new CompletionProposal(cpl, offset
-							- prefix.length(), prefix.length(), cpl.length()));
+					result
+							.add(new CompletionProposal(cpl, offset
+									- aprefix.length(), aprefix.length(), cpl
+									.length()));
 				}
 			}
 		}
 	}
 
 	private void externalCallCompletions(final String moduleName,
-			final int offset, final String prefix,
+			final int offset, final String aprefix,
 			final List<ICompletionProposal> result, final int k,
 			final IBackend b) throws ErlangRpcException, BackendException,
 			RpcException, OtpErlangRangeException {
@@ -122,7 +124,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-				moduleName, prefix, stateDir);
+				moduleName, aprefix, stateDir);
 		// final OtpErlangObject res = ErlideDoc
 		// .getExported(b, prefix, moduleName);
 		if (res instanceof OtpErlangList) {
@@ -143,7 +145,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						docStr = ((OtpErlangString) elt).stringValue();
 					}
 				}
-				final String cpl = funWithParameters.substring(prefix.length());
+				final String cpl = funWithParameters.substring(aprefix.length());
 				final List<Point> offsetsAndLengths = getOffsetsAndLengths(
 						parOffsets, offset);
 				int offs = cpl.length();

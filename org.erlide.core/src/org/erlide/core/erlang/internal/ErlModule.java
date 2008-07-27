@@ -95,17 +95,6 @@ public class ErlModule extends Openable implements IErlModule {
 	protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 
-		// generate structure and compute syntax problems if needed
-		// final IErlProject project = getErlProject();
-		// boolean computeProblems = ErlangCore.hasErlangNature(project
-		// .getProject());
-
-		// final Map<String, String> options = project.getOptions(true);
-		// if (!computeProblems) {
-		// // disable task tags checking to speed up parsing
-		// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-		// }
-
 		// ErlLogger.debug("* build structure " + this.fName);
 		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 

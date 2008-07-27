@@ -4,17 +4,12 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.basicui.prefs.ErtsPreferencePage"
-            id="org.erlide.ui.preferences.erts"
-            name="Runtime (ERTS)"/>
-      <page
             class="org.erlide.basicui.prefs.ErlangPreferencePage"
             id="org.erlide.ui.preferences"
             name="Erlang"/>
       <page
             category="org.erlide.ui.preferences"
-            class="org.erlide.basicui.prefs.ErtsInstallPreferencePage"
+            class="org.erlide.basicui.prefs.RuntimesPreferencePage"
             id="org.erlide.ui.preferences.test"
             name="%installErtsPageName">
       </page>

@@ -822,6 +822,7 @@ public final class CharOperation {
 	 *         separator between each part and appending the given name at the
 	 *         end
 	 */
+	@SuppressWarnings("null")
 	public static char[] concatWith(char[] name, char[][] array, char separator) {
 		final int nameLength = (name == null) ? 0 : name.length;
 		if (nameLength == 0) {
@@ -902,6 +903,7 @@ public final class CharOperation {
 	 *         separator between each part and appending the given name at the
 	 *         end
 	 */
+	@SuppressWarnings("null")
 	public static char[] concatWith(char[][] array, char[] name, char separator) {
 		final int nameLength = (name == null) ? 0 : name.length;
 		if (nameLength == 0) {
@@ -967,6 +969,7 @@ public final class CharOperation {
 	 * @return the concatenation of the given array parts using the given
 	 *         separator between each part
 	 */
+	@SuppressWarnings("null")
 	public static char[] concatWith(char[][] array, char separator) {
 		int length = (array == null) ? 0 : array.length;
 		if (length == 0) {
@@ -2223,8 +2226,8 @@ public final class CharOperation {
 		}
 
 		return (segmentStart == patternEnd)
-		|| (iName == nameEnd && iPattern == patternEnd)
-		|| (iPattern == patternEnd - 1 && pattern[iPattern] == '*');
+				|| (iName == nameEnd && iPattern == patternEnd)
+				|| (iPattern == patternEnd - 1 && pattern[iPattern] == '*');
 	}
 
 	/**
@@ -2372,7 +2375,7 @@ public final class CharOperation {
 			/* path segment is ending */
 			if (pSegmentEnd == pSegmentStart + 2
 					&& pattern[pSegmentStart] == '*'
-						&& pattern[pSegmentStart + 1] == '*') {
+					&& pattern[pSegmentStart + 1] == '*') {
 				pSegmentEnd = CharOperation.indexOf(pathSeparator, pattern,
 						pSegmentStart = pSegmentEnd + 1);
 				// skip separator
@@ -2428,9 +2431,9 @@ public final class CharOperation {
 		}
 
 		return (pSegmentRestart >= pSegmentEnd)
-		|| (fSegmentStart >= fLength && pSegmentStart >= pLength)
-		|| (pSegmentStart == pLength - 2
-				&& pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*')
+				|| (fSegmentStart >= fLength && pSegmentStart >= pLength)
+				|| (pSegmentStart == pLength - 2
+						&& pattern[pSegmentStart] == '*' && pattern[pSegmentStart + 1] == '*')
 				|| (pSegmentStart == pLength && freeTrailingDoubleStar);
 	}
 
@@ -2770,7 +2773,7 @@ public final class CharOperation {
 			return array;
 		}
 		final char[] result = new char[max + occurrenceCount
-		                               * (replacementLength - replacedLength)];
+				* (replacementLength - replacedLength)];
 		int inStart = 0, outStart = 0;
 		for (int i = 0; i < occurrenceCount; i++) {
 			final int offset = starts[i] - inStart;
@@ -2838,6 +2841,7 @@ public final class CharOperation {
 	 *         divider and triming each subarray to remove whitespaces equals to
 	 *         ' '
 	 */
+	@SuppressWarnings("null")
 	public static char[][] splitAndTrimOn(char divider, char[] array) {
 		final int length = (array == null) ? 0 : array.length;
 		if (length == 0) {
@@ -2876,8 +2880,8 @@ public final class CharOperation {
 		}
 		split[currentWord] = new char[end - start + 1];
 		System
-		.arraycopy(array, start, split[currentWord++], 0, end - start
-				+ 1);
+				.arraycopy(array, start, split[currentWord++], 0, end - start
+						+ 1);
 		return split;
 	}
 
@@ -2923,7 +2927,7 @@ public final class CharOperation {
 	 * @return a new array which is the split of the given array using the given
 	 *         divider
 	 */
-	@SuppressWarnings( {})
+	@SuppressWarnings( { "null" })
 	public static char[][] splitOn(char divider, char[] array) {
 		final int length = (array == null) ? 0 : array.length;
 		if (length == 0) {
@@ -2942,8 +2946,8 @@ public final class CharOperation {
 			if (array[i] == divider) {
 				split[currentWord] = new char[i - last];
 				System
-				.arraycopy(array, last, split[currentWord++], 0, i
-						- last);
+						.arraycopy(array, last, split[currentWord++], 0, i
+								- last);
 				last = i + 1;
 			}
 		}
@@ -2985,6 +2989,7 @@ public final class CharOperation {
 	 *             if start is lower than 0 or end is greater than the array
 	 *             length
 	 */
+	@SuppressWarnings("null")
 	public static char[][] splitOn(char divider, char[] array, int start,
 			int end) {
 		final int length = (array == null) ? 0 : array.length;
@@ -3004,8 +3009,8 @@ public final class CharOperation {
 			if (array[i] == divider) {
 				split[currentWord] = new char[i - last];
 				System
-				.arraycopy(array, last, split[currentWord++], 0, i
-						- last);
+						.arraycopy(array, last, split[currentWord++], 0, i
+								- last);
 				last = i + 1;
 			}
 		}

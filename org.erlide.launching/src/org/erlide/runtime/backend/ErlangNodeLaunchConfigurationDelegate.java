@@ -111,7 +111,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			}// make a nice little BackEnd for it
 			final IBackend backend = getBackend(label);
 			// backend.setLabel(label);
-			backend.setErts(process);
+			backend.setRuntime(process);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load the debugger code on this erlang node
 				final List<ICodeBundle> l = new ArrayList<ICodeBundle>(1);
@@ -221,7 +221,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	}
 
 	public IBackend getBackend(final String name) {
-		return BackendManager.getDefault().getNamedBackend(name, false);
+		return null;
+		// TODO BackendManager.getDefault().getNamedBackend(name, false);
 	}
 
 	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {

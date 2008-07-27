@@ -31,28 +31,17 @@ import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.backend.internal.ManagedBackend;
-import org.erlide.runtime.backend.internal.StandaloneBackend;
-
-import com.ericsson.otp.erlang.OtpEpmd;
 
 public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
 
 	private IBackend fLocalBackend;
-
 	private final Map<String, IBackend> fProjectBackends;
-
 	private final Object fProjectBackendsLock = new Object();
-
 	private IBackend fRemoteBackend;
-
 	protected List<IBackendListener> fListeners;
-
 	private final List<ICodeBundle> fPlugins;
-
-	private final Map<String, IBackend> fExternalBackends = new HashMap<String, IBackend>(
-			2);
 
 	// private final Object fExternalBackendsLock = new Object();
 
@@ -60,8 +49,7 @@ public final class BackendManager implements IResourceChangeListener {
 		ADDED, REMOVED
 	};
 
-	private static final String DEFAULT_BACKEND_LABEL = "erlide";
-
+	// private static final String DEFAULT_BACKEND_LABEL = "erlide";
 	public static final String JAVA_NODE_LABEL = "jerlide";
 
 	// TODO this smells bad!
@@ -83,38 +71,25 @@ public final class BackendManager implements IResourceChangeListener {
 						| IResourceChangeEvent.POST_CHANGE);
 
 		final EpmdWatchJob job = new EpmdWatchJob();
-		job.schedule(1000);
+		job.schedule(3000);
 	}
 
 	public static BackendManager getDefault() {
 		return MANAGER;
 	}
 
-	public IBackend createManaged(final String name, final boolean debug,
+	public IBackend create(BackendInfo info, boolean debug,
 			final boolean launchErlang) {
-		ErlLogger.debug("create managed backend '" + name + "'."
+		ErlLogger.debug("create managed backend '" + info + "'. "
 				+ Thread.currentThread());
-		final AbstractBackend b = new ManagedBackend();
-		b.setLabel(name);
+
+		final AbstractBackend b = new ManagedBackend(info);
 
 		if (launchErlang) {
-			b.initializeErts();
+			b.initializeRuntime();
 			b.connectAndRegister(fPlugins);
 			b.initErlang();
 		}
-
-		return b;
-	}
-
-	public IBackend createStandalone(final String name) {
-		ErlLogger.debug("create standalone backend " + name + ".");
-
-		final AbstractBackend b = new StandaloneBackend();
-		b.setLabel(name);
-
-		b.initializeErts();
-		b.connectAndRegister(fPlugins);
-		b.initErlang();
 		return b;
 	}
 
@@ -127,68 +102,34 @@ public final class BackendManager implements IResourceChangeListener {
 		synchronized (fProjectBackendsLock) {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
-			final String name = getBackendName(project);
-			return getNamedBackend(name, launchErlang);
+
+			final BackendInfo info = getBackendInfo(project);
+			if (info == null) {
+				return fLocalBackend;
+			}
+			IBackend b = fProjectBackends.get(info.getName());
+			if (b != null && !b.ping()) {
+				fProjectBackends.remove(info.getName());
+				fireUpdate(b, BackendEvent.REMOVED);
+				b = null;
+			}
+			if (b == null) {
+				b = create(info, false, launchErlang);
+				fProjectBackends.put(info.getName(), b);
+				fireUpdate(b, BackendEvent.ADDED);
+			}
+			return b;
 		}
 	}
 
-	/**
-	 * @param name
-	 * @param launchErlang
-	 * @return
-	 */
-	public IBackend getNamedBackend(final String name,
-			final boolean launchErlang) {
-		if (name.equals(DEFAULT_BACKEND_LABEL)) {
-			return fLocalBackend;
-		}
-		IBackend b = fProjectBackends.get(name);
-		if (b != null && !b.ping()) {
-			fProjectBackends.remove(name);
-			fireUpdate(b, BackendEvent.REMOVED);
-			b = null;
-		}
-		if (b == null) {
-			// b = createStandalone(name);
-			b = createManaged(name, false, launchErlang);
-			fProjectBackends.put(name, b);
-			fireUpdate(b, BackendEvent.ADDED);
-		}
-		return b;
-	}
-
-	public IBackend getExternal(final String nodeName) {
-		// synchronized (fExternalBackendsLock) {
-		final IBackend b = fExternalBackends.get(nodeName);
-		return b;
-		// }
-	}
-
-	public IBackend createExternal(final String nodeName, final String cookie) {
-		final AbstractBackend b = new StandaloneBackend();
-		b.setLabel(nodeName);
-		b.connect(cookie);
-		// for (final ICodeBundle element : fPlugins) {
-		// b.getCodeManager().register(element);
-		// }
-		fExternalBackends.put(nodeName, b);
-		return b;
-
-	}
-
-	public static String getBackendName(final IProject project) {
+	public static BackendInfo getBackendInfo(IProject project) {
 		if (project == null) {
-			return DEFAULT_BACKEND_LABEL;
+			return null;
 		}
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final String prjLabel = prefs.getBackendName();
-		if (prjLabel.length() == 0) {
-			// return project.getName().replace(".", "__");
-			// return "project";
-			return DEFAULT_BACKEND_LABEL;
-		}
-		return prjLabel;
+		return prefs.getInfo();
+		// return "project";
 	}
 
 	public void remove(final IProject project) {
@@ -200,14 +141,15 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public synchronized IBackend getIdeBackend() {
-		// ErlLogger.debug("** getIdeBackend: " + Thread.currentThread());
+		// ErlLogger.debug("** getIdeBackend: " + this + " " + fLocalBackend + "
+		// "
+		// + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
-			String label = getLabelProperty();
-			if (label == null || label.length() == 0) {
-				label = DEFAULT_BACKEND_LABEL;
-			}
-			fLocalBackend = createManaged(label, false, true);
+			ErlLogger.debug("** create IdeBackend: " + this + " "
+					+ fLocalBackend + " " + Thread.currentThread());
+			fLocalBackend = create(BackendInfoManager.getDefault()
+					.getErlideBackend(), false, true);
 		}
 		return fLocalBackend;
 	}
@@ -257,7 +199,9 @@ public final class BackendManager implements IResourceChangeListener {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
+		 * @see
+		 * org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
+		 * Throwable)
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
@@ -336,8 +280,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachProjectBackend(final IBackendVisitor visitor) {
 		synchronized (fProjectBackendsLock) {
-			for (final Object element : fProjectBackends.values()) {
-				final IBackend b = (IBackend) element;
+			for (final IBackend b : fProjectBackends.values()) {
 				try {
 					visitor.run(b);
 				} catch (final Exception e) {
@@ -360,28 +303,6 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 		return label;
 	}
-
-	// private boolean isExtErlideLabel(String label) {
-	// final String[] parts = label.split("_");
-	// if (parts.length != 2) {
-	// return false;
-	// }
-	//
-	// if (JAVA_NODE_LABEL.equals(parts[0])) {
-	// return false;
-	// }
-	// try {
-	// /* final long n = */Long.parseLong(parts[1], 16);
-	//
-	// synchronized (fProjectBackendsLock) {
-	// final IBackend bl = fProjectBackends.get(parts[0]);
-	// return bl == null || !bl.getLabel().equals(label);
-	// }
-	//
-	// } catch (final Exception e) {
-	// return false;
-	// }
-	// }
 
 	public static String getHost() {
 		String host;
@@ -416,67 +337,11 @@ public final class BackendManager implements IResourceChangeListener {
 		return fRemoteBackend;
 	}
 
-	public void setRemoteBackend(final IBackend b) {
-		fRemoteBackend = b;
-	}
-
-	public void checkEpmd() {
-		if (!isDeveloper()) {
-			return;
-		}
-		if (fLocalBackend == null) {
-			return;
-		}
-
-		try {
-			final String[] names = OtpEpmd.lookupNames();
-			final List<String> labels = new ArrayList<String>(names.length);
-			for (String label : names) {
-				// label is "name X at port N"
-				final String[] parts = label.split(" ");
-				if (parts.length == 5) {
-					label = parts[1];
-					labels.add(label);
-				}
-			}
-
-			if (fRemoteBackend != null) {
-				boolean found = false;
-
-				for (final String label : labels) {
-					if (isExtErlideLabel(label)
-							&& label.equals(fRemoteBackend.getLabel())) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					ErlLogger.debug("$ Removed external backend:: "
-							+ fRemoteBackend.getLabel());
-					fireUpdate(fRemoteBackend, BackendEvent.REMOVED);
-					fRemoteBackend = null;
-				}
-			} else {
-				for (final String label : labels) {
-					if (isExtErlideLabel(label)) {
-						ErlLogger.debug("$ Added external backend:: " + label);
-						fRemoteBackend = createStandalone(label);
-						fireUpdate(fRemoteBackend, BackendEvent.ADDED);
-						break;
-					}
-				}
-			}
-
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+	public void setEpmdStatus(List<String> started, List<String> stopped) {
+		// TODO Auto-generated method stub
+		// for added: make corresponding backend (if any) available
+		// for added: make corresponding backend (if any) unavailable
 
 	}
 
-	private boolean isExtErlideLabel(final String label) {
-		if (fLocalBackend != null && label.equals(fLocalBackend.getLabel())) {
-			return false;
-		}
-		return label.startsWith("erlide_");
-	}
 }

@@ -11,12 +11,9 @@
 package org.erlide.basicui.prefs;
 
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.DeviceResourceException;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -28,7 +25,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.IErlideBasicUIConstants;
+
+import com.swtdesigner.ResourceManager;
 
 public class ErlangPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
@@ -43,19 +41,8 @@ public class ErlangPreferencePage extends PreferencePage implements
 
 		final Label img = new Label(panel, SWT.NONE);
 		img.setLayoutData(new GridData(144, SWT.DEFAULT));
-		try {
-			final ImageDescriptor d = ErlideBasicUIPlugin
-					.getDefault()
-					.getImageDescriptor(IErlideBasicUIConstants.IMG_ERLANG_LOGO);
-			if (d != null) {
-				img.setImage((Image) d.createResource(parent.getDisplay()));
-			} else {
-				img.setText(PreferenceMessages
-						.getString("ErlangPreferencePage.0")); //$NON-NLS-1$
-			}
-		} catch (final DeviceResourceException e) {
-			img.setText(PreferenceMessages.getString("ErlangPreferencePage.1")); //$NON-NLS-1$
-		}
+		img.setImage(ResourceManager.getPluginImage(ErlideBasicUIPlugin
+				.getDefault(), "icons/erlang058.gif"));
 
 		final Label text = new Label(panel, SWT.NONE);
 		text.setLayoutData(new GridData(290, SWT.DEFAULT));

@@ -12,16 +12,23 @@ package org.erlide.runtime;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties {
 
@@ -29,15 +36,13 @@ public class ErlangProjectProperties {
 
 	private IProject project;
 
-	private boolean fOtpProjectStructure = IPrefConstants.DEFAULT_OTP_PROJECT_STRUCTURE;
 	private String fSourceDirs = IPrefConstants.DEFAULT_SOURCE_DIRS;
-	private String fIncludeDirs = IPrefConstants.DEFAULT_INCLUDE_DIRS;
-	private String fOutputDir = IPrefConstants.DEFAULT_OUTPUT_DIR;
-	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String fUsePathZ = IPrefConstants.DEFAULT_USE_PATHZ;
+	private String fOutputDir = IPrefConstants.DEFAULT_OUTPUT_DIR;
+	private String fIncludeDirs = IPrefConstants.DEFAULT_INCLUDE_DIRS;
+	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
-	private String fBackendName = IPrefConstants.DEFAULT_BACKEND_NAME;;
-	private String fBackendCookie = IPrefConstants.DEFAULT_BACKEND_COOKIE;
+	private String fBackendName = IPrefConstants.DEFAULT_BACKEND_NAME;
 
 	/**
 	 * Name of file containing project classpath
@@ -57,41 +62,72 @@ public class ErlangProjectProperties {
 			return;
 		}
 
-		final File codepath = project.getFile(CODEPATH_FILENAME)
-				.getRawLocation().toFile();
-		final Properties prefs = new Properties();
-		try {
-			FileInputStream stream = new FileInputStream(codepath);
-			prefs.load(stream);
-			stream.close();
-		} catch (final IOException e) {
-		}
+		// if .codepath exists, read from it, otherwise from .settings
 
-		fOtpProjectStructure = Boolean
-				.getBoolean(prefs
-						.getProperty(
-								IPrefConstants.PROJECT_OTP_PROJECT_STRUCTURE,
-								Boolean
-										.toString(IPrefConstants.DEFAULT_OTP_PROJECT_STRUCTURE)));
-		fSourceDirs = prefs.getProperty(IPrefConstants.PROJECT_SOURCE_DIRS,
-				IPrefConstants.DEFAULT_SOURCE_DIRS);
-		fIncludeDirs = prefs.getProperty(IPrefConstants.PROJECT_INCLUDE_DIRS,
-				IPrefConstants.DEFAULT_INCLUDE_DIRS);
-		fOutputDir = prefs.getProperty(IPrefConstants.PROJECT_OUTPUT_DIR,
-				IPrefConstants.DEFAULT_OUTPUT_DIR);
-		fUsePathZ = prefs.getProperty(IPrefConstants.PROJECT_USE_PATHZ,
-				IPrefConstants.DEFAULT_USE_PATHZ);
-		fExternalIncludes = prefs.getProperty(
-				IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
-				IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-		fBackendName = prefs.getProperty(IPrefConstants.PROJECT_BACKEND_NAME,
-				IPrefConstants.DEFAULT_BACKEND_NAME);
-		fBackendCookie = prefs.getProperty(
-				IPrefConstants.PROJECT_BACKEND_COOKIE,
-				IPrefConstants.DEFAULT_BACKEND_COOKIE);
-		fExternalModules = prefs.getProperty(
-				IPrefConstants.PROJECT_EXTERNAL_MODULES,
-				IPrefConstants.DEFAULT_EXTERNAL_MODULES);
+		boolean loaded = false;
+		final IFile cp = project.getFile(CODEPATH_FILENAME);
+		if (cp.exists()) {
+			final File codepath = cp.getRawLocation().toFile();
+			final Properties prefs = new Properties();
+			FileInputStream stream;
+			try {
+				stream = new FileInputStream(codepath);
+				prefs.load(stream);
+				stream.close();
+				loaded = true;
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// ErlLogger.debug("project %s, loading from .codepath", project
+			// .getName());
+
+			fSourceDirs = prefs.getProperty(IPrefConstants.PROJECT_SOURCE_DIRS,
+					IPrefConstants.DEFAULT_SOURCE_DIRS);
+			fIncludeDirs = prefs.getProperty(
+					IPrefConstants.PROJECT_INCLUDE_DIRS,
+					IPrefConstants.DEFAULT_INCLUDE_DIRS);
+			fOutputDir = prefs.getProperty(IPrefConstants.PROJECT_OUTPUT_DIR,
+					IPrefConstants.DEFAULT_OUTPUT_DIR);
+			fUsePathZ = prefs.getProperty(IPrefConstants.PROJECT_USE_PATHZ,
+					IPrefConstants.DEFAULT_USE_PATHZ);
+			fExternalIncludes = prefs.getProperty(
+					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
+					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
+			fBackendName = prefs.getProperty(
+					IPrefConstants.PROJECT_BACKEND_NAME,
+					IPrefConstants.DEFAULT_BACKEND_NAME);
+			fExternalModules = prefs.getProperty(
+					IPrefConstants.PROJECT_EXTERNAL_MODULES,
+					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
+		}
+		if (!loaded) {
+			// ErlLogger.debug("project %s, loading from .settings", project
+			// .getName());
+
+			ProjectScope s = new ProjectScope(project);
+			IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
+
+			// new settings
+			fSourceDirs = node.get(IPrefConstants.PROJECT_SOURCE_DIRS,
+					IPrefConstants.DEFAULT_SOURCE_DIRS);
+			fIncludeDirs = node.get(IPrefConstants.PROJECT_INCLUDE_DIRS,
+					IPrefConstants.DEFAULT_INCLUDE_DIRS);
+			fOutputDir = node.get(IPrefConstants.PROJECT_OUTPUT_DIR,
+					IPrefConstants.DEFAULT_OUTPUT_DIR);
+			fUsePathZ = node.get(IPrefConstants.PROJECT_USE_PATHZ,
+					IPrefConstants.DEFAULT_USE_PATHZ);
+			fExternalIncludes = node.get(
+					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
+					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
+			fBackendName = node.get(IPrefConstants.PROJECT_BACKEND_NAME,
+					IPrefConstants.DEFAULT_BACKEND_NAME);
+			fExternalModules = node.get(
+					IPrefConstants.PROJECT_EXTERNAL_MODULES,
+					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
+		}
 	}
 
 	public void store() {
@@ -99,24 +135,50 @@ public class ErlangProjectProperties {
 			return;
 		}
 
-		final File codepath = project.getFile(".codepath").getRawLocation()
-				.toFile();
-		final Properties prefs = new Properties();
+		// save in .settings
+		// ErlLogger.debug("project %s, saving to .settings",
+		// project.getName());
 
-		prefs.put(IPrefConstants.PROJECT_OTP_PROJECT_STRUCTURE, Boolean
-				.toString(fOtpProjectStructure));
-		prefs.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
-		prefs.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
-		prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
-		prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
-		prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
-		prefs.put(IPrefConstants.PROJECT_BACKEND_NAME, fBackendName);
-		prefs.put(IPrefConstants.PROJECT_BACKEND_COOKIE, fBackendCookie);
-		prefs.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
+		ProjectScope s = new ProjectScope(project);
+		IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
+
+		node.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
+		node.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
+		node.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
+		node.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
+		node.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
+		node.put(IPrefConstants.PROJECT_BACKEND_NAME, fBackendName);
+		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
-			prefs.store(new FileOutputStream(codepath), null);
-		} catch (final IOException e) {
+			node.flush();
+		} catch (BackingStoreException e1) {
+		}
+
+		final IFile cp = project.getFile(CODEPATH_FILENAME);
+		if (cp.exists()) {
+			// save in .codepath
+			// ErlLogger.debug("project %s, saving to .codepath", project
+			// .getName());
+
+			final File codepath = cp.getRawLocation().toFile();
+			final Properties prefs = new Properties();
+
+			prefs.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
+			prefs.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
+			prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
+			prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
+			prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
+					fExternalIncludes);
+			prefs.put(IPrefConstants.PROJECT_BACKEND_NAME, fBackendName);
+			prefs
+					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
+							fExternalModules);
+
+			try {
+				prefs.store(new FileOutputStream(codepath), null);
+			} catch (final IOException e) {
+			}
 		}
 	}
 
@@ -136,14 +198,6 @@ public class ErlangProjectProperties {
 		fIncludeDirs = pack(includeDirs);
 	}
 
-	public boolean hasOtpProjectStructure() {
-		return fOtpProjectStructure;
-	}
-
-	public void setOtpProjectStructure(boolean otpProjectStructure) {
-		fOtpProjectStructure = otpProjectStructure;
-	}
-
 	public String getOutputDir() {
 		return fOutputDir;
 	}
@@ -152,20 +206,11 @@ public class ErlangProjectProperties {
 		if (!fOutputDir.equals(outputDir)) {
 			IBackend b = BackendManager.getDefault().get(project);
 
-			assert (project != null);
-			final IPath location = project.getLocation();
-			if (location == null) {
-				ErlLogger.debug("### project.getLocation() is null for %s. "
-						+ "URI='%s', old='%s', new='%s'", project.getName(),
-						project.getLocationURI().toString(), fOutputDir,
-						outputDir);
-			} else {
-				String p = location.append(fOutputDir).toString();
-				b.getCodeManager().removePath(getUsePathZ(), p);
+			String p = project.getLocation().append(fOutputDir).toString();
+			b.getCodeManager().removePath(getUsePathZ(), p);
 
-				p = location.append(outputDir).toString();
-				b.getCodeManager().addPath(getUsePathZ(), p);
-			}
+			p = project.getLocation().append(outputDir).toString();
+			b.getCodeManager().addPath(getUsePathZ(), p);
 		}
 		fOutputDir = outputDir;
 	}
@@ -231,9 +276,7 @@ public class ErlangProjectProperties {
 		fIncludeDirs = bprefs.fIncludeDirs;
 		fSourceDirs = bprefs.fSourceDirs;
 		fOutputDir = bprefs.fOutputDir;
-		fOtpProjectStructure = bprefs.fOtpProjectStructure;
 		fBackendName = bprefs.fBackendName;
-		fBackendCookie = bprefs.fBackendCookie;
 	}
 
 	public static String pack(String[] strs) {
@@ -285,14 +328,11 @@ public class ErlangProjectProperties {
 	}
 
 	public String getBackendName() {
-		return this.fBackendName;
+		return fBackendName;
 	}
 
-	public String getBackendCookie() {
-		return this.fBackendCookie;
+	public BackendInfo getInfo() {
+		return BackendInfoManager.getDefault().getElement(fBackendName);
 	}
 
-	public void setBackendCookie(String text) {
-		fBackendCookie = text;
-	}
 }

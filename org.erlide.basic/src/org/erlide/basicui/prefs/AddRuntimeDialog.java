@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -32,16 +33,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.basiccore.ErtsInstall;
+import org.erlide.basiccore.RuntimeInfo;
 import org.erlide.basiccore.StatusInfo;
 import org.erlide.basicui.dialogfields.DialogField;
 import org.erlide.basicui.dialogfields.IDialogFieldListener;
+import org.erlide.basicui.dialogfields.IListAdapter;
 import org.erlide.basicui.dialogfields.IStringButtonAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringButtonDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
 
-public class AddVMDialog extends StatusDialog {
+public class AddRuntimeDialog extends StatusDialog implements
+		IListAdapter<String> {
 
 	public static class StringLabelProvider implements ILabelProvider {
 
@@ -68,30 +71,28 @@ public class AddVMDialog extends StatusDialog {
 
 	}
 
-	private IAddVMDialogRequestor fRequestor;
+	private final IAddDialogRequestor<RuntimeInfo> fRequestor;
 
-	private ErtsInstall fEditedVM;
+	private final RuntimeInfo fEditedVM;
 
 	private StringDialogField fVMName;
 
 	private StringButtonDialogField fOtpHome;
 
-	private ListDialogField<String> fPathA;
+	private ListDialogField<String> fCodePath;
 
-	private ListDialogField<String> fPathZ;
+	private StringDialogField fDefaultArgs;
 
-	private StringDialogField fExtraArgs;
+	private final IStatus[] fStatuses;
 
-	private IStatus[] fStati;
-
-	public AddVMDialog(IAddVMDialogRequestor requestor, Shell shell,
-			ErtsInstall editedVM) {
+	public AddRuntimeDialog(IAddDialogRequestor<RuntimeInfo> requestor,
+			Shell shell, RuntimeInfo editedVM) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		fRequestor = requestor;
-		fStati = new IStatus[5];
-		for (int i = 0; i < fStati.length; i++) {
-			fStati[i] = new StatusInfo();
+		fStatuses = new IStatus[5];
+		for (int i = 0; i < fStatuses.length; i++) {
+			fStatuses[i] = new StatusInfo();
 		}
 
 		fEditedVM = editedVM;
@@ -110,7 +111,7 @@ public class AddVMDialog extends StatusDialog {
 	protected void createDialogFields() {
 
 		fVMName = new StringDialogField();
-		fVMName.setLabelText(ErtsMessages.addVMDialog_ertsName);
+		fVMName.setLabelText(PreferenceMessages.addVMDialog_ertsName);
 
 		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
@@ -121,18 +122,15 @@ public class AddVMDialog extends StatusDialog {
 		fOtpHome.setLabelText("Location"); //$NON-NLS-1$
 		fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
 
-		final String[] buttons = new String[] { ErtsMessages.AddVMDialog_3,
-				ErtsMessages.AddVMDialog_4, ErtsMessages.AddVMDialog_5 };
-		fPathA = new ListDialogField<String>(null, buttons,
+		final String[] buttons = new String[] {
+				PreferenceMessages.AddVMDialog_3,
+				PreferenceMessages.AddVMDialog_5, "Move up", "Move down" };
+		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
-		fPathA.setLabelText("PathA");
+		fCodePath.setLabelText("PathA");
 
-		fPathZ = new ListDialogField<String>(null, buttons,
-				new StringLabelProvider());
-		fPathZ.setLabelText("PathZ");
-
-		fExtraArgs = new StringDialogField();
-		fExtraArgs.setLabelText("E&xtra args"); //$NON-NLS-1$
+		fDefaultArgs = new StringDialogField();
+		fDefaultArgs.setLabelText("E&xtra args"); //$NON-NLS-1$
 	}
 
 	protected void createFieldListeners() {
@@ -169,14 +167,9 @@ public class AddVMDialog extends StatusDialog {
 		((GridLayout) parent.getLayout()).numColumns = 3;
 
 		fVMName.doFillIntoGrid(parent, 3);
-
 		fOtpHome.doFillIntoGrid(parent, 3);
-
-		fPathA.doFillIntoGrid(parent, 3);
-
-		fPathZ.doFillIntoGrid(parent, 3);
-
-		fExtraArgs.doFillIntoGrid(parent, 3);
+		fCodePath.doFillIntoGrid(parent, 3);
+		fDefaultArgs.doFillIntoGrid(parent, 3);
 
 		final Text t = fVMName.getTextControl(parent);
 		final GridData gd = (GridData) t.getLayoutData();
@@ -199,15 +192,13 @@ public class AddVMDialog extends StatusDialog {
 		if (fEditedVM == null) {
 			fVMName.setText(""); //$NON-NLS-1$
 			fOtpHome.setText(""); //$NON-NLS-1$
-			fPathA.setElements(new ArrayList<String>(5));
-			fPathZ.setElements(new ArrayList<String>(5));
-			fExtraArgs.setText(""); //$NON-NLS-1$
+			fCodePath.setElements(new ArrayList<String>(5));
+			fDefaultArgs.setText(""); //$NON-NLS-1$
 		} else {
 			fVMName.setText(fEditedVM.getName());
 			fOtpHome.setText(fEditedVM.getOtpHome());
-			fPathA.setElements(fEditedVM.getPathA());
-			fPathZ.setElements(fEditedVM.getPathZ());
-			fExtraArgs.setText(fEditedVM.getExtraArgs());
+			fCodePath.setElements(fEditedVM.getCodePath());
+			fDefaultArgs.setText(fEditedVM.getArgs());
 		}
 		setVMNameStatus(validateVMName());
 		setVMLocationStatus(validateVMLocation());
@@ -246,7 +237,7 @@ public class AddVMDialog extends StatusDialog {
 				status.setError("Location doesn't exist");
 			} else if (!f.isDirectory()) {
 				status.setError("Location isn't a directory");
-			} else if (!ErtsInstall.validateLocation(loc)) {
+			} else if (!RuntimeInfo.validateLocation(loc)) {
 				status.setError("Location is not a valid OTP home");
 			}
 		}
@@ -255,7 +246,7 @@ public class AddVMDialog extends StatusDialog {
 
 	protected void updateStatusLine() {
 		IStatus max = null;
-		for (final IStatus curr : fStati) {
+		for (final IStatus curr : fStatuses) {
 			if (curr.matches(IStatus.ERROR)) {
 				updateStatus(curr);
 				return;
@@ -270,7 +261,8 @@ public class AddVMDialog extends StatusDialog {
 	protected void browseForInstallDir() {
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog.setFilterPath(fOtpHome.getText());
-		dialog.setMessage(ErtsMessages.addVMDialog_pickERTSRootDialog_message);
+		dialog
+				.setMessage(PreferenceMessages.addVMDialog_pickERTSRootDialog_message);
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fOtpHome.setText(newPath);
@@ -285,23 +277,22 @@ public class AddVMDialog extends StatusDialog {
 
 	private void doOkPressed() {
 		if (fEditedVM == null) {
-			final ErtsInstall vm = new ErtsInstall();
+			final RuntimeInfo vm = new RuntimeInfo();
 			setFieldValuesToVM(vm);
-			fRequestor.vmAdded(vm);
+			fRequestor.itemAdded(vm);
 		} else {
 			setFieldValuesToVM(fEditedVM);
 		}
 	}
 
-	protected void setFieldValuesToVM(ErtsInstall vm) {
+	protected void setFieldValuesToVM(RuntimeInfo vm) {
 		vm.setOtpHome(fOtpHome.getText());
 		vm.setName(fVMName.getText());
 
-		vm.setPathA(fPathA.getElements());
-		vm.setPathZ(fPathZ.getElements());
+		vm.setCodePath(fCodePath.getElements());
 
-		final String argString = fExtraArgs.getText().trim();
-		vm.setExtraArgs(argString);
+		final String argString = fDefaultArgs.getText().trim();
+		vm.setArgs(argString);
 
 	}
 
@@ -313,15 +304,15 @@ public class AddVMDialog extends StatusDialog {
 	}
 
 	protected void setVMNameStatus(IStatus status) {
-		fStati[0] = status;
+		fStatuses[0] = status;
 	}
 
 	protected void setVMLocationStatus(IStatus status) {
-		fStati[1] = status;
+		fStatuses[1] = status;
 	}
 
 	protected void setVMVersionStatus(IStatus status) {
-		fStati[2] = status;
+		fStatuses[2] = status;
 	}
 
 	/**
@@ -395,5 +386,53 @@ public class AddVMDialog extends StatusDialog {
 		return size;
 		// return DialogSettingsHelper.getInitialSize(
 		// getDialogSettingsSectionName(), size);
+	}
+
+	public void customButtonPressed(ListDialogField<String> field, int index) {
+		switch (index) {
+		case 0:
+			addPath(field);
+			break;
+		case 1:
+			removePath(field);
+			break;
+		case 2:
+			moveUp(field);
+			break;
+		case 3:
+			moveDown(field);
+			break;
+		default:
+			;
+		}
+	}
+
+	private void moveDown(ListDialogField<String> field) {
+	}
+
+	private void moveUp(ListDialogField<String> field) {
+	}
+
+	private void removePath(ListDialogField<String> field) {
+	}
+
+	private void addPath(ListDialogField<String> field) {
+
+		// TODO validate value ?
+		InputDialog dlg = new InputDialog(new Shell(), "Add path",
+				"Enter a path to be added to ", "", null);
+		dlg.setBlockOnOpen(true);
+		dlg.open();
+		String value = dlg.getValue();
+
+		if (value.length() > 0) {
+			field.addElement(value);
+		}
+	}
+
+	public void doubleClicked(ListDialogField<String> field) {
+	}
+
+	public void selectionChanged(ListDialogField<String> field) {
 	}
 }

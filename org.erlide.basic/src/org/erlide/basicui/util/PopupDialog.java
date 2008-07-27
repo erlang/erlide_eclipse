@@ -77,14 +77,12 @@ public class PopupDialog {
 			}
 		});
 		final UIJob job = new UIJob("close balloon") {
-
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				if (!win.getContents().isDisposed()) {
 					win.getContents().getShell().close();
 					// display.dispose();
 				}
-
 				return new Status(IStatus.OK, ErlideBasicUIPlugin.PLUGIN_ID,
 						IStatus.OK, "", null);
 			}

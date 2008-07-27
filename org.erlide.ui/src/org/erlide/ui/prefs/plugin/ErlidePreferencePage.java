@@ -23,7 +23,6 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 		return eclipsePreferences;
 	}
 
-	@SuppressWarnings("boxing")
 	protected static List<String> getPreferences(String key, String[] keys,
 			String[] defaults) {
 		final List<String> l = new ArrayList<String>(keys.length);

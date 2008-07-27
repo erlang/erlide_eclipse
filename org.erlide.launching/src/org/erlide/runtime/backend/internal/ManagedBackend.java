@@ -13,18 +13,21 @@ package org.erlide.runtime.backend.internal;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basiccore.ErtsPreferences;
-import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.prefs.IPrefConstants;
+import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.Cookie;
 import org.erlide.runtime.backend.ErtsProcess;
+import org.erlide.runtime.backend.ErtsProcessFactory;
 import org.erlide.runtime.backend.console.BackendShellManager;
 
 /**
@@ -32,63 +35,21 @@ import org.erlide.runtime.backend.console.BackendShellManager;
  */
 public class ManagedBackend extends AbstractBackend {
 
-	private ErtsProcess fErts;
-	static private boolean dontUseLaunchConfigurationForInternalErts = true;
-
-	// private ILaunch startErts() {
-	// if (getLabel() == null) {
-	// return null;
-	// }
-	//
-	// final String cmd = getCmdLine();
-	//
-	// try {
-	// final ILaunchManager manager = DebugPlugin.getDefault()
-	// .getLaunchManager();
-	// final ILaunchConfigurationType type = manager
-	// .getLaunchConfigurationType(ErtsProcess.ERLIDE_CONFIGURATION_TYPE);
-	// ILaunchConfigurationWorkingCopy wc;
-	// wc = type.newInstance(null, getLabel());
-	// wc.setAttribute(IProcess.ATTR_PROCESS_LABEL, getLabel());
-	// wc.setAttribute(IProcess.ATTR_PROCESS_TYPE, "erlang vm");
-	// wc.setAttribute(IProcess.ATTR_CMDLINE, cmd);
-	// wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-	// ErtsProcessFactory.ID);
-	// wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
-	//
-	// final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
-	// new NullProgressMonitor());
-	// fErts = null;
-	// if (ll.getProcesses().length == 1) {
-	// fErts = (ErtsProcess) ll.getProcesses()[0];
-	// }
-	//
-	// fShellManager = new BackendShellManager(this);
-	// return ll;
-	//
-	// } catch (final Exception e) {
-	// e.printStackTrace();
-	// return null;
-	// }
-	// }
-
-	static public String getCmdLine() {
-		final ErtsPreferences ertsPrefs = ErlideBasicUIPlugin.getDefault()
-				.getPreferences();
-		final String otpHome = ErlideBasicUIPlugin.getDefault()
-				.getPluginPreferences().getString(IPrefConstants.ERTS_OTP_HOME);
-		final String cmd = ertsPrefs.buildCommandLine(otpHome);
-		return cmd;
+	public ManagedBackend(BackendInfo info) {
+		super(info);
 	}
 
+	private ErtsProcess fRuntime;
+	static private boolean useLaunchConfigurationForInternalRuntime = false;
+
 	@Override
-	public void connect(final String cookie) {
-		if (fErts == null && !dontUseLaunchConfigurationForInternalErts) {
+	public void connect() {
+		if (fRuntime == null && useLaunchConfigurationForInternalRuntime) {
 			return;
 		}
 
-		fLabel = BackendManager.buildNodeLabel(getLabel());
-		doConnect(getLabel(), cookie);
+		fLabel = BackendManager.buildNodeLabel(getName());
+		doConnect(getName());
 	}
 
 	/**
@@ -96,16 +57,14 @@ public class ManagedBackend extends AbstractBackend {
 	 */
 	@Override
 	public void dispose() {
-		super.dispose();
-
 		// BackendManager.getDefault().remove();
-
-		if (fErts != null) {
+		if (fRuntime != null) {
 			try {
-				fErts.terminate();
+				fRuntime.terminate();
 			} catch (final DebugException e) {
 			}
 		}
+		super.dispose();
 	}
 
 	// /**
@@ -127,57 +86,46 @@ public class ManagedBackend extends AbstractBackend {
 	 */
 	@Override
 	public void sendToDefaultShell(final String string) throws IOException {
-		if (dontUseLaunchConfigurationForInternalErts) {
+		if (!useLaunchConfigurationForInternalRuntime) {
 			if (streamsProxy != null) {
 				streamsProxy.write(string);
 			}
 		} else {
-			if (fErts == null) {
+			if (fRuntime == null) {
 				return;
 			}
-			fErts.writeToErlang(string);
+			fRuntime.writeToErlang(string);
 		}
-	}
-
-	public ErtsPreferences getNodePrefs() {
-		if (fErts == null) {
-			return null;
-		}
-
-		return fErts.getConfiguration();
 	}
 
 	@Override
 	public void addStdListener(final IStreamListener dsp) {
-		fErts.addStdListener(dsp);
+		if (fRuntime == null) {
+			return;
+		}
+		fRuntime.addStdListener(dsp);
 	}
 
 	@Override
-	public void initializeErts() {
-		if (dontUseLaunchConfigurationForInternalErts) {
-			startErtsWOLC();
+	public void initializeRuntime() {
+		if (!useLaunchConfigurationForInternalRuntime) {
+			startRuntimeWOLC();
 		} else {
-			Assert.isTrue(dontUseLaunchConfigurationForInternalErts);
-			// startErts();
+			startRuntime();
 		}
 	}
 
 	IStreamsProxy streamsProxy;
 
-	private void startErtsWOLC() {
-		if (getLabel() == null) {
+	private void startRuntimeWOLC() {
+		if (getInfo() == null) {
 			return;
 		}
 
-		String cmd = getCmdLine();
+		String cmd = getInfo().getCmdLine();
 
-		final String label = getLabel();
-		final String nodeName = BackendManager.buildNodeName(label);
-		final String nameAndCookie = "-name " + nodeName + " -setcookie "
-				+ Cookie.retrieveCookie();
-		cmd += nameAndCookie;
 		ErlLogger.debug("RUN internal node WOLC> " + cmd);
-		final File workingDirectory = new File(".");
+		final File workingDirectory = new File(getInfo().getWorkingDir());
 		Process vm = null;
 		try {
 			vm = Runtime.getRuntime().exec(cmd, null, workingDirectory);
@@ -194,10 +142,48 @@ public class ManagedBackend extends AbstractBackend {
 	}
 
 	@Override
-	public void setErts(final IProcess process) {
+	public void setRuntime(final IProcess process) {
 		if (process instanceof ErtsProcess) {
-			fErts = (ErtsProcess) process;
+			fRuntime = (ErtsProcess) process;
+			fShellManager = new BackendShellManager(this);
 		}
-		fShellManager = new BackendShellManager(this);
 	}
+
+	private ILaunch startRuntime() {
+		if (getInfo() == null) {
+			return null;
+		}
+
+		final String cmd = getInfo().getCmdLine();
+
+		try {
+			final ILaunchManager manager = DebugPlugin.getDefault()
+					.getLaunchManager();
+			final ILaunchConfigurationType type = manager
+					.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE);
+			ILaunchConfigurationWorkingCopy wc;
+			wc = type.newInstance(null, getInfo().getName());
+			wc.setAttribute(IProcess.ATTR_PROCESS_LABEL, getInfo().getName());
+			wc.setAttribute(IProcess.ATTR_PROCESS_TYPE, "erlang vm");
+			wc.setAttribute(IProcess.ATTR_CMDLINE, cmd);
+			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
+					ErtsProcessFactory.ID);
+			wc.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
+
+			final ILaunch ll = wc.launch(ILaunchManager.RUN_MODE,
+					new NullProgressMonitor());
+			fRuntime = null;
+			if (ll.getProcesses().length == 1) {
+				fRuntime = (ErtsProcess) ll.getProcesses()[0];
+			}
+
+			fShellManager = new BackendShellManager(this);
+			return ll;
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

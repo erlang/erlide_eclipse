@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -169,15 +170,21 @@ public class ResourceManager extends SWTResourceManager {
 	public static void disposeImages() {
 		SWTResourceManager.disposeImages();
 		// dispose ImageDescriptor images
-		for (Image image : m_DescriptorImageMap.values()) {
-			image.dispose();
+		{
+			for (Iterator<Image> I = m_DescriptorImageMap.values().iterator(); I
+					.hasNext();) {
+				I.next().dispose();
+			}
+			m_DescriptorImageMap.clear();
 		}
-		m_DescriptorImageMap.clear();
 		// dispose plugin images
-		for (Image image : m_URLImageMap.values()) {
-			image.dispose();
+		{
+			for (Iterator<Image> I = m_URLImageMap.values().iterator(); I
+					.hasNext();) {
+				I.next().dispose();
+			}
+			m_URLImageMap.clear();
 		}
-		m_URLImageMap.clear();
 	}
 
 	// ////////////////////////////

@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.QualifiedName;
@@ -38,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchPropertyPage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * @author Berthold Daum
@@ -174,8 +177,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 			// Cache the page id
 			pageId = getPageId();
 			// Create an overlay preference store and fill it with properties
-			overlayStore = new PropertyStore((IResource) getElement(), super
-					.getPreferenceStore(), pageId);
+			overlayStore = new ScopedPreferenceStore(new ProjectScope(
+					(IProject) getElement().getAdapter(IProject.class)), pageId);
 			// Set overlay store as current preference store
 		}
 		super.createControl(parent);

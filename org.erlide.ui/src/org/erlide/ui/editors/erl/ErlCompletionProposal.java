@@ -42,10 +42,9 @@ public class ErlCompletionProposal implements ICompletionProposal {
 				if (environment.anyPositionContains(offset)) {
 					return new LinkedModeUI.ExitFlags(
 							ILinkedModeListener.UPDATE_CARET, false);
-				} else {
-					return new LinkedModeUI.ExitFlags(
-							ILinkedModeListener.UPDATE_CARET, true);
 				}
+				return new LinkedModeUI.ExitFlags(
+						ILinkedModeListener.UPDATE_CARET, true);
 			}
 
 			switch (event.character) {
@@ -175,9 +174,8 @@ public class ErlCompletionProposal implements ICompletionProposal {
 	public Point getSelection(final IDocument document) {
 		if (offsetsAndLengths.isEmpty()) {
 			return new Point(replacementOffset + cursorPosition, 0);
-		} else {
-			return offsetsAndLengths.get(0);
 		}
+		return offsetsAndLengths.get(0);
 	}
 
 	/**

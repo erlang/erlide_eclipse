@@ -19,19 +19,15 @@ package org.erlide.basicui.prefs;
  */
 public interface IPrefConstants {
 
-	String ERTS_OTP_HOME = "otp_home";
+	static final String ERTS_HOME_DIR = "otp_home";
 
-	String DEFAULT_OTP_HOME = "";
+	static final String DEFAULT_OTP_HOME = "";
 
-	String ERTS_PATH_A = "path_a";
+	static final String ERTS_CODE_PATH = "code_path";
 
-	String DEFAULT_PATH_A = "";
+	static final String DEFAULT_CODE_PATH = "*PROJECT*";
 
-	String ERTS_PATH_Z = "path_z";
+	static final String ERTS_DEFAULT_ARGS = "default_erts_args";
 
-	String DEFAULT_PATH_Z = "";
-
-	String ERTS_EXTRA_ARGS = "extra_erts_args";
-
-	String DEFAULT_EXTRA_ARGS = " ";
+	static final String DEFAULT_EXTRA_ARGS = "";
 }

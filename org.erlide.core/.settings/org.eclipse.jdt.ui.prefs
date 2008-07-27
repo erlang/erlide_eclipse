@@ -1,4 +1,4 @@
-#Wed Jan 23 16:59:19 CET 2008
+#Fri Mar 07 19:42:13 CET 2008
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=true
@@ -54,5 +54,5 @@ internal.default.compliance=default
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.javadoc=false
-org.eclipse.jdt.ui.keywordthis=true
+org.eclipse.jdt.ui.keywordthis=false
 org.eclipse.jdt.ui.overrideannotation=true

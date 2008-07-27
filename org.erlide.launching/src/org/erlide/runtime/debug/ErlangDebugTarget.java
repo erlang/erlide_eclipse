@@ -125,7 +125,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public String getName() throws DebugException {
-		return fBackend.getLabel();
+		return fBackend.getInfo().getName();
 	}
 
 	public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
@@ -136,11 +136,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					.getProject();
 			if (project == bpProject) {
 				return true;
-			} else {
-				for (final IProject p : otherProjects) {
-					if (p == bpProject) {
-						return true;
-					}
+			}
+			for (final IProject p : otherProjects) {
+				if (p == bpProject) {
+					return true;
 				}
 			}
 		}
@@ -323,7 +322,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson.otp.erlang.OtpErlangObject)
+			 * @see
+			 * org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
+			 * .otp.erlang.OtpErlangObject)
 			 */
 			public void handleEvent(final OtpErlangObject msg) {
 				if (msg != null) {

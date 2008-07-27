@@ -20,7 +20,6 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basiccore.ErtsPreferences;
 
 /**
  * 
@@ -28,8 +27,6 @@ import org.erlide.basiccore.ErtsPreferences;
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public class ErtsProcess extends RuntimeProcess {
-
-	private ErtsPreferences fConfiguration;
 
 	@SuppressWarnings( { "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
@@ -42,24 +39,12 @@ public class ErtsProcess extends RuntimeProcess {
 	}
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
-	public static final String ERLIDE_CONFIGURATION_TYPE = "org.erlide.core.launch.erlide";
 
 	/**
 	 * @return Returns the started.
 	 */
 	public boolean isStarted() {
 		return getLaunch() != null;
-	}
-
-	/**
-	 * @return Returns the configuration.
-	 */
-	public ErtsPreferences getConfiguration() {
-		return fConfiguration;
-	}
-
-	public void setConfiguration(ErtsPreferences configuration) {
-		fConfiguration = configuration;
 	}
 
 	/**

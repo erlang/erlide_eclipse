@@ -28,7 +28,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basiccore.ErtsPreferences;
 import org.erlide.basicui.util.IErlangStatusConstants;
 import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.osgi.framework.Bundle;
@@ -67,21 +66,9 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 
 	}
 
-	private ErtsPreferences preferences;
-
 	private ImageDescriptorRegistry fImageDescriptorRegistry;
 
 	private Bundle fLaunchBundle;
-
-	/**
-	 * @return
-	 */
-	public ErtsPreferences getPreferences() {
-		if (preferences == null) {
-			preferences = new ErtsPreferences();
-		}
-		return preferences;
-	}
 
 	/**
 	 * This method is called upon plug-in activation
@@ -181,27 +168,6 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 * 
-	 * @param key
-	 *            The resource
-	 * @return The identified string
-	 */
-	public static String getResourceString(String key) {
-		final ResourceBundle bundle = ErlideBasicUIPlugin.getDefault()
-				.getResourceBundle();
-		try {
-
-			final String returnString = (bundle != null) ? bundle
-					.getString(key) : key;
-			return returnString;
-		} catch (final MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
 	 * Returns the plugin's resource bundle,
 	 * 
 	 * @return The requested bundle
@@ -280,4 +246,5 @@ public class ErlideBasicUIPlugin extends AbstractUIPlugin {
 			}
 		}
 	}
+
 }

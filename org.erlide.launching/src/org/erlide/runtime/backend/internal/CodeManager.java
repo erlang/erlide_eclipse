@@ -101,8 +101,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	/**
-	 * @see
-	 * 	org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
+	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
 	 */
 	private void removePathA(String path) {
 		if (removePath(pathA, path)) {
@@ -111,8 +110,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	/**
-	 * @see
-	 * 	org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
+	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
 	 */
 	private void removePathZ(String path) {
 		if (removePath(pathZ, path)) {
@@ -173,48 +171,20 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		return ErlideBackend.loadBeam(fBackend, moduleName, bin);
 	}
 
-	protected boolean loadBootstrap(String moduleName, URL beamPath) {
-		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
-		if (bin == null) {
-			return false;
-		}
-		final String aa = binToString(bin);
-		final String msg = "code:load_binary(" + moduleName + ",\""
-				+ moduleName + ".beam\"," + aa + ").\n";
-		try {
-			fBackend.sendToDefaultShell(msg);
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	private String binToString(OtpErlangBinary bin) {
-		String s = "<<";
-		final byte[] buf = bin.binaryValue();
-		for (int i = 0; i < buf.length - 1; i++) {
-			s += Integer.valueOf(buf[i]).toString() + ",";
-		}
-		s += Integer.valueOf(buf[buf.length - 1]).toString();
-		return s + ">>";
-	}
-
 	/**
 	 * Method getBeam
 	 * 
 	 * @param moduleName
-	 * 		String
+	 *            String
 	 * @param beamPath
-	 * 		String
+	 *            String
 	 * @param bufSize
-	 * 		int
+	 *            int
 	 * @return OtpErlangBinary
 	 */
 	private OtpErlangBinary getBeam(String moduleName, URL beamPath, int bufSize) {
 		try {
 			byte[] b = new byte[bufSize];
-			byte[] bm;
 			final BufferedInputStream s = new BufferedInputStream(beamPath
 					.openStream());
 			try {
@@ -224,7 +194,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 					b = null;
 					return getBeam(moduleName, beamPath, bufSize * 2);
 				} else if (r > 0) {
-					bm = new byte[r];
+					byte[] bm = new byte[r];
 					System.arraycopy(b, 0, bm, 0, r);
 					b = null;
 					return new OtpErlangBinary(bm);
@@ -240,25 +210,24 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	void loadBootstrap(int port) {
-		ErlLogger.debug("bootstrapping...");
-		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
-		URL e;
-		e = b.getEntry("/ebin/erlide_erpc.beam");
-		loadBootstrap("erlide_erpc", e);
-
-		try {
-			fBackend.sendToDefaultShell("{ok,X}=erlide_erpc:start(" + port
-					+ ", false).\n");
-			fBackend.sendToDefaultShell("unlink(X).\n");
-		} catch (final IOException e1) {
-			e1.printStackTrace();
+	// TODO move this in an util class!
+	public static byte[] concat(byte[][] arrs) {
+		int total = 0;
+		for (byte[] arr : arrs) {
+			total += arr.length;
 		}
+		byte[] result = new byte[total];
+		int crt = 0;
+		for (byte[] arr : arrs) {
+			System.arraycopy(arr, 0, result, crt, arr.length);
+			crt += arr.length;
+		}
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
 	private void loadPluginCode(ICodeBundle p) {
-		if (fBackend instanceof StandaloneBackend) {
+		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()) {
 			return;
 		}
 
@@ -298,7 +267,10 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 								.lastSegment();
 						// ErlLogger.debug(" " + m);
 						try {
-							loadBeam(m, b.getEntry(s));
+							boolean ok = loadBeam(m, b.getEntry(s));
+							if (!ok) {
+								ErlLogger.error("Could not load %s", m);
+							}
 						} catch (final Exception ex) {
 							ex.printStackTrace();
 						}
@@ -345,7 +317,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	@SuppressWarnings("unchecked")
 	private void unloadPluginCode(ICodeBundle p) {
-		if (fBackend instanceof StandaloneBackend) {
+		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()) {
 			return;
 		}
 

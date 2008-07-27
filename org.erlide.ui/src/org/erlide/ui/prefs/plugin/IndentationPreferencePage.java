@@ -41,34 +41,34 @@ import org.osgi.service.prefs.Preferences;
  * @author Vlad Dumitrescu
  */
 public class IndentationPreferencePage extends ErlidePreferencePage implements
-IWorkbenchPreferencePage {
+		IWorkbenchPreferencePage {
 
 	private static final String INDENT_FIELDS[] = new String[] {
-		ErlEditorMessages.Prefs_Before_binary_op,
-		ErlEditorMessages.Prefs_After_binary_op,
-		ErlEditorMessages.Prefs_Before_arrow,
-		ErlEditorMessages.Prefs_After_arrow,
-		ErlEditorMessages.Prefs_After_unary_op,
-		ErlEditorMessages.Prefs_Clause, ErlEditorMessages.Prefs_Case,
-		ErlEditorMessages.Prefs_Try, ErlEditorMessages.Prefs_Catch,
-		ErlEditorMessages.Prefs_Function_parameters,
-		ErlEditorMessages.Prefs_Fun, ErlEditorMessages.Prefs_Fun_body,
-		ErlEditorMessages.Prefs_Paren,
-		ErlEditorMessages.Prefs_Binary_begin,
-		ErlEditorMessages.Prefs_End_paren,
-		ErlEditorMessages.Prefs_Semicolon_nl,
-		ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
-		ErlEditorMessages.Prefs_Comma_nl };
+			ErlEditorMessages.Prefs_Before_binary_op,
+			ErlEditorMessages.Prefs_After_binary_op,
+			ErlEditorMessages.Prefs_Before_arrow,
+			ErlEditorMessages.Prefs_After_arrow,
+			ErlEditorMessages.Prefs_After_unary_op,
+			ErlEditorMessages.Prefs_Clause, ErlEditorMessages.Prefs_Case,
+			ErlEditorMessages.Prefs_Try, ErlEditorMessages.Prefs_Catch,
+			ErlEditorMessages.Prefs_Function_parameters,
+			ErlEditorMessages.Prefs_Fun, ErlEditorMessages.Prefs_Fun_body,
+			ErlEditorMessages.Prefs_Paren,
+			ErlEditorMessages.Prefs_Binary_begin,
+			ErlEditorMessages.Prefs_End_paren,
+			ErlEditorMessages.Prefs_Semicolon_nl,
+			ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
+			ErlEditorMessages.Prefs_Comma_nl };
 
 	private static final String INDENT_KEYS[] = new String[] {
-		"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		"after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		"function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		"end_paren", "semicolon_nl", "dot_nl", "arrow_nl", "comma_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			"after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"end_paren", "semicolon_nl", "dot_nl", "arrow_nl", "comma_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 	private static final String INDENT_DEFAULTS[] = new String[] { "4", "4", //$NON-NLS-1$ //$NON-NLS-2$
-		"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
-		"0", "0", "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+			"0", "0", "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
 
@@ -133,7 +133,6 @@ IWorkbenchPreferencePage {
 
 	static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
-	@SuppressWarnings("boxing")
 	private void setToPreferences() {
 		final List<String> l = getPreferences(INDENT_KEY, INDENT_KEYS,
 				INDENT_DEFAULTS);
@@ -201,23 +200,23 @@ IWorkbenchPreferencePage {
 		final StatusInfo status = new StatusInfo();
 		if (number.length() == 0) {
 			status
-			.setError(ErlEditorMessages.ErlEditorPreferencePage_empty_input);
+					.setError(ErlEditorMessages.ErlEditorPreferencePage_empty_input);
 		} else {
 			try {
 				final int value = Integer.parseInt(number);
 				if (value < 0) {
 					status
-					.setError(MessageFormat
-							.format(
-									ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-									(Object[]) new String[] { number }));
+							.setError(MessageFormat
+									.format(
+											ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
+											(Object[]) new String[] { number }));
 				}
 			} catch (final NumberFormatException e) {
 				status
-				.setError(MessageFormat
-						.format(
-								ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-								(Object[]) new String[] { number }));
+						.setError(MessageFormat
+								.format(
+										ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
+										(Object[]) new String[] { number }));
 			}
 		}
 		return status;
@@ -258,9 +257,9 @@ IWorkbenchPreferencePage {
 			if (message.length() == 0) {
 				message = null;
 			}
-		page.setMessage(null);
-		page.setErrorMessage(message);
-		break;
+			page.setMessage(null);
+			page.setErrorMessage(message);
+			break;
 		}
 	}
 

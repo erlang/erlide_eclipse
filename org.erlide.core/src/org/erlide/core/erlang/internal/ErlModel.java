@@ -47,9 +47,9 @@ import org.erlide.core.erlang.util.Util;
 public class ErlModel extends Openable implements IErlModel {
 
 	/**
-	 * A array with all the non-java projects contained by this model
+	 * A array with all the non-erlang projects contained by this model
 	 */
-	private IProject[] nonJavaResources;
+	private IProject[] nonErlangProjects;
 
 	private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
 			5);
@@ -182,13 +182,6 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public Kind getKind() {
 		return Kind.MODEL;
-	}
-
-	/**
-	 * @see ErlElement#getHandleMemento()
-	 */
-	public String getHandleMemento() {
-		return getName();
 	}
 
 	/**
@@ -411,10 +404,10 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	public IProject[] getNonErlangResources() throws ErlModelException {
 
-		if (nonJavaResources == null) {
-			nonJavaResources = computeNonErlangResources();
+		if (nonErlangProjects == null) {
+			nonErlangProjects = computeNonErlangResources();
 		}
-		return nonJavaResources;
+		return nonErlangProjects;
 	}
 
 	public void notifyChange(IErlElement element) {

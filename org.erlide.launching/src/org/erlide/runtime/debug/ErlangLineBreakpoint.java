@@ -55,13 +55,13 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	 * @param target
 	 *            debug target
 	 */
-	public void install(final ErlangDebugTarget target) {
-		this.target = target;
+	public void install(final ErlangDebugTarget _target) {
+		target = _target;
 		createRequest(target);
 	}
 
-	private void createRequest(final ErlangDebugTarget target) {
-		final IBackend b = target.getBackend();
+	private void createRequest(final ErlangDebugTarget _target) {
+		final IBackend b = _target.getBackend();
 		int line = -1;
 		try {
 			line = getLineNumber();

@@ -111,8 +111,8 @@ public class EditorUtility {
 
 	/**
 	 * Opens a Java editor for an element such as <code>IJavaElement</code>,
-	 * <code>IFile</code>, or <code>IStorage</code>. The editor is
-	 * activated by default.
+	 * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
+	 * default.
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */
@@ -270,6 +270,9 @@ public class EditorUtility {
 					.getActionBars()
 					.getGlobalActionHandler(
 							ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY);
+			if (toggleAction == null) {
+				return;
+			}
 			boolean enable = toggleAction != null;
 			if (enable && editorPart instanceof ErlangEditor) {
 				enable = ErlideUIPlugin.getDefault().getPreferenceStore()
@@ -448,8 +451,8 @@ public class EditorUtility {
 	// String[] {modifierString, newModifierString});
 	// }
 	/**
-	 * Returns the Java project for a given editor input or <code>null</code>
-	 * if no corresponding Java project exists.
+	 * Returns the Java project for a given editor input or <code>null</code> if
+	 * no corresponding Java project exists.
 	 * 
 	 * @param input
 	 *            the editor input

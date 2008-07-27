@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.bdaum.overlayPages;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.preference.IPreferenceNode;
@@ -34,6 +36,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.part.PageBook;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * @author Berthold Daum
@@ -58,7 +61,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	Button configureButton;
 
 	// Overlay preference store for property pages
-	private PropertyStore overlayStore;
+	private IPreferenceStore overlayStore;
 
 	// The image descriptor of this pages title image
 	private ImageDescriptor image;
@@ -222,8 +225,8 @@ public abstract class OverlayPage extends PropertyPage implements
 			// Cache the page id
 			pageId = getPageId();
 			// Create an overlay preference store and fill it with properties
-			overlayStore = new PropertyStore((IResource) getElement(), super
-					.getPreferenceStore(), pageId);
+			overlayStore = new ScopedPreferenceStore(new ProjectScope(
+					(IProject) getElement().getAdapter(IProject.class)), pageId);
 			// Set overlay store as current preference store
 		}
 		super.createControl(parent);

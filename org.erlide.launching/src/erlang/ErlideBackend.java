@@ -22,13 +22,9 @@ public class ErlideBackend {
 
 	private static final String ERL_BACKEND = "erlide_backend";
 
-	public static void init(final IBackend ideBackend) {
-		init(ideBackend, ideBackend.getName());
-	}
-
-	public static void init(final IBackend backend, final String node) {
+	public static void init(IBackend backend, String javaNode) {
 		try {
-			backend.rpc(ERL_BACKEND, "init", "ap", node, backend.getRpcPid());
+			backend.rpcx(ERL_BACKEND, "init", "a", javaNode);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -180,14 +176,14 @@ public class ErlideBackend {
 	}
 
 	public static void generateRpcStub(final IBackend b, final String s) {
-		try {
-			final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
-			if (!r.isOk()) {
-				ErlLogger.debug("rpcstub::" + r.toString());
-			}
-		} catch (final Exception e) {
-			ErlLogger.debug(e);
-		}
+		// try {
+		// final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
+		// if (!r.isOk()) {
+		// ErlLogger.debug("rpcstub::" + r.toString());
+		// }
+		// } catch (final Exception e) {
+		// ErlLogger.debug(e);
+		// }
 	}
 
 	public static boolean loadBeam(final IBackend backend,
@@ -277,7 +273,17 @@ public class ErlideBackend {
 
 	public static void startTracer(IBackend b, OtpErlangPid tracer) {
 		try {
-			b.rpcx("erlide_backend", "start_tracer", "p", tracer);
+			ErlLogger.debug("Start tracer to %s", tracer);
+			b.rpcx("erlide_backend", "start_tracer", "ps", tracer);
+		} catch (RpcException e) {
+		} catch (BackendException e) {
+		}
+	}
+
+	public static void startTracer(IBackend b, String logname) {
+		try {
+			ErlLogger.debug("Start tracer to %s", logname);
+			b.rpcx("erlide_backend", "start_tracer", "s", logname);
 		} catch (RpcException e) {
 		} catch (BackendException e) {
 		}

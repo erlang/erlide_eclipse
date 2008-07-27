@@ -47,11 +47,10 @@ event(Id, Msg) ->
 
 rpc_loop(JavaNode) ->
     receive
-       Msg ->
-           {rex, JavaNode} ! Msg,
-           rpc_loop(JavaNode)
-       end,
-    ok.
+        Msg ->
+            {rex, JavaNode} ! Msg,
+            rpc_loop(JavaNode)
+    end.
 
 -define(P(X), io:format(">>> ~p~n", [X])).
 

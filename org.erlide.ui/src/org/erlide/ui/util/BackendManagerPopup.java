@@ -33,27 +33,27 @@ public class BackendManagerPopup implements IBackendListener {
 	}
 
 	public void backendAdded(final IBackend b) {
-		ErlLogger.debug("$$ added backend " + b.getLabel());
+		ErlLogger.debug("$$ added backend " + b.getInfo().getName());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				PopupDialog.showBalloon("Backend notification", "Added " +
-						b.getLabel(), DELAY);
+				PopupDialog.showBalloon("Backend notification", "Added "
+						+ b.getInfo().getName(), DELAY);
 			}
 		});
 	}
 
 	public void backendRemoved(final IBackend b) {
-		ErlLogger.debug("$$ removed backend " + b.getLabel());
+		ErlLogger.debug("$$ removed backend " + b.getInfo().getName());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				PopupDialog.showBalloon("Backend notification", "Removed " +
-						b.getLabel(), DELAY);
+				PopupDialog.showBalloon("Backend notification", "Removed "
+						+ b.getInfo().getName(), DELAY);
 			}
 		});
 	}

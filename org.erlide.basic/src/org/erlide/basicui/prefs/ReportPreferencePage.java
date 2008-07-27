@@ -48,9 +48,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class ReportPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	Text contact;
-	Text body;
-	Text title;
+	Text fcontact;
+	Text fbody;
+	Text ftitle;
 
 	class ReportData {
 		String title;
@@ -85,19 +85,19 @@ public class ReportPreferencePage extends PreferencePage implements
 		titleLabel.setText("Title");
 		titleLabel.setBounds(0, 5, 25, 15);
 
-		this.title = new Text(panel, SWT.BORDER);
-		this.title.setBounds(46, 0, 416, 25);
+		this.ftitle = new Text(panel, SWT.BORDER);
+		this.ftitle.setBounds(46, 0, 416, 25);
 
-		this.body = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER
+		this.fbody = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER
 				| SWT.WRAP);
-		this.body.setBounds(46, 31, 416, 188);
+		this.fbody.setBounds(46, 31, 416, 188);
 
-		this.body
+		this.fbody
 				.setText("(enter error description here, paste any relevant code too)");
 
-		this.contact = new Text(panel, SWT.BORDER);
-		contact.setText(System.getProperty("user.name"));
-		this.contact.setBounds(152, 225, 310, 25);
+		this.fcontact = new Text(panel, SWT.BORDER);
+		fcontact.setText(System.getProperty("user.name"));
+		this.fcontact.setBounds(152, 225, 310, 25);
 
 		attachTechnicalDataButton = new Button(panel, SWT.CHECK);
 		attachTechnicalDataButton.setSelection(true);
@@ -132,9 +132,9 @@ public class ReportPreferencePage extends PreferencePage implements
 
 	protected void postReport() {
 		Job j = new Job("send error report") {
-			ReportData data = new ReportData(title.getText(),
-					contact.getText(), body.getText(),
-					attachTechnicalDataButton.getSelection());
+			ReportData data = new ReportData(ftitle.getText(), fcontact
+					.getText(), fbody.getText(), attachTechnicalDataButton
+					.getSelection());
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -197,9 +197,9 @@ public class ReportPreferencePage extends PreferencePage implements
 		String descr;
 		String email;
 		try {
-			extra = URLEncoder.encode(body.getText(), "UTF-8");
-			descr = URLEncoder.encode(title.getText(), "UTF-8");
-			email = URLEncoder.encode(contact.getText(), "UTF-8");
+			extra = URLEncoder.encode(fbody.getText(), "UTF-8");
+			descr = URLEncoder.encode(ftitle.getText(), "UTF-8");
+			email = URLEncoder.encode(fcontact.getText(), "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 			extra = "";

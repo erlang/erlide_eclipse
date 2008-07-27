@@ -4,19 +4,33 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.erlide.basicui.prefs;
 
-import org.erlide.basicui.dialogfields.DialogField;
-
 /**
- * Change listener used by <code>StringButtonDialogField</code>
+ * This interface is implemented by clients of the <code>AddRuntimeDialog</code>.
  */
-public interface IStringButtonAdapter {
+public interface IAddDialogRequestor<T> {
 
-	void changeControlPressed(DialogField field);
+	/**
+	 * Reply whether or not a new VM of the specified name would constitute a
+	 * duplicate.
+	 * 
+	 * @param name
+	 *            the name of a potential new VM
+	 * @return whether a new VM with the specified name would be a duplicate VM
+	 */
+	boolean isDuplicateName(String name);
+
+	/**
+	 * Notification that a VM has been added from the <code>AddVMDialog</code>.
+	 * 
+	 * @param vm
+	 *            the added vm
+	 */
+	void itemAdded(T vm);
 
 }

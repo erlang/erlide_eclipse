@@ -13,14 +13,11 @@ package org.erlide.runtime.backend;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -30,65 +27,94 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public interface IBackend {
 
 	/**
-	 * @throws ErlangRpcException
-	 * 
-	 * @param m
-	 * @param f
-	 * @param signature
-	 *            TODO
-	 * @param a
-	 * @return OtpErlangObject
-	 * @throws RpcException
-	 * @throws ConversionException
+	 * @see #rpc(String, String, int, String, Object...)
 	 */
 	RpcResult rpc(String m, String f, String signature, Object... a)
 			throws RpcException;
 
+	// TODO signature specification is not complete!
 	/**
-	 * @throws ErlangRpcException
+	 * Makes a RPC to the Erlang side. || subject to changes! ||
+	 * 
+	 * <p>
+	 * The signature specifies the types of the Erlang arguments, so that the
+	 * Java ones can be converted automatically. It is the concatenation of
+	 * signatures for each argument as defined below:
+	 * <dl>
+	 * <dt>x</dt>
+	 * <dd>Generic; a simple conversion is done:
+	 * <ul>
+	 * <li>integer types -> integer </li>
+	 * <li>String -> string </li>
+	 * <li>List<> -> list </li>
+	 * <li>array -> list </li>
+	 * </ul>
+	 * </dd>
+	 * <dt>i</dt>
+	 * <dd>any integral type, including char -> integer()</dd>
+	 * <dt>d</dt>
+	 * <dd>floats and doubles -> float() </dd>
+	 * <dt>s</dt>
+	 * <dd>String -> string().</dd>
+	 * <dt>a</dt>
+	 * <dd>String -> atom()</dd>
+	 * <dt>b</dt>
+	 * <dd>String, byte[] -> binary()</dd>
+	 * <dt>o</dt>
+	 * <dd>boolean -> atom()</dd>
+	 * <dt>p</dt>
+	 * <dd>OtpErlangPid.</dd>
+	 * <dt>r</dt>
+	 * <dd>OtpErlangReference.</dd>
+	 * <dt>l*</dt>
+	 * <dd>List<>, array -> list(). * is the elements' signature</dd>
+	 * <dt>t***</dt>
+	 * <dd>Object[] -> tuple(); *** are the tuple elements' signatures</dd>
+	 * <dt>j</dt>
+	 * <dd>java object reference; see below.</dd>
+	 * </dl>
+	 * Object instances not covered here are handled in a special way: they are
+	 * stored in a weak map keyed by OtpErlangReference and the reference is
+	 * sent instead. This reference can later be used to make RPC calls from
+	 * Erlang to Java.
+	 * </p>
+	 * <p>
+	 * Example: "salstaxls" means "string(), atom(), [string()], {atom(),
+	 * term(), [string()]}" and the rpc's arguments can be of types String,
+	 * String, List<String>, Object[]
+	 * </p>
 	 * 
 	 * @param m
+	 *            module name
 	 * @param f
+	 *            function name
 	 * @param timeout
+	 *            timeout for the call
 	 * @param signature
-	 *            TODO
-	 * @param a
-	 * @return OtpErlangObject
-	 * @throws NoBackendException
-	 * @throws ConversionException
+	 *            the arguments' signature as above
+	 * @param args
+	 *            the arguments
+	 * 
+	 * @return the result of the RPC
+	 * 
+	 * @throws RpcException
+	 *             the rpc exception
 	 */
 	RpcResult rpc(String m, String f, int timeout, String signature,
 			Object... a) throws RpcException;
 
 	/**
-	 * @throws ErlangRpcException,
-	 *             BackendException
-	 * 
-	 * @param m
-	 * @param f
-	 * @param signature
-	 *            TODO
-	 * @param a
-	 * @return OtpErlangObject
+	 * @see #rpc(String, String, int, String, Object...)
 	 * @throws BackendException
-	 * @throws ConversionException
+	 * @throws RpcException
 	 */
 	OtpErlangObject rpcx(String m, String f, String signature, Object... a)
 			throws RpcException, BackendException;
 
 	/**
-	 * @throws ErlangRpcException,
-	 *             BackendException
-	 * 
-	 * @param m
-	 * @param f
-	 * @param timeout
-	 * @param signature
-	 *            TODO
-	 * @param a
-	 * @return OtpErlangObject
+	 * @see #rpc(String, String, int, String, Object...)
 	 * @throws BackendException
-	 * @throws ConversionException
+	 * @throws RpcException
 	 */
 	OtpErlangObject rpcx(String m, String f, int timeout, String signature,
 			Object... a) throws RpcException, BackendException;
@@ -145,23 +171,23 @@ public interface IBackend {
 
 	// void sendToShell(String str);
 
-	void addStdListener(IStreamListener dsp);
+	// void addStdListener(IStreamListener dsp);
 
-	String getLabel();
-
-	void setLabel(final String label);
+	// void setLabel(final String label);
 
 	boolean ping();
 
 	List<IBackendEventListener> getEventListeners(String event);
 
-	String getName();
+	BackendInfo getInfo();
 
 	String getHost();
 
-	public void setErts(final IProcess process);
+	public void setRuntime(final IProcess process);
 
-	public abstract void initializeErts();
+	void setRemoteRex(OtpErlangPid rex);
+
+	public abstract void initializeRuntime();
 
 	public void connectAndRegister(final List<ICodeBundle> plugins);
 }

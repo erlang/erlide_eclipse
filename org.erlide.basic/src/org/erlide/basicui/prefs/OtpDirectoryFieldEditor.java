@@ -13,7 +13,7 @@ package org.erlide.basicui.prefs;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.basiccore.ErtsPreferences;
+import org.erlide.basiccore.RuntimeInfo;
 
 public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 
@@ -30,7 +30,7 @@ public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 	protected boolean doCheckState() {
 		String fileName = getTextControl().getText();
 		fileName = fileName.trim();
-		return ErtsPreferences.isValidOtpHome(fileName);
+		return RuntimeInfo.isValidOtpHome(fileName);
 	}
 
 }

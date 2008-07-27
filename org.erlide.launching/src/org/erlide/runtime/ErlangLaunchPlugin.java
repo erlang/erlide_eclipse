@@ -65,7 +65,7 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		ErlLogger.debug("Starting LAUNCHING");
+		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
 		super.start(context);
 
 		String dev = "";
@@ -85,9 +85,12 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 
 		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
 		IBackend b = BackendManager.getDefault().getIdeBackend();
-		ErlideBackend.init(b);
-		if (System.getProperty("erlide.tracer", "false").equals("true"))
-			ErlideBackend.startTracer(b, b.getEventPid());
+		ErlideBackend.init(b, BackendManager
+				.buildNodeName(BackendManager.JAVA_NODE_LABEL));
+		if (System.getProperty("erlide.tracer", "false").equals("true")) {
+			// TODO find a way to configure tracing when needed
+			// ErlideBackend.startTracer(b, "log.1");
+		}
 		ErlLogger.debug("Started LAUNCHING");
 	}
 

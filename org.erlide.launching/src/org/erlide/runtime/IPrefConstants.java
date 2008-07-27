@@ -38,10 +38,6 @@ public interface IPrefConstants {
 
 	// /
 
-	String PROJECT_OTP_PROJECT_STRUCTURE = "otp_project_structure";
-
-	boolean DEFAULT_OTP_PROJECT_STRUCTURE = true;
-
 	String PROJECT_SOURCE_DIRS = "source_dirs";
 
 	String DEFAULT_SOURCE_DIRS = "src";

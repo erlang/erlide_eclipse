@@ -17,7 +17,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideIndent {
 
-	@SuppressWarnings("boxing")
 	private static OtpErlangList fixIndentPrefs(final Map<String, String> m) {
 		final OtpErlangObject[] o = new OtpErlangObject[m.size()];
 		final Iterator<Map.Entry<String, String>> im = m.entrySet().iterator();
