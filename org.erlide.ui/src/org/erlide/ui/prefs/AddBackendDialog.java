@@ -31,7 +31,6 @@ import org.erlide.basicui.dialogfields.IDialogFieldListener;
 import org.erlide.basicui.dialogfields.IListAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
-import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 
@@ -102,7 +101,7 @@ extends StatusDialog implements IListAdapter<String> {
 	protected void createDialogFields() {
 
 		fName = new StringDialogField();
-		fName.setLabelText(PreferenceMessages.addVMDialog_ertsName);
+		fName.setLabelText(PreferenceMessages.addRuntimeDialog_ertsName);
 
 		fNodeName = new StringDialogField();
 		fNodeName.setLabelText("node name");
@@ -119,8 +118,8 @@ extends StatusDialog implements IListAdapter<String> {
 		fRuntime.selectItem(0);
 
 		final String[] buttons = new String[] {
-				PreferenceMessages.AddVMDialog_3,
-				PreferenceMessages.AddVMDialog_5, "Move up", "Move down" };
+				PreferenceMessages.AddRuntimeDialog_3,
+				PreferenceMessages.AddRuntimeDialog_5, "Move up", "Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
 		fCodePath.setLabelText("PathA");
@@ -248,7 +247,7 @@ extends StatusDialog implements IListAdapter<String> {
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog.setFilterPath(fRuntime.getText());
 		dialog
-				.setMessage(PreferenceMessages.addVMDialog_pickERTSRootDialog_message);
+				.setMessage(PreferenceMessages.addRuntimeDialog_pickRuntimeRootDialog_message);
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fRuntime.setText(newPath);
@@ -263,9 +262,9 @@ extends StatusDialog implements IListAdapter<String> {
 
 	private void doOkPressed() {
 		if (fEditedBackend == null) {
-			final BackendInfo vm = new BackendInfo();
-			storeValues(vm);
-			fRequestor.itemAdded(vm);
+			final BackendInfo runtime = new BackendInfo();
+			storeValues(runtime);
+			fRequestor.itemAdded(runtime);
 		} else {
 			storeValues(fEditedBackend);
 		}

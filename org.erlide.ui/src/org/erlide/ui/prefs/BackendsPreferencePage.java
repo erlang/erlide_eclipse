@@ -64,7 +64,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.basicui.util.SWTUtil;
 import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendInfoManager;
@@ -110,7 +109,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 	private int fSortColumn = 0;
 
 	/**
-	 * Selection listeners (checked ERTS changes)
+	 * Selection listeners (checked Runtime changes)
 	 */
 	private final ListenerList fSelectionListeners = new ListenerList();
 
@@ -121,7 +120,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 	private ComboViewer erlideBackendViewer;
 
 	/**
-	 * Content provider to show a list of ERTSs
+	 * Content provider to show a list of Runtimes
 	 */
 	class BackendContentProvider implements IStructuredContentProvider {
 
@@ -187,9 +186,8 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionListeners.add(listener);
@@ -207,9 +205,8 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
@@ -219,9 +216,8 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-	 * .jface.viewers.ISelection)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+	 *      .jface.viewers.ISelection)
 	 */
 	public void setSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
@@ -402,9 +398,9 @@ public class BackendsPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Returns the ERTSs currently being displayed in this block
+	 * Returns the Runtimes currently being displayed in this block
 	 * 
-	 * @return ERTSs currently being displayed in this block
+	 * @return Runtimes currently being displayed in this block
 	 */
 	public List<BackendInfo> getBackends() {
 		return new ArrayList<BackendInfo>(backends);
@@ -418,7 +414,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				null);
-		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_7);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_7);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -448,7 +444,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		}
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				vm);
-		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_8);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_8);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -498,10 +494,10 @@ public class BackendsPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Sets the checked ERTS, possible <code>null</code>
+	 * Sets the checked Runtime, possible <code>null</code>
 	 * 
 	 * @param vm
-	 *            ERTS or <code>null</code>
+	 *            Runtime or <code>null</code>
 	 */
 	public void setCheckedBackend(BackendInfo vm) {
 		if (vm == null) {
@@ -512,9 +508,9 @@ public class BackendsPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Returns the checked ERTS or <code>null</code> if none.
+	 * Returns the checked Runtime or <code>null</code> if none.
 	 * 
-	 * @return the checked ERTS or <code>null</code> if none
+	 * @return the checked Runtime or <code>null</code> if none
 	 */
 	public BackendInfo getCheckedBackend() {
 		final Object[] objects = fBackendList.getCheckedElements();
@@ -707,7 +703,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
 		column1.setWidth(80);
-		column1.setText(PreferenceMessages.InstalledERTSsBlock_0);
+		column1.setText(PreferenceMessages.InstalledRuntimesBlock_0);
 		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
@@ -790,7 +786,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		buttons.setFont(font);
 
 		fAddButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_3);
+				PreferenceMessages.InstalledRuntimesBlock_3);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -799,7 +795,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		});
 
 		fEditButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_4);
+				PreferenceMessages.InstalledRuntimesBlock_4);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -808,7 +804,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		});
 
 		fRemoveButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_5);
+				PreferenceMessages.InstalledRuntimesBlock_5);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {

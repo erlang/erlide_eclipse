@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -40,32 +41,34 @@ public class ErlangPreferencePage extends PreferencePage implements
 		panel.setLayout(layout);
 
 		final Label img = new Label(panel, SWT.NONE);
-		img.setLayoutData(new GridData(144, SWT.DEFAULT));
+		final GridData gd_img = new GridData(79, SWT.DEFAULT);
+		img.setLayoutData(gd_img);
 		img.setImage(ResourceManager.getPluginImage(ErlideBasicUIPlugin
 				.getDefault(), "icons/erlang058.gif"));
 
-		final Label text = new Label(panel, SWT.NONE);
-		text.setLayoutData(new GridData(290, SWT.DEFAULT));
-		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2")); //$NON-NLS-1$
+		final Group composite = new Group(panel, SWT.NONE);
+		final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
+				false);
+		gd_composite.widthHint = 356;
+		composite.setLayoutData(gd_composite);
+		composite.setLayout(new GridLayout());
 
-		// final SelectionListener linkListener = new SelectionListener() {
-		// public void widgetSelected(SelectionEvent e) {
-		// Program.launch(e.text);
-		// }
-		//
-		// public void widgetDefaultSelected(SelectionEvent e) {
-		// }
-		// };
+		final Label text = new Label(composite, SWT.NONE);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
+		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2"));
 
-		final Composite panel2 = new Composite(panel, SWT.NONE);
-		final GridData gd_panel2 = new GridData(SWT.LEFT, SWT.CENTER, false,
-				false, 2, 1);
-		gd_panel2.widthHint = 441;
-		panel2.setLayoutData(gd_panel2);
-		final GridLayout layout2 = new GridLayout();
-		panel2.setLayout(layout2);
+		final Link erlideorgLink = new Link(composite, SWT.NONE);
+		erlideorgLink.setText(PreferenceMessages
+				.getString("ErlangPreferencePage.3"));
 
-		final Button reportButton = new Button(panel2, SWT.NONE);
+		final Link updateLink = new Link(composite, SWT.NONE);
+		updateLink.setText(PreferenceMessages
+				.getString("ErlangPreferencePage.4"));
+		new Label(panel, SWT.NONE);
+
+		final Button reportButton = new Button(panel, SWT.NONE);
+		reportButton.setLayoutData(new GridData());
 		reportButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -73,25 +76,8 @@ public class ErlangPreferencePage extends PreferencePage implements
 						"org.erlide.basic.reporting", null, null);
 			}
 		});
-		reportButton.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false,
-				false));
 		reportButton.setText("Report problems");
-
-		final Group group = new Group(panel2, SWT.NONE);
-		group.setLayoutData(new GridData(421, SWT.DEFAULT));
-		group.setLayout(new GridLayout());
-		new Label(group, SWT.NONE).setText("The main developers are: ");
-		new Label(group, SWT.NONE).setText("  * Vlad Dumitrescu");
-		new Label(group, SWT.NONE).setText("  * Jakob Cederlund");
 		// new Label(group, SWT.NONE).setText(" * Tomas Daarstad");
-
-		new Label(group, SWT.NONE).setText("Other contributors:");
-		new Label(group, SWT.NONE).setText("  * Lukas Larsson");
-		new Label(group, SWT.NONE).setText("  * Mickaël Rémond");
-
-		final Label alsoManyThanksLabel = new Label(group, SWT.NONE);
-		alsoManyThanksLabel
-				.setText("also many thanks to all who gave their feedback and helped to improve Erlide! ");
 
 		return panel;
 	}

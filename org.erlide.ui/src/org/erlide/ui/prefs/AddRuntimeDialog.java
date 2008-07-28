@@ -41,7 +41,6 @@ import org.erlide.basicui.dialogfields.IStringButtonAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringButtonDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
-import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.runtime.backend.RuntimeInfo;
 
 public class AddRuntimeDialog extends StatusDialog implements
@@ -74,9 +73,9 @@ public class AddRuntimeDialog extends StatusDialog implements
 
 	private final IAddDialogRequestor<RuntimeInfo> fRequestor;
 
-	private final RuntimeInfo fEditedVM;
+	private final RuntimeInfo fEditedRuntime;
 
-	private StringDialogField fVMName;
+	private StringDialogField fRuntimeName;
 
 	private StringButtonDialogField fOtpHome;
 
@@ -87,7 +86,7 @@ public class AddRuntimeDialog extends StatusDialog implements
 	private final IStatus[] fStatuses;
 
 	public AddRuntimeDialog(IAddDialogRequestor<RuntimeInfo> requestor,
-			Shell shell, RuntimeInfo editedVM) {
+			Shell shell, RuntimeInfo editedRuntime) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		fRequestor = requestor;
@@ -96,7 +95,7 @@ public class AddRuntimeDialog extends StatusDialog implements
 			fStatuses[i] = new StatusInfo();
 		}
 
-		fEditedVM = editedVM;
+		fEditedRuntime = editedRuntime;
 	}
 
 	/**
@@ -111,8 +110,8 @@ public class AddRuntimeDialog extends StatusDialog implements
 
 	protected void createDialogFields() {
 
-		fVMName = new StringDialogField();
-		fVMName.setLabelText(PreferenceMessages.addVMDialog_ertsName);
+		fRuntimeName = new StringDialogField();
+		fRuntimeName.setLabelText(PreferenceMessages.addRuntimeDialog_ertsName);
 
 		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
@@ -124,8 +123,8 @@ public class AddRuntimeDialog extends StatusDialog implements
 		fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
 
 		final String[] buttons = new String[] {
-				PreferenceMessages.AddVMDialog_3,
-				PreferenceMessages.AddVMDialog_5, "Move up", "Move down" };
+				PreferenceMessages.AddRuntimeDialog_3,
+				PreferenceMessages.AddRuntimeDialog_5, "Move up", "Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
 		fCodePath.setLabelText("PathA");
@@ -135,10 +134,10 @@ public class AddRuntimeDialog extends StatusDialog implements
 	}
 
 	protected void createFieldListeners() {
-		fVMName.setDialogFieldListener(new IDialogFieldListener() {
+		fRuntimeName.setDialogFieldListener(new IDialogFieldListener() {
 
 			public void dialogFieldChanged(DialogField field) {
-				setVMNameStatus(validateVMName());
+				setRuntimeNameStatus(validateRuntimeName());
 				updateStatusLine();
 			}
 		});
@@ -146,15 +145,15 @@ public class AddRuntimeDialog extends StatusDialog implements
 		fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
 
 			public void dialogFieldChanged(DialogField field) {
-				setVMLocationStatus(validateVMLocation());
+				setRuntimeLocationStatus(validateRuntimeLocation());
 				updateStatusLine();
 			}
 		});
 
 	}
 
-	protected String getVMName() {
-		return fVMName.getText();
+	protected String getRuntimeName() {
+		return fRuntimeName.getText();
 	}
 
 	protected File getInstallLocation() {
@@ -167,12 +166,12 @@ public class AddRuntimeDialog extends StatusDialog implements
 		final Composite parent = (Composite) super.createDialogArea(ancestor);
 		((GridLayout) parent.getLayout()).numColumns = 3;
 
-		fVMName.doFillIntoGrid(parent, 3);
+		fRuntimeName.doFillIntoGrid(parent, 3);
 		fOtpHome.doFillIntoGrid(parent, 3);
 		fCodePath.doFillIntoGrid(parent, 3);
 		fDefaultArgs.doFillIntoGrid(parent, 3);
 
-		final Text t = fVMName.getTextControl(parent);
+		final Text t = fRuntimeName.getTextControl(parent);
 		final GridData gd = (GridData) t.getLayoutData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.widthHint = convertWidthInCharsToPixels(50);
@@ -186,34 +185,35 @@ public class AddRuntimeDialog extends StatusDialog implements
 	@Override
 	public void create() {
 		super.create();
-		fVMName.setFocus();
+		fRuntimeName.setFocus();
 	}
 
 	private void initializeFields() {
-		if (fEditedVM == null) {
-			fVMName.setText(""); //$NON-NLS-1$
+		if (fEditedRuntime == null) {
+			fRuntimeName.setText(""); //$NON-NLS-1$
 			fOtpHome.setText(""); //$NON-NLS-1$
 			fCodePath.setElements(new ArrayList<String>(5));
 			fDefaultArgs.setText(""); //$NON-NLS-1$
 		} else {
-			fVMName.setText(fEditedVM.getName());
-			fOtpHome.setText(fEditedVM.getOtpHome());
-			fCodePath.setElements(fEditedVM.getCodePath());
-			fDefaultArgs.setText(fEditedVM.getArgs());
+			fRuntimeName.setText(fEditedRuntime.getName());
+			fOtpHome.setText(fEditedRuntime.getOtpHome());
+			fCodePath.setElements(fEditedRuntime.getCodePath());
+			fDefaultArgs.setText(fEditedRuntime.getArgs());
 		}
-		setVMNameStatus(validateVMName());
-		setVMLocationStatus(validateVMLocation());
+		setRuntimeNameStatus(validateRuntimeName());
+		setRuntimeLocationStatus(validateRuntimeLocation());
 		updateStatusLine();
 	}
 
-	protected IStatus validateVMName() {
+	protected IStatus validateRuntimeName() {
 		final StatusInfo status = new StatusInfo();
-		final String name = fVMName.getText();
+		final String name = fRuntimeName.getText();
 		if (name == null || name.trim().length() == 0) {
-			status.setInfo("Enter the VM's name"); //$NON-NLS-1$
+			status.setInfo("Enter the Runtime's name"); //$NON-NLS-1$
 		} else {
 			if (fRequestor.isDuplicateName(name)
-					&& (fEditedVM == null || !name.equals(fEditedVM.getName()))) {
+					&& (fEditedRuntime == null || !name.equals(fEditedRuntime
+							.getName()))) {
 				status.setError("The name is already used"); //$NON-NLS-1$
 			} else {
 				final IStatus s = ResourcesPlugin.getWorkspace().validateName(
@@ -227,11 +227,11 @@ public class AddRuntimeDialog extends StatusDialog implements
 		return status;
 	}
 
-	protected IStatus validateVMLocation() {
+	protected IStatus validateRuntimeLocation() {
 		final StatusInfo status = new StatusInfo();
 		final String loc = fOtpHome.getText();
 		if (loc == null || loc.trim().length() == 0) {
-			status.setInfo("Enter the VM's location");
+			status.setInfo("Enter the Runtime's location");
 		} else {
 			final File f = new File(loc);
 			if (!f.exists()) {
@@ -263,7 +263,7 @@ public class AddRuntimeDialog extends StatusDialog implements
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog.setFilterPath(fOtpHome.getText());
 		dialog
-				.setMessage(PreferenceMessages.addVMDialog_pickERTSRootDialog_message);
+				.setMessage(PreferenceMessages.addRuntimeDialog_pickRuntimeRootDialog_message);
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fOtpHome.setText(newPath);
@@ -277,23 +277,23 @@ public class AddRuntimeDialog extends StatusDialog implements
 	}
 
 	private void doOkPressed() {
-		if (fEditedVM == null) {
-			final RuntimeInfo vm = new RuntimeInfo();
-			setFieldValuesToVM(vm);
-			fRequestor.itemAdded(vm);
+		if (fEditedRuntime == null) {
+			final RuntimeInfo Runtime = new RuntimeInfo();
+			setFieldValuesToRuntime(Runtime);
+			fRequestor.itemAdded(Runtime);
 		} else {
-			setFieldValuesToVM(fEditedVM);
+			setFieldValuesToRuntime(fEditedRuntime);
 		}
 	}
 
-	protected void setFieldValuesToVM(RuntimeInfo vm) {
-		vm.setOtpHome(fOtpHome.getText());
-		vm.setName(fVMName.getText());
+	protected void setFieldValuesToRuntime(RuntimeInfo Runtime) {
+		Runtime.setOtpHome(fOtpHome.getText());
+		Runtime.setName(fRuntimeName.getText());
 
-		vm.setCodePath(fCodePath.getElements());
+		Runtime.setCodePath(fCodePath.getElements());
 
 		final String argString = fDefaultArgs.getText().trim();
-		vm.setArgs(argString);
+		Runtime.setArgs(argString);
 
 	}
 
@@ -304,15 +304,15 @@ public class AddRuntimeDialog extends StatusDialog implements
 		return new File(path).getAbsoluteFile();
 	}
 
-	protected void setVMNameStatus(IStatus status) {
+	protected void setRuntimeNameStatus(IStatus status) {
 		fStatuses[0] = status;
 	}
 
-	protected void setVMLocationStatus(IStatus status) {
+	protected void setRuntimeLocationStatus(IStatus status) {
 		fStatuses[1] = status;
 	}
 
-	protected void setVMVersionStatus(IStatus status) {
+	protected void setRuntimeVersionStatus(IStatus status) {
 		fStatuses[2] = status;
 	}
 

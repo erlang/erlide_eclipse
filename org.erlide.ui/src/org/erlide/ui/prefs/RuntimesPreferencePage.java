@@ -73,7 +73,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.basicui.util.SWTUtil;
 import org.erlide.runtime.backend.InfoElement;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -119,7 +118,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	private int fSortColumn = 0;
 
 	/**
-	 * Selection listeners (checked ERTS changes)
+	 * Selection listeners (checked Runtime changes)
 	 */
 	private final ListenerList fSelectionListeners = new ListenerList();
 
@@ -129,7 +128,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	private ISelection fPrevSelection = new StructuredSelection();
 
 	/**
-	 * Content provider to show a list of ERTSs
+	 * Content provider to show a list of Runtimes
 	 */
 	class RuntimeContentProvider implements IStructuredContentProvider {
 
@@ -180,8 +179,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 	public RuntimesPreferencePage() {
 		super();
-		setTitle(PreferenceMessages.ERTSsPreferencePage_1);
-		setDescription(PreferenceMessages.ERTSsPreferencePage_2);
+		setTitle(PreferenceMessages.RuntimesPreferencePage_1);
+		setDescription(PreferenceMessages.RuntimesPreferencePage_2);
 
 		runtimes = RuntimeInfoManager.getDefault().getElements();
 		defaultRuntime = RuntimeInfoManager.getDefault().getDefaultRuntime();
@@ -190,9 +189,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionListeners.add(listener);
@@ -210,9 +208,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
@@ -222,9 +219,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-	 * .jface.viewers.ISelection)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+	 *      .jface.viewers.ISelection)
 	 */
 	public void setSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
@@ -435,9 +431,9 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Returns the ERTSs currently being displayed in this block
+	 * Returns the Runtimes currently being displayed in this block
 	 * 
-	 * @return ERTSs currently being displayed in this block
+	 * @return Runtimes currently being displayed in this block
 	 */
 	public List<RuntimeInfo> getRuntimes() {
 		return new ArrayList<RuntimeInfo>(runtimes);
@@ -451,7 +447,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
 				null);
-		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_7);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_7);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -482,7 +478,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		}
 		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
 				vm);
-		dialog.setTitle(PreferenceMessages.InstalledERTSsBlock_8);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_8);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -532,8 +528,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		// choose a root directory for the search
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
-		dialog.setMessage(PreferenceMessages.InstalledERTSsBlock_9);
-		dialog.setText(PreferenceMessages.InstalledERTSsBlock_10);
+		dialog.setMessage(PreferenceMessages.InstalledRuntimesBlock_9);
+		dialog.setText(PreferenceMessages.InstalledRuntimesBlock_10);
 		final String path = dialog.open();
 		if (path == null) {
 			return;
@@ -554,7 +550,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		final IRunnableWithProgress r = new IRunnableWithProgress() {
 
 			public void run(IProgressMonitor monitor) {
-				monitor.beginTask(PreferenceMessages.InstalledERTSsBlock_11,
+				monitor.beginTask(PreferenceMessages.InstalledRuntimesBlock_11,
 						IProgressMonitor.UNKNOWN);
 				search(rootDir, locations, existingLocations, monitor);
 				monitor.done();
@@ -574,9 +570,10 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		if (locations.isEmpty()) {
 			MessageDialog.openInformation(getShell(),
-					PreferenceMessages.InstalledERTSsBlock_12, MessageFormat
-							.format(PreferenceMessages.InstalledERTSsBlock_13,
-									(Object[]) new String[] { path }));
+					PreferenceMessages.InstalledRuntimesBlock_12,
+					MessageFormat.format(
+							PreferenceMessages.InstalledRuntimesBlock_13,
+							(Object[]) new String[] { path }));
 		} else {
 			Iterator<File> iter = locations.iterator();
 			while (iter.hasNext()) {
@@ -658,10 +655,10 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Sets the checked ERTS, possible <code>null</code>
+	 * Sets the checked Runtime, possible <code>null</code>
 	 * 
 	 * @param vm
-	 *            ERTS or <code>null</code>
+	 *            Runtime or <code>null</code>
 	 */
 	public void setCheckedRuntime(RuntimeInfo vm) {
 		if (vm == null) {
@@ -672,9 +669,9 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Returns the checked ERTS or <code>null</code> if none.
+	 * Returns the checked Runtime or <code>null</code> if none.
 	 * 
-	 * @return the checked ERTS or <code>null</code> if none
+	 * @return the checked Runtime or <code>null</code> if none
 	 */
 	public RuntimeInfo getCheckedRuntime() {
 		final Object[] objects = fRuntimeList.getCheckedElements();
@@ -795,7 +792,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		GridData data;
 
 		final Label tableLabel = new Label(parent, SWT.NONE);
-		tableLabel.setText(PreferenceMessages.InstalledERTSsBlock_15);
+		tableLabel.setText(PreferenceMessages.InstalledRuntimesBlock_15);
 		data = new GridData();
 		data.horizontalSpan = 2;
 		tableLabel.setLayoutData(data);
@@ -825,7 +822,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
 		column1.setWidth(80);
-		column1.setText(PreferenceMessages.InstalledERTSsBlock_0);
+		column1.setText(PreferenceMessages.InstalledRuntimesBlock_0);
 		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
@@ -837,7 +834,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		final TableColumn column2 = new TableColumn(table, SWT.NULL);
 		column2.setWidth(150);
-		column2.setText(PreferenceMessages.InstalledERTSsBlock_1);
+		column2.setText(PreferenceMessages.InstalledRuntimesBlock_1);
 		column2.setResizable(true);
 		column2.addSelectionListener(new SelectionAdapter() {
 
@@ -849,7 +846,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 		final TableColumn column3 = new TableColumn(table, SWT.NULL);
 		column3.setWidth(80);
-		column3.setText(PreferenceMessages.InstalledERTSsBlock_2);
+		column3.setText(PreferenceMessages.InstalledRuntimesBlock_2);
 		column3.setResizable(false);
 		column3.addSelectionListener(new SelectionAdapter() {
 
@@ -924,7 +921,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		buttons.setFont(font);
 
 		fAddButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_3);
+				PreferenceMessages.InstalledRuntimesBlock_3);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -933,7 +930,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		});
 
 		fEditButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_4);
+				PreferenceMessages.InstalledRuntimesBlock_4);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -942,7 +939,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		});
 
 		fRemoveButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_5);
+				PreferenceMessages.InstalledRuntimesBlock_5);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -960,7 +957,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		separator.setLayoutData(gd);
 
 		fSearchButton = createPushButton(buttons,
-				PreferenceMessages.InstalledERTSsBlock_6);
+				PreferenceMessages.InstalledRuntimesBlock_6);
 		fSearchButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -1013,7 +1010,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		final RuntimeInfo def = getCheckedRuntime();
 		if (def == null && getRuntimes().size() > 0) {
 			setValid(false);
-			setErrorMessage(PreferenceMessages.ERTSsPreferencePage_13);
+			setErrorMessage(PreferenceMessages.RuntimesPreferencePage_13);
 		} else {
 			setValid(true);
 			setErrorMessage(null);
