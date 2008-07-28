@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.basiccore.RuntimeInfoManager;
 import org.erlide.basiccore.StatusInfo;
 import org.erlide.basicui.dialogfields.ComboDialogField;
 import org.erlide.basicui.dialogfields.DialogField;
@@ -32,9 +31,9 @@ import org.erlide.basicui.dialogfields.IDialogFieldListener;
 import org.erlide.basicui.dialogfields.IListAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
-import org.erlide.basicui.prefs.IAddDialogRequestor;
 import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 public class AddBackendDialog
 

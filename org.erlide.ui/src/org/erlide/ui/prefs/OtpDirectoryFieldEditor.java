@@ -8,12 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.basicui.prefs;
+package org.erlide.ui.prefs;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.basiccore.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfo;
 
 public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 

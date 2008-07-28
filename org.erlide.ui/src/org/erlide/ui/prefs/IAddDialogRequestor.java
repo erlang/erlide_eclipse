@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.basicui.prefs;
+package org.erlide.ui.prefs;
 
 /**
  * This interface is implemented by clients of the <code>AddRuntimeDialog</code>.

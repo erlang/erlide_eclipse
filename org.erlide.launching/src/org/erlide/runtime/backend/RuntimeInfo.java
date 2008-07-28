@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.basiccore;
+package org.erlide.runtime.backend;
 
 import java.io.File;
 import java.io.FileInputStream;

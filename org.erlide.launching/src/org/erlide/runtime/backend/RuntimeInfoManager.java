@@ -1,4 +1,4 @@
-package org.erlide.basiccore;
+package org.erlide.runtime.backend;
 
 import org.erlide.basicui.ErlideBasicUIPlugin;
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.basicui.prefs;
+package org.erlide.ui.prefs;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.basiccore.RuntimeInfo;
 import org.erlide.basiccore.StatusInfo;
 import org.erlide.basicui.dialogfields.DialogField;
 import org.erlide.basicui.dialogfields.IDialogFieldListener;
@@ -42,6 +41,8 @@ import org.erlide.basicui.dialogfields.IStringButtonAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringButtonDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
+import org.erlide.basicui.prefs.PreferenceMessages;
+import org.erlide.runtime.backend.RuntimeInfo;
 
 public class AddRuntimeDialog extends StatusDialog implements
 		IListAdapter<String> {

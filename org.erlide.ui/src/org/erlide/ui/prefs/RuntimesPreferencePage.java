@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.basicui.prefs;
+package org.erlide.ui.prefs;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,11 +72,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.basiccore.InfoElement;
-import org.erlide.basiccore.RuntimeInfo;
-import org.erlide.basiccore.RuntimeInfoManager;
 import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.basicui.util.SWTUtil;
+import org.erlide.runtime.backend.InfoElement;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
  * A preference page that displays installed runtimes in a table. Runtimes can

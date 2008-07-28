@@ -9,12 +9,6 @@
             name="Erlang"/>
       <page
             category="org.erlide.ui.preferences"
-            class="org.erlide.basicui.prefs.RuntimesPreferencePage"
-            id="org.erlide.ui.preferences.test"
-            name="%installErtsPageName">
-      </page>
-      <page
-            category="org.erlide.ui.preferences"
             class="org.erlide.basicui.prefs.ReportPreferencePage"
             id="org.erlide.basic.reporting"
             name="Report problems">

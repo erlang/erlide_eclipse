@@ -64,7 +64,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.prefs.IAddDialogRequestor;
 import org.erlide.basicui.prefs.PreferenceMessages;
 import org.erlide.basicui.util.SWTUtil;
 import org.erlide.runtime.backend.BackendInfo;

@@ -2,8 +2,6 @@ package org.erlide.runtime.backend;
 
 import java.util.List;
 
-import org.erlide.basiccore.InfoElement;
-import org.erlide.basiccore.RuntimeInfoManager;
 import org.osgi.service.prefs.Preferences;
 
 public class BackendInfo extends InfoElement {
