@@ -8,28 +8,28 @@ import org.eclipse.osgi.util.NLS;
 public class PreferenceMessages {
 	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.PreferenceMessages"; //$NON-NLS-1$
 
-	public static String InstalledRuntimesBlock_0;
-	public static String InstalledRuntimesBlock_1;
-	public static String InstalledRuntimesBlock_2;
-	public static String InstalledRuntimesBlock_3;
-	public static String InstalledRuntimesBlock_4;
-	public static String InstalledRuntimesBlock_5;
-	public static String InstalledRuntimesBlock_6;
-	public static String InstalledRuntimesBlock_7;
-	public static String InstalledRuntimesBlock_8;
-	public static String InstalledRuntimesBlock_9;
-	public static String InstalledRuntimesBlock_10;
-	public static String InstalledRuntimesBlock_11;
-	public static String InstalledRuntimesBlock_12;
-	public static String InstalledRuntimesBlock_13;
-	public static String InstalledRuntimesBlock_15;
-	public static String RuntimesPreferencePage_1;
-	public static String RuntimesPreferencePage_2;
-	public static String RuntimesPreferencePage_13;
+	public static String InstalledRuntimesBlock_name;
+	public static String InstalledRuntimesBlock_location;
+	public static String InstalledRuntimesBlock_version;
+	public static String InstalledRuntimesBlock_add;
+	public static String InstalledRuntimesBlock_edit;
+	public static String InstalledRuntimesBlock_remove;
+	public static String InstalledRuntimesBlock_search;
+	public static String InstalledRuntimesBlock_add_title;
+	public static String InstalledRuntimesBlock_edit_title;
+	public static String InstalledRuntimesBlock_search_message;
+	public static String InstalledRuntimesBlock_search_text;
+	public static String InstalledRuntimesBlock_search_task;
+	public static String InstalledRuntimesBlock_info_title;
+	public static String InstalledRuntimesBlock_info_message;
+	public static String InstalledRuntimesBlock_installedRuntimes;
+	public static String RuntimesPreferencePage_title;
+	public static String RuntimesPreferencePage_description;
+	public static String RuntimesPreferencePage_pleaseSelectADefaultRuntime;
 	public static String addRuntimeDialog_ertsName;
 	public static String addRuntimeDialog_pickRuntimeRootDialog_message;
-	public static String AddRuntimeDialog_3;
-	public static String AddRuntimeDialog_5;
+	public static String AddRuntimeDialog_add;
+	public static String AddRuntimeDialog_remove;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, PreferenceMessages.class);

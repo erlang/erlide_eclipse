@@ -123,8 +123,8 @@ public class AddRuntimeDialog extends StatusDialog implements
 		fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
 
 		final String[] buttons = new String[] {
-				PreferenceMessages.AddRuntimeDialog_3,
-				PreferenceMessages.AddRuntimeDialog_5, "Move up", "Move down" };
+				PreferenceMessages.AddRuntimeDialog_add,
+				PreferenceMessages.AddRuntimeDialog_remove, "Move up", "Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
 		fCodePath.setLabelText("PathA");

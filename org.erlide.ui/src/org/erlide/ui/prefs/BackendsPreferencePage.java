@@ -414,7 +414,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				null);
-		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_7);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_add_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -444,7 +444,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		}
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				vm);
-		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_8);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_edit_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -703,7 +703,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
 		column1.setWidth(80);
-		column1.setText(PreferenceMessages.InstalledRuntimesBlock_0);
+		column1.setText(PreferenceMessages.InstalledRuntimesBlock_name);
 		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
@@ -786,7 +786,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		buttons.setFont(font);
 
 		fAddButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_3);
+				PreferenceMessages.InstalledRuntimesBlock_add);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -795,7 +795,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		});
 
 		fEditButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_4);
+				PreferenceMessages.InstalledRuntimesBlock_edit);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -804,7 +804,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		});
 
 		fRemoveButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_5);
+				PreferenceMessages.InstalledRuntimesBlock_remove);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
