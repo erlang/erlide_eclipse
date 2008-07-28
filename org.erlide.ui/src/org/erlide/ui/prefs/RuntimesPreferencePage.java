@@ -460,8 +460,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	/**
 	 * @see IAddRuntimeDialogRequestor#itemAdded(RuntimeInfo)
 	 */
-	public void itemAdded(RuntimeInfo vm) {
-		runtimes.add(vm);
+	public void itemAdded(RuntimeInfo runtime) {
+		runtimes.add(runtime);
 		fRuntimeList.refresh();
 	}
 
@@ -800,7 +800,8 @@ public class RuntimesPreferencePage extends PreferencePage implements
 		GridData data;
 
 		final Label tableLabel = new Label(parent, SWT.NONE);
-		tableLabel.setText(PreferenceMessages.InstalledRuntimesBlock_installedRuntimes);
+		tableLabel
+				.setText(PreferenceMessages.InstalledRuntimesBlock_installedRuntimes);
 		data = new GridData();
 		data.horizontalSpan = 2;
 		tableLabel.setLayoutData(data);

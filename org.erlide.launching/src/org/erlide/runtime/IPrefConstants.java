@@ -18,56 +18,33 @@ package org.erlide.runtime;
  */
 public interface IPrefConstants {
 
-	// Erts preferences
-
-	String ERTS_OTP_HOME = "otp_home";
-
-	String DEFAULT_OTP_HOME = "";
-
-	String ERTS_PATH_A = "path_a";
-
-	String DEFAULT_PATH_A = "";
-
-	String ERTS_PATH_Z = "path_z";
-
-	String DEFAULT_PATH_Z = "";
-
-	String ERTS_EXTRA_ARGS = "extra_erts_args";
-
-	String DEFAULT_EXTRA_ARGS = "";
-
-	// /
-
 	String PROJECT_SOURCE_DIRS = "source_dirs";
-
 	String DEFAULT_SOURCE_DIRS = "src";
 
 	String PROJECT_INCLUDE_DIRS = "include_dirs";
-
 	String DEFAULT_INCLUDE_DIRS = "include";
 
 	String PROJECT_OUTPUT_DIR = "output_dir";
-
 	String DEFAULT_OUTPUT_DIR = "ebin";
 
 	String PROJECT_EXTERNAL_INCLUDES = "external_includes";
-
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
-	String PROJECT_BACKEND_NAME = "backend_name";
+	String PROJECT_IDE_BACKEND_NAME = "backend_name";
+	String PROJECT_BUILD_BACKEND_NAME = "backend_name";
+	String PROJECT_EXECUTE_BACKEND_NAME = "backend_name";
 
-	String DEFAULT_BACKEND_NAME = "";
+	String DEFAULT_IDE_BACKEND_NAME = "";
+	String DEFAULT_BUILD_BACKEND_NAME = "";
+	String DEFAULT_EXECUTE_BACKEND_NAME = "";
 
 	String PROJECT_BACKEND_COOKIE = "backend_cookie";
-
 	String DEFAULT_BACKEND_COOKIE = "";
 
 	String PROJECT_USE_PATHZ = "use_pathz";
-
 	String DEFAULT_USE_PATHZ = "true";
 
-	String DEFAULT_EXTERNAL_MODULES = "";
-
 	String PROJECT_EXTERNAL_MODULES = "external_modules";
+	String DEFAULT_EXTERNAL_MODULES = "";
 
 }

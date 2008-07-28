@@ -29,6 +29,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
@@ -93,17 +94,17 @@ public final class BackendManager implements IResourceChangeListener {
 		return b;
 	}
 
-	public IBackend get(final IProject project) {
-		return get(project, true);
+	public IBackend get(final IProject project, BackendType type) {
+		return get(project, true, type);
 	}
 
 	public synchronized IBackend get(final IProject project,
-			final boolean launchErlang) {
+			final boolean launchErlang, BackendType type) {
 		synchronized (fProjectBackendsLock) {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
 
-			final BackendInfo info = getBackendInfo(project);
+			final BackendInfo info = getBackendInfo(project, type);
 			if (info == null) {
 				return fLocalBackend;
 			}
@@ -122,13 +123,13 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public static BackendInfo getBackendInfo(IProject project) {
+	public static BackendInfo getBackendInfo(IProject project, BackendType type) {
 		if (project == null) {
 			return null;
 		}
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		return prefs.getInfo();
+		return prefs.getBackendInfo(type);
 		// return "project";
 	}
 

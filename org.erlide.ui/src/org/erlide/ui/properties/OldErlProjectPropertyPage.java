@@ -9,11 +9,15 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.Arrays;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -28,13 +32,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
+import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class OldErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
-	private Combo backendName;
+	Combo executionBackendName;
+	Combo buildBackendName;
+	Combo ideBackendName;
 	private ErlangProjectProperties prefs;
 	private Text output;
 	private Text source;
@@ -72,7 +80,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
 		final Label outLabel = new Label(composite, SWT.NONE);
-		outLabel.setText("output Dir");
+		outLabel.setText("Output directory:");
 		final GridData gd_Label = new GridData();
 		gd_Label.minimumWidth = 50;
 		outLabel.setLayoutData(gd_Label);
@@ -80,7 +88,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gd.minimumWidth = 50;
-		gd.widthHint = 384;
+		gd.widthHint = 256;
 		output.setLayoutData(gd);
 		output.setText(prefs.getOutputDir());
 		output.addListener(SWT.Modify, nameModifyListener);
@@ -93,7 +101,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		uz.addListener(SWT.Modify, nameModifyListener);
 
 		Label l1 = new Label(composite, SWT.NONE);
-		l1.setText("sources");
+		l1.setText("Source directories:");
 		String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
@@ -107,7 +115,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
 		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setText("includes");
+		includesLabel.setText("Include directories:");
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
 		this.include.setToolTipText("enter a list of folders");
@@ -116,17 +124,82 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		include.setText(prefs.getIncludeDirsString());
 		include.addListener(SWT.Modify, nameModifyListener);
 
+		String[] backends = BackendInfoManager.getDefault().getElementNames()
+				.toArray(new String[] {});
+		int db = Arrays.binarySearch(backends, BackendInfoManager.getDefault()
+				.getDefaultBackend().getName());
+
 		final Label nodeNameLabel = new Label(composite, SWT.NONE);
-		nodeNameLabel.setText("Backend name");
+		nodeNameLabel.setText("IDE Backend:");
 
-		backendName = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
+		ideBackendName = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		ideBackendName.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				System.out.println("SELECT!" + e);
+
+				if (buildBackendName.getSelectionIndex() == -1) {
+					buildBackendName.select(ideBackendName.getSelectionIndex());
+				}
+				if (executionBackendName.getSelectionIndex() == -1) {
+					executionBackendName.select(ideBackendName
+							.getSelectionIndex());
+				}
+			}
+		});
+		final GridData gd_ideBackendName = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
-		backendName.setLayoutData(gd_backendName);
-		backendName.setText(prefs.getBackendName());
-		new Label(composite, SWT.NONE);
+		ideBackendName.setLayoutData(gd_ideBackendName);
+		ideBackendName.setText(prefs.getBackendName(BackendType.IDE));
+		ideBackendName.setItems(backends);
+		ideBackendName.select(db);
 
 		new Label(composite, SWT.NONE);
+
+		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
+		nodeNameLabel_1.setText("Build backend:");
+
+		buildBackendName = new Combo(composite, SWT.READ_ONLY);
+		final GridData gd_buildBackendName = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		buildBackendName.setLayoutData(gd_buildBackendName);
+		buildBackendName.setItems(backends);
+		ideBackendName.select(db);
+
+		final Button buildButton = new Button(composite, SWT.CHECK);
+		buildButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				buildBackendName.setEnabled(!buildButton.getSelection());
+			}
+		});
+		buildButton.setSelection(prefs.getBackendName(BackendType.BUILD)
+				.equals(prefs.getBackendName(BackendType.IDE)));
+		buildButton.setText("same as IDE");
+		buildBackendName.setEnabled(!buildButton.getSelection());
+
+		final Label nodeNameLabel_1_1 = new Label(composite, SWT.NONE);
+		nodeNameLabel_1_1.setText("Execution backend:");
+
+		executionBackendName = new Combo(composite, SWT.READ_ONLY);
+		final GridData gd_executionBackendName = new GridData(SWT.FILL,
+				SWT.CENTER, true, false);
+		executionBackendName.setLayoutData(gd_executionBackendName);
+		executionBackendName.setItems(backends);
+		ideBackendName.select(db);
+
+		final Button executionButton = new Button(composite, SWT.CHECK);
+		executionButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				executionBackendName
+						.setEnabled(!executionButton.getSelection());
+			}
+		});
+		executionButton.setSelection(prefs.getBackendName(BackendType.EXECUTE)
+				.equals(prefs.getBackendName(BackendType.IDE)));
+		executionButton.setText("same as IDE");
+		executionBackendName.setEnabled(!executionButton.getSelection());
 
 		setValid(testPageComplete());
 
@@ -137,7 +210,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		String last = externalIncludes.getText();
 		// if (last.length() == 0) {
 		// last =
-		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
 		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$
@@ -168,7 +241,10 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
 		// prefs.setExternalModules(externalIncludes.getText());
-		prefs.setBackendName(backendName.getText());
+		prefs.setBackendName(BackendType.IDE, ideBackendName.getText());
+		prefs.setBackendName(BackendType.BUILD, buildBackendName.getText());
+		prefs.setBackendName(BackendType.EXECUTE, executionBackendName
+				.getText());
 		prefs.store();
 		return true;
 	}

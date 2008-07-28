@@ -319,8 +319,8 @@ public class ErlProject extends Openable implements IErlProject,
 		 * arguments = new String[] { path.toString() }; } if
 		 * (ErlangCore.ERROR.equals(getOption(
 		 * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
-		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
-		 * break; }
+		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING;
+		 * } break; }
 		 */
 	}
 
@@ -381,8 +381,8 @@ public class ErlProject extends Openable implements IErlProject,
 		 * TODO: realizate findElement(IPath path) final String extension =
 		 * path.getFileExtension(); if
 		 * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
-		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
-		 * path.removeLastSegments(1); final String packageName =
+		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath
+		 * = path.removeLastSegments(1); final String packageName =
 		 * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
 		 * typeName = path.lastSegment(); typeName = typeName.substring(0,
 		 * typeName.length() - extension.length() - 1); String qualifiedName =

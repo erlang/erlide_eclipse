@@ -22,6 +22,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
@@ -55,8 +56,9 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
+	 * .IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		fSelection = selection;
@@ -65,8 +67,9 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.ui.IWorkbenchPart)
+	 * @see
+	 * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
+	 * action.IAction, org.eclipse.ui.IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
@@ -97,8 +100,9 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 					// remove code path to backend
 					final String out = project.getLocation().append(
 							prefs.getOutputDir()).toString();
-					BackendManager.getDefault().get(project).getCodeManager()
-							.removePath(prefs.getUsePathZ(), out);
+					BackendManager.getDefault().get(project,
+							BackendType.EXECUTE).getCodeManager().removePath(
+							prefs.getUsePathZ(), out);
 					return;
 				}
 			}
@@ -113,8 +117,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project).getCodeManager().addPath(
-					prefs.getUsePathZ(), out);
+			BackendManager.getDefault().get(project, BackendType.EXECUTE)
+					.getCodeManager().addPath(prefs.getUsePathZ(), out);
 
 		} catch (final CoreException e) {
 		}

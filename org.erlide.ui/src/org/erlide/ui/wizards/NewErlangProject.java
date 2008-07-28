@@ -38,6 +38,7 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.IErlideUIConstants;
@@ -215,8 +216,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project).getCodeManager().addPath(
-					prefs.getUsePathZ(), out);
+			BackendManager.getDefault().get(project, BackendType.EXECUTE)
+					.getCodeManager().addPath(prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

@@ -40,6 +40,7 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -158,7 +159,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-	 *      org.eclipse.jface.viewers.IStructuredSelection)
+	 * org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init(final IWorkbench aWorkbench,
 			final IStructuredSelection aSelection) {
@@ -311,8 +312,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project).getCodeManager().addPath(
-					prefs.getUsePathZ(), out);
+			BackendManager.getDefault().get(project, BackendType.EXECUTE)
+					.getCodeManager().addPath(prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

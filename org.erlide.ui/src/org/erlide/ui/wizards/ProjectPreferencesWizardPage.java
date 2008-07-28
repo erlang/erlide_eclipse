@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
@@ -144,7 +145,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
 		backendName.setLayoutData(gd_backendName);
-		backendName.setText(prefs.getBackendName());
+		backendName.setText(prefs.getBackendName(BackendType.IDE));
 		new Label(composite, SWT.NONE);
 
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
@@ -242,7 +243,9 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setOutputDir(output.getText());
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
-			prefs.setBackendName(backendName.getText());
+			prefs.setBackendName(BackendType.IDE, backendName.getText());
+			prefs.setBackendName(BackendType.BUILD, backendName.getText());
+			prefs.setBackendName(BackendType.EXECUTE, backendName.getText());
 			prefs.setExternalModules(externalModules.getText());
 
 			setPageComplete(testPageComplete());
@@ -290,7 +293,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		String last = externalModules.getText();
 		// if (last.length() == 0) {
 		// last =
-		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
 		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$
