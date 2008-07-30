@@ -59,13 +59,13 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	private Button fProjButton;
 
-	private Text moduleText;
+	Text moduleText;
 
-	private Text funcText;
+	Text funcText;
 
-	private Text otpPathText;
+	Text otpPathText;
 
-	private Button otpPathBrowseButton;
+	Button otpPathBrowseButton;
 
 	private Button startedNodeCheckbox;
 
@@ -96,7 +96,6 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		startedNodeCheckbox = new Button(group, SWT.CHECK);
 		startedNodeCheckbox.setText("Connect to started node");
 		startedNodeCheckbox.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean startNew = !startedNodeCheckbox.getSelection();
@@ -188,7 +187,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		String last = otpPathText.getText().trim();
 		// if (last.length() == 0) {
 		// last =
-		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
 		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$

@@ -32,7 +32,6 @@ public interface IErlangLaunchConfigurationAttributes {
 
 	String ATTR_START_NODE = "startNode";
 
-	// /
 	String ATTR_OTP_HOME = "otphome";
 
 	String ERTS_OTP_HOME = prefix + ".otp_home";

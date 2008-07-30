@@ -181,9 +181,6 @@ public class Util {
 					break;
 				}
 			} else {
-				if (output == null) {
-					return new String(messageWithNoDoubleQuotes);
-				}
 				output.append(messageWithNoDoubleQuotes, start, length - start);
 				break;
 			}
