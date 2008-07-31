@@ -198,7 +198,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		});
 		executionButton.setSelection(prefs.getBackendName(BackendType.EXECUTE)
 				.equals(prefs.getBackendName(BackendType.IDE)));
-		executionButton.setText("same as IDE");
+		executionButton.setText("same as \"build\"");
 		executionBackendName.setEnabled(!executionButton.getSelection());
 
 		setValid(testPageComplete());

@@ -74,6 +74,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.basicui.util.SWTUtil;
+import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.runtime.backend.InfoElement;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -508,8 +510,11 @@ public class RuntimesPreferencePage extends PreferencePage implements
 	 */
 	public void removeRuntimes(RuntimeInfo[] vms) {
 		final IStructuredSelection prev = (IStructuredSelection) getSelection();
-		for (final RuntimeInfo element : vms) {
-			runtimes.remove(element);
+		for (final RuntimeInfo rt : vms) {
+			runtimes.remove(rt);
+			for (BackendInfo bi : rt.getBackends()) {
+				BackendInfoManager.getDefault().removeElement(bi.getName());
+			}
 		}
 		fRuntimeList.refresh();
 		final IStructuredSelection curr = (IStructuredSelection) getSelection();
@@ -990,6 +995,9 @@ public class RuntimesPreferencePage extends PreferencePage implements
 
 	private void saveData() {
 		RuntimeInfoManager.getDefault().setElements(runtimes);
+		for (RuntimeInfo rt : runtimes) {
+			BackendInfoManager.getDefault().createDefaultBackends(rt);
+		}
 		if (defaultRuntime != null) {
 			RuntimeInfoManager.getDefault().setSelectedKey(
 					defaultRuntime.getName());

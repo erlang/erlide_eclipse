@@ -119,7 +119,8 @@ extends StatusDialog implements IListAdapter<String> {
 
 		final String[] buttons = new String[] {
 				PreferenceMessages.AddRuntimeDialog_add,
-				PreferenceMessages.AddRuntimeDialog_remove, "Move up", "Move down" };
+				PreferenceMessages.AddRuntimeDialog_remove, "Move up",
+				"Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
 		fCodePath.setLabelText("PathA");
@@ -270,14 +271,14 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 	}
 
-	protected void storeValues(BackendInfo vm) {
-		vm.setRuntime(fRuntime.getItems()[fRuntime.getSelectionIndex()]);
-		vm.setName(fName.getText());
-		vm.setNodeName(fNodeName.getText());
-		vm.setCookie(fCookie.getText());
-		vm.setCodePath(fCodePath.getElements());
+	protected void storeValues(BackendInfo backend) {
+		backend.setRuntime(fRuntime.getItems()[fRuntime.getSelectionIndex()]);
+		backend.setName(fName.getText());
+		backend.setNodeName(fNodeName.getText());
+		backend.setCookie(fCookie.getText());
+		backend.setCodePath(fCodePath.getElements());
 		final String argString = fArgs.getText().trim();
-		vm.setArgs(argString);
+		backend.setArgs(argString);
 	}
 
 	protected void setNameStatus(IStatus status) {
@@ -335,7 +336,9 @@ extends StatusDialog implements IListAdapter<String> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt.graphics.Point)
+	 * @see
+	 * org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt.graphics
+	 * .Point)
 	 */
 	@Override
 	protected Point getInitialLocation(Point initialSize) {

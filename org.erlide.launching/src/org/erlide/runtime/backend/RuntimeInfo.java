@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.basicui.util.PreferencesUtils;
@@ -30,15 +31,17 @@ public class RuntimeInfo extends InfoElement {
 	private String fArgs = "";
 
 	private String fVersion;
+	private List<BackendInfo> backends;
 
 	public RuntimeInfo() {
 		super();
+		backends = new ArrayList<BackendInfo>();
 		getCodePath().add(DEFAULT_MARKER);
 	}
 
 	public String getVersion() {
 		if (fVersion == null) {
-			getRuntimeVersion(fHomeDir);
+			fVersion = getRuntimeVersion(fHomeDir);
 		}
 		return fVersion;
 	}
@@ -112,14 +115,30 @@ public class RuntimeInfo extends InfoElement {
 		final File erlexe = new File(otpHome + "/bin/erl.exe");
 		final boolean hasErl = erl.exists() || erlexe.exists();
 
+		final File lib = new File(otpHome + "/lib");
+		final boolean hasLib = lib.isDirectory() && lib.exists();
+
+		return hasErl && hasLib;
+	}
+
+	public static boolean hasCompiler(String otpHome) {
+		// Check if it looks like a ERL_TOP location:
+		if (otpHome == null) {
+			return false;
+		}
+		if (otpHome.length() == 0) {
+			return false;
+		}
+		final File d = new File(otpHome);
+		if (!d.isDirectory()) {
+			return false;
+		}
+
 		final File erlc = new File(otpHome + "/bin/erlc");
 		final File erlcexe = new File(otpHome + "/bin/erlc.exe");
 		final boolean hasErlc = erlc.exists() || erlcexe.exists();
 
-		final File lib = new File(otpHome + "/lib");
-		final boolean hasLib = lib.isDirectory() && lib.exists();
-
-		return hasErl && hasErlc && hasLib;
+		return hasErlc;
 	}
 
 	@Override
@@ -167,6 +186,10 @@ public class RuntimeInfo extends InfoElement {
 			return "";
 		}
 		return key + str;
+	}
+
+	public List<BackendInfo> getBackends() {
+		return backends;
 	}
 
 }
