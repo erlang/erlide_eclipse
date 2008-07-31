@@ -43,7 +43,7 @@ public class ErlParser {
 	 */
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse) {
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);

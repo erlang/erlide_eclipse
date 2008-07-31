@@ -55,7 +55,7 @@ public class IndentAction extends ErlangTextEditorAction {
 
 		final Map<String, String> prefs = IndentationPreferencePage
 				.getKeysAndPrefs();
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		final OtpErlangObject r1 = ErlideIndent.indentLines(b, selection
 				.getOffset(), text, tabw, prefs);
 		return r1;

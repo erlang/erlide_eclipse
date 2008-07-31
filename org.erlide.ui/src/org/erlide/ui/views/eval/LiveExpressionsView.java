@@ -163,7 +163,7 @@ public class LiveExpressionsView extends ViewPart implements
 				return e.fExpr;
 			}
 			final BackendEvalResult r = ErlideBackend.eval(BackendManager
-					.getDefault().getIdeBackend(), e.fExpr + ".", null);
+					.getDefault().getInternalBackend(), e.fExpr + ".", null);
 			if (r.isOk()) {
 				return r.getValue().toString();
 			}
@@ -327,7 +327,7 @@ public class LiveExpressionsView extends ViewPart implements
 						// item.getText(1));
 						// ErlLogger.debug(str);
 						BackendEvalResult r = BackendUtil.eval(BackendManager
-								.getDefault().getIdeBackend(),
+								.getDefault().getInternalBackend(),
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).");
 						if (r.isOk()) {

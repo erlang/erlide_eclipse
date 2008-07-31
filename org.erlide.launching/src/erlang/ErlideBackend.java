@@ -37,9 +37,9 @@ public class ErlideBackend {
 
 		String res;
 		try {
-			RpcResult r = BackendManager.getDefault().getIdeBackend().rpc(
+			RpcResult r = BackendManager.getDefault().getInternalBackend().rpc(
 					mod.atomValue(), "format_error", "x", arg);
-			r = BackendManager.getDefault().getIdeBackend().rpc("lists",
+			r = BackendManager.getDefault().getInternalBackend().rpc("lists",
 					"flatten", "x", r.getValue());
 			res = ((OtpErlangString) r.getValue()).stringValue();
 		} catch (final Exception e) {
@@ -224,9 +224,9 @@ public class ErlideBackend {
 	public static OtpErlangObject call(final String module, final String fun,
 			final int offset, final String text) throws BackendException,
 			RpcException {
+		IBackend b = BackendManager.getDefault().getInternalBackend();
 		try {
-			final OtpErlangObject r1 = BackendManager.getDefault()
-					.getIdeBackend().rpcx(module, fun, "si", text, offset);
+			final OtpErlangObject r1 = b.rpcx(module, fun, "si", text, offset);
 			return r1;
 		} catch (final NoBackendException e) {
 			return new OtpErlangString("");
@@ -236,7 +236,7 @@ public class ErlideBackend {
 	public static OtpErlangObject concreteSyntax(final OtpErlangObject val)
 			throws BackendException, RpcException {
 		try {
-			return BackendManager.getDefault().getIdeBackend().rpcx(
+			return BackendManager.getDefault().getInternalBackend().rpcx(
 					"erlide_syntax", "concrete", "x", val);
 		} catch (final NoBackendException e) {
 			return null;

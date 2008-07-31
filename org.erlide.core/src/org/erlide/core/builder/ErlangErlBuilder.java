@@ -43,7 +43,7 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 		}
 
 		// ?????
-		BackendManager.getDefault().getIdeBackend().addEventListener("build",
+		BackendManager.getDefault().getInternalBackend().addEventListener("build",
 				this);
 
 		while (!monitor.isCanceled()) {

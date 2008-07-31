@@ -149,9 +149,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * Selects the given range on the editor.
 	 * 
 	 * @param newOffset
-	 * 		the selection offset
+	 *            the selection offset
 	 * @param newLength
-	 * 		the selection range
+	 *            the selection range
 	 */
 	protected void selectAndReveal(int newOffset, int newLength) {
 		final ITextEditor editor = getTextEditor();

@@ -52,6 +52,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
@@ -157,7 +158,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -200,7 +201,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		} catch (final CoreException e1) {
 		}
 
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
@@ -486,7 +487,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							// ErlLogger.debug(">>>>> is developer");
 							final OtpErlangBinary code = (OtpErlangBinary) t
 									.elementAt(2);
-							distributeModule(beamf, code);
+							IBackend b = BackendManager.getDefault().get(
+									getProject(), BackendType.EXECUTE);
+							distributeModule(b, beamf, code);
 						}
 					} else {
 						// ErlLogger.debug(">>>>> normal");
@@ -766,10 +769,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return null;
 	}
 
-	private static void distributeModule(final String beamf,
+	private static void distributeModule(IBackend b, final String beamf,
 			final OtpErlangBinary code) {
-		final IBackend b = BackendManager.getDefault().getRemoteBackend();
-		// ErlLogger.debug(" $ distribute " + beamf + " to " + b);
 		if (b == null) {
 			return;
 		}
@@ -789,8 +790,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -818,8 +820,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {

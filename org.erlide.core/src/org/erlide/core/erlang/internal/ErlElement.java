@@ -607,7 +607,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
-				IBackend b = BackendManager.getDefault().getIdeBackend();
+				IBackend b = BackendManager.getDefault().getInternalBackend();
 				return ErlideBackend.prettyPrint(b, e);
 			} catch (final Exception e1) {
 				return "?";

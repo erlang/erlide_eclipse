@@ -46,7 +46,7 @@ public class ErlideDoc {
 		OtpErlangObject res = null;
 		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
-			res = BackendManager.getDefault().getIdeBackend().rpcx(
+			res = BackendManager.getDefault().getInternalBackend().rpcx(
 					"erlide_otp_doc", "get_doc_from_scan_tuples", "ailos",
 					module, offset, imports, stateDir);
 		} catch (final RpcException e) {

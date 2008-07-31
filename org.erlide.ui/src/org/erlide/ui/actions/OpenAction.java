@@ -278,7 +278,7 @@ public class OpenAction extends SelectionDispatchAction {
 	public void run() {
 
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();

@@ -40,7 +40,6 @@ public final class BackendManager implements IResourceChangeListener {
 	private IBackend fLocalBackend;
 	private final Map<String, IBackend> fProjectBackends;
 	private final Object fProjectBackendsLock = new Object();
-	private IBackend fRemoteBackend;
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
@@ -60,7 +59,6 @@ public final class BackendManager implements IResourceChangeListener {
 		fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
 
 		fLocalBackend = null;
-		fRemoteBackend = null;
 		fProjectBackends = new HashMap<String, IBackend>(5);
 		fListeners = new ArrayList<IBackendListener>(5);
 		fPlugins = new ArrayList<ICodeBundle>(5);
@@ -72,7 +70,7 @@ public final class BackendManager implements IResourceChangeListener {
 						| IResourceChangeEvent.POST_CHANGE);
 
 		final EpmdWatchJob job = new EpmdWatchJob();
-		job.schedule(3000);
+		job.schedule(100);
 	}
 
 	public static BackendManager getDefault() {
@@ -141,13 +139,13 @@ public final class BackendManager implements IResourceChangeListener {
 		 */
 	}
 
-	public synchronized IBackend getIdeBackend() {
+	public synchronized IBackend getInternalBackend() {
 		// ErlLogger.debug("** getIdeBackend: " + this + " " + fLocalBackend + "
 		// "
 		// + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
-			ErlLogger.debug("** create IdeBackend: " + this + " "
+			ErlLogger.debug("** create InternalBackend: " + this + " "
 					+ fLocalBackend + " " + Thread.currentThread());
 			fLocalBackend = create(BackendInfoManager.getDefault()
 					.getErlideBackend(), false, true);
@@ -167,11 +165,6 @@ public final class BackendManager implements IResourceChangeListener {
 	public static boolean isTest() {
 		final String test = System.getProperty("erlide.test");
 		return test != null && "true".equals(test);
-	}
-
-	public static int getRetries() {
-		return Integer.parseInt(System.getProperty("erlide.backend.retries",
-				"50"));
 	}
 
 	public void addBackendListener(final IBackendListener listener) {
@@ -260,7 +253,7 @@ public final class BackendManager implements IResourceChangeListener {
 	public void register(final ICodeBundle p) {
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
-			getIdeBackend().getCodeManager().register(p);
+			getInternalBackend().getCodeManager().register(p);
 			forEachProjectBackend(new IBackendVisitor() {
 				public void run(final IBackend b) {
 					b.getCodeManager().register(p);
@@ -271,7 +264,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void removePlugin(final ICodeBundle p) {
 		fPlugins.remove(p);
-		getIdeBackend().getCodeManager().unregister(p);
+		getInternalBackend().getCodeManager().unregister(p);
 		forEachProjectBackend(new IBackendVisitor() {
 			public void run(final IBackend b) {
 				b.getCodeManager().unregister(p);
@@ -334,15 +327,17 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public IBackend getRemoteBackend() {
-		return fRemoteBackend;
+	synchronized public void setEpmdStatus(List<String> started,
+			List<String> stopped) {
+		// TODO for started: make corresponding backend (if any) available
+		for (String b : started) {
+			System.out.println("started: " + b);
+			IBackend bb = null;
+		}
+		// TODO for stopped: make corresponding backend (if any) unavailable
+		for (String b : stopped) {
+			System.out.println("stopped: " + b);
+		}
+
 	}
-
-	public void setEpmdStatus(List<String> started, List<String> stopped) {
-		// TODO Auto-generated method stub
-		// for added: make corresponding backend (if any) available
-		// for added: make corresponding backend (if any) unavailable
-
-	}
-
 }

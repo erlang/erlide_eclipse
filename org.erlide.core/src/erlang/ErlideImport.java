@@ -30,7 +30,7 @@ public class ErlideImport {
 	 */
 	public static ErlProjectImport importProject(final String prefix,
 			final List<String> importSources) {
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		OtpErlangObject res = null;
 		try {
 			res = b.rpcx("erlide_import", "import", "sls", prefix,

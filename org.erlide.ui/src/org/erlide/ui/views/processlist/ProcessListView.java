@@ -80,7 +80,7 @@ public class ProcessListView extends ViewPart {
 			IBackend[] projectBackends = BackendManager.getDefault()
 					.getProjectBackends();
 			IBackend[] result = new IBackend[projectBackends.length + 1];
-			result[0] = BackendManager.getDefault().getIdeBackend();
+			result[0] = BackendManager.getDefault().getInternalBackend();
 			System.arraycopy(projectBackends, 0, result, 1,
 					projectBackends.length);
 			return result;
@@ -284,7 +284,7 @@ public class ProcessListView extends ViewPart {
 
 		// TODO this is wrong - all backends should be inited
 		ErlideProclist.processListInit(BackendManager.getDefault()
-				.getIdeBackend());
+				.getInternalBackend());
 		BackendManager.getDefault().forEachProjectBackend(
 				new IBackendVisitor() {
 
@@ -425,7 +425,7 @@ public class ProcessListView extends ViewPart {
 			final IBackend b = (IBackend) sel.getFirstElement();
 			return b;
 		}
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = BackendManager.getDefault().getInternalBackend();
 		backends.setSelection(new StructuredSelection(b));
 		return b;
 	}

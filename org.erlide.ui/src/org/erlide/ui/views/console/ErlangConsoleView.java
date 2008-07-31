@@ -145,7 +145,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	public ErlangConsoleView() {
 		fDoc = new ErlConsoleDocument();
-		fBackend = BackendManager.getDefault().getIdeBackend();
+		fBackend = BackendManager.getDefault().getInternalBackend();
 		fBackend.addEventListener("io_server", this);
 
 		try {

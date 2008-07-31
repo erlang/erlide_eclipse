@@ -98,7 +98,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		final int lineLength = d.getLineLength(lineN);
 		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
-			final IBackend b = BackendManager.getDefault().getIdeBackend();
+			final IBackend b = BackendManager.getDefault().getInternalBackend();
 			int tabw = ErlideUIPlugin
 					.getDefault()
 					.getPreferenceStore()

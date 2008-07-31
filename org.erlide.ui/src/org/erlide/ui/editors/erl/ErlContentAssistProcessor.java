@@ -77,7 +77,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 			final int k = aprefix.indexOf(':');
-			final IBackend b = BackendManager.getDefault().getIdeBackend();
+			final IBackend b = BackendManager.getDefault().getInternalBackend();
 			if (k >= 0) {
 				final String moduleName = aprefix.substring(0, k);
 				externalCallCompletions(moduleName, offset, aprefix
