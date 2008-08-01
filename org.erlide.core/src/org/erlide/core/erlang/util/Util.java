@@ -354,7 +354,7 @@ public class Util {
 	public static final boolean endsWithIgnoreCase(final String str,
 			final String end) {
 
-		if (str == end) {
+		if (str == null && end == null) {
 			return true;
 		}
 		if (str == null) {
@@ -362,6 +362,9 @@ public class Util {
 		}
 		if (end == null) {
 			return false;
+		}
+		if (str.equals(end)) {
+			return true;
 		}
 
 		final int strLength = str.length();
@@ -1008,7 +1011,7 @@ public class Util {
 	private static void quickSort(final char[][] list, int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
-		final char[] mid = list[(left + right) / 2];
+		final char[] mid = list[left / 2 + right / 2];
 		do {
 			while (compare(list[left], mid) < 0) {
 				left++;
@@ -1128,7 +1131,7 @@ public class Util {
 			int right, final int[] sortOrder) {
 		final int original_left = left;
 		final int original_right = right;
-		final int mid = sortOrder[(left + right) / 2];
+		final int mid = sortOrder[left / 2 + right / 2];
 		do {
 			while (sortOrder[left] < mid) {
 				left++;

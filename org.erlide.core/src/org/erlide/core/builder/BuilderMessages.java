@@ -21,32 +21,19 @@ public final class BuilderMessages extends NLS {
 	}
 
 	public static String buildOneWarning;
-
 	public static String build_multipleWarnings;
-
 	public static String build_multipleErrors;
-
-	public static Object build_oneError;
-
+	public static String build_oneError;
 	public static String build_compiling;
-
 	public static String build_done;
-
-	public static Object build_foundHeader;
-
-	public static Object build_fixedHeader;
-
+	public static String build_foundHeader;
+	public static String build_fixedHeader;
 	public static String build_inconsistentProject;
-
 	public static String build_incompleteClassPath;
-
 	public static String build_missingSourceFile;
-
 	public static String build_preparingBuild;
-
 	public static String build_readingDelta;
-
-	public static int build_abortDueToClasspathProblems;
+	public static String build_abortDueToClasspathProblems;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, BuilderMessages.class);

@@ -211,7 +211,12 @@ public class ErlangProjectProperties {
 							fExternalModules);
 
 			try {
-				prefs.store(new FileOutputStream(codepath), null);
+				FileOutputStream out = new FileOutputStream(codepath);
+				try {
+					prefs.store(out, null);
+				} finally {
+					out.close();
+				}
 			} catch (final IOException e) {
 			}
 		}

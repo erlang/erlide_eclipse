@@ -75,7 +75,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * Creates a OverflowingLRUCache.
 	 * 
 	 * @param size
-	 * 		Size limit of cache.
+	 *            Size limit of cache.
 	 */
 	public OverflowingLRUCache(int size) {
 		this(size, 0);
@@ -85,9 +85,9 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * Creates a OverflowingLRUCache.
 	 * 
 	 * @param size
-	 * 		Size limit of cache.
+	 *            Size limit of cache.
 	 * @param overflow
-	 * 		Size of the overflow.
+	 *            Size of the overflow.
 	 */
 	public OverflowingLRUCache(int size, int overflow) {
 		super(size);
@@ -187,7 +187,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * since some elements cannot be removed until they are saved.
 	 * 
 	 * @param space
-	 * 		Amount of space to free up
+	 *            Amount of space to free up
 	 */
 	@Override
 	protected boolean makeSpace(int space) {
@@ -300,8 +300,8 @@ abstract public class OverflowingLRUCache extends LRUCache {
 			}
 		}
 
-		for (Object element : h.keySet()) {
-			ErlLogger.debug("%s", h.get(element));
+		for (Object element : h.entrySet()) {
+			ErlLogger.debug("%s", element);
 		}
 	}
 
@@ -310,8 +310,8 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * <code>privateRemoveEntry</code> with the external functionality enabled.
 	 * 
 	 * @param shuffle
-	 * 		indicates whether we are just shuffling the queue (in which case,
-	 * 		the entry table is not modified).
+	 *            indicates whether we are just shuffling the queue (in which
+	 *            case, the entry table is not modified).
 	 */
 	@Override
 	protected void privateRemoveEntry(LRUCacheEntry entry, boolean shuffle) {
@@ -328,8 +328,8 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * not removed and the pointers are not changed.
 	 * 
 	 * @param shuffle
-	 * 		indicates whether we are just shuffling the queue (in which case,
-	 * 		the entry table is not modified).
+	 *            indicates whether we are just shuffling the queue (in which
+	 *            case, the entry table is not modified).
 	 */
 	protected void privateRemoveEntry(LRUCacheEntry entry, boolean shuffle,
 			boolean external) {
@@ -376,9 +376,9 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * Sets the value in the cache at the given key. Returns the value.
 	 * 
 	 * @param key
-	 * 		Key of object to add.
+	 *            Key of object to add.
 	 * @param value
-	 * 		Value of object to add.
+	 *            Value of object to add.
 	 * @return added value.
 	 */
 	@Override
@@ -427,7 +427,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * is not in the cache, returns null.
 	 * 
 	 * @param key
-	 * 		Key of object to remove from cache.
+	 *            Key of object to remove from cache.
 	 * @return Value removed from cache.
 	 */
 	public Object remove(Object key) {
@@ -439,9 +439,9 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * space is reclaimed when the cache exceeds its space limit.
 	 * 
 	 * @param newLoadFactor
-	 * 		double
+	 *            double
 	 * @throws IllegalArgumentException
-	 * 		when the new load factor is not in (0.0, 1.0]
+	 *             when the new load factor is not in (0.0, 1.0]
 	 */
 	public void setLoadFactor(double newLoadFactor) {
 		if (newLoadFactor <= 1.0 && newLoadFactor > 0.0) {
@@ -456,7 +456,7 @@ abstract public class OverflowingLRUCache extends LRUCache {
 	 * Sets the maximum amount of space that the cache can store
 	 * 
 	 * @param limit
-	 * 		Number of units of cache space
+	 *            Number of units of cache space
 	 */
 	@Override
 	public void setSpaceLimit(int limit) {

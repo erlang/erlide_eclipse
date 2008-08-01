@@ -159,7 +159,9 @@ public class ErlProject extends Openable implements IErlProject,
 			e.printStackTrace();
 		}
 		setChildren(modules);
-		ErlLogger.debug("---YY " + fChildren.size());
+		if (fChildren != null) {
+			ErlLogger.debug("---YY " + fChildren.size());
+		}
 
 		return true;
 	}

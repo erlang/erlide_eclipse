@@ -327,9 +327,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			 * .otp.erlang.OtpErlangObject)
 			 */
 			public void handleEvent(final OtpErlangObject msg) {
-				if (msg != null) {
-					ErlLogger.debug("### got msg: " + msg);
+				if (msg == null) {
+					return;
 				}
+				ErlLogger.debug("### got msg: " + msg);
 				// TODO Fler events från erlide_dbg_mon...
 				final OtpErlangTuple t = (OtpErlangTuple) msg;
 				final OtpErlangObject el0 = t.elementAt(0);

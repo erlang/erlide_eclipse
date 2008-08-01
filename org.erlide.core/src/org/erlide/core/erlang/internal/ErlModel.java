@@ -38,10 +38,10 @@ import org.erlide.core.erlang.util.Util;
 /**
  * Implementation of
  * <code>IErlModel<code>. The Erlang Model maintains a cache of
- * active <code>IErlProject</code>s in a workspace. A Erlang Model is specific to a
- * workspace. To retrieve a workspace's model, use the
+ * active <code>IErlProject</code>s in a workspace. A Erlang Model is specific
+ * to a workspace. To retrieve a workspace's model, use the
  * <code>#getErlangModel(IWorkspace)</code> method.
- *
+ * 
  * @see IErlModel
  */
 public class ErlModel extends Openable implements IErlModel {
@@ -464,7 +464,7 @@ public class ErlModel extends Openable implements IErlModel {
 	public List<IErlModule> findModule(String project, String module) {
 		final ArrayList<IErlModule> mods = new ArrayList<IErlModule>(20);
 
-		if (module == UNKNOWN_MODULE) {
+		if (UNKNOWN_MODULE.equals(module)) {
 			module = "*";
 		}
 		final IErlProject prj = getErlangProject(project);
