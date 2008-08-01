@@ -93,7 +93,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		}
 		final String prefix = mainPage.getProjectPath().toString();
 		final ErlProjectImport epi = ErlideImport.importProject(BackendManager
-				.getDefault().getInternalBackend(), prefix, filesAndDirs);
+				.getDefault().getIdeBackend(), prefix, filesAndDirs);
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		for (final Object o : selectedResources) {
 			final FileSystemElement fse = (FileSystemElement) o;

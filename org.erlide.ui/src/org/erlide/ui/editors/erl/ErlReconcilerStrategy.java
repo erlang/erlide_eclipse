@@ -95,7 +95,7 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void notify(final OtpErlangObject msg) {
-		BackendManager.getDefault().getInternalBackend().send("erlide_code_db", msg);
+		BackendManager.getDefault().getIdeBackend().send("erlide_code_db", msg);
 	}
 
 	public void setProgressMonitor(final IProgressMonitor monitor) {

@@ -29,6 +29,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.ErlEventLoop;
 import org.erlide.jinterface.rpc.IErlEventHandler;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -68,7 +69,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
-	public ErlangDebugTarget(final ILaunch launch, final IBackend b,
+	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
 			final IProject project, final IProject[] otherProjects) {
 		super(null);
 		fBackend = b;

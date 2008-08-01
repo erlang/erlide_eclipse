@@ -25,7 +25,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -77,7 +77,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 			final int k = aprefix.indexOf(':');
-			final IBackend b = BackendManager.getDefault().getInternalBackend();
+			final BuildBackend b = BackendManager.getDefault()
+					.getIdeBackend().asBuild();
 			if (k >= 0) {
 				final String moduleName = aprefix.substring(0, k);
 				externalCallCompletions(moduleName, offset, aprefix
@@ -94,7 +95,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private void moduleCompletions(final int offset, final String aprefix,
 			final List<ICompletionProposal> result, final int k,
-			final IBackend b) {
+			final BuildBackend b) {
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
 		OtpErlangObject res = null;
@@ -118,7 +119,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private void externalCallCompletions(final String moduleName,
 			final int offset, final String aprefix,
 			final List<ICompletionProposal> result, final int k,
-			final IBackend b) throws ErlangRpcException, BackendException,
+			final BuildBackend b) throws ErlangRpcException, BackendException,
 			RpcException, OtpErlangRangeException {
 		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
@@ -145,7 +146,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						docStr = ((OtpErlangString) elt).stringValue();
 					}
 				}
-				final String cpl = funWithParameters.substring(aprefix.length());
+				final String cpl = funWithParameters
+						.substring(aprefix.length());
 				final List<Point> offsetsAndLengths = getOffsetsAndLengths(
 						parOffsets, offset);
 				int offs = cpl.length();

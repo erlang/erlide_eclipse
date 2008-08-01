@@ -44,6 +44,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IBackendVisitor;
@@ -80,7 +81,7 @@ public class ProcessListView extends ViewPart {
 			IBackend[] projectBackends = BackendManager.getDefault()
 					.getProjectBackends();
 			IBackend[] result = new IBackend[projectBackends.length + 1];
-			result[0] = BackendManager.getDefault().getInternalBackend();
+			result[0] = BackendManager.getDefault().getIdeBackend();
 			System.arraycopy(projectBackends, 0, result, 1,
 					projectBackends.length);
 			return result;
@@ -136,7 +137,7 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public Object[] getElements(Object parent) {
-			final IBackend bk = getBackend();
+			final ExecutionBackend bk = getBackend();
 			bk.addEventListener("processlist", this);
 
 			final OtpErlangList r = ErlideProclist.getProcessList(bk);
@@ -283,13 +284,14 @@ public class ProcessListView extends ViewPart {
 		label.setText("Erlang backend node");
 
 		// TODO this is wrong - all backends should be inited
-		ErlideProclist.processListInit(BackendManager.getDefault()
-				.getInternalBackend());
+		ExecutionBackend ideBackend = BackendManager.getDefault()
+				.getIdeBackend().asExecution();
+		ErlideProclist.processListInit(ideBackend);
 		BackendManager.getDefault().forEachProjectBackend(
 				new IBackendVisitor() {
 
 					public void run(IBackend b) {
-						ErlideProclist.processListInit(b);
+						ErlideProclist.processListInit(b.asExecution());
 					}
 				});
 
@@ -418,16 +420,16 @@ public class ProcessListView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public IBackend getBackend() {
+	public ExecutionBackend getBackend() {
 		final IStructuredSelection sel = (IStructuredSelection) backends
 				.getSelection();
 		if (sel.getFirstElement() != null) {
 			final IBackend b = (IBackend) sel.getFirstElement();
-			return b;
+			return b.asExecution();
 		}
-		final IBackend b = BackendManager.getDefault().getInternalBackend();
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		backends.setSelection(new StructuredSelection(b));
-		return b;
+		return b.asExecution();
 	}
 
 }

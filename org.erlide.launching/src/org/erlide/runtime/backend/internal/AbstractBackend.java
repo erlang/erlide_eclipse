@@ -31,7 +31,6 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.IdeBackend;
@@ -58,7 +57,7 @@ import erlang.ErlideBackend;
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public abstract class AbstractBackend extends OtpNodeStatus implements
-		IBackend, IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
+		IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = "true".equals(System
@@ -91,7 +90,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	}
 
 	private ThreadLocalMbox ftMBox; // outgoing rpc and send
-	private OtpMbox ftRpcBox; // ingoing rpc and events
+	private OtpMbox ftRpcBox; // incoming rpc and events
 	protected String fLabel;
 	protected static String fHost;
 	protected OtpNode fNode;

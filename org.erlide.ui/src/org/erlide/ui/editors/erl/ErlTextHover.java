@@ -26,6 +26,8 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -66,7 +68,9 @@ public class ErlTextHover implements ITextHover,
 		final int offset = hoverRegion.getOffset();
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		r1 = ErlideDoc.getDocFromScan(offset, stateDir, ErlScanner
+		BuildBackend b = BackendManager.getDefault().getIdeBackend()
+				.asBuild();
+		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;

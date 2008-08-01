@@ -55,7 +55,8 @@ public class BackendUtil {
 	 * @return OtpErlangObject
 	 * @throws ErlangEvalException
 	 */
-	public static BackendEvalResult eval(final IBackend b, final String string) {
+	public static BackendEvalResult eval(final ExecutionBackend b,
+			final String string) {
 		return ErlideBackend.eval(b, string, null);
 	}
 

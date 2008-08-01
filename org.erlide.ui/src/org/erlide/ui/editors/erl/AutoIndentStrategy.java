@@ -24,7 +24,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
@@ -98,7 +98,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		final int lineLength = d.getLineLength(lineN);
 		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
-			final IBackend b = BackendManager.getDefault().getInternalBackend();
+			final IdeBackend b = BackendManager.getDefault()
+					.getIdeBackend();
 			int tabw = ErlideUIPlugin
 					.getDefault()
 					.getPreferenceStore()

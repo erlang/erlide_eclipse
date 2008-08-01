@@ -25,7 +25,7 @@ public class ErlideScanner2 {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
-			BackendManager.getDefault().getInternalBackend().rpc(MODULE,
+			BackendManager.getDefault().getIdeBackend().rpc(MODULE,
 					"initialScan", "asss", module, moduleFileName, initialText,
 					stateDir);
 		} catch (final Exception e) {
@@ -35,7 +35,7 @@ public class ErlideScanner2 {
 
 	public static void destroy(final String module) {
 		try {
-			BackendManager.getDefault().getInternalBackend().rpcx(MODULE, "destroy",
+			BackendManager.getDefault().getIdeBackend().rpcx(MODULE, "destroy",
 					"a", module);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
@@ -46,7 +46,7 @@ public class ErlideScanner2 {
 	public static ErlToken getTokenAt(final String module, final int offset) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getInternalBackend().rpcx(MODULE,
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(MODULE,
 					"getTokenAt", "ai", module, offset);
 			// ErlLogger.debug("getTokenAt -> " + r1);
 		} catch (final Exception e) {
@@ -106,7 +106,7 @@ public class ErlideScanner2 {
 			final int removeLength, final String newText) {
 		try {
 			final OtpErlangObject r = BackendManager.getDefault()
-					.getInternalBackend().rpcx(MODULE, "replaceText", "aiis",
+					.getIdeBackend().rpcx(MODULE, "replaceText", "aiis",
 							module, offset, removeLength, newText);
 			if (r instanceof OtpErlangTuple) {
 				ErlLogger.error("GOT::" + r.toString());
@@ -131,7 +131,7 @@ public class ErlideScanner2 {
 			final int offset) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getInternalBackend().rpcx(
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
 					"erlide_scan", "string", "sx", string, TUPLE00);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
@@ -172,7 +172,7 @@ public class ErlideScanner2 {
 			throws BackendException {
 		try {
 			final OtpErlangObject o = BackendManager.getDefault()
-					.getInternalBackend().rpcx("erlide_scanner2", "check_all", "as",
+					.getIdeBackend().rpcx("erlide_scanner2", "check_all", "as",
 							module, text);
 			return o.toString();
 		} catch (final RpcException e) {

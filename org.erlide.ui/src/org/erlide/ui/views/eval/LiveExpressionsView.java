@@ -62,6 +62,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.IErlideUIConstants;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -80,16 +81,12 @@ public class LiveExpressionsView extends ViewPart implements
 	public static final String ID = "org.erlide.ui.views.eval.LiveExpressionsView";
 
 	private Label label;
-
 	private List<LiveExpr> exprs;
-
 	TableViewer viewer;
-
 	private Action refreshAction;
-
 	private Action fAddAction;
-
 	Action fRemoveAction;
+	ExecutionBackend fBackend;
 
 	static private class LiveExpr {
 
@@ -154,7 +151,7 @@ public class LiveExpressionsView extends ViewPart implements
 
 	}
 
-	static class ViewLabelProvider extends LabelProvider implements
+	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
 		public String getColumnText(Object obj, int index) {
@@ -162,8 +159,8 @@ public class LiveExpressionsView extends ViewPart implements
 			if (index == 0) {
 				return e.fExpr;
 			}
-			final BackendEvalResult r = ErlideBackend.eval(BackendManager
-					.getDefault().getInternalBackend(), e.fExpr + ".", null);
+			final BackendEvalResult r = ErlideBackend.eval(fBackend, e.fExpr
+					+ ".", null);
 			if (r.isOk()) {
 				return r.getValue().toString();
 			}
@@ -193,6 +190,10 @@ public class LiveExpressionsView extends ViewPart implements
 	public LiveExpressionsView() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
 				IResourceChangeEvent.POST_BUILD);
+
+		// TODO make the backend configurable (as for console)
+		fBackend = (ExecutionBackend) BackendManager.getDefault()
+				.getIdeBackend();
 	}
 
 	/**
@@ -326,8 +327,7 @@ public class LiveExpressionsView extends ViewPart implements
 						// str = BackendUtil.prettyPrint(bk,
 						// item.getText(1));
 						// ErlLogger.debug(str);
-						BackendEvalResult r = BackendUtil.eval(BackendManager
-								.getDefault().getInternalBackend(),
+						BackendEvalResult r = BackendUtil.eval(fBackend,
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).");
 						if (r.isOk()) {

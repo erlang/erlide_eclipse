@@ -27,7 +27,7 @@ public abstract class AbstractErlangTest {
 
 	@Before
 	public void setUp() throws Exception {
-		fBackend = BackendManager.getDefault().getInternalBackend();
+		fBackend = BackendManager.getDefault().getIdeBackend();
 	}
 
 	@After

@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -33,7 +33,7 @@ public class ErlideIndent {
 	}
 
 	@SuppressWarnings("boxing")
-	public static IndentResult indentLine(final IBackend b,
+	public static IndentResult indentLine(final IdeBackend b,
 			final String oldLine, final String txt, String insertedText,
 			final int tabw, final Map<String, String> prefs)
 			throws ErlangRpcException, BackendException, RpcException,
@@ -45,7 +45,7 @@ public class ErlideIndent {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject indentLines(final IBackend b,
+	public static OtpErlangObject indentLines(final IdeBackend b,
 			final int offset, final String text, final int tabw,
 			final Map<String, String> prefs) throws RpcException,
 			BackendException {

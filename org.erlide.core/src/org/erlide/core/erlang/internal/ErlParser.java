@@ -43,7 +43,7 @@ public class ErlParser {
 	 */
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse) {
-		final IdeBackend b = BackendManager.getDefault().getInternalBackend();
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
@@ -157,7 +157,7 @@ public class ErlParser {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
 			final String msg = ErlideBackend.format_error(BackendManager
-					.getDefault().getInternalBackend(), er);
+					.getDefault().getIdeBackend(), er);
 
 			final ErlMessage e = new ErlMessage(parent,
 					ErlMessage.MessageKind.ERROR, msg);
@@ -445,7 +445,7 @@ public class ErlParser {
 			return new OtpErlangList(res);
 		}
 		try {
-			return ErlideBackend.concreteSyntax(val);
+			return ErlideBackend.concreteSyntax(BackendManager.getDefault().getIdeBackend(), val);
 		} catch (final Exception e) {
 			return val;
 		}

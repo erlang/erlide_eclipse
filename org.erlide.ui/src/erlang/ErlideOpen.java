@@ -20,7 +20,7 @@ public class ErlideOpen {
 
 	public static String getIncludeLib(String s) throws ErlangRpcException,
 			BackendException, RpcException {
-		final IBackend b = BackendManager.getDefault().getInternalBackend();
+		final IBackend b = BackendManager.getDefault().getIdeBackend();
 		final OtpErlangObject t = b.rpcx("erlide_open", "get_include_lib",
 				null, s);
 		if (t instanceof OtpErlangTuple) {

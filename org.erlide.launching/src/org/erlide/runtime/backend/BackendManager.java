@@ -154,7 +154,7 @@ public final class BackendManager implements IResourceChangeListener {
 		 */
 	}
 
-	public synchronized IdeBackend getInternalBackend() {
+	public synchronized IdeBackend getIdeBackend() {
 		// ErlLogger.debug("** getIdeBackend: " + this + " " + fLocalBackend + "
 		// "
 		// + Thread.currentThread());
@@ -269,7 +269,7 @@ public final class BackendManager implements IResourceChangeListener {
 	public void register(final ICodeBundle p) {
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
-			getInternalBackend().getCodeManager().register(p);
+			getIdeBackend().getCodeManager().register(p);
 			forEachProjectBackend(new IBackendVisitor() {
 				public void run(final IBackend b) {
 					b.getCodeManager().register(p);
@@ -280,7 +280,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void removePlugin(final ICodeBundle p) {
 		fPlugins.remove(p);
-		getInternalBackend().getCodeManager().unregister(p);
+		getIdeBackend().getCodeManager().unregister(p);
 		forEachProjectBackend(new IBackendVisitor() {
 			public void run(final IBackend b) {
 				b.getCodeManager().unregister(p);

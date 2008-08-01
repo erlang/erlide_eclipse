@@ -737,7 +737,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 							element);
 					final String path = element.getLocation().append(
 							prefs.getOutputDir()).toString();
-					BackendManager.getDefault().getInternalBackend()
+					BackendManager.getDefault().getIdeBackend()
 							.getCodeManager()
 							.addPath(prefs.getUsePathZ(), path);
 				}

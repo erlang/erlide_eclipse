@@ -31,7 +31,7 @@ import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.ICodeManager;
 import org.osgi.framework.Bundle;
 
@@ -42,7 +42,7 @@ import erlang.ErlideBackend;
 
 public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
-	private final IBackend fBackend;
+	private final ExecutionBackend fBackend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
@@ -50,7 +50,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private final List<ICodeBundle> plugins;
 
 	// only to be called by AbstractBackend
-	CodeManager(IBackend b) {
+	CodeManager(ExecutionBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);

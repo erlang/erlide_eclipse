@@ -2,6 +2,7 @@ package erlang;
 
 import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -13,7 +14,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class ErlangCode {
 
-	public static void addPathA(final IBackend fBackend, final String path) {
+	public static void addPathA(final ExecutionBackend fBackend,
+			final String path) {
 		try {
 			fBackend.rpc("code", "add_patha", "s", path);
 		} catch (final Exception e) {
@@ -21,7 +23,8 @@ public class ErlangCode {
 		}
 	}
 
-	public static void addPathZ(final IBackend fBackend, final String path) {
+	public static void addPathZ(final ExecutionBackend fBackend,
+			final String path) {
 		try {
 			fBackend.rpc("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
@@ -29,7 +32,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathZ(final IBackend fBackend, String path) {
+	public static void removePathZ(final ExecutionBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			final RpcResult rr = fBackend.rpc("filename", "join", "x",
@@ -44,7 +47,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathA(final IBackend fBackend, String path) {
+	public static void removePathA(final ExecutionBackend fBackend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			final RpcResult rr = fBackend.rpc("filename", "join", "x",

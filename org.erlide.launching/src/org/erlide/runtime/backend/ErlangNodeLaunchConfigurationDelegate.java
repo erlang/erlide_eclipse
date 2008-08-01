@@ -109,8 +109,12 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 							3000);
 				}
 			}// make a nice little BackEnd for it
-			final IBackend backend = getBackend(label);
+			final ExecutionBackend backend = getBackend(label);
 			// backend.setLabel(label);
+			if (backend == null) {
+				ErlLogger.error("Launch: got null backend!");
+				return;
+			}
 			backend.setRuntime(process);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load the debugger code on this erlang node
@@ -150,7 +154,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 	}
 
-	private void interpretAll(final IBackend backend, final IProject project) {
+	private void interpretAll(final ExecutionBackend backend,
+			final IProject project) {
 		final List<String> beams = new ArrayList<String>();
 		final List<String> erls = new ArrayList<String>();
 		final Map<String, String> erlLocations = new TreeMap<String, String>();
@@ -220,7 +225,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		}
 	}
 
-	public IBackend getBackend(final String name) {
+	public ExecutionBackend getBackend(final String name) {
 		return null;
 		// TODO BackendManager.getDefault().getNamedBackend(name, false);
 	}
@@ -228,11 +233,5 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {
 		return "";
 	}
-
-	/* NOT USED */
-	/*
-	 * private boolean useSeparateNode(ILaunchConfiguration configuration) { //
-	 * false = use project's backend // true = start new backend return false; }
-	 */
 
 }

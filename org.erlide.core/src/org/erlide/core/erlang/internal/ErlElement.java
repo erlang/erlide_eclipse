@@ -35,7 +35,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -80,14 +80,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public int fOccurrenceCount = 1;
 
 	/**
-	 * This element's parent, or <code>null</code> if this element does not
-	 * have a parent.
+	 * This element's parent, or <code>null</code> if this element does not have
+	 * a parent.
 	 */
 	protected IErlElement fParent;
 
 	/**
-	 * This element's name, or an empty <code>String</code> if this element
-	 * does not have a name.
+	 * This element's name, or an empty <code>String</code> if this element does
+	 * not have a name.
 	 */
 	protected String fName;
 
@@ -208,11 +208,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Returns a collection of (immediate) children of this node of the
 	 * specified type.
 	 * 
-	 * @param type -
-	 *            one of the constants defined by IErlElement
+	 * @param type
+	 *            - one of the constants defined by IErlElement
 	 */
-	public ArrayList<? extends IErlElement> getChildrenOfType(
-			Kind type) throws ErlModelException {
+	public ArrayList<? extends IErlElement> getChildrenOfType(Kind type)
+			throws ErlModelException {
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
 		for (IErlElement i : getChildren()) {
 			if (i.getKind() == type) {
@@ -282,8 +282,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 	/**
 	 * Returns the element that is located at the given source position in this
-	 * element. This is a helper method for <code>IErlModule#getElementAt</code>,
-	 * and only works on compilation units and types. The position given is
+	 * element. This is a helper method for <code>IErlModule#getElementAt</code>
+	 * , and only works on compilation units and types. The position given is
 	 * known to be within this element's source range already, and if no finer
 	 * grained element is found at the position, this element is returned.
 	 */
@@ -607,7 +607,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
-				IBackend b = BackendManager.getDefault().getInternalBackend();
+				IdeBackend b = BackendManager.getDefault().getIdeBackend();
 				return ErlideBackend.prettyPrint(b, e);
 			} catch (final Exception e1) {
 				return "?";

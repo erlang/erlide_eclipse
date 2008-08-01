@@ -204,7 +204,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		// FIXME
 		final BuildBackend b = (BuildBackend) BackendManager.getDefault()
-				.getInternalBackend();
+				.getIdeBackend();
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
