@@ -73,12 +73,12 @@ public class BackendUtil {
 	}
 
 	public static void generateRpcStub(final String className,
-			final boolean onlyDeclared, final IBackend b) {
+			final boolean onlyDeclared, final BuildBackend b) {
 		generateRpcStub(RpcConverter.getClassByName(className), onlyDeclared, b);
 	}
 
 	public static void generateRpcStub(final Class<?> cls,
-			final boolean onlyDeclared, final IBackend b) {
+			final boolean onlyDeclared, final BuildBackend b) {
 		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		ErlideBackend.generateRpcStub(b, s);
 	}

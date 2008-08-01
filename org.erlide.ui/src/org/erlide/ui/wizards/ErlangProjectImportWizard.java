@@ -40,7 +40,6 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -93,8 +92,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			filesAndDirs.add(s);
 		}
 		final String prefix = mainPage.getProjectPath().toString();
-		final ErlProjectImport epi = ErlideImport.importProject(prefix,
-				filesAndDirs);
+		final ErlProjectImport epi = ErlideImport.importProject(BackendManager
+				.getDefault().getInternalBackend(), prefix, filesAndDirs);
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		for (final Object o : selectedResources) {
 			final FileSystemElement fse = (FileSystemElement) o;
@@ -312,8 +311,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project, BackendType.EXECUTE)
-					.getCodeManager().addPath(prefs.getUsePathZ(), out);
+			BackendManager.getDefault().getExecution(project).getCodeManager()
+					.addPath(prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

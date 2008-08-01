@@ -196,7 +196,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 						.setEnabled(!executionButton.getSelection());
 			}
 		});
-		executionButton.setSelection(prefs.getBackendName(BackendType.EXECUTE)
+		executionButton.setSelection(prefs.getBackendName(BackendType.EXECUTION)
 				.equals(prefs.getBackendName(BackendType.IDE)));
 		executionButton.setText("same as \"build\"");
 		executionBackendName.setEnabled(!executionButton.getSelection());
@@ -243,7 +243,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		// prefs.setExternalModules(externalIncludes.getText());
 		prefs.setBackendName(BackendType.IDE, ideBackendName.getText());
 		prefs.setBackendName(BackendType.BUILD, buildBackendName.getText());
-		prefs.setBackendName(BackendType.EXECUTE, executionBackendName
+		prefs.setBackendName(BackendType.EXECUTION, executionBackendName
 				.getText());
 		prefs.store();
 		return true;

@@ -4,7 +4,9 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
@@ -22,7 +24,7 @@ public class ErlideBackend {
 
 	private static final String ERL_BACKEND = "erlide_backend";
 
-	public static void init(IBackend backend, String javaNode) {
+	public static void init(IdeBackend backend, String javaNode) {
 		try {
 			backend.rpcx(ERL_BACKEND, "init", "a", javaNode);
 		} catch (final Exception e) {
@@ -30,17 +32,16 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String format_error(final OtpErlangObject object) {
+	public static String format_error(final IdeBackend b,
+			final OtpErlangObject object) {
 		final OtpErlangTuple err = (OtpErlangTuple) object;
 		final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
 		final OtpErlangObject arg = err.elementAt(2);
 
 		String res;
 		try {
-			RpcResult r = BackendManager.getDefault().getInternalBackend().rpc(
-					mod.atomValue(), "format_error", "x", arg);
-			r = BackendManager.getDefault().getInternalBackend().rpc("lists",
-					"flatten", "x", r.getValue());
+			RpcResult r = b.rpc(mod.atomValue(), "format_error", "x", arg);
+			r = b.rpc("lists", "flatten", "x", r.getValue());
 			res = ((OtpErlangString) r.getValue()).stringValue();
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -49,7 +50,7 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static String format(final IBackend b, final String fmt,
+	public static String format(final IdeBackend b, final String fmt,
 			final OtpErlangObject... args) {
 		try {
 			final String r = b.rpc(ERL_BACKEND, "format", "slx", fmt, args)
@@ -68,7 +69,7 @@ public class ErlideBackend {
 	 * @return OtpErlangobject
 	 * @throws ErlangParseException
 	 */
-	public static OtpErlangObject parseTerm(final IBackend b,
+	public static OtpErlangObject parseTerm(final IdeBackend b,
 			final String string) throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
@@ -91,7 +92,7 @@ public class ErlideBackend {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static OtpErlangObject scanString(final IBackend b,
+	public static OtpErlangObject scanString(final IdeBackend b,
 			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
@@ -175,7 +176,7 @@ public class ErlideBackend {
 		return result;
 	}
 
-	public static void generateRpcStub(final IBackend b, final String s) {
+	public static void generateRpcStub(final BuildBackend b, final String s) {
 		// try {
 		// final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 		// if (!r.isOk()) {

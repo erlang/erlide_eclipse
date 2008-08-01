@@ -22,7 +22,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
@@ -100,9 +99,9 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 					// remove code path to backend
 					final String out = project.getLocation().append(
 							prefs.getOutputDir()).toString();
-					BackendManager.getDefault().get(project,
-							BackendType.EXECUTE).getCodeManager().removePath(
-							prefs.getUsePathZ(), out);
+					BackendManager.getDefault().getExecution(project)
+							.getCodeManager().removePath(prefs.getUsePathZ(),
+									out);
 					return;
 				}
 			}
@@ -117,8 +116,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().get(project, BackendType.EXECUTE)
-					.getCodeManager().addPath(prefs.getUsePathZ(), out);
+			BackendManager.getDefault().getExecution(project).getCodeManager()
+					.addPath(prefs.getUsePathZ(), out);
 
 		} catch (final CoreException e) {
 		}

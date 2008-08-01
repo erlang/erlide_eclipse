@@ -29,13 +29,14 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties {
 
 	public enum BackendType {
-		IDE, BUILD, EXECUTE
+		IDE, BUILD, EXECUTION
 	};
 
 	private static final String PATH_SEP = ";";
@@ -62,7 +63,7 @@ public class ErlangProjectProperties {
 				IPrefConstants.DEFAULT_IDE_BACKEND_NAME);
 		fBackendNames.put(BackendType.BUILD,
 				IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
-		fBackendNames.put(BackendType.EXECUTE,
+		fBackendNames.put(BackendType.EXECUTION,
 				IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME);
 	}
 
@@ -114,7 +115,7 @@ public class ErlangProjectProperties {
 			fBackendNames.put(BackendType.BUILD, prefs.getProperty(
 					IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
 					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME));
-			fBackendNames.put(BackendType.EXECUTE, prefs.getProperty(
+			fBackendNames.put(BackendType.EXECUTION, prefs.getProperty(
 					IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
 					IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME));
 			fExternalModules = prefs.getProperty(
@@ -146,7 +147,7 @@ public class ErlangProjectProperties {
 			fBackendNames.put(BackendType.BUILD, node.get(
 					IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
 					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME));
-			fBackendNames.put(BackendType.EXECUTE, node.get(
+			fBackendNames.put(BackendType.EXECUTION, node.get(
 					IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
 					IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME));
 			fExternalModules = node.get(
@@ -177,7 +178,7 @@ public class ErlangProjectProperties {
 		node.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fBackendNames
 				.get(BackendType.BUILD));
 		node.put(IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME, fBackendNames
-				.get(BackendType.EXECUTE));
+				.get(BackendType.EXECUTION));
 		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
@@ -205,7 +206,7 @@ public class ErlangProjectProperties {
 			prefs.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fBackendNames
 					.get(BackendType.BUILD));
 			prefs.put(IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
-					fBackendNames.get(BackendType.EXECUTE));
+					fBackendNames.get(BackendType.EXECUTION));
 			prefs
 					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
 							fExternalModules);
@@ -244,8 +245,7 @@ public class ErlangProjectProperties {
 
 	public void setOutputDir(String outputDir) {
 		if (!fOutputDir.equals(outputDir)) {
-			IBackend b = BackendManager.getDefault().get(project,
-					BackendType.BUILD);
+			BuildBackend b = BackendManager.getDefault().getBuild(project);
 
 			String p = project.getLocation().append(fOutputDir).toString();
 			b.getCodeManager().removePath(getUsePathZ(), p);
@@ -263,8 +263,8 @@ public class ErlangProjectProperties {
 	public void setUsePathZ(boolean pz) {
 		boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
-			IBackend b = BackendManager.getDefault().get(project,
-					BackendType.EXECUTE);
+			ExecutionBackend b = BackendManager.getDefault().getExecution(
+					project);
 
 			String p = project.getLocation().append(fOutputDir).toString();
 			b.getCodeManager().removePath(z, p);

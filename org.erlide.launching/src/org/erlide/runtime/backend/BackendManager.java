@@ -13,9 +13,11 @@ package org.erlide.runtime.backend;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -37,7 +39,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
 
-	private IBackend fLocalBackend;
+	private IdeBackend fLocalBackend;
 	private final Map<String, IBackend> fProjectBackends;
 	private final Object fProjectBackendsLock = new Object();
 	protected List<IBackendListener> fListeners;
@@ -77,14 +79,17 @@ public final class BackendManager implements IResourceChangeListener {
 		return MANAGER;
 	}
 
-	public IBackend create(BackendInfo info, boolean debug,
-			final boolean launchErlang) {
-		ErlLogger.debug("create managed backend '" + info + "'. "
+	public enum BackendOptions {
+		DEBUG, MANAGED
+	};
+
+	public IBackend create(BackendInfo info, Set<BackendOptions> options) {
+		ErlLogger.debug("create " + options + " backend '" + info + "' "
 				+ Thread.currentThread());
 
 		final AbstractBackend b = new ManagedBackend(info);
 
-		if (launchErlang) {
+		if (options.contains(BackendOptions.MANAGED)) {
 			b.initializeRuntime();
 			b.connectAndRegister(fPlugins);
 			b.initErlang();
@@ -92,12 +97,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return b;
 	}
 
-	public IBackend get(final IProject project, BackendType type) {
-		return get(project, true, type);
-	}
-
-	public synchronized IBackend get(final IProject project,
-			final boolean launchErlang, BackendType type) {
+	private IBackend get(final IProject project, BackendType type) {
 		synchronized (fProjectBackendsLock) {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
@@ -113,12 +113,27 @@ public final class BackendManager implements IResourceChangeListener {
 				b = null;
 			}
 			if (b == null) {
-				b = create(info, false, launchErlang);
+				EnumSet<BackendOptions> options = info.isManaged() ? EnumSet
+						.of(BackendOptions.MANAGED) : EnumSet
+						.noneOf(BackendOptions.class);
+				b = create(info, options);
 				fProjectBackends.put(info.getName(), b);
 				fireUpdate(b, BackendEvent.ADDED);
 			}
 			return b;
 		}
+	}
+
+	public IdeBackend getIde(final IProject project) {
+		return get(project, BackendType.IDE).asIDE();
+	}
+
+	public BuildBackend getBuild(final IProject project) {
+		return get(project, BackendType.BUILD).asBuild();
+	}
+
+	public ExecutionBackend getExecution(final IProject project) {
+		return get(project, BackendType.EXECUTION).asExecution();
 	}
 
 	public static BackendInfo getBackendInfo(IProject project, BackendType type) {
@@ -139,7 +154,7 @@ public final class BackendManager implements IResourceChangeListener {
 		 */
 	}
 
-	public synchronized IBackend getInternalBackend() {
+	public synchronized IdeBackend getInternalBackend() {
 		// ErlLogger.debug("** getIdeBackend: " + this + " " + fLocalBackend + "
 		// "
 		// + Thread.currentThread());
@@ -147,8 +162,9 @@ public final class BackendManager implements IResourceChangeListener {
 		if (fLocalBackend == null) {
 			ErlLogger.debug("** create InternalBackend: " + this + " "
 					+ fLocalBackend + " " + Thread.currentThread());
-			fLocalBackend = create(BackendInfoManager.getDefault()
-					.getErlideBackend(), false, true);
+			fLocalBackend = create(
+					BackendInfoManager.getDefault().getErlideBackend(),
+					EnumSet.of(BackendOptions.MANAGED)).asIDE();
 		}
 		return fLocalBackend;
 	}

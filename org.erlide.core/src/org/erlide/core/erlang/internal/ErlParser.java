@@ -18,7 +18,7 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -43,7 +43,7 @@ public class ErlParser {
 	 */
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse) {
-		final IBackend b = BackendManager.getDefault().getInternalBackend();
+		final IdeBackend b = BackendManager.getDefault().getInternalBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
@@ -156,7 +156,8 @@ public class ErlParser {
 		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-			final String msg = ErlideBackend.format_error(er);
+			final String msg = ErlideBackend.format_error(BackendManager
+					.getDefault().getInternalBackend(), er);
 
 			final ErlMessage e = new ErlMessage(parent,
 					ErlMessage.MessageKind.ERROR, msg);

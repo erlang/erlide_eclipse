@@ -1,14 +1,14 @@
 package erlang;
 
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideNoparse {
 
-	public static OtpErlangTuple initialParse(final IBackend b,
+	public static OtpErlangTuple initialParse(final IdeBackend b,
 			final String scannerModuleName, final String moduleFileName,
 			final String initialText, final String stateDir) {
 		OtpErlangTuple res = null;
@@ -24,7 +24,7 @@ public class ErlideNoparse {
 		return res;
 	}
 
-	public static OtpErlangTuple reparse(final IBackend b,
+	public static OtpErlangTuple reparse(final IdeBackend b,
 			final String scannerModuleName) {
 		OtpErlangTuple res = null;
 		try {

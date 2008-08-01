@@ -52,8 +52,9 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -201,7 +202,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		} catch (final CoreException e1) {
 		}
 
-		final IBackend b = BackendManager.getDefault().getInternalBackend();
+		// FIXME
+		final BuildBackend b = (BuildBackend) BackendManager.getDefault()
+				.getInternalBackend();
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
@@ -487,8 +490,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							// ErlLogger.debug(">>>>> is developer");
 							final OtpErlangBinary code = (OtpErlangBinary) t
 									.elementAt(2);
-							IBackend b = BackendManager.getDefault().get(
-									getProject(), BackendType.EXECUTE);
+							ExecutionBackend b = BackendManager.getDefault()
+									.getExecution(project);
 							distributeModule(b, beamf, code);
 						}
 					} else {

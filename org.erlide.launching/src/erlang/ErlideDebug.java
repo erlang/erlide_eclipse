@@ -2,6 +2,7 @@ package erlang;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendUtil;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -14,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideDebug {
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangList getProcesses(final IBackend backend,
+	public static OtpErlangList getProcesses(final ExecutionBackend backend,
 			final boolean showSystemProcesses, final boolean showErlideProcesses) {
 		OtpErlangList procs = null;
 		try {

@@ -44,16 +44,16 @@ public interface IBackend {
 	 * <dt>x</dt>
 	 * <dd>Generic; a simple conversion is done:
 	 * <ul>
-	 * <li>integer types -> integer </li>
-	 * <li>String -> string </li>
-	 * <li>List<> -> list </li>
-	 * <li>array -> list </li>
+	 * <li>integer types -> integer</li>
+	 * <li>String -> string</li>
+	 * <li>List<> -> list</li>
+	 * <li>array -> list</li>
 	 * </ul>
 	 * </dd>
 	 * <dt>i</dt>
 	 * <dd>any integral type, including char -> integer()</dd>
 	 * <dt>d</dt>
-	 * <dd>floats and doubles -> float() </dd>
+	 * <dd>floats and doubles -> float()</dd>
 	 * <dt>s</dt>
 	 * <dd>String -> string().</dd>
 	 * <dt>a</dt>
@@ -183,11 +183,18 @@ public interface IBackend {
 
 	String getHost();
 
-	public void setRuntime(final IProcess process);
+	void setRuntime(final IProcess process);
 
 	void setRemoteRex(OtpErlangPid rex);
 
-	public abstract void initializeRuntime();
+	abstract void initializeRuntime();
 
-	public void connectAndRegister(final List<ICodeBundle> plugins);
+	void connectAndRegister(final List<ICodeBundle> plugins);
+
+	IdeBackend asIDE();
+
+	BuildBackend asBuild();
+
+	ExecutionBackend asExecution();
+
 }

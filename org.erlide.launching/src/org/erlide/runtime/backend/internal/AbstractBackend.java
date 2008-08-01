@@ -28,10 +28,13 @@ import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
+import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
@@ -55,7 +58,7 @@ import erlang.ErlideBackend;
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public abstract class AbstractBackend extends OtpNodeStatus implements
-		IBackend, IDisposable {
+		IBackend, IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = "true".equals(System
@@ -568,5 +571,17 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		String direction = incoming ? "incoming" : "outgoing";
 		ErlLogger.debug(String.format("@@: Connection attempt: %s %s %s", node,
 				direction, info));
+	}
+
+	public IdeBackend asIDE() {
+		return this;
+	}
+
+	public BuildBackend asBuild() {
+		return this;
+	}
+
+	public ExecutionBackend asExecution() {
+		return this;
 	}
 }

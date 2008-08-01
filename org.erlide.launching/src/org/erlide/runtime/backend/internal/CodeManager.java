@@ -30,6 +30,7 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendUtil;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.ICodeManager;
 import org.osgi.framework.Bundle;
@@ -44,14 +45,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private final IBackend fBackend;
 
 	private final List<PathItem> pathA;
-
 	private final List<PathItem> pathZ;
 
 	private final List<ICodeBundle> plugins;
 
 	// only to be called by AbstractBackend
-	CodeManager(IBackend backend) {
-		fBackend = backend;
+	CodeManager(IBackend b) {
+		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
 		plugins = new ArrayList<ICodeBundle>(10);
@@ -290,7 +290,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 						decl);
 				BackendUtil.generateRpcStub(stub.getAttribute("class"),
 						(decl == null) ? false : Boolean.parseBoolean(decl),
-						fBackend);
+						(BuildBackend) fBackend);
 			}
 		}
 		ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());

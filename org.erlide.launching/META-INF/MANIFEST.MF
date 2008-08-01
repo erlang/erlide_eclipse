@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
  org.erlide.basic
 Bundle-ActivationPolicy: lazy
-Export-Package: erlang;uses:="com.ericsson.otp.erlang,org.erlide.runtime.backend",
+Export-Package: erlang,
  org.erlide.runtime;
   uses:="org.eclipse.debug.core.sourcelookup,
    org.erlide.jinterface,

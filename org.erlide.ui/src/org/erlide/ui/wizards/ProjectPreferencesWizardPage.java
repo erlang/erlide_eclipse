@@ -245,7 +245,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setIncludeDirsString(include.getText());
 			prefs.setBackendName(BackendType.IDE, backendName.getText());
 			prefs.setBackendName(BackendType.BUILD, backendName.getText());
-			prefs.setBackendName(BackendType.EXECUTE, backendName.getText());
+			prefs.setBackendName(BackendType.EXECUTION, backendName.getText());
 			prefs.setExternalModules(externalModules.getText());
 
 			setPageComplete(testPageComplete());
