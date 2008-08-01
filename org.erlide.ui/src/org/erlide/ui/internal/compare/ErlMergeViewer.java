@@ -54,19 +54,18 @@ public class ErlMergeViewer extends TextMergeViewer {
 			};
 			fPreferenceStore
 					.addPropertyChangeListener(fPreferenceChangeListener);
-		}
 
-		fUseSystemColors = fPreferenceStore
-				.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
-		if (!fUseSystemColors) {
-			final RGB bg = createColor(fPreferenceStore,
-					AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
-			setBackgroundColor(bg);
-			final RGB fg = createColor(fPreferenceStore,
-					AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
-			setForegroundColor(fg);
+			fUseSystemColors = fPreferenceStore
+					.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+			if (!fUseSystemColors) {
+				final RGB bg = createColor(fPreferenceStore,
+						AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
+				setBackgroundColor(bg);
+				final RGB fg = createColor(fPreferenceStore,
+						AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
+				setForegroundColor(fg);
+			}
 		}
-
 	}
 
 	@Override

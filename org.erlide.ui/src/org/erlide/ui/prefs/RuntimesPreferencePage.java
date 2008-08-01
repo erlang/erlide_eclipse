@@ -645,7 +645,7 @@ public class RuntimesPreferencePage extends PreferencePage implements
 			} catch (final IOException e) {
 			}
 			if (file.isDirectory()) {
-				if (!ignore.contains(file)) {
+				if (!ignore.contains(file.getName())) {
 					boolean validLocation = RuntimeInfo.isValidOtpHome(file
 							.getAbsolutePath());
 

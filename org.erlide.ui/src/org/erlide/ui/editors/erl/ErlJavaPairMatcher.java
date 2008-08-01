@@ -50,8 +50,8 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 	/**
 	 * Creates a new character pair matcher that matches characters within the
 	 * default partitioning. The specified list of characters must have the form
-	 * <blockquote>{ <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>,
-	 * ..., <i>start</i>, <i>end</i> }</blockquote> For instance:
+	 * <blockquote>{ <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>, ...,
+	 * <i>start</i>, <i>end</i> }</blockquote> For instance:
 	 * 
 	 * <pre>
 	 * char[] chars = new char[] { '(', ')', '{', '}', '[', ']' };
@@ -67,8 +67,9 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 
 	/* @see ICharacterPairMatcher#match(IDocument, int) */
 	public IRegion match(IDocument doc, int offset) {
-		if (doc == null || offset < 0 || offset > doc.getLength())
+		if (doc == null || offset < 0 || offset > doc.getLength()) {
 			return null;
+		}
 		try {
 			return performMatch(doc, offset);
 		} catch (BadLocationException ble) {
@@ -81,15 +82,18 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 	 */
 	private IRegion performMatch(IDocument doc, int offset)
 			throws BadLocationException {
-		if (offset <= 0)
+		if (offset <= 0) {
 			return null;
+		}
 		String prevString = doc.get(offset - 1, 1);
 		if (!fPairs.contains(prevString)) {
-			if (offset == 1)
+			if (offset == 1) {
 				return null;
+			}
 			prevString = doc.get(offset - 2, 2);
-			if (!fPairs.contains(prevString))
+			if (!fPairs.contains(prevString)) {
 				return null;
+			}
 		}
 		final boolean isForward = fPairs.isStartString(prevString);
 		fAnchor = isForward ? ICharacterPairMatcher.LEFT
@@ -105,18 +109,19 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 				.getMatching(prevString), isForward, isForward ? doc
 				.getLength()
 				- prevString.length() + 1 : -1, searchStartPosition);
-		if (endOffset == -1)
+		if (endOffset == -1) {
 			return null;
+		}
 		final int adjustedEndOffset = isForward ? endOffset + 1 : endOffset;
-		if (adjustedEndOffset == adjustedOffset)
+		if (adjustedEndOffset == adjustedOffset) {
 			return null;
+		}
 		return new Region(Math.min(adjustedOffset, adjustedEndOffset), Math
 				.abs(adjustedEndOffset - adjustedOffset));
 	}
 
 	/**
-	 * Searches <code>doc</code> for the specified end string,
-	 * <code>end</code>.
+	 * Searches <code>doc</code> for the specified end string, <code>end</code>.
 	 * 
 	 * @param doc
 	 *            the document to search
@@ -145,8 +150,9 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 			} else if (s.equals(start) && doc.inPartition(pos)) {
 				pos = findMatchingPeer(doc, start, end, searchForward,
 						boundary, doc.getNextPosition(pos, searchForward));
-				if (pos == -1)
+				if (pos == -1) {
 					return -1;
+				}
 			}
 			pos = doc.getNextPosition(pos, searchForward);
 		}
@@ -251,18 +257,22 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 		 */
 		public int getNextPosition(int pos, boolean searchForward) {
 			final ITypedRegion partition = getPartition(pos);
-			if (partition == null)
+			if (partition == null) {
 				return simpleIncrement(pos, searchForward);
-			if (fPartition.equals(partition.getType()))
+			}
+			if (fPartition.equals(partition.getType())) {
 				return simpleIncrement(pos, searchForward);
+			}
 			if (searchForward) {
 				int end = partition.getOffset() + partition.getLength();
-				if (pos < end)
+				if (pos < end) {
 					return end;
+				}
 			} else {
 				int offset = partition.getOffset();
-				if (pos > offset)
+				if (pos > offset) {
 					return offset - 1;
+				}
 			}
 			return simpleIncrement(pos, searchForward);
 		}
@@ -331,8 +341,9 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 		private Set<String> getAllCharacters() {
 			if (fStringsCache == null) {
 				Set<String> set = new HashSet<String>();
-				for (int i = 0; i < fPairs.length; i++)
-					set.add(new String(fPairs[i]));
+				for (int i = 0; i < fPairs.length; i++) {
+					set.add(fPairs[i]);
+				}
 				fStringsCache = set;
 			}
 			return fStringsCache;
@@ -350,10 +361,11 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 		 */
 		public boolean isOpeningString(String s, boolean searchForward) {
 			for (int i = 0; i < fPairs.length; i += 2) {
-				if (searchForward && getStartString(i).equals(s))
+				if (searchForward && getStartString(i).equals(s)) {
 					return true;
-				else if (!searchForward && getEndString(i).equals(s))
+				} else if (!searchForward && getEndString(i).equals(s)) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -378,10 +390,11 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 		 */
 		public String getMatching(String s) {
 			for (int i = 0; i < fPairs.length; i += 2) {
-				if (getStartString(i).equals(s))
+				if (getStartString(i).equals(s)) {
 					return getEndString(i);
-				else if (getEndString(i).equals(s))
+				} else if (getEndString(i).equals(s)) {
 					return getStartString(i);
+				}
 			}
 			Assert.isTrue(false);
 			return "";

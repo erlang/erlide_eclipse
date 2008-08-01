@@ -3,11 +3,12 @@ package org.erlide.ui.navigator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.ui.navigator.CommonDragAdapterAssistant;
 
-public class CommonDragAdapterAssistant extends
-		org.eclipse.ui.navigator.CommonDragAdapterAssistant {
+public class ErlideCommonDragAdapterAssistant extends
+		CommonDragAdapterAssistant {
 
-	public CommonDragAdapterAssistant() {
+	public ErlideCommonDragAdapterAssistant() {
 		// TODO Auto-generated constructor stub
 	}
 

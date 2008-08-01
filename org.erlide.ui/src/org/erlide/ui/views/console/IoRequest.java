@@ -56,8 +56,9 @@ public class IoRequest implements Comparable<IoRequest> {
 		}
 
 		public int compareTo(Timestamp ts) {
-			if (ts == null)
+			if (ts == null) {
 				return -1;
+			}
 			if (ts.megasecs > megasecs) {
 				return -1;
 			} else if (ts.megasecs < megasecs) {
@@ -77,6 +78,14 @@ public class IoRequest implements Comparable<IoRequest> {
 				}
 			}
 			return 0;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof Timestamp)) {
+				return false;
+			}
+			return compareTo((Timestamp) o) == 0;
 		}
 
 		public Timestamp next() {
@@ -116,10 +125,11 @@ public class IoRequest implements Comparable<IoRequest> {
 
 			leader = (OtpErlangPid) obj.elementAt(1);
 			OtpErlangObject s = obj.elementAt(2);
-			if (s instanceof OtpErlangPid)
+			if (s instanceof OtpErlangPid) {
 				sender = (OtpErlangPid) s;
-			else
+			} else {
 				sender = new OtpErlangPid("s", 0, 0, 0);
+			}
 			tstamp = new Timestamp((OtpErlangTuple) obj.elementAt(3));
 		} catch (Exception e) {
 			message = null;
@@ -184,8 +194,9 @@ public class IoRequest implements Comparable<IoRequest> {
 	}
 
 	public int compareTo(IoRequest io) {
-		if (io == null)
+		if (io == null) {
 			return -1;
+		}
 		return tstamp.compareTo(io.getTstamp());
 	}
 
