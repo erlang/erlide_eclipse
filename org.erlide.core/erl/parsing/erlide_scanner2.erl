@@ -21,7 +21,8 @@
 
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
- 		 dump_module/1, logging/1, dump_log/0]).
+         dump_module/1, logging/1, dump_log/0, scan_uncached/2]).
+%% -compile(export_all).
 
 %% internal exports 
 -export([loop/1]).
@@ -60,6 +61,9 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir)
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
 	server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir}).
 
+scan_uncached(ScannerName, ModuleFileName) ->
+    server_cmd(scan_uncached, {ScannerName, ModuleFileName}).
+
 modules() ->
 	server_cmd(modules, []).
 
@@ -95,9 +99,9 @@ logging(OnOff) ->
 %%
 
 server_cmd(Command, Args) ->
-	spawn_server(),
+    spawn_server(),
     ?SERVER ! {Command, self(), Args},
-	receive
+    receive
         {Command, _Pid, Result} ->
             Result
     end.
@@ -137,11 +141,11 @@ find_line_w_offset(0, _Pos, _N, []) ->
 find_line_w_offset(_Offset, _Pos, _N, []) ->
     not_found;
 find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos+Length, Lines =/= [] ->
-	find_line_w_offset(Offset, Pos+Length, N+1, Lines);
+    find_line_w_offset(Offset, Pos+Length, N+1, Lines);
 find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offset < Pos + Length ->
-	{N, Pos, Length, Line, false};
-find_line_w_offset(_Offset, Pos, N, [{Length, Line}]) ->
-    case ends_with_newline(Line) of
+    {N, Pos, Length, Line, false};
+find_line_w_offset(Offset, Pos, N, [{Length, Line}]) ->
+    case ends_with_newline(Line) orelse Offset >= Pos + Length of
         true ->
             {N+1, Pos+Length, 0, "", beyond_eof};
         false ->
@@ -155,12 +159,10 @@ ends_with_newline("\r\n") -> true;
 ends_with_newline([_C | R]) -> ends_with_newline(R).
 
 replace_between_lines(From, Length, With, Lines) ->
-    ?D([From, Length, With, Lines]),
     {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
     FirstPiece = string:substr(Line1, 1, From-Pos1),
     {LineNo2, Pos2, _Length2, Line2, Beyond2} = find_line_w_offset(From+Length, Lines),
-	LastPiece = string:substr(Line2, From+Length-Pos2+1),
-    ?D([LineNo1, Pos1, Line1, LineNo2, Pos2, Line2, FirstPiece, LastPiece, Beyond1, Beyond2]),
+    LastPiece = string:substr(Line2, From+Length-Pos2+1),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
     NOldLines = case {Beyond1, Beyond2} of
                     {on_eof, on_eof} -> 0;
@@ -168,7 +170,6 @@ replace_between_lines(From, Length, With, Lines) ->
                     {_, beyond_eof} -> LineNo2-LineNo1;
                     _ -> LineNo2-LineNo1+1
                 end,
-    ?D([LineNo1, NOldLines, WLines, Lines]),
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 
@@ -204,6 +205,11 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
     RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
     erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
 
+do_scan_uncached(ScannerName, ModuleFileName) ->
+    {ok, B} = file:read_file(ModuleFileName),
+    InitialText = binary_to_list(B),
+    do_scan(ScannerName, InitialText).
+
 do_scan(ScannerName, InitialText) ->
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
@@ -219,11 +225,8 @@ scan_line({Length, S}) ->
     end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
-    ?D({text_length, length(lines_to_text(Module#module.lines))}),
-    ?D({Module#module.name, Offset, RemoveLength, length(NewText)}),
     {Line, NOldLines, AffectedLines, NewLines} = 
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
-    ?D(AffectedLines),
     LineTokens = [scan_line(L) || L <- AffectedLines],
     NewTokens = replace_between(Line, NOldLines, LineTokens, Module#module.tokens),
     Module#module{lines=NewLines, tokens=NewTokens}.
@@ -390,6 +393,9 @@ do_cmd(destroy, Mod, Modules) ->
 do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
 	?Debug({rescan, _Mod}),
 	Modules;
+do_cmd(scan_uncached, {Mod, ModuleFileName}, Modules) ->
+    NewMod = do_scan_uncached(Mod, ModuleFileName),
+    [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir}, Modules) ->
 	NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
@@ -447,7 +453,7 @@ tokens_to_string([], Acc) ->
     lists:flatten(Acc);
 tokens_to_string([T], Acc) ->
     S = token_to_string(T),
-	tokens_to_string([], [Acc, S]);
+    tokens_to_string([], [Acc, S]);
 tokens_to_string([T1 | [T2 | _] = Rest], Acc) ->
     S = token_to_string(T1),
     Sb = space_between(T1, T2),

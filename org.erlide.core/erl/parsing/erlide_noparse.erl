@@ -22,7 +22,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 4).
+-define(CACHE_VERSION, 6).
 -define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
@@ -59,11 +59,11 @@ stop() ->
 initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
     try
     	?D({StateDir, ModuleFileName}),
-		RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir) end,
+        RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir) end,
         CacheFun = fun(D) -> erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-		Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
+        Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
         update_state(ScannerName, Res),
         {ok, Res}
     catch
@@ -89,11 +89,12 @@ reparse(ScannerName) ->
 
 -record(function, {pos, name, arity, args, head, clauses, name_pos}).
 -record(clause, {pos, name, args, head, code, name_pos}).
--record(attribute, {pos, name, args}).
+-record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
 %%     ?Info({noparse, ScannerName}),
+%%     erlide_tracing:dbgon([erlide_noparse], "/Users/jakob/x.log"),
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir),
     ?D(length(Toks)),
     {UncommentToks, Comments} = extract_comments(Toks),
@@ -103,6 +104,8 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
     ?D(length(Collected)),
     %% {Collected, Comments, Toks}.
+%%     erlide_tracing:dbgoff(),
+%%     erlide_tracing:dbgtc("/Users/jakob/x.log", "/Users/jakob/x.txt"),
     #model{forms=Collected, comments=Comments}.
 
 classify_and_collect(C) ->
@@ -126,15 +129,17 @@ cac(function, Tokens) ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
 cac(attribute, Attribute) ->
+    ?D(Attribute),
     case Attribute of
-        [#token{kind='-', offset=Offset, line=Line}, 
+        [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
+            Extra = to_string(get_between_outer_pars(Attribute)),
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=Args};
+                       name=Name, args=Args, extra=Extra};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
@@ -158,7 +163,28 @@ check_class(_) ->
     other.
 
 to_string(Tokens) ->
-    erlide_scanner2:tokens_to_string(Tokens).
+    S = erlide_scanner2:tokens_to_string(Tokens),
+    unspacify(S).
+
+unspacify(S) ->
+    unspacify(S, false, "").
+
+is_space($ ) -> true;
+is_space($\t) -> true;
+is_space(_) -> false.
+
+unspacify([], _PrevSpace, Acc) ->
+    lists:reverse(Acc);
+unspacify([C | Rest], true, Acc) ->
+    case is_space(C) of
+        true -> unspacify(Rest, true, Acc);
+        false -> unspacify(Rest, false, [C | [$  | Acc]])
+    end;
+unspacify([C | Rest], false, Acc) ->
+    case is_space(C) of
+        true -> unspacify(Rest, true, Acc);
+        false -> unspacify(Rest, is_space(C), [C | Acc])
+    end.
 
 get_head(T) ->
     case get_args(T) of
@@ -181,6 +207,28 @@ get_args(T) ->
             "("++to_string(P)++")"
     end.
 
+get_between_outer_pars(Attribute) ->
+    case skip_to(Attribute, '(') of
+        [] ->
+            [];
+        [_ | S] ->
+            {R, _Rest} = gbop(S),
+            lists:reverse(tl(lists:reverse(R)))
+    end.
+
+gbop([]) ->
+    {[], []};
+gbop([eof | _]) ->
+    {[], []};
+gbop([#token{kind=')'}=T | Rest]) ->
+    {[T], Rest};
+gbop([#token{kind='('}=T | Rest]) ->
+    {R, Rest1} = gbop(Rest),
+    {R2, Rest2} = gbop(Rest1),
+    {[T] ++ R ++ R2, Rest2};
+gbop([T | Rest]) ->
+    {R, Rest1} = gbop(Rest),
+    {[T] ++ R, Rest1}.
 
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
@@ -212,6 +260,13 @@ get_upto([#token{kind=Delim} | _], Delim, Acc) ->
 	lists:reverse(Acc);
 get_upto([T | Rest], Delim, Acc) ->
     get_upto(Rest, Delim, [T | Acc]).
+
+skip_to([], _Delim) ->
+    [];
+skip_to([#token{kind=Delim} | _] = L, Delim) ->
+    L;
+skip_to([_ | Rest], Delim) ->
+    skip_to(Rest, Delim).
 
 %% get_between([], _A, _B) ->
 %%     [];
