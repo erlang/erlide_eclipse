@@ -6,7 +6,8 @@ import org.eclipse.jface.text.reconciler.MonoReconciler;
 
 public class ErlReconciler extends MonoReconciler {
 
-	public ErlReconciler(IReconcilingStrategy strategy, boolean isIncremental) {
+	public ErlReconciler(final IReconcilingStrategy strategy,
+			final boolean isIncremental) {
 		super(strategy, isIncremental);
 	}
 
@@ -20,6 +21,11 @@ public class ErlReconciler extends MonoReconciler {
 	public void uninstall() {
 		final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
 		s.uninstall();
+	}
+
+	@Override
+	public void forceReconciling() {
+		super.forceReconciling();
 	}
 
 }

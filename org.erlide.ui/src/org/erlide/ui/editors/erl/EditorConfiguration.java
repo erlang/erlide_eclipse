@@ -66,6 +66,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	private InformationPresenter fOutlinePresenter;
 
+	private ErlReconciler reconciler;
+
 	/**
 	 * Default configuration constructor
 	 * 
@@ -192,10 +194,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IReconciler getReconciler(final ISourceViewer sourceViewer) {
 		final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-		final ErlReconciler reconciler = new ErlReconciler(strategy, true);
+		reconciler = new ErlReconciler(strategy, true);
 		// reconciler.setIsIncrementalReconciler(false);
 		reconciler.setProgressMonitor(new NullProgressMonitor());
-		reconciler.setDelay(500);
+		reconciler.setDelay(300);
 		return reconciler;
 	}
 
@@ -333,6 +335,13 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		fOutlinePresenter.setSizeConstraints(50, 20, true, false);
 
 		return fOutlinePresenter;
+	}
+
+	public void resetReconciler() {
+		if (reconciler == null) {
+			return;
+		}
+		reconciler.forceReconciling();
 	}
 
 }
