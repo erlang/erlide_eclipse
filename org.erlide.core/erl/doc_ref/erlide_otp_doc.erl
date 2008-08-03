@@ -338,7 +338,6 @@ get_mod_doc_files(DocDir, EbinDir) ->
     sets:to_list(Intersection).
 
 get_all_docs_for_mod(Mod) ->
-        io:format("~p\n", [Mod]),
     E0 = Mod:module_info(exports),
     Exports = lists:filter(fun({module_info, _}) -> false;
                               (_) -> true
@@ -486,7 +485,7 @@ get_proposals(Mod, Prefix, StateDir) ->
     end.
 
 fix_proposals(FunArityList, DocList, PrefixLength) -> 
-    erlide_log:log(io_lib:format("PrefixLength ~p", [PrefixLength])),
+%%     ?Debug({prefixLength, PrefixLength}),
     fix_proposals(FunArityList, DocList, PrefixLength, []).
 
 fix_proposals([], _, _, Acc) ->
