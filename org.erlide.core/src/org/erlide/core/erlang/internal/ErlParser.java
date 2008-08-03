@@ -25,6 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideBackend;
@@ -170,12 +171,16 @@ public class ErlParser {
 			final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
 			final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
 			final OtpErlangObject val = atr.elementAt(2);
-			return addAttribute(parent, pos, n, val);
+			final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
+					: null;
+			return addAttribute(parent, pos, n, val, extra);
 		} else if ("attribute".equals(type.atomValue())) {
 			final OtpErlangObject pos = el.elementAt(1);
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
 			final OtpErlangObject val = el.elementAt(3);
-			return addAttribute(parent, pos, name, val);
+			final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
+					: null;
+			return addAttribute(parent, pos, name, val, extra);
 		} else if ("function".equals(type.atomValue())) {
 			final ErlFunction f = makeErlFunction(parent, el);
 			final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
@@ -264,15 +269,17 @@ public class ErlParser {
 
 	/**
 	 * @param parent
-	 * @param el
 	 * @param pos
 	 * @param name
 	 * @param val
+	 * @param extra
+	 *            TODO
+	 * @param el
 	 * @return
 	 */
 	private IErlMember addAttribute(final IErlModule parent,
 			final OtpErlangObject pos, final OtpErlangAtom name,
-			final OtpErlangObject val) {
+			final OtpErlangObject val, final OtpErlangObject extra) {
 		if ("import".equals(name.atomValue())) {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) val;
@@ -322,7 +329,8 @@ public class ErlParser {
 				if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
 					final String recordName = ((OtpErlangAtom) recordTuple
 							.elementAt(0)).atomValue();
-					final ErlRecordDef r = new ErlRecordDef(parent, recordName);
+					final ErlRecordDef r = new ErlRecordDef(parent, recordName,
+							null);
 					setPos(r, pos);
 					// r.setParseTree(val);
 					return r;
@@ -331,7 +339,8 @@ public class ErlParser {
 			if (val instanceof OtpErlangAtom) {
 				final OtpErlangAtom nameA = (OtpErlangAtom) val;
 				final String recordName = nameA.atomValue();
-				final ErlRecordDef r = new ErlRecordDef(parent, recordName);
+				final ErlRecordDef r = new ErlRecordDef(parent, recordName,
+						null);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;
@@ -339,7 +348,10 @@ public class ErlParser {
 		} else if ("define".equals(name.atomValue())) {
 			if (val instanceof OtpErlangAtom) {
 				final OtpErlangAtom o = (OtpErlangAtom) val;
-				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue());
+				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
+						.stringValue()
+						: null;
+				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue(), s);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;
@@ -357,13 +369,13 @@ public class ErlParser {
 					if (o instanceof OtpErlangAtom) {
 						final String macroName = ((OtpErlangAtom) o)
 								.atomValue();
-						r = new ErlMacroDef(parent, macroName);
+						r = new ErlMacroDef(parent, macroName, null);
 					} else {
 						// what do we do here? the define isn't correct
 						// Erlang...
 						ErlLogger.warn("Strange macro definition in %s: %s",
 								parent.getName(), o.toString());
-						r = new ErlMacroDef(parent, o.toString());
+						r = new ErlMacroDef(parent, o.toString(), null);
 					}
 					setPos(r, pos);
 					// r.setParseTree(val);

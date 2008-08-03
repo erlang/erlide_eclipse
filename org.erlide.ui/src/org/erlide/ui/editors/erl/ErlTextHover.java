@@ -9,8 +9,11 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -24,16 +27,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDoc;
 
@@ -68,13 +75,30 @@ public class ErlTextHover implements ITextHover,
 		final int offset = hoverRegion.getOffset();
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		BuildBackend b = BackendManager.getDefault().getIdeBackend()
+		final BuildBackend b = BackendManager.getDefault().getIdeBackend()
 				.asBuild();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;
 			return s1.stringValue();
+		} else if (r1 instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) r1;
+			final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(1);
+			String definedName = a.atomValue();
+			if (definedName.charAt(0) == '?') {
+				definedName = definedName.substring(1);
+			}
+			try {
+				final IErlPreprocessorDef pd = ErlModelUtils
+						.findPreprocessorDef((IProject) fModule.getProject()
+								.getResource(), fModule, definedName,
+								IErlElement.Kind.MACRO_DEF,
+								new ArrayList<IErlModule>());
+				return pd.getExtra();
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}

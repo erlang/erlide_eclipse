@@ -10,4 +10,6 @@ package org.erlide.core.erlang;
 public interface IErlPreprocessorDef extends IErlMember, IParent {
 
 	public String getDefinedName();
+
+	public String getExtra();
 }

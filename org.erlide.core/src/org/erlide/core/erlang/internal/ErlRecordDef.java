@@ -7,15 +7,18 @@ import org.erlide.core.erlang.util.Util;
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
 	String record;
+	String extra;
 
 	/**
 	 * @param parent
 	 * @param imports
 	 * @param module
 	 */
-	protected ErlRecordDef(final IErlElement parent, final String record) {
+	protected ErlRecordDef(final IErlElement parent, final String record,
+			final String extra) {
 		super(parent, "record_definition");
 		this.record = record;
+		this.extra = extra;
 	}
 
 	public Kind getKind() {
@@ -55,6 +58,10 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 			return toString().equals(o.toString());
 		}
 		return false;
+	}
+
+	public String getExtra() {
+		return extra;
 	}
 
 }

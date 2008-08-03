@@ -36,10 +36,14 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+
+import erlang.ErlideNoparse;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -94,6 +98,17 @@ public class ErlModule extends Openable implements IErlModule {
 	@Override
 	protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
+
+		// generate structure and compute syntax problems if needed
+		// final IErlProject project = getErlProject();
+		// boolean computeProblems = ErlangCore.hasErlangNature(project
+		// .getProject());
+
+		// final Map<String, String> options = project.getOptions(true);
+		// if (!computeProblems) {
+		// // disable task tags checking to speed up parsing
+		// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
+		// }
 
 		// ErlLogger.debug("* build structure " + this.fName);
 		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
@@ -380,6 +395,11 @@ public class ErlModule extends Openable implements IErlModule {
 		scanner.dispose();
 		scanner = null;
 		scannerDisposed = true;
+	}
+
+	public void disposeParser() {
+		IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		ErlideNoparse.destroy(b, getModuleName());
 	}
 
 	public void reenableScanner() {

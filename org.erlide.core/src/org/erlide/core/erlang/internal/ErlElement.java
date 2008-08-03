@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -32,7 +33,6 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
@@ -80,14 +80,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public int fOccurrenceCount = 1;
 
 	/**
-	 * This element's parent, or <code>null</code> if this element does not have
-	 * a parent.
+	 * This element's parent, or <code>null</code> if this element does not
+	 * have a parent.
 	 */
 	protected IErlElement fParent;
 
 	/**
-	 * This element's name, or an empty <code>String</code> if this element does
-	 * not have a name.
+	 * This element's name, or an empty <code>String</code> if this element
+	 * does not have a name.
 	 */
 	protected String fName;
 
@@ -109,7 +109,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 *             constants
 	 * 
 	 */
-	protected ErlElement(IErlElement parent, String name) {
+	protected ErlElement(final IErlElement parent, final String name) {
 		fParent = parent;
 		fName = name;
 	}
@@ -139,7 +139,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * @see Object#equals
 	 */
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -163,7 +163,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return false;
 	}
 
-	protected void escapeMementoName(StringBuilder buffer, String mementoName) {
+	protected void escapeMementoName(final StringBuilder buffer,
+			final String mementoName) {
 		for (int i = 0, length = mementoName.length(); i < length; i++) {
 			final char character = mementoName.charAt(i);
 			switch (character) {
@@ -192,7 +193,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * @see IErlElement
 	 */
-	public IErlElement getAncestor(Kind ancestorType) {
+	public IErlElement getAncestor(final Kind ancestorType) {
 
 		IErlElement element = this;
 		while (element != null) {
@@ -208,13 +209,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Returns a collection of (immediate) children of this node of the
 	 * specified type.
 	 * 
-	 * @param type
-	 *            - one of the constants defined by IErlElement
+	 * @param type -
+	 *            one of the constants defined by IErlElement
 	 */
-	public ArrayList<? extends IErlElement> getChildrenOfType(Kind type)
+	public ArrayList<? extends IErlElement> getChildrenOfType(final Kind type)
 			throws ErlModelException {
 		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
-		for (IErlElement i : getChildren()) {
+		for (final IErlElement i : getChildren()) {
 			if (i.getKind() == type) {
 				list.add(i);
 			}
@@ -282,15 +283,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 	/**
 	 * Returns the element that is located at the given source position in this
-	 * element. This is a helper method for <code>IErlModule#getElementAt</code>
-	 * , and only works on compilation units and types. The position given is
+	 * element. This is a helper method for <code>IErlModule#getElementAt</code> ,
+	 * and only works on compilation units and types. The position given is
 	 * known to be within this element's source range already, and if no finer
 	 * grained element is found at the position, this element is returned.
 	 */
-	protected IErlElement getSourceElementAt(int position)
+	protected IErlElement getSourceElementAt(final int position)
 			throws ErlModelException {
 		if (this instanceof ISourceReference) {
-			for (IErlElement i : fChildren) {
+			for (final IErlElement i : fChildren) {
 				if (i instanceof SourceRefElement) {
 					final SourceRefElement child = (SourceRefElement) i;
 					final ISourceRange range = child.getSourceRange();
@@ -323,11 +324,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 				public IPath fPath;
 
-				public NoResourceSchedulingRule(IPath path) {
+				public NoResourceSchedulingRule(final IPath path) {
 					fPath = path;
 				}
 
-				public boolean contains(ISchedulingRule rule) {
+				public boolean contains(final ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
 						return fPath
 								.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
@@ -335,7 +336,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 					return false;
 				}
 
-				public boolean isConflicting(ISchedulingRule rule) {
+				public boolean isConflicting(final ISchedulingRule rule) {
 					if (rule instanceof NoResourceSchedulingRule) {
 						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
 						return fPath.isPrefixOf(otherPath)
@@ -381,7 +382,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Returns true if this element is an ancestor of the given element,
 	 * otherwise false.
 	 */
-	public boolean isAncestorOf(IErlElement e) {
+	public boolean isAncestorOf(final IErlElement e) {
 		IErlElement parentElement = e.getParent();
 		while (parentElement != null && !parentElement.equals(this)) {
 			parentElement = parentElement.getParent();
@@ -408,10 +409,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 */
 	public String readableName() {
-		return this.getName();
+		return getName();
 	}
 
-	protected String tabString(int tab) {
+	protected String tabString(final int tab) {
 		final StringBuilder buffer = new StringBuilder();
 		for (int i = tab; i > 0; i--) {
 			buffer.append("  "); //$NON-NLS-1$
@@ -441,12 +442,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toString(int tab, StringBuilder buffer) {
+	protected void toString(final int tab, final StringBuilder buffer) {
 		final Object info = this.toStringInfo(tab, buffer);
 		if (tab == 0) {
-			this.toStringAncestors(buffer);
+			toStringAncestors(buffer);
 		}
-		this.toStringChildren(tab, buffer, info);
+		toStringChildren(tab, buffer, info);
 	}
 
 	/**
@@ -455,15 +456,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public String toStringWithAncestors() {
 		final StringBuilder buffer = new StringBuilder();
 		this.toStringInfo(0, buffer, NO_INFO);
-		this.toStringAncestors(buffer);
+		toStringAncestors(buffer);
 		return buffer.toString();
 	}
 
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringAncestors(StringBuilder buffer) {
-		final ErlElement parentElement = (ErlElement) this.getParent();
+	protected void toStringAncestors(final StringBuilder buffer) {
+		final ErlElement parentElement = (ErlElement) getParent();
 		if (parentElement != null && parentElement.getParent() != null) {
 			buffer.append(" [in "); //$NON-NLS-1$
 			parentElement.toStringInfo(0, buffer, NO_INFO);
@@ -475,11 +476,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringChildren(int tab, StringBuilder buffer, Object info) {
+	protected void toStringChildren(final int tab, final StringBuilder buffer,
+			final Object info) {
 		if (info == null || !(info instanceof ErlElement)) {
 			return;
 		}
-		for (IErlElement element : fChildren) {
+		for (final IErlElement element : fChildren) {
 			buffer.append("\n"); //$NON-NLS-1$
 			((ErlElement) element).toString(tab + 1, buffer);
 		}
@@ -488,7 +490,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	public Object toStringInfo(int tab, StringBuilder buffer) {
+	public Object toStringInfo(final int tab, final StringBuilder buffer) {
 		final Object info = ErlangCore.getModelManager().getInfo(this);
 		this.toStringInfo(tab, buffer, info);
 		return info;
@@ -497,8 +499,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info) {
-		buffer.append(this.tabString(tab));
+	protected void toStringInfo(final int tab, final StringBuilder buffer,
+			final Object info) {
+		buffer.append(tabString(tab));
 		toStringName(buffer);
 		if (info == null) {
 			buffer.append(" (not open)"); //$NON-NLS-1$
@@ -508,7 +511,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Debugging purposes
 	 */
-	protected void toStringName(StringBuilder buffer) {
+	protected void toStringName(final StringBuilder buffer) {
 		buffer.append(getName());
 		if (fOccurrenceCount > 1) {
 			buffer.append("#"); //$NON-NLS-1$
@@ -534,7 +537,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 */
 	static final IProject[] NO_NON_ERLANG_RESOURCES = new IProject[] {};
 
-	public void addChild(IErlElement child) {
+	public void addChild(final IErlElement child) {
 		fChildren.add(child);
 	}
 
@@ -554,7 +557,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * Returns <code>true</code> if this child is in my children collection
 	 */
-	protected boolean includesChild(IErlElement child) {
+	protected boolean includesChild(final IErlElement child) {
 		return fChildren.contains(child);
 	}
 
@@ -565,18 +568,18 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return isStructureKnown;
 	}
 
-	public void removeChild(IErlElement child) {
+	public void removeChild(final IErlElement child) {
 		fChildren.remove(child);
 	}
 
-	public void setChildren(Collection<? extends IErlElement> c) {
+	public void setChildren(final Collection<? extends IErlElement> c) {
 		fChildren.clear();
 		fChildren.addAll(c);
 	}
 
-	public void setChildren(IErlElement[] children) {
+	public void setChildren(final IErlElement[] children) {
 		fChildren.clear();
-		for (IErlElement i : children) {
+		for (final IErlElement i : children) {
 			fChildren.add(i);
 		}
 	}
@@ -586,11 +589,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * 
 	 * @see IErlElement#isStructureKnown()
 	 */
-	public void setIsStructureKnown(boolean newIsStructureKnown) {
+	public void setIsStructureKnown(final boolean newIsStructureKnown) {
 		isStructureKnown = newIsStructureKnown;
 	}
 
-	protected String pp(OtpErlangObject e) {
+	protected String pp(final OtpErlangObject e) {
 		if (e == null) {
 			return "";
 		}
@@ -607,7 +610,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
-				IdeBackend b = BackendManager.getDefault().getIdeBackend();
+				final IdeBackend b = BackendManager.getDefault()
+						.getIdeBackend();
 				return ErlideBackend.prettyPrint(b, e);
 			} catch (final Exception e1) {
 				return "?";
@@ -617,7 +621,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		}
 	}
 
-	protected String pp_1(OtpErlangList e) {
+	protected String pp_1(final OtpErlangList e) {
 		if (e == null) {
 			return "";
 		}
@@ -633,7 +637,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		// return rr;
 	}
 
-	protected String pp_2(OtpErlangTuple x2) {
+	protected String pp_2(final OtpErlangTuple x2) {
 		// if (x2 == null) {
 		// return "";
 		// }
@@ -645,16 +649,16 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		// final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) :
 		// "";
 		// return rr;
-		OtpErlangObject o = x2.elementAt(5);
+		final OtpErlangObject o = x2.elementAt(5);
 		String result;
 		if (o instanceof OtpErlangAtom) {
-			OtpErlangAtom a = (OtpErlangAtom) o;
+			final OtpErlangAtom a = (OtpErlangAtom) o;
 			result = a.atomValue();
 		} else {
 			result = o.toString();
 		}
 		if (result.equals("undefined")) {
-			OtpErlangAtom a = (OtpErlangAtom) x2.elementAt(1);
+			final OtpErlangAtom a = (OtpErlangAtom) x2.elementAt(1);
 			result = a.atomValue();
 		}
 		return result;
