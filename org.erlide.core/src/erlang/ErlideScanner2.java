@@ -105,6 +105,8 @@ public class ErlideScanner2 {
 	public static void replaceText(final String module, final int offset,
 			final int removeLength, final String newText) {
 		try {
+			ErlLogger.info("replaceText %d %d \"%d\"", offset, removeLength,
+					newText.length());
 			final OtpErlangObject r = BackendManager.getDefault()
 					.getIdeBackend().rpcx(MODULE, "replaceText", "aiis",
 							module, offset, removeLength, newText);
