@@ -44,8 +44,6 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
@@ -384,9 +382,5 @@ public class ErlModelUtils {
 		if (mod != null) {
 			getModule(editor).reenableScanner();
 		}
-	}
-
-	public static String getMacroExtra(final OtpErlangAtom a) {
-		return "extra macro " + a;
 	}
 }
