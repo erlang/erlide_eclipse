@@ -97,24 +97,24 @@ erlang:display({"****",Meta}),
 %%           | {user_command, Cmd}
 %%           | {edit, {Var, Val}}
 
-	{gui, Cmd} = Msg ->
-		io:format("* msg: ~p~n", [Msg]),
+	{gui, Cmd} = _Msg ->
+%% 		io:format("* msg: ~p~n", [_Msg]),
 	    State2 = gui_cmd(Cmd, State),
 	    loop(State2);
 
 	%% From the interpreter
-	{int, Cmd} = Msg ->
-		io:format("* dbg: ~p~n", [Msg]),
+	{int, Cmd} = _Msg ->
+%% 		io:format("* dbg: ~p~n", [_Msg]),
 	    State2 = int_cmd(Cmd, State),
 	    loop(State2);
 
 	%% From the meta process
-	{Meta, Cmd} = Msg ->
-		io:format("* dbg: ~p~n", [Msg]),
+	{Meta, Cmd} = _Msg ->
+%% 		io:format("* dbg: ~p~n", [_Msg]),
 	    State2 = meta_cmd(Cmd, State),
 	    loop(State2);
-	{NewMeta, {exit_at, Where, Reason, Cur}} = Msg->
-		io:format("* dbg: ~p~n", [Msg]),
+	{NewMeta, {exit_at, Where, Reason, Cur}} = _Msg->
+%% 		io:format("* dbg: ~p~n", [_Msg]),
 	    State2 = meta_cmd({exit_at, Where, Reason, Cur},
 			      State#state{meta=NewMeta}),
 	    loop(State2);
