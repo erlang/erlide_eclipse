@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
@@ -32,7 +33,6 @@ import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.util.Assert;
 import org.erlide.core.erlang.util.Util;
 
 /**
@@ -67,8 +67,8 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	protected boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource)
+	protected boolean buildStructure(final IProgressMonitor pm,
+			final IResource underlyingResource)
 	// throws ErlModelException
 	{
 		// determine my children
@@ -86,7 +86,7 @@ public class ErlModel extends Openable implements IErlModel {
 	/*
 	 * @see IErlModel
 	 */
-	public boolean contains(IResource resource) {
+	public boolean contains(final IResource resource) {
 		switch (resource.getType()) {
 		case IResource.ROOT:
 		case IResource.PROJECT:
@@ -111,9 +111,10 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlModel
 	 */
-	public void copy(IErlElement[] elements, IErlElement[] containers,
-			IErlElement[] siblings, String[] renamings, boolean force,
-			IProgressMonitor monitor) throws ErlModelException {
+	public void copy(final IErlElement[] elements,
+			final IErlElement[] containers, final IErlElement[] siblings,
+			final String[] renamings, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// if (elements != null && elements.length > 0 && elements[0] != null
 		// && elements[0].getElementType() < IErlElement.TYPE)
 		// {
@@ -132,8 +133,8 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlModel
 	 */
-	public void delete(IErlElement[] elements, boolean force,
-			IProgressMonitor monitor) throws ErlModelException {
+	public void delete(final IErlElement[] elements, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// if (elements != null && elements.length > 0 && elements[0] != null
 		// && elements[0].getElementType() < IErlElement.TYPE)
 		// {
@@ -147,7 +148,7 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof ErlModel)) {
 			return false;
 		}
@@ -163,7 +164,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 * Finds the given project in the list of the Erlang model's children.
 	 * Returns null if not found.
 	 */
-	public IErlProject findErlangProject(IProject project) {
+	public IErlProject findErlangProject(final IProject project) {
 		try {
 			final List<IErlProject> projects = getErlangProjects();
 			for (final IErlProject erlangProject : projects) {
@@ -185,6 +186,13 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	/**
+	 * @see ErlElement#getHandleMemento()
+	 */
+	public String getHandleMemento() {
+		return getName();
+	}
+
+	/**
 	 * Returns the <code>char</code> that marks the start of this handles
 	 * contribution to a memento.
 	 */
@@ -196,7 +204,7 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlModel
 	 */
-	public IErlProject getErlangProject(String projectName) {
+	public IErlProject getErlangProject(final String projectName) {
 		for (final IErlElement element : fChildren) {
 			if (element.getName().equals(projectName)) {
 				return (IErlProject) element;
@@ -211,7 +219,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 *                if the given resource is not one of an IProject, IFolder,
 	 *                or IFile.
 	 */
-	public IErlProject makeErlangProject(IResource resource) {
+	public IErlProject makeErlangProject(final IResource resource) {
 		switch (resource.getType()) {
 		case IResource.FOLDER:
 			return new ErlProject(((IFolder) resource).getProject(), this);
@@ -259,9 +267,10 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlModel
 	 */
-	public void move(IErlElement[] elements, IErlElement[] containers,
-			IErlElement[] siblings, String[] renamings, boolean force,
-			IProgressMonitor monitor) throws ErlModelException {
+	public void move(final IErlElement[] elements,
+			final IErlElement[] containers, final IErlElement[] siblings,
+			final String[] renamings, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// if (elements != null && elements.length > 0 && elements[0] != null
 		// && elements[0].getElementType() < IErlElement.TYPE)
 		// {
@@ -279,8 +288,9 @@ public class ErlModel extends Openable implements IErlModel {
 	/**
 	 * @see IErlModel
 	 */
-	public void rename(IErlElement[] elements, IErlElement[] destinations,
-			String[] renamings, boolean force, IProgressMonitor monitor)
+	public void rename(final IErlElement[] elements,
+			final IErlElement[] destinations, final String[] renamings,
+			final boolean force, final IProgressMonitor monitor)
 			throws ErlModelException {
 		// MultiOperation op;
 		// if (elements != null && elements.length > 0 && elements[0] != null
@@ -320,7 +330,8 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @private Debugging purposes
 	 */
 	@Override
-	protected void toStringInfo(int tab, StringBuilder buffer, Object info) {
+	protected void toStringInfo(final int tab, final StringBuilder buffer,
+			final Object info) {
 		buffer.append(tabString(tab));
 		buffer.append("Erlang Model"); //$NON-NLS-1$
 		if (info == null) {
@@ -333,8 +344,8 @@ public class ErlModel extends Openable implements IErlModel {
 	 * java.io.File if external), or null if unbound Internal items must be
 	 * referred to using container relative paths.
 	 */
-	public static Object getTarget(IContainer container, IPath path,
-			boolean checkResourceExistence) {
+	public static Object getTarget(final IContainer container,
+			final IPath path, boolean checkResourceExistence) {
 
 		if (path == null) {
 			return null;
@@ -410,7 +421,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return nonErlangProjects;
 	}
 
-	public void notifyChange(IErlElement element) {
+	public void notifyChange(final IErlElement element) {
 		// ErlLogger.debug("^> notifying change of " +
 		// element.getElementName());
 		for (int i = 0; i < fListeners.size(); i++) {
@@ -418,13 +429,13 @@ public class ErlModel extends Openable implements IErlModel {
 		}
 	}
 
-	public void addModelChangeListener(IErlModelChangeListener listener) {
+	public void addModelChangeListener(final IErlModelChangeListener listener) {
 		if (!fListeners.contains(listener)) {
 			fListeners.add(listener);
 		}
 	}
 
-	public void removeModelChangeListener(IErlModelChangeListener listener) {
+	public void removeModelChangeListener(final IErlModelChangeListener listener) {
 		fListeners.remove(listener);
 	}
 
@@ -436,14 +447,14 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see org.erlide.core.erlang.IErlModel#findFunction(java.lang.String,
 	 *      java.lang.String, int)
 	 */
-	public List<IErlFunction> findFunction(String project, String module,
-			String function, int arity) {
+	public List<IErlFunction> findFunction(final String project,
+			final String module, final String function, final int arity) {
 		final ArrayList<IErlFunction> funs = new ArrayList<IErlFunction>(20);
 
 		final List<IErlModule> modules = findModule(project, module);
 		for (final IErlModule mod : modules) {
 			try {
-				for (IErlElement el : mod.getChildren()) {
+				for (final IErlElement el : mod.getChildren()) {
 					if (el instanceof IErlFunction) {
 						final IErlFunction fun = (IErlFunction) el;
 						final boolean arityOk = arity == UNKNOWN_ARITY
@@ -461,7 +472,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return funs;
 	}
 
-	public List<IErlModule> findModule(String project, String module) {
+	public List<IErlModule> findModule(final String project, String module) {
 		final ArrayList<IErlModule> mods = new ArrayList<IErlModule>(20);
 
 		if (UNKNOWN_MODULE.equals(module)) {
@@ -470,7 +481,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlProject prj = getErlangProject(project);
 
 		try {
-			for (IErlElement el : prj.getChildren()) {
+			for (final IErlElement el : prj.getChildren()) {
 				if (el instanceof IErlModule) {
 					final IErlModule mod = (IErlModule) el;
 					if (mod.getName().matches(module)) {
@@ -486,7 +497,7 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	protected void closing(Object info) throws ErlModelException {
+	protected void closing(final Object info) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
