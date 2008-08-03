@@ -64,7 +64,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(final IWorkbench workbench,
+			final IStructuredSelection selection) {
 		setNeedsProgressMonitor(true);
 	}
 
@@ -117,8 +118,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 			getContainer().run(false, true, new WorkspaceModifyOperation() {
 
 				@Override
-				protected void execute(IProgressMonitor monitor) {
-					createProject((monitor != null) ? monitor
+				protected void execute(final IProgressMonitor monitor) {
+					createProject(monitor != null ? monitor
 							: new NullProgressMonitor());
 
 					// try {
@@ -148,8 +149,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @return
 	 */
 	private boolean validateFinish() {
-		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir() +
-				"|");
+		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
+				+ "|");
 		final ErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().trim().length() == 0) {
 			reportError(ErlideErlcPlugin
@@ -171,7 +172,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @param monitor
 	 *            reports progress on this object
 	 */
-	protected void createProject(IProgressMonitor monitor) {
+	protected void createProject(final IProgressMonitor monitor) {
 		// FIXME ?ndra massor h?r
 		monitor.beginTask(ErlideErlcPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
@@ -215,8 +216,8 @@ public class NewErlcProject extends Wizard implements INewWizard {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			final ICodeManager codeManager = BackendManager.getDefault().get(
-					project).getCodeManager();
+			final ICodeManager codeManager = BackendManager.getDefault()
+					.getBuild(project).getCodeManager();
 			codeManager.addPath(prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
@@ -240,15 +241,16 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @throws CoreException
 	 *             if a problem occures
 	 */
-	private void buildPaths(IProgressMonitor monitor, IWorkspaceRoot root,
-			IProject project, String[] pathList) throws CoreException {
+	private void buildPaths(final IProgressMonitor monitor,
+			final IWorkspaceRoot root, final IProject project,
+			final String[] pathList) throws CoreException {
 		// Some paths are optionals (include): If we do not specify it, we get a
 		// null string and we do not need to create the directory
 		if (null != pathList) {
 			final IPath projectPath = project.getFullPath();
 
 			String pathElement;
-			for (String element : pathList) {
+			for (final String element : pathList) {
 				pathElement = element;
 				final IPath pp = new Path(pathElement);
 				// only create in-project paths
@@ -267,7 +269,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @param x
 	 *            details on the error
 	 */
-	private void reportError(Exception x) {
+	private void reportError(final Exception x) {
 		x.printStackTrace();
 		ErrorDialog.openError(getShell(), ErlideErlcPlugin
 				.getResourceString("wizards.errors.projecterrordesc"),
@@ -282,7 +284,7 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @param x
 	 *            details on the error
 	 */
-	private void reportError(String x) {
+	private void reportError(final String x) {
 		final Status status = new Status(IStatus.ERROR,
 				ErlideErlcPlugin.PLUGIN_ID, 0, x, null);
 
@@ -298,11 +300,11 @@ public class NewErlcProject extends Wizard implements INewWizard {
 	 * @throws CoreException
 	 * @see java.io.File#mkdirs()
 	 */
-	private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
-			throws CoreException {
+	private void createFolderHelper(final IFolder folder,
+			final IProgressMonitor monitor) throws CoreException {
 		if (!folder.exists()) {
 			final IContainer parent = folder.getParent();
-			if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
+			if (parent instanceof IFolder && !((IFolder) parent).exists()) {
 				createFolderHelper((IFolder) parent, monitor);
 			}
 

@@ -11,13 +11,18 @@
 
 package org.erlide.erlc.errorparsing;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.erlc.core.ErrorParserManager;
 
 public interface IErrorParser {
 
 	/**
 	 * Finds error or warnings on the given line
+	 * 
+	 * @param project
+	 *            TODO
 	 */
-	boolean processLines(String lines, ErrorParserManager eoParser);
+	boolean processLines(String lines, ErrorParserManager eoParser,
+			IProject project);
 
 }

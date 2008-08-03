@@ -69,21 +69,23 @@ public class ErrorParserManager extends OutputStream {
 
 	private boolean hasErrors = false;
 
-	public ErrorParserManager(ErlcMakeBuilder builder) {
+	public ErrorParserManager(final ErlcMakeBuilder builder) {
 		this(builder.getProject(), builder);
 	}
 
-	public ErrorParserManager(IProject project, IMarkerGenerator markerGenerator) {
+	public ErrorParserManager(final IProject project,
+			final IMarkerGenerator markerGenerator) {
 		this(project, markerGenerator, null);
 	}
 
-	public ErrorParserManager(IProject project,
-			IMarkerGenerator markerGenerator, String[] parsersIDs) {
+	public ErrorParserManager(final IProject project,
+			final IMarkerGenerator markerGenerator, final String[] parsersIDs) {
 		this(project, project.getLocation(), markerGenerator, parsersIDs);
 	}
 
-	public ErrorParserManager(IProject project, IPath workingDirectory,
-			IMarkerGenerator markerGenerator, String[] parsersIDs) {
+	public ErrorParserManager(final IProject project,
+			final IPath workingDirectory,
+			final IMarkerGenerator markerGenerator, final String[] parsersIDs) {
 		fProject = project;
 		if (parsersIDs == null) {
 			enableAllParsers();
@@ -100,7 +102,7 @@ public class ErrorParserManager extends OutputStream {
 		initErrorParserManager(workingDirectory);
 	}
 
-	private void initErrorParserManager(IPath workingDirectory) {
+	private void initErrorParserManager(final IPath workingDirectory) {
 		fFilesInProject = new HashMap<String, IFile>();
 		fNameConflicts = new ArrayList<String>();
 		fDirectoryStack = new Vector<IPath>();
@@ -129,7 +131,7 @@ public class ErrorParserManager extends OutputStream {
 		return fBaseDirectory;
 	}
 
-	public void pushDirectory(IPath dir) {
+	public void pushDirectory(final IPath dir) {
 		if (dir != null) {
 			IPath pwd = null;
 			if (fBaseDirectory.isPrefixOf(dir)) {
@@ -180,11 +182,12 @@ public class ErrorParserManager extends OutputStream {
 		}
 	}
 
-	protected void collectFiles(IProject parent, final List<IFile> result) {
+	protected void collectFiles(final IProject parent, final List<IFile> result) {
 		try {
 			parent.accept(new IResourceProxyVisitor() {
 
-				public boolean visit(IResourceProxy proxy) throws CoreException {
+				public boolean visit(final IResourceProxy proxy)
+						throws CoreException {
 					if (proxy.getType() == IResource.FILE) {
 						result.add((IFile) proxy.requestResource());
 						return false;
@@ -200,7 +203,7 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Parses the input and try to generate error or warning markers
 	 */
-	private void processLines(String line) {
+	private void processLines(final String line) {
 		if (fErrorParsers.size() == 0) {
 			return;
 		}
@@ -214,7 +217,7 @@ public class ErrorParserManager extends OutputStream {
 		for (final String element : parserIDs) {
 			final IErrorParser[] parsers = fErrorParsers.get(element);
 			for (final IErrorParser curr : parsers) {
-				if (curr.processLines(line, this)) {
+				if (curr.processLines(line, this, fProject)) {
 					return;
 				}
 			}
@@ -247,12 +250,12 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Called by the error parsers.
 	 */
-	public IFile findFileName(String fileName) {
+	public IFile findFileName(final String fileName) {
 		final IPath path = new Path(fileName);
 		return fFilesInProject.get(path.lastSegment());
 	}
 
-	protected IFile findFileInWorkspace(IPath path) {
+	protected IFile findFileInWorkspace(final IPath path) {
 		IFile file = null;
 		if (path.isAbsolute()) {
 			final IWorkspaceRoot root = fProject.getWorkspace().getRoot();
@@ -277,7 +280,7 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Called by the error parsers.
 	 */
-	public boolean isConflictingName(String fileName) {
+	public boolean isConflictingName(final String fileName) {
 		final IPath path = new Path(fileName);
 		return fNameConflicts.contains(path.lastSegment());
 	}
@@ -285,7 +288,7 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Called by the error parsers.
 	 */
-	public IFile findFilePath(String filePath) {
+	public IFile findFilePath(final String filePath) {
 		IPath path = null;
 		final IPath fp = new Path(filePath);
 		if (fp.isAbsolute()) {
@@ -336,8 +339,9 @@ public class ErrorParserManager extends OutputStream {
 
 		protected String variableName;
 
-		public Problem(IResource file, IResource compiledFile, int lineNumber,
-				String descr, int severity, String variableName) {
+		public Problem(final IResource file, final IResource compiledFile,
+				final int lineNumber, final String descr, final int severity,
+				final String variableName) {
 			this.file = file;
 			this.compiledFile = compiledFile;
 			this.lineNumber = lineNumber;
@@ -350,8 +354,9 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * Called by the error parsers.
 	 */
-	public void generateMarker(IResource file, IResource compiledFile,
-			int lineNumber, String desc, int severity, String varName) {
+	public void generateMarker(final IResource file,
+			final IResource compiledFile, final int lineNumber,
+			final String desc, final int severity, final String varName) {
 		final Problem problem = new Problem(file, compiledFile, lineNumber,
 				desc, severity, varName);
 		fErrors.add(problem);
@@ -365,12 +370,13 @@ public class ErrorParserManager extends OutputStream {
 
 		ErrorParserManager fErrorParserManager;
 
-		MarkerGenerator(ErrorParserManager epm) {
+		MarkerGenerator(final ErrorParserManager epm) {
 			fErrorParserManager = epm;
 		}
 
-		public void addMarker(IResource file, IResource compiledFiled,
-				String errorDesc, int lineNumber, int severity, String errorVar) {
+		public void addMarker(final IResource file,
+				final IResource compiledFiled, final String errorDesc,
+				final int lineNumber, final int severity, final String errorVar) {
 			fErrorParserManager.generateMarker(file, compiledFiled, lineNumber,
 					errorDesc, severity, errorVar);
 		}
@@ -396,7 +402,7 @@ public class ErrorParserManager extends OutputStream {
 	 * 
 	 * @param cos
 	 */
-	public void setOutputStream(OutputStream os) {
+	public void setOutputStream(final OutputStream os) {
 		outputStream = os;
 	}
 
@@ -440,7 +446,7 @@ public class ErrorParserManager extends OutputStream {
 	 * @see java.io.OutputStream#write(int)
 	 */
 	@Override
-	public synchronized void write(int b) throws IOException {
+	public synchronized void write(final int b) throws IOException {
 		currentLines.append((char) b);
 		checkLines(false);
 		if (outputStream != null) {
@@ -449,7 +455,7 @@ public class ErrorParserManager extends OutputStream {
 	}
 
 	@Override
-	public synchronized void write(byte[] b, int off, int len)
+	public synchronized void write(final byte[] b, final int off, final int len)
 			throws IOException {
 		if (b == null) {
 			throw new NullPointerException();
@@ -527,7 +533,7 @@ public class ErrorParserManager extends OutputStream {
 	/**
 	 * @param line
 	 */
-	public void appendToScratchBuffer(String line) {
+	public void appendToScratchBuffer(final String line) {
 		scratchBuffer.append(line);
 	}
 

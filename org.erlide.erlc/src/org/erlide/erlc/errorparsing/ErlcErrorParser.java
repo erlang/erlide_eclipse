@@ -11,11 +11,12 @@
 package org.erlide.erlc.errorparsing;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.erlc.core.ErrorParserManager;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -28,8 +29,9 @@ public class ErlcErrorParser implements IErrorParser {
 
 	public final static String ID = "erlcerrorparser";
 
-	public boolean processLines(String lines, ErrorParserManager epm) {
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+	public boolean processLines(final String lines,
+			final ErrorParserManager epm, final IProject project) {
+		final BuildBackend b = BackendManager.getDefault().getBuild(project);
 		OtpErlangObject res;
 		try {
 			res = ErlideBackend.convertErrors(b, lines);
@@ -41,7 +43,6 @@ public class ErlcErrorParser implements IErrorParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return true;
 	}
 
@@ -51,8 +52,9 @@ public class ErlcErrorParser implements IErrorParser {
 	 * @param mg
 	 * @param listOfFilesAndErrorLists
 	 */
-	public static void addErrorMarkersForMultipleFiles(ErrorParserManager epm,
-			OtpErlangList listOfFilesAndErrorLists) {
+	public static void addErrorMarkersForMultipleFiles(
+			final ErrorParserManager epm,
+			final OtpErlangList listOfFilesAndErrorLists) {
 		final IMarkerGenerator mg = epm.getMarkerGenerator();
 		for (int i = 0; i < listOfFilesAndErrorLists.arity(); ++i) {
 			final OtpErlangObject o = listOfFilesAndErrorLists.elementAt(i);
