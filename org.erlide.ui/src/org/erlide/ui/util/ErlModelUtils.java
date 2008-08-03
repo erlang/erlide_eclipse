@@ -44,6 +44,8 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
@@ -133,6 +135,61 @@ public class ErlModelUtils {
 	public static IErlFunction findFunctionFromPos(final IErlModule module,
 			final int offset) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param project
+	 * @param m
+	 * @param definedName
+	 * @param type
+	 * @param modulesDone
+	 * @return
+	 * @throws CoreException
+	 */
+	public static IErlPreprocessorDef findPreprocessorDef(
+			final IProject project, IErlModule m, final String definedName,
+			final IErlElement.Kind type, final List<IErlModule> modulesDone)
+			throws CoreException {
+		if (m == null) {
+			return null;
+		}
+		modulesDone.add(m);
+		m.open(null);
+		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
+		if (pd != null) {
+			return pd;
+		} else {
+			final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+			for (final ErlangIncludeFile element : includes) {
+				IResource re = ResourceUtil
+						.recursiveFindNamedResourceWithReferences(project,
+								element.getFilenameLastPart());
+				if (re == null) {
+					try {
+						String s = element.getFilename();
+						if (element.isSystemInclude()) {
+							s = ErlideOpen.getIncludeLib(s);
+						} else {
+							s = findIncludeFile(project, s);
+						}
+						re = EditorUtility.openExternal(s);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (re != null && re instanceof IFile) {
+					m = getModule((IFile) re);
+					if (m != null && !modulesDone.contains(m)) {
+						final IErlPreprocessorDef pd2 = findPreprocessorDef(
+								project, m, definedName, type, modulesDone);
+						if (pd2 != null) {
+							return pd2;
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -315,6 +372,13 @@ public class ErlModelUtils {
 		}
 	}
 
+	public static void disposeParser(final ErlangEditor editor) {
+		final IErlModule mod = getModule(editor);
+		if (mod != null) {
+			getModule(editor).disposeParser();
+		}
+	}
+
 	public static void reenableScanner(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
@@ -322,4 +386,7 @@ public class ErlModelUtils {
 		}
 	}
 
+	public static String getMacroExtra(final OtpErlangAtom a) {
+		return "extra macro " + a;
+	}
 }
