@@ -152,7 +152,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 				case 0:
 					return vm.getName();
 				case 1:
-					return vm.getRuntime();
+					return vm.getInstallation();
 				case 2:
 					return vm.getNodeName();
 				}
@@ -186,8 +186,9 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionListeners.add(listener);
@@ -205,8 +206,9 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-	 *      (org.eclipse.jface.viewers.ISelectionChangedListener)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
@@ -216,8 +218,9 @@ public class BackendsPreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-	 *      .jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+	 * .jface.viewers.ISelection)
 	 */
 	public void setSelection(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
@@ -284,8 +287,8 @@ public class BackendsPreferencePage extends PreferencePage implements
 				if ((e1 instanceof BackendInfo) && (e2 instanceof BackendInfo)) {
 					final BackendInfo left = (BackendInfo) e1;
 					final BackendInfo right = (BackendInfo) e2;
-					return left.getRuntime().compareToIgnoreCase(
-							right.getRuntime());
+					return left.getInstallation().compareToIgnoreCase(
+							right.getInstallation());
 				}
 				return super.compare(viewer, e1, e2);
 			}
@@ -414,7 +417,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				null);
-		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_add_title);
+		dialog.setTitle(BackendPreferenceMessages.add_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -444,7 +447,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		}
 		final AddBackendDialog dialog = new AddBackendDialog(this, getShell(),
 				vm);
-		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_edit_title);
+		dialog.setTitle(BackendPreferenceMessages.edit_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
@@ -703,7 +706,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
 		column1.setWidth(80);
-		column1.setText(PreferenceMessages.InstalledRuntimesBlock_name);
+		column1.setText(BackendPreferenceMessages.name);
 		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
@@ -785,8 +788,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		buttons.setLayout(layout);
 		buttons.setFont(font);
 
-		fAddButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_add);
+		fAddButton = createPushButton(buttons, BackendPreferenceMessages.add);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -794,8 +796,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 			}
 		});
 
-		fEditButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_edit);
+		fEditButton = createPushButton(buttons, BackendPreferenceMessages.edit);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -804,7 +805,7 @@ public class BackendsPreferencePage extends PreferencePage implements
 		});
 
 		fRemoveButton = createPushButton(buttons,
-				PreferenceMessages.InstalledRuntimesBlock_remove);
+				BackendPreferenceMessages.remove);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {

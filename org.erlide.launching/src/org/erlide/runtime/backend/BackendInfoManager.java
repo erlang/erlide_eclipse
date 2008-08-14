@@ -68,7 +68,7 @@ public class BackendInfoManager extends InfoManager<BackendInfo> {
 		}
 	}
 
-	public void createDefaultBackends(RuntimeInfo rt) {
+	public void createDefaultBackends(InstallationInfo rt) {
 		if (hasBackendsWithRuntime(rt)) {
 			return;
 		}
@@ -76,7 +76,7 @@ public class BackendInfoManager extends InfoManager<BackendInfo> {
 				.getName());
 
 		BackendInfo result = new BackendInfo();
-		result.setRuntime(rt.getName());
+		result.setInstallation(rt.getName());
 		rt.getBackends().add(result);
 		result.setName(rt.getName());
 		result.setNodeName("n" + rt.getName());
@@ -85,7 +85,7 @@ public class BackendInfoManager extends InfoManager<BackendInfo> {
 		String ver = rt.getVersion();
 		if (ver != null && ver.compareTo("R12B") >= 0) {
 			result = new BackendInfo();
-			result.setRuntime(rt.getName());
+			result.setInstallation(rt.getName());
 			rt.getBackends().add(result);
 			result.setName(rt.getName() + " SMP");
 			result.setArgs("+S 2");
@@ -94,9 +94,9 @@ public class BackendInfoManager extends InfoManager<BackendInfo> {
 		}
 	}
 
-	private boolean hasBackendsWithRuntime(RuntimeInfo rt) {
+	private boolean hasBackendsWithRuntime(InstallationInfo rt) {
 		for (BackendInfo bi : fElements.values()) {
-			if (bi.getRuntime().equals(rt.getName())) {
+			if (bi.getInstallation().equals(rt.getName())) {
 				return true;
 			}
 		}

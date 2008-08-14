@@ -32,7 +32,7 @@ import org.erlide.basicui.dialogfields.IListAdapter;
 import org.erlide.basicui.dialogfields.ListDialogField;
 import org.erlide.basicui.dialogfields.StringDialogField;
 import org.erlide.runtime.backend.BackendInfo;
-import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.runtime.backend.InstallationInfoManager;
 
 public class AddBackendDialog
 
@@ -101,7 +101,7 @@ extends StatusDialog implements IListAdapter<String> {
 	protected void createDialogFields() {
 
 		fName = new StringDialogField();
-		fName.setLabelText(PreferenceMessages.addRuntimeDialog_ertsName);
+		fName.setLabelText(InstallationPreferenceMessages.addDialog_ertsName);
 
 		fNodeName = new StringDialogField();
 		fNodeName.setLabelText("node name");
@@ -111,15 +111,15 @@ extends StatusDialog implements IListAdapter<String> {
 
 		fRuntime = new ComboDialogField(SWT.DROP_DOWN | SWT.READ_ONLY);
 		fRuntime.setLabelText("Runtime"); //$NON-NLS-1$
-		Collection<String> elementNames = RuntimeInfoManager.getDefault()
+		Collection<String> elementNames = InstallationInfoManager.getDefault()
 				.getElementNames();
 		fRuntime
 				.setItems(elementNames.toArray(new String[elementNames.size()]));
 		fRuntime.selectItem(0);
 
 		final String[] buttons = new String[] {
-				PreferenceMessages.AddRuntimeDialog_add,
-				PreferenceMessages.AddRuntimeDialog_remove, "Move up",
+				InstallationPreferenceMessages.addDialog_add,
+				InstallationPreferenceMessages.addDialog_remove, "Move up",
 				"Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
@@ -190,7 +190,7 @@ extends StatusDialog implements IListAdapter<String> {
 			fName.setText(fEditedBackend.getName());
 			fNodeName.setText(fEditedBackend.getNodeName());
 			fCookie.setText(fEditedBackend.getCookie());
-			fRuntime.setText(fEditedBackend.getRuntime());
+			fRuntime.setText(fEditedBackend.getInstallation());
 			fCodePath.setElements(fEditedBackend.getCodePath());
 			fArgs.setText(fEditedBackend.getArgs());
 		}
@@ -248,7 +248,7 @@ extends StatusDialog implements IListAdapter<String> {
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog.setFilterPath(fRuntime.getText());
 		dialog
-				.setMessage(PreferenceMessages.addRuntimeDialog_pickRuntimeRootDialog_message);
+				.setMessage(InstallationPreferenceMessages.addDialog_pickInstallationRootDialog);
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fRuntime.setText(newPath);
@@ -272,7 +272,7 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	protected void storeValues(BackendInfo backend) {
-		backend.setRuntime(fRuntime.getItems()[fRuntime.getSelectionIndex()]);
+		backend.setInstallation(fRuntime.getItems()[fRuntime.getSelectionIndex()]);
 		backend.setName(fName.getText());
 		backend.setNodeName(fNodeName.getText());
 		backend.setCookie(fCookie.getText());
