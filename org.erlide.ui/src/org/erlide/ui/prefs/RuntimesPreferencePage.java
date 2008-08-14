@@ -77,31 +77,31 @@ import org.erlide.basicui.util.SWTUtil;
 import org.erlide.runtime.backend.BackendInfo;
 import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.runtime.backend.InfoElement;
-import org.erlide.runtime.backend.InstallationInfo;
-import org.erlide.runtime.backend.InstallationInfoManager;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
- * A preference page that displays installed installations in a table.
- * Installations can be added, removed, edited, and searched for.
+ * A preference page that displays installed runtimes in a table. Runtimes can
+ * be added, removed, edited, and searched for.
  * <p>
  * It implements ISelectionProvider - it sends selection change events when the
  * checked runtime in the table changes, or when the "use default" button check
  * state changes.
  * </p>
  */
-public class InstallationsPreferencePage extends PreferencePage implements
-		IAddDialogRequestor<InstallationInfo>, ISelectionProvider,
+public class RuntimesPreferencePage extends PreferencePage implements
+		IAddDialogRequestor<RuntimeInfo>, ISelectionProvider,
 		IWorkbenchPreferencePage {
 
-	private static final String INSTALLATIONS_PREFERENCE_PAGE = "INSTALLATIONS_PREFERENCE_PAGE";
+	private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
-	Collection<InstallationInfo> installations;
-	InstallationInfo defaultInstallation;
+	Collection<RuntimeInfo> runtimes;
+	RuntimeInfo defaultRuntime;
 
 	/**
 	 * The main list control
 	 */
-	protected CheckboxTableViewer fInstallationList;
+	protected CheckboxTableViewer fRuntimeList;
 
 	// Action buttons
 	private Button fAddButton;
@@ -130,13 +130,12 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	private ISelection fPrevSelection = new StructuredSelection();
 
 	/**
-	 * Content provider to show a list of installations
+	 * Content provider to show a list of Runtimes
 	 */
-	class InstallationContentProvider implements IStructuredContentProvider {
+	class RuntimeContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object input) {
-			return installations.toArray(new InstallationInfo[installations
-					.size()]);
+			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -150,15 +149,15 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	/**
 	 * Label provider for installed runtimes table.
 	 */
-	static class InstallationLabelProvider extends LabelProvider implements
+	static class RuntimeLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
 		/**
 		 * @see ITableLabelProvider#getColumnText(Object, int)
 		 */
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof InstallationInfo) {
-				final InstallationInfo vm = (InstallationInfo) element;
+			if (element instanceof RuntimeInfo) {
+				final RuntimeInfo vm = (RuntimeInfo) element;
 				switch (columnIndex) {
 				case 0:
 					return vm.getName();
@@ -180,14 +179,13 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 	}
 
-	public InstallationsPreferencePage() {
+	public RuntimesPreferencePage() {
 		super();
-		setTitle(InstallationPreferenceMessages.Page_title);
-		setDescription(InstallationPreferenceMessages.Page_description);
+		setTitle(PreferenceMessages.RuntimesPreferencePage_title);
+		setDescription(PreferenceMessages.RuntimesPreferencePage_description);
 
-		installations = InstallationInfoManager.getDefault().getElements();
-		defaultInstallation = InstallationInfoManager.getDefault()
-				.getDefaultInstallation();
+		runtimes = RuntimeInfoManager.getDefault().getElements();
+		defaultRuntime = RuntimeInfoManager.getDefault().getDefaultRuntime();
 	}
 
 	/*
@@ -207,7 +205,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
 	 */
 	public ISelection getSelection() {
-		return new StructuredSelection(fInstallationList.getCheckedElements());
+		return new StructuredSelection(fRuntimeList.getCheckedElements());
 	}
 
 	/*
@@ -236,10 +234,10 @@ public class InstallationsPreferencePage extends PreferencePage implements
 				final Object vm = ((IStructuredSelection) selection)
 						.getFirstElement();
 				if (vm == null) {
-					fInstallationList.setCheckedElements(new Object[0]);
+					fRuntimeList.setCheckedElements(new Object[0]);
 				} else {
-					fInstallationList.setCheckedElements(new Object[] { vm });
-					fInstallationList.reveal(vm);
+					fRuntimeList.setCheckedElements(new Object[] { vm });
+					fRuntimeList.reveal(vm);
 				}
 				fireSelectionChanged();
 			}
@@ -263,14 +261,13 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * Sorts by VM type, and name within type.
 	 */
 	protected void sortByVersion() {
-		fInstallationList.setSorter(new ViewerSorter() {
+		fRuntimeList.setSorter(new ViewerSorter() {
 
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof InstallationInfo)
-						&& (e2 instanceof InstallationInfo)) {
-					final InstallationInfo left = (InstallationInfo) e1;
-					final InstallationInfo right = (InstallationInfo) e2;
+				if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
+					final RuntimeInfo left = (RuntimeInfo) e1;
+					final RuntimeInfo right = (RuntimeInfo) e2;
 					final String leftType = left.getVersion();
 					final String rightType = right.getVersion();
 					final int res = leftType.compareToIgnoreCase(rightType);
@@ -294,14 +291,13 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * Sorts by VM name.
 	 */
 	protected void sortByName() {
-		fInstallationList.setSorter(new ViewerSorter() {
+		fRuntimeList.setSorter(new ViewerSorter() {
 
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof InstallationInfo)
-						&& (e2 instanceof InstallationInfo)) {
-					final InstallationInfo left = (InstallationInfo) e1;
-					final InstallationInfo right = (InstallationInfo) e2;
+				if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
+					final RuntimeInfo left = (RuntimeInfo) e1;
+					final RuntimeInfo right = (RuntimeInfo) e2;
 					return left.getName().compareToIgnoreCase(right.getName());
 				}
 				return super.compare(viewer, e1, e2);
@@ -319,14 +315,13 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * Sorts by VM location.
 	 */
 	protected void sortByLocation() {
-		fInstallationList.setSorter(new ViewerSorter() {
+		fRuntimeList.setSorter(new ViewerSorter() {
 
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if ((e1 instanceof InstallationInfo)
-						&& (e2 instanceof InstallationInfo)) {
-					final InstallationInfo left = (InstallationInfo) e1;
-					final InstallationInfo right = (InstallationInfo) e2;
+				if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
+					final RuntimeInfo left = (RuntimeInfo) e1;
+					final RuntimeInfo right = (RuntimeInfo) e2;
 					return left.getOtpHome().compareToIgnoreCase(
 							right.getOtpHome());
 				}
@@ -342,13 +337,11 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	}
 
 	protected void enableButtons() {
-		final int selectionCount = ((IStructuredSelection) fInstallationList
+		final int selectionCount = ((IStructuredSelection) fRuntimeList
 				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
-		fRemoveButton
-				.setEnabled(selectionCount > 0
-						&& selectionCount < fInstallationList.getTable()
-								.getItemCount());
+		fRemoveButton.setEnabled(selectionCount > 0
+				&& selectionCount < fRuntimeList.getTable().getItemCount());
 	}
 
 	protected Button createPushButton(Composite parent, String label) {
@@ -447,70 +440,67 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * 
 	 * @return Runtimes currently being displayed in this block
 	 */
-	public List<InstallationInfo> getInstallations() {
-		return new ArrayList<InstallationInfo>(installations);
+	public List<RuntimeInfo> getRuntimes() {
+		return new ArrayList<RuntimeInfo>(runtimes);
 	}
 
 	/**
 	 * Bring up a dialog that lets the user create a new VM definition.
 	 */
-	protected void addInstallation() {
-		fInstallationList.refresh();
+	protected void addRuntime() {
+		fRuntimeList.refresh();
 
-		final AddInstallationDialog dialog = new AddInstallationDialog(this,
-				getShell(), null);
-		dialog
-				.setTitle(InstallationPreferenceMessages.add_title);
+		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
+				null);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_add_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
-		fInstallationList.refresh();
+		fRuntimeList.refresh();
 	}
 
 	/**
-	 * @see IAddRuntimeDialogRequestor#itemAdded(InstallationInfo)
+	 * @see IAddRuntimeDialogRequestor#itemAdded(RuntimeInfo)
 	 */
-	public void itemAdded(InstallationInfo installation) {
-		installations.add(installation);
-		fInstallationList.refresh();
+	public void itemAdded(RuntimeInfo runtime) {
+		runtimes.add(runtime);
+		fRuntimeList.refresh();
 	}
 
 	/**
 	 * @see IAddRuntimeDialogRequestor#isDuplicateName(String)
 	 */
 	public boolean isDuplicateName(String name) {
-		return InstallationInfoManager.getDefault().isDuplicateName(name);
+		return RuntimeInfoManager.getDefault().isDuplicateName(name);
 	}
 
 	protected void editRuntime() {
-		final IStructuredSelection selection = (IStructuredSelection) fInstallationList
+		final IStructuredSelection selection = (IStructuredSelection) fRuntimeList
 				.getSelection();
-		final InstallationInfo vm = (InstallationInfo) selection
-				.getFirstElement();
+		final RuntimeInfo vm = (RuntimeInfo) selection.getFirstElement();
 		if (vm == null) {
 			return;
 		}
-		final AddInstallationDialog dialog = new AddInstallationDialog(this,
-				getShell(), vm);
-		dialog
-				.setTitle(InstallationPreferenceMessages.edit_title);
+		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
+				vm);
+		dialog.setTitle(PreferenceMessages.InstalledRuntimesBlock_edit_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
-		fInstallationList.refresh(vm);
+		fRuntimeList.refresh(vm);
 	}
 
 	protected void removeSelectedRuntimes() {
-		final IStructuredSelection selection = (IStructuredSelection) fInstallationList
+		final IStructuredSelection selection = (IStructuredSelection) fRuntimeList
 				.getSelection();
-		final InstallationInfo[] vms = new InstallationInfo[selection.size()];
+		final RuntimeInfo[] vms = new RuntimeInfo[selection.size()];
 		final Iterator<?> iter = selection.iterator();
 		int i = 0;
 		while (iter.hasNext()) {
-			vms[i] = (InstallationInfo) iter.next();
+			vms[i] = (RuntimeInfo) iter.next();
 			i++;
 		}
-		removeInstallations(vms);
+		removeRuntimes(vms);
 	}
 
 	/**
@@ -518,18 +508,18 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * 
 	 * @param vms
 	 */
-	public void removeInstallations(InstallationInfo[] vms) {
+	public void removeRuntimes(RuntimeInfo[] vms) {
 		final IStructuredSelection prev = (IStructuredSelection) getSelection();
-		for (final InstallationInfo rt : vms) {
-			installations.remove(rt);
+		for (final RuntimeInfo rt : vms) {
+			runtimes.remove(rt);
 			for (BackendInfo bi : rt.getBackends()) {
 				BackendInfoManager.getDefault().removeElement(bi.getName());
 			}
 		}
-		fInstallationList.refresh();
+		fRuntimeList.refresh();
 		final IStructuredSelection curr = (IStructuredSelection) getSelection();
 		if (!curr.equals(prev)) {
-			final List<InstallationInfo> installs = getInstallations();
+			final List<RuntimeInfo> installs = getRuntimes();
 			if (curr.size() == 0 && installs.size() == 1) {
 				// pick a default VM automatically
 				setSelection(new StructuredSelection(installs.get(0)));
@@ -547,9 +537,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		// choose a root directory for the search
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog
-				.setMessage(InstallationPreferenceMessages.search_message);
-		dialog
-				.setText(InstallationPreferenceMessages.search_text);
+				.setMessage(PreferenceMessages.InstalledRuntimesBlock_search_message);
+		dialog.setText(PreferenceMessages.InstalledRuntimesBlock_search_text);
 		final String path = dialog.open();
 		if (path == null) {
 			return;
@@ -558,8 +547,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		// ignore installed locations
 		final Set<String> existingLocations = new HashSet<String>();
 		{
-			for (InfoElement rt : installations) {
-				existingLocations.add(((InstallationInfo) rt).getOtpHome());
+			for (InfoElement rt : runtimes) {
+				existingLocations.add(((RuntimeInfo) rt).getOtpHome());
 			}
 		}
 
@@ -570,10 +559,9 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		final IRunnableWithProgress r = new IRunnableWithProgress() {
 
 			public void run(IProgressMonitor monitor) {
-				monitor
-						.beginTask(
-								InstallationPreferenceMessages.search_task,
-								IProgressMonitor.UNKNOWN);
+				monitor.beginTask(
+						PreferenceMessages.InstalledRuntimesBlock_search_task,
+						IProgressMonitor.UNKNOWN);
 				search(rootDir, locations, existingLocations, monitor);
 				monitor.done();
 			}
@@ -594,16 +582,16 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			MessageDialog
 					.openInformation(
 							getShell(),
-							InstallationPreferenceMessages.info_title,
+							PreferenceMessages.InstalledRuntimesBlock_info_title,
 							MessageFormat
 									.format(
-											InstallationPreferenceMessages.info_message,
+											PreferenceMessages.InstalledRuntimesBlock_info_message,
 											(Object[]) new String[] { path }));
 		} else {
 			Iterator<File> iter = locations.iterator();
 			while (iter.hasNext()) {
 				final File location = iter.next();
-				final InstallationInfo vm = new InstallationInfo();
+				final RuntimeInfo vm = new RuntimeInfo();
 				final String name = location.getName();
 				String nameCopy = name;
 				int i = 1;
@@ -658,8 +646,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			}
 			if (file.isDirectory()) {
 				if (!ignore.contains(file.getName())) {
-					boolean validLocation = InstallationInfo
-							.isValidOtpHome(file.getAbsolutePath());
+					boolean validLocation = RuntimeInfo.isValidOtpHome(file
+							.getAbsolutePath());
 
 					// FIXME
 
@@ -685,7 +673,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * @param vm
 	 *            Runtime or <code>null</code>
 	 */
-	public void setCheckedRuntime(InstallationInfo vm) {
+	public void setCheckedRuntime(RuntimeInfo vm) {
 		if (vm == null) {
 			setSelection(new StructuredSelection());
 		} else {
@@ -698,12 +686,12 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	 * 
 	 * @return the checked Runtime or <code>null</code> if none
 	 */
-	public InstallationInfo getCheckedInstallation() {
-		final Object[] objects = fInstallationList.getCheckedElements();
+	public RuntimeInfo getCheckedRuntime() {
+		final Object[] objects = fRuntimeList.getCheckedElements();
 		if (objects.length == 0) {
 			return null;
 		}
-		return (InstallationInfo) objects[0];
+		return (RuntimeInfo) objects[0];
 	}
 
 	/**
@@ -724,7 +712,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	}
 
 	protected float getColumnWeight(int col) {
-		final Table table = fInstallationList.getTable();
+		final Table table = fRuntimeList.getTable();
 		final int tableWidth = table.getSize().x;
 		final int columnWidth = table.getColumn(col).getWidth();
 		if (tableWidth > columnWidth) {
@@ -744,7 +732,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	public void restoreColumnSettings(IDialogSettings settings, String qualifier) {
 		fWeight1 = restoreColumnWeight(settings, qualifier, 0);
 		fWeight2 = restoreColumnWeight(settings, qualifier, 1);
-		fInstallationList.getTable().layout(true);
+		fRuntimeList.getTable().layout(true);
 		try {
 			fSortColumn = settings.getInt(qualifier + ".sortColumn"); //$NON-NLS-1$
 		} catch (final NumberFormatException e) {
@@ -818,7 +806,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		final Label tableLabel = new Label(parent, SWT.NONE);
 		tableLabel
-				.setText(InstallationPreferenceMessages.installations);
+				.setText(PreferenceMessages.InstalledRuntimesBlock_installedRuntimes);
 		data = new GridData();
 		data.horizontalSpan = 2;
 		tableLabel.setLayoutData(data);
@@ -830,8 +818,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				if (e.detail == SWT.CHECK) {
-					InstallationInfo ri = (InstallationInfo) e.item.getData();
-					defaultInstallation = ri;
+					RuntimeInfo ri = (RuntimeInfo) e.item.getData();
+					defaultRuntime = ri;
 				}
 			}
 		});
@@ -848,7 +836,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		final TableColumn column1 = new TableColumn(table, SWT.NULL);
 		column1.setWidth(80);
-		column1.setText(InstallationPreferenceMessages.name);
+		column1.setText(PreferenceMessages.InstalledRuntimesBlock_name);
 		column1.setResizable(true);
 		column1.addSelectionListener(new SelectionAdapter() {
 
@@ -860,7 +848,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		final TableColumn column2 = new TableColumn(table, SWT.NULL);
 		column2.setWidth(150);
-		column2.setText(InstallationPreferenceMessages.location);
+		column2.setText(PreferenceMessages.InstalledRuntimesBlock_location);
 		column2.setResizable(true);
 		column2.addSelectionListener(new SelectionAdapter() {
 
@@ -872,7 +860,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		final TableColumn column3 = new TableColumn(table, SWT.NULL);
 		column3.setWidth(80);
-		column3.setText(InstallationPreferenceMessages.version);
+		column3.setText(PreferenceMessages.InstalledRuntimesBlock_version);
 		column3.setResizable(false);
 		column3.addSelectionListener(new SelectionAdapter() {
 
@@ -882,18 +870,17 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			}
 		});
 
-		fInstallationList = new CheckboxTableViewer(table);
-		fInstallationList.setLabelProvider(new InstallationLabelProvider());
-		fInstallationList.setContentProvider(new InstallationContentProvider());
-		fInstallationList.setInput(installations);
-		if (defaultInstallation != null) {
-			fInstallationList
-					.setCheckedElements(new Object[] { defaultInstallation });
+		fRuntimeList = new CheckboxTableViewer(table);
+		fRuntimeList.setLabelProvider(new RuntimeLabelProvider());
+		fRuntimeList.setContentProvider(new RuntimeContentProvider());
+		fRuntimeList.setInput(runtimes);
+		if (defaultRuntime != null) {
+			fRuntimeList.setCheckedElements(new Object[] { defaultRuntime });
 		}
-		fInstallationList.addCheckStateListener(new ICheckStateListener() {
+		fRuntimeList.addCheckStateListener(new ICheckStateListener() {
 
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				InstallationInfo e = (InstallationInfo) event.getElement();
+				RuntimeInfo e = (RuntimeInfo) event.getElement();
 				if (event.getChecked()) {
 					setCheckedRuntime(e);
 				}
@@ -902,7 +889,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		// by default, sort by name
 		sortByName();
 
-		fInstallationList
+		fRuntimeList
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					public void selectionChanged(SelectionChangedEvent evt) {
@@ -910,21 +897,21 @@ public class InstallationsPreferencePage extends PreferencePage implements
 					}
 				});
 
-		fInstallationList.addCheckStateListener(new ICheckStateListener() {
+		fRuntimeList.addCheckStateListener(new ICheckStateListener() {
 
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					setCheckedRuntime((InstallationInfo) event.getElement());
+					setCheckedRuntime((RuntimeInfo) event.getElement());
 				} else {
 					setCheckedRuntime(null);
 				}
 			}
 		});
 
-		fInstallationList.addDoubleClickListener(new IDoubleClickListener() {
+		fRuntimeList.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent e) {
-				if (!fInstallationList.getSelection().isEmpty()) {
+				if (!fRuntimeList.getSelection().isEmpty()) {
 					editRuntime();
 				}
 			}
@@ -948,16 +935,16 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		buttons.setFont(font);
 
 		fAddButton = createPushButton(buttons,
-				InstallationPreferenceMessages.add);
+				PreferenceMessages.InstalledRuntimesBlock_add);
 		fAddButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
-				addInstallation();
+				addRuntime();
 			}
 		});
 
 		fEditButton = createPushButton(buttons,
-				InstallationPreferenceMessages.edit);
+				PreferenceMessages.InstalledRuntimesBlock_edit);
 		fEditButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -965,9 +952,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			}
 		});
 
-		fRemoveButton = createPushButton(
-				buttons,
-				InstallationPreferenceMessages.remove);
+		fRemoveButton = createPushButton(buttons,
+				PreferenceMessages.InstalledRuntimesBlock_remove);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -984,9 +970,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		gd.heightHint = 4;
 		separator.setLayoutData(gd);
 
-		fSearchButton = createPushButton(
-				buttons,
-				InstallationPreferenceMessages.search);
+		fSearchButton = createPushButton(buttons,
+				PreferenceMessages.InstalledRuntimesBlock_search);
 		fSearchButton.addListener(SWT.Selection, new Listener() {
 
 			public void handleEvent(Event evt) {
@@ -1009,19 +994,19 @@ public class InstallationsPreferencePage extends PreferencePage implements
 	}
 
 	private void saveData() {
-		InstallationInfoManager.getDefault().setElements(installations);
-		for (InstallationInfo rt : installations) {
+		RuntimeInfoManager.getDefault().setElements(runtimes);
+		for (RuntimeInfo rt : runtimes) {
 			BackendInfoManager.getDefault().createDefaultBackends(rt);
 		}
-		if (defaultInstallation != null) {
-			InstallationInfoManager.getDefault().setSelectedKey(
-					defaultInstallation.getName());
+		if (defaultRuntime != null) {
+			RuntimeInfoManager.getDefault().setSelectedKey(
+					defaultRuntime.getName());
 		}
 
 		// save column widths
 		final IDialogSettings settings = ErlideBasicUIPlugin.getDefault()
 				.getDialogSettings();
-		saveColumnSettings(settings, INSTALLATIONS_PREFERENCE_PAGE);
+		saveColumnSettings(settings, RUNTIMES_PREFERENCE_PAGE);
 	}
 
 	@Override
@@ -1032,18 +1017,17 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 	@Override
 	protected void performDefaults() {
-		installations = InstallationInfoManager.getDefault().getElements();
-		defaultInstallation = InstallationInfoManager.getDefault()
-				.getDefaultInstallation();
-		fInstallationList.refresh();
+		runtimes = RuntimeInfoManager.getDefault().getElements();
+		defaultRuntime = RuntimeInfoManager.getDefault().getDefaultRuntime();
+		fRuntimeList.refresh();
 		super.performDefaults();
 	}
 
 	void checkValid() {
-		final InstallationInfo def = getCheckedInstallation();
-		if (def == null && getInstallations().size() > 0) {
+		final RuntimeInfo def = getCheckedRuntime();
+		if (def == null && getRuntimes().size() > 0) {
 			setValid(false);
-			setErrorMessage(InstallationPreferenceMessages.Page_pleaseSelectADefaultInstallation);
+			setErrorMessage(PreferenceMessages.RuntimesPreferencePage_pleaseSelectADefaultRuntime);
 		} else {
 			setValid(true);
 			setErrorMessage(null);
