@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -19,11 +21,18 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -36,9 +45,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -52,6 +61,8 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
@@ -63,13 +74,13 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	Text funcText;
 
-	Text otpPathText;
+	// Text otpPathText;
 
-	Button otpPathBrowseButton;
+	// Button otpPathBrowseButton;
 
 	Button startedNodeCheckbox;
 
-	private Text otpNodeName;
+	// private Text otpNodeName;
 
 	private CheckboxTableViewer projectsTable;
 
@@ -83,10 +94,14 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 		// final Label l = new Label(comp, SWT.NONE);
 		// l.setText("*** Only for internal erlide testing! ***");
-
+		getRuntimes();
 		createProjectEditor(comp);
 		createErlangEditor(comp);
 		createOtherProjectsEditor(comp);
+	}
+
+	private void getRuntimes() {
+		runtimes = RuntimeInfoManager.getDefault().getElements();
 	}
 
 	private void createErlangEditor(final Composite comp) {
@@ -100,62 +115,63 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean startNew = !startedNodeCheckbox.getSelection();
-				otpPathText.setEnabled(startNew);
-				otpPathBrowseButton.setEnabled(startNew);
+				// otpPathText.setEnabled(startNew);
+				// otpPathBrowseButton.setEnabled(startNew);
 				moduleText.setEnabled(startNew);
 				funcText.setEnabled(startNew);
 				updateLaunchConfigurationDialog();
 			}
 		});
-		createOtpPathEditor(group);
+		// createOtpPathEditor(group);
 		createStartFunctionEditor(group);
-		createNodeNameEditor(group);
+		// createNodeNameEditor(group);
+		createBackendCombo(group);
 	}
 
-	private void createNodeNameEditor(final Group parent) {
-		// final Font font = parent.getFont();
-		final Label otpPathLabel = new Label(parent, SWT.NONE);
-		otpPathLabel.setText("Node name");
-		// otpPathLabel.setFont(font);
-		final Group group = SWTUtil.createGroup(parent, null, 2,
-				GridData.FILL_HORIZONTAL);
+	// private void createNodeNameEditor(final Group parent) {
+	// // final Font font = parent.getFont();
+	// final Label otpPathLabel = new Label(parent, SWT.NONE);
+	// otpPathLabel.setText("Node name");
+	// // otpPathLabel.setFont(font);
+	// final Group group = SWTUtil.createGroup(parent, null, 2,
+	// GridData.FILL_HORIZONTAL);
+	//
+	// // group.setFont(font);
+	//
+	// otpNodeName = new Text(group, SWT.SINGLE | SWT.BORDER);
+	// final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+	// otpNodeName.setLayoutData(gd);
+	// // otpPathText.setFont(font);
+	// otpNodeName.addModifyListener(fBasicModifyListener);
+	// }
 
-		// group.setFont(font);
-
-		otpNodeName = new Text(group, SWT.SINGLE | SWT.BORDER);
-		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		otpNodeName.setLayoutData(gd);
-		// otpPathText.setFont(font);
-		otpNodeName.addModifyListener(fBasicModifyListener);
-	}
-
-	private void createOtpPathEditor(final Composite parent) {
-		// final Font font = parent.getFont();
-		final Label otpPathLabel = new Label(parent, SWT.NONE);
-		otpPathLabel.setText("OTP Home");
-		// otpPathLabel.setFont(font);
-		final Group group = SWTUtil.createGroup(parent, null, 3,
-				GridData.FILL_HORIZONTAL);
-		// group.setFont(font);
-
-		otpPathText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		otpPathText.setLayoutData(gd);
-		// otpPathText.setFont(font);
-		otpPathText.addModifyListener(fBasicModifyListener);
-
-		otpPathBrowseButton = new Button(group, SWT.PUSH);
-		otpPathBrowseButton.setText("Browse...");
-		// otpPathBrowseButton.setFont(font);
-		otpPathBrowseButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent evt) {
-				handleotpPathBrowseButtonSelected();
-			}
-
-		});
-
-	}
+	// private void createOtpPathEditor(final Composite parent) {
+	// // final Font font = parent.getFont();
+	// final Label otpPathLabel = new Label(parent, SWT.NONE);
+	// otpPathLabel.setText("OTP Home");
+	// // otpPathLabel.setFont(font);
+	// final Group group = SWTUtil.createGroup(parent, null, 3,
+	// GridData.FILL_HORIZONTAL);
+	// // group.setFont(font);
+	//
+	// otpPathText = new Text(group, SWT.SINGLE | SWT.BORDER);
+	// final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+	// otpPathText.setLayoutData(gd);
+	// // otpPathText.setFont(font);
+	// otpPathText.addModifyListener(fBasicModifyListener);
+	//
+	// otpPathBrowseButton = new Button(group, SWT.PUSH);
+	// otpPathBrowseButton.setText("Browse...");
+	// // otpPathBrowseButton.setFont(font);
+	// otpPathBrowseButton.addSelectionListener(new SelectionAdapter() {
+	// @Override
+	// public void widgetSelected(final SelectionEvent evt) {
+	// handleotpPathBrowseButtonSelected();
+	// }
+	//
+	// });
+	//
+	// }
 
 	private void createStartFunctionEditor(final Composite parent) {
 		// final Font font = parent.getFont();
@@ -183,27 +199,27 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		funcText.addModifyListener(fBasicModifyListener);
 	}
 
-	void handleotpPathBrowseButtonSelected() {
-
-		String last = otpPathText.getText().trim();
-		// if (last.length() == 0) {
-		// last =
-		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
-		// }
-		if (last == null) {
-			last = ""; //$NON-NLS-1$
-		}
-		final DirectoryDialog dialog = new DirectoryDialog(getShell(),
-				SWT.SINGLE);
-		dialog.setText("Select otp home");
-		dialog.setMessage("Select otp home <msg>");
-		dialog.setFilterPath(last);
-		final String result = dialog.open();
-		if (result == null) {
-			return;
-		}
-		otpPathText.setText(result);
-	}
+	// void handleotpPathBrowseButtonSelected() {
+	//
+	// String last = otpPathText.getText().trim();
+	// // if (last.length() == 0) {
+	// // last =
+	// //DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+	// // }
+	// if (last == null) {
+	// last = ""; //$NON-NLS-1$
+	// }
+	// final DirectoryDialog dialog = new DirectoryDialog(getShell(),
+	// SWT.SINGLE);
+	// dialog.setText("Select otp home");
+	// dialog.setMessage("Select otp home <msg>");
+	// dialog.setFilterPath(last);
+	// final String result = dialog.open();
+	// if (result == null) {
+	// return;
+	// }
+	// otpPathText.setText(result);
+	// }
 
 	/**
 	 * Creates the projects table control
@@ -320,6 +336,9 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 				IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME, "");
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS, "");
+		configuration.setAttribute(
+				IErlangLaunchConfigurationAttributes.BACKEND_NAME,
+				RuntimeInfoManager.getDefault().getDefaultRuntime().getName());
 	}
 
 	public void initializeFrom(final ILaunchConfiguration configuration) {
@@ -344,14 +363,14 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 					.setText(IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_FUNCTION);
 		}
 
-		try {
-			otpPathText.setText(configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
-					IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME));
-		} catch (final CoreException e) {
-			otpPathText
-					.setText(IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
-		}
+		// try {
+		// otpPathText.setText(configuration.getAttribute(
+		// IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
+		// IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME));
+		// } catch (final CoreException e) {
+		// otpPathText
+		// .setText(IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
+		// }
 		try {
 			fProjText
 					.setText(configuration
@@ -361,12 +380,12 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		} catch (final CoreException e) {
 			fProjText.setText("");
 		}
-		try {
-			otpNodeName.setText(configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME, ""));
-		} catch (final CoreException e) {
-			otpNodeName.setText("");
-		}
+		// try {
+		// otpNodeName.setText(configuration.getAttribute(
+		// IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME, ""));
+		// } catch (final CoreException e) {
+		// otpNodeName.setText("");
+		// }
 		try {
 			startedNodeCheckbox
 					.setSelection(configuration
@@ -375,6 +394,22 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 									true));
 		} catch (final CoreException e) {
 			startedNodeCheckbox.setSelection(true);
+		}
+		try {
+			final String backendName = configuration.getAttribute(
+					IErlangLaunchConfigurationAttributes.BACKEND_NAME, "");
+			for (final RuntimeInfo i : runtimes) {
+				if (i.getName().equals(backendName)) {
+					selectedRuntime = i;
+					break;
+				}
+			}
+			if (selectedRuntime != null) {
+				erlideBackendViewer.setSelection(new StructuredSelection(
+						selectedRuntime), true);
+			}
+		} catch (final CoreException e) {
+			selectedRuntime = null;
 		}
 	}
 
@@ -402,18 +437,24 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_ENODE_FUNCTION,
 				funcText.getText());
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME, otpPathText
-						.getText());
+		// configuration.setAttribute(
+		// IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME, otpPathText
+		// .getText());
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME,
 				fProjText.getText());
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME,
-				otpNodeName.getText());
+		// configuration.setAttribute(
+		// IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME,
+		// otpNodeName.getText());
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_START_NODE,
 				!startedNodeCheckbox.getSelection());
+		String backendName = "";
+		if (selectedRuntime != null) {
+			backendName = selectedRuntime.getName();
+		}
+		configuration.setAttribute(
+				IErlangLaunchConfigurationAttributes.BACKEND_NAME, backendName);
 	}
 
 	private void performApplyOtherProjects(
@@ -448,6 +489,14 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		}
 	};
+
+	private ComboViewer erlideBackendViewer;
+
+	private Collection<RuntimeInfo> runtimes;
+
+	private Combo combo;
+
+	private RuntimeInfo selectedRuntime;
 
 	/**
 	 * Creates the widgets for specifying a main type.
@@ -523,6 +572,124 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		final IErlModel m = ErlangCore.getModelManager().getErlangModel();
 		return m.getErlangProject(projectName);
 	}
+
+	/**
+	 * Label provider for installed runtimes table.
+	 */
+	static class BackendLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
+
+		/**
+		 * @see ITableLabelProvider#getColumnText(Object, int)
+		 */
+		public String getColumnText(final Object element, final int columnIndex) {
+			if (element instanceof RuntimeInfo) {
+				final RuntimeInfo vm = (RuntimeInfo) element;
+				switch (columnIndex) {
+				case 0:
+					return vm.getName();
+					// case 1:
+					// return vm.getRuntime();
+					// case 2:
+					// return vm.getNodeName();
+				}
+			}
+			return element.toString();
+		}
+
+		/**
+		 * @see ITableLabelProvider#getColumnImage(Object, int)
+		 */
+		public Image getColumnImage(final Object element, final int columnIndex) {
+			return null;
+		}
+
+		@Override
+		public String getText(final Object element) {
+			return getColumnText(element, 0);
+		}
+	}
+
+	/**
+	 * Content provider to show a list of Runtimes
+	 */
+	class BackendContentProvider implements IStructuredContentProvider {
+
+		public Object[] getElements(final Object input) {
+			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
+		}
+
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
+		}
+
+		public void dispose() {
+		}
+
+	}
+
+	/**
+	 * @param parent
+	 */
+	private void createBackendCombo(final Composite parent) {
+		final Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		final GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		composite.setLayout(gridLayout);
+
+		final Label erlideWillUseLabel = new Label(composite, SWT.NONE);
+		erlideWillUseLabel
+				.setToolTipText("The erlide backend is used for running project code.");
+		erlideWillUseLabel.setText("Erlide backend");
+
+		erlideBackendViewer = new ComboViewer(composite, SWT.READ_ONLY);
+		erlideBackendViewer.setLabelProvider(new BackendLabelProvider());
+		erlideBackendViewer.setContentProvider(new BackendContentProvider());
+		erlideBackendViewer.setInput(runtimes);
+		combo = erlideBackendViewer.getCombo();
+		final GridData gd_combo = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd_combo.widthHint = 118;
+		combo.setLayoutData(gd_combo);
+		if (selectedRuntime != null) {
+			erlideBackendViewer.setSelection(new StructuredSelection(
+					selectedRuntime), true);
+		}
+		// erlideBackendViewer
+		// .addPostSelectionChangedListener(new ISelectionChangedListener() {
+		// public void selectionChanged(
+		// final SelectionChangedEvent event) {
+		// fireSelectionChanged();
+		// }
+		// });
+		erlideBackendViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							final SelectionChangedEvent event) {
+						final ISelection sel = event.getSelection();
+						if (sel instanceof IStructuredSelection) {
+							final IStructuredSelection ssel = (IStructuredSelection) sel;
+							selectedRuntime = (RuntimeInfo) ssel
+									.getFirstElement();
+						}
+						updateLaunchConfigurationDialog();
+					}
+				});
+	}
+
+	// /**
+	// * Fire current selection
+	// */
+	// void fireSelectionChanged() {
+	// final SelectionChangedEvent event = new SelectionChangedEvent(this,
+	// getSelection());
+	// final Object[] listeners = fSelectionListeners.getListeners();
+	// for (final Object element : listeners) {
+	// final ISelectionChangedListener listener = (ISelectionChangedListener)
+	// element;
+	// listener.selectionChanged(event);
+	// }
+	// }
 
 	public static class ErlProjectNameLabelProvider implements ILabelProvider {
 
