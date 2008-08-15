@@ -39,7 +39,7 @@ public final class BackendManager implements IResourceChangeListener {
 	private static final BackendManager MANAGER = new BackendManager();
 
 	private IdeBackend fLocalBackend;
-	private final Map<String, IBackend> fProjectBackends;
+	private final Map<String, IBackend> fBuildBackends;
 	private final Object fProjectBackendsLock = new Object();
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
@@ -60,7 +60,7 @@ public final class BackendManager implements IResourceChangeListener {
 		fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
 
 		fLocalBackend = null;
-		fProjectBackends = new HashMap<String, IBackend>(5);
+		fBuildBackends = new HashMap<String, IBackend>(5);
 		fListeners = new ArrayList<IBackendListener>(5);
 		fPlugins = new ArrayList<ICodeBundle>(5);
 
@@ -105,9 +105,9 @@ public final class BackendManager implements IResourceChangeListener {
 			if (info == null) {
 				return fLocalBackend;
 			}
-			IBackend b = fProjectBackends.get(info.getName());
+			IBackend b = fBuildBackends.get(info.getName());
 			if (b != null && !b.ping()) {
-				fProjectBackends.remove(info.getName());
+				fBuildBackends.remove(info.getName());
 				fireUpdate(b, BackendEvent.REMOVED);
 				b = null;
 			}
@@ -116,7 +116,7 @@ public final class BackendManager implements IResourceChangeListener {
 						.of(BackendOptions.MANAGED) : EnumSet
 						.noneOf(BackendOptions.class);
 				b = create(info, options);
-				fProjectBackends.put(info.getName(), b);
+				fBuildBackends.put(info.getName(), b);
 				fireUpdate(b, BackendEvent.ADDED);
 			}
 			return b;
@@ -257,7 +257,7 @@ public final class BackendManager implements IResourceChangeListener {
 	public AbstractBackend[] getProjectBackends() {
 		// getDefaultBackend();
 		synchronized (fProjectBackendsLock) {
-			final Object[] ob = fProjectBackends.values().toArray();
+			final Object[] ob = fBuildBackends.values().toArray();
 			final AbstractBackend[] res = new AbstractBackend[ob.length];
 			System.arraycopy(ob, 0, res, 0, ob.length);
 			return res;
@@ -288,7 +288,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void forEachProjectBackend(final IBackendVisitor visitor) {
 		synchronized (fProjectBackendsLock) {
-			for (final IBackend b : fProjectBackends.values()) {
+			for (final IBackend b : fBuildBackends.values()) {
 				try {
 					visitor.run(b);
 				} catch (final Exception e) {
