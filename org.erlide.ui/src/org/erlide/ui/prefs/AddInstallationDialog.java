@@ -266,7 +266,7 @@ public class AddInstallationDialog extends StatusDialog implements
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		dialog.setFilterPath(fOtpHome.getText());
 		dialog
-				.setMessage(InstallationPreferenceMessages.addDialog_pickInstallationRootDialog);
+				.setMessage(InstallationPreferenceMessages.addDialog_pickInstallationRoot);
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fOtpHome.setText(newPath);

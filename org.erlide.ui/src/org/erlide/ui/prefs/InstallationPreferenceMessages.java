@@ -24,7 +24,7 @@ public class InstallationPreferenceMessages extends NLS {
 	public static String Page_description;
 	public static String Page_pleaseSelectADefaultInstallation;
 	public static String addDialog_ertsName;
-	public static String addDialog_pickInstallationRootDialog;
+	public static String addDialog_pickInstallationRoot;
 	public static String addDialog_add;
 	public static String addDialog_remove;
 
