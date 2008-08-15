@@ -108,8 +108,9 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 							"Could not start, please check your preferences!",
 							3000);
 				}
-			}// make a nice little BackEnd for it
-			final ExecutionBackend backend = getBackend(label);
+			}
+			// make a nice little BackEnd for it
+			final ExecutionBackend backend = makeBackend(project);
 			// backend.setLabel(label);
 			if (backend == null) {
 				ErlLogger.error("Launch: got null backend!");
@@ -225,9 +226,8 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 		}
 	}
 
-	public ExecutionBackend getBackend(final String name) {
-		return null;
-		// TODO BackendManager.getDefault().getNamedBackend(name, false);
+	public ExecutionBackend makeBackend(final IProject project) {
+		return BackendManager.getDefault().getExecution(project);
 	}
 
 	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {

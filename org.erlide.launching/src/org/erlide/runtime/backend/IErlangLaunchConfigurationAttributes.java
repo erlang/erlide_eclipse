@@ -54,4 +54,6 @@ public interface IErlangLaunchConfigurationAttributes {
 
 	String DEFAULT_WORKING_DIR = ".";
 
+	String BACKEND_NAME = prefix + ".backend_name";
+
 }
