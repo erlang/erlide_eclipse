@@ -87,10 +87,6 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		ErlideBackend.init(b, BackendManager
 				.buildNodeName(BackendManager.JAVA_NODE_LABEL));
-		if (System.getProperty("erlide.tracer", "false").equals("true")) {
-			// TODO find a way to configure tracing when needed
-			// ErlideBackend.startTracer(b, "log.1");
-		}
 		ErlLogger.debug("Started LAUNCHING");
 	}
 

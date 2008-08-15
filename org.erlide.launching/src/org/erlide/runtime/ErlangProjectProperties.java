@@ -15,8 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
@@ -26,18 +24,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.runtime.backend.BackendInfo;
-import org.erlide.runtime.backend.BackendInfoManager;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties {
-
-	public enum BackendType {
-		IDE, BUILD, EXECUTION
-	};
 
 	private static final String PATH_SEP = ";";
 
@@ -50,8 +44,7 @@ public class ErlangProjectProperties {
 	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
 
-	private Map<BackendType, String> fBackendNames = new EnumMap<BackendType, String>(
-			BackendType.class);
+	private String fRuntimeName;
 
 	/**
 	 * Name of file containing project classpath
@@ -59,12 +52,7 @@ public class ErlangProjectProperties {
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		fBackendNames.put(BackendType.IDE,
-				IPrefConstants.DEFAULT_IDE_BACKEND_NAME);
-		fBackendNames.put(BackendType.BUILD,
-				IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
-		fBackendNames.put(BackendType.EXECUTION,
-				IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME);
+		fRuntimeName = IPrefConstants.DEFAULT_BUILD_BACKEND_NAME;
 	}
 
 	public ErlangProjectProperties(IProject prj) {
@@ -109,15 +97,9 @@ public class ErlangProjectProperties {
 			fExternalIncludes = prefs.getProperty(
 					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fBackendNames.put(BackendType.IDE, prefs.getProperty(
-					IPrefConstants.PROJECT_IDE_BACKEND_NAME,
-					IPrefConstants.DEFAULT_IDE_BACKEND_NAME));
-			fBackendNames.put(BackendType.BUILD, prefs.getProperty(
+			fRuntimeName = prefs.getProperty(
 					IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME));
-			fBackendNames.put(BackendType.EXECUTION, prefs.getProperty(
-					IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
-					IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME));
+					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
 			fExternalModules = prefs.getProperty(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -141,15 +123,8 @@ public class ErlangProjectProperties {
 			fExternalIncludes = node.get(
 					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fBackendNames.put(BackendType.IDE, node.get(
-					IPrefConstants.PROJECT_IDE_BACKEND_NAME,
-					IPrefConstants.DEFAULT_IDE_BACKEND_NAME));
-			fBackendNames.put(BackendType.BUILD, node.get(
-					IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME));
-			fBackendNames.put(BackendType.EXECUTION, node.get(
-					IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
-					IPrefConstants.DEFAULT_EXECUTE_BACKEND_NAME));
+			fRuntimeName = node.get(IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
+					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
 			fExternalModules = node.get(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -173,12 +148,7 @@ public class ErlangProjectProperties {
 		node.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
 		node.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
-		node.put(IPrefConstants.PROJECT_IDE_BACKEND_NAME, fBackendNames
-				.get(BackendType.IDE));
-		node.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fBackendNames
-				.get(BackendType.BUILD));
-		node.put(IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME, fBackendNames
-				.get(BackendType.EXECUTION));
+		node.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fRuntimeName);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
@@ -201,12 +171,7 @@ public class ErlangProjectProperties {
 			prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 			prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					fExternalIncludes);
-			prefs.put(IPrefConstants.PROJECT_IDE_BACKEND_NAME, fBackendNames
-					.get(BackendType.IDE));
-			prefs.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fBackendNames
-					.get(BackendType.BUILD));
-			prefs.put(IPrefConstants.PROJECT_EXECUTE_BACKEND_NAME,
-					fBackendNames.get(BackendType.EXECUTION));
+			prefs.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fRuntimeName);
 			prefs
 					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
 							fExternalModules);
@@ -318,7 +283,7 @@ public class ErlangProjectProperties {
 		fIncludeDirs = bprefs.fIncludeDirs;
 		fSourceDirs = bprefs.fSourceDirs;
 		fOutputDir = bprefs.fOutputDir;
-		fBackendNames = new EnumMap<BackendType, String>(bprefs.fBackendNames);
+		fRuntimeName = "";
 	}
 
 	public static String pack(String[] strs) {
@@ -356,9 +321,9 @@ public class ErlangProjectProperties {
 		return project;
 	}
 
-	public void setBackendName(BackendType type, String backendName) {
+	public void setRuntimeName(String backendName) {
 		// TODO validate!
-		fBackendNames.put(type, backendName);
+		fRuntimeName = backendName;
 	}
 
 	public void setExternalModules(String fExternalModules) {
@@ -369,13 +334,12 @@ public class ErlangProjectProperties {
 		return fExternalModules;
 	}
 
-	public String getBackendName(BackendType type) {
-		return fBackendNames.get(type);
+	public String getBackendName() {
+		return fRuntimeName;
 	}
 
-	public BackendInfo getBackendInfo(BackendType type) {
-		return BackendInfoManager.getDefault().getElement(
-				fBackendNames.get(type));
+	public RuntimeInfo getRuntimeInfo() {
+		return RuntimeInfoManager.getDefault().getElement(fRuntimeName);
 	}
 
 }

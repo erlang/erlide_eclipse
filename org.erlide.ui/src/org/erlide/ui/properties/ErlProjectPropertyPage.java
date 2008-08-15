@@ -129,7 +129,7 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 		String[][] values = new String[][] { { "a", "a" }, { "b", "b" } };
 
 		final Composite rtComposite = createComposite(backendComposite);
-		editors.add(new ComboFieldEditor("runtimes", "Runtimes", values,
+		editors.add(new ComboFieldEditor("runtimes", "Installations", values,
 				rtComposite));
 
 		editors.add(new StringFieldEditor("backendName", "Node name",

@@ -24,7 +24,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.ErtsProcessFactory;
@@ -35,7 +35,7 @@ import org.erlide.runtime.backend.console.BackendShellManager;
  */
 public class ManagedBackend extends AbstractBackend {
 
-	public ManagedBackend(BackendInfo info) {
+	public ManagedBackend(RuntimeInfo info) {
 		super(info);
 	}
 

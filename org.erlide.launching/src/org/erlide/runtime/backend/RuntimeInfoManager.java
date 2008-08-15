@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlangLaunchPlugin;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
-	static final String RUNTIMES = "runtimes";
 
+	private static final String RUNTIMES = "runtimes";
 	private static RuntimeInfoManager manager;
+	private RuntimeInfo erlideRuntime;
 
 	private RuntimeInfoManager() {
-		super(RuntimeInfo.class, ErlideBasicUIPlugin.PLUGIN_ID, RUNTIMES);
+		super(RuntimeInfo.class, ErlangLaunchPlugin.PLUGIN_ID, RUNTIMES);
 		load();
 	}
 
@@ -29,12 +33,73 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 		return manager;
 	}
 
-	public String getDefaultRuntimeName() {
-		return getSelectedKey();
+	public void setErlideRuntime(RuntimeInfo runtime) {
+		this.erlideRuntime = runtime;
+		if (runtime != null) {
+			runtime.setErlide(true);
+		}
+	}
+
+	public RuntimeInfo getErlideRuntime() {
+		return this.erlideRuntime;
 	}
 
 	public RuntimeInfo getDefaultRuntime() {
 		return getElement(getSelectedKey());
 	}
 
+	@Override
+	public void load() {
+		super.load();
+		IEclipsePreferences root = getRootPreferenceNode();
+		setErlideRuntime(getElement(root.get("erlide", null)));
+	}
+
+	@Override
+	public void store() {
+		super.store();
+		IEclipsePreferences root = getRootPreferenceNode();
+		if (erlideRuntime != null) {
+			root.put("erlide", erlideRuntime.getName());
+		}
+		try {
+			root.flush();
+		} catch (BackingStoreException e) {
+		}
+	}
+
+	public void createDefaultRuntimes(InstallationInfo rt) {
+		if (hasRuntimesWithInstallation(rt)) {
+			return;
+		}
+		ErlLogger.debug("creating default runtimes for installation %s", rt
+				.getName());
+
+		RuntimeInfo result = new RuntimeInfo();
+		result.setInstallation(rt.getName());
+		rt.getBackends().add(result);
+		result.setName(rt.getName());
+		result.setNodeName("n" + rt.getName());
+		fElements.put(result.getName(), result);
+
+		String ver = rt.getVersion();
+		if (ver != null && ver.compareTo("R12B") >= 0) {
+			result = new RuntimeInfo();
+			result.setInstallation(rt.getName());
+			rt.getBackends().add(result);
+			result.setName(rt.getName() + " SMP");
+			result.setArgs("+S 2");
+			result.setNodeName("n" + rt.getName() + "smp");
+			fElements.put(result.getName(), result);
+		}
+	}
+
+	private boolean hasRuntimesWithInstallation(InstallationInfo rt) {
+		for (RuntimeInfo bi : fElements.values()) {
+			if (bi.getInstallation().equals(rt.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

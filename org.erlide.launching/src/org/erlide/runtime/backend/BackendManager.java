@@ -31,7 +31,6 @@ import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.ErlangProjectProperties.BackendType;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
@@ -83,7 +82,7 @@ public final class BackendManager implements IResourceChangeListener {
 		DEBUG, MANAGED
 	};
 
-	public IBackend create(BackendInfo info, Set<BackendOptions> options) {
+	public IBackend create(RuntimeInfo info, Set<BackendOptions> options) {
 		ErlLogger.debug("create " + options + " backend '" + info + "' "
 				+ Thread.currentThread());
 
@@ -97,12 +96,12 @@ public final class BackendManager implements IResourceChangeListener {
 		return b;
 	}
 
-	private IBackend get(final IProject project, BackendType type) {
+	private IBackend get(final IProject project) {
 		synchronized (fProjectBackendsLock) {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
 
-			final BackendInfo info = getBackendInfo(project, type);
+			final RuntimeInfo info = getBackendInfo(project);
 			if (info == null) {
 				return fLocalBackend;
 			}
@@ -124,25 +123,24 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public IdeBackend getIde(final IProject project) {
-		return get(project, BackendType.IDE).asIDE();
-	}
-
 	public BuildBackend getBuild(final IProject project) {
-		return get(project, BackendType.BUILD).asBuild();
+		return get(project).asBuild();
 	}
 
 	public ExecutionBackend getExecution(final IProject project) {
-		return get(project, BackendType.EXECUTION).asExecution();
+
+		ErlLogger.error("FIXME FIXME FIXME!!!");
+
+		return get(project).asExecution();
 	}
 
-	public static BackendInfo getBackendInfo(IProject project, BackendType type) {
+	public static RuntimeInfo getBackendInfo(IProject project) {
 		if (project == null) {
 			return null;
 		}
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		return prefs.getBackendInfo(type);
+		return prefs.getRuntimeInfo();
 		// return "project";
 	}
 
@@ -163,7 +161,7 @@ public final class BackendManager implements IResourceChangeListener {
 			ErlLogger.debug("** create InternalBackend: " + this + " "
 					+ fLocalBackend + " " + Thread.currentThread());
 			fLocalBackend = create(
-					BackendInfoManager.getDefault().getErlideBackend(),
+					RuntimeInfoManager.getDefault().getErlideRuntime(),
 					EnumSet.of(BackendOptions.MANAGED)).asIDE();
 		}
 		return fLocalBackend;

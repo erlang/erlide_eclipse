@@ -4,22 +4,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.InstallationInfo;
 import org.junit.Test;
 
 public class InfoElementTest {
 
 	@Test
-	public void codePath_runtime_1() {
-		RuntimeInfo info = new RuntimeInfo();
+	public void codePath_installation_1() {
+		InstallationInfo info = new InstallationInfo();
 		List<String> pa = info.getCodePath();
 		assertTrue(pa.size() == 1);
-		assertTrue(pa.get(0).equals(RuntimeInfo.DEFAULT_MARKER));
+		assertTrue(pa.get(0).equals(InstallationInfo.DEFAULT_MARKER));
 	}
 
 	@Test
-	public void codePathA_runtime_1() {
-		RuntimeInfo info = new RuntimeInfo();
+	public void codePathA_installation_1() {
+		InstallationInfo info = new InstallationInfo();
 		List<String> p = info.getCodePath();
 		p.add("zzz");
 		p.add(0, "aaa");
@@ -30,8 +30,8 @@ public class InfoElementTest {
 	}
 
 	@Test
-	public void codePathZ_runtime_1() {
-		RuntimeInfo info = new RuntimeInfo();
+	public void codePathZ_installation_1() {
+		InstallationInfo info = new InstallationInfo();
 		List<String> p = info.getCodePath();
 		p.add("zzz");
 		p.add(0, "aaa");

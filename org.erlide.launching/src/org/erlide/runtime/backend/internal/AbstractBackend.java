@@ -26,7 +26,7 @@ import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.BackendInfo;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
@@ -97,9 +97,9 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	protected String fPeer;
 	protected IShellManager fShellManager;
 	private String fCurrentVersion;
-	private BackendInfo fInfo;
+	private RuntimeInfo fInfo;
 
-	public AbstractBackend(BackendInfo info) {
+	public AbstractBackend(RuntimeInfo info) {
 		fLabel = null;
 
 		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>(
@@ -515,7 +515,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 * 
 	 * @see org.erlide.runtime.backend.IBackend#getInfo()
 	 */
-	public BackendInfo getInfo() {
+	public RuntimeInfo getInfo() {
 		return fInfo;
 	}
 

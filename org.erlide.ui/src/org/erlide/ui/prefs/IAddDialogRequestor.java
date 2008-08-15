@@ -11,7 +11,7 @@
 package org.erlide.ui.prefs;
 
 /**
- * This interface is implemented by clients of the <code>AddRuntimeDialog</code>.
+ * This interface is implemented by clients of the <code>Add*Dialog</code>.
  */
 public interface IAddDialogRequestor<T> {
 

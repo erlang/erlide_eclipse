@@ -143,20 +143,21 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IPresentationReconciler getPresentationReconciler(
 			final ISourceViewer sourceViewer) {
-		final PresentationReconciler reconciler = new PresentationReconciler();
+		final PresentationReconciler areconciler = new PresentationReconciler();
 
 		final ErlHighlightScanner scan = getHighlightScanner();
 		if (scan != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
-			reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-			reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+			areconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+			areconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		}
-		return reconciler;
+		return areconciler;
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies(org.eclipse.jface.text.source.ISourceViewer,
-	 *      java.lang.String)
+	 * @see
+	 * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
+	 * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
@@ -234,7 +235,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * @see
+	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * 
 	 * @since 2.0
 	 */
 	@Override

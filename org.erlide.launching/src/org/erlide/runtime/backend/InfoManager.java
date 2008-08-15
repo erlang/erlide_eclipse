@@ -22,7 +22,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public class InfoManager<T extends InfoElement> {
 	protected final Map<String, T> fElements = new WeakHashMap<String, T>();
 	private final String preferencesKey;
-	private final Class<? extends InfoElement> elementClass;
+	private final Class<T> elementClass;
 	private final String qualifier;
 	private String selectedKey = "";
 
@@ -57,7 +57,6 @@ public class InfoManager<T extends InfoElement> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void load() {
 		fElements.clear();
 		IEclipsePreferences root = getRootPreferenceNode();
@@ -68,7 +67,7 @@ public class InfoManager<T extends InfoElement> {
 			children = root.childrenNames();
 			for (String name : children) {
 				try {
-					T rt = (T) elementClass.newInstance();
+					T rt = elementClass.newInstance();
 					rt.load(root.node(name));
 					fElements.put(name, rt);
 				} catch (InstantiationException e) {
@@ -77,9 +76,9 @@ public class InfoManager<T extends InfoElement> {
 					e.printStackTrace();
 				}
 			}
-			// if (selectedKey == null && children.length == 1) {
-			// selectedKey = children[0];
-			// }
+			if (selectedKey == null) {
+				selectedKey = children[0];
+			}
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}

@@ -179,7 +179,7 @@ public interface IBackend {
 
 	List<IBackendEventListener> getEventListeners(String event);
 
-	BackendInfo getInfo();
+	RuntimeInfo getInfo();
 
 	String getHost();
 

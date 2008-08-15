@@ -157,33 +157,32 @@ public class ErlModelUtils {
 		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
 		if (pd != null) {
 			return pd;
-		} else {
-			final List<ErlangIncludeFile> includes = m.getIncludedFiles();
-			for (final ErlangIncludeFile element : includes) {
-				IResource re = ResourceUtil
-						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart());
-				if (re == null) {
-					try {
-						String s = element.getFilename();
-						if (element.isSystemInclude()) {
-							s = ErlideOpen.getIncludeLib(s);
-						} else {
-							s = findIncludeFile(project, s);
-						}
-						re = EditorUtility.openExternal(s);
-					} catch (final Exception e) {
-						e.printStackTrace();
+		}
+		final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+		for (final ErlangIncludeFile element : includes) {
+			IResource re = ResourceUtil
+					.recursiveFindNamedResourceWithReferences(project, element
+							.getFilenameLastPart());
+			if (re == null) {
+				try {
+					String s = element.getFilename();
+					if (element.isSystemInclude()) {
+						s = ErlideOpen.getIncludeLib(s);
+					} else {
+						s = findIncludeFile(project, s);
 					}
+					re = EditorUtility.openExternal(s);
+				} catch (final Exception e) {
+					e.printStackTrace();
 				}
-				if (re != null && re instanceof IFile) {
-					m = getModule((IFile) re);
-					if (m != null && !modulesDone.contains(m)) {
-						final IErlPreprocessorDef pd2 = findPreprocessorDef(
-								project, m, definedName, type, modulesDone);
-						if (pd2 != null) {
-							return pd2;
-						}
+			}
+			if (re != null && re instanceof IFile) {
+				m = getModule((IFile) re);
+				if (m != null && !modulesDone.contains(m)) {
+					final IErlPreprocessorDef pd2 = findPreprocessorDef(
+							project, m, definedName, type, modulesDone);
+					if (pd2 != null) {
+						return pd2;
 					}
 				}
 			}
