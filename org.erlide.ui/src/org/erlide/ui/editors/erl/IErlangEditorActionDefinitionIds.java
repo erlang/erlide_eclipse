@@ -25,4 +25,6 @@ public class IErlangEditorActionDefinitionIds {
 	public static final String SHOW_OUTLINE = "org.erlide.ui.actions.show.outline";
 
 	public static final String TEST = "org.erlide.ui.actions.test";
+
+	public static final String OPEN = "org.erlide.ui.actions.open";
 }

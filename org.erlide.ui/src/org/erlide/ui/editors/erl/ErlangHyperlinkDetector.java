@@ -53,9 +53,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	 */
 	private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
 
-		ITypedRegion partition;
-		final ErlPartition aPartion = new ErlPartition();
-
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module == null) {
 			return null;
@@ -65,7 +62,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			return null;
 		}
 		final ErlToken token = scanner.getTokenAt(offset);
-
 		if (token == null) {
 			return null;
 		}
@@ -74,81 +70,45 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 				&& !tokenKind.equals("macro")) {
 			return null;
 		}
-
-		final Region ErlRegion = new Region(token.getOffset(), token
-				.getLength());
-
 		try {
-			partition = doc.getPartition(offset);
-
-			aPartion.setLength(ErlRegion.getLength());
-			aPartion.setOffset(ErlRegion.getOffset());
-			aPartion.setAType(partition.getType());
-
-			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(aPartion.getAType())) {
+			final ITypedRegion partition = doc.getPartition(offset);
+			final ErlPartition erlPartition = new ErlPartition(token
+					.getLength(), token.getOffset(), partition.getType());
+			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
 				return null;
 			}
+			return new IHyperlink[] { new ErlangSubHyperlink(editor, token
+					.getContent(), erlPartition) };
 		} catch (final BadLocationException e) {
 			return null;
 		}
-
-		return new IHyperlink[] { new ErlangSubHyperlink(editor, token
-				.getContent(), aPartion) };
 	}
 
 	/**
 	 * 
 	 * 
 	 */
-	static class ErlPartition implements IRegion {
-		int length;
-		int offset;
-		String aType;
+	static class ErlPartition extends Region {
+		String type;
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.IRegion#getLength()
-		 */
-		public int getLength() {
-			return length;
-		}
-
-		/**
-		 * @param length
-		 */
-		public void setLength(final int length) {
-			this.length = length;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.IRegion#getOffset()
-		 */
-		public int getOffset() {
-			return offset;
-		}
-
-		/**
-		 * @param offset
-		 */
-		public void setOffset(final int offset) {
-			this.offset = offset;
+		public ErlPartition(final int offset, final int length,
+				final String type) {
+			super(offset, length);
+			this.type = type;
 		}
 
 		/**
 		 * @return
 		 */
-		public String getAType() {
-			return aType;
+		public String getType() {
+			return type;
 		}
 
 		/**
 		 * @param string
 		 */
-		public void setAType(final String string) {
-			aType = string;
+		public void setType(final String string) {
+			type = string;
 		}
 
 	}
@@ -197,7 +157,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		 */
 		public void open() {
 			final OpenAction action = (OpenAction) editor
-					.getAction("org.erlide.ui.actions.open");
+					.getAction(IErlangEditorActionDefinitionIds.OPEN);
 			if (action != null) {
 				action.run();
 			}
