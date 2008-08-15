@@ -52,7 +52,7 @@ public class ErlangProjectProperties {
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		fRuntimeName = IPrefConstants.DEFAULT_BUILD_BACKEND_NAME;
+		fRuntimeName = IPrefConstants.DEFAULT_BACKEND_NAME;
 	}
 
 	public ErlangProjectProperties(IProject prj) {
@@ -98,8 +98,8 @@ public class ErlangProjectProperties {
 					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
 			fRuntimeName = prefs.getProperty(
-					IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
+					IPrefConstants.PROJECT_BACKEND_NAME,
+					IPrefConstants.DEFAULT_BACKEND_NAME);
 			fExternalModules = prefs.getProperty(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -123,8 +123,8 @@ public class ErlangProjectProperties {
 			fExternalIncludes = node.get(
 					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fRuntimeName = node.get(IPrefConstants.PROJECT_BUILD_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BUILD_BACKEND_NAME);
+			fRuntimeName = node.get(IPrefConstants.PROJECT_BACKEND_NAME,
+					IPrefConstants.DEFAULT_BACKEND_NAME);
 			fExternalModules = node.get(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -148,7 +148,7 @@ public class ErlangProjectProperties {
 		node.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
 		node.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
-		node.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fRuntimeName);
+		node.put(IPrefConstants.PROJECT_BACKEND_NAME, fRuntimeName);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
@@ -171,7 +171,7 @@ public class ErlangProjectProperties {
 			prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
 			prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
 					fExternalIncludes);
-			prefs.put(IPrefConstants.PROJECT_BUILD_BACKEND_NAME, fRuntimeName);
+			prefs.put(IPrefConstants.PROJECT_BACKEND_NAME, fRuntimeName);
 			prefs
 					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
 							fExternalModules);

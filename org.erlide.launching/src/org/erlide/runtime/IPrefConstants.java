@@ -30,8 +30,8 @@ public interface IPrefConstants {
 	String PROJECT_EXTERNAL_INCLUDES = "external_includes";
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
-	String PROJECT_BUILD_BACKEND_NAME = "backend_name";
-	String DEFAULT_BUILD_BACKEND_NAME = "";
+	String PROJECT_BACKEND_NAME = "backend_name";
+	String DEFAULT_BACKEND_NAME = "";
 
 	String PROJECT_BACKEND_COOKIE = "backend_cookie";
 	String DEFAULT_BACKEND_COOKIE = "";

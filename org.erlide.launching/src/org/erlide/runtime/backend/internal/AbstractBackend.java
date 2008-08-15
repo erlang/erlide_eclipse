@@ -26,7 +26,6 @@ import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
@@ -35,6 +34,7 @@ import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -524,11 +524,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			return "<not_connected>";
 		}
 		return fInfo.getNodeName();
-	}
-
-	public String getHost() {
-		// TODO fix Backend.getHost()
-		return "localhost";
 	}
 
 	public abstract void initializeRuntime();

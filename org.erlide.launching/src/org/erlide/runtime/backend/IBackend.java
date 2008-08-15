@@ -181,8 +181,6 @@ public interface IBackend {
 
 	RuntimeInfo getInfo();
 
-	String getHost();
-
 	void setRuntime(final IProcess process);
 
 	void setRemoteRex(OtpErlangPid rex);
