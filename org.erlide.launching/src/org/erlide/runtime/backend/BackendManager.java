@@ -101,7 +101,7 @@ public final class BackendManager implements IResourceChangeListener {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
 
-			final RuntimeInfo info = getBackendInfo(project);
+			final RuntimeInfo info = getRuntimeInfo(project);
 			if (info == null) {
 				return fLocalBackend;
 			}
@@ -134,7 +134,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return get(project).asExecution();
 	}
 
-	public static RuntimeInfo getBackendInfo(IProject project) {
+	public static RuntimeInfo getRuntimeInfo(IProject project) {
 		if (project == null) {
 			return null;
 		}

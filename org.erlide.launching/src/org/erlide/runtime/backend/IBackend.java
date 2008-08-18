@@ -169,12 +169,6 @@ public interface IBackend {
 
 	void sendToDefaultShell(String msg) throws IOException;
 
-	// void sendToShell(String str);
-
-	// void addStdListener(IStreamListener dsp);
-
-	// void setLabel(final String label);
-
 	boolean ping();
 
 	List<IBackendEventListener> getEventListeners(String event);
