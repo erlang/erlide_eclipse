@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend.console;
+package org.erlide.ui.views.console;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;

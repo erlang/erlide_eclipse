@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.basiccore;
+package org.erlide.runtime;
 
 import java.text.MessageFormat;
 

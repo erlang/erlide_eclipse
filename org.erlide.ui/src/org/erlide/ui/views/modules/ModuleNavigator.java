@@ -32,8 +32,8 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.OpenFileAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ResourceSelectionUtil;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.views.modules.actions.MainActionGroup;
 import org.erlide.ui.views.modules.actions.ModuleNavigatorActionGroup;
 

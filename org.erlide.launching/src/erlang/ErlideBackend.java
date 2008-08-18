@@ -1,7 +1,7 @@
 package erlang;
 
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;

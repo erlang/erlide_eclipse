@@ -13,7 +13,7 @@ package org.erlide.core.erlang.util;
 import java.text.NumberFormat;
 import java.util.Enumeration;
 
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * The <code>OverflowingLRUCache</code> is an LRUCache which attempts to

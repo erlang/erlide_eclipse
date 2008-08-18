@@ -18,7 +18,7 @@ import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 public final class TestListener implements IResourceChangeListener,
 		ISelectionChangedListener, ITextInputListener, ITextListener {

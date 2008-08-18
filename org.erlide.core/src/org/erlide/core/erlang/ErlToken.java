@@ -13,7 +13,7 @@ package org.erlide.core.erlang;
 
 import java.text.DecimalFormat;
 
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangChar;

@@ -8,9 +8,9 @@ import java.util.ResourceBundle;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import erlang.ErlideScanner2;

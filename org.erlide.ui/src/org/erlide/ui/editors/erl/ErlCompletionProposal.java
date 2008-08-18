@@ -17,7 +17,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 public class ErlCompletionProposal implements ICompletionProposal {
 

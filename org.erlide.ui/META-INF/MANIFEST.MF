@@ -8,6 +8,8 @@ Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.novocode.naf.swt.custom,
+ org.erlide.debug.ui,
+ org.erlide.debug.ui.model,
  org.erlide.ui;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
@@ -123,8 +125,8 @@ Export-Package: com.novocode.naf.swt.custom,
    org.eclipse.ui,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets",
- org.erlide.ui.internal;x-friends:="org.erlide.ui.merlin",
  org.erlide.ui.internal.folding;x-friends:="org.erlide.ui.merlin",
+ org.erlide.ui.launch;uses:="org.eclipse.debug.ui,org.eclipse.ui,org.eclipse.jface.viewers",
  org.erlide.ui.perspectives;uses:="org.eclipse.ui",
  org.erlide.ui.prefs;
   uses:="org.eclipse.jface.preference,
@@ -263,6 +265,7 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.debug.ui,
  org.eclipse.jface.text,
  org.eclipse.search,
+ org.eclipse.swt,
  org.erlide.jinterface,
  org.erlide.launching,
  org.erlide.core

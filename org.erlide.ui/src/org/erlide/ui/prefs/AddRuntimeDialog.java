@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.basiccore.StatusInfo;
 import org.erlide.runtime.backend.InstallationInfoManager;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.ui.dialogfields.ComboDialogField;
@@ -32,6 +31,7 @@ import org.erlide.ui.dialogfields.IDialogFieldListener;
 import org.erlide.ui.dialogfields.IListAdapter;
 import org.erlide.ui.dialogfields.ListDialogField;
 import org.erlide.ui.dialogfields.StringDialogField;
+import org.erlide.ui.util.StatusInfo;
 
 public class AddRuntimeDialog
 

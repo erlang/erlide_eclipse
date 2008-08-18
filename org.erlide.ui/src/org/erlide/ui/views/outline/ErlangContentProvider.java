@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.views.outline.ErlangOutlinePage.NoModuleElement;
 
 public class ErlangContentProvider implements ITreeContentProvider {

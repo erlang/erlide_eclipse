@@ -3,9 +3,9 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;

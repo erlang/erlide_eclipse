@@ -273,18 +273,6 @@ litigation.
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.debug.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.basic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.erlide.jinterface"
          download-size="0"
          install-size="0"

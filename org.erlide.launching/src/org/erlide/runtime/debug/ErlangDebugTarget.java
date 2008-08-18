@@ -26,9 +26,9 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.basiccore.ErlLogger;
 import org.erlide.jinterface.rpc.ErlEventLoop;
 import org.erlide.jinterface.rpc.IErlEventHandler;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 

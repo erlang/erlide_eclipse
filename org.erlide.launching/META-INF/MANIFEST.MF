@@ -7,14 +7,10 @@ Bundle-Activator: org.erlide.runtime.ErlangLaunchPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.debug.ui,
- org.eclipse.jface.text,
- org.eclipse.ui,
- org.eclipse.ui.console,
+ org.eclipse.debug.core,
  org.erlide.jinterface
 Bundle-ActivationPolicy: lazy
 Export-Package: erlang,
- org.erlide.basiccore,
  org.erlide.runtime;
   uses:="org.eclipse.debug.core.sourcelookup,
    org.erlide.jinterface,

@@ -1,6 +1,6 @@
 package erlang;
 
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 

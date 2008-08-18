@@ -1,4 +1,4 @@
-package org.erlide.basiccore;
+package org.erlide.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -38,10 +38,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.erlide.basiccore.StatusInfo;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.internal.ColorEditor;
 import org.erlide.ui.util.OverlayPreferenceStore;
+import org.erlide.ui.util.StatusInfo;
 
 /**
  * The editor preferences

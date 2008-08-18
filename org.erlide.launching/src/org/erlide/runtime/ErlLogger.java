@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.basiccore;
+package org.erlide.runtime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

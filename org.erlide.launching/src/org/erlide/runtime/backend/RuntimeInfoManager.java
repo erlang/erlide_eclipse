@@ -11,7 +11,7 @@
 package org.erlide.runtime.backend;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 

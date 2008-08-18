@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.basiccore.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
