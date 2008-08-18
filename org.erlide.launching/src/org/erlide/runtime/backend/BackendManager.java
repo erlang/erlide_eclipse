@@ -207,9 +207,8 @@ public final class BackendManager implements IResourceChangeListener {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
-		 * Throwable)
+		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
+		 *      Throwable)
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
@@ -341,16 +340,16 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	synchronized public void setEpmdStatus(List<String> started,
+	synchronized public void updateBackendStatus(List<String> started,
 			List<String> stopped) {
 		// TODO for started: make corresponding backend (if any) available
 		for (String b : started) {
-			System.out.println("started: " + b);
+			ErlLogger.info("(epmd) started: %s", b);
 			IBackend bb = null;
 		}
 		// TODO for stopped: make corresponding backend (if any) unavailable
 		for (String b : stopped) {
-			System.out.println("stopped: " + b);
+			ErlLogger.info("(epmd) stopped: %s", b);
 		}
 
 	}

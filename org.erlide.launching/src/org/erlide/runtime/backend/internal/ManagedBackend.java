@@ -24,10 +24,9 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.ErtsProcessFactory;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.console.BackendShellManager;
 
 /**
@@ -48,7 +47,6 @@ public class ManagedBackend extends AbstractBackend {
 			return;
 		}
 
-		fLabel = BackendManager.buildNodeLabel(getName());
 		doConnect(getName());
 	}
 

@@ -63,7 +63,7 @@ public class EpmdWatchJob extends Job {
 			clean(started);
 			clean(stopped);
 
-			BackendManager.getDefault().setEpmdStatus(started, stopped);
+			BackendManager.getDefault().updateBackendStatus(started, stopped);
 
 			nodes = labels;
 

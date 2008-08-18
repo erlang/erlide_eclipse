@@ -91,7 +91,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	private ThreadLocalMbox ftMBox; // outgoing rpc and send
 	private OtpMbox ftRpcBox; // incoming rpc and events
-	protected String fLabel;
 	protected static String fHost;
 	protected OtpNode fNode;
 	protected String fPeer;
@@ -100,8 +99,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	private RuntimeInfo fInfo;
 
 	public AbstractBackend(RuntimeInfo info) {
-		fLabel = null;
-
 		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>(
 				10);
 		fCodeManager = new CodeManager(this);
@@ -144,7 +141,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 * Method dispose
 	 */
 	public void dispose() {
-		ErlLogger.debug("disposing backend " + fLabel);
+		ErlLogger.debug("disposing backend " + getName());
 
 		if (fNode != null) {
 			fNode.close();
