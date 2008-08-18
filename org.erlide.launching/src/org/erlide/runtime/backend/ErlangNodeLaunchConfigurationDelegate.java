@@ -69,11 +69,9 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 				// build command string
 				final StringBuilder cmd = new StringBuilder();
-				cmd
-						.append(configuration
-								.getAttribute(
-										IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
-										""));
+				final RuntimeInfo r = BackendManager.getBackendInfo(project);
+				final String cmdLine = r.getCmdLine();
+				cmd.append(cmdLine);
 				if (cmd.length() > 0) {
 					cmd.append(File.separator).append("bin").append(
 							File.separator).append("erl ");
