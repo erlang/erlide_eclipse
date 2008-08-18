@@ -73,7 +73,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		try {
 			final ITypedRegion partition = doc.getPartition(offset);
 			final ErlPartition erlPartition = new ErlPartition(token
-					.getLength(), token.getOffset(), partition.getType());
+					.getOffset(), token.getLength(), partition.getType());
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
 				return null;
 			}
