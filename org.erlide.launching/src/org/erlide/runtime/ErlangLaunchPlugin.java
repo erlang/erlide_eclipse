@@ -26,6 +26,7 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.InstallationInfoManager;
 import org.osgi.framework.BundleContext;
 
 import erlang.ErlideBackend;
@@ -110,6 +111,7 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 
+		InstallationInfoManager.getDefault().load();
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 

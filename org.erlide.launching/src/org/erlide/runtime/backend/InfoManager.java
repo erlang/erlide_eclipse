@@ -96,6 +96,11 @@ public class InfoManager<T extends InfoElement> {
 		store();
 	}
 
+	public void addElement(T rt) {
+		fElements.put(rt.getName(), rt);
+		store();
+	}
+
 	public Collection<String> getElementNames() {
 		return fElements.keySet();
 	}

@@ -72,14 +72,14 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 		if (hasRuntimesWithInstallation(rt)) {
 			return;
 		}
-		ErlLogger.debug("creating default runtimes for installation %s", rt
+		ErlLogger.debug("creating default runtimes for installation '%s'", rt
 				.getName());
 
 		RuntimeInfo result = new RuntimeInfo();
 		result.setInstallation(rt.getName());
 		rt.getBackends().add(result);
 		result.setName(rt.getName());
-		result.setNodeName("n" + rt.getName());
+		result.setNodeName(rt.getName());
 		fElements.put(result.getName(), result);
 
 		String ver = rt.getVersion();
@@ -89,7 +89,7 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 			rt.getBackends().add(result);
 			result.setName(rt.getName() + " SMP");
 			result.setArgs("+S 2");
-			result.setNodeName("n" + rt.getName() + "smp");
+			result.setNodeName(rt.getName() + "-smp");
 			fElements.put(result.getName(), result);
 		}
 	}
