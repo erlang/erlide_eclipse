@@ -909,4 +909,15 @@
          <enablement></enablement>
       </consolePatternMatchListener>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.runtime.backend.ErlangNodeLaunchConfigurationDelegate"
+            id="org.erlide.core.launch.erlangProcess"
+            modes="run, debug"
+            name="Erlang application"
+            sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
 </plugin>

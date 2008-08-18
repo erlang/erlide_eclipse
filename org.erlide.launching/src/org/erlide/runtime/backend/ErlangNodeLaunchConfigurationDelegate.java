@@ -69,7 +69,7 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 
 				// build command string
 				final StringBuilder cmd = new StringBuilder();
-				final RuntimeInfo r = BackendManager.getBackendInfo(project);
+				final RuntimeInfo r = BackendManager.getRuntimeInfo(project);
 				final String cmdLine = r.getCmdLine();
 				cmd.append(cmdLine);
 				if (cmd.length() > 0) {
