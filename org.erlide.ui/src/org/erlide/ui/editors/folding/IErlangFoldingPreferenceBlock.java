@@ -29,16 +29,16 @@ public interface IErlangFoldingPreferenceBlock {
 	void initialize();
 
 	/**
-	 * Called when the <code>OK</code> button is pressed on the preference
-	 * page. Implementations should commit the configured preference settings
-	 * into their form of preference storage.
+	 * Called when the <code>OK</code> button is pressed on the preference page.
+	 * Implementations should commit the configured preference settings into
+	 * their form of preference storage.
 	 */
 	void performOk();
 
 	/**
-	 * Called when the <code>Defaults</code> button is pressed on the
-	 * preference page. Implementation should reset any preference settings to
-	 * their default values and adjust the controls accordingly.
+	 * Called when the <code>Defaults</code> button is pressed on the preference
+	 * page. Implementation should reset any preference settings to their
+	 * default values and adjust the controls accordingly.
 	 */
 	void performDefaults();
 

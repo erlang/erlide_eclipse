@@ -11,10 +11,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui,
  org.eclipse.ui.console,
- org.erlide.jinterface,
- org.erlide.basic
+ org.erlide.jinterface
 Bundle-ActivationPolicy: lazy
 Export-Package: erlang,
+ org.erlide.basiccore,
  org.erlide.runtime;
   uses:="org.eclipse.debug.core.sourcelookup,
    org.erlide.jinterface,

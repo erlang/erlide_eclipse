@@ -31,9 +31,9 @@ import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.actions.ImportResourcesAction;
 import org.eclipse.ui.actions.NewWizardMenu;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
-import org.erlide.basicui.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.util.PluginUtils;
 import org.erlide.ui.views.modules.ModuleNavigator;
 
 /**

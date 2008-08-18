@@ -7,7 +7,8 @@ Bundle-ClassPath: erlide-ui.jar
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.erlide.ui;
+Export-Package: com.novocode.naf.swt.custom,
+ org.erlide.ui;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.ui.navigator,
@@ -36,6 +37,7 @@ Export-Package: org.erlide.ui;
    org.eclipse.jface.viewers,
    org.eclipse.jface.util,
    org.eclipse.swt.widgets",
+ org.erlide.ui.dialogfields,
  org.erlide.ui.editors.erl;
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
@@ -262,7 +264,6 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.jface.text,
  org.eclipse.search,
  org.erlide.jinterface,
- org.erlide.basic,
  org.erlide.launching,
  org.erlide.core
 Bundle-ActivationPolicy: lazy

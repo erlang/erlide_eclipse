@@ -63,10 +63,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.util.SWTUtil;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.util.SWTUtil;
 
 /**
  * A preference page that displays installed runtimes in a table. Runtimes can
@@ -829,7 +829,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		RuntimeInfoManager.getDefault().setElements(runtimes);
 
 		// save column widths
-		final IDialogSettings settings = ErlideBasicUIPlugin.getDefault()
+		final IDialogSettings settings = ErlideUIPlugin.getDefault()
 				.getDialogSettings();
 		saveColumnSettings(settings, RUNTIMES_PREFERENCE_PAGE);
 

@@ -59,7 +59,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.erlide.basicui.util.PixelConverter;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
@@ -68,6 +67,7 @@ import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
+import org.erlide.ui.util.PixelConverter;
 
 // import org.erlide.basicui.util.OverlayPreferenceStore;
 // import org.erlide.basicui.util.OverlayPreferenceStore.OverlayKey;

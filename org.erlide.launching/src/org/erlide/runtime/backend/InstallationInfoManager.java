@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import org.erlide.basicui.ErlideBasicUIPlugin;
+import org.erlide.runtime.ErlangLaunchPlugin;
 
 public class InstallationInfoManager extends InfoManager<InstallationInfo> {
 	// TODO
@@ -19,7 +19,7 @@ public class InstallationInfoManager extends InfoManager<InstallationInfo> {
 	private static InstallationInfoManager manager;
 
 	private InstallationInfoManager() {
-		super(InstallationInfo.class, ErlideBasicUIPlugin.PLUGIN_ID,
+		super(InstallationInfo.class, ErlangLaunchPlugin.PLUGIN_ID,
 				INSTALLATIONS);
 		load();
 	}

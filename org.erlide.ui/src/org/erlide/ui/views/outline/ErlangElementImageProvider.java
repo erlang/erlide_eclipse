@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IParent;
@@ -28,6 +27,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.internal.ProblemsLabelDecorator;
+import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
  * Default strategy of the Java plugin for the construction of Java element

@@ -10,14 +10,19 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import java.io.IOException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.ErlideBasicUIPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
@@ -65,8 +70,34 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
 		super.start(context);
+
+		Handler fh;
+		try {
+			final ErlLogger.ErlSimpleFormatter erlSimpleFormatter = new ErlLogger.ErlSimpleFormatter();
+			final Logger logger = Logger.getLogger("org.erlide");
+
+			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+					.toPortableString();
+			dir = dir == null ? "c:/" : dir;
+			fh = new FileHandler(dir + "_erlide.log");
+			fh.setFormatter(erlSimpleFormatter);
+			logger.addHandler(fh);
+
+			final ConsoleHandler consoleHandler = new ConsoleHandler();
+			consoleHandler.setFormatter(erlSimpleFormatter);
+			consoleHandler.setLevel(java.util.logging.Level.FINEST);
+			logger.addHandler(consoleHandler);
+
+			logger.setLevel(java.util.logging.Level.FINEST);
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
 
 		String dev = "";
 		if (BackendManager.isDeveloper()) {
@@ -83,7 +114,6 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 
-		ErlideBasicUIPlugin.getDefault().setLaunchBundle(getBundle());
 		IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		ErlideBackend.init(b, BackendManager
 				.buildNodeName(BackendManager.JAVA_NODE_LABEL));

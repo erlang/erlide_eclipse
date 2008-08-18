@@ -240,13 +240,13 @@
             category="org.erlide.ui.preferences"
             class="org.erlide.ui.prefs.InstallationsPreferencePage"
             id="org.erlide.ui.preferences.runtimes"
-            name="Installed runtimes">
+            name="ERTS installations">
       </page>
        <page
              category="org.erlide.ui.preferences.runtimes"
              class="org.erlide.ui.prefs.RuntimePreferencePage"
              id="org.erlide.ui.preferences.backends"
-             name="Backend definitions">
+             name="Runtimes">
        </page>
   </extension>
   <extension
@@ -815,5 +815,30 @@
             
          </mapping>
       </transfer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.erlide.ui.prefs.ErlangPreferencePage"
+            id="org.erlide.ui.preferences"
+            name="Erlang"/>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.ReportPreferencePage"
+            id="org.erlide.basic.reporting"
+            name="Report problems">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.erlide.categories.views"
+            name="Erlang"/>
+      <view
+            category="org.erlide.categories.views"
+            class="org.erlide.ui.views.ErlLoggerView"
+            icon="icons/icons/sample.gif"
+            id="org.erlide.basic.views.ErlLoggerView"
+            name="Erlang Logger"/>
    </extension>
 </plugin>

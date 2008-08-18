@@ -72,13 +72,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.basicui.ErlideBasicUIPlugin;
-import org.erlide.basicui.util.SWTUtil;
-import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.backend.InfoElement;
 import org.erlide.runtime.backend.InstallationInfo;
 import org.erlide.runtime.backend.InstallationInfoManager;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.util.SWTUtil;
 
 /**
  * A preference page that displays installed installations in a table.
@@ -578,7 +578,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 					getShell());
 			progress.run(true, true, r);
 		} catch (final InvocationTargetException e) {
-			ErlideBasicUIPlugin.log(e);
+			ErlideUIPlugin.log(e);
 		} catch (final InterruptedException e) {
 			// Canceled
 			return;
@@ -904,7 +904,8 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					setCheckedInstallation((InstallationInfo) event.getElement());
+					setCheckedInstallation((InstallationInfo) event
+							.getElement());
 				} else {
 					setCheckedInstallation(null);
 				}
@@ -1007,7 +1008,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		}
 
 		// save column widths
-		final IDialogSettings settings = ErlideBasicUIPlugin.getDefault()
+		final IDialogSettings settings = ErlideUIPlugin.getDefault()
 				.getDialogSettings();
 		saveColumnSettings(settings, INSTALLATIONS_PREFERENCE_PAGE);
 	}

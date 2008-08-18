@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.basicui.util.PreferencesUtils;
+import org.erlide.basiccore.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public abstract class InfoElement {

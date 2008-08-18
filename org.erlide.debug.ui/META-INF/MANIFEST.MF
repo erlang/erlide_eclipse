@@ -16,7 +16,6 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.ui.workbench.texteditor,
  org.erlide.jinterface,
  org.erlide.launching,
- org.erlide.basic,
  org.erlide.core,
  org.erlide.ui
 Bundle-ActivationPolicy: lazy

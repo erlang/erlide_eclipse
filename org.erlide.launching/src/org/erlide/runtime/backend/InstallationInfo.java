@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.basicui.util.PreferencesUtils;
+import org.erlide.basiccore.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class InstallationInfo extends InfoElement {

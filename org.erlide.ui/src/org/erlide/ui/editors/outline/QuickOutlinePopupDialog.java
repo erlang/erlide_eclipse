@@ -50,13 +50,13 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.util.StringMatcher;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
+import org.erlide.ui.util.StringMatcher;
 
 /**
  * AbstractInfoPopupDialog

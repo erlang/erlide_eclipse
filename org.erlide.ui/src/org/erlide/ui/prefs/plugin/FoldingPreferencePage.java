@@ -2,10 +2,10 @@ package org.erlide.ui.prefs.plugin;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.erlide.basicui.util.OverlayPreferenceStore;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.FoldingConfigurationBlock;
 import org.erlide.ui.prefs.IPreferenceConfigurationBlock;
+import org.erlide.ui.util.OverlayPreferenceStore;
 
 public final class FoldingPreferencePage extends
 		AbstractConfigurationBlockPreferencePage {

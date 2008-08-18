@@ -28,14 +28,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.basiccore.ErlLogger;
-import org.erlide.basicui.util.IErlangStatusConstants;
-import org.erlide.basicui.util.ImageDescriptorRegistry;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
+import org.erlide.ui.util.IErlangStatusConstants;
+import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -262,6 +262,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		createImageDescriptor(IErlideUIConstants.IMG_COLLAPSEALL, baseURL);
 		createImageDescriptor(IErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
 				baseURL);
+
+		createImageDescriptor(IErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
 	}
 
 	/**

@@ -76,7 +76,7 @@ public class InfoManager<T extends InfoElement> {
 					e.printStackTrace();
 				}
 			}
-			if (selectedKey == null) {
+			if (selectedKey == null && children.length > 0) {
 				selectedKey = children[0];
 			}
 		} catch (BackingStoreException e) {

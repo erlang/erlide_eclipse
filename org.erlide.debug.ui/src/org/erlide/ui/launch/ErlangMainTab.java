@@ -52,7 +52,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.erlide.basicui.util.SWTUtil;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -63,6 +62,7 @@ import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.ui.util.SWTUtil;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
@@ -615,6 +615,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	 */
 	class BackendContentProvider implements IStructuredContentProvider {
 
+		@SuppressWarnings("synthetic-access")
 		public Object[] getElements(final Object input) {
 			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
 		}
@@ -664,6 +665,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		// });
 		erlideBackendViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
+					@SuppressWarnings("synthetic-access")
 					public void selectionChanged(
 							final SelectionChangedEvent event) {
 						final ISelection sel = event.getSelection();
