@@ -119,7 +119,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		include.setText(prefs.getIncludeDirsString());
 		include.addListener(SWT.Modify, nameModifyListener);
 
-		String[] backends = RuntimeInfoManager.getDefault().getElementNames()
+		String[] backends = RuntimeInfoManager.getDefault().getRuntimeNames()
 				.toArray(new String[] {});
 		int db = Arrays.binarySearch(backends, RuntimeInfoManager.getDefault()
 				.getDefaultRuntime().getName());

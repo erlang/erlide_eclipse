@@ -338,7 +338,7 @@ public class ErlangProjectProperties {
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
-		return RuntimeInfoManager.getDefault().getElement(fRuntimeName);
+		return RuntimeInfoManager.getDefault().getRuntime(fRuntimeName);
 	}
 
 }

@@ -236,17 +236,11 @@
              id="org.erlide.ui.properties.myErlangProjectPropertyPage"
              name="new Erlang project default properties">
        </page>
-      <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.InstallationsPreferencePage"
-            id="org.erlide.ui.preferences.runtimes"
-            name="ERTS installations">
-      </page>
        <page
-             category="org.erlide.ui.preferences.runtimes"
+             category="org.erlide.ui.preferences"
              class="org.erlide.ui.prefs.RuntimePreferencePage"
-             id="org.erlide.ui.preferences.backends"
-             name="Runtimes">
+             id="org.erlide.ui.preferences.runtimes"
+             name="Installed runtimes">
        </page>
   </extension>
   <extension

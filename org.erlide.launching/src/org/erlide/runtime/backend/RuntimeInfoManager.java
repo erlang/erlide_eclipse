@@ -10,19 +10,25 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
+public class RuntimeInfoManager {
 
-	private static final String RUNTIMES = "runtimes";
+	private static final String OLD_NAME = "erts";
+
 	private static RuntimeInfoManager manager;
 	private RuntimeInfo erlideRuntime;
 
 	private RuntimeInfoManager() {
-		super(RuntimeInfo.class, ErlangLaunchPlugin.PLUGIN_ID, RUNTIMES);
 		load();
 	}
 
@@ -31,6 +37,134 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 			manager = new RuntimeInfoManager();
 		}
 		return manager;
+	}
+
+	protected final Map<String, RuntimeInfo> fRuntimes = new WeakHashMap<String, RuntimeInfo>();
+	private String defaultRuntime = "";
+
+	public Collection<RuntimeInfo> getRuntimes() {
+		return new ArrayList<RuntimeInfo>(fRuntimes.values());
+	}
+
+	public void store() {
+		IEclipsePreferences root = getRootPreferenceNode();
+		String[] children;
+		try {
+			children = root.childrenNames();
+			for (String name : children) {
+				root.node(name).removeNode();
+			}
+			for (RuntimeInfo rt : fRuntimes.values()) {
+				rt.store(root);
+			}
+			if (defaultRuntime != null) {
+				root.put("default", defaultRuntime);
+			}
+			if (erlideRuntime != null) {
+				root.put("erlide", erlideRuntime.getName());
+			}
+			try {
+				root.flush();
+			} catch (BackingStoreException e) {
+			}
+			root.flush();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void load() {
+		fRuntimes.clear();
+		IEclipsePreferences root = getRootPreferenceNode();
+		defaultRuntime = root.get("default", null);
+
+		String[] children;
+		try {
+			children = root.childrenNames();
+			for (String name : children) {
+				RuntimeInfo rt = new RuntimeInfo();
+				rt.load(root.node(name));
+				fRuntimes.put(name, rt);
+			}
+			if (defaultRuntime == null && children.length > 0) {
+				defaultRuntime = children[0];
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+
+		IEclipsePreferences old = new InstanceScope()
+				.getNode("org.erlide.basic/");
+		String oldVal = old.get("otp_home", null);
+		if (oldVal != null) {
+			ErlLogger.debug("** converting old workspace Erlang settings");
+
+			RuntimeInfo rt = new RuntimeInfo();
+			rt.setOtpHome(oldVal);
+			rt.setName(OLD_NAME);
+			rt.setNodeName(rt.getName());
+			addRuntime(rt);
+			setDefaultRuntime(OLD_NAME);
+			setErlideRuntime(RuntimeInfoManager.getDefault()
+					.getDefaultRuntime());
+			old.remove("otp_home");
+			try {
+				old.flush();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+			store();
+			RuntimeInfoManager.getDefault().store();
+		}
+
+		setErlideRuntime(getRuntime(root.get("erlide", null)));
+	}
+
+	protected IEclipsePreferences getRootPreferenceNode() {
+		return new InstanceScope().getNode(ErlangLaunchPlugin.PLUGIN_ID
+				+ "/runtimes");
+	}
+
+	public void setRuntimes(Collection<RuntimeInfo> elements) {
+		fRuntimes.clear();
+		for (RuntimeInfo rt : elements) {
+			fRuntimes.put(rt.getName(), rt);
+		}
+		store();
+	}
+
+	public void addRuntime(RuntimeInfo rt) {
+		fRuntimes.put(rt.getName(), rt);
+		store();
+	}
+
+	public Collection<String> getRuntimeNames() {
+		return fRuntimes.keySet();
+	}
+
+	public boolean isDuplicateName(String name) {
+		for (RuntimeInfo vm : fRuntimes.values()) {
+			if (vm.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public RuntimeInfo getRuntime(String name) {
+		return fRuntimes.get(name);
+	}
+
+	public void removeRuntime(String name) {
+		fRuntimes.remove(name);
+	}
+
+	public String getDefaultRuntimeName() {
+		return this.defaultRuntime;
+	}
+
+	public void setDefaultRuntime(String selectedKey) {
+		this.defaultRuntime = selectedKey;
 	}
 
 	public void setErlideRuntime(RuntimeInfo runtime) {
@@ -45,61 +179,7 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 	}
 
 	public RuntimeInfo getDefaultRuntime() {
-		return getElement(getSelectedKey());
+		return getRuntime(getDefaultRuntimeName());
 	}
 
-	@Override
-	public void load() {
-		super.load();
-		IEclipsePreferences root = getRootPreferenceNode();
-		setErlideRuntime(getElement(root.get("erlide", null)));
-	}
-
-	@Override
-	public void store() {
-		super.store();
-		IEclipsePreferences root = getRootPreferenceNode();
-		if (erlideRuntime != null) {
-			root.put("erlide", erlideRuntime.getName());
-		}
-		try {
-			root.flush();
-		} catch (BackingStoreException e) {
-		}
-	}
-
-	public void createDefaultRuntimes(InstallationInfo rt) {
-		if (hasRuntimesWithInstallation(rt)) {
-			return;
-		}
-		ErlLogger.debug("creating default runtimes for installation '%s'", rt
-				.getName());
-
-		RuntimeInfo result = new RuntimeInfo();
-		result.setInstallation(rt.getName());
-		rt.getRuntimes().add(result);
-		result.setName(rt.getName());
-		result.setNodeName(rt.getName());
-		fElements.put(result.getName(), result);
-
-		String ver = rt.getVersion();
-		if (ver != null && ver.compareTo("R12B") >= 0) {
-			result = new RuntimeInfo();
-			result.setInstallation(rt.getName());
-			rt.getRuntimes().add(result);
-			result.setName(rt.getName() + " SMP");
-			result.setArgs("+S 2");
-			result.setNodeName(rt.getName() + "-smp");
-			fElements.put(result.getName(), result);
-		}
-	}
-
-	private boolean hasRuntimesWithInstallation(InstallationInfo rt) {
-		for (RuntimeInfo bi : fElements.values()) {
-			if (bi.getInstallation().equals(rt.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
 }

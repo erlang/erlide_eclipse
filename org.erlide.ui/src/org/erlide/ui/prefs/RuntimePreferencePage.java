@@ -81,6 +81,8 @@ public class RuntimePreferencePage extends PreferencePage implements
 		IAddDialogRequestor<RuntimeInfo>, ISelectionProvider,
 		IWorkbenchPreferencePage {
 
+	private static final RuntimeInfoManager manager = RuntimeInfoManager
+			.getDefault();
 	private Combo combo;
 	private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
@@ -97,6 +99,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	private Button fAddButton;
 	private Button fRemoveButton;
 	private Button fEditButton;
+	private Button fDuplicateButton;
 
 	// column weights
 	protected float fWeight1 = 1 / 3F;
@@ -152,7 +155,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 				case 0:
 					return vm.getName();
 				case 1:
-					return vm.getInstallation();
+					return vm.getOtpHome();
 				case 2:
 					return vm.getNodeName();
 				}
@@ -287,8 +290,8 @@ public class RuntimePreferencePage extends PreferencePage implements
 				if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
 					final RuntimeInfo left = (RuntimeInfo) e1;
 					final RuntimeInfo right = (RuntimeInfo) e2;
-					return left.getInstallation().compareToIgnoreCase(
-							right.getInstallation());
+					return left.getOtpHome().compareToIgnoreCase(
+							right.getOtpHome());
 				}
 				return super.compare(viewer, e1, e2);
 			}
@@ -305,6 +308,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		final int selectionCount = ((IStructuredSelection) fRuntimeList
 				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
+		fDuplicateButton.setEnabled(selectionCount == 1);
 		fRemoveButton.setEnabled(selectionCount > 0
 				&& selectionCount < fRuntimeList.getTable().getItemCount());
 	}
@@ -416,7 +420,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		fRuntimeList.refresh();
 
 		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
-				null);
+				null, true);
 		dialog.setTitle(RuntimePreferenceMessages.add_title);
 		if (dialog.open() != Window.OK) {
 			return;
@@ -435,7 +439,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	 * @see IAddRuntimeDialogRequestor#isDuplicateName(String)
 	 */
 	public boolean isDuplicateName(String name) {
-		return RuntimeInfoManager.getDefault().isDuplicateName(name);
+		return manager.isDuplicateName(name);
 	}
 
 	protected void editRuntime() {
@@ -446,12 +450,31 @@ public class RuntimePreferencePage extends PreferencePage implements
 			return;
 		}
 		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
-				vm);
+				vm, false);
 		dialog.setTitle(RuntimePreferenceMessages.edit_title);
 		if (dialog.open() != Window.OK) {
 			return;
 		}
 		fRuntimeList.refresh(vm);
+		erlideRuntimeViewer.refresh();
+	}
+
+	protected void duplicateRuntime() {
+		final IStructuredSelection selection = (IStructuredSelection) fRuntimeList
+				.getSelection();
+		final RuntimeInfo vm = (RuntimeInfo) selection.getFirstElement();
+		if (vm == null) {
+			return;
+		}
+		RuntimeInfo vm1 = new RuntimeInfo(vm);
+		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
+				vm1, true);
+		dialog.setTitle(RuntimePreferenceMessages.edit_title);
+		if (dialog.open() != Window.OK) {
+			return;
+		}
+		fRuntimeList.refresh();
+		erlideRuntimeViewer.refresh();
 	}
 
 	protected void removeSelectedRuntimes() {
@@ -804,6 +827,16 @@ public class RuntimePreferencePage extends PreferencePage implements
 			}
 		});
 
+		fDuplicateButton = createPushButton(buttons,
+				RuntimePreferenceMessages.duplicate);
+		fDuplicateButton.addListener(SWT.Selection, new Listener() {
+
+			public void handleEvent(Event evt) {
+				duplicateRuntime();
+			}
+
+		});
+
 		fRemoveButton = createPushButton(buttons,
 				RuntimePreferenceMessages.remove);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
@@ -823,10 +856,10 @@ public class RuntimePreferencePage extends PreferencePage implements
 
 	@Override
 	public boolean performOk() {
-		RuntimeInfoManager.getDefault().setErlideRuntime(erlideRuntime);
-		RuntimeInfoManager.getDefault()
-				.setSelectedKey(defaultRuntime.getName());
-		RuntimeInfoManager.getDefault().setElements(runtimes);
+		manager.setErlideRuntime(erlideRuntime);
+		manager.setDefaultRuntime(defaultRuntime.getName());
+		manager.setRuntimes(runtimes);
+		manager.store();
 
 		// save column widths
 		final IDialogSettings settings = ErlideUIPlugin.getDefault()
@@ -838,9 +871,9 @@ public class RuntimePreferencePage extends PreferencePage implements
 
 	@Override
 	public void performDefaults() {
-		runtimes = RuntimeInfoManager.getDefault().getElements();
-		defaultRuntime = RuntimeInfoManager.getDefault().getDefaultRuntime();
-		erlideRuntime = RuntimeInfoManager.getDefault().getErlideRuntime();
+		runtimes = manager.getRuntimes();
+		defaultRuntime = manager.getDefaultRuntime();
+		erlideRuntime = manager.getErlideRuntime();
 	}
 
 	void checkValid() {

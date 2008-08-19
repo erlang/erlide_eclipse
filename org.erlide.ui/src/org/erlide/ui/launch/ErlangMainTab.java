@@ -101,7 +101,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void getRuntimes() {
-		runtimes = RuntimeInfoManager.getDefault().getElements();
+		runtimes = RuntimeInfoManager.getDefault().getRuntimes();
 	}
 
 	private void createErlangEditor(final Composite comp) {

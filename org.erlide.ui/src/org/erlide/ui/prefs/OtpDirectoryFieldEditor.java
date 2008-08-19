@@ -13,7 +13,7 @@ package org.erlide.ui.prefs;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.runtime.backend.InstallationInfo;
+import org.erlide.runtime.backend.RuntimeInfo;
 
 public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 
@@ -30,10 +30,10 @@ public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 	protected boolean doCheckState() {
 		String fileName = getTextControl().getText();
 		fileName = fileName.trim();
-		if (InstallationInfo.hasCompiler(fileName)) {
+		if (RuntimeInfo.hasCompiler(fileName)) {
 			showMessage("No Erlang compiler was found."
 					+ " This runtime can't be used for a compiler backend.");
 		}
-		return InstallationInfo.isValidOtpHome(fileName);
+		return RuntimeInfo.isValidOtpHome(fileName);
 	}
 }

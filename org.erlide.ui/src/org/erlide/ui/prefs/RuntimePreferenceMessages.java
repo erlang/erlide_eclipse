@@ -5,6 +5,7 @@ import org.eclipse.osgi.util.NLS;
 public class RuntimePreferenceMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.RuntimePreferenceMessages"; //$NON-NLS-1$
 
+	public static String duplicate;
 	public static String name;
 	public static String location;
 	public static String version;
@@ -22,6 +23,7 @@ public class RuntimePreferenceMessages extends NLS {
 	public static String addDialog_ertsName;
 	public static String addDialog_add;
 	public static String addDialog_remove;
+	public static String addDialog_pickInstallationRoot;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, RuntimePreferenceMessages.class);

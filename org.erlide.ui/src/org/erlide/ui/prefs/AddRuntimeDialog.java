@@ -3,7 +3,6 @@ package org.erlide.ui.prefs;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -21,15 +20,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.runtime.backend.InstallationInfoManager;
 import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.ui.dialogfields.ComboDialogField;
 import org.erlide.ui.dialogfields.DialogField;
 import org.erlide.ui.dialogfields.IDialogFieldListener;
 import org.erlide.ui.dialogfields.IListAdapter;
+import org.erlide.ui.dialogfields.IStringButtonAdapter;
 import org.erlide.ui.dialogfields.ListDialogField;
+import org.erlide.ui.dialogfields.StringButtonDialogField;
 import org.erlide.ui.dialogfields.StringDialogField;
 import org.erlide.ui.util.StatusInfo;
 
@@ -67,16 +67,17 @@ extends StatusDialog implements IListAdapter<String> {
 	private final RuntimeInfo fEditedRuntime;
 
 	private StringDialogField fName;
+	private StringButtonDialogField fOtpHome;
 	private StringDialogField fNodeName;
 	private StringDialogField fCookie;
-	private ComboDialogField fInstallation;
 	private ListDialogField<String> fCodePath;
 	private StringDialogField fArgs;
+	private boolean returnNew;
 
 	private final IStatus[] fStatuses;
 
 	public AddRuntimeDialog(IAddDialogRequestor<RuntimeInfo> requestor,
-			Shell shell, RuntimeInfo editedVM) {
+			Shell shell, RuntimeInfo editedVM, boolean returnNew) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		fRequestor = requestor;
@@ -85,6 +86,7 @@ extends StatusDialog implements IListAdapter<String> {
 			fStatuses[i] = new StatusInfo();
 		}
 		fEditedRuntime = editedVM;
+		this.returnNew = returnNew;
 	}
 
 	/**
@@ -106,14 +108,18 @@ extends StatusDialog implements IListAdapter<String> {
 			}
 		});
 
+		fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
+
+			public void dialogFieldChanged(DialogField field) {
+				setLocationStatus(validateLocation());
+				updateStatusLine();
+			}
+		});
+
 	}
 
 	protected String getBackendName() {
 		return fName.getText();
-	}
-
-	protected File getInstallLocation() {
-		return new File(fInstallation.getText());
 	}
 
 	@Override
@@ -127,13 +133,14 @@ extends StatusDialog implements IListAdapter<String> {
 		fCookie = new StringDialogField();
 		fCookie.setLabelText("cookie");
 
-		fInstallation = new ComboDialogField(SWT.DROP_DOWN | SWT.READ_ONLY);
-		fInstallation.setLabelText("Installation"); //$NON-NLS-1$
-		Collection<String> elementNames = InstallationInfoManager.getDefault()
-				.getElementNames();
-		fInstallation.setItems(elementNames.toArray(new String[elementNames
-				.size()]));
-		fInstallation.selectItem(0);
+		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
+
+			public void changeControlPressed(DialogField field) {
+				browseForInstallDir();
+			}
+		});
+		fOtpHome.setLabelText("Location"); //$NON-NLS-1$
+		fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
 
 		final String[] buttons = new String[] {
 				RuntimePreferenceMessages.addDialog_add,
@@ -150,7 +157,7 @@ extends StatusDialog implements IListAdapter<String> {
 		((GridLayout) parent.getLayout()).numColumns = 3;
 
 		fName.doFillIntoGrid(parent, 3);
-		fInstallation.doFillIntoGrid(parent, 3);
+		fOtpHome.doFillIntoGrid(parent, 3);
 		fNodeName.doFillIntoGrid(parent, 3);
 		fCookie.doFillIntoGrid(parent, 3);
 		fCodePath.doFillIntoGrid(parent, 3);
@@ -178,19 +185,19 @@ extends StatusDialog implements IListAdapter<String> {
 			fName.setText(""); //$NON-NLS-1$
 			fNodeName.setText("");
 			fCookie.setText("");
-			fInstallation.setText(""); //$NON-NLS-1$
+			fOtpHome.setText(""); //$NON-NLS-1$
 			fCodePath.setElements(new ArrayList<String>(5));
 			fArgs.setText(""); //$NON-NLS-1$
 		} else {
 			fName.setText(fEditedRuntime.getName());
 			fNodeName.setText(fEditedRuntime.getNodeName());
 			fCookie.setText(fEditedRuntime.getCookie());
-			fInstallation.setText(fEditedRuntime.getInstallation());
+			fOtpHome.setText(fEditedRuntime.getOtpHome());
 			fCodePath.setElements(fEditedRuntime.getCodePath());
 			fArgs.setText(fEditedRuntime.getArgs());
 		}
 		setNameStatus(validateName());
-		setInstallationStatus(validateInstallation());
+		setLocationStatus(validateLocation());
 		updateStatusLine();
 	}
 
@@ -216,15 +223,19 @@ extends StatusDialog implements IListAdapter<String> {
 		return status;
 	}
 
-	protected IStatus validateInstallation() {
+	protected IStatus validateLocation() {
 		final StatusInfo status = new StatusInfo();
-		if (fInstallation.getSelectionIndex() == -1) {
-			status.setError("Choose an installation"); //$NON-NLS-1$
+		final String loc = fOtpHome.getText();
+		if (loc == null || loc.trim().length() == 0) {
+			status.setInfo("Enter the installation's location");
 		} else {
-			final String installation = fInstallation.getItems()[fInstallation
-					.getSelectionIndex()];
-			if (installation == null || installation.trim().length() == 0) {
-				status.setError("Choose an installation"); //$NON-NLS-1$
+			final File f = new File(loc);
+			if (!f.exists()) {
+				status.setError("Location doesn't exist");
+			} else if (!f.isDirectory()) {
+				status.setError("Location isn't a directory");
+			} else if (!RuntimeInfo.validateLocation(loc)) {
+				status.setError("Location is not a valid OTP home");
 			}
 		}
 		return status;
@@ -251,7 +262,7 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	private void doOkPressed() {
-		if (fEditedRuntime == null) {
+		if (returnNew) {
 			final RuntimeInfo info = new RuntimeInfo();
 			storeValues(info);
 			fRequestor.itemAdded(info);
@@ -261,8 +272,7 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	protected void storeValues(RuntimeInfo runtime) {
-		runtime.setInstallation(fInstallation.getItems()[fInstallation
-				.getSelectionIndex()]);
+		runtime.setOtpHome(fOtpHome.getText());
 		runtime.setName(fName.getText());
 		runtime.setNodeName(fNodeName.getText());
 		runtime.setCookie(fCookie.getText());
@@ -275,7 +285,7 @@ extends StatusDialog implements IListAdapter<String> {
 		fStatuses[0] = status;
 	}
 
-	protected void setInstallationStatus(IStatus status) {
+	protected void setLocationStatus(IStatus status) {
 		fStatuses[1] = status;
 	}
 
@@ -400,6 +410,17 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	public void selectionChanged(ListDialogField<String> field) {
+	}
+
+	protected void browseForInstallDir() {
+		final DirectoryDialog dialog = new DirectoryDialog(getShell());
+		dialog.setFilterPath(fOtpHome.getText());
+		dialog
+				.setMessage(RuntimePreferenceMessages.addDialog_pickInstallationRoot);
+		final String newPath = dialog.open();
+		if (newPath != null) {
+			fOtpHome.setText(newPath);
+		}
 	}
 
 }
