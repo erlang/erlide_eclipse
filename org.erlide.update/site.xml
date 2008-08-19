@@ -3,6 +3,20 @@
    <description url="http://erlide.sourceforge.net/update/site.xml">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.2 and later.
    </description>
-   <feature url="features/org.erlide_0.3.60.jar" id="org.erlide" version="0.3.60"/>
-   <feature url="features/org.erlide_0.3.61.jar" id="org.erlide" version="0.3.61"/>
+   <feature url="features/org.erlide_0.3.55.jar" id="org.erlide" version="0.3.55">
+      <category name="stable"/>
+   </feature>
+   <feature url="features/org.erlide_0.3.61.jar" id="org.erlide" version="0.3.61">
+      <category name="unstable"/>
+   </feature>
+   <category-def name="stable" label="Stable builds">
+      <description>
+         These builds have been around a little longer and are reasonably stable.
+      </description>
+   </category-def>
+   <category-def name="unstable" label="Unstable builds">
+      <description>
+         These bulds may be broken, so use at your own risk.
+      </description>
+   </category-def>
 </site>
