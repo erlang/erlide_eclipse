@@ -801,9 +801,6 @@
          <mapping
                scope="instance">
             <entry
-                  node="org.erlide.basicui">
-            </entry>
-            <entry
                   node="org.erlide.ui">
             </entry>
                         <entry
@@ -825,7 +822,7 @@
       <page
             category="org.erlide.ui.preferences"
             class="org.erlide.ui.prefs.ReportPreferencePage"
-            id="org.erlide.basic.reporting"
+            id="org.erlide.ui.reporting"
             name="Report problems">
       </page>
    </extension>
@@ -838,7 +835,7 @@
             category="org.erlide.categories.views"
             class="org.erlide.ui.views.ErlLoggerView"
             icon="icons/icons/sample.gif"
-            id="org.erlide.basic.views.ErlLoggerView"
+            id="org.erlide.ui.views.ErlLoggerView"
             name="Erlang Logger"/>
    </extension>
    <extension

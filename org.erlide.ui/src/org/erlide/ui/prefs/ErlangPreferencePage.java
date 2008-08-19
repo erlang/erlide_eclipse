@@ -73,11 +73,10 @@ public class ErlangPreferencePage extends PreferencePage implements
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				PreferencesUtil.createPreferenceDialogOn(getShell(),
-						"org.erlide.basic.reporting", null, null);
+						"org.erlide.ui.reporting", null, null);
 			}
 		});
 		reportButton.setText("Report problems");
-		// new Label(group, SWT.NONE).setText(" * Tomas Daarstad");
 
 		return panel;
 	}

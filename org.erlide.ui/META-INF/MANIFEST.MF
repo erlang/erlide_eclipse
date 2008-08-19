@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.3.60
+Bundle-Version: 0.3.61
 Bundle-ClassPath: erlide-ui.jar
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -15,7 +15,6 @@ Export-Package: com.novocode.naf.swt.custom,
    org.eclipse.jface.resource,
    org.eclipse.ui.navigator,
    org.eclipse.ui,
-   org.erlide.basicui.util,
    org.eclipse.ui.plugin,
    org.eclipse.jface.action,
    org.erlide.ui.internal.folding,
@@ -77,7 +76,6 @@ Export-Package: com.novocode.naf.swt.custom,
    org.erlide.ui.editors.erl,
    org.eclipse.swt.events,
    org.eclipse.swt.graphics,
-   org.erlide.basicui.util,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
@@ -130,14 +128,12 @@ Export-Package: com.novocode.naf.swt.custom,
  org.erlide.ui.perspectives;uses:="org.eclipse.ui",
  org.erlide.ui.prefs;
   uses:="org.eclipse.jface.preference,
-   org.erlide.basicui.util,
    org.eclipse.swt.graphics,
    org.eclipse.core.runtime.preferences,
    org.eclipse.swt.widgets",
  org.erlide.ui.prefs.plugin;
   uses:="org.eclipse.core.runtime,
    org.eclipse.ui,
-   org.erlide.basicui.util,
    org.eclipse.osgi.util,
    org.eclipse.jface.preference,
    org.erlide.ui.prefs.plugin.internal,

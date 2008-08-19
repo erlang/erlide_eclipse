@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.3.60"
+      version="0.3.61"
       provider-name="Erlide project"
       image="erlang120.gif">
    <install-handler/>
@@ -229,7 +229,6 @@ litigation.
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.erlide.basic"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -241,11 +240,10 @@ litigation.
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.erlide.core"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.erlide.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.swt"/>
    </requires>
 
    <plugin

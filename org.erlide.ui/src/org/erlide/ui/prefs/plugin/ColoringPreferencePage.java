@@ -69,9 +69,6 @@ import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.PixelConverter;
 
-// import org.erlide.basicui.util.OverlayPreferenceStore;
-// import org.erlide.basicui.util.OverlayPreferenceStore.OverlayKey;
-
 /**
  * The color preferences.
  * 
@@ -256,7 +253,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 	static class ColorListLabelProvider extends LabelProvider {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 		 */
 		@Override
 		public String getText(Object element) {
@@ -274,7 +272,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 	class ColorListContentProvider implements ITreeContentProvider {
 
 		/*
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(
+		 * java.lang.Object)
 		 */
 		public Object[] getElements(Object inputElement) {
 			return new String[] { fErlangCategory
@@ -289,8 +289,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 		}
 
 		/*
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
+		 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 		 */
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
