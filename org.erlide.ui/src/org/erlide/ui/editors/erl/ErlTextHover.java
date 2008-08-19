@@ -95,7 +95,9 @@ public class ErlTextHover implements ITextHover,
 								.getResource(), fModule, definedName,
 								IErlElement.Kind.MACRO_DEF,
 								new ArrayList<IErlModule>());
-				return pd.getExtra();
+				if (pd != null) {
+					return pd.getExtra();
+				}
 			} catch (final CoreException e) {
 				e.printStackTrace();
 			}
