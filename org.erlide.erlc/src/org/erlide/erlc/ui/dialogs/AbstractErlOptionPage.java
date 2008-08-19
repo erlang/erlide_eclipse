@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.basicui.util.SWTUtil;
+import org.erlide.ui.util.SWTUtil;
 
 public abstract class AbstractErlOptionPage extends DialogPage implements
 		IErlOptionPage {
@@ -28,8 +28,8 @@ public abstract class AbstractErlOptionPage extends DialogPage implements
 
 	private IErlOptionContainer fContainer;
 
-	protected Button createPushButton(Composite parent, String label,
-			Image image) {
+	protected Button createPushButton(final Composite parent,
+			final String label, final Image image) {
 		final Button button = new Button(parent, SWT.PUSH);
 		button.setFont(parent.getFont());
 		if (image != null) {
@@ -44,7 +44,8 @@ public abstract class AbstractErlOptionPage extends DialogPage implements
 		return button;
 	}
 
-	protected Button createRadioButton(Composite parent, String label) {
+	protected Button createRadioButton(final Composite parent,
+			final String label) {
 		final Button button = new Button(parent, SWT.RADIO);
 		button.setFont(parent.getFont());
 		if (label != null) {
@@ -60,15 +61,16 @@ public abstract class AbstractErlOptionPage extends DialogPage implements
 		super();
 	}
 
-	protected AbstractErlOptionPage(String title) {
+	protected AbstractErlOptionPage(final String title) {
 		super(title);
 	}
 
-	protected AbstractErlOptionPage(String title, ImageDescriptor image) {
+	protected AbstractErlOptionPage(final String title,
+			final ImageDescriptor image) {
 		super(title, image);
 	}
 
-	public void setContainer(IErlOptionContainer container) {
+	public void setContainer(final IErlOptionContainer container) {
 		fContainer = container;
 	}
 
@@ -76,7 +78,7 @@ public abstract class AbstractErlOptionPage extends DialogPage implements
 		return fContainer;
 	}
 
-	protected void setValid(boolean isValid) {
+	protected void setValid(final boolean isValid) {
 		bIsValid = isValid;
 	}
 
