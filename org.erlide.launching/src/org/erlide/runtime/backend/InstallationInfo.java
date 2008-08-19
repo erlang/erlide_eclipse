@@ -31,11 +31,11 @@ public class InstallationInfo extends InfoElement {
 	private String fArgs = "";
 
 	private String fVersion;
-	private List<RuntimeInfo> backends;
+	private List<RuntimeInfo> runtimes;
 
 	public InstallationInfo() {
 		super();
-		backends = new ArrayList<RuntimeInfo>();
+		runtimes = new ArrayList<RuntimeInfo>();
 		getCodePath().add(DEFAULT_MARKER);
 	}
 
@@ -188,8 +188,8 @@ public class InstallationInfo extends InfoElement {
 		return key + str;
 	}
 
-	public List<RuntimeInfo> getBackends() {
-		return backends;
+	public List<RuntimeInfo> getRuntimes() {
+		return runtimes;
 	}
 
 }

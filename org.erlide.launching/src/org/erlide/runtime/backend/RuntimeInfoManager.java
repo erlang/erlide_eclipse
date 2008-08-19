@@ -77,7 +77,7 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 
 		RuntimeInfo result = new RuntimeInfo();
 		result.setInstallation(rt.getName());
-		rt.getBackends().add(result);
+		rt.getRuntimes().add(result);
 		result.setName(rt.getName());
 		result.setNodeName(rt.getName());
 		fElements.put(result.getName(), result);
@@ -86,7 +86,7 @@ public class RuntimeInfoManager extends InfoManager<RuntimeInfo> {
 		if (ver != null && ver.compareTo("R12B") >= 0) {
 			result = new RuntimeInfo();
 			result.setInstallation(rt.getName());
-			rt.getBackends().add(result);
+			rt.getRuntimes().add(result);
 			result.setName(rt.getName() + " SMP");
 			result.setArgs("+S 2");
 			result.setNodeName(rt.getName() + "-smp");

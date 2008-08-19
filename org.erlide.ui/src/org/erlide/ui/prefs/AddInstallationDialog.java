@@ -46,43 +46,12 @@ import org.erlide.ui.util.StatusInfo;
 public class AddInstallationDialog extends StatusDialog implements
 		IListAdapter<String> {
 
-	public static class StringLabelProvider implements ILabelProvider {
-
-		public Image getImage(Object element) {
-			return null;
-		}
-
-		public String getText(Object element) {
-			return (String) element;
-		}
-
-		public void addListener(ILabelProviderListener listener) {
-		}
-
-		public void dispose() {
-		}
-
-		public boolean isLabelProperty(Object element, String property) {
-			return false;
-		}
-
-		public void removeListener(ILabelProviderListener listener) {
-		}
-
-	}
-
 	private final IAddDialogRequestor<InstallationInfo> fRequestor;
-
 	private final InstallationInfo fEditedInstallation;
-
 	private StringDialogField fInstallationName;
-
 	private StringButtonDialogField fOtpHome;
-
 	private ListDialogField<String> fCodePath;
-
 	private StringDialogField fDefaultArgs;
-
 	private final IStatus[] fStatuses;
 
 	public AddInstallationDialog(
@@ -99,9 +68,6 @@ public class AddInstallationDialog extends StatusDialog implements
 		fEditedInstallation = editedInstallation;
 	}
 
-	/**
-	 * @see Windows#configureShell
-	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -441,4 +407,30 @@ public class AddInstallationDialog extends StatusDialog implements
 
 	public void selectionChanged(ListDialogField<String> field) {
 	}
+
+	public static class StringLabelProvider implements ILabelProvider {
+
+		public Image getImage(Object element) {
+			return null;
+		}
+
+		public String getText(Object element) {
+			return (String) element;
+		}
+
+		public void addListener(ILabelProviderListener listener) {
+		}
+
+		public void dispose() {
+		}
+
+		public boolean isLabelProperty(Object element, String property) {
+			return false;
+		}
+
+		public void removeListener(ILabelProviderListener listener) {
+		}
+
+	}
+
 }

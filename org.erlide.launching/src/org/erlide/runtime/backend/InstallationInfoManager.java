@@ -50,7 +50,7 @@ public class InstallationInfoManager extends InfoManager<InstallationInfo> {
 				.getNode("org.erlide.basic/");
 		String oldVal = old.get("otp_home", null);
 		if (oldVal != null) {
-			ErlLogger.debug("converting old workspace Erlang settings");
+			ErlLogger.debug("** converting old workspace Erlang settings");
 
 			InstallationInfo rt = new InstallationInfo();
 			rt.setOtpHome(oldVal);

@@ -93,10 +93,13 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		IAddDialogRequestor<InstallationInfo>, ISelectionProvider,
 		IWorkbenchPreferencePage {
 
+	private Composite buttons;
+	private Label tableLabel;
 	private static final String INSTALLATIONS_PREFERENCE_PAGE = "INSTALLATIONS_PREFERENCE_PAGE";
 
 	Collection<InstallationInfo> installations;
 	InstallationInfo defaultInstallation;
+	private boolean modified;
 
 	/**
 	 * The main list control
@@ -185,9 +188,14 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		setTitle(InstallationPreferenceMessages.Page_title);
 		setDescription(InstallationPreferenceMessages.Page_description);
 
+		refreshData();
+	}
+
+	private void refreshData() {
 		installations = InstallationInfoManager.getDefault().getElements();
 		defaultInstallation = InstallationInfoManager.getDefault()
 				.getDefaultInstallation();
+		modified = false;
 	}
 
 	/*
@@ -520,7 +528,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 		final IStructuredSelection prev = (IStructuredSelection) getSelection();
 		for (final InstallationInfo rt : vms) {
 			installations.remove(rt);
-			for (RuntimeInfo bi : rt.getBackends()) {
+			for (RuntimeInfo bi : rt.getRuntimes()) {
 				RuntimeInfoManager.getDefault().removeElement(bi.getName());
 			}
 		}
@@ -807,7 +815,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		GridData data;
 
-		final Label tableLabel = new Label(parent, SWT.NONE);
+		tableLabel = new Label(parent, SWT.NONE);
 		tableLabel.setText(InstallationPreferenceMessages.installations);
 		data = new GridData();
 		data.horizontalSpan = 2;
@@ -930,8 +938,11 @@ public class InstallationsPreferencePage extends PreferencePage implements
 			}
 		});
 
-		final Composite buttons = new Composite(parent, SWT.NULL);
-		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		buttons = new Composite(parent, SWT.NULL);
+		final GridData gd_buttons = new GridData(SWT.LEFT, SWT.TOP, false,
+				false);
+		gd_buttons.heightHint = 133;
+		buttons.setLayoutData(gd_buttons);
 		layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
@@ -985,6 +996,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 		configureTableResizing(parent, buttons, table, column1, column2,
 				column3);
+		parent.setTabList(new Control[] { tableLabel, table, buttons });
 
 		enableButtons();
 
@@ -1021,9 +1033,7 @@ public class InstallationsPreferencePage extends PreferencePage implements
 
 	@Override
 	protected void performDefaults() {
-		installations = InstallationInfoManager.getDefault().getElements();
-		defaultInstallation = InstallationInfoManager.getDefault()
-				.getDefaultInstallation();
+		refreshData();
 		fInstallationList.refresh();
 		super.performDefaults();
 	}
