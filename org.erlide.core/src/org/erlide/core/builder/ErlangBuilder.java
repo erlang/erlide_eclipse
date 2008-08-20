@@ -483,7 +483,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							.removeFileExtension().lastSegment();
 					// ErlLogger.debug(">>>>> " + project.getName() + ": " +
 					// beamf);
-					if (project.getName().startsWith("erlide")
+					if (project.getName().startsWith("org.erlide")
 							|| beamf.startsWith("erlide")) {
 						// ErlLogger.debug(">>>>> is erlide");
 						if (BackendManager.isDeveloper()) {
