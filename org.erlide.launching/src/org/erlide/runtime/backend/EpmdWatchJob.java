@@ -45,7 +45,7 @@ public class EpmdWatchJob extends Job {
 
 		checkEpmd();
 
-		this.schedule(5000);
+		this.schedule(1000);
 		return Status.OK_STATUS;
 	}
 

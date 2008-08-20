@@ -79,7 +79,7 @@ public class ProcessListView extends ViewPart {
 
 		public Object[] getElements(Object inputElement) {
 			IBackend[] projectBackends = BackendManager.getDefault()
-					.getProjectBackends();
+					.getAllBackends();
 			IBackend[] result = new IBackend[projectBackends.length + 1];
 			result[0] = BackendManager.getDefault().getIdeBackend();
 			System.arraycopy(projectBackends, 0, result, 1,

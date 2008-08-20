@@ -128,7 +128,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
-			fNode.ping(fPeer, 5);
+			int tries = 50;
+			while (!fAvailable && tries > 0) {
+				fAvailable = fNode.ping(fPeer, 20);
+				tries--;
+			}
 
 		} catch (final Exception e) {
 			e.printStackTrace();

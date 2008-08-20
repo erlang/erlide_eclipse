@@ -34,13 +34,15 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 import org.erlide.runtime.backend.internal.ManagedBackend;
 
+import com.ericsson.otp.erlang.OtpNodeStatus;
+
 public final class BackendManager implements IResourceChangeListener {
 
 	private static final BackendManager MANAGER = new BackendManager();
 
 	private IdeBackend fLocalBackend;
 	private final Map<String, IBackend> fBuildBackends;
-	private final Object fProjectBackendsLock = new Object();
+	private final Object fBuildBackendsLock = new Object();
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
@@ -97,7 +99,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	private IBackend get(final IProject project) {
-		synchronized (fProjectBackendsLock) {
+		synchronized (fBuildBackendsLock) {
 			// ErlLogger.debug("** getBackend: " + project.getName() + " "
 			// + Thread.currentThread());
 
@@ -207,8 +209,9 @@ public final class BackendManager implements IResourceChangeListener {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
-		 *      Throwable)
+		 * @see
+		 * org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
+		 * Throwable)
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
@@ -253,12 +256,12 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	public AbstractBackend[] getProjectBackends() {
-		// getDefaultBackend();
-		synchronized (fProjectBackendsLock) {
+	public IBackend[] getAllBackends() {
+		synchronized (fBuildBackendsLock) {
 			final Object[] ob = fBuildBackends.values().toArray();
-			final AbstractBackend[] res = new AbstractBackend[ob.length];
+			final IBackend[] res = new IBackend[ob.length + 1];
 			System.arraycopy(ob, 0, res, 0, ob.length);
+			res[ob.length] = getIdeBackend();
 			return res;
 		}
 	}
@@ -286,7 +289,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public void forEachProjectBackend(final IBackendVisitor visitor) {
-		synchronized (fProjectBackendsLock) {
+		synchronized (fBuildBackendsLock) {
 			for (final IBackend b : fBuildBackends.values()) {
 				try {
 					visitor.run(b);
@@ -342,14 +345,17 @@ public final class BackendManager implements IResourceChangeListener {
 
 	synchronized public void updateBackendStatus(List<String> started,
 			List<String> stopped) {
-		// TODO for started: make corresponding backend (if any) available
 		for (String b : started) {
 			ErlLogger.info("(epmd) started: %s", b);
-			IBackend bb = null;
+			for (IBackend bb : getAllBackends()) {
+				((OtpNodeStatus) bb).remoteStatus(b, true, null);
+			}
 		}
-		// TODO for stopped: make corresponding backend (if any) unavailable
 		for (String b : stopped) {
 			ErlLogger.info("(epmd) stopped: %s", b);
+			for (IBackend bb : getAllBackends()) {
+				((OtpNodeStatus) bb).remoteStatus(b, false, null);
+			}
 		}
 
 	}
