@@ -337,7 +337,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(
 				IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS, "");
 		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.BACKEND_NAME,
+				IErlangLaunchConfigurationAttributes.RUNTIME_NAME,
 				RuntimeInfoManager.getDefault().getDefaultRuntime().getName());
 	}
 
@@ -397,7 +397,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		}
 		try {
 			final String backendName = configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.BACKEND_NAME, "");
+					IErlangLaunchConfigurationAttributes.RUNTIME_NAME, "");
 			for (final RuntimeInfo i : runtimes) {
 				if (i.getName().equals(backendName)) {
 					selectedRuntime = i;
@@ -454,7 +454,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 			backendName = selectedRuntime.getName();
 		}
 		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.BACKEND_NAME, backendName);
+				IErlangLaunchConfigurationAttributes.RUNTIME_NAME, backendName);
 	}
 
 	private void performApplyOtherProjects(
