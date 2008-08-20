@@ -84,22 +84,25 @@ public class ErlTextHover implements ITextHover,
 			return s1.stringValue();
 		} else if (r1 instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
-			final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(1);
-			String definedName = a.atomValue();
-			if (definedName.charAt(0) == '?') {
-				definedName = definedName.substring(1);
-			}
-			try {
-				final IErlPreprocessorDef pd = ErlModelUtils
-						.findPreprocessorDef((IProject) fModule.getProject()
-								.getResource(), fModule, definedName,
-								IErlElement.Kind.MACRO_DEF,
-								new ArrayList<IErlModule>());
-				if (pd != null) {
-					return pd.getExtra();
+			final OtpErlangObject o1 = t.elementAt(1);
+			if (o1 instanceof OtpErlangAtom) {
+				final OtpErlangAtom a = (OtpErlangAtom) o1;
+				String definedName = a.atomValue();
+				if (definedName.charAt(0) == '?') {
+					definedName = definedName.substring(1);
 				}
-			} catch (final CoreException e) {
-				e.printStackTrace();
+				try {
+					final IErlPreprocessorDef pd = ErlModelUtils
+							.findPreprocessorDef((IProject) fModule
+									.getProject().getResource(), fModule,
+									definedName, IErlElement.Kind.MACRO_DEF,
+									new ArrayList<IErlModule>());
+					if (pd != null) {
+						return pd.getExtra();
+					}
+				} catch (final CoreException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return null;
