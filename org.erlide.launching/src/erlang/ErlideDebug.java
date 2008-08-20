@@ -5,6 +5,7 @@ import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.debug.IErlDebugConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -140,10 +141,13 @@ public class ErlideDebug {
 	}
 
 	@SuppressWarnings("boxing")
-	public static void addLineBreakpoint(final IBackend backend,
-			final String module, final int line) {
+	public static void addDeleteLineBreakpoint(final IBackend backend,
+			final String module, final int line, final int action) {
 		try {
-			backend.rpcx("erlide_debug", "line_breakpoint", "si", module, line);
+			final String a = action == IErlDebugConstants.REQUEST_INSTALL ? "add"
+					: "delete";
+			backend.rpcx("erlide_debug", "line_breakpoint", "sia", module,
+					line, a);
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

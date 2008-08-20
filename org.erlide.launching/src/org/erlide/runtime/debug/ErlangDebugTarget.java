@@ -232,7 +232,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	public void breakpointRemoved(final IBreakpoint breakpoint,
 			final IMarkerDelta delta) {
-		// TODO Auto-generated method stub
+		if (supportsBreakpoint(breakpoint)) {
+			final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
+			erlangLineBreakpoint.remove(this);
+		}
 	}
 
 	public void breakpointChanged(final IBreakpoint breakpoint,
@@ -323,9 +326,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see
-			 * org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
-			 * .otp.erlang.OtpErlangObject)
+			 * @see org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
+			 *      .otp.erlang.OtpErlangObject)
 			 */
 			public void handleEvent(final OtpErlangObject msg) {
 				if (msg == null) {

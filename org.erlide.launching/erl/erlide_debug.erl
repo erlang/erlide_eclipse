@@ -25,7 +25,7 @@
 -export([start_debug/0, 
          attached/2, 
          send_started/1]).
--export([line_breakpoint/2, 
+-export([line_breakpoint/3, 
          resume/1, 
          suspend/1, 
          bindings/1, 
@@ -94,10 +94,10 @@ interpret(File) ->
 %%     ?Debug({interpret, File}),
     erlide_dbg_mon:interpret([File]).
 
-line_breakpoint(File, Line) ->
+line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),
     Module = list_to_atom(ModuleName),
-    Res = erlide_dbg_mon:line_breakpoint(Module, Line),
+    Res = erlide_dbg_mon:line_breakpoint(Module, Line, Action),
     Res.
 
 suspend(MetaPid) ->

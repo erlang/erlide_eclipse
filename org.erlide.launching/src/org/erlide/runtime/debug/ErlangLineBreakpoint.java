@@ -55,13 +55,13 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	 * @param target
 	 *            debug target
 	 */
-	public void install(final ErlangDebugTarget _target) {
-		target = _target;
-		createRequest(target);
+	public void install(final ErlangDebugTarget target) {
+		this.target = target;
+		createRequest(IErlDebugConstants.REQUEST_INSTALL);
 	}
 
-	private void createRequest(final ErlangDebugTarget _target) {
-		final IBackend b = _target.getBackend();
+	private void createRequest(final int request) {
+		final IBackend b = target.getBackend();
 		int line = -1;
 		try {
 			line = getLineNumber();
@@ -72,7 +72,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 		final IResource r = getMarker().getResource();
 		final String module = r.getLocation().toPortableString();
 		if (line != -1) {
-			ErlideDebug.addLineBreakpoint(b, module, line);
+			ErlideDebug.addDeleteLineBreakpoint(b, module, line, request);
 		}
 	}
 
@@ -115,6 +115,11 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 			return m.getAttribute(IMarker.CHAR_END, -1);
 		}
 		return -1;
+	}
+
+	public void remove(final ErlangDebugTarget target) {
+		this.target = target;
+		createRequest(IErlDebugConstants.REQUEST_REMOVE);
 	}
 
 }

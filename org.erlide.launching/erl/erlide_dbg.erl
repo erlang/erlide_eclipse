@@ -277,7 +277,7 @@ meta_cmd({attached, Mod, Line, _Trace}, State) ->
     State#state{status={init,Mod,Line}, cm=Mod};
 
 %% Message received when returning to interpreted code
-meta_cmd({re_entry, dbg_ieval, eval_fun}, State) ->
+meta_cmd({re_entry, erlide_dbg_ieval, eval_fun}, State) ->
     State;
 meta_cmd({re_entry, Mod, _Func}, State) ->
     Obs = State#state.cm_obsolete,
@@ -330,14 +330,15 @@ meta_cmd({trace, _Bool}, State) ->
 meta_cmd({stack_trace, Flag}, State) ->
     {Status,_,_} = State#state.status,
     if
-	Status==break; Status==wait_break ->
-		ok;
-	true -> ignore
+        Status==break; Status==wait_break ->
+            ok;
+        true -> ignore
     end,
     State#state{stack_trace=Flag};
 
 meta_cmd({trace_output, Str}, State) ->
-    dbg_ui_trace_win:trace_output(Str),
+%%     dbg_ui_trace_win:trace_output(Str),
+    io:format("trace_output ~p\n", [Str]),
     State;
 
 %% Reply on a user command

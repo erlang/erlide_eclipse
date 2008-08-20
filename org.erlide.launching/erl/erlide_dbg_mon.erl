@@ -17,12 +17,12 @@
 -include_lib("kernel/include/file.hrl").
 
 
-%% -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
-%% -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
-%% -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
+-define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
+-define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
+-define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %% External exports
--export([start/2, stop/0, interpret/1, line_breakpoint/2]).
+-export([start/2, stop/0, interpret/1, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 
@@ -400,7 +400,7 @@ int_cmd(_Other, State) ->
 %% Debugger API
 %%====================================================================
 interpret(Modules) ->
-%%     ?Debug({interpret, Modules}),
+    log("interpret  ~p\n", [Modules]),
     cmd(interpret, Modules).
 
 suspend(MetaPid) ->
@@ -430,8 +430,8 @@ bindings(MetaPid) ->
 all_stack_frames(MetaPid) ->
     cmd(all_stack_frames, MetaPid).
 
-line_breakpoint(Module, Line) ->
-    cmd(break, {Module, Line, add}).
+line_breakpoint(Module, Line, Action) ->
+    cmd(break, {Module, Line, Action}).
 
 cmd(Cmd, Args) ->
     cmd({Cmd, Args}).
@@ -551,4 +551,11 @@ msg(Pid, Msg) ->
 %% 	io:format("SEND:: ~p~n", [Msg]),
     _Res = (catch(Pid ! Msg)),
     ok.
-    
+
+log(S, A) ->
+    {ok, F} = file:open("/Users/jakob/Desktop/log.txt", [append]),
+    io:format(F, S, A),
+    file:close(F).
+
+
+
