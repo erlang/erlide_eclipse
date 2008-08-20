@@ -13,6 +13,7 @@ package org.erlide.runtime.backend;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,6 +34,7 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 
 import erlang.ErlideDebug;
@@ -52,67 +54,56 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			if (label.length() == 0) {
 				label = projectName;
 			}
-			IProcess process = null;
 			IProject project = null;
 			if (projectName.length() > 0) {
 				project = ResourcesPlugin.getWorkspace().getRoot().getProject(
 						projectName);
 			}
-			if (configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_START_NODE, true)) {
-				final String nodeName = BackendManager.buildNodeName(label);
-
-				final String nameAndCookie = "-name " + nodeName
-						+ " -setcookie " + Cookie.retrieveCookie();
-
-				// launch of erlang project
-
-				// build command string
-				final StringBuilder cmd = new StringBuilder();
-				final RuntimeInfo r = BackendManager.getRuntimeInfo(project);
-				final String cmdLine = r.getCmdLine();
-				cmd.append(cmdLine);
-				if (cmd.length() > 0) {
-					cmd.append(File.separator).append("bin").append(
-							File.separator).append("erl ");
-				}
-				cmd.append(nameAndCookie).append(" ");
-				if (project == null) {
-					return;
-				}
-				final ErlangProjectProperties prefs = new ErlangProjectProperties(
-						project);
-				final String projOutputDir = project.getLocation().append(
-						prefs.getOutputDir()).toOSString();
-				if (projOutputDir.length() > 0) {
-					cmd.append((prefs.getUsePathZ() ? "-pz" : "-pa")).append(
-							" ").append(projOutputDir).append(" ");
-				}
-				ErlLogger.debug("RUN*> " + cmd.toString());
-				// launch an erlang process
-				final File workingDirectory = new File(".");
-				Process vm = null;
-				try {
-					vm = Runtime.getRuntime().exec(cmd.toString(), null,
-							workingDirectory);
-					process = new ErtsProcess(launch, vm, label, null);
-					launch.addProcess(process);
-				} catch (final Exception e) {
-				}
-
-				if (vm == null) {
-					// PopupDialog.showBalloon("Starting Erlang backend",
-					// "Could not start, please check your preferences!",
-					// 3000);
-				}
+			if (project == null) {
+				ErlLogger.error("Launch: project not set or not found! %s",
+						projectName);
+				return;
 			}
-			// make a nice little BackEnd for it
-			final ExecutionBackend backend = makeBackend(project);
-			// backend.setLabel(label);
+			// launch of erlang project
+			// build command string
+			final StringBuilder cmd = new StringBuilder();
+			final String runtimeName = configuration.getAttribute(
+					IErlangLaunchConfigurationAttributes.RUNTIME_NAME, "");
+			final ExecutionBackend backend = createNamedBackend(runtimeName,
+					project);
 			if (backend == null) {
 				ErlLogger.error("Launch: got null backend!");
 				return;
 			}
+			final RuntimeInfo r = backend.getInfo();
+			final String cmdLine = r.getCmdLine();
+			cmd.append(cmdLine).append(" ");
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
+			final String projOutputDir = project.getLocation().append(
+					prefs.getOutputDir()).toOSString();
+			if (projOutputDir.length() > 0) {
+				final String az = prefs.getUsePathZ() ? "-pz" : "-pa";
+				cmd.append(az).append(" ").append(projOutputDir).append(" ");
+			}
+			ErlLogger.debug("RUN*> " + cmd.toString());
+			// launch an erlang process
+			final File workingDirectory = new File(".");
+			Process vm = null;
+			ErtsProcess process = null;
+			try {
+				vm = Runtime.getRuntime().exec(cmd.toString(), null,
+						workingDirectory);
+				process = new ErtsProcess(launch, vm, label, null);
+				launch.addProcess(process);
+			} catch (final Exception e) {
+			}
+
+			if (vm == null || process == null) {
+				ErlLogger.error("Couldn't start erlang %s", cmd.toString());
+				return;
+			}
+
 			backend.setRuntime(process);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load the debugger code on this erlang node
@@ -149,7 +140,14 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
 		}
+	}
 
+	private ExecutionBackend createNamedBackend(final String name,
+			final IProject project) {
+		final RuntimeInfo r = RuntimeInfoManager.getDefault().getRuntime(name);
+		final EnumSet<BackendOptions> options = EnumSet
+				.of(BackendOptions.DEBUG);
+		return BackendManager.getDefault().create(r, options).asExecution();
 	}
 
 	private void interpretAll(final ExecutionBackend backend,
