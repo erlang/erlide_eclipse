@@ -96,7 +96,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	@Override
-	protected boolean buildStructure(final IProgressMonitor pm,
+	synchronized protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 
 		// generate structure and compute syntax problems if needed
