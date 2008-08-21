@@ -388,7 +388,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		// }
 		try {
 			startedNodeCheckbox
-					.setSelection(configuration
+					.setSelection(!configuration
 							.getAttribute(
 									IErlangLaunchConfigurationAttributes.ATTR_START_NODE,
 									true));
