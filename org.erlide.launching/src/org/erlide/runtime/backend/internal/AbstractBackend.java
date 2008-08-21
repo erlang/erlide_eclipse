@@ -96,9 +96,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	protected String fPeer;
 	protected IShellManager fShellManager;
 	private String fCurrentVersion;
-	private RuntimeInfo fInfo;
+	private final RuntimeInfo fInfo;
 
-	public AbstractBackend(RuntimeInfo info) {
+	private boolean fDebug;
+
+	public AbstractBackend(final RuntimeInfo info) {
 		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>(
 				10);
 		fCodeManager = new CodeManager(this);
@@ -175,7 +177,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 * @throws ConversionException
 	 */
 	public RpcResult rpc(final String m, final String f, final int timeout,
-			String signature, Object... args) throws RpcException {
+			final String signature, final Object... args) throws RpcException {
 		return sendRpc(m, f, timeout, signature, args);
 	}
 
@@ -200,19 +202,20 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
 			throws BackendException, RpcException {
-		RpcResult r = rpc(m, f, timeout, signature, a);
+		final RpcResult r = rpc(m, f, timeout, signature, a);
 		if (r != null && r.isOk()) {
 			return r.getValue();
 		}
 		if (r == null) {
 			throw new NoBackendException();
 		}
-		StringBuffer sa = new StringBuffer();
-		for (Object x : a) {
+		final StringBuffer sa = new StringBuffer();
+		for (final Object x : a) {
 			sa.append("'").append(x.toString()).append("',");
 		}
-		String ss = sa.toString().replaceAll("[\\r\\n]", " ");
-		String msg = String.format("%s <- %s:%s(%s)", r.getValue(), m, f, ss);
+		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
+		final String msg = String.format("%s <- %s:%s(%s)", r.getValue(), m, f,
+				ss);
 		throw new BackendException(msg);
 	}
 
@@ -531,10 +534,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public abstract void setRuntime(final IProcess process);
 
-	public void setRemoteRex(OtpErlangPid watchdog) {
+	public void setRemoteRex(final OtpErlangPid watchdog) {
 		try {
 			getEventBox().link(watchdog);
-		} catch (OtpErlangExit e) {
+		} catch (final OtpErlangExit e) {
 		}
 	}
 
@@ -548,22 +551,24 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	}
 
 	@Override
-	public void remoteStatus(String node, boolean up, Object info) {
-		String dir = up ? "up" : "down";
+	public void remoteStatus(final String node, final boolean up,
+			final Object info) {
+		final String dir = up ? "up" : "down";
 		ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
 		if (node.equals(fPeer)) {
 			setAvailable(up);
 		}
 	}
 
-	private void setAvailable(boolean up) {
+	private void setAvailable(final boolean up) {
 		// TODO notify others? BackendManager?
 		fAvailable = up;
 	}
 
 	@Override
-	public void connAttempt(String node, boolean incoming, Object info) {
-		String direction = incoming ? "incoming" : "outgoing";
+	public void connAttempt(final String node, final boolean incoming,
+			final Object info) {
+		final String direction = incoming ? "incoming" : "outgoing";
 		ErlLogger.debug(String.format("@@: Connection attempt: %s %s %s", node,
 				direction, info));
 	}
@@ -578,5 +583,13 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public ExecutionBackend asExecution() {
 		return this;
+	}
+
+	public void setDebug(final boolean b) {
+		fDebug = b;
+	}
+
+	public boolean isDebug() {
+		return fDebug;
 	}
 }

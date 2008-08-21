@@ -84,7 +84,8 @@ public final class BackendManager implements IResourceChangeListener {
 		DEBUG, MANAGED
 	};
 
-	public IBackend create(RuntimeInfo info, Set<BackendOptions> options) {
+	public IBackend create(final RuntimeInfo info,
+			final Set<BackendOptions> options) {
 		ErlLogger.debug("create " + options + " backend '" + info + "' "
 				+ Thread.currentThread());
 
@@ -95,6 +96,7 @@ public final class BackendManager implements IResourceChangeListener {
 			b.connectAndRegister(fPlugins);
 			b.initErlang();
 		}
+		b.setDebug(options.contains(BackendOptions.DEBUG));
 		return b;
 	}
 
@@ -114,9 +116,9 @@ public final class BackendManager implements IResourceChangeListener {
 				b = null;
 			}
 			if (b == null) {
-				EnumSet<BackendOptions> options = info.isManaged() ? EnumSet
-						.of(BackendOptions.MANAGED) : EnumSet
-						.noneOf(BackendOptions.class);
+				final EnumSet<BackendOptions> options = info.isManaged() ? EnumSet
+						.of(BackendOptions.MANAGED)
+						: EnumSet.noneOf(BackendOptions.class);
 				b = create(info, options);
 				fBuildBackends.put(info.getName(), b);
 				fireUpdate(b, BackendEvent.ADDED);
@@ -136,7 +138,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return get(project).asExecution();
 	}
 
-	public static RuntimeInfo getRuntimeInfo(IProject project) {
+	public static RuntimeInfo getRuntimeInfo(final IProject project) {
 		if (project == null) {
 			return null;
 		}
@@ -209,9 +211,8 @@ public final class BackendManager implements IResourceChangeListener {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
-		 * Throwable)
+		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
+		 *      Throwable)
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
@@ -343,17 +344,17 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	synchronized public void updateBackendStatus(List<String> started,
-			List<String> stopped) {
-		for (String b : started) {
+	synchronized public void updateBackendStatus(final List<String> started,
+			final List<String> stopped) {
+		for (final String b : started) {
 			ErlLogger.info("(epmd) started: %s", b);
-			for (IBackend bb : getAllBackends()) {
+			for (final IBackend bb : getAllBackends()) {
 				((OtpNodeStatus) bb).remoteStatus(b, true, null);
 			}
 		}
-		for (String b : stopped) {
+		for (final String b : stopped) {
 			ErlLogger.info("(epmd) stopped: %s", b);
-			for (IBackend bb : getAllBackends()) {
+			for (final IBackend bb : getAllBackends()) {
 				((OtpNodeStatus) bb).remoteStatus(b, false, null);
 			}
 		}

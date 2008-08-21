@@ -189,4 +189,5 @@ public interface IBackend {
 
 	ExecutionBackend asExecution();
 
+	boolean isDebug();
 }

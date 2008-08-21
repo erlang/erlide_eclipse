@@ -50,14 +50,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	private final List<ICodeBundle> plugins;
 
 	// only to be called by AbstractBackend
-	CodeManager(ExecutionBackend b) {
+	CodeManager(final ExecutionBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
 		plugins = new ArrayList<ICodeBundle>(10);
 	}
 
-	private PathItem findItem(List<PathItem> l, String p) {
+	private PathItem findItem(final List<PathItem> l, final String p) {
 		final Iterator<PathItem> i = l.iterator();
 		while (i.hasNext()) {
 			final PathItem it = i.next();
@@ -71,7 +71,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#addPathA(java.lang.String)
 	 */
-	private void addPathA(String path) {
+	private void addPathA(final String path) {
 		if (addPath(pathA, path)) {
 			ErlangCode.addPathA(fBackend, path);
 		}
@@ -80,13 +80,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#addPathZ(java.lang.String)
 	 */
-	private void addPathZ(String path) {
+	private void addPathZ(final String path) {
 		if (addPath(pathZ, path)) {
 			ErlangCode.addPathZ(fBackend, path);
 		}
 	}
 
-	private boolean addPath(List<PathItem> l, String path) {
+	private boolean addPath(final List<PathItem> l, final String path) {
 		if (path == null) {
 			return false;
 		}
@@ -103,7 +103,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
 	 */
-	private void removePathA(String path) {
+	private void removePathA(final String path) {
 		if (removePath(pathA, path)) {
 			ErlangCode.removePathA(fBackend, path);
 		}
@@ -112,13 +112,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
 	 */
-	private void removePathZ(String path) {
+	private void removePathZ(final String path) {
 		if (removePath(pathZ, path)) {
 			ErlangCode.removePathZ(fBackend, path);
 		}
 	}
 
-	private boolean removePath(List<PathItem> l, String path) {
+	private boolean removePath(final List<PathItem> l, final String path) {
 		if (path == null) {
 			return false;
 		}
@@ -147,7 +147,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		return getPath(pathZ);
 	}
 
-	private List<String> getPath(List<PathItem> l) {
+	private List<String> getPath(final List<PathItem> l) {
 		final List<String> r = new ArrayList<String>(l.size());
 		for (int i = 0; i < l.size(); i++) {
 			final String p = l.get(i).path;
@@ -163,7 +163,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 * @param beamPath
 	 * @return boolean
 	 */
-	protected boolean loadBeam(String moduleName, URL beamPath) {
+	protected boolean loadBeam(final String moduleName, final URL beamPath) {
 		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
 		if (bin == null) {
 			return false;
@@ -182,7 +182,8 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	 *            int
 	 * @return OtpErlangBinary
 	 */
-	private OtpErlangBinary getBeam(String moduleName, URL beamPath, int bufSize) {
+	private OtpErlangBinary getBeam(final String moduleName,
+			final URL beamPath, final int bufSize) {
 		try {
 			byte[] b = new byte[bufSize];
 			final BufferedInputStream s = new BufferedInputStream(beamPath
@@ -194,7 +195,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 					b = null;
 					return getBeam(moduleName, beamPath, bufSize * 2);
 				} else if (r > 0) {
-					byte[] bm = new byte[r];
+					final byte[] bm = new byte[r];
 					System.arraycopy(b, 0, bm, 0, r);
 					b = null;
 					return new OtpErlangBinary(bm);
@@ -211,14 +212,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	// TODO move this in an util class!
-	public static byte[] concat(byte[][] arrs) {
+	public static byte[] concat(final byte[][] arrs) {
 		int total = 0;
-		for (byte[] arr : arrs) {
+		for (final byte[] arr : arrs) {
 			total += arr.length;
 		}
-		byte[] result = new byte[total];
+		final byte[] result = new byte[total];
 		int crt = 0;
-		for (byte[] arr : arrs) {
+		for (final byte[] arr : arrs) {
 			System.arraycopy(arr, 0, result, crt, arr.length);
 			crt += arr.length;
 		}
@@ -226,8 +227,9 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadPluginCode(ICodeBundle p) {
-		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()) {
+	private void loadPluginCode(final ICodeBundle p) {
+		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()
+				&& !fBackend.isDebug()) {
 			return;
 		}
 
@@ -237,14 +239,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
 
-		IExtensionRegistry reg = RegistryFactory.getRegistry();
+		final IExtensionRegistry reg = RegistryFactory.getRegistry();
 		reg.addRegistryChangeListener(this);
-		IConfigurationElement[] els = reg.getConfigurationElementsFor(
+		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
 				InterfacePlugin.PLUGIN_ID, "codepath");
-		for (IConfigurationElement el : els) {
-			IContributor c = el.getContributor();
+		for (final IConfigurationElement el : els) {
+			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
-				String dir_path = el.getAttribute("path");
+				final String dir_path = el.getAttribute("path");
 
 				ErlLogger.debug("    " + dir_path);
 
@@ -280,16 +282,16 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 
 		// load all stub code
-		IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
+		final IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
 				ErlangLaunchPlugin.PLUGIN_ID, "javaRpcStubs");
-		for (IConfigurationElement stub : stubs) {
-			IContributor c = stub.getContributor();
+		for (final IConfigurationElement stub : stubs) {
+			final IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
-				String decl = stub.getAttribute("onlyDeclared");
+				final String decl = stub.getAttribute("onlyDeclared");
 				ErlLogger.debug("  STUB: %s %s", stub.getAttribute("class"),
 						decl);
 				BackendUtil.generateRpcStub(stub.getAttribute("class"),
-						(decl == null) ? false : Boolean.parseBoolean(decl),
+						decl == null ? false : Boolean.parseBoolean(decl),
 						(BuildBackend) fBackend);
 			}
 		}
@@ -299,7 +301,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#register(ICodeBundle)
 	 */
-	public void register(ICodeBundle p) {
+	public void register(final ICodeBundle p) {
 		if (plugins.indexOf(p) < 0) {
 			plugins.add(p);
 			loadPluginCode(p);
@@ -310,13 +312,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 	/**
 	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
 	 */
-	public void unregister(ICodeBundle p) {
+	public void unregister(final ICodeBundle p) {
 		plugins.remove(p);
 		unloadPluginCode(p);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void unloadPluginCode(ICodeBundle p) {
+	private void unloadPluginCode(final ICodeBundle p) {
 		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()) {
 			return;
 		}
@@ -345,13 +347,13 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	private void unloadBeam(String moduleName) {
+	private void unloadBeam(final String moduleName) {
 		ErlangCode.delete(fBackend, moduleName);
 	}
 
 	private static class PathItem {
 
-		public PathItem(String p) {
+		public PathItem(final String p) {
 			path = p;
 			ref = 1;
 		}
@@ -369,7 +371,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	public void addPath(boolean usePathZ, String path) {
+	public void addPath(final boolean usePathZ, final String path) {
 		if (usePathZ) {
 			addPathZ(path);
 		} else {
@@ -377,7 +379,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	public void removePath(boolean usePathZ, String path) {
+	public void removePath(final boolean usePathZ, final String path) {
 		if (usePathZ) {
 			removePathZ(path);
 		} else {
@@ -385,7 +387,7 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 		}
 	}
 
-	public void registryChanged(IRegistryChangeEvent event) {
+	public void registryChanged(final IRegistryChangeEvent event) {
 		ErlLogger.debug("??"
 				+ event.getExtensionDeltas()[0].getExtensionPoint()
 						.getUniqueIdentifier());
