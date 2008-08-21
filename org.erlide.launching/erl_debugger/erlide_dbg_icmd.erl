@@ -123,6 +123,7 @@ break_p(Mod, Line, Le, Bs) ->
 %% Called whenever evaluation enters break mode, informs attached
 %% process and erlide_dbg_iserver
 break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
+%%    erlide_debug:log({Expr, Bs, Ieval}),
     Line = element(2, Expr),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
     tell_attached({break_at,M,Line,Le}),

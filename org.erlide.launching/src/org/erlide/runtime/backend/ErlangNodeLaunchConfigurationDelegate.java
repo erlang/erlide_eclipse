@@ -76,35 +76,39 @@ public class ErlangNodeLaunchConfigurationDelegate extends
 				return;
 			}
 			final RuntimeInfo r = backend.getInfo();
-			final String cmdLine = r.getCmdLine();
-			cmd.append(cmdLine).append(" ");
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					project);
-			final String projOutputDir = project.getLocation().append(
-					prefs.getOutputDir()).toOSString();
-			if (projOutputDir.length() > 0) {
-				final String az = prefs.getUsePathZ() ? "-pz" : "-pa";
-				cmd.append(az).append(" ").append(projOutputDir).append(" ");
-			}
-			ErlLogger.debug("RUN*> " + cmd.toString());
-			// launch an erlang process
-			final File workingDirectory = new File(".");
-			Process vm = null;
-			ErtsProcess process = null;
-			try {
-				vm = Runtime.getRuntime().exec(cmd.toString(), null,
-						workingDirectory);
-				process = new ErtsProcess(launch, vm, label, null);
-				launch.addProcess(process);
-			} catch (final Exception e) {
-			}
+			if (configuration.getAttribute(
+					IErlangLaunchConfigurationAttributes.ATTR_START_NODE, true)) {
+				final String cmdLine = r.getCmdLine();
+				cmd.append(cmdLine).append(" ");
+				final ErlangProjectProperties prefs = new ErlangProjectProperties(
+						project);
+				final String projOutputDir = project.getLocation().append(
+						prefs.getOutputDir()).toOSString();
+				if (projOutputDir.length() > 0) {
+					final String az = prefs.getUsePathZ() ? "-pz" : "-pa";
+					cmd.append(az).append(" ").append(projOutputDir)
+							.append(" ");
+				}
+				ErlLogger.debug("RUN*> " + cmd.toString());
+				// launch an erlang process
+				final File workingDirectory = new File(".");
+				Process vm = null;
+				ErtsProcess process = null;
+				try {
+					vm = Runtime.getRuntime().exec(cmd.toString(), null,
+							workingDirectory);
+					process = new ErtsProcess(launch, vm, label, null);
+					launch.addProcess(process);
+				} catch (final Exception e) {
+				}
 
-			if (vm == null || process == null) {
-				ErlLogger.error("Couldn't start erlang %s", cmd.toString());
-				return;
-			}
+				if (vm == null || process == null) {
+					ErlLogger.error("Couldn't start erlang %s", cmd.toString());
+					return;
+				}
 
-			backend.setRuntime(process);
+				backend.setRuntime(process);
+			}
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load the debugger code on this erlang node
 				final List<ICodeBundle> l = new ArrayList<ICodeBundle>(1);

@@ -340,9 +340,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public boolean isSuspended() {
+		// return getStatus().equals(STATUS_SUSPENDED)
+		// || getStatus().equals(STATUS_BREAK)
+		// || getStatus().equals(STATUS_IDLE);
 		return getStatus().equals(STATUS_SUSPENDED)
-				|| getStatus().equals(STATUS_BREAK)
-				|| getStatus().equals(STATUS_IDLE);
+				|| getStatus().equals(STATUS_BREAK);
 	}
 
 	public void resume() throws DebugException {

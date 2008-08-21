@@ -400,7 +400,6 @@ int_cmd(_Other, State) ->
 %% Debugger API
 %%====================================================================
 interpret(Modules) ->
-    log("interpret  ~p\n", [Modules]),
     cmd(interpret, Modules).
 
 suspend(MetaPid) ->

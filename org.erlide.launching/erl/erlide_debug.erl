@@ -39,6 +39,8 @@
          
          processes/2]).
 
+-export([log/1]).
+
 %% -compile(export_all).
 
 %%
@@ -92,6 +94,7 @@ is_erlide_process(Pid) when pid(Pid)->
 
 interpret(File) ->
 %%     ?Debug({interpret, File}),
+%%    log({interpret, File}),
     erlide_dbg_mon:interpret([File]).
 
 line_breakpoint(File, Line, Action) ->
@@ -127,7 +130,18 @@ step_return(MetaPid) ->
 set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
+
+log(E) ->
+    case file:open("/Users/jakob/Desktop/log.txt", [append]) of
+        {ok, F} ->
+            io:format(F, "~p\n", [E]),
+            file:close(F);
+        _ ->
+            ok
+    end.
+
     
+
 %%
 %% Local Functions
 %%
