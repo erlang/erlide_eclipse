@@ -105,8 +105,7 @@ public class RuntimeInfoManager {
 			rt.setNodeName(rt.getName());
 			addRuntime(rt);
 			setDefaultRuntime(OLD_NAME);
-			setErlideRuntime(RuntimeInfoManager.getDefault()
-					.getDefaultRuntime());
+			setErlideRuntime(getDefaultRuntime());
 			old.remove("otp_home");
 			try {
 				old.flush();
