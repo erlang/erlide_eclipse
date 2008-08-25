@@ -111,7 +111,9 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 
-		RuntimeInfoManager.getDefault().load();
+		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
+		rim.load();
+
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 

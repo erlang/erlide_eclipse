@@ -38,7 +38,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager implements IResourceChangeListener {
 
-	private static final BackendManager MANAGER = new BackendManager();
+	private static BackendManager MANAGER;
 
 	private IdeBackend fLocalBackend;
 	private final Map<String, IBackend> fBuildBackends;
@@ -77,6 +77,9 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public static BackendManager getDefault() {
+		if (MANAGER == null) {
+			MANAGER = new BackendManager();
+		}
 		return MANAGER;
 	}
 
