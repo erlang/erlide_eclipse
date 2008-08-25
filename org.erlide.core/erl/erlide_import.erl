@@ -67,6 +67,8 @@ import(Prefix, [File | Rest], Files, SourceDirs, IncludeDirs) ->
             import(Prefix, Rest, [File | Files], SourceDirs, add_elem(remove_prefix(Prefix, Dir), IncludeDirs));
         ".erl" ->
             import(Prefix, Rest, [File | Files], add_elem(remove_prefix(Prefix, Dir), SourceDirs), IncludeDirs);
+        ".yrl" ->
+            import(Prefix, Rest, [File | Files], add_elem(remove_prefix(Prefix, Dir), SourceDirs), IncludeDirs);
         ".beam" ->
             import(Prefix, Rest, Files, SourceDirs, IncludeDirs);
         _ ->
