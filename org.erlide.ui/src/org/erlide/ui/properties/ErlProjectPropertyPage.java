@@ -228,7 +228,8 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 
 	@Override
 	public IAdaptable getElement() {
-		final IProject prj = (IProject) super.getElement();
+		final IProject prj = (IProject) super.getElement().getAdapter(
+				IProject.class);
 		return prj;
 	}
 

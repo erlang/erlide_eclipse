@@ -58,8 +58,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		final Object prj = getElement();
-		prefs = new ErlangProjectProperties((IProject) prj);
+		final IProject prj = (IProject) getElement().getAdapter(IProject.class);
+		prefs = new ErlangProjectProperties(prj);
 		mockPrefs = new MockupPreferenceStore();
 		mockPrefs.addPropertyChangeListener(this);
 
