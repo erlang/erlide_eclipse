@@ -27,6 +27,19 @@
       </editor>
    </extension>
    <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="org.erlide.ui.ErlangEditor.BreakpointRulerActions"
+            targetID="org.erlide.ui.editors.erl.ErlangEditor">
+         <action
+               actionID="RulerDoubleClick"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
+               label="%AddBreakpoint.label">
+         </action>
+      </editorContribution>
+   </extension>
+   <extension
          point="org.eclipse.ui.newWizards">
       <category
             name="Erlang"
