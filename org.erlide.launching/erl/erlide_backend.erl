@@ -46,9 +46,17 @@ init(JavaNode) ->
 watch_eclipse(JavaNode) ->
     spawn(fun() ->
                   monitor_node(JavaNode, true),
+                  file:delete("safe_erlide.log"),
                   receive
                       {nodedown, JavaNode} ->
-                          init:stop()
+                          Fmt = "This file can safely be removed! ~n~n"
+                                    ++ "~p: eclipse node ~p went down",
+                          file:write_file("safe_erlide.log", 
+                                          io_lib:format(Fmt, 
+                                                        [calendar:local_time(), 
+                                                         JavaNode])),
+                          init:stop(),
+                          ok
                   end
           end).
 

@@ -55,8 +55,8 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	 * @param target
 	 *            debug target
 	 */
-	public void install(final ErlangDebugTarget target) {
-		this.target = target;
+	public void install(final ErlangDebugTarget atarget) {
+		this.target = atarget;
 		createRequest(IErlDebugConstants.REQUEST_INSTALL);
 	}
 
@@ -117,8 +117,8 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 		return -1;
 	}
 
-	public void remove(final ErlangDebugTarget target) {
-		this.target = target;
+	public void remove(final ErlangDebugTarget atarget) {
+		this.target = atarget;
 		createRequest(IErlDebugConstants.REQUEST_REMOVE);
 	}
 

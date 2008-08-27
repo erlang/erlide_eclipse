@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
-import org.eclipse.debug.core.model.IProcess;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
@@ -25,13 +27,13 @@ import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
-import org.erlide.runtime.backend.ICodeManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -64,7 +66,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			.getProperty("org.erlide.checkrpc"));
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
-	private final ICodeManager fCodeManager;
+	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
 	class ThreadLocalMbox extends ThreadLocal<Object> {
@@ -97,12 +99,15 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	protected IShellManager fShellManager;
 	private String fCurrentVersion;
 	private final RuntimeInfo fInfo;
-
 	private boolean fDebug;
+	private ErlRpcDaemon rpcDaemon;
 
-	public AbstractBackend(final RuntimeInfo info) {
-		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>(
-				10);
+	public AbstractBackend(final RuntimeInfo info) throws BackendException {
+		if (info == null) {
+			throw new BackendException(
+					"Can't create backend without runtime information");
+		}
+		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>();
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
 		fInfo = info;
@@ -115,26 +120,28 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	}
 
 	protected void doConnect(final String label) {
-		ErlLogger.debug("connect to:: " + label + " " + Thread.currentThread());
+		ErlLogger.debug("connect to:: '" + label + "' "
+				+ Thread.currentThread());
 		// Thread.dumpStack();
 		try {
 			wait_for_epmd();
 
-			fNode = new OtpNode(BackendManager
-					.buildNodeName(BackendManager.JAVA_NODE_LABEL), getInfo()
-					.getCookie());
+			String cookie = getInfo().getCookie();
+			fNode = new OtpNode(BackendManager.getDefault().getJavaNodeName(),
+					cookie);
 			fNode.registerStatusHandler(this);
 			fPeer = BackendManager.buildNodeName(label);
-			ErlLogger.debug("java node is " + fNode.node() + " erlang peer is "
-					+ fPeer);
+			ErlLogger.debug("java node is " + fNode.node()
+					+ "; erlang peer is " + fPeer);
 
 			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 50;
 			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, 20);
+				fAvailable = fNode.ping(fPeer, 200);
 				tries--;
 			}
+			ErlLogger.debug("connected!");
 
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -156,7 +163,14 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		if (fShellManager instanceof IDisposable) {
 			((IDisposable) fShellManager).dispose();
 		}
-		ErlRpcDaemon.getInstance().stop();
+		getRpcDaemon().stop();
+	}
+
+	private ErlRpcDaemon getRpcDaemon() {
+		if (rpcDaemon == null) {
+			rpcDaemon = new ErlRpcDaemon(this);
+		}
+		return rpcDaemon;
 	}
 
 	/**
@@ -340,7 +354,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		}
 	}
 
-	public ICodeManager getCodeManager() {
+	public CodeManager getCodeManager() {
 		return fCodeManager;
 	}
 
@@ -502,12 +516,12 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public abstract void sendToDefaultShell(String msg) throws IOException;
 
-	// public abstract void sendToShell(String str);
-
 	public abstract void addStdListener(IStreamListener dsp);
 
 	public void initErlang() {
-		ErlRpcDaemon.getInstance().start(this);
+		ErlideBackend.init(this, BackendManager
+				.buildNodeName(getJavaNodeName()));
+		getRpcDaemon().start();
 	}
 
 	public List<IBackendEventListener> getEventListeners(final String event) {
@@ -530,9 +544,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		return fInfo.getNodeName();
 	}
 
-	public abstract void initializeRuntime();
-
-	public abstract void setRuntime(final IProcess process);
+	public abstract void initializeRuntime(ILaunch launch);
 
 	public void setRemoteRex(final OtpErlangPid watchdog) {
 		try {
@@ -553,8 +565,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	@Override
 	public void remoteStatus(final String node, final boolean up,
 			final Object info) {
-		final String dir = up ? "up" : "down";
-		ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
+		// final String dir = up ? "up" : "down";
+		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
 		if (node.equals(fPeer)) {
 			setAvailable(up);
 		}
@@ -591,5 +603,32 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public boolean isDebug() {
 		return fDebug;
+	}
+
+	public String getJavaNodeName() {
+		return fNode.node();
+	}
+
+	public void removePath(final boolean usePathZ, final String path) {
+		fCodeManager.removePath(usePathZ, path);
+	}
+
+	public void addPath(final boolean usePathZ, final String path) {
+		fCodeManager.addPath(usePathZ, path);
+	}
+
+	public void registerProjects(String[] projectNames) {
+		for (String s : projectNames) {
+			IProject project = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject(s);
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					project);
+			final String outDir = project.getLocation().append(
+					prefs.getOutputDir()).toOSString();
+			if (outDir.length() > 0) {
+				addPath(prefs.getUsePathZ(), outDir);
+			}
+		}
+
 	}
 }

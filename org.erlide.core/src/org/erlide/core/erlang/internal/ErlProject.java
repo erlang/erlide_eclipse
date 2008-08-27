@@ -42,7 +42,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ISuffixConstants;
 import org.erlide.core.erlang.util.Util;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 
 /**
@@ -132,11 +131,11 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
 		}
-		ErlLogger.debug("--- " + getProject().getName() + "? " + fChildren);
-		if (fChildren != null && !fChildren.isEmpty()) {
-			ErlLogger.debug("--- !");
-			return true;
-		}
+		// ErlLogger.debug("--- " + getProject().getName() + "? " + fChildren);
+		// if (fChildren != null && !fChildren.isEmpty()) {
+		// ErlLogger.debug("--- !");
+		// return true;
+		// }
 
 		// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		// final IWorkspaceRoot wRoot = workspace.getRoot();
@@ -160,7 +159,7 @@ public class ErlProject extends Openable implements IErlProject,
 		}
 		setChildren(modules);
 		if (fChildren != null) {
-			ErlLogger.debug("---YY " + fChildren.size());
+			// ErlLogger.debug("---YY " + fChildren.size());
 		}
 
 		return true;

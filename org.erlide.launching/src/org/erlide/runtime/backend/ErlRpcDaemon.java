@@ -32,24 +32,11 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 
 	boolean fStopJob = false;
 
-	private static ErlRpcDaemon instance = new ErlRpcDaemon();
-
-	public static ErlRpcDaemon getInstance() {
-		return instance;
-	}
-
-	private ErlRpcDaemon() {
-	}
-
-	public void start(IBackend b) {
-		if (fBackend != null) {
-			ErlLogger.error(
-					"Trying to start ErlRpcDaemon twice! Got '%s', had '%s'.",
-					b.getInfo().getName(), fBackend.getInfo().getName());
-			return;
-		}
+	public ErlRpcDaemon(IBackend b) {
 		fBackend = b;
+	}
 
+	public void start() {
 		BackendManager.getDefault().addBackendListener(this);
 
 		final Job handlerJob = new Job("Erlang RPC daemon") {

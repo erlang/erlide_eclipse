@@ -30,9 +30,7 @@ import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendUtil;
-import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.ICodeManager;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -40,7 +38,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import erlang.ErlangCode;
 import erlang.ErlideBackend;
 
-public class CodeManager implements ICodeManager, IRegistryChangeListener {
+public class CodeManager implements IRegistryChangeListener {
 
 	private final ExecutionBackend fBackend;
 
@@ -228,13 +226,10 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	@SuppressWarnings("unchecked")
 	private void loadPluginCode(final ICodeBundle p) {
-		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()
-				&& !fBackend.isDebug()) {
-			return;
-		}
 
 		final Bundle b = p.getBundle();
-		ErlLogger.debug("loading plugin " + b.getSymbolicName());
+		ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
+				+ fBackend.getInfo().getName());
 
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
@@ -247,9 +242,6 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
-
-				ErlLogger.debug("    " + dir_path);
-
 				final String ver = fBackend.getCurrentVersion();
 				Enumeration e = b.getEntryPaths(dir_path + "/" + ver);
 				if (e == null || !e.hasMoreElements()) {
@@ -288,14 +280,14 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 			final IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String decl = stub.getAttribute("onlyDeclared");
-				ErlLogger.debug("  STUB: %s %s", stub.getAttribute("class"),
-						decl);
+				// ErlLogger.debug("  STUB: %s %s", stub.getAttribute("class"),
+				// decl);
 				BackendUtil.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
-						(BuildBackend) fBackend);
+						fBackend.asBuild());
 			}
 		}
-		ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
+		// ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
 	}
 
 	/**
@@ -319,10 +311,6 @@ public class CodeManager implements ICodeManager, IRegistryChangeListener {
 
 	@SuppressWarnings("unchecked")
 	private void unloadPluginCode(final ICodeBundle p) {
-		if (fBackend.getInfo() != null && !fBackend.getInfo().isErlide()) {
-			return;
-		}
-
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
 

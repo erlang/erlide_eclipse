@@ -192,12 +192,12 @@ public class ErlideBackend {
 		OtpErlangObject r = null;
 		try {
 			r = backend.rpcx("code", "is_sticky", "a", moduleName);
-			if (!((OtpErlangAtom) r).booleanValue()
-					|| !BackendManager.isDeveloper()) {
+			if (true || (!((OtpErlangAtom) r).booleanValue() || !BackendManager
+					.isDeveloper())) {
 				r = backend.rpcx("code", "load_binary", "asb", moduleName,
 						moduleName + ".erl", bin);
 				if (!BackendManager.isDeveloper()) {
-					backend.rpc("code", "stick_mod", "a", moduleName);
+					// backend.rpc("code", "stick_mod", "a", moduleName);
 				}
 			} else {
 				r = null;

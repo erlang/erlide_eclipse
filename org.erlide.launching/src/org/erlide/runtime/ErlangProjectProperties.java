@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.osgi.service.prefs.BackingStoreException;
@@ -44,6 +44,8 @@ public class ErlangProjectProperties {
 	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
 
 	private String fRuntimeName;
+	private String fNodeName;
+	private String fCookie;
 
 	/**
 	 * Name of file containing project classpath
@@ -51,7 +53,7 @@ public class ErlangProjectProperties {
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		fRuntimeName = IPrefConstants.DEFAULT_BACKEND_NAME;
+		fRuntimeName = IPrefConstants.DEFAULT_RUNTIME_NAME;
 	}
 
 	public ErlangProjectProperties(IProject prj) {
@@ -84,21 +86,23 @@ public class ErlangProjectProperties {
 				e.printStackTrace();
 			}
 
-			fSourceDirs = prefs.getProperty(IPrefConstants.PROJECT_SOURCE_DIRS,
+			fSourceDirs = prefs.getProperty(IPrefConstants.SOURCE_DIRS,
 					IPrefConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = prefs.getProperty(
-					IPrefConstants.PROJECT_INCLUDE_DIRS,
+			fIncludeDirs = prefs.getProperty(IPrefConstants.INCLUDE_DIRS,
 					IPrefConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = prefs.getProperty(IPrefConstants.PROJECT_OUTPUT_DIR,
+			fOutputDir = prefs.getProperty(IPrefConstants.OUTPUT_DIR,
 					IPrefConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = prefs.getProperty(IPrefConstants.PROJECT_USE_PATHZ,
+			fUsePathZ = prefs.getProperty(IPrefConstants.USE_PATHZ,
 					IPrefConstants.DEFAULT_USE_PATHZ);
 			fExternalIncludes = prefs.getProperty(
-					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
+					IPrefConstants.EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fRuntimeName = prefs.getProperty(
-					IPrefConstants.PROJECT_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BACKEND_NAME);
+			fRuntimeName = prefs.getProperty(IPrefConstants.RUNTIME_NAME,
+					IPrefConstants.DEFAULT_RUNTIME_NAME);
+			fNodeName = prefs.getProperty(IPrefConstants.NODE_NAME,
+					IPrefConstants.DEFAULT_NODENAME);
+			fCookie = prefs.getProperty(IPrefConstants.COOKIE,
+					IPrefConstants.DEFAULT_COOKIE);
 			fExternalModules = prefs.getProperty(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -111,19 +115,22 @@ public class ErlangProjectProperties {
 			IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
 
 			// new settings
-			fSourceDirs = node.get(IPrefConstants.PROJECT_SOURCE_DIRS,
+			fSourceDirs = node.get(IPrefConstants.SOURCE_DIRS,
 					IPrefConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = node.get(IPrefConstants.PROJECT_INCLUDE_DIRS,
+			fIncludeDirs = node.get(IPrefConstants.INCLUDE_DIRS,
 					IPrefConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = node.get(IPrefConstants.PROJECT_OUTPUT_DIR,
+			fOutputDir = node.get(IPrefConstants.OUTPUT_DIR,
 					IPrefConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = node.get(IPrefConstants.PROJECT_USE_PATHZ,
+			fUsePathZ = node.get(IPrefConstants.USE_PATHZ,
 					IPrefConstants.DEFAULT_USE_PATHZ);
-			fExternalIncludes = node.get(
-					IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
+			fExternalIncludes = node.get(IPrefConstants.EXTERNAL_INCLUDES,
 					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fRuntimeName = node.get(IPrefConstants.PROJECT_BACKEND_NAME,
-					IPrefConstants.DEFAULT_BACKEND_NAME);
+			fRuntimeName = node.get(IPrefConstants.RUNTIME_NAME,
+					IPrefConstants.DEFAULT_RUNTIME_NAME);
+			fNodeName = node.get(IPrefConstants.NODE_NAME,
+					IPrefConstants.DEFAULT_NODENAME);
+			fCookie = node.get(IPrefConstants.COOKIE,
+					IPrefConstants.DEFAULT_COOKIE);
 			fExternalModules = node.get(
 					IPrefConstants.PROJECT_EXTERNAL_MODULES,
 					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
@@ -142,12 +149,14 @@ public class ErlangProjectProperties {
 		ProjectScope s = new ProjectScope(project);
 		IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
 
-		node.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
-		node.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
-		node.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
-		node.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
-		node.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES, fExternalIncludes);
-		node.put(IPrefConstants.PROJECT_BACKEND_NAME, fRuntimeName);
+		node.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
+		node.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);
+		node.put(IPrefConstants.OUTPUT_DIR, fOutputDir);
+		node.put(IPrefConstants.USE_PATHZ, fUsePathZ);
+		node.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
+		node.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
+		node.put(IPrefConstants.NODE_NAME, fNodeName);
+		node.put(IPrefConstants.COOKIE, fCookie);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
@@ -164,13 +173,14 @@ public class ErlangProjectProperties {
 			final File codepath = cp.getRawLocation().toFile();
 			final Properties prefs = new Properties();
 
-			prefs.put(IPrefConstants.PROJECT_SOURCE_DIRS, fSourceDirs);
-			prefs.put(IPrefConstants.PROJECT_INCLUDE_DIRS, fIncludeDirs);
-			prefs.put(IPrefConstants.PROJECT_OUTPUT_DIR, fOutputDir);
-			prefs.put(IPrefConstants.PROJECT_USE_PATHZ, fUsePathZ);
-			prefs.put(IPrefConstants.PROJECT_EXTERNAL_INCLUDES,
-					fExternalIncludes);
-			prefs.put(IPrefConstants.PROJECT_BACKEND_NAME, fRuntimeName);
+			prefs.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
+			prefs.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);
+			prefs.put(IPrefConstants.OUTPUT_DIR, fOutputDir);
+			prefs.put(IPrefConstants.USE_PATHZ, fUsePathZ);
+			prefs.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
+			prefs.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
+			prefs.put(IPrefConstants.NODE_NAME, fNodeName);
+			prefs.put(IPrefConstants.COOKIE, fCookie);
 			prefs
 					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
 							fExternalModules);
@@ -212,10 +222,10 @@ public class ErlangProjectProperties {
 			BuildBackend b = BackendManager.getDefault().getBuild(project);
 
 			String p = project.getLocation().append(fOutputDir).toString();
-			b.getCodeManager().removePath(getUsePathZ(), p);
+			b.removePath(getUsePathZ(), p);
 
 			p = project.getLocation().append(outputDir).toString();
-			b.getCodeManager().addPath(getUsePathZ(), p);
+			b.addPath(getUsePathZ(), p);
 		}
 		fOutputDir = outputDir;
 	}
@@ -227,13 +237,12 @@ public class ErlangProjectProperties {
 	public void setUsePathZ(boolean pz) {
 		boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
-			ExecutionBackend b = BackendManager.getDefault().getExecution(
-					project);
+			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
 
-			String p = project.getLocation().append(fOutputDir).toString();
-			b.getCodeManager().removePath(z, p);
-			b.getCodeManager().addPath(pz, p);
-			b.getCodeManager();
+				String p = project.getLocation().append(fOutputDir).toString();
+				b.removePath(z, p);
+				b.addPath(pz, p);
+			}
 		}
 		fUsePathZ = Boolean.toString(pz);
 	}
@@ -333,12 +342,34 @@ public class ErlangProjectProperties {
 		return fExternalModules;
 	}
 
-	public String getBackendName() {
+	public String getRuntimeName() {
 		return fRuntimeName;
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
-		return RuntimeInfoManager.getDefault().getRuntime(fRuntimeName);
+		RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager.getDefault()
+				.getRuntime(fRuntimeName), false);
+		if (rt != null) {
+			rt.setNodeName(fNodeName);
+			rt.setCookie(fCookie);
+		}
+		return rt;
+	}
+
+	public void setCookie(String text) {
+		fCookie = text.trim();
+	}
+
+	public String getCookie() {
+		return fCookie;
+	}
+
+	public String getNodeName() {
+		return fNodeName;
+	}
+
+	public void setNodeName(String text) {
+		fNodeName = text.trim();
 	}
 
 }

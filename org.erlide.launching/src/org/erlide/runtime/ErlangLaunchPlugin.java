@@ -25,11 +25,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.osgi.framework.BundleContext;
-
-import erlang.ErlideBackend;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -117,9 +114,9 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 
-		IdeBackend b = BackendManager.getDefault().getIdeBackend();
-		ErlideBackend.init(b, BackendManager
-				.buildNodeName(BackendManager.JAVA_NODE_LABEL));
+		// IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		// ErlideBackend
+		// .init(b, BackendManager.buildNodeName(b.getJavaNodeName()));
 		ErlLogger.debug("Started LAUNCHING");
 	}
 

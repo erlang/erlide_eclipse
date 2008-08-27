@@ -41,6 +41,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.IBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
@@ -311,8 +312,9 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			BackendManager.getDefault().getExecution(project).getCodeManager()
-					.addPath(prefs.getUsePathZ(), out);
+			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
+				b.addPath(prefs.getUsePathZ(), out);
+			}
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

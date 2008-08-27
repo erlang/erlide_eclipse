@@ -13,11 +13,12 @@ package org.erlide.runtime.backend;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.ILaunch;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.internal.CodeManager;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -111,47 +112,18 @@ public interface IBackend {
 	OtpErlangObject rpcx(String m, String f, String signature, Object... a)
 			throws RpcException, BackendException;
 
-	/**
-	 * @see #rpc(String, String, int, String, Object...)
-	 * @throws BackendException
-	 * @throws RpcException
-	 */
 	OtpErlangObject rpcx(String m, String f, int timeout, String signature,
 			Object... a) throws RpcException, BackendException;
 
-	/**
-	 * 
-	 * @param pid
-	 * @param msg
-	 * @param signature
-	 *            TODO
-	 * @throws ConversionException
-	 */
 	void send(OtpErlangPid pid, Object msg);
 
 	void send(String name, Object msg);
 
-	/**
-	 * Method addEventListener
-	 * 
-	 * @param event
-	 *            String
-	 * @param l
-	 *            IBackendEventListener
-	 */
 	void addEventListener(String event, IBackendEventListener l);
 
-	/**
-	 * Method removeEventListener
-	 * 
-	 * @param event
-	 *            String
-	 * @param l
-	 *            IBackendEventListener
-	 */
 	void removeEventListener(String event, IBackendEventListener l);
 
-	ICodeManager getCodeManager();
+	CodeManager getCodeManager();
 
 	OtpErlangPid getEventPid();
 
@@ -175,11 +147,9 @@ public interface IBackend {
 
 	RuntimeInfo getInfo();
 
-	void setRuntime(final IProcess process);
-
 	void setRemoteRex(OtpErlangPid rex);
 
-	abstract void initializeRuntime();
+	void initializeRuntime(ILaunch launch);
 
 	void connectAndRegister(final List<ICodeBundle> plugins);
 
@@ -190,4 +160,14 @@ public interface IBackend {
 	ExecutionBackend asExecution();
 
 	boolean isDebug();
+
+	String getJavaNodeName();
+
+	void stop();
+
+	void addPath(final boolean usePathZ, final String path);
+
+	void removePath(final boolean usePathZ, final String path);
+
+	void registerProjects(String[] projectNames);
 }

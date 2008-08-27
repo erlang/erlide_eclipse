@@ -144,7 +144,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
 		backendName.setLayoutData(gd_backendName);
-		backendName.setText(prefs.getBackendName());
+		backendName.setText(prefs.getRuntimeName());
 		new Label(composite, SWT.NONE);
 
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
@@ -273,7 +273,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		gd.widthHint = 384;
 		externalModules.setLayoutData(gd);
 		externalModules.addListener(SWT.Modify, nameModifyListener);
-		externalModulesBrowse = new Button(composite, SWT.BORDER);
+		externalModulesBrowse = new Button(composite, SWT.NONE);
 		externalModulesBrowse.setText("Browse...");
 		// externalModulesBrowse.setLayoutData(new GridData());
 		// externalModulesBrowse.setFont(font);

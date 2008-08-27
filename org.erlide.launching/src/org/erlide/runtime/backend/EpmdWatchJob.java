@@ -73,7 +73,7 @@ public class EpmdWatchJob extends Job {
 
 	}
 
-	private void clean(List<String> list) {
+	public static void clean(List<String> list) {
 		for (int i = 0; i < list.size(); i++) {
 			String label = list.get(i);
 			// label is "name X at port N"

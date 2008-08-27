@@ -151,7 +151,8 @@ public class RuntimeInfoManager {
 	}
 
 	public RuntimeInfo getRuntime(String name) {
-		return fRuntimes.get(name);
+		final RuntimeInfo rt = fRuntimes.get(name);
+		return rt;
 	}
 
 	public void removeRuntime(String name) {
@@ -167,9 +168,14 @@ public class RuntimeInfoManager {
 	}
 
 	public void setErlideRuntime(RuntimeInfo runtime) {
-		this.erlideRuntime = runtime;
 		if (runtime != null) {
-			runtime.setErlide(true);
+			runtime.setNodeName("erlide");
+		}
+		RuntimeInfo old = this.erlideRuntime;
+		if (old == null || !old.equals(runtime)) {
+			this.erlideRuntime = runtime;
+			// this creates infinite recursion!
+			// BackendManager.getDefault().getIdeBackend().stop();
 		}
 	}
 

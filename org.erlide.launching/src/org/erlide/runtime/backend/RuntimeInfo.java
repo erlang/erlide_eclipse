@@ -19,18 +19,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfo implements Cloneable {
 	private static final String CODE_PATH = "codePath";
 	private static final String HOME_DIR = "homeDir";
-	private static final String NODENAME = "nodeName";
-	private static final String COOKIE = "cookie";
 	private static final String ARGS = "args";
 	private static final String WORKING_DIR = "workingDir";
 	private static final String MANAGED = "managed";
-	private static final String ERLIDE = "erlide";
 
 	public static final String DEFAULT_MARKER = "*DEFAULT*";
 
@@ -40,7 +39,6 @@ public class RuntimeInfo implements Cloneable {
 	private String nodeName = "";
 	private String workingDir = "";
 	private boolean managed; // will it be started/stopped by us?
-	private boolean erlide; // will erlide code be installed?
 
 	private String fVersion;
 	private String name;
@@ -50,18 +48,28 @@ public class RuntimeInfo implements Cloneable {
 		super();
 		codePath = new ArrayList<String>();
 		codePath.add(DEFAULT_MARKER);
+
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final String location = root.getLocation().toPortableString();
+		workingDir = location;
 	}
 
-	public RuntimeInfo(RuntimeInfo o) {
-		super();
-		name = o.name + "_copy";
-		args = o.args;
-		codePath = new ArrayList<String>(o.codePath);
-		cookie = o.cookie;
-		managed = o.managed;
-		homeDir = o.homeDir;
-		workingDir = o.workingDir;
-		nodeName = o.nodeName + "_copy";
+	public static RuntimeInfo copy(RuntimeInfo o, boolean mkCopy) {
+		if (o == null) {
+			return null;
+		}
+		RuntimeInfo rt = new RuntimeInfo();
+		rt.name = o.name;
+		if (mkCopy) {
+			rt.name += "_copy";
+		}
+		rt.args = o.args;
+		rt.codePath = new ArrayList<String>(o.codePath);
+		rt.managed = o.managed;
+		rt.homeDir = o.homeDir;
+		rt.workingDir = o.workingDir;
+		rt.nodeName = o.nodeName;
+		return rt;
 	}
 
 	public void store(Preferences root) {
@@ -69,12 +77,9 @@ public class RuntimeInfo implements Cloneable {
 		String code = PreferencesUtils.packList(getCodePath());
 		node.put(CODE_PATH, code);
 		node.put(HOME_DIR, getOtpHome());
-		node.put(NODENAME, getNodeName());
-		node.put(COOKIE, cookie);
 		node.put(ARGS, args);
 		node.put(WORKING_DIR, workingDir);
-		node.put(MANAGED, Boolean.toString(managed));
-		node.put(ERLIDE, Boolean.toString(erlide));
+		node.putBoolean(MANAGED, managed);
 	}
 
 	public void load(Preferences node) {
@@ -82,12 +87,12 @@ public class RuntimeInfo implements Cloneable {
 		String path = node.get(CODE_PATH, "");
 		setCodePath(PreferencesUtils.unpackList(path));
 		setOtpHome(node.get(HOME_DIR, ""));
-		nodeName = node.get(NODENAME, "");
-		cookie = node.get(COOKIE, "");
 		args = node.get(ARGS, "");
-		workingDir = node.get(WORKING_DIR, "");
-		managed = node.getBoolean(MANAGED, false);
-		erlide = node.getBoolean(ERLIDE, false);
+		String wd = node.get(WORKING_DIR, workingDir);
+		if (wd.length() != 0) {
+			workingDir = wd;
+		}
+		managed = node.getBoolean(MANAGED, true);
 	}
 
 	public String getArgs() {
@@ -99,7 +104,7 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public String getCookie() {
-		if (cookie == null || cookie.length() == 0) {
+		if (cookie == null || cookie.equals("")) {
 			cookie = Cookie.retrieveCookie();
 		}
 		return this.cookie;
@@ -114,7 +119,11 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public void setNodeName(String nodeName) {
-		this.nodeName = nodeName;
+		if (validateNodeName(nodeName)) {
+			this.nodeName = nodeName;
+		} else {
+			this.nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
+		}
 	}
 
 	public boolean isManaged() {
@@ -123,14 +132,6 @@ public class RuntimeInfo implements Cloneable {
 
 	public void setManaged(boolean managed) {
 		this.managed = managed;
-	}
-
-	public boolean isErlide() {
-		return this.erlide;
-	}
-
-	public void setErlide(boolean erlide) {
-		this.erlide = erlide;
 	}
 
 	public List<String> getPathA() {
@@ -152,7 +153,8 @@ public class RuntimeInfo implements Cloneable {
 
 	@Override
 	public String toString() {
-		return String.format("Runtime<%s (%s)>", getName(), getOtpHome());
+		return String.format("Runtime<%s/%s (%s) %s [%s]>", getName(),
+				getNodeName(), getOtpHome(), getVersion(), getArgs());
 	}
 
 	public String getCmdLine() {
@@ -227,6 +229,10 @@ public class RuntimeInfo implements Cloneable {
 			return list.subList(i + 1, codePath.size());
 		}
 		return Collections.emptyList();
+	}
+
+	public static boolean validateNodeName(String name) {
+		return name != null && name.matches("[a-zA-Z0-9_-]+");
 	}
 
 	public static boolean validateLocation(String path) {

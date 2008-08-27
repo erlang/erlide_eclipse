@@ -916,7 +916,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.runtime.backend.ErlangNodeLaunchConfigurationDelegate"
+            delegate="org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate"
             id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
             name="Erlang application"

@@ -153,8 +153,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 * @param element
 	 *            the Erlang element for which the marker needs to be configured
 	 * @throws CoreException
-	 *             if the <code>IMarker.setAttribute</code> on the marker
-	 *             fails
+	 *             if the <code>IMarker.setAttribute</code> on the marker fails
 	 */
 	public void configureErlangElementMarker(IMarker marker, IErlElement element)
 			throws CoreException {
@@ -238,10 +237,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                           COMPILER / Reporting Invalid Edoc Tags
 	 *                              When enabled, the compiler will signal unbound or unexpected reference tags in Edoc.
 	 *                              A 'throws' tag referencing an undeclared exception would be considered as unexpected.
-	 * <br>
+	 * &lt;br&gt;
 	 *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the Edoc;
 	 *                              also see the setting &quot;org.erlide.core.erlang.compiler.problem.invalidEdocTagsVisibility&quot;.
-	 * <br>
+	 * &lt;br&gt;
 	 *                              The severity of the problem is controlled with option &quot;org.erlide.core.erlang.compiler.problem.invalidEdoc&quot;.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.invalidEdocTags&quot;
 	 *                               - possible values:   { &quot;disabled&quot;, &quot;enabled&quot; }
@@ -250,10 +249,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                           COMPILER / Reporting Missing Edoc Tags
 	 *                              This is the generic control for the severity of Edoc missing tag problems.
 	 *                              When enabled, the compiler will issue an error or a warning when tags are missing in Edoc comments.
-	 * <br>
+	 * &lt;br&gt;
 	 *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the Edoc;
 	 *                              also see the setting &quot;org.erlide.core.erlang.compiler.problem.missingEdocTagsVisibility&quot;.
-	 * <br>
+	 * &lt;br&gt;
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocTags&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
@@ -261,10 +260,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                           COMPILER / Reporting Missing Edoc Comments
 	 *                              This is the generic control for the severity of missing Edoc comment problems.
 	 *                              When enabled, the compiler will issue an error or a warning when Edoc comments are missing.
-	 * <br>
+	 * &lt;br&gt;
 	 *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected Edoc;
 	 *                              also see the setting &quot;org.erlide.core.erlang.compiler.problem.missingEdocCommentsVisibility&quot;.
-	 * <br>
+	 * &lt;br&gt;
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocComments&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
@@ -414,8 +413,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 	/**
 	 * Helper method for returning one option value only. Equivalent to
-	 * <code>(String)ErlangCore.getOptions().get(optionName)</code> Note that
-	 * it may answer <code>null</code> if this option does not exist.
+	 * <code>(String)ErlangCore.getOptions().get(optionName)</code> Note that it
+	 * may answer <code>null</code> if this option does not exist.
 	 * <p>
 	 * For a complete description of the configurable options, see
 	 * <code>getDefaultOptions</code>.
@@ -510,8 +509,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 * @param action
 	 *            the action to perform
 	 * @param monitor
-	 *            a progress monitor, or <code>null</code> if progress
-	 *            reporting and cancellation are not desired
+	 *            a progress monitor, or <code>null</code> if progress reporting
+	 *            and cancellation are not desired
 	 * @throws CoreException
 	 *             if the operation failed.
 	 */
@@ -549,11 +548,11 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *            the action to perform
 	 * @param rule
 	 *            the scheduling rule to use when running this operation, or
-	 *            <code>null</code> if there are no scheduling restrictions
-	 *            for this operation.
+	 *            <code>null</code> if there are no scheduling restrictions for
+	 *            this operation.
 	 * @param monitor
-	 *            a progress monitor, or <code>null</code> if progress
-	 *            reporting and cancellation are not desired
+	 *            a progress monitor, or <code>null</code> if progress reporting
+	 *            and cancellation are not desired
 	 * @throws CoreException
 	 *             if the operation failed.
 	 */
@@ -623,7 +622,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			try {
 				// savePluginPreferences();
 				// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				// workspace.removeResourceChangeListener(ErlModelManager.getDefault().deltaState);
+				// workspace.removeResourceChangeListener(ErlModelManager.
+				// getDefault().deltaState);
 				// workspace.removeSaveParticipant(this);
 
 				ErlangCore.getModelManager().shutdown();
@@ -737,9 +737,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 							element);
 					final String path = element.getLocation().append(
 							prefs.getOutputDir()).toString();
-					BackendManager.getDefault().getIdeBackend()
-							.getCodeManager()
-							.addPath(prefs.getUsePathZ(), path);
+					BackendManager.getDefault().getIdeBackend().addPath(
+							prefs.getUsePathZ(), path);
 				}
 			} catch (final CoreException e) {
 				e.printStackTrace();

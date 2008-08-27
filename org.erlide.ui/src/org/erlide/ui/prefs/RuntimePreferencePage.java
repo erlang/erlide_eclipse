@@ -102,7 +102,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	private Button fDuplicateButton;
 
 	// column weights
-	protected float fWeight1 = 1 / 3F;
+	protected float fWeight1 = 1 / 4F;
 	protected float fWeight2 = 4 / 9F;
 
 	// ignore column re-sizing when the table is being resized
@@ -120,61 +120,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	 * Previous selection
 	 */
 	private ISelection fPrevSelection = new StructuredSelection();
-	private ComboViewer erlideRuntimeViewer;
-
-	/**
-	 * Content provider to show a list of Runtimes
-	 */
-	class RuntimeContentProvider implements IStructuredContentProvider {
-
-		public Object[] getElements(Object input) {
-			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-
-		public void dispose() {
-		}
-
-	}
-
-	/**
-	 * Label provider for installed runtimes table.
-	 */
-	static class RuntimeLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-
-		/**
-		 * @see ITableLabelProvider#getColumnText(Object, int)
-		 */
-		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof RuntimeInfo) {
-				final RuntimeInfo vm = (RuntimeInfo) element;
-				switch (columnIndex) {
-				case 0:
-					return vm.getName();
-				case 1:
-					return vm.getOtpHome();
-				case 2:
-					return vm.getNodeName();
-				}
-			}
-			return element.toString();
-		}
-
-		/**
-		 * @see ITableLabelProvider#getColumnImage(Object, int)
-		 */
-		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
-		}
-
-		@Override
-		public String getText(Object element) {
-			return getColumnText(element, 0);
-		}
-	}
+	private ComboViewer erlideCombo;
 
 	public RuntimePreferencePage() {
 		super();
@@ -282,7 +228,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	/**
 	 * Sorts by VM location.
 	 */
-	protected void sortByInstallation() {
+	protected void sortByDirectory() {
 		fRuntimeList.setSorter(new ViewerSorter() {
 
 			@Override
@@ -309,8 +255,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 				.getSelection()).size();
 		fEditButton.setEnabled(selectionCount == 1);
 		fDuplicateButton.setEnabled(selectionCount == 1);
-		fRemoveButton.setEnabled(selectionCount > 0
-				&& selectionCount < fRuntimeList.getTable().getItemCount());
+		fRemoveButton.setEnabled(selectionCount > 0);
 	}
 
 	protected Button createPushButton(Composite parent, String label) {
@@ -426,13 +371,33 @@ public class RuntimePreferencePage extends PreferencePage implements
 			return;
 		}
 		fRuntimeList.refresh();
-		erlideRuntimeViewer.refresh();
+		erlideCombo.refresh();
 	}
 
 	public void itemAdded(RuntimeInfo vm) {
 		runtimes.add(vm);
 		fRuntimeList.refresh();
-		erlideRuntimeViewer.refresh();
+		erlideCombo.refresh();
+		selectSingle();
+	}
+
+	private void selectSingle() {
+		if (runtimes.size() == 1) {
+			RuntimeInfo vm = runtimes.iterator().next();
+			fRuntimeList.setChecked(vm, true);
+			erlideCombo.setSelection(new StructuredSelection(vm));
+		}
+		if (runtimes.size() > 1) {
+			RuntimeInfo vm = runtimes.iterator().next();
+			if (fRuntimeList.getCheckedElements().length == 0) {
+				fRuntimeList.setChecked(vm, true);
+			}
+			StructuredSelection sel = (StructuredSelection) erlideCombo
+					.getSelection();
+			if (sel.isEmpty()) {
+				erlideCombo.setSelection(new StructuredSelection(vm));
+			}
+		}
 	}
 
 	/**
@@ -456,7 +421,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 			return;
 		}
 		fRuntimeList.refresh(vm);
-		erlideRuntimeViewer.refresh();
+		erlideCombo.refresh();
 	}
 
 	protected void duplicateRuntime() {
@@ -466,7 +431,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		if (vm == null) {
 			return;
 		}
-		RuntimeInfo vm1 = new RuntimeInfo(vm);
+		RuntimeInfo vm1 = RuntimeInfo.copy(vm, true);
 		final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
 				vm1, true);
 		dialog.setTitle(RuntimePreferenceMessages.edit_title);
@@ -474,7 +439,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 			return;
 		}
 		fRuntimeList.refresh();
-		erlideRuntimeViewer.refresh();
+		erlideCombo.refresh();
 	}
 
 	protected void removeSelectedRuntimes() {
@@ -501,7 +466,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 			runtimes.remove(element);
 		}
 		fRuntimeList.refresh();
-		erlideRuntimeViewer.refresh();
+		erlideCombo.refresh();
 		final IStructuredSelection curr = (IStructuredSelection) getSelection();
 		if (!curr.equals(prev)) {
 			final List<RuntimeInfo> installs = getRuntimes();
@@ -512,6 +477,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 				fireSelectionChanged();
 			}
 		}
+		selectSingle();
 	}
 
 	@Override
@@ -595,7 +561,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 			sortByName();
 			break;
 		case 2:
-			sortByInstallation();
+			sortByDirectory();
 			break;
 		}
 	}
@@ -659,32 +625,32 @@ public class RuntimePreferencePage extends PreferencePage implements
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		final Label erlideWillUseLabel = new Label(composite, SWT.NONE);
-		erlideWillUseLabel
+		final Label erlideLabel = new Label(composite, SWT.NONE);
+		erlideLabel
 				.setToolTipText("The erlide runtime is used for IDE purposes, not for running project code.");
-		erlideWillUseLabel
-				.setText("Erlide runtime (requires restart to be effective!)");
+		erlideLabel
+				.setText("Runtime used by Erlide itself (restart is required)");
 
-		erlideRuntimeViewer = new ComboViewer(composite, SWT.READ_ONLY);
-		erlideRuntimeViewer.setLabelProvider(new RuntimeLabelProvider());
-		erlideRuntimeViewer.setContentProvider(new RuntimeContentProvider());
-		erlideRuntimeViewer.setInput(runtimes);
-		combo = erlideRuntimeViewer.getCombo();
-		final GridData gd_combo = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd_combo.widthHint = 118;
+		erlideCombo = new ComboViewer(composite, SWT.READ_ONLY);
+		erlideCombo.setLabelProvider(new RuntimeLabelProvider());
+		erlideCombo.setContentProvider(new RuntimeContentProvider());
+		erlideCombo.setInput(runtimes);
+		combo = erlideCombo.getCombo();
+		final GridData gd_combo = new GridData(SWT.LEFT, SWT.FILL, true, false);
+		gd_combo.widthHint = 153;
 		combo.setLayoutData(gd_combo);
 		if (erlideRuntime != null) {
-			erlideRuntimeViewer.setSelection(new StructuredSelection(
-					erlideRuntime), true);
+			erlideCombo.setSelection(new StructuredSelection(erlideRuntime),
+					true);
 		}
-		erlideRuntimeViewer
+		erlideCombo
 				.addPostSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							final SelectionChangedEvent event) {
 						fireSelectionChanged();
 					}
 				});
-		erlideRuntimeViewer
+		erlideCombo
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						ISelection sel = event.getSelection();
@@ -741,19 +707,19 @@ public class RuntimePreferencePage extends PreferencePage implements
 
 		final TableColumn column2 = new TableColumn(table, SWT.NULL);
 		column2.setWidth(150);
-		column2.setText("Installation");
+		column2.setText("Directory");
 		column2.setResizable(true);
 		column2.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				sortByInstallation();
+				sortByDirectory();
 			}
 		});
 
 		final TableColumn column3 = new TableColumn(table, SWT.NULL);
 		column3.setWidth(80);
-		column3.setText("Node name");
+		column3.setText("Version");
 		column3.setResizable(false);
 
 		fRuntimeList = new CheckboxTableViewer(table);
@@ -878,7 +844,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
 	void checkValid() {
 		final RuntimeInfo def = getCheckedRuntime();
-		StructuredSelection sel = (StructuredSelection) erlideRuntimeViewer
+		StructuredSelection sel = (StructuredSelection) erlideCombo
 				.getSelection();
 
 		if (def == null && getRuntimes().size() > 0) {
@@ -892,4 +858,59 @@ public class RuntimePreferencePage extends PreferencePage implements
 			setErrorMessage(null);
 		}
 	}
+
+	/**
+	 * Content provider to show a list of Runtimes
+	 */
+	class RuntimeContentProvider implements IStructuredContentProvider {
+
+		public Object[] getElements(Object input) {
+			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
+		}
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		}
+
+		public void dispose() {
+		}
+
+	}
+
+	/**
+	 * Label provider for installed runtimes table.
+	 */
+	static class RuntimeLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
+
+		/**
+		 * @see ITableLabelProvider#getColumnText(Object, int)
+		 */
+		public String getColumnText(Object element, int columnIndex) {
+			if (element instanceof RuntimeInfo) {
+				final RuntimeInfo vm = (RuntimeInfo) element;
+				switch (columnIndex) {
+				case 0:
+					return vm.getName();
+				case 1:
+					return vm.getOtpHome();
+				case 2:
+					return vm.getVersion();
+				}
+			}
+			return element.toString();
+		}
+
+		/**
+		 * @see ITableLabelProvider#getColumnImage(Object, int)
+		 */
+		public Image getColumnImage(Object element, int columnIndex) {
+			return null;
+		}
+
+		@Override
+		public String getText(Object element) {
+			return getColumnText(element, 0);
+		}
+	}
+
 }

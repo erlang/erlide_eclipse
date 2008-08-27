@@ -68,8 +68,8 @@ extends StatusDialog implements IListAdapter<String> {
 
 	private StringDialogField fName;
 	private StringButtonDialogField fOtpHome;
-	private StringDialogField fNodeName;
-	private StringDialogField fCookie;
+	// private StringDialogField fNodeName;
+	// private StringDialogField fCookie;
 	private ListDialogField<String> fCodePath;
 	private StringDialogField fArgs;
 	private boolean returnNew;
@@ -107,6 +107,14 @@ extends StatusDialog implements IListAdapter<String> {
 				updateStatusLine();
 			}
 		});
+		// fNodeName.setDialogFieldListener(new IDialogFieldListener() {
+		//
+		// public void dialogFieldChanged(DialogField field) {
+		// setNodeNameStatus(validateNodeName());
+		// updateStatusLine();
+		// }
+		//
+		// });
 
 		fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
 
@@ -127,11 +135,11 @@ extends StatusDialog implements IListAdapter<String> {
 		fName = new StringDialogField();
 		fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
-		fNodeName = new StringDialogField();
-		fNodeName.setLabelText("node name");
+		// fNodeName = new StringDialogField();
+		// fNodeName.setLabelText("node name");
 
-		fCookie = new StringDialogField();
-		fCookie.setLabelText("cookie");
+		// fCookie = new StringDialogField();
+		// fCookie.setLabelText("cookie");
 
 		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
@@ -158,8 +166,8 @@ extends StatusDialog implements IListAdapter<String> {
 
 		fName.doFillIntoGrid(parent, 3);
 		fOtpHome.doFillIntoGrid(parent, 3);
-		fNodeName.doFillIntoGrid(parent, 3);
-		fCookie.doFillIntoGrid(parent, 3);
+		// fNodeName.doFillIntoGrid(parent, 3);
+		// fCookie.doFillIntoGrid(parent, 3);
 		fCodePath.doFillIntoGrid(parent, 3);
 		fArgs.doFillIntoGrid(parent, 3);
 
@@ -183,20 +191,22 @@ extends StatusDialog implements IListAdapter<String> {
 	private void initializeFields() {
 		if (fEditedRuntime == null) {
 			fName.setText(""); //$NON-NLS-1$
-			fNodeName.setText("");
-			fCookie.setText("");
+			// fNodeName.setText("");
+			// fCookie.setText("");
 			fOtpHome.setText(""); //$NON-NLS-1$
 			fCodePath.setElements(new ArrayList<String>(5));
 			fArgs.setText(""); //$NON-NLS-1$
 		} else {
 			fName.setText(fEditedRuntime.getName());
-			fNodeName.setText(fEditedRuntime.getNodeName());
-			fCookie.setText(fEditedRuntime.getCookie());
+			// fNodeName.setText(fEditedRuntime.getNodeName());
+			// final String cookie = fEditedRuntime.getCookie();
+			// fCookie.setText(cookie == null ? "" : cookie);
 			fOtpHome.setText(fEditedRuntime.getOtpHome());
 			fCodePath.setElements(fEditedRuntime.getCodePath());
 			fArgs.setText(fEditedRuntime.getArgs());
 		}
 		setNameStatus(validateName());
+		// setNodeNameStatus(validateNodeName());
 		setLocationStatus(validateLocation());
 		updateStatusLine();
 	}
@@ -215,13 +225,28 @@ extends StatusDialog implements IListAdapter<String> {
 				final IStatus s = ResourcesPlugin.getWorkspace().validateName(
 						name, IResource.FILE);
 				if (!s.isOK()) {
-					status.setError(MessageFormat.format("name is invalid",
+					status.setError(MessageFormat.format("Name is invalid: %s",
 							(Object[]) new String[] { s.getMessage() }));
 				}
 			}
 		}
 		return status;
 	}
+
+	// protected IStatus validateNodeName() {
+	// final StatusInfo status = new StatusInfo();
+	// final String name = fNodeName.getText();
+	// if (name == null || name.trim().length() == 0) {
+	//			status.setError("Enter the runtime's node name"); //$NON-NLS-1$
+	// } else {
+	// boolean ok = RuntimeInfo.validateNodeName(name);
+	// if (!ok) {
+	// status.setError("The node name is invalid, "
+	// + "it should match [a-zA-Z0-9_-]+");
+	// }
+	// }
+	// return status;
+	// }
 
 	protected IStatus validateLocation() {
 		final StatusInfo status = new StatusInfo();
@@ -274,8 +299,8 @@ extends StatusDialog implements IListAdapter<String> {
 	protected void storeValues(RuntimeInfo runtime) {
 		runtime.setOtpHome(fOtpHome.getText());
 		runtime.setName(fName.getText());
-		runtime.setNodeName(fNodeName.getText());
-		runtime.setCookie(fCookie.getText());
+		// runtime.setNodeName(fNodeName.getText());
+		// runtime.setCookie(fCookie.getText());
 		runtime.setCodePath(fCodePath.getElements());
 		final String argString = fArgs.getText().trim();
 		runtime.setArgs(argString);
@@ -285,8 +310,12 @@ extends StatusDialog implements IListAdapter<String> {
 		fStatuses[0] = status;
 	}
 
-	protected void setLocationStatus(IStatus status) {
+	protected void setNodeNameStatus(IStatus status) {
 		fStatuses[1] = status;
+	}
+
+	protected void setLocationStatus(IStatus status) {
+		fStatuses[2] = status;
 	}
 
 	/**

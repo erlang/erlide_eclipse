@@ -49,34 +49,24 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private static final IThread[] NO_PROCS = new IThread[] {};
 
 	List<ErlangProcess> threads;
-
 	final IBackend fBackend;
-
 	private final ILaunch fLaunch;
-
 	private boolean fDisconnected = false;
-
 	private final DebuggerListener fDbgListener;
-
 	boolean fTerminated;
-
 	private boolean fShowSystemProcesses = false;
-
 	private boolean fShowErlideProcesses = false;
-
-	IProject project;
-	IProject[] otherProjects;
+	IProject[] projects;
 
 	final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
 	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
-			final IProject project, final IProject[] otherProjects) {
+			final IProject[] projects) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
 		fTerminated = false;
-		this.project = project;
-		this.otherProjects = otherProjects;
+		this.projects = projects;
 		threads = new ArrayList<ErlangProcess>();
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b);
@@ -135,10 +125,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				&& breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
 			final IProject bpProject = breakpoint.getMarker().getResource()
 					.getProject();
-			if (project == bpProject) {
-				return true;
-			}
-			for (final IProject p : otherProjects) {
+			for (final IProject p : projects) {
 				if (p == bpProject) {
 					return true;
 				}
@@ -326,15 +313,16 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
-			 *      .otp.erlang.OtpErlangObject)
+			 * @see
+			 * org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
+			 * .otp.erlang.OtpErlangObject)
 			 */
 			public void handleEvent(final OtpErlangObject msg) {
 				if (msg == null) {
 					return;
 				}
 				ErlLogger.debug("### got msg: " + msg);
-				// TODO Fler events från erlide_dbg_mon...
+				// TODO Fler events frï¿½n erlide_dbg_mon...
 				final OtpErlangTuple t = (OtpErlangTuple) msg;
 				final OtpErlangObject el0 = t.elementAt(0);
 				if (el0 instanceof OtpErlangAtom) {
@@ -364,8 +352,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
 				final String event = a.atomValue();
 				if (event.equals("new_break")) {
-					// TODO ska vi göra nåt här? kanske inte ska fixa den i
-					// eclipse förrän detta kommer...
+					// TODO should we do anything here?
 				} else if (event.equals("new_status")) {
 					final OtpErlangPid pid = (OtpErlangPid) intEvent
 							.elementAt(1);

@@ -54,7 +54,6 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -202,9 +201,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		} catch (final CoreException e1) {
 		}
 
-		// FIXME
-		final BuildBackend b = (BuildBackend) BackendManager.getDefault()
-				.getIdeBackend();
+		final BuildBackend b = BackendManager.getDefault().getBuild(getProject());
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
@@ -213,8 +210,17 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				addMarker(getProject(), getProject(), "Code clash between "
-						+ f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING, "");
+
+				// add marker only for modules belonging to this project!
+				IProject p = getProject();
+				IResource r1 = p.findMember(f1);
+				IResource r2 = p.findMember(f2);
+				// XXX does the above work? or do we need to get the name only?
+				if (r1 != null || r2 != null) {
+					addMarker(getProject(), getProject(), "Code clash between "
+							+ f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING,
+							"");
+				}
 			}
 
 		} catch (final Exception e) {
@@ -490,9 +496,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							// ErlLogger.debug(">>>>> is developer");
 							final OtpErlangBinary code = (OtpErlangBinary) t
 									.elementAt(2);
-							ExecutionBackend b = BackendManager.getDefault()
-									.getExecution(project);
-							distributeModule(b, beamf, code);
+							for (IBackend b : BackendManager.getDefault()
+									.getExecution(project)) {
+								distributeModule(b, beamf, code);
+							}
 						}
 					} else {
 						// ErlLogger.debug(">>>>> normal");

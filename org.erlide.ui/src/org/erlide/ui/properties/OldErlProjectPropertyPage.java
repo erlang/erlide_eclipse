@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -37,8 +38,9 @@ import org.erlide.ui.properties.internal.MockupPreferenceStore;
 public class OldErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener {
 
-	Combo buildBackendName;
-	private ErlangProjectProperties prefs;
+	private Text cookie;
+	private Text nodeName;
+	Combo runtimeName;
 	private Text output;
 	private Text source;
 	private Text include;
@@ -58,8 +60,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		final IProject prj = (IProject) getElement().getAdapter(IProject.class);
-		prefs = new ErlangProjectProperties(prj);
 		mockPrefs = new MockupPreferenceStore();
 		mockPrefs.addPropertyChangeListener(this);
 
@@ -85,15 +85,13 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		gd.minimumWidth = 50;
 		gd.widthHint = 256;
 		output.setLayoutData(gd);
-		output.setText(prefs.getOutputDir());
-		output.addListener(SWT.Modify, nameModifyListener);
+		output.addListener(SWT.Modify, modifyListener);
 		// TODO use resource!
 		uz = new Button(composite, SWT.CHECK);
 		this.uz.setToolTipText("place at end of code:path");
 		this.uz.setText("place last in path");
 		this.uz.setLayoutData(new GridData());
-		uz.setSelection(prefs.getUsePathZ());
-		uz.addListener(SWT.Modify, nameModifyListener);
+		uz.addListener(SWT.Modify, modifyListener);
 
 		Label l1 = new Label(composite, SWT.NONE);
 		l1.setText("Source directories:");
@@ -104,8 +102,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		this.source.setToolTipText("enter a list of folders");
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		source.setLayoutData(gd);
-		source.setText(prefs.getSourceDirsString());
-		source.addListener(SWT.Modify, nameModifyListener);
+		source.addListener(SWT.Modify, modifyListener);
 
 		String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
@@ -116,24 +113,45 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		this.include.setToolTipText("enter a list of folders");
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		include.setLayoutData(gd);
-		include.setText(prefs.getIncludeDirsString());
-		include.addListener(SWT.Modify, nameModifyListener);
-
-		String[] backends = RuntimeInfoManager.getDefault().getRuntimeNames()
-				.toArray(new String[] {});
-		int db = Arrays.binarySearch(backends, RuntimeInfoManager.getDefault()
-				.getDefaultRuntime().getName());
+		include.addListener(SWT.Modify, modifyListener);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
 		nodeNameLabel_1.setText("Build backend:");
 
-		buildBackendName = new Combo(composite, SWT.READ_ONLY);
-		final GridData gd_buildBackendName = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
-		buildBackendName.setLayoutData(gd_buildBackendName);
-		buildBackendName.setItems(backends);
+		final Group group = new Group(composite, SWT.NONE);
+		final GridData gd_group = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gd_group.heightHint = 84;
+		group.setLayoutData(gd_group);
+		final GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		group.setLayout(gridLayout);
+
+		final Label runtimeLabel = new Label(group, SWT.NONE);
+		runtimeLabel.setText("Runtime");
+
+		runtimeName = new Combo(group, SWT.READ_ONLY);
+		runtimeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+				false));
+		runtimeName.addListener(SWT.Modify, modifyListener);
+
+		final Label nodeNameLabel = new Label(group, SWT.NONE);
+		nodeNameLabel.setText("Node name");
+
+		nodeName = new Text(group, SWT.BORDER);
+		nodeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		nodeName.addListener(SWT.Modify, modifyListener);
+
+		final Label cookieLabel = new Label(group, SWT.NONE);
+		cookieLabel.setText("Cookie");
+
+		cookie = new Text(group, SWT.BORDER);
+		final GridData gd_cookie = new GridData(SWT.FILL, SWT.CENTER, true,
+				false);
+		cookie.setLayoutData(gd_cookie);
+
 		new Label(composite, SWT.NONE);
 
+		performDefaults();
 		setValid(testPageComplete());
 
 		return composite;
@@ -164,22 +182,46 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	@Override
 	protected void performDefaults() {
 		// Populate the owner text field with the default value
+		final Object prj = getElement();
+		ErlangProjectProperties prefs = new ErlangProjectProperties(
+				(IProject) prj);
+
+		uz.setSelection(prefs.getUsePathZ());
+		source.setText(prefs.getSourceDirsString());
+		include.setText(prefs.getIncludeDirsString());
+		output.setText(prefs.getOutputDir());
+
+		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
+				.toArray(new String[] {});
+		int db = Arrays.binarySearch(runtimes, RuntimeInfoManager.getDefault()
+				.getDefaultRuntime().getName());
+		runtimeName.setItems(runtimes);
+		runtimeName.select(db);
+
+		nodeName.setText(prefs.getNodeName());
+		cookie.setText(prefs.getCookie());
+
 	}
 
 	@Override
 	public boolean performOk() {
 		// store the value in the owner text field
+		final Object prj = getElement();
+		ErlangProjectProperties prefs = new ErlangProjectProperties(
+				(IProject) prj);
+
 		prefs.setOutputDir(output.getText());
 		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
-		// prefs.setExternalModules(externalIncludes.getText());
-		prefs.setRuntimeName(buildBackendName.getText());
+		prefs.setRuntimeName(runtimeName.getText());
+		prefs.setNodeName(nodeName.getText());
+		prefs.setCookie(cookie.getText());
 		prefs.store();
 		return true;
 	}
 
-	private final Listener nameModifyListener = new Listener() {
+	private final Listener modifyListener = new Listener() {
 		public void handleEvent(Event e) {
 			setValid(testPageComplete());
 		}
@@ -195,6 +237,16 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		if ((source.getText() == null || source.getText().trim().length() == 0)) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.sourcerequired"));
+			return false;
+		}
+		if (runtimeName.getText() == null
+				|| runtimeName.getText().trim().length() == 0) {
+			setErrorMessage("The backend's runtime has to be specified");
+			return false;
+		}
+		if (nodeName.getText() == null
+				|| nodeName.getText().trim().length() == 0) {
+			setErrorMessage("The backend's node name has to be specified");
 			return false;
 		}
 

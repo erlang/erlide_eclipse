@@ -69,17 +69,19 @@ public class NewScratchFileCreationWizard extends Wizard implements INewWizard {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-	 *      org.eclipse.jface.viewers.IStructuredSelection)
+	 * org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		fSelection = selection;
-		// setDefaultPageImageDescriptor(JavaDebugImages.DESC_WIZBAN_NEWSCRAPPAGE);
+		//setDefaultPageImageDescriptor(JavaDebugImages.DESC_WIZBAN_NEWSCRAPPAGE
+		// );
 	}
 
 	/**
 	 * If the current active editor edits a Java element return it, else return
 	 * null
 	 */
+	@SuppressWarnings("null")
 	private IErlElement getActiveEditorErlangInput() {
 		final IWorkbenchPage page = null; // JDIDebugUIPlugin.getActivePage();
 		if (page != null) {

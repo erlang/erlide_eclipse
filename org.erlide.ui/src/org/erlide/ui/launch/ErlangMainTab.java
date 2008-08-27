@@ -10,257 +10,145 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.runtime.backend.BackendUtil;
-import org.erlide.runtime.backend.IErlangLaunchConfigurationAttributes;
-import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.ui.util.SWTUtil;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
-	private Text fProjText;
-
-	private Button fProjButton;
-
-	Text moduleText;
-
-	Text funcText;
-
-	// Text otpPathText;
-
-	// Button otpPathBrowseButton;
-
-	Button startedNodeCheckbox;
-
-	// private Text otpNodeName;
-
 	private CheckboxTableViewer projectsTable;
+	Text moduleText;
+	Text funcText;
+	private Text argsText;
 
 	public void createControl(final Composite parent) {
-		// final Font font = parent.getFont();
-
 		final Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
 		final GridLayout topLayout = new GridLayout();
 		comp.setLayout(topLayout);
 
-		// final Label l = new Label(comp, SWT.NONE);
-		// l.setText("*** Only for internal erlide testing! ***");
-		getRuntimes();
-		createProjectEditor(comp);
-		createErlangEditor(comp);
-		createOtherProjectsEditor(comp);
-	}
-
-	private void getRuntimes() {
-		runtimes = RuntimeInfoManager.getDefault().getRuntimes();
-	}
-
-	private void createErlangEditor(final Composite comp) {
-		// final Font font = comp.getFont();
-		final Group group = SWTUtil.createGroup(comp, "Erlang", 1,
+		final Group projectsGroup = SWTUtil.createGroup(comp, "Projects", 2,
 				GridData.FILL_HORIZONTAL);
-		startedNodeCheckbox = new Button(group, SWT.CHECK);
-		startedNodeCheckbox.setText("Connect to started node");
-		startedNodeCheckbox.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("synthetic-access")
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				final boolean startNew = !startedNodeCheckbox.getSelection();
-				// otpPathText.setEnabled(startNew);
-				// otpPathBrowseButton.setEnabled(startNew);
-				moduleText.setEnabled(startNew);
-				funcText.setEnabled(startNew);
-				updateLaunchConfigurationDialog();
-			}
-		});
-		// createOtpPathEditor(group);
-		createStartFunctionEditor(group);
-		// createNodeNameEditor(group);
-		createBackendCombo(group);
-	}
+		projectsGroup.setLayout(new GridLayout());
 
-	// private void createNodeNameEditor(final Group parent) {
-	// // final Font font = parent.getFont();
-	// final Label otpPathLabel = new Label(parent, SWT.NONE);
-	// otpPathLabel.setText("Node name");
-	// // otpPathLabel.setFont(font);
-	// final Group group = SWTUtil.createGroup(parent, null, 2,
-	// GridData.FILL_HORIZONTAL);
-	//
-	// // group.setFont(font);
-	//
-	// otpNodeName = new Text(group, SWT.SINGLE | SWT.BORDER);
-	// final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-	// otpNodeName.setLayoutData(gd);
-	// // otpPathText.setFont(font);
-	// otpNodeName.addModifyListener(fBasicModifyListener);
-	// }
-
-	// private void createOtpPathEditor(final Composite parent) {
-	// // final Font font = parent.getFont();
-	// final Label otpPathLabel = new Label(parent, SWT.NONE);
-	// otpPathLabel.setText("OTP Home");
-	// // otpPathLabel.setFont(font);
-	// final Group group = SWTUtil.createGroup(parent, null, 3,
-	// GridData.FILL_HORIZONTAL);
-	// // group.setFont(font);
-	//
-	// otpPathText = new Text(group, SWT.SINGLE | SWT.BORDER);
-	// final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-	// otpPathText.setLayoutData(gd);
-	// // otpPathText.setFont(font);
-	// otpPathText.addModifyListener(fBasicModifyListener);
-	//
-	// otpPathBrowseButton = new Button(group, SWT.PUSH);
-	// otpPathBrowseButton.setText("Browse...");
-	// // otpPathBrowseButton.setFont(font);
-	// otpPathBrowseButton.addSelectionListener(new SelectionAdapter() {
-	// @Override
-	// public void widgetSelected(final SelectionEvent evt) {
-	// handleotpPathBrowseButtonSelected();
-	// }
-	//
-	// });
-	//
-	// }
-
-	private void createStartFunctionEditor(final Composite parent) {
-		// final Font font = parent.getFont();
-		final Group group = SWTUtil.createGroup(parent, "Start function", 4,
-				GridData.FILL_HORIZONTAL);
-
-		final Label moduleLabel = new Label(group, SWT.NONE);
-		moduleLabel.setText("module");
-		// moduleLabel.setFont(font);
-
-		moduleText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		moduleText.setLayoutData(gd);
-		// moduleText.setFont(font);
-		moduleText.addModifyListener(fBasicModifyListener);
-
-		final Label funcLabel = new Label(group, SWT.NONE);
-		funcLabel.setText("function");
-		// funcLabel.setFont(font);
-
-		funcText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		funcText.setLayoutData(gd);
-		// funcText.setFont(font);
-		funcText.addModifyListener(fBasicModifyListener);
-	}
-
-	// void handleotpPathBrowseButtonSelected() {
-	//
-	// String last = otpPathText.getText().trim();
-	// // if (last.length() == 0) {
-	// // last =
-	// //DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
-	// // }
-	// if (last == null) {
-	// last = ""; //$NON-NLS-1$
-	// }
-	// final DirectoryDialog dialog = new DirectoryDialog(getShell(),
-	// SWT.SINGLE);
-	// dialog.setText("Select otp home");
-	// dialog.setMessage("Select otp home <msg>");
-	// dialog.setFilterPath(last);
-	// final String result = dialog.open();
-	// if (result == null) {
-	// return;
-	// }
-	// otpPathText.setText(result);
-	// }
-
-	/**
-	 * Creates the projects table control
-	 * 
-	 * @param parent
-	 *            the parent composite to add this one to
-	 * @since 3.2
-	 */
-	private void createOtherProjectsEditor(final Composite parent) {
-		// final Composite comp = new Composite(parent, SWT.NONE);
-		// setControl(comp);
-		// final GridLayout topLayout = new GridLayout();
-		// comp.setLayout(topLayout);
-
-		final Group projComp = SWTUtil.createGroup(parent, "Other projects", 1,
-				GridData.FILL_BOTH);
-		projectsTable = CheckboxTableViewer.newCheckList(projComp, SWT.CHECK
-				| SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
-		final Control table = projectsTable.getControl();
-		final GridData gd = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(gd);
-		table.setFont(parent.getFont());
-		projectsTable.setContentProvider(new OtherProjectsContentProvider());
-		projectsTable.setLabelProvider(new OtherProjectsLabelProvider());
+		projectsTable = CheckboxTableViewer.newCheckList(projectsGroup,
+				SWT.HIDE_SELECTION | SWT.BORDER);
+		projectsTable.setLabelProvider(new ProjectsLabelProvider());
+		projectsTable.setContentProvider(new ProjectsContentProvider());
+		Table table_1 = projectsTable.getTable();
+		final GridData gd_table_1 = new GridData(SWT.LEFT, SWT.FILL, true, true);
+		gd_table_1.widthHint = 287;
+		table_1.setLayoutData(gd_table_1);
 		projectsTable.addCheckStateListener(new ICheckStateListener() {
 			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				updateLaunchConfigurationDialog();
 			}
 		});
+
+		final Group startGroup = new Group(comp, SWT.NONE);
+		startGroup.setText("Start");
+		final GridData gd_startGroup = new GridData(SWT.FILL, SWT.CENTER,
+				false, false);
+		startGroup.setLayoutData(gd_startGroup);
+		final GridLayout gridLayout_1 = new GridLayout();
+		gridLayout_1.numColumns = 4;
+		startGroup.setLayout(gridLayout_1);
+
+		final Label moduleLabel = new Label(startGroup, SWT.NONE);
+		moduleLabel.setLayoutData(new GridData());
+		moduleLabel.setText("Module");
+
+		moduleText = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
+		final GridData gd_moduleText = new GridData(SWT.FILL, SWT.CENTER,
+				false, false);
+		gd_moduleText.widthHint = 114;
+		moduleText.setLayoutData(gd_moduleText);
+		moduleText.addModifyListener(fBasicModifyListener);
+
+		final Label funcLabel = new Label(startGroup, SWT.NONE);
+		funcLabel.setLayoutData(new GridData());
+		funcLabel.setText("Function");
+
+		funcText = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
+		final GridData gd_funcText = new GridData(SWT.FILL, SWT.CENTER, false,
+				false);
+		gd_funcText.widthHint = 107;
+		funcText.setLayoutData(gd_funcText);
+		funcText.addModifyListener(fBasicModifyListener);
+
+		final Label argumentsLabel = new Label(startGroup, SWT.NONE);
+		argumentsLabel.setLayoutData(new GridData());
+		argumentsLabel.setText("Arguments");
+
+		argsText = new Text(startGroup, SWT.BORDER);
+		argsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+				3, 1));
+		argsText.addModifyListener(fBasicModifyListener);
+		new Label(startGroup, SWT.NONE);
+
+		final Label infoLabel = new Label(startGroup, SWT.NONE);
+		final GridData gd_infoLabel = new GridData(SWT.LEFT, SWT.CENTER, false,
+				false, 3, 1);
+		infoLabel.setLayoutData(gd_infoLabel);
+		infoLabel
+				.setText("The arguments will be sent as one single argument, a string.");
+
+		java.util.List<IErlProject> projects;
+		try {
+			projects = ErlangCore.getModel().getErlangProjects();
+			java.util.List<String> ps = new ArrayList<String>();
+			for (IErlProject p : projects) {
+				ps.add(p.getName());
+			}
+		} catch (ErlModelException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Content provider for the projects table
 	 */
-	class OtherProjectsContentProvider implements IStructuredContentProvider {
+	static class ProjectsContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(final Object inputElement) {
-			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
-					.getRoot();
-			return root.getProjects();
+			try {
+				final java.util.List<IErlProject> projects = ErlangCore
+						.getModel().getErlangProjects();
+				java.util.List<String> ps = new ArrayList<String>();
+				for (IErlProject p : projects) {
+					ps.add(p.getName());
+				}
+				return ps.toArray(new String[0]);
+			} catch (ErlModelException e) {
+			}
+			return new String[] {};
 		}
 
 		public void dispose() {
@@ -276,41 +164,22 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	 * Provides the labels for the projects table
 	 * 
 	 */
-	class OtherProjectsLabelProvider implements ITableLabelProvider {
-
-		// private final Map fImages = new HashMap();
-
+	static class ProjectsLabelProvider implements ITableLabelProvider {
 		public Image getColumnImage(final Object element, final int columnIndex) {
-			// Image image = (Image)fImages.get(element);
-			// if (image == null) {
-			// final ImageDescriptor descriptor =
-			// ((LaunchGroupExtension)element).getImageDescriptor();
-			// if (descriptor != null) {
-			// image = descriptor.createImage();
-			// fImages.put(element, image);
-			// }
-			// }
-			// return image;
 			return null;
 		}
 
 		public String getColumnText(final Object element, final int columnIndex) {
-			if (element instanceof IProject) {
-				final IProject project = (IProject) element;
-				return project.getName();
+			if (element instanceof String) {
+				return (String) element;
 			}
-			return "";
+			return "?" + element;
 		}
 
 		public void addListener(final ILabelProviderListener listener) {
 		}
 
 		public void dispose() {
-			// final Iterator images = fImages.values().iterator();
-			// while (images.hasNext()) {
-			// final Image image = (Image)images.next();
-			// image.dispose();
-			// }
 		}
 
 		public boolean isLabelProperty(final Object element,
@@ -322,163 +191,75 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	public void setDefaults(final ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_ENODE_MODULE,
-				IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_MODULE);
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_ENODE_FUNCTION,
-				IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_FUNCTION);
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
-				IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME, "");
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS, "");
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.RUNTIME_NAME,
-				RuntimeInfoManager.getDefault().getDefaultRuntime().getName());
+	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
+		config.setAttribute(IErlLaunchAttributes.PROJECTS, "");
+		config.setAttribute(IErlLaunchAttributes.MODULE, "");
+		config.setAttribute(IErlLaunchAttributes.FUNCTION, "");
+		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, "");
 	}
 
-	public void initializeFrom(final ILaunchConfiguration configuration) {
-		projectsTable.setInput(configuration);
-		initializeOtherProjectsFrom(configuration);
+	public void initializeFrom(final ILaunchConfiguration config) {
+		projectsTable.setInput(config);
+		String projs;
 		try {
-			moduleText.setText(configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_ENODE_MODULE,
-					IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_MODULE));
-		} catch (final CoreException e) {
-			moduleText
-					.setText(IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_MODULE);
+			projs = config.getAttribute(IErlLaunchAttributes.PROJECTS, "");
+		} catch (CoreException e1) {
+			projs = "";
 		}
-		try {
-			funcText
-					.setText(configuration
-							.getAttribute(
-									IErlangLaunchConfigurationAttributes.ATTR_ENODE_FUNCTION,
-									IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_FUNCTION));
-		} catch (final CoreException e) {
-			funcText
-					.setText(IErlangLaunchConfigurationAttributes.DEFAULT_ENODE_FUNCTION);
+		final String[] projects = projs.split(";");
+		projectsTable.setAllChecked(false);
+		for (String p : projects) {
+			projectsTable.setChecked(p, true);
+		}
+		final int itemCount = projectsTable.getTable().getItemCount();
+		if (itemCount == 1) {
+			projectsTable.setChecked(projectsTable.getTable().getItem(0), true);
 		}
 
-		// try {
-		// otpPathText.setText(configuration.getAttribute(
-		// IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME,
-		// IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME));
-		// } catch (final CoreException e) {
-		// otpPathText
-		// .setText(IErlangLaunchConfigurationAttributes.DEFAULT_OTP_HOME);
-		// }
 		try {
-			fProjText
-					.setText(configuration
-							.getAttribute(
-									IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME,
-									""));
+			final String attribute = config.getAttribute(
+					IErlLaunchAttributes.MODULE, "");
+			moduleText.setText(attribute);
 		} catch (final CoreException e) {
-			fProjText.setText("");
-		}
-		// try {
-		// otpNodeName.setText(configuration.getAttribute(
-		// IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME, ""));
-		// } catch (final CoreException e) {
-		// otpNodeName.setText("");
-		// }
-		try {
-			startedNodeCheckbox
-					.setSelection(!configuration
-							.getAttribute(
-									IErlangLaunchConfigurationAttributes.ATTR_START_NODE,
-									true));
-		} catch (final CoreException e) {
-			startedNodeCheckbox.setSelection(true);
+			moduleText.setText("");
 		}
 		try {
-			final String backendName = configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.RUNTIME_NAME, "");
-			for (final RuntimeInfo i : runtimes) {
-				if (i.getName().equals(backendName)) {
-					selectedRuntime = i;
-					break;
-				}
-			}
-			if (selectedRuntime != null) {
-				erlideBackendViewer.setSelection(new StructuredSelection(
-						selectedRuntime), true);
-			}
+			final String attribute = config.getAttribute(
+					IErlLaunchAttributes.FUNCTION, "");
+			funcText.setText(attribute);
 		} catch (final CoreException e) {
-			selectedRuntime = null;
+			funcText.setText("");
 		}
+		updateLaunchConfigurationDialog();
 	}
 
-	/**
-	 * @param configuration
-	 */
-	private void initializeOtherProjectsFrom(
-			final ILaunchConfiguration configuration) {
-		String otherProjects = "";
-		try {
-			otherProjects = configuration.getAttribute(
-					IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS,
-					"");
-		} catch (final CoreException e) {
-		}
-		final IProject[] projects = BackendUtil.getProjects(otherProjects);
-		projectsTable.setCheckedElements(projects);
-	}
-
-	public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
-		performApplyOtherProjects(configuration);
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_ENODE_MODULE,
-				moduleText.getText());
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_ENODE_FUNCTION,
-				funcText.getText());
-		// configuration.setAttribute(
-		// IErlangLaunchConfigurationAttributes.ATTR_OTP_HOME, otpPathText
-		// .getText());
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_PROJECT_NAME,
-				fProjText.getText());
-		// configuration.setAttribute(
-		// IErlangLaunchConfigurationAttributes.ATTR_NODE_NAME,
-		// otpNodeName.getText());
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_START_NODE,
-				!startedNodeCheckbox.getSelection());
-		String backendName = "";
-		if (selectedRuntime != null) {
-			backendName = selectedRuntime.getName();
-		}
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.RUNTIME_NAME, backendName);
-	}
-
-	private void performApplyOtherProjects(
-			final ILaunchConfigurationWorkingCopy configuration) {
+	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		final Object[] sel = projectsTable.getCheckedElements();
 		final StringBuilder projectNames = new StringBuilder();
 		for (final Object o : sel) {
-			final IProject p = (IProject) o;
-			projectNames.append(p.getName()).append(";");
+			final String p = (String) o;
+			projectNames.append(p).append(";");
 		}
 		if (projectNames.length() > 0) {
 			projectNames.setLength(projectNames.length() - 1);
 		}
-		configuration.setAttribute(
-				IErlangLaunchConfigurationAttributes.ATTR_OTHER_PROJECTS,
-				projectNames.toString());
+		config.setAttribute(IErlLaunchAttributes.PROJECTS, projectNames
+				.toString());
+
+		config.setAttribute(IErlLaunchAttributes.MODULE, moduleText.getText());
+		config.setAttribute(IErlLaunchAttributes.FUNCTION, funcText.getText());
+		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, argsText.getText());
 	}
 
 	public String getName() {
-		return "Erlang node";
+		return "Main";
 	}
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration launchConfig) {
+		if (projectsTable.getCheckedElements().length == 0) {
+			return false;
+		}
 		return true;
 	}
 
@@ -490,232 +271,4 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		}
 	};
 
-	private ComboViewer erlideBackendViewer;
-
-	private Collection<RuntimeInfo> runtimes;
-
-	private Combo combo;
-
-	private RuntimeInfo selectedRuntime;
-
-	/**
-	 * Creates the widgets for specifying a main type.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 */
-	protected void createProjectEditor(final Composite parent) {
-		// final Font font = parent.getFont();
-		final Group group = SWTUtil.createGroup(parent, "Project", 2,
-				GridData.FILL_HORIZONTAL);
-		// group.setFont(font);
-		fProjText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		fProjText.setLayoutData(gd);
-		// fProjText.setFont(font);
-		fProjText.addModifyListener(fBasicModifyListener);
-		fProjButton = createPushButton(group, "Browse...", null);
-		fProjButton.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(final SelectionEvent e) {
-				handleProjectButtonSelected();
-			}
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-		});
-	}
-
-	protected void handleProjectButtonSelected() {
-		// TODO Auto-generated method stub
-		final IErlProject project = chooseErlProject();
-		if (project == null) {
-			return;
-		}
-		final String projectName = project.getName();
-		fProjText.setText(projectName);
-	}
-
-	private IErlProject chooseErlProject() {
-		final ILabelProvider labelProvider = new ErlProjectNameLabelProvider();
-		// JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT);
-		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
-				getShell(), labelProvider);
-		dialog.setTitle("Select Project");
-		dialog.setMessage("SelectProject");
-		final IErlModelManager mm = ErlangCore.getModelManager();
-		final IErlModel m = mm.getErlangModel();
-		IErlElement[] projects;
-		try {
-			projects = m.getChildren().toArray(new IErlElement[0]);
-		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		dialog.setElements(projects);
-		final IErlProject erlProject = getErlProject();
-		if (erlProject != null) {
-			dialog.setInitialSelections(new Object[] { erlProject });
-		}
-		if (dialog.open() == Window.OK) {
-			return (IErlProject) dialog.getFirstResult();
-		}
-		return null;
-	}
-
-	private IErlProject getErlProject() {
-		final String projectName = fProjText.getText().trim();
-		if (projectName.length() == 0) {
-			return null;
-		}
-		final IErlModel m = ErlangCore.getModelManager().getErlangModel();
-		return m.getErlangProject(projectName);
-	}
-
-	/**
-	 * Label provider for installed runtimes table.
-	 */
-	static class BackendLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-
-		/**
-		 * @see ITableLabelProvider#getColumnText(Object, int)
-		 */
-		public String getColumnText(final Object element, final int columnIndex) {
-			if (element instanceof RuntimeInfo) {
-				final RuntimeInfo vm = (RuntimeInfo) element;
-				switch (columnIndex) {
-				case 0:
-					return vm.getName();
-					// case 1:
-					// return vm.getRuntime();
-					// case 2:
-					// return vm.getNodeName();
-				}
-			}
-			return element.toString();
-		}
-
-		/**
-		 * @see ITableLabelProvider#getColumnImage(Object, int)
-		 */
-		public Image getColumnImage(final Object element, final int columnIndex) {
-			return null;
-		}
-
-		@Override
-		public String getText(final Object element) {
-			return getColumnText(element, 0);
-		}
-	}
-
-	/**
-	 * Content provider to show a list of Runtimes
-	 */
-	class BackendContentProvider implements IStructuredContentProvider {
-
-		@SuppressWarnings("synthetic-access")
-		public Object[] getElements(final Object input) {
-			return runtimes.toArray(new RuntimeInfo[runtimes.size()]);
-		}
-
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-		}
-
-		public void dispose() {
-		}
-
-	}
-
-	/**
-	 * @param parent
-	 */
-	private void createBackendCombo(final Composite parent) {
-		final Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		composite.setLayout(gridLayout);
-
-		final Label erlideWillUseLabel = new Label(composite, SWT.NONE);
-		erlideWillUseLabel
-				.setToolTipText("The erlide backend is used for running project code.");
-		erlideWillUseLabel.setText("Erlide backend");
-
-		erlideBackendViewer = new ComboViewer(composite, SWT.READ_ONLY);
-		erlideBackendViewer.setLabelProvider(new BackendLabelProvider());
-		erlideBackendViewer.setContentProvider(new BackendContentProvider());
-		erlideBackendViewer.setInput(runtimes);
-		combo = erlideBackendViewer.getCombo();
-		final GridData gd_combo = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd_combo.widthHint = 118;
-		combo.setLayoutData(gd_combo);
-		if (selectedRuntime != null) {
-			erlideBackendViewer.setSelection(new StructuredSelection(
-					selectedRuntime), true);
-		}
-		// erlideBackendViewer
-		// .addPostSelectionChangedListener(new ISelectionChangedListener() {
-		// public void selectionChanged(
-		// final SelectionChangedEvent event) {
-		// fireSelectionChanged();
-		// }
-		// });
-		erlideBackendViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					@SuppressWarnings("synthetic-access")
-					public void selectionChanged(
-							final SelectionChangedEvent event) {
-						final ISelection sel = event.getSelection();
-						if (sel instanceof IStructuredSelection) {
-							final IStructuredSelection ssel = (IStructuredSelection) sel;
-							selectedRuntime = (RuntimeInfo) ssel
-									.getFirstElement();
-						}
-						updateLaunchConfigurationDialog();
-					}
-				});
-	}
-
-	// /**
-	// * Fire current selection
-	// */
-	// void fireSelectionChanged() {
-	// final SelectionChangedEvent event = new SelectionChangedEvent(this,
-	// getSelection());
-	// final Object[] listeners = fSelectionListeners.getListeners();
-	// for (final Object element : listeners) {
-	// final ISelectionChangedListener listener = (ISelectionChangedListener)
-	// element;
-	// listener.selectionChanged(event);
-	// }
-	// }
-
-	public static class ErlProjectNameLabelProvider implements ILabelProvider {
-
-		public Image getImage(final Object element) {
-			return null;
-		}
-
-		public String getText(final Object element) {
-			return ((IErlProject) element).getName();
-		}
-
-		public void addListener(final ILabelProviderListener listener) {
-		}
-
-		public void dispose() {
-		}
-
-		public boolean isLabelProperty(final Object element,
-				final String property) {
-			return false;
-		}
-
-		public void removeListener(final ILabelProviderListener listener) {
-		}
-
-	}
 }

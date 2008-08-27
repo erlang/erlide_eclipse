@@ -85,17 +85,21 @@ public class BackendUtil {
 	}
 
 	public static IProject[] getProjects(final String attribute) {
-		final String[] otherProjectNames = attribute.split(";");
-		final List<IProject> otherProjects = new ArrayList<IProject>();
+		final String[] projectNames = attribute.split(";");
+		return getProjects(projectNames);
+	}
+
+	public static IProject[] getProjects(final String[] projectNames) {
+		final List<IProject> projects = new ArrayList<IProject>();
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		for (final String s : otherProjectNames) {
+		for (final String s : projectNames) {
 			if (s != null && s.length() > 0) {
 				final IProject p = root.getProject(s);
 				if (p != null) {
-					otherProjects.add(p);
+					projects.add(p);
 				}
 			}
 		}
-		return otherProjects.toArray(new IProject[otherProjects.size()]);
+		return projects.toArray(new IProject[projects.size()]);
 	}
 }

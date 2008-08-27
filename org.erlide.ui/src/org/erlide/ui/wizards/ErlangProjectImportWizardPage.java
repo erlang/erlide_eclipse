@@ -1052,6 +1052,7 @@ public class ErlangProjectImportWizardPage extends
 		// getContainer().getShell());
 		final Map<FileSystemElement, List<MinimizedFileSystemElement>> selectionMap = new Hashtable<FileSystemElement, List<MinimizedFileSystemElement>>();
 
+		@SuppressWarnings("unused")
 		final IElementFilter filter = new IElementFilter() {
 
 			@SuppressWarnings("unchecked")

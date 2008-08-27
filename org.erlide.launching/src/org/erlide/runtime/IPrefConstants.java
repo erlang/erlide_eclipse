@@ -18,25 +18,28 @@ package org.erlide.runtime;
  */
 public interface IPrefConstants {
 
-	String PROJECT_SOURCE_DIRS = "source_dirs";
+	String SOURCE_DIRS = "source_dirs";
 	String DEFAULT_SOURCE_DIRS = "src";
 
-	String PROJECT_INCLUDE_DIRS = "include_dirs";
+	String INCLUDE_DIRS = "include_dirs";
 	String DEFAULT_INCLUDE_DIRS = "include";
 
-	String PROJECT_OUTPUT_DIR = "output_dir";
+	String OUTPUT_DIR = "output_dir";
 	String DEFAULT_OUTPUT_DIR = "ebin";
 
-	String PROJECT_EXTERNAL_INCLUDES = "external_includes";
+	String EXTERNAL_INCLUDES = "external_includes";
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
-	String PROJECT_BACKEND_NAME = "backend_name";
-	String DEFAULT_BACKEND_NAME = "";
+	String RUNTIME_NAME = "backend_name";
+	String DEFAULT_RUNTIME_NAME = "erts";
 
-	String PROJECT_BACKEND_COOKIE = "backend_cookie";
-	String DEFAULT_BACKEND_COOKIE = "";
+	String COOKIE = "backend_cookie";
+	String DEFAULT_COOKIE = "";
 
-	String PROJECT_USE_PATHZ = "use_pathz";
+	String NODE_NAME = "backend_node";
+	String DEFAULT_NODENAME = "erts";
+
+	String USE_PATHZ = "use_pathz";
 	String DEFAULT_USE_PATHZ = "true";
 
 	String PROJECT_EXTERNAL_MODULES = "external_modules";
