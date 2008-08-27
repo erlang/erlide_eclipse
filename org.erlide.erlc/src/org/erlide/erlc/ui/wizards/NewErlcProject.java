@@ -39,8 +39,6 @@ import org.erlide.erlc.ErlideErlcPlugin;
 import org.erlide.erlc.IErlideErlcConstants;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ICodeManager;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
@@ -214,11 +212,11 @@ public class NewErlcProject extends Wizard implements INewWizard {
 			prefs.store();
 
 			// add code path to backend
-			final String out = project.getLocation().append(
-					prefs.getOutputDir()).toString();
-			final ICodeManager codeManager = BackendManager.getDefault()
-					.getBuild(project).getCodeManager();
-			codeManager.addPath(prefs.getUsePathZ(), out);
+//			final String out = project.getLocation().append(
+//					prefs.getOutputDir()).toString();
+			// final CodeManager codeManager = BackendManager.getDefault()
+			// .getBuild(project).getCodeManager();
+			// codeManager.addPath(prefs.getUsePathZ(), out);
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);
