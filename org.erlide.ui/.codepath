@@ -1,6 +1,6 @@
 #Fri Aug 01 09:44:56 CEST 2008
 source_dirs=erl
-backend_cookie=
+backend_cookie=kaka
 otp_project_structure=false
 backend_name=
 external_includes=

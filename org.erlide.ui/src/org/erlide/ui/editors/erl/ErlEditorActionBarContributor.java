@@ -13,6 +13,7 @@ package org.erlide.ui.editors.erl;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -39,12 +40,12 @@ public class ErlEditorActionBarContributor extends
 	}
 
 	// protected RetargetTextEditorAction contentAssistProposal;
-	private GotoAnnotationAction fPreviousAnnotation;
+	private final GotoAnnotationAction fPreviousAnnotation;
 
-	private GotoAnnotationAction fNextAnnotation;
+	private final GotoAnnotationAction fNextAnnotation;
 
 	@Override
-	public void contributeToMenu(IMenuManager menuManager) {
+	public void contributeToMenu(final IMenuManager menuManager) {
 		final IMenuManager navigateMenu = menuManager
 				.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
 		if (navigateMenu != null) {
@@ -54,7 +55,7 @@ public class ErlEditorActionBarContributor extends
 	}
 
 	@Override
-	public void setActiveEditor(IEditorPart part) {
+	public void setActiveEditor(final IEditorPart part) {
 		super.setActiveEditor(part);
 
 		ITextEditor editor = null;
@@ -62,6 +63,10 @@ public class ErlEditorActionBarContributor extends
 			editor = (ITextEditor) part;
 		}
 
+		if (part instanceof ErlangEditor) {
+			final ErlangEditor erlangEditor = (ErlangEditor) part;
+			erlangEditor.getActionGroup().fillActionBars(getActionBars());
+		}
 		// contentAssistProposal.setAction(getAction(editor,
 		// "ContentAssistProposal"));
 
@@ -73,11 +78,15 @@ public class ErlEditorActionBarContributor extends
 		// getAction(editor,
 		// "Uncomment"));
 
+		final IActionBars actionBars = getActionBars();
+		final IStatusLineManager manager = actionBars.getStatusLineManager();
+		manager.setMessage(null);
+		manager.setErrorMessage(null);
+
 		fPreviousAnnotation.setEditor(editor);
 		fNextAnnotation.setEditor(editor);
 
-		IActionBars actionBars = getActionBars();
-		IAction showOutline = getAction(editor,
+		final IAction showOutline = getAction(editor,
 				IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
 		actionBars.setGlobalActionHandler(
 				IErlangEditorActionDefinitionIds.SHOW_OUTLINE, showOutline);
@@ -88,7 +97,7 @@ public class ErlEditorActionBarContributor extends
 	 * @see IEditorActionBarContributor#init(IActionBars, IWorkbenchPage)
 	 */
 	@Override
-	public void init(IActionBars bars, IWorkbenchPage page) {
+	public void init(final IActionBars bars, final IWorkbenchPage page) {
 		super.init(bars, page);
 		// register actions that have a dynamic editor.
 		bars.setGlobalActionHandler(

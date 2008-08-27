@@ -105,8 +105,16 @@ public interface IErlideUIConstants {
 	String EVALUATION_GROUP = "erlang_evaluation_group";
 
 	String IMG_ERLANG_LOGO = "erlang058.gif";
-	
+
 	// The Erlang Navigator View ID
 	public static final String NAVIGATOR_VIEW_ID = "org.erlide.ui.views.navigator.view"; //$NON-NLS-1$
+
+	// Search Menu
+	public static final String FIND_REFERENCES_IN_WORKSPACE = "org.eclipse.jdt.ui.actions.ReferencesInWorkspace"; //$NON-NLS-1$
+
+	public static final String FIND_REFERENCES_IN_PROJECT = "org.eclipse.jdt.ui.actions.ReferencesInProject"; //$NON-NLS-1$
+
+	// public static final String FIND_REFERENCES_IN_WORKING_SET=
+	// "org.eclipse.jdt.ui.actions.ReferencesInWorkingSet"; //$NON-NLS-1$
 
 }

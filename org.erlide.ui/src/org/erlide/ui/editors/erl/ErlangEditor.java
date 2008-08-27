@@ -75,6 +75,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
@@ -91,6 +92,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionContext;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
@@ -121,6 +124,8 @@ import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.CompositeActionGroup;
+import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.actions.ShowOutlineAction;
@@ -190,6 +195,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
 
+	private ActionGroup fActionGroups;
+
+	private ActionGroup fContextMenuGroup;
+
 	/**
 	 * Simple constructor
 	 * 
@@ -219,6 +228,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 		final IEclipsePreferences node = ErlidePreferencePage.getPrefsNode();
 		node.removePreferenceChangeListener(fPreferenceChangeListener);
+		if (fActionGroups != null) {
+			fActionGroups.dispose();
+			fActionGroups = null;
+		}
 		super.dispose();
 	}
 
@@ -338,6 +351,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		} else {
 			externalModules = "";
 		}
+
+		// ActionGroup oeg, ovg, jsg;
+		ActionGroup esg;
+		fActionGroups = new CompositeActionGroup(new ActionGroup[] {
+		// oeg= new OpenEditorActionGroup(this),
+				// ovg= new OpenViewActionGroup(this),
+				esg = new ErlangSearchActionGroup(this) });
+		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
+
 		openAction = new OpenAction(getSite(), externalModules);
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
@@ -414,12 +436,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		super.editorContextMenuAboutToShow(menu);
 
 		if (BackendManager.isTest()) {
-			menu.prependToGroup("group.open", testAction);
+			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
 		}
-		menu.prependToGroup("group.open", fShowOutline);
-		menu.prependToGroup("group.open", toggleCommentAction);
-		menu.prependToGroup("group.open", indentAction);
-		menu.prependToGroup("group.open", openAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
+				toggleCommentAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
+		final ActionContext context = new ActionContext(getSelectionProvider()
+				.getSelection());
+		fContextMenuGroup.setContext(context);
+		fContextMenuGroup.fillContextMenu(menu);
+		fContextMenuGroup.setContext(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1986,6 +2014,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			}
 			return false;
 		}
+	}
+
+	public ActionGroup getActionGroup() {
+		return fActionGroups;
 	}
 
 }

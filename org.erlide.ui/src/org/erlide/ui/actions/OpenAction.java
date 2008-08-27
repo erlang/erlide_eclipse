@@ -299,10 +299,10 @@ public class OpenAction extends SelectionDispatchAction {
 								.getName());
 				if (r == null) {
 					try {
-						final String m = ErlModelUtils.findIncludeFile(project,
+						final String includeFile = ErlModelUtils.findIncludeFile(project,
 								res.getName());
-						if (m != null) {
-							r = EditorUtility.openExternal(m);
+						if (includeFile != null) {
+							r = EditorUtility.openExternal(includeFile);
 						}
 					} catch (final Exception e) {
 						e.printStackTrace();

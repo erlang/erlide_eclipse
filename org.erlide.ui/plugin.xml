@@ -483,15 +483,6 @@
             
  </extension>
  <extension
-       point="org.eclipse.ui.actionSetPartAssociations">
-    <actionSetPartAssociation targetID="org.eclipse.ui.edit.text.actionSet.annotationNavigation">
-       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
-    </actionSetPartAssociation>
-    <actionSetPartAssociation targetID="org.erlide.ui.actions.openActionSet">
-       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
-    </actionSetPartAssociation>
- </extension>
- <extension
        point="org.eclipse.ui.actionSets">
     <actionSet
           id="org.erlide.ui.actions.openActionSet"
@@ -505,6 +496,59 @@
              menubarPath="navigate/open.ext"
              retarget="true"
              tooltip="Open"/>
+    </actionSet>
+    <actionSet
+          description="description"
+          id="org.erlide.ui.searchActionSet"
+          label="Erlang Search"
+          visible="false">
+       <menu
+             id="org.eclipse.search.menu"
+             label="Se&amp;arch"
+             path="navigate">
+          <groupMarker
+                name="internalDialogGroup">
+          </groupMarker>
+          <groupMarker
+                name="dialogGroup">
+          </groupMarker>
+          <separator
+                name="fileSearchContextMenuActionsGroup">
+          </separator>
+          <separator
+                name="contextMenuActionsGroup">
+          </separator>
+          <separator
+                name="occurencesActionsGroup">
+          </separator>
+          <separator
+                name="extraSearchGroup">
+          </separator>
+       </menu>
+       <menu
+             id="referencesSubMenu"
+             label="R&amp;eferences"
+             path="org.eclipse.search.menu/contextMenuActionsGroup">
+          <separator
+                name="group1">
+          </separator>
+       </menu>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.references.in.workspace"
+             id="org.erlide.ui.search.actions.ReferencesInWorkspace"
+             label="&amp;Workspace"
+             menubarPath="org.eclipse.search.menu/referencesSubMenu/group1"
+             retarget="true">
+       </action>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.references.in.project"
+             id="org.erlide.ui.actions.ReferencesInProject"
+             label="&amp;Project"
+             menubarPath="org.eclipse.search.menu/referencesSubMenu/group1"
+             retarget="true">
+       </action>
     </actionSet>
 <!--
     <actionSet
@@ -522,6 +566,21 @@
              toolbarPath="erlang/console"/>
     </actionSet>
 -->
+ </extension>
+ <extension
+       point="org.eclipse.ui.actionSetPartAssociations">
+    <actionSetPartAssociation targetID="org.eclipse.ui.edit.text.actionSet.annotationNavigation">
+       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
+    </actionSetPartAssociation>
+    <actionSetPartAssociation targetID="org.erlide.ui.actions.openActionSet">
+       <part id="org.erlide.ui.editors.erl.ErlangEditor"/>
+    </actionSetPartAssociation>
+    <actionSetPartAssociation
+          targetID="org.erlide.ui.searchActionSet">
+       <part
+             id="org.erlide.ui.editors.erl.ErlangEditor">
+       </part>
+    </actionSetPartAssociation>
  </extension>
  <extension
        point="org.eclipse.compare.structureCreators">
@@ -923,5 +982,26 @@
             sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
       </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.erlide.ui.search.category.search"
+            id="org.erlide.ui.search.references.in.workspace"
+            name="References in Workspace">
+      </command>
+      <command
+            categoryId="org.erlide.ui.search.category.search"
+            id="org.erlide.ui.search.references.in.project"
+            name="References in Project">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.erlide.ui.search.references.in.workspace"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+G">
+      </key>
    </extension>
 </plugin>
