@@ -23,8 +23,8 @@
 
   <chapter id="gettingStarted">
     <title>Getting started</title>
-    <section >
-      <title id="instalation_guide">Installation guide</title>
+    <section id="instalation_guide">
+      <title>Installation guide</title>
       <para>
         <itemizedlist>
           <listitem>
@@ -61,7 +61,7 @@
           >Developer reference</link> for the specific details.</para>
       </sidebar>
     </section>
-    <section>
+    <section id="quick_intro">
       <title>Quick intro</title>
       <note>
         <para>This chapter is just a quick-and-dirty version of a more complete documentation, whose
@@ -147,7 +147,7 @@
         </listitem>
       </itemizedlist></para>
     </section>
-    <section>
+    <section id="tutorials">
       <title>Tutorials</title>
       <section>
         <title>Installation tutorial</title>
@@ -280,7 +280,7 @@
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="reference">
     <title>Reference</title>
     
     <section>
@@ -301,7 +301,7 @@
       <para>TBD</para>
     </section>
   </chapter>
-  <chapter>
+  <chapter id="developer_reference">
     <title>Developer reference</title>
     
     <section id="install_dev">
@@ -557,12 +557,12 @@
       </itemizedlist></para>
     </section>
   </chapter>
-  <chapter>
+  <chapter id="tips_tricks">
     <title>Tips and tricks</title>
     
     <para>TBD</para>
   </chapter>
-  <chapter>
+  <chapter id="news">
     <title>What's new</title>
     
     <para>TBD</para>
