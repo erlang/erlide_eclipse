@@ -27,10 +27,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.actions.ActionContext;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
@@ -40,6 +43,8 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.CompositeActionGroup;
+import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
@@ -58,8 +63,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	IErlModule myMdl;
 
-	private ErlangEditor myEditor;
+	private ErlangEditor fEditor;
 	private final String fToolTipText = "Sort";
+
+	private CompositeActionGroup fActionGroups;
 
 	/**
 	 * 
@@ -68,10 +75,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 * @param editor
 	 * 
 	 */
-	public ErlangOutlinePage(IDocumentProvider documentProvider,
-			ErlangEditor editor) {
+	public ErlangOutlinePage(final IDocumentProvider documentProvider,
+			final ErlangEditor editor) {
 		// myDocProvider = documentProvider;
-		myEditor = editor;
+		fEditor = editor;
 		ErlangCore.getModel().addModelChangeListener(this);
 	}
 
@@ -80,7 +87,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 * @param editorInput
 	 * 
 	 */
-	public void setInput(IEditorInput editorInput) {
+	public void setInput(final IEditorInput editorInput) {
 		// ErlLogger.log("> outline set input "+editorInput);
 		myMdl = ErlModelUtils.getModule(editorInput);
 		// if (myMdl != null) {
@@ -116,7 +123,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	}
 
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		final TreeViewer viewer = getTreeViewer();
 		viewer.setContentProvider(new ErlangContentProvider(true));
@@ -129,17 +136,33 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		final MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager m) {
+			public void menuAboutToShow(final IMenuManager m) {
 				// recursive loop?
 				// menuAboutToShow(m);
+				contextMenuAboutToShow(m);
 			}
 		});
 		final IPageSite site = getSite();
 
 		site.registerContextMenu(
 				ErlangPlugin.PLUGIN_ID + ".outline", manager, viewer); //$NON-NLS-1$
+		fActionGroups = new CompositeActionGroup(
+				new ActionGroup[] { new ErlangSearchActionGroup(this) });
+		// register global actions
 		final IActionBars actionBars = site.getActionBars();
+		actionBars.setGlobalActionHandler(ITextEditorActionConstants.UNDO,
+				fEditor.getAction(ITextEditorActionConstants.UNDO));
+		actionBars.setGlobalActionHandler(ITextEditorActionConstants.REDO,
+				fEditor.getAction(ITextEditorActionConstants.REDO));
+		fActionGroups.fillActionBars(actionBars);
 		registerToolbarActions(actionBars);
+	}
+
+	protected void contextMenuAboutToShow(final IMenuManager menu) {
+		ErlideUIPlugin.createStandardGroups(menu);
+		final IStructuredSelection selection = (IStructuredSelection) getSelection();
+		fActionGroups.setContext(new ActionContext(selection));
+		fActionGroups.fillContextMenu(menu);
 	}
 
 	static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
@@ -160,7 +183,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		 * 
 		 */
 		@SuppressWarnings("unchecked")
-		public Object getAdapter(Class clas) {
+		public Object getAdapter(final Class clas) {
 			if (clas == IWorkbenchAdapter.class) {
 				return this;
 			}
@@ -168,7 +191,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 	}
 
-	public void select(ISourceReference reference) {
+	public void select(final ISourceReference reference) {
 		if (getTreeViewer() != null) {
 			ISelection s = getTreeViewer().getSelection();
 			if (s instanceof IStructuredSelection) {
@@ -185,19 +208,19 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	@Override
 	public void dispose() {
-		if (myEditor == null) {
+		if (fEditor == null) {
 			return;
 		}
 
-		myEditor.outlinePageClosed();
-		myEditor = null;
+		fEditor.outlinePageClosed();
+		fEditor = null;
 
 		ErlangCore.getModel().removeModelChangeListener(this);
 
 		super.dispose();
 	}
 
-	public void elementChanged(IErlElement element) {
+	public void elementChanged(final IErlElement element) {
 		if (myMdl == element) {
 			refresh();
 		}
@@ -206,14 +229,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/**
 	 * @param actionBars
 	 */
-	private void registerToolbarActions(IActionBars actionBars) {
+	private void registerToolbarActions(final IActionBars actionBars) {
 		final IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		final ViewerComparator vc = new ErlElementSorter();
 		toolBarManager.add(new SortAction(getTreeViewer(), fToolTipText, vc,
 				null, false, ErlideUIPlugin.getDefault().getPreferenceStore()));
 	}
 
-	public void sort(boolean sorting) {
+	public void sort(final boolean sorting) {
 		ErlLogger.debug("sorting " + sorting);
 	}
 }

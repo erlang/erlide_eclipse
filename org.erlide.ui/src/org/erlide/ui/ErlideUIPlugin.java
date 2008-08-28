@@ -19,6 +19,8 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -33,6 +35,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
@@ -42,6 +45,7 @@ import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.RuntimePreferencePage;
 import org.erlide.ui.util.BackendManagerPopup;
+import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.IErlangStatusConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.osgi.framework.BundleContext;
@@ -106,7 +110,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 *             if a problem occurs
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		ErlLogger.debug("Starting UI " + Thread.currentThread());
 		super.start(context);
 
@@ -133,13 +137,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	private void openPreferencePage() {
 		final IPreferencePage page = new RuntimePreferencePage();
 		final PreferenceManager mgr = new PreferenceManager();
-		IPreferenceNode node = new PreferenceNode("1", page);
+		final IPreferenceNode node = new PreferenceNode("1", page);
 		mgr.addToRoot(node);
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				PreferenceDialog dialog = new PreferenceDialog(display
+				final PreferenceDialog dialog = new PreferenceDialog(display
 						.getActiveShell(), mgr);
 				dialog.create();
 				dialog.setMessage(page.getTitle());
@@ -157,7 +161,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 *             if a problem occurs
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		BackendManager.getDefault().removePlugin(this);
 
 		super.stop(context);
@@ -180,13 +184,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 *            The resource
 	 * @return The identified string
 	 */
-	public static String getResourceString(String key) {
+	public static String getResourceString(final String key) {
 		final ResourceBundle bundle = ErlideUIPlugin.getDefault()
 				.getResourceBundle();
 		try {
 
-			final String returnString = (bundle != null) ? bundle
-					.getString(key) : key;
+			final String returnString = bundle != null ? bundle.getString(key)
+					: key;
 			return returnString;
 		} catch (final MissingResourceException e) {
 			return key;
@@ -226,7 +230,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 * @param baseURL
 	 *            The descriptor url
 	 */
-	protected void createImageDescriptor(String id, URL baseURL) {
+	protected void createImageDescriptor(final String id, final URL baseURL) {
 		URL url = null;
 		try {
 			url = new URL(baseURL, IErlideUIConstants.ICON_PATH + id);
@@ -246,7 +250,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 * 
 	 * @return The image descriptor
 	 */
-	public ImageDescriptor getImageDescriptor(String id) {
+	public ImageDescriptor getImageDescriptor(final String id) {
 		final ImageDescriptor returnImageDescriptor = getImageRegistry()
 				.getDescriptor(id);
 		return returnImageDescriptor;
@@ -261,7 +265,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 * 
 	 * @return The image
 	 */
-	public Image getImage(String id) {
+	public Image getImage(final String id) {
 		final Image returnImage = getImageRegistry().get(id);
 		return returnImage;
 	}
@@ -270,7 +274,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
 	 */
 	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
+	protected void initializeImageRegistry(final ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 
 		final URL baseURL = getBundle().getEntry("/");
@@ -325,21 +329,21 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		return null;
 	}
 
-	public static void log(Exception e) {
+	public static void log(final Exception e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
 				IErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
 	}
 
-	public static void log(IStatus status) {
+	public static void log(final IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
-	public static void logErrorMessage(String message) {
+	public static void logErrorMessage(final String message) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
 				IErlangStatusConstants.INTERNAL_ERROR, message, null));
 	}
 
-	public static void logErrorStatus(String message, IStatus status) {
+	public static void logErrorStatus(final String message, final IStatus status) {
 		if (status == null) {
 			logErrorMessage(message);
 			return;
@@ -350,7 +354,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		log(multi);
 	}
 
-	public static void log(Throwable e) {
+	public static void log(final Throwable e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
 				IErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
 				e));
@@ -383,7 +387,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		return fFoldingStructureProviderRegistry;
 	}
 
-	public static void debug(String message) {
+	public static void debug(final String message) {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}
@@ -392,6 +396,16 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	public void start() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public static void createStandardGroups(final IMenuManager menu) {
+		if (!menu.isEmpty()) {
+			return;
+		}
+		menu.add(new Separator(IContextMenuConstants.GROUP_OPEN));
+		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
+		menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+		menu.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
 	}
 
 }

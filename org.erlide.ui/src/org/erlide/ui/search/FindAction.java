@@ -287,6 +287,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	 */
 	@Override
 	public void selectionChanged(final ITextSelection selection) {
+		setEnabled(true); // FIXME japps
 	}
 
 	/**

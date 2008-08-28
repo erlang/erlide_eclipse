@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
@@ -34,8 +33,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.SelectionDispatchAction;
-import org.erlide.ui.util.IContextMenuConstants;
 
 /**
  * Abstract class for views which show information for a given element.
@@ -169,7 +168,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public final void createPartControl(Composite parent) {
+	public final void createPartControl(final Composite parent) {
 		internalCreatePartControl(parent);
 		setInfoColor();
 		getSite().getWorkbenchWindow().getPartService().addPartListener(
@@ -210,10 +209,8 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	/*
 	 * @see IMenuListener#menuAboutToShow(org.eclipse.jface.action.IMenuManager)
 	 */
-	public void menuAboutToShow(IMenuManager menu) {
-		menu.add(new Separator(IContextMenuConstants.GROUP_OPEN));
-		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
-		menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+	public void menuAboutToShow(final IMenuManager menu) {
+		ErlideUIPlugin.createStandardGroups(menu);
 
 		IAction action;
 
@@ -261,7 +258,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 * @param actionBars
 	 *            the action bars
 	 */
-	protected void fillActionBars(IActionBars actionBars) {
+	protected void fillActionBars(final IActionBars actionBars) {
 		final IToolBarManager toolBar = actionBars.getToolBarManager();
 		fillToolBar(toolBar);
 
@@ -289,7 +286,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 * @param tbm
 	 *            the tool bar manager
 	 */
-	protected void fillToolBar(IToolBarManager tbm) {
+	protected void fillToolBar(final IToolBarManager tbm) {
 		// TODO NYI tbm.add(fGotoInputAction);
 	}
 
@@ -331,7 +328,8 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 * @see ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
 	 *      org.eclipse.jface.viewers.ISelection)
 	 */
-	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	public void selectionChanged(final IWorkbenchPart part,
+			final ISelection selection) {
 		if (part.equals(this)) {
 			return;
 		}
@@ -526,7 +524,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 		thread.start();
 	}
 
-	void doSetInfo(String info) {
+	void doSetInfo(final String info) {
 		setInfo(info);
 
 		fGotoInputAction.setEnabled(true);

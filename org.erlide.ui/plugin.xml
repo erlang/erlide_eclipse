@@ -987,6 +987,7 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.erlide.ui.search.category.search"
+            description="References in Workspace"
             id="org.erlide.ui.search.references.in.workspace"
             name="References in Workspace">
       </command>
