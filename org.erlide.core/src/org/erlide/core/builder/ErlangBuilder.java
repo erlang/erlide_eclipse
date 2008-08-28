@@ -201,7 +201,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		} catch (final CoreException e1) {
 		}
 
-		final BuildBackend b = BackendManager.getDefault().getBuild(getProject());
+		final BuildBackend b = BackendManager.getDefault().getBuild(
+				getProject());
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
@@ -487,24 +488,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
 					final String beamf = resource.getFullPath()
 							.removeFileExtension().lastSegment();
-					// ErlLogger.debug(">>>>> " + project.getName() + ": " +
-					// beamf);
-					if (project.getName().startsWith("org.erlide")
-							|| beamf.startsWith("erlide")) {
-						// ErlLogger.debug(">>>>> is erlide");
-						if (BackendManager.isDeveloper()) {
-							// ErlLogger.debug(">>>>> is developer");
-							final OtpErlangBinary code = (OtpErlangBinary) t
-									.elementAt(2);
-							for (IBackend b : BackendManager.getDefault()
-									.getExecution(project)) {
-								distributeModule(b, beamf, code);
-							}
-						}
-					} else {
-						// ErlLogger.debug(">>>>> normal");
-						ErlideBuilder.loadModule(project, beamf);
-					}
+					// final OtpErlangBinary code = (OtpErlangBinary) t
+					// .elementAt(2);
+					// for (IBackend b :
+					// BackendManager.getDefault().getExecution(
+					// project)) {
+					// distributeModule(b, beamf, code);
+					// }
+					ErlideBuilder.loadModule(project, beamf);
 				} else {
 					ErlLogger.debug(">>>> compile error..."
 							+ resource.getName());

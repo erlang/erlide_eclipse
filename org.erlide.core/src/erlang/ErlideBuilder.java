@@ -20,7 +20,8 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final IProject project,
 			final String fn, final String output) {
 		try {
-			final BuildBackend b = BackendManager.getDefault().getBuild(project);
+			final BuildBackend b = BackendManager.getDefault()
+					.getBuild(project);
 			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
 					30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
@@ -37,7 +38,8 @@ public class ErlideBuilder {
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		try {
-			final BuildBackend b = BackendManager.getDefault().getBuild(project);
+			final BuildBackend b = BackendManager.getDefault()
+					.getBuild(project);
 			// FIXME add an option for the compiler options
 			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
 					outputdir, includedirs, new String[] { "debug_info" });
@@ -65,6 +67,7 @@ public class ErlideBuilder {
 	public static void loadModule(final IProject project, final String module) {
 		try {
 			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
+				ErlLogger.debug(":: loading %s in %s", module, b.toString());
 				b.rpcx("erlide_builder", "load", "a", module);
 			}
 		} catch (final Exception e) {
