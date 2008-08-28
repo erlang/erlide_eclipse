@@ -79,8 +79,11 @@ public class EpmdWatchJob extends Job {
 			// label is "name X at port N"
 			final String[] parts = label.split(" ");
 			if (parts.length == 5) {
-				label = parts[1];
-				list.set(i, label);
+				String alabel = parts[1];
+				if (alabel.length() == 0) {
+					alabel = "??" + label;
+				}
+				list.set(i, alabel);
 			}
 		}
 	}
