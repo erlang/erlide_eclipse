@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article>
+  <title>Developer reference</title>
+
+  <section id="install_dev">
+    <title>Installation</title>
+
+    <para>After the <link linkend="instalation_guide">installation procedures
+    for regular users</link> (this means that you have to have installed and
+    running Erlide!), developing Erlide itself requires an additional
+    step:<itemizedlist>
+        <listitem>
+          <para>The Eclipse command line has to be tweaked a little bit,
+          because some functionality is only available in this case. The
+          arguments to add to the command line (or to the
+          <filename>eclipse.ini</filename> file) are <userinput>-vmargs
+          -Derlide.devel=true</userinput>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Done!</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <important>
+      <para>For developing Erlide, you can only use R11 at this time.</para>
+    </important>
+  </section>
+
+  <section>
+    <title>Retrieve the code from repository</title>
+
+    <para>The repository is Subversion based. I recommend using the Subclipse
+    plugin from http://subclipse.tigris.org.</para>
+
+    <para>The subversion repository has to be configured in the SVN Repository
+    Browsing perspective. The URL for the repository is <ulink
+    url="???">https://erlide.svn.sourceforge.net/svnroot/erlide</ulink>. Note
+    that this is different than the URL mentioned on SourceForge, it is an as
+    yet unannounced fix they did (using the normal URL could produce checkout
+    errors).</para>
+
+    <para>I recommend to check out the code by following the procedure below,
+    not by checking out from within Eclipse.<screen>$ cd erlide.workspace  # use your workspace's folder
+$ svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</screen>This
+    is because from within Eclipse we can get atomic commits only per each
+    project. In order to get those across all projects, the operations need to
+    be done at the workspace level and thus the workspace needs to be a
+    versioned directory. This is important when branching and tagging.</para>
+
+    <para>Then go back to Eclipse and shut down the automatic builder
+    (<guimenu>Project-&gt;Build Automatically</guimenu>) then choose
+    <guimenu>File-&gt;Import-&gt;Existing projects into workspace</guimenu>.
+    Import all projects and turn automatic build back on.</para>
+  </section>
+
+  <section>
+    <title>Build</title>
+
+    <section>
+      <title>Manual build</title>
+
+      <para>TBD</para>
+    </section>
+
+    <section>
+      <title>Automated build</title>
+
+      <para>This is implemented in the org.erlide.build project. Description
+      of the procedure will be added later. TBD.</para>
+    </section>
+
+    <section>
+      <title>Building the documentation</title>
+
+      <para>TBD</para>
+    </section>
+
+    <section>
+      <title>Starting the newly built Erlide</title>
+
+      <para><itemizedlist>
+          <listitem>
+            <para>After compiling the plugins, you can try starting the newly
+            build Erlide. For this you have to create a run configuration.
+            Choose <guimenu>Run-&gt;Run...</guimenu> and <guimenu>Eclipse
+            Application-&gt;New</guimenu>. Use a nice, friendly name like
+            "Erlide" and in the plug-ins tab select "Choose from list".</para>
+          </listitem>
+
+          <listitem>
+            <para>In the main tab, select the "Program to run" to be "Run an
+            application". The default value (org.eclipse.ui.ide.workbench) is
+            fine.</para>
+          </listitem>
+
+          <listitem>
+            <para>Check all the Erlide plugins under "workspace plugins" and
+            then "Add required plugins" for a minimal setting. Press validate
+            and add any other plugins that may be needed.</para>
+          </listitem>
+
+          <listitem>
+            <para>Go to the <guimenu>Common</guimenu> tab and check the
+            <guimenuitem>Show in favorites</guimenuitem> for both run and
+            debug.</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Plugin description</title>
+
+    <section>
+      <title>org.erlide</title>
+
+      <para>The feature that groups together all the deliverable
+      plugins.</para>
+    </section>
+
+    <section>
+      <title>org.erlide.basic</title>
+
+      <para>This plugin contains the functionality necessary to configure the
+      Erlang backend and also some utility classes.</para>
+    </section>
+
+    <section>
+      <title>org.erlide.core</title>
+
+      <para>Here we find the classes that model the Erlang code.</para>
+    </section>
+
+    <section>
+      <title>org.erlide.jinterface</title>
+
+      <para>This is a wrapper around jinterface plus some minor
+      additions.</para>
+    </section>
+
+    <section>
+      <title>erlide-launching</title>
+
+      <para>This plugin manages Erlang backends.</para>
+    </section>
+
+    <section>
+      <title>erlide-ui</title>
+
+      <para>Here we find all UI related functionality.</para>
+    </section>
+
+    <section>
+      <title>erlide-update</title>
+
+      <para>An update site is needed to distribute Erlide.</para>
+    </section>
+
+    <section>
+      <title>erlide-help</title>
+
+      <para>The help files reside here. The documentation is written in
+      Docbook format and from it we generate different formats: Eclipse help,
+      online HTML documentation, printable PDF.</para>
+    </section>
+
+    <section>
+      <title>erlide-docs</title>
+
+      <para>Here we have no code, but administration-related files. Most
+      notable is the source to the home page of the project in the
+      <filename>site</filename> directory.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Development process</title>
+
+    <section>
+      <title>Source code management</title>
+
+      <bridgehead>Repository structure</bridgehead>
+
+      <para>The source code is stored in a Subversion repository. We use a
+      standard structure, where the Eclipse project directories lie directly
+      under the trunk: <screen>/
+   branches/
+      b_x/
+         org.erlide.*
+   tags/
+   trunk/
+      org.erlide.*</screen>This way, we can do a checkout on the whole trunk
+      directly in a workspace directory. This will allow to do atomic commits
+      across all projects by using the svn client, because from within Eclipse
+      the atomicity is per project (a limitation of the Eclipse
+      plugins).</para>
+
+      <bridgehead>Branches</bridgehead>
+
+      <para><itemizedlist spacing="compact">
+          <listitem>
+            <para>The trunk will contain the bleeding edge of
+            development.</para>
+          </listitem>
+
+          <listitem>
+            <para>Release branches will be named RB-x.x and the</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>Commit policies</title>
+
+      <para></para>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Release management</title>
+
+    <para>There are a couple of scripts that handle the packaging of the
+    plugins and the publishing/uploading to the Sourceforge site.</para>
+
+    <para>TBD</para>
+
+    <para>Alternatively something like WinSCP can be used to upload files to
+    Sourceforge.</para>
+  </section>
+
+  <section>
+    <title>Design decisions</title>
+
+    <para>TBD</para>
+  </section>
+
+  <section>
+    <title>Tools used</title>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>OpenOffice 2 <ulink
+          url="http://www.openoffice.org">http://www.openoffice.org</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>XMLmind XML editor for the developer's manual <ulink
+          url="http://www.xmlmind.com/xmleditor/">http://www.xmlmind.com/xmleditor/</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Open Workbench for the time plans <ulink
+          url="http://www.openworkbench.org">http://www.openworkbench.org</ulink></para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+</article>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article>
+  <title>Getting started</title>
+  <section>
+    <title id="instalation_guide">Installation guide</title>
+    <para>
+      <itemizedlist>
+        <listitem>
+          <para>Install <emphasis>Erlang R11</emphasis> or later, if it isn't already
+            present on your system. On Windows systems, use a path with no spaces in it.</para>
+        </listitem>
+        <listitem>
+          <para>Install Eclipse. The recommended Eclipse version is <emphasis>3.3</emphasis>.</para>
+        </listitem>
+        <listitem>
+          <para>If your network uses a proxy, fill in the appropriate data in <guimenu
+              >Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy settings</guimenu>.</para>
+        </listitem>
+        <listitem>
+          <para>Download Erlide by going to <guimenu>Window-&gt;Software Updates-&gt;Find and
+              Install...-&gt;Search for new features to install</guimenu>. In the dialog, choose
+              <guibutton>New remote site</guibutton> and enter <userinput>Erlide</userinput> as name
+            and <userinput><ulink url="http://erlide.sourceforge.net/update32"
+                >http://erlide.sourceforge.net/update</ulink></userinput> as URL. Follow the dialogs
+            with the obvious choices and in the end you will be asked to restart.</para>
+        </listitem>
+        <listitem>
+          <para>Restart. A dialog will pop up, asking for the path to your Erlang instalation. Enter
+            the path to the top level directory (i.e. <varname>$ERL_TOP</varname>). Now restart
+            again.</para>
+        </listitem>
+        <listitem>
+          <para>Done! You're ready to start exploring</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <sidebar>
+      <para>If you want to work on Erlide itself, please read the <link linkend="install_dev"
+          >Developer reference</link> for the specific details.</para>
+    </sidebar>
+  </section>
+  <section>
+    <title>Quick intro</title>
+    <note>
+      <para>This chapter is just a quick-and-dirty version of a more complete documentation, whose
+        outline you see below and which will follow when time permits.</para>
+    </note>
+    <para>
+      <itemizedlist>
+        <listitem>
+          <para>Create projects with the File-&gt;New-&gt;Erlang project wizard. If the project
+            isn't new, you can do an automatic search for source files, by using the "Discover
+            paths" option. Review the result and add other needed directories</para>
+        </listitem>
+        <listitem>
+          <para>Create files by right-clicking on the desired directory in the resource view, and
+            choosing either File-&gt;New-&gt;Other-&gt;File and entering a name ending with erl, or
+            File-&gt;New-&gt;Erlang-&gt;Module and following the instructions in the wizard. Leave
+            empty any fields you don't understand the meaning of.</para>
+        </listitem>
+        <listitem>
+          <para>The Erlang perspective should open.</para>
+        </listitem>
+        <listitem>
+          <para>The editor works as usual. Can be configured in Window-Preferences-&gt;Erlang. Note
+            that not all options are functional.</para>
+        </listitem>
+        <listitem>
+          <para>Some useful commands in the editor are<itemizedlist>
+              <listitem>
+                <para>put cursor on a function call (only standard OTP modules are supported
+                  currently) and its documentation will pop up</para>
+              </listitem>
+              <listitem>
+                <para>put cursor in a function name and press F3 and the source of the function's
+                  definition will be shown (if available)</para>
+              </listitem>
+              <listitem>
+                <para>writing for example "lists:r" will pop up a list of possible completions of
+                  the function call.</para>
+              </listitem>
+              <listitem>
+                <para>right clicking in the editor will show a menu where some Erlang options are at
+                  the bottom. "Correct indentation" is still not so good yet.</para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+        <listitem>
+          <para>The outline view allows navigation in a module and an overview of the functions in
+            it. Clicking on an item will show its definition in the editor.</para>
+        </listitem>
+        <listitem>
+          <para>The console lets you interact with the Erlang node that is behind the scenes.</para>
+        </listitem>
+        <listitem>
+          <para>Ther is a "Live expressions" view where you can enter expressions that will be
+            reeevaluated every time a file is recompiled or when you press "refresh" in the view.
+            You have to create a new entry, then go to the expression field and edit it. Don't use
+            expressions that might kill the runtime or crash things (for example "init:stop()"),
+            because there's no restriction yet.</para>
+        </listitem>
+        <listitem>
+          <para>The "Process list" view is just what it says,</para>
+        </listitem>
+        <listitem>
+          <para>Opening a "Edoc" view (in Window-&gt;Show view-&gt;Erlang) will display the
+            documentation for the function where the cursor is (only OTP libraries)</para>
+        </listitem>
+        <listitem>
+          <para>Building is automatic whenever a file is saved (if Project-&gt;Build automatically
+            is enabled) and the modified module is also reloaded in the Erlang backend.</para>
+        </listitem>
+        <listitem>
+          <para>The problems view will show all errors and warnings from the compiler. Clicking them
+            opens the file in the editor at the right line.</para>
+        </listitem>
+        <listitem>
+          <para>There is also a builder that uses Make files --- TBD</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
+        <listitem>
+          <para>Ctrl-Shift-L will display a list of key bindings to the various commands</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+  <section>
+    <title>Tutorials</title>
+    <section>
+      <title>Installation tutorial</title>
+      <para>There is a preliminary presentation <ulink url="../tut/install.htm">here</ulink>
+        (requires Flash)</para>
+    </section>
+    <section>
+      <title>Basic tutorial</title>
+      <para>This Getting Started tutorial is designed to help you learn about using the Erlang IDE
+        (Erlide) in the workbench. This tutorial assumes the following:<itemizedlist>
+          <listitem>
+            <para>That you are starting with a brand new workbench installation with all the default
+              settings and preferences.</para>
+          </listitem>
+          <listitem>
+            <para>That the Erlide plugin is properly installed and running, see the <link
+                linkend="instalation_guide">Installation guide</link>.</para>
+          </listitem>
+          <listitem>
+            <para>That you are familiar with the basic workbench mechanisms (e.g., views, text
+              searching, perspectives, etc.)</para>
+          </listitem>
+        </itemizedlist></para>
+      <para>There is also a preliminary presentation <ulink url="../tut/project.htm">here</ulink>
+        (requires Flash)</para>
+      <section>
+        <title>Preparing the workbench</title>
+        <para>In this section, you will verify that the workbench is properly set up for Erlang
+          development. See the installation guide.</para>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Creating your first Erlang project</title>
+        <para>In this section, you will create a new Erlang project.</para>
+        <bridgehead>Creating the project</bridgehead>
+        <para>Inside Eclipse select the menu item <guimenu>File &gt; New &gt; Project...</guimenu>.
+          to open the New Project wizard. Select <guimenu>Erlang Project</guimenu> then click
+            <guibutton>Next</guibutton> to start the New Erlang Project wizard: On this page, type
+          "ErlDemo" in the Project name field.</para>
+        <para>In the Resource Explorer, make sure that the src directory under the ErlDemo project
+          is selected. Select the menu item <guimenu>File &gt; New... &gt; File</guimenu> and enter
+          "mytest.erl".</para>
+        <para>Related concepts: Erlang projects,Erlang views</para>
+        <para>Related tasks: Working with build paths,Creating a new Erlang project,Using the
+          Package Explorer</para>
+        <para>Related reference: New Erlang Project Wizard</para>
+      </section>
+      <section>
+        <title>Browsing Erlang elements using the resource explorer</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Editing Erlang elements</title>
+        <section>
+          <title>Opening an Erlang editor</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Adding new functions</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Using content assist</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Identifying problems in your code</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Using code templates</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Using the local history</title>
+          <para>TBD</para>
+        </section>
+      </section>
+      <section>
+        <title>Creating an Erlang module</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Renaming Erlang elements</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Moving and copying Erlang elements</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Navigate to an Erlang element's declaration</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Searching the workbench</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Running your programs</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Debugging your programs</title>
+        <para>TBD</para>
+      </section>
+      <section>
+        <title>Evaluating expressions</title>
+        <para>TBD</para>
+      </section>
+    </section>
+    <section>
+      <title>Configuration tutorial</title>
+      <para>TBD</para>
+    </section>
+  </section>
+</article>
