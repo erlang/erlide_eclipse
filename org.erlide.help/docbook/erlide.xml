@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-<!ENTITY __gettingstarted__ SYSTEM "gettingstarted.xml">
-<!ENTITY __concepts__ SYSTEM "concepts.xml">
-<!ENTITY __tasks__ SYSTEM "tasks.xml">
-<!ENTITY __reference__ SYSTEM "reference.xml">
-<!ENTITY __devreference__ SYSTEM "devreference.xml">
-<!ENTITY __tipstricks__ SYSTEM "tipstricks.xml">
-<!ENTITY __news__ SYSTEM "news.xml">
-]>
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <book lang="en-US">
   <title>Erlide - the Erlang IDE</title>
 
@@ -29,20 +21,552 @@
     </copyright>
   </bookinfo>
 
-  &__gettingstarted__;
+  <chapter>
+    <title>Getting started</title>
+    <section >
+      <title id="instalation_guide">Installation guide</title>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>Install <emphasis>Erlang R11</emphasis> or later, if it isn't already
+              present on your system. On Windows systems, use a path with no spaces in it.</para>
+          </listitem>
+          <listitem>
+            <para>Install Eclipse. The recommended Eclipse version is <emphasis>3.3</emphasis>.</para>
+          </listitem>
+          <listitem>
+            <para>If your network uses a proxy, fill in the appropriate data in <guimenu
+              >Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy settings</guimenu>.</para>
+          </listitem>
+          <listitem>
+            <para>Download Erlide by going to <guimenu>Window-&gt;Software Updates-&gt;Find and
+              Install...-&gt;Search for new features to install</guimenu>. In the dialog, choose
+              <guibutton>New remote site</guibutton> and enter <userinput>Erlide</userinput> as name
+              and <userinput><ulink url="http://erlide.sourceforge.net/update32"
+                >http://erlide.sourceforge.net/update</ulink></userinput> as URL. Follow the dialogs
+              with the obvious choices and in the end you will be asked to restart.</para>
+          </listitem>
+          <listitem>
+            <para>Restart. A dialog will pop up, asking for the path to your Erlang instalation. Enter
+              the path to the top level directory (i.e. <varname>$ERL_TOP</varname>). Now restart
+              again.</para>
+          </listitem>
+          <listitem>
+            <para>Done! You're ready to start exploring</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      <sidebar>
+        <para>If you want to work on Erlide itself, please read the <link linkend="install_dev"
+          >Developer reference</link> for the specific details.</para>
+      </sidebar>
+    </section>
+    <section>
+      <title>Quick intro</title>
+      <note>
+        <para>This chapter is just a quick-and-dirty version of a more complete documentation, whose
+          outline you see below and which will follow when time permits.</para>
+      </note>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>Create projects with the File-&gt;New-&gt;Erlang project wizard. If the project
+              isn't new, you can do an automatic search for source files, by using the "Discover
+              paths" option. Review the result and add other needed directories</para>
+          </listitem>
+          <listitem>
+            <para>Create files by right-clicking on the desired directory in the resource view, and
+              choosing either File-&gt;New-&gt;Other-&gt;File and entering a name ending with erl, or
+              File-&gt;New-&gt;Erlang-&gt;Module and following the instructions in the wizard. Leave
+              empty any fields you don't understand the meaning of.</para>
+          </listitem>
+          <listitem>
+            <para>The Erlang perspective should open.</para>
+          </listitem>
+          <listitem>
+            <para>The editor works as usual. Can be configured in Window-Preferences-&gt;Erlang. Note
+              that not all options are functional.</para>
+          </listitem>
+          <listitem>
+            <para>Some useful commands in the editor are<itemizedlist>
+              <listitem>
+                <para>put cursor on a function call (only standard OTP modules are supported
+                  currently) and its documentation will pop up</para>
+              </listitem>
+              <listitem>
+                <para>put cursor in a function name and press F3 and the source of the function's
+                  definition will be shown (if available)</para>
+              </listitem>
+              <listitem>
+                <para>writing for example "lists:r" will pop up a list of possible completions of
+                  the function call.</para>
+              </listitem>
+              <listitem>
+                <para>right clicking in the editor will show a menu where some Erlang options are at
+                  the bottom. "Correct indentation" is still not so good yet.</para>
+              </listitem>
+            </itemizedlist></para>
+          </listitem>
+          <listitem>
+            <para>The outline view allows navigation in a module and an overview of the functions in
+              it. Clicking on an item will show its definition in the editor.</para>
+          </listitem>
+          <listitem>
+            <para>The console lets you interact with the Erlang node that is behind the scenes.</para>
+          </listitem>
+          <listitem>
+            <para>Ther is a "Live expressions" view where you can enter expressions that will be
+              reeevaluated every time a file is recompiled or when you press "refresh" in the view.
+              You have to create a new entry, then go to the expression field and edit it. Don't use
+              expressions that might kill the runtime or crash things (for example "init:stop()"),
+              because there's no restriction yet.</para>
+          </listitem>
+          <listitem>
+            <para>The "Process list" view is just what it says,</para>
+          </listitem>
+          <listitem>
+            <para>Opening a "Edoc" view (in Window-&gt;Show view-&gt;Erlang) will display the
+              documentation for the function where the cursor is (only OTP libraries)</para>
+          </listitem>
+          <listitem>
+            <para>Building is automatic whenever a file is saved (if Project-&gt;Build automatically
+              is enabled) and the modified module is also reloaded in the Erlang backend.</para>
+          </listitem>
+          <listitem>
+            <para>The problems view will show all errors and warnings from the compiler. Clicking them
+              opens the file in the editor at the right line.</para>
+          </listitem>
+          <listitem>
+            <para>There is also a builder that uses Make files --- TBD</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
+        <listitem>
+          <para>Ctrl-Shift-L will display a list of key bindings to the various commands</para>
+        </listitem>
+      </itemizedlist></para>
+    </section>
+    <section>
+      <title>Tutorials</title>
+      <section>
+        <title>Installation tutorial</title>
+        <para>There is a preliminary presentation <ulink url="../tut/install.htm">here</ulink>
+          (requires Flash)</para>
+      </section>
+      <section>
+        <title>Basic tutorial</title>
+        <para>This Getting Started tutorial is designed to help you learn about using the Erlang IDE
+          (Erlide) in the workbench. This tutorial assumes the following:<itemizedlist>
+            <listitem>
+              <para>That you are starting with a brand new workbench installation with all the default
+                settings and preferences.</para>
+            </listitem>
+            <listitem>
+              <para>That the Erlide plugin is properly installed and running, see the <link
+                linkend="instalation_guide">Installation guide</link>.</para>
+            </listitem>
+            <listitem>
+              <para>That you are familiar with the basic workbench mechanisms (e.g., views, text
+                searching, perspectives, etc.)</para>
+            </listitem>
+          </itemizedlist></para>
+        <para>There is also a preliminary presentation <ulink url="../tut/project.htm">here</ulink>
+          (requires Flash)</para>
+        <section>
+          <title>Preparing the workbench</title>
+          <para>In this section, you will verify that the workbench is properly set up for Erlang
+            development. See the installation guide.</para>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Creating your first Erlang project</title>
+          <para>In this section, you will create a new Erlang project.</para>
+          <bridgehead>Creating the project</bridgehead>
+          <para>Inside Eclipse select the menu item <guimenu>File &gt; New &gt; Project...</guimenu>.
+            to open the New Project wizard. Select <guimenu>Erlang Project</guimenu> then click
+            <guibutton>Next</guibutton> to start the New Erlang Project wizard: On this page, type
+            "ErlDemo" in the Project name field.</para>
+          <para>In the Resource Explorer, make sure that the src directory under the ErlDemo project
+            is selected. Select the menu item <guimenu>File &gt; New... &gt; File</guimenu> and enter
+            "mytest.erl".</para>
+          <para>Related concepts: Erlang projects,Erlang views</para>
+          <para>Related tasks: Working with build paths,Creating a new Erlang project,Using the
+            Package Explorer</para>
+          <para>Related reference: New Erlang Project Wizard</para>
+        </section>
+        <section>
+          <title>Browsing Erlang elements using the resource explorer</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Editing Erlang elements</title>
+          <section>
+            <title>Opening an Erlang editor</title>
+            <para>TBD</para>
+          </section>
+          <section>
+            <title>Adding new functions</title>
+            <para>TBD</para>
+          </section>
+          <section>
+            <title>Using content assist</title>
+            <para>TBD</para>
+          </section>
+          <section>
+            <title>Identifying problems in your code</title>
+            <para>TBD</para>
+          </section>
+          <section>
+            <title>Using code templates</title>
+            <para>TBD</para>
+          </section>
+          <section>
+            <title>Using the local history</title>
+            <para>TBD</para>
+          </section>
+        </section>
+        <section>
+          <title>Creating an Erlang module</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Renaming Erlang elements</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Moving and copying Erlang elements</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Navigate to an Erlang element's declaration</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Searching the workbench</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Running your programs</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Debugging your programs</title>
+          <para>TBD</para>
+        </section>
+        <section>
+          <title>Evaluating expressions</title>
+          <para>TBD</para>
+        </section>
+      </section>
+      <section>
+        <title>Configuration tutorial</title>
+        <para>TBD</para>
+      </section>
+    </section>
+  </chapter>
+  
+  <chapter>
+    <title>Concepts</title>
+    
+    <para>In the following, basic Eclipse knowledge will be assumed. Some
+      functionality that is not Erlide specific will be mentioned, but for details
+      please read the Eclipse documentation.</para>
+    
+    <section>
+      <title>Erlang projects</title>
+      
+      <para>TBD</para>
+    </section>
+  </chapter>
 
-  &__concepts__;
-
-  &__tasks__;
-
-  &__reference__;
-
-  &__devreference__;
-
-  &__tipstricks__;
-
-  &__news__;
-
+  <chapter>
+    <title>Reference</title>
+    
+    <section>
+      <title>Actions</title>
+      
+      <para>TBD</para>
+    </section>
+    
+    <section>
+      <title>Views and editors</title>
+      
+      <para>TBD</para>
+    </section>
+    
+    <section>
+      <title>Menus</title>
+      
+      <para>TBD</para>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Developer reference</title>
+    
+    <section id="install_dev">
+      <title>Installation</title>
+      
+      <para>After the <link linkend="instalation_guide">installation procedures
+        for regular users</link> (this means that you have to have installed and
+        running Erlide!), developing Erlide itself requires an additional
+        step:<itemizedlist>
+          <listitem>
+            <para>The Eclipse command line has to be tweaked a little bit,
+              because some functionality is only available in this case. The
+              arguments to add to the command line (or to the
+              <filename>eclipse.ini</filename> file) are <userinput>-vmargs
+                -Derlide.devel=true</userinput>.</para>
+          </listitem>
+          
+          <listitem>
+            <para>Done!</para>
+          </listitem>
+        </itemizedlist></para>
+      
+      <important>
+        <para>For developing Erlide, you can only use R11 at this time.</para>
+      </important>
+    </section>
+    
+    <section>
+      <title>Retrieve the code from repository</title>
+      
+      <para>The repository is Subversion based. I recommend using the Subclipse
+        plugin from http://subclipse.tigris.org.</para>
+      
+      <para>The subversion repository has to be configured in the SVN Repository
+        Browsing perspective. The URL for the repository is <ulink
+          url="???">https://erlide.svn.sourceforge.net/svnroot/erlide</ulink>. </para>
+      
+      <para>I recommend to check out and commit the code by following the procedure below,
+        not by checking out from within Eclipse.<screen>$ cd erlide.workspace  # use your workspace's folder
+          $ svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</screen>This
+        is because from within Eclipse we can get atomic commits only per each
+        project. In order to get those across all projects, the operations need to
+        be done at the workspace level and thus the workspace needs to be a
+        versioned directory. This is important when branching and tagging.</para>
+      
+      <para>Then go back to Eclipse and shut down the automatic builder
+        (<guimenu>Project-&gt;Build Automatically</guimenu>) then choose
+        <guimenu>File-&gt;Import-&gt;Existing projects into workspace</guimenu>.
+        Import all projects and turn automatic build back on.</para>
+    </section>
+    
+    <section>
+      <title>Build</title>
+      
+      <section>
+        <title>Manual build</title>
+        
+        <para>TBD</para>
+      </section>
+      
+      <section>
+        <title>Automated build</title>
+        
+        <para>This is implemented in the org.erlide.build project. Description
+          of the procedure will be added later. TBD.</para>
+      </section>
+      
+      <section>
+        <title>Building the documentation</title>
+        
+        <para>TBD</para>
+      </section>
+      
+      <section>
+        <title>Starting the newly built Erlide</title>
+        
+        <para><itemizedlist>
+          <listitem>
+            <para>After compiling the plugins, you can try starting the newly
+              build Erlide. For this you have to create a run configuration.
+              Choose <guimenu>Run-&gt;Run...</guimenu> and <guimenu>Eclipse
+                Application-&gt;New</guimenu>. Use a nice, friendly name like
+              "Erlide" and in the plug-ins tab select "Choose from list".</para>
+          </listitem>
+          
+          <listitem>
+            <para>In the main tab, select the "Program to run" to be "Run an
+              application". The default value (org.eclipse.ui.ide.workbench) is
+              fine.</para>
+          </listitem>
+          
+          <listitem>
+            <para>Check all the Erlide plugins under "workspace plugins" and
+              then "Add required plugins" for a minimal setting. Press validate
+              and add any other plugins that may be needed.</para>
+          </listitem>
+          
+          <listitem>
+            <para>Go to the <guimenu>Common</guimenu> tab and check the
+              <guimenuitem>Show in favorites</guimenuitem> for both run and
+              debug.</para>
+          </listitem>
+        </itemizedlist></para>
+      </section>
+    </section>
+    
+    <section>
+      <title>Plugin description</title>
+      
+      <section>
+        <title>org.erlide</title>
+        
+        <para>The feature that groups together all the deliverable
+          plugins.</para>
+      </section>
+      
+      <section>
+        <title>org.erlide.basic</title>
+        
+        <para>This plugin contains the functionality necessary to configure the
+          Erlang backend and also some utility classes.</para>
+      </section>
+      
+      <section>
+        <title>org.erlide.core</title>
+        
+        <para>Here we find the classes that model the Erlang code.</para>
+      </section>
+      
+      <section>
+        <title>org.erlide.jinterface</title>
+        
+        <para>This is a wrapper around jinterface plus some minor
+          additions.</para>
+      </section>
+      
+      <section>
+        <title>erlide-launching</title>
+        
+        <para>This plugin manages Erlang backends.</para>
+      </section>
+      
+      <section>
+        <title>erlide-ui</title>
+        
+        <para>Here we find all UI related functionality.</para>
+      </section>
+      
+      <section>
+        <title>erlide-update</title>
+        
+        <para>An update site is needed to distribute Erlide.</para>
+      </section>
+      
+      <section>
+        <title>erlide-help</title>
+        
+        <para>The help files reside here. The documentation is written in
+          Docbook format and from it we generate different formats: Eclipse help,
+          online HTML documentation, printable PDF.</para>
+      </section>
+      
+      <section>
+        <title>erlide-docs</title>
+        
+        <para>Here we have no code, but administration-related files. Most
+          notable is the source to the home page of the project in the
+          <filename>site</filename> directory.</para>
+      </section>
+    </section>
+    
+    <section>
+      <title>Development process</title>
+      
+      <section>
+        <title>Source code management</title>
+        
+        <bridgehead>Repository structure</bridgehead>
+        
+        <para>The source code is stored in a Subversion repository. We use a
+          standard structure, where the Eclipse project directories lie directly
+          under the trunk: <screen>/
+            branches/
+            b_x/
+            org.erlide.*
+            tags/
+            trunk/
+            org.erlide.*</screen>This way, we can do a checkout on the whole trunk
+          directly in a workspace directory. This will allow to do atomic commits
+          across all projects by using the svn client, because from within Eclipse
+          the atomicity is per project (a limitation of the Eclipse
+          plugins).</para>
+        
+        <bridgehead>Branches</bridgehead>
+        
+        <para><itemizedlist spacing="compact">
+          <listitem>
+            <para>The trunk will contain the bleeding edge of
+              development.</para>
+          </listitem>
+          
+          <listitem>
+            <para>Release branches will be named RB-x.x and the</para>
+          </listitem>
+        </itemizedlist></para>
+      </section>
+      
+      <section>
+        <title>Commit policies</title>
+        
+        <para></para>
+        
+        <para></para>
+      </section>
+    </section>
+    
+    <section>
+      <title>Release management</title>
+      
+      <para>There are a couple of scripts that handle the packaging of the
+        plugins and the publishing/uploading to the Sourceforge site.</para>
+      
+      <para>TBD</para>
+      
+      <para>Alternatively something like WinSCP can be used to upload files to
+        Sourceforge.</para>
+    </section>
+    
+    <section>
+      <title>Design decisions</title>
+      
+      <para>TBD</para>
+    </section>
+    
+    <section>
+      <title>Tools used</title>
+      
+      <para><itemizedlist>
+        <listitem>
+          <para>OpenOffice 2 <ulink
+            url="http://www.openoffice.org">http://www.openoffice.org</ulink></para>
+        </listitem>
+        
+        <listitem>
+          <para>XMLmind XML editor for the developer's manual <ulink
+            url="http://www.xmlmind.com/xmleditor/">http://www.xmlmind.com/xmleditor/</ulink></para>
+        </listitem>
+        
+        <listitem>
+          <para>Open Workbench for the time plans <ulink
+            url="http://www.openworkbench.org">http://www.openworkbench.org</ulink></para>
+        </listitem>
+      </itemizedlist></para>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Tips and tricks</title>
+    
+    <para>TBD</para>
+  </chapter>
+  <chapter>
+    <title>What's new</title>
+    
+    <para>TBD</para>
+  </chapter>
   <chapter id="legal">
     <title>Legal</title>
 
