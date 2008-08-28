@@ -95,7 +95,6 @@ public final class BackendManager implements IResourceChangeListener {
 		return "jerlide_" + fUniqueId;
 	}
 
-	@SuppressWarnings("unused")
 	private String getErlideNameSuffix() {
 		String fUniqueId;
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -217,6 +216,8 @@ public final class BackendManager implements IResourceChangeListener {
 					.getErlideRuntime();
 			if (erlideRuntime != null) {
 				try {
+					erlideRuntime
+							.setNodeName("erlide_" + getErlideNameSuffix());
 					fLocalBackend = create(erlideRuntime,
 							EnumSet.of(BackendOptions.AUTOSTART), null).asIDE();
 				} catch (BackendException e) {
