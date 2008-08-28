@@ -197,14 +197,14 @@
                name="nature"
                value="org.erlide.core.erlnature"/>
       </page>
-      <page
+      <!--page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang properties (work in progress)">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
-      </page>
+      </page-->
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
