@@ -21,7 +21,7 @@
     </copyright>
   </bookinfo>
 
-  <chapter>
+  <chapter id="gettingStarted">
     <title>Getting started</title>
     <section >
       <title id="instalation_guide">Installation guide</title>
@@ -266,7 +266,7 @@
     </section>
   </chapter>
   
-  <chapter>
+  <chapter id="concepts">
     <title>Concepts</title>
     
     <para>In the following, basic Eclipse knowledge will be assumed. Some
