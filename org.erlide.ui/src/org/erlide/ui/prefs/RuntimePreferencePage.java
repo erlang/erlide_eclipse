@@ -823,6 +823,9 @@ public class RuntimePreferencePage extends PreferencePage implements
 	@Override
 	public boolean performOk() {
 		manager.setErlideRuntime(erlideRuntime);
+		if (defaultRuntime == null) {
+			defaultRuntime = (RuntimeInfo) fRuntimeList.getElementAt(0);
+		}
 		manager.setDefaultRuntime(defaultRuntime.getName());
 		manager.setRuntimes(runtimes);
 		manager.store();
