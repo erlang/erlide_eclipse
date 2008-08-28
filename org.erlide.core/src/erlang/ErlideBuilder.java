@@ -67,7 +67,8 @@ public class ErlideBuilder {
 	public static void loadModule(final IProject project, final String module) {
 		try {
 			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
-				ErlLogger.debug(":: loading %s in %s", module, b.toString());
+				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
+						.toString());
 				b.rpcx("erlide_builder", "load", "a", module);
 			}
 		} catch (final Exception e) {

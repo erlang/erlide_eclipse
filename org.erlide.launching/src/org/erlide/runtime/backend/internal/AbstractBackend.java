@@ -228,8 +228,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			sa.append("'").append(x.toString()).append("',");
 		}
 		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
-		final String msg = String.format("%s <- %s:%s(%s)", r.getValue(), m, f,
-				ss);
+		final String msg = String.format("%s <- %s:%s(%s) %% %s", r.getValue(),
+				m, f, ss, this.getInfo().toString());
 		throw new BackendException(msg);
 	}
 
