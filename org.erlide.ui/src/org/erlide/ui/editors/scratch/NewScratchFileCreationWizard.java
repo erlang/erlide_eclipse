@@ -81,7 +81,6 @@ public class NewScratchFileCreationWizard extends Wizard implements INewWizard {
 	 * If the current active editor edits a Java element return it, else return
 	 * null
 	 */
-	@SuppressWarnings("null")
 	private IErlElement getActiveEditorErlangInput() {
 		final IWorkbenchPage page = null; // JDIDebugUIPlugin.getActivePage();
 		if (page != null) {
