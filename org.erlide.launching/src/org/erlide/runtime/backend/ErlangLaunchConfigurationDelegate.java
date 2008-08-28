@@ -98,14 +98,14 @@ public class ErlangLaunchConfigurationDelegate extends
 				options.add(BackendOptions.AUTOSTART);
 			}
 
-			ExecutionBackend backend = null;
-			backend = BackendManager.getDefault().create(rt, options, launch)
-					.asExecution();
-
-			if (backend == null) {
+			final IBackend b = BackendManager.getDefault().create(rt, options,
+					launch);
+			if (b == null) {
 				ErlLogger.error("Launch: got null backend!");
 				return;
 			}
+			ExecutionBackend backend = b.asExecution();
+
 			// launch.addProcess(null);
 			backend.registerProjects(projectNames);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {

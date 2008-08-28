@@ -621,6 +621,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		for (String s : projectNames) {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(s);
+			BackendManager.getDefault().addExecution(project, this);
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					project);
 			final String outDir = project.getLocation().append(
