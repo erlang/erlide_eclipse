@@ -1,6 +1,10 @@
 package org.erlide.ui.search;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.search.ui.ISearchQuery;
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.ui.progress.IProgressService;
 
 public class SearchUtil {
 
@@ -15,6 +19,16 @@ public class SearchUtil {
 
 	static public String[] getWorkspaceScope() {
 		return null;
+	}
+
+	public static void runQueryInBackground(final Object query) {
+		NewSearchUI.runQueryInBackground((ISearchQuery) query);
+	}
+
+	public static IStatus runQueryInForeground(
+			final IProgressService progressService, final Object query) {
+		return NewSearchUI.runQueryInForeground(progressService,
+				(ISearchQuery) query);
 	}
 
 	// public static String toString(final IWorkingSet[] workingSets) {

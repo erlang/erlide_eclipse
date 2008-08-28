@@ -253,7 +253,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			 * eventually triggering the loading of a plug-in (in this case
 			 * ISearchQuery results in Search plug-in being loaded).
 			 */
-			NewSearchUI.runQueryInBackground(query);
+			SearchUtil.runQueryInBackground(query);
 		} else {
 			final IProgressService progressService = PlatformUI.getWorkbench()
 					.getProgressService();
@@ -264,7 +264,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			 * eventually triggering the loading of a plug-in (in this case it
 			 * would be ISearchQuery).
 			 */
-			final IStatus status = NewSearchUI.runQueryInForeground(
+			final IStatus status = SearchUtil.runQueryInForeground(
 					progressService, query);
 			if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
 				ErrorDialog.openError(getShell(),
