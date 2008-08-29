@@ -216,8 +216,13 @@ public final class BackendManager implements IResourceChangeListener {
 					.getErlideRuntime();
 			if (erlideRuntime != null) {
 				try {
-					erlideRuntime
-							.setNodeName("erlide_" + getErlideNameSuffix());
+					String defLabel = getLabelProperty();
+					if (defLabel != null) {
+						erlideRuntime.setNodeName(defLabel);
+					} else {
+						erlideRuntime.setNodeName("erlide_"
+								+ getErlideNameSuffix());
+					}
 					fLocalBackend = create(erlideRuntime,
 							EnumSet.of(BackendOptions.AUTOSTART), null).asIDE();
 				} catch (BackendException e) {
@@ -229,7 +234,7 @@ public final class BackendManager implements IResourceChangeListener {
 	}
 
 	public static String getLabelProperty() {
-		return System.getProperty("erlide.label");
+		return System.getProperty("erlide.label", null);
 	}
 
 	public static boolean isDeveloper() {

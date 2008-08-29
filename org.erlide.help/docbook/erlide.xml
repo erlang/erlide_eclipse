@@ -3,7 +3,8 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <book lang="en-US">
   <title>Erlide - the Erlang IDE</title>
-  <bookinfo><author>
+  <bookinfo>
+    <author>
       <firstname>Vlad</firstname>
       <surname>Dumitrescu</surname>
     </author>
@@ -29,15 +30,19 @@
             <emphasis>3.3</emphasis>.</para>
           </listitem>
           <listitem>
-            <para>If your network uses a proxy, fill in the appropriate data in <guimenu
-                >Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy settings</guimenu>.</para>
+            <para>If your network uses a proxy, fill in the appropriate data in
+                <guimenu>Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy
+              settings</guimenu>.</para>
           </listitem>
           <listitem>
-            <para>Download Erlide by going to <guimenu>Window-&gt;Software Updates-&gt;Find and
-                Install...-&gt;Search for new features to install</guimenu>. In the dialog, choose
-                <guibutton>New remote site</guibutton> and enter <userinput>Erlide</userinput> as
-              name and <userinput>
-                <ulink url="http://erlide.sourceforge.net/update32"
+            <para>Download Erlide by going to <menuchoice>
+                <guimenu>Window</guimenu>
+                <guisubmenu>Software Updates</guisubmenu>
+                <guisubmenu>Find and Install...</guisubmenu>
+                <guimenuitem>Search for new features to install</guimenuitem>
+              </menuchoice>. In the dialog, choose <guibutton>New remote site</guibutton> and enter
+                <userinput>Erlide</userinput> as name and <userinput>
+                <ulink url="http://erlide.sourceforge.net/update"
                   >http://erlide.sourceforge.net/update</ulink>
               </userinput> as URL. Follow the dialogs with the obvious choices and in the end you
               will be asked to restart.</para>
@@ -52,10 +57,10 @@
           </listitem>
         </itemizedlist>
       </para>
-      <sidebar>
+      <note>
         <para>If you want to work on Erlide itself, please read the <link linkend="install_dev"
             >Developer reference</link> for the specific details.</para>
-      </sidebar>
+      </note>
     </section>
     <section id="quick_intro">
       <title>Quick intro</title>
@@ -66,18 +71,18 @@
       <para>
         <itemizedlist>
           <listitem>
-            <para>Create projects with the  <menuchoice>
+            <para>Create projects with the <menuchoice>
                 <guisubmenu>File</guisubmenu>
                 <guisubmenu>New</guisubmenu>
                 <guisubmenu>Project</guisubmenu>
                 <guimenuitem>Erlang</guimenuitem>
-              </menuchoice> project wizard. If the project isn't new, you can
-              do an automatic search for source files, by using the "Discover paths" option. Review
-              the result and add other needed directories</para>
+              </menuchoice> project wizard. If the project isn't new, you can do an automatic search
+              for source files, by using the "Discover paths" option. Review the result and add
+              other needed directories</para>
           </listitem>
           <listitem>
             <para>Create files by right-clicking on the desired directory in the resource view, and
-              choosing either  <menuchoice>
+              choosing either <menuchoice>
                 <guisubmenu>File</guisubmenu>
                 <guisubmenu>New</guisubmenu>
                 <guisubmenu>Other</guisubmenu>
@@ -129,19 +134,20 @@
             <para>Ther is a "Live expressions" view where you can enter expressions that will be
               reeevaluated every time a file is recompiled or when you press "refresh" in the view.
               You have to create a new entry, then go to the expression field and edit it. Don't use
-              expressions that might kill the runtime or crash things (for example <command
-                >init:stop()</command>), because there's no restriction yet.</para>
+              expressions that might kill the runtime or crash things (for example
+                <command>init:stop()</command>), because there's no restriction yet.</para>
           </listitem>
           <listitem>
             <para>The "Process list" view is just what it says,</para>
           </listitem>
           <listitem>
-            <para>Opening a "Edoc" view (in Window-&gt;Show view-&gt;Erlang) will display the
-              documentation for the function where the cursor is (only OTP libraries)</para>
+            <para>Opening a "Edoc" view (in Window-&gt;Show view-&gt;Erlang) will display
+              the documentation for the function where the cursor is (only OTP libraries)</para>
           </listitem>
           <listitem>
-            <para>Building is automatic whenever a file is saved (if Project-&gt;Build automatically
-              is enabled) and the modified module is also reloaded in the Erlang backend.</para>
+            <para>Building is automatic whenever a file is saved (if Project-&gt;Build
+              automatically is enabled) and the modified module is also reloaded in the Erlang
+              backend.</para>
           </listitem>
           <listitem>
             <para>The problems view will show all errors and warnings from the compiler. Clicking
@@ -199,8 +205,8 @@
             Project</guimenu> then click <guibutton>Next</guibutton> to start the New Erlang Project
             wizard: On this page, type "ErlDemo" in the Project name field.</para>
           <para>In the Resource Explorer, make sure that the src directory under the ErlDemo project
-            is selected. Select the menu item <guimenu>File &gt; New... &gt; File</guimenu> and
-            enter "mytest.erl".</para>
+            is selected. Select the menu item <guimenu>File &gt; New... &gt; File</guimenu>
+            and enter "mytest.erl".</para>
           <para>Related concepts: Erlang projects,Erlang views</para>
           <para>Related tasks: Working with build paths,Creating a new Erlang project,Using the
             Package Explorer</para>
@@ -336,9 +342,10 @@
         get those across all projects, the operations need to be done at the workspace level and
         thus the workspace needs to be a versioned directory. This is important when branching and
         tagging.</para>
-      <para>Then go back to Eclipse and shut down the automatic builder (<guimenu>Project-&gt;Build
-          Automatically</guimenu>) then choose <guimenu>File-&gt;Import-&gt;Existing projects into
-          workspace</guimenu>. Import all projects and turn automatic build back on.</para>
+      <para>Then go back to Eclipse and shut down the automatic builder
+          (<guimenu>Project-&gt;Build Automatically</guimenu>) then choose
+          <guimenu>File-&gt;Import-&gt;Existing projects into workspace</guimenu>. Import
+        all projects and turn automatic build back on.</para>
     </section>
     <section>
       <title>Build</title>
@@ -361,10 +368,10 @@
           <itemizedlist>
             <listitem>
               <para>After compiling the plugins, you can try starting the newly build Erlide. For
-                this you have to create a run configuration. Choose <guimenu
-                >Run-&gt;Run...</guimenu> and <guimenu>Eclipse Application-&gt;New</guimenu>. Use a
-                nice, friendly name like "Erlide" and in the plug-ins tab select "Choose from
-              list".</para>
+                this you have to create a run configuration. Choose
+                <guimenu>Run-&gt;Run...</guimenu> and <guimenu>Eclipse
+                Application-&gt;New</guimenu>. Use a nice, friendly name like "Erlide" and in
+                the plug-ins tab select "Choose from list".</para>
             </listitem>
             <listitem>
               <para>In the main tab, select the "Program to run" to be "Run an application". The

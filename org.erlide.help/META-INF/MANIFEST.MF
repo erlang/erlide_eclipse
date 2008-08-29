@@ -5,4 +5,6 @@ Bundle-SymbolicName: org.erlide.help; singleton:=true
 Bundle-Version: 0.3.69
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.help
+Require-Bundle: org.eclipse.help,
+ org.eclipse.help.ui;bundle-version="3.3.2",
+ org.eclipse.help.webapp;bundle-version="3.3.2"
