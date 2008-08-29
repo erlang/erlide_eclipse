@@ -114,9 +114,6 @@ public class ErlangLaunchPlugin extends Plugin implements ICodeBundle {
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 
-		// IdeBackend b = BackendManager.getDefault().getIdeBackend();
-		// ErlideBackend
-		// .init(b, BackendManager.buildNodeName(b.getJavaNodeName()));
 		ErlLogger.debug("Started LAUNCHING");
 	}
 

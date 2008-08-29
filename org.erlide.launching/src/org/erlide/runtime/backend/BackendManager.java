@@ -63,7 +63,7 @@ public final class BackendManager implements IResourceChangeListener {
 	};
 
 	public enum BackendOptions {
-		DEBUG, AUTOSTART
+		DEBUG, AUTOSTART, TRAP_EXIT
 	};
 
 	public static BackendManager getDefault() {
@@ -135,6 +135,7 @@ public final class BackendManager implements IResourceChangeListener {
 		b.connectAndRegister(fPlugins);
 		b.initErlang();
 		b.setDebug(options.contains(BackendOptions.DEBUG));
+		b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
 
 		return b;
 	}
@@ -323,9 +324,15 @@ public final class BackendManager implements IResourceChangeListener {
 	public IBackend[] getAllBackends() {
 		synchronized (fBuildBackendsLock) {
 			final Object[] ob = fBuildBackends.values().toArray();
-			final IBackend[] res = new IBackend[ob.length + 1];
+			Set<ExecutionBackend> ebs = new HashSet<ExecutionBackend>();
+			for (Set<ExecutionBackend> b : fExecutionBackends.values()) {
+				ebs.addAll(b);
+			}
+			final Object[] eb = ebs.toArray();
+			final IBackend[] res = new IBackend[ob.length + eb.length + 1];
 			System.arraycopy(ob, 0, res, 0, ob.length);
-			res[ob.length] = getIdeBackend();
+			System.arraycopy(eb, 0, res, ob.length, eb.length);
+			res[ob.length + eb.length] = getIdeBackend();
 			return res;
 		}
 	}

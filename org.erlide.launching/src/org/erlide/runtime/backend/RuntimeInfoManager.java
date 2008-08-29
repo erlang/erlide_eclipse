@@ -113,7 +113,6 @@ public class RuntimeInfoManager {
 				e.printStackTrace();
 			}
 			store();
-			RuntimeInfoManager.getDefault().store();
 		}
 
 		setErlideRuntime(getRuntime(root.get("erlide", null)));

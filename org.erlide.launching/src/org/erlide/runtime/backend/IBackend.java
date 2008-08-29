@@ -170,4 +170,8 @@ public interface IBackend {
 	void removePath(final boolean usePathZ, final String path);
 
 	void registerProjects(String[] projectNames);
+
+	public void setTrapExit(boolean trapexit);
+
+	public boolean getTrapExit();
 }

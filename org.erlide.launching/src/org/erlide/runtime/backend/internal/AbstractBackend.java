@@ -102,6 +102,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	private boolean fDebug;
 	private ErlRpcDaemon rpcDaemon;
 
+	private boolean trapexit;
+
 	public AbstractBackend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
 			throw new BackendException(
@@ -631,5 +633,13 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			}
 		}
 
+	}
+
+	public void setTrapExit(boolean trapexit) {
+		this.trapexit = trapexit;
+	}
+
+	public boolean getTrapExit() {
+		return trapexit;
 	}
 }

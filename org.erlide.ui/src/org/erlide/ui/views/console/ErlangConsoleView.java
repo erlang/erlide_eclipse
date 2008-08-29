@@ -122,43 +122,38 @@ public class ErlangConsoleView extends ViewPart implements
 			new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
 	StyledText consoleText;
-
 	boolean fGroupByLeader;
-
 	boolean fColored;
-
 	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
-
 	TableViewer consoleTable;
-
 	ErlConsoleDocument fDoc;
-
-	final IBackend fBackend;
-
+	IBackend fBackend;
 	BackendShell fShell;
-
 	final List<String> history = new ArrayList<String>(10);
-
 	StyledText consoleInput;
-
 	SourceViewer consoleInputViewer;
 
 	public ErlangConsoleView() {
+		super();
 		fDoc = new ErlConsoleDocument();
-		fBackend = BackendManager.getDefault().getIdeBackend();
-		fBackend.addEventListener("io_server", this);
-
 		try {
 			final Job j = new Job("shell opener") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					fShell = fBackend.getShellManager().openShell("main");
+					fBackend = BackendManager.getDefault().getIdeBackend();
+					if (fBackend == null) {
+						schedule(400);
+					} else {
+						fBackend.addEventListener("io_server",
+								ErlangConsoleView.this);
+						fShell = fBackend.getShellManager().openShell("main");
+					}
 					return Status.OK_STATUS;
 				}
 			};
 			j.setSystem(true);
 			j.setPriority(Job.SHORT);
-			j.schedule(200);
+			j.schedule(400);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -614,7 +609,8 @@ public class ErlangConsoleView extends ViewPart implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
+		 * @seeorg.eclipse.jface.text.source.SourceViewerConfiguration#
+		 * getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
 		 */
 		@Override
 		public IContentAssistant getContentAssistant(
@@ -631,7 +627,8 @@ public class ErlangConsoleView extends ViewPart implements
 			asst.setAutoActivationDelay(500);
 			asst.enableAutoInsert(true);
 			asst.enablePrefixCompletion(false);
-			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+			//asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
+			// );
 
 			asst
 					.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
@@ -650,7 +647,9 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		/*
-		 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * @see
+		 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * 
 		 * @since 2.0
 		 */
 		@Override
