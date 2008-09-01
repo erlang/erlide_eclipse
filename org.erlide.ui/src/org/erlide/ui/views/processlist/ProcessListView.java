@@ -78,13 +78,7 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			IBackend[] projectBackends = BackendManager.getDefault()
-					.getAllBackends();
-			IBackend[] result = new IBackend[projectBackends.length + 1];
-			result[0] = BackendManager.getDefault().getIdeBackend();
-			System.arraycopy(projectBackends, 0, result, 1,
-					projectBackends.length);
-			return result;
+			return BackendManager.getDefault().getAllBackends();
 		}
 	}
 
@@ -133,11 +127,17 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public void dispose() {
-			getBackend().removeEventListener("processlist", this);
+			final ExecutionBackend backend = getBackend();
+			if (backend != null) {
+				backend.removeEventListener("processlist", this);
+			}
 		}
 
 		public Object[] getElements(Object parent) {
 			final ExecutionBackend bk = getBackend();
+			if (bk == null) {
+				return new OtpErlangObject[] {};
+			}
 			bk.addEventListener("processlist", this);
 
 			final OtpErlangList r = ErlideProclist.getProcessList(bk);
@@ -284,12 +284,12 @@ public class ProcessListView extends ViewPart {
 		label.setText("Erlang backend node");
 
 		// TODO this is wrong - all backends should be inited
-		ExecutionBackend ideBackend = BackendManager.getDefault()
-				.getIdeBackend().asExecution();
-		ErlideProclist.processListInit(ideBackend);
+		IBackend ideBackend = BackendManager.getDefault().getIdeBackend();
+		if (ideBackend != null) {
+			ErlideProclist.processListInit(ideBackend.asExecution());
+		}
 		BackendManager.getDefault().forEachProjectBackend(
 				new IBackendVisitor() {
-
 					public void run(IBackend b) {
 						ErlideProclist.processListInit(b.asExecution());
 					}
@@ -371,8 +371,6 @@ public class ProcessListView extends ViewPart {
 					return;
 				}
 
-				// final ErlangConsole c = ErlangConsole.getDefault();
-				// if (c != null) {
 				final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
 						.elementAt(0);
 
@@ -393,7 +391,6 @@ public class ProcessListView extends ViewPart {
 							+ pid.toString()
 							+ " is probably dead.\nPlease refresh process list.");
 				}
-				// }
 			}
 		};
 	}
@@ -428,8 +425,12 @@ public class ProcessListView extends ViewPart {
 			return b.asExecution();
 		}
 		final IBackend b = BackendManager.getDefault().getIdeBackend();
-		backends.setSelection(new StructuredSelection(b));
-		return b.asExecution();
+		if (b != null) {
+			backends.setSelection(new StructuredSelection(b));
+			return b.asExecution();
+		}
+		return null;
+
 	}
 
 }

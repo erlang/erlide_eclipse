@@ -17,11 +17,13 @@ import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class RuntimeInfoManager {
+public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	private static final String OLD_NAME = "erts";
 
@@ -184,6 +186,12 @@ public class RuntimeInfoManager {
 
 	public RuntimeInfo getDefaultRuntime() {
 		return getRuntime(getDefaultRuntimeName());
+	}
+
+	public void preferenceChange(PreferenceChangeEvent event) {
+		if (event.getNode().absolutePath().contains("org.erlide")) {
+			load();
+		}
 	}
 
 }

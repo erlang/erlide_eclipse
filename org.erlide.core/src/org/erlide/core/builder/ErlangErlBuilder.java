@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackendEventListener;
+import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -43,8 +44,11 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 		}
 
 		// ?????
-		BackendManager.getDefault().getIdeBackend().addEventListener("build",
-				this);
+		final IdeBackend ideBackend = BackendManager.getDefault()
+				.getIdeBackend();
+		if (ideBackend != null) {
+			ideBackend.addEventListener("build", this);
+		}
 
 		while (!monitor.isCanceled()) {
 

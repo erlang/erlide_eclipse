@@ -210,8 +210,8 @@ public final class BackendManager implements IResourceChangeListener {
 		// + "		 " + Thread.currentThread());
 		// Thread.dumpStack();
 		if (fLocalBackend == null) {
-			ErlLogger.debug("** create InternalBackend: "
-					+ Thread.currentThread());
+			// ErlLogger.debug("** create InternalBackend: "
+			// + Thread.currentThread());
 
 			final RuntimeInfo erlideRuntime = RuntimeInfoManager.getDefault()
 					.getErlideRuntime();
@@ -329,10 +329,14 @@ public final class BackendManager implements IResourceChangeListener {
 				ebs.addAll(b);
 			}
 			final Object[] eb = ebs.toArray();
-			final IBackend[] res = new IBackend[ob.length + eb.length + 1];
+			IdeBackend b = getIdeBackend();
+			int x = (b == null) ? 0 : 1;
+			final IBackend[] res = new IBackend[ob.length + eb.length + x];
 			System.arraycopy(ob, 0, res, 0, ob.length);
 			System.arraycopy(eb, 0, res, ob.length, eb.length);
-			res[ob.length + eb.length] = getIdeBackend();
+			if (b != null) {
+				res[ob.length + eb.length] = b;
+			}
 			return res;
 		}
 	}
@@ -353,7 +357,9 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public void removePlugin(final ICodeBundle p) {
 		fPlugins.remove(p);
-		fLocalBackend.getCodeManager().unregister(p);
+		if (fLocalBackend != null) {
+			fLocalBackend.getCodeManager().unregister(p);
+		}
 		forEachProjectBackend(new IBackendVisitor() {
 			public void run(final IBackend b) {
 				b.getCodeManager().unregister(p);

@@ -13,6 +13,9 @@ public class ErlideProclist {
 	public static final String MODULE_NAME = "erlide_proclist";
 
 	public static void processListInit(ExecutionBackend b) {
+		if (b == null) {
+			return;
+		}
 		try {
 			b.rpc(MODULE_NAME, "process_list_init", "");
 		} catch (final Exception e) {
@@ -21,6 +24,9 @@ public class ErlideProclist {
 	}
 
 	public static OtpErlangList getProcessList(ExecutionBackend b) {
+		if (b == null) {
+			return new OtpErlangList();
+		}
 		try {
 			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", "");
 		} catch (final NoBackendException e) {
@@ -33,6 +39,9 @@ public class ErlideProclist {
 
 	public static OtpErlangObject getProcessInfo(ExecutionBackend b,
 			OtpErlangPid pid) {
+		if (b == null) {
+			return new OtpErlangAtom("error");
+		}
 		try {
 			return b.rpcx(MODULE_NAME, "get_process_info", "p", pid);
 		} catch (final NoBackendException e) {
