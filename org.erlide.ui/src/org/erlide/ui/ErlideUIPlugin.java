@@ -135,6 +135,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		ErlLogger.debug("Started UI");
 	}
 
+	@SuppressWarnings("unused")
 	private void openPreferencePage() {
 		final IPreferencePage page = new RuntimePreferencePage();
 		final PreferenceManager mgr = new PreferenceManager();

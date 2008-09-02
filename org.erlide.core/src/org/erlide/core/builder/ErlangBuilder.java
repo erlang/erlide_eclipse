@@ -770,6 +770,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private static void distributeModule(IBackend b, final String beamf,
 			final OtpErlangBinary code) {
 		if (b == null) {
