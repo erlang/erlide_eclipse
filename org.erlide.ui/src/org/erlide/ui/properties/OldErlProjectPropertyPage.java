@@ -12,6 +12,7 @@ package org.erlide.ui.properties;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -182,9 +183,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	@Override
 	protected void performDefaults() {
 		// Populate the owner text field with the default value
-		final Object prj = getElement();
+		final IAdaptable prj = getElement();
 		ErlangProjectProperties prefs = new ErlangProjectProperties(
-				(IProject) prj);
+				(IProject) prj.getAdapter(IProject.class));
 
 		uz.setSelection(prefs.getUsePathZ());
 		source.setText(prefs.getSourceDirsString());
@@ -206,9 +207,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	@Override
 	public boolean performOk() {
 		// store the value in the owner text field
-		final Object prj = getElement();
+		final IAdaptable prj = getElement();
 		ErlangProjectProperties prefs = new ErlangProjectProperties(
-				(IProject) prj);
+				(IProject) prj.getAdapter(IProject.class));
 
 		prefs.setOutputDir(output.getText());
 		prefs.setUsePathZ(uz.getSelection());

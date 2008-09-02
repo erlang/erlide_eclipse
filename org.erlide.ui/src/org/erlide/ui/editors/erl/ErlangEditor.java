@@ -722,10 +722,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input
-	 * element is reconciled in advance. If it is <code>false</code> this
-	 * method only returns a result if the editor's input element does not need
-	 * to be reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input element is
+	 * reconciled in advance. If it is <code>false</code> this method only
+	 * returns a result if the editor's input element does not need to be
+	 * reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -810,8 +810,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -901,8 +902,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to
-	 *            be done
+	 *            <code>true</code> if check for active outline page needs to be
+	 *            done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1198,8 +1199,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
-				 *      #getInformationPresenterControlCreator()
+				 * @see
+				 * org.eclipse.jface.text.information.IInformationProviderExtension2
+				 * #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */
@@ -1576,8 +1578,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
-		 *      text.DocumentEvent)
+		 * @see
+		 * org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
+		 * text.DocumentEvent)
 		 */
 		public void update(final DocumentEvent event) {
 
@@ -1698,8 +1701,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt
-		 *      .events.VerifyEvent)
+		 * @see
+		 * org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt
+		 * .events.VerifyEvent)
 		 */
 		@SuppressWarnings("synthetic-access")
 		public void verifyKey(final VerifyEvent event) {
@@ -1845,8 +1849,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.
-		 *      jface.text.link.LinkedModeModel, int)
+		 * @see
+		 * org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.
+		 * jface.text.link.LinkedModeModel, int)
 		 */
 		@SuppressWarnings("synthetic-access")
 		public void left(final LinkedModeModel environment, final int flags) {
@@ -1896,15 +1901,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse
-		 *      .jface.text.link.LinkedModeModel)
+		 * @see
+		 * org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse
+		 * .jface.text.link.LinkedModeModel)
 		 */
 		public void suspend(final LinkedModeModel environment) {
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse
-		 *      .jface.text.link.LinkedModeModel, int)
+		 * @see
+		 * org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse
+		 * .jface.text.link.LinkedModeModel, int)
 		 */
 		public void resume(final LinkedModeModel environment, final int flags) {
 		}
@@ -1967,9 +1974,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
-		 *      #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
-		 *      org.eclipse.swt.events.VerifyEvent, int, int)
+		 * @see
+		 * org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
+		 * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
+		 * org.eclipse.swt.events.VerifyEvent, int, int)
 		 */
 		@SuppressWarnings("synthetic-access")
 		public ExitFlags doExit(final LinkedModeModel model,

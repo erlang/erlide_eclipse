@@ -82,8 +82,8 @@ public abstract class OverlayPage extends PropertyPage implements
 	/**
 	 * Constructor
 	 * 
-	 * @param title -
-	 *            title string
+	 * @param title
+	 *            - title string
 	 */
 	public OverlayPage(String title) {
 		super();
@@ -93,10 +93,10 @@ public abstract class OverlayPage extends PropertyPage implements
 	/**
 	 * Constructor
 	 * 
-	 * @param title -
-	 *            title string
-	 * @param image -
-	 *            title image
+	 * @param title
+	 *            - title string
+	 * @param image
+	 *            - title image
 	 */
 	public OverlayPage(String title, ImageDescriptor image) {
 		super();
@@ -132,8 +132,9 @@ public abstract class OverlayPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			createSelectionGroup(parent);
+		}
 		contents = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
@@ -147,8 +148,8 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * Creates and initializes a selection group with two choice buttons and one
 	 * push button.
 	 * 
-	 * @param parent -
-	 *            the parent composite
+	 * @param parent
+	 *            - the parent composite
 	 */
 	private void createSelectionGroup(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -175,14 +176,15 @@ public abstract class OverlayPage extends PropertyPage implements
 		});
 		// Set workspace/project radio buttons
 		try {
-			String use = ((IResource) getElement())
+			String use = ((IResource) getElement().getAdapter(IResource.class))
 					.getPersistentProperty(new QualifiedName(pageId,
 							USEPROJECTSETTINGS));
 			if (TRUE.equals(use)) {
 				useProjectSettingsButton.setSelection(true);
 				configureButton.setEnabled(false);
-			} else
+			} else {
 				useWorkspaceSettingsButton.setSelection(true);
+			}
 		} catch (CoreException e) {
 			useWorkspaceSettingsButton.setSelection(true);
 		}
@@ -191,10 +193,10 @@ public abstract class OverlayPage extends PropertyPage implements
 	/**
 	 * Convenience method creating a radio button
 	 * 
-	 * @param parent -
-	 *            the parent composite
-	 * @param label -
-	 *            the button label
+	 * @param parent
+	 *            - the parent composite
+	 * @param label
+	 *            - the button label
 	 * @return - the new button
 	 */
 	private Button createRadioButton(Composite parent, String label) {
@@ -231,8 +233,9 @@ public abstract class OverlayPage extends PropertyPage implements
 		}
 		super.createControl(parent);
 		// Update enablement of all subclass controls
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			setControlsEnabled();
+		}
 	}
 
 	/*
@@ -243,8 +246,9 @@ public abstract class OverlayPage extends PropertyPage implements
 	 */
 	@Override
 	public IPreferenceStore getPreferenceStore() {
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			return overlayStore;
+		}
 		return super.getPreferenceStore();
 	}
 
@@ -259,8 +263,8 @@ public abstract class OverlayPage extends PropertyPage implements
 	/**
 	 * Enables or disables the controls of this page Subclasses may override.
 	 * 
-	 * @param enabled -
-	 *            true if controls shall be enabled
+	 * @param enabled
+	 *            - true if controls shall be enabled
 	 */
 	protected void setControlsEnabled(boolean enabled) {
 		setControlsEnabled(contents, enabled);
@@ -270,20 +274,22 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * Enables or disables a tree of controls starting at the specified root. We
 	 * spare tabbed notebooks and pagebooks to allow for user navigation.
 	 * 
-	 * @param root -
-	 *            the root composite
-	 * @param enabled -
-	 *            true if controls shall be enabled
+	 * @param root
+	 *            - the root composite
+	 * @param enabled
+	 *            - true if controls shall be enabled
 	 */
 	private void setControlsEnabled(Composite root, boolean enabled) {
 		Control[] children = root.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			Control child = children[i];
 			if (!(child instanceof CTabFolder) && !(child instanceof TabFolder)
-					&& !(child instanceof PageBook))
+					&& !(child instanceof PageBook)) {
 				child.setEnabled(enabled);
-			if (child instanceof Composite)
+			}
+			if (child instanceof Composite) {
 				setControlsEnabled((Composite) child, enabled);
+			}
 		}
 	}
 
@@ -298,7 +304,8 @@ public abstract class OverlayPage extends PropertyPage implements
 		boolean result = super.performOk();
 		if (result && isPropertyPage()) {
 			// Save state of radiobuttons in project properties
-			IResource resource = (IResource) getElement();
+			IResource resource = (IResource) getElement().getAdapter(
+					IResource.class);
 			try {
 				String value = (useProjectSettingsButton.getSelection()) ? TRUE
 						: FALSE;
@@ -350,10 +357,10 @@ public abstract class OverlayPage extends PropertyPage implements
 	/**
 	 * Show a single preference pages
 	 * 
-	 * @param id -
-	 *            the preference page identification
-	 * @param page -
-	 *            the preference page
+	 * @param id
+	 *            - the preference page identification
+	 * @param page
+	 *            - the preference page
 	 */
 	protected void showPreferencePage(String id, IPreferencePage page) {
 		final IPreferenceNode targetNode = new PreferenceNode(id, page);
