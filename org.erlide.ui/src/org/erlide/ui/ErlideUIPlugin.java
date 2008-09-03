@@ -135,8 +135,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		ErlLogger.debug("Started UI");
 	}
 
-	@SuppressWarnings("unused")
-	private void openPreferencePage() {
+	public static void openPreferencePage() {
 		final IPreferencePage page = new RuntimePreferencePage();
 		final PreferenceManager mgr = new PreferenceManager();
 		final IPreferenceNode node = new PreferenceNode("1", page);
@@ -150,6 +149,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 				dialog.create();
 				dialog.setMessage(page.getTitle());
 				dialog.open();
+				RuntimeInfoManager.getDefault().load();
 			}
 		});
 	}

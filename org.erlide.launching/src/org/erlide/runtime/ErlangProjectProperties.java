@@ -28,6 +28,7 @@ import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties {
@@ -219,13 +220,17 @@ public class ErlangProjectProperties {
 
 	public void setOutputDir(String outputDir) {
 		if (!fOutputDir.equals(outputDir)) {
-			BuildBackend b = BackendManager.getDefault().getBuild(project);
+			try {
+				BuildBackend b = BackendManager.getDefault().getBuild(project);
+				String p = project.getLocation().append(fOutputDir).toString();
+				b.removePath(getUsePathZ(), p);
 
-			String p = project.getLocation().append(fOutputDir).toString();
-			b.removePath(getUsePathZ(), p);
+				p = project.getLocation().append(outputDir).toString();
+				b.addPath(getUsePathZ(), p);
+			} catch (BackendException e) {
+				ErlLogger.info(e);
+			}
 
-			p = project.getLocation().append(outputDir).toString();
-			b.addPath(getUsePathZ(), p);
 		}
 		fOutputDir = outputDir;
 	}

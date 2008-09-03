@@ -12,6 +12,7 @@ package org.erlide.runtime.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -42,7 +43,9 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	protected final Map<String, RuntimeInfo> fRuntimes = new WeakHashMap<String, RuntimeInfo>();
-	private String defaultRuntime = "";
+	private String defaultRuntimeName = "";
+
+	private List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
 
 	public Collection<RuntimeInfo> getRuntimes() {
 		return new ArrayList<RuntimeInfo>(fRuntimes.values());
@@ -59,8 +62,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			for (RuntimeInfo rt : fRuntimes.values()) {
 				rt.store(root);
 			}
-			if (defaultRuntime != null) {
-				root.put("default", defaultRuntime);
+			if (defaultRuntimeName != null) {
+				root.put("default", defaultRuntimeName);
 			}
 			if (erlideRuntime != null) {
 				root.put("erlide", erlideRuntime.getName());
@@ -75,10 +78,10 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		}
 	}
 
-	public void load() {
+	public synchronized void load() {
 		fRuntimes.clear();
 		IEclipsePreferences root = getRootPreferenceNode();
-		defaultRuntime = root.get("default", null);
+		defaultRuntimeName = root.get("default", null);
 
 		String[] children;
 		try {
@@ -88,8 +91,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 				rt.load(root.node(name));
 				fRuntimes.put(name, rt);
 			}
-			if (defaultRuntime == null && children.length > 0) {
-				defaultRuntime = children[0];
+			if (defaultRuntimeName == null && children.length > 0) {
+				defaultRuntimeName = children[0];
 			}
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
@@ -118,6 +121,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		}
 
 		setErlideRuntime(getRuntime(root.get("erlide", null)));
+
+		notifyListeners();
 	}
 
 	protected IEclipsePreferences getRootPreferenceNode() {
@@ -130,12 +135,12 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		for (RuntimeInfo rt : elements) {
 			fRuntimes.put(rt.getName(), rt);
 		}
-		store();
+		notifyListeners();
 	}
 
 	public void addRuntime(RuntimeInfo rt) {
 		fRuntimes.put(rt.getName(), rt);
-		store();
+		notifyListeners();
 	}
 
 	public Collection<String> getRuntimeNames() {
@@ -158,14 +163,16 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	public void removeRuntime(String name) {
 		fRuntimes.remove(name);
+		notifyListeners();
 	}
 
 	public String getDefaultRuntimeName() {
-		return this.defaultRuntime;
+		return this.defaultRuntimeName;
 	}
 
-	public void setDefaultRuntime(String selectedKey) {
-		this.defaultRuntime = selectedKey;
+	public void setDefaultRuntime(String name) {
+		this.defaultRuntimeName = name;
+		notifyListeners();
 	}
 
 	public void setErlideRuntime(RuntimeInfo runtime) {
@@ -175,6 +182,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		RuntimeInfo old = this.erlideRuntime;
 		if (old == null || !old.equals(runtime)) {
 			this.erlideRuntime = runtime;
+			notifyListeners();
 			// this creates infinite recursion!
 			// BackendManager.getDefault().getIdeBackend().stop();
 		}
@@ -194,4 +202,19 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		}
 	}
 
+	public void addListener(RuntimeInfoListener listener) {
+		if (!fListeners.contains(listener)) {
+			fListeners.add(listener);
+		}
+	}
+
+	public void removeListener(RuntimeInfoListener listener) {
+		fListeners.remove(listener);
+	}
+
+	private void notifyListeners() {
+		for (RuntimeInfoListener listener : fListeners) {
+			listener.infoChanged();
+		}
+	}
 }

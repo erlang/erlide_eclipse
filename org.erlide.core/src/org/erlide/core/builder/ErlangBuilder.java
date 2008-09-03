@@ -56,6 +56,7 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -189,12 +190,15 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			build_remote(kind, args, monitor);
 		}
 
-		checkForClashes();
+		try {
+			checkForClashes();
+		} catch (Exception e) {
+		}
 
 		return null;
 	}
 
-	private void checkForClashes() {
+	private void checkForClashes() throws BackendException {
 		try {
 			getProject().deleteMarkers(PROBLEM_MARKER, true,
 					IResource.DEPTH_ZERO);

@@ -140,12 +140,17 @@ public final class BackendManager implements IResourceChangeListener {
 		return b;
 	}
 
-	public BuildBackend getBuild(final IProject project) {
+	public BuildBackend getBuild(final IProject project)
+			throws BackendException {
 		synchronized (fBuildBackendsLock) {
 			final RuntimeInfo info = getRuntimeInfo(project);
 			if (info == null) {
 				ErlLogger.info("Project %s has no runtime info, using ide",
 						project.getName());
+				if (fLocalBackend == null) {
+					throw new BackendException(
+							"IDE backend is not created - check configuration!");
+				}
 				return fLocalBackend.asBuild();
 			}
 			final String ideName = BackendManager.getDefault().getIdeBackend()
@@ -153,6 +158,10 @@ public final class BackendManager implements IResourceChangeListener {
 			if (info.getNodeName() == null
 					|| info.getNodeName().equals(ideName)
 					|| info.getNodeName().equals("")) {
+				if (fLocalBackend == null) {
+					throw new BackendException(
+							"IDE backend is not created - check configuration!");
+				}
 				return fLocalBackend.asBuild();
 			}
 

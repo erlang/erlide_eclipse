@@ -32,12 +32,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeInfoListener;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class OldErlProjectPropertyPage extends PropertyPage implements
-		IPropertyChangeListener {
+		IPropertyChangeListener, RuntimeInfoListener {
 
 	private Text cookie;
 	private Text nodeName;
@@ -54,6 +56,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	public OldErlProjectPropertyPage() {
 		super();
+		RuntimeInfoManager.getDefault().addListener(this);
 	}
 
 	/**
@@ -61,6 +64,10 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
+		if (RuntimeInfoManager.getDefault().getDefaultRuntime() == null) {
+			ErlideUIPlugin.openPreferencePage();
+		}
+
 		mockPrefs = new MockupPreferenceStore();
 		mockPrefs.addPropertyChangeListener(this);
 
@@ -194,10 +201,13 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
 				.toArray(new String[] {});
-		int db = Arrays.binarySearch(runtimes, RuntimeInfoManager.getDefault()
-				.getDefaultRuntime().getName());
+		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
-		runtimeName.select(db);
+		if (defaultRuntime != null) {
+			int db = Arrays.binarySearch(runtimes, defaultRuntime.getName());
+			runtimeName.select(db);
+		}
 
 		nodeName.setText(prefs.getNodeName());
 		cookie.setText(prefs.getCookie());
@@ -258,6 +268,18 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 	public void propertyChange(PropertyChangeEvent event) {
 		ErlLogger.debug("*+> " + event);
+	}
+
+	public void infoChanged() {
+		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
+				.toArray(new String[] {});
+		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+				.getDefaultRuntime();
+		runtimeName.setItems(runtimes);
+		if (defaultRuntime != null) {
+			int db = Arrays.binarySearch(runtimes, defaultRuntime.getName());
+			runtimeName.select(db);
+		}
 	}
 
 }
