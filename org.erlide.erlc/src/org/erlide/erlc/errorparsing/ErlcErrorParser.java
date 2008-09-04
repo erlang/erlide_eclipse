@@ -31,19 +31,19 @@ public class ErlcErrorParser implements IErrorParser {
 
 	public boolean processLines(final String lines,
 			final ErrorParserManager epm, final IProject project) {
-		final BuildBackend b = BackendManager.getDefault().getBuild(project);
-		OtpErlangObject res;
 		try {
-			res = ErlideBackend.convertErrors(b, lines);
-			if (!(res instanceof OtpErlangList)) {
-				return false;
+			final BuildBackend b = BackendManager.getDefault()
+					.getBuild(project);
+			final OtpErlangObject res = ErlideBackend.convertErrors(b, lines);
+			if (res instanceof OtpErlangList) {
+				addErrorMarkersForMultipleFiles(epm, (OtpErlangList) res);
 			}
-			addErrorMarkersForMultipleFiles(epm, (OtpErlangList) res);
+			return true;
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 	/**
