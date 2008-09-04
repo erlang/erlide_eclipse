@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -130,7 +131,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
 		rim.load();
 		if (rim.getRuntimeNames().size() == 0) {
-			// openPreferencePage();
+			openPreferencePage();
 		}
 		ErlLogger.debug("Started UI");
 	}
@@ -408,6 +409,24 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
 		menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
 		menu.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
+	}
+
+	/**
+	 * Returns a section in the Java plugin's dialog settings. If the section
+	 * doesn't exist yet, it is created.
+	 * 
+	 * @param name
+	 *            the name of the section
+	 * @return the section of the given name
+	 * @since 3.2
+	 */
+	public IDialogSettings getDialogSettingsSection(final String name) {
+		final IDialogSettings dialogSettings = getDialogSettings();
+		IDialogSettings section = dialogSettings.getSection(name);
+		if (section == null) {
+			section = dialogSettings.addNewSection(name);
+		}
+		return section;
 	}
 
 }
