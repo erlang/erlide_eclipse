@@ -192,6 +192,7 @@ handle_call({all_breaks, Mod}, _From, State) ->
 %% From Meta process
 handle_call({new_process, Pid, Meta, Function}, _From, State) ->
     link(Meta),
+    erlide_debug:log({new_process, {pid, Pid}, {meta, Meta}, Function}),
 
     %% A new, debugged process has been started. Return its status,
     %% ie running (running as usual) or break (stop)

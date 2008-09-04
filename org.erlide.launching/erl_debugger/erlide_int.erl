@@ -19,7 +19,7 @@
 
 %% External exports
 -export([i/1, i/2, ni/1, ni/2, n/1, nn/1, interpreted/0, file/1,
-	 interpretable/1]).
+	 interpretable/1, interpret_beam/2]).
 -export([auto_attach/0, auto_attach/1, auto_attach/2,
 	 stack_trace/0, stack_trace/1]).
 -export([break/2, delete_break/2, break_in/3, del_break_in/3,
@@ -108,6 +108,15 @@ i2([], _Dist) ->
     ok;
 i2(AbsMod, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
     int_mod(AbsMod, Dist).
+
+interpret_beam(AbsBeam, Dist) ->
+    case check_beam(AbsBeam) of
+        {ok, Exp, Abst} ->
+            Mod = filename:basename(AbsBeam, ".beam"),
+            load({Mod, AbsBeam, Exp, Abst}, Dist);
+        Error ->
+            Error
+    end.
 
 %%--------------------------------------------------------------------
 %% n(AbsMods) -> ok
@@ -504,6 +513,23 @@ load({Mod, Src, Beam, Exp, Abst}, Dist) ->
     MD5 = code:module_md5(BeamBin),
     Bin = term_to_binary({interpreter_module,Exp,Abst,SrcBin,MD5}),
     {module, Mod} = erlide_dbg_iserver:safe_call({load, Mod, Src, Bin}),
+    everywhere(Dist,
+	       fun() ->
+		       true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0
+	       end),
+    {module, Mod};
+load({Mod, Beam, Exp, Abst}, Dist) ->
+    everywhere(Dist,
+	       fun() ->
+                       code:purge(Mod),
+                       erts_debug:breakpoint({Mod,'_','_'}, false),
+                       {module,Mod} = code:load_abs(filename:rootname(Beam),
+                                                    Mod)
+	       end),
+    {ok, BeamBin} = file:read_file(Beam),
+    MD5 = code:module_md5(BeamBin),
+    Bin = term_to_binary({interpreter_module,Exp,Abst,<<>>,MD5}),
+    {module, Mod} = erlide_dbg_iserver:safe_call({load, Mod, no_source, Bin}),
     everywhere(Dist,
 	       fun() ->
 		       true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0

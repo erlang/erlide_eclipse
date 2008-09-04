@@ -22,7 +22,7 @@
 -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %% External exports
--export([start/2, stop/0, interpret/1, line_breakpoint/3]).
+-export([start/2, stop/0, interpret/2, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 
@@ -32,20 +32,23 @@
                 status     % break | exit | idle | running | waiting
                 }).
 
+%% FIXME vi behöver inget state! detta är mest till för otp-debuggern,
+%% så den sparar sig mellan varven...
+
 -record(state, {parent, %pid() remote
                 mode,      % local | global
                 starter,   % bool() 'true' if int was started by me
                 
                 focus, % #pinfo()
-                intdir,    % string() Default dir
+%%                 intdir,    % string() Default dir
                 pinfos,    % [#pinfo{}] Debugged processes
                 
                 backtrace, % integer() Number of call frames to fetch
                 
                 attach,    % false | {Flags, Function}
                 
-                sfile,     % default | string() Settings file
-                changed,   % boolean() Settings have been changed
+%%                 sfile,     % default | string() Settings file
+%%                 changed,   % boolean() Settings have been changed
                 
                 interpreted% list of interpreted filenames
                }).
@@ -63,18 +66,17 @@
 %%   Pid = pid()
 %%   Reason = {already_started,Pid} | term()
 %%--------------------------------------------------------------------
-start(Mode, SFile) ->
+start(Mode, Flags) ->
     case whereis(?SERVER) of
         undefined ->
             CallingPid = self(),
-            Pid = spawn(fun () -> init(CallingPid, Mode, SFile) end),
+            Pid = spawn(fun () -> init(CallingPid, Mode, Flags) end),
             receive
                 {initialization_complete, Pid} ->
                     {ok, Pid};
                 Error ->
                     Error
             end;
-        
         Pid ->
             {error, {already_started,Pid}}
     end.
@@ -102,11 +104,8 @@ stop() ->
 %% Initialization
 %%====================================================================
 
-init(CallingPid, Mode, SFile) ->
+init(CallingPid, Mode, Flags) ->
     register(?SERVER, self()),
-    init2(CallingPid, Mode, SFile).
-
-init2(CallingPid, Mode, SFile) ->
     %% Start Int if necessary and subscribe to information from it
     Bool = case erlide_int:start() of
                {ok, _Int} -> true;
@@ -118,19 +117,16 @@ init2(CallingPid, Mode, SFile) ->
     State1 = #state{mode    = Mode,
                     starter = Bool,
                     
-                    intdir  = element(2, file:get_cwd()),
+%%                     intdir  = element(2, file:get_cwd()),
                     pinfos  = [],
                     
-                    sfile   = SFile,
-                    changed = false,
+%%                     changed = false,
                     
                     interpreted = []
                     },
     
-    State2 = init_options(erlide_int:auto_attach(),    % Auto Attach
-                          erlide_int:stack_trace(),    % Stack Trace
-                          ?BACKTRACE,           % Back Trace Size
-                          State1),
+    State2 = State1#state{attach = Flags},
+
 
     State3 = init_contents(erlide_int:interpreted(),   % Modules
                            erlide_int:all_breaks(),    % Breakpoints
@@ -139,23 +135,7 @@ init2(CallingPid, Mode, SFile) ->
 
     CallingPid ! {initialization_complete, self()},
 
-    if SFile==default ->
-           loop(State3);
-       true ->
-           loop(load_settings(SFile, State3))
-    end.
-
-init_options(AutoAttach, _StackTrace, BackTrace, State) ->
-    case AutoAttach of
-        false -> ignore;
-        {Flags, _Function} ->
-            lists:foreach(fun(_Flag) ->
-                                  %			  dbg_ui_mon_win:select(map(Flag), true)
-                                  ok
-                          end,
-                          Flags)
-    end,
-    State#state{backtrace=BackTrace}.
+    loop(State3).
 
 init_contents(_Mods, _Breaks, Processes, State) ->
     lists:foldl(fun(PidTuple, State0) ->
@@ -239,11 +219,9 @@ gui_cmd(kill_all_processes, State) ->
 		  State#state.pinfos),
     State;
 
-gui_cmd({interpret, Modules}, State) ->
-    Res = erlide_int:i(Modules),
-%    dbg_ui_interpret:start(State#state.gs, State#state.coords,
-%			   State#state.intdir, State#state.mode),
-    {Res, State#state{interpreted=State#state.interpreted++Modules}};
+gui_cmd({interpret, {AbsBeam, Dist}}, State) ->
+    Res = erlide_int:interpret_beam(AbsBeam, Dist),
+    {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
 gui_cmd(delete_all, State) ->
     lists:foreach(fun(Mod) -> erlide_int:nn(Mod) end, erlide_int:interpreted()),
     {ok, State};
@@ -323,7 +301,8 @@ gui_cmd({trace, JPid}, State) ->
 	_AutoAttach -> ignore
     end,
     State;
-gui_cmd({auto_attach, _When}, State) ->
+gui_cmd({auto_attach, Flags}, State) ->
+    erlide_int:auto_attach(Flags, {'_', '_', []}),
     State;
 gui_cmd({stack_trace, [_Name]}, State) ->
 %    erlide_int:stack_trace(map(Name)),
@@ -399,8 +378,8 @@ int_cmd(_Other, State) ->
 %%====================================================================
 %% Debugger API
 %%====================================================================
-interpret(Modules) ->
-    cmd(interpret, Modules).
+interpret(Module, Dist) ->
+    cmd(interpret, {Module, Dist}).
 
 suspend(MetaPid) ->
     cmd(suspend, MetaPid).
@@ -446,57 +425,57 @@ cmd(Cmd) ->
 %% Debugger settings
 %%====================================================================
 
-load_settings(SFile, State) ->
-    case file:read_file(SFile) of
-	{ok, Binary} ->
-	    case catch binary_to_term(Binary) of
-		{debugger_settings, Settings} ->
-		    load_settings2(Settings,
-				   State#state{sfile=SFile,
-					       changed=false});
-		_Error -> State
-	    end;
-	{error, _Reason} -> State
-    end.
+%% load_settings(SFile, State) ->
+%%     case file:read_file(SFile) of
+%% 	{ok, Binary} ->
+%% 	    case catch binary_to_term(Binary) of
+%% 		{debugger_settings, Settings} ->
+%% 		    load_settings2(Settings,
+%% 				   State#state{sfile=SFile,
+%% 					       changed=false});
+%% 		_Error -> State
+%% 	    end;
+%% 	{error, _Reason} -> State
+%%     end.
 
-load_settings2(Settings, State) ->
-    {AutoAttach, StackTrace, BackTrace, Files, Breaks} =
-	Settings,
-
-    case AutoAttach of
-	false -> erlide_int:auto_attach(false);
-	{Flags, Function} -> erlide_int:auto_attach(Flags, Function)
-    end,
-
-    erlide_int:stack_trace(StackTrace),
-
-    case State#state.mode of
-	local -> lists:foreach(fun(File) -> erlide_int:i(File) end, Files);
-	global -> lists:foreach(fun(File) -> erlide_int:ni(File) end, Files)
-    end,
-    lists:foreach(fun(Break) ->
-			  {{Mod, Line}, [Status, Action, _, Cond]} =
-			      Break,
-			  erlide_int:break(Mod, Line),
-			  if
-			      Status==inactive ->
-				  erlide_int:disable_break(Mod, Line);
-			      true -> ignore
-			  end,
-			  if
-			      Action/=enable ->
-				  erlide_int:action_at_break(Mod,Line,Action);
-			      true -> ignore
-			  end,
-			  case Cond of
-			      CFunction when tuple(CFunction) ->
-				  erlide_int:test_at_break(Mod,Line,CFunction);
-			      null -> ignore
-			  end
-		  end,
-		  Breaks),
-
-    State#state{backtrace=BackTrace}.
+%% load_settings(Settings, State) ->
+%%     {AutoAttach, StackTrace, BackTrace, Files, Breaks} =
+%% 	Settings,
+%% 
+%%     case AutoAttach of
+%% 	false -> erlide_int:auto_attach(false);
+%% 	{Flags, Function} -> erlide_int:auto_attach(Flags, Function)
+%%     end,
+%% 
+%%     erlide_int:stack_trace(StackTrace),
+%% 
+%%     case State#state.mode of
+%% 	local -> lists:foreach(fun(File) -> erlide_int:i(File) end, Files);
+%% 	global -> lists:foreach(fun(File) -> erlide_int:ni(File) end, Files)
+%%     end,
+%%     lists:foreach(fun(Break) ->
+%% 			  {{Mod, Line}, [Status, Action, _, Cond]} =
+%% 			      Break,
+%% 			  erlide_int:break(Mod, Line),
+%% 			  if
+%% 			      Status==inactive ->
+%% 				  erlide_int:disable_break(Mod, Line);
+%% 			      true -> ignore
+%% 			  end,
+%% 			  if
+%% 			      Action/=enable ->
+%% 				  erlide_int:action_at_break(Mod,Line,Action);
+%% 			      true -> ignore
+%% 			  end,
+%% 			  case Cond of
+%% 			      CFunction when tuple(CFunction) ->
+%% 				  erlide_int:test_at_break(Mod,Line,CFunction);
+%% 			      null -> ignore
+%% 			  end
+%% 		  end,
+%% 		  Breaks),
+%% 
+%%     State#state{backtrace=BackTrace}.
 
 % TODO: Use of save settings
 %% save_settings(SFile, State) ->
@@ -551,10 +530,5 @@ msg(Pid, Msg) ->
     _Res = (catch(Pid ! Msg)),
     ok.
 
-log(S, A) ->
-    {ok, F} = file:open("/Users/jakob/Desktop/log.txt", [append]),
-    io:format(F, S, A),
-    file:close(F).
-
-
-
+log(E) ->
+    erlide_debug:log(E).

@@ -33,10 +33,11 @@ public class ErlideDebug {
 		return procs;
 	}
 
-	public static OtpErlangPid startDebug(final IBackend backend) {
+	public static OtpErlangPid startDebug(final IBackend backend,
+			final int debugFlags) {
 		OtpErlangObject res = null;
 		try {
-			res = backend.rpcx("erlide_debug", "start_debug", "");
+			res = backend.rpcx("erlide_debug", "start_debug", "i", debugFlags);
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,10 +107,11 @@ public class ErlideDebug {
 		return res;
 	}
 
-	public static boolean interpret(final IBackend backend, final String module) {
+	public static boolean interpret(final IBackend backend,
+			final String module, final boolean distributed) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
-					"interpret", "s", module);
+					"interpret", "so", module, distributed);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangObject o = t.elementAt(0);

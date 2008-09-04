@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -33,6 +31,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlangDebugTarget;
+import org.erlide.runtime.debug.IErlDebugConstants;
 
 import erlang.ErlideDebug;
 
@@ -59,6 +58,9 @@ public class ErlangLaunchConfigurationDelegate extends
 					IErlLaunchAttributes.COOKIE, "").trim();
 			final boolean startMe = config.getAttribute(
 					IErlLaunchAttributes.START_ME, false);
+			final int debugFlags = config.getAttribute(
+					IErlLaunchAttributes.DEBUG_FLAGS,
+					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 
 			System.out.println("Debug:: about to start a backend in " + mode
 					+ " mode, with attributes::");
@@ -70,14 +72,15 @@ public class ErlangLaunchConfigurationDelegate extends
 			System.out.println("  runtime: " + runtime);
 			System.out.println("  node name: " + nodeName);
 			System.out.println("  cookie: " + cookie);
+			System.out.println("  debugFlags: " + debugFlags);
 			if (startMe) {
 				System.out.println("  * start it if not running");
 			}
 			System.out.println("---------------");
 
-			for (String s : projectNames) {
-				IProject project = ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(s);
+			for (final String s : projectNames) {
+				final IProject project = ResourcesPlugin.getWorkspace()
+						.getRoot().getProject(s);
 				if (project == null) {
 					ErlLogger.error("Launch: project not found: '%s'!", s);
 					return;
@@ -104,7 +107,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				ErlLogger.error("Launch: got null backend!");
 				return;
 			}
-			ExecutionBackend backend = b.asExecution();
+			final ExecutionBackend backend = b.asExecution();
 
 			// launch.addProcess(null);
 			backend.registerProjects(projectNames);
@@ -113,12 +116,13 @@ public class ErlangLaunchConfigurationDelegate extends
 				final IProject[] projects = BackendUtil
 						.getProjects(projectNames);
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-						backend, projects);
+						backend, projects, debugFlags);
 				launch.addDebugTarget(target);
+				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
 				// interpret everything we can
 				if (projects != null) {
 					for (final IProject p : projects) {
-						interpretAll(backend, p);
+						interpretAll(backend, p, distributed);
 					}
 				}
 				// send started to target
@@ -140,10 +144,11 @@ public class ErlangLaunchConfigurationDelegate extends
 	}
 
 	private void interpretAll(final ExecutionBackend backend,
-			final IProject project) {
+			final IProject project, final boolean distributed) {
 		final List<String> beams = new ArrayList<String>();
-		final List<String> erls = new ArrayList<String>();
-		final Map<String, String> erlLocations = new TreeMap<String, String>();
+		// final List<String> erls = new ArrayList<String>();
+		// final Map<String, String> erlLocations = new TreeMap<String,
+		// String>();
 		try {
 			project.accept(new IResourceVisitor() {
 				public boolean visit(final IResource resource)
@@ -152,28 +157,35 @@ public class ErlangLaunchConfigurationDelegate extends
 					if (fullPath != null) {
 						final String ext = fullPath.getFileExtension();
 						if (ext != null) {
-							final String baseName = fullPath
-									.removeFileExtension().lastSegment();
+							// final String baseName = fullPath
+							// .removeFileExtension().lastSegment();
 							if (ext.equals("beam")) {
-								beams.add(baseName);
-							} else if (ext.equals("erl")) {
-								final IPath location = resource.getLocation();
-								if (location != null) {
-									erls.add(baseName);
-									erlLocations.put(baseName, location
-											.toString());
-								}
+								// beams.add(baseName);
+								beams.add(fullPath.toString());
 							}
+							// else if (ext.equals("erl")) {
+							// final IPath location = resource.getLocation();
+							// if (location != null) {
+							// erls.add(baseName);
+							// erlLocations.put(baseName, location
+							// .toString());
+							// }
+							// }
 						}
 					}
 					return true;
 				}
 			}, IResource.DEPTH_INFINITE, 0);
-			for (final String erl : erls) {
-				if (beams.contains(erl)) {
-					ErlLogger.debug("interpret " + erlLocations.get(erl));
-					ErlideDebug.interpret(backend, erlLocations.get(erl));
-				}
+			// for (final String erl : erls) {
+			// if (beams.contains(erl)) {
+			// ErlLogger.debug("interpret " + erlLocations.get(erl));
+			// ErlideDebug.interpret(backend, erlLocations.get(erl),
+			// distributed);
+			// }
+			// }
+			for (final String beam : beams) {
+				ErlLogger.debug("interpret " + beam);
+				ErlideDebug.interpret(backend, beam, distributed);
 			}
 		} catch (final CoreException e) {
 			// TODO Auto-generated catch block

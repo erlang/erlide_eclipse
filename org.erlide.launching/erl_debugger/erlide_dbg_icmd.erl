@@ -53,6 +53,7 @@ cmd(Expr, Bs, Ieval) ->
 
 %% Evaluation should break
 cmd(Expr, Bs, break, Ieval) ->
+    erlide_debug:log({break0}),
     break(Expr, Bs, Ieval);
 %% Evaluation should continue, unless there is a breakpoint at
 %% the current line
@@ -60,6 +61,7 @@ cmd(Expr, Bs, running, #ieval{level=Le,module=M}=Ieval) ->
     Line = element(2, Expr),
     case break_p(M, Line, Le, Bs) of
 	true ->
+            erlide_debug:log({icmd_break_true, M, Line, Le, Bs}),
 	    put(next_break, break),
 	    break(Expr, Bs, Ieval);
 	false ->
@@ -75,6 +77,7 @@ cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
 cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
                                                  Next>=Le ->
     put(next_break, break),
+    erlide_debug:log({break1}),
     break(Expr, Bs, Ieval).
 
 %% break_p(Mod, Line, Le, Bs) -> true | false
@@ -123,7 +126,7 @@ break_p(Mod, Line, Le, Bs) ->
 %% Called whenever evaluation enters break mode, informs attached
 %% process and erlide_dbg_iserver
 break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
-%%    erlide_debug:log({Expr, Bs, Ieval}),
+    erlide_debug:log({icmd_break, Expr, Bs, Ieval, erlang:get_stacktrace()}),
     Line = element(2, Expr),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
     tell_attached({break_at,M,Line,Le}),
@@ -244,6 +247,7 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 
     %% Update process dictionary
     put(attached, AttPid),
+    erlide_debug:log({break01, AttPid, Status}),
     put(next_break, break),
 
     %% Tell attached process in which module evalution is located
@@ -315,8 +319,10 @@ handle_int_msg(stop, exit_at, _Bs, _Ieval) ->
 handle_user_msg({cmd, stop}, Status, _Bs, _Ieval) ->
     case lists:member(Status, [running, wait_at, wait_after_at]) of
 	true ->
+            erlide_debug:log({break02, Status}),
 	    put(next_break, break);
 	false when is_integer(Status); is_tuple(Status) ->
+            erlide_debug:log({break03, Status}),
 	    put(next_break, break);
 	false -> % idle | exit_at (| break)
 	    ignore
@@ -456,6 +462,7 @@ mark_running(LineNo, Le) ->
     tell_attached(running).
 
 mark_break(Cm, LineNo, Le) ->
+    erlide_debug:log({break04, Cm, LineNo, Le}),
     put(next_break, break),
     put(user_eval, tl(get(user_eval))),
     tell_attached({break_at, Cm, LineNo, Le}),

@@ -61,7 +61,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
 	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
-			final IProject[] projects) {
+			final IProject[] projects, final int debugFlags) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;
@@ -69,7 +69,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		this.projects = projects;
 		threads = new ArrayList<ErlangProcess>();
 
-		final OtpErlangPid pid = ErlideDebug.startDebug(b);
+		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
 		// start debugger listener job
 		fDbgListener = new DebuggerListener("Erlang debugger listener", pid);
@@ -313,9 +313,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see
-			 * org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
-			 * .otp.erlang.OtpErlangObject)
+			 * @see org.erlide.jinterface.rpc.IErlEventHandler#handleEvent(com.ericsson
+			 *      .otp.erlang.OtpErlangObject)
 			 */
 			public void handleEvent(final OtpErlangObject msg) {
 				if (msg == null) {

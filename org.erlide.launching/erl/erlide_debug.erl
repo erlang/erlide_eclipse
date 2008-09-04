@@ -22,7 +22,7 @@
 %%
 %% Exported Functions
 %%
--export([start_debug/0, 
+-export([start_debug/1, 
          attached/2, 
          send_started/1]).
 -export([line_breakpoint/3, 
@@ -32,7 +32,7 @@
          step_over/1, 
          step_into/1, 
          step_return/1,
-         interpret/1, 
+         interpret/2, 
          all_stack_frames/1, 
          eval/2, 
          set_variable_value/4, 
@@ -47,9 +47,21 @@
 %% API Functions
 %%
 
-start_debug() ->
+%% copied from IErlDebugConstants
+%% final int DISTRIBUTED_DEBUG_FLAG = 1;
+%% final int ATTACH_ON_FIRST_CALL_FLAG = 2;
+%% final int ATTACH_ON_BREAKPOINT_FLAG = 4;
+%% final int ATTACH_ON_EXIT_FLAG = 8;
+
+fix_flags(N) ->
+    fix_flag(N, 2, init) ++ fix_flag(N, 4, break) ++ fix_flag(N, 8, exit).
+
+fix_flag(N, F, A) when N band F =/= 0 -> [A];
+fix_flag(_, _, _) -> [].
+
+start_debug(Flags) ->
 	group_leader(whereis(init), self()),
-	{ok, Pid} = erlide_dbg_mon:start(local, default),
+	{ok, Pid} = erlide_dbg_mon:start(local, fix_flags(Flags)),
 	Pid.
 
 send_started(JPid) ->
@@ -92,10 +104,11 @@ is_erlide_process(Pid) when pid(Pid)->
               end,
     Started or Current.
 
-interpret(File) ->
-%%     ?Debug({interpret, File}),
-%%    log({interpret, File}),
-    erlide_dbg_mon:interpret([File]).
+get_dist(true) -> distributed;
+get_dist(false) -> local.
+
+interpret(File, Dist) ->
+    erlide_dbg_mon:interpret(File, get_dist(Dist)).
 
 line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),

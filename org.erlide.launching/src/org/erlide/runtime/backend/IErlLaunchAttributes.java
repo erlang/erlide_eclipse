@@ -28,4 +28,7 @@ public interface IErlLaunchAttributes {
 	final String NODE_NAME = prefix + ".nodeName";
 	final String COOKIE = prefix + ".cookie";
 	final String START_ME = prefix + ".startMe";
+
+	final String DEBUG_FLAGS = prefix + ".debugFlags"; // @see
+														// IErlDebugConstants
 }
