@@ -459,11 +459,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final IProject[] referencedProjects = project
 					.getReferencedProjects();
 			for (final IProject p : referencedProjects) {
-				includeDirs = getIncludeDirs(p, includeDirs);
+				if (p.isAccessible()) {
+					includeDirs = getIncludeDirs(p, includeDirs);
+				}
 			}
 		} catch (final CoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 
 		// delete beam file
@@ -548,8 +548,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (inc.isAbsolute()) {
 				includeDirs.add(inc.toString());
 			} else {
-				includeDirs.add(project.getFolder(incs[i]).getLocation()
-						.toString());
+				final IFolder folder = project.getFolder(incs[i]);
+				final IPath location = folder.getLocation();
+				if (folder != null) {
+					includeDirs.add(location.toString());
+				}
 			}
 		}
 		return includeDirs;
