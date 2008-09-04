@@ -47,6 +47,8 @@ import erlang.ErlideDoc;
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
 
+	private static final ArrayList<IErlModule> EMPTY_MODULE_LIST = new ArrayList<IErlModule>();
+
 	// private ITextEditor fEditor;
 	private List<IErlImport> fImports;
 
@@ -84,19 +86,23 @@ public class ErlTextHover implements ITextHover,
 			return s1.stringValue();
 		} else if (r1 instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
+			final OtpErlangObject o0 = t.elementAt(0);
 			final OtpErlangObject o1 = t.elementAt(1);
-			if (o1 instanceof OtpErlangAtom) {
-				final OtpErlangAtom a = (OtpErlangAtom) o1;
-				String definedName = a.atomValue();
+			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
+				final OtpErlangAtom a0 = (OtpErlangAtom) o0;
+				final OtpErlangAtom a1 = (OtpErlangAtom) o1;
+				String definedName = a1.atomValue();
 				if (definedName.charAt(0) == '?') {
 					definedName = definedName.substring(1);
 				}
+				final IErlElement.Kind kindToFind = a0.atomValue().equals(
+						"record") ? IErlElement.Kind.RECORD_DEF
+						: IErlElement.Kind.MACRO_DEF;
 				try {
 					final IErlPreprocessorDef pd = ErlModelUtils
 							.findPreprocessorDef((IProject) fModule
 									.getProject().getResource(), fModule,
-									definedName, IErlElement.Kind.MACRO_DEF,
-									new ArrayList<IErlModule>());
+									definedName, kindToFind, EMPTY_MODULE_LIST);
 					if (pd != null) {
 						return pd.getExtra();
 					}
