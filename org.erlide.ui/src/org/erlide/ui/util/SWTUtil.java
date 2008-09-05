@@ -131,17 +131,10 @@ public class SWTUtil {
 	 */
 	public static Button createPushButton(final Composite parent,
 			final String label, final Image image) {
-		final Button button = new Button(parent, SWT.PUSH);
-		button.setFont(parent.getFont());
+		final Button button = createButton(parent, label, SWT.PUSH);
 		if (image != null) {
 			button.setImage(image);
 		}
-		if (label != null) {
-			button.setText(label);
-		}
-		final GridData gd = new GridData();
-		button.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(button);
 		return button;
 	}
 
@@ -157,7 +150,19 @@ public class SWTUtil {
 	 */
 	public static Button createRadioButton(final Composite parent,
 			final String label) {
-		final Button button = new Button(parent, SWT.RADIO);
+		final Button button = createButton(parent, label, SWT.RADIO);
+		return button;
+	}
+
+	/**
+	 * @param parent
+	 * @param label
+	 * @param style
+	 * @return
+	 */
+	private static Button createButton(final Composite parent,
+			final String label, final int style) {
+		final Button button = new Button(parent, style);
 		button.setFont(parent.getFont());
 		if (label != null) {
 			button.setText(label);
@@ -166,6 +171,16 @@ public class SWTUtil {
 		button.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(button);
 		return button;
+	}
+
+	/**
+	 * @param parent
+	 * @param label
+	 * @return
+	 */
+	public static Button createCheckButton(final Composite parent,
+			final String label) {
+		return createButton(parent, label, SWT.CHECK);
 	}
 
 	/**

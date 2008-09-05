@@ -60,6 +60,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 
+	private final WaitingForDebuggerListener waiter;
+
 	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
 			final IProject[] projects, final int debugFlags) {
 		super(null);
@@ -72,10 +74,25 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
 		// start debugger listener job
-		fDbgListener = new DebuggerListener("Erlang debugger listener", pid);
+		waiter = new WaitingForDebuggerListener();
+		fDbgListener = new DebuggerListener("Erlang debugger listener", pid,
+				waiter);
 
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
 				this);
+	}
+
+	public class WaitingForDebuggerListener {
+		public synchronized void doWait() {
+			try {
+				wait(100);
+			} catch (final InterruptedException e) {
+			}
+		}
+
+		synchronized void doNotify() {
+			notify();
+		}
 	}
 
 	@Override
@@ -290,7 +307,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		private final ErlEventLoop loop;
 
-		public DebuggerListener(final String name, final OtpErlangPid dbgPid) {
+		public DebuggerListener(final String name, final OtpErlangPid dbgPid,
+				final WaitingForDebuggerListener waiting) {
 			fDbgPid = dbgPid;
 
 			// TODO use the new event router job!
@@ -298,6 +316,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			final IErlEventHandler r = new DebuggerJob();
 			loop = new ErlEventLoop(r);
 			loop.start();
+			waiting.doNotify();
 		}
 
 		class DebuggerJob implements IErlEventHandler {
@@ -321,7 +340,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					return;
 				}
 				ErlLogger.debug("### got msg: " + msg);
-				// TODO Fler events fr�n erlide_dbg_mon...
+				// TODO Fler events från erlide_dbg_mon...
 				final OtpErlangTuple t = (OtpErlangTuple) msg;
 				final OtpErlangObject el0 = t.elementAt(0);
 				if (el0 instanceof OtpErlangAtom) {
@@ -506,6 +525,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	void terminated() {
 		fireTerminateEvent();
+	}
+
+	public WaitingForDebuggerListener getWaiter() {
+		return waiter;
 	}
 
 }

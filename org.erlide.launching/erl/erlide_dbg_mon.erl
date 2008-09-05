@@ -22,7 +22,7 @@
 -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %% External exports
--export([start/2, stop/0, interpret/2, line_breakpoint/3]).
+-export([start/2, stop/0, interpret/2, interpreted/0, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 
@@ -221,7 +221,11 @@ gui_cmd(kill_all_processes, State) ->
 
 gui_cmd({interpret, {AbsBeam, Dist}}, State) ->
     Res = erlide_int:interpret_beam(AbsBeam, Dist),
+    log({?MODULE, ?LINE, AbsBeam}),
     {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
+gui_cmd({interpreted, []}, State) ->
+    Res = State#state.interpreted,
+    {Res, State};
 gui_cmd(delete_all, State) ->
     lists:foreach(fun(Mod) -> erlide_int:nn(Mod) end, erlide_int:interpreted()),
     {ok, State};
@@ -380,6 +384,9 @@ int_cmd(_Other, State) ->
 %%====================================================================
 interpret(Module, Dist) ->
     cmd(interpret, {Module, Dist}).
+
+interpreted() ->
+    cmd(interpreted, []).
 
 suspend(MetaPid) ->
     cmd(suspend, MetaPid).

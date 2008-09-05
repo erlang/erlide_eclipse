@@ -117,9 +117,10 @@ public class ErlangLaunchConfigurationDelegate extends
 						.getProjects(projectNames);
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
 						backend, projects, debugFlags);
+				target.getWaiter().doWait();
 				launch.addDebugTarget(target);
-				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
 				// interpret everything we can
+				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
 				if (projects != null) {
 					for (final IProject p : projects) {
 						interpretAll(backend, p, distributed);
@@ -146,43 +147,22 @@ public class ErlangLaunchConfigurationDelegate extends
 	private void interpretAll(final ExecutionBackend backend,
 			final IProject project, final boolean distributed) {
 		final List<String> beams = new ArrayList<String>();
-		// final List<String> erls = new ArrayList<String>();
-		// final Map<String, String> erlLocations = new TreeMap<String,
-		// String>();
 		try {
 			project.accept(new IResourceVisitor() {
 				public boolean visit(final IResource resource)
 						throws CoreException {
-					final IPath fullPath = resource.getFullPath();
-					if (fullPath != null) {
-						final String ext = fullPath.getFileExtension();
+					final IPath location = resource.getLocation();
+					if (location != null) {
+						final String ext = location.getFileExtension();
 						if (ext != null) {
-							// final String baseName = fullPath
-							// .removeFileExtension().lastSegment();
 							if (ext.equals("beam")) {
-								// beams.add(baseName);
-								beams.add(fullPath.toString());
+								beams.add(location.toString());
 							}
-							// else if (ext.equals("erl")) {
-							// final IPath location = resource.getLocation();
-							// if (location != null) {
-							// erls.add(baseName);
-							// erlLocations.put(baseName, location
-							// .toString());
-							// }
-							// }
 						}
 					}
 					return true;
 				}
 			}, IResource.DEPTH_INFINITE, 0);
-			// for (final String erl : erls) {
-			// if (beams.contains(erl)) {
-			// ErlLogger.debug("interpret " + erlLocations.get(erl));
-			// ErlideDebug.interpret(backend, erlLocations.get(erl),
-			// distributed);
-			// }
-			// }
 			for (final String beam : beams) {
 				ErlLogger.debug("interpret " + beam);
 				ErlideDebug.interpret(backend, beam, distributed);
