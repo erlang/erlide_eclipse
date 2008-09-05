@@ -2,19 +2,7 @@
 %% Created: Mar 23, 2006
 %% Description: TODO: Add description to erlide_open
 -module(erlide_open).
-
-%%
-%% Include files
-%%
-
-%-define(DEBUG, 1).
-
--include("erlide.hrl").
--include("erlide_scanner.hrl").
-
-%-define(SCANNER, erlide_scanner).
--define(SCANNER, erlide_scanner2).
-
+-author(jakobce@gmail.com).
 
 %%
 %% Exported Functions
@@ -26,26 +14,35 @@
          get_include_lib/1]).
 
 %%
+%% Include files
+%%
+
+%% -define(DEBUG, 1).
+
+-include("erlide.hrl").
+-include("erlide_scanner.hrl").
+
+%%
 %% API Functions
 %%
 
 
 open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
-   	try
+    try
         {TokensWComments, BeforeReversed} = 
-            ?SCANNER:getTokenWindow(Mod, Offset, 5, 50),
-		?D({TokensWComments, BeforeReversed}),
+            erlide_scanner2:getTokenWindow(Mod, Offset, 5, 50),
+        ?D({TokensWComments, BeforeReversed}),
         try_open(Mod, Offset, TokensWComments, BeforeReversed, 
                  ExternalModules, PathVars),
         error
     catch
         throw:{open, Res} ->
-			Res;
-        throw:_ ->
-            error;
-        error:_ ->
-            error
+            Res;
+        throw:T ->
+            {error, T};
+        error:E ->
+            {error, E}
     end.
 
 try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars) ->
@@ -101,10 +98,10 @@ o_tokens(_, _, _, _) ->
 o_include([#token{kind='('}, #token{kind=string, value=File} | _]) ->
     throw({open, {include, File}});
 o_include(_) ->
-	no.
+    no.
 
 o_include_lib([#token{kind='('}, #token{kind=string, value=Path} | _]) ->
-	{include, File} = get_include_lib(Path),
+    {include, File} = get_include_lib(Path),
     throw({open, {include, File}});
 o_include_lib(_) ->
 	no.
@@ -117,7 +114,7 @@ o_record(Value) ->
 
 o_external(Module, Function, [_ | ParameterListTokens], ExternalModules, PathVars) ->
     ?D({Module, Function, ParameterListTokens}),
-	N = erlide_text:guess_arity(ParameterListTokens),
+    N = erlide_text:guess_arity(ParameterListTokens),
     ?D(N),
     P = get_source_from_module(Module, ExternalModules, PathVars),
     throw({open, {external, Module, Function, N, P}}).
