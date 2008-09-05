@@ -221,7 +221,7 @@ gui_cmd(kill_all_processes, State) ->
 
 gui_cmd({interpret, {AbsBeam, Dist}}, State) ->
     Res = erlide_int:interpret_beam(AbsBeam, Dist),
-    log({?MODULE, ?LINE, AbsBeam}),
+%%     log({?MODULE, ?LINE, AbsBeam}),
     {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
 gui_cmd({interpreted, []}, State) ->
     Res = State#state.interpreted,

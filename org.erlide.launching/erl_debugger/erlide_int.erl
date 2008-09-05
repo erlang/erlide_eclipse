@@ -115,7 +115,6 @@ interpret_beam(AbsBeam, Dist) ->
             Mod = list_to_atom(filename:basename(AbsBeam, ".beam")),
             load({Mod, AbsBeam, Exp, Abst}, Dist);
         Error ->
-	    log({?MODULE, ?LINE, Error}),
             Error
     end.
 
@@ -520,32 +519,22 @@ load({Mod, Src, Beam, Exp, Abst}, Dist) ->
 	       end),
     {module, Mod};
 load({Mod, Beam, Exp, Abst}, Dist) ->
-    log({?MODULE, ?LINE}),
     everywhere(Dist,
                fun() ->
-                       log({?MODULE, ?LINE}),
                        code:purge(Mod),
-                       log({?MODULE, ?LINE}),
                        erts_debug:breakpoint({Mod,'_','_'}, false),
-                       log({?MODULE, ?LINE}),
                        {module,Mod} = code:load_abs(filename:rootname(Beam),
                                                     Mod),
-                       log({?MODULE, ?LINE}),
                        {module,Mod}
                end),
-    log({?MODULE, ?LINE}),
     {ok, BeamBin} = file:read_file(Beam),
-    log({?MODULE, ?LINE}),
     MD5 = code:module_md5(BeamBin),
     Bin = term_to_binary({interpreter_module,Exp,Abst,<<>>,MD5}),
-    log({?MODULE, ?LINE}),
     {module, Mod} = erlide_dbg_iserver:safe_call({load, Mod, no_source, Bin}),
-    log({?MODULE, ?LINE}),
     everywhere(Dist,
 	       fun() ->
 		       true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0
 	       end),
-    log({?MODULE, ?LINE}),
     {module, Mod}.
 
 check_module(Mod) ->
