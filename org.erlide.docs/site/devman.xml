@@ -1,190 +1,67 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE article PUBLIC '-//OASIS//DTD DocBook XML V4.5//EN' 'http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd'>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <info>
+    <title>Erlide developer's manual</title>
+    <author>
+      <personname>
+        <firstname>Vlad</firstname>
+        <surname>Dumitrescu</surname>
+      </personname>
+    </author>
+  </info>
 
-<article>
-  <title>http://www.dbdoclet.org/herold</title>
   <!--File: c:\programs\erlide.sf\org.erlide.docs\site\devman.html-->
-  <sect1>
-    <title id="devman.html">Erlide developer&apos;s manual</title>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e1"/>Erlide developer&apos;s manual</title>
-      <sect3 remap="h3">
-        <title>VladDumitrescu</title>
-        <variablelist>
-          <varlistentry>
-            <term>
-              <link linkend="devman.html-d0e12">1. Setting up the environment</link>
-            </term>
-            <listitem>
-              <para>
-                <variablelist>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e15">1.1. Installing Eclipse and Erlide</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e47">1.2. Retrieve code from CVS</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e90">1.3. Build</link>
-                    </term>
-                    <listitem>
-                      <simpara/>
-                    </listitem>
-                  </varlistentry>
-                </variablelist>
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term>
-              <link linkend="devman.html-d0e119">2. Description of plugins</link>
-            </term>
-            <listitem>
-              <para>
-                <variablelist>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e122">2.1. erlide-feature</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e131">2.2. erlide-jinterface</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e136">2.3. erlide-launching</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e141">2.4. erlide-core</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e153">2.5. erlide-basic-ui</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e158">2.6. erlide-ui</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e163">2.7. erlide-update</link>
-                    </term>
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </varlistentry>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e168">2.8. erlide-docs</link>
-                    </term>
-                    <listitem>
-                      <simpara/>
-                    </listitem>
-                  </varlistentry>
-                </variablelist>
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term>
-              <link linkend="devman.html-d0e173">3. Release management</link>
-            </term>
-            <listitem>
-              <para/>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term>
-              <link linkend="devman.html-d0e180">4. Design notes</link>
-            </term>
-            <listitem>
-              <para/>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term>
-              <link linkend="devman.html-d0e185">5. Miscellaneous</link>
-            </term>
-            <listitem>
-              <para>
-                <variablelist>
-                  <varlistentry>
-                    <term>
-                      <link linkend="devman.html-d0e188">5.1. Tools</link>
-                    </term>
-                    <listitem>
-                      <simpara/>
-                    </listitem>
-                  </varlistentry>
-                </variablelist>
-              </para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-      </sect3>
-    </sect2>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e12"/>1. Setting up the environment</title>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e15"/>1.1. Installing Eclipse and Erlide</title>
+  <section>
+    <info>
+      <title xml:id="devman.html">Erlide developer's manual</title>
+    </info>
+
+    <section remap="h2">
+      <info>
+        <title><anchor xml:id="devman.html-d0e12"/>1. Setting up the environment</title>
+      </info>
+
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e15"/>1.1. Installing Eclipse and Erlide</title>
+        </info>
+
         <itemizedlist>
           <listitem>
-            <para> Install Erlang R9 or later, if it isn&apos;t already present on your system.</para>
+            <para> Install Erlang R9 or later, if it isn't already present on your system.</para>
           </listitem>
           <listitem>
             <para> Install Eclipse. The recommended Eclipse version is 3.1.1.</para>
           </listitem>
           <listitem>
-            <para> Point the Eclipse update manager to the Erlide update site at <ulink url="http://erlide.sf.net/update">http://erlide.sourceforge.net/update</ulink> and retrieve the latest version. If your network uses a proxy, fill in the appropriate data in Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy settings.</para>
+            <para> Point the Eclipse update manager to the Erlide update site at <link
+                xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://erlide.sf.net/update"
+                >http://erlide.sourceforge.net/update</link> and retrieve the latest version. If
+              your network uses a proxy, fill in the appropriate data in
+              Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy settings.</para>
           </listitem>
           <listitem>
-            <para> Restart. A dialog will pop up, asking for the path to your Erlang instalation. Enter the path to the top level directory (i.e. <literal>$ERL_TOP</literal>). Do not restart now, but go to Window-&gt;Preferences-&gt;Run/debug-&gt;String substitution and add a new item, named ERL_ROOT and with the same value as above. Now restart.</para>
+            <para> Restart. A dialog will pop up, asking for the path to your Erlang instalation.
+              Enter the path to the top level directory (i.e. <literal>$ERL_TOP</literal>). Do not
+              restart now, but go to Window-&gt;Preferences-&gt;Run/debug-&gt;String
+              substitution and add a new item, named ERL_ROOT and with the same value as above. Now
+              restart.</para>
           </listitem>
           <listitem>
             <para> Done!</para>
           </listitem>
         </itemizedlist>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e47"/>1.2. Retrieve code from CVS</title>
-        <para>Configure Eclipse CVS to use extssh connection method when &quot;<emphasis>ext</emphasis>&quot; is chosen.</para>
-        <para>In the CVS perspective, connect to the erlide CVS, at <literal>erlide.cvs.sourceforge.net:/cvsroot/erlide</literal>. Use &quot;<emphasis>ext</emphasis>&quot;-type of connection.</para>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e47"/>1.2. Retrieve code from CVS</title>
+        </info>
+
+        <para>Configure Eclipse CVS to use extssh connection method when "<emphasis>ext</emphasis>"
+          is chosen.</para>
+        <para>In the CVS perspective, connect to the erlide CVS, at
+            <literal>erlide.cvs.sourceforge.net:/cvsroot/erlide</literal>. Use
+          "<emphasis>ext</emphasis>"-type of connection.</para>
         <para>Check out the following modules:</para>
         <itemizedlist>
           <listitem>
@@ -218,44 +95,71 @@
             <para> erlide-erlc</para>
           </listitem>
         </itemizedlist>
-        <para> The code for Eclipse 3.2 is in a branch called &quot;convert_32&quot;.</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e90"/>1.3. Build</title>
+        <para> The code for Eclipse 3.2 is in a branch called "convert_32".</para>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e90"/>1.3. Build</title>
+        </info>
+
         <itemizedlist>
           <listitem>
-            <para> After that, everything should compile and you can try starting the newly build Erlide. For this you have to create a run configuration. Choose Run-&gt;Run... and Eclipse Application-&gt;New. Use a nice, friendly name like &quot;Erlide&quot; and in the plug-ins tab select &quot;Choose from list&quot;.</para>
+            <para> After that, everything should compile and you can try starting the newly build
+              Erlide. For this you have to create a run configuration. Choose Run-&gt;Run... and
+              Eclipse Application-&gt;New. Use a nice, friendly name like "Erlide" and in the
+              plug-ins tab select "Choose from list".</para>
           </listitem>
           <listitem>
-            <para> Check all the erlide plugins under &quot;workspace plugins&quot; and then &quot;Add required plugins&quot; for a minimal setting. Press validate and add any other plugins that may be needed.</para>
+            <para> Check all the erlide plugins under "workspace plugins" and then "Add required
+              plugins" for a minimal setting. Press validate and add any other plugins that may be
+              needed.</para>
           </listitem>
           <listitem>
-            <para> Go to the Common tab and check the Show in favorites for both run and debug.</para>
+            <para> Go to the Common tab and check the Show in favorites for both run and
+            debug.</para>
           </listitem>
           <listitem>
-            <para> Check all the erlide plugins under &quot;workspace plugins&quot; and then &quot;Add required plugins&quot; for a minimal setting. Press validate and add any other plugins that may be needed.</para>
+            <para> Check all the erlide plugins under "workspace plugins" and then "Add required
+              plugins" for a minimal setting. Press validate and add any other plugins that may be
+              needed.</para>
           </listitem>
         </itemizedlist>
-      </sect3>
-    </sect2>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e119"/>2. Description of plugins</title>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e122"/>2.1. erlide-feature</title>
+      </section>
+    </section>
+    <section remap="h2">
+      <info>
+        <title><anchor xml:id="devman.html-d0e119"/>2. Description of plugins</title>
+      </info>
+
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e122"/>2.1. erlide-feature</title>
+        </info>
+
         <para>The erlide feature, pointing to the plugins.</para>
-        <para>For alpha releases, the feature&apos;s version number is to be forced into the plugins.</para>
+        <para>For alpha releases, the feature's version number is to be forced into the plugins.</para>
         <para>Here we can also build an archve with all the plugins.</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e131"/>2.2. erlide-jinterface</title>
-        <para>A wrapper for the jinterface library. Provides also some extensions to it (like support for Pids).</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e136"/>2.3. erlide-launching</title>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e131"/>2.2. erlide-jinterface</title>
+        </info>
+
+        <para>A wrapper for the jinterface library. Provides also some extensions to it (like
+          support for Pids).</para>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e136"/>2.3. erlide-launching</title>
+        </info>
+
         <para>This plugin allows starting Erlang nodes and provides the Backend abstraction.</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e141"/>2.4. erlide-core</title>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e141"/>2.4. erlide-core</title>
+        </info>
+
         <para>Here we define the rest of the non-ui functionality. Most important are:</para>
         <itemizedlist>
           <listitem>
@@ -265,50 +169,82 @@
             <para> the builder</para>
           </listitem>
         </itemizedlist>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e153"/>2.5. erlide-basic-ui</title>
-        <para>This plugin provides the means to configure the backend (the dialogs for entering the path to the used Erlang instalation).</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e158"/>2.6. erlide-ui</title>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e153"/>2.5. erlide-basic-ui</title>
+        </info>
+
+        <para>This plugin provides the means to configure the backend (the dialogs for entering the
+          path to the used Erlang instalation).</para>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e158"/>2.6. erlide-ui</title>
+        </info>
+
         <para>This plugin contains all UI related functionality.</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e163"/>2.7. erlide-update</title>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e163"/>2.7. erlide-update</title>
+        </info>
+
         <para>This is a project for building the update site.</para>
-      </sect3>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e168"/>2.8. erlide-docs</title>
-        <para>This is just a gathering place for all documentation, both internal and external (the latter includes the project&apos;s web site).</para>
-      </sect3>
-    </sect2>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e173"/>3. Release management</title>
-      <para>There are a couple of scripts that handle the packaging of the plugins and the publishing/uploading to the Sourceforge site.</para>
+      </section>
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e168"/>2.8. erlide-docs</title>
+        </info>
+
+        <para>This is just a gathering place for all documentation, both internal and external (the
+          latter includes the project's web site).</para>
+      </section>
+    </section>
+    <section remap="h2">
+      <info>
+        <title><anchor xml:id="devman.html-d0e173"/>3. Release management</title>
+      </info>
+
+      <para>There are a couple of scripts that handle the packaging of the plugins and the
+        publishing/uploading to the Sourceforge site.</para>
       <para>TBD</para>
-    </sect2>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e180"/>4. Design notes</title>
+    </section>
+    <section remap="h2">
+      <info>
+        <title><anchor xml:id="devman.html-d0e180"/>4. Design notes</title>
+      </info>
+
       <para>TBD</para>
-    </sect2>
-    <sect2 remap="h2">
-      <title><anchor id="devman.html-d0e185"/>5. Miscellaneous</title>
-      <sect3 remap="h3">
-        <title><anchor id="devman.html-d0e188"/>5.1. Tools</title>
+    </section>
+    <section remap="h2">
+      <info>
+        <title><anchor xml:id="devman.html-d0e185"/>5. Miscellaneous</title>
+      </info>
+
+      <section remap="h3">
+        <info>
+          <title><anchor xml:id="devman.html-d0e188"/>5.1. Tools</title>
+        </info>
+
         <itemizedlist>
           <listitem>
-            <para> OpenOffice 2 <ulink url="http://www.openoffice.org">http://www.openoffice.org</ulink></para>
+            <para> OpenOffice 2 <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="http://www.openoffice.org">http://www.openoffice.org</link></para>
           </listitem>
           <listitem>
-            <para> XMLmind XML editor for the developer&apos;s manual <ulink url="http://www.xmlmind.com/xmleditor/">http://www.xmlmind.com/xmleditor/</ulink></para>
+            <para> XMLmind XML editor for the developer's manual <link
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="http://www.xmlmind.com/xmleditor/"
+              >http://www.xmlmind.com/xmleditor/</link></para>
           </listitem>
           <listitem>
-            <para> Open Workbench for the time plans <ulink url="http://www.openworkbench.org">http://www.openworkbench.org</ulink></para>
+            <para> Open Workbench for the time plans <link
+                xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.openworkbench.org"
+                >http://www.openworkbench.org</link></para>
           </listitem>
         </itemizedlist>
-      </sect3>
-    </sect2>
-  </sect1>
+      </section>
+    </section>
+  </section>
 </article>
-

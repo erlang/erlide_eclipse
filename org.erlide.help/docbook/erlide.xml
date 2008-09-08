@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<book lang="en-US">
-  <title>Erlide - the Erlang IDE</title>
-  <bookinfo>
+<book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en-US">
+  <info>
+    <title>Erlide, the Erlang IDE</title>
     <author>
-      <firstname>Vlad</firstname>
-      <surname>Dumitrescu</surname>
+      <personname>
+        <firstname>Vlad</firstname>
+        <surname>Dumitrescu</surname>
+      </personname>
     </author>
     <date>2008-08-28</date>
     <copyright>
@@ -14,15 +14,19 @@
       <holder>Vlad Dumitrescu; parts IBM Corporation and others. See <link linkend="legal"
         >Legal</link></holder>
     </copyright>
-  </bookinfo>
-  <chapter id="gettingStarted">
-    <title>Getting started</title>
-    <section id="instalation_guide">
-      <title>Installation guide</title>
+  </info>
+  <chapter xml:id="gettingStarted">
+    <info>
+      <title>Getting started</title>
+    </info>
+    <sect1 xml:id="instalation_guide">
+      <info>
+        <title>Installation guide</title>
+      </info>
       <para>
         <itemizedlist>
           <listitem>
-            <para>Install <emphasis>Erlang R11</emphasis> or later, if it isn't already present on
+            <para>Install Erlang <emphasis>R11</emphasis> or later, if it isn't already present on
               your system. On Windows systems, use a path with no spaces in it.</para>
           </listitem>
           <listitem>
@@ -30,9 +34,12 @@
             <emphasis>3.3</emphasis>.</para>
           </listitem>
           <listitem>
-            <para>If your network uses a proxy, fill in the appropriate data in
-                <guimenu>Window-&gt;Preferences-&gt;Install/Update-&gt;Proxy
-              settings</guimenu>.</para>
+            <para>If your network uses a proxy, fill in the appropriate data in <menuchoice>
+                <guimenu>Window</guimenu>
+                <guisubmenu>Preferences</guisubmenu>
+                <guisubmenu> Install/Update</guisubmenu>
+                <guimenuitem>Proxy settings</guimenuitem>
+              </menuchoice>.</para>
           </listitem>
           <listitem>
             <para>Download Erlide by going to <menuchoice>
@@ -42,28 +49,184 @@
                 <guimenuitem>Search for new features to install</guimenuitem>
               </menuchoice>. In the dialog, choose <guibutton>New remote site</guibutton> and enter
                 <userinput>Erlide</userinput> as name and <userinput>
-                <ulink url="http://erlide.sourceforge.net/update"
-                  >http://erlide.sourceforge.net/update</ulink>
-              </userinput> as URL. Follow the dialogs with the obvious choices and in the end you
-              will be asked to restart.</para>
+                http://erlide.sourceforge.net/update </userinput> as URL. Follow the dialogs with
+              the obvious choices and in the end you will be asked to restart.</para>
           </listitem>
           <listitem>
-            <para>Restart. A dialog will pop up, asking for the path to your Erlang instalation.
-              Enter the path to the top level directory (i.e. <varname>$ERL_TOP</varname>). Now
-              restart again.</para>
+            <para>Restart. Go to <menuchoice>
+                <guimenu>Window</guimenu>
+                <guisubmenu>Preferences</guisubmenu>
+                <guisubmenu>Erlang</guisubmenu>
+                <guimenuitem>Installed runtimes</guimenuitem>
+              </menuchoice>and add an entry (or several) for your Erlang installation of choice. The
+              required parameters are the name and the path to the top level directory (i.e.
+                <varname>$ERL_TOP</varname>). Now restart again.</para>
           </listitem>
           <listitem>
-            <para>Done! You're ready to start exploring</para>
+            <para>Done! You're ready to start exploring.</para>
           </listitem>
         </itemizedlist>
       </para>
-      <note>
-        <para>If you want to work on Erlide itself, please read the <link linkend="install_dev"
-            >Developer reference</link> for the specific details.</para>
-      </note>
-    </section>
-    <section id="quick_intro">
-      <title>Quick intro</title>
+    </sect1>
+    <sect1 xml:id="tutorials">
+      <info>
+        <title>Tutorials</title>
+      </info>
+      <sect2>
+        <info>
+          <title>Basic tutorial</title>
+        </info>
+        <para>This Getting Started tutorial is designed to help you learn about using the Erlang IDE
+          (Erlide) in the workbench. This tutorial assumes the following:<itemizedlist>
+            <listitem>
+              <para>That you are starting with a brand new workbench installation with all the
+                default settings and preferences.</para>
+            </listitem>
+            <listitem>
+              <para>That the Erlide plugin is properly installed and running.</para>
+            </listitem>
+            <listitem>
+              <para>That you are familiar with the basic workbench mechanisms (e.g., views, text
+                searching, perspectives, etc.)</para>
+            </listitem>
+          </itemizedlist></para>
+        <sect3>
+          <info>
+            <title>Preparing the workbench</title>
+          </info>
+          <para>In this section, you will verify that the workbench is properly set up for Erlang
+            development. See the <link linkend="instalation_guide">installation guide</link>.</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Creating your first Erlang project</title>
+          </info>
+          <para>In this section, you will create a new Erlang project.</para>
+          <para>Inside Eclipse select the menu item <menuchoice>
+              <guimenu>File</guimenu>
+              <guisubmenu>New...</guisubmenu>
+              <guimenuitem>Project...</guimenuitem>
+            </menuchoice> to open the New Project wizard. Select <guimenu>Erlang Project</guimenu>
+            then click <guibutton>Next</guibutton> to start the New Erlang Project wizard: on this
+            page, type <userinput>ErlDemo</userinput> in the Project name field.</para>
+          <para>In the Resource Explorer, make sure that the src directory under the ErlDemo project
+            is selected. Select the menu item <menuchoice>
+              <guimenu>File</guimenu>
+              <guisubmenu>New...</guisubmenu>
+              <guimenuitem>File</guimenuitem>
+            </menuchoice> and enter <userinput>mytest.erl</userinput>.</para>
+          <para>Related concepts: Erlang projects,Erlang views</para>
+          <para>Related tasks: Working with build paths,Creating a new Erlang project,Using the
+            Package Explorer</para>
+          <para>Related reference: New Erlang Project Wizard</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Browsing Erlang elements using the resource explorer</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Editing Erlang elements</title>
+          </info>
+          <sect4>
+            <info>
+              <title>Opening an Erlang editor</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+          <sect4>
+            <info>
+              <title>Adding new functions</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+          <sect4>
+            <info>
+              <title>Using content assist</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+          <sect4>
+            <info>
+              <title>Identifying problems in your code</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+          <sect4>
+            <info>
+              <title>Using code templates</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+          <sect4>
+            <info>
+              <title>Using the local history</title>
+            </info>
+            <para>TBD</para>
+          </sect4>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Creating an Erlang module</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Renaming Erlang elements</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Moving and copying Erlang elements</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Navigate to an Erlang element's declaration</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Searching the workbench</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Running your programs</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Debugging your programs</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+        <sect3>
+          <info>
+            <title>Evaluating expressions</title>
+          </info>
+          <para>TBD</para>
+        </sect3>
+      </sect2>
+      <sect2>
+        <info>
+          <title>Configuration tutorial</title>
+        </info>
+        <para>TBD</para>
+      </sect2>
+    </sect1>
+    <sect1 xml:id="quick_intro">
+      <info>
+        <title>Quick intro</title>
+      </info>
       <note>
         <para>This chapter is just a quick-and-dirty version of a more complete documentation, whose
           outline you see below and which will follow when time permits.</para>
@@ -99,14 +262,17 @@
             <para>The Erlang perspective should open.</para>
           </listitem>
           <listitem>
-            <para>The editor works as usual. Can be configured in Window-Preferences-&gt;Erlang.
-              Note that not all options are functional.</para>
+            <para>The editor works as usual. Can be configured in <menuchoice>
+                <guimenu>Window</guimenu>
+                <guisubmenu>Preferences</guisubmenu>
+                <guimenuitem>Erlang</guimenuitem>
+              </menuchoice>. Note that not all options are functional yet.</para>
           </listitem>
           <listitem>
-            <para>Some useful commands in the editor are<itemizedlist>
+            <para>Some useful commands in the editor are: <itemizedlist>
                 <listitem>
-                  <para>put cursor on a function call (only standard OTP modules are supported
-                    currently) and its documentation will pop up</para>
+                  <para> put cursor on a function call (only standard OTP modules are supported
+                    currently) and its documentation will pop up </para>
                 </listitem>
                 <listitem>
                   <para>put cursor in a function name and press <keysym>F3</keysym> and the source
@@ -118,7 +284,7 @@
                 </listitem>
                 <listitem>
                   <para>right clicking in the editor will show a menu where some Erlang options are
-                    at the bottom. "Correct indentation" is still not so good yet.</para>
+                    at the bottom. </para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
@@ -131,247 +297,526 @@
             scenes.</para>
           </listitem>
           <listitem>
-            <para>Ther is a "Live expressions" view where you can enter expressions that will be
-              reeevaluated every time a file is recompiled or when you press "refresh" in the view.
-              You have to create a new entry, then go to the expression field and edit it. Don't use
-              expressions that might kill the runtime or crash things (for example
-                <command>init:stop()</command>), because there's no restriction yet.</para>
+            <para>There is a <guimenu>Live expressions</guimenu> view where you can enter
+              expressions that will be reevaluated every time a file is recompiled or when you press
+              "refresh" in the view. You have to create a new entry, then go to the expression field
+              and edit it. <warning>
+                <para>Don't use expressions that might kill the runtime or crash things (for example
+                    <command>init:stop()</command>), because there's no restriction yet.</para>
+              </warning></para>
           </listitem>
           <listitem>
             <para>The "Process list" view is just what it says,</para>
           </listitem>
           <listitem>
-            <para>Opening a "Edoc" view (in Window-&gt;Show view-&gt;Erlang) will display
-              the documentation for the function where the cursor is (only OTP libraries)</para>
+            <para>Opening a "Edoc" view (in <menuchoice>
+                <guimenu>Window</guimenu>
+                <guisubmenu>Show view</guisubmenu>
+                <guimenuitem>Erlang</guimenuitem>
+              </menuchoice>) will display the documentation for the function where the cursor is
+              (only OTP libraries)</para>
           </listitem>
           <listitem>
-            <para>Building is automatic whenever a file is saved (if Project-&gt;Build
-              automatically is enabled) and the modified module is also reloaded in the Erlang
+            <para>Building is automatic whenever a file is saved (if <menuchoice>
+                <guimenu>Project</guimenu>
+                <guimenuitem>Build automatically</guimenuitem>
+              </menuchoice> is enabled) and the modified module is also reloaded in the Erlang
               backend.</para>
           </listitem>
           <listitem>
             <para>The problems view will show all errors and warnings from the compiler. Clicking
               them opens the file in the editor at the right line.</para>
           </listitem>
-          <listitem>
-            <para>There is also a builder that uses Make files --- TBD</para>
-          </listitem>
         </itemizedlist>
       </para>
       <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
           <listitem>
-            <para>Ctrl-Shift-L will display a list of key bindings to the various commands</para>
+            <para><keycombo action="simul">
+                <keycap function="control">Ctrl</keycap>
+                <keycap>Shift</keycap>
+                <keycap>L</keycap>
+              </keycombo> will display a list of key bindings to the various commands</para>
           </listitem>
         </itemizedlist></para>
+    </sect1>
+  </chapter>
+  <chapter xml:id="reference">
+    <info>
+      <title>Reference</title>
+    </info>
+    <section>
+      <info>
+        <title>Creating a project</title>
+      </info>
+      <para>To create a project:</para>
+      <orderedlist inheritnum="ignore" continuation="restarts">
+        <listitem>
+          <para> Click <menuchoice>
+              <guimenu>File &gt; New &gt; Other... &gt; Erlang Project</guimenu>
+            </menuchoice> or use the context menu in the navigator, right-clicking and choosing
+              <menuchoice role="bold">
+              <guimenu>New</guimenu>
+              <guimenuitem>Erlang Project</guimenuitem>
+            </menuchoice></para>
+          <para>
+            <inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="./images/file_menu.png" format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para> In the <guimenu>New Erlang Project</guimenu> wizard, enter the project name and if
+            needed choose the project's location</para>
+          <para>
+            <inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="./images/new_project_wizard.png" format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para> Click <guibutton role="bold">Next</guibutton>.</para>
+        </listitem>
+        <listitem>
+          <para> In the <emphasis role="bold">Project Build Preferences</emphasis> boxes, type
+            Output, Source and Include folders or use the default values.</para>
+          <para>
+            <inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="./images/new_proj_build_properties.png" format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para> To create your project, click <guibutton role="bold">Finish</guibutton>.</para>
+        </listitem>
+      </orderedlist>
     </section>
-    <section id="tutorials">
-      <title>Tutorials</title>
+    <section>
+      <info>
+        <title>Importing an Erlang Project</title>
+      </info>
+      <para>Import a project:</para>
+      <orderedlist inheritnum="ignore" continuation="restarts">
+        <listitem>
+          <para> Click <menuchoice>
+              <guimenu>File</guimenu>
+              <guisubmenu>Import</guisubmenu>
+              <guisubmenu>Erlang</guisubmenu>
+              <guimenuitem>Import erlang project into workspace</guimenuitem>
+            </menuchoice> or right click in <menuchoice>
+              <guimenu>Erlang Navigator</guimenu>
+              <guimenuitem>Import...</guimenuitem>
+            </menuchoice></para>
+          <para>
+            <inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="./images/import_wizard01.png" format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para> In the Erlang Project Import Wizard, <guibutton role="bold">Browse...</guibutton>
+            for <emphasis role="bold">Erlang project</emphasis></para>
+          <para>
+            <inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="./images/import_wizard02.png" format="PNG"/>
+              </imageobject>
+            </inlinemediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para> In the source field select project.</para>
+        </listitem>
+        <listitem>
+          <para> In Options you can choose to link to all folders and all files or to Copy selected
+            files and selected folders to workspace.</para>
+        </listitem>
+        <listitem>
+          <para> To import your project, click <guibutton role="bold">Finish</guibutton>.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+    <section>
+      <info>
+        <title>Editor view</title>
+      </info>
+      <para>The Erlang editor provides specialized features for editing Erlang related files.</para>
+      <para>
+        <inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="./images/view_editor.png" format="PNG"/>
+          </imageobject>
+        </inlinemediaobject>
+      </para>
+      <para>Associated with the editor is a Erlang-specific <link
+          xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="erlide_outline_view.html">outline
+          view</link>, which shows the structure of the active <filename>.erl</filename> or
+          <filename>.hrl</filename> file. It is updated as you edit these files.</para>
+      <para>The editor includes the following features:</para>
+      <itemizedlist>
+        <listitem>
+          <para> Syntax highlighting</para>
+        </listitem>
+        <listitem>
+          <para> Content/code assist</para>
+        </listitem>
+      </itemizedlist>
+      <para>The most common way to invoke the Erlang editor is to open a file from the Erlang
+        Navigator.</para>
+    </section>
+    <section xml:id="navigator">
+      <info>
+        <title>Erlang navigator view</title>
+      </info>
+      <para>The Erlang naviagor view displays, in a tree structure, only elements relevant to Erlang
+        project files. In this view you can do the following:</para>
+      <itemizedlist>
+        <listitem>
+          <para> Browse the elements of <filename>*.erl</filename> source files</para>
+        </listitem>
+        <listitem>
+          <para> Open files in the editor view</para>
+        </listitem>
+        <listitem>
+          <para> Open projects in a new window</para>
+        </listitem>
+        <listitem>
+          <para> Create new projects, modules, files, or folders</para>
+        </listitem>
+        <listitem>
+          <para> Manage existing files (cut, paste, delete, move or rename)</para>
+        </listitem>
+        <listitem>
+          <para> Restore deleted files from local history</para>
+        </listitem>
+        <listitem>
+          <para> Import or Export files and projects</para>
+        </listitem>
+      </itemizedlist>
+      <para> Files that you select in the Navigator view affect the information that is displayed in
+        other views. </para>
+      <para>
+        <inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="./images/erlangNavigatorView.png" format="PNG"/>
+          </imageobject>
+        </inlinemediaobject>
+      </para>
       <section>
-        <title>Installation tutorial</title>
-        <para>There is a preliminary presentation <ulink url="../tut/install.htm">here</ulink>
-          (requires Flash)</para>
+        <info>
+          <title>Toolbar</title>
+        </info>
+        <informaltable frame="all">
+          <tgroup cols="3">
+            <colspec colname="c1"/>
+            <colspec colname="c2"/>
+            <colspec colname="c3"/>
+            <tbody>
+              <row>
+                <entry>
+                  <emphasis role="bold">Icon</emphasis>
+                </entry>
+                <entry>
+                  <emphasis role="bold">Name</emphasis>
+                </entry>
+                <entry align="left">
+                  <emphasis role="bold">Description</emphasis>
+                </entry>
+              </row>
+              <row>
+                <entry align="center" valign="top">
+                  <inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="./images/icon_con_min.png" format="PNG"/>
+                    </imageobject>
+                  </inlinemediaobject>
+                </entry>
+                <entry valign="top">
+                  <para>Minimize</para>
+                </entry>
+                <entry valign="top"> Minimizes the view. </entry>
+              </row>
+              <row>
+                <entry align="center" valign="top">
+                  <inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="./images/icon_con_max.png" format="PNG"/>
+                    </imageobject>
+                  </inlinemediaobject>
+                </entry>
+                <entry valign="top"> Maximize </entry>
+                <entry valign="top"> Maximizes the view. </entry>
+              </row>
+              <row>
+                <entry align="center" valign="top">
+                  <inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="./images/icon_collapse_all.png" format="PNG"/>
+                    </imageobject>
+                  </inlinemediaobject>
+                </entry>
+                <entry valign="top">
+                  <para>Collapse All </para>
+                </entry>
+                <entry valign="top"> This command collapses the tree expansion state of all
+                  resources in the view. </entry>
+              </row>
+              <row>
+                <entry align="center" valign="top">
+                  <para>
+                    <inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="./images/icon_link_with_editor.png" format="PNG"/>
+                      </imageobject>
+                    </inlinemediaobject>
+                  </para>
+                </entry>
+                <entry valign="top">
+                  <para>Link with Editor </para>
+                </entry>
+                <entry valign="top">
+                  <para>This command toggles whether the view selection is linked to the active
+                    editor. When this option is selected, changing the active editor will
+                    automatically update the selection to the resource being edited.</para>
+                </entry>
+              </row>
+              <row>
+                <entry align="center" valign="top">
+                  <inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="./images/icon_menu.png" format="PNG"/>
+                    </imageobject>
+                  </inlinemediaobject>
+                </entry>
+                <entry valign="top">
+                  <para>Menu</para>
+                </entry>
+                <entry valign="top">
+                  <para>Click the black upside-down triangle icon to open a menu of items specific
+                    to the view.</para>
+                  <para>
+                    <variablelist>
+                      <varlistentry>
+                        <term>Filters</term>
+                        <listitem>
+                          <para>This command allows you to select filters to apply to the view so
+                            that you can show or hide various resources as needed. File types
+                            selected in the list will not be shown in the Erlang Navigator
+                          view.</para>
+                        </listitem>
+                      </varlistentry>
+                      <varlistentry>
+                        <term>Link with Editor</term>
+                        <listitem>
+                          <para>See the toolbar item description above.</para>
+                        </listitem>
+                      </varlistentry>
+                      <varlistentry>
+                        <term>Select Working Set</term>
+                        <listitem>
+                          <para>Opens the <emphasis role="bold">Select Working Set</emphasis> dialog
+                            to allow selecting a working set for the view.</para>
+                        </listitem>
+                      </varlistentry>
+                      <varlistentry>
+                        <term>Deselect Working Set</term>
+                        <listitem>
+                          <para>Deselects the current working set.</para>
+                        </listitem>
+                      </varlistentry>
+                      <varlistentry>
+                        <term>Edit Active Working Set</term>
+                        <listitem>
+                          <para>Opens the <emphasis role="bold">Edit Working Set</emphasis> dialog
+                            to allow changing the current working set.</para>
+                        </listitem>
+                      </varlistentry>
+                      <varlistentry>
+                        <term>Top Level Elements</term>
+                        <listitem>
+                          <para>
+                            <itemizedlist>
+                              <listitem>
+                                <para><emphasis role="bold">By project</emphasis> : </para>
+                              </listitem>
+                              <listitem>
+                                <para><emphasis role="bold">By working sets</emphasis> : </para>
+                              </listitem>
+                            </itemizedlist>
+                          </para>
+                        </listitem>
+                      </varlistentry>
+                    </variablelist>
+                  </para>
+                </entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
       </section>
       <section>
-        <title>Basic tutorial</title>
-        <para>This Getting Started tutorial is designed to help you learn about using the Erlang IDE
-          (Erlide) in the workbench. This tutorial assumes the following:<itemizedlist>
-            <listitem>
-              <para>That you are starting with a brand new workbench installation with all the
-                default settings and preferences.</para>
-            </listitem>
-            <listitem>
-              <para>That the Erlide plugin is properly installed and running, see the <link
-                  linkend="instalation_guide">Installation guide</link>.</para>
-            </listitem>
-            <listitem>
-              <para>That you are familiar with the basic workbench mechanisms (e.g., views, text
-                searching, perspectives, etc.)</para>
-            </listitem>
-          </itemizedlist></para>
-        <para>There is also a preliminary presentation <ulink url="../tut/project.htm">here</ulink>
-          (requires Flash)</para>
-        <section>
-          <title>Preparing the workbench</title>
-          <para>In this section, you will verify that the workbench is properly set up for Erlang
-            development. See the installation guide.</para>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Creating your first Erlang project</title>
-          <para>In this section, you will create a new Erlang project.</para>
-          <bridgehead>Creating the project</bridgehead>
-          <para>Inside Eclipse select the menu item <guimenu>File &gt; New &gt;
-            Project...</guimenu>. to open the New Project wizard. Select <guimenu>Erlang
-            Project</guimenu> then click <guibutton>Next</guibutton> to start the New Erlang Project
-            wizard: On this page, type "ErlDemo" in the Project name field.</para>
-          <para>In the Resource Explorer, make sure that the src directory under the ErlDemo project
-            is selected. Select the menu item <guimenu>File &gt; New... &gt; File</guimenu>
-            and enter "mytest.erl".</para>
-          <para>Related concepts: Erlang projects,Erlang views</para>
-          <para>Related tasks: Working with build paths,Creating a new Erlang project,Using the
-            Package Explorer</para>
-          <para>Related reference: New Erlang Project Wizard</para>
-        </section>
-        <section>
-          <title>Browsing Erlang elements using the resource explorer</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Editing Erlang elements</title>
-          <section>
-            <title>Opening an Erlang editor</title>
-            <para>TBD</para>
-          </section>
-          <section>
-            <title>Adding new functions</title>
-            <para>TBD</para>
-          </section>
-          <section>
-            <title>Using content assist</title>
-            <para>TBD</para>
-          </section>
-          <section>
-            <title>Identifying problems in your code</title>
-            <para>TBD</para>
-          </section>
-          <section>
-            <title>Using code templates</title>
-            <para>TBD</para>
-          </section>
-          <section>
-            <title>Using the local history</title>
-            <para>TBD</para>
-          </section>
-        </section>
-        <section>
-          <title>Creating an Erlang module</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Renaming Erlang elements</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Moving and copying Erlang elements</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Navigate to an Erlang element's declaration</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Searching the workbench</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Running your programs</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Debugging your programs</title>
-          <para>TBD</para>
-        </section>
-        <section>
-          <title>Evaluating expressions</title>
-          <para>TBD</para>
-        </section>
-      </section>
-      <section>
-        <title>Configuration tutorial</title>
-        <para>TBD</para>
+        <info>
+          <title>Erlang Navigator view icons</title>
+        </info>
+        <para>The table below lists the icons displayed in the Erlang Navigator view.</para>
+        <informaltable frame="all">
+          <tgroup cols="2">
+            <colspec colname="c1" colwidth="19*"/>
+            <colspec colname="c2" colwidth="81*"/>
+            <tbody>
+              <row>
+                <entry align="left" valign="middle">
+                  <para>
+                    <emphasis role="bold">Icon</emphasis>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <emphasis role="bold">Description</emphasis>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry align="left" valign="middle">
+                  <para>
+                    <inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="./images/erlang_srcFile.gif" format="GIF"/>
+                      </imageobject>
+                    </inlinemediaobject>
+                  </para>
+                </entry>
+                <entry>
+                  <para>Erlang file</para>
+                </entry>
+              </row>
+              <row>
+                <entry align="left" valign="middle">
+                  <para>
+                    <inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="./images/methpri_obj.gif" format="GIF"/>
+                      </imageobject>
+                    </inlinemediaobject>
+                  </para>
+                </entry>
+                <entry>
+                  <para>Function</para>
+                </entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
       </section>
     </section>
-  </chapter>
-  <chapter id="concepts">
-    <title>Concepts</title>
-    <para>In the following, basic Eclipse knowledge will be assumed. Some functionality that is not
-      Erlide specific will be mentioned, but for details please read the Eclipse documentation.</para>
+    <section xml:id="actions">
+      <info>
+        <title>Actions</title>
+      </info>
+      <para>TBD</para>
+    </section>
     <section>
-      <title>Erlang projects</title>
+      <info>
+        <title>Views and editors</title>
+      </info>
+      <para>TBD</para>
+    </section>
+    <section>
+      <info>
+        <title>Menus</title>
+      </info>
       <para>TBD</para>
     </section>
   </chapter>
-  <chapter id="reference">
-    <title>Reference</title>
-    <section>
-      <title>Actions</title>
-      <para>TBD</para>
-    </section>
-    <section>
-      <title>Views and editors</title>
-      <para>TBD</para>
-    </section>
-    <section>
-      <title>Menus</title>
-      <para>TBD</para>
-    </section>
-  </chapter>
-  <chapter id="developer_reference">
-    <title>Developer reference</title>
-    <section id="install_dev">
-      <title>Installation</title>
-      <para>After the <link linkend="instalation_guide">installation procedures for regular
-        users</link> (this means that you have to have installed and running Erlide!), developing
-        Erlide itself requires an additional step:<itemizedlist>
-          <listitem>
-            <para>The Eclipse command line has to be tweaked a little bit, because some
-              functionality is only available in this case. The arguments to add to the command line
-              (or to the <filename>eclipse.ini</filename> file) are <userinput>-vmargs
-                -Derlide.devel=true</userinput>.</para>
-          </listitem>
-          <listitem>
-            <para>Done!</para>
-          </listitem>
-        </itemizedlist></para>
+  <chapter xml:id="developer_reference">
+    <info>
+      <title>Developer reference</title>
+    </info>
+    <section xml:id="install_dev">
+      <info>
+        <title>Installation</title>
+      </info>
+      <para>Install Eclipse SDK, Erlang R11 and Erlide as usual.</para>
       <important>
-        <para>For developing Erlide, you can only use R11 at this time.</para>
+        <para>For developing Erlide, you can only use R11 for the IDE runtime.</para>
       </important>
     </section>
     <section>
-      <title>Retrieve the code from repository</title>
+      <info>
+        <title>Retrieve the code from repository</title>
+      </info>
       <para>The repository is Subversion based. I recommend using the Subclipse plugin from
         http://subclipse.tigris.org.</para>
       <para>The subversion repository has to be configured in the SVN Repository Browsing
-        perspective. The URL for the repository is <ulink url="???"
-          >https://erlide.svn.sourceforge.net/svnroot/erlide</ulink>. </para>
+        perspective. The URL for the repository is <link xmlns:xlink="http://www.w3.org/1999/xlink"
+          xlink:href="???">https://erlide.svn.sourceforge.net/svnroot/erlide</link>. </para>
       <para>I recommend to check out and commit the code by following the procedure below, not by
         checking out from within
-        Eclipse.<screen>$ cd erlide.workspace  # use your workspace's folder
-          $ svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</screen>This
+        Eclipse.<screen language="bash">
+<prompt>$</prompt><command> cd erlide.workspace</command>  # use your workspace's folder
+<prompt>$</prompt><command> svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</command>
+      </screen>This
         is because from within Eclipse we can get atomic commits only per each project. In order to
         get those across all projects, the operations need to be done at the workspace level and
         thus the workspace needs to be a versioned directory. This is important when branching and
         tagging.</para>
-      <para>Then go back to Eclipse and shut down the automatic builder
-          (<guimenu>Project-&gt;Build Automatically</guimenu>) then choose
-          <guimenu>File-&gt;Import-&gt;Existing projects into workspace</guimenu>. Import
-        all projects and turn automatic build back on.</para>
+      <para>Then go back to Eclipse and shut down the automatic builder (<menuchoice>
+          <guimenu>Project</guimenu>
+          <guimenuitem>Build Automatically</guimenuitem>
+        </menuchoice>) then choose <menuchoice>
+          <guimenu>File</guimenu>
+          <guisubmenu>Import...</guisubmenu>
+          <guimenuitem>Existing projects into workspace</guimenuitem>
+        </menuchoice>. Import all projects and turn automatic build back on.</para>
     </section>
     <section>
-      <title>Build</title>
+      <info>
+        <title>Build</title>
+      </info>
       <section>
-        <title>Manual build</title>
-        <para>TBD</para>
+        <info>
+          <title>Manual build</title>
+        </info>
+        <para>Go to the org.erlide.update project and create an entry for the current version, then
+          press <guibutton>Build</guibutton>.</para>
       </section>
       <section>
-        <title>Automated build</title>
-        <para>This is implemented in the org.erlide.build project. Description of the procedure will
-          be added later. TBD.</para>
+        <info>
+          <title>Automated build</title>
+        </info>
+        <para><emphasis>Currently doesn't work.</emphasis> This is implemented in the
+          org.erlide.build project. Description of the procedure will be added later. TBD.</para>
       </section>
       <section>
-        <title>Building the documentation</title>
-        <para>TBD</para>
+        <info>
+          <title>Building the documentation</title>
+        </info>
+        <para>The source of the documentation is the <filename>erlide.xml</filename> file, in
+          Docbook 5 format. It is used to generate Eclipse infocenter help, HTML pages to be put
+          online and a printable PDF book.</para>
       </section>
       <section>
-        <title>Starting the newly built Erlide</title>
+        <info>
+          <title>Starting the newly built Erlide</title>
+        </info>
         <para>
           <itemizedlist>
             <listitem>
               <para>After compiling the plugins, you can try starting the newly build Erlide. For
-                this you have to create a run configuration. Choose
-                <guimenu>Run-&gt;Run...</guimenu> and <guimenu>Eclipse
-                Application-&gt;New</guimenu>. Use a nice, friendly name like "Erlide" and in
-                the plug-ins tab select "Choose from list".</para>
+                this you have to create a run configuration. Choose <menuchoice>
+                  <guimenu>Run</guimenu>
+                  <guisubmenu>Run...</guisubmenu>
+                  <guisubmenu>Eclipse Application</guisubmenu>
+                  <guimenuitem>New...</guimenuitem>
+                </menuchoice>. Use a nice, friendly name like <userinput>Erlide</userinput> and in
+                the plug-ins tab select <guimenuitem>Choose from list</guimenuitem>.</para>
             </listitem>
             <listitem>
               <para>In the main tab, select the "Program to run" to be "Run an application". The
@@ -391,119 +836,142 @@
       </section>
     </section>
     <section>
-      <title>Plugin description</title>
-      <bridgehead> org.erlide </bridgehead>
-      <para>The feature that groups together all the deliverable plugins.</para>
-      <bridgehead>org.erlide.core</bridgehead>
-      <para>Here we find the classes that model the Erlang code.</para>
-      <bridgehead> org.erlide.jinterface </bridgehead>
-      <para>This is a wrapper around jinterface plus some minor additions.</para>
-      <bridgehead>erlide-launching</bridgehead>
-      <para>This plugin manages Erlang backends.</para>
-      <bridgehead> erlide-ui </bridgehead>
-      <para>Here we find all UI related functionality.</para>
-      <bridgehead> erlide-update </bridgehead>
-      <para>An update site is needed to distribute Erlide.</para>
-      <bridgehead> erlide-help </bridgehead>
-      <para>The help files reside here. The documentation is written in Docbook format and from it
-        we generate different formats: Eclipse help, online HTML documentation, printable PDF.</para>
-      <bridgehead> erlide-docs </bridgehead>
-      <para>Here we have no code, but administration-related files. Most notable is the source to
-        the home page of the project in the <filename>site</filename> directory.</para>
-    </section>
-    <section>
-      <title>Development process</title>
-      <section>
-        <title>Source code management</title>
-        <bridgehead>Repository structure</bridgehead>
-        <para>The source code is stored in a Subversion repository. We use a standard structure,
-          where the Eclipse project directories lie directly under the trunk:
-          <screen>/
-            branches/
-            b_x/
-            org.erlide.*
-            tags/
-            trunk/
-            org.erlide.*</screen>This
-          way, we can do a checkout on the whole trunk directly in a workspace directory. This will
-          allow to do atomic commits across all projects by using the svn client, because from
-          within Eclipse the atomicity is per project (a limitation of the Eclipse plugins).</para>
-        <bridgehead>Branches</bridgehead>
-        <para>
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para>The trunk will contain the bleeding edge of development.</para>
-            </listitem>
-            <listitem>
-              <para>Release branches will be named RB-x.x and the</para>
-            </listitem>
-          </itemizedlist>
-        </para>
-      </section>
-      <section>
-        <title>Commit policies</title>
-        <para/>
-        <para/>
-      </section>
-    </section>
-    <section>
-      <title>Release management</title>
-      <para>There are a couple of scripts that handle the packaging of the plugins and the
-        publishing/uploading to the Sourceforge site.</para>
-      <para>TBD</para>
-      <para>Alternatively something like WinSCP can be used to upload files to Sourceforge.</para>
-    </section>
-    <section>
-      <title>Design decisions</title>
-      <para>TBD</para>
-    </section>
-    <section>
-      <title>Tools used</title>
+      <info>
+        <title>Plugin description</title>
+      </info>
       <para>
-        <itemizedlist>
-          <listitem>
-            <para>OpenOffice 2 <ulink url="http://www.openoffice.org"
-              >http://www.openoffice.org</ulink></para>
-          </listitem>
-          <listitem>
-            <para>XMLmind XML editor for the developer's manual <ulink
-                url="http://www.xmlmind.com/xmleditor/"
-            >http://www.xmlmind.com/xmleditor/</ulink></para>
-          </listitem>
-          <listitem>
-            <para>Open Workbench for the time plans <ulink url="http://www.openworkbench.org"
-                >http://www.openworkbench.org</ulink></para>
-          </listitem>
-        </itemizedlist>
+        <variablelist>
+          <varlistentry>
+            <term>org.erlide</term>
+            <listitem>
+              <para>The feature that groups together all the deliverable plugins. </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.core</term>
+            <listitem>
+              <para>Here we find the classes that model the Erlang code.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.jinterface</term>
+            <listitem>
+              <para>This is a wrapper around jinterface plus some minor additions.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.launching</term>
+            <listitem>
+              <para>This plugin manages Erlang backends.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.ui</term>
+            <listitem>
+              <para>Here we find all UI related functionality.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.update</term>
+            <listitem>
+              <para>An update site is needed to distribute Erlide.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.help </term>
+            <listitem>
+              <para>The help files reside here. The documentation is written in Docbook 5 format and
+                from it we generate Eclipse help, online HTML documentation, printable PDF.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>org.erlide.docs</term>
+            <listitem>
+              <para>Here we have no code, but administration-related files. Most notable is the
+                source to the home page of the project in the <filename>site</filename>
+              directory.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
       </para>
     </section>
+    <section>
+      <info>
+        <title>Development process</title>
+      </info>
+      <section>
+        <info>
+          <title>Source code management</title>
+        </info>
+        <section>
+          <info>
+            <title>Repository structure </title>
+          </info>
+          <para>The source code is stored in a Subversion repository. We use a standard structure,
+            where the Eclipse project directories lie directly under the trunk:
+            <screen>
+/
+  branches/
+    RB_x/
+      org.erlide.*
+  tags/
+    REL_y/
+    org.erlide.*
+  trunk/
+    org.erlide.*
+</screen>This
+            way, we can do a checkout on the whole trunk directly in a workspace directory. This
+            will allow to do atomic commits across all projects by using an external
+            <command>svn</command> client, because from within Eclipse the atomicity is per project
+            (a limitation of the Eclipse plugins).</para>
+        </section>
+        <section>
+          <info>
+            <title>Branches</title>
+          </info>
+          <para>
+            <itemizedlist spacing="compact">
+              <listitem>
+                <para>The trunk will contain the bleeding edge of development.</para>
+              </listitem>
+              <listitem>
+                <para>Release branches will be named RB-x.x and the</para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </section>
+      </section>
+      <section>
+        <info>
+          <title>Commit policies</title>
+        </info>
+        <para>To be specified.</para>
+      </section>
+    </section>
   </chapter>
-  <chapter id="tips_tricks">
-    <title>Tips and tricks</title>
-    <para>TBD</para>
-  </chapter>
-  <chapter id="news">
-    <title>What's new</title>
-    <para>TBD</para>
-  </chapter>
-  <chapter id="legal">
-    <title>Legal</title>
+  <chapter xml:id="legal">
+    <info>
+      <title>Legal</title>
+    </info>
     <para>
-      <trademark class="copyright">The basic structure and some material is Copyright (c) IBM
-        Corporation and others 2000, 2005. The material in this guide is Copyright (c) Vlad
-        Dumitrescu and others 2006-2008.</trademark>
+      <trademark class="copyright">The basic structure and some material is Copyright © IBM
+        Corporation and others 2000, 2005. The material in this guide is Copyright © Vlad Dumitrescu
+        and others 2006-2008.</trademark>
     </para>
-    <bridgehead>Terms and conditions regarding the use of this guide</bridgehead>
-    <para>Unless otherwise indicated below, the Content is provided to you under the terms and
-      conditions of the Eclipse Public License Version 1.0 ("EPL"). A copy of the EPL is available
-      at <ulink url="http://www.eclipse.org/legal/epl-v10.html"
-        >http://www.eclipse.org/legal/epl-v10.html</ulink>. For purposes of the EPL, "Program" will
-      mean the Content.</para>
-    <para>If you did not receive this Content directly from the Eclipse Foundation, the Content is
-      being redistributed by another party ("Redistributor") and different terms and conditions may
-      apply to your use of any object code in the Content. Check the Redistributor's license that
-      was provided with the Content. If no such license exists, contact the Redistributor. Unless
-      otherwise indicated below, the terms and conditions of the EPL still apply to any source code
-      in the Content.</para>
+    <section>
+      <title>Terms and conditions regarding the use of this guide</title>
+      <para>Unless otherwise indicated below, the Content is provided to you under the terms and
+        conditions of the Eclipse Public License Version 1.0 ("EPL"). A copy of the EPL is available
+        at <link xmlns:xlink="http://www.w3.org/1999/xlink"
+          xlink:href="http://www.eclipse.org/legal/epl-v10.html"
+          >http://www.eclipse.org/legal/epl-v10.html</link>. For purposes of the EPL, "Program" will
+        mean the Content.</para>
+      <para>If you did not receive this Content directly from the Eclipse Foundation, the Content is
+        being redistributed by another party ("Redistributor") and different terms and conditions
+        may apply to your use of any object code in the Content. Check the Redistributor's license
+        that was provided with the Content. If no such license exists, contact the Redistributor.
+        Unless otherwise indicated below, the terms and conditions of the EPL still apply to any
+        source code in the Content.</para>
+    </section>
   </chapter>
 </book>
