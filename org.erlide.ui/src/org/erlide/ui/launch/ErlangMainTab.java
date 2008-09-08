@@ -339,16 +339,19 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private final ModifyListener fBasicModifyListener = new ModifyListener() {
+		@SuppressWarnings("synthetic-access")
 		public void modifyText(ModifyEvent evt) {
 			updateLaunchConfigurationDialog();
 		}
 	};
 
 	private final SelectionListener fBasicSelectionListener = new SelectionListener() {
+		@SuppressWarnings("synthetic-access")
 		public void widgetDefaultSelected(SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 
+		@SuppressWarnings("synthetic-access")
 		public void widgetSelected(SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}

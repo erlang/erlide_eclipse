@@ -33,6 +33,7 @@ public class ErlideDebug {
 		return procs;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangPid startDebug(final IBackend backend,
 			final int debugFlags) {
 		OtpErlangObject res = null;
@@ -107,6 +108,7 @@ public class ErlideDebug {
 		return res;
 	}
 
+	@SuppressWarnings("boxing")
 	public static boolean interpret(final IBackend backend,
 			final String module, final boolean distributed) {
 		try {
