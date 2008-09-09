@@ -43,6 +43,7 @@ public class RuntimeInfo implements Cloneable {
 	private String fVersion;
 	private String name;
 	private List<String> codePath;
+	private boolean fUnique = false;
 
 	public RuntimeInfo() {
 		super();
@@ -115,7 +116,9 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public String getNodeName() {
-		return this.nodeName;
+		String suffix = fUnique ? "_" + BackendManager.getErlideNameSuffix()
+				: "";
+		return this.nodeName + suffix;
 	}
 
 	public void setNodeName(String nodeName) {
@@ -166,6 +169,10 @@ public class RuntimeInfo implements Cloneable {
 		cmd += "-name " + BackendManager.buildNodeName(getNodeName())
 				+ " -setcookie " + getCookie();
 		return cmd;
+	}
+
+	private boolean getUniqueName() {
+		return fUnique;
 	}
 
 	private String ifNotEmpty(String key, String str) {
@@ -324,6 +331,10 @@ public class RuntimeInfo implements Cloneable {
 			}
 		}
 		return result;
+	}
+
+	public void setUniqueName(boolean unique) {
+		fUnique = unique;
 	}
 
 }

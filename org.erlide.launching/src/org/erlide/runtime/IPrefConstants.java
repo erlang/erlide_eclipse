@@ -45,4 +45,6 @@ public interface IPrefConstants {
 	String PROJECT_EXTERNAL_MODULES = "external_modules";
 	String DEFAULT_EXTERNAL_MODULES = "";
 
+	String MK_UNIQUE = "make_unique";
+
 }

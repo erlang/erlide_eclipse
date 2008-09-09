@@ -41,6 +41,7 @@ import org.erlide.ui.properties.internal.MockupPreferenceStore;
 public class OldErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener, RuntimeInfoListener {
 
+	private Button makeUniqueButton;
 	private Text cookie;
 	private Text nodeName;
 	Combo runtimeName;
@@ -131,7 +132,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		gd_group.heightHint = 84;
 		group.setLayoutData(gd_group);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		gridLayout.numColumns = 3;
 		group.setLayout(gridLayout);
 
 		final Label runtimeLabel = new Label(group, SWT.NONE);
@@ -141,6 +142,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		runtimeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
 		runtimeName.addListener(SWT.Modify, modifyListener);
+		new Label(group, SWT.NONE);
 
 		final Label nodeNameLabel = new Label(group, SWT.NONE);
 		nodeNameLabel.setText("Node name");
@@ -149,13 +151,17 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		nodeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		nodeName.addListener(SWT.Modify, modifyListener);
 
+		makeUniqueButton = new Button(group, SWT.CHECK);
+		makeUniqueButton.setText("make unique");
+
 		final Label cookieLabel = new Label(group, SWT.NONE);
 		cookieLabel.setText("Cookie");
 
 		cookie = new Text(group, SWT.BORDER);
 		final GridData gd_cookie = new GridData(SWT.FILL, SWT.CENTER, true,
-				false);
+				false, 2, 1);
 		cookie.setLayoutData(gd_cookie);
+		new Label(group, SWT.NONE);
 
 		new Label(composite, SWT.NONE);
 
@@ -211,6 +217,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 		nodeName.setText(prefs.getNodeName());
 		cookie.setText(prefs.getCookie());
+		makeUniqueButton.setSelection(prefs.isUniqueName());
 
 	}
 
@@ -228,6 +235,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		prefs.setRuntimeName(runtimeName.getText());
 		prefs.setNodeName(nodeName.getText());
 		prefs.setCookie(cookie.getText());
+		prefs.setUniqueName(makeUniqueButton.getSelection());
 		prefs.store();
 		return true;
 	}

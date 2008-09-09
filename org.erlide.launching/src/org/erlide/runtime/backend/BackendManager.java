@@ -90,12 +90,12 @@ public final class BackendManager implements IResourceChangeListener {
 		job.schedule(100);
 	}
 
-	public String getJavaNodeName() {
+	public static String getJavaNodeName() {
 		String fUniqueId = getTimeSuffix();
 		return "jerlide_" + fUniqueId;
 	}
 
-	private String getErlideNameSuffix() {
+	static String getErlideNameSuffix() {
 		String fUniqueId;
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final String location = root.getLocation().toPortableString();
@@ -103,7 +103,7 @@ public final class BackendManager implements IResourceChangeListener {
 		return fUniqueId;
 	}
 
-	private String getTimeSuffix() {
+	private static String getTimeSuffix() {
 		String fUniqueId;
 		fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
 		return fUniqueId;
@@ -389,6 +389,7 @@ public final class BackendManager implements IResourceChangeListener {
 
 	public static String buildNodeName(final String label) {
 		if (label.indexOf('@') > 0) {
+			// ignore unique here?
 			return label;
 		}
 		final String host = getHost();

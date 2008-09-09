@@ -48,6 +48,8 @@ public class ErlangProjectProperties {
 	private String fNodeName;
 	private String fCookie;
 
+	private boolean fUnique = true;
+
 	/**
 	 * Name of file containing project classpath
 	 */
@@ -102,6 +104,8 @@ public class ErlangProjectProperties {
 					IPrefConstants.DEFAULT_RUNTIME_NAME);
 			fNodeName = prefs.getProperty(IPrefConstants.NODE_NAME,
 					IPrefConstants.DEFAULT_NODENAME);
+			fUnique = Boolean.parseBoolean(prefs.getProperty(
+					IPrefConstants.MK_UNIQUE, "true"));
 			fCookie = prefs.getProperty(IPrefConstants.COOKIE,
 					IPrefConstants.DEFAULT_COOKIE);
 			fExternalModules = prefs.getProperty(
@@ -130,6 +134,8 @@ public class ErlangProjectProperties {
 					IPrefConstants.DEFAULT_RUNTIME_NAME);
 			fNodeName = node.get(IPrefConstants.NODE_NAME,
 					IPrefConstants.DEFAULT_NODENAME);
+			fUnique = Boolean.parseBoolean(node.get(IPrefConstants.MK_UNIQUE,
+					"true"));
 			fCookie = node.get(IPrefConstants.COOKIE,
 					IPrefConstants.DEFAULT_COOKIE);
 			fExternalModules = node.get(
@@ -157,6 +163,7 @@ public class ErlangProjectProperties {
 		node.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
 		node.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
 		node.put(IPrefConstants.NODE_NAME, fNodeName);
+		node.put(IPrefConstants.MK_UNIQUE, Boolean.toString(fUnique));
 		node.put(IPrefConstants.COOKIE, fCookie);
 		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
@@ -181,6 +188,7 @@ public class ErlangProjectProperties {
 			prefs.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
 			prefs.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
 			prefs.put(IPrefConstants.NODE_NAME, fNodeName);
+			prefs.put(IPrefConstants.MK_UNIQUE, Boolean.toString(fUnique));
 			prefs.put(IPrefConstants.COOKIE, fCookie);
 			prefs
 					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
@@ -356,6 +364,7 @@ public class ErlangProjectProperties {
 				.getRuntime(fRuntimeName), false);
 		if (rt != null) {
 			rt.setNodeName(fNodeName);
+			rt.setUniqueName(fUnique);
 			rt.setCookie(fCookie);
 		}
 		return rt;
@@ -375,6 +384,14 @@ public class ErlangProjectProperties {
 
 	public void setNodeName(String text) {
 		fNodeName = text.trim();
+	}
+
+	public void setUniqueName(boolean unique) {
+		fUnique = unique;
+	}
+
+	public boolean isUniqueName() {
+		return this.fUnique;
 	}
 
 }
