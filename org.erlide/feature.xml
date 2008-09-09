@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.3.71"
+      version="0.3.74"
       provider-name="Erlide project"
       image="erlang120.gif">
    <install-handler/>
