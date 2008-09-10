@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en-US">
-  <info>
-    <title>Erlide, the Erlang IDE</title>
-    <author>
+  <info><title>Erlide, the Erlang IDE</title><author>
       <personname>
         <firstname>Vlad</firstname>
         <surname>Dumitrescu</surname>
@@ -61,6 +59,13 @@
               </menuchoice>and add an entry (or several) for your Erlang installation of choice. The
               required parameters are the name and the path to the top level directory (i.e.
                 <varname>$ERL_TOP</varname>). Now restart again.</para>
+            <para>
+              <inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="./images/runtimeinstall.png" format="PNG"/>
+                </imageobject>
+              </inlinemediaobject>
+            </para>
           </listitem>
           <listitem>
             <para>Done! You're ready to start exploring.</para>
@@ -223,13 +228,80 @@
         <para>TBD</para>
       </sect2>
     </sect1>
+    <sect1>
+      <info>
+        <title>Concepts</title>
+      </info>
+      <sect2 xml:id="backends">
+        <info>
+          <title>Runtimes and backends</title>
+        </info>
+        <para>In Erlide we often use the terms <emphasis>runtime</emphasis> and
+          <emphasis>backend</emphasis>. Here we will try to make clear what each of them means.</para>
+        <variablelist>
+          <varlistentry>
+            <term>Runtime</term>
+            <listitem>
+              <para>Describes an Erlang installation by pointing to its home directory and
+                optionally adding extra code path entries and/or arguments. For example, one might
+                want to have two R12B runtimes defined, one with and one without SMP enabled.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Backend</term>
+            <listitem>
+              <para>Is an Erlang node that has Erlide-specific code loaded and running. </para>
+              <para>There are two kinds of backends: managed and standalone. The Erlang node behind
+                a <emphasis role="bold">managed</emphasis> backend is started and stopped by Erlide.
+                The one behind a <emphasis role="bold">standalone</emphasis> one has an independent
+                life cycle. A managed backend must refer to a runtime; for a standalone one, the
+                reference is informative only.</para>
+              <para>There are several kinds of backends: ide, build and execution. A single Erlang
+                node may very well be behind several backends, but only at most one of them must be managed.<variablelist>
+                  <varlistentry>
+                    <term>IDE backend</term>
+                    <listitem>
+                      <para>Used by Erlide itself for all IDE related functionality (lexing,
+                        parsing, etc)</para>
+                    </listitem>
+                  </varlistentry>
+                  <varlistentry>
+                    <term>Build backend</term>
+                    <listitem>
+                      <para>Each project has a build backend where the compilation is done. This is
+                        where the OTP documentation is taken from. It is specified in the project's
+                        properties and defaults to the IDE backend.</para>
+                    </listitem>
+                  </varlistentry>
+                  <varlistentry>
+                    <term>Execution backend</term>
+                    <listitem>
+                      <para>The execution backend is where the code is loaded and run/debugged. It
+                        is specified in an Eclipse run or debug configuration.</para>
+                    </listitem>
+                  </varlistentry>
+                </variablelist></para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+        <para>When a backend is about to be created, the following algorithm is used: <itemizedlist>
+            <listitem>
+              <para>if an Erlang node with the given name exists, use it;</para>
+            </listitem>
+            <listitem>
+              <para>if not, start one (if the backend is managed) else give an error.</para>
+            </listitem>
+          </itemizedlist></para>
+      </sect2>
+    </sect1>
     <sect1 xml:id="quick_intro">
       <info>
         <title>Quick intro</title>
       </info>
       <note>
         <para>This chapter is just a quick-and-dirty version of a more complete documentation, whose
-          outline you see below and which will follow when time permits.</para>
+          outline you see below and which will follow when time permits. Help with the documentation
+          will be very much appreciated.</para>
       </note>
       <para>
         <itemizedlist>
@@ -395,6 +467,29 @@
           <para> To create your project, click <guibutton role="bold">Finish</guibutton>.</para>
         </listitem>
       </orderedlist>
+    </section>
+    <section>
+      <info>
+        <title>Configuring a project</title>
+      </info>
+      <para>In the Navigator pane, right-click on the project and choose <menuchoice>
+          <guimenu>Properties</guimenu>
+          <guimenuitem>Erlang</guimenuitem>
+        </menuchoice>. The dialog allows you to specify the project's settings.</para>
+      <para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="./images/projectproperties.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </para>
+      <para>The build backend specifies the Erlang node on which the compilation will be done. By
+        default, we use the same backend as the one the IDE is using and in most cases this is
+        sufficient. See the <link linkend="backends">Backends</link> section for more details.</para>
+      <para>The "make unique" box lets you decide if the specified name will get a unique suffix in
+        order to ensure that there will be no conflict with running nodes (the use case is when
+        there are several users running Erlide on the same machine, it's difficult to ensure that
+        they won't use the same name for nodes).</para>
     </section>
     <section>
       <info>
