@@ -192,7 +192,7 @@
       <page
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
-            name="Erlang properties">
+            name="Erlang">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
@@ -200,7 +200,7 @@
       <!--page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
-            name="new Erlang properties (work in progress)">
+            name="new Erlang (work in progress)">
          <filter
                name="nature"
                value="org.erlide.core.erlnature"/>
