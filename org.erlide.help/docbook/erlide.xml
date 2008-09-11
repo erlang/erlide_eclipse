@@ -50,7 +50,7 @@
                                 <guimenuitem>Search for new features to install</guimenuitem>
                             </menuchoice>. In the dialog, choose <guibutton>New remote
                             site</guibutton> and enter <userinput>Erlide</userinput> as name and
-                                <userinput> http://erlide.sourceforge.net/update </userinput> as
+                                <userinput> http://erlide.sourceforge.net/update</userinput> as
                             URL. Follow the dialogs with the obvious choices and in the end you will
                             be asked to restart.</para>
                     </listitem>
@@ -60,7 +60,7 @@
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu>Erlang</guisubmenu>
                                 <guimenuitem>Installed runtimes</guimenuitem>
-                            </menuchoice>and add an entry (or several) for your Erlang installation
+                            </menuchoice> and add an entry (or several) for your Erlang installation
                             of choice. The required parameters are the name and the path to the top
                             level directory (i.e. <varname>$ERL_TOP</varname>). Now restart again.</para>
                         <para>

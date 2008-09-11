@@ -1,203 +1,169 @@
-BODY
+@import url(http://yui.yahooapis.com/2.5.2/build/reset/reset-min.css);
+@import url(http://yui.yahooapis.com/2.5.2/build/fonts/fonts-min.css);
+@import url(http://yui.yahooapis.com/2.5.2/build/base/base-min.css);
+.sect1, .sect2, .sect3, .sect4
 {
-        font-family: verdana, arial, sans-serif;
+	padding-left: 1em;
 }
-
+.command
+{
+	font-family: monospace;
+}
+.screen
+{
+	border: 1px dotted #0000DD;
+}
+.toc DL
+{
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.toc
+{
+	border: 1px dotted;
+	background-color: #EFF3F5;
+	margin-left: 2em;
+	margin-right: 2em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+.term
+{
+	font-weight: bold;
+}
 DIV.ABSTRACT
 {
-        border: solid 2px;
-        padding-left: 10pt;
-        padding-right: 10pt;
+	/*[disabled]border:2px solid;*/
+	/*[disabled]padding-left:10pt;*/
+	/*[disabled]padding-right:10pt;*/
 }
-
 PRE.SCREEN
 {
-        font-family:monospace;
-        white-space: pre;
-        width: 100%;
-        background-color: #ffffcc;
-        border:solid;
-        color: #000000;
-        border-color: #009999;
-        border-left: solid #009999 2px;
-        border-right: solid #009999 2px;
-        border-top: solid #009999 2px;
-        border-bottom: solid #009999 2px;
-
-        padding-left: 15pt;
+	/*[disabled]font-family:monospace;*/
+	/*[disabled]white-space:pre;*/
+	/*[disabled]width:100%;*/
+	/*[disabled]background-color:#FFFFCC;*/
+	/*[disabled]border:1px dotted #009999;*/
+	/*[disabled]padding-left:15pt;*/
 }
-
 PRE.PROGRAMLISTING
 {
-        font-family: monospace;
-        white-space: pre;
-        width: 100%;
-        color: black;
-        background-color: #F9F9F9;
-        border: 1px dashed #2F6FAB;
-        color: #000000;
-        padding-left: 15pt;
-} 
-
-H1
-{
-        font-variant: small-caps;
-        width: 100%;
+	/*[disabled]font-family:monospace;*/
+	/*[disabled]white-space:pre;*/
+	/*[disabled]width:100%;*/
+	/*[disabled]color:black;*/
+	/*[disabled]background-color:#F9F9F9;*/
+	/*[disabled]border:1px dashed #2F6FAB;*/
+	/*[disabled]padding-left:15pt;*/
 }
-
-TABLE.IMPORTANT
+.note, .warning, .important
 {
-        font-style:italic;
-        border: solid 2px #ff0000;
-        width: 70%;
-        margin-left: 15%;       
+	font-style: italic;
+	border: 1px dashed #000000;
+	width: 70%;
+	margin-left: 15%;
+	background-color: #D8DAE9;
+	padding-left: 1em;
 }
-TABLE.CAUTION
+.warning, .important
 {
-        font-style:italic;
-        border: ridge 2px #ffff00;
-        width: 70%;
-        margin-left: 15%;       
+	border-color: red;
 }
-
-TABLE.NOTE
+.bold
 {
-        font-style:italic;
-        border: solid 1px #000000;
-        width: 70%;
-        margin-left: 15%;       
+	font-weight: bold;
 }
 TABLE.TIP
 {
-        font-style:italic;
-        border: solid 1px #000000;
-        width: 70%;
-        margin-left: 15%;       
+	/*[disabled]font-style:italic;*/
+	/*[disabled]border:1px solid #000000;*/
+	/*[disabled]width:70%;*/
+	/*[disabled]margin-left:15%;*/
 }
-
 TABLE.WARNING
 {
-        font-style:italic;
-        font-weight: bold;
-        border: ridge 4px #ff0000;
-        
-        width: 70%;
-        margin-left: 15%;       
+	/*[disabled]font-style:italic;*/
+	/*[disabled]font-weight:bold;*/
+	/*[disabled]border:4px ridge #FF0000;*/
+	/*[disabled]width:70%;*/
+	/*[disabled]margin-left:15%;*/
 }
-
-DIV.VARIABLELIST {
-        font-style: normal;
-        font-weight: normal;
-        padding-left: 20px;
+DIV.VARIABLELIST
+{
+	/*[disabled]font-style:normal;*/
+	/*[disabled]font-weight:normal;*/
+	/*[disabled]padding-left:20px;*/
 }
-
-.VARLISTENTRY {
-        font-weight: bold;
-        margin-top: 10px;
-        COLOR: #ffffff ;
-        BACKGROUND-color: #a0a0d0;
-        BORDER: solid 1px #606090;
-        PADDING: 1px
+.VARLISTENTRY
+{
+	/*[disabled]font-weight:bold;*/
+	/*[disabled]margin-top:10px;*/
+	/*[disabled]color:#FFFFFF;*/
+	/*[disabled]background-color:#A0A0D0;*/
+	/*[disabled]border:1px solid #606090;*/
+	/*[disabled]padding:1px;*/
 }
-
-/*
- * See http://diveintoaccessibility.org/day_26_using_relative_font_sizes.html
- * for an explanation of the following few commands.
- * They are really too complicated to explain here in all depth. ;-)
-*/
-
-P {
-        font-size: 12px;
+A[href^="http:"]
+{
+	/*[disabled]background:url(images/remote.gif) no-repeat right center;*/
+	/*[disabled]padding-right:12px;*/
 }
-
-/*/*/A{}
-BODY P {
-        font-size: x-small;
-        voice-family: "\"}\"";
-        voice-family: inherit;
-        font-size: small;
+A[href^="http:"]:hover
+{
+	/*[disabled]background:url(images/remote_a.gif) no-repeat right center;*/
 }
-
-HTML>BODY P {
-        font-size: small;
+A[href^="#FTN"]
+{
+	/*[disabled]background:url(images/qbullet-note.gif) no-repeat right center;*/
+	/*[disabled]padding-right:12px;*/
 }
-/* */
-
-/* Add an external-link icon to absolute links */
-a[href^="http:"] {
-        background: url(images/remote.gif) right center no-repeat;
-        padding-right: 12px;
+A[href^="#FTN"]:hover
+{
+	/*[disabled]background:url(images/qbullet-note_a.gif) no-repeat right center;*/
 }
-
-a[href^="http:"]:hover {
-        background: url(images/remote_a.gif) right center no-repeat;
+A[name^="FTN"]
+{
+	/*[disabled]background:url(images/scrollup.gif) no-repeat right center;*/
+	/*[disabled]padding-right:12px;*/
 }
-
-/* Add a note icon to footnote links */
-a[href^="#FTN"] {
-        background: url(images/qbullet-note.gif) right center no-repeat;
-        padding-right: 12px;
+A[name^="FTN"]:hover
+{
+	/*[disabled]background:url(images/scrollup_a.gif) no-repeat right center;*/
 }
-
-a[href^="#FTN"]:hover {
-        background: url(images/qbullet-note_a.gif) right center no-repeat;
+DIV.imagelink A[href^="http:"]
+{
+	/*[disabled]background:transparent;*/
+	/*[disabled]padding-right:0px;*/
 }
-
-/* ...and a back icon to the backlinks in the footnotes themselves */
-a[name^="FTN"] {
-        background: url(images/scrollup.gif) right center no-repeat;
-        padding-right: 12px;
+DIV.imagelink A[href^="http:"]:hover
+{
+	/*[disabled]background:transparent;*/
 }
-
-a[name^="FTN"]:hover {
-        background: url(images/scrollup_a.gif) right center no-repeat;
+DIV.NAVFOOTER
+{
+	display: none;
 }
-
-/* ...or to any images  */
-DIV.imagelink  a[href^="http:"] {
-        background: transparent;
-        padding-right: 0px;
+DIV.NAVHEADER
+{
+	display: none;
 }
-
-DIV.imagelink  a[href^="http:"]:hover {
-        background: transparent;
+CODE
+{
+	background-color: #FFFFCC;
 }
-
-
-P.C2 {
-        COLOR: #ffffff ;
-        BACKGROUND-color: #a0a0d0;
-        BORDER: solid 1px #606090;
-        PADDING: 1px
+.screen
+{
+	background-color: #FFFFCC;
+	padding-left: 1em;
+	padding-top: 0.5em;
+	white-space: pre;
 }
-
-
-DIV.NAVFOOTER {
-        display: none;
+.userinput
+{
+	color: blue;
 }
-
-DIV.NAVHEADER {
-        display: none;
+.guimenu, .guisubmenu, .guimenuitem
+{
+	background-color: #DDDDCC;
+	font-family: monospace;
 }
-
-DIV.SECT1,DIV.SECT2,DIV.SECT3 {
-        margin-left: 20px;
-}
-
-DIV.EXAMPLE,DIV.TOC {
-        border: thin dotted #70AAE5;
-        padding-left: 10px;
-        padding-right: 10px;
-        color: #000000;
-        background-color: #EFF8F8;
-}
-
-DIV.TOC {
-        margin-left: 20px;
-        margin-right: 20px;
-        width: 95%;
-}
-
-UL  {
-        list-style: url("images/tux-bullet.png") disc;
-    }
