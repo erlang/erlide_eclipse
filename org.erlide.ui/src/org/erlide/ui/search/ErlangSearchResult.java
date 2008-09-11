@@ -72,12 +72,12 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	private static final Match[] NO_MATCHES = new Match[0];
 
 	public Match[] computeContainedMatches(
-			final AbstractTextSearchResult result, final IEditorPart editor) {
+			final AbstractTextSearchResult aResult, final IEditorPart editor) {
 		// TODO: copied from JavaSearchResult:
 		final IEditorInput editorInput = editor.getEditorInput();
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
-			return computeContainedMatches(result, fileEditorInput.getFile());
+			return computeContainedMatches(aResult, fileEditorInput.getFile());
 		}
 		return NO_MATCHES;
 	}

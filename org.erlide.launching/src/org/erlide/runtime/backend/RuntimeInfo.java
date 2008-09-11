@@ -171,10 +171,6 @@ public class RuntimeInfo implements Cloneable {
 		return cmd;
 	}
 
-	private boolean getUniqueName() {
-		return fUnique;
-	}
-
 	private String ifNotEmpty(String key, String str) {
 		if (str == null || str.length() == 0) {
 			return "";

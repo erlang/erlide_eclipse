@@ -29,20 +29,15 @@ PRE.SCREEN
 
 PRE.PROGRAMLISTING
 {
-        font-family:monospace;
+        font-family: monospace;
         white-space: pre;
         width: 100%;
-        background-color: #ffffcc;
-        border:solid;
+        color: black;
+        background-color: #F9F9F9;
+        border: 1px dashed #2F6FAB;
         color: #000000;
-        border-color: #009999;
-        border-left: solid #009999 2px;
-        border-right: solid #009999 2px;
-        border-top: solid #009999 2px;
-        border-bottom: solid #009999 2px;
-
         padding-left: 15pt;
-}
+} 
 
 H1
 {
