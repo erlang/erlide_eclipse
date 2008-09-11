@@ -66,7 +66,7 @@
                         <para>
                             <inlinemediaobject>
                                 <imageobject>
-                                    <imagedata fileref="./images/runtimeinstall.png" format="PNG"/>
+                                    <imagedata fileref="../images/runtimeinstall.png" format="PNG"/>
                                 </imageobject>
                             </inlinemediaobject>
                         </para>
@@ -454,7 +454,7 @@
                     <para>
                         <inlinemediaobject>
                             <imageobject>
-                                <imagedata fileref="./images/file_menu.png" format="PNG"/>
+                                <imagedata fileref="../images/file_menu.png" format="PNG"/>
                             </imageobject>
                         </inlinemediaobject>
                     </para>
@@ -465,7 +465,7 @@
                     <para>
                         <inlinemediaobject>
                             <imageobject>
-                                <imagedata fileref="./images/new_project_wizard.png" format="PNG"/>
+                                <imagedata fileref="../images/new_project_wizard.png" format="PNG"/>
                             </imageobject>
                         </inlinemediaobject>
                     </para>
@@ -479,7 +479,7 @@
                     <para>
                         <inlinemediaobject>
                             <imageobject>
-                                <imagedata fileref="./images/new_proj_build_properties.png"
+                                <imagedata fileref="../images/new_proj_build_properties.png"
                                     format="PNG"/>
                             </imageobject>
                         </inlinemediaobject>
@@ -502,7 +502,7 @@
             <para>
                 <mediaobject>
                     <imageobject>
-                        <imagedata fileref="./images/projectproperties.png" format="PNG"/>
+                        <imagedata fileref="../images/projectproperties.png" format="PNG"/>
                     </imageobject>
                 </mediaobject>
             </para>
@@ -534,7 +534,7 @@
                     <para>
                         <inlinemediaobject>
                             <imageobject>
-                                <imagedata fileref="./images/import_wizard01.png" format="PNG"/>
+                                <imagedata fileref="../images/import_wizard01.png" format="PNG"/>
                             </imageobject>
                         </inlinemediaobject>
                     </para>
@@ -545,7 +545,7 @@
                     <para>
                         <inlinemediaobject>
                             <imageobject>
-                                <imagedata fileref="./images/import_wizard02.png" format="PNG"/>
+                                <imagedata fileref="../images/import_wizard02.png" format="PNG"/>
                             </imageobject>
                         </inlinemediaobject>
                     </para>
@@ -571,7 +571,7 @@
             <para>
                 <inlinemediaobject>
                     <imageobject>
-                        <imagedata fileref="./images/view_editor.png" format="PNG"/>
+                        <imagedata fileref="../images/view_editor.png" format="PNG"/>
                     </imageobject>
                 </inlinemediaobject>
             </para>
@@ -626,7 +626,7 @@
             <para>
                 <inlinemediaobject>
                     <imageobject>
-                        <imagedata fileref="./images/erlangNavigatorView.png" format="PNG"/>
+                        <imagedata fileref="../images/erlangNavigatorView.png" format="PNG"/>
                     </imageobject>
                 </inlinemediaobject>
             </para>
@@ -655,7 +655,7 @@
                                 <entry align="center" valign="top">
                                     <inlinemediaobject>
                                         <imageobject>
-                                            <imagedata fileref="./images/icon_con_min.png"
+                                            <imagedata fileref="../images/icon_con_min.png"
                                                 format="PNG"/>
                                         </imageobject>
                                     </inlinemediaobject>
@@ -669,7 +669,7 @@
                                 <entry align="center" valign="top">
                                     <inlinemediaobject>
                                         <imageobject>
-                                            <imagedata fileref="./images/icon_con_max.png"
+                                            <imagedata fileref="../images/icon_con_max.png"
                                                 format="PNG"/>
                                         </imageobject>
                                     </inlinemediaobject>
@@ -681,7 +681,7 @@
                                 <entry align="center" valign="top">
                                     <inlinemediaobject>
                                         <imageobject>
-                                            <imagedata fileref="./images/icon_collapse_all.png"
+                                            <imagedata fileref="../images/icon_collapse_all.png"
                                                 format="PNG"/>
                                         </imageobject>
                                     </inlinemediaobject>
@@ -698,7 +698,7 @@
                                         <inlinemediaobject>
                                             <imageobject>
                                                 <imagedata
-                                                  fileref="./images/icon_link_with_editor.png"
+                                                  fileref="../images/icon_link_with_editor.png"
                                                   format="PNG"/>
                                             </imageobject>
                                         </inlinemediaobject>
@@ -718,7 +718,7 @@
                                 <entry align="center" valign="top">
                                     <inlinemediaobject>
                                         <imageobject>
-                                            <imagedata fileref="./images/icon_menu.png" format="PNG"
+                                            <imagedata fileref="../images/icon_menu.png" format="PNG"
                                             />
                                         </imageobject>
                                     </inlinemediaobject>
@@ -823,7 +823,7 @@
                                     <para>
                                         <inlinemediaobject>
                                             <imageobject>
-                                                <imagedata fileref="./images/erlang_srcFile.gif"
+                                                <imagedata fileref="../images/erlang_srcFile.gif"
                                                   format="GIF"/>
                                             </imageobject>
                                         </inlinemediaobject>
@@ -838,7 +838,7 @@
                                     <para>
                                         <inlinemediaobject>
                                             <imageobject>
-                                                <imagedata fileref="./images/methpri_obj.gif"
+                                                <imagedata fileref="../images/methpri_obj.gif"
                                                   format="GIF"/>
                                             </imageobject>
                                         </inlinemediaobject>
