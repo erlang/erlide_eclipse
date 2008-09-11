@@ -186,9 +186,12 @@ stop(Meta) ->     Meta ! {user, {cmd, stop}}.
 set_variable_value(Meta, Variable, Value, SP) ->
     eval(Meta, {no_module, Variable++"="++Value, SP}),
     receive
-        M ->
-            M
+        {Meta, EvalRsp} ->
+            EvalRsp
+    after 5000 ->
+            {error, timeout}
     end.
+
 
 eval(Meta, {Mod, Cmd}) ->
     eval(Meta, {Mod, Cmd, nostack});
@@ -399,17 +402,17 @@ messages() ->
 eval_restricted({From,_Mod,Cmd,SP}, Bs) ->
     case catch parse_cmd(Cmd, 1) of
 	{'EXIT', _Reason} ->
-	    From ! {self(), {eval_rsp, 'Parse error'}};
+	    From ! {self(), {eval_rsp, {error, 'Parse error'}}};
 	[{var,_,Var}] ->
 	    Bs2 = bindings(Bs, SP),
 	    Res = case get_binding(Var, Bs2) of
 		      {value, Value} -> Value;
-		      unbound -> unbound
+		      unbound -> {error, unbound}
 		  end,
 	    From ! {self(), {eval_rsp, Res}};
 	_Forms ->
 	    Rsp = 'Only possible to inspect variables',
-	    From ! {self(), {eval_rsp, Rsp}}
+	    From ! {self(), {eval_rsp, {error, Rsp}}}
     end.
 
 eval_nonrestricted({From,Mod,Cmd,SP}, Bs, #ieval{level=Le}) when SP<Le->

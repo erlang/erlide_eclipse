@@ -65,8 +65,9 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 					"Can't set value of part of expression", null));
 		}
 		final ErlangDebugTarget edt = (ErlangDebugTarget) getDebugTarget();
-		if (!ErlideDebug.setVariableValue(edt.getBackend(), name, expression,
-				stackFrameNo, process.getMeta())) {
+		final String err = ErlideDebug.setVariableValue(edt.getBackend(), name,
+				expression, stackFrameNo, process.getMeta());
+		if (err != null) {
 			throw new DebugException(new Status(IStatus.ERROR,
 					ErlangLaunchPlugin.PLUGIN_ID,
 					DebugException.TARGET_REQUEST_FAILED, "Bad expression",

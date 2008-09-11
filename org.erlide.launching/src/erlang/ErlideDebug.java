@@ -11,6 +11,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDebug {
@@ -291,25 +292,46 @@ public class ErlideDebug {
 		return null;
 	}
 
+	static final OtpErlangAtom OK = new OtpErlangAtom("ok");
+
 	@SuppressWarnings("boxing")
-	public static boolean setVariableValue(final IBackend backend,
+	public static String setVariableValue(final IBackend backend,
 			final String name, final String value, final int stackFrameNo,
 			final OtpErlangPid meta) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
 					"set_variable_value", "ssix", name, value,
 					stackFrameNo + 1, meta);
-			if (res instanceof OtpErlangAtom) {
-				final OtpErlangAtom ok = (OtpErlangAtom) res;
-				return ok.atomValue().equals("ok");
+			if (res instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				final OtpErlangObject o = t.elementAt(1);
+				if (o instanceof OtpErlangTuple) {
+					final OtpErlangTuple t1 = (OtpErlangTuple) o;
+					final OtpErlangObject o10 = t1.elementAt(0);
+					final OtpErlangObject o11 = t1.elementAt(1);
+					if (o10 instanceof OtpErlangAtom) {
+						final OtpErlangAtom e = (OtpErlangAtom) o10;
+						if (e.atomValue().equals("error")) {
+							if (o11 instanceof OtpErlangAtom) {
+								final OtpErlangAtom e11 = (OtpErlangAtom) o11;
+								return e11.atomValue();
+							} else if (o11 instanceof OtpErlangString) {
+								final OtpErlangString s11 = (OtpErlangString) o11;
+								return s11.stringValue();
+							} else {
+								return "error";
+							}
+						}
+
+					}
+				}
 			}
+			return null;
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return "error";
 	}
 }
