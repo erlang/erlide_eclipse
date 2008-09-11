@@ -1,29 +1,52 @@
 package org.erlide.ui.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
-import org.erlide.core.erlang.IErlElement;
+import org.eclipse.search.ui.text.Match;
+import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.runtime.backend.BackendManager;
+
+import erlang.ErlideNoparse;
 
 public class ErlSearchQuery implements ISearchQuery {
-	String module;
-	String fun;
-	int arity;
-	IErlElement element;
-	String[] scope;
+	private final ErlangExternalFunctionCallRef searchRef;
+	// String module;
+	// String fun;
+	// int arity;
+	// IErlElement element;
+	private final String[] scope;
+	private final int searchFor; // REFERENCES, DECLARATIONS or
+	// ALL_OCCURRENCES
+	private final int limitTo;
+	private ErlangSearchResult fSearchResult;
+	private List<ErlangExternalFunctionCallRef> fResult;
 
-	public ErlSearchQuery(final String module, final String fun,
-			final int arity, final String[] scope) {
-		this.module = module;
-		this.fun = fun;
-		this.arity = arity;
-		this.scope = scope;
-	}
+	// public ErlSearchQuery(final String module, final String fun,
+	// final int arity, final String[] scope) {
+	// this.module = module;
+	// this.fun = fun;
+	// this.arity = arity;
+	// this.scope = scope;
+	// }
 
-	public ErlSearchQuery(final IErlElement element, final String[] scope) {
-		this.element = element;
+	// public ErlSearchQuery(final IErlElement element, final String[] scope) {
+	// this.element = element;
+	// this.scope = scope;
+	// }
+
+	public ErlSearchQuery(final ErlangExternalFunctionCallRef ref,
+			final int searchFor, final int limitTo, final String[] scope) {
+		searchRef = ref;
+		this.searchFor = searchFor;
+		this.limitTo = limitTo;
 		this.scope = scope;
 	}
 
@@ -33,24 +56,34 @@ public class ErlSearchQuery implements ISearchQuery {
 	}
 
 	public boolean canRunInBackground() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public String getLabel() {
-		// TODO Auto-generated method stub
-		return null;
+		return searchRef.toString();
 	}
 
 	public ISearchResult getSearchResult() {
-		// TODO Auto-generated method stub
-		return null;
+		if (fSearchResult == null) {
+			fSearchResult = new ErlangSearchResult(this, fResult);
+		}
+		return fSearchResult;
 	}
 
 	public IStatus run(final IProgressMonitor monitor)
 			throws OperationCanceledException {
-		// TODO Auto-generated method stub
-		return null;
+		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
+		// in... ev portionera ut lite
+		fResult = ErlideNoparse.find(BackendManager.getDefault()
+				.getIdeBackend(), searchRef);
+		fSearchResult.setResult(fResult);
+		final List<Match> l = new ArrayList<Match>();
+		for (final ErlangExternalFunctionCallRef ref : fResult) {
+			final ISourceRange pos = ref.getPos();
+			final Match m = new Match(ref, pos.getOffset(), pos.getLength());
+			l.add(m);
+		}
+		fSearchResult.addMatches(l.toArray(new Match[l.size()]));
+		return Status.OK_STATUS;
 	}
-
 }

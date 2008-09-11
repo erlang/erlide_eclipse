@@ -2,9 +2,17 @@ package org.erlide.ui.search;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.search.ErlangExternalFunctionCallRef;
+
+import erlang.OpenResult;
 
 public class SearchUtil {
 
@@ -21,6 +29,16 @@ public class SearchUtil {
 		return null;
 	}
 
+	public static String[] getProjectsScope(final String[] projectNames) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static String[] getSelectionScope(final ISelection selection) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void runQueryInBackground(final Object query) {
 		NewSearchUI.runQueryInBackground((ISearchQuery) query);
 	}
@@ -29,6 +47,41 @@ public class SearchUtil {
 			final IProgressService progressService, final Object query) {
 		return NewSearchUI.runQueryInForeground(progressService,
 				(ISearchQuery) query);
+	}
+
+	public static ErlangExternalFunctionCallRef getRefFromOpenRes(
+			final OpenResult res) {
+		if (!res.isExternalCall()) {
+			return null;
+		}
+		return new ErlangExternalFunctionCallRef(res.getName(), res.getFun(),
+				res.getArity());
+	}
+
+	public static ErlangExternalFunctionCallRef getRefFromErlElement(
+			final IErlElement element) {
+		if (element instanceof IErlFunction) {
+			final IErlFunction function = (IErlFunction) element;
+			return new ErlangExternalFunctionCallRef(function.getModule()
+					.getModuleName(), function.getName(), function.getArity());
+		} else if (element instanceof IErlFunctionClause) {
+			final IErlFunctionClause clause = (IErlFunctionClause) element;
+			getRefFromErlElement(clause.getParent());
+		}
+		return null;
+	}
+
+	public static boolean isLineDelimiterChar(final char ch) {
+		return ch == '\n' || ch == '\r';
+	}
+
+	public static IErlModule getModule(final IErlElement key) {
+		if (key instanceof IErlFunction) {
+			return (IErlModule) key.getParent();
+		} else if (key instanceof IErlFunctionClause) {
+			return (IErlModule) key.getParent().getParent();
+		}
+		return null;
 	}
 
 	// public static String toString(final IWorkingSet[] workingSets) {

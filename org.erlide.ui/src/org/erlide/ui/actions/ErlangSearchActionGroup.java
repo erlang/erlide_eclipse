@@ -11,16 +11,13 @@
 package org.erlide.ui.actions;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.search.ReferencesSearchGroup;
 
@@ -134,7 +131,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 
 		// if (PreferenceConstants.getPreferenceStore().getBoolean(
 		// PreferenceConstants.SEARCH_USE_REDUCED_MENU)) {
-		// fReferencesGroup.fillContextMenu(menu);
+		fReferencesGroup.fillContextMenu(menu);
 		// fDeclarationsGroup.fillContextMenu(menu);
 		//
 		// if (fEditor == null) {
@@ -143,34 +140,34 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		// fWriteAccessGroup.fillContextMenu(menu);
 		// }
 		// } else {
-		IMenuManager target = menu;
-		IMenuManager searchSubMenu = null;
-		if (fEditor != null) {
-			final String groupName = "S&earch";
-			searchSubMenu = new MenuManager(groupName,
-					ITextEditorActionConstants.GROUP_FIND);
-			searchSubMenu.add(new GroupMarker(
-					ITextEditorActionConstants.GROUP_FIND));
-			target = searchSubMenu;
-			// }
-
-			fReferencesGroup.fillContextMenu(target);
-			// fDeclarationsGroup.fillContextMenu(target);
-			// fImplementorsGroup.fillContextMenu(target);
-			// fReadAccessGroup.fillContextMenu(target);
-			// fWriteAccessGroup.fillContextMenu(target);
-
-			// if (searchSubMenu != null) {
-			// fOccurrencesGroup.fillContextMenu(target);
-			// searchSubMenu.add(new Separator());
-			// }
-
-			// no other way to find out if we have added items.
-			if (searchSubMenu != null && searchSubMenu.getItems().length > 2) {
-				menu.appendToGroup(ITextEditorActionConstants.GROUP_FIND,
-						searchSubMenu);
-			}
-		}
+		// IMenuManager target = menu;
+		// IMenuManager searchSubMenu = null;
+		// if (fEditor != null) {
+		// final String groupName = "S&earch";
+		// searchSubMenu = new MenuManager(groupName,
+		// ITextEditorActionConstants.GROUP_FIND);
+		// searchSubMenu.add(new GroupMarker(
+		// ITextEditorActionConstants.GROUP_FIND));
+		// target = searchSubMenu;
+		// // }
+		//
+		// fReferencesGroup.fillContextMenu(target);
+		// // fDeclarationsGroup.fillContextMenu(target);
+		// // fImplementorsGroup.fillContextMenu(target);
+		// // fReadAccessGroup.fillContextMenu(target);
+		// // fWriteAccessGroup.fillContextMenu(target);
+		//
+		// // if (searchSubMenu != null) {
+		// // fOccurrencesGroup.fillContextMenu(target);
+		// // searchSubMenu.add(new Separator());
+		// // }
+		//
+		// // no other way to find out if we have added items.
+		// if (searchSubMenu != null && searchSubMenu.getItems().length > 1) {
+		// menu.appendToGroup(ITextEditorActionConstants.GROUP_FIND,
+		// searchSubMenu);
+		// }
+		// }
 	}
 
 	/*

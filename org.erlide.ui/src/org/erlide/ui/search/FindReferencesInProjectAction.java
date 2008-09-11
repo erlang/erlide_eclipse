@@ -61,8 +61,8 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 
 	@Override
 	void init() {
-		setText("SearchMessages.Search_FindReferencesInProjectAction_label");
-		setToolTipText("SearchMessages.Search_FindReferencesInProjectAction_tooltip");
+		setText("Project");
+		setToolTipText("Find references in selected projects");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);

@@ -87,8 +87,8 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 
 	@Override
 	void init() {
-		setText("SearchMessages.Search_FindReferencesInWorkingSetAction_label");
-		setToolTipText("SearchMessages.Search_FindReferencesInWorkingSetAction_tooltip");
+		setText("Working set");
+		setToolTipText("Find references in working set");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKING_SET_ACTION);

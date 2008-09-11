@@ -479,6 +479,12 @@
             commandId="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F3">
+      </key>
+      <key
+            commandId="org.erlide.ui.search.references.in.workspace"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+G">
       </key>      
             
  </extension>
@@ -998,11 +1004,24 @@
       </command>
    </extension>
    <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.erlide.ui.search.references.in.workspace"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+G">
-      </key>
+         point="org.eclipse.search.searchPages">
+      <page
+            canSearchEnclosingProjects="true"
+            class="org.erlide.ui.search.ErlangSearchPage"
+            icon="icons/full/obj16/erlang020.gif"
+            id="org.erlide.ui.ErlangSearchPage"
+            label="Erlang Search"
+            showScopeSection="true"
+            sizeHint="460,160">
+      </page>
    </extension>
+   <extension
+         point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="org.erlide.ui.search.ErlangSearchResultPage"
+            id="org.erlide.ui.ErlangSearchResultPage"
+            searchResultClass="org.erlide.ui.search.ErlangSearchResult">
+      </viewPage>
+   </extension>
+
 </plugin>

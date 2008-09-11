@@ -57,8 +57,8 @@ public class FindReferencesAction extends FindAction {
 
 	@Override
 	void init() {
-		setText("SearchMessages.Search_FindReferencesAction_label");
-		setToolTipText("SearchMessages.Search_FindReferencesAction_tooltip");
+		setText("Workspace");
+		setToolTipText("Find references in workspace");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);

@@ -25,6 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -228,7 +229,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			// "SearchMessages.SearchElementSelectionDialog_message";
 
 			if (res.isExternalCall()) {
-				performNewSearch(res.getName(), res.getFun(), res.getArity());
+				performNewSearch(SearchUtil.getRefFromOpenRes(res));
 			}
 		} catch (final Exception e) {
 			// final String title = "SearchMessages.Search_Error_search_title";
@@ -240,10 +241,10 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 	abstract protected String[] getScope();
 
-	private void performNewSearch(final String name, final String fun,
-			final int arity) {
+	private void performNewSearch(final ErlangExternalFunctionCallRef ref) {
 
-		final ErlSearchQuery query = new ErlSearchQuery(name, fun, arity,
+		final ErlSearchQuery query = new ErlSearchQuery(ref,
+				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,
 				getScope());
 		if (query.canRunInBackground()) {
 			/*
@@ -304,7 +305,10 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	private void performNewSearch(final IErlElement element) {
-		final ErlSearchQuery query = new ErlSearchQuery(element, getScope());
+		final ErlangExternalFunctionCallRef ref = SearchUtil.getRefFromErlElement(element);
+		final ErlSearchQuery query = new ErlSearchQuery(ref,
+				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,
+				getScope());
 		if (query.canRunInBackground()) {
 			/*
 			 * This indirection with Object as parameter is needed to prevent
