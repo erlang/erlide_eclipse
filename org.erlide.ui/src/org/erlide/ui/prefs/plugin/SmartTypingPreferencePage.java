@@ -29,18 +29,19 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
 	private static final String SMART_TYPING_KEYS[] = new String[] {
 			"strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			"parens", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$
+			"parens", "embraceSelection", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	public static final int STRINGS = 0;
 	public static final int ATOMS = 1;
 	public static final int BRACES = 2;
 	public static final int BRACKETS = 3;
 	public static final int PARENS = 4;
+	public static final int EMBRACE_SELECTION = 5;
 
-	public static final int PASTE_REINDENT = 5;
+	public static final int PASTE_REINDENT = 6;
 
 	private static final String SMART_TYPING_DEFAULTS[] = new String[] { "1", //$NON-NLS-1$
-			"0", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"0", "1", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
 	List<Button> buttons = new ArrayList<Button>();
 
@@ -128,6 +129,9 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
 		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_Parens);
 		buttons.add(b);
+
+		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_EmbraceSelection);
+		buttons.add(b);
 	}
 
 	private Button addCheckBox(final Composite composite, final String label) {
@@ -164,7 +168,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
-	@SuppressWarnings("boxing")
+	@SuppressWarnings("boxing") //$NON-NLS-1$
 	private void setToPreferences() {
 		final List<Boolean> l = getPreferences();
 		for (int i = 0; i < l.size(); ++i) {
@@ -173,13 +177,13 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
-	@SuppressWarnings("boxing")
+	@SuppressWarnings("boxing") //$NON-NLS-1$
 	public static List<Boolean> getPreferences() {
 		final List<String> p = getPreferences(SMART_TYPING_KEY,
 				SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS);
 		final List<Boolean> l = new ArrayList<Boolean>(p.size());
 		for (final String i : p) {
-			l.add(!i.equals("0") && !i.equals("false")); //$NON-NLS-1$
+			l.add(!i.equals("0") && !i.equals("false")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return l;
 	}

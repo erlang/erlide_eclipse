@@ -100,6 +100,8 @@ public class ErlEditorMessages extends NLS {
 
 	public static String Prefs_After_arrow;
 
+	public static String SmartTypingPrefs_EmbraceSelection;
+
 	public static String SmartTypingPrefs_atoms;
 
 	public static String SmartTypingPrefs_AutomaticallyClose;
