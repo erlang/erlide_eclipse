@@ -95,8 +95,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	}
 
 	public Match[] computeContainedMatches(
-			final AbstractTextSearchResult result, final IFile file) {
-		final ErlangSearchResult esr = (ErlangSearchResult) result;
+			final AbstractTextSearchResult aResult, final IFile file) {
+		final ErlangSearchResult esr = (ErlangSearchResult) aResult;
 		final List<Match> l = new ArrayList<Match>();
 		final List<ErlangExternalFunctionCallRef> refs = esr.getResult();
 		if (refs == null) {

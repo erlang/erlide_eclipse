@@ -185,6 +185,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 		final Display display = SWTUtil.getStandardDisplay();
 		if (display != null && !display.isDisposed()) {
 			display.asyncExec(new Runnable() {
+				@SuppressWarnings("synthetic-access")
 				public void run() {
 					final Object[] listeners = fListeners.getListeners();
 					for (int i = 0; i < listeners.length; i++) {

@@ -347,7 +347,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
 		 */
 		@Override
 		public int category(final Object element) {
@@ -394,6 +395,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
 	private static final String[] SHOW_IN_TARGETS = new String[] { IPageLayout.ID_RES_NAV };
 	private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
+		@SuppressWarnings("synthetic-access")
 		public String[] getShowInTargetIds() {
 			return SHOW_IN_TARGETS;
 		}

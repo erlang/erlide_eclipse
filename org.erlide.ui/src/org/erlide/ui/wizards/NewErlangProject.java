@@ -211,9 +211,9 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			prefs.copyFrom(bprefs);
 			prefs.store();
 
-			// add code path to backend
-			final String out = project.getLocation().append(
-					prefs.getOutputDir()).toString();
+			// TODO add code path to backend
+			// final String out = project.getLocation().append(
+			// prefs.getOutputDir()).toString();
 		} catch (final CoreException x) {
 			x.printStackTrace();
 			reportError(x);

@@ -69,7 +69,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 		public SearchPatternData(final int searchFor, final int limitTo,
 				final boolean isCaseSensitive, final String pattern,
-				final ErlangExternalFunctionCallRef ref) { // , final int includeMask) {
+				final ErlangExternalFunctionCallRef ref) { // , final int
+			// includeMask) {
 			this(searchFor, limitTo, pattern, isCaseSensitive, ref,
 					ISearchPageContainer.WORKSPACE_SCOPE, null); // ,
 			// includeMask);
@@ -271,6 +272,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			final String[] projectNames = getContainer()
 					.getSelectedProjectNames();
 			scope = SearchUtil.getProjectsScope(projectNames);
+			break;
 		case ISearchPageContainer.SELECTION_SCOPE:
 			scope = SearchUtil.getSelectionScope(getContainer().getSelection());
 			// case ISearchPageContainer.WORKING_SET_SCOPE: {
@@ -450,7 +452,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	public void createControl(final Composite parent) {
 		initializeDialogUnits(parent);
@@ -488,6 +492,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// createParticipants(result);
 
 		final SelectionAdapter javaElementInitializer = new SelectionAdapter() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				if (getSearchFor() == fInitialData.getSearchFor()) {
@@ -518,12 +523,12 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	 * (!SearchParticipantsExtensionPoint.hasAnyParticipants()) return new
 	 * Composite(result, SWT.NULL); Button selectParticipants= new
 	 * Button(result, SWT.PUSH);
-	 * selectParticipants.setText(SearchMessages.getString("SearchPage.select_participants.label"));
-	 * //$NON-NLS-1$ GridData gd= new GridData(); gd.verticalAlignment=
-	 * GridData.VERTICAL_ALIGN_BEGINNING; gd.horizontalAlignment=
-	 * GridData.HORIZONTAL_ALIGN_END; gd.grabExcessHorizontalSpace= false;
-	 * gd.horizontalAlignment= GridData.END; gd.horizontalSpan= 2;
-	 * selectParticipants.setLayoutData(gd);
+	 * selectParticipants.setText(SearchMessages.getString
+	 * ("SearchPage.select_participants.label")); //$NON-NLS-1$ GridData gd= new
+	 * GridData(); gd.verticalAlignment= GridData.VERTICAL_ALIGN_BEGINNING;
+	 * gd.horizontalAlignment= GridData.HORIZONTAL_ALIGN_END;
+	 * gd.grabExcessHorizontalSpace= false; gd.horizontalAlignment=
+	 * GridData.END; gd.horizontalSpan= 2; selectParticipants.setLayoutData(gd);
 	 * selectParticipants.addSelectionListener(new SelectionAdapter() { public
 	 * void widgetSelected(SelectionEvent e) {
 	 * PreferencePageSupport.showPreferencePage(getShell(),
@@ -542,13 +547,15 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 		// Pattern text + info
 		final Label label = new Label(result, SWT.LEFT);
-		label.setText("Expression"); // SearchMessages.SearchPage_expression_label);
+		label.setText("Expression"); //SearchMessages.SearchPage_expression_label
+		// );
 		label.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false,
 				false, 2, 1));
 
 		// Pattern combo
 		fPattern = new Combo(result, SWT.SINGLE | SWT.BORDER);
 		fPattern.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				handlePatternSelected();
@@ -556,6 +563,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			}
 		});
 		fPattern.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(final ModifyEvent e) {
 				doPatternModified();
 				updateOKStatus();
@@ -570,8 +578,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 		// Ignore case checkbox
 		fCaseSensitive = new Button(result, SWT.CHECK);
-		fCaseSensitive.setText("Case sensitive");// SearchMessages.SearchPage_expression_caseSensitive);
+		fCaseSensitive.setText("Case sensitive");// SearchMessages.
+		// SearchPage_expression_caseSensitive
+		// );
 		fCaseSensitive.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				fIsCaseSensitive = fCaseSensitive.getSelection();
@@ -833,7 +844,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private SearchPatternData determineInitValuesFrom(final IErlElement o) {
-		final ErlangExternalFunctionCallRef ref = SearchUtil.getRefFromErlElement(o);
+		final ErlangExternalFunctionCallRef ref = SearchUtil
+				.getRefFromErlElement(o);
 		if (ref == null) {
 			return null;
 		}
