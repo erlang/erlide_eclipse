@@ -31,6 +31,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -46,8 +47,6 @@ import erlang.ErlideDoc;
 
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
-
-	private static final ArrayList<IErlModule> EMPTY_MODULE_LIST = new ArrayList<IErlModule>();
 
 	// private ITextEditor fEditor;
 	private List<IErlImport> fImports;
@@ -81,6 +80,7 @@ public class ErlTextHover implements ITextHover,
 				.asBuild();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
+		ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;
 			return s1.stringValue();
@@ -102,7 +102,8 @@ public class ErlTextHover implements ITextHover,
 					final IErlPreprocessorDef pd = ErlModelUtils
 							.findPreprocessorDef((IProject) fModule
 									.getProject().getResource(), fModule,
-									definedName, kindToFind, EMPTY_MODULE_LIST);
+									definedName, kindToFind,
+									new ArrayList<IErlModule>());
 					if (pd != null) {
 						return pd.getExtra();
 					}
