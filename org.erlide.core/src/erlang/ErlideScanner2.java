@@ -18,16 +18,17 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner2 {
-	private final static String MODULE = "erlide_scanner2";
+	private final static String ERLIDE_SCANNER2 = "erlide_scanner2";
 
 	public static void initialScan(final String module,
-			final String moduleFileName, final String initialText) {
+			final String moduleFileName, final String initialText,
+			final String erlidePath) {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
-			BackendManager.getDefault().getIdeBackend().rpc(MODULE,
-					"initialScan", "asss", module, moduleFileName, initialText,
-					stateDir);
+			BackendManager.getDefault().getIdeBackend().rpc(ERLIDE_SCANNER2,
+					"initialScan", "assss", module, moduleFileName,
+					initialText, stateDir, erlidePath);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -35,8 +36,8 @@ public class ErlideScanner2 {
 
 	public static void destroy(final String module) {
 		try {
-			BackendManager.getDefault().getIdeBackend().rpcx(MODULE, "destroy",
-					"a", module);
+			BackendManager.getDefault().getIdeBackend().rpcx(ERLIDE_SCANNER2,
+					"destroy", "a", module);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -46,8 +47,8 @@ public class ErlideScanner2 {
 	public static ErlToken getTokenAt(final String module, final int offset) {
 		OtpErlangObject r1 = null;
 		try {
-			r1 = BackendManager.getDefault().getIdeBackend().rpcx(MODULE,
-					"getTokenAt", "ai", module, offset);
+			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
+					ERLIDE_SCANNER2, "getTokenAt", "ai", module, offset);
 			// ErlLogger.debug("getTokenAt -> " + r1);
 		} catch (final Exception e) {
 			// e.printStackTrace();
@@ -108,8 +109,8 @@ public class ErlideScanner2 {
 			ErlLogger.info("replaceText %d %d \"%d\"", offset, removeLength,
 					newText.length());
 			final OtpErlangObject r = BackendManager.getDefault()
-					.getIdeBackend().rpcx(MODULE, "replaceText", "aiis",
-							module, offset, removeLength, newText);
+					.getIdeBackend().rpcx(ERLIDE_SCANNER2, "replaceText",
+							"aiis", module, offset, removeLength, newText);
 			if (r instanceof OtpErlangTuple) {
 				ErlLogger.error("GOT::" + r.toString());
 			}

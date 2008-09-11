@@ -50,9 +50,9 @@ public class ErlModule extends Openable implements IErlModule {
 	private long timestamp;
 
 	private OtpErlangObject parseTree;
-
 	// the document last reconciled with
 	// private IDocument fDoc;
+
 	private final List<IErlComment> comments;
 
 	private String initialText;
@@ -115,7 +115,8 @@ public class ErlModule extends Openable implements IErlModule {
 
 		final ErlParser parser = new ErlParser();
 		if (initialText != null) {
-			isStructureKnown = parser.parse(this, initialText, !parsed);
+			isStructureKnown = parser.parse(this, initialText, !parsed,
+					underlyingResource.getFullPath().toString());
 		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
@@ -327,7 +328,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	private IErlScanner getNewScanner() {
-		return new ErlScanner(this, initialText);
+		return new ErlScanner(this, initialText, fFile.getFullPath().toString());
 	}
 
 	public void fixExportedFunctions() {
@@ -398,7 +399,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void disposeParser() {
-		IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
 	}
 

@@ -8,10 +8,13 @@
 %% Exported Functions
 %%
 
--export([initial_parse/4, reparse/1]).
+-export([initial_parse/5, reparse/1]).
 
 %% server stuff, currently only for testing
--export([modules/0, dump_module/1, dump_log/0, create/1, destroy/1, logging/1, all/0, stop/0]).
+-export([modules/0, dump_module/1, dump_log/0, create/3, destroy/1, logging/1, all/0, stop/0, find/3,
+         xdump/0]).
+
+-compile(export_all).
 
 %% internal exports 
 -export([loop/1]).
@@ -22,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 6).
+-define(CACHE_VERSION, 9).
 -define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
@@ -33,22 +36,27 @@
 %%
 
 modules() ->
-	server_cmd(modules, []).
+    server_cmd(modules, []).
 
-create(Module) when is_atom(Module) ->
-    server_cmd(create, Module).
+create(Module, Model, ErlidePath) when is_atom(Module), is_list(ErlidePath) ->
+    server_cmd(create, {Module, Model, ErlidePath}).
 
 destroy(Module) when is_atom(Module) ->
-	server_cmd(destroy, Module).
+    server_cmd(destroy, Module).
 
 dump_log() ->
     server_cmd(dump_log, []).
 
-logging(OnOff) ->
-    server_cmd(logging, OnOff).
+logging(on) ->
+    server_cmd(logging, on);
+logging(off) ->
+    server_cmd(logging, off).
 
 all() ->
     server_cmd(all, []).
+
+xdump() ->
+    server_cmd(xdump, []).
 
 dump_module(Module) when is_atom(Module) ->
     server_cmd(dump_module, Module).
@@ -56,11 +64,14 @@ dump_module(Module) when is_atom(Module) ->
 stop() ->
     server_cmd(stop, []).
 
-initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
+find(M, F, A) ->
+    server_cmd(find, {external_call, {M, F, A}}).
+
+initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     try
-    	?D({StateDir, ModuleFileName}),
-        RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir) end,
-        CacheFun = fun(D) -> erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir), D end,
+    	?D({StateDir, ModuleFileName, ErlidePath}),
+        RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) end,
+        CacheFun = fun(D) -> erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
         Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
@@ -73,7 +84,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir) ->
 
 reparse(ScannerName) ->
     try
-        Res = do_parse(ScannerName, "", "", ""),
+        Res = do_parse(ScannerName, "", "", "", ""),
         update_state(ScannerName, Res),
         {ok, Res}
     catch
@@ -87,26 +98,35 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos}).
--record(clause, {pos, name, args, head, code, name_pos}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, code, external_refs}).
+-record(clause, {pos, name, args, head, code, name_pos, external_refs}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
+-record(module, {name, erlide_path, model}).
+-record(external_call, {module, function, arity, offset, length}).
 
-do_parse(ScannerName, ModuleFileName, InitalText, StateDir) ->
-%%     ?Info({noparse, ScannerName}),
-%%     erlide_tracing:dbgon([erlide_noparse], "/Users/jakob/x.log"),
-    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir),
-    ?D(length(Toks)),
+do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
+    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath),
+    ?D({do_parse, ErlidePath, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     ?D({length(UncommentToks), length(Comments)}),
     Functions = split_after_dots(UncommentToks, [], []),
     ?D(length(Functions)),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
     ?D(length(Collected)),
-    %% {Collected, Comments, Toks}.
-%%     erlide_tracing:dbgoff(),
-%%     erlide_tracing:dbgtc("/Users/jakob/x.log", "/Users/jakob/x.txt"),
-    #model{forms=Collected, comments=Comments}.
+    Model = #model{forms=Collected, comments=Comments},
+    create(ScannerName, Model, ErlidePath),
+    Model.
+
+parse_test(ScannerName, File) ->
+    erlide_scanner2:scan_uncached(ScannerName, File, ""),
+    Toks = erlide_scanner2:getTokens(ScannerName),
+    {UncommentToks, Comments} = extract_comments(Toks),
+    Functions = split_after_dots(UncommentToks, [], []),
+    Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
+    Model = #model{forms=Collected, comments=Comments},
+    create(ScannerName, Model, ""),
+    ok.
 
 classify_and_collect(C) ->
     ?D(C),
@@ -116,15 +136,14 @@ classify_and_collect(C) ->
 
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
-	?D(ClauseList),
+    ?D(ClauseList),
     Clauses = [fix_clause(C) || C <- ClauseList],
-	?D(length(Clauses)),
-    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP} | _] = Clauses,
+    ?D(length(Clauses)),
+    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, code=Co, external_refs=X} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
-	?D(Arity),
     case Clauses of					% only show subclauses when more than one
         [_] ->
-            #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
+            #function{pos=P, name=N, arity=Arity, args=A, head=H, code=Co, external_refs=X, clauses=[], name_pos=NP};
         _ ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
@@ -159,7 +178,7 @@ check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
     attribute;
 check_class(_) ->
-	?D(ok),
+    ?D(x),
     other.
 
 to_string(Tokens) ->
@@ -316,17 +335,60 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
             split_clauses(TRest, [[T | ClAcc] | Acc], [])
     end.
 
-fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
+fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
-    #clause{pos={{Line, LastLine, Offset}, PosLength},
-            name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=[],
-            name_pos={{Line, Offset}, Length}}.
+    ExternalRefs = external_calls_code(Rest),
+    ?D([Rest, ExternalRefs]),
+    #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
+            name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
+            external_refs=ExternalRefs}.
 
-scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
-    erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir),
+scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
+    erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath),
     S = erlide_scanner2:getTokens(ScannerName),
     S.
+
+%% ex(Module) ->
+%%     Model = Module#module.model,
+%%     Forms = Model#model.forms,
+%%     external_calls(Forms).
+%% 
+%% external_calls(Functions) ->
+%%     lists:foldl(fun(F, A) ->
+%%                         external_calls_f(F)++A
+%%                 end, [], Functions).
+%% 
+%% external_calls_f(#function{clauses=[], code=Tokens}) ->
+%%     case external_calls_code(Tokens) of
+%%         [] -> [];
+%%         L -> L
+%%     end;
+%% external_calls_f(#function{clauses=Clauses}) ->
+%%     lists:foldl(fun(C, A) ->
+%%                         case external_calls_cl(C) of
+%%                             [] -> A;
+%%                             L -> L++A
+%%                         end
+%%                 end, [], Clauses);
+%% external_calls_f(_) ->
+%%     [].
+%% 
+%% external_calls_cl(#clause{code=Tokens}) ->
+%%     external_calls_code(Tokens).
+
+%% extract external calls from tokens (VERY simple! M:F(_) is all it finds )
+external_calls_code([]) ->
+    [];
+external_calls_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
+                     #token{kind=atom, value=F, offset=Offset2, length=Length2},
+                     #token{kind='('} | Rest]) ->
+    Arity = erlide_text:guess_arity(Rest),
+    XC = #external_call{module = M, function=F, arity=Arity, offset=Offset, 
+                        length=Length2+Offset2-Offset},
+    [XC | external_calls_code(Rest)];
+external_calls_code([_|Rest]) ->
+    external_calls_code(Rest).
 
 %% @spec (Tokens::tokens()) -> {tokens(), tokens()}
 %% @type tokens() = [#token]
@@ -356,9 +418,6 @@ extract_comments([T | Rest], _, TAcc, CAcc) ->
 
 update_state(ScannerName, Model) ->
     server_cmd(update_state, {ScannerName, Model}).
-
--record(module, {name,
-                 model=[]}).
 
 server_cmd(Command, Args) ->
 	spawn_server(),
@@ -404,22 +463,27 @@ cmd(Cmd, From, Args, Modules) ->
         end
     catch
         exit:Error ->
-			reply(Cmd, From, {exit, Error}),
+            reply(Cmd, From, {exit, Error}),
             Modules;
         error:Error ->
-			reply(Cmd, From, {error, Error}),
+            reply(Cmd, From, {error, Error}),
             Modules
     end.
 
 reply(Cmd, From, R) ->
 	From ! {Cmd, self(), R}.
 
-do_cmd(create, Mod, Modules) ->
-	[#module{name=Mod} | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(create, {Mod, Model, ErlidePath}, Modules) ->
+    [#module{name=Mod, model=Model, erlide_path=ErlidePath} | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(destroy, Mod, Modules) ->
     lists:keydelete(Mod, #module.name, Modules);
 do_cmd(update_state, {Mod, Model}, Modules) ->
-	NewMod = #module{name=Mod, model=Model},
+    NewMod = case lists:keysearch(Mod, #module.name, Modules) of
+                 {value, OldMod} ->
+                     OldMod#module{model=Model};
+                 false ->
+                     #module{name=Mod, model=Model}
+             end,
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(all, [], Modules) ->
     {Modules, Modules};
@@ -432,8 +496,79 @@ do_cmd(dump_module, Mod, Modules) ->
 do_cmd(logging, OnOff, Modules) ->
     put(log, []),
     {put(logging, OnOff), Modules};
+do_cmd(find, {external_call, {M, F, A}}, Modules) ->
+    {find_external_call({M, F, A}, Modules), Modules};
 do_cmd(dump_log, [], Modules) ->
-    {get(log), Modules}.
+    {get(log), Modules};
+do_cmd(xdump, [], Modules) ->
+    {do_xdump(Modules), Modules}.
+
+%% find all external calls in the modules known
+find_external_call(MFA, Modules) ->
+    D = find_external_call(Modules, MFA, []),
+    ?D(D),
+    D.
+
+find_external_call([], _, Acc) ->
+    Acc;
+find_external_call([#module{model=Model, erlide_path=Path} | Rest], MFA, Acc) ->
+    Forms = Model#model.forms,
+    case find_call_f(Forms, MFA, []) of
+        [] ->
+            find_external_call(Rest, MFA, Acc);
+        L ->
+            find_external_call(Rest, MFA, [{Path, L} | Acc])
+    end.
+
+find_call_f([], _, Acc) ->
+    Acc;
+find_call_f([#function{external_refs=X, clauses=C, name=F, arity=A} | Rest], MFA, Acc0) ->
+    Acc1 = case find_call_x(X, MFA, []) of
+               [] -> Acc0;
+               L -> [{{F, A}, L} | Acc0]
+             end,
+    Acc = case find_call_c(C, MFA, []) of
+              [] -> Acc1;
+              L1 -> [{{F, A}, L1} | Acc1]
+          end,
+    find_call_f(Rest, MFA, Acc);
+find_call_f([_ | Rest], MFA, Acc) ->
+    find_call_f(Rest, MFA, Acc).
+    
+    
+find_call_c([], _, Acc) ->
+    Acc;
+find_call_c([#clause{external_refs=X, head=H} | Rest], MFA, Acc0) ->
+    Acc = case find_call_x(X, MFA, []) of
+              [] -> Acc0;
+              L -> [{H, L} | Acc0]
+          end,
+    find_call_c(Rest, MFA, Acc);
+find_call_c([_ | Rest], MFA, Acc) ->
+    find_call_c(Rest, MFA, Acc).
+
+find_call_x([], _, Acc) ->
+    Acc;
+find_call_x(undefined, _, Acc) ->
+    Acc;
+find_call_x([#external_call{module=M, function=F, arity=XA} = X | Rest],
+            {M, F, A} = MFA, Acc0) ->
+    Acc = case A of
+              XA -> [X | Acc0];
+              -1 -> [X | Acc0];
+              _ -> Acc0
+          end,
+    find_call_x(Rest, MFA, Acc);
+find_call_x([_ | Rest], MFA, Acc) ->
+    find_call_x(Rest, MFA, Acc).
+
+do_xdump(Modules) ->
+    [{Module#module.name, do_xdump1(Module)} || Module <- Modules].
+
+do_xdump1(#module{model=M}) ->
+    Forms = M#model.forms,
+    [[F#function.external_refs | [C#clause.external_refs || C <- F#function.clauses]]
+    || F <- Forms, is_record(F, function)].
 
 
 

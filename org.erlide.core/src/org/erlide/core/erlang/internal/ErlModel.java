@@ -501,5 +501,4 @@ public class ErlModel extends Openable implements IErlModel {
 		// TODO Auto-generated method stub
 
 	}
-
 }

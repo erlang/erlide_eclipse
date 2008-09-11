@@ -1,6 +1,6 @@
-#Tue Apr 29 11:30:22 CEST 2008
-source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing
-backend_cookie=
+#Fri Jul 18 15:23:41 CEST 2008
+source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing
+backend_cookie=kaka
 otp_project_structure=false
 backend_name=
 external_includes=

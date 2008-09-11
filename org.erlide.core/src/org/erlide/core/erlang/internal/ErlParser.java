@@ -40,10 +40,12 @@ public class ErlParser {
 	 *            the initial text
 	 * @param initialParse
 	 *            true if first time parse
+	 * @param erlidePath
+	 *            path to resource in eclipse
 	 * @return -record(model, {forms, comments}).
 	 */
 	public boolean parse(final IErlModule module, final String initialText,
-			final boolean initialParse) {
+			final boolean initialParse, final String erlidePath) {
 		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
@@ -60,7 +62,7 @@ public class ErlParser {
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
-					moduleFileName, initialText, stateDir);
+					moduleFileName, initialText, stateDir, erlidePath);
 		} else {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
@@ -329,8 +331,11 @@ public class ErlParser {
 				if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
 					final String recordName = ((OtpErlangAtom) recordTuple
 							.elementAt(0)).atomValue();
+					final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
+							.stringValue()
+							: null;
 					final ErlRecordDef r = new ErlRecordDef(parent, recordName,
-							null);
+							s);
 					setPos(r, pos);
 					// r.setParseTree(val);
 					return r;
@@ -339,8 +344,10 @@ public class ErlParser {
 			if (val instanceof OtpErlangAtom) {
 				final OtpErlangAtom nameA = (OtpErlangAtom) val;
 				final String recordName = nameA.atomValue();
-				final ErlRecordDef r = new ErlRecordDef(parent, recordName,
-						null);
+				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
+						.stringValue()
+						: null;
+				final ErlRecordDef r = new ErlRecordDef(parent, recordName, s);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;
@@ -457,7 +464,8 @@ public class ErlParser {
 			return new OtpErlangList(res);
 		}
 		try {
-			return ErlideBackend.concreteSyntax(BackendManager.getDefault().getIdeBackend(), val);
+			return ErlideBackend.concreteSyntax(BackendManager.getDefault()
+					.getIdeBackend(), val);
 		} catch (final Exception e) {
 			return val;
 		}

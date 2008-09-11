@@ -16,12 +16,12 @@
 %% Exported Functions
 %%
 
--export([create/1, destroy/1, initialScan/4, getTokenAt/2, getTokenWindow/4, 
+-export([create/2, destroy/1, initialScan/5, getTokenAt/2, getTokenWindow/4, 
          getTokens/1, replaceText/4, stop/0, tokens_to_string/1]).
 
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
-         dump_module/1, logging/1, dump_log/0, scan_uncached/2]).
+         dump_module/1, logging/1, dump_log/0, scan_uncached/3]).
 %% -compile(export_all).
 
 %% internal exports 
@@ -31,12 +31,12 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 11).
+-define(CACHE_VERSION, 12).
 
 -define(SERVER, ?MODULE).
 
-create(Module) when is_atom(Module) ->
-    server_cmd(create, Module).
+create(Module, ErlidePath) when is_atom(Module) ->
+    server_cmd(create, {Module, ErlidePath}).
 
 destroy(Module) when is_atom(Module) ->
 	server_cmd(destroy, Module).
@@ -57,12 +57,12 @@ getTokenWindow(Module, Offset, Before, After)
 getTokenAt(Module, Offset) when is_atom(Module), is_integer(Offset) ->
     server_cmd(get_token_at, {Module, Offset}).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir) 
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) 
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
-	server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir}).
+	server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath}).
 
-scan_uncached(ScannerName, ModuleFileName) ->
-    server_cmd(scan_uncached, {ScannerName, ModuleFileName}).
+scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
+    server_cmd(scan_uncached, {ScannerName, ModuleFileName, ErlidePath}).
 
 modules() ->
 	server_cmd(modules, []).
@@ -180,6 +180,7 @@ lines_to_text(Lines) ->
                  lines = [], % [{Length, String}]
                  tokens = [], % [{Length, [Token]}]
                  cachedTokens = [],
+                 erlide_path="",
                  log = []}).
 
 spawn_server() ->
@@ -200,21 +201,22 @@ loop(Modules) ->
             ?MODULE:loop(NewMods)
     end.
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
-    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
+    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText, ErlidePath) end,
     erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
 
-do_scan_uncached(ScannerName, ModuleFileName) ->
+do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     {ok, B} = file:read_file(ModuleFileName),
     InitialText = binary_to_list(B),
-    do_scan(ScannerName, InitialText).
+    do_scan(ScannerName, InitialText, ErlidePath).
 
-do_scan(ScannerName, InitialText) ->
+do_scan(ScannerName, InitialText, ErlidePath) ->
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     ?D([ScannerName, InitialText, LineTokens]),
-    #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
+    #module{name=ScannerName, lines=Lines, tokens=LineTokens,
+            erlide_path=ErlidePath}.
 
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of
@@ -386,18 +388,19 @@ cmd(Cmd, From, Args, Modules) ->
 reply(Cmd, From, R) ->
 	From ! {Cmd, self(), R}.
 
-do_cmd(create, Mod, Modules) ->
-	[#module{name=Mod} | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(create, {Mod, ErlidePath}, Modules) ->
+	[#module{name=Mod, erlide_path=ErlidePath} 
+        | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(destroy, Mod, Modules) ->
     lists:keydelete(Mod, #module.name, Modules);
 do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
 	?Debug({rescan, _Mod}),
 	Modules;
-do_cmd(scan_uncached, {Mod, ModuleFileName}, Modules) ->
-    NewMod = do_scan_uncached(Mod, ModuleFileName),
+do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, Modules) ->
+    NewMod = do_scan_uncached(Mod, ModuleFileName, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
-do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir}, Modules) ->
-	NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir),
+do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath}, Modules) ->
+    NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(all, [], Modules) ->
     {Modules, Modules};

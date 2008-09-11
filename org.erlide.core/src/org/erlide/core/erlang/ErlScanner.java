@@ -29,8 +29,10 @@ public class ErlScanner implements IErlScanner {
 	private final String moduleName;
 
 	private String moduleFileName;
+	private final String erlidePath;
 
-	public ErlScanner(final IErlModule module, final String initialText) {
+	public ErlScanner(final IErlModule module, final String initialText,
+			final String erlidePath) {
 		this.module = module;
 		moduleName = createScannerModuleName(module);
 		moduleFileName = "";
@@ -39,7 +41,9 @@ public class ErlScanner implements IErlScanner {
 			final IFile f = (IFile) r;
 			moduleFileName = f.getLocation().toString();
 		}
-		ErlideScanner2.initialScan(moduleName, moduleFileName, initialText);
+		this.erlidePath = erlidePath;
+		ErlideScanner2.initialScan(moduleName, moduleFileName, initialText,
+				erlidePath);
 		// create();
 		// insertText(0, initialText);
 	}
@@ -111,7 +115,8 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void rescan(final String fullText) {
-		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText);
+		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText,
+				erlidePath);
 	}
 
 	public List<IErlComment> getComments() {
