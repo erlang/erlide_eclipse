@@ -34,6 +34,7 @@ import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
+import org.erlide.runtime.backend.IErlRpcMessageListener;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -128,7 +129,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		try {
 			wait_for_epmd();
 
-			String cookie = getInfo().getCookie();
+			final String cookie = getInfo().getCookie();
 			fNode = new OtpNode(BackendManager.getDefault().getJavaNodeName(),
 					cookie);
 			fNode.registerStatusHandler(this);
@@ -173,6 +174,14 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			rpcDaemon = new ErlRpcDaemon(this);
 		}
 		return rpcDaemon;
+	}
+
+	public void addErlRpcMessageListener(final IErlRpcMessageListener l) {
+		rpcDaemon.addErlRpcMessageListener(l);
+	}
+
+	public void removeErlRpcMessageListener(final IErlRpcMessageListener l) {
+		rpcDaemon.removeErlRpcMessageListener(l);
 	}
 
 	/**
@@ -231,7 +240,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		}
 		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
 		final String msg = String.format("%s <- %s:%s(%s) %% %s", r.getValue(),
-				m, f, ss, this.getInfo().toString());
+				m, f, ss, getInfo().toString());
 		throw new BackendException(msg);
 	}
 
@@ -619,9 +628,9 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		fCodeManager.addPath(usePathZ, path);
 	}
 
-	public void registerProjects(String[] projectNames) {
-		for (String s : projectNames) {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot()
+	public void registerProjects(final String[] projectNames) {
+		for (final String s : projectNames) {
+			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(s);
 			BackendManager.getDefault().addExecution(project, this);
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -635,7 +644,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	}
 
-	public void setTrapExit(boolean trapexit) {
+	public void setTrapExit(final boolean trapexit) {
 		this.trapexit = trapexit;
 	}
 

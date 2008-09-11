@@ -1,6 +1,6 @@
 #Sat Jul 05 11:29:32 CEST 2008
 source_dirs=erl;erl_debugger
-backend_cookie=
+backend_cookie=kaka
 otp_project_structure=false
 backend_name=
 external_includes=

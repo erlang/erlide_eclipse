@@ -32,9 +32,11 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 
 	boolean fStopJob = false;
 
-	public ErlRpcDaemon(IBackend b) {
+	public ErlRpcDaemon(final IBackend b) {
 		fBackend = b;
 	}
+
+	List<IErlRpcMessageListener> fErlRpcMessageListeners = new ArrayList<IErlRpcMessageListener>();
 
 	public void start() {
 		BackendManager.getDefault().addBackendListener(this);
@@ -67,6 +69,9 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 						}
 					} while (msg != null && !fStopJob
 							&& received < MAX_RECEIVED);
+					for (IErlRpcMessageListener i : fErlRpcMessageListeners) {
+						i.handleMsgs(msgs);
+					}
 					if (msgs.size() > 0) {
 						RpcUtil.handleRequests(msgs, ErlRpcDaemon.this);
 					}
@@ -89,18 +94,18 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		fStopJob = true;
 	}
 
-	public void backendAdded(IBackend b) {
+	public void backendAdded(final IBackend b) {
 	}
 
-	public void backendRemoved(IBackend b) {
+	public void backendRemoved(final IBackend b) {
 		if (b == fBackend) {
 			stop();
 		}
 	}
 
-	public void rpcEvent(String id, OtpErlangObject event) {
+	public void rpcEvent(final String id, final OtpErlangObject event) {
 		if ("log".equals(id)) {
-			OtpErlangTuple t = (OtpErlangTuple) event;
+			final OtpErlangTuple t = (OtpErlangTuple) event;
 			ErlLogger.debug("%s", t.elementAt(1).toString());
 		} else if ("erlang_log".equals(id)) {
 			final OtpErlangTuple t = (OtpErlangTuple) event;
@@ -132,7 +137,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		}
 	}
 
-	public void rpcReply(OtpErlangPid from, OtpErlangObject result) {
+	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
 		fBackend.send(from, new OtpErlangTuple(new OtpErlangAtom("reply"),
 				result));
 	}
@@ -148,5 +153,13 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		job.setSystem(true);
 		job.setPriority(Job.SHORT);
 		job.schedule();
+	}
+
+	public void addErlRpcMessageListener(final IErlRpcMessageListener l) {
+		fErlRpcMessageListeners.add(l);
+	}
+
+	public void removeErlRpcMessageListener(final IErlRpcMessageListener l) {
+		fErlRpcMessageListeners.remove(l);
 	}
 }

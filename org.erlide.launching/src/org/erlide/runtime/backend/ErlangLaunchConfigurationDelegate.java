@@ -117,7 +117,7 @@ public class ErlangLaunchConfigurationDelegate extends
 						.getProjects(projectNames);
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
 						backend, projects, debugFlags);
-				target.getWaiter().doWait();
+				// target.getWaiter().doWait();
 				launch.addDebugTarget(target);
 				// interpret everything we can
 				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
