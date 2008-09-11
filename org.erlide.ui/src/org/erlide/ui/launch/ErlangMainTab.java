@@ -131,36 +131,13 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		gridLayout_1.numColumns = 4;
 		startGroup.setLayout(gridLayout_1);
 
-		final Label moduleLabel = new Label(startGroup, SWT.NONE);
-		moduleLabel.setLayoutData(new GridData());
-		moduleLabel.setText("Module");
+		moduleText = textWithLabel(startGroup, "Module", 114,
+				fBasicModifyListener);
+		funcText = textWithLabel(startGroup, "Function", 107,
+				fBasicModifyListener);
+		argsText = textWithLabel(startGroup, "Arguments", 3,
+				fBasicModifyListener);
 
-		moduleText = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
-		final GridData gd_moduleText = new GridData(SWT.FILL, SWT.CENTER,
-				false, false);
-		gd_moduleText.widthHint = 114;
-		moduleText.setLayoutData(gd_moduleText);
-		moduleText.addModifyListener(fBasicModifyListener);
-
-		final Label funcLabel = new Label(startGroup, SWT.NONE);
-		funcLabel.setLayoutData(new GridData());
-		funcLabel.setText("Function");
-
-		funcText = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
-		final GridData gd_funcText = new GridData(SWT.FILL, SWT.CENTER, false,
-				false);
-		gd_funcText.widthHint = 107;
-		funcText.setLayoutData(gd_funcText);
-		funcText.addModifyListener(fBasicModifyListener);
-
-		final Label argumentsLabel = new Label(startGroup, SWT.NONE);
-		argumentsLabel.setLayoutData(new GridData());
-		argumentsLabel.setText("Arguments");
-
-		argsText = new Text(startGroup, SWT.BORDER);
-		argsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				3, 1));
-		argsText.addModifyListener(fBasicModifyListener);
 		new Label(startGroup, SWT.NONE);
 
 		final Label infoLabel = new Label(startGroup, SWT.NONE);
@@ -169,6 +146,36 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		infoLabel.setLayoutData(gd_infoLabel);
 		infoLabel
 				.setText("The arguments will be sent as one single argument, a string.");
+	}
+
+	/**
+	 * @param startGroup
+	 * @param labelText
+	 *            TODO
+	 * @param textWidthHint
+	 *            TODO
+	 * @param modifyListener
+	 *            TODO
+	 */
+	private Text textWithLabel(final Group startGroup, final String labelText,
+			final int textWidthHint, final ModifyListener modifyListener) {
+		final Label label = new Label(startGroup, SWT.NONE);
+		label.setLayoutData(new GridData());
+		label.setText(labelText);
+
+		final Text text = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
+		final GridData gd;
+		if (textWidthHint < 10) {
+			gd = new GridData(SWT.FILL, SWT.CENTER, false, false,
+					textWidthHint, 1);
+		} else {
+			gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
+			gd.widthHint = textWidthHint;
+		}
+		text.setLayoutData(gd);
+		text.addModifyListener(modifyListener);
+
+		return text;
 	}
 
 	/**
@@ -270,6 +277,13 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 			funcText.setText(attribute);
 		} catch (final CoreException e) {
 			funcText.setText("");
+		}
+		try {
+			final String attribute = config.getAttribute(
+					IErlLaunchAttributes.ARGUMENTS, "");
+			argsText.setText(attribute);
+		} catch (final CoreException e) {
+			argsText.setText("");
 		}
 		int debugFlags;
 		try {
