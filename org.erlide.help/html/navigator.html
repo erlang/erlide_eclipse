@@ -1,0 +1,69 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Erlang navigator view</title><link href="eclipse.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL-NS Stylesheets V1.73.2" name="generator"><link rel="start" href="index.html" title="Erlide, the Erlang IDE"><link rel="up" href="reference.html" title="Chapter&nbsp;2.&nbsp;Reference"><link rel="prev" href="ch02s04.html" title="Editor view"><link rel="next" href="actions.html" title="Actions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Erlang navigator view</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ch02s04.html">Prev</a>&nbsp;</td><th align="center" width="60%">Chapter&nbsp;2.&nbsp;Reference</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="actions.html">Next</a></td></tr></table><hr></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="navigator"></a>Erlang navigator view</h2></div></div></div><p>The Erlang naviagor view displays, in a tree structure, only elements relevant to Erlang
+        project files. In this view you can do the following:</p><div class="itemizedlist"><ul type="disc"><li><p> Browse the elements of <code class="filename">*.erl</code> source files</p></li><li><p> Open files in the editor view</p></li><li><p> Open projects in a new window</p></li><li><p> Create new projects, modules, files, or folders</p></li><li><p> Manage existing files (cut, paste, delete, move or rename)</p></li><li><p> Restore deleted files from local history</p></li><li><p> Import or Export files and projects</p></li></ul></div><p> Files that you select in the Navigator view affect the information that is displayed in
+        other views. </p><p>
+        <span class="inlinemediaobject"><img src="./images/erlangNavigatorView.png"></span>
+      </p><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title"><a name="N102F4"></a>Toolbar</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td>
+                  <span class="bold"><strong>Icon</strong></span>
+                </td><td>
+                  <span class="bold"><strong>Name</strong></span>
+                </td><td align="left">
+                  <span class="bold"><strong>Description</strong></span>
+                </td></tr><tr><td align="center" valign="top">
+                  <span class="inlinemediaobject"><img src="./images/icon_con_min.png"></span>
+                </td><td valign="top">
+                  <p>Minimize</p>
+                </td><td valign="top"> Minimizes the view. </td></tr><tr><td align="center" valign="top">
+                  <span class="inlinemediaobject"><img src="./images/icon_con_max.png"></span>
+                </td><td valign="top"> Maximize </td><td valign="top"> Maximizes the view. </td></tr><tr><td align="center" valign="top">
+                  <span class="inlinemediaobject"><img src="./images/icon_collapse_all.png"></span>
+                </td><td valign="top">
+                  <p>Collapse All </p>
+                </td><td valign="top"> This command collapses the tree expansion state of all
+                  resources in the view. </td></tr><tr><td align="center" valign="top">
+                  <p>
+                    <span class="inlinemediaobject"><img src="./images/icon_link_with_editor.png"></span>
+                  </p>
+                </td><td valign="top">
+                  <p>Link with Editor </p>
+                </td><td valign="top">
+                  <p>This command toggles whether the view selection is linked to the active
+                    editor. When this option is selected, changing the active editor will
+                    automatically update the selection to the resource being edited.</p>
+                </td></tr><tr><td align="center" valign="top">
+                  <span class="inlinemediaobject"><img src="./images/icon_menu.png"></span>
+                </td><td valign="top">
+                  <p>Menu</p>
+                </td><td valign="top">
+                  <p>Click the black upside-down triangle icon to open a menu of items specific
+                    to the view.</p>
+                  <p>
+                    <div class="variablelist"><dl><dt><span class="term">Filters</span></dt><dd><p>This command allows you to select filters to apply to the view so
+                            that you can show or hide various resources as needed. File types
+                            selected in the list will not be shown in the Erlang Navigator
+                          view.</p></dd><dt><span class="term">Link with Editor</span></dt><dd><p>See the toolbar item description above.</p></dd><dt><span class="term">Select Working Set</span></dt><dd><p>Opens the <span class="bold"><strong>Select Working Set</strong></span> dialog
+                            to allow selecting a working set for the view.</p></dd><dt><span class="term">Deselect Working Set</span></dt><dd><p>Deselects the current working set.</p></dd><dt><span class="term">Edit Active Working Set</span></dt><dd><p>Opens the <span class="bold"><strong>Edit Working Set</strong></span> dialog
+                            to allow changing the current working set.</p></dd><dt><span class="term">Top Level Elements</span></dt><dd><p>
+                            <div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><strong>By project</strong></span> :&nbsp;</p></li><li><p><span class="bold"><strong>By working sets</strong></span> :&nbsp;</p></li></ul></div>
+                          </p></dd></dl></div>
+                  </p>
+                </td></tr></tbody></table></div></div><div class="section" lang="en-US"><div class="titlepage"><div><div><h3 class="title"><a name="N103C0"></a>Erlang Navigator view icons</h3></div></div></div><p>The table below lists the icons displayed in the Erlang Navigator view.</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><tbody><tr><td align="left" valign="middle">
+                  <p>
+                    <span class="bold"><strong>Icon</strong></span>
+                  </p>
+                </td><td>
+                  <p>
+                    <span class="bold"><strong>Description</strong></span>
+                  </p>
+                </td></tr><tr><td align="left" valign="middle">
+                  <p>
+                    <span class="inlinemediaobject"><img src="./images/erlang_srcFile.gif"></span>
+                  </p>
+                </td><td>
+                  <p>Erlang file</p>
+                </td></tr><tr><td align="left" valign="middle">
+                  <p>
+                    <span class="inlinemediaobject"><img src="./images/methpri_obj.gif"></span>
+                  </p>
+                </td><td>
+                  <p>Function</p>
+                </td></tr></tbody></table></div></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ch02s04.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="reference.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="actions.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Editor view&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Actions</td></tr></table></div></body></html>
