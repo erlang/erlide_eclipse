@@ -25,11 +25,11 @@ import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfo implements Cloneable {
-	private static final String CODE_PATH = "codePath";
-	private static final String HOME_DIR = "homeDir";
-	private static final String ARGS = "args";
-	private static final String WORKING_DIR = "workingDir";
-	private static final String MANAGED = "managed";
+	static final String CODE_PATH = "codePath";
+	static final String HOME_DIR = "homeDir";
+	static final String ARGS = "args";
+	static final String WORKING_DIR = "workingDir";
+	static final String MANAGED = "managed";
 
 	public static final String DEFAULT_MARKER = "*DEFAULT*";
 

@@ -6,25 +6,7 @@
    <feature url="features/org.erlide_0.3.55.jar" id="org.erlide" version="0.3.55">
       <category name="stable"/>
    </feature>
-   <feature url="features/org.erlide_0.3.64.jar" id="org.erlide" version="0.3.64">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.65.jar" id="org.erlide" version="0.3.65">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.69.jar" id="org.erlide" version="0.3.69">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.70.jar" id="org.erlide" version="0.3.70">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.71.jar" id="org.erlide" version="0.3.71">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.74.jar" id="org.erlide" version="0.3.74">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.3.75.jar" id="org.erlide" version="0.3.75">
+   <feature url="features/org.erlide_0.3.76.jar" id="org.erlide" version="0.3.76">
       <category name="unstable"/>
    </feature>
    <category-def name="stable" label="Stable builds">

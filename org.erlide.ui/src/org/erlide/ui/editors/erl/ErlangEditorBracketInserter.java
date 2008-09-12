@@ -62,8 +62,9 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
-		 *      text.DocumentEvent)
+		 * @see
+		 * org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
+		 * text.DocumentEvent)
 		 */
 		public void update(final DocumentEvent event) {
 
@@ -182,9 +183,8 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 
 	/*
 	 * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt
-	 *      .events.VerifyEvent)
+	 * .events.VerifyEvent)
 	 */
-	@SuppressWarnings("synthetic-access")
 	public void verifyKey(final VerifyEvent event) {
 
 		// early pruning to slow down normal typing as little as possible
@@ -334,7 +334,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 
 	/*
 	 * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.
-	 *      jface.text.link.LinkedModeModel, int)
+	 * jface.text.link.LinkedModeModel, int)
 	 */
 	@SuppressWarnings("synthetic-access")
 	public void left(final LinkedModeModel environment, final int flags) {
@@ -383,14 +383,14 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 
 	/*
 	 * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse
-	 *      .jface.text.link.LinkedModeModel)
+	 * .jface.text.link.LinkedModeModel)
 	 */
 	public void suspend(final LinkedModeModel environment) {
 	}
 
 	/*
 	 * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse
-	 *      .jface.text.link.LinkedModeModel, int)
+	 * .jface.text.link.LinkedModeModel, int)
 	 */
 	public void resume(final LinkedModeModel environment, final int flags) {
 	}
@@ -452,9 +452,10 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 		}
 
 		/*
-		 * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
-		 *      #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
-		 *      org.eclipse.swt.events.VerifyEvent, int, int)
+		 * @see
+		 * org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
+		 * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
+		 * org.eclipse.swt.events.VerifyEvent, int, int)
 		 */
 		@SuppressWarnings("synthetic-access")
 		public ExitFlags doExit(final LinkedModeModel model,

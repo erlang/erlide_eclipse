@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoManager implements IPreferenceChangeListener {
@@ -98,8 +99,30 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			e.printStackTrace();
 		}
 
-		IEclipsePreferences old = new InstanceScope()
-				.getNode("org.erlide.basic/");
+		IEclipsePreferences aroot = new InstanceScope()
+				.getNode(ErlangLaunchPlugin.PLUGIN_ID + "/");
+		String defName = aroot.get("default_name", null);
+		if (defName != null && getRuntime(defName) != null) {
+			System.out.println("!!! " + defName);
+			RuntimeInfo rt = new RuntimeInfo();
+			rt.setName(defName);
+			String path = aroot.get("default_" + RuntimeInfo.CODE_PATH, "");
+			rt.setCodePath(PreferencesUtils.unpackList(path));
+			rt.setOtpHome(aroot.get("default_" + RuntimeInfo.HOME_DIR, ""));
+			rt.setArgs(aroot.get("default_" + RuntimeInfo.ARGS, ""));
+			String wd = aroot.get("default_" + RuntimeInfo.WORKING_DIR, "");
+			if (wd.length() != 0) {
+				rt.setWorkingDir(wd);
+			}
+			rt.setManaged(aroot.getBoolean("default_" + RuntimeInfo.MANAGED,
+					true));
+			addRuntime(rt);
+			setDefaultRuntime(defName);
+			setErlideRuntime(getDefaultRuntime());
+		}
+
+		IEclipsePreferences old = new InstanceScope().getNode("flux/");
+		old = new InstanceScope().getNode("org.erlide.basic/");
 		String oldVal = old.get("otp_home", null);
 		if (oldVal != null) {
 			ErlLogger.debug("** converting old workspace Erlang settings");
