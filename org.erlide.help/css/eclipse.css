@@ -103,41 +103,15 @@ DIV.VARIABLELIST
 	/*[disabled]border:1px solid #606090;*/
 	/*[disabled]padding:1px;*/
 }
-A[href^="http:"]
+a.link
 {
-	/*[disabled]background:url(images/remote.gif) no-repeat right center;*/
-	/*[disabled]padding-right:12px;*/
+	background:transparent url(../images/external.png) no-repeat right center;
+	padding-right:12px;
 }
-A[href^="http:"]:hover
+DIV.imagelink A.link
 {
-	/*[disabled]background:url(images/remote_a.gif) no-repeat right center;*/
-}
-A[href^="#FTN"]
-{
-	/*[disabled]background:url(images/qbullet-note.gif) no-repeat right center;*/
-	/*[disabled]padding-right:12px;*/
-}
-A[href^="#FTN"]:hover
-{
-	/*[disabled]background:url(images/qbullet-note_a.gif) no-repeat right center;*/
-}
-A[name^="FTN"]
-{
-	/*[disabled]background:url(images/scrollup.gif) no-repeat right center;*/
-	/*[disabled]padding-right:12px;*/
-}
-A[name^="FTN"]:hover
-{
-	/*[disabled]background:url(images/scrollup_a.gif) no-repeat right center;*/
-}
-DIV.imagelink A[href^="http:"]
-{
-	/*[disabled]background:transparent;*/
-	/*[disabled]padding-right:0px;*/
-}
-DIV.imagelink A[href^="http:"]:hover
-{
-	/*[disabled]background:transparent;*/
+	background:transparent;
+	padding-right:0px;
 }
 DIV.NAVFOOTER
 {

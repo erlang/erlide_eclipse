@@ -50,9 +50,9 @@
                                 <guimenuitem>Search for new features to install</guimenuitem>
                             </menuchoice>. In the dialog, choose <guibutton>New remote
                             site</guibutton> and enter <userinput>Erlide</userinput> as name and
-                                <userinput> http://erlide.sourceforge.net/update</userinput> as
-                            URL. Follow the dialogs with the obvious choices and in the end you will
-                            be asked to restart.</para>
+                                <userinput> http://erlide.sourceforge.net/update</userinput> as URL.
+                            Follow the dialogs with the obvious choices and in the end you will be
+                            asked to restart.</para>
                     </listitem>
                     <listitem>
                         <para>Restart. Go to <menuchoice>
@@ -718,8 +718,8 @@
                                 <entry align="center" valign="top">
                                     <inlinemediaobject>
                                         <imageobject>
-                                            <imagedata fileref="../images/icon_menu.png" format="PNG"
-                                            />
+                                            <imagedata fileref="../images/icon_menu.png"
+                                                format="PNG"/>
                                         </imageobject>
                                     </inlinemediaobject>
                                 </entry>
@@ -893,7 +893,8 @@
                 http://subclipse.tigris.org.</para>
             <para>The subversion repository has to be configured in the SVN Repository Browsing
                 perspective. The URL for the repository is <link
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="???"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xlink:href="https://erlide.svn.sourceforge.net/svnroot/erlide"
                     >https://erlide.svn.sourceforge.net/svnroot/erlide</link>. </para>
             <para>I recommend to check out and commit the code by following the procedure below, not
                 by checking out from within
