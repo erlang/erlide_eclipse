@@ -400,7 +400,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			if (mbox == null) {
 				return RpcResult.error("missing receive mailbox");
 			}
-			res = RpcUtil.buildRpcCall(module, fun, args, mbox.self());
+			res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
 			send("rex", res);
 			if (CHECK_RPC) {
 				ErlLogger.debug("RPC :: " + res);

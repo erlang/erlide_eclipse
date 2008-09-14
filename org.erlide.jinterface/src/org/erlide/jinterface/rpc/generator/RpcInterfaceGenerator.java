@@ -48,9 +48,9 @@ public class RpcInterfaceGenerator {
 			OtpNode node = new OtpNode("dummy");
 
 			OtpMbox mbox = node.createMbox();
-			OtpErlangObject msg = RpcUtil.buildRpcCall("erlang", "module_info",
-					new OtpErlangObject[] { new OtpErlangAtom("exports") },
-					mbox.self());
+			OtpErlangObject msg = RpcUtil.buildRpcCall(mbox.self(), "erlang",
+					"module_info",
+					new OtpErlangObject[] { new OtpErlangAtom("exports") });
 			mbox.send("rex", "wolf", msg);
 			OtpErlangObject res = null;
 			try {

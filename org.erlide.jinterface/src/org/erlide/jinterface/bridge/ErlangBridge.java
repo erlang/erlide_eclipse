@@ -86,8 +86,8 @@ public class ErlangBridge {
 			for (int i = 0; i < args.length; i++) {
 				eargs[i + 1] = RpcConverter.java2erlang(args[i], "x");
 			}
-			OtpErlangObject msg = RpcUtil.buildRpcCall(module,
-					method.getName(), eargs, mbox.self());
+			OtpErlangObject msg = RpcUtil.buildRpcCall(mbox.self(),
+					module, method.getName(), eargs);
 
 			System.out.println("-->" + msg);
 

@@ -37,7 +37,6 @@ public class PatternMatchTest {
 				new OtpErlangTuple(new OtpErlangAtom("a")));
 		HashMap<String, OtpErlangObject> b = new HashMap<String, OtpErlangObject>();
 		HashMap<String, OtpErlangObject> r;
-		@SuppressWarnings("unused")
 		HashMap<String, OtpErlangObject> r2;
 
 		r = match(p, t1, b);
