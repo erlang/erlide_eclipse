@@ -901,14 +901,21 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            id="org.erlide.categories.views"
+            id="org.erlide.views"
             name="Erlang"/>
       <view
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.ErlLoggerView"
             icon="icons/icons/sample.gif"
             id="org.erlide.ui.views.ErlLoggerView"
             name="Erlang Logger"/>
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.erlide.ui.views.EpmdView"
+            id="org.erlide.ui.epmd"
+            name="Epmd view">
+      </view>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">

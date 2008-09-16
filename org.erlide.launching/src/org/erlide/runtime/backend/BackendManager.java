@@ -44,7 +44,8 @@ import org.erlide.runtime.backend.internal.StandaloneBackend;
 import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
-public final class BackendManager implements IResourceChangeListener {
+public final class BackendManager implements IResourceChangeListener,
+		IEpmdListener {
 
 	private static BackendManager MANAGER;
 
@@ -89,6 +90,7 @@ public final class BackendManager implements IResourceChangeListener {
 						| IResourceChangeEvent.POST_CHANGE);
 
 		epmdJob = new EpmdWatchJob();
+		epmdJob.addEpmdListener(this);
 		epmdJob.schedule(100);
 	}
 
@@ -482,6 +484,10 @@ public final class BackendManager implements IResourceChangeListener {
 		} catch (IOException e) {
 		}
 		return false;
+	}
+
+	public EpmdWatchJob getEpmdJob() {
+		return epmdJob;
 	}
 
 }

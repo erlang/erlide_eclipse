@@ -61,6 +61,7 @@ public class EpmdWatchJob extends Job {
 
 	private List<String> hosts = new ArrayList<String>();
 	private Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
+	private List<IEpmdListener> listeners = new ArrayList<IEpmdListener>();
 
 	synchronized public void addHost(String host) {
 		if (hosts.contains(host)) {
@@ -89,8 +90,11 @@ public class EpmdWatchJob extends Job {
 				List<String> started = getDiff(labels, nodes);
 				List<String> stopped = getDiff(nodes, labels);
 
-				BackendManager.getDefault().updateBackendStatus(host, started,
-						stopped);
+				if (started.size() > 0 || stopped.size() > 0) {
+					for (IEpmdListener listener : listeners) {
+						listener.updateBackendStatus(host, started, stopped);
+					}
+				}
 
 				entry.setValue(labels);
 
@@ -98,6 +102,16 @@ public class EpmdWatchJob extends Job {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void addEpmdListener(IEpmdListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	public void removeEpmdListener(IEpmdListener listener) {
+		listeners.remove(listener);
 	}
 
 	public static void clean(List<String> list) {
@@ -119,6 +133,10 @@ public class EpmdWatchJob extends Job {
 		List<String> result = new ArrayList<String>(list1);
 		result.removeAll(list2);
 		return result;
+	}
+
+	public Map<String, List<String>> getData() {
+		return nodeMap;
 	}
 
 }
