@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wrangler Refactor plug-in
+Bundle-SymbolicName: org.erlide.wrangler.refactoring;singleton:=true
+Bundle-Version: 0.1.4.5
+Bundle-ClassPath: wrangler.jar
+Bundle-Activator: org.erlide.wrangler.refactoring.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring,
+ org.eclipse.core.resources,
+ org.erlide.launching,
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text,
+ org.eclipse.ui.browser,
+ org.eclipse.ui,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui.ide,
+ org.erlide.jinterface,
+ org.eclipse.search
+Eclipse-LazyStart: true
+Export-Package: org.erlide.wrangler.refactoring,
+ org.erlide.wrangler.refactoring.util
+Bundle-Localization: plugin
+Bundle-Vendor: UKC
