@@ -11,9 +11,14 @@
 package org.erlide.runtime.backend;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,13 +34,18 @@ import com.ericsson.otp.erlang.OtpEpmd;
  */
 public class EpmdWatchJob extends Job {
 
-	// TODO add a way to register several hosts to watch
-
 	// TODO maybe better to register node names we're interested in, to be
 	// notified when they go up/down?
 
 	public EpmdWatchJob() {
 		super("Checking EPMD for new backends");
+
+		try {
+			addHost(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+			addHost("localhost");
+		}
+
 		setSystem(true);
 		setPriority(SHORT);
 	}
@@ -49,28 +59,45 @@ public class EpmdWatchJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private List<String> nodes = new ArrayList<String>();
+	private List<String> hosts = new ArrayList<String>();
+	private Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
 
-	private void checkEpmd() {
-
-		try {
-			final String[] names = OtpEpmd.lookupNames();
-			final List<String> labels = Arrays.asList(names);
-
-			List<String> started = getDiff(labels, nodes);
-			List<String> stopped = getDiff(nodes, labels);
-
-			clean(started);
-			clean(stopped);
-
-			BackendManager.getDefault().updateBackendStatus(started, stopped);
-
-			nodes = labels;
-
-		} catch (final IOException e) {
-			e.printStackTrace();
+	synchronized public void addHost(String host) {
+		if (hosts.contains(host)) {
+			return;
 		}
+		hosts.add(host);
+		nodeMap.put(host, new ArrayList<String>());
+	}
 
+	synchronized public void removeHost(String host) {
+		hosts.remove(host);
+		nodeMap.remove(host);
+	}
+
+	synchronized private void checkEpmd() {
+		for (Entry<String, List<String>> entry : nodeMap.entrySet()) {
+			try {
+				String host = entry.getKey();
+				List<String> nodes = entry.getValue();
+
+				final String[] names = OtpEpmd.lookupNames(InetAddress
+						.getByName(host));
+				final List<String> labels = Arrays.asList(names);
+				clean(labels);
+
+				List<String> started = getDiff(labels, nodes);
+				List<String> stopped = getDiff(nodes, labels);
+
+				BackendManager.getDefault().updateBackendStatus(host, started,
+						stopped);
+
+				entry.setValue(labels);
+
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void clean(List<String> list) {

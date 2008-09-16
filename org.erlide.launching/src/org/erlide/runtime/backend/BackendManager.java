@@ -56,6 +56,8 @@ public final class BackendManager implements IResourceChangeListener {
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
+	private EpmdWatchJob epmdJob;
+
 	// private final Object fExternalBackendsLock = new Object();
 
 	public enum BackendEvent {
@@ -86,8 +88,8 @@ public final class BackendManager implements IResourceChangeListener {
 						| IResourceChangeEvent.PRE_DELETE
 						| IResourceChangeEvent.POST_CHANGE);
 
-		final EpmdWatchJob job = new EpmdWatchJob();
-		job.schedule(100);
+		epmdJob = new EpmdWatchJob();
+		epmdJob.schedule(100);
 	}
 
 	public static String getJavaNodeName() {
@@ -425,21 +427,23 @@ public final class BackendManager implements IResourceChangeListener {
 		}
 	}
 
-	synchronized public void updateBackendStatus(final List<String> started,
-			final List<String> stopped) {
+	synchronized public void updateBackendStatus(String host,
+			final List<String> started, final List<String> stopped) {
 		for (final String b : started) {
-			ErlLogger.info("(epmd) started: '%s'", b);
+			String name = b + "@" + host;
+			ErlLogger.info("(epmd) started: '%s'", name);
 			for (final IBackend bb : getAllBackends()) {
 				if (bb != null) {
-					((OtpNodeStatus) bb).remoteStatus(b, true, null);
+					((OtpNodeStatus) bb).remoteStatus(name, true, null);
 				}
 			}
 		}
 		for (final String b : stopped) {
-			ErlLogger.info("(epmd) stopped: '%s'", b);
+			String name = b + "@" + host;
+			ErlLogger.info("(epmd) stopped: '%s'", name);
 			for (final IBackend bb : getAllBackends()) {
 				if (bb != null) {
-					((OtpNodeStatus) bb).remoteStatus(b, false, null);
+					((OtpNodeStatus) bb).remoteStatus(name, false, null);
 				}
 			}
 		}
