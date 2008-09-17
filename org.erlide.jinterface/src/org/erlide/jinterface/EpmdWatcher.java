@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.jinterface;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -20,48 +20,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-
 import com.ericsson.otp.erlang.OtpEpmd;
 
 /**
- * Each 2 seconds, query epmd to see if there are any new nodes that have been
+ * Periodically, query epmd to see if there are any new nodes that have been
  * registered.
  * 
  */
-public class EpmdWatchJob extends Job {
+public class EpmdWatcher {
 
-	// TODO maybe better to register node names we're interested in, to be
-	// notified when they go up/down?
-
-	public EpmdWatchJob() {
-		super("Checking EPMD for new backends");
-
+	public EpmdWatcher() {
 		try {
 			addHost(InetAddress.getLocalHost().getHostName());
 		} catch (UnknownHostException e) {
 			addHost("localhost");
 		}
-
-		setSystem(true);
-		setPriority(SHORT);
-	}
-
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-
-		checkEpmd();
-
-		this.schedule(1000);
-		return Status.OK_STATUS;
 	}
 
 	private List<String> hosts = new ArrayList<String>();
 	private Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
 	private List<IEpmdListener> listeners = new ArrayList<IEpmdListener>();
+	private Map<String, List<IEpmdMonitor>> monitors = new HashMap<String, List<IEpmdMonitor>>();
 
 	synchronized public void addHost(String host) {
 		if (hosts.contains(host)) {
@@ -76,7 +55,7 @@ public class EpmdWatchJob extends Job {
 		nodeMap.remove(host);
 	}
 
-	synchronized private void checkEpmd() {
+	public synchronized void checkEpmd() {
 		for (Entry<String, List<String>> entry : nodeMap.entrySet()) {
 			try {
 				String host = entry.getKey();
@@ -94,6 +73,22 @@ public class EpmdWatchJob extends Job {
 					for (IEpmdListener listener : listeners) {
 						listener.updateBackendStatus(host, started, stopped);
 					}
+					for (String s : started) {
+						List<IEpmdMonitor> ms = monitors.get(s);
+						if (ms != null) {
+							for (IEpmdMonitor m : ms) {
+								m.nodeUp(s);
+							}
+						}
+					}
+					for (String s : stopped) {
+						List<IEpmdMonitor> ms = monitors.get(s);
+						if (ms != null) {
+							for (IEpmdMonitor m : ms) {
+								m.nodeDown(s);
+							}
+						}
+					}
 				}
 
 				entry.setValue(labels);
@@ -104,12 +99,22 @@ public class EpmdWatchJob extends Job {
 		}
 	}
 
+	/**
+	 * Register interest in all changes of node status
+	 * 
+	 * @param listener
+	 */
 	public void addEpmdListener(IEpmdListener listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 
+	/**
+	 * Unregister interest in all changes of node status
+	 * 
+	 * @param listener
+	 */
 	public void removeEpmdListener(IEpmdListener listener) {
 		listeners.remove(listener);
 	}
@@ -139,4 +144,38 @@ public class EpmdWatchJob extends Job {
 		return nodeMap;
 	}
 
+	/**
+	 * Register interest in the status of a certain node.
+	 * 
+	 * @param node
+	 * @param monitor
+	 */
+	public void addMonitor(String node, IEpmdMonitor monitor) {
+		List<IEpmdMonitor> mons = monitors.get(node);
+		if (mons == null) {
+			mons = new ArrayList<IEpmdMonitor>();
+		}
+		if (mons.contains(monitor)) {
+			return;
+		}
+		mons.add(monitor);
+		monitors.put(node, mons);
+	}
+
+	/**
+	 * Unregister interest in the status of a certain node.
+	 * 
+	 * @param node
+	 * @param monitor
+	 */
+	public void removeMonitor(String node, IEpmdMonitor monitor) {
+		List<IEpmdMonitor> mons = monitors.get(node);
+		if (mons == null) {
+			return;
+		}
+		if (mons.contains(monitor)) {
+			mons.remove(monitor);
+			monitors.put(node, mons);
+		}
+	}
 }

@@ -32,7 +32,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
+import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.ICodeBundle;
+import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -57,7 +59,7 @@ public final class BackendManager implements IResourceChangeListener,
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
-	private EpmdWatchJob epmdJob;
+	private EpmdWatcher epmdWatcher;
 
 	// private final Object fExternalBackendsLock = new Object();
 
@@ -89,9 +91,9 @@ public final class BackendManager implements IResourceChangeListener,
 						| IResourceChangeEvent.PRE_DELETE
 						| IResourceChangeEvent.POST_CHANGE);
 
-		epmdJob = new EpmdWatchJob();
-		epmdJob.addEpmdListener(this);
-		epmdJob.schedule(100);
+		epmdWatcher = new EpmdWatcher();
+		epmdWatcher.addEpmdListener(this);
+		new EpmdWatchJob(epmdWatcher).schedule(100);
 	}
 
 	public static String getJavaNodeName() {
@@ -475,7 +477,7 @@ public final class BackendManager implements IResourceChangeListener,
 		try {
 			final String[] names = OtpEpmd.lookupNames();
 			final List<String> labels = Arrays.asList(names);
-			EpmdWatchJob.clean(labels);
+			EpmdWatcher.clean(labels);
 			for (String name : labels) {
 				if (name.equals(nodeName)) {
 					return true;
@@ -486,8 +488,8 @@ public final class BackendManager implements IResourceChangeListener,
 		return false;
 	}
 
-	public EpmdWatchJob getEpmdJob() {
-		return epmdJob;
+	public EpmdWatcher getEpmdWatcher() {
+		return epmdWatcher;
 	}
 
 }

@@ -16,9 +16,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.jinterface.EpmdWatcher;
+import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.EpmdWatchJob;
-import org.erlide.runtime.backend.IEpmdListener;
 
 public class EpmdView extends ViewPart implements IEpmdListener {
 
@@ -74,10 +74,11 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 	}
 
 	Map<String, List<String>> model;
+	EpmdWatcher epmdWatcher;
 
 	public EpmdView() {
-		EpmdWatchJob epmdJob = BackendManager.getDefault().getEpmdJob();
-		epmdJob.addEpmdListener(this);
+		epmdWatcher = BackendManager.getDefault().getEpmdWatcher();
+		epmdWatcher.addEpmdListener(this);
 	}
 
 	@Override
@@ -107,8 +108,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 
 	public void updateBackendStatus(String host, List<String> started,
 			List<String> stopped) {
-		final EpmdWatchJob epmdJob = BackendManager.getDefault().getEpmdJob();
-		model = epmdJob.getData();
+		model = epmdWatcher.getData();
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
