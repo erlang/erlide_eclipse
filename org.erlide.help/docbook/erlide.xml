@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en-US">
-    <info>
-        <title>Erlide, the Erlang IDE</title>
-        <author>
+    <info><title>Erlide, the Erlang IDE</title><author>
             <personname>
                 <firstname>Vlad</firstname>
                 <surname>Dumitrescu</surname>
@@ -35,7 +33,8 @@
                             <emphasis>3.3</emphasis>.</para>
                     </listitem>
                     <listitem>
-                        <para>If your network uses a proxy, fill in the appropriate data in <menuchoice>
+                        <para>If your network uses a proxy, fill in the appropriate data in
+                                <menuchoice>
                                 <guimenu>Window</guimenu>
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu> Install/Update</guisubmenu>
@@ -76,6 +75,164 @@
                     </listitem>
                 </itemizedlist>
             </para>
+        </sect1>
+        <sect1 xml:id="features">
+            <info>
+                <title>Features</title>
+            </info>
+            <note>
+                <para>This chapter is just a quick-and-dirty listing of the current features. Help
+                    with the documentation will be very much appreciated.</para>
+            </note>
+            <para>
+                <variablelist>
+                    <varlistentry>
+                        <term>Project wizard</term>
+                        <listitem>
+                            <para>Create projects with the <menuchoice>
+                                    <guisubmenu>File</guisubmenu>
+                                    <guisubmenu>New</guisubmenu>
+                                    <guisubmenu>Project</guisubmenu>
+                                    <guimenuitem>Erlang</guimenuitem>
+                                </menuchoice> project wizard. If the project isn't new, you can do
+                                an automatic search for source files, by using the "Discover paths"
+                                option. Review the result and add other needed directories</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Module wizard</term>
+                        <listitem>
+                            <para>Create files by right-clicking on the desired directory in the
+                                resource view, and choosing either <menuchoice>
+                                    <guisubmenu>File</guisubmenu>
+                                    <guisubmenu>New</guisubmenu>
+                                    <guisubmenu>Other</guisubmenu>
+                                    <guimenuitem>File</guimenuitem>
+                                </menuchoice> and entering a name ending with erl, or <menuchoice>
+                                    <guisubmenu>File</guisubmenu>
+                                    <guisubmenu>New</guisubmenu>
+                                    <guisubmenu>Erlang</guisubmenu>
+                                    <guimenuitem>Module</guimenuitem>
+                                </menuchoice> and following the instructions in the wizard. Leave
+                                empty any fields you don't understand the meaning of.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Configuration </term>
+                        <listitem>
+                            <para>Can be configured in <menuchoice>
+                                    <guimenu>Window</guimenu>
+                                    <guisubmenu>Preferences</guisubmenu>
+                                    <guimenuitem>Erlang</guimenuitem>
+                                </menuchoice>. Note that not all options are functional yet.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Editor</term>
+                        <listitem>
+                            <para>Some useful commands in the editor are: <itemizedlist>
+                                    <listitem>
+                                        <para> put cursor on a function call (only standard OTP
+                                            modules are supported currently) and its documentation
+                                            will pop up </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>put cursor in a function name and press
+                                            <keysym>F3</keysym> and the source of the function's
+                                            definition will be shown (if available)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>writing for example <command>lists:r</command> will
+                                            pop up a list of possible completions of the function
+                                            call.</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>right clicking in the editor will show a menu where
+                                            some Erlang options are at the bottom. </para>
+                                    </listitem>
+                                </itemizedlist></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Outline view</term>
+                        <listitem>
+                            <para>The outline view allows navigation in a module and an overview of
+                                the functions in it. Clicking on an item will show its definition in
+                                the editor.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Erlang console</term>
+                        <listitem>
+                            <para>The console lets you interact with the Erlang node that is behind
+                                the scenes.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Live expressions view</term>
+                        <listitem>
+                            <para>There is a <guimenu>Live expressions</guimenu> view where you can
+                                enter expressions that will be reevaluated every time a file is
+                                recompiled or when you press "refresh" in the view. You have to
+                                create a new entry, then go to the expression field and edit it. <warning>
+                                    <para>Don't use expressions that might kill or crash the runtime
+                                        (for example <command>init:stop()</command>), because there
+                                        are no restrictions yet.</para>
+                                </warning></para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Process list view</term>
+                        <listitem>
+                            <para>The "Process list" view is just what it says,</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>EDoc view</term>
+                        <listitem>
+                            <para>Opening a "Edoc" view (in <menuchoice>
+                                    <guimenu>Window</guimenu>
+                                    <guisubmenu>Show view</guisubmenu>
+                                    <guimenuitem>Erlang</guimenuitem>
+                                </menuchoice>) will display the documentation for the function where
+                                the cursor is (only OTP libraries)</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Builder</term>
+                        <listitem>
+                            <para>Building is automatic whenever a file is saved (if <menuchoice>
+                                    <guimenu>Project</guimenu>
+                                    <guimenuitem>Build automatically</guimenuitem>
+                                </menuchoice> is enabled) and the modified module is also reloaded
+                                in the Erlang backend.</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Problems view</term>
+                        <listitem>
+                            <para>The problems view will show all errors and warnings from the
+                                compiler. Clicking them opens the file in the editor at the right
+                                line.</para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <sect2>
+                <info>
+                    <title>A few Eclipse tips</title>
+                </info>
+                <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
+                        <listitem>
+                            <para><keycombo action="simul">
+                                    <keycap function="control">Ctrl</keycap>
+                                    <keycap function="shift">Shift</keycap>
+                                    <keycap>L</keycap>
+                                </keycombo> will display a list of key bindings to the various
+                                commands</para>
+                        </listitem>
+                    </itemizedlist></para>
+            </sect2>
         </sect1>
         <sect1 xml:id="tutorials">
             <info>
@@ -234,7 +391,7 @@
                 <para>TBD</para>
             </sect2>
         </sect1>
-        <sect1>
+        <sect1 xml:id="concepts">
             <info>
                 <title>Concepts</title>
             </info>
@@ -309,128 +466,6 @@
                     </itemizedlist></para>
             </sect2>
         </sect1>
-        <sect1 xml:id="quick_intro">
-            <info>
-                <title>Quick intro</title>
-            </info>
-            <note>
-                <para>This chapter is just a quick-and-dirty version of a more complete
-                    documentation, whose outline you see below and which will follow when time
-                    permits. Help with the documentation will be very much appreciated.</para>
-            </note>
-            <para>
-                <itemizedlist>
-                    <listitem>
-                        <para>Create projects with the <menuchoice>
-                                <guisubmenu>File</guisubmenu>
-                                <guisubmenu>New</guisubmenu>
-                                <guisubmenu>Project</guisubmenu>
-                                <guimenuitem>Erlang</guimenuitem>
-                            </menuchoice> project wizard. If the project isn't new, you can do an
-                            automatic search for source files, by using the "Discover paths" option.
-                            Review the result and add other needed directories</para>
-                    </listitem>
-                    <listitem>
-                        <para>Create files by right-clicking on the desired directory in the
-                            resource view, and choosing either <menuchoice>
-                                <guisubmenu>File</guisubmenu>
-                                <guisubmenu>New</guisubmenu>
-                                <guisubmenu>Other</guisubmenu>
-                                <guimenuitem>File</guimenuitem>
-                            </menuchoice> and entering a name ending with erl, or <menuchoice>
-                                <guisubmenu>File</guisubmenu>
-                                <guisubmenu>New</guisubmenu>
-                                <guisubmenu>Erlang</guisubmenu>
-                                <guimenuitem>Module</guimenuitem>
-                            </menuchoice> and following the instructions in the wizard. Leave empty
-                            any fields you don't understand the meaning of.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The Erlang perspective should open.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The editor works as usual. Can be configured in <menuchoice>
-                                <guimenu>Window</guimenu>
-                                <guisubmenu>Preferences</guisubmenu>
-                                <guimenuitem>Erlang</guimenuitem>
-                            </menuchoice>. Note that not all options are functional yet.</para>
-                    </listitem>
-                    <listitem>
-                        <para>Some useful commands in the editor are: <itemizedlist>
-                                <listitem>
-                                    <para> put cursor on a function call (only standard OTP modules
-                                        are supported currently) and its documentation will pop up
-                                    </para>
-                                </listitem>
-                                <listitem>
-                                    <para>put cursor in a function name and press
-                                        <keysym>F3</keysym> and the source of the function's
-                                        definition will be shown (if available)</para>
-                                </listitem>
-                                <listitem>
-                                    <para>writing for example <command>lists:r</command> will pop up
-                                        a list of possible completions of the function call.</para>
-                                </listitem>
-                                <listitem>
-                                    <para>right clicking in the editor will show a menu where some
-                                        Erlang options are at the bottom. </para>
-                                </listitem>
-                            </itemizedlist></para>
-                    </listitem>
-                    <listitem>
-                        <para>The outline view allows navigation in a module and an overview of the
-                            functions in it. Clicking on an item will show its definition in the
-                            editor.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The console lets you interact with the Erlang node that is behind the
-                            scenes.</para>
-                    </listitem>
-                    <listitem>
-                        <para>There is a <guimenu>Live expressions</guimenu> view where you can
-                            enter expressions that will be reevaluated every time a file is
-                            recompiled or when you press "refresh" in the view. You have to create a
-                            new entry, then go to the expression field and edit it. <warning>
-                                <para>Don't use expressions that might kill the runtime or crash
-                                    things (for example <command>init:stop()</command>), because
-                                    there's no restriction yet.</para>
-                            </warning></para>
-                    </listitem>
-                    <listitem>
-                        <para>The "Process list" view is just what it says,</para>
-                    </listitem>
-                    <listitem>
-                        <para>Opening a "Edoc" view (in <menuchoice>
-                                <guimenu>Window</guimenu>
-                                <guisubmenu>Show view</guisubmenu>
-                                <guimenuitem>Erlang</guimenuitem>
-                            </menuchoice>) will display the documentation for the function where the
-                            cursor is (only OTP libraries)</para>
-                    </listitem>
-                    <listitem>
-                        <para>Building is automatic whenever a file is saved (if <menuchoice>
-                                <guimenu>Project</guimenu>
-                                <guimenuitem>Build automatically</guimenuitem>
-                            </menuchoice> is enabled) and the modified module is also reloaded in
-                            the Erlang backend.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The problems view will show all errors and warnings from the compiler.
-                            Clicking them opens the file in the editor at the right line.</para>
-                    </listitem>
-                </itemizedlist>
-            </para>
-            <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
-                    <listitem>
-                        <para><keycombo action="simul">
-                                <keycap function="control">Ctrl</keycap>
-                                <keycap>Shift</keycap>
-                                <keycap>L</keycap>
-                            </keycombo> will display a list of key bindings to the various
-                        commands</para>
-                    </listitem>
-                </itemizedlist></para>
-        </sect1>
     </chapter>
     <chapter xml:id="reference">
         <info>
@@ -444,8 +479,7 @@
             <orderedlist inheritnum="ignore" continuation="restarts">
                 <listitem>
                     <para> Click <menuchoice>
-                            <guimenu>File &gt; New &gt; Other... &gt; Erlang
-                            Project</guimenu>
+                            <guimenu>File &gt; New &gt; Other... &gt; Erlang Project</guimenu>
                         </menuchoice> or use the context menu in the navigator, right-clicking and
                         choosing <menuchoice role="bold">
                             <guimenu>New</guimenu>
@@ -950,7 +984,8 @@
                     <itemizedlist>
                         <listitem>
                             <para>After compiling the plugins, you can try starting the newly build
-                                Erlide. For this you have to create a run configuration. Choose <menuchoice>
+                                Erlide. For this you have to create a run configuration. Choose
+                                    <menuchoice>
                                     <guimenu>Run</guimenu>
                                     <guisubmenu>Run...</guisubmenu>
                                     <guisubmenu>Eclipse Application</guisubmenu>
