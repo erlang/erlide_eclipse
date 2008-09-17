@@ -30,7 +30,6 @@ public class NewModuleNameInputPage extends WranglerNewDataInputPage {
 	protected void initListeners() {
 		newDataText.addModifyListener(new ModifyListener() {
 
-			
 			public void modifyText(ModifyEvent e) {
 				String s = newDataText.getText();
 				if (s.length() == 0) {
@@ -52,5 +51,5 @@ public class NewModuleNameInputPage extends WranglerNewDataInputPage {
 	protected String initTitle() {
 		return "Rename module";
 	}
-	
+
 }

@@ -33,7 +33,6 @@ public class NewParametersNameInputPage extends WranglerNewDataInputPage {
 	protected void initListeners() {
 		newDataText.addModifyListener(new ModifyListener() {
 
-			
 			public void modifyText(ModifyEvent e) {
 				String s = newDataText.getText();
 				if (s.length() == 0) {
@@ -73,7 +72,7 @@ public class NewParametersNameInputPage extends WranglerNewDataInputPage {
 		newExtraDataText.setLayoutData(gridData);
 
 		newExtraDataText.addModifyListener(new ModifyListener() {
-			
+
 			public void modifyText(ModifyEvent e) {
 				String s = newExtraDataText.getText();
 				TupleToRecordRefactoring refac = (TupleToRecordRefactoring) getRefactoring();

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -53,14 +54,15 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 */
 	public WranglerRefactoring(RefactoringParameters parameters) {
 		this.parameters = parameters;
-		this.managedBackend = (IdeBackend) BackendManager.getDefault()
-				.getIdeBackend();
+		this.managedBackend = BackendManager.getDefault().getIdeBackend();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ltk.core.refactoring.Refactoring#checkFinalConditions(org.eclipse.core.runtime.IProgressMonitor)
+	 * @see
+	 * org.eclipse.ltk.core.refactoring.Refactoring#checkFinalConditions(org
+	 * .eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
@@ -119,7 +121,9 @@ public abstract class WranglerRefactoring extends Refactoring {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ltk.core.refactoring.Refactoring#checkInitialConditions(org.eclipse.core.runtime.IProgressMonitor)
+	 * @see
+	 * org.eclipse.ltk.core.refactoring.Refactoring#checkInitialConditions(org
+	 * .eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
@@ -148,7 +152,9 @@ public abstract class WranglerRefactoring extends Refactoring {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ltk.core.refactoring.Refactoring#createChange(org.eclipse.core.runtime.IProgressMonitor)
+	 * @see
+	 * org.eclipse.ltk.core.refactoring.Refactoring#createChange(org.eclipse
+	 * .core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public Change createChange(IProgressMonitor pm) throws CoreException,
@@ -160,12 +166,12 @@ public abstract class WranglerRefactoring extends Refactoring {
 			Change c;
 			for (FileResourceChanges e : fileRs) {
 				c = e.createChanges();
-				if (c!=null) {
+				if (c != null) {
 					cChange.add(c);
 				}
 			}
 		} catch (IOException e) {
-			Status s = new Status(Status.ERROR, Activator.PLUGIN_ID, e
+			Status s = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
 					.getMessage());
 			throw new CoreException(s);
 		}

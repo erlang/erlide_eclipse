@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.core.foldexpression;
 
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.ui.WranglerRefactoringAction;
 import org.erlide.wrangler.refactoring.ui.WranglerRefactoringWizard;
@@ -18,8 +19,8 @@ public class FoldExpressionAction extends WranglerRefactoringAction {
 
 	@Override
 	protected WranglerRefactoringWizard initWranglerRefactoringWizard() {
-		return new FoldExpressionRefactoringWizard(refactoring, 
-				WranglerRefactoringWizard.DIALOG_BASED_USER_INTERFACE);
+		return new FoldExpressionRefactoringWizard(refactoring,
+				RefactoringWizard.DIALOG_BASED_USER_INTERFACE);
 	}
 
 }

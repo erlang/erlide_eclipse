@@ -1,15 +1,23 @@
 package org.incava.util.diff;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Compares two collections, returning a list of the additions, changes, and
  * deletions between them. A <code>Comparator</code> may be passed as an
  * argument to the constructor, and will thus be used. If not provided, the
- * initial value in the <code>a</code> ("from") collection will be looked at
- * to see if it supports the <code>Comparable</code> interface. If so, its
- * <code>equals</code> and <code>compareTo</code> methods will be invoked on
- * the instances in the "from" and "to" collections; otherwise, for speed, hash
+ * initial value in the <code>a</code> ("from") collection will be looked at to
+ * see if it supports the <code>Comparable</code> interface. If so, its
+ * <code>equals</code> and <code>compareTo</code> methods will be invoked on the
+ * instances in the "from" and "to" collections; otherwise, for speed, hash
  * codes from the objects will be used instead for comparison.
  * 
  * <p>
@@ -61,8 +69,8 @@ public class Diff {
 
 	/**
 	 * Constructs the Diff object for the two arrays, using the default
-	 * comparison mechanism between the objects, such as <code>equals</code>
-	 * and <code>compareTo</code>.
+	 * comparison mechanism between the objects, such as <code>equals</code> and
+	 * <code>compareTo</code>.
 	 */
 	public Diff(Object[] a, Object[] b) {
 		this(a, b, null);
@@ -78,8 +86,8 @@ public class Diff {
 
 	/**
 	 * Constructs the Diff object for the two collections, using the default
-	 * comparison mechanism between the objects, such as <code>equals</code>
-	 * and <code>compareTo</code>.
+	 * comparison mechanism between the objects, such as <code>equals</code> and
+	 * <code>compareTo</code>.
 	 */
 	public Diff(Collection a, Collection b) {
 		this(a, b, null);
@@ -168,16 +176,16 @@ public class Diff {
 	}
 
 	/**
-	 * Override and return true in order to have <code>finishedA</code>
-	 * invoked at the last element in the <code>a</code> array.
+	 * Override and return true in order to have <code>finishedA</code> invoked
+	 * at the last element in the <code>a</code> array.
 	 */
 	protected boolean callFinishedA() {
 		return false;
 	}
 
 	/**
-	 * Override and return true in order to have <code>finishedB</code>
-	 * invoked at the last element in the <code>b</code> array.
+	 * Override and return true in order to have <code>finishedB</code> invoked
+	 * at the last element in the <code>b</code> array.
 	 */
 	protected boolean callFinishedB() {
 		return false;

@@ -69,8 +69,8 @@ public class FileResourceChanges {
 
 		TextFileChange change = new TextFileChange(newPath, eclipseRep);
 		File tf = new File(oldPath);
-		ArrayList<TextEdit> edits = ComparerTool.createEdits(tf,
-				newFileContent);
+		ArrayList<TextEdit> edits = ComparerTool
+				.createEdits(tf, newFileContent);
 		MultiTextEdit multiEdit = new MultiTextEdit();
 		if (!edits.isEmpty()) {
 			for (TextEdit edit : edits) {

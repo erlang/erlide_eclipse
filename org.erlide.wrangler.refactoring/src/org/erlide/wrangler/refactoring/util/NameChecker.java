@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.util;
 
-
 public class NameChecker {
 
 	private NameChecker() {

@@ -34,7 +34,6 @@ public class NewParameterNameInputPage extends WranglerNewDataInputPage {
 	protected void initListeners() {
 		newDataText.addModifyListener(new ModifyListener() {
 
-			
 			public void modifyText(ModifyEvent e) {
 				String s = newDataText.getText();
 				if (s.length() == 0) {
@@ -101,7 +100,8 @@ public class NewParameterNameInputPage extends WranglerNewDataInputPage {
 			refac.setRefactoringStatus(RefactoringStatus
 					.createFatalErrorStatus(e.getMessage()));
 		} catch (CoreException e) {
-			refac.setRefactoringStatus(RefactoringStatus.createFatalErrorStatus(e.getMessage()));
+			refac.setRefactoringStatus(RefactoringStatus
+					.createFatalErrorStatus(e.getMessage()));
 		}
 	}
 
@@ -112,10 +112,11 @@ public class NewParameterNameInputPage extends WranglerNewDataInputPage {
 		mb.setMessage(question);
 		mb.setText(title);
 		int response = mb.open();
-		if (response == SWT.YES)
+		if (response == SWT.YES) {
 			b = true;
-		else
+		} else {
 			b = false;
+		}
 
 		return b;
 	}

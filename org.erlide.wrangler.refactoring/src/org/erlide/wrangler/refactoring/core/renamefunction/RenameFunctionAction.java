@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.core.renamefunction;
 
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.ui.WranglerRefactoringAction;
 import org.erlide.wrangler.refactoring.ui.WranglerRefactoringWizard;
@@ -19,7 +20,7 @@ public class RenameFunctionAction extends WranglerRefactoringAction {
 	@Override
 	protected WranglerRefactoringWizard initWranglerRefactoringWizard() {
 		return new RenameFunctionWizard(refactoring,
-				WranglerRefactoringWizard.DIALOG_BASED_USER_INTERFACE);
+				RefactoringWizard.DIALOG_BASED_USER_INTERFACE);
 	}
 
 }

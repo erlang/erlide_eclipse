@@ -30,7 +30,6 @@ public class RenameModuleRefactoring extends WranglerRefactoring {
 
 	@Override
 	protected Change doOtherChanges() {
-		org.eclipse.ltk.internal.core.refactoring.Resources r;
 		return null;
 	}
 }

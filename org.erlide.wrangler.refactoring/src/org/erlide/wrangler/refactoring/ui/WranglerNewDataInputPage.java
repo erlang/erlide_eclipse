@@ -107,7 +107,6 @@ public abstract class WranglerNewDataInputPage extends UserInputWizardPage {
 	private void initNewNameModifyListener() {
 		newDataText.addModifyListener(new ModifyListener() {
 
-
 			public void modifyText(ModifyEvent e) {
 				WranglerRefactoring refac = (WranglerRefactoring) getRefactoring();
 				refac.setNewName(newDataText.getText());

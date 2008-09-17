@@ -69,8 +69,9 @@ public class FoundExpressionSelectionInputPage extends WranglerNewDataInputPage 
 		ArrayList<OtpErlangTuple> selectedPositions = new ArrayList<OtpErlangTuple>();
 
 		for (Map.Entry<Button, ExpressionInfo> e : checkButtons.entrySet()) {
-			if (e.getKey().getSelection())
+			if (e.getKey().getSelection()) {
 				selectedPositions.add(e.getValue().getErlangPosition());
+			}
 		}
 
 		FoldExpressionRefactoring refac = (FoldExpressionRefactoring) getRefactoring();

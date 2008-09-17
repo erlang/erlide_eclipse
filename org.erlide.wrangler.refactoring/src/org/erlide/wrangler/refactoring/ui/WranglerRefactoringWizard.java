@@ -26,7 +26,7 @@ public abstract class WranglerRefactoringWizard extends RefactoringWizard {
 	}
 
 	@Override
-	/**
+	/*
 	 * Adds InputPages to the wizard. At least one page is needed.
 	 */
 	protected abstract void addUserInputPages();
