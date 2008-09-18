@@ -38,13 +38,13 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
-import erlang.ErlProjectImport;
 import erlang.ErlideImport;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard

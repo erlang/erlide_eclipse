@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.erlang;
 
 import java.util.ArrayList;
 import java.util.Collection;
