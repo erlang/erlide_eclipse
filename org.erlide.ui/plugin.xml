@@ -193,17 +193,16 @@
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
             name="Erlang">
-         <filter
-               name="nature"
-               value="org.erlide.core.erlnature"/>
+		<enabledWhen>
+ 			<adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
+		     </adapt>  
+        </enabledWhen>
       </page>
       <!--page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang (work in progress)">
-         <filter
-               name="nature"
-               value="org.erlide.core.erlnature"/>
       </page-->
    </extension>
    <extension
