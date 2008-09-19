@@ -48,6 +48,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class ReportPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
+	private Label locationLabel;
 	Text fcontact;
 	Text fbody;
 	Text ftitle;
@@ -121,9 +122,14 @@ public class ReportPreferencePage extends PreferencePage implements
 
 		responseLabel = new Label(panel, SWT.CENTER);
 		responseLabel.setVisible(false);
-		responseLabel
-				.setText("The report is being sent now, you can close this window.");
-		responseLabel.setBounds(47, 315, 415, 20);
+		responseLabel.setText("The report was saved in the location below,"
+				+ " you can close this window.");
+		responseLabel.setBounds(47, 315, 415, 15);
+
+		locationLabel = new Label(panel, SWT.CENTER);
+		locationLabel.setText("location");
+		locationLabel.setBounds(46, 336, 415, 15);
+		locationLabel.setVisible(false);
 
 		noDefaultAndApplyButton();
 
@@ -147,6 +153,8 @@ public class ReportPreferencePage extends PreferencePage implements
 		j.schedule();
 
 		responseLabel.setVisible(true);
+		locationLabel.setText(getLocation());
+		locationLabel.setVisible(true);
 	}
 
 	String getLocation() {
