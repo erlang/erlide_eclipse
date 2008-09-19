@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -81,6 +83,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	public synchronized void load() {
 		fRuntimes.clear();
+
 		IEclipsePreferences root = getRootPreferenceNode();
 		defaultRuntimeName = root.get("default", null);
 
@@ -99,30 +102,38 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			e.printStackTrace();
 		}
 
-		IEclipsePreferences aroot = new InstanceScope()
-				.getNode(ErlangLaunchPlugin.PLUGIN_ID + "/");
-		String defName = aroot.get("default_name", null);
-		if (defName != null && getRuntime(defName) != null) {
+		IPreferencesService ps = Platform.getPreferencesService();
+		String defName = ps.getString(ErlangLaunchPlugin.PLUGIN_ID,
+				"default_name", null, null);
+		final RuntimeInfo runtime = getRuntime(defName);
+		if (defName != null && runtime == null) {
 			System.out.println("!!! " + defName);
 			RuntimeInfo rt = new RuntimeInfo();
 			rt.setName(defName);
-			String path = aroot.get("default_" + RuntimeInfo.CODE_PATH, "");
+			String path = ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+					+ RuntimeInfo.CODE_PATH, "", null);
 			rt.setCodePath(PreferencesUtils.unpackList(path));
-			rt.setOtpHome(aroot.get("default_" + RuntimeInfo.HOME_DIR, ""));
-			rt.setArgs(aroot.get("default_" + RuntimeInfo.ARGS, ""));
-			String wd = aroot.get("default_" + RuntimeInfo.WORKING_DIR, "");
+			rt.setOtpHome(ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+					+ RuntimeInfo.HOME_DIR, "", null));
+			rt.setArgs(ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+					+ RuntimeInfo.ARGS, "", null));
+			String wd = ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+					+ RuntimeInfo.WORKING_DIR, "", null);
 			if (wd.length() != 0) {
 				rt.setWorkingDir(wd);
 			}
-			rt.setManaged(aroot.getBoolean("default_" + RuntimeInfo.MANAGED,
-					true));
+			rt.setManaged(ps.getBoolean(ErlangLaunchPlugin.PLUGIN_ID,
+					"default_" + RuntimeInfo.MANAGED, true, null));
 			addRuntime(rt);
+			setDefaultRuntime(defName);
+			setErlideRuntime(getDefaultRuntime());
+		} else if (defName != null) {
 			setDefaultRuntime(defName);
 			setErlideRuntime(getDefaultRuntime());
 		}
 
-		IEclipsePreferences old = new InstanceScope().getNode("flux/");
-		old = new InstanceScope().getNode("org.erlide.basic/");
+		IEclipsePreferences old = new InstanceScope()
+				.getNode("org.erlide.basic/");
 		String oldVal = old.get("otp_home", null);
 		if (oldVal != null) {
 			ErlLogger.debug("** converting old workspace Erlang settings");
