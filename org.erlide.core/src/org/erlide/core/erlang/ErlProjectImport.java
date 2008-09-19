@@ -17,7 +17,7 @@ public class ErlProjectImport {
 	private final List<String> sourceDirs;
 	private final List<String> includeDirs;
 
-	ErlProjectImport(final OtpErlangObject o) {
+	public ErlProjectImport(final OtpErlangObject o) {
 		final OtpErlangTuple t = (OtpErlangTuple) o;
 		OtpErlangList l = (OtpErlangList) t.elementAt(0);
 		resources = (Set<String>) erlangStringList2Collection(l,
