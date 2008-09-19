@@ -3,6 +3,7 @@ package org.erlide.ui.prefs;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -12,6 +13,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -413,25 +415,50 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	private void moveDown(ListDialogField<String> field) {
+		List<String> sel = field.getSelectedElements();
+		if (sel.size() == 1) {
+			String value = sel.get(0);
+			int pos = field.getIndexOfElement(value);
+			if (pos < field.getSize() - 1) {
+				field.removeElement(value);
+				field.addElement(value, pos + 1);
+			}
+			field.selectElements(new StructuredSelection(value));
+			field.refresh();
+		}
 	}
 
 	private void moveUp(ListDialogField<String> field) {
+		List<String> sel = field.getSelectedElements();
+		if (sel.size() == 1) {
+			String value = sel.get(0);
+			int pos = field.getIndexOfElement(value);
+			if (pos > 0) {
+				field.removeElement(value);
+				field.addElement(value, pos - 1);
+			}
+			field.selectElements(new StructuredSelection(value));
+			field.refresh();
+		}
 	}
 
 	private void removePath(ListDialogField<String> field) {
+		List<String> sel = field.getSelectedElements();
+		field.removeElements(sel);
 	}
 
 	private void addPath(ListDialogField<String> field) {
-
-		// TODO validate value ?
 		InputDialog dlg = new InputDialog(new Shell(), "Add path",
 				"Enter a path to be added to ", "", null);
 		dlg.setBlockOnOpen(true);
 		dlg.open();
 		String value = dlg.getValue();
 
-		if (value.length() > 0) {
-			field.addElement(value);
+		if (value != null && value.length() > 0) {
+			File f = new File(value);
+			if (f.exists()) {
+				field.addElement(value);
+			}
 		}
 	}
 

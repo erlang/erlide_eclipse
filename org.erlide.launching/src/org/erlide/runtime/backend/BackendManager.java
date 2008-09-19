@@ -414,7 +414,7 @@ public final class BackendManager implements IResourceChangeListener,
 			}
 		} catch (final IOException e) {
 			host = "localhost";
-			ErlangLaunchPlugin.log(e);
+			ErlLogger.error(e);
 		}
 		return host;
 	}
