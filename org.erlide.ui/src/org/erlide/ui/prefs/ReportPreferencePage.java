@@ -126,9 +126,9 @@ public class ReportPreferencePage extends PreferencePage implements
 				+ " you can close this window.");
 		responseLabel.setBounds(47, 315, 415, 15);
 
-		locationLabel = new Label(panel, SWT.CENTER);
+		locationLabel = new Label(panel, SWT.CENTER | SWT.WRAP);
 		locationLabel.setText("location");
-		locationLabel.setBounds(46, 336, 415, 15);
+		locationLabel.setBounds(46, 336, 415, 38);
 		locationLabel.setVisible(false);
 
 		noDefaultAndApplyButton();
@@ -137,6 +137,7 @@ public class ReportPreferencePage extends PreferencePage implements
 	}
 
 	protected void postReport() {
+		final String location = getLocation();
 		Job j = new Job("send error report") {
 			ReportData data = new ReportData(ftitle.getText(), fcontact
 					.getText(), fbody.getText(), attachTechnicalDataButton
@@ -144,7 +145,7 @@ public class ReportPreferencePage extends PreferencePage implements
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				sendToDisk(getLocation(), data);
+				sendToDisk(location, data);
 				return Status.OK_STATUS;
 			}
 		};
@@ -153,7 +154,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		j.schedule();
 
 		responseLabel.setVisible(true);
-		locationLabel.setText(getLocation());
+		locationLabel.setText(location);
 		locationLabel.setVisible(true);
 	}
 
@@ -168,14 +169,14 @@ public class ReportPreferencePage extends PreferencePage implements
 		if (!dir.exists()) {
 			return System.getProperty("user.home");
 		}
-		return s;
+		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		return s + "/" + System.getProperty("user.name") + "_" + tstamp
+				+ ".txt";
 	}
 
 	void sendToDisk(String location, ReportData data) {
-		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-				.format(new Date());
-		File report = new File(location + "/" + System.getProperty("user.name")
-				+ "_" + tstamp + ".txt");
+		File report = new File(location);
 		try {
 			report.createNewFile();
 			OutputStream out = new FileOutputStream(report);
