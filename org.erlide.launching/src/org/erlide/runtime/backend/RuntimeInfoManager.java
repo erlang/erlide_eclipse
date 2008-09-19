@@ -102,6 +102,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			e.printStackTrace();
 		}
 
+		boolean hasDefaultRuntime = getDefaultRuntime() != null;
+
 		IPreferencesService ps = Platform.getPreferencesService();
 		String defName = ps.getString(ErlangLaunchPlugin.PLUGIN_ID,
 				"default_name", null, null);
@@ -125,9 +127,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			rt.setManaged(ps.getBoolean(ErlangLaunchPlugin.PLUGIN_ID,
 					"default_" + RuntimeInfo.MANAGED, true, null));
 			addRuntime(rt);
-			setDefaultRuntime(defName);
-			setErlideRuntime(getDefaultRuntime());
-		} else if (defName != null) {
+		}
+		if (!hasDefaultRuntime && defName != null) {
 			setDefaultRuntime(defName);
 			setErlideRuntime(getDefaultRuntime());
 		}
