@@ -7,7 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *     Vlad Dumitrescu
- *     Mickaël Rémond
+ *     Mickael Remond
  *******************************************************************************/
 package org.erlide.runtime;
 
@@ -31,13 +31,13 @@ public interface IPrefConstants {
 	String DEFAULT_EXTERNAL_INCLUDES = "";
 
 	String RUNTIME_NAME = "backend_name";
-	String DEFAULT_RUNTIME_NAME = "erts";
+	String DEFAULT_RUNTIME_NAME = "erlide";
 
 	String COOKIE = "backend_cookie";
 	String DEFAULT_COOKIE = "";
 
 	String NODE_NAME = "backend_node";
-	String DEFAULT_NODENAME = "erts";
+	String DEFAULT_NODENAME = "erlide";
 
 	String USE_PATHZ = "use_pathz";
 	String DEFAULT_USE_PATHZ = "true";
