@@ -394,4 +394,13 @@ public class ErlangProjectProperties {
 		return this.fUnique;
 	}
 
+	public boolean hasSourceDir(IPath fullPath) {
+		for (String s : getSourceDirs()) {
+			if (s.equals(fullPath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeLayout;
@@ -202,7 +203,16 @@ public class ErlangFileWizardPage extends WizardPage implements
 				} else {
 					container = ((IResource) obj).getParent();
 				}
-				containerText.setText(container.getFullPath().toString());
+				ErlangProjectProperties pp = new ErlangProjectProperties(
+						((IResource) obj).getProject());
+				if (pp.hasSourceDir(container.getFullPath())) {
+					containerText.setText(container.getFullPath().toString());
+				} else if (pp.getSourceDirs().length > 0) {
+					containerText.setText(pp.getSourceDirs()[0].toString());
+				} else {
+					containerText.setText(container.getFullPath().toString());
+				}
+
 			}
 		}
 
@@ -340,7 +350,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
+	 * .swt.events.SelectionEvent)
 	 */
 	public void widgetDefaultSelected(SelectionEvent e) {
 		// TODO Auto-generated method stub
@@ -350,7 +362,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
+	 * .events.SelectionEvent)
 	 */
 	public void widgetSelected(SelectionEvent e) {
 
