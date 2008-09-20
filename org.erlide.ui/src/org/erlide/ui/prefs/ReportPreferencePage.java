@@ -167,7 +167,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		}
 		File dir = new File(s);
 		if (!dir.exists()) {
-			return System.getProperty("user.home");
+			s = System.getProperty("user.home");
 		}
 		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
