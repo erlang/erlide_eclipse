@@ -1,5 +1,0 @@
-# Debugging options for the org.erlide plugins
-
-org.erlide.launching/debug=false
-
-org.erlide.launching/debug/reconciler=false
