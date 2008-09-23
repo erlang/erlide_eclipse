@@ -10,6 +10,11 @@ package org.erlide.wrangler.refactoring.core.exception;
 public class WranglerRPCException extends WranglerException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Sole constructor with built-in message
 	 */
 	public WranglerRPCException() {

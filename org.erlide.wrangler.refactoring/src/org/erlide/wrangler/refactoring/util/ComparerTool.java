@@ -102,6 +102,7 @@ public class ComparerTool {
 	 * Readsthe input file, compares with the given new string, then creates
 	 * Eclipse's <code>TextEdit</code>-s.
 	 */
+	@SuppressWarnings("unchecked")
 	static public ArrayList<TextEdit> createEdits(File in, String out)
 			throws IOException {
 		inFile = in;

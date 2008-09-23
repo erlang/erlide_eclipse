@@ -8,6 +8,11 @@ package org.erlide.wrangler.refactoring.core.exception;
  */
 public abstract class WranglerException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected WranglerException(String message) {
 		super(message);
 	}

@@ -39,6 +39,7 @@ public class Diff {
 	/**
 	 * The list of differences, as <code>Difference</code> instances.
 	 */
+	@SuppressWarnings("unchecked")
 	protected List diffs = new ArrayList();
 
 	/**
@@ -49,17 +50,20 @@ public class Diff {
 	/**
 	 * The comparator used, if any.
 	 */
+	@SuppressWarnings("unchecked")
 	private Comparator comparator;
 
 	/**
 	 * The thresholds.
 	 */
+	@SuppressWarnings("unchecked")
 	private TreeMap thresh;
 
 	/**
 	 * Constructs the Diff object for the two arrays, using the given
 	 * comparator.
 	 */
+	@SuppressWarnings("unchecked")
 	public Diff(Object[] a, Object[] b, Comparator comp) {
 		this.a = a;
 		this.b = b;
@@ -80,6 +84,7 @@ public class Diff {
 	 * Constructs the Diff object for the two collections, using the given
 	 * comparator.
 	 */
+	@SuppressWarnings("unchecked")
 	public Diff(Collection a, Collection b, Comparator comp) {
 		this(a.toArray(), b.toArray(), comp);
 	}
@@ -89,6 +94,7 @@ public class Diff {
 	 * comparison mechanism between the objects, such as <code>equals</code> and
 	 * <code>compareTo</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	public Diff(Collection a, Collection b) {
 		this(a, b, null);
 	}
@@ -96,6 +102,7 @@ public class Diff {
 	/**
 	 * Runs diff and returns the results.
 	 */
+	@SuppressWarnings("unchecked")
 	public List diff() {
 		traverseSequences();
 
@@ -230,6 +237,7 @@ public class Diff {
 	/**
 	 * Invoked for elements matching in <code>a</code> and <code>b</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	protected void onMatch(int ai, int bi) {
 		if (pending == null) {
 			// no current pending
@@ -243,6 +251,7 @@ public class Diff {
 	 * Compares the two objects, using the comparator provided with the
 	 * constructor, if any.
 	 */
+	@SuppressWarnings("unchecked")
 	protected boolean equals(Object x, Object y) {
 		return comparator == null ? x.equals(y) : comparator.compare(x, y) == 0;
 	}
@@ -250,6 +259,7 @@ public class Diff {
 	/**
 	 * Returns an array of the longest common subsequences.
 	 */
+	@SuppressWarnings("unchecked")
 	public Integer[] getLongestCommonSubsequences() {
 		int aStart = 0;
 		int aEnd = a.length - 1;
@@ -336,6 +346,7 @@ public class Diff {
 	/**
 	 * Converts the map (indexed by java.lang.Integers) into an array.
 	 */
+	@SuppressWarnings("unchecked")
 	protected static Integer[] toArray(TreeMap map) {
 		int size = map.size() == 0 ? 0 : 1 + ((Integer) map.lastKey())
 				.intValue();
@@ -386,6 +397,7 @@ public class Diff {
 	 * Adds the given value to the "end" of the threshold map, that is, with the
 	 * greatest index/key.
 	 */
+	@SuppressWarnings("unchecked")
 	protected void append(Integer value) {
 		Integer addIdx = null;
 		if (thresh.size() == 0) {
@@ -400,6 +412,7 @@ public class Diff {
 	/**
 	 * Inserts the given values into the threshold map.
 	 */
+	@SuppressWarnings("unchecked")
 	protected Integer insert(Integer j, Integer k) {
 		if (isNonzero(k) && isGreaterThan(k, j)
 				&& isLessThan(new Integer(k.intValue() - 1), j)) {
