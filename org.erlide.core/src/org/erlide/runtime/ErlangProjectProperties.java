@@ -23,6 +23,7 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
@@ -117,7 +118,7 @@ public class ErlangProjectProperties {
 			// .getName());
 
 			ProjectScope s = new ProjectScope(project);
-			IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
+			IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 			// new settings
 			fSourceDirs = node.get(IPrefConstants.SOURCE_DIRS,
@@ -154,7 +155,7 @@ public class ErlangProjectProperties {
 		// project.getName());
 
 		ProjectScope s = new ProjectScope(project);
-		IEclipsePreferences node = s.getNode(ErlangLaunchPlugin.PLUGIN_ID);
+		IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 		node.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
 		node.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);

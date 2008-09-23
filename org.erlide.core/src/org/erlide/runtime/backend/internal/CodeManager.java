@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.osgi.framework.Bundle;
@@ -275,7 +275,7 @@ public class CodeManager implements IRegistryChangeListener {
 
 		// load all stub code
 		final IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
-				ErlangLaunchPlugin.PLUGIN_ID, "javaRpcStubs");
+				ErlangPlugin.PLUGIN_ID, "javaRpcStubs");
 		for (final IConfigurationElement stub : stubs) {
 			final IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {

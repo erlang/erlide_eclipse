@@ -10,15 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.erlide.jinterface
 Bundle-ActivationPolicy: lazy
-Export-Package: erlang,
- org.erlide.runtime;
-  uses:="org.eclipse.debug.core.sourcelookup,
-   org.erlide.jinterface,
-   org.osgi.framework,
-   org.eclipse.core.resources,
-   org.eclipse.core.runtime,
-   org.eclipse.debug.core",
- org.erlide.runtime.backend;
+Export-Package: org.erlide.runtime.backend;
   uses:="com.ericsson.otp.erlang,
    org.erlide.runtime.backend.console,
    org.eclipse.core.resources,
@@ -35,13 +27,7 @@ Export-Package: erlang,
    org.erlide.runtime.backend,
    org.eclipse.core.runtime,
    org.eclipse.debug.core",
- org.erlide.runtime.backend.exceptions;uses:="org.erlide.jinterface.rpc",
- org.erlide.runtime.debug;
-  uses:="com.ericsson.otp.erlang,
-   org.eclipse.debug.core.model,
-   org.erlide.runtime.backend,
-   org.eclipse.core.resources,
-   org.eclipse.debug.core"
+ org.erlide.runtime.backend.exceptions;uses:="org.erlide.jinterface.rpc"
 Bundle-Vendor: %providerName
 Bundle-ClassPath: erlide-launching.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

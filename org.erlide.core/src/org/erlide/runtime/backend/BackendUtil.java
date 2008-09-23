@@ -18,9 +18,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
 import org.osgi.framework.Bundle;
 
@@ -62,7 +62,7 @@ public class BackendUtil {
 
 	public static String getLocalPath(final String string) {
 		String dir = "?";
-		final Bundle b = ErlangLaunchPlugin.getDefault().getBundle();
+		final Bundle b = ErlangPlugin.getDefault().getBundle();
 		final URL url = b.getEntry(string);
 		try {
 			dir = FileLocator.toFileURL(url).getPath().substring(1);

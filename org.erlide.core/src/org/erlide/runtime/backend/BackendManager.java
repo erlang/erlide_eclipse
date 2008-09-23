@@ -32,11 +32,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.AbstractBackend;
@@ -295,9 +295,9 @@ public final class BackendManager implements IResourceChangeListener,
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
-					ErlangLaunchPlugin.PLUGIN_ID, 1,
+					ErlangPlugin.PLUGIN_ID, 1,
 					"backend listener exception", exception);
-			ErlangLaunchPlugin.log(status);
+			ErlangPlugin.log(status);
 		}
 
 		/*

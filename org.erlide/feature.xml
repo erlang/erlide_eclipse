@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.3.80"
+      version="0.3.81"
       provider-name="Erlide project"
       image="erlang120.gif">
    <install-handler/>
@@ -254,12 +254,6 @@ litigation.
 
    <plugin
          id="org.erlide.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.launching"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

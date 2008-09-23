@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -85,25 +85,25 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		fRuntimes.clear();
 
 		IPreferencesService ps = Platform.getPreferencesService();
-		String defName = ps.getString(ErlangLaunchPlugin.PLUGIN_ID,
+		String defName = ps.getString(ErlangPlugin.PLUGIN_ID,
 				"default_name", null, null);
 		final RuntimeInfo runtime = getRuntime(defName);
 		if (defName != null && runtime == null) {
 			RuntimeInfo rt = new RuntimeInfo();
 			rt.setName(defName);
-			String path = ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+			String path = ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
 					+ RuntimeInfo.CODE_PATH, "", null);
 			rt.setCodePath(PreferencesUtils.unpackList(path));
-			rt.setOtpHome(ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+			rt.setOtpHome(ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
 					+ RuntimeInfo.HOME_DIR, "", null));
-			rt.setArgs(ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+			rt.setArgs(ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
 					+ RuntimeInfo.ARGS, "", null));
-			String wd = ps.getString(ErlangLaunchPlugin.PLUGIN_ID, "default_"
+			String wd = ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
 					+ RuntimeInfo.WORKING_DIR, "", null);
 			if (wd.length() != 0) {
 				rt.setWorkingDir(wd);
 			}
-			rt.setManaged(ps.getBoolean(ErlangLaunchPlugin.PLUGIN_ID,
+			rt.setManaged(ps.getBoolean(ErlangPlugin.PLUGIN_ID,
 					"default_" + RuntimeInfo.MANAGED, true, null));
 			addRuntime(rt);
 		}
@@ -155,7 +155,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	protected IEclipsePreferences getRootPreferenceNode() {
-		return new InstanceScope().getNode(ErlangLaunchPlugin.PLUGIN_ID
+		return new InstanceScope().getNode(ErlangPlugin.PLUGIN_ID
 				+ "/runtimes");
 	}
 

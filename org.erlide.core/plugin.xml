@@ -54,4 +54,56 @@
       </bundle_dir>
    </extension>
 
+   <extension-point id="javaRpcStubs" name="javaRpcStubs" schema="schema/javaRpcStubs.exsd"/>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.erlide.runtime.ErlangSourcePathComputerDelegate"
+            id="org.erlide.launching.sourcepathcomputer"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.erlide.runtime.ErlangSourceLookupDirector"
+            id="org.erlide.launching.erlangLocatorDirector"
+            name="erlide-launching.erlangSourceLocator"/>
+   </extension>
+    <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="org.erlide.runtime.debug.ErlangLineBreakpoint"
+            id="erlang.lineBreakpoint"
+            markerType="org.erlide.launching.erlang.lineBreakpoint.marker"/>
+   </extension>
+  <extension
+         id="erlang.lineBreakpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.debug.core.breakpointMarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="org.erlide.runtime.backend.ErtsProcessFactory"
+            id="org.erlide.core.backend.ertsprocessfactory"/>
+   </extension>
+   <extension
+         point="org.erlide.jinterface.codepath">
+      <bundle_dir
+            path="/ebin">
+      </bundle_dir>
+   </extension>
+   <extension
+         point="org.erlide.core.javaRpcStubs">
+      <stub
+            class="org.erlide.jinterface.rpc.RpcTest"
+            onlyDeclared="true">
+      </stub>
+      <stub
+            class="org.eclipse.core.runtime.Platform"
+            onlyDeclared="false">
+      </stub>
+   </extension>
+ 
+
 </plugin>

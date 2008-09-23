@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -17,6 +18,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
@@ -35,10 +40,12 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.jinterface.ICodeBundle;
+import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -619,6 +626,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		BackendManager.getDefault().removePlugin(this);
+
 		try {
 			try {
 				// savePluginPreferences();
@@ -637,6 +646,9 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+
+		super.stop(context);
+		plugin = null;
 	}
 
 	/*
@@ -651,6 +663,51 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	public void start(BundleContext context) throws Exception {
 		ErlLogger.debug("Starting CORE");
 		super.start(context);
+
+		Handler fh;
+		try {
+			final ErlLogger.ErlSimpleFormatter erlSimpleFormatter = new ErlLogger.ErlSimpleFormatter();
+			final Logger logger = Logger.getLogger("org.erlide");
+
+			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+					.toPortableString();
+			dir = dir == null ? "c:/" : dir;
+			fh = new FileHandler(dir + "_erlide.log");
+			fh.setFormatter(erlSimpleFormatter);
+			logger.addHandler(fh);
+
+			final ConsoleHandler consoleHandler = new ConsoleHandler();
+			consoleHandler.setFormatter(erlSimpleFormatter);
+			consoleHandler.setLevel(java.util.logging.Level.FINEST);
+			logger.addHandler(consoleHandler);
+
+			logger.setLevel(java.util.logging.Level.FINEST);
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
+
+		String dev = "";
+		if (BackendManager.isDeveloper()) {
+			dev = " erlide developer version ***";
+		}
+		if (BackendManager.isTest()) {
+			dev += " test ***";
+		}
+		ErlLogger
+				.info("*** starting Erlide v"
+						+ getBundle().getHeaders().get("Bundle-Version")
+						+ " ***" + dev);
+
+		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
+		rim.load();
+
+		BackendManager.getDefault().register(InterfacePlugin.getDefault());
+		BackendManager.getDefault().register(this);
 
 		BackendManager.getDefault().register(this);
 
@@ -820,6 +877,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public void start() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

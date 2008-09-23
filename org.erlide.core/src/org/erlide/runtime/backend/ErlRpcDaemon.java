@@ -7,10 +7,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.rpc.IRpcHandler;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -61,10 +61,10 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 						} catch (final OtpErlangExit e) {
 							// backend crashed -- restart?
 
-							ErlangLaunchPlugin.log(e);
+							ErlangPlugin.log(e);
 							e.printStackTrace();
 						} catch (final OtpErlangException e) {
-							ErlangLaunchPlugin.log(e);
+							ErlangPlugin.log(e);
 							e.printStackTrace();
 						}
 					} while (msg != null && !fStopJob
@@ -77,7 +77,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 					}
 					return Status.OK_STATUS;
 				} finally {
-					ErlangLaunchPlugin plugin = ErlangLaunchPlugin.getDefault();
+					ErlangPlugin plugin = ErlangPlugin.getDefault();
 					if (plugin != null
 							&& plugin.getBundle().getState() != Bundle.STOPPING) {
 						schedule(50);

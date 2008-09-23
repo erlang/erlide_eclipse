@@ -40,7 +40,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 	protected Integer coloumn, line;
 	protected Change change;
 	protected RefactoringParameters parameters;
-	@SuppressWarnings("restriction")
 	protected IdeBackend managedBackend;
 	protected String newName;
 

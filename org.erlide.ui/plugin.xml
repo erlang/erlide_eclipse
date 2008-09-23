@@ -613,7 +613,7 @@
       </bundle_dir>
    </extension>
    <extension
-         point="org.erlide.launching.javaRpcStubs">
+         point="org.erlide.core.javaRpcStubs">
       <stub
             class="java.util.Map"
             onlyDeclared="true">

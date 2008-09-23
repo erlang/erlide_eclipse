@@ -15,7 +15,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
-import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.core.ErlangPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -61,7 +61,7 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 	public void setValue(final String expression) throws DebugException {
 		if (subVariable) {
 			throw new DebugException(new Status(IStatus.ERROR,
-					ErlangLaunchPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
+					ErlangPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
 					"Can't set value of part of expression", null));
 		}
 		final ErlangDebugTarget edt = (ErlangDebugTarget) getDebugTarget();
@@ -69,7 +69,7 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 				expression, stackFrameNo, process.getMeta());
 		if (err != null) {
 			throw new DebugException(new Status(IStatus.ERROR,
-					ErlangLaunchPlugin.PLUGIN_ID,
+					ErlangPlugin.PLUGIN_ID,
 					DebugException.TARGET_REQUEST_FAILED, "Bad expression",
 					null));
 		}

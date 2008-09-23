@@ -20,13 +20,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.rpc.RpcConverter.Signature;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangLaunchPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.BackendManager;
@@ -147,7 +147,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 		} catch (final Exception e) {
 			e.printStackTrace();
-			ErlangLaunchPlugin.log(e);
+			ErlangPlugin.log(e);
 			fAvailable = false;
 		}
 	}
@@ -427,10 +427,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			result = new RpcResult(res);
 		} catch (final OtpErlangExit e) {
 			e.printStackTrace();
-			ErlangLaunchPlugin.log(e);
+			ErlangPlugin.log(e);
 		} catch (final OtpErlangDecodeException e) {
 			e.printStackTrace();
-			ErlangLaunchPlugin.log(e);
+			ErlangPlugin.log(e);
 		}
 		return result;
 	}

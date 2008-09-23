@@ -8,7 +8,6 @@ Bundle-Vendor: %providerName
 Bundle-Activator: org.erlide.testing.ErlideTestingPlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
- org.erlide.launching,
  org.erlide.core,
  org.erlide.ui,
  org.junit4

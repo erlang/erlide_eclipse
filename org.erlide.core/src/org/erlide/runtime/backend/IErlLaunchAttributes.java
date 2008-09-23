@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import org.erlide.runtime.ErlangLaunchPlugin;
+import org.erlide.core.ErlangPlugin;
 
 public interface IErlLaunchAttributes {
 
-	final String prefix = ErlangLaunchPlugin.PLUGIN_ID;
+	final String prefix = ErlangPlugin.PLUGIN_ID;
 
 	final String PROJECTS = prefix + ".projects";
 
