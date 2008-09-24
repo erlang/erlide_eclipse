@@ -142,7 +142,10 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	private void loadPrefs(IEclipsePreferences root) {
-		defaultRuntimeName = root.get("default", null);
+		String defrt = root.get("default", null);
+		if (defrt != null) {
+			defaultRuntimeName = defrt;
+		}
 
 		String[] children;
 		try {

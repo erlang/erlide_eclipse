@@ -132,7 +132,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		}
 
 		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
-		rim.load();
 		if (rim.getRuntimeNames().size() == 0) {
 			// openPreferencePage();
 		}

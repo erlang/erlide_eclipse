@@ -704,11 +704,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 						+ " ***" + dev);
 
 		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
-		rim.load();
 
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
-		BackendManager.getDefault().register(this);
-
 		BackendManager.getDefault().register(this);
 
 		registerOpenProjects();

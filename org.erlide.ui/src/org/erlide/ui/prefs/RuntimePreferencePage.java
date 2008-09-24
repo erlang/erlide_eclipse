@@ -81,8 +81,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		IAddDialogRequestor<RuntimeInfo>, ISelectionProvider,
 		IWorkbenchPreferencePage {
 
-	private static final RuntimeInfoManager manager = RuntimeInfoManager
-			.getDefault();
+	private final RuntimeInfoManager manager;
 	private Combo combo;
 	private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
@@ -128,7 +127,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		setDescription("Add, remove or edit runtime definitions.\n"
 				+ "The checked one will be used by default in new projects "
 				+ "to build the project's code.");
-
+		manager = RuntimeInfoManager.getDefault();
 		performDefaults();
 	}
 
