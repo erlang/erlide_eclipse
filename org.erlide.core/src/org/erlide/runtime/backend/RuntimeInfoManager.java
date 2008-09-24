@@ -85,8 +85,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		fRuntimes.clear();
 
 		IPreferencesService ps = Platform.getPreferencesService();
-		String defName = ps.getString(ErlangPlugin.PLUGIN_ID,
-				"default_name", null, null);
+		String defName = ps.getString(ErlangPlugin.PLUGIN_ID, "default_name",
+				null, null);
 		final RuntimeInfo runtime = getRuntime(defName);
 		if (defName != null && runtime == null) {
 			RuntimeInfo rt = new RuntimeInfo();
@@ -103,8 +103,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			if (wd.length() != 0) {
 				rt.setWorkingDir(wd);
 			}
-			rt.setManaged(ps.getBoolean(ErlangPlugin.PLUGIN_ID,
-					"default_" + RuntimeInfo.MANAGED, true, null));
+			rt.setManaged(ps.getBoolean(ErlangPlugin.PLUGIN_ID, "default_"
+					+ RuntimeInfo.MANAGED, true, null));
 			addRuntime(rt);
 		}
 
@@ -129,7 +129,15 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			store();
 		}
 
-		IEclipsePreferences root = getRootPreferenceNode();
+		IEclipsePreferences root = new InstanceScope()
+				.getNode("org.erlide.launching/runtimes");
+		loadPrefs(root);
+
+		root = getRootPreferenceNode();
+		loadPrefs(root);
+	}
+
+	private void loadPrefs(IEclipsePreferences root) {
 		defaultRuntimeName = root.get("default", null);
 
 		String[] children;
@@ -155,8 +163,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	protected IEclipsePreferences getRootPreferenceNode() {
-		return new InstanceScope().getNode(ErlangPlugin.PLUGIN_ID
-				+ "/runtimes");
+		return new InstanceScope()
+				.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
 	}
 
 	public void setRuntimes(Collection<RuntimeInfo> elements) {
