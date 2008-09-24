@@ -83,7 +83,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 * 
 	 * @return the current adornments
 	 */
-	public int getAdronments() {
+	public int getAdornments() {
 		return fFlags;
 	}
 

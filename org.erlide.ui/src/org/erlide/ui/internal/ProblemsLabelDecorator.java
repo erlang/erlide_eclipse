@@ -4,18 +4,28 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.util.IProblemChangedListener;
+import org.erlide.ui.util.ImageImageDescriptor;
 import org.erlide.ui.views.outline.ErlangElementImageDescriptor;
 
-public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
+public class ProblemsLabelDecorator implements ILabelDecorator,
+		ILightweightLabelDecorator {
 
 	/**
 	 * This is a special <code>LabelProviderChangedEvent</code> carrying
@@ -60,6 +70,8 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 
 	private static final int ERRORTICK_WARNING = ErlangElementImageDescriptor.WARNING;
 	private static final int ERRORTICK_ERROR = ErlangElementImageDescriptor.ERROR;
+	private ListenerList fListeners;
+	private IProblemChangedListener fProblemChangedListener;
 
 	// private IProblemChangedListener fProblemChangedListener;
 	// private Collection fListeners;
@@ -194,24 +206,101 @@ public class ProblemsLabelDecorator implements ILightweightLabelDecorator {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see IBaseLabelProvider#addListener(ILabelProviderListener)
+	 */
 	public void addListener(final ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-
+		if (fListeners == null) {
+			fListeners = new ListenerList();
+		}
+		fListeners.add(listener);
+		if (fProblemChangedListener == null) {
+			fProblemChangedListener = new IProblemChangedListener() {
+				public void problemsChanged(final IResource[] changedResources,
+						final boolean isMarkerChange) {
+					fireProblemsChanged(changedResources, isMarkerChange);
+				}
+			};
+			ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(
+					fProblemChangedListener);
+		}
 	}
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+	private void fireProblemsChanged(final IResource[] changedResources,
+			final boolean isMarkerChange) {
+		if (fListeners != null && !fListeners.isEmpty()) {
+			final LabelProviderChangedEvent event = new ProblemsLabelChangedEvent(
+					this, changedResources, isMarkerChange);
+			final Object[] listeners = fListeners.getListeners();
+			for (int i = 0; i < listeners.length; i++) {
+				((ILabelProviderListener) listeners[i])
+						.labelProviderChanged(event);
+			}
+		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see IBaseLabelProvider#dispose()
+	 */
+	public void dispose() {
+		if (fProblemChangedListener != null) {
+			ErlideUIPlugin.getDefault().getProblemMarkerManager()
+					.removeListener(fProblemChangedListener);
+			fProblemChangedListener = null;
+		}
+		// if (fRegistry != null && fUseNewRegistry) {
+		// fRegistry.dispose();
+		// }
 	}
 
 	public boolean isLabelProperty(final Object element, final String property) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see IBaseLabelProvider#removeListener(ILabelProviderListener)
+	 */
 	public void removeListener(final ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
+		if (fListeners != null) {
+			fListeners.remove(listener);
+			if (fListeners.isEmpty() && fProblemChangedListener != null) {
+				ErlideUIPlugin.getDefault().getProblemMarkerManager()
+						.removeListener(fProblemChangedListener);
+				fProblemChangedListener = null;
+			}
+		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ILabelDecorator#decorateText(String, Object)
+	 */
+	public String decorateText(final String text, final Object element) {
+		return text;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ILabelDecorator#decorateImage(Image, Object)
+	 */
+	public Image decorateImage(final Image image, final Object obj) {
+		final int adornmentFlags = computeAdornmentFlags(obj);
+		if (adornmentFlags != 0) {
+			final ImageDescriptor baseImage = new ImageImageDescriptor(image);
+			final Rectangle bounds = image.getBounds();
+			return ErlideUIPlugin.getImageDescriptorRegistry().get(
+					new ErlangElementImageDescriptor(baseImage, adornmentFlags,
+							new Point(bounds.width, bounds.height)));
+		}
+		return image;
 	}
 
 }

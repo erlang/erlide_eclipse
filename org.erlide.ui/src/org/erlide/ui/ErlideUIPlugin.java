@@ -49,6 +49,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.IErlangStatusConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
+import org.erlide.ui.util.ProblemMarkerManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -84,6 +85,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 * @since 3.0
 	 */
 	private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
+
+	private ProblemMarkerManager fProblemMarkerManager = null;
 
 	/**
 	 * The constructor.
@@ -427,6 +430,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 			section = dialogSettings.addNewSection(name);
 		}
 		return section;
+	}
+
+	public ProblemMarkerManager getProblemMarkerManager() {
+		if (fProblemMarkerManager == null) {
+			fProblemMarkerManager = new ProblemMarkerManager();
+		}
+		return fProblemMarkerManager;
 	}
 
 }

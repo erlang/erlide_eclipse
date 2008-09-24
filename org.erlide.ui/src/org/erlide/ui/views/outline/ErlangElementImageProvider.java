@@ -11,8 +11,6 @@
 package org.erlide.ui.views.outline;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -22,11 +20,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
-import org.erlide.ui.internal.ProblemsLabelDecorator;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
@@ -148,7 +143,8 @@ public class ErlangElementImageProvider {
 	 */
 	public ImageDescriptor getErlImageDescriptor(final IErlElement element,
 			final int flags) {
-		final int adornmentFlags = computeAdornmentFlags(element, flags);
+		final int adornmentFlags = 0; // computeAdornmentFlags(element,
+		// flags);
 		final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
 		return new ErlangElementImageDescriptor(getBaseImageDescriptor(element,
 				flags), adornmentFlags, size);
@@ -228,42 +224,42 @@ public class ErlangElementImageProvider {
 	// ---- Methods to compute the adornments flags
 	// ---------------------------------
 
-	protected int computeAdornmentFlags(final IErlElement element,
-			final int renderFlags) {
-		int flags = 0;
-		if (showOverlayIcons(renderFlags) && element instanceof IErlFunction) {
-			try {
-				final IErlFunction member = (IErlFunction) element;
-
-				if (member.isExported()) {
-					flags |= ErlangElementImageDescriptor.EXPORTED;
-				}
-
-			} catch (final Exception e) {
-				// do nothing. Can't compute runnable adornment or get flags
-			}
-		}
-		if (element instanceof ISourceReference) {
-			final ISourceReference sr = (ISourceReference) element;
-			try {
-				flags |= ProblemsLabelDecorator.getErrorTicksFromMarkers(
-						element.getResource(), IResource.DEPTH_INFINITE, sr);
-				if (element instanceof IParent) {
-					final IParent p = (IParent) element;
-					for (final IErlElement e : p.getChildren()) {
-						if (e instanceof ISourceReference) {
-							final ISourceReference esr = (ISourceReference) e;
-							flags |= ProblemsLabelDecorator
-									.getErrorTicksFromMarkers(e.getResource(),
-											IResource.DEPTH_INFINITE, esr);
-						}
-					}
-				}
-			} catch (final CoreException e) {
-			}
-		}
-		return flags;
-	}
+	// protected int computeAdornmentFlags(final IErlElement element,
+	// final int renderFlags) {
+	// int flags = 0;
+	// if (showOverlayIcons(renderFlags) && element instanceof IErlFunction) {
+	// try {
+	// final IErlFunction member = (IErlFunction) element;
+	//
+	// if (member.isExported()) {
+	// flags |= ErlangElementImageDescriptor.EXPORTED;
+	// }
+	//
+	// } catch (final Exception e) {
+	// // do nothing. Can't compute runnable adornment or get flags
+	// }
+	// }
+	// if (element instanceof ISourceReference) {
+	// final ISourceReference sr = (ISourceReference) element;
+	// try {
+	// flags |= ProblemsLabelDecorator.getErrorTicksFromMarkers(
+	// element.getResource(), IResource.DEPTH_INFINITE, sr);
+	// if (element instanceof IParent) {
+	// final IParent p = (IParent) element;
+	// for (final IErlElement e : p.getChildren()) {
+	// if (e instanceof ISourceReference) {
+	// final ISourceReference esr = (ISourceReference) e;
+	// flags |= ProblemsLabelDecorator
+	// .getErrorTicksFromMarkers(e.getResource(),
+	// IResource.DEPTH_INFINITE, esr);
+	// }
+	// }
+	// }
+	// } catch (final CoreException e) {
+	// }
+	// }
+	// return flags;
+	// }
 
 	public static Image getDecoratedImage(final ImageDescriptor baseImage,
 			final int adornments, final Point size) {

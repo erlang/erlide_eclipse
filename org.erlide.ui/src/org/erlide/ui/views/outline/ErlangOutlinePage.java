@@ -48,6 +48,7 @@ import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
+import org.erlide.ui.internal.ProblemsLabelDecorator;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
@@ -127,7 +128,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		super.createControl(parent);
 		final TreeViewer viewer = getTreeViewer();
 		viewer.setContentProvider(new ErlangContentProvider(true));
-		viewer.setLabelProvider(new ErlangLabelProvider());
+		final ErlangLabelProvider erlangLabelProvider = new ErlangLabelProvider();
+		erlangLabelProvider.addLabelDecorator(new ProblemsLabelDecorator());
+		viewer.setLabelProvider(erlangLabelProvider);
 		viewer.addSelectionChangedListener(this);
 		getTreeViewer().setAutoExpandLevel(0);
 		getTreeViewer().setUseHashlookup(true);
@@ -144,8 +147,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		});
 		final IPageSite site = getSite();
 
-		site.registerContextMenu(
-				ErlangPlugin.PLUGIN_ID + ".outline", manager, viewer); //$NON-NLS-1$
+		site.registerContextMenu(ErlangPlugin.PLUGIN_ID + ".outline", manager,
+				viewer);
 		fActionGroups = new CompositeActionGroup(
 				new ActionGroup[] { new ErlangSearchActionGroup(this) });
 		// register global actions
