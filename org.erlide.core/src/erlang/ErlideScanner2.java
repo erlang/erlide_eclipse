@@ -151,7 +151,12 @@ public class ErlideScanner2 {
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		List<ErlToken> toks = null;
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (!(t1.elementAt(0) instanceof OtpErlangAtom)) {
+			throw new BackendException("Could not parse string \"" + string
+					+ "\": funny return value" + t1);
+		}
+		OtpErlangAtom tag = (OtpErlangAtom) t1.elementAt(0);
+		if (tag.atomValue().compareTo("ok") == 0) {
 			if (t1.elementAt(1) instanceof OtpErlangList) {
 				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {
