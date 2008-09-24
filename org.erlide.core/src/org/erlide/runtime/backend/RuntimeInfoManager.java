@@ -132,6 +132,10 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		IEclipsePreferences root = new InstanceScope()
 				.getNode("org.erlide.launching/runtimes");
 		loadPrefs(root);
+		try {
+			root.removeNode();
+		} catch (BackingStoreException e) {
+		}
 
 		root = getRootPreferenceNode();
 		loadPrefs(root);
