@@ -58,19 +58,12 @@ public class ErlangFileWizardPage extends WizardPage implements
 		SelectionListener {
 
 	public boolean gettingInput = false;
-
 	private Text containerText;
-
 	private Text fileText;
-
 	private Combo applications;
-
 	private Combo skeleton;
-
 	FunctionGroup functionGroup;
-
 	private ISelection fSelection;
-
 	Template[] behaviours;
 
 	/**
@@ -205,13 +198,17 @@ public class ErlangFileWizardPage extends WizardPage implements
 				}
 				ErlangProjectProperties pp = new ErlangProjectProperties(
 						((IResource) obj).getProject());
+				String txt;
 				if (pp.hasSourceDir(container.getFullPath())) {
-					containerText.setText(container.getFullPath().toString());
+					txt = container.getFullPath().toString();
 				} else if (pp.getSourceDirs().length > 0) {
-					containerText.setText(pp.getSourceDirs()[0].toString());
+					txt = container.getFolder(
+							new Path(pp.getSourceDirs()[0].toString()))
+							.getFullPath().toString();
 				} else {
-					containerText.setText(container.getFullPath().toString());
+					txt = container.getFullPath().toString();
 				}
+				containerText.setText(txt);
 
 			}
 		}

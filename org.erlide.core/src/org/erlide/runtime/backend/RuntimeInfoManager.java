@@ -29,8 +29,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoManager implements IPreferenceChangeListener {
 
-	private static final String OLD_NAME = "erts";
-
 	private static RuntimeInfoManager manager;
 	private RuntimeInfo erlideRuntime;
 
@@ -84,32 +82,10 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	public synchronized void load() {
 		fRuntimes.clear();
 
-		IPreferencesService ps = Platform.getPreferencesService();
-		final String DEFAULT_ID = "org.erlide";
-
-		String defName = ps.getString(DEFAULT_ID, "default_name", null, null);
-		final RuntimeInfo runtime = getRuntime(defName);
-		if (defName != null && runtime == null) {
-			RuntimeInfo rt = new RuntimeInfo();
-			rt.setName(defName);
-			String path = ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.CODE_PATH, "", null);
-			rt.setCodePath(PreferencesUtils.unpackList(path));
-			rt.setOtpHome(ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.HOME_DIR, "", null));
-			rt.setArgs(ps.getString(DEFAULT_ID, "default_" + RuntimeInfo.ARGS,
-					"", null));
-			String wd = ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.WORKING_DIR, "", null);
-			if (wd.length() != 0) {
-				rt.setWorkingDir(wd);
-			}
-			rt.setManaged(ps.getBoolean(DEFAULT_ID, "default_"
-					+ RuntimeInfo.MANAGED, true, null));
-			addRuntime(rt);
-		}
+		loadDefaultPrefs();
 
 		// TODO remove this later
+		final String OLD_NAME = "erts";
 		IEclipsePreferences old = new InstanceScope()
 				.getNode("org.erlide.basic/");
 		String oldVal = old.get("otp_home", null);
@@ -144,6 +120,34 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 		root = getRootPreferenceNode();
 		loadPrefs(root);
+	}
+
+	private void loadDefaultPrefs() {
+		IPreferencesService ps = Platform.getPreferencesService();
+		final String DEFAULT_ID = "org.erlide";
+
+		String defName = ps.getString(DEFAULT_ID, "default_name", null, null);
+		final RuntimeInfo runtime = getRuntime(defName);
+		if (defName != null && runtime == null) {
+			RuntimeInfo rt = new RuntimeInfo();
+			rt.setName(defName);
+			String path = ps.getString(DEFAULT_ID, "default_"
+					+ RuntimeInfo.CODE_PATH, "", null);
+			rt.setCodePath(PreferencesUtils.unpackList(path));
+			rt.setOtpHome(ps.getString(DEFAULT_ID, "default_"
+					+ RuntimeInfo.HOME_DIR, "", null));
+			rt.setArgs(ps.getString(DEFAULT_ID, "default_" + RuntimeInfo.ARGS,
+					"", null));
+			String wd = ps.getString(DEFAULT_ID, "default_"
+					+ RuntimeInfo.WORKING_DIR, "", null);
+			if (wd.length() != 0) {
+				rt.setWorkingDir(wd);
+			}
+			rt.setManaged(ps.getBoolean(DEFAULT_ID, "default_"
+					+ RuntimeInfo.MANAGED, true, null));
+			addRuntime(rt);
+		}
+		defaultRuntimeName = defName;
 	}
 
 	private void loadPrefs(IEclipsePreferences root) {

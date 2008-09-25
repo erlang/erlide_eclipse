@@ -249,7 +249,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	/**
 	 * 
 	 */
-	ErlangSearchPage() {
+	public ErlangSearchPage() {
 		fPreviousSearchPatterns = new ArrayList<SearchPatternData>();
 	}
 
