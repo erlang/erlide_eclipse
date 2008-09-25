@@ -141,8 +141,8 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a java element. The descriptor includes
 	 * overlays, if specified.
 	 */
-	public ImageDescriptor getErlImageDescriptor(final IErlElement element,
-			final int flags) {
+	static public ImageDescriptor getErlImageDescriptor(
+			final IErlElement element, final int flags) {
 		final int adornmentFlags = 0; // computeAdornmentFlags(element,
 		// flags);
 		final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
@@ -179,8 +179,8 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a java element. This is the base image,
 	 * no overlays.
 	 */
-	public ImageDescriptor getBaseImageDescriptor(final IErlElement element,
-			final int renderFlags) {
+	static public ImageDescriptor getBaseImageDescriptor(
+			final IErlElement element, final int renderFlags) {
 
 		// try {
 		if (element.getKind() == IErlElement.Kind.FUNCTION) {
@@ -204,6 +204,8 @@ public class ErlangElementImageProvider {
 			return ErlideUIPluginImages.DESC_IMPORT;
 		} else if (element.getKind() == IErlElement.Kind.ERROR) {
 			return ErlideUIPluginImages.DESC_UNKNOWN;
+		} else if (element.getKind() == IErlElement.Kind.MODULE) {
+			return ErlideUIPluginImages.DESC_MODULE;
 		}
 
 		// Assert.isTrue(false, "ErlangElementImageProvider: wrong image");

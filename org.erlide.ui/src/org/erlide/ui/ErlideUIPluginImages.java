@@ -116,11 +116,10 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_OVR_ERROR = create(T_OVR,
 			"error_co.gif");
 
-	public static final String IMG_MODULE = NAME_PREFIX
-			+ "erlang-notext020.gif";
+	public static final String IMG_MODULE = NAME_PREFIX + "erlang_srcFile.gif";
 
 	public static final String IMG_MODULE_RESOURCE = NAME_PREFIX
-			+ "jcu_resource_obj.gif";
+			+ "erlang_srcFile.gif";
 
 	public static final ImageDescriptor DESC_MODULE = createManaged(T_OBJ,
 			IMG_MODULE);
@@ -140,7 +139,7 @@ public class ErlideUIPluginImages {
 	 *            the image's key
 	 * @return the image managed under the given key
 	 */
-	public static Image get(String key) {
+	public static Image get(final String key) {
 		return getImageRegistry().get(key);
 	}
 
@@ -152,7 +151,7 @@ public class ErlideUIPluginImages {
 	 *            the image's key
 	 * @return the image descriptor for the given key
 	 */
-	public static ImageDescriptor getDescriptor(String key) {
+	public static ImageDescriptor getDescriptor(final String key) {
 		if (fgImageRegistry == null) {
 			return fgAvoidSWTErrorMap.get(key);
 		}
@@ -168,7 +167,8 @@ public class ErlideUIPluginImages {
 	 * @param iconName
 	 *            the icon name
 	 */
-	public static void setToolImageDescriptors(IAction action, String iconName) {
+	public static void setToolImageDescriptors(final IAction action,
+			final String iconName) {
 		setImageDescriptors(action, "tool16", iconName); //$NON-NLS-1$
 	}
 
@@ -181,7 +181,8 @@ public class ErlideUIPluginImages {
 	 * @param iconName
 	 *            the icon name
 	 */
-	public static void setLocalImageDescriptors(IAction action, String iconName) {
+	public static void setLocalImageDescriptors(final IAction action,
+			final String iconName) {
 		setImageDescriptors(action, "lcl16", iconName); //$NON-NLS-1$
 	}
 
@@ -191,7 +192,7 @@ public class ErlideUIPluginImages {
 	/* package */static ImageRegistry getImageRegistry() {
 		if (fgImageRegistry == null) {
 			fgImageRegistry = new ImageRegistry();
-			for (Object element : fgAvoidSWTErrorMap.keySet()) {
+			for (final Object element : fgAvoidSWTErrorMap.keySet()) {
 				final String key = (String) element;
 				fgImageRegistry.put(key, fgAvoidSWTErrorMap.get(key));
 			}
@@ -203,8 +204,8 @@ public class ErlideUIPluginImages {
 	// ---- Helper methods to access icons on the file system
 	// --------------------------------------
 
-	private static void setImageDescriptors(IAction action, String type,
-			String relPath) {
+	private static void setImageDescriptors(final IAction action,
+			final String type, final String relPath) {
 
 		try {
 			final ImageDescriptor id = ImageDescriptor
@@ -227,7 +228,8 @@ public class ErlideUIPluginImages {
 		action.setImageDescriptor(descriptor);
 	}
 
-	private static ImageDescriptor createManaged(String prefix, String name) {
+	private static ImageDescriptor createManaged(final String prefix,
+			final String name) {
 		try {
 			final ImageDescriptor result = ImageDescriptor
 					.createFromURL(makeIconFileURL(prefix, name
@@ -272,7 +274,7 @@ public class ErlideUIPluginImages {
 	// }
 	// }
 
-	private static ImageDescriptor create(String prefix, String name) {
+	private static ImageDescriptor create(final String prefix, final String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
 		} catch (final MalformedURLException e) {
@@ -280,7 +282,7 @@ public class ErlideUIPluginImages {
 		}
 	}
 
-	private static URL makeIconFileURL(String prefix, String name)
+	private static URL makeIconFileURL(final String prefix, final String name)
 			throws MalformedURLException {
 		if (fgIconBaseURL == null) {
 			throw new MalformedURLException();

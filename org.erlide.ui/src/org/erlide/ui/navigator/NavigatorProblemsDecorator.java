@@ -1,7 +1,7 @@
 package org.erlide.ui.navigator;
 
 import org.eclipse.core.resources.IFolder;
-import org.erlide.ui.internal.ProblemsLabelDecorator;
+import org.erlide.ui.util.ProblemsLabelDecorator;
 
 public class NavigatorProblemsDecorator extends ProblemsLabelDecorator {
 

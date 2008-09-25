@@ -48,10 +48,10 @@ import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
-import org.erlide.ui.internal.ProblemsLabelDecorator;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.ProblemsLabelDecorator;
 
 /**
  * 

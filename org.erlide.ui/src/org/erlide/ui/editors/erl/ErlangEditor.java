@@ -65,6 +65,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -121,6 +122,8 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlidePreferencePage;
 import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.ErlangEditorErrorTickUpdater;
+import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 import org.erlide.ui.views.outline.ErlangContentProvider;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
@@ -179,12 +182,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private ActionGroup fContextMenuGroup;
 
+	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
+
 	/**
 	 * Simple constructor
 	 * 
 	 */
 	public ErlangEditor() {
 		super();
+		fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 	}
 
 	/**
@@ -212,6 +218,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			fActionGroups.dispose();
 			fActionGroups = null;
 		}
+		fErlangEditorErrorTickUpdater.dispose();
 		super.dispose();
 	}
 
@@ -654,6 +661,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// TODO should we use model events here?
 			myOutlinePage.setInput(input);
 		}
+
+		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
+
 	}
 
 	@Override
@@ -702,10 +712,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input element is
-	 * reconciled in advance. If it is <code>false</code> this method only
-	 * returns a result if the editor's input element does not need to be
-	 * reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input
+	 * element is reconciled in advance. If it is <code>false</code> this
+	 * method only returns a result if the editor's input element does not need
+	 * to be reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -790,9 +800,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -865,6 +874,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	/**
+	 * @see org.eclipse.ui.part.WorkbenchPart#setTitleImage(Image titleImage);
+	 * @param image
+	 */
+	public void updatedTitleImage(final Image image) {
+		setTitleImage(image);
+	}
+
+	/**
 	 * Synchronizes the outliner selection with the given element position in
 	 * the editor.
 	 * 
@@ -882,8 +899,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to be
-	 *            done
+	 *            <code>true</code> if check for active outline page needs to
+	 *            be done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1192,9 +1209,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see
-				 * org.eclipse.jface.text.information.IInformationProviderExtension2
-				 * #getInformationPresenterControlCreator()
+				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
+				 *      #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */
@@ -1505,7 +1521,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public ILabelProvider createOutlineLabelProvider() {
-		return new ErlangLabelProvider();
+		final ErlangLabelProvider erlangLabelProvider = new ErlangLabelProvider();
+		erlangLabelProvider.addLabelDecorator(new ProblemsLabelDecorator());
+		return erlangLabelProvider;
 	}
 
 	public Object getOutlineInput() {

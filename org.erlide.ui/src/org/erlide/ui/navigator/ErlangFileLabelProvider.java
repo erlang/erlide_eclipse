@@ -1,12 +1,13 @@
 package org.erlide.ui.navigator;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.views.outline.ErlangElementImageProvider;
 
 public class ErlangFileLabelProvider extends LabelProvider implements
 		IDescriptionProvider {
@@ -22,9 +23,13 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 	@Override
 	public Image getImage(final Object element) {
 		if (element instanceof IErlElement) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJS_INFO_TSK);
-
+			final IErlElement e = (IErlElement) element;
+			final ImageDescriptor desc = ErlangElementImageProvider
+					.getErlImageDescriptor(e,
+							ErlangElementImageProvider.SMALL_ICONS);
+			final Image img = ErlideUIPlugin.getImageDescriptorRegistry().get(
+					desc);
+			return fProblemDecorator.decorateImage(img, e);
 		}
 		return null;
 	}

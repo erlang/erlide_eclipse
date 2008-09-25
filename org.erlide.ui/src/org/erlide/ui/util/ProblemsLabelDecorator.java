@@ -1,4 +1,4 @@
-package org.erlide.ui.internal;
+package org.erlide.ui.util;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -15,13 +15,11 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
-import org.erlide.ui.util.IProblemChangedListener;
-import org.erlide.ui.util.ImageImageDescriptor;
 import org.erlide.ui.views.outline.ErlangElementImageDescriptor;
 
 public class ProblemsLabelDecorator implements ILabelDecorator,
@@ -95,13 +93,15 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 	 */
 	protected int computeAdornmentFlags(final Object obj) {
 		try {
+			final ISourceReference r = obj instanceof ISourceReference ? (ISourceReference) obj
+					: null;
 			if (obj instanceof IResource) {
 				return getErrorTicksFromMarkers((IResource) obj,
-						IResource.DEPTH_INFINITE, null);
-			} else if (obj instanceof IErlMember) {
-				final IErlMember m = (IErlMember) obj;
-				return getErrorTicksFromMarkers(m.getResource(),
-						IResource.DEPTH_INFINITE, m);
+						IResource.DEPTH_INFINITE, r);
+			} else if (obj instanceof IErlElement) {
+				final IErlElement e = (IErlElement) obj;
+				return getErrorTicksFromMarkers(e.getResource(),
+						IResource.DEPTH_INFINITE, r);
 			}
 		} catch (final CoreException e) {
 			if (e.getStatus().getCode() == IResourceStatus.MARKER_NOT_FOUND) {
