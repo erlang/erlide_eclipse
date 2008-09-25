@@ -12,19 +12,24 @@ package org.erlide.ui.views.outline;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.actions.ActionContext;
@@ -52,6 +57,7 @@ import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
+import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 
 /**
  * 
@@ -62,12 +68,111 @@ import org.erlide.ui.util.ProblemsLabelDecorator;
 public class ErlangOutlinePage extends ContentOutlinePage implements
 		IErlModelChangeListener, ISortableContentOutlinePage {
 
-	IErlModule myMdl;
+	public class ErlangOutlineViewer extends TreeViewer {
+
+		public ErlangOutlineViewer(final Tree tree) {
+			super(tree);
+			setAutoExpandLevel(0);
+			setUseHashlookup(true);
+		}
+
+		/*
+		 * @see ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
+		 */
+		@Override
+		protected void handleLabelProviderChanged(
+				LabelProviderChangedEvent event) {
+			final Object input = getInput();
+			if (event instanceof ProblemsLabelChangedEvent) {
+				final ProblemsLabelChangedEvent e = (ProblemsLabelChangedEvent) event;
+				if (e.isMarkerChange() && input instanceof IErlModule) {
+					return; // marker changes can be ignored
+				}
+			}
+			// look if the underlying resource changed
+			final Object[] changed = event.getElements();
+			if (changed != null) {
+				final IResource resource = getUnderlyingResource();
+				if (resource != null) {
+					for (int i = 0; i < changed.length; i++) {
+						if (changed[i] != null && changed[i].equals(resource)) {
+							// change event to a full refresh
+							event = new LabelProviderChangedEvent(
+									(IBaseLabelProvider) event.getSource());
+							break;
+						}
+					}
+				}
+			}
+			super.handleLabelProviderChanged(event);
+		}
+
+		private IResource getUnderlyingResource() {
+			if (fModule != null) {
+				return fModule.getResource();
+			}
+			return null;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getControl()
+	 */
+	@Override
+	public Control getControl() {
+		return fOutlineViewer.getControl();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		return fOutlineViewer.getSelection();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
+	 */
+	@Override
+	protected TreeViewer getTreeViewer() {
+		return fOutlineViewer;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setFocus()
+	 */
+	@Override
+	public void setFocus() {
+		getControl().setFocus();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org.eclipse.jface.viewers.ISelection)
+	 */
+	@Override
+	public void setSelection(final ISelection selection) {
+		fOutlineViewer.setSelection(selection);
+	}
+
+	private IErlModule fModule;
 
 	private ErlangEditor fEditor;
 	private final String fToolTipText = "Sort";
 
 	private CompositeActionGroup fActionGroups;
+
+	private ErlangOutlineViewer fOutlineViewer;
 
 	/**
 	 * 
@@ -90,7 +195,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 */
 	public void setInput(final IEditorInput editorInput) {
 		// ErlLogger.log("> outline set input "+editorInput);
-		myMdl = ErlModelUtils.getModule(editorInput);
+		fModule = ErlModelUtils.getModule(editorInput);
 		// if (myMdl != null) {
 		// try {
 		// myMdl.open(null);
@@ -116,7 +221,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 					if (getTreeViewer().getControl() != null
 							&& !getTreeViewer().getControl().isDisposed()) {
 						// ErlLogger.log("*>> refreshing.");
-						getTreeViewer().setInput(myMdl);
+						getTreeViewer().setInput(fModule);
 					}
 				}
 			});
@@ -125,16 +230,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	@Override
 	public void createControl(final Composite parent) {
-		super.createControl(parent);
-		final TreeViewer viewer = getTreeViewer();
-		viewer.setContentProvider(new ErlangContentProvider(true));
+		final Tree tree = new Tree(parent, SWT.MULTI);
+		fOutlineViewer = new ErlangOutlineViewer(tree);
+		fOutlineViewer.setContentProvider(new ErlangContentProvider(true));
 		final ErlangLabelProvider erlangLabelProvider = new ErlangLabelProvider();
 		erlangLabelProvider.addLabelDecorator(new ProblemsLabelDecorator());
-		viewer.setLabelProvider(erlangLabelProvider);
-		viewer.addSelectionChangedListener(this);
-		getTreeViewer().setAutoExpandLevel(0);
-		getTreeViewer().setUseHashlookup(true);
-		viewer.setInput(myMdl);
+		fOutlineViewer.setLabelProvider(erlangLabelProvider);
+		fOutlineViewer.addSelectionChangedListener(this);
+		fOutlineViewer.setInput(fModule);
 
 		final MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
@@ -148,7 +251,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		final IPageSite site = getSite();
 
 		site.registerContextMenu(ErlangPlugin.PLUGIN_ID + ".outline", manager,
-				viewer);
+				fOutlineViewer);
 		fActionGroups = new CompositeActionGroup(
 				new ActionGroup[] { new ErlangSearchActionGroup(this) });
 		// register global actions
@@ -224,7 +327,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	}
 
 	public void elementChanged(final IErlElement element) {
-		if (myMdl == element) {
+		if (fModule == element) {
 			refresh();
 		}
 	}

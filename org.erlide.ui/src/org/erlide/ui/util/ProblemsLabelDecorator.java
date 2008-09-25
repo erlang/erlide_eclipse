@@ -153,7 +153,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 		}
 		final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1);
 		if (line != -1) {
-			return isInsideLines(line, sourceElement);
+			return isInsideLines(line - 1, sourceElement);
 		}
 		return false;
 	}
