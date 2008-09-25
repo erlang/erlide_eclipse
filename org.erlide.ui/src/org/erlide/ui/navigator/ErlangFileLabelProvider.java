@@ -12,7 +12,6 @@ import org.erlide.ui.views.outline.ErlangElementImageProvider;
 public class ErlangFileLabelProvider extends LabelProvider implements
 		IDescriptionProvider {
 
-	@SuppressWarnings("unused")
 	private final NavigatorProblemsDecorator fProblemDecorator;
 
 	public ErlangFileLabelProvider() {
