@@ -85,29 +85,31 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		fRuntimes.clear();
 
 		IPreferencesService ps = Platform.getPreferencesService();
-		String defName = ps.getString(ErlangPlugin.PLUGIN_ID, "default_name",
-				null, null);
+		final String DEFAULT_ID = "org.erlide";
+
+		String defName = ps.getString(DEFAULT_ID, "default_name", null, null);
 		final RuntimeInfo runtime = getRuntime(defName);
 		if (defName != null && runtime == null) {
 			RuntimeInfo rt = new RuntimeInfo();
 			rt.setName(defName);
-			String path = ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
+			String path = ps.getString(DEFAULT_ID, "default_"
 					+ RuntimeInfo.CODE_PATH, "", null);
 			rt.setCodePath(PreferencesUtils.unpackList(path));
-			rt.setOtpHome(ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
+			rt.setOtpHome(ps.getString(DEFAULT_ID, "default_"
 					+ RuntimeInfo.HOME_DIR, "", null));
-			rt.setArgs(ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
-					+ RuntimeInfo.ARGS, "", null));
-			String wd = ps.getString(ErlangPlugin.PLUGIN_ID, "default_"
+			rt.setArgs(ps.getString(DEFAULT_ID, "default_" + RuntimeInfo.ARGS,
+					"", null));
+			String wd = ps.getString(DEFAULT_ID, "default_"
 					+ RuntimeInfo.WORKING_DIR, "", null);
 			if (wd.length() != 0) {
 				rt.setWorkingDir(wd);
 			}
-			rt.setManaged(ps.getBoolean(ErlangPlugin.PLUGIN_ID, "default_"
+			rt.setManaged(ps.getBoolean(DEFAULT_ID, "default_"
 					+ RuntimeInfo.MANAGED, true, null));
 			addRuntime(rt);
 		}
 
+		// TODO remove this later
 		IEclipsePreferences old = new InstanceScope()
 				.getNode("org.erlide.basic/");
 		String oldVal = old.get("otp_home", null);
@@ -128,7 +130,9 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			}
 			store();
 		}
+		//
 
+		// TODO remove this later
 		IEclipsePreferences root = new InstanceScope()
 				.getNode("org.erlide.launching/runtimes");
 		loadPrefs(root);
@@ -136,6 +140,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			root.removeNode();
 		} catch (BackingStoreException e) {
 		}
+		//
 
 		root = getRootPreferenceNode();
 		loadPrefs(root);
