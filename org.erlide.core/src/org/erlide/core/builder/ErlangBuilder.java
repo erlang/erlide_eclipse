@@ -159,7 +159,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -192,7 +192,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		try {
 			checkForClashes();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 		}
 
 		return null;
@@ -217,9 +217,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.stringValue();
 
 				// add marker only for modules belonging to this project!
-				IProject p = getProject();
-				IResource r1 = p.findMember(f1);
-				IResource r2 = p.findMember(f2);
+				final IProject p = getProject();
+				final IResource r1 = p.findMember(f1);
+				final IResource r2 = p.findMember(f2);
 				// XXX does the above work? or do we need to get the name only?
 				if (r1 != null || r2 != null) {
 					addMarker(getProject(), getProject(), "Code clash between "
@@ -562,9 +562,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final IResource resource) {
 		final IErlProject p = ErlangCore.getModel().findErlangProject(project);
 		if (p != null) {
-			IErlModule m;
 			try {
-				m = p.getModule(resource.getName());
+				final IErlModule m = p.getModule(resource.getName());
+				if (m == null) {
+					return;
+				}
 				final IErlScanner s = m.getScanner();
 				final List<IErlComment> cl = s.getComments();
 				for (final IErlComment c : cl) {
@@ -778,7 +780,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unused")
-	private static void distributeModule(IBackend b, final String beamf,
+	private static void distributeModule(final IBackend b, final String beamf,
 			final OtpErlangBinary code) {
 		if (b == null) {
 			return;
@@ -799,9 +801,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -829,9 +830,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {
