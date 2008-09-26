@@ -101,6 +101,11 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		nameText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
 			public void modifyText(final ModifyEvent e) {
+				boolean isRemote = nameText.getText().contains("@");
+				startNodeCheckbox.setEnabled(!isRemote);
+				if (isRemote) {
+					startNodeCheckbox.setSelection(false);
+				}
 				updateLaunchConfigurationDialog();
 			}
 		});

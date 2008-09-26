@@ -119,10 +119,12 @@ public final class BackendManager implements IResourceChangeListener,
 			final Set<BackendOptions> options, ILaunch launch)
 			throws BackendException {
 
-		boolean exists = BackendManager.findRunningNode(info.getNodeName());
+		String nodeName = info.getNodeName();
+		boolean exists = BackendManager.findRunningNode(nodeName);
 		AbstractBackend b = null;
 
-		if (exists) {
+		boolean isRemoteNode = nodeName.contains("@");
+		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
 			b = new StandaloneBackend(info);
@@ -132,8 +134,7 @@ public final class BackendManager implements IResourceChangeListener,
 			b = new ManagedBackend(info);
 		}
 		if (b == null) {
-			ErlLogger.error("Node %s not found, could not launch!", info
-					.getNodeName());
+			ErlLogger.error("Node %s not found, could not launch!", nodeName);
 			return null;
 		}
 
@@ -295,8 +296,8 @@ public final class BackendManager implements IResourceChangeListener,
 		 */
 		public void handleException(final Throwable exception) {
 			final IStatus status = new Status(IStatus.ERROR,
-					ErlangPlugin.PLUGIN_ID, 1,
-					"backend listener exception", exception);
+					ErlangPlugin.PLUGIN_ID, 1, "backend listener exception",
+					exception);
 			ErlangPlugin.log(status);
 		}
 

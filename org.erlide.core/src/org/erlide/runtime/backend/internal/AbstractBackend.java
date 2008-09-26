@@ -130,7 +130,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			wait_for_epmd();
 
 			final String cookie = getInfo().getCookie();
-			fNode = new OtpNode(BackendManager.getJavaNodeName(), cookie);
+			if (cookie == null) {
+				fNode = new OtpNode(BackendManager.getJavaNodeName());
+			} else {
+				fNode = new OtpNode(BackendManager.getJavaNodeName(), cookie);
+			}
 			fNode.registerStatusHandler(this);
 			fPeer = BackendManager.buildNodeName(label);
 			ErlLogger.debug("java node is " + fNode.node()

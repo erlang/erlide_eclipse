@@ -84,7 +84,6 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	public synchronized void load() {
 		fRuntimes.clear();
 
-		System.out.println("0: " + fRuntimes.toString());
 		loadDefaultPrefs();
 
 		// TODO remove this later
@@ -124,10 +123,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		}
 		//
 
-		System.out.println("1: " + fRuntimes.toString());
 		root = getRootPreferenceNode();
 		loadPrefs(root);
-		System.out.println("2: " + fRuntimes.toString());
 	}
 
 	private void loadDefaultPrefs() {

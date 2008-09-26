@@ -105,8 +105,8 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public String getCookie() {
-		if (cookie == null || cookie.equals("")) {
-			cookie = Cookie.retrieveCookie();
+		if ("".equals(cookie)) {
+			cookie = null;
 		}
 		return this.cookie;
 	}
@@ -166,8 +166,9 @@ public class RuntimeInfo implements Cloneable {
 		String cmd = String.format("%s/bin/erl %s %s %s", getOtpHome(),
 				ifNotEmpty(" -pa ", pathA), ifNotEmpty(" -pz ", pathZ),
 				getArgs());
-		cmd += "-name " + BackendManager.buildNodeName(getNodeName())
-				+ " -setcookie " + getCookie();
+		String cky = getCookie();
+		cky = cky == null ? "" : " -setcookie " + cky;
+		cmd += "-name " + BackendManager.buildNodeName(getNodeName()) + cky;
 		return cmd;
 	}
 
@@ -235,7 +236,8 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public static boolean validateNodeName(String name) {
-		return name != null && name.matches("[a-zA-Z0-9_-]+");
+		return name != null
+				&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
 	}
 
 	public static boolean validateLocation(String path) {
