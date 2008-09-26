@@ -12,9 +12,9 @@ package org.erlide.runtime.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -26,6 +26,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfoManager implements IPreferenceChangeListener {
 
@@ -33,17 +34,18 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	private RuntimeInfo erlideRuntime;
 
 	private RuntimeInfoManager() {
+		getRootPreferenceNode().addPreferenceChangeListener(this);
 		load();
 	}
 
-	public static RuntimeInfoManager getDefault() {
+	public synchronized static RuntimeInfoManager getDefault() {
 		if (manager == null) {
 			manager = new RuntimeInfoManager();
 		}
 		return manager;
 	}
 
-	protected final Map<String, RuntimeInfo> fRuntimes = new WeakHashMap<String, RuntimeInfo>();
+	private final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
 	private String defaultRuntimeName = "";
 
 	private List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
@@ -52,7 +54,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		return new ArrayList<RuntimeInfo>(fRuntimes.values());
 	}
 
-	public void store() {
+	public synchronized void store() {
 		IEclipsePreferences root = getRootPreferenceNode();
 		String[] children;
 		try {
@@ -82,6 +84,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	public synchronized void load() {
 		fRuntimes.clear();
 
+		System.out.println("0: " + fRuntimes.toString());
 		loadDefaultPrefs();
 
 		// TODO remove this later
@@ -101,7 +104,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			old.remove("otp_home");
 			try {
 				old.flush();
-			} catch (BackingStoreException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			store();
@@ -113,13 +116,18 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 				.getNode("org.erlide.launching/runtimes");
 		loadPrefs(root);
 		try {
+			Preferences p = root.parent();
 			root.removeNode();
-		} catch (BackingStoreException e) {
+			p.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		//
 
+		System.out.println("1: " + fRuntimes.toString());
 		root = getRootPreferenceNode();
 		loadPrefs(root);
+		System.out.println("2: " + fRuntimes.toString());
 	}
 
 	private void loadDefaultPrefs() {

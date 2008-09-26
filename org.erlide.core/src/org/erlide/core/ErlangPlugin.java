@@ -45,7 +45,6 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -702,8 +701,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 				.info("*** starting Erlide v"
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
-
-		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
 
 		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);

@@ -76,8 +76,10 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			rtl.add(r.getName());
 		}
 		String[] rts = rtl.toArray(new String[] {});
-		int db = Arrays.binarySearch(rts, RuntimeInfoManager.getDefault()
-				.getDefaultRuntime().getName());
+		RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+				.getDefaultRuntime();
+		int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
+				defaultRuntime.getName());
 
 		runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);
 		runtimesCombo.setLayoutData(new GridData(210, SWT.DEFAULT));
