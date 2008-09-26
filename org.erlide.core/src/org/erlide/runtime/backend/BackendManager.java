@@ -477,8 +477,7 @@ public final class BackendManager implements IResourceChangeListener,
 	public static boolean findRunningNode(String nodeName) {
 		try {
 			final String[] names = OtpEpmd.lookupNames();
-			final List<String> labels = Arrays.asList(names);
-			EpmdWatcher.clean(labels);
+			final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
 			for (String name : labels) {
 				if (name.equals(nodeName)) {
 					return true;

@@ -3,7 +3,6 @@ package erlang;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendEvalResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
@@ -192,13 +191,10 @@ public class ErlideBackend {
 		OtpErlangObject r = null;
 		try {
 			r = backend.rpcx("code", "is_sticky", "a", moduleName);
-			if (true || (!((OtpErlangAtom) r).booleanValue() || !BackendManager
-					.isDeveloper())) {
+			// TODO handle sticky directories
+			if (true || !((OtpErlangAtom) r).booleanValue()) {
 				r = backend.rpcx("code", "load_binary", "asb", moduleName,
 						moduleName + ".erl", bin);
-				if (!BackendManager.isDeveloper()) {
-					// backend.rpc("code", "stick_mod", "a", moduleName);
-				}
 			} else {
 				r = null;
 			}

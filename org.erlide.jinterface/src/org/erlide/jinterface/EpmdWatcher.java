@@ -63,8 +63,7 @@ public class EpmdWatcher {
 
 				final String[] names = OtpEpmd.lookupNames(InetAddress
 						.getByName(host));
-				final List<String> labels = Arrays.asList(names);
-				clean(labels);
+				final List<String> labels = clean(Arrays.asList(names));
 
 				List<String> started = getDiff(labels, nodes);
 				List<String> stopped = getDiff(nodes, labels);
@@ -119,9 +118,12 @@ public class EpmdWatcher {
 		listeners.remove(listener);
 	}
 
-	public static void clean(List<String> list) {
-		for (int i = 0; i < list.size(); i++) {
-			String label = list.get(i);
+	public static List<String> clean(List<String> list) {
+		List<String> result = new ArrayList<String>();
+		for (String label : list) {
+			if ("".equals(label)) {
+				continue;
+			}
 			// label is "name X at port N"
 			final String[] parts = label.split(" ");
 			if (parts.length == 5) {
@@ -129,9 +131,10 @@ public class EpmdWatcher {
 				if (alabel.length() == 0) {
 					alabel = "??" + label;
 				}
-				list.set(i, alabel);
+				result.add(alabel);
 			}
 		}
+		return result;
 	}
 
 	private List<String> getDiff(List<String> list1, List<String> list2) {

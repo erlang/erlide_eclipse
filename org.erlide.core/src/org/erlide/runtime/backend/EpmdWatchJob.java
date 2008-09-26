@@ -23,7 +23,7 @@ import org.erlide.jinterface.EpmdWatcher;
  */
 public class EpmdWatchJob extends Job {
 
-	private static final int defaultInterval = 1000;
+	private static final int defaultInterval = 2000;
 	private int interval = defaultInterval;
 	private EpmdWatcher watcher;
 
