@@ -1,9 +1,18 @@
 @import url(http://yui.yahooapis.com/2.5.2/build/reset/reset-min.css);
 @import url(http://yui.yahooapis.com/2.5.2/build/fonts/fonts-min.css);
 @import url(http://yui.yahooapis.com/2.5.2/build/base/base-min.css);
+.informaltable
+{
+	margin-left: 5em;
+	margin-right: 5em;
+}
 .sect1, .sect2, .sect3, .sect4
 {
 	padding-left: 1em;
+}
+DIV.mediaobject
+{
+	margin-left: 5em;
 }
 SPAN.guilabel
 {
@@ -63,7 +72,6 @@ PRE.PROGRAMLISTING
 .note, .warning, .important
 {
 	border: 1px dashed #000000;
-	margin-left: 10em;
 }
 .important TABLE, .important TH, .important TD
 {
@@ -128,12 +136,23 @@ CODE
 {
 	background-color: #E3E3BE;
 }
+CODE.prompt
+{
+	font-weight: bolder;
+	color: #2F0FCB;
+}
+CODE.filename
+{
+	background-color: white;
+}
 .screen
 {
-	background-color: #FFFFCC;
+	background-color: #F3F3DE;
 	padding-left: 1em;
 	padding-top: 0.5em;
 	white-space: pre;
+	margin-left: 1em;
+	margin-right: 1em;
 }
 .userinput
 {

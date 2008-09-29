@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en-US">
-    <info>
-        <title>Erlide, the Erlang IDE</title>
-        <author>
+    <info><title>Erlide, the Erlang IDE</title><author>
             <personname>
                 <firstname>Vlad</firstname>
                 <surname>Dumitrescu</surname>
@@ -266,7 +264,8 @@
                             but <emphasis>3.4</emphasis> works just as well.</para>
                     </listitem>
                     <listitem>
-                        <para>If your network uses a proxy, fill in the appropriate data in <menuchoice>
+                        <para>If your network uses a proxy, fill in the appropriate data in
+                                <menuchoice>
                                 <guimenu>Window</guimenu>
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu> Install/Update</guisubmenu>
@@ -294,13 +293,11 @@
                             </menuchoice> and add an entry (or several) for your Erlang installation
                             of choice. The required parameters are the name and the path to the top
                             level directory (i.e. <varname>$ERL_TOP</varname>). Now restart again.</para>
-                        <para>
-                            <inlinemediaobject>
-                                <imageobject>
-                                    <imagedata fileref="../images/runtimeinstall.png" format="PNG"/>
-                                </imageobject>
-                            </inlinemediaobject>
-                        </para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="../images/runtimeinstall.png" format="PNG"/>
+                            </imageobject>
+                        </mediaobject>
                     </listitem>
                     <listitem>
                         <para>Done! You're ready to start exploring.</para>
@@ -374,9 +371,9 @@
                                             definition will be shown (if available)</para>
                                     </listitem>
                                     <listitem>
-                                        <para>writing for example <command>lists:r</command> will
-                                            pop up a list of possible completions of the function
-                                            call.</para>
+                                        <para>writing for example <userinput>lists:r</userinput>
+                                            will pop up a list of possible completions of the
+                                            function call.</para>
                                     </listitem>
                                     <listitem>
                                         <para>right clicking in the editor will show a menu where
@@ -408,7 +405,7 @@
                                 recompiled or when you press "refresh" in the view. You have to
                                 create a new entry, then go to the expression field and edit it. <warning>
                                     <para>Don't use expressions that might kill or crash the runtime
-                                        (for example <command>init:stop()</command>), because there
+                                        (for example <userinput>init:stop()</userinput>), because there
                                         are no restrictions yet.</para>
                                 </warning></para>
                         </listitem>
@@ -711,31 +708,26 @@
             <orderedlist inheritnum="ignore" continuation="restarts">
                 <listitem>
                     <para> Click <menuchoice>
-                            <guimenu>File &gt; New &gt; Other... &gt; Erlang
-                            Project</guimenu>
+                            <guimenu>File &gt; New &gt; Other... &gt; Erlang Project</guimenu>
                         </menuchoice> or use the context menu in the navigator, right-clicking and
                         choosing <menuchoice role="bold">
                             <guimenu>New</guimenu>
                             <guimenuitem>Erlang Project</guimenuitem>
                         </menuchoice></para>
-                    <para>
-                        <inlinemediaobject>
-                            <imageobject>
-                                <imagedata fileref="../images/file_menu.png" format="PNG"/>
-                            </imageobject>
-                        </inlinemediaobject>
-                    </para>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/file_menu.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject>
                 </listitem>
                 <listitem>
                     <para> In the <guimenu>New Erlang Project</guimenu> wizard, enter the project
                         name and if needed choose the project's location</para>
-                    <para>
-                        <inlinemediaobject>
-                            <imageobject>
-                                <imagedata fileref="../images/new_project_wizard.png" format="PNG"/>
-                            </imageobject>
-                        </inlinemediaobject>
-                    </para>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/new_project_wizard.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject>
                 </listitem>
                 <listitem>
                     <para> Click <guibutton role="bold">Next</guibutton>.</para>
@@ -743,14 +735,12 @@
                 <listitem>
                     <para> In the <emphasis role="bold">Project Build Preferences</emphasis> boxes,
                         type Output, Source and Include folders or use the default values.</para>
-                    <para>
-                        <inlinemediaobject>
-                            <imageobject>
-                                <imagedata fileref="../images/new_proj_build_properties.png"
-                                    format="PNG"/>
-                            </imageobject>
-                        </inlinemediaobject>
-                    </para>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/new_proj_build_properties.png"
+                                format="PNG"/>
+                        </imageobject>
+                    </mediaobject>
                 </listitem>
                 <listitem>
                     <para> To create your project, click <guibutton role="bold"
@@ -798,24 +788,20 @@
                             <guimenu>Erlang Navigator</guimenu>
                             <guimenuitem>Import...</guimenuitem>
                         </menuchoice></para>
-                    <para>
-                        <inlinemediaobject>
-                            <imageobject>
-                                <imagedata fileref="../images/import_wizard01.png" format="PNG"/>
-                            </imageobject>
-                        </inlinemediaobject>
-                    </para>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/import_wizard01.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject>
                 </listitem>
                 <listitem>
                     <para> In the Erlang Project Import Wizard, <guibutton role="bold"
                         >Browse...</guibutton> for <emphasis role="bold">Erlang project</emphasis></para>
-                    <para>
-                        <inlinemediaobject>
-                            <imageobject>
-                                <imagedata fileref="../images/import_wizard02.png" format="PNG"/>
-                            </imageobject>
-                        </inlinemediaobject>
-                    </para>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/import_wizard02.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject>
                 </listitem>
                 <listitem>
                     <para> In the source field select project.</para>
@@ -835,14 +821,12 @@
                 <title>Editor view</title>
             </info>
             <para>The Erlang editor provides specialized features for editing Erlang related files.</para>
-            <para>
-                <inlinemediaobject>
-                    <imageobject>
-                        <imagedata fileref="../images/view_editor.png" format="PNG"/>
-                    </imageobject>
-                </inlinemediaobject>
-            </para>
-            <para>Associated with the editor is a Erlang-specific <link
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/view_editor.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+            <para>Associated with the editor is an Erlang-specific <link
                     xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="erlide_outline_view.html"
                     >outline view</link>, which shows the structure of the active
                 <filename>.erl</filename> or <filename>.hrl</filename> file. It is updated as you
@@ -890,13 +874,11 @@
             </itemizedlist>
             <para> Files that you select in the Navigator view affect the information that is
                 displayed in other views. </para>
-            <para>
-                <inlinemediaobject>
-                    <imageobject>
-                        <imagedata fileref="../images/erlangNavigatorView.png" format="PNG"/>
-                    </imageobject>
-                </inlinemediaobject>
-            </para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/erlangNavigatorView.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
             <section>
                 <info>
                     <title>Toolbar</title>
@@ -1217,7 +1199,8 @@
                     <itemizedlist>
                         <listitem>
                             <para>After compiling the plugins, you can try starting the newly build
-                                Erlide. For this you have to create a run configuration. Choose <menuchoice>
+                                Erlide. For this you have to create a run configuration. Choose
+                                    <menuchoice>
                                     <guimenu>Run</guimenu>
                                     <guisubmenu>Run...</guisubmenu>
                                     <guisubmenu>Eclipse Application</guisubmenu>
