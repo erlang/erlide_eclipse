@@ -5,6 +5,10 @@
 {
 	padding-left: 1em;
 }
+SPAN.guilabel
+{
+	outline: thin solid #E0E5AE;
+}
 .command
 {
 	font-family: monospace;
@@ -58,16 +62,23 @@ PRE.PROGRAMLISTING
 }
 .note, .warning, .important
 {
-	font-style: italic;
 	border: 1px dashed #000000;
-	width: 70%;
-	margin-left: 15%;
-	background-color: #D8DAE9;
-	padding-left: 1em;
+	margin-left: 10em;
 }
-.warning, .important
+.important TABLE, .important TH, .important TD
 {
-	border-color: red;
+	border-style: none;
+	vertical-align: middle;
+}
+.note TABLE, .note TD, .note TH
+{
+	border-style: none;
+	vertical-align: middle;
+}
+.warning TABLE, .warning TD, .warning TH
+{
+	border-style: none;
+	vertical-align: middle;
 }
 .bold
 {
@@ -103,19 +114,19 @@ DIV.VARIABLELIST
 	/*[disabled]border:1px solid #606090;*/
 	/*[disabled]padding:1px;*/
 }
-a.link
+A.link
 {
-	background:transparent url(../images/external.png) no-repeat right center;
-	padding-right:12px;
+	background: transparent url(../images/external.png) no-repeat right center;
+	padding-right: 12px;
 }
 DIV.imagelink A.link
 {
-	background:transparent;
-	padding-right:0px;
+	background: transparent;
+	padding-right: 0px;
 }
 CODE
 {
-	background-color: #FFFFCC;
+	background-color: #E3E3BE;
 }
 .screen
 {
@@ -126,10 +137,15 @@ CODE
 }
 .userinput
 {
-	color: blue;
+	color: #0D0DA9;
 }
 .guimenu, .guisubmenu, .guimenuitem
 {
-	background-color: #DDDDCC;
 	font-family: monospace;
+	outline: thin dashed #BDBD90;
+}
+DIV.author
+{
+	margin-left: 27px;
+	font-size: small;
 }

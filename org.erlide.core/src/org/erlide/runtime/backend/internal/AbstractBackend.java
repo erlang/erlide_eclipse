@@ -63,8 +63,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
 
 	// use this for debugging
-	private static final boolean CHECK_RPC = "true".equals(System
-			.getProperty("org.erlide.checkrpc"));
+	private static final boolean CHECK_RPC = Boolean
+			.getBoolean("org.erlide.checkrpc");
 
 	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
 	private final CodeManager fCodeManager;

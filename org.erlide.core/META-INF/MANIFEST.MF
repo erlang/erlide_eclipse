@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.3.88
+Bundle-Version: 0.3.90
 Bundle-ClassPath: erlide-core.jar,
  commons-net-1.4.1.jar
 Bundle-Activator: org.erlide.core.ErlangPlugin
@@ -36,6 +36,6 @@ Export-Package: erlang,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.jinterface,
- org.eclipse.debug.core;bundle-version="3.3.2"
+ org.eclipse.debug.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
