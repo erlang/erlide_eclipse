@@ -189,7 +189,9 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 						.getModel().getErlangProjects();
 				final java.util.List<String> ps = new ArrayList<String>();
 				for (final IErlProject p : projects) {
-					ps.add(p.getName());
+					if (p.getProject().isAccessible()) {
+						ps.add(p.getName());
+					}
 				}
 				return ps.toArray(new String[0]);
 			} catch (final ErlModelException e) {

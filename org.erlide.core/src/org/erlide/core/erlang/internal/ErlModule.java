@@ -110,8 +110,10 @@ public class ErlModule extends Openable implements IErlModule {
 		// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 		// }
 
-		// ErlLogger.debug("* build structure " + this.fName);
-		// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
+		if (ErlModelManager.verbose) {
+			ErlLogger.debug("* build structure " + this.fName);
+			// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
+		}
 
 		final ErlParser parser = new ErlParser();
 		if (initialText != null) {
