@@ -1,10 +1,11 @@
-#Fri Jul 18 15:23:41 CEST 2008
-source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing
-backend_cookie=kaka
-otp_project_structure=false
-backend_name=
+#Wed Oct 01 09:45:16 CEST 2008
+source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing;erl_debugger
+backend_cookie=
+backend_name=r11
 external_includes=
+make_unique=true
 include_dirs=include
 use_pathz=true
 output_dir=ebin
+backend_node=erlide
 external_modules=

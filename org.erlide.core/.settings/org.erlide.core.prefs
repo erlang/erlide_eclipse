@@ -1,6 +1,6 @@
-#Tue Sep 30 16:35:30 CEST 2008
-backend_cookie=kaka
-backend_name=erts
+#Wed Oct 01 09:45:16 CEST 2008
+backend_cookie=
+backend_name=
 backend_node=erlide
 eclipse.preferences.version=1
 external_includes=

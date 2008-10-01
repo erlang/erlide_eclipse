@@ -1,11 +1,12 @@
 #Wed Oct 01 12:43:01 CEST 2008
-source_dirs=wrangler/erl
 backend_cookie=
 backend_name=r11
-external_includes=
-make_unique=true
-include_dirs=wrangler/hrl
-use_pathz=true
-output_dir=wrangler/ebin
 backend_node=erlide
+eclipse.preferences.version=1
+external_includes=
 external_modules=
+include_dirs=wrangler/hrl
+make_unique=true
+output_dir=wrangler/ebin
+source_dirs=wrangler/erl
+use_pathz=true
