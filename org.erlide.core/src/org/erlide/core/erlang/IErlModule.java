@@ -13,7 +13,7 @@
 package org.erlide.core.erlang;
 
 import java.util.List;
-
+ 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
