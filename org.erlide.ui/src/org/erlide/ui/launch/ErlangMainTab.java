@@ -13,6 +13,9 @@ package org.erlide.ui.launch;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -38,9 +41,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.debug.IErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
@@ -184,19 +189,27 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	static class ProjectsContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(final Object inputElement) {
-			try {
-				final java.util.List<IErlProject> projects = ErlangCore
-						.getModel().getErlangProjects();
-				final java.util.List<String> ps = new ArrayList<String>();
-				for (final IErlProject p : projects) {
-					if (p.getProject().isAccessible()) {
+			final java.util.List<String> ps = new ArrayList<String>();
+
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+					.getProjects();
+			for (final IProject p : projects) {
+				if (p.isAccessible()) {
+					IProjectNature n = null;
+					try {
+						n = p.getNature(ErlangPlugin.NATURE_ID);
+					} catch (CoreException e) {
+					}
+					if (n == null) {
+						ErlLogger.debug(
+								"project %s doesn't have an erlang nature", p
+										.getName());
+					} else {
 						ps.add(p.getName());
 					}
 				}
-				return ps.toArray(new String[0]);
-			} catch (final ErlModelException e) {
 			}
-			return new String[] {};
+			return ps.toArray(new String[0]);
 		}
 
 		public void dispose() {
