@@ -111,14 +111,15 @@ public class ErlModule extends Openable implements IErlModule {
 		// }
 
 		if (ErlModelManager.verbose) {
-			ErlLogger.debug("* build structure " + this.fName);
+			ErlLogger.debug("* build structure " + fName);
 			// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 		}
 
 		final ErlParser parser = new ErlParser();
 		if (initialText != null) {
-			isStructureKnown = parser.parse(this, initialText, !parsed,
-					underlyingResource.getFullPath().toString());
+			final String path = underlyingResource != null ? underlyingResource
+					.getFullPath().toString() : "";
+			isStructureKnown = parser.parse(this, initialText, !parsed, path);
 		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
