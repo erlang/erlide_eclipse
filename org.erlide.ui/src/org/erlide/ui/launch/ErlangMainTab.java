@@ -114,6 +114,9 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		final Table table_1 = projectsTable.getTable();
 		final GridData gd_table_1 = new GridData(SWT.LEFT, SWT.FILL, true, true);
 		gd_table_1.widthHint = 287;
+		gd_table_1.heightHint = 126;
+		gd_table_1.minimumHeight = 108;
+		gd_table_1.minimumWidth = 256;
 		table_1.setLayoutData(gd_table_1);
 		projectsTable.addCheckStateListener(new ICheckStateListener() {
 			@SuppressWarnings("synthetic-access")

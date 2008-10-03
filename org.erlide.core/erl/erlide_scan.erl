@@ -17,7 +17,7 @@
 
 %% Erlang token scanning functions of io library.
 
-%% Modified erl_scan.erl by Vlad Dumitrescu (vlad_dumitrescu at hotmail.com):
+%% Modified erl_scan.erl by Vlad Dumitrescu (vladdu55 at gmail dot com):
 %%   - Pos values are now {{line number, offset in file}, token length}
 %%   - return matched text where meaningful (last element in token tuple)
 %%   - added comment and whitespace tokens, returned by functions with "ws" in the name
@@ -122,7 +122,7 @@ tokens_ws({Cs,_Stack,_Toks,Pos,eof,_Fun}, eof, _) ->
     {done,{eof,Pos},Cs};
 tokens_ws({Cs,Stack,Toks,Pos,_State,Errors,Fun}, eof, _) ->
     Fun(Cs++eof, Stack, Toks, Pos, eof, Errors);
-tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) ->
+tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) -> 
     Fun(Cs++Chars, Stack, Toks, Pos, State, Errors).
 
 
