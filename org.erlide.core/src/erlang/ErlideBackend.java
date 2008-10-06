@@ -192,10 +192,11 @@ public class ErlideBackend {
 		try {
 			r = backend.rpcx("code", "is_sticky", "a", moduleName);
 			// TODO handle sticky directories
-			if (true || !((OtpErlangAtom) r).booleanValue()) {
+			if (!((OtpErlangAtom) r).booleanValue()) {
 				r = backend.rpcx("code", "load_binary", "asb", moduleName,
 						moduleName + ".erl", bin);
 			} else {
+				ErlLogger.warn("sticky:: %s", moduleName);
 				r = null;
 			}
 		} catch (final NoBackendException e) {
