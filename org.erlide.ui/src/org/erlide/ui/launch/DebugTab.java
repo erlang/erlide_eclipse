@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -19,12 +20,19 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.ui.util.SWTUtil;
 
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
@@ -66,6 +74,10 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private Tree tree;
+	private Button attachOnFirstCallCheck;
+	private Button attachOnBreakpointCheck;
+	private Button attachOnExitCheck;
+	private Button distributedDebugCheck;
 
 	public void createControl(final Composite parent) {
 
@@ -87,20 +99,49 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		tree = checkboxTreeViewer.getTree();
 		final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd_tree.minimumWidth = 250;
-		gd_tree.minimumHeight = 128;
+		gd_tree.minimumHeight = 120;
 		gd_tree.widthHint = 256;
-		gd_tree.heightHint = 296;
+		gd_tree.heightHint = 150;
 		tree.setLayoutData(gd_tree);
 
+		final Label anyModuleHavingLabel = new Label(interpretedModulesGroup,
+				SWT.WRAP);
+		anyModuleHavingLabel.setLayoutData(new GridData(279, SWT.DEFAULT));
+		anyModuleHavingLabel
+				.setText("Any module having breakpoints enabled will be dynamically added to the list.");
+
+		distributedDebugCheck = createCheckButton(comp,
+				"Debug all connected nodes");
+		distributedDebugCheck.addSelectionListener(fBasicSelectionListener);
+		final Group attachGroup = SWTUtil.createGroup(comp, "Auto Attach", 1,
+				GridData.FILL_BOTH);
+		attachGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+				false));
+		attachOnFirstCallCheck = createCheckButton(attachGroup, "First &call");
+		attachOnFirstCallCheck.addSelectionListener(fBasicSelectionListener);
+		attachOnBreakpointCheck = createCheckButton(attachGroup, "&Breakpoint");
+		attachOnBreakpointCheck.addSelectionListener(fBasicSelectionListener);
+		attachOnExitCheck = createCheckButton(attachGroup, "E&xit");
+		attachOnExitCheck.addSelectionListener(fBasicSelectionListener);
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
+		int debugFlags;
+		try {
+			debugFlags = config.getAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
+					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+		} catch (final CoreException e) {
+			debugFlags = IErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+		}
+		setFlagCheckboxes(debugFlags);
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
+		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
+				getFlagChechboxes());
 	}
 
 	public String getName() {
@@ -111,4 +152,40 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	public boolean isValid(final ILaunchConfiguration config) {
 		return true;
 	}
+
+	private void setFlagCheckboxes(final int debugFlags) {
+		attachOnFirstCallCheck
+				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG) != 0);
+		attachOnBreakpointCheck
+				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG) != 0);
+		attachOnExitCheck
+				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_EXIT_FLAG) != 0);
+		distributedDebugCheck
+				.setSelection((debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0);
+	}
+
+	private int getFlagChechboxes() {
+		int result = attachOnFirstCallCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG
+				: 0;
+		result += attachOnBreakpointCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG
+				: 0;
+		result += attachOnExitCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_EXIT_FLAG
+				: 0;
+		result += distributedDebugCheck.getSelection() ? IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG
+				: 0;
+		return result;
+	}
+
+	private final SelectionListener fBasicSelectionListener = new SelectionListener() {
+		@SuppressWarnings("synthetic-access")
+		public void widgetDefaultSelected(SelectionEvent e) {
+			updateLaunchConfigurationDialog();
+		}
+
+		@SuppressWarnings("synthetic-access")
+		public void widgetSelected(SelectionEvent e) {
+			updateLaunchConfigurationDialog();
+		}
+	};
+
 }

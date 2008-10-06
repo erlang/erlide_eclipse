@@ -30,12 +30,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -56,10 +53,6 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	private Text moduleText;
 	private Text funcText;
 	private Text argsText;
-	private Button attachOnFirstCallCheck;
-	private Button attachOnBreakpointCheck;
-	private Button attachOnExitCheck;
-	private Button distributedDebugCheck;
 
 	public void createControl(final Composite parent) {
 		final Composite comp = new Composite(parent, SWT.NONE);
@@ -68,10 +61,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		comp.setLayout(topLayout);
 
 		createProjectsGroup(comp);
-
 		createStartGroup(comp);
-
-		createDebugFlagsGroup(comp);
 
 		List<IErlProject> projects;
 		try {
@@ -83,22 +73,6 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void createDebugFlagsGroup(final Composite comp) {
-		final Group debugGroup = SWTUtil.createGroup(comp, "Debug", 1,
-				GridData.FILL_HORIZONTAL);
-		distributedDebugCheck = createCheckButton(debugGroup,
-				"Debug all connected nodes");
-		distributedDebugCheck.addSelectionListener(fBasicSelectionListener);
-		final Group attachGroup = SWTUtil.createGroup(debugGroup,
-				"Auto Attach", 1, GridData.FILL_BOTH);
-		attachOnFirstCallCheck = createCheckButton(attachGroup, "First &call");
-		attachOnFirstCallCheck.addSelectionListener(fBasicSelectionListener);
-		attachOnBreakpointCheck = createCheckButton(attachGroup, "&Breakpoint");
-		attachOnBreakpointCheck.addSelectionListener(fBasicSelectionListener);
-		attachOnExitCheck = createCheckButton(attachGroup, "E&xit");
-		attachOnExitCheck.addSelectionListener(fBasicSelectionListener);
 	}
 
 	/**
@@ -303,39 +277,8 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		} catch (final CoreException e) {
 			argsText.setText("");
 		}
-		int debugFlags;
-		try {
-			debugFlags = config.getAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
-					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-		} catch (final CoreException e) {
-			debugFlags = IErlDebugConstants.DEFAULT_DEBUG_FLAGS;
-		}
-		setFlagCheckboxes(debugFlags);
 
 		updateLaunchConfigurationDialog();
-	}
-
-	private void setFlagCheckboxes(final int debugFlags) {
-		attachOnFirstCallCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG) != 0);
-		attachOnBreakpointCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG) != 0);
-		attachOnExitCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_EXIT_FLAG) != 0);
-		distributedDebugCheck
-				.setSelection((debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0);
-	}
-
-	private int getFlagChechboxes() {
-		int result = attachOnFirstCallCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG
-				: 0;
-		result += attachOnBreakpointCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG
-				: 0;
-		result += attachOnExitCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_EXIT_FLAG
-				: 0;
-		result += distributedDebugCheck.getSelection() ? IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG
-				: 0;
-		return result;
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
@@ -354,8 +297,6 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(IErlLaunchAttributes.MODULE, moduleText.getText());
 		config.setAttribute(IErlLaunchAttributes.FUNCTION, funcText.getText());
 		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, argsText.getText());
-		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
-				getFlagChechboxes());
 	}
 
 	public String getName() {
@@ -373,18 +314,6 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	private final ModifyListener fBasicModifyListener = new ModifyListener() {
 		@SuppressWarnings("synthetic-access")
 		public void modifyText(ModifyEvent evt) {
-			updateLaunchConfigurationDialog();
-		}
-	};
-
-	private final SelectionListener fBasicSelectionListener = new SelectionListener() {
-		@SuppressWarnings("synthetic-access")
-		public void widgetDefaultSelected(SelectionEvent e) {
-			updateLaunchConfigurationDialog();
-		}
-
-		@SuppressWarnings("synthetic-access")
-		public void widgetSelected(SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 	};
