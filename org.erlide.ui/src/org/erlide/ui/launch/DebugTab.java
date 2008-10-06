@@ -13,8 +13,6 @@ package org.erlide.ui.launch;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -103,10 +101,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			if (parentElement == input) {
 				return projects;
 			} else if (parentElement instanceof String) {
-				IProject p = ResourcesPlugin.getWorkspace().getRoot()
-						.getProject((String) parentElement);
-				IErlProject ep = (IErlProject) p.getAdapter(IErlProject.class);
-				ep = ErlangCore.getModel().getErlangProject(
+				IErlProject ep = ErlangCore.getModel().getErlangProject(
 						(String) parentElement);
 				if (ep != null) {
 					try {
@@ -205,6 +200,24 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
 		checkboxTreeViewer.setInput(config);
+		List<String> interpret;
+		try {
+			interpret = config.getAttribute(
+					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+					new ArrayList<String>());
+		} catch (CoreException e1) {
+			interpret = new ArrayList<String>();
+		}
+		interpretedModules = new ArrayList<IErlModule>();
+		for (String m : interpret) {
+			String[] pm = m.split(":");
+			IErlProject prj = ErlangCore.getModel().getErlangProject(pm[0]);
+			try {
+				IErlModule mod = prj.getModule(pm[1]);
+				interpretedModules.add(mod);
+			} catch (ErlModelException e) {
+			}
+		}
 
 		int debugFlags;
 		try {
@@ -219,26 +232,23 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
-		checkboxTreeViewer.setInput(config);
-		// TODO restore checks
-
-		int debugFlags;
 		try {
-			debugFlags = config.getAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
-					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-		} catch (final CoreException e) {
-			debugFlags = IErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+			setDefaults(config.getWorkingCopy());
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
-		setFlagCheckboxes(debugFlags);
-
-		checkboxTreeViewer.expandAll();
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
 				getFlagChechboxes());
 
-		// TODO save checked values
+		List<String> r = new ArrayList<String>();
+		for (IErlModule m : interpretedModules) {
+			r.add(m.getProject().getName() + ":" + m.getName());
+		}
+		config.setAttribute(IErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
+
 	}
 
 	public String getName() {

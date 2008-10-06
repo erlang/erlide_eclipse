@@ -30,5 +30,7 @@ public interface IErlLaunchAttributes {
 	final String START_ME = prefix + ".startMe";
 
 	final String DEBUG_FLAGS = prefix + ".debugFlags"; // @see
-														// IErlDebugConstants
+	// IErlDebugConstants
+
+	final String DEBUG_INTERPRET_MODULES = prefix + ".interpretModules";
 }

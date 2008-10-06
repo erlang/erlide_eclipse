@@ -16,18 +16,20 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlangDebugTarget;
@@ -61,6 +63,9 @@ public class ErlangLaunchConfigurationDelegate extends
 			final int debugFlags = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_FLAGS,
 					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+			final List<String> interpretedModules = config.getAttribute(
+					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+					new ArrayList<String>());
 
 			System.out.println("Debug:: about to start a backend in " + mode
 					+ " mode, with attributes::");
@@ -73,6 +78,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			System.out.println("  node name: " + nodeName);
 			System.out.println("  cookie: " + cookie);
 			System.out.println("  debugFlags: " + debugFlags);
+			System.out.println("  interpretedModules: " + interpretedModules);
 			if (startMe) {
 				System.out.println("  * start it if not running");
 			}
@@ -121,10 +127,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				launch.addDebugTarget(target);
 				// interpret everything we can
 				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
-				if (projects != null) {
-					for (final IProject p : projects) {
-						interpretAll(backend, p, distributed);
-					}
+				for (final String pm : interpretedModules) {
+					String[] pms = pm.split(":");
+					interpret(backend, pms[0], pms[1], distributed);
 				}
 				// send started to target
 				target.sendStarted();
@@ -144,33 +149,26 @@ public class ErlangLaunchConfigurationDelegate extends
 		}
 	}
 
-	private void interpretAll(final ExecutionBackend backend,
-			final IProject project, final boolean distributed) {
-		final List<String> beams = new ArrayList<String>();
+	private void interpret(final ExecutionBackend backend,
+			final String project, final String module, final boolean distributed) {
+		IErlProject eprj = ErlangCore.getModel().getErlangProject(project);
+		IProject iprj = eprj.getProject();
 		try {
-			project.accept(new IResourceVisitor() {
-				public boolean visit(final IResource resource)
-						throws CoreException {
-					final IPath location = resource.getLocation();
-					if (location != null) {
-						final String ext = location.getFileExtension();
-						if (ext != null) {
-							if (ext.equals("beam")) {
-								beams.add(location.toString());
-							}
-						}
-					}
-					return true;
-				}
-			}, IResource.DEPTH_INFINITE, 0);
-			for (final String beam : beams) {
+			IFolder r = iprj.getFolder(eprj.getOutputLocation());
+			String beam = module.substring(0, module.length() - 4) + ".beam";
+			IFile f = r.getFile(beam);
+			if (f.exists()) {
 				ErlLogger.debug("interpret " + beam);
 				ErlideDebug.interpret(backend, beam, distributed);
+			} else {
+				ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
+						+ module);
 			}
-		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
+
+		} catch (ErlModelException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public String getCmdLine(final ILaunchConfiguration configuration) {
