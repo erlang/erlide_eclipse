@@ -100,7 +100,7 @@ public class ErlModelUtils {
 
 	public static IErlFunction findFunction(final IErlModule module,
 			final String function, final int arity) throws ErlModelException {
-		final List<IErlElement> children = module.getChildren();
+		final List<? extends IErlElement> children = module.getChildren();
 		for (final IErlElement element : children) {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;

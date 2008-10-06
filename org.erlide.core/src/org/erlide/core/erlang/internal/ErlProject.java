@@ -614,10 +614,16 @@ public class ErlProject extends Openable implements IErlProject,
 		fName = project.getName();
 	}
 
-	public List<IErlModule> getModules() {
-		// TODO fix this!
-		return null;
-		// return getChildren();
+	public List<IErlModule> getModules() throws ErlModelException {
+		if (!hasChildren()) {
+			open(null);
+		}
+		List<? extends IErlElement> r = getChildren();
+		ArrayList<IErlModule> result = new ArrayList<IErlModule>();
+		for (IErlElement e : r) {
+			result.add((IErlModule) e);
+		}
+		return result;
 	}
 
 	/**

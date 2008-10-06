@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -282,11 +283,10 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
-		final Object[] sel = projectsTable.getCheckedElements();
+		final List<IProject> projects = getSelectedProjects();
 		final StringBuilder projectNames = new StringBuilder();
-		for (final Object o : sel) {
-			final String p = (String) o;
-			projectNames.append(p).append(";");
+		for (IProject p : projects) {
+			projectNames.append(p.getName()).append(";");
 		}
 		if (projectNames.length() > 0) {
 			projectNames.setLength(projectNames.length() - 1);
@@ -297,6 +297,17 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(IErlLaunchAttributes.MODULE, moduleText.getText());
 		config.setAttribute(IErlLaunchAttributes.FUNCTION, funcText.getText());
 		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, argsText.getText());
+	}
+
+	public List<IProject> getSelectedProjects() {
+		final Object[] sel = projectsTable.getCheckedElements();
+		List<IProject> result = new ArrayList<IProject>();
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		for (final Object o : sel) {
+			final String p = (String) o;
+			result.add(root.getProject(p));
+		}
+		return result;
 	}
 
 	public String getName() {
