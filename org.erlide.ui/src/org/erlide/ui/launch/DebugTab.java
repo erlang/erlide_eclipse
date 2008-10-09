@@ -47,12 +47,12 @@ import org.erlide.ui.util.SWTUtil;
 
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
+	CheckboxTreeViewer checkboxTreeViewer;
 	private Button attachOnFirstCallCheck;
 	private Button attachOnBreakpointCheck;
 	private Button attachOnExitCheck;
 	private Button distributedDebugCheck;
-	private List<IErlModule> interpretedModules;
+	List<IErlModule> interpretedModules;
 
 	class TreeLabelProvider extends LabelProvider {
 		@Override
@@ -73,6 +73,25 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		IErlElement item = null;
 		MyTreeItem parent = null;
 		List<MyTreeItem> children = new ArrayList<MyTreeItem>();
+
+		boolean isFullyChecked() {
+			for (MyTreeItem i : children) {
+				if (!interpretedModules.contains(i.item)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		boolean isFullyUnchecked() {
+			for (MyTreeItem i : children) {
+				if (interpretedModules.contains(i.item)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 	}
 
 	class TreeContentProvider implements IStructuredContentProvider,
@@ -185,21 +204,47 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(final CheckStateChangedEvent event) {
-				Object element = event.getElement();
-				boolean ch = event.getChecked();
-				MyTreeItem item = (MyTreeItem) element;
+				MyTreeItem item = (MyTreeItem) event.getElement();
+				boolean checked = event.getChecked();
 
-				// TODO see CustomizePerspectiveDialog for how to do this
-				// properly
-				if (ch) {
+				if (checked) {
 					if (item.item instanceof IErlModule) {
-						interpretedModules.add((IErlModule) item.item);
+						if (!interpretedModules.contains(item.item)) {
+							interpretedModules.add((IErlModule) item.item);
+						}
+					} else {
+						for (MyTreeItem c : item.children) {
+							if (!interpretedModules.contains(c.item)) {
+								interpretedModules.add((IErlModule) c.item);
+							}
+						}
 					}
 				} else {
-					interpretedModules.remove(item.item);
+					if (item.item instanceof IErlModule) {
+						interpretedModules.remove(item.item);
+					} else {
+						for (MyTreeItem c : item.children) {
+							interpretedModules.remove(c.item);
+						}
+					}
 				}
 
+				for (IErlElement ee : interpretedModules) {
+					System.out.println("- " + ee);
+				}
+				System.out.println("/// " + item.item + " " + checked);
+
+				checkboxTreeViewer.setSubtreeChecked(item, checked);
+				// set gray state of the element's category subtree, all items
+				// should not be grayed
+				for (MyTreeItem i : item.children) {
+					checkboxTreeViewer.setGrayed(i, false);
+				}
+				checkboxTreeViewer.setGrayed(item, false);
+				updateMenuCategoryCheckedState(item.parent);
+
 			}
+
 		});
 		checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
 		checkboxTreeViewer.setContentProvider(new TreeContentProvider());
@@ -210,6 +255,23 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		gd_tree.widthHint = 256;
 		gd_tree.heightHint = 220;
 		tree.setLayoutData(gd_tree);
+	}
+
+	void updateMenuCategoryCheckedState(MyTreeItem item) {
+		if (item == null) {
+			return;
+		}
+		if (item.isFullyChecked()) {
+			checkboxTreeViewer.setParentsGrayed(item, false);
+			checkboxTreeViewer.setChecked(item, true);
+		} else if (item.isFullyUnchecked()) {
+			checkboxTreeViewer.setParentsGrayed(item, false);
+			checkboxTreeViewer.setChecked(item, false);
+		} else {
+			checkboxTreeViewer.setParentsGrayed(item, true);
+			checkboxTreeViewer.setChecked(item, true);
+		}
+		updateMenuCategoryCheckedState(item.parent);
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
@@ -244,8 +306,21 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		if (checkboxTreeViewer != null) {
 			checkboxTreeViewer.setInput(config);
 			checkboxTreeViewer.expandAll();
+			MyTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+					.getContentProvider()).root;
+			setchecked(root, interpretedModules);
 		} else {
 
+		}
+	}
+
+	private void setchecked(MyTreeItem item, List<IErlModule> list) {
+		if (list.contains(item.item)) {
+			checkboxTreeViewer.setChecked(item, true);
+		}
+		for (MyTreeItem c : item.children) {
+			setchecked(c, list);
+			updateMenuCategoryCheckedState(item);
 		}
 	}
 
