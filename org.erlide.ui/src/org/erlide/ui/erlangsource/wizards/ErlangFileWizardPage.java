@@ -63,15 +63,16 @@ public class ErlangFileWizardPage extends WizardPage implements
 	private Combo applications;
 	private Combo skeleton;
 	FunctionGroup functionGroup;
-	private ISelection fSelection;
+	private final ISelection fSelection;
 	Template[] behaviours;
+	private final ModifyListener fModifyListener;
 
 	/**
 	 * Constructor for SampleNewWizardPage.
 	 * 
 	 * @param pageName
 	 */
-	public ErlangFileWizardPage(ISelection selection) {
+	public ErlangFileWizardPage(final ISelection selection) {
 		super("wizardPage");
 		setTitle("Erlang Source File");
 		setDescription("This wizard creates a new erlang source file.");
@@ -80,13 +81,17 @@ public class ErlangFileWizardPage extends WizardPage implements
 		behaviours = ErlangSourceContextTypeComment.getDefault()
 				.getTemplateStore().getTemplates(
 						ErlangSourceContextTypeBehaviour.getDefault().getId());
-
+		fModifyListener = new ModifyListener() {
+			public void modifyText(final ModifyEvent e) {
+				dialogChanged();
+			}
+		};
 	}
 
 	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 
 		final Composite container = new Composite(parent, SWT.NULL);
 
@@ -100,43 +105,33 @@ public class ErlangFileWizardPage extends WizardPage implements
 		filePanel.setLayout(layout);
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
+
 		Label label = new Label(filePanel, SWT.NULL);
-		label.setText("&Container:");
-
-		containerText = new Text(filePanel, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
-		containerText.setLayoutData(gd);
-		containerText.addModifyListener(new ModifyListener() {
-
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
-
-		final Button button = new Button(filePanel, SWT.PUSH);
-		button.setText("Browse...");
-		button.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				handleBrowse();
-			}
-		});
-
-		label = new Label(filePanel, SWT.NULL);
 		label.setText("&Module name:");
 
 		fileText = new Text(filePanel, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		fileText.setLayoutData(gd);
-		fileText.addModifyListener(new ModifyListener() {
+		fileText.addModifyListener(fModifyListener);
 
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
+		label = new Label(filePanel, SWT.NULL);
+
+		label = new Label(filePanel, SWT.NULL);
+		label.setText("&Container:");
+
+		containerText = new Text(filePanel, SWT.BORDER | SWT.SINGLE);
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
+		containerText.setLayoutData(gd);
+		containerText.addModifyListener(fModifyListener);
+
+		final Button button = new Button(filePanel, SWT.PUSH);
+		button.setText("Browse...");
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				handleBrowse();
 			}
 		});
-
-		new Label(filePanel, SWT.NULL);
 
 		label = new Label(filePanel, SWT.NULL);
 		label.setText("&Application name:");
@@ -147,12 +142,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		applications.setLayoutData(gd);
 		applications.select(0);
-		applications.addModifyListener(new ModifyListener() {
-
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		applications.addModifyListener(fModifyListener);
 
 		new Label(filePanel, SWT.NULL);
 
@@ -165,7 +155,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 				| SWT.READ_ONLY);
 		skeleton.add("None");
 
-		for (Template element : behaviours) {
+		for (final Template element : behaviours) {
 			skeleton.add(element.getName());
 		}
 		skeleton.select(0);
@@ -196,7 +186,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 				} else {
 					container = ((IResource) obj).getParent();
 				}
-				ErlangProjectProperties pp = new ErlangProjectProperties(
+				final ErlangProjectProperties pp = new ErlangProjectProperties(
 						((IResource) obj).getProject());
 				String txt;
 				if (pp.hasSourceDir(container.getFullPath())) {
@@ -274,7 +264,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 		updateStatus(null);
 	}
 
-	private void updateStatus(String message) {
+	private void updateStatus(final String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
@@ -303,7 +293,8 @@ public class ErlangFileWizardPage extends WizardPage implements
 				.getTemplate(), ErlangSourceContextTypeLayout.getDefault());
 	}
 
-	private String parse(Template template, TemplateContextType contextType) {
+	private String parse(final Template template,
+			final TemplateContextType contextType) {
 		ModuleVariableResolver.getDefault().setModule(getFileName());
 
 		ExportedFunctionsVariableResolver.getDefault().clearFunctions();
@@ -347,11 +338,10 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
-	 * .swt.events.SelectionEvent)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
+	 *      .swt.events.SelectionEvent)
 	 */
-	public void widgetDefaultSelected(SelectionEvent e) {
+	public void widgetDefaultSelected(final SelectionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
@@ -359,11 +349,10 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
-	 * .events.SelectionEvent)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
+	 *      .events.SelectionEvent)
 	 */
-	public void widgetSelected(SelectionEvent e) {
+	public void widgetSelected(final SelectionEvent e) {
 
 	}
 }

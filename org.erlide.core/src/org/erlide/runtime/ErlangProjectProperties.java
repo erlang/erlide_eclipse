@@ -60,7 +60,7 @@ public class ErlangProjectProperties {
 		fRuntimeName = IPrefConstants.DEFAULT_RUNTIME_NAME;
 	}
 
-	public ErlangProjectProperties(IProject prj) {
+	public ErlangProjectProperties(final IProject prj) {
 		super();
 		project = prj;
 		load();
@@ -84,9 +84,9 @@ public class ErlangProjectProperties {
 				prefs.load(stream);
 				stream.close();
 				loaded = true;
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 
@@ -117,8 +117,8 @@ public class ErlangProjectProperties {
 			// ErlLogger.debug("project %s, loading from .settings", project
 			// .getName());
 
-			ProjectScope s = new ProjectScope(project);
-			IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
+			final ProjectScope s = new ProjectScope(project);
+			final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 			// new settings
 			fSourceDirs = node.get(IPrefConstants.SOURCE_DIRS,
@@ -154,8 +154,8 @@ public class ErlangProjectProperties {
 		// ErlLogger.debug("project %s, saving to .settings",
 		// project.getName());
 
-		ProjectScope s = new ProjectScope(project);
-		IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
+		final ProjectScope s = new ProjectScope(project);
+		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 		node.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
 		node.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);
@@ -170,7 +170,7 @@ public class ErlangProjectProperties {
 
 		try {
 			node.flush();
-		} catch (BackingStoreException e1) {
+		} catch (final BackingStoreException e1) {
 		}
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
@@ -196,7 +196,7 @@ public class ErlangProjectProperties {
 							fExternalModules);
 
 			try {
-				FileOutputStream out = new FileOutputStream(codepath);
+				final FileOutputStream out = new FileOutputStream(codepath);
 				try {
 					prefs.store(out, null);
 				} finally {
@@ -211,7 +211,7 @@ public class ErlangProjectProperties {
 		return fIncludeDirs;
 	}
 
-	public void setIncludeDirsString(String includeDirs) {
+	public void setIncludeDirsString(final String includeDirs) {
 		fIncludeDirs = includeDirs;
 	}
 
@@ -219,7 +219,7 @@ public class ErlangProjectProperties {
 		return unpack(fIncludeDirs);
 	}
 
-	public void setIncludeDirs(String[] includeDirs) {
+	public void setIncludeDirs(final String[] includeDirs) {
 		fIncludeDirs = pack(includeDirs);
 	}
 
@@ -227,16 +227,17 @@ public class ErlangProjectProperties {
 		return fOutputDir;
 	}
 
-	public void setOutputDir(String outputDir) {
+	public void setOutputDir(final String outputDir) {
 		if (!fOutputDir.equals(outputDir)) {
 			try {
-				BuildBackend b = BackendManager.getDefault().getBuild(project);
+				final BuildBackend b = BackendManager.getDefault().getBuild(
+						project);
 				String p = project.getLocation().append(fOutputDir).toString();
 				b.removePath(getUsePathZ(), p);
 
 				p = project.getLocation().append(outputDir).toString();
 				b.addPath(getUsePathZ(), p);
-			} catch (BackendException e) {
+			} catch (final BackendException e) {
 				ErlLogger.info(e);
 			}
 
@@ -248,12 +249,14 @@ public class ErlangProjectProperties {
 		return Boolean.parseBoolean(fUsePathZ);
 	}
 
-	public void setUsePathZ(boolean pz) {
-		boolean z = Boolean.parseBoolean(fUsePathZ);
+	public void setUsePathZ(final boolean pz) {
+		final boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
-			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
+			for (final IBackend b : BackendManager.getDefault().getExecution(
+					project)) {
 
-				String p = project.getLocation().append(fOutputDir).toString();
+				final String p = project.getLocation().append(fOutputDir)
+						.toString();
 				b.removePath(z, p);
 				b.addPath(pz, p);
 			}
@@ -265,7 +268,7 @@ public class ErlangProjectProperties {
 		return fSourceDirs;
 	}
 
-	public void setSourceDirsString(String sourceDirs) {
+	public void setSourceDirsString(final String sourceDirs) {
 		fSourceDirs = sourceDirs;
 	}
 
@@ -273,7 +276,7 @@ public class ErlangProjectProperties {
 		return unpack(fSourceDirs);
 	}
 
-	public void setSourceDirs(String[] sourceDirs) {
+	public void setSourceDirs(final String[] sourceDirs) {
 		fSourceDirs = pack(sourceDirs);
 	}
 
@@ -285,9 +288,9 @@ public class ErlangProjectProperties {
 		return "";
 	}
 
-	public String buildIncludeDirs(String[] dirs) {
+	public String buildIncludeDirs(final String[] dirs) {
 		final StringBuilder incs = new StringBuilder();
-		for (String element : dirs) {
+		for (final String element : dirs) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
 			ErlLogger.debug("* " + inc);
@@ -301,14 +304,14 @@ public class ErlangProjectProperties {
 		return incs.toString();
 	}
 
-	public void copyFrom(ErlangProjectProperties bprefs) {
+	public void copyFrom(final ErlangProjectProperties bprefs) {
 		fIncludeDirs = bprefs.fIncludeDirs;
 		fSourceDirs = bprefs.fSourceDirs;
 		fOutputDir = bprefs.fOutputDir;
 		fRuntimeName = "";
 	}
 
-	public static String pack(String[] strs) {
+	public static String pack(final String[] strs) {
 		final StringBuilder b = new StringBuilder();
 		for (int i = 0; i < strs.length; i++) {
 			b.append(strs[i]);
@@ -323,7 +326,7 @@ public class ErlangProjectProperties {
 		return unpack(fExternalIncludes);
 	}
 
-	private String[] unpack(String str) {
+	private String[] unpack(final String str) {
 		final String[] res = str.split(PATH_SEP);
 		for (int i = 0; i < res.length; i++) {
 			res[i] = res[i].trim();
@@ -335,7 +338,7 @@ public class ErlangProjectProperties {
 		return fExternalIncludes;
 	}
 
-	public void setExternalIncludes(String[] externalIncludes) {
+	public void setExternalIncludes(final String[] externalIncludes) {
 		fExternalIncludes = pack(externalIncludes);
 	}
 
@@ -343,12 +346,12 @@ public class ErlangProjectProperties {
 		return project;
 	}
 
-	public void setRuntimeName(String backendName) {
+	public void setRuntimeName(final String backendName) {
 		// TODO validate!
 		fRuntimeName = backendName;
 	}
 
-	public void setExternalModules(String fExternalModules) {
+	public void setExternalModules(final String fExternalModules) {
 		this.fExternalModules = fExternalModules;
 	}
 
@@ -361,7 +364,7 @@ public class ErlangProjectProperties {
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
-		RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager.getDefault()
+		final RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager.getDefault()
 				.getRuntime(fRuntimeName), false);
 		if (rt != null) {
 			rt.setNodeName(fNodeName);
@@ -371,7 +374,7 @@ public class ErlangProjectProperties {
 		return rt;
 	}
 
-	public void setCookie(String text) {
+	public void setCookie(final String text) {
 		fCookie = text.trim();
 	}
 
@@ -383,21 +386,22 @@ public class ErlangProjectProperties {
 		return fNodeName;
 	}
 
-	public void setNodeName(String text) {
+	public void setNodeName(final String text) {
 		fNodeName = text.trim();
 	}
 
-	public void setUniqueName(boolean unique) {
+	public void setUniqueName(final boolean unique) {
 		fUnique = unique;
 	}
 
 	public boolean isUniqueName() {
-		return this.fUnique;
+		return fUnique;
 	}
 
-	public boolean hasSourceDir(IPath fullPath) {
-		for (String s : getSourceDirs()) {
-			if (s.equals(fullPath)) {
+	public boolean hasSourceDir(final IPath fullPath) {
+		final String f = fullPath.removeFirstSegments(1).toString();
+		for (final String s : getSourceDirs()) {
+			if (s.equals(f)) {
 				return true;
 			}
 		}
