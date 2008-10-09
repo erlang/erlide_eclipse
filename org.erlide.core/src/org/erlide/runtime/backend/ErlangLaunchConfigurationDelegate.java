@@ -44,8 +44,10 @@ public class ErlangLaunchConfigurationDelegate extends
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
 		try {
-			final String[] projectNames = config.getAttribute(
-					IErlLaunchAttributes.PROJECTS, "").trim().split(";");
+			String prjs = config
+					.getAttribute(IErlLaunchAttributes.PROJECTS, "").trim();
+			final String[] projectNames = prjs.length() == 0 ? new String[] {}
+					: prjs.split(";");
 			final String module = config.getAttribute(
 					IErlLaunchAttributes.MODULE, "").trim();
 			final String function = config.getAttribute(

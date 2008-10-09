@@ -80,11 +80,12 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				input = (ILaunchConfiguration) newInput;
 				try {
 					projs = input.getAttribute(IErlLaunchAttributes.PROJECTS,
-							"");
+							"").trim();
 				} catch (final CoreException e1) {
 					projs = "";
 				}
-				projects = projs.split(";");
+				projects = projs.length() == 0 ? new String[] {} : projs
+						.split(";");
 			} else {
 				projects = null;
 			}
@@ -199,7 +200,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-		checkboxTreeViewer.setInput(config);
 		List<String> interpret;
 		try {
 			interpret = config.getAttribute(
@@ -228,7 +228,12 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 		setFlagCheckboxes(debugFlags);
 
-		checkboxTreeViewer.expandAll();
+		if (checkboxTreeViewer != null) {
+			checkboxTreeViewer.setInput(config);
+			checkboxTreeViewer.expandAll();
+		} else {
+
+		}
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
