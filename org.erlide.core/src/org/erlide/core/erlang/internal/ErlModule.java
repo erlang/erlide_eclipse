@@ -337,16 +337,6 @@ public class ErlModule extends Openable implements IErlModule {
 	public void fixExportedFunctions() {
 	}
 
-	public int getLineEnd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getLineStart() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public void reconcileText(final int offset, final int removeLength,
 			final String newText, final IProgressMonitor mon) {
 		if (scannerDisposed) {
