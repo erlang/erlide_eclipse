@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
@@ -56,9 +57,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	class TreeLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			if (element instanceof IErlProject) {
-				IErlProject p = (IErlProject) element;
-				return p.getName();
+			if (element instanceof MyTreeItem) {
+				return ((MyTreeItem) element).item.getName();
 			}
 			return super.getText(element);
 		}
@@ -69,15 +69,23 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
+	class MyTreeItem {
+		IErlElement item = null;
+		MyTreeItem parent = null;
+		List<MyTreeItem> children = new ArrayList<MyTreeItem>();
+	}
+
 	class TreeContentProvider implements IStructuredContentProvider,
 			ITreeContentProvider {
 		String[] projects;
 		ILaunchConfiguration input;
+		MyTreeItem root;
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			String projs;
 			if (newInput instanceof ILaunchConfiguration) {
 				input = (ILaunchConfiguration) newInput;
+				root = new MyTreeItem();
 				try {
 					projs = input.getAttribute(IErlLaunchAttributes.PROJECTS,
 							"").trim();
@@ -86,8 +94,30 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				}
 				projects = projs.length() == 0 ? new String[] {} : projs
 						.split(";");
+				for (String p : projects) {
+					IErlProject pj = ErlangCore.getModel().getErlangProject(p);
+					MyTreeItem m = new MyTreeItem();
+					m.item = pj;
+					root.children.add(m);
+
+					try {
+						List<IErlModule> ms = pj.getModules();
+						for (IErlModule mm : ms) {
+							if (mm.getModuleKind() == ModuleKind.ERL) {
+								MyTreeItem mi = new MyTreeItem();
+								mi.item = mm;
+								mi.parent = m;
+								m.children.add(mi);
+							}
+						}
+					} catch (ErlModelException e) {
+						e.printStackTrace();
+					}
+
+				}
 			} else {
 				projects = null;
+				root = new MyTreeItem();
 			}
 		}
 
@@ -95,36 +125,18 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return getChildren(inputElement);
+			return root.children.toArray();
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement == input) {
-				return projects;
-			} else if (parentElement instanceof String) {
-				IErlProject ep = ErlangCore.getModel().getErlangProject(
-						(String) parentElement);
-				if (ep != null) {
-					try {
-						List<IErlModule> ms = ep.getModules();
-						List<IErlModule> msr = new ArrayList<IErlModule>();
-						for (IErlModule m : ms) {
-							if (m.getModuleKind() == ModuleKind.ERL) {
-								msr.add(m);
-							}
-						}
-						return msr.toArray();
-					} catch (ErlModelException e) {
-						e.printStackTrace();
-					}
-				}
-				return new Object[] {};
-			} else {
-				return new Object[] {};
-			}
+			MyTreeItem item = (MyTreeItem) parentElement;
+			return item.children.toArray();
 		}
 
 		public Object getParent(Object element) {
+			if (element instanceof MyTreeItem) {
+				return ((MyTreeItem) element).parent;
+			}
 			return null;
 		}
 
@@ -175,17 +187,18 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				Object element = event.getElement();
 				boolean ch = event.getChecked();
-				if (element instanceof String) {
-					if (ch) {
-						checkboxTreeViewer.setChecked(element, false);
+				MyTreeItem item = (MyTreeItem) element;
+
+				// TODO see CustomizePerspectiveDialog for how to do this
+				// properly
+				if (ch) {
+					if (item.item instanceof IErlModule) {
+						interpretedModules.add((IErlModule) item.item);
 					}
 				} else {
-					if (ch) {
-						interpretedModules.add((IErlModule) element);
-					} else {
-						interpretedModules.remove(element);
-					}
+					interpretedModules.remove(item.item);
 				}
+
 			}
 		});
 		checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
