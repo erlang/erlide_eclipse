@@ -57,8 +57,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	class TreeLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			if (element instanceof MyTreeItem) {
-				return ((MyTreeItem) element).item.getName();
+			if (element instanceof DebugTreeItem) {
+				return ((DebugTreeItem) element).item.getName();
 			}
 			return super.getText(element);
 		}
@@ -69,13 +69,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	class MyTreeItem {
+	class DebugTreeItem {
 		IErlElement item = null;
-		MyTreeItem parent = null;
-		List<MyTreeItem> children = new ArrayList<MyTreeItem>();
+		DebugTreeItem parent = null;
+		List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		boolean isFullyChecked() {
-			for (MyTreeItem i : children) {
+			for (DebugTreeItem i : children) {
 				if (!interpretedModules.contains(i.item)) {
 					return false;
 				}
@@ -84,7 +84,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 
 		boolean isFullyUnchecked() {
-			for (MyTreeItem i : children) {
+			for (DebugTreeItem i : children) {
 				if (interpretedModules.contains(i.item)) {
 					return false;
 				}
@@ -98,13 +98,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			ITreeContentProvider {
 		String[] projects;
 		ILaunchConfiguration input;
-		MyTreeItem root;
+		DebugTreeItem root;
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			String projs;
 			if (newInput instanceof ILaunchConfiguration) {
 				input = (ILaunchConfiguration) newInput;
-				root = new MyTreeItem();
+				root = new DebugTreeItem();
 				try {
 					projs = input.getAttribute(IErlLaunchAttributes.PROJECTS,
 							"").trim();
@@ -115,7 +115,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 						.split(";");
 				for (String p : projects) {
 					IErlProject pj = ErlangCore.getModel().getErlangProject(p);
-					MyTreeItem m = new MyTreeItem();
+					DebugTreeItem m = new DebugTreeItem();
 					m.item = pj;
 					root.children.add(m);
 
@@ -123,7 +123,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 						List<IErlModule> ms = pj.getModules();
 						for (IErlModule mm : ms) {
 							if (mm.getModuleKind() == ModuleKind.ERL) {
-								MyTreeItem mi = new MyTreeItem();
+								DebugTreeItem mi = new DebugTreeItem();
 								mi.item = mm;
 								mi.parent = m;
 								m.children.add(mi);
@@ -136,7 +136,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				}
 			} else {
 				projects = null;
-				root = new MyTreeItem();
+				root = new DebugTreeItem();
 			}
 		}
 
@@ -148,13 +148,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			MyTreeItem item = (MyTreeItem) parentElement;
+			DebugTreeItem item = (DebugTreeItem) parentElement;
 			return item.children.toArray();
 		}
 
 		public Object getParent(Object element) {
-			if (element instanceof MyTreeItem) {
-				return ((MyTreeItem) element).parent;
+			if (element instanceof DebugTreeItem) {
+				return ((DebugTreeItem) element).parent;
 			}
 			return null;
 		}
@@ -204,7 +204,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(final CheckStateChangedEvent event) {
-				MyTreeItem item = (MyTreeItem) event.getElement();
+				DebugTreeItem item = (DebugTreeItem) event.getElement();
 				boolean checked = event.getChecked();
 
 				if (checked) {
@@ -213,7 +213,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 							interpretedModules.add((IErlModule) item.item);
 						}
 					} else {
-						for (MyTreeItem c : item.children) {
+						for (DebugTreeItem c : item.children) {
 							if (!interpretedModules.contains(c.item)) {
 								interpretedModules.add((IErlModule) c.item);
 							}
@@ -223,21 +223,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					if (item.item instanceof IErlModule) {
 						interpretedModules.remove(item.item);
 					} else {
-						for (MyTreeItem c : item.children) {
+						for (DebugTreeItem c : item.children) {
 							interpretedModules.remove(c.item);
 						}
 					}
 				}
 
-				for (IErlElement ee : interpretedModules) {
-					System.out.println("- " + ee);
-				}
-				System.out.println("/// " + item.item + " " + checked);
-
 				checkboxTreeViewer.setSubtreeChecked(item, checked);
 				// set gray state of the element's category subtree, all items
 				// should not be grayed
-				for (MyTreeItem i : item.children) {
+				for (DebugTreeItem i : item.children) {
 					checkboxTreeViewer.setGrayed(i, false);
 				}
 				checkboxTreeViewer.setGrayed(item, false);
@@ -257,7 +252,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		tree.setLayoutData(gd_tree);
 	}
 
-	void updateMenuCategoryCheckedState(MyTreeItem item) {
+	void updateMenuCategoryCheckedState(DebugTreeItem item) {
 		if (item == null) {
 			return;
 		}
@@ -306,7 +301,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		if (checkboxTreeViewer != null) {
 			checkboxTreeViewer.setInput(config);
 			checkboxTreeViewer.expandAll();
-			MyTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+			DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
 					.getContentProvider()).root;
 			setchecked(root, interpretedModules);
 		} else {
@@ -314,11 +309,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
-	private void setchecked(MyTreeItem item, List<IErlModule> list) {
+	private void setchecked(DebugTreeItem item, List<IErlModule> list) {
 		if (list.contains(item.item)) {
 			checkboxTreeViewer.setChecked(item, true);
 		}
-		for (MyTreeItem c : item.children) {
+		for (DebugTreeItem c : item.children) {
 			setchecked(c, list);
 			updateMenuCategoryCheckedState(item);
 		}

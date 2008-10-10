@@ -152,8 +152,8 @@ public final class BackendManager implements IResourceChangeListener,
 		synchronized (fBuildBackendsLock) {
 			final RuntimeInfo info = getRuntimeInfo(project);
 			if (info == null) {
-				ErlLogger.info("Project %s has no runtime info, using ide",
-						project.getName());
+				// ErlLogger.info("Project %s has no runtime info, using ide",
+				// project.getName());
 				if (fLocalBackend == null) {
 					throw new BackendException(
 							"IDE backend is not created - check configuration!");
