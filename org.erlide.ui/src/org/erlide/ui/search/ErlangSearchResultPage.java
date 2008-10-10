@@ -347,8 +347,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
+		 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
 		 */
 		@Override
 		public int category(final Object element) {
@@ -516,21 +515,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		fActionGroup.setContext(new ActionContext(getSite()
 				.getSelectionProvider().getSelection()));
 		fActionGroup.fillContextMenu(mgr);
-		// final ErlSearchQuery query = (ErlSearchQuery) getInput().getQuery();
-		// if (!"".equals(query.getSearchString())) { //$NON-NLS-1$
-		// ReplaceAction2 replaceAction = new ReplaceAction2(this,
-		// (IStructuredSelection) getViewer().getSelection());
-		// if (replaceAction.isEnabled()) {
-		// mgr.appendToGroup(IContextMenuConstants.GROUP_REORGANIZE,
-		// replaceAction);
-		// }
-		//
-		// ReplaceAction2 replaceAll = new ReplaceAction2(this);
-		// if (replaceAll.isEnabled()) {
-		// mgr.appendToGroup(IContextMenuConstants.GROUP_REORGANIZE,
-		// replaceAll);
-		// }
-		// }
 	}
 
 	private void addSortActions(final IMenuManager mgr) {

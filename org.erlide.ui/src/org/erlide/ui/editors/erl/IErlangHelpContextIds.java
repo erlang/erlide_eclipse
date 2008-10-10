@@ -26,4 +26,10 @@ public class IErlangHelpContextIds {
 
 	public static final String OPEN_INCLUDE_FILE_ACTION = "openIncludeFile";
 
+	// public static final String FILTER_FIELDS_ACTION = "filterFields";
+	//
+	// public static final String FILTER_STATIC_ACTION = "filterStatic";
+
+	public static final String FILTER_LOCAL_FUNCTIONS_ACTION = "filterLocalFunctions";
+
 }

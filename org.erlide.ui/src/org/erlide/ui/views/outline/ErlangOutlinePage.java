@@ -174,6 +174,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	private ErlangOutlineViewer fOutlineViewer;
 
+	private MemberFilterActionGroup fMemberFilterActionGroup;
+
 	/**
 	 * 
 	 * @param documentProvider
@@ -314,13 +316,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	@Override
 	public void dispose() {
-		if (fEditor == null) {
-			return;
+		if (fEditor != null) {
+			fEditor.outlinePageClosed();
+			fEditor = null;
 		}
-
-		fEditor.outlinePageClosed();
-		fEditor = null;
-
+		if (fMemberFilterActionGroup != null) {
+			fMemberFilterActionGroup.dispose();
+			fMemberFilterActionGroup = null;
+		}
 		ErlangCore.getModel().removeModelChangeListener(this);
 
 		super.dispose();
@@ -340,6 +343,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		final ViewerComparator vc = new ErlElementSorter();
 		toolBarManager.add(new SortAction(getTreeViewer(), fToolTipText, vc,
 				null, false, ErlideUIPlugin.getDefault().getPreferenceStore()));
+		fMemberFilterActionGroup = new MemberFilterActionGroup(fOutlineViewer,
+				"org.eclipse.jdt.ui.JavaOutlinePage"); //$NON-NLS-1$
+		fMemberFilterActionGroup.contributeToToolBar(toolBarManager);
 	}
 
 	public void sort(final boolean sorting) {

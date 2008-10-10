@@ -32,4 +32,28 @@ public class ActionMessages extends NLS {
 	public static final String IndentAction_error_message = "indent action";
 
 	public static final String OpenIncludeFileAction_label = "Open Include File";
+
+	// public static final String MemberFilterActionGroup_hide_fields_label =
+	// "Hide Fields";
+	//
+	// public static final String
+	// MemberFilterActionGroup_hide_fields_description = "Hide fields desc";
+	//
+	// public static final String MemberFilterActionGroup_hide_fields_tooltip =
+	// "Hide";
+	//
+	// public static final String MemberFilterActionGroup_hide_static_label =
+	// "Hide static";
+	//
+	// public static final String
+	// MemberFilterActionGroup_hide_static_description = "Hide Static desc";
+	//
+	// public static final String MemberFilterActionGroup_hide_static_tooltip =
+	// "Hide";
+
+	public static final String MemberFilterActionGroup_hide_local_functions_label = "Hide Local Functions";
+
+	public static final String MemberFilterActionGroup_hide_local_functions_description = "Hide Local Functions";
+
+	public static final String MemberFilterActionGroup_hide_local_functions_tooltip = "Hide Local Functions";
 }
