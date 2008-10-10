@@ -178,6 +178,9 @@ get_attribute_args(import, Between, _Args) ->
     From = get_first_of_kind(atom, Between),
     Tokens = get_between(Between, '[', ']'),
     {From, fun_arity_from_tokens(Tokens)};
+get_attribute_args(export, Between, _Args) ->
+    Tokens = get_between(Between, '[', ']'),
+    fun_arity_from_tokens(Tokens);
 get_attribute_args(_, _Between, Args) ->
     Args.
 

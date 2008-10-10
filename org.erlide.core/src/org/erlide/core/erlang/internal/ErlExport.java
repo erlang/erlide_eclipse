@@ -1,13 +1,15 @@
 package org.erlide.core.erlang.internal;
 
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
-import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.IErlModule;
 
-public class ErlExport extends ErlMember implements IErlExport, IParent {
+import com.ericsson.otp.erlang.OtpErlangList;
 
-	protected ErlExport(IErlElement parent) {
-		super(parent, "export");
+public class ErlExport extends ErlImportExport implements IErlExport {
+
+	protected ErlExport(final IErlModule module,
+			final OtpErlangList functionList) {
+		super(module, "export", functionList);
 	}
 
 	public Kind getKind() {

@@ -298,30 +298,9 @@ public class ErlParser {
 					return imp;
 				}
 			}
-			// ErlImport imp = new ErlImport(val);
 		} else if ("export".equals(name.atomValue())) {
-			// OtpErlangList exportList = (OtpErlangList) val;
-			final ErlExport ex = new ErlExport(parent);
-			// ErlExportFunction[] funs = new
-			// ErlExportFunction[exportList.arity()];
-			// for (int i = 0; i < exportList.arity(); i++)
-			// {
-			// ErlLogger.debug(" exportFun: " + exportList.elementAt(i));
-			// OtpErlangTuple xf = (OtpErlangTuple)exportList.elementAt(i);
-			// String funName = ((OtpErlangAtom)xf.elementAt(0)).atomValue();
-			// try {
-			// int funArity = ((OtpErlangLong)xf.elementAt(1)).intValue();
-			// funs[i] = new ErlExportFunction(ex, funName, funArity);
-			// //pos = ((OtpErlangTuple) (clauses.elementAt(i))).elementAt(1);
-			// // OtpErlangList args = (OtpErlangList)
-			// // ((OtpErlangTuple)(clauses.elementAt(i))).elementAt(2);
-			// funs[i].setParseTree(exportList.elementAt(i));
-			// setPos(funs[i], pos);
-			// } catch (OtpErlangRangeException e) {
-			// e.printStackTrace();
-			// }
-			// }
-			// ex.setChildren(funs);
+			final OtpErlangList functionList = (OtpErlangList) val;
+			final ErlExport ex = new ErlExport(parent, functionList);
 			setPos(ex, pos);
 			// ex.setParseTree(val);
 			return ex;

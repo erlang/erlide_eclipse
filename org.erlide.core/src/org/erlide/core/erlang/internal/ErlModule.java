@@ -21,6 +21,7 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
@@ -272,7 +273,19 @@ public class ErlModule extends Openable implements IErlModule {
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
 				final IErlImport ei = (IErlImport) m;
-				if (ei.hasImported(function)) {
+				if (ei.hasFunction(function)) {
+					return ei;
+				}
+			}
+		}
+		return null;
+	}
+
+	public IErlExport findExport(final ErlangFunction function) {
+		for (final IErlElement m : fChildren) {
+			if (m instanceof IErlExport) {
+				final IErlExport ei = (IErlExport) m;
+				if (ei.hasFunction(function)) {
 					return ei;
 				}
 			}
@@ -335,6 +348,15 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void fixExportedFunctions() {
+		try {
+			final List<? extends IErlElement> functions = getChildrenOfType(IErlElement.Kind.FUNCTION);
+			for (final IErlElement erlElement : functions) {
+				final ErlFunction f = (ErlFunction) erlElement;
+				final boolean exported = findExport(f.getFunction()) != null;
+				f.setExported(exported);
+			}
+		} catch (final ErlModelException e) {
+		}
 	}
 
 	public void reconcileText(final int offset, final int removeLength,
