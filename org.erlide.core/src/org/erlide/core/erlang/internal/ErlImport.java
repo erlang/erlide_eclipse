@@ -13,7 +13,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlImport extends ErlMember implements IErlImport, IParent {
@@ -27,30 +26,24 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 	 * @param imports
 	 * @param module
 	 */
-	protected ErlImport(IErlElement parent, String importModule,
-			ErlangFunction[] imports) {
+	protected ErlImport(final IErlElement parent, final String importModule,
+			final ErlangFunction[] imports) {
 		super(parent, "import");
 		fImportModule = importModule;
 		fFunctions = new ArrayList<ErlangFunction>(imports.length);
-		for (ErlangFunction element : imports) {
+		for (final ErlangFunction element : imports) {
 			fFunctions.add(element);
 		}
 	}
 
-	public ErlImport(IErlModule parent, String importModule,
-			OtpErlangList functionList) {
+	public ErlImport(final IErlModule parent, final String importModule,
+			final OtpErlangList functionList) {
 		super(parent, "import");
 		fImportModule = importModule;
-		final int n = functionList.arity();
-		fFunctions = new ArrayList<ErlangFunction>(n);
-		for (int i = 0; i < n; ++i) {
-			final OtpErlangTuple function = (OtpErlangTuple) functionList
-					.elementAt(i);
-			try {
-				fFunctions.add(new ErlangFunction(function));
-			} catch (final OtpErlangRangeException e) {
-				--i;
-			}
+		fFunctions = new ArrayList<ErlangFunction>(functionList.arity());
+		for (final OtpErlangObject i : functionList.elements()) {
+			final OtpErlangTuple function = (OtpErlangTuple) i;
+			fFunctions.add(new ErlangFunction(function));
 		}
 	}
 
@@ -62,7 +55,7 @@ public class ErlImport extends ErlMember implements IErlImport, IParent {
 		return fImportModule;
 	}
 
-	public boolean hasImported(ErlangFunction f) {
+	public boolean hasImported(final ErlangFunction f) {
 		return fFunctions.contains(f);
 	}
 

@@ -133,19 +133,20 @@ public class ErlideNoparse {
 					try {
 						final IErlFunction f = getFunction(module, fun
 								.atomValue(), ar.intValue());
-						final OtpErlangObject o2 = t2.elementAt(1);
-						if (o2 instanceof OtpErlangList) {
-							final OtpErlangList l = (OtpErlangList) o2;
-							addToList(result, f, l);
-						} else if (o2 instanceof OtpErlangTuple) {
-							final OtpErlangTuple ct = (OtpErlangTuple) o2;
-							final OtpErlangString cl = (OtpErlangString) ct
-									.elementAt(0);
-							final OtpErlangList l = (OtpErlangList) ct
-									.elementAt(1);
-							final IErlFunctionClause c = getClause(f, cl
-									.stringValue());
-							addToList(result, c, l);
+						final OtpErlangList l = (OtpErlangList) t2.elementAt(1);
+						for (final OtpErlangObject j : l.elements()) {
+							if (j instanceof OtpErlangList) {
+								addToList(result, f, (OtpErlangList) j);
+							} else if (j instanceof OtpErlangTuple) {
+								final OtpErlangTuple ct = (OtpErlangTuple) j;
+								final OtpErlangString cl = (OtpErlangString) ct
+										.elementAt(0);
+								final OtpErlangList ll = (OtpErlangList) ct
+										.elementAt(1);
+								final IErlFunctionClause c = getClause(f, cl
+										.stringValue());
+								addToList(result, c, ll);
+							}
 						}
 					} catch (final OtpErlangRangeException e1) {
 						continue;

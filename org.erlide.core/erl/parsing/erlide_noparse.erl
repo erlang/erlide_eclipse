@@ -156,9 +156,10 @@ cac(attribute, Attribute) ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
-            Extra = to_string(get_between_outer_pars(Attribute)),
+            Between = get_between_outer_pars(Attribute),
+            Extra = to_string(Between),
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=Args, extra=Extra};
+                       name=Name, args=get_attribute_args(Name, Between, Args), extra=Extra};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
@@ -173,6 +174,13 @@ cac(_, _D) ->
 	?D(_D),
 	eof.
 
+get_attribute_args(import, Between, _Args) ->
+    From = get_first_of_kind(atom, Between),
+    Tokens = get_between(Between, '[', ']'),
+    {From, fun_arity_from_tokens(Tokens)};
+get_attribute_args(_, _Between, Args) ->
+    Args.
+
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
@@ -180,6 +188,21 @@ check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
 check_class(_) ->
     ?D(x),
     other.
+
+get_first_of_kind(_Kind, []) ->
+    undefined;
+get_first_of_kind(Kind, [#token{kind=Kind, value=Value} | _]) ->
+    Value;
+get_first_of_kind(Kind, [_ | Rest]) ->
+    get_first_of_kind(Kind, Rest).
+
+fun_arity_from_tokens([#token{kind=atom, value=Fun}, #token{kind='/'}, 
+                       #token{kind=integer, value=Arity} | Rest]) ->
+    [{Fun, Arity} | fun_arity_from_tokens(Rest)];
+fun_arity_from_tokens([_ | Rest]) ->
+    fun_arity_from_tokens(Rest);
+fun_arity_from_tokens(_) ->
+    [].
 
 to_string(Tokens) ->
     S = erlide_scanner2:tokens_to_string(Tokens),
@@ -563,7 +586,7 @@ find_call_x([_ | Rest], MFA, Acc) ->
     find_call_x(Rest, MFA, Acc).
 
 do_xdump(Modules) ->
-    [{Module#module.name, do_xdump1(Module)} || Module <- Modules].
+    [{Module#module.name, Module#module.erlide_path, do_xdump1(Module)} || Module <- Modules].
 
 do_xdump1(#module{model=M}) ->
     Forms = M#model.forms,

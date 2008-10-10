@@ -15,13 +15,13 @@ public class ErlangFunction {
 	 * @param name
 	 * @param arity
 	 */
-	public ErlangFunction(String name, int arity) {
+	public ErlangFunction(final String name, final int arity) {
 		super();
 		this.name = name;
 		this.arity = arity;
 	}
 
-	public ErlangFunction(OtpErlangTuple tuple) throws OtpErlangRangeException {
+	public ErlangFunction(final OtpErlangTuple tuple) {
 		OtpErlangAtom a;
 		OtpErlangLong l;
 		if (tuple.arity() == 2) {
@@ -32,20 +32,20 @@ public class ErlangFunction {
 			l = (OtpErlangLong) tuple.elementAt(3);
 		}
 		name = a.atomValue();
-		arity = l.intValue();
+		try {
+			arity = l.intValue();
+		} catch (final OtpErlangRangeException e) {
+			arity = 0;
+		}
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof String) {
 			return toString().equals(obj);
 		}
 		if (obj instanceof OtpErlangTuple) {
-			try {
-				return new ErlangFunction((OtpErlangTuple) obj).equals(this);
-			} catch (final OtpErlangRangeException e) {
-				return false;
-			}
+			return new ErlangFunction((OtpErlangTuple) obj).equals(this);
 		}
 		if (obj instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) obj;
