@@ -24,9 +24,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * Represents an entire Erlang compilation unit (<code>.erl</code> or
  * <code>.hrl</code> source file). Compilation unit elements need to be opened
  * before they can be navigated or manipulated. The children are of type
- * <code>IErlAttribute</code>, and <code>IErlFunction</code>, and appear
- * in the order in which they are declared in the source. If a <code>.erl</code>
- * file cannot be parsed, its structure remains unknown. Use
+ * <code>IErlAttribute</code>, and <code>IErlFunction</code>, and appear in the
+ * order in which they are declared in the source. If a <code>.erl</code> file
+ * cannot be parsed, its structure remains unknown. Use
  * <code>IErlElement.isStructureKnown</code> to determine whether this is the
  * case.
  * <p>
@@ -42,9 +42,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	/**
 	 * Returns the smallest element within this module that includes the given
 	 * source position (that is, a clause, attribute, etc.), or
-	 * <code>null</code> if there is no element other than the compilation
-	 * unit itself at the given position, or if the given position is not within
-	 * the source range of this compilation unit.
+	 * <code>null</code> if there is no element other than the compilation unit
+	 * itself at the given position, or if the given position is not within the
+	 * source range of this compilation unit.
 	 * 
 	 * @param position
 	 *            a source position inside the compilation unit
@@ -102,7 +102,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type);
 
-	List<ErlangIncludeFile> getIncludedFiles();
+	List<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
 
 	IErlScanner getScanner();
 

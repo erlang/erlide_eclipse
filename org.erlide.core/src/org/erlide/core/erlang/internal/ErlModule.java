@@ -307,7 +307,10 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
-	public List<ErlangIncludeFile> getIncludedFiles() {
+	public List<ErlangIncludeFile> getIncludedFiles() throws ErlModelException {
+		if (!isStructureKnown) {
+			open(null);
+		}
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlAttribute) {

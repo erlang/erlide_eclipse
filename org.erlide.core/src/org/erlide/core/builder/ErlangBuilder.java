@@ -49,6 +49,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -159,7 +160,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -276,6 +277,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			if (resource instanceof IFile) {
 				deleteMarkersWithCompiledFile(resource.getProject(),
 						(IFile) resource);
+				// should we delete markers for dependent hrl files?
 			}
 		} catch (final CoreException ce) {
 		}
@@ -425,11 +427,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				project);
 
 		deleteMarkers(resource);
-		// try {
-		// resource.deleteMarkers(PROBLEM_MARKER, true,
-		// IResource.DEPTH_INFINITE);
-		// } catch (final CoreException e1) {
-		// }
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
 			addMarker(
@@ -445,11 +442,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		final String outputDir = projectPath.append(prefs.getOutputDir())
 				.toString();
-		// TODO leave this in place??
-		// if (BackendManager.isDeveloper()) {
-		// IBackend b = BackendManager.getDefault().get(project);
-		// outputDir += "/" + b.getCurrentVersion();
-		// }
 		ensureDirExists(outputDir);
 
 		List<String> includeDirs = getIncludeDirs(project,
@@ -474,12 +466,38 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		IResource br = project.findMember(beam);
 
 		try {
-			if (br == null
-					|| br.getLocalTimeStamp() < resource.getLocalTimeStamp()) {
+			boolean shouldCompile = (br == null);
+
+			if (br != null) {
+				IErlProject eprj = ErlangCore.getModel().findErlangProject(
+						project);
+				IErlModule m = eprj.getModule(resource.getName());
+				List<ErlangIncludeFile> incs = m.getIncludedFiles();
+				for (ErlangIncludeFile ifile : incs) {
+					IResource rifile = findResourceByName(project, ifile
+							.getFilename());
+					if (rifile != null
+							&& (rifile.getLocalTimeStamp() > br
+									.getLocalTimeStamp())) {
+						shouldCompile = true;
+						break;
+					}
+				}
+			}
+
+			if (br != null) {
+				shouldCompile |= (br.getLocalTimeStamp() < resource
+						.getLocalTimeStamp());
+			}
+
+			if (shouldCompile) {
 				if (br != null) {
 					br.delete(true, null);
 				}
 
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("compiling %s", resource.getName());
+				}
 				OtpErlangObject r;
 				r = compileFile(project, resource.getLocation().toString(),
 						outputDir, includeDirs);
@@ -522,8 +540,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
 				addErrorMarkers(getMarkerGenerator(), resource, l);
 			} else {
-				ErlLogger.debug("skipping %s (beam is newer)", resource
-						.getName());
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("skipping %s", resource.getName());
+				}
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -629,6 +648,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		erl = erl.addFileExtension("erl").setDevice(null);
 		IResource br = project.findMember(erl);
 
+		// TODO check timestamps!
+
 		try {
 			if (br != null) {
 				br.delete(true, null);
@@ -696,6 +717,20 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
+	private boolean isInIncludedPath(IResource resource, IProject my_project) {
+		List<String> inc = new ArrayList<String>();
+		getIncludeDirs(my_project, inc);
+
+		for (String s : inc) {
+			IPath p = new Path(s);
+			IPath resourcePath = resource.getLocation();
+			if (p.isPrefixOf(resourcePath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	static boolean isInOutputPath(final IResource resource,
 			final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -705,6 +740,15 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final String out = prefs.getOutputDir();
 		return projectPath.append(new Path(out)).isPrefixOf(
 				resource.getLocation());
+	}
+
+	private static boolean comparePath(String p1, String p2) {
+		boolean WINDOWS = java.io.File.separatorChar == '\\';
+		if (WINDOWS) {
+			return p1.equalsIgnoreCase(p2);
+		} else {
+			return p1.equals(p2);
+		}
 	}
 
 	/**
@@ -723,7 +767,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final String fileName = ((OtpErlangString) data.elementAt(1))
 					.stringValue();
 			IResource res = resource;
-			if (!resource.getLocation().toString().equals(fileName)) {
+			if (!comparePath(resource.getLocation().toString(), fileName)) {
 				res = findResource(resource.getProject(), fileName);
 				if (res == null) {
 					res = resource;
@@ -762,7 +806,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			final String fileName) {
 		try {
 			for (final IResource r : container.members()) {
-				if (r.getLocation().toString().equals(fileName)) {
+				if (comparePath(r.getLocation().toString(), fileName)) {
 					return r;
 				}
 				if (r instanceof IContainer) {
@@ -773,7 +817,27 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 			}
 		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static IResource findResourceByName(final IContainer container,
+			final String fileName) {
+		try {
+			for (final IResource r : container.members()) {
+				if (comparePath(r.getName(), fileName)) {
+					return r;
+				}
+				if (r instanceof IContainer) {
+					final IResource res = findResourceByName((IContainer) r,
+							fileName);
+					if (res != null) {
+						return res;
+					}
+				}
+			}
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -801,8 +865,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -830,8 +895,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {
@@ -852,8 +918,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
-					// handle added resource
-					compileFile(my_project, resource);
+				case IResourceDelta.CHANGED:
+					// handle changed resource
+					if (!resource.isDerived()) {
+						compileFile(my_project, resource);
+					}
 					break;
 				case IResourceDelta.REMOVED:
 					// handle removed resource
@@ -877,14 +946,42 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					}
 
 					break;
+				}
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("...worked... " + resource);
+				}
+				mon.worked(1);
+			}
+			if (resource.getType() == IResource.FILE
+					&& resource.getFileExtension() != null
+					&& "hrl".equals(resource.getFileExtension())
+					&& isInIncludedPath(resource, my_project)) {
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("+++ Incr: " + resource.getName() + " "
+							+ delta.getKind());
+				}
+				switch (delta.getKind()) {
+				case IResourceDelta.ADDED:
+					break;
+				case IResourceDelta.REMOVED:
 				case IResourceDelta.CHANGED:
-					// handle changed resource
-					if (resource.isDerived()) {
-						// TODO what do we do here?
-						;
-					} else {
-						compileFile(my_project, resource);
+					deleteMarkers(resource);
+
+					IErlProject eprj = ErlangCore.getModel().findErlangProject(
+							my_project);
+					List<IErlModule> ms = eprj.getModules();
+					for (IErlModule m : ms) {
+						List<ErlangIncludeFile> incs = m.getIncludedFiles();
+						for (ErlangIncludeFile ifile : incs) {
+							System.out.println("@" + ifile.getFilename());
+							if (comparePath(ifile.getFilename(), resource
+									.getLocation().toString())) {
+								compileFile(my_project, m.getResource());
+								break;
+							}
+						}
 					}
+
 					break;
 				}
 				if (BuilderUtils.isDebugging()) {
@@ -902,11 +999,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
-					// handle added resource
+				case IResourceDelta.CHANGED:
 					compileYrlFile(my_project, resource);
 					break;
+
 				case IResourceDelta.REMOVED:
-					// handle removed resource
 					deleteMarkers(resource);
 
 					IPath erl = resource.getProjectRelativePath()
@@ -916,10 +1013,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					if (br != null) {
 						br.delete(true, null);
 					}
-					break;
-				case IResourceDelta.CHANGED:
-					// handle changed resource
-					compileYrlFile(my_project, resource);
 					break;
 				}
 				mon.worked(1);
@@ -931,7 +1024,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
-					// what to do here?
 					break;
 				case IResourceDelta.REMOVED:
 					final ErlangFileVisitor searcher = new ErlangFileVisitor(
@@ -964,56 +1056,53 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			monitor = subMon;
 		}
 
-		public boolean visit(final IResource resource) {
+		public boolean visit(final IResource resource) throws CoreException {
 			if (monitor.isCanceled()) {
 				return false;
 			}
 			final IProject my_project = resource.getProject();
-			// final ErlangProjectProperties prefs = new
-			// ErlangProjectProperties(my_project);
 
-			// monitor.worked(1);
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+					&& isInExtCodePath(resource, my_project)
+					&& !resource.isDerived()) {
 
 				try {
 					if (BuilderUtils.isDebugging()) {
 						ErlLogger.debug("Full: " + resource.getName());
 					}
-					// we should skip it is the beam file already exists and
-					// timestamp is
-					// recent
-					final long timestamp = ((IFile) resource)
-							.getLocalTimeStamp();
-					long moduletimestamp = 0;
-
-					final IErlProject prj = ErlangCore.getModel()
-							.findErlangProject(resource.getProject());
-					if (prj != null) {
-						IErlModule mod = null;
-						mod = prj.getModule(resource.getName());
-						if (mod != null) {
-							moduletimestamp = mod.getTimestamp();
-						}
-					}
-					// if (timestamp > moduletimestamp)
-					{
-						if (BuilderUtils.isDebugging()) {
-							ErlLogger.debug(" recompiling "
-									+ resource.getName() + " " + timestamp
-									+ " " + moduletimestamp);
-						}
-						compileFile(resource.getProject(), resource);
-						if (BuilderUtils.isDebugging()) {
-							ErlLogger.debug("...worked... " + resource);
-						}
-						monitor.worked(1);
-					}
+					compileFile(resource.getProject(), resource);
+					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
+			}
+			if (resource.getType() == IResource.FILE
+					&& resource.getFileExtension() != null
+					&& "hrl".equals(resource.getFileExtension())
+					&& isInIncludedPath(resource, my_project)) {
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("Full: " + resource.getName());
+				}
+				deleteMarkers(resource);
+
+				IErlProject eprj = ErlangCore.getModel().findErlangProject(
+						my_project);
+				if (eprj != null) {
+					List<IErlModule> ms = eprj.getModules();
+					for (IErlModule m : ms) {
+						List<ErlangIncludeFile> incs = m.getIncludedFiles();
+						for (ErlangIncludeFile ifile : incs) {
+							if (comparePath(ifile.getFilename(), resource
+									.getName())) {
+								compileFile(my_project, m.getResource());
+								break;
+							}
+						}
+					}
+				}
+
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -1024,30 +1113,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					if (BuilderUtils.isDebugging()) {
 						ErlLogger.debug("Full: " + resource.getName());
 					}
-					// we should skip it is the beam file already exists and
-					// timestamp is
-					// recent
-					final long timestamp = ((IFile) resource)
-							.getLocalTimeStamp();
-					long erltimestamp = 0;
-
-					IPath erl = resource.getProjectRelativePath()
-							.removeFileExtension();
-					erl = erl.addFileExtension("erl").setDevice(null);
-					final IResource br = my_project.findMember(erl);
-					if (br != null) {
-						erltimestamp = br.getLocalTimeStamp();
-					}
-					// if (timestamp > moduletimestamp)
-					{
-						if (BuilderUtils.isDebugging()) {
-							ErlLogger.debug(" recompiling "
-									+ resource.getName() + " " + timestamp
-									+ " " + erltimestamp);
-						}
-						compileYrlFile(resource.getProject(), resource);
-						monitor.worked(1);
-					}
+					compileYrlFile(resource.getProject(), resource);
+					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -1059,6 +1126,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 			return true;
 		}
+
 	}
 
 	static class ErlangFileVisitor implements IResourceVisitor {
@@ -1216,7 +1284,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		if (BuilderUtils.isDebugging()) {
 			System.out
 					.println("\nStarting build of " + currentProject.getName() //$NON-NLS-1$
-							+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
+							+ " @ " + new Date(System.currentTimeMillis()));
 		}
 		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
@@ -1236,9 +1304,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 			}
 		} catch (final CoreException e) {
-			log(
-					e,
-					"JavaBuilder handling CoreException while building: " + currentProject.getName()); //$NON-NLS-1$
+			log(e, "JavaBuilder handling CoreException while building: "
+					+ currentProject.getName());
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
 					BuilderMessages.build_inconsistentProject, e
@@ -1250,7 +1317,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 		return null;
 	}
@@ -1269,7 +1336,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
@@ -1281,9 +1348,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			// new BatchImageBuilder(this).cleanOutputFolders(false);
 		} catch (final CoreException e) {
 
-			log(
-					e,
-					"JavaBuilder handling CoreException while cleaning: " + currentProject.getName()); //$NON-NLS-1$
+			log(e, "JavaBuilder handling CoreException while cleaning: "
+					+ currentProject.getName());
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
 					BuilderMessages.build_inconsistentProject, e
@@ -1295,7 +1361,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis())); //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 	}
 
