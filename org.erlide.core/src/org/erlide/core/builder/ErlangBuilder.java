@@ -200,11 +200,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	private void checkForClashes() throws BackendException {
-		try {
-			getProject().deleteMarkers(PROBLEM_MARKER, true,
-					IResource.DEPTH_ZERO);
-		} catch (final CoreException e1) {
-		}
+		// try {
+		// getProject().deleteMarkers(PROBLEM_MARKER, true,
+		// IResource.DEPTH_ZERO);
+		// } catch (final CoreException e1) {
+		// }
 
 		final BuildBackend b = BackendManager.getDefault().getBuild(
 				getProject());
@@ -965,23 +965,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					break;
 				case IResourceDelta.REMOVED:
 				case IResourceDelta.CHANGED:
-					deleteMarkers(resource);
-
-					IErlProject eprj = ErlangCore.getModel().findErlangProject(
-							my_project);
-					List<IErlModule> ms = eprj.getModules();
-					for (IErlModule m : ms) {
-						List<ErlangIncludeFile> incs = m.getIncludedFiles();
-						for (ErlangIncludeFile ifile : incs) {
-							System.out.println("@" + ifile.getFilename());
-							if (comparePath(ifile.getFilename(), resource
-									.getLocation().toString())) {
-								compileFile(my_project, m.getResource());
-								break;
-							}
-						}
-					}
-
+					checkDependents(resource, my_project);
 					break;
 				}
 				if (BuilderUtils.isDebugging()) {
@@ -1046,6 +1030,24 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 			return true;
 		}
+
+	}
+
+	private void checkDependents(final IResource resource,
+			final IProject my_project) throws ErlModelException {
+		IErlProject eprj = ErlangCore.getModel().findErlangProject(my_project);
+		if (eprj != null) {
+			List<IErlModule> ms = eprj.getModules();
+			for (IErlModule m : ms) {
+				List<ErlangIncludeFile> incs = m.getIncludedFiles();
+				for (ErlangIncludeFile ifile : incs) {
+					if (comparePath(ifile.getFilename(), resource.getName())) {
+						compileFile(my_project, m.getResource());
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	class ErlangResourceVisitor implements IResourceVisitor {
@@ -1085,24 +1087,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("Full: " + resource.getName());
 				}
-				deleteMarkers(resource);
-
-				IErlProject eprj = ErlangCore.getModel().findErlangProject(
-						my_project);
-				if (eprj != null) {
-					List<IErlModule> ms = eprj.getModules();
-					for (IErlModule m : ms) {
-						List<ErlangIncludeFile> incs = m.getIncludedFiles();
-						for (ErlangIncludeFile ifile : incs) {
-							if (comparePath(ifile.getFilename(), resource
-									.getName())) {
-								compileFile(my_project, m.getResource());
-								break;
-							}
-						}
-					}
-				}
-
+				checkDependents(resource, my_project);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -1126,7 +1111,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 			return true;
 		}
-
 	}
 
 	static class ErlangFileVisitor implements IResourceVisitor {
