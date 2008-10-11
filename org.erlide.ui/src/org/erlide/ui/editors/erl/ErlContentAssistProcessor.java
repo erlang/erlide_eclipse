@@ -13,6 +13,7 @@ package org.erlide.ui.editors.erl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -23,12 +24,18 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -42,13 +49,15 @@ import erlang.ErlideDoc;
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final ISourceViewer sourceViewer;
 	String prefix;
+	private final IErlModule module;
 
 	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
 	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-			final String prefix) {
+			final String prefix, final IErlModule module) {
 		this.sourceViewer = sourceViewer;
 		this.prefix = prefix;
+		this.module = module;
 	}
 
 	// @Deprecated
@@ -70,22 +79,51 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
+		BuildBackend b = BackendManager.getDefault().getIdeBackend().asBuild();
+		if (module != null) {
+			try {
+				b = BackendManager.getDefault().getBuild(
+						(IProject) module.getProject().getResource());
+			} catch (final BackendException e) {
+			}
+		}
 		try {
 			final IDocument doc = viewer.getDocument();
-			final String aprefix = lastText(doc, offset);
+			final String prefix = lastText(doc, offset);
 			// final String indent = lastIndent(doc, offset);
 
-			final ArrayList<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-			final int k = aprefix.indexOf(':');
-			final BuildBackend b = BackendManager.getDefault()
-					.getIdeBackend().asBuild();
-			if (k >= 0) {
-				final String moduleName = aprefix.substring(0, k);
-				externalCallCompletions(moduleName, offset, aprefix
-						.substring(k + 1), result, k, b);
-				return result.toArray(new ICompletionProposal[result.size()]);
+			final int colonPos = prefix.indexOf(':');
+			final int hashMarkPos = prefix.indexOf('#');
+			final int dotPos = prefix.indexOf('.');
+			final int interrogationMarkPos = prefix.indexOf('?');
+			List<ICompletionProposal> result;
+			if (colonPos >= 0) {
+				final String moduleName = prefix.substring(0, colonPos);
+				result = externalCallCompletions(moduleName, offset, prefix
+						.substring(colonPos + 1), colonPos, b);
+			} else if (hashMarkPos >= 0) {
+				if (dotPos >= 0) {
+					final String recordName = prefix.substring(hashMarkPos + 1,
+							dotPos);
+					result = recordFieldCompletions(recordName, offset, prefix
+							.substring(dotPos + 1), hashMarkPos, b);
+				} else {
+					result = macroOrRecordCompletions(offset, prefix
+							.substring(hashMarkPos + 1), b,
+							IErlElement.Kind.RECORD_DEF);
+				}
+			} else if (interrogationMarkPos >= 0) {
+				result = macroOrRecordCompletions(offset, prefix
+						.substring(interrogationMarkPos + 1), b,
+						IErlElement.Kind.MACRO_DEF);
 			}
-			moduleCompletions(offset, aprefix, result, k, b);
+
+			else {
+				result = moduleCompletions(offset, prefix, colonPos, b);
+			}
+			if (result == null) {
+				return NO_COMPLETIONS;
+			}
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -93,9 +131,31 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private void moduleCompletions(final int offset, final String aprefix,
-			final List<ICompletionProposal> result, final int k,
-			final BuildBackend b) {
+	private List<ICompletionProposal> recordFieldCompletions(
+			final String recordName, final int offset, final String aprefix,
+			final int hashMarkPos, final BuildBackend b) {
+		if (module == null) {
+			return null;
+		}
+		final IProject project = (IProject) module.getProject().getResource();
+		final IErlRecordDef recordDef = (IErlRecordDef) ErlModelUtils
+				.findPreprocessorDef(b, project, module, recordName,
+						IErlElement.Kind.RECORD_DEF);
+		final List<String> fields = recordDef.getFields();
+		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(
+				fields.size());
+		for (final String field : fields) {
+			if (field.startsWith(aprefix)) {
+				result.add(new CompletionProposal(field, offset
+						- aprefix.length(), aprefix.length(), field.length()));
+			}
+		}
+		return result;
+	}
+
+	private List<ICompletionProposal> moduleCompletions(final int offset,
+			final String aprefix, final int k, final BuildBackend b) {
+		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
 		OtpErlangObject res = null;
@@ -114,18 +174,46 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 		}
+		return result;
 	}
 
-	private void externalCallCompletions(final String moduleName,
-			final int offset, final String aprefix,
-			final List<ICompletionProposal> result, final int k,
-			final BuildBackend b) throws ErlangRpcException, BackendException,
-			RpcException, OtpErlangRangeException {
+	/**
+	 * @param offset
+	 * @param prefix
+	 * @param b
+	 * @param kind
+	 * @return
+	 */
+	private List<ICompletionProposal> macroOrRecordCompletions(
+			final int offset, final String prefix, final BuildBackend b,
+			final Kind kind) {
+		if (module == null) {
+			return null;
+		}
+		final IProject project = (IProject) module.getProject().getResource();
+		final List<IErlPreprocessorDef> defs = ErlModelUtils
+				.getPreprocessorDefs(b, project, module, kind);
+		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
+		for (final IErlPreprocessorDef pd : defs) {
+			final String name = pd.getDefinedName();
+			if (name.startsWith(prefix)) {
+				result.add(new CompletionProposal(name, offset
+						- prefix.length(), prefix.length(), name.length()));
+			}
+		}
+		return result;
+	}
+
+	private List<ICompletionProposal> externalCallCompletions(
+			final String moduleName, final int offset, final String aprefix,
+			final int k, final BuildBackend b) throws ErlangRpcException,
+			BackendException, RpcException, OtpErlangRangeException {
 		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
 				moduleName, aprefix, stateDir);
+		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		// final OtpErlangObject res = ErlideDoc
 		// .getExported(b, prefix, moduleName);
 		if (res instanceof OtpErlangList) {
@@ -164,6 +252,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				result.add(c);
 			}
 		}
+		return result;
 	}
 
 	private List<Point> getOffsetsAndLengths(final OtpErlangList parOffsets,
@@ -187,7 +276,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
 				final char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c) && c != ':') {
+				if (!isErlangIdentifierChar(c) && c != ':' && c != '.'
+						&& c != '#' && c != '?') {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}
@@ -207,7 +297,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	public char[] getCompletionProposalAutoActivationCharacters() {
-		return new char[] { ':' };
+		return new char[] { ':', '?', '#' };
 	}
 
 	public char[] getContextInformationAutoActivationCharacters() {

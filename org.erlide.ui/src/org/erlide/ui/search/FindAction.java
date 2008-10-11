@@ -29,7 +29,7 @@ import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -213,7 +213,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 		// if (!ActionUtil.isProcessable(fEditor)) {
 		// return;
 		// }
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		// TODO how in the world can we find the proper build backend?
+		final BuildBackend b = BackendManager.getDefault().getIdeBackend()
+				.asBuild();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
@@ -305,7 +307,8 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	private void performNewSearch(final IErlElement element) {
-		final ErlangExternalFunctionCallRef ref = SearchUtil.getRefFromErlElement(element);
+		final ErlangExternalFunctionCallRef ref = SearchUtil
+				.getRefFromErlElement(element);
 		final ErlSearchQuery query = new ErlSearchQuery(ref,
 				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,
 				getScope());

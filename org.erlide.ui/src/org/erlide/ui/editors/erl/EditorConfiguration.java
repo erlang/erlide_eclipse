@@ -155,9 +155,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see
-	 * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
-	 * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
+	 *      (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
@@ -209,7 +208,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final ContentAssistant asst = new ContentAssistant();
 
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, ""), IDocument.DEFAULT_CONTENT_TYPE);
+					sourceViewer, "", editor.getModule()),
+					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);
@@ -235,8 +235,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see
-	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 	 * 
 	 * @since 2.0
 	 */

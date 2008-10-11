@@ -9,11 +9,9 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -34,6 +32,7 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -76,8 +75,14 @@ public class ErlTextHover implements ITextHover,
 		final int offset = hoverRegion.getOffset();
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		final BuildBackend b = BackendManager.getDefault().getIdeBackend()
-				.asBuild();
+		final IProject proj = (IProject) fModule.getProject().getResource();
+		BuildBackend b;
+		try {
+			b = BackendManager.getDefault().getBuild(proj);
+		} catch (final BackendException e1) {
+			e1.printStackTrace();
+			return null;
+		}
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
 		ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
@@ -98,17 +103,11 @@ public class ErlTextHover implements ITextHover,
 				final IErlElement.Kind kindToFind = a0.atomValue().equals(
 						"record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
-				try {
-					final IErlPreprocessorDef pd = ErlModelUtils
-							.findPreprocessorDef((IProject) fModule
-									.getProject().getResource(), fModule,
-									definedName, kindToFind,
-									new ArrayList<IErlModule>());
-					if (pd != null) {
-						return pd.getExtra();
-					}
-				} catch (final CoreException e) {
-					e.printStackTrace();
+				final IErlPreprocessorDef pd = ErlModelUtils
+						.findPreprocessorDef(b, proj, fModule, definedName,
+								kindToFind);
+				if (pd != null) {
+					return pd.getExtra();
 				}
 			}
 		}

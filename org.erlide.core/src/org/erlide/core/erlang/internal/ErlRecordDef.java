@@ -1,13 +1,22 @@
 package org.erlide.core.erlang.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.util.Util;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
 	String record;
 	String extra;
+	public List<String> fields;
 
 	/**
 	 * @param parent
@@ -15,10 +24,22 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 	 * @param module
 	 */
 	protected ErlRecordDef(final IErlElement parent, final String record,
-			final String extra) {
+			final String extra, final OtpErlangList fields) {
 		super(parent, "record_definition");
 		this.record = record;
 		this.extra = extra;
+		this.fields = new ArrayList<String>();
+		if (fields != null && fields.arity() > 0) {
+			for (final OtpErlangObject o : fields.elements()) {
+				final OtpErlangAtom a = (OtpErlangAtom) o;
+				this.fields.add(a.atomValue());
+			}
+		}
+	}
+
+	public ErlRecordDef(final IErlModule parent, final String recordName,
+			final String s) {
+		this(parent, recordName, s, null);
 	}
 
 	public Kind getKind() {
@@ -27,6 +48,10 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
 	public String getDefinedName() {
 		return record;
+	}
+
+	public List<String> getFields() {
+		return fields;
 	}
 
 	@Override

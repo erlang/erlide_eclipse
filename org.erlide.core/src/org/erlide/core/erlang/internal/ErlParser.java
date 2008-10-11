@@ -313,8 +313,10 @@ public class ErlParser {
 					final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
 							.stringValue()
 							: null;
+					final OtpErlangList l = (OtpErlangList) recordTuple
+							.elementAt(1);
 					final ErlRecordDef r = new ErlRecordDef(parent, recordName,
-							s);
+							s, l);
 					setPos(r, pos);
 					// r.setParseTree(val);
 					return r;

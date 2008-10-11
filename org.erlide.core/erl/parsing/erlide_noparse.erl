@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 9).
+-define(CACHE_VERSION, 10).
 -define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
@@ -181,6 +181,10 @@ get_attribute_args(import, Between, _Args) ->
 get_attribute_args(export, Between, _Args) ->
     Tokens = get_between(Between, '[', ']'),
     fun_arity_from_tokens(Tokens);
+get_attribute_args(record, Between, _Args) ->
+    RecordName = get_first_of_kind(atom, Between),
+    Tokens = get_between(Between, '{', '}'),
+    {RecordName, field_list_from_tokens(Tokens)};
 get_attribute_args(_, _Between, Args) ->
     Args.
 
@@ -192,19 +196,27 @@ check_class(_) ->
     ?D(x),
     other.
 
-get_first_of_kind(_Kind, []) ->
-    undefined;
-get_first_of_kind(Kind, [#token{kind=Kind, value=Value} | _]) ->
-    Value;
-get_first_of_kind(Kind, [_ | Rest]) ->
-    get_first_of_kind(Kind, Rest).
-
+get_first_of_kind(Kind, Tokens) ->
+    case skip_to(Tokens, Kind) of
+        [#token{kind=Kind, value=Value} | _] ->
+            Value;
+        _ ->
+            undefined
+    end.
+        
 fun_arity_from_tokens([#token{kind=atom, value=Fun}, #token{kind='/'}, 
                        #token{kind=integer, value=Arity} | Rest]) ->
     [{Fun, Arity} | fun_arity_from_tokens(Rest)];
 fun_arity_from_tokens([_ | Rest]) ->
     fun_arity_from_tokens(Rest);
 fun_arity_from_tokens(_) ->
+    [].
+
+field_list_from_tokens([#token{kind=atom, value=Field} | Rest]) ->
+    [Field | field_list_from_tokens(skip_to(Rest, ','))];
+field_list_from_tokens([_ | Rest]) ->
+    field_list_from_tokens(Rest);
+field_list_from_tokens(_) ->
     [].
 
 to_string(Tokens) ->

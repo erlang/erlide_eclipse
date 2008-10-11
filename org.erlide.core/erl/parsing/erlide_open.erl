@@ -245,7 +245,7 @@ find_first_var(Var, S) ->
         {'EXIT', _} ->
             error;
         Other ->
-            {ok, Other}
+            Other
     end.
 
 %% Local Functions

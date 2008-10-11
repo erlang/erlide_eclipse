@@ -307,8 +307,21 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
+	public List<IErlPreprocessorDef> getPreprocessorDefs(final Kind type) {
+		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
+		for (final IErlElement m : fChildren) {
+			if (m instanceof IErlPreprocessorDef) {
+				final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
+				if (pd.getKind().equals(type) || type.equals(Kind.ERROR)) {
+					res.add(pd);
+				}
+			}
+		}
+		return res;
+	}
+
 	public List<ErlangIncludeFile> getIncludedFiles() throws ErlModelException {
-		if (!isStructureKnown) {
+			if (!isStructureKnown) {
 			open(null);
 		}
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);

@@ -13,12 +13,13 @@ public class OpenResult {
 	private String fun;
 	private int arity;
 	private String path;
-	private boolean isRecord;
-	private boolean isMacro;
-	private boolean isLocalCall;
-	private boolean isInclude;
+	private boolean isRecord = false;
+	private boolean isMacro = false;
+	private boolean isLocalCall = false;
+	private boolean isInclude = false;
+	private boolean isVariable = false;
 
-	public OpenResult(OtpErlangObject res) {
+	public OpenResult(final OtpErlangObject res) {
 		if (!(res instanceof OtpErlangTuple)) {
 			return; // not a call, ignore
 		}
@@ -50,6 +51,11 @@ public class OpenResult {
 				isMacro = kind.equals("macro");
 				isRecord = kind.equals("record");
 				name = ((OtpErlangAtom) tres.elementAt(1)).atomValue();
+			} else if (kind.equals("variable")) {
+				isVariable = true;
+				final OtpErlangTuple t = (OtpErlangTuple) tres.elementAt(1);
+				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
+				name = a.atomValue();
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -92,6 +98,10 @@ public class OpenResult {
 		return isInclude;
 	}
 
+	public boolean isVariable() {
+		return isVariable;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -117,4 +127,5 @@ public class OpenResult {
 		b.append("}");
 		return b.toString();
 	}
+
 }

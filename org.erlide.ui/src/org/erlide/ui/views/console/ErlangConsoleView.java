@@ -621,13 +621,13 @@ public class ErlangConsoleView extends ViewPart implements
 			// TODO vi vill ha in en punkt här, men den får return till
 			// styledtext o skickar allt för tidigt...
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, ""), IDocument.DEFAULT_CONTENT_TYPE);
+					sourceViewer, "", null), IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);
 			asst.enableAutoInsert(true);
 			asst.enablePrefixCompletion(false);
-			//asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
+			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
 			// );
 
 			asst
@@ -647,8 +647,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		/*
-		 * @see
-		 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 		 * 
 		 * @since 2.0
 		 */

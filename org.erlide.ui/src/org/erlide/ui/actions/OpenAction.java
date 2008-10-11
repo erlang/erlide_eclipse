@@ -39,22 +39,27 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IErlangStatusConstants;
 
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideDoc;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
@@ -62,7 +67,8 @@ import erlang.OpenResult;
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
+ * <code>ICompilationUnit</code>, <code>IMember</code> or
+ * <code>IFile</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -82,12 +88,12 @@ public class OpenAction extends SelectionDispatchAction {
 	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
 	 * 
 	 * @param site
-	 * 		the site providing context information for this action
+	 *            the site providing context information for this action
 	 * @param externalModules
-	 * 		the externalModules file that can be searched for references to
-	 * 		external modules
+	 *            the externalModules file that can be searched for references
+	 *            to external modules
 	 */
-	public OpenAction(IWorkbenchSite site, String externalModules) {
+	public OpenAction(final IWorkbenchSite site, final String externalModules) {
 		super(site);
 		fExternalModules = externalModules;
 		setText(ActionMessages.OpenAction_label);
@@ -98,7 +104,7 @@ public class OpenAction extends SelectionDispatchAction {
 
 	}
 
-	public OpenAction(ErlangEditor editor, String externalModules) {
+	public OpenAction(final ErlangEditor editor, final String externalModules) {
 		this(editor.getEditorSite(), externalModules);
 		fEditor = editor;
 		fExternalModules = externalModules;
@@ -121,18 +127,18 @@ public class OpenAction extends SelectionDispatchAction {
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
 	 */
 	@Override
-	public void selectionChanged(ITextSelection selection) {
+	public void selectionChanged(final ITextSelection selection) {
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
 	 */
 	@Override
-	public void selectionChanged(IStructuredSelection selection) {
+	public void selectionChanged(final IStructuredSelection selection) {
 		setEnabled(checkEnabled(selection));
 	}
 
-	private boolean checkEnabled(IStructuredSelection selection) {
+	private boolean checkEnabled(final IStructuredSelection selection) {
 		if (selection.isEmpty()) {
 			return false;
 		}
@@ -156,7 +162,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
 	 */
 	@Override
-	public void run(ITextSelection selection) {
+	public void run(final ITextSelection selection) {
 		ErlLogger.debug("*> goto " + selection);
 
 		// if (!ActionUtil.isProcessable(getShell(), fEditor))
@@ -191,7 +197,7 @@ public class OpenAction extends SelectionDispatchAction {
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
 	 */
 	@Override
-	public void run(IStructuredSelection selection) {
+	public void run(final IStructuredSelection selection) {
 		if (!checkEnabled(selection)) {
 			return;
 		}
@@ -203,9 +209,9 @@ public class OpenAction extends SelectionDispatchAction {
 	 * method.
 	 * 
 	 * @param elements
-	 * 		the elements to process
+	 *            the elements to process
 	 */
-	public void run(Object[] elements) {
+	public void run(final Object[] elements) {
 		if (elements == null) {
 			return;
 		}
@@ -261,12 +267,13 @@ public class OpenAction extends SelectionDispatchAction {
 	 * method.
 	 * 
 	 * @param object
-	 * 		the element to open
+	 *            the element to open
 	 * @return the real element to open
 	 * @throws ErlangModelException
-	 * 		if an error occurs while accessing the Erlang model
+	 *             if an error occurs while accessing the Erlang model
 	 */
-	public Object getElementToOpen(Object object) throws ErlModelException {
+	public Object getElementToOpen(final Object object)
+			throws ErlModelException {
 		return object;
 	}
 
@@ -276,9 +283,17 @@ public class OpenAction extends SelectionDispatchAction {
 
 	@Override
 	public void run() {
-
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IErlModule module = fEditor.getModule();
+		final IProject proj = module != null ? (IProject) module.getProject()
+				.getResource() : null;
+		BuildBackend b = null;
+		try {
+			b = BackendManager.getDefault().getBuild(proj);
+		} catch (final BackendException e1) {
+			e1.printStackTrace();
+			return;
+		}
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
@@ -287,8 +302,6 @@ public class OpenAction extends SelectionDispatchAction {
 					.createScannerModuleName(fEditor.getModule()), offset,
 					fExternalModules, pathVars);
 			ErlLogger.debug("open " + res);
-			final IErlModule module = ErlModelUtils.getModule(fEditor
-					.getEditorInput());
 			final IProject project = module == null ? null : module
 					.getErlProject().getProject();
 			if (res.isExternalCall()) {
@@ -299,8 +312,8 @@ public class OpenAction extends SelectionDispatchAction {
 								.getName());
 				if (r == null) {
 					try {
-						final String includeFile = ErlModelUtils.findIncludeFile(project,
-								res.getName());
+						final String includeFile = ErlModelUtils
+								.findIncludeFile(project, res.getName());
 						if (includeFile != null) {
 							r = EditorUtility.openExternal(includeFile);
 						}
@@ -339,27 +352,22 @@ public class OpenAction extends SelectionDispatchAction {
 								res.getArity(), path, project);
 					}
 				}
-				// } else if (external.equals("variable")) {
-				// final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
-				// final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
-				// final ITextSelection sel = (ITextSelection) fEditor
-				// .getSelectionProvider().getSelection();
-				// final IErlElement e = fEditor.getElementAt(sel.getOffset(),
-				// false);
-				// final ISourceReference sref = (ISourceReference) e;
-				// final OtpErlangString s = new
-				// OtpErlangString(sref.getSource());
-				// final OtpErlangObject res2 = b.rpcx("erlide_open",
-				// "find_first_var", var, s);
-				// if (!(res2 instanceof OtpErlangTuple)) {
-				// return;
-				// }
-				// final OtpErlangTuple mf2 = (OtpErlangTuple) res2;
-				// final OtpErlangTuple t = (OtpErlangTuple) mf2.elementAt(1);
-				// final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
-				// final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				// fEditor.setHighlightRange(pos
-				// + sref.getSourceRange().getOffset(), len, true);
+			} else if (res.isVariable()) {
+				final IErlElement e = fEditor.getElementAt(offset, false);
+				final ISourceReference sref = (ISourceReference) e;
+				final ISourceRange range = sref.getSourceRange();
+				final String s = fEditor.getDocument().get(range.getOffset(),
+						range.getLength());
+				final OtpErlangTuple res2 = ErlideDoc.findFirstVar(b, res
+						.getName(), s);
+				if (res2 == null) {
+					return;
+				}
+				final OtpErlangTuple t = (OtpErlangTuple) res2.elementAt(1);
+				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
+				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
+				fEditor.setHighlightRange(pos
+						+ sref.getSourceRange().getOffset(), len, true);
 			} else if (res.isRecord() || res.isMacro()) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {
@@ -367,8 +375,6 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 				final boolean macro = res.isMacro();
 				String definedName = res.getName();
-				final IErlModule m = ErlModelUtils.getModule(fEditor
-						.getEditorInput());
 				if (definedName.length() == 0) {
 					return;
 				}
@@ -377,7 +383,7 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 				final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 						: IErlElement.Kind.RECORD_DEF;
-				ErlModelUtils.openPreprocessorDef(project, page, m,
+				ErlModelUtils.openPreprocessorDef(b, project, page, module,
 						definedName, type, new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {

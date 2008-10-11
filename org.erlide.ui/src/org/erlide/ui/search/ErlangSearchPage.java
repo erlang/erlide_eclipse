@@ -47,7 +47,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -452,9 +452,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-	 * .Composite)
+	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
+	 *      .Composite)
 	 */
 	public void createControl(final Composite parent) {
 		initializeDialogUnits(parent);
@@ -547,7 +546,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 		// Pattern text + info
 		final Label label = new Label(result, SWT.LEFT);
-		label.setText("Expression"); //SearchMessages.SearchPage_expression_label
+		label.setText("Expression"); // SearchMessages.SearchPage_expression_label
 		// );
 		label.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false,
 				false, 2, 1));
@@ -754,7 +753,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			final IEditorPart activePart = getActiveEditor();
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
-				final IBackend b = BackendManager.getDefault().getIdeBackend();
+				// TODO how in the world can we find the proper build backend?
+				final BuildBackend b = BackendManager.getDefault()
+						.getIdeBackend().asBuild();
 				final ISelection ssel = erlangEditor.getSite()
 						.getSelectionProvider().getSelection();
 				final ITextSelection textSel = (ITextSelection) ssel;
