@@ -192,7 +192,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
 	 */
 	protected void setUpLinkedMode(final IDocument document,
 			final char closingCharacter, final List<Point> offsetsAndLengths) {
-		if (sourceViewer != null) {
+		if (sourceViewer != null && !offsetsAndLengths.isEmpty()) {
 			try {
 				final LinkedModeModel model = new LinkedModeModel();
 				int last = 0, i = 0;
