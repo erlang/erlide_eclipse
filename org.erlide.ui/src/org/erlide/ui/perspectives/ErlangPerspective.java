@@ -14,10 +14,8 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.erlide.ui.IErlideUIConstants;
-import org.erlide.ui.views.console.ErlangConsoleView;
 import org.erlide.ui.views.eval.LiveExpressionsView;
 import org.erlide.ui.views.processlist.ProcessListView;
 
@@ -70,7 +68,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
 		final IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, (float) 0.65, editorArea);
-		bottom.addView(ErlangConsoleView.ID);
+		// bottom.addView(ErlangConsoleView.ID);
 		bottom.addView(ProcessListView.ID);
 		bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
 		bottom.addView(LiveExpressionsView.ID);
@@ -88,7 +86,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
 
 		//
-		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
+		// layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 		//
 		layout.addShowViewShortcut(LiveExpressionsView.ID);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
