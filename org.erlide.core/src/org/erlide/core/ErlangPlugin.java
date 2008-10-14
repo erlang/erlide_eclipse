@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IContainer;
@@ -666,6 +667,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 		Handler fh;
 		try {
+			// TODO move this to ErlLogger?
 			final ErlLogger.ErlSimpleFormatter erlSimpleFormatter = new ErlLogger.ErlSimpleFormatter();
 			final Logger logger = Logger.getLogger("org.erlide");
 
@@ -676,14 +678,14 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			fh.setFormatter(erlSimpleFormatter);
 			logger.addHandler(fh);
 
-			if (Platform.inDebugMode()) {
-				final ConsoleHandler consoleHandler = new ConsoleHandler();
-				consoleHandler.setFormatter(erlSimpleFormatter);
-				consoleHandler.setLevel(java.util.logging.Level.FINEST);
-				logger.addHandler(consoleHandler);
-			}
+			final ConsoleHandler consoleHandler = new ConsoleHandler();
+			consoleHandler.setFormatter(erlSimpleFormatter);
+			Level lvl = Platform.inDebugMode() ? java.util.logging.Level.FINEST
+					: java.util.logging.Level.SEVERE;
+			consoleHandler.setLevel(lvl);
+			logger.addHandler(consoleHandler);
 
-			logger.setLevel(java.util.logging.Level.FINEST);
+			logger.setLevel(lvl);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
