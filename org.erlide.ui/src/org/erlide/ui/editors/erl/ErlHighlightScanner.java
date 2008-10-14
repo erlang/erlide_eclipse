@@ -26,7 +26,7 @@ import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.ui.prefs.Highlight;
 import org.erlide.ui.util.IColorManager;
 
 import erlang.ErlideScanner2;
@@ -39,16 +39,15 @@ import erlang.ErlideScanner2;
 public class ErlHighlightScanner implements ITokenScanner {
 
 	public enum MyErlToken {
-		t_def(PreferenceConstants.DEFAULT), t_atom(PreferenceConstants.ATOM), t_attribute(
-				PreferenceConstants.ATTRIBUTE), t_string(
-				PreferenceConstants.STRING), t_keyword(
-				PreferenceConstants.KEYWORD), t_var(
-				PreferenceConstants.VARIABLE), t_char(PreferenceConstants.CHAR), t_arrow(
-				PreferenceConstants.ARROW), t_guard(PreferenceConstants.GUARD), t_bif(
-				PreferenceConstants.BIF), t_macro(PreferenceConstants.MACRO), t_record(
-				PreferenceConstants.RECORD), t_integer(
-				PreferenceConstants.INTEGER), t_float(PreferenceConstants.FLOAT), t_comment(
-				PreferenceConstants.COMMENT), ;
+		t_def(Highlight.DEFAULT.getKey()), t_atom(Highlight.ATOM.getKey()), t_attribute(
+				Highlight.ATTRIBUTE.getKey()), t_string(Highlight.STRING
+				.getKey()), t_keyword(Highlight.KEYWORD.getKey()), t_var(
+				Highlight.VARIABLE.getKey()), t_char(Highlight.CHAR.getKey()), t_arrow(
+				Highlight.ARROW.getKey()), t_guard(Highlight.GUARD.getKey()), t_bif(
+				Highlight.BIF.getKey()), t_macro(Highlight.MACRO.getKey()), t_record(
+				Highlight.RECORD.getKey()), t_integer(Highlight.INTEGER
+				.getKey()), t_float(Highlight.FLOAT.getKey()), t_comment(
+				Highlight.COMMENT.getKey()), ;
 
 		// private String pref;
 
@@ -93,63 +92,63 @@ public class ErlHighlightScanner implements ITokenScanner {
 
 		t_attribute = new Token(new TextAttribute(fColorManager
 				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.ATTRIBUTE)), null, SWT.NORMAL));
+						Highlight.ATTRIBUTE.getKey())), null, SWT.NORMAL));
 
 		t_string = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.STRING)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.STRING
+						.getKey())), null, SWT.NORMAL));
 
 		t_keyword = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.KEYWORD)), null, SWT.BOLD));
+				.getColor(PreferenceConverter.getColor(store, Highlight.KEYWORD
+						.getKey())), null, SWT.BOLD));
 
 		t_var = new Token(new TextAttribute(fColorManager
 				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.VARIABLE)), null, SWT.NORMAL));
+						Highlight.VARIABLE.getKey())), null, SWT.NORMAL));
 
 		t_def = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.DEFAULT)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.DEFAULT
+						.getKey())), null, SWT.NORMAL));
 
 		t_arrow = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.ARROW)), null, SWT.BOLD));
+				.getColor(PreferenceConverter.getColor(store, Highlight.ARROW
+						.getKey())), null, SWT.BOLD));
 
 		t_char = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.CHAR)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.CHAR
+						.getKey())), null, SWT.NORMAL));
 
 		t_bif = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.BIF)), null, SWT.BOLD));
+				.getColor(PreferenceConverter.getColor(store, Highlight.BIF
+						.getKey())), null, SWT.BOLD));
 
 		t_guard = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.GUARD)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.GUARD
+						.getKey())), null, SWT.NORMAL));
 
 		t_macro = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.MACRO)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.MACRO
+						.getKey())), null, SWT.NORMAL));
 
 		t_record = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.RECORD)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.RECORD
+						.getKey())), null, SWT.NORMAL));
 
 		t_atom = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.ATOM)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.ATOM
+						.getKey())), null, SWT.NORMAL));
 
 		t_integer = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.INTEGER)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.INTEGER
+						.getKey())), null, SWT.NORMAL));
 
 		t_float = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.FLOAT)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.FLOAT
+						.getKey())), null, SWT.NORMAL));
 
 		t_comment = new Token(new TextAttribute(fColorManager
-				.getColor(PreferenceConverter.getColor(store,
-						PreferenceConstants.COMMENT)), null, SWT.NORMAL));
+				.getColor(PreferenceConverter.getColor(store, Highlight.COMMENT
+						.getKey())), null, SWT.NORMAL));
 	}
 
 	public IToken convert(final ErlToken tk) {
@@ -205,35 +204,35 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	private Token getToken(final String id) {
-		if (PreferenceConstants.ATTRIBUTE.equals(id)) {
+		if (Highlight.ATTRIBUTE.getKey().equals(id)) {
 			return t_attribute;
-		} else if (PreferenceConstants.DEFAULT.equals(id)) {
+		} else if (Highlight.DEFAULT.getKey().equals(id)) {
 			return t_def;
-		} else if (PreferenceConstants.KEYWORD.equals(id)) {
+		} else if (Highlight.KEYWORD.getKey().equals(id)) {
 			return t_keyword;
-		} else if (PreferenceConstants.STRING.equals(id)) {
+		} else if (Highlight.STRING.getKey().equals(id)) {
 			return t_string;
-		} else if (PreferenceConstants.VARIABLE.equals(id)) {
+		} else if (Highlight.VARIABLE.getKey().equals(id)) {
 			return t_var;
-		} else if (PreferenceConstants.COMMENT.equals(id)) {
+		} else if (Highlight.COMMENT.getKey().equals(id)) {
 			return t_comment;
-		} else if (PreferenceConstants.CHAR.equals(id)) {
+		} else if (Highlight.CHAR.getKey().equals(id)) {
 			return t_char;
-		} else if (PreferenceConstants.ATOM.equals(id)) {
+		} else if (Highlight.ATOM.getKey().equals(id)) {
 			return t_atom;
-		} else if (PreferenceConstants.ARROW.equals(id)) {
+		} else if (Highlight.ARROW.getKey().equals(id)) {
 			return t_arrow;
-		} else if (PreferenceConstants.RECORD.equals(id)) {
+		} else if (Highlight.RECORD.getKey().equals(id)) {
 			return t_record;
-		} else if (PreferenceConstants.FLOAT.equals(id)) {
+		} else if (Highlight.FLOAT.getKey().equals(id)) {
 			return t_float;
-		} else if (PreferenceConstants.BIF.equals(id)) {
+		} else if (Highlight.BIF.getKey().equals(id)) {
 			return t_bif;
-		} else if (PreferenceConstants.INTEGER.equals(id)) {
+		} else if (Highlight.INTEGER.getKey().equals(id)) {
 			return t_integer;
-		} else if (PreferenceConstants.GUARD.equals(id)) {
+		} else if (Highlight.GUARD.getKey().equals(id)) {
 			return t_guard;
-		} else if (PreferenceConstants.MACRO.equals(id)) {
+		} else if (Highlight.MACRO.getKey().equals(id)) {
 			return t_macro;
 		}
 		return null;

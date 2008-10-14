@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -22,27 +25,28 @@ public class PreferenceConstants {
 	public static final String EDITOR_PREFIX = "__erl_editor_";
 
 	// Editor colors
-	public static final String DEFAULT = EDITOR_PREFIX + "default";
-	public static final String KEYWORD = EDITOR_PREFIX + "keyword";
-	public static final String ATOM = EDITOR_PREFIX + "atom";
-	public static final String RECORD = EDITOR_PREFIX + "record";
-	public static final String MACRO = EDITOR_PREFIX + "macro";
-	public static final String BIF = EDITOR_PREFIX + "bif";
-	public static final String GUARD = EDITOR_PREFIX + "guard";
-	public static final String ARROW = EDITOR_PREFIX + "arrow";
-	public static final String CHAR = EDITOR_PREFIX + "char";
-	public static final String VARIABLE = EDITOR_PREFIX + "variable";
-	public static final String COMMENT = EDITOR_PREFIX + "comment";
-	public static final String ATTRIBUTE = EDITOR_PREFIX + "attribute";
-	public static final String STRING = EDITOR_PREFIX + "string";
-	public static final String INTEGER = EDITOR_PREFIX + "integer";
-	public static final String FLOAT = EDITOR_PREFIX + "float";
+	// public static final String DEFAULT = HighlightElement.DEFAULT.getKey();
+	// // EDITOR_PREFIX + "default" ;
+	// public static final String KEYWORD = EDITOR_PREFIX + "keyword";
+	// public static final String ATOM = EDITOR_PREFIX + "atom";
+	// public static final String RECORD = EDITOR_PREFIX + "record";
+	// public static final String MACRO = EDITOR_PREFIX + "macro";
+	// public static final String BIF = EDITOR_PREFIX + "bif";
+	// public static final String GUARD = EDITOR_PREFIX + "guard";
+	// public static final String ARROW = EDITOR_PREFIX + "arrow";
+	// public static final String CHAR = EDITOR_PREFIX + "char";
+	// public static final String VARIABLE = EDITOR_PREFIX + "variable";
+	// public static final String COMMENT = EDITOR_PREFIX + "comment";
+	// public static final String ATTRIBUTE = EDITOR_PREFIX + "attribute";
+	// public static final String STRING = EDITOR_PREFIX + "string";
+	// public static final String INTEGER = EDITOR_PREFIX + "integer";
+	// public static final String FLOAT = EDITOR_PREFIX + "float";
 
-	// The default editor colors
+	public static final Map<String, RGB> colorMap = new HashMap<String, RGB>();
 
-	public static final RGB DEFAULT_COMMENT_COLOR = Colors.DARKGREEN.getColor();
-	public static final RGB DEFAULT_ATTRIBUTE_COLOR = Colors.BLUE.getColor();
-	public static final RGB DEFAULT_STRING_COLOR = Colors.DARKORCHID.getColor();
+	public static final RGB DEFAULT_COMMENT_COLOR = Color.DARKGREEN.getColor();
+	public static final RGB DEFAULT_ATTRIBUTE_COLOR = Color.BLUE.getColor();
+	public static final RGB DEFAULT_STRING_COLOR = Color.DARKORCHID.getColor();
 	public static final RGB DEFAULT_DEFAULT_COLOR = new RGB(50, 50, 90);
 	public static final RGB DEFAULT_KEYWORD_COLOR = new RGB(128, 0, 255);
 	public static final RGB DEFAULT_VARIABLE_COLOR = new RGB(150, 100, 0);
@@ -52,10 +56,10 @@ public class PreferenceConstants {
 	public static final RGB DEFAULT_RECORD_COLOR = new RGB(90, 150, 0);
 	public static final RGB DEFAULT_BIF_COLOR = new RGB(0, 80, 150);
 	public static final RGB DEFAULT_CHAR_COLOR = new RGB(200, 0, 250);
-	public static final RGB DEFAULT_ATOM_COLOR = Colors.BLACK.getColor();
+	public static final RGB DEFAULT_ATOM_COLOR = Color.BLACK.getColor();
 	public static final RGB DEFAULT_ARROW_COLOR = new RGB(0, 50, 230);
 	public static final RGB DEFAULT_INTEGER_COLOR = new RGB(90, 90, 180);
-	public static final RGB DEFAULT_FLOAT_COLOR = Colors.NAVY.getColor();
+	public static final RGB DEFAULT_FLOAT_COLOR = Color.NAVY.getColor();
 
 	public static final int DEFAULT_PRINT_MARGIN = 80;
 	public static final String PRINT_MARGIN = "__erl_print_margin";
@@ -145,7 +149,7 @@ public class PreferenceConstants {
 
 	public static final String EDITOR_SHOW_SEGMENTS = "showSegments"; //$NON-NLS-1$
 
-	public static enum Colors {
+	public static enum Color {
 		ALICEBLUE(240, 248, 255), ANTIQUEWHITE(250, 235, 215), AQUA(0, 255, 255), AQUAMARINE(
 				127, 255, 212), AZURE(240, 255, 255), BEIGE(245, 245, 220), BISQUE(
 				255, 228, 196), BLACK(0, 0, 0), BLANCHEDALMOND(255, 235, 205), BLUE(
@@ -204,7 +208,7 @@ public class PreferenceConstants {
 
 		private final RGB color;
 
-		private Colors(int r, int g, int b) {
+		private Color(int r, int g, int b) {
 			color = new RGB(r, g, b);
 		}
 

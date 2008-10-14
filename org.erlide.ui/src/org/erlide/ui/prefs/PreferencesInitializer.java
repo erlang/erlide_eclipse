@@ -9,13 +9,6 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import static org.erlide.ui.prefs.PreferenceConstants.ARROW;
-import static org.erlide.ui.prefs.PreferenceConstants.ATOM;
-import static org.erlide.ui.prefs.PreferenceConstants.ATTRIBUTE;
-import static org.erlide.ui.prefs.PreferenceConstants.BIF;
-import static org.erlide.ui.prefs.PreferenceConstants.CHAR;
-import static org.erlide.ui.prefs.PreferenceConstants.COMMENT;
-import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT;
 import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT_ARROW_COLOR;
 import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT_ATOM_COLOR;
 import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT_ATTRIBUTE_COLOR;
@@ -40,15 +33,7 @@ import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_HEADERS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_PROVIDER;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-import static org.erlide.ui.prefs.PreferenceConstants.FLOAT;
-import static org.erlide.ui.prefs.PreferenceConstants.GUARD;
-import static org.erlide.ui.prefs.PreferenceConstants.INTEGER;
-import static org.erlide.ui.prefs.PreferenceConstants.KEYWORD;
-import static org.erlide.ui.prefs.PreferenceConstants.MACRO;
 import static org.erlide.ui.prefs.PreferenceConstants.PRINT_MARGIN;
-import static org.erlide.ui.prefs.PreferenceConstants.RECORD;
-import static org.erlide.ui.prefs.PreferenceConstants.STRING;
-import static org.erlide.ui.prefs.PreferenceConstants.VARIABLE;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -67,22 +52,36 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		final IPreferenceStore store = ErlideUIPlugin.getDefault()
 				.getPreferenceStore();
 
-		PreferenceConverter.setDefault(store, ATTRIBUTE,
+		PreferenceConverter.setDefault(store, Highlight.ATTRIBUTE.getKey(),
 				DEFAULT_ATTRIBUTE_COLOR);
-		PreferenceConverter.setDefault(store, COMMENT, DEFAULT_COMMENT_COLOR);
-		PreferenceConverter.setDefault(store, DEFAULT, DEFAULT_DEFAULT_COLOR);
-		PreferenceConverter.setDefault(store, KEYWORD, DEFAULT_KEYWORD_COLOR);
-		PreferenceConverter.setDefault(store, STRING, DEFAULT_STRING_COLOR);
-		PreferenceConverter.setDefault(store, VARIABLE, DEFAULT_VARIABLE_COLOR);
-		PreferenceConverter.setDefault(store, ARROW, DEFAULT_ARROW_COLOR);
-		PreferenceConverter.setDefault(store, BIF, DEFAULT_BIF_COLOR);
-		PreferenceConverter.setDefault(store, GUARD, DEFAULT_GUARD_COLOR);
-		PreferenceConverter.setDefault(store, MACRO, DEFAULT_MACRO_COLOR);
-		PreferenceConverter.setDefault(store, RECORD, DEFAULT_RECORD_COLOR);
-		PreferenceConverter.setDefault(store, CHAR, DEFAULT_CHAR_COLOR);
-		PreferenceConverter.setDefault(store, ATOM, DEFAULT_ATOM_COLOR);
-		PreferenceConverter.setDefault(store, INTEGER, DEFAULT_INTEGER_COLOR);
-		PreferenceConverter.setDefault(store, FLOAT, DEFAULT_FLOAT_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.COMMENT.getKey(),
+				DEFAULT_COMMENT_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.DEFAULT.getKey(),
+				DEFAULT_DEFAULT_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.KEYWORD.getKey(),
+				DEFAULT_KEYWORD_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.STRING.getKey(),
+				DEFAULT_STRING_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.VARIABLE.getKey(),
+				DEFAULT_VARIABLE_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.ARROW.getKey(),
+				DEFAULT_ARROW_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.BIF.getKey(),
+				DEFAULT_BIF_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.GUARD.getKey(),
+				DEFAULT_GUARD_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.MACRO.getKey(),
+				DEFAULT_MACRO_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.RECORD.getKey(),
+				DEFAULT_RECORD_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.CHAR.getKey(),
+				DEFAULT_CHAR_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.ATOM.getKey(),
+				DEFAULT_ATOM_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.INTEGER.getKey(),
+				DEFAULT_INTEGER_COLOR);
+		PreferenceConverter.setDefault(store, Highlight.FLOAT.getKey(),
+				DEFAULT_FLOAT_COLOR);
 
 		store.setDefault(PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
 

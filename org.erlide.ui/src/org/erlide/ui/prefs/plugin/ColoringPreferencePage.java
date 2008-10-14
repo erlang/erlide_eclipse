@@ -64,6 +64,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
+import org.erlide.ui.prefs.Highlight;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
@@ -292,35 +293,35 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 */
 	private final String[][] fSyntaxColorModel = new String[][] {
 			{ PreferencesMessages.ErlEditorPreferencePage_comment,
-					PreferenceConstants.COMMENT },
+					Highlight.COMMENT.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_attribute,
-					PreferenceConstants.ATTRIBUTE },
+					Highlight.ATTRIBUTE.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_string,
-					PreferenceConstants.STRING },
+					Highlight.STRING.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_default,
-					PreferenceConstants.DEFAULT },
+					Highlight.DEFAULT.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_keyword,
-					PreferenceConstants.KEYWORD },
+					Highlight.KEYWORD.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_variable,
-					PreferenceConstants.VARIABLE },
+					Highlight.VARIABLE.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_guard,
-					PreferenceConstants.GUARD },
+					Highlight.GUARD.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_macro,
-					PreferenceConstants.MACRO },
+					Highlight.MACRO.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_record,
-					PreferenceConstants.RECORD },
+					Highlight.RECORD.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_bif,
-					PreferenceConstants.BIF },
+					Highlight.BIF.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_char,
-					PreferenceConstants.CHAR },
+					Highlight.CHAR.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_atom,
-					PreferenceConstants.ATOM },
+					Highlight.ATOM.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_arrow,
-					PreferenceConstants.ARROW },
+					Highlight.ARROW.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_integer,
-					PreferenceConstants.INTEGER },
+					Highlight.INTEGER.getKey() },
 			{ PreferencesMessages.ErlEditorPreferencePage_float,
-					PreferenceConstants.FLOAT }
+					Highlight.FLOAT.getKey() }
 
 	};
 
