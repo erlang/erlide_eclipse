@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
@@ -675,10 +676,12 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			fh.setFormatter(erlSimpleFormatter);
 			logger.addHandler(fh);
 
-			final ConsoleHandler consoleHandler = new ConsoleHandler();
-			consoleHandler.setFormatter(erlSimpleFormatter);
-			consoleHandler.setLevel(java.util.logging.Level.FINEST);
-			logger.addHandler(consoleHandler);
+			if (Platform.inDebugMode()) {
+				final ConsoleHandler consoleHandler = new ConsoleHandler();
+				consoleHandler.setFormatter(erlSimpleFormatter);
+				consoleHandler.setLevel(java.util.logging.Level.FINEST);
+				logger.addHandler(consoleHandler);
+			}
 
 			logger.setLevel(java.util.logging.Level.FINEST);
 		} catch (SecurityException e) {

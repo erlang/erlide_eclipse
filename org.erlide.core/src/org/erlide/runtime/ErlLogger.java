@@ -49,7 +49,10 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = String.format(fmt, o);
-		Logger.getLogger("org.erlide").finer(
+		Logger.getLogger("org.erlide").logp(
+				java.util.logging.Level.FINER,
+				el.getClassName(),
+				el.getMethodName(),
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
 						+ str);
 	}
@@ -61,8 +64,10 @@ public class ErlLogger {
 		final StackTraceElement el = getCaller();
 		final String str = e.getMessage();
 
-		Logger.getLogger("org.erlide").log(
+		Logger.getLogger("org.erlide").logp(
 				java.util.logging.Level.FINER,
+				el.getClassName(),
+				el.getMethodName(),
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
 						+ str, e);
 	}
