@@ -96,61 +96,25 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 		fColorManager = new ColorManager();
 
-		for (String[] element : fSyntaxColorListModel) {
-			fListModel.add(new HighlightingColorListItem(element[0],
-					element[1], element[1] + BOLD, element[1] + ITALIC,
-					element[1] + STRIKETHROUGH, element[1] + UNDERLINE));
+		for (String[] element : fSyntaxColorModel) {
+			fListModel.add(new HighlightColorItem(element[0], element[1],
+					element[1] + BOLD, element[1] + ITALIC, element[1]
+							+ STRIKETHROUGH, element[1] + UNDERLINE));
 		}
 
 		// store.addKeys(createOverlayStoreKeys());
 	}
 
-	// ////////////
+	private static class HighlightColorItem {
 
-	/**
-	 * Item in the highlighting color list.
-	 */
-	private static class HighlightingColorListItem {
-
-		/** Display name */
 		private final String fDisplayName;
-
-		/** Color preference key */
 		private final String fColorKey;
-
-		/** Bold preference key */
 		private final String fBoldKey;
-
-		/** Italic preference key */
 		private final String fItalicKey;
-
-		/**
-		 * Strikethrough preference key.
-		 */
 		private final String fStrikethroughKey;
-
-		/**
-		 * Underline preference key.
-		 */
 		private final String fUnderlineKey;
 
-		/**
-		 * Initialize the item with the given values.
-		 * 
-		 * @param displayName
-		 *            the display name
-		 * @param colorKey
-		 *            the color preference key
-		 * @param boldKey
-		 *            the bold preference key
-		 * @param italicKey
-		 *            the italic preference key
-		 * @param strikethroughKey
-		 *            the strikethrough preference key
-		 * @param underlineKey
-		 *            the underline preference key
-		 */
-		public HighlightingColorListItem(String displayName, String colorKey,
+		public HighlightColorItem(String displayName, String colorKey,
 				String boldKey, String italicKey, String strikethroughKey,
 				String underlineKey) {
 			fDisplayName = displayName;
@@ -207,7 +171,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	}
 
 	private static class SemanticHighlightingColorListItem extends
-			HighlightingColorListItem {
+			HighlightColorItem {
 
 		/** Enablement preference key */
 		private final String fEnableKey;
@@ -246,10 +210,6 @@ public class ColoringPreferencePage extends PreferencePage implements
 		}
 	}
 
-	/**
-	 * Color list label provider.
-	 * 
-	 */
 	static class ColorListLabelProvider extends LabelProvider {
 
 		/*
@@ -261,14 +221,10 @@ public class ColoringPreferencePage extends PreferencePage implements
 			if (element instanceof String) {
 				return (String) element;
 			}
-			return ((HighlightingColorListItem) element).getDisplayName();
+			return ((HighlightColorItem) element).getDisplayName();
 		}
 	}
 
-	/**
-	 * Color list content provider.
-	 * 
-	 */
 	class ColorListContentProvider implements ITreeContentProvider {
 
 		/*
@@ -329,13 +285,12 @@ public class ColoringPreferencePage extends PreferencePage implements
 	private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
 	private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
 	private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
-
 	private static final String COMPILER_TASK_TAGS = ErlangCore.COMPILER_TASK_TAGS;
 
 	/**
 	 * The keys of the overlay store.
 	 */
-	private final String[][] fSyntaxColorListModel = new String[][] {
+	private final String[][] fSyntaxColorModel = new String[][] {
 			{ PreferencesMessages.ErlEditorPreferencePage_comment,
 					PreferenceConstants.COMMENT },
 			{ PreferencesMessages.ErlEditorPreferencePage_attribute,
@@ -375,33 +330,18 @@ public class ColoringPreferencePage extends PreferencePage implements
 	// PreferencesMessages.ErlEditorPreferencePage_coloring_category_edoc;
 
 	ColorSelector fSyntaxForegroundColorEditor;
-
 	Label fColorEditorLabel;
-
 	Button fBoldCheckBox;
-
 	Button fEnableCheckbox;
-
 	Button fItalicCheckBox;
-
 	Button fStrikethroughCheckBox;
-
 	Button fUnderlineCheckBox;
 
-	/**
-	 * Highlighting color list
-	 */
-	final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
+	final java.util.List<HighlightColorItem> fListModel = new ArrayList<HighlightColorItem>();
 
-	/**
-	 * Highlighting color list viewer
-	 */
 	private StructuredViewer fListViewer;
-
 	private IColorManager fColorManager;
-
 	private SourceViewer fPreviewViewer;
-
 	private FontMetrics fFontMetrics;
 
 	/* NOT USED */
@@ -510,7 +450,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 	}
 
 	void handleSyntaxColorListSelection() {
-		final HighlightingColorListItem item = getHighlightingColorListItem();
+		final HighlightColorItem item = getHighlightColorItem();
 		if (item == null) {
 			fEnableCheckbox.setEnabled(false);
 			fSyntaxForegroundColorEditor.getButton().setEnabled(false);
@@ -625,7 +565,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 		gd.heightHint = convertHeightInCharsToPixels(9);
 		int maxWidth = 0;
 		for (Object element : fListModel) {
-			final HighlightingColorListItem item = (HighlightingColorListItem) element;
+			final HighlightColorItem item = (HighlightColorItem) element;
 			maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
 					.getDisplayName().length()));
 		}
@@ -725,7 +665,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				PreferenceConverter.setValue(getPreferenceStore(), item
 						.getColorKey(), fSyntaxForegroundColorEditor
 						.getColorValue());
@@ -739,7 +679,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				getPreferenceStore().setValue(item.getBoldKey(),
 						fBoldCheckBox.getSelection());
 			}
@@ -752,7 +692,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				getPreferenceStore().setValue(item.getItalicKey(),
 						fItalicCheckBox.getSelection());
 			}
@@ -764,7 +704,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				getPreferenceStore().setValue(item.getStrikethroughKey(),
 						fStrikethroughCheckBox.getSelection());
 			}
@@ -777,7 +717,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				getPreferenceStore().setValue(item.getUnderlineKey(),
 						fUnderlineCheckBox.getSelection());
 			}
@@ -790,7 +730,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final HighlightingColorListItem item = getHighlightingColorListItem();
+				final HighlightColorItem item = getHighlightColorItem();
 				if (item instanceof SemanticHighlightingColorListItem) {
 					final boolean enable = fEnableCheckbox.getSelection();
 					getPreferenceStore().setValue(
@@ -889,14 +829,14 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 * @return the current highlighting color list item
 	 * 
 	 */
-	HighlightingColorListItem getHighlightingColorListItem() {
+	HighlightColorItem getHighlightColorItem() {
 		final IStructuredSelection selection = (IStructuredSelection) fListViewer
 				.getSelection();
 		final Object element = selection.getFirstElement();
 		if (element instanceof String) {
 			return null;
 		}
-		return (HighlightingColorListItem) element;
+		return (HighlightColorItem) element;
 	}
 
 	/**
