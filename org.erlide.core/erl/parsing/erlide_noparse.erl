@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 10).
+-define(CACHE_VERSION, 11).
 -define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
@@ -103,7 +103,10 @@ reparse(ScannerName) ->
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 -record(module, {name, erlide_path, model}).
--record(external_call, {module, function, arity, offset, length}).
+-record(position, {offset, length}).
+-record(external_call, {module, function, arity, position}).
+-record(macro_ref, {macro, position}).
+-record(record_ref, {record, position}).
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath),
@@ -376,7 +379,7 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
-    ExternalRefs = external_calls_code(Rest),
+    ExternalRefs = get_refs(Rest),
     ?D([Rest, ExternalRefs]),
     #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
@@ -415,18 +418,30 @@ scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
 %% external_calls_cl(#clause{code=Tokens}) ->
 %%     external_calls_code(Tokens).
 
-%% extract external calls from tokens (VERY simple! M:F(_) is all it finds )
-external_calls_code([]) ->
+
+%% find references in code
+%% VERY simple, M:F(_ ...), #R, ?M, and that's it 
+get_refs([]) ->
     [];
-external_calls_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
+get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
                      #token{kind=atom, value=F, offset=Offset2, length=Length2},
                      #token{kind='('} | Rest]) ->
     Arity = erlide_text:guess_arity(Rest),
-    XC = #external_call{module = M, function=F, arity=Arity, offset=Offset, 
-                        length=Length2+Offset2-Offset},
-    [XC | external_calls_code(Rest)];
-external_calls_code([_|Rest]) ->
-    external_calls_code(Rest).
+    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
+    XC = #external_call{module = M, function=F, arity=Arity, position=Position},
+    [XC | get_refs(Rest)];
+get_refs([#token{kind='?', offset=Offset}, 
+          #token{kind=atom, value=M, offset=Offset2, length=Length2} | Rest]) ->
+    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
+    MR = #macro_ref{macro=M, position=Position},
+    [MR | get_refs(Rest)];
+get_refs([#token{kind='#', offset=Offset}, 
+          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
+    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
+    RR = #record_ref{record=R, position=Position},
+    [RR | get_refs(Rest)];
+get_refs([_|Rest]) ->
+    get_refs(Rest).
 
 %% @spec (Tokens::tokens()) -> {tokens(), tokens()}
 %% @type tokens() = [#token]
@@ -526,7 +541,7 @@ do_cmd(update_state, {Mod, Model}, Modules) ->
 do_cmd(all, [], Modules) ->
     {Modules, Modules};
 do_cmd(modules, [], Modules) ->
-    Mods = [M#module.name || M <- Modules],
+    Mods = [{Name, Path} || #module{name=Name, erlide_path=Path} <- Modules],
     {Mods, Modules};
 do_cmd(dump_module, Mod, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),

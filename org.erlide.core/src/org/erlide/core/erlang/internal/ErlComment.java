@@ -10,8 +10,6 @@ import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.ISourceRange;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 /**
  * @author jakob
  * 
@@ -24,8 +22,8 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 
 	private int fLevel;
 
-	public ErlComment(IErlElement parent, String name, boolean isEdoc,
-			boolean isHeader) {
+	public ErlComment(final IErlElement parent, final String name,
+			final boolean isEdoc, final boolean isHeader) {
 		super(parent, name);
 		fIsEdoc = isEdoc;
 		fIsHeader = isHeader;
@@ -41,11 +39,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return null;
 	}
 
-	public OtpErlangObject getParseTree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public boolean isEdoc() {
 		return fIsEdoc;
 	}
@@ -55,35 +48,37 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 	}
 
 	@Override
-	protected void closing(Object info) throws ErlModelException {
+	protected void closing(final Object info) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void copy(IErlElement container, IErlElement sibling, String rename,
-			boolean replace, IProgressMonitor monitor) throws ErlModelException {
+	public void copy(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void delete(boolean force, IProgressMonitor monitor)
+	public void delete(final boolean force, final IProgressMonitor monitor)
 			throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void move(IErlElement container, IErlElement sibling, String rename,
-			boolean replace, IProgressMonitor monitor) throws ErlModelException {
+	public void move(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void rename(String name, boolean replace, IProgressMonitor monitor)
-			throws ErlModelException {
+	public void rename(final String name, final boolean replace,
+			final IProgressMonitor monitor) throws ErlModelException {
 		// TODO Auto-generated method stub
 
 	}
@@ -138,7 +133,7 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return result + ">";
 	}
 
-	public void setNameRangeStartEnd(int start, int end) {
+	public void setNameRangeStartEnd(final int start, final int end) {
 		// TODO Auto-generated method stub
 
 	}

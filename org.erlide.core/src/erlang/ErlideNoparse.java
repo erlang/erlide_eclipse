@@ -104,7 +104,6 @@ public class ErlideNoparse {
 		return null;
 	}
 
-	@SuppressWarnings("boxing")
 	public static List<ErlangExternalFunctionCallRef> find(final IdeBackend b,
 			final ErlangExternalFunctionCallRef ref) {
 		try {

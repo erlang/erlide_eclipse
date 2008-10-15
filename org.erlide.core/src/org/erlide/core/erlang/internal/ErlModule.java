@@ -40,7 +40,6 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
@@ -50,7 +49,8 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
 
-	private OtpErlangObject parseTree;
+	// private OtpErlangObject parseTree;
+
 	// the document last reconciled with
 	// private IDocument fDoc;
 
@@ -253,14 +253,6 @@ public class ErlModule extends Openable implements IErlModule {
 		isStructureKnown = false;
 	}
 
-	public OtpErlangObject getParseTree() {
-		return parseTree;
-	}
-
-	public void setParseTree(final OtpErlangList forms) {
-		parseTree = forms;
-	}
-
 	public long getTimestamp() {
 		return timestamp;
 	}
@@ -321,7 +313,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public List<ErlangIncludeFile> getIncludedFiles() throws ErlModelException {
-			if (!isStructureKnown) {
+		if (!isStructureKnown) {
 			open(null);
 		}
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);

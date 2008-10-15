@@ -77,7 +77,7 @@ public class ErlParser {
 		}
 		final ErlModule mm = (ErlModule) module;
 		mm.reset();
-		mm.setParseTree(forms);
+		// mm.setParseTree(forms);
 		if (forms == null) {
 			return true;
 		}

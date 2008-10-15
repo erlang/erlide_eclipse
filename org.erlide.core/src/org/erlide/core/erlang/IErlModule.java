@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
+// * Copyright (c) 2000, 2004 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or
@@ -84,15 +82,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	List<IErlComment> getComments();
 
-	OtpErlangObject getParseTree();
-
 	long getTimestamp();
-
-	// void reconcile(IDocument doc, DirtyRegion dirtyRegion);
-
-	// void reconcile(IDocument document);
-
-	// ArrayList<ICompletionProposal> result);
 
 	void reset();
 
