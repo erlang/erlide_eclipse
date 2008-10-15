@@ -40,6 +40,7 @@ import erlang.ErlideDebug;
 public class ErlangLaunchConfigurationDelegate extends
 		LaunchConfigurationDelegate {
 
+	@SuppressWarnings("unchecked")
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
