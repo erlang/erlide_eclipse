@@ -13,12 +13,11 @@ package org.erlide.ui.prefs.plugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.ColorSelector;
-import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
@@ -41,8 +40,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -62,6 +59,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
+import org.erlide.ui.prefs.HighlightData;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
@@ -78,7 +76,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	private static final String COMPILER_TASK_TAGS = ErlangCore.COMPILER_TASK_TAGS;
 
-	public static final String QUALIFIER = ErlideUIPlugin.PLUGIN_ID
+	public static final String COLORS_QUALIFIER = ErlideUIPlugin.PLUGIN_ID
 			+ "/editor/colors/";
 
 	final String fErlangCategory = PreferencesMessages.ErlEditorPreferencePage_coloring_category_erlang;
@@ -97,15 +95,19 @@ public class ColoringPreferencePage extends PreferencePage implements
 	private StructuredViewer fListViewer;
 	private IColorManager fColorManager;
 	private SourceViewer fPreviewViewer;
-	private FontMetrics fFontMetrics;
 
-	final java.util.List<TokenHighlight> fListModel = new ArrayList<TokenHighlight>();
+	Map<TokenHighlight, HighlightData> fColors;
 
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 		fColorManager = new ColorManager();
+
+		fColors = new HashMap<TokenHighlight, HighlightData>();
+		for (TokenHighlight th : TokenHighlight.values()) {
+			fColors.put(th, th.getDefaultData());
+		}
 	}
 
 	static class ColorListLabelProvider extends LabelProvider {
@@ -154,7 +156,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 			if (parentElement instanceof String) {
 				final String entry = (String) parentElement;
 				if (fErlangCategory.equals(entry)) {
-					return fListModel.toArray();
+					return fColors.keySet().toArray();
 				}
 				// if (fEdocCategory.equals(entry)) {
 				// return fListModel.subList(0, 4).toArray();
@@ -179,101 +181,17 @@ public class ColoringPreferencePage extends PreferencePage implements
 		}
 	}
 
-	/* NOT USED */
-	/*
-	 * private OverlayKey[] createOverlayStoreKeys() {
-	 * 
-	 * final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
-	 * 
-	 * for (int i = 0, n = fListModel.size(); i < n; i++) { final
-	 * HighlightingColorListItem item = (HighlightingColorListItem) fListModel
-	 * .get(i); overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.STRING, item .getColorKey()));
-	 * overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getBoldKey()));
-	 * overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getItalicKey()));
-	 * overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item
-	 * .getStrikethroughKey())); overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN, item .getUnderlineKey()));
-	 * 
-	 * if (item instanceof SemanticHighlightingColorListItem) {
-	 * overlayKeys.add(new OverlayKey(
-	 * OverlayPreferenceStore.TypeDescriptor.BOOLEAN,
-	 * ((SemanticHighlightingColorListItem) item) .getEnableKey())); } }
-	 * 
-	 * final OverlayKey[] keys = new OverlayKey[overlayKeys.size()];
-	 * overlayKeys.toArray(keys); return keys; }
-	 */
-
-	/**
-	 * Returns the number of pixels corresponding to the width of the given
-	 * number of characters.
-	 * <p>
-	 * This method may only be called after <code>initializeDialogUnits</code>
-	 * has been called.
-	 * </p>
-	 * <p>
-	 * Clients may call this framework method, but should not override it.
-	 * </p>
-	 * 
-	 * @param chars
-	 *            the number of characters
-	 * @return the number of pixels
-	 */
-	@Override
-	protected int convertWidthInCharsToPixels(int chars) {
-		// test for failure to initialize for backward compatibility
-		if (fFontMetrics == null) {
-			return 0;
-		}
-		return Dialog.convertWidthInCharsToPixels(fFontMetrics, chars);
-	}
-
-	/**
-	 * Returns the number of pixels corresponding to the height of the given
-	 * number of characters.
-	 * <p>
-	 * This method may only be called after <code>initializeDialogUnits</code>
-	 * has been called.
-	 * </p>
-	 * <p>
-	 * Clients may call this framework method, but should not override it.
-	 * </p>
-	 * 
-	 * @param chars
-	 *            the number of characters
-	 * @return the number of pixels
-	 */
-	@Override
-	protected int convertHeightInCharsToPixels(int chars) {
-		// test for failure to initialize for backward compatibility
-		if (fFontMetrics == null) {
-			return 0;
-		}
-		return Dialog.convertHeightInCharsToPixels(fFontMetrics, chars);
-	}
-
 	@Override
 	public void performDefaults() {
 		super.performDefaults();
 
 		handleSyntaxColorListSelection();
-
 		fPreviewViewer.invalidateTextPresentation();
 	}
 
 	@Override
 	public boolean performOk() {
-		IPreferenceStore store = getPreferenceStore();
-		if (store instanceof IPersistentPreferenceStore) {
-			try {
-				((IPersistentPreferenceStore) store).save();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// TODO
 		return super.performOk();
 	}
 
@@ -378,7 +296,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 		fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
 		fListViewer.setLabelProvider(new ColorListLabelProvider());
 		fListViewer.setContentProvider(new ColorListContentProvider());
-		fListViewer.setInput(fListModel);
+		fListViewer.setInput(fColors);
 		fListViewer.setSelection(new StructuredSelection(fErlangCategory));
 		fListViewer.setSorter(new ViewerSorter() {
 
@@ -400,7 +318,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
 		gd.heightHint = convertHeightInCharsToPixels(9);
 		int maxWidth = 0;
-		for (TokenHighlight item : fListModel) {
+		for (TokenHighlight item : fColors.keySet()) {
 			maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
 					.getName().length()));
 		}
@@ -514,6 +432,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
+				HighlightData data = fColors.get(item);
 				// getPreferenceStore().setValue(item.getBoldKey(),
 				// fBoldCheckBox.getSelection());
 			}
@@ -601,7 +520,6 @@ public class ColoringPreferencePage extends PreferencePage implements
 				.getPreferenceStore();
 		final IPreferenceStore store = new ChainedPreferenceStore(
 				new IPreferenceStore[] {
-						getPreferenceStore(),
 						new PreferencesAdapter(
 								createTemporaryCorePreferenceStore()),
 						generalTextStore });
@@ -671,26 +589,6 @@ public class ColoringPreferencePage extends PreferencePage implements
 			return null;
 		}
 		return (TokenHighlight) element;
-	}
-
-	/**
-	 * Initializes the computation of horizontal and vertical dialog units based
-	 * on the size of current font.
-	 * <p>
-	 * This method must be called before any of the dialog unit based conversion
-	 * methods are called.
-	 * </p>
-	 * 
-	 * @param testControl
-	 *            a control from which to obtain the current font
-	 */
-	@Override
-	protected void initializeDialogUnits(Control testControl) {
-		// Compute and store a font metric
-		final GC gc = new GC(testControl);
-		gc.setFont(JFaceResources.getDialogFont());
-		fFontMetrics = gc.getFontMetrics();
-		gc.dispose();
 	}
 
 	@Override

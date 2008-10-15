@@ -90,7 +90,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	private TextAttribute getTextAttribute(TokenHighlight th) {
-		String qualifier = ColoringPreferencePage.QUALIFIER + th.getName();
+		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER + th.getName();
 		HighlightData data = new HighlightData();
 		data.load(qualifier, th.getDefaultData());
 		return new TextAttribute(fColorManager.getColor(data.getColor()), null,

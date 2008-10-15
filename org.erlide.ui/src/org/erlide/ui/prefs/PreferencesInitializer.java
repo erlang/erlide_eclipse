@@ -37,7 +37,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		String qualifier = ColoringPreferencePage.QUALIFIER;
+		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER;
 		for (TokenHighlight ht : TokenHighlight.values()) {
 			IEclipsePreferences node = new DefaultScope().getNode(qualifier
 					+ ht.getName());

@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -24,17 +21,10 @@ public class PreferenceConstants {
 
 	public static final String EDITOR_PREFIX = "__erl_editor_";
 
-	public static final Map<String, RGB> colorMap = new HashMap<String, RGB>();
-
 	public static final int DEFAULT_PRINT_MARGIN = 80;
 	public static final String PRINT_MARGIN = "__erl_print_margin";
 
 	public static final String EDITOR_TEXT_FONT = "__erl_text_font";
-
-	public static final String EDITOR_BOLD_SUFFIX = "_bold"; //$NON-NLS-1$
-	public static final String EDITOR_ITALIC_SUFFIX = "_italic"; //$NON-NLS-1$
-	public static final String EDITOR_STRIKEOUT_SUFFIX = "_strikethrough"; //$NON-NLS-1$
-	public static final String EDITOR_UNDERLINE_SUFFIX = "_underline"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that controls whether bracket matching highlighting is
