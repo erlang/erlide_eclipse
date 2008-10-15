@@ -15,22 +15,6 @@ public final class PreferencesMessages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.plugin.PreferencesMessages"; //$NON-NLS-1$
 
-	public static String ErlEditorPreferencePage_comment;
-	public static String ErlEditorPreferencePage_attribute;
-	public static String ErlEditorPreferencePage_string;
-	public static String ErlEditorPreferencePage_default;
-	public static String ErlEditorPreferencePage_keyword;
-	public static String ErlEditorPreferencePage_variable;
-	public static String ErlEditorPreferencePage_function;
-	public static String ErlEditorPreferencePage_guard;
-	public static String ErlEditorPreferencePage_macro;
-	public static String ErlEditorPreferencePage_record;
-	public static String ErlEditorPreferencePage_bif;
-	public static String ErlEditorPreferencePage_char;
-	public static String ErlEditorPreferencePage_atom;
-	public static String ErlEditorPreferencePage_arrow;
-	public static String ErlEditorPreferencePage_integer;
-	public static String ErlEditorPreferencePage_float;
 	public static String ErlEditorPreferencePage_coloring_category_erlang;
 	public static String ErlEditorPreferencePage_coloring_category_edoc;
 	public static String ErlEditorColoringConfigurationBlock_link;
@@ -39,7 +23,7 @@ public final class PreferencesMessages extends NLS {
 	public static String ErlEditorPreferencePage_color;
 	public static String ErlEditorPreferencePage_bold;
 	public static String ErlEditorPreferencePage_italic;
-	public static String ErlEditorPreferencePage_strikethrough;
+	public static String ErlEditorPreferencePage_strikeout;
 	public static String ErlEditorPreferencePage_underline;
 	public static String ErlEditorPreferencePage_preview;
 	public static String ErlEditorPreferencePage_folding_title;

@@ -77,7 +77,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 
 		/*
-		 * @see ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
+		 * @see
+		 * ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
 		 */
 		@Override
 		protected void handleLabelProviderChanged(
@@ -128,7 +129,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
 	 */
 	@Override
 	public ISelection getSelection() {
@@ -138,7 +140,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
 	 */
 	@Override
 	protected TreeViewer getTreeViewer() {
@@ -158,7 +161,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
+	 * .eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setSelection(final ISelection selection) {
@@ -278,17 +283,15 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		/*
 		 * 
 		 * @see java.lang.Object#toString()
-		 * 
 		 */
 		@Override
 		public String toString() {
-			return ErlEditorMessages.ErlangOutlinePage_error_NoTopLevelType;
+			return ErlEditorMessages.ErlangOutlinePage_error_noelement;
 		}
 
 		/*
 		 * 
 		 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
-		 * 
 		 */
 		@SuppressWarnings("unchecked")
 		public Object getAdapter(final Class clas) {

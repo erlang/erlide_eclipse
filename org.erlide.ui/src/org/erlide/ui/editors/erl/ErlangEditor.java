@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -52,7 +51,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -67,7 +65,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -261,43 +258,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
-	}
-
-	/**
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
-	@Override
-	protected void handlePreferenceStoreChanged(final PropertyChangeEvent event) {
-		super.handlePreferenceStoreChanged(event);
-		final String name = event.getProperty();
-		if (name.startsWith(PreferenceConstants.EDITOR_PREFIX)) {
-			ErlLogger.debug("prefs changed");
-			final RGB rgb = getRGB(event.getNewValue());
-			// TODO handle text style changes too!
-			if (null != rgb) {
-				final ErlHighlightScanner scanner = ((EditorConfiguration) getSourceViewerConfiguration())
-						.getHighlightScanner();
-
-				scanner.handleColorChange(event.getProperty(), rgb);
-				getSourceViewer().invalidateTextPresentation();
-			}
-		}
-	}
-
-	/**
-	 * Try to get an rgb value
-	 * 
-	 * @param value
-	 *            the object
-	 * @return
-	 */
-	private static RGB getRGB(final Object value) {
-		if (value instanceof RGB) {
-			return (RGB) value;
-		} else if (value instanceof String) {
-			return StringConverter.asRGB((String) value);
-		}
-		return null;
 	}
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {
@@ -712,10 +672,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input
-	 * element is reconciled in advance. If it is <code>false</code> this
-	 * method only returns a result if the editor's input element does not need
-	 * to be reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input element is
+	 * reconciled in advance. If it is <code>false</code> this method only
+	 * returns a result if the editor's input element does not need to be
+	 * reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -800,8 +760,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -899,8 +860,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to
-	 *            be done
+	 *            <code>true</code> if check for active outline page needs to be
+	 *            done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1209,8 +1170,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
-				 *      #getInformationPresenterControlCreator()
+				 * @see
+				 * org.eclipse.jface.text.information.IInformationProviderExtension2
+				 * #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */
