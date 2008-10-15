@@ -17,12 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -31,7 +34,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -59,7 +61,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.SimpleEditorConfiguration;
-import org.erlide.ui.prefs.HighlightData;
+import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
@@ -92,11 +94,11 @@ public class ColoringPreferencePage extends PreferencePage implements
 	Button fStrikethroughCheckBox;
 	Button fUnderlineCheckBox;
 
-	private StructuredViewer fListViewer;
+	private TreeViewer fListViewer;
 	private IColorManager fColorManager;
 	private SourceViewer fPreviewViewer;
 
-	Map<TokenHighlight, HighlightData> fColors;
+	Map<TokenHighlight, HighlightStyle> fColors;
 
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -104,51 +106,33 @@ public class ColoringPreferencePage extends PreferencePage implements
 	public void init(IWorkbench workbench) {
 		fColorManager = new ColorManager();
 
-		fColors = new HashMap<TokenHighlight, HighlightData>();
-		for (TokenHighlight th : TokenHighlight.values()) {
-			fColors.put(th, th.getDefaultData());
-		}
+		loadColors();
 	}
 
 	static class ColorListLabelProvider extends LabelProvider {
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-		 */
 		@Override
 		public String getText(Object element) {
 			if (element instanceof String) {
 				return (String) element;
 			}
-			return ((TokenHighlight) element).getName();
+			final String name = ((TokenHighlight) element).getName();
+			char c = Character.toUpperCase(name.charAt(0));
+			return c + name.substring(1);
 		}
 	}
 
 	class ColorListContentProvider implements ITreeContentProvider {
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(
-		 * java.lang.Object)
-		 */
 		public Object[] getElements(Object inputElement) {
 			return new String[] { fErlangCategory
 			// , fEdocCategory
 			};
 		}
 
-		/*
-		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-		 */
 		public void dispose() {
 		}
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
-		 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-		 */
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 
@@ -185,13 +169,30 @@ public class ColoringPreferencePage extends PreferencePage implements
 	public void performDefaults() {
 		super.performDefaults();
 
+		loadColors();
+
 		handleSyntaxColorListSelection();
 		fPreviewViewer.invalidateTextPresentation();
 	}
 
+	private void loadColors() {
+		fColors = new HashMap<TokenHighlight, HighlightStyle>();
+		for (TokenHighlight th : TokenHighlight.values()) {
+			HighlightStyle data = new HighlightStyle();
+			data.load(COLORS_QUALIFIER + th.getName(), th.getDefaultData());
+			fColors.put(th, data);
+		}
+	}
+
 	@Override
 	public boolean performOk() {
-		// TODO
+		for (TokenHighlight th : fColors.keySet()) {
+			IEclipsePreferences node = new InstanceScope()
+					.getNode(COLORS_QUALIFIER + th.getName());
+			HighlightStyle data = fColors.get(th);
+			data.store(node);
+		}
+
 		return super.performOk();
 	}
 
@@ -214,18 +215,14 @@ public class ColoringPreferencePage extends PreferencePage implements
 			fUnderlineCheckBox.setEnabled(false);
 			return;
 		}
-		// final RGB rgb = PreferenceConverter.getColor(getPreferenceStore(),
-		// item
-		// .getColorKey());
-		// fSyntaxForegroundColorEditor.setColorValue(rgb);
-		// fBoldCheckBox.setSelection(getPreferenceStore().getBoolean(
-		// item.getBoldKey()));
-		// fItalicCheckBox.setSelection(getPreferenceStore().getBoolean(
-		// item.getItalicKey()));
-		// fStrikethroughCheckBox.setSelection(getPreferenceStore().getBoolean(
-		// item.getStrikethroughKey()));
-		// fUnderlineCheckBox.setSelection(getPreferenceStore().getBoolean(
-		// item.getUnderlineKey()));
+		HighlightStyle style = fColors.get(item);
+		fSyntaxForegroundColorEditor.setColorValue(style.getColor());
+		fBoldCheckBox.setSelection(style.hasStyle(SWT.BOLD));
+		fItalicCheckBox.setSelection(style.hasStyle(SWT.ITALIC));
+		fStrikethroughCheckBox.setSelection(style
+				.hasStyle(TextAttribute.STRIKETHROUGH));
+		fUnderlineCheckBox
+				.setSelection(style.hasStyle(TextAttribute.UNDERLINE));
 		// if (item instanceof SemanticHighlightingColorListItem) {
 		// fEnableCheckbox.setEnabled(true);
 		// final boolean enable = getPreferenceStore().getBoolean(
@@ -238,14 +235,14 @@ public class ColoringPreferencePage extends PreferencePage implements
 		// fStrikethroughCheckBox.setEnabled(enable);
 		// fUnderlineCheckBox.setEnabled(enable);
 		// } else {
-		// fSyntaxForegroundColorEditor.getButton().setEnabled(true);
-		// fColorEditorLabel.setEnabled(true);
-		// fBoldCheckBox.setEnabled(true);
-		// fItalicCheckBox.setEnabled(true);
-		// fStrikethroughCheckBox.setEnabled(true);
-		// fUnderlineCheckBox.setEnabled(true);
-		// fEnableCheckbox.setEnabled(false);
-		// fEnableCheckbox.setSelection(true);
+		fSyntaxForegroundColorEditor.getButton().setEnabled(true);
+		fColorEditorLabel.setEnabled(true);
+		fBoldCheckBox.setEnabled(true);
+		fItalicCheckBox.setEnabled(true);
+		fStrikethroughCheckBox.setEnabled(true);
+		fUnderlineCheckBox.setEnabled(true);
+		fEnableCheckbox.setEnabled(false);
+		fEnableCheckbox.setSelection(true);
 		// }
 	}
 
@@ -331,6 +328,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 		gd.widthHint = maxWidth;
 
 		fListViewer.getControl().setLayoutData(gd);
+		fListViewer.expandAll();
 
 		final Composite stylesComposite = new Composite(editorComposite,
 				SWT.NONE);
@@ -418,9 +416,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				// final TokenHighlight item = getHighlight();
-				// HighlightData data = fColors.get(item);
-				// data.setColor(fSyntaxForegroundColorEditor.getColorValue());
+				final TokenHighlight item = getHighlight();
+				HighlightStyle data = fColors.get(item);
+				data.setColor(fSyntaxForegroundColorEditor.getColorValue());
 			}
 		});
 
@@ -432,9 +430,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
-				HighlightData data = fColors.get(item);
-				// getPreferenceStore().setValue(item.getBoldKey(),
-				// fBoldCheckBox.getSelection());
+				HighlightStyle data = fColors.get(item);
+				data.setStyle(SWT.BOLD, true);
 			}
 		});
 
@@ -483,7 +480,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
+				fEnableCheckbox.setSelection(true);
+				// final TokenHighlight item = getHighlight();
 				// if (item instanceof SemanticHighlightingColorListItem) {
 				// final boolean enable = fEnableCheckbox.getSelection();
 				// getPreferenceStore().setValue(
@@ -582,6 +580,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 	 * 
 	 */
 	TokenHighlight getHighlight() {
+		if (fListViewer == null) {
+			return null;
+		}
 		final IStructuredSelection selection = (IStructuredSelection) fListViewer
 				.getSelection();
 		final Object element = selection.getFirstElement();

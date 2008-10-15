@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
-public class HighlightData {
+public class HighlightStyle {
 	private static final String STYLE_KEY = "style";
 	private static final String COLOR_KEY = "color";
 
@@ -29,12 +29,12 @@ public class HighlightData {
 		this.style = style;
 	}
 
-	public HighlightData(RGB color, int style) {
+	public HighlightStyle(RGB color, int style) {
 		this.color = color;
 		this.style = style;
 	}
 
-	public HighlightData() {
+	public HighlightStyle() {
 	}
 
 	public void store(IEclipsePreferences node) {
@@ -44,7 +44,7 @@ public class HighlightData {
 		}
 	}
 
-	public void load(IEclipsePreferences node, HighlightData def) {
+	public void load(IEclipsePreferences node, HighlightStyle def) {
 		if (node != null) {
 			color = StringConverter.asRGB(node.get(COLOR_KEY, StringConverter
 					.asString(def.getColor())));
@@ -52,10 +52,22 @@ public class HighlightData {
 		}
 	}
 
-	public void load(String qualifier, HighlightData def) {
+	public void load(String qualifier, HighlightStyle def) {
 		IPreferencesService service = Platform.getPreferencesService();
 		color = StringConverter.asRGB(service.getString(qualifier, COLOR_KEY,
 				StringConverter.asString(def.getColor()), null));
 		style = service.getInt(qualifier, STYLE_KEY, def.getStyle(), null);
+	}
+
+	public boolean hasStyle(int flag) {
+		return (style & flag) == flag;
+	}
+
+	public void setStyle(int flag, boolean b) {
+		if (b) {
+			style |= flag;
+		} else {
+			style &= ~flag;
+		}
 	}
 }

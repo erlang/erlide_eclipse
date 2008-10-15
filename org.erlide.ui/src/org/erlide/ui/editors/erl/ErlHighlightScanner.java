@@ -12,7 +12,6 @@ package org.erlide.ui.editors.erl;
 
 import java.util.List;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
@@ -23,8 +22,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
-import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.prefs.HighlightData;
+import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
@@ -69,8 +67,6 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 */
 	public ErlHighlightScanner(final IColorManager lmanager) {
 		fColorManager = lmanager;
-		final IPreferenceStore store = ErlideUIPlugin.getDefault()
-				.getPreferenceStore();
 
 		t_attribute = new Token(getTextAttribute(TokenHighlight.ATTRIBUTE));
 		t_string = new Token(getTextAttribute(TokenHighlight.STRING));
@@ -90,8 +86,9 @@ public class ErlHighlightScanner implements ITokenScanner {
 	}
 
 	private TextAttribute getTextAttribute(TokenHighlight th) {
-		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER + th.getName();
-		HighlightData data = new HighlightData();
+		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER
+				+ th.getName();
+		HighlightStyle data = new HighlightStyle();
 		data.load(qualifier, th.getDefaultData());
 		return new TextAttribute(fColorManager.getColor(data.getColor()), null,
 				data.getStyle());
@@ -144,9 +141,10 @@ public class ErlHighlightScanner implements ITokenScanner {
 	 * @param newValue
 	 *            the new value of the color
 	 */
-	public void handleColorChange(final String id, final RGB newValue) {
+	public void handleColorChange(final String id, final RGB newValue,
+			final int style) {
 		final Token token = getToken(id);
-		fixTokenData(token, newValue);
+		fixTokenData(token, newValue, style);
 	}
 
 	private Token getToken(final String id) {
@@ -184,10 +182,11 @@ public class ErlHighlightScanner implements ITokenScanner {
 		return null;
 	}
 
-	private void fixTokenData(final Token token, final RGB newValue) {
+	private void fixTokenData(final Token token, final RGB newValue,
+			final int style) {
 		final TextAttribute attr = (TextAttribute) token.getData();
 		token.setData(new TextAttribute(fColorManager.getColor(newValue), attr
-				.getBackground(), attr.getStyle()));
+				.getBackground(), style));
 	}
 
 	public void setRange(final IDocument document, final int offset,
@@ -202,7 +201,7 @@ public class ErlHighlightScanner implements ITokenScanner {
 			rangeLength = document.getLineOffset(line2) - rangeOffset
 					+ document.getLineLength(line2);
 
-			// ErlLogger.debug("§§§ setRange %s %d:%d (%d:%d)", document,
+			// ErlLogger.debug("setRange %s %d:%d (%d:%d)", document,
 			// rangeOffset, rangeLength, offset, length);
 
 			final String str = document.get(rangeOffset, rangeLength);

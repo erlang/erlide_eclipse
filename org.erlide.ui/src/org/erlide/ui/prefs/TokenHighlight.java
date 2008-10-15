@@ -38,13 +38,13 @@ public enum TokenHighlight {
 
 	FLOAT(Color.NAVY.getColor(), SWT.NORMAL);
 
-	private final HighlightData defaultData;
+	private final HighlightStyle defaultData;
 
 	private TokenHighlight(RGB color, int style) {
-		defaultData = new HighlightData(color, style);
+		defaultData = new HighlightStyle(color, style);
 	}
 
-	public HighlightData getDefaultData() {
+	public HighlightStyle getDefaultData() {
 		return defaultData;
 	}
 

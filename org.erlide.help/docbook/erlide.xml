@@ -770,7 +770,8 @@
             <para>The "make unique" box lets you decide if the specified name will get a unique
                 suffix in order to ensure that there will be no conflict with running nodes (the use
                 case is when there are several users running Erlide on the same machine, it's
-                difficult to ensure that they won't use the same name for nodes).</para>
+                difficult to ensure that they won't use the same name for nodes). The suffix is
+                derived from the workspace path, so it is deterministic. </para>
         </section>
         <section>
             <info>

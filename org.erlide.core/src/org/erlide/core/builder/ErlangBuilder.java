@@ -717,7 +717,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	private boolean isInIncludedPath(IResource resource, IProject my_project) {
+	boolean isInIncludedPath(IResource resource, IProject my_project) {
 		List<String> inc = new ArrayList<String>();
 		getIncludeDirs(my_project, inc);
 
@@ -1033,8 +1033,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	private void checkDependents(final IResource resource,
-			final IProject my_project) throws ErlModelException {
+	void checkDependents(final IResource resource, final IProject my_project)
+			throws ErlModelException {
 		IErlProject eprj = ErlangCore.getModel().findErlangProject(my_project);
 		if (eprj != null) {
 			List<IErlModule> ms = eprj.getModules();
