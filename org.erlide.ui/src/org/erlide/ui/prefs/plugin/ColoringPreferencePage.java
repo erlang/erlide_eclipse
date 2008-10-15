@@ -96,7 +96,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	private TreeViewer fListViewer;
 	private IColorManager fColorManager;
-	private SourceViewer fPreviewViewer;
+	SourceViewer fPreviewViewer;
 
 	Map<TokenHighlight, HighlightStyle> fColors;
 
@@ -190,9 +190,10 @@ public class ColoringPreferencePage extends PreferencePage implements
 			IEclipsePreferences node = new InstanceScope()
 					.getNode(COLORS_QUALIFIER + th.getName());
 			HighlightStyle data = fColors.get(th);
+
+			// TODO only if different than default!
 			data.store(node);
 		}
-
 		return super.performOk();
 	}
 
@@ -223,6 +224,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 				.hasStyle(TextAttribute.STRIKETHROUGH));
 		fUnderlineCheckBox
 				.setSelection(style.hasStyle(TextAttribute.UNDERLINE));
+
 		// if (item instanceof SemanticHighlightingColorListItem) {
 		// fEnableCheckbox.setEnabled(true);
 		// final boolean enable = getPreferenceStore().getBoolean(
@@ -419,6 +421,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 				final TokenHighlight item = getHighlight();
 				HighlightStyle data = fColors.get(item);
 				data.setColor(fSyntaxForegroundColorEditor.getColorValue());
+				fPreviewViewer.invalidateTextPresentation();
 			}
 		});
 
@@ -431,7 +434,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
 				HighlightStyle data = fColors.get(item);
-				data.setStyle(SWT.BOLD, true);
+				data.setStyle(SWT.BOLD, fBoldCheckBox.getSelection());
+				fPreviewViewer.invalidateTextPresentation();
 			}
 		});
 

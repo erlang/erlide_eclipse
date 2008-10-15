@@ -12,6 +12,9 @@ package org.erlide.ui.editors.erl;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
@@ -34,7 +37,8 @@ import erlang.ErlideScanner2;
  * 
  * @author Eric Merritt
  */
-public class ErlHighlightScanner implements ITokenScanner {
+public class ErlHighlightScanner implements ITokenScanner,
+		IPreferenceChangeListener {
 
 	private final Token t_def;
 	private final Token t_atom;
@@ -83,6 +87,9 @@ public class ErlHighlightScanner implements ITokenScanner {
 		t_integer = new Token(getTextAttribute(TokenHighlight.INTEGER));
 		t_float = new Token(getTextAttribute(TokenHighlight.FLOAT));
 		t_comment = new Token(getTextAttribute(TokenHighlight.COMMENT));
+
+		new InstanceScope().getNode(ColoringPreferencePage.COLORS_QUALIFIER)
+				.addPreferenceChangeListener(this);
 	}
 
 	private TextAttribute getTextAttribute(TokenHighlight th) {
@@ -274,6 +281,10 @@ public class ErlHighlightScanner implements ITokenScanner {
 			return ErlToken.EOF;
 		}
 		return fTokens.get(fCrtToken);
+	}
+
+	public void preferenceChange(PreferenceChangeEvent event) {
+		System.out.println(event.getKey());
 	}
 
 }

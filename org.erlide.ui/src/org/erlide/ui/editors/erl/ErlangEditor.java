@@ -263,6 +263,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
+			System.out.println("event:: " + key);
 			if (key.indexOf('/') != -1
 					&& key.split("/")[0]
 							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
