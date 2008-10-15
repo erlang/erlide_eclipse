@@ -59,13 +59,13 @@
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
             class="org.erlide.runtime.ErlangSourcePathComputerDelegate"
-            id="org.erlide.launching.sourcepathcomputer"/>
+            id="org.erlide.core.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
             class="org.erlide.runtime.ErlangSourceLookupDirector"
-            id="org.erlide.launching.erlangLocatorDirector"
+            id="org.erlide.core.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>
     <extension
@@ -73,7 +73,7 @@
       <breakpoint
             class="org.erlide.runtime.debug.ErlangLineBreakpoint"
             id="erlang.lineBreakpoint"
-            markerType="org.erlide.launching.erlang.lineBreakpoint.marker"/>
+            markerType="org.erlide.core.erlang.lineBreakpoint.marker"/>
    </extension>
   <extension
          id="erlang.lineBreakpoint.marker"
@@ -103,6 +103,17 @@
             class="org.eclipse.core.runtime.Platform"
             onlyDeclared="false">
       </stub>
+   </extension>
+   <extension
+         id="org.erlide.core.erlang.lineBreakpoint.marker"
+         name="Erlang Line Breakpoint Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.lineBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
  
 
