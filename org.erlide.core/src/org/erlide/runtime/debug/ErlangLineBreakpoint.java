@@ -37,7 +37,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 		final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				IMarker marker = resource
-						.createMarker("org.erlide.launching.erlang.lineBreakpoint.marker");
+						.createMarker("org.erlide.core.erlang.lineBreakpoint.marker");
 				setMarker(marker);
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
@@ -56,7 +56,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	 *            debug target
 	 */
 	public void install(final ErlangDebugTarget atarget) {
-		this.target = atarget;
+		target = atarget;
 		createRequest(IErlDebugConstants.REQUEST_INSTALL);
 	}
 
@@ -118,7 +118,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	}
 
 	public void remove(final ErlangDebugTarget atarget) {
-		this.target = atarget;
+		target = atarget;
 		createRequest(IErlDebugConstants.REQUEST_REMOVE);
 	}
 
