@@ -991,8 +991,8 @@
             id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
             name="Erlang application"
-            sourceLocatorId="org.erlide.launching.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.launching.sourcepathcomputer">
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
    <extension

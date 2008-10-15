@@ -11,6 +11,7 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.erlide.runtime.debug.ErlangDebugTarget;
@@ -24,6 +25,17 @@ import org.erlide.runtime.debug.ErlangStackFrame;
  */
 public class ErlDebugModelPresentation extends LabelProvider implements
 		IDebugModelPresentation {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
+	 */
+	@Override
+	public Image getImage(final Object element) {
+		// TODO Auto-generated method stub
+		return super.getImage(element);
+	}
 
 	/**
 	 * 
