@@ -24,14 +24,14 @@ import org.erlide.ui.editors.erl.EditorConfiguration;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 /**
- * Handles Java editor font changes for Java source preview viewers.
+ * Handles Erlang editor font changes for Erlang source preview viewers.
  * 
  */
 public class ErlangSourceViewerUpdater {
 
 	/**
-	 * Creates a Java source preview updater for the given viewer, configuration
-	 * and preference store.
+	 * Creates an Erlang source preview updater for the given viewer,
+	 * configuration and preference store.
 	 * 
 	 * @param viewer
 	 *            the viewer
@@ -49,7 +49,9 @@ public class ErlangSourceViewerUpdater {
 		final IPropertyChangeListener fontChangeListener = new IPropertyChangeListener() {
 
 			/*
-			 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+			 * @see
+			 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
+			 * (org.eclipse.jface.util.PropertyChangeEvent)
 			 */
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
@@ -63,7 +65,9 @@ public class ErlangSourceViewerUpdater {
 		final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
 			/*
-			 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+			 * @see
+			 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
+			 * (org.eclipse.jface.util.PropertyChangeEvent)
 			 */
 			public void propertyChange(PropertyChangeEvent event) {
 				// if (configuration.affectsTextPresentation(event)) {
@@ -75,7 +79,9 @@ public class ErlangSourceViewerUpdater {
 		viewer.getTextWidget().addDisposeListener(new DisposeListener() {
 
 			/*
-			 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+			 * @see
+			 * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse
+			 * .swt.events.DisposeEvent)
 			 */
 			public void widgetDisposed(DisposeEvent e) {
 				preferenceStore

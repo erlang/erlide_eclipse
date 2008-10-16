@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -24,7 +25,7 @@ public class PreferenceConstants {
 	public static final int DEFAULT_PRINT_MARGIN = 80;
 	public static final String PRINT_MARGIN = "__erl_print_margin";
 
-	public static final String EDITOR_TEXT_FONT = "__erl_text_font";
+	public static final String EDITOR_TEXT_FONT = JFaceResources.TEXT_FONT;
 
 	/**
 	 * A named preference that controls whether bracket matching highlighting is

@@ -546,9 +546,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	private Preferences createTemporaryCorePreferenceStore() {
 		final Preferences result = new Preferences();
-
 		result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
-
 		return result;
 	}
 
