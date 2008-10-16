@@ -45,8 +45,8 @@ public class ErlangLaunchConfigurationDelegate extends
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
 		try {
-			String prjs = config
-					.getAttribute(IErlLaunchAttributes.PROJECTS, "").trim();
+			final String prjs = config.getAttribute(
+					IErlLaunchAttributes.PROJECTS, "").trim();
 			final String[] projectNames = prjs.length() == 0 ? new String[] {}
 					: prjs.split(";");
 			final String module = config.getAttribute(
@@ -131,7 +131,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				// interpret everything we can
 				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
 				for (final String pm : interpretedModules) {
-					String[] pms = pm.split(":");
+					final String[] pms = pm.split(":");
 					interpret(backend, pms[0], pms[1], distributed);
 				}
 				// send started to target
@@ -154,21 +154,24 @@ public class ErlangLaunchConfigurationDelegate extends
 
 	private void interpret(final ExecutionBackend backend,
 			final String project, final String module, final boolean distributed) {
-		IErlProject eprj = ErlangCore.getModel().getErlangProject(project);
-		IProject iprj = eprj.getProject();
+		final IErlProject eprj = ErlangCore.getModel()
+				.getErlangProject(project);
+		final IProject iprj = eprj.getProject();
 		try {
-			IFolder r = iprj.getFolder(eprj.getOutputLocation());
-			String beam = module.substring(0, module.length() - 4) + ".beam";
-			IFile f = r.getFile(beam);
+			final IFolder r = iprj.getFolder(eprj.getOutputLocation());
+			final String beam = module.substring(0, module.length() - 4)
+					+ ".beam";
+			final IFile f = r.getFile(beam);
 			if (f.exists()) {
 				ErlLogger.debug("interpret " + beam);
-				ErlideDebug.interpret(backend, beam, distributed);
+				ErlideDebug.interpret(backend, f.getLocation().toString(),
+						distributed);
 			} else {
 				ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
 						+ module);
 			}
 
-		} catch (ErlModelException e) {
+		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
 
