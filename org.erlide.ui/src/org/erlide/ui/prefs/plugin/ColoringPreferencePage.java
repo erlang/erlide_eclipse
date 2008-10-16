@@ -395,7 +395,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 		label = new Label(colorComposite, SWT.LEFT);
 		label.setText(PreferencesMessages.ErlEditorPreferencePage_preview);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		final GridData gd_label = new GridData(SWT.FILL, SWT.FILL, true, false);
+		label.setLayoutData(gd_label);
 
 		final Control previewer = createPreviewer(colorComposite);
 		gd = new GridData(GridData.FILL_BOTH);
@@ -412,7 +413,6 @@ public class ColoringPreferencePage extends PreferencePage implements
 				});
 
 		foregroundColorButton.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
@@ -426,7 +426,6 @@ public class ColoringPreferencePage extends PreferencePage implements
 		});
 
 		fBoldCheckBox.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
@@ -440,45 +439,46 @@ public class ColoringPreferencePage extends PreferencePage implements
 		});
 
 		fItalicCheckBox.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
 
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
-				// getPreferenceStore().setValue(item.getItalicKey(),
-				// fItalicCheckBox.getSelection());
+				HighlightStyle data = fColors.get(item);
+				data.setStyle(SWT.ITALIC, fItalicCheckBox.getSelection());
+				fPreviewViewer.invalidateTextPresentation();
 			}
 		});
 		fStrikethroughCheckBox.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
 
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
-				// getPreferenceStore().setValue(item.getStrikethroughKey(),
-				// fStrikethroughCheckBox.getSelection());
+				HighlightStyle data = fColors.get(item);
+				data.setStyle(TextAttribute.STRIKETHROUGH,
+						fStrikethroughCheckBox.getSelection());
+				fPreviewViewer.invalidateTextPresentation();
 			}
 		});
 
 		fUnderlineCheckBox.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}
 
 			public void widgetSelected(SelectionEvent e) {
 				final TokenHighlight item = getHighlight();
-				// getPreferenceStore().setValue(item.getUnderlineKey(),
-				// fUnderlineCheckBox.getSelection());
+				HighlightStyle data = fColors.get(item);
+				data.setStyle(TextAttribute.UNDERLINE, fUnderlineCheckBox
+						.getSelection());
+				fPreviewViewer.invalidateTextPresentation();
 			}
 		});
 
 		fEnableCheckbox.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
 			}

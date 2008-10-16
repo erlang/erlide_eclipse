@@ -7,11 +7,12 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
 public class HighlightStyle {
-	private static final String STYLE_KEY = "style";
-	private static final String COLOR_KEY = "color";
+	public static final String STYLE_KEY = "style";
+	public static final String COLOR_KEY = "color";
 
 	private RGB color;
 	private int style;
+	private HighlightStyle dflt;
 
 	public RGB getColor() {
 		return color;
@@ -45,6 +46,7 @@ public class HighlightStyle {
 	}
 
 	public void load(IEclipsePreferences node, HighlightStyle def) {
+		dflt = def;
 		if (node != null) {
 			color = StringConverter.asRGB(node.get(COLOR_KEY, StringConverter
 					.asString(def.getColor())));
@@ -54,6 +56,7 @@ public class HighlightStyle {
 
 	public void load(String qualifier, HighlightStyle def) {
 		IPreferencesService service = Platform.getPreferencesService();
+		dflt = def;
 		color = StringConverter.asRGB(service.getString(qualifier, COLOR_KEY,
 				StringConverter.asString(def.getColor()), null));
 		style = service.getInt(qualifier, STYLE_KEY, def.getStyle(), null);
@@ -70,4 +73,5 @@ public class HighlightStyle {
 			style &= ~flag;
 		}
 	}
+
 }

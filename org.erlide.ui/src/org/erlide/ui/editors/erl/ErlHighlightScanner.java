@@ -15,12 +15,14 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -29,6 +31,7 @@ import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
+import org.osgi.service.prefs.Preferences;
 
 import erlang.ErlideScanner2;
 
@@ -61,16 +64,20 @@ public class ErlHighlightScanner implements ITokenScanner,
 	protected int fCrtToken;
 	private int rangeLength;
 	private int rangeOffset;
+	private ISourceViewer fSourceViewer;
 
 	/**
 	 * Constructs the rules that define syntax highlighting.
 	 * 
 	 * @param lmanager
 	 *            the color fColorManager
+	 * @param editorConfiguration
 	 * @param fScanner
 	 */
-	public ErlHighlightScanner(final IColorManager lmanager) {
+	public ErlHighlightScanner(final IColorManager lmanager,
+			ISourceViewer editorConfiguration) {
 		fColorManager = lmanager;
+		fSourceViewer = editorConfiguration;
 
 		t_attribute = new Token(getTextAttribute(TokenHighlight.ATTRIBUTE));
 		t_string = new Token(getTextAttribute(TokenHighlight.STRING));
@@ -88,8 +95,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 		t_float = new Token(getTextAttribute(TokenHighlight.FLOAT));
 		t_comment = new Token(getTextAttribute(TokenHighlight.COMMENT));
 
-		new InstanceScope().getNode(ColoringPreferencePage.COLORS_QUALIFIER)
-				.addPreferenceChangeListener(this);
 	}
 
 	private TextAttribute getTextAttribute(TokenHighlight th) {
@@ -97,6 +102,8 @@ public class ErlHighlightScanner implements ITokenScanner,
 				+ th.getName();
 		HighlightStyle data = new HighlightStyle();
 		data.load(qualifier, th.getDefaultData());
+		new InstanceScope().getNode(qualifier)
+				.addPreferenceChangeListener(this);
 		return new TextAttribute(fColorManager.getColor(data.getColor()), null,
 				data.getStyle());
 	}
@@ -284,7 +291,28 @@ public class ErlHighlightScanner implements ITokenScanner,
 	}
 
 	public void preferenceChange(PreferenceChangeEvent event) {
-		System.out.println(event.getKey());
+		String key = event.getKey();
+		Preferences node = event.getNode();
+		String newValue = (String) event.getNewValue();
+		Token tk = getToken(node.name());
+		TextAttribute attr = (TextAttribute) tk.getData();
+		if (HighlightStyle.COLOR_KEY.equals(key)) {
+			if (newValue == null) {
+				// color = dflt.color;
+			} else {
+				attr = new TextAttribute(fColorManager.getColor(StringConverter
+						.asRGB(newValue)), attr.getBackground(), attr
+						.getStyle());
+			}
+		} else if (HighlightStyle.STYLE_KEY.equals(key)) {
+			if (newValue == null) {
+				// style = dflt.style;
+			} else {
+				attr = new TextAttribute(attr.getForeground(), attr
+						.getBackground(), Integer.parseInt(newValue));
+			}
+		}
+		tk.setData(attr);
+		fSourceViewer.invalidateTextPresentation();
 	}
-
 }

@@ -117,9 +117,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * 
 	 * @return the highlighting fHighlightScanner
 	 */
-	protected ErlHighlightScanner getHighlightScanner() {
+	protected ErlHighlightScanner getHighlightScanner(ISourceViewer sourceViewer) {
 		if (fHighlightScanner == null) {
-			fHighlightScanner = new ErlHighlightScanner(colorManager);
+			fHighlightScanner = new ErlHighlightScanner(colorManager,
+					sourceViewer);
 		}
 		return fHighlightScanner;
 	}
@@ -145,7 +146,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final ISourceViewer sourceViewer) {
 		final PresentationReconciler areconciler = new PresentationReconciler();
 
-		final ErlHighlightScanner scan = getHighlightScanner();
+		final ErlHighlightScanner scan = getHighlightScanner(sourceViewer);
 		if (scan != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
 			areconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
@@ -155,8 +156,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
-	 *      (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+	 * @see
+	 * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
+	 * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
@@ -235,7 +237,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * @see
+	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 	 * 
 	 * @since 2.0
 	 */

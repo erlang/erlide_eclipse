@@ -618,8 +618,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 			final ContentAssistant asst = new ContentAssistant();
 
-			// TODO vi vill ha in en punkt hŠr, men den fŒr return till
-			// styledtext o skickar allt fšr tidigt...
+			// TODO vi vill ha in en punkt här, men den får return till
+			// styledtext o skickar allt för tidigt...
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
 					sourceViewer, "", null), IDocument.DEFAULT_CONTENT_TYPE);
 
@@ -627,7 +627,7 @@ public class ErlangConsoleView extends ViewPart implements
 			asst.setAutoActivationDelay(500);
 			asst.enableAutoInsert(true);
 			asst.enablePrefixCompletion(false);
-			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
+			//asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
 			// );
 
 			asst
@@ -647,7 +647,8 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		/*
-		 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * @see
+		 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 		 * 
 		 * @since 2.0
 		 */
@@ -687,9 +688,11 @@ public class ErlangConsoleView extends ViewPart implements
 		 * 
 		 * @return the highlighting fHighlightScanner
 		 */
-		protected ErlHighlightScanner getHighlightScanner() {
+		protected ErlHighlightScanner getHighlightScanner(
+				final ISourceViewer sourceViewer) {
 			if (fHighlightScanner == null) {
-				fHighlightScanner = new ErlHighlightScanner(new ColorManager());
+				fHighlightScanner = new ErlHighlightScanner(new ColorManager(),
+						sourceViewer);
 			}
 			return fHighlightScanner;
 		}
@@ -715,7 +718,7 @@ public class ErlangConsoleView extends ViewPart implements
 				final ISourceViewer sourceViewer) {
 			final PresentationReconciler reconciler = new PresentationReconciler();
 
-			final ErlHighlightScanner scan = getHighlightScanner();
+			final ErlHighlightScanner scan = getHighlightScanner(sourceViewer);
 			if (scan != null) {
 				final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
 				reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
