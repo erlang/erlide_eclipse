@@ -129,7 +129,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				// target.getWaiter().doWait();
 				launch.addDebugTarget(target);
 				// interpret everything we can
-				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0;
+				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 				for (final String pm : interpretedModules) {
 					final String[] pms = pm.split(":");
 					interpret(backend, pms[0], pms[1], distributed);

@@ -285,7 +285,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			IErlProject prj = ErlangCore.getModel().getErlangProject(pm[0]);
 			try {
 				IErlModule mod = prj.getModule(pm[1]);
-				interpretedModules.add(mod);
+				if (mod != null) {
+					interpretedModules.add(mod);
+				}
 			} catch (ErlModelException e) {
 			}
 		}
@@ -304,18 +306,18 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			checkboxTreeViewer.expandAll();
 			DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
 					.getContentProvider()).root;
-			setchecked(root, interpretedModules);
+			setChecked(root, interpretedModules);
 		} else {
 
 		}
 	}
 
-	private void setchecked(DebugTreeItem item, List<IErlModule> list) {
+	private void setChecked(DebugTreeItem item, List<IErlModule> list) {
 		if (list.contains(item.item)) {
 			checkboxTreeViewer.setChecked(item, true);
 		}
 		for (DebugTreeItem c : item.children) {
-			setchecked(c, list);
+			setChecked(c, list);
 			updateMenuCategoryCheckedState(item);
 		}
 	}
@@ -350,25 +352,34 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private void setFlagCheckboxes(final int debugFlags) {
-		attachOnFirstCallCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG) != 0);
-		attachOnBreakpointCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG) != 0);
-		attachOnExitCheck
-				.setSelection((debugFlags & IErlDebugConstants.ATTACH_ON_EXIT_FLAG) != 0);
-		distributedDebugCheck
-				.setSelection((debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG) != 0);
+		if (attachOnFirstCallCheck == null) {
+			// I don't know why these are null sometimes...
+			return;
+		}
+		int flag = debugFlags & IErlDebugConstants.ATTACH_ON_FIRST_CALL;
+		attachOnFirstCallCheck.setSelection(flag != 0);
+		flag = debugFlags & IErlDebugConstants.ATTACH_ON_BREAKPOINT;
+		attachOnBreakpointCheck.setSelection(flag != 0);
+		flag = debugFlags & IErlDebugConstants.ATTACH_ON_EXIT;
+		attachOnExitCheck.setSelection(flag != 0);
+		flag = debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG;
+		distributedDebugCheck.setSelection(flag != 0);
 	}
 
 	private int getFlagChechboxes() {
-		int result = attachOnFirstCallCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_FIRST_CALL_FLAG
-				: 0;
-		result += attachOnBreakpointCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_BREAKPOINT_FLAG
-				: 0;
-		result += attachOnExitCheck.getSelection() ? IErlDebugConstants.ATTACH_ON_EXIT_FLAG
-				: 0;
-		result += distributedDebugCheck.getSelection() ? IErlDebugConstants.DISTRIBUTED_DEBUG_FLAG
-				: 0;
+		int result = 0;
+		if (attachOnFirstCallCheck.getSelection()) {
+			result |= IErlDebugConstants.ATTACH_ON_FIRST_CALL;
+		}
+		if (attachOnBreakpointCheck.getSelection()) {
+			result |= IErlDebugConstants.ATTACH_ON_BREAKPOINT;
+		}
+		if (attachOnExitCheck.getSelection()) {
+			result |= IErlDebugConstants.ATTACH_ON_EXIT;
+		}
+		if (distributedDebugCheck.getSelection()) {
+			result |= IErlDebugConstants.DISTRIBUTED_DEBUG;
+		}
 		return result;
 	}
 
