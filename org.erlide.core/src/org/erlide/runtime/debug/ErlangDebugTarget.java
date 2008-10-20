@@ -290,7 +290,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				e1.printStackTrace();
 			}
 			final OtpErlangPid pid = getPidFromMeta(metaPid);
-			final ErlangProcess erlangProcess = getErlangProcess(pid);
+			ErlangProcess erlangProcess = getErlangProcess(pid);
+			if (erlangProcess == null) {
+				erlangProcess = addErlangProcess(pid);
+			}
 			erlangProcess.breakAt(mod.atomValue(), line);
 			if (erlangProcess.isStepping()) {
 				erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
