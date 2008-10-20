@@ -32,6 +32,9 @@
                 status     % break | exit | idle | running | waiting
                 }).
 
+%% Internal exports
+-export([send_attached_to_java/2]).
+
 %% FIXME vi behöver inget state! detta är mest till för otp-debuggern,
 %% så den sparar sig mellan varven...
 
@@ -40,15 +43,11 @@
                 starter,   % bool() 'true' if int was started by me
                 
                 focus, % #pinfo()
-%%                 intdir,    % string() Default dir
                 pinfos,    % [#pinfo{}] Debugged processes
                 
                 backtrace, % integer() Number of call frames to fetch
                 
                 attach,    % false | {Flags, Function}
-                
-%%                 sfile,     % default | string() Settings file
-%%                 changed,   % boolean() Settings have been changed
                 
                 interpreted% list of interpreted filenames
                }).
@@ -116,14 +115,9 @@ init(CallingPid, Mode, Flags) ->
     %% Initial process state
     State1 = #state{mode    = Mode,
                     starter = Bool,
-                    
-%%                     intdir  = element(2, file:get_cwd()),
                     pinfos  = [],
-                    
-%%                     changed = false,
-                    
                     interpreted = []
-                    },
+                   },
     
     State2 = State1#state{attach = Flags},
 
@@ -134,7 +128,6 @@ init(CallingPid, Mode, Flags) ->
                            State2),
 
     CallingPid ! {initialization_complete, self()},
-
     loop(State3).
 
 init_contents(_Mods, _Breaks, Processes, State) ->
@@ -152,6 +145,8 @@ init_contents(_Mods, _Breaks, Processes, State) ->
 loop(State) ->
     receive
         {parent, P} -> %% P is the remote mailbox
+            log({parent, P}),
+            erlide_int:auto_attach(State#state.attach, {?MODULE, send_attached_to_java, [P]}),
             loop(State#state{parent=P});
         
 %%         dumpState ->
@@ -161,6 +156,7 @@ loop(State) ->
         
         {cmd, Cmd, From} = _Msg ->
             %% 	    io:format("@ dbg_mon cmd: ~p~n", [_Msg]),
+            log({gui_cmd, Cmd, From}),
             {Reply, State1} = gui_cmd(Cmd, State),
             From ! Reply,
             loop(State1);
@@ -170,6 +166,7 @@ loop(State) ->
         
         %% From the interpreter process
         {int, Cmd} = Msg ->
+            log({int_cmd, Cmd}),
             msg(State#state.parent, Msg),	    
             
             State2 = int_cmd(Cmd, State),
@@ -220,9 +217,14 @@ gui_cmd(kill_all_processes, State) ->
     State;
 
 gui_cmd({interpret, {AbsBeam, Dist}}, State) ->
+%%     log({interpret, {AbsBeam, Dist}}),
     Res = erlide_int:interpret_beam(AbsBeam, Dist),
-%%     log({?MODULE, ?LINE, AbsBeam}),
-    {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
+    case Res of 
+        {module, _} ->
+            {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
+        _ ->
+            {Res, State}
+    end;
 gui_cmd({interpreted, []}, State) ->
     Res = State#state.interpreted,
     {Res, State};
@@ -541,3 +543,8 @@ msg(Pid, Msg) ->
 
 log(E) ->
     erlide_debug:log(E).
+
+send_attached_to_java(P, Pid) ->
+    log({attached, P, Pid}),
+    msg(Pid, {attached, P}),
+    log(attached_sent).

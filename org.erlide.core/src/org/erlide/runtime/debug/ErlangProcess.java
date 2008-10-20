@@ -19,6 +19,7 @@ import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -50,15 +51,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	private final OtpErlangPid fPid;
 
-	private OtpErlangPid cachedMetaPid;
+	private OtpErlangPid cachedMetaPid = null;
 
 	private final IBackend fBackend;
 
 	private String fStatus;
-
-	// private ErlangStackFrame topFrame;
-	//
-	// private ErlangStackFrame fakeFrame;
 
 	private List<ErlangStackFrame> stackFrames;
 
@@ -69,12 +66,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		fPid = pid;
 		fBackend = target.getBackend();
 		fStatus = STATUS_UNKNOWN;
-		// topFrame = null;
-		// fakeFrame = null;
 		stackFrames = new ArrayList<ErlangStackFrame>();
-		cachedMetaPid = null;
 		stepping = false;
-		// fakeFrame = new ErlangStackFrame("tester_server", this, target, 12);
 	}
 
 	public String getRegisteredName() {
@@ -95,7 +88,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	public OtpErlangPid getMeta() {
 		if (cachedMetaPid == null) {
 			cachedMetaPid = ((ErlangDebugTarget) getDebugTarget())
-					.getMetaForPid(fPid);
+					.getMetaFromPid(fPid);
 		}
 		return cachedMetaPid;
 	}
@@ -199,6 +192,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		// final OtpErlangList bindings = ErlideDebug.getBindings(fBackend,
 		// getMeta());
 		// ErlLogger.debug("bindings " + bindings);
+		ErlLogger.debug("breakAt getMeta() " + getMeta());
 		final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
 				fBackend, getMeta());
 		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings

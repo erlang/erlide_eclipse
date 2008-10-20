@@ -159,6 +159,8 @@ handle_call(snapshot, _From, State) ->
 		      end,
 		      State#state.procs),
     {reply, Reply, State};
+handle_call(dump, _From, State) ->
+    {reply, {record_info(fields, state), State}, State};
 handle_call({get_meta, Pid}, _From, State) ->
     Reply = case get_proc({pid, Pid}, State#state.procs) of
 		{true, Proc} ->
@@ -192,7 +194,7 @@ handle_call({all_breaks, Mod}, _From, State) ->
 %% From Meta process
 handle_call({new_process, Pid, Meta, Function}, _From, State) ->
     link(Meta),
-%%     erlide_debug:log({new_process, {pid, Pid}, {meta, Meta}, Function}),
+    erlide_debug:log({new_process, {pid, Pid}, {meta, Meta}, Function}),
 
     %% A new, debugged process has been started. Return its status,
     %% ie running (running as usual) or break (stop)

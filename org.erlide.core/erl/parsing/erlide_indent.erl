@@ -731,7 +731,10 @@ i_if_clause_list(R0, I0, A0) ->
      
 i_catch_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
-    R2 = i_kind(atom, R1, I0),
+    R2 = case i_sniff(R1) of
+             atom -> i_kind(atom, R1, I0);
+             var -> i_kind(var, R1, I0)
+         end,
     R3 = i_kind(':', R2, I0),
     {R4, _A} = i_expr(R3, I0, none),
     I1 = i_with(before_arrow, R1, I0),

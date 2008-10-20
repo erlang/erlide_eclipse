@@ -715,5 +715,5 @@ del_mod(AbsMod, Dist) ->
 	       end),
     ok.
 
-log(E) ->
-    erlide_debug:log(E).
+
+

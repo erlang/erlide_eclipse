@@ -53,7 +53,7 @@ cmd(Expr, Bs, Ieval) ->
 
 %% Evaluation should break
 cmd(Expr, Bs, break, Ieval) ->
-%%     erlide_debug:log({break0}),
+    erlide_debug:log({break0}),
     break(Expr, Bs, Ieval);
 %% Evaluation should continue, unless there is a breakpoint at
 %% the current line
@@ -61,8 +61,8 @@ cmd(Expr, Bs, running, #ieval{level=Le,module=M}=Ieval) ->
     Line = element(2, Expr),
     case break_p(M, Line, Le, Bs) of
 	true ->
-%%             erlide_debug:log({icmd_break_true, M, Line, Le, Bs}),
-	    put(next_break, break),
+            erlide_debug:log({icmd_break_true, M, Line, Le, Bs}),
+	    put_next_break(break),
 	    break(Expr, Bs, Ieval);
 	false ->
 	    handle_cmd(Bs, running, Ieval)
@@ -76,8 +76,8 @@ cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
 %% Evaluation has returned to call level Next, break
 cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
                                                  Next>=Le ->
-    put(next_break, break),
-%%     erlide_debug:log({break1}),
+    erlide_debug:log({break1}),
+    put_next_break(break),
     break(Expr, Bs, Ieval).
 
 %% break_p(Mod, Line, Le, Bs) -> true | false
@@ -126,7 +126,7 @@ break_p(Mod, Line, Le, Bs) ->
 %% Called whenever evaluation enters break mode, informs attached
 %% process and erlide_dbg_iserver
 break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
-%%     erlide_debug:log({icmd_break, Expr, Bs, Ieval, erlang:get_stacktrace()}),
+    erlide_debug:log({icmd_break, Expr, Bs, Ieval, erlang:get_stacktrace()}),
     Line = element(2, Expr),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
     tell_attached({break_at,M,Line,Le}),
@@ -146,9 +146,9 @@ handle_cmd(Bs, break, #ieval{level=Le}=Ieval) ->
 	    tell_attached(running),
 	    case Cmd of
 		step -> Bs;
-		next -> put(next_break, Le), Bs;
-		continue -> put(next_break, running), Bs;
-		finish -> put(next_break, Le-1), Bs;
+		next -> erlide_debug:log({break, ?LINE}), put_next_break(Le), Bs;
+		continue -> erlide_debug:log({break, ?LINE}), put_next_break(running), Bs;
+		finish -> erlide_debug:log({break, ?LINE}), put_next_break(Le-1), Bs;
 		skip -> {skip, Bs}
 	    end;
 	{user, {eval, Cmd}} ->
@@ -165,7 +165,7 @@ handle_cmd(Bs, Status, Ieval) ->
 	    erlide_dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
 	    handle_msg(Msg, Status, Bs, Ieval),
 	    handle_cmd(Bs, Status, Ieval)
-    after 0 -> 
+    after 0 ->
 	    Bs
     end.
 
@@ -250,8 +250,8 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 
     %% Update process dictionary
     put(attached, AttPid),
-%%     erlide_debug:log({break01, AttPid, Status}),
-    put(next_break, break),
+    erlide_debug:log({break, ?LINE}),
+    put_next_break(break),
 
     %% Tell attached process in which module evalution is located
     if
@@ -274,7 +274,7 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 handle_int_msg(detached, _Status, _Bs, _Ieval) ->
     %% Update process dictionary
     put(attached, undefined),
-    put(next_break, running),
+    put_next_break(running),
     put(trace, false); % no need for tracing if there is no AttPid
 handle_int_msg({old_code,Mod}, Status, Bs,
 	       #ieval{level=Le,module=M}=Ieval) ->
@@ -323,10 +323,10 @@ handle_user_msg({cmd, stop}, Status, _Bs, _Ieval) ->
     case lists:member(Status, [running, wait_at, wait_after_at]) of
 	true ->
             erlide_debug:log({break02, Status}),
-	    put(next_break, break);
+	    put_next_break(break);
 	false when is_integer(Status); is_tuple(Status) ->
             erlide_debug:log({break03, Status}),
-	    put(next_break, break);
+	    put_next_break(break);
 	false -> % idle | exit_at (| break)
 	    ignore
     end;
@@ -334,7 +334,7 @@ handle_user_msg({cmd, continue}, Status, _Bs, _Ieval) ->
     %% Allow leaving break mode when waiting in a receive
     case lists:member(Status, [wait_at, wait_after_at]) of
 	true ->
-	    put(next_break, running);
+	    put_next_break(running);
 	false ->
 	    ignore
     end;
@@ -459,14 +459,14 @@ eval_nonrestricted_1(Expr, Bs, Ieval) ->
     {Res,Bs2}.
 
 mark_running(LineNo, Le) ->
-    put(next_break, running),
+    put_next_break(running),
     put(user_eval, [{LineNo, Le} | get(user_eval)]),
     erlide_dbg_iserver:cast(get(int), {set_status, self(), running, {}}),
     tell_attached(running).
 
 mark_break(Cm, LineNo, Le) ->
     erlide_debug:log({break04, Cm, LineNo, Le}),
-    put(next_break, break),
+    put_next_break(break),
     put(user_eval, tl(get(user_eval))),
     tell_attached({break_at, Cm, LineNo, Le}),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{Cm,LineNo}}).
@@ -498,3 +498,7 @@ get_binding(Var, Bs) ->
 	{value, {Var, Value}} -> {value, Value};
 	false -> unbound
     end.
+
+put_next_break(V) ->
+    put(next_break, V).
+

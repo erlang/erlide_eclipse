@@ -144,14 +144,15 @@ set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
 
-log(E) ->
-    case file:open("/Users/jakob/Desktop/log.txt", [append]) of
-        {ok, F} ->
-            io:format(F, "~p\n", [E]),
-            file:close(F);
-        _ ->
-            ok
-    end.
+log(_E) ->
+%%     case file:open("/Users/jakob/Desktop/log.txt", [append]) of
+%%         {ok, F} ->
+%%             io:format(F, "~p\n", [E]),
+%%             file:close(F);
+%%         _ ->
+%%             ok
+%%     end.
+    ok.
 
     
 
