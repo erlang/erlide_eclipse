@@ -12,6 +12,12 @@ package org.erlide.ui.editors.erl;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -70,8 +76,13 @@ public class ErlTextHover implements ITextHover,
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
-		OtpErlangObject r1 = null;
 		final int offset = hoverRegion.getOffset();
+		OtpErlangObject r1 = null;
+		final String debuggerVar = makeDebuggerVariableHover(textViewer,
+				offset, hoverRegion.getLength());
+		if (debuggerVar.length() > 0) {
+			return debuggerVar;
+		}
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		final IProject proj = (IProject) fModule.getProject().getResource();
@@ -111,6 +122,50 @@ public class ErlTextHover implements ITextHover,
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param textViewer
+	 * @param offset
+	 * @param length
+	 */
+	private String makeDebuggerVariableHover(final ITextViewer textViewer,
+			final int offset, final int length) {
+		final IAdaptable adaptable = DebugUITools.getDebugContext();
+		if (adaptable != null) {
+			final IStackFrame frame = (IStackFrame) adaptable
+					.getAdapter(IStackFrame.class);
+			try {
+				if (frame != null && frame.hasVariables()) {
+					String varName = "";
+					try {
+						varName = textViewer.getDocument().get(offset, length);
+					} catch (final BadLocationException e) {
+					}
+					if (varName.length() > 0) {
+						final String firstLetter = varName.substring(0, 1);
+						if (firstLetter.toUpperCase().equals(firstLetter)) {
+							final IVariable[] vars = frame.getVariables();
+							for (final IVariable variable : vars) {
+								if (variable.getName().equals(varName)) {
+									final String value = variable.getValue()
+											.getValueString();
+									return makeVariablePresentation(varName,
+											value);
+								}
+							}
+						}
+					}
+				}
+			} catch (final DebugException e) {
+			}
+		}
+		return "";
+	}
+
+	private String makeVariablePresentation(final String varName,
+			final String value) {
+		return varName + " = " + value;
 	}
 
 	public IInformationControlCreator getInformationPresenterControlCreator() {
