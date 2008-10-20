@@ -29,7 +29,6 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -85,7 +84,7 @@ public class ErlTextHover implements ITextHover,
 		}
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
-		ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
+		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;
 			return s1.stringValue();
