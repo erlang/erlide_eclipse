@@ -3,16 +3,16 @@
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved via the world wide web at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
  * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
  * AB. All Rights Reserved.''
- * 
+ *
  *     $Id$
  */
 package com.ericsson.otp.erlang;
@@ -51,7 +51,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 * Create a list of characters.
 	 * 
 	 * @param str
-	 * 		the characters from which to create the list.
+	 *            the characters from which to create the list.
 	 */
 	public OtpErlangList(String str) {
 		int len = 0;
@@ -71,7 +71,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 * Create a list containing one element.
 	 * 
 	 * @param elem
-	 * 		the element to make the list from.
+	 *            the element to make the list from.
 	 */
 	public OtpErlangList(OtpErlangObject elem) {
 		elems = new OtpErlangObject[1];
@@ -82,7 +82,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 * Create a list from an array of arbitrary Erlang terms.
 	 * 
 	 * @param elems
-	 * 		the array of terms from which to create the list.
+	 *            the array of terms from which to create the list.
 	 */
 	public OtpErlangList(OtpErlangObject... elems) {
 		this(elems, 0, elems.length);
@@ -92,11 +92,11 @@ public class OtpErlangList extends OtpErlangObject {
 	 * Create a list from an array of arbitrary Erlang terms.
 	 * 
 	 * @param elems
-	 * 		the array of terms from which to create the list.
+	 *            the array of terms from which to create the list.
 	 * @param start
-	 * 		the offset of the first term to insert.
+	 *            the offset of the first term to insert.
 	 * @param count
-	 * 		the number of terms to insert.
+	 *            the number of terms to insert.
 	 */
 	public OtpErlangList(OtpErlangObject[] elems, int start, int count) {
 		if ((elems != null) && (count > 0)) {
@@ -110,11 +110,11 @@ public class OtpErlangList extends OtpErlangObject {
 	 * format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded list.
+	 *            the stream containing the encoded list.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang list.
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang list.
 	 */
 	public OtpErlangList(OtpInputStream buf) throws OtpErlangDecodeException {
 		elems = null;
@@ -156,8 +156,8 @@ public class OtpErlangList extends OtpErlangObject {
 	 * Get the specified element from the list.
 	 * 
 	 * @param i
-	 * 		the index of the requested element. List elements are numbered as
-	 * 		array elements, starting at 0.
+	 *            the index of the requested element. List elements are numbered
+	 *            as array elements, starting at 0.
 	 * 
 	 * @return the requested element, of null if i is not a valid element index.
 	 */
@@ -175,7 +175,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 */
 	public OtpErlangObject[] elements() {
 		if (arity() == 0) {
-			return null;
+			return new OtpErlangObject[] {};
 		}
 		final OtpErlangObject[] res = new OtpErlangObject[arity()];
 		System.arraycopy(elems, 0, res, 0, res.length);
@@ -212,7 +212,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 * to do so.
 	 * 
 	 * @param buf
-	 * 		An output stream to which the encoded list should be written.
+	 *            An output stream to which the encoded list should be written.
 	 * 
 	 */
 	@Override
@@ -235,10 +235,10 @@ public class OtpErlangList extends OtpErlangObject {
 	 * arity and all of the elements are equal.
 	 * 
 	 * @param o
-	 * 		the list to compare to.
+	 *            the list to compare to.
 	 * 
 	 * @return true if the lists have the same arity and all the elements are
-	 * 	equal.
+	 *         equal.
 	 */
 	@Override
 	public boolean equals(Object o) {
