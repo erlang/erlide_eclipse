@@ -472,15 +472,17 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				IErlProject eprj = ErlangCore.getModel().findErlangProject(
 						project);
 				IErlModule m = eprj.getModule(resource.getName());
-				List<ErlangIncludeFile> incs = m.getIncludedFiles();
-				for (ErlangIncludeFile ifile : incs) {
-					IResource rifile = findResourceByName(project, ifile
-							.getFilename());
-					if (rifile != null
-							&& (rifile.getLocalTimeStamp() > br
-									.getLocalTimeStamp())) {
-						shouldCompile = true;
-						break;
+				if (m != null) {
+					List<ErlangIncludeFile> incs = m.getIncludedFiles();
+					for (ErlangIncludeFile ifile : incs) {
+						IResource rifile = findResourceByName(project, ifile
+								.getFilename());
+						if (rifile != null
+								&& (rifile.getLocalTimeStamp() > br
+										.getLocalTimeStamp())) {
+							shouldCompile = true;
+							break;
+						}
 					}
 				}
 			}
