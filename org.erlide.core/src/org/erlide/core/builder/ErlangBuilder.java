@@ -596,10 +596,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
 					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
 				}
+				// we don't want all of the scanner data to linger around
+				s.dispose();
 			} catch (final ErlModelException e) {
 			}
 		}
 
+	}
+
+	@SuppressWarnings("unused")
+	private List<IErlComment> getComments(IResource resource) {
+		List<IErlComment> result = new ArrayList<IErlComment>();
+		return result;
 	}
 
 	private void mkMarker(final IResource resource, final IErlComment c,
