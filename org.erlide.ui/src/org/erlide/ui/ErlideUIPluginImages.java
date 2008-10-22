@@ -92,6 +92,12 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_HIDE_LOCAL_FUNCTIONS = createManaged(
 			T_ELCL, IMG_HIDE_LOCAL_FUNCTIONS);
 
+	public static final String IMG_HIDE_EXPORTS = NAME_PREFIX
+			+ "hide_exports.gif"; //$NON-NLS-1$
+
+	public static final ImageDescriptor DESC_HIDE_EXPORTS = createManaged(
+			T_ELCL, IMG_HIDE_EXPORTS);
+
 	public static final ImageDescriptor DESC_FUNCTION_EXPORTED = createManaged(
 			T_OBJ, IMG_FUNCTION_EXPORTED);
 

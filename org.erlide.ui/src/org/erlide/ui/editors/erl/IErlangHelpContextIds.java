@@ -32,4 +32,6 @@ public class IErlangHelpContextIds {
 
 	public static final String FILTER_LOCAL_FUNCTIONS_ACTION = "filterLocalFunctions";
 
+	public static final String FILTER_EXPORTS_ACTION = "filterExports";
+
 }

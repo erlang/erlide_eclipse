@@ -29,6 +29,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
@@ -53,19 +54,22 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 public class MemberFilterActionGroup extends ActionGroup {
 
 	public static final int FILTER_LOCAL_FUNCTIONS = MemberFilter.FILTER_LOCAL_FUNCTIONS;
-	public static final int FILTER_STATIC = MemberFilter.FILTER_STATIC;
-	public static final int FILTER_FIELDS = MemberFilter.FILTER_FIELDS;
+	public static final int FILTER_EXPORTS = MemberFilter.FILTER_EXPORTS;
+	// public static final int FILTER_FIELDS = MemberFilter.FILTER_FIELDS;
 
 	/** @since 3.0 */
-	public static final int FILTER_LOCALTYPES = MemberFilter.FILTER_LOCALTYPES;
+	// public static final int FILTER_LOCALTYPES =
+	// MemberFilter.FILTER_LOCALTYPES;
 	/** @since 3.0 */
 	public static final int ALL_FILTERS = FILTER_LOCAL_FUNCTIONS
-			| FILTER_FIELDS | FILTER_STATIC | FILTER_LOCALTYPES;
+			| FILTER_EXPORTS;
+	// | FILTER_FIELDS | FILTER_EXPORTS | FILTER_LOCALTYPES;
 
-	private static final String TAG_HIDEFIELDS = "hidefields"; //$NON-NLS-1$
-	private static final String TAG_HIDESTATIC = "hidestatic"; //$NON-NLS-1$
-	private static final String TAG_HIDENONPUBLIC = "hidenonpublic"; //$NON-NLS-1$
-	private static final String TAG_HIDELOCALTYPES = "hidelocaltypes"; //$NON-NLS-1$
+	// private static final String TAG_HIDEFIELDS = "hidefields"; //$NON-NLS-1$
+	private static final String TAG_HIDEEXPORTS = "hideexports"; //$NON-NLS-1$
+	private static final String TAG_HIDELOCALFUNCTIONS = "hidelocalfunctions"; //$NON-NLS-1$
+	// private static final String TAG_HIDELOCALTYPES = "hidelocaltypes";
+	// //$NON-NLS-1$
 
 	private final List<MemberFilterAction> fFilterActions;
 	private final MemberFilter fFilter;
@@ -165,29 +169,29 @@ public class MemberFilterActionGroup extends ActionGroup {
 		// actions.add(hideFields);
 		// }
 
-		// static
-		// filterProperty = FILTER_STATIC;
-		// if (isSet(filterProperty, availableFilters)) {
-		// final boolean filterEnabled = getPrefsNode().getBoolean(
-		// getPreferenceKey(filterProperty), false);
-		// if (filterEnabled) {
-		// fFilter.addFilter(filterProperty);
-		// }
-		// title = ActionMessages.MemberFilterActionGroup_hide_static_label;
-		// helpContext = IErlangHelpContextIds.FILTER_STATIC_ACTION;
-		// final MemberFilterAction hideStatic = new MemberFilterAction(this,
-		// title, FILTER_STATIC, helpContext, filterEnabled);
-		// hideStatic
-		// .setDescription(ActionMessages.MemberFilterActionGroup_hide_static_description);
-		// hideStatic
-		// .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_static_tooltip);
-		// hideStatic.setImageDescriptor(ErlideUIPlugin.getDefault()
-		// .getImageDescriptor(IErlideUIConstants.IMG_HIDE_STATIC));
-		// actions.add(hideStatic);
-		// }
+		// export directives
+		int filterProperty = FILTER_EXPORTS;
+		if (isSet(filterProperty, availableFilters)) {
+			final boolean filterEnabled = getPrefsNode().getBoolean(
+					getPreferenceKey(filterProperty), false);
+			if (filterEnabled) {
+				fFilter.addFilter(filterProperty);
+			}
+			title = ActionMessages.MemberFilterActionGroup_hide_exports_label;
+			helpContext = IErlangHelpContextIds.FILTER_EXPORTS_ACTION;
+			final MemberFilterAction hideExports = new MemberFilterAction(this,
+					title, FILTER_EXPORTS, helpContext, filterEnabled);
+			hideExports
+					.setDescription(ActionMessages.MemberFilterActionGroup_hide_exports_description);
+			hideExports
+					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_exports_tooltip);
+			hideExports
+					.setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_EXPORTS);
+			fFilterActions.add(hideExports);
+		}
 
 		// non-public
-		final int filterProperty = FILTER_LOCAL_FUNCTIONS;
+		filterProperty = FILTER_LOCAL_FUNCTIONS;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
@@ -331,14 +335,14 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento to which the state is saved
 	 */
 	public void saveState(final IMemento memento) {
-		memento.putString(TAG_HIDEFIELDS, String
-				.valueOf(hasMemberFilter(FILTER_FIELDS)));
-		memento.putString(TAG_HIDESTATIC, String
-				.valueOf(hasMemberFilter(FILTER_STATIC)));
-		memento.putString(TAG_HIDENONPUBLIC, String
+		// memento.putString(TAG_HIDEFIELDS, String
+		// .valueOf(hasMemberFilter(FILTER_FIELDS)));
+		memento.putString(TAG_HIDEEXPORTS, String
+				.valueOf(hasMemberFilter(FILTER_EXPORTS)));
+		memento.putString(TAG_HIDELOCALFUNCTIONS, String
 				.valueOf(hasMemberFilter(FILTER_LOCAL_FUNCTIONS)));
-		memento.putString(TAG_HIDELOCALTYPES, String
-				.valueOf(hasMemberFilter(FILTER_LOCALTYPES)));
+		// memento.putString(TAG_HIDELOCALTYPES, String
+		// .valueOf(hasMemberFilter(FILTER_LOCALTYPES)));
 	}
 
 	/**
@@ -351,16 +355,19 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento from which the state is restored
 	 */
 	public void restoreState(final IMemento memento) {
-		setMemberFilters(new int[] { FILTER_FIELDS, FILTER_STATIC,
-				FILTER_LOCAL_FUNCTIONS, FILTER_LOCALTYPES }, new boolean[] {
-				Boolean.valueOf(memento.getString(TAG_HIDEFIELDS))
-						.booleanValue(),
-				Boolean.valueOf(memento.getString(TAG_HIDESTATIC))
-						.booleanValue(),
-				Boolean.valueOf(memento.getString(TAG_HIDENONPUBLIC))
-						.booleanValue(),
-				Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
-						.booleanValue() }, false);
+		// setMemberFilters(new int[] { FILTER_FIELDS, FILTER_EXPORTS,
+		// FILTER_LOCAL_FUNCTIONS, FILTER_LOCALTYPES }, new boolean[] {
+		setMemberFilters(new int[] { FILTER_EXPORTS, FILTER_LOCAL_FUNCTIONS },
+				new boolean[] {
+						// Boolean.valueOf(memento.getString(TAG_HIDEFIELDS))
+						// .booleanValue(),
+						// Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
+						// .booleanValue(),
+						Boolean.valueOf(memento.getString(TAG_HIDEEXPORTS))
+								.booleanValue(),
+						Boolean.valueOf(
+								memento.getString(TAG_HIDELOCALFUNCTIONS))
+								.booleanValue() }, false);
 	}
 
 	/*
@@ -466,9 +473,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	public class MemberFilter extends ViewerFilter {
 
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
-		public static final int FILTER_STATIC = 2;
-		public static final int FILTER_FIELDS = 4;
-		public static final int FILTER_LOCALTYPES = 8;
+		public static final int FILTER_EXPORTS = 2;
+		// public static final int FILTER_FIELDS = 4;
+		// public static final int FILTER_LOCALTYPES = 8;
 
 		private int fFilterProperties;
 
@@ -543,6 +550,12 @@ public class MemberFilterActionGroup extends ActionGroup {
 						if (!f.isExported()) {
 							return false;
 						}
+					}
+				}
+				if (hasFilter(FILTER_EXPORTS)
+						&& kind == IErlElement.Kind.EXPORT) {
+					if (e instanceof IErlExport) {
+						return false;
 					}
 				}
 			}
