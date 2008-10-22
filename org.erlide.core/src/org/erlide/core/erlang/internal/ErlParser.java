@@ -53,6 +53,7 @@ public class ErlParser {
 		OtpErlangTuple res = null;
 		ErlLogger.debug("parse=" + module.getName() + " init_len="
 				+ initialText.length() + " initialParse=" + initialParse);
+
 		if (true || initialParse) {
 			String moduleFileName = "";
 			final IResource resource = module.getResource();
@@ -64,6 +65,7 @@ public class ErlParser {
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
 					moduleFileName, initialText, stateDir, erlidePath);
 		} else {
+			// FIXME this doesn't work...
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
 		if (res != null

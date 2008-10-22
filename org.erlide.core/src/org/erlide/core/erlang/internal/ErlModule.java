@@ -101,7 +101,6 @@ public class ErlModule extends Openable implements IErlModule {
 
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("* build structure " + fName);
-			ErlLogger.debug("*     :" + initialText + ":");
 			// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 		}
 
