@@ -128,7 +128,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		boolean isModule = (newInput instanceof IErlModule);
 
-		ErlLogger.debug("Outline set input:: " + newInput);
+		ErlLogger.debug("content set input:: " + newInput);
 		if (isModule && fListener == null) {
 			// TODO fixme
 			fListener = new ElementChangedListener(null);

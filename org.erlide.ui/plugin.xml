@@ -112,7 +112,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.modules.ModuleNavigator"
             icon="icons/modulenavigator.gif"
             id="org.erlide.ui.views.modulenavigator"
@@ -120,41 +120,41 @@
       </view>
       <view
             allowMultiple="false"
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.processlist.ProcessListView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.processlist.ProcessListView"
             name="Process list view">
       </view>
       <view
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.eval.LiveExpressionsView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.eval.LiveExpressionsView"
             name="Live Expressions"/>
       <view
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.TraceLogView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.TraceLogView"
             name="Trace Log View"/>
       <view
             allowMultiple="false"
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.EdocView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.EdocView"
             name="Edoc"/>
       <view
             allowMultiple="false"
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.erlide.ui.views.console.ErlangConsoleView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.console"
             name="Erlang console"/>
       <view
             allowMultiple="false"
-            category="org.erlide.categories.views"
+            category="org.erlide.views"
             class="org.eclipse.ui.navigator.CommonNavigator"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"
@@ -196,7 +196,7 @@
 		<enabledWhen>
  			<adapt type="org.eclipse.core.resources.IProject">
 		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
-		     </adapt>  
+		     </adapt>
         </enabledWhen>
       </page>
       <!--page
@@ -426,13 +426,13 @@
             id="org.erlide.ui.actions.test"
             name="Test">
       </command>
-            
+
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
        <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
             carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
-       
+
       <key
             sequence="F2"
             contextId="org.erlide.ui.erlangEditorScope"
@@ -457,12 +457,12 @@
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+C"/>      
+            sequence="M1+M2+C"/>
       <key
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+7"/>      
+            sequence="M1+7"/>
       <key
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
@@ -484,8 +484,8 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+G">
-      </key>      
-            
+      </key>
+
  </extension>
  <extension
        point="org.eclipse.ui.actionSets">
@@ -632,34 +632,34 @@
                 id="org.erlide.ui.views.navigator.view#PopupMenu">
              <insertionPoint name="erlideMenu1"
              				 separator="true"/>
-             <insertionPoint name="erlideMenu2"/> 
+             <insertionPoint name="erlideMenu2"/>
              <insertionPoint name="group.new"
              				separator="true"/>
              <insertionPoint
                    name="group.open"
                    separator="true"/>
-             <insertionPoint name="group.openWith"/>   
+             <insertionPoint name="group.openWith"/>
              <insertionPoint name="group.edit"
-                   separator="true"/>   
-             <insertionPoint name="group.reorganize" />         
+                   separator="true"/>
+             <insertionPoint name="group.reorganize" />
              <insertionPoint
                    name="group.port"
-                   separator="true"/>     
+                   separator="true"/>
              <insertionPoint
                    name="group.build"
-                   separator="true"/> 
+                   separator="true"/>
              <insertionPoint
                    name="group.generate"
-                   separator="true"/> 
+                   separator="true"/>
              <insertionPoint
                    name="group.search"
-                   separator="true"/>              
+                   separator="true"/>
              <insertionPoint
                    name="additions"
-                   separator="true"/>              
+                   separator="true"/>
              <insertionPoint
                    name="group.properties"
-                   separator="true"/>             
+                   separator="true"/>
           </popupMenu>
       </viewer>
       <viewerContentBinding
@@ -790,7 +790,7 @@
          </commonSorter>
       </navigatorContent>
    </extension>
-   
+
    <!-- Bind the Properties content extension to the viewer -->
    <extension
          point="org.eclipse.ui.importWizards">
@@ -821,7 +821,7 @@
                label="New Module"
                menubarPath="erlideMenu2">
          </action>
- 
+
       </objectContribution>
       <viewerContribution
             id="org.erlide.ui.navigatorViewerContribution"
@@ -880,7 +880,7 @@
                         <entry
                   node="org.erlide.launching">
             </entry>
-            
+
          </mapping>
       </transfer>
    </extension>
@@ -950,7 +950,7 @@
             targetID="org.erlide.ui.perspectives.ErlangPerspective">
 		 <actionSet
                id="org.eclipse.debug.ui.breakpointActionSet">
-         </actionSet>                            
+         </actionSet>
          <actionSet
                id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
          </actionSet>

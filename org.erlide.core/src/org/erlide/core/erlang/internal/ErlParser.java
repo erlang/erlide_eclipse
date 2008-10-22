@@ -54,7 +54,7 @@ public class ErlParser {
 		ErlLogger.debug("parse=" + module.getName() + " init_len="
 				+ initialText.length() + " initialParse=" + initialParse);
 
-		if (true || initialParse) {
+		if (initialParse) {
 			String moduleFileName = "";
 			final IResource resource = module.getResource();
 			if (resource != null) {

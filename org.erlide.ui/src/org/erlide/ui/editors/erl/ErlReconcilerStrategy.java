@@ -47,8 +47,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(final DirtyRegion dirtyRegion, final IRegion subRegion) {
-		//ErlLogger.debug("## reconcile " + fModule + ": " + dirtyRegion + " "
-		//		+ subRegion);
+		// ErlLogger.debug("## reconcile " + fModule + ": " + dirtyRegion + " "
+		// + subRegion);
 		notify(mkReconcileMsg("reconcile", dirtyRegion, subRegion));
 		reconcileModel(fDoc, dirtyRegion);
 	}
@@ -60,9 +60,9 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	public void reconcile(final IRegion partition) {
-		//ErlLogger.debug("## reconcile " + fModule + ": " + partition);
+		// ErlLogger.debug("## reconcile " + fModule + ": " + partition);
 		reconcile(new DirtyRegion(partition.getOffset(), partition.getLength(),
-				DirtyRegion.INSERT, ""), partition);
+				DirtyRegion.INSERT, fDoc.get()), partition);
 	}
 
 	private void reconcileModel(final IDocument doc,

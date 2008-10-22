@@ -45,7 +45,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 * 
 	 */
 	public ErlangFileContentProvider() {
-		// super(false);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
 				IResourceChangeEvent.POST_CHANGE);
 		final IErlModel mdl = ErlangCore.getModel();
@@ -128,6 +127,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		ErlangCore.getModel().removeModelChangeListener(this);
 	}
 
 	public void inputChanged(Viewer aViewer, Object oldInput, Object newInput) {
@@ -137,7 +137,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+	 * @see
+	 * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
+	 * .eclipse.core.resources.IResourceChangeEvent)
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 
@@ -152,7 +154,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
+	 * @see
+	 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
+	 * .resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) {
 
