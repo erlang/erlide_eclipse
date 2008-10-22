@@ -413,11 +413,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	protected String tabString(final int tab) {
-		final StringBuilder buffer = new StringBuilder();
-		for (int i = tab; i > 0; i--) {
-			buffer.append("  "); //$NON-NLS-1$
-		}
-		return buffer.toString();
+		return " ";
+		// final StringBuilder buffer = new StringBuilder();
+		// for (int i = tab; i > 0; i--) {
+		//			buffer.append("  "); //$NON-NLS-1$
+		// }
+		// return buffer.toString();
 	}
 
 	/**
@@ -466,10 +467,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	protected void toStringAncestors(final StringBuilder buffer) {
 		final ErlElement parentElement = (ErlElement) getParent();
 		if (parentElement != null && parentElement.getParent() != null) {
-			buffer.append(" [in "); //$NON-NLS-1$
+			buffer.append("[> "); //$NON-NLS-1$
 			parentElement.toStringInfo(0, buffer, NO_INFO);
 			parentElement.toStringAncestors(buffer);
-			buffer.append("]"); //$NON-NLS-1$
+			buffer.append("] "); //$NON-NLS-1$
 		}
 	}
 
@@ -481,9 +482,16 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		if (info == null || !(info instanceof ErlElement)) {
 			return;
 		}
+		if (fChildren.size() > 0) {
+			buffer.append("{");
+		}
 		for (final IErlElement element : fChildren) {
-			buffer.append("\n"); //$NON-NLS-1$
 			((ErlElement) element).toString(tab + 1, buffer);
+			buffer.append(","); //$NON-NLS-1$
+		}
+		if (fChildren.size() > 0) {
+			buffer.deleteCharAt(buffer.length() - 1);
+			buffer.append("}");
 		}
 	}
 

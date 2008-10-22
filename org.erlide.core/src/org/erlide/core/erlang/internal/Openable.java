@@ -139,8 +139,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
 	public void open(final IProgressMonitor monitor) throws ErlModelException {
 		if (ErlModelManager.verbose) {
-			ErlLogger.debug("1open " + this + " " + getName() + " "
-					+ isStructureKnown());
+			ErlLogger.debug("open " + isStructureKnown() + " > " + this);
 		}
 		// open the parent if necessary
 		openParent(monitor);
@@ -148,10 +147,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
 			return;
 		}
 
-		if (ErlModelManager.verbose) {
-			ErlLogger.debug("2open " + this + " " + getName() + " "
-					+ isStructureKnown());
-		}
 		// build the structure of the openable (this will open the buffer if
 		// needed)
 		try {
@@ -162,10 +157,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
 			}
 		} catch (final ErlModelException e) {
 			throw e;
-		}
-		if (ErlModelManager.verbose) {
-			ErlLogger.debug("3open " + this + " " + getName() + " "
-					+ isStructureKnown());
 		}
 	}
 

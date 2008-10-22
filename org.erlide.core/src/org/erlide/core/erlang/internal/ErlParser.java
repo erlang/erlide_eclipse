@@ -51,9 +51,9 @@ public class ErlParser {
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
 		OtpErlangTuple res = null;
-		ErlLogger.debug("parse " + module.getName() + " init len "
-				+ initialText.length() + " initialParse " + initialParse);
-		if (initialParse) {
+		ErlLogger.debug("parse=" + module.getName() + " init_len="
+				+ initialText.length() + " initialParse=" + initialParse);
+		if (true || initialParse) {
 			String moduleFileName = "";
 			final IResource resource = module.getResource();
 			if (resource != null) {

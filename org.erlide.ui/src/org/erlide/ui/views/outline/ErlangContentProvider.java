@@ -126,17 +126,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (oldInput == newInput) {
-			return;
-		}
 		boolean isModule = (newInput instanceof IErlModule);
 
-		// ErlLogger.debug("> cprov set input:::" + newInput);
-		if (newInput != null) {
-			// ErlLogger.debug("!! " + newInput.getClass().getName() + "
-			// " +
-			// fListener);
-		}
+		ErlLogger.debug("Outline set input:: " + newInput);
 		if (isModule && fListener == null) {
 			// TODO fixme
 			fListener = new ElementChangedListener(null);

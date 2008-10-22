@@ -48,28 +48,16 @@ import erlang.ErlideNoparse;
 public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
-
-	// private OtpErlangObject parseTree;
-
-	// the document last reconciled with
-	// private IDocument fDoc;
-
 	private final List<IErlComment> comments;
-
 	private String initialText;
-
 	private IErlScanner scanner;
-
 	private final IFile fFile;
-
 	private boolean parsed = false;
 
 	// These are needed to ignore the initial INSERT of all text and final
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
-
 	private boolean scannerDisposed = false;
-
 	private final ModuleKind moduleKind;
 
 	protected ErlModule(final IErlProject parent, final String name,
@@ -113,6 +101,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("* build structure " + fName);
+			ErlLogger.debug("*     :" + initialText + ":");
 			// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 		}
 
