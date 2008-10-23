@@ -86,9 +86,6 @@ public class ErlModule extends Openable implements IErlModule {
 			final String path = underlyingResource != null ? underlyingResource
 					.getFullPath().toString() : "";
 			isStructureKnown = parser.parse(this, initialText, !parsed, path);
-			if (scanner != null) {
-				initialText = null;
-			}
 		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
