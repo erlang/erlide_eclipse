@@ -109,6 +109,9 @@ public class ErlModule extends Openable implements IErlModule {
 			final String path = underlyingResource != null ? underlyingResource
 					.getFullPath().toString() : "";
 			isStructureKnown = parser.parse(this, initialText, !parsed, path);
+			if (scanner != null) {
+				initialText = null;
+			}
 		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
@@ -332,9 +335,12 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public IErlScanner getScanner() {
+	synchronized public IErlScanner getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
+			if (parsed) {
+				initialText = null;
+			}
 		}
 		return scanner;
 	}
