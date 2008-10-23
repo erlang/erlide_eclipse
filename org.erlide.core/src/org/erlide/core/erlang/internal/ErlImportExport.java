@@ -30,6 +30,7 @@ public abstract class ErlImportExport extends ErlMember implements IParent {
 	public ErlImportExport(final IErlModule module, final String name,
 			final OtpErlangList functionList) {
 		super(module, name);
+		fFunctions = new ArrayList<ErlangFunction>(functionList.arity());
 		for (final OtpErlangObject i : functionList.elements()) {
 			final OtpErlangTuple function = (OtpErlangTuple) i;
 			fFunctions.add(new ErlangFunction(function));
