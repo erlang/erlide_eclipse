@@ -74,7 +74,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	private final List<MemberFilterAction> fFilterActions;
 	private final MemberFilter fFilter;
 
-	private final StructuredViewer fViewer;
+	final StructuredViewer fViewer;
 	private final String fViewerId;
 	private boolean fInViewMenu;
 
@@ -125,10 +125,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param availableFilters
 	 *            Specifies which filter action should be contained.
 	 *            <code>FILTER_NONPUBLIC</code>, <code>FILTER_STATIC</code>,
-	 *            <code>FILTER_FIELDS</code> and
-	 *            <code>FILTER_LOCALTYPES</code> or a combination of these
-	 *            constants are possible values. Use <code>ALL_FILTERS</code>
-	 *            to select all available filters.
+	 *            <code>FILTER_FIELDS</code> and <code>FILTER_LOCALTYPES</code>
+	 *            or a combination of these constants are possible values. Use
+	 *            <code>ALL_FILTERS</code> to select all available filters.
 	 * 
 	 * @since 3.0
 	 */
@@ -159,9 +158,11 @@ public class MemberFilterActionGroup extends ActionGroup {
 		// final MemberFilterAction hideFields = new MemberFilterAction(this,
 		// title, filterProperty, helpContext, filterEnabled);
 		// hideFields
-		// .setDescription(ActionMessages.MemberFilterActionGroup_hide_fields_description);
+		// .setDescription(ActionMessages.
+		// MemberFilterActionGroup_hide_fields_description);
 		// hideFields
-		// .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_fields_tooltip);
+		// .setToolTipText(ActionMessages.
+		// MemberFilterActionGroup_hide_fields_tooltip);
 		// hideFields.setImageDescriptor(ErlideUIPlugin.getDefault()
 		// .getImageDescriptor(
 		// IErlideUIConstants.IMG_HIDE_LOCAL_FUNCTIONS));
@@ -224,9 +225,11 @@ public class MemberFilterActionGroup extends ActionGroup {
 		// final MemberFilterAction hideLocalTypes = new MemberFilterAction(
 		// this, title, filterProperty, helpContext, filterEnabled);
 		// hideLocalTypes
-		// .setDescription(ActionMessages.MemberFilterActionGroup_hide_localtypes_description);
+		// .setDescription(ActionMessages.
+		// MemberFilterActionGroup_hide_localtypes_description);
 		// hideLocalTypes
-		// .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_localtypes_tooltip);
+		// .setToolTipText(ActionMessages.
+		// MemberFilterActionGroup_hide_localtypes_tooltip);
 		// JavaPluginImages.setLocalImageDescriptors(hideLocalTypes,
 		// "localtypes_co.gif");
 		// actions.add(hideLocalTypes);
@@ -254,8 +257,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * 
 	 * @param filterProperty
 	 *            the filter to be manipulated. Valid values are
-	 *            <code>FILTER_FIELDS</code>,
-	 *            <code>FILTER_PUBLIC</code> <code>FILTER_PRIVATE</code> and
+	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>
+	 *            <code>FILTER_PRIVATE</code> and
 	 *            <code>FILTER_LOCALTYPES_ACTION</code> as defined by this
 	 *            action group
 	 * @param set
@@ -320,9 +323,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param filterProperty
 	 *            the filter to be tested. Valid values are
 	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>,
-	 *            <code>FILTER_PRIVATE</code> and
-	 *            <code>FILTER_LOCALTYPES</code> as defined by this action
-	 *            group
+	 *            <code>FILTER_PRIVATE</code> and <code>FILTER_LOCALTYPES</code>
+	 *            as defined by this action group
 	 */
 	public boolean hasMemberFilter(final int filterProperty) {
 		return fFilter.hasFilter(filterProperty);
@@ -361,7 +363,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 				new boolean[] {
 						// Boolean.valueOf(memento.getString(TAG_HIDEFIELDS))
 						// .booleanValue(),
-						// Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
+						//Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
 						// .booleanValue(),
 						Boolean.valueOf(memento.getString(TAG_HIDEEXPORTS))
 								.booleanValue(),
@@ -502,7 +504,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#isFilterProperty(java.lang.Object,
-		 *      java.lang.String)
+		 * java.lang.String)
 		 */
 		public boolean isFilterProperty(final Object element,
 				final Object property) {
@@ -511,7 +513,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
+		 * java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public boolean select(final Viewer viewer, final Object parentElement,

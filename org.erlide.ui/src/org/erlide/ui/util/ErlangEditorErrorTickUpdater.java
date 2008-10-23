@@ -27,7 +27,7 @@ import org.erlide.ui.navigator.ErlangFileLabelProvider;
  */
 public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
 
-	private final ErlangEditor fErlangEditor;
+	final ErlangEditor fErlangEditor;
 	private final ErlangFileLabelProvider fLabelProvider;
 
 	public ErlangEditorErrorTickUpdater(final ErlangEditor editor) {

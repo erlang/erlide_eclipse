@@ -270,29 +270,29 @@ public class EditorUtility {
 					.getActionBars()
 					.getGlobalActionHandler(
 							ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY);
-			if (toggleAction == null) {
-				return;
-			}
-			boolean enable = toggleAction != null;
-			if (enable && editorPart instanceof ErlangEditor) {
-				enable = ErlideUIPlugin.getDefault().getPreferenceStore()
-						.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS);
-			} else {
-				enable = enable && toggleAction.isEnabled()
-						&& toggleAction.isChecked();
-			}
-			if (enable) {
-				if (toggleAction instanceof TextEditorAction) {
-					// Reset the action
-					((TextEditorAction) toggleAction).setEditor(null);
-					// Restore the action
-					((TextEditorAction) toggleAction)
-							.setEditor((ITextEditor) editorPart);
+			if (toggleAction != null) {
+				boolean enable;
+				if (editorPart instanceof ErlangEditor) {
+					enable = ErlideUIPlugin.getDefault().getPreferenceStore()
+							.getBoolean(
+									PreferenceConstants.EDITOR_SHOW_SEGMENTS);
 				} else {
-					// Un-check
-					toggleAction.run();
-					// Check
-					toggleAction.run();
+					enable = toggleAction.isEnabled()
+							&& toggleAction.isChecked();
+				}
+				if (enable) {
+					if (toggleAction instanceof TextEditorAction) {
+						// Reset the action
+						((TextEditorAction) toggleAction).setEditor(null);
+						// Restore the action
+						((TextEditorAction) toggleAction)
+								.setEditor((ITextEditor) editorPart);
+					} else {
+						// Un-check
+						toggleAction.run();
+						// Check
+						toggleAction.run();
+					}
 				}
 			}
 		}

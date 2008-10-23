@@ -170,7 +170,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		fOutlineViewer.setSelection(selection);
 	}
 
-	private IErlModule fModule;
+	IErlModule fModule;
 
 	private ErlangEditor fEditor;
 	private final String fToolTipText = "Sort";
@@ -223,7 +223,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			final Display d = c.getDisplay();
 			d.asyncExec(new Runnable() {
 
-				@SuppressWarnings("synthetic-access")
 				public void run() {
 					if (getTreeViewer().getControl() != null
 							&& !getTreeViewer().getControl().isDisposed()) {

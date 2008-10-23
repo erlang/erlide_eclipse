@@ -89,37 +89,37 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 		try {
 			final IDocument doc = viewer.getDocument();
-			final String prefix = lastText(doc, offset);
+			final String aPrefix = lastText(doc, offset);
 			// final String indent = lastIndent(doc, offset);
 
-			final int colonPos = prefix.indexOf(':');
-			final int hashMarkPos = prefix.indexOf('#');
-			final int dotPos = prefix.indexOf('.');
-			final int interrogationMarkPos = prefix.indexOf('?');
+			final int colonPos = aPrefix.indexOf(':');
+			final int hashMarkPos = aPrefix.indexOf('#');
+			final int dotPos = aPrefix.indexOf('.');
+			final int interrogationMarkPos = aPrefix.indexOf('?');
 			List<ICompletionProposal> result;
 			if (colonPos >= 0) {
-				final String moduleName = prefix.substring(0, colonPos);
-				result = externalCallCompletions(moduleName, offset, prefix
+				final String moduleName = aPrefix.substring(0, colonPos);
+				result = externalCallCompletions(moduleName, offset, aPrefix
 						.substring(colonPos + 1), colonPos, b);
 			} else if (hashMarkPos >= 0) {
 				if (dotPos >= 0) {
-					final String recordName = prefix.substring(hashMarkPos + 1,
+					final String recordName = aPrefix.substring(hashMarkPos + 1,
 							dotPos);
-					result = recordFieldCompletions(recordName, offset, prefix
+					result = recordFieldCompletions(recordName, offset, aPrefix
 							.substring(dotPos + 1), hashMarkPos, b);
 				} else {
-					result = macroOrRecordCompletions(offset, prefix
+					result = macroOrRecordCompletions(offset, aPrefix
 							.substring(hashMarkPos + 1), b,
 							IErlElement.Kind.RECORD_DEF);
 				}
 			} else if (interrogationMarkPos >= 0) {
-				result = macroOrRecordCompletions(offset, prefix
+				result = macroOrRecordCompletions(offset, aPrefix
 						.substring(interrogationMarkPos + 1), b,
 						IErlElement.Kind.MACRO_DEF);
 			}
 
 			else {
-				result = moduleCompletions(offset, prefix, colonPos, b);
+				result = moduleCompletions(offset, aPrefix, colonPos, b);
 			}
 			if (result == null) {
 				return NO_COMPLETIONS;
@@ -179,13 +179,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	/**
 	 * @param offset
-	 * @param prefix
+	 * @param aPrefix
 	 * @param b
 	 * @param kind
 	 * @return
 	 */
 	private List<ICompletionProposal> macroOrRecordCompletions(
-			final int offset, final String prefix, final BuildBackend b,
+			final int offset, final String aPrefix, final BuildBackend b,
 			final Kind kind) {
 		if (module == null) {
 			return null;
@@ -196,9 +196,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
-			if (name.startsWith(prefix)) {
+			if (name.startsWith(aPrefix)) {
 				result.add(new CompletionProposal(name, offset
-						- prefix.length(), prefix.length(), name.length()));
+						- aPrefix.length(), aPrefix.length(), name.length()));
 			}
 		}
 		return result;
