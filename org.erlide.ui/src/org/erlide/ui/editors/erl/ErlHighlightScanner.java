@@ -43,18 +43,14 @@ import erlang.ErlideScanner2;
 public class ErlHighlightScanner implements ITokenScanner,
 		IPreferenceChangeListener {
 
-	private final Token t_def;
+	private final Token t_default;
 	private final Token t_atom;
-	private final Token t_attribute;
 	private final Token t_string;
 	private final Token t_keyword;
 	private final Token t_var;
 	private final Token t_char;
 	private final Token t_arrow;
-	private final Token t_guard;
-	private final Token t_bif;
 	private final Token t_macro;
-	private final Token t_record;
 	private final Token t_integer;
 	private final Token t_float;
 	private final Token t_comment;
@@ -79,17 +75,13 @@ public class ErlHighlightScanner implements ITokenScanner,
 		fColorManager = lmanager;
 		fSourceViewer = editorConfiguration;
 
-		t_attribute = new Token(getTextAttribute(TokenHighlight.ATTRIBUTE));
 		t_string = new Token(getTextAttribute(TokenHighlight.STRING));
 		t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
 		t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
-		t_def = new Token(getTextAttribute(TokenHighlight.DEFAULT));
+		t_default = new Token(getTextAttribute(TokenHighlight.DEFAULT));
 		t_arrow = new Token(getTextAttribute(TokenHighlight.ARROW));
 		t_char = new Token(getTextAttribute(TokenHighlight.CHAR));
-		t_bif = new Token(getTextAttribute(TokenHighlight.BIF));
-		t_guard = new Token(getTextAttribute(TokenHighlight.GUARD));
 		t_macro = new Token(getTextAttribute(TokenHighlight.MACRO));
-		t_record = new Token(getTextAttribute(TokenHighlight.RECORD));
 		t_atom = new Token(getTextAttribute(TokenHighlight.ATOM));
 		t_integer = new Token(getTextAttribute(TokenHighlight.INTEGER));
 		t_float = new Token(getTextAttribute(TokenHighlight.FLOAT));
@@ -114,16 +106,12 @@ public class ErlHighlightScanner implements ITokenScanner,
 		}
 
 		final String kind = tk.getKind();
-		if (kind.equals("attribute")) {
-			return t_attribute;
-		} else if (kind.equals("string")) {
+		if (kind.equals("string")) {
 			return t_string;
 		} else if (kind.equals("reserved")) {
 			return t_keyword;
 		} else if (kind.equals("atom")) {
 			return t_atom;
-		} else if (kind.equals("record")) {
-			return t_record;
 		} else if (kind.equals("var")) {
 			return t_var;
 		} else if (kind.equals("char")) {
@@ -132,10 +120,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return t_macro;
 		} else if (kind.equals("->")) {
 			return t_arrow;
-		} else if (kind.equals("bif")) {
-			return t_bif;
-		} else if (kind.equals("guard_bif")) {
-			return t_guard;
 		} else if (kind.equals("integer")) {
 			return t_integer;
 		} else if (kind.equals("float")) {
@@ -143,7 +127,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 		} else if (kind.equals("comment")) {
 			return t_comment;
 		} else {
-			return t_def; // Token.UNDEFINED;
+			return t_default; // Token.UNDEFINED;
 		}
 	}
 
@@ -162,10 +146,8 @@ public class ErlHighlightScanner implements ITokenScanner,
 	}
 
 	private Token getToken(final String id) {
-		if (TokenHighlight.ATTRIBUTE.getName().equals(id)) {
-			return t_attribute;
-		} else if (TokenHighlight.DEFAULT.getName().equals(id)) {
-			return t_def;
+		if (TokenHighlight.DEFAULT.getName().equals(id)) {
+			return t_default;
 		} else if (TokenHighlight.KEYWORD.getName().equals(id)) {
 			return t_keyword;
 		} else if (TokenHighlight.STRING.getName().equals(id)) {
@@ -180,16 +162,10 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return t_atom;
 		} else if (TokenHighlight.ARROW.getName().equals(id)) {
 			return t_arrow;
-		} else if (TokenHighlight.RECORD.getName().equals(id)) {
-			return t_record;
 		} else if (TokenHighlight.FLOAT.getName().equals(id)) {
 			return t_float;
-		} else if (TokenHighlight.BIF.getName().equals(id)) {
-			return t_bif;
 		} else if (TokenHighlight.INTEGER.getName().equals(id)) {
 			return t_integer;
-		} else if (TokenHighlight.GUARD.getName().equals(id)) {
-			return t_guard;
 		} else if (TokenHighlight.MACRO.getName().equals(id)) {
 			return t_macro;
 		}

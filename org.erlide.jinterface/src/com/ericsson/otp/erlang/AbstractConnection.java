@@ -49,10 +49,10 @@ import java.util.Random;
  * <p>
  * The System property OtpConnection.trace can be used to change the initial
  * trace level setting for all connections. Normally the initial trace level is
- * 0 and connections are not traced unless
- * {@link #setTraceLevel setTraceLevel()} is used to change the setting for a
- * particular connection. OtpConnection.trace can be used to turn on tracing by
- * default for all connections.
+ * 0 and connections are not traced unless {@link #setTraceLevel
+ * setTraceLevel()} is used to change the setting for a particular connection.
+ * OtpConnection.trace can be used to turn on tracing by default for all
+ * connections.
  * </p>
  */
 public abstract class AbstractConnection extends Thread {
@@ -144,10 +144,10 @@ public abstract class AbstractConnection extends Thread {
 	// }
 
 	/*
-	 * Accept an incoming connection from a remote node. Used by
-	 * {@link OtpSelf#accept() OtpSelf.accept()} to create a connection based on
-	 * data received when handshaking with the peer node, when the remote node
-	 * is the connection intitiator.
+	 * Accept an incoming connection from a remote node. Used by {@link
+	 * OtpSelf#accept() OtpSelf.accept()} to create a connection based on data
+	 * received when handshaking with the peer node, when the remote node is the
+	 * connection intitiator.
 	 * 
 	 * @exception java.io.IOException if it was not possible to connect to the
 	 * peer.
@@ -428,8 +428,8 @@ public abstract class AbstractConnection extends Thread {
 
 	/**
 	 * Remove a link between the local node and the specified process on the
-	 * remote node. This method deactivates links created with
-	 * {@link #sendLink link()}.
+	 * remote node. This method deactivates links created with {@link #sendLink
+	 * link()}.
 	 * 
 	 * @param dest
 	 *            the Erlang PID of the remote process.
@@ -684,10 +684,11 @@ public abstract class AbstractConnection extends Thread {
 					deliver(new OtpMsg(tag, from, to, reason));
 					break;
 
-				case exitTTTag: // { EXIT, FromPid, ToPid, TraceToken, Reason }
-				case exit2TTTag: // { EXIT2, FromPid, ToPid, TraceToken,
-					// Reason }
-					// as above, but bifferent element number
+				case exitTTTag:
+					// { EXIT, FromPid, ToPid, TraceToken, Reason }
+				case exit2TTTag:
+					// { EXIT2, FromPid, ToPid, TraceToken, Reason }
+					// as above, but different element number
 					if (head.elementAt(4) == null) {
 						break receive_loop;
 					}

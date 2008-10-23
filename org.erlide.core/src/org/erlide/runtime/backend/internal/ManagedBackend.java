@@ -91,7 +91,7 @@ public class ManagedBackend extends AbstractBackend {
 				launch.addProcess(erts);
 			}
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ErlLogger.error(e);
 		}
 
 		// streamsProxy = new StreamsProxy(fRuntime, null);

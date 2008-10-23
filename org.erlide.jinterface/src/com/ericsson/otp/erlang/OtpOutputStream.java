@@ -306,35 +306,17 @@ public class OtpOutputStream {
 	 * the specified position. If the position specified is beyond the end of
 	 * the stream, this method will have no effect.
 	 * 
-	 * Normally this method should be used in conjunction with
-	 * {@link#getPos() getPos()}, when is is necessary to insert data into the
-	 * stream before it is known what the actual value should be. For example:
+	 * Normally this method should be used in conjunction with {@link#getPos()
+	 * getPos()}, when is is necessary to insert data into the stream before it
+	 * is known what the actual value should be. For example:
 	 * 
 	 * <pre>
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *                     int pos = s.getPos();
-	 *                     s.write4BE(0); // make space for length data,
-	 *                     // but final value is not yet known
-	 *       
-	 *                     [ ...more write statements...]
-	 *       
-	 *                     // later... when we know the length value
-	 *                     s.poke4BE(pos, length);
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
-	 *       
+	 *    int pos = s.getPos();
+	 *    s.write4BE(0); // make space for length data,
+	 *    // but final value is not yet known
+	 *    [ ...more write statements...]
+	 *    // later... when we know the length value
+	 *    s.poke4BE(pos, length);
 	 * </pre>
 	 * 
 	 * 
@@ -480,8 +462,8 @@ public class OtpOutputStream {
 			this.write1(v);
 		} else {
 			// note that v != 0L
-			if ((v < 0 && unsigned) || v < OtpExternal.erlMin ||
-					v > OtpExternal.erlMax) {
+			if ((v < 0 && unsigned) || v < OtpExternal.erlMin
+					|| v > OtpExternal.erlMax) {
 				// some kind of bignum
 				final long abs = (unsigned ? v : ((v < 0) ? -v : v));
 				final int sign = (unsigned ? 0 : ((v < 0) ? 1 : 0));

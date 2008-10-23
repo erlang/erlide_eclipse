@@ -14,13 +14,7 @@ public enum TokenHighlight {
 
 	ATOM(Color.BLACK.getColor(), SWT.NORMAL),
 
-	RECORD(new RGB(90, 150, 0), SWT.NORMAL),
-
 	MACRO(new RGB(50, 150, 50), SWT.NORMAL),
-
-	BIF(new RGB(0, 80, 150), SWT.BOLD),
-
-	GUARD(new RGB(50, 80, 150), SWT.NORMAL),
 
 	ARROW(new RGB(0, 50, 230), SWT.NORMAL),
 
@@ -29,8 +23,6 @@ public enum TokenHighlight {
 	VARIABLE(new RGB(150, 100, 0), SWT.NORMAL),
 
 	COMMENT(Color.DARKGREEN.getColor(), SWT.NORMAL),
-
-	ATTRIBUTE(Color.BLUE.getColor(), SWT.NORMAL),
 
 	STRING(Color.DARKORCHID.getColor(), SWT.NORMAL),
 
