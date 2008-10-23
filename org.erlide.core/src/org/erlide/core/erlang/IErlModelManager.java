@@ -95,7 +95,7 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * Currently used by compare functions
 	 */
 	public IErlModule createModuleFrom(String name, String text,
-			IErlProject project, IFile file);
+			IErlProject project);
 
 	/**
 	 * Returns the Erlang project corresponding to the given project.

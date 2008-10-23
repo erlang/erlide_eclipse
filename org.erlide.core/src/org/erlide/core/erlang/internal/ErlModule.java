@@ -33,7 +33,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.runtime.ErlLogger;
@@ -61,22 +60,13 @@ public class ErlModule extends Openable implements IErlModule {
 	private final ModuleKind moduleKind;
 
 	protected ErlModule(final IErlProject parent, final String name,
-			final String ext, final IFile file, final String initialText) {
+			final String ext, final String initialText, final IFile file) {
 		super(parent, name);
 		fFile = file;
 		moduleKind = extToModuleKind(ext);
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
-		if (initialText == null && fFile.exists()) {
-			try {
-				this.initialText = new String(Util
-						.getResourceContentsAsCharArray(fFile));
-			} catch (final ErlModelException e) {
-				this.initialText = "";
-			}
-		} else {
-			this.initialText = initialText;
-		}
+		this.initialText = initialText;
 		setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getName() + "/" + name
@@ -87,21 +77,8 @@ public class ErlModule extends Openable implements IErlModule {
 	@Override
 	synchronized protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
-
-		// generate structure and compute syntax problems if needed
-		// final IErlProject project = getErlProject();
-		// boolean computeProblems = ErlangCore.hasErlangNature(project
-		// .getProject());
-
-		// final Map<String, String> options = project.getOptions(true);
-		// if (!computeProblems) {
-		// // disable task tags checking to speed up parsing
-		// options.put(ErlangCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-		// }
-
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("* build structure " + fName);
-			// PUT SOMEWHERE ELSE! getScanner().modifyText(doc, dirtyRegion);
 		}
 
 		final ErlParser parser = new ErlParser();
@@ -124,7 +101,7 @@ public class ErlModule extends Openable implements IErlModule {
 		if (underlyingResource == null) {
 			underlyingResource = getResource();
 		}
-		if (underlyingResource != null) {
+		if (underlyingResource != null && underlyingResource instanceof IFile) {
 			timestamp = ((IFile) underlyingResource).getLocalTimeStamp();
 		} else {
 			timestamp = IResource.NULL_STAMP;
@@ -215,20 +192,6 @@ public class ErlModule extends Openable implements IErlModule {
 	protected boolean hasBuffer() {
 		return true;
 	}
-
-	// @Override
-	// protected IBuffer openBuffer(IProgressMonitor pm, Object info) {
-	// final IBuffer b = BufferManager.getDefaultBufferManager().createBuffer(
-	// this);
-	// try {
-	// final IFile f = (IFile) getUnderlyingResource();
-	// b.setContents(Util.getResourceContentsAsCharArray(f));
-	// b.addBufferChangedListener(this);
-	// } catch (final ErlModelException e) {
-	// // e.printStackTrace();
-	// }
-	// return b;
-	// }
 
 	public void addMember(final IErlMember elem) {
 		addChild(elem);
@@ -335,12 +298,9 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	synchronized public IErlScanner getScanner() {
+	public IErlScanner getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
-			if (parsed) {
-				initialText = null;
-			}
 		}
 		return scanner;
 	}

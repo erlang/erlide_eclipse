@@ -28,6 +28,8 @@ import java.util.Arrays;
  */
 public class OtpErlangList extends OtpErlangObject {
 
+	private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[] {};
+
 	// don't change this!
 	static final long serialVersionUID = 5999112769036676548L;
 
@@ -175,7 +177,7 @@ public class OtpErlangList extends OtpErlangObject {
 	 */
 	public OtpErlangObject[] elements() {
 		if (arity() == 0) {
-			return new OtpErlangObject[] {};
+			return NO_ELEMENTS;
 		}
 		final OtpErlangObject[] res = new OtpErlangObject[arity()];
 		System.arraycopy(elems, 0, res, 0, res.length);

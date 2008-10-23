@@ -200,28 +200,26 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);
 		stackFrames = new ArrayList<ErlangStackFrame>();
 		// [{{Mod, Fun, Arity}, {Mod, LineNo}, [Binding...]}...]
-		if (erlStackFrames.arity() > 0) {
-			for (final OtpErlangObject o : erlStackFrames.elements()) {
-				final OtpErlangTuple t = (OtpErlangTuple) o;
-				final OtpErlangTuple ml = (OtpErlangTuple) t.elementAt(1);
-				final OtpErlangAtom m = (OtpErlangAtom) ml.elementAt(0);
-				final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
-				final OtpErlangLong n = (OtpErlangLong) t.elementAt(3);
-				int stackFrameNo;
-				try {
-					stackFrameNo = n.intValue();
-				} catch (final OtpErlangRangeException e) {
-					stackFrameNo = -1;
-				}
-				stackFrames.add(new ErlangStackFrame(module, this,
-						getDebugTarget(), line, bs, stackFrameNo));
-				bs = (OtpErlangList) t.elementAt(2);
-				module = m.atomValue();
-				try {
-					line = l.intValue();
-				} catch (final OtpErlangRangeException e) {
-					line = -1;
-				}
+		for (final OtpErlangObject o : erlStackFrames.elements()) {
+			final OtpErlangTuple t = (OtpErlangTuple) o;
+			final OtpErlangTuple ml = (OtpErlangTuple) t.elementAt(1);
+			final OtpErlangAtom m = (OtpErlangAtom) ml.elementAt(0);
+			final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
+			final OtpErlangLong n = (OtpErlangLong) t.elementAt(3);
+			int stackFrameNo;
+			try {
+				stackFrameNo = n.intValue();
+			} catch (final OtpErlangRangeException e) {
+				stackFrameNo = -1;
+			}
+			stackFrames.add(new ErlangStackFrame(module, this,
+					getDebugTarget(), line, bs, stackFrameNo));
+			bs = (OtpErlangList) t.elementAt(2);
+			module = m.atomValue();
+			try {
+				line = l.intValue();
+			} catch (final OtpErlangRangeException e) {
+				line = -1;
 			}
 		}
 		// topFrame = new ErlangStackFrame(module, this, getDebugTarget(), line,

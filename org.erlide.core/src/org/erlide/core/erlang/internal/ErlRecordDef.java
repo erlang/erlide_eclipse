@@ -29,7 +29,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 		this.record = record;
 		this.extra = extra;
 		this.fields = new ArrayList<String>();
-		if (fields != null && fields.arity() > 0) {
+		if (fields != null) {
 			for (final OtpErlangObject o : fields.elements()) {
 				final OtpErlangAtom a = (OtpErlangAtom) o;
 				this.fields.add(a.atomValue());

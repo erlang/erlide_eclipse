@@ -40,17 +40,14 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		fModule = module;
 		fLineNumber = lineNumber;
 		this.stackFrameNo = stackFrameNo;
-		final int arity = bindings.arity();
-		this.bindings = new ArrayList<ErlangVariable>(arity);
-		if (arity > 0) {
-			for (final OtpErlangObject o : bindings.elements()) {
-				if (o instanceof OtpErlangTuple) {
-					final OtpErlangTuple t = (OtpErlangTuple) o;
-					final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
-					final OtpErlangObject value = t.elementAt(1);
-					this.bindings.add(new ErlangVariable(target, nameA
-							.atomValue(), false, value, parent, stackFrameNo));
-				}
+		this.bindings = new ArrayList<ErlangVariable>(bindings.arity());
+		for (final OtpErlangObject o : bindings.elements()) {
+			if (o instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) o;
+				final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
+				final OtpErlangObject value = t.elementAt(1);
+				this.bindings.add(new ErlangVariable(target, nameA.atomValue(),
+						false, value, parent, stackFrameNo));
 			}
 		}
 	}
