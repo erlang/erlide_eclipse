@@ -56,15 +56,13 @@ public class ErlangPreferencePage extends PreferencePage implements
 		final Label text = new Label(composite, SWT.NONE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
-		text.setText(PreferenceMessages.getString("ErlangPreferencePage.2"));
+		text.setText(PreferenceMessages.ErlangPreferencePage_2);
 
 		final Link erlideorgLink = new Link(composite, SWT.NONE);
-		erlideorgLink.setText(PreferenceMessages
-				.getString("ErlangPreferencePage.3"));
+		erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);
 
 		final Link updateLink = new Link(composite, SWT.NONE);
-		updateLink.setText(PreferenceMessages
-				.getString("ErlangPreferencePage.4"));
+		updateLink.setText(PreferenceMessages.ErlangPreferencePage_4);
 		new Label(panel, SWT.NONE);
 
 		final Button reportButton = new Button(panel, SWT.NONE);

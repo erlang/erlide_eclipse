@@ -30,6 +30,9 @@ public class PreferenceMessages {
 	public static String addRuntimeDialog_pickRuntimeRootDialog_message;
 	public static String AddRuntimeDialog_add;
 	public static String AddRuntimeDialog_remove;
+	public static String ErlangPreferencePage_2;
+	public static String ErlangPreferencePage_3;
+	public static String ErlangPreferencePage_4;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, PreferenceMessages.class);

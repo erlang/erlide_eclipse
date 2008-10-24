@@ -1304,7 +1304,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the position of the found annotation
 	 * @return the found annotation
 	 */
-	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
 			boolean forward, final Position annotationPosition) {
 
@@ -1325,8 +1324,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				true, true);
 		while (e.hasNext()) {
 			final Annotation a = e.next();
-			if (a instanceof IErlangAnnotation
-					&& ((IErlangAnnotation) a).hasOverlay()
+			if ((a instanceof IErlangAnnotation && ((IErlangAnnotation) a)
+					.hasOverlay())
 					|| !isNavigationTarget(a)) {
 				continue;
 			}
@@ -1340,10 +1339,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& p.offset + p.getLength() == offset + length) {// ||
 				// p.includes(offset))
 				// {
-				if (containingAnnotation == null || forward
-						&& p.length >= containingAnnotationPosition.length
-						|| !forward
-						&& p.length < containingAnnotationPosition.length) {
+				if (containingAnnotation == null
+						|| (forward && p.length >= containingAnnotationPosition.length)
+						|| (!forward && p.length < containingAnnotationPosition.length)) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1358,8 +1356,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					}
 
 					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
+							|| (currentDistance == distance && p.length < nextAnnotationPosition.length)) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;
@@ -1372,8 +1369,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					}
 
 					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
+							|| (currentDistance == distance && p.length < nextAnnotationPosition.length)) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;

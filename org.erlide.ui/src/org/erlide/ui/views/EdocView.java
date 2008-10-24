@@ -57,12 +57,8 @@ import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.osgi.framework.Bundle;
 
 /**
- * View which shows Javadoc for a given Java element.
+ * View which shows Edoc for a given Erlang element.
  * 
- * FIXME: As of 3.0 selectAll() and getSelection() is not working see
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
- * 
- * @since 3.0
  */
 public class EdocView extends AbstractInfoView {
 
@@ -74,7 +70,6 @@ public class EdocView extends AbstractInfoView {
 	 */
 	private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
-	// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=73558
 	private static final boolean WARNING_DIALOG_ENABLED = false;
 
 	// /** Flags used to render a label in the text widget. */
@@ -220,7 +215,9 @@ public class EdocView extends AbstractInfoView {
 		}
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+		 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 		 */
 		public void addSelectionChangedListener(
 				final ISelectionChangedListener listener) {
@@ -242,7 +239,9 @@ public class EdocView extends AbstractInfoView {
 		}
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+		 * @seeorg.eclipse.jface.viewers.ISelectionProvider#
+		 * removeSelectionChangedListener
+		 * (org.eclipse.jface.viewers.ISelectionChangedListener)
 		 */
 		public void removeSelectionChangedListener(
 				final ISelectionChangedListener listener) {
@@ -250,7 +249,9 @@ public class EdocView extends AbstractInfoView {
 		}
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+		 * .jface.viewers.ISelection)
 		 */
 		public void setSelection(final ISelection selection) {
 			// not supported
@@ -302,7 +303,9 @@ public class EdocView extends AbstractInfoView {
 			fText.addControlListener(new ControlAdapter() {
 
 				/*
-				 * @see org.eclipse.swt.events.ControlAdapter#controlResized(org.eclipse.swt.events.ControlEvent)
+				 * @see
+				 * org.eclipse.swt.events.ControlAdapter#controlResized(org.
+				 * eclipse.swt.events.ControlEvent)
 				 */
 				@Override
 				public void controlResized(final ControlEvent e) {
@@ -340,7 +343,10 @@ public class EdocView extends AbstractInfoView {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction
+	 * ()
+	 * 
 	 * @since 3.0
 	 */
 	@Override
@@ -354,7 +360,9 @@ public class EdocView extends AbstractInfoView {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getCopyToClipboardAction()
+	 * @seeorg.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#
+	 * getCopyToClipboardAction()
+	 * 
 	 * @since 3.0
 	 */
 	@Override
@@ -529,7 +537,10 @@ public class EdocView extends AbstractInfoView {
 	// }
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#isIgnoringEqualInput()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#isIgnoringEqualInput
+	 * ()
+	 * 
 	 * @since 3.0
 	 */
 	@Override
@@ -590,7 +601,9 @@ public class EdocView extends AbstractInfoView {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
+	 * 
 	 * @since 3.1
 	 */
 	@Override

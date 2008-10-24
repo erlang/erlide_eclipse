@@ -254,6 +254,12 @@
              id="org.erlide.ui.preferences.runtimes"
              name="Installed runtimes">
        </page>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.CompilerPreferencePage"
+             id="org.erlide.ui.preferences.compiler"
+             name="Compiler">
+       </page>
   </extension>
   <extension
          point="org.eclipse.ui.editors.templates">
