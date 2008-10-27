@@ -28,9 +28,10 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
+import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlImportExport;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
@@ -54,7 +55,7 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 public class MemberFilterActionGroup extends ActionGroup {
 
 	public static final int FILTER_LOCAL_FUNCTIONS = MemberFilter.FILTER_LOCAL_FUNCTIONS;
-	public static final int FILTER_EXPORTS = MemberFilter.FILTER_EXPORTS;
+	public static final int FILTER_ATTRIBUTES = MemberFilter.FILTER_ATTRIBUTES;
 	// public static final int FILTER_FIELDS = MemberFilter.FILTER_FIELDS;
 
 	/** @since 3.0 */
@@ -62,11 +63,11 @@ public class MemberFilterActionGroup extends ActionGroup {
 	// MemberFilter.FILTER_LOCALTYPES;
 	/** @since 3.0 */
 	public static final int ALL_FILTERS = FILTER_LOCAL_FUNCTIONS
-			| FILTER_EXPORTS;
+			| FILTER_ATTRIBUTES;
 	// | FILTER_FIELDS | FILTER_EXPORTS | FILTER_LOCALTYPES;
 
 	// private static final String TAG_HIDEFIELDS = "hidefields"; //$NON-NLS-1$
-	private static final String TAG_HIDEEXPORTS = "hideexports"; //$NON-NLS-1$
+	private static final String TAG_HIDEATTRIBUTES = "hideattributes"; //$NON-NLS-1$
 	private static final String TAG_HIDELOCALFUNCTIONS = "hidelocalfunctions"; //$NON-NLS-1$
 	// private static final String TAG_HIDELOCALTYPES = "hidelocaltypes";
 	// //$NON-NLS-1$
@@ -125,9 +126,10 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param availableFilters
 	 *            Specifies which filter action should be contained.
 	 *            <code>FILTER_NONPUBLIC</code>, <code>FILTER_STATIC</code>,
-	 *            <code>FILTER_FIELDS</code> and <code>FILTER_LOCALTYPES</code>
-	 *            or a combination of these constants are possible values. Use
-	 *            <code>ALL_FILTERS</code> to select all available filters.
+	 *            <code>FILTER_FIELDS</code> and
+	 *            <code>FILTER_LOCALTYPES</code> or a combination of these
+	 *            constants are possible values. Use <code>ALL_FILTERS</code>
+	 *            to select all available filters.
 	 * 
 	 * @since 3.0
 	 */
@@ -171,24 +173,24 @@ public class MemberFilterActionGroup extends ActionGroup {
 		// }
 
 		// export directives
-		int filterProperty = FILTER_EXPORTS;
+		int filterProperty = FILTER_ATTRIBUTES;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
 			if (filterEnabled) {
 				fFilter.addFilter(filterProperty);
 			}
-			title = ActionMessages.MemberFilterActionGroup_hide_exports_label;
-			helpContext = IErlangHelpContextIds.FILTER_EXPORTS_ACTION;
-			final MemberFilterAction hideExports = new MemberFilterAction(this,
-					title, FILTER_EXPORTS, helpContext, filterEnabled);
-			hideExports
-					.setDescription(ActionMessages.MemberFilterActionGroup_hide_exports_description);
-			hideExports
-					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_exports_tooltip);
-			hideExports
-					.setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_EXPORTS);
-			fFilterActions.add(hideExports);
+			title = ActionMessages.MemberFilterActionGroup_hide_attributes_label;
+			helpContext = IErlangHelpContextIds.FILTER_ATTRIBUTES_ACTION;
+			final MemberFilterAction hideAttributes = new MemberFilterAction(
+					this, title, FILTER_ATTRIBUTES, helpContext, filterEnabled);
+			hideAttributes
+					.setDescription(ActionMessages.MemberFilterActionGroup_hide_attributes_description);
+			hideAttributes
+					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_attributes_tooltip);
+			hideAttributes
+					.setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_ATTRIBUTES);
+			fFilterActions.add(hideAttributes);
 		}
 
 		// non-public
@@ -258,8 +260,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param filterProperty
 	 *            the filter to be manipulated. Valid values are
 	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>
-	 *            <code>FILTER_PRIVATE</code> and
-	 *            <code>FILTER_LOCALTYPES_ACTION</code> as defined by this
+	 *            <code>FILTER_PRIVATE</code>
+	 *            and <code>FILTER_LOCALTYPES_ACTION</code> as defined by this
 	 *            action group
 	 * @param set
 	 *            if <code>true</code> the given filter is installed. If
@@ -323,8 +325,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param filterProperty
 	 *            the filter to be tested. Valid values are
 	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>,
-	 *            <code>FILTER_PRIVATE</code> and <code>FILTER_LOCALTYPES</code>
-	 *            as defined by this action group
+	 *            <code>FILTER_PRIVATE</code> and
+	 *            <code>FILTER_LOCALTYPES</code> as defined by this action
+	 *            group
 	 */
 	public boolean hasMemberFilter(final int filterProperty) {
 		return fFilter.hasFilter(filterProperty);
@@ -339,8 +342,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	public void saveState(final IMemento memento) {
 		// memento.putString(TAG_HIDEFIELDS, String
 		// .valueOf(hasMemberFilter(FILTER_FIELDS)));
-		memento.putString(TAG_HIDEEXPORTS, String
-				.valueOf(hasMemberFilter(FILTER_EXPORTS)));
+		memento.putString(TAG_HIDEATTRIBUTES, String
+				.valueOf(hasMemberFilter(FILTER_ATTRIBUTES)));
 		memento.putString(TAG_HIDELOCALFUNCTIONS, String
 				.valueOf(hasMemberFilter(FILTER_LOCAL_FUNCTIONS)));
 		// memento.putString(TAG_HIDELOCALTYPES, String
@@ -359,13 +362,14 @@ public class MemberFilterActionGroup extends ActionGroup {
 	public void restoreState(final IMemento memento) {
 		// setMemberFilters(new int[] { FILTER_FIELDS, FILTER_EXPORTS,
 		// FILTER_LOCAL_FUNCTIONS, FILTER_LOCALTYPES }, new boolean[] {
-		setMemberFilters(new int[] { FILTER_EXPORTS, FILTER_LOCAL_FUNCTIONS },
+		setMemberFilters(
+				new int[] { FILTER_ATTRIBUTES, FILTER_LOCAL_FUNCTIONS },
 				new boolean[] {
 						// Boolean.valueOf(memento.getString(TAG_HIDEFIELDS))
 						// .booleanValue(),
-						//Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
+						// Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
 						// .booleanValue(),
-						Boolean.valueOf(memento.getString(TAG_HIDEEXPORTS))
+						Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
 								.booleanValue(),
 						Boolean.valueOf(
 								memento.getString(TAG_HIDELOCALFUNCTIONS))
@@ -475,7 +479,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	public class MemberFilter extends ViewerFilter {
 
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
-		public static final int FILTER_EXPORTS = 2;
+		public static final int FILTER_ATTRIBUTES = 2;
 		// public static final int FILTER_FIELDS = 4;
 		// public static final int FILTER_LOCALTYPES = 8;
 
@@ -504,7 +508,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#isFilterProperty(java.lang.Object,
-		 * java.lang.String)
+		 *      java.lang.String)
 		 */
 		public boolean isFilterProperty(final Object element,
 				final Object property) {
@@ -513,7 +517,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-		 * java.lang.Object, java.lang.Object)
+		 *      java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public boolean select(final Viewer viewer, final Object parentElement,
@@ -554,9 +558,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 						}
 					}
 				}
-				if (hasFilter(FILTER_EXPORTS)
-						&& kind == IErlElement.Kind.EXPORT) {
-					if (e instanceof IErlExport) {
+				if (hasFilter(FILTER_ATTRIBUTES)) {
+					if (e instanceof IErlAttribute
+							|| e instanceof IErlImportExport) {
 						return false;
 					}
 				}

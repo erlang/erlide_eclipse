@@ -57,9 +57,9 @@ public class ActionMessages extends NLS {
 
 	public static final String MemberFilterActionGroup_hide_local_functions_tooltip = "Hide Local Functions";
 
-	public static final String MemberFilterActionGroup_hide_exports_label = "Hide Exports";
+	public static final String MemberFilterActionGroup_hide_attributes_label = "Hide Attributes";
 
-	public static final String MemberFilterActionGroup_hide_exports_description = "Hide Exports";
+	public static final String MemberFilterActionGroup_hide_attributes_description = "Hide Attributes";
 
-	public static final String MemberFilterActionGroup_hide_exports_tooltip = "Hide Exports";
+	public static final String MemberFilterActionGroup_hide_attributes_tooltip = "Hide Attributes";
 }
