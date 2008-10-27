@@ -28,7 +28,6 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IErlRpcMessageListener;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 
@@ -47,7 +46,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private static final IThread[] NO_PROCS = new IThread[] {};
 
 	private final List<ErlangProcess> fProcesses;
-	final IBackend fBackend;
+	final ExecutionBackend fBackend;
 	private final ILaunch fLaunch;
 	private boolean fDisconnected = false;
 	// private final DebuggerListener fDbgListener;
@@ -254,7 +253,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return null;
 	}
 
-	public IBackend getBackend() {
+	public ExecutionBackend getBackend() {
 		return fBackend;
 	}
 

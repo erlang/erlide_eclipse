@@ -14,6 +14,7 @@ package org.erlide.runtime.backend;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -21,19 +22,33 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
+import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.IErlDebugConstants;
+import org.osgi.framework.Bundle;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDebug;
 
@@ -130,6 +145,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				launch.addDebugTarget(target);
 				// interpret everything we can
 				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+				if (distributed) {
+					distributeDebuggerCode(backend);
+				}
 				for (final String pm : interpretedModules) {
 					final String[] pms = pm.split(":");
 					interpret(backend, pms[0], pms[1], distributed);
@@ -150,6 +168,78 @@ public class ErlangLaunchConfigurationDelegate extends
 			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
 		}
+	}
+
+	private void distributeDebuggerCode(final ExecutionBackend backend) {
+		final String debuggerModules[] = { "erlide_dbg_debugged",
+				"erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
+				"erlide_dbg_iload", "erlide_dbg_iserver",  "erlide_int", "int"};
+		final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
+				debuggerModules.length);
+		for (final String module : debuggerModules) {
+			final OtpErlangBinary b = getBeam(module, backend);
+			if (b != null) {
+				final OtpErlangString filename = new OtpErlangString(module
+						+ ".erl");
+				final OtpErlangTuple t = new OtpErlangTuple(new OtpErlangAtom(
+						module), filename, b);
+				modules.add(t);
+			}
+		}
+		ErlideDebug.distributeDebuggerCode(backend, modules);
+	}
+
+	/**
+	 * Get a named beam-file as a binary from the core plug-in bundle
+	 * 
+	 * @param module
+	 *            module name, without extension
+	 * @param backend
+	 *            the execution backend
+	 * @return
+	 */
+	private OtpErlangBinary getBeam(final String module, final IBackend backend) {
+		final Bundle b = ErlangPlugin.getDefault().getBundle();
+		final String beamname = module + ".beam";
+		final IExtensionRegistry reg = RegistryFactory.getRegistry();
+		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
+				InterfacePlugin.PLUGIN_ID, "codepath");
+		// TODO: this code assumes that the debugged target and the
+		// erlide-plugin uses the same Erlang version, how can we escape this?
+		final String ver = backend.getCurrentVersion();
+		for (final IConfigurationElement el : els) {
+			final IContributor c = el.getContributor();
+			if (c.getName().equals(b.getSymbolicName())) {
+				final String dir_path = el.getAttribute("path");
+				Enumeration<?> e = b.getEntryPaths(dir_path + "/" + ver);
+				if (e == null || !e.hasMoreElements()) {
+					e = b.getEntryPaths(dir_path);
+				}
+				if (e == null) {
+					ErlLogger.debug("* !!! error loading plugin "
+							+ b.getSymbolicName());
+					return null;
+				}
+				while (e.hasMoreElements()) {
+					final String s = (String) e.nextElement();
+					final Path path = new Path(s);
+					if (path.lastSegment().equals(beamname)) {
+						if (path.getFileExtension() != null
+								&& "beam".compareTo(path.getFileExtension()) == 0) {
+							final String m = path.removeFileExtension()
+									.lastSegment();
+							try {
+								return CodeManager.getBeamBinary(m, b
+										.getEntry(s));
+							} catch (final Exception ex) {
+								ex.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	private void interpret(final ExecutionBackend backend,

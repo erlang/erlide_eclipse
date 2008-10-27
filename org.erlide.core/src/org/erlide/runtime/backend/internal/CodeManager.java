@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
-import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -162,66 +162,11 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @return boolean
 	 */
 	protected boolean loadBeam(final String moduleName, final URL beamPath) {
-		final OtpErlangBinary bin = getBeam(moduleName, beamPath, 2048);
+		final OtpErlangBinary bin = getBeamBinary(moduleName, beamPath);
 		if (bin == null) {
 			return false;
 		}
 		return ErlideBackend.loadBeam(fBackend, moduleName, bin);
-	}
-
-	/**
-	 * Method getBeam
-	 * 
-	 * @param moduleName
-	 *            String
-	 * @param beamPath
-	 *            String
-	 * @param bufSize
-	 *            int
-	 * @return OtpErlangBinary
-	 */
-	private OtpErlangBinary getBeam(final String moduleName,
-			final URL beamPath, final int bufSize) {
-		try {
-			byte[] b = new byte[bufSize];
-			final BufferedInputStream s = new BufferedInputStream(beamPath
-					.openStream());
-			try {
-				final int r = s.read(b);
-
-				if (r == b.length) {
-					b = null;
-					return getBeam(moduleName, beamPath, bufSize * 2);
-				} else if (r > 0) {
-					final byte[] bm = new byte[r];
-					System.arraycopy(b, 0, bm, 0, r);
-					b = null;
-					return new OtpErlangBinary(bm);
-				} else {
-					return null;
-				}
-			} finally {
-				s.close();
-			}
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	// TODO move this in an util class!
-	public static byte[] concat(final byte[][] arrs) {
-		int total = 0;
-		for (final byte[] arr : arrs) {
-			total += arr.length;
-		}
-		final byte[] result = new byte[total];
-		int crt = 0;
-		for (final byte[] arr : arrs) {
-			System.arraycopy(arr, 0, result, crt, arr.length);
-			crt += arr.length;
-		}
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -280,7 +225,7 @@ public class CodeManager implements IRegistryChangeListener {
 			final IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String decl = stub.getAttribute("onlyDeclared");
-				// ErlLogger.debug("  STUB: %s %s", stub.getAttribute("class"),
+				// ErlLogger.debug(" STUB: %s %s", stub.getAttribute("class"),
 				// decl);
 				BackendUtil.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
@@ -379,5 +324,23 @@ public class CodeManager implements IRegistryChangeListener {
 		ErlLogger.debug("??"
 				+ event.getExtensionDeltas()[0].getExtensionPoint()
 						.getUniqueIdentifier());
+	}
+
+	public static OtpErlangBinary getBeamBinary(final String moduleName,
+			final URL beamPath) {
+		try {
+			final FileInputStream s = (FileInputStream) beamPath.openStream();
+			final int sz = (int) s.getChannel().size();
+			final byte buf[] = new byte[sz];
+			try {
+				s.read(buf);
+				return new OtpErlangBinary(buf);
+			} finally {
+				s.close();
+			}
+		} catch (final IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

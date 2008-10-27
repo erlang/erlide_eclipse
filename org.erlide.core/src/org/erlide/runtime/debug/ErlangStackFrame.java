@@ -61,13 +61,6 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 	}
 
 	public IVariable[] getVariables() throws DebugException {
-		// return new IVariable[] { new ErlangVariable(getDebugTarget(), "Var1",
-		// new OtpErlangTuple(new OtpErlangObject[] {
-		// new OtpErlangAtom("hej"),
-		// new OtpErlangList(new OtpErlangObject[] {
-		// new OtpErlangString("du"),
-		// new OtpErlangAtom("glade") }),
-		// new OtpErlangLong(1234) })) };
 		return bindings.toArray(new IVariable[bindings.size()]);
 	}
 

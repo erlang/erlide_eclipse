@@ -60,7 +60,7 @@ start(Pid, JPid) -> % Used by debugger:quick/3 (no monitor)
 
 start(Pid, JPid, BackTrace) ->
     %% Inform int about my existence and get the meta pid back
-    erlide_debug:log({erlide_dbg_start, {pid, Pid}, {jpid, JPid}}),
+    log({erlide_dbg_start, {pid, Pid}, {jpid, JPid}}),
     case erlide_int:attached(Pid) of
 	{ok, Meta} ->
 	    init(Pid, JPid, Meta, BackTrace);
@@ -349,3 +349,6 @@ meta_cmd({eval_rsp, Res}, State) ->
     State.
 
 
+log(_) ->
+    ok.
+%% erlide_debug:log(E).

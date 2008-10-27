@@ -1,5 +1,7 @@
 package erlang;
 
+import java.util.List;
+
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
@@ -162,7 +164,7 @@ public class ErlideDebug {
 		}
 	}
 
-	public static void sendStarted(final IBackend backend,
+	public static void sendStarted(final ExecutionBackend backend,
 			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "send_started", "x", meta);
@@ -175,7 +177,8 @@ public class ErlideDebug {
 		}
 	}
 
-	public static void resume(final IBackend backend, final OtpErlangPid meta) {
+	public static void resume(final ExecutionBackend backend,
+			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "resume", "x", meta);
 		} catch (final RpcException e) {
@@ -187,7 +190,8 @@ public class ErlideDebug {
 		}
 	}
 
-	public static void suspend(final IBackend backend, final OtpErlangPid meta) {
+	public static void suspend(final ExecutionBackend backend,
+			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "suspend", "x", meta);
 		} catch (final RpcException e) {
@@ -199,7 +203,7 @@ public class ErlideDebug {
 		}
 	}
 
-	public static OtpErlangList getBindings(final IBackend backend,
+	public static OtpErlangList getBindings(final ExecutionBackend backend,
 			final OtpErlangPid meta) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
@@ -215,7 +219,8 @@ public class ErlideDebug {
 		return null;
 	}
 
-	public static void stepOver(final IBackend backend, final OtpErlangPid meta) {
+	public static void stepOver(final ExecutionBackend backend,
+			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "step_over", "x", meta);
 		} catch (final RpcException e) {
@@ -227,7 +232,7 @@ public class ErlideDebug {
 		}
 	}
 
-	public static void stepReturn(final IBackend backend,
+	public static void stepReturn(final ExecutionBackend backend,
 			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "step_return", "x", meta);
@@ -240,7 +245,8 @@ public class ErlideDebug {
 		}
 	}
 
-	public static void stepInto(final IBackend backend, final OtpErlangPid meta) {
+	public static void stepInto(final ExecutionBackend backend,
+			final OtpErlangPid meta) {
 		try {
 			backend.rpcx("erlide_debug", "step_into", "x", meta);
 		} catch (final RpcException e) {
@@ -252,8 +258,8 @@ public class ErlideDebug {
 		}
 	}
 
-	public static OtpErlangTuple getAllStackframes(final IBackend backend,
-			final OtpErlangPid meta) {
+	public static OtpErlangTuple getAllStackframes(
+			final ExecutionBackend backend, final OtpErlangPid meta) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
 					"all_stack_frames", "x", meta);
@@ -270,7 +276,7 @@ public class ErlideDebug {
 		return null;
 	}
 
-	public static OtpErlangObject eval(final IBackend backend,
+	public static OtpErlangObject eval(final ExecutionBackend backend,
 			final String expression, final OtpErlangPid meta) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug", "eval",
@@ -292,10 +298,10 @@ public class ErlideDebug {
 		return null;
 	}
 
-	static final OtpErlangAtom OK = new OtpErlangAtom("ok");
+	public static final OtpErlangAtom OK = new OtpErlangAtom("ok");
 
 	@SuppressWarnings("boxing")
-	public static String setVariableValue(final IBackend backend,
+	public static String setVariableValue(final ExecutionBackend backend,
 			final String name, final String value, final int stackFrameNo,
 			final OtpErlangPid meta) {
 		try {
@@ -322,7 +328,6 @@ public class ErlideDebug {
 								return "error";
 							}
 						}
-
 					}
 				}
 			}
@@ -333,5 +338,21 @@ public class ErlideDebug {
 			e.printStackTrace();
 		}
 		return "error";
+	}
+
+	public static OtpErlangObject distributeDebuggerCode(
+			final ExecutionBackend backend, final List<OtpErlangTuple> modules) {
+		try {
+			final OtpErlangObject o = backend.rpcx("erlide_debug",
+					"distribute_debugger_code", "lx", modules);
+			return o;
+		} catch (final RpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

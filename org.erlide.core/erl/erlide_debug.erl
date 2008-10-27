@@ -35,8 +35,8 @@
          interpret/2, 
          all_stack_frames/1, 
          eval/2, 
-         set_variable_value/4, 
-         
+         set_variable_value/4,
+         distribute_debugger_code/1,
          processes/2]).
 
 -export([log/1]).
@@ -143,6 +143,19 @@ step_return(MetaPid) ->
 set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
+distribute_debugger_code(Modules) ->
+    [rpc:multicall(code, load_binary, [Module, Filename, Binary]) ||
+     {Module, Filename, Binary} <- Modules].
+%%     DebuggerModules = [erlide_dbg_debugged, erlide_dbg_icmd, erlide_dbg_idb,
+%%                        erlide_dbg_ieval, erlide_dbg_iload, erlide_dbg_iserver,
+%%                        erlide_int, int],
+%%     lists:foreach(fun(Module) ->
+%%                           {_Module, Binary, Filename} = 
+%%                               code:get_object_code(Module),
+%%                           rpc:multicall(nodes(), code, load_binary, 
+%%                                         [Module, Filename, Binary])
+%%                   end,
+%%                   DebuggerModules).
 
 log(_E) ->
 %%     case file:open("/Users/jakob/Desktop/log.txt", [append]) of

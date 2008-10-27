@@ -44,7 +44,7 @@
 %%--------------------------------------------------------------------
 eval(Mod, Func, Args) ->
     Debugged = self(),
-    erlide_debug:log({ieval_eval, {mf, Mod, Func, {debugged, Debugged}}}),
+    log({ieval_eval, {mf, Mod, Func, {debugged, Debugged}}}),
     Int = erlide_dbg_iserver:find(),
     case erlide_dbg_iserver:call(Int, {get_meta,Debugged}) of
 	{ok,Meta} ->
@@ -218,7 +218,7 @@ meta(Int, Debugged, M, F, As) ->
 		_ ->
 		    {M, F, As}
 	    end,
-    erlide_debug:log({ieval_meta, {self_meta, self()}, {debugged, Debugged}, {mf, M, F}, As}),
+    log({ieval_meta, {self_meta, self()}, {debugged, Debugged}, {mf, M, F}, As}),
     Status = erlide_dbg_iserver:call(Int, {new_process,Debugged,self(),Pargs}),
     
     %% Initiate process dictionary
@@ -1743,3 +1743,7 @@ add_binding(N,Val,[B1|Bs]) ->
     [B1|add_binding(N,Val,Bs)];
 add_binding(N,Val,[]) ->
     [{N,Val}].
+
+log(_) ->
+    ok.
+%% erlide_debug:log(E).

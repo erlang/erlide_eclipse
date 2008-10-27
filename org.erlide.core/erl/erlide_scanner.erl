@@ -455,7 +455,7 @@ filter_ws(L) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 do_test({Before, {F, Arg1, Arg2}, Expect}=Cmd) ->
-    %erlide_log:log({"----- test ", Cmd}),
+    %log({"----- test ", Cmd}),
     destroy(xx_before),
     create(xx_before),
     insertText(xx_before, 1, Before),
