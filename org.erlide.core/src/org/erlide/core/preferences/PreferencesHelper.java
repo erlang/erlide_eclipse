@@ -3,7 +3,7 @@ package org.erlide.core.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.internal.preferences.EclipsePreferences;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -52,8 +52,8 @@ public class PreferencesHelper {
 		return service.getString(qualifier, key, defaultValue, loadContexts);
 	}
 
-	public Object[] getList(String key, Object[] defaultValue) {
-		return getList(qualifier, key, defaultValue, loadContexts);
+	public String[] childrenNames(String key) {
+		return childrenNames(getNodes(qualifier, key, loadContexts));
 	}
 
 	public void putBoolean(String key, boolean value) {
@@ -84,16 +84,12 @@ public class PreferencesHelper {
 		storeContext.getNode(qualifier).put(key, defaultValue);
 	}
 
-	public void putList(String key, Object[] defaultValue) {
-		// storeContext.getNode(qualifier).putList(qualifier, key, defaultValue,
-		// loadContexts);
-	}
+	//
 
 	private Preferences[] getNodes(String qualifier, String key,
 			IScopeContext[] contexts) {
 		String[] order = service.getLookupOrder(qualifier, key);
-		String childPath = EclipsePreferences.makeRelative(EclipsePreferences
-				.decodePath(key)[0]);
+		String childPath = makeRelative(decodePath(key)[0]);
 		ArrayList<Preferences> result = new ArrayList<Preferences>();
 		for (int i = 0; i < order.length; i++) {
 			String scopeString = order[i];
@@ -124,6 +120,67 @@ public class PreferencesHelper {
 		return result.toArray(new Preferences[result.size()]);
 	}
 
+	// copied these from EclipsePreferences
+
+	protected static final String DOUBLE_SLASH = "//"; //$NON-NLS-1$
+	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
+	/*
+	 * Return a relative path
+	 */
+	public static String makeRelative(String path) {
+		String result = path;
+		if (path == null) {
+			return EMPTY_STRING;
+		}
+		if (path.length() > 0 && path.charAt(0) == IPath.SEPARATOR) {
+			result = path.length() == 0 ? EMPTY_STRING : path.substring(1);
+		}
+		return result;
+	}
+
+	/*
+	 * Return a 2 element String array. element 0 - the path element 1 - the key
+	 * The path may be null. The key is never null.
+	 */
+	public static String[] decodePath(String fullPath) {
+		String key = null;
+		String path = null;
+
+		// check to see if we have an indicator which tells us where the path
+		// ends
+		int index = fullPath.indexOf(DOUBLE_SLASH);
+		if (index == -1) {
+			// we don't have a double-slash telling us where the path ends
+			// so the path is up to the last slash character
+			int lastIndex = fullPath.lastIndexOf(IPath.SEPARATOR);
+			if (lastIndex == -1) {
+				key = fullPath;
+			} else {
+				path = fullPath.substring(0, lastIndex);
+				key = fullPath.substring(lastIndex + 1);
+			}
+		} else {
+			// the child path is up to the double-slash and the key
+			// is the string after it
+			path = fullPath.substring(0, index);
+			key = fullPath.substring(index + 2);
+		}
+
+		// adjust if we have an absolute path
+		if (path != null) {
+			if (path.length() == 0) {
+				path = null;
+			} else if (path.charAt(0) == IPath.SEPARATOR) {
+				path = path.substring(1);
+			}
+		}
+
+		return new String[] { path, key };
+	}
+
+	// end EclipsePreferences
+
 	public String[] childrenNames(Preferences[] nodes) {
 		List<String> names = new ArrayList<String>();
 		if (nodes == null) {
@@ -144,19 +201,6 @@ public class PreferencesHelper {
 			}
 		}
 		return names.toArray(new String[names.size()]);
-	}
-
-	public String[] childrenNames(String qualifier, String key,
-			IScopeContext[] scopes) {
-		return childrenNames(getNodes(qualifier, key, scopes));
-
-	}
-
-	public Object[] getList(String qualifier, String key,
-			Object[] defaultValue, IScopeContext[] scopes) {
-		String[] childrenNames = childrenNames(qualifier, key, scopes);
-		// TODO
-		return defaultValue;
 	}
 
 }
