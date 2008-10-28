@@ -653,12 +653,8 @@ scan_white(Cs, Stack, Toks, Pos, State, Errors) ->
 reserved_word('after') -> true;
 reserved_word('begin') -> true;
 reserved_word('case') -> true;
-reserved_word('try') ->
-    Opts = get_compiler_options(),
-    not lists:member('disable_try', Opts);
-reserved_word('cond') ->
-    Opts = get_compiler_options(),
-    not lists:member('disable_cond', Opts);
+reserved_word('try') -> true;
+reserved_word('cond') -> true;
 reserved_word('catch') -> true;
 reserved_word('andalso') -> true;
 reserved_word('orelse') -> true;
@@ -682,6 +678,7 @@ reserved_word('bsl') -> true;
 reserved_word('bsr') -> true;
 reserved_word('or') -> true;
 reserved_word('xor') -> true;
+reserved_word('spec') -> true;
 reserved_word(_) -> false.
 
 get_compiler_options() ->
