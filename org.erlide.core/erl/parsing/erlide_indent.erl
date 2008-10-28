@@ -262,7 +262,7 @@ i_expr_rest(R0, I, A) ->
             {R0, A};
         #token{kind='#'} -> % record something
 	    ?D(I),
-            i_record_something(R0, I);
+            i_record(R0, I);
         #token{kind=':'} -> % external function call
             R1 = i_kind(':', R0, I),
             R2 = i_1_expr(R1, I),
@@ -440,7 +440,7 @@ i_1_expr([#token{kind='<<'} | _] = R0, I0) ->
     i_kind('>>', R2, I2);
 i_1_expr([#token{kind='#'} | _] = L, I) ->
     ?D('#'),
-    {R, _A} = i_record_something(L, I#i{in_block=false}),
+    {R, _A} = i_record(L, I#i{in_block=false}),
     R;
 i_1_expr([#token{kind='case'}=T | _] = R0, I0) ->
     R1 = i_kind('case', R0, I0),
@@ -508,6 +508,7 @@ i_try(R0, I0) ->
     R1 = i_kind('try', R0, I1),
     I2 = i_with('try', R0, I1),
     R2 = i_expr_list(R1, I2),
+    ?D(R2),
     R3 = case i_sniff(R2) of
              #token{kind='of'} ->
                  R21 = i_kind('of', R2, I1),
@@ -515,8 +516,11 @@ i_try(R0, I0) ->
              _ ->
                  R2
          end,
+    ?D(R3),
     R4 = i_kind('catch', R3, I1),
+    ?D(R4),
     I3 = i_with('catch', R3, I1),
+    ?D(R4),
     R5 = i_catch_clause_list(R4, I3),
     case i_sniff(R5) of
         #token{kind='end'} ->
@@ -552,10 +556,9 @@ i_parameters(R, I) ->
             i_expr_list(R, I)
     end.
 
-i_record_something([#token{kind='#'} | R0], I) ->
+i_record([#token{kind='#'} | R0], I) ->
     R1 = i_comments(R0, I),
-    A = hd(R1),
-    R2 = i_kind(atom, R1, I),
+    R2 = i_atom_or_macro(R1, I),
     ?D(R2),
     case i_sniff(R2) of
         #token{kind='.'} ->
@@ -566,7 +569,7 @@ i_record_something([#token{kind='#'} | R0], I) ->
         #token{kind='{'} ->
             i_expr(R2, I, none);
         _ ->
-            {R2, A}
+            {R2, hd(R1)}
     end.
 
 comment_kind("%%%" ++ _) ->
@@ -602,6 +605,15 @@ skip_comments([#token{kind=comment} | Rest]) ->
     skip_comments(Rest);
 skip_comments(Rest) ->
     Rest.
+
+i_atom_or_macro(R0, I) ->
+    case i_sniff(R0) of
+        #token{kind=atom} ->
+            i_kind(atom, R0, I);
+        #token{kind=macro} ->
+            {R, _} = i_expr(R0, I, none),
+            R
+    end.
 
 i_kind(Kind, R0, I) ->
     R1 = i_comments(R0, I),
@@ -731,12 +743,16 @@ i_if_clause_list(R0, I0, A0) ->
      
 i_catch_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
+    ?D(R1),
     R2 = case i_sniff(R1) of
-             atom -> i_kind(atom, R1, I0);
-             var -> i_kind(var, R1, I0)
+             #token{kind=atom} -> i_kind(atom, R1, I0);
+             #token{kind=var} -> i_kind(var, R1, I0)
          end,
+    ?D(R2),
     R3 = i_kind(':', R2, I0),
+    ?D(R3),
     {R4, _A} = i_expr(R3, I0, none),
+    ?D(R4),
     I1 = i_with(before_arrow, R1, I0),
     R5 = case i_sniff(R4) of
              #token{kind='when'} ->
@@ -746,16 +762,20 @@ i_catch_clause(R0, I0) ->
              _ ->
                  R4
          end,
+    ?D(R5),
     R6 = i_kind('->', R5, I1),
+    ?D(R6),
     I2 = i_with(clause, R1, I0),
     R = i_expr_list(R6, I2),
     R. 
 
 i_catch_clause_list(R, I) ->
     R0 = i_catch_clause(R, I),
+    ?D(R0),
     case i_sniff(R0) of
         #token{kind=';'} ->
             R1 = i_kind(';', R0, I),
+            ?D(R1),
             i_catch_clause_list(R1, I);
         _ ->
             R0
@@ -783,7 +803,7 @@ scan(S) ->
 trace_start() ->
     user_default:da(?MODULE).
 trace_stop() ->
-	user_default:dbgoff(),
+    user_default:dbgoff(),
     user_default:dbgtc("x.log", "x.txt").
 -else.
 trace_start() ->
