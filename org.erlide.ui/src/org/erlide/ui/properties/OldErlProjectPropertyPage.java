@@ -109,26 +109,35 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
 		this.source.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd = new GridData(SWT.FILL, SWT.TOP, false, false);
+		gd.widthHint = 325;
 		source.setLayoutData(gd);
 		source.addListener(SWT.Modify, modifyListener);
 
 		String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
+
+		final Label label = new Label(composite, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		final Label includesLabel = new Label(composite, SWT.NONE);
+		includesLabel.setLayoutData(new GridData());
 		includesLabel.setText("Include directories:");
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
 		this.include.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+		gd.widthHint = 313;
 		include.setLayoutData(gd);
 		include.addListener(SWT.Modify, modifyListener);
+
+		final Label label_1 = new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
 		nodeNameLabel_1.setText("Build backend:");
 
 		final Group group = new Group(composite, SWT.NONE);
 		final GridData gd_group = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gd_group.widthHint = 331;
 		gd_group.heightHint = 84;
 		group.setLayoutData(gd_group);
 		final GridLayout gridLayout = new GridLayout();
@@ -161,9 +170,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final GridData gd_cookie = new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 2, 1);
 		cookie.setLayoutData(gd_cookie);
-		new Label(group, SWT.NONE);
-
-		new Label(composite, SWT.NONE);
 
 		performDefaults();
 		setValid(testPageComplete());
@@ -175,7 +181,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		String last = externalIncludes.getText();
 		// if (last.length() == 0) {
 		// last =
-		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
 		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$

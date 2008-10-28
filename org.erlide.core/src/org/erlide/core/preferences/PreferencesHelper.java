@@ -3,10 +3,15 @@ package org.erlide.core.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.Preferences;
 
 public class PreferencesHelper {
@@ -16,12 +21,31 @@ public class PreferencesHelper {
 	private IPreferencesService service;
 	private String qualifier;
 
-	PreferencesHelper(String qualifier, IScopeContext[] loadContexts,
+	public PreferencesHelper(String qualifier, IScopeContext[] loadContexts,
 			IScopeContext storeContext) {
 		this.loadContexts = loadContexts;
 		this.storeContext = storeContext;
 		service = Platform.getPreferencesService();
 		this.qualifier = qualifier;
+	}
+
+	public PreferencesHelper(String qualifier, IProject project,
+			IScopeContext storeContext) {
+		this(qualifier, new IScopeContext[] { new ProjectScope(project),
+				new InstanceScope(), new ConfigurationScope(),
+				new DefaultScope() }, storeContext);
+	}
+
+	public PreferencesHelper(String qualifier, IProject project) {
+		this(qualifier, new IScopeContext[] { new ProjectScope(project),
+				new InstanceScope(), new ConfigurationScope(),
+				new DefaultScope() }, new ProjectScope(project));
+	}
+
+	public PreferencesHelper(String qualifier) {
+		this(qualifier, new IScopeContext[] { new InstanceScope(),
+				new ConfigurationScope(), new DefaultScope() },
+				new InstanceScope());
 	}
 
 	public boolean getBoolean(String key, boolean defaultValue) {
