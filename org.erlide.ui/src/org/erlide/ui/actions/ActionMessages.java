@@ -62,4 +62,10 @@ public class ActionMessages extends NLS {
 	public static final String MemberFilterActionGroup_hide_attributes_description = "Hide Attributes";
 
 	public static final String MemberFilterActionGroup_hide_attributes_tooltip = "Hide Attributes";
+
+	public static final String MemberFilterActionGroup_hide_macro_record_defs_label = "Hide Macro and Record definitions";
+
+	public static final String MemberFilterActionGroup_hide_macro_record_defs_description = "Hide Macro and Record definitions";
+
+	public static final String MemberFilterActionGroup_hide_macro_record_defs_tooltip = "Hide Macro and Record definitions";
 }

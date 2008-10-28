@@ -34,4 +34,6 @@ public class IErlangHelpContextIds {
 
 	public static final String FILTER_ATTRIBUTES_ACTION = "filterAttributes";
 
+	public static final String FILTER_MACRO_RECORD_DEFS_ACTION = "filterMacroRecordDefs";
+
 }

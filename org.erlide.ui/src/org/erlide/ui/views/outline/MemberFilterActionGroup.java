@@ -32,6 +32,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImportExport;
+import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
@@ -56,21 +57,14 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 	public static final int FILTER_LOCAL_FUNCTIONS = MemberFilter.FILTER_LOCAL_FUNCTIONS;
 	public static final int FILTER_ATTRIBUTES = MemberFilter.FILTER_ATTRIBUTES;
-	// public static final int FILTER_FIELDS = MemberFilter.FILTER_FIELDS;
+	public static final int FILTER_MACRO_RECORD_DEFS = MemberFilter.FILTER_MACRO_RECORD_DEFS;
 
-	/** @since 3.0 */
-	// public static final int FILTER_LOCALTYPES =
-	// MemberFilter.FILTER_LOCALTYPES;
-	/** @since 3.0 */
 	public static final int ALL_FILTERS = FILTER_LOCAL_FUNCTIONS
-			| FILTER_ATTRIBUTES;
-	// | FILTER_FIELDS | FILTER_EXPORTS | FILTER_LOCALTYPES;
+			| FILTER_ATTRIBUTES | FILTER_MACRO_RECORD_DEFS;
 
-	// private static final String TAG_HIDEFIELDS = "hidefields"; //$NON-NLS-1$
 	private static final String TAG_HIDEATTRIBUTES = "hideattributes"; //$NON-NLS-1$
 	private static final String TAG_HIDELOCALFUNCTIONS = "hidelocalfunctions"; //$NON-NLS-1$
-	// private static final String TAG_HIDELOCALTYPES = "hidelocaltypes";
-	// //$NON-NLS-1$
+	private static final String TAG_HIDEMACRORECORDDEF = "hidemacrorecorddef"; //$NON-NLS-1$
 
 	private final List<MemberFilterAction> fFilterActions;
 	private final MemberFilter fFilter;
@@ -146,32 +140,6 @@ public class MemberFilterActionGroup extends ActionGroup {
 		String title, helpContext;
 		fFilterActions = new ArrayList<MemberFilterAction>();
 
-		// fields
-		// int filterProperty = FILTER_FIELDS;
-		// if (isSet(filterProperty, availableFilters)) {
-		// final boolean filterEnabled =
-		//
-		// getPrefsNode().getBoolean(getPreferenceKey(filterProperty), false);
-		// if (filterEnabled) {
-		// fFilter.addFilter(filterProperty);
-		// }
-		// title = ActionMessages.MemberFilterActionGroup_hide_fields_label;
-		// helpContext = IErlangHelpContextIds.FILTER_FIELDS_ACTION;
-		// final MemberFilterAction hideFields = new MemberFilterAction(this,
-		// title, filterProperty, helpContext, filterEnabled);
-		// hideFields
-		// .setDescription(ActionMessages.
-		// MemberFilterActionGroup_hide_fields_description);
-		// hideFields
-		// .setToolTipText(ActionMessages.
-		// MemberFilterActionGroup_hide_fields_tooltip);
-		// hideFields.setImageDescriptor(ErlideUIPlugin.getDefault()
-		// .getImageDescriptor(
-		// IErlideUIConstants.IMG_HIDE_LOCAL_FUNCTIONS));
-		//
-		// actions.add(hideFields);
-		// }
-
 		// export directives
 		int filterProperty = FILTER_ATTRIBUTES;
 		if (isSet(filterProperty, availableFilters)) {
@@ -193,7 +161,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 			fFilterActions.add(hideAttributes);
 		}
 
-		// non-public
+		// non-exported
 		filterProperty = FILTER_LOCAL_FUNCTIONS;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
@@ -214,28 +182,26 @@ public class MemberFilterActionGroup extends ActionGroup {
 			fFilterActions.add(hideLocalFunctions);
 		}
 
-		// // local types
-		// filterProperty = FILTER_LOCALTYPES;
-		// if (isSet(filterProperty, availableFilters)) {
-		// final boolean filterEnabled = getPrefsNode().getBoolean(
-		// getPreferenceKey(filterProperty), false);
-		// if (filterEnabled) {
-		// fFilter.addFilter(filterProperty);
-		// }
-		// title = ActionMessages.MemberFilterActionGroup_hide_localtypes_label;
-		// helpContext = IJavaHelpContextIds.FILTER_LOCALTYPES_ACTION;
-		// final MemberFilterAction hideLocalTypes = new MemberFilterAction(
-		// this, title, filterProperty, helpContext, filterEnabled);
-		// hideLocalTypes
-		// .setDescription(ActionMessages.
-		// MemberFilterActionGroup_hide_localtypes_description);
-		// hideLocalTypes
-		// .setToolTipText(ActionMessages.
-		// MemberFilterActionGroup_hide_localtypes_tooltip);
-		// JavaPluginImages.setLocalImageDescriptors(hideLocalTypes,
-		// "localtypes_co.gif");
-		// actions.add(hideLocalTypes);
-		// }
+		// macros and record definitions
+		filterProperty = FILTER_MACRO_RECORD_DEFS;
+		if (isSet(filterProperty, availableFilters)) {
+			final boolean filterEnabled = getPrefsNode().getBoolean(
+					getPreferenceKey(filterProperty), false);
+			if (filterEnabled) {
+				fFilter.addFilter(filterProperty);
+			}
+			title = ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_label;
+			helpContext = IErlangHelpContextIds.FILTER_MACRO_RECORD_DEFS_ACTION;
+			final MemberFilterAction hideMacroRecordDefs = new MemberFilterAction(
+					this, title, filterProperty, helpContext, filterEnabled);
+			hideMacroRecordDefs
+					.setDescription(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_description);
+			hideMacroRecordDefs
+					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_tooltip);
+			hideMacroRecordDefs
+					.setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_MACRO_RECORD_DEFS);
+			fFilterActions.add(hideMacroRecordDefs);
+		}
 
 		// order corresponds to order in toolbar
 
@@ -258,10 +224,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * Sets the member filters.
 	 * 
 	 * @param filterProperty
-	 *            the filter to be manipulated. Valid values are
-	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>
-	 *            <code>FILTER_PRIVATE</code>
-	 *            and <code>FILTER_LOCALTYPES_ACTION</code> as defined by this
+	 *            the filter to be manipulated. Valid values are defined by this
 	 *            action group
 	 * @param set
 	 *            if <code>true</code> the given filter is installed. If
@@ -283,8 +246,6 @@ public class MemberFilterActionGroup extends ActionGroup {
 			final int filterProperty = propertyKeys[i];
 			final boolean set = propertyValues[i];
 
-			// final IPreferenceStore store = JavaPlugin.getDefault()
-			// .getPreferenceStore();
 			final IEclipsePreferences node = getPrefsNode();
 			boolean found = false;
 			for (final MemberFilterAction j : fFilterActions) {
@@ -340,14 +301,12 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento to which the state is saved
 	 */
 	public void saveState(final IMemento memento) {
-		// memento.putString(TAG_HIDEFIELDS, String
-		// .valueOf(hasMemberFilter(FILTER_FIELDS)));
 		memento.putString(TAG_HIDEATTRIBUTES, String
 				.valueOf(hasMemberFilter(FILTER_ATTRIBUTES)));
 		memento.putString(TAG_HIDELOCALFUNCTIONS, String
 				.valueOf(hasMemberFilter(FILTER_LOCAL_FUNCTIONS)));
-		// memento.putString(TAG_HIDELOCALTYPES, String
-		// .valueOf(hasMemberFilter(FILTER_LOCALTYPES)));
+		memento.putString(TAG_HIDEMACRORECORDDEF, String
+				.valueOf(hasMemberFilter(FILTER_MACRO_RECORD_DEFS)));
 	}
 
 	/**
@@ -360,20 +319,14 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento from which the state is restored
 	 */
 	public void restoreState(final IMemento memento) {
-		// setMemberFilters(new int[] { FILTER_FIELDS, FILTER_EXPORTS,
-		// FILTER_LOCAL_FUNCTIONS, FILTER_LOCALTYPES }, new boolean[] {
-		setMemberFilters(
-				new int[] { FILTER_ATTRIBUTES, FILTER_LOCAL_FUNCTIONS },
-				new boolean[] {
-						// Boolean.valueOf(memento.getString(TAG_HIDEFIELDS))
-						// .booleanValue(),
-						// Boolean.valueOf(memento.getString(TAG_HIDELOCALTYPES))
-						// .booleanValue(),
-						Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
-								.booleanValue(),
-						Boolean.valueOf(
-								memento.getString(TAG_HIDELOCALFUNCTIONS))
-								.booleanValue() }, false);
+		setMemberFilters(new int[] { FILTER_ATTRIBUTES, FILTER_LOCAL_FUNCTIONS,
+				FILTER_MACRO_RECORD_DEFS }, new boolean[] {
+				Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
+						.booleanValue(),
+				Boolean.valueOf(memento.getString(TAG_HIDELOCALFUNCTIONS))
+						.booleanValue(),
+				Boolean.valueOf(memento.getString(TAG_HIDEMACRORECORDDEF))
+						.booleanValue() }, false);
 	}
 
 	/*
@@ -480,7 +433,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
 		public static final int FILTER_ATTRIBUTES = 2;
-		// public static final int FILTER_FIELDS = 4;
+		public static final int FILTER_MACRO_RECORD_DEFS = 4;
 		// public static final int FILTER_LOCALTYPES = 8;
 
 		private int fFilterProperties;
@@ -524,33 +477,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 				final Object element) {
 			if (element instanceof IErlElement) {
 				final IErlElement e = (IErlElement) element;
-				final IErlElement.Kind kind = e.getKind();
-				// if (hasFilter(FILTER_FIELDS)
-				// && memberType == IJavaElement.FIELD) {
-				// return false;
-				// }
-				//
-				// if (hasFilter(FILTER_LOCALTYPES)
-				// && memberType == IJavaElement.TYPE
-				// && isLocalType((IType) member)) {
-				// return false;
-				// }
-				//
-				// if (member.getElementName().startsWith("<")) { // filter
-				// // out
-				// // <clinit>
-				// // //$NON-NLS-1$
-				// return false;
-				// }
-				// final int flags = member.getFlags();
-				// if (hasFilter(FILTER_STATIC)
-				// && (Flags.isStatic(flags) ||
-				// isFieldInInterfaceOrAnnotation(member))
-				// && memberType != IJavaElement.TYPE) {
-				// return false;
-				// }
-				if (hasFilter(FILTER_LOCAL_FUNCTIONS)
-						&& kind == IErlElement.Kind.FUNCTION) {
+				if (hasFilter(FILTER_LOCAL_FUNCTIONS)) {
 					if (e instanceof IErlFunction) {
 						final IErlFunction f = (IErlFunction) e;
 						if (!f.isExported()) {
@@ -564,38 +491,13 @@ public class MemberFilterActionGroup extends ActionGroup {
 						return false;
 					}
 				}
+				if (hasFilter(FILTER_MACRO_RECORD_DEFS)) {
+					if (e instanceof IErlPreprocessorDef) {
+						return false;
+					}
+				}
 			}
 			return true;
 		}
-
-		// private boolean isLocalType(IType type) {
-		// IJavaElement parent = type.getParent();
-		// return parent instanceof IMember && !(parent instanceof IType);
-		// }
-		//
-		// private boolean isMemberInInterfaceOrAnnotation(IMember member)
-		// throws JavaModelException {
-		// IType parent = member.getDeclaringType();
-		// return parent != null
-		// && JavaModelUtil.isInterfaceOrAnnotation(parent);
-		// }
-		//
-		// private boolean isFieldInInterfaceOrAnnotation(IMember member)
-		// throws JavaModelException {
-		// return member.getElementType() == IJavaElement.FIELD
-		// && JavaModelUtil.isInterfaceOrAnnotation(member
-		// .getDeclaringType());
-		// }
-		//
-		// private boolean isTopLevelType(IMember member) {
-		// IType parent = member.getDeclaringType();
-		// return parent == null;
-		// }
-		//
-		// private boolean isEnumConstant(IMember member)
-		// throws JavaModelException {
-		// return member.getElementType() == IJavaElement.FIELD
-		// && ((IField) member).isEnumConstant();
-		// }
 	}
 }

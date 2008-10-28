@@ -92,6 +92,12 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_HIDE_LOCAL_FUNCTIONS = createManaged(
 			T_ELCL, IMG_HIDE_LOCAL_FUNCTIONS);
 
+	public static final String IMG_HIDE_MACRO_RECORD_DEFS = NAME_PREFIX
+			+ "hide_macro_record_defs.gif"; //$NON-NLS-1$
+
+	public static final ImageDescriptor DESC_HIDE_MACRO_RECORD_DEFS = createManaged(
+			T_ELCL, IMG_HIDE_MACRO_RECORD_DEFS);
+
 	public static final String IMG_HIDE_ATTRIBUTES = NAME_PREFIX
 			+ "hide_attributes.gif"; //$NON-NLS-1$
 
