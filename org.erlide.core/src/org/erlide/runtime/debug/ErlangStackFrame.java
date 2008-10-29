@@ -40,16 +40,23 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		fModule = module;
 		fLineNumber = lineNumber;
 		this.stackFrameNo = stackFrameNo;
-		this.bindings = new ArrayList<ErlangVariable>(bindings.arity());
+		final List<ErlangVariable> framesReversed = new ArrayList<ErlangVariable>(
+				bindings.arity());
 		for (final OtpErlangObject o : bindings.elements()) {
 			if (o instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) o;
 				final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
 				final OtpErlangObject value = t.elementAt(1);
-				this.bindings.add(new ErlangVariable(target, nameA.atomValue(),
-						false, value, parent, stackFrameNo));
+				framesReversed.add(new ErlangVariable(target,
+						nameA.atomValue(), false, value, parent, stackFrameNo));
 			}
 		}
+		final List<ErlangVariable> frames = new ArrayList<ErlangVariable>(
+				framesReversed.size());
+		for (int i = framesReversed.size() - 1; i >= 0; --i) {
+			frames.add(framesReversed.get(i));
+		}
+		this.bindings = frames;
 	}
 
 	public String getModule() {
