@@ -216,7 +216,11 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
-		if (defaultRuntime != null) {
+		String rt = prefs.getRuntimeName();
+		if (rt != null) {
+			int db = Arrays.binarySearch(runtimes, rt);
+			runtimeName.select(db);
+		} else if (defaultRuntime != null) {
 			int db = Arrays.binarySearch(runtimes, defaultRuntime.getName());
 			runtimeName.select(db);
 		}
