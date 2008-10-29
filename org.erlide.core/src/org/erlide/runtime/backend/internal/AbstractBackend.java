@@ -569,10 +569,20 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public void connectAndRegister(final List<ICodeBundle> plugins) {
 		connect();
+		startCodeServer();
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
 				getCodeManager().register(element);
 			}
+		}
+	}
+
+	public void startCodeServer() {
+		try {
+			// sometimes the code server isn't started until we try to
+			// load code, this seems to fix it.
+			rpcx("code", "module_info", "");
+		} catch (Exception e) {
 		}
 	}
 

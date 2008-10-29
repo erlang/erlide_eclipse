@@ -361,10 +361,12 @@ public final class BackendManager implements IResourceChangeListener,
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
 			if (fLocalBackend != null) {
+				fLocalBackend.startCodeServer();
 				fLocalBackend.getCodeManager().register(p);
 			}
 			forEachProjectBackend(new IBackendVisitor() {
 				public void run(final IBackend b) {
+					b.startCodeServer();
 					b.getCodeManager().register(p);
 				}
 			});
