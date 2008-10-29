@@ -116,8 +116,8 @@ public class ErlTextHover implements ITextHover,
 				final IProject proj = (IProject) fModule.getProject()
 						.getResource();
 				final IErlPreprocessorDef pd = ErlModelUtils
-						.findPreprocessorDef(b.asIDE(), proj, fModule,
-								definedName, kindToFind);
+						.findPreprocessorDef(b, proj, fModule, definedName,
+								kindToFind);
 				if (pd != null) {
 					return pd.getExtra();
 				}
