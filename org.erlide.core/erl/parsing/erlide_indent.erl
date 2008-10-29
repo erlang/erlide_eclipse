@@ -240,13 +240,15 @@ i_expr(R0, I0, A) ->
     R1 = i_comments(R0, I0),
     I1 = i_with_old_or_new_anchor(A, R1, I0),
     R2 = i_1_expr(R1, I1),
+    ?D(R1),
     case R1 of
-        [#token{kind=string} | _] ->
+        [#token{kind=Kind} | _] when Kind=:=string; Kind=:=macro ->
             case i_sniff(R2) of
-                #token{kind=Kind} when Kind=:=string; Kind=:=eof ->
-                     i_expr(R2, i_with(after_binary_op, I1), A);
+                #token{kind=Kind2} when Kind2=:=string; Kind2=:=macro; Kind2=:=eof ->
+                    ?D(R2),
+                    i_expr(R2, i_with(after_binary_op, I1), A);
                 _ ->
-                     i_expr_rest(R2, I1, I1#i.anchor)
+                    i_expr_rest(R2, I1, I1#i.anchor)
             end;
         _ ->
             i_expr_rest(R2, I1, I1#i.anchor)
