@@ -36,8 +36,7 @@ import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -85,14 +84,15 @@ public class ErlTextHover implements ITextHover,
 		}
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		final IProject proj = (IProject) fModule.getProject().getResource();
-		BuildBackend b;
-		try {
-			b = BackendManager.getDefault().getBuild(proj);
-		} catch (final BackendException e1) {
-			e1.printStackTrace();
-			return null;
-		}
+		// final IProject proj = (IProject) fModule.getProject().getResource();
+		// BuildBackend b;
+		// try {
+		// b = BackendManager.getDefault().getBuild(proj);
+		// } catch (final BackendException e1) {
+		// e1.printStackTrace();
+		// return null;
+		// }
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
@@ -113,6 +113,8 @@ public class ErlTextHover implements ITextHover,
 				final IErlElement.Kind kindToFind = a0.atomValue().equals(
 						"record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
+				final IProject proj = (IProject) fModule.getProject()
+						.getResource();
 				final IErlPreprocessorDef pd = ErlModelUtils
 						.findPreprocessorDef(b.asIDE(), proj, fModule,
 								definedName, kindToFind);

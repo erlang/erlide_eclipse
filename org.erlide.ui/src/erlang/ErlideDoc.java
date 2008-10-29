@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
-	public static OtpErlangObject getProposalsWithDoc(final BuildBackend b,
+	public static OtpErlangObject getProposalsWithDoc(final IdeBackend b,
 			final String mod, final String prefix, final String stateDir) {
 		OtpErlangObject res = null;
 		try {
@@ -24,7 +24,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static OtpErlangObject getModules(final BuildBackend b,
+	public static OtpErlangObject getModules(final IdeBackend b,
 			final String prefix, final List<String> projectModules) {
 		OtpErlangObject res = null;
 		try {
@@ -38,7 +38,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static OtpErlangObject getDocFromScan(final BuildBackend b,
+	public static OtpErlangObject getDocFromScan(final IdeBackend b,
 			final int offset, final String stateDir, final String module,
 			final List<IErlImport> imports) {
 		OtpErlangObject res = null;

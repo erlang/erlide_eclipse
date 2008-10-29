@@ -31,7 +31,7 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -79,14 +79,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
-		BuildBackend b = BackendManager.getDefault().getIdeBackend().asBuild();
-		if (module != null) {
-			try {
-				b = BackendManager.getDefault().getBuild(
-						(IProject) module.getProject().getResource());
-			} catch (final BackendException e) {
-			}
-		}
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		try {
 			final IDocument doc = viewer.getDocument();
 			final String aPrefix = lastText(doc, offset);
@@ -117,7 +110,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						.substring(interrogationMarkPos + 1),
 						IErlElement.Kind.MACRO_DEF);
 			} else {
-				result = moduleCompletions(offset, aPrefix, colonPos, b);
+				result = moduleCompletions(b, offset, aPrefix, colonPos);
 			}
 			if (result == null) {
 				return NO_COMPLETIONS;
@@ -130,15 +123,14 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> recordFieldCompletions(
-			final BuildBackend b, final String recordName, final int offset,
+			final IdeBackend b, final String recordName, final int offset,
 			final String aprefix, final int hashMarkPos) {
 		if (module == null) {
 			return null;
 		}
 		final IProject project = (IProject) module.getProject().getResource();
-		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b
-				.asIDE(), project, module, recordName,
-				IErlElement.Kind.RECORD_DEF);
+		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b,
+				project, module, recordName, IErlElement.Kind.RECORD_DEF);
 		if (p == null || !(p instanceof IErlRecordDef)) {
 			return null;
 		}
@@ -155,8 +147,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
-	private List<ICompletionProposal> moduleCompletions(final int offset,
-			final String aprefix, final int k, final BuildBackend b) {
+	private List<ICompletionProposal> moduleCompletions(final IdeBackend b,
+			final int offset, final String aprefix, final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
 				.getAllErlangFiles();
@@ -187,14 +179,14 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	 * @return
 	 */
 	private List<ICompletionProposal> macroOrRecordCompletions(
-			final BuildBackend b, final int offset, final String aPrefix,
+			final IdeBackend b, final int offset, final String aPrefix,
 			final Kind kind) {
 		if (module == null) {
 			return null;
 		}
 		final IProject project = (IProject) module.getProject().getResource();
 		final List<IErlPreprocessorDef> defs = ErlModelUtils
-				.getPreprocessorDefs(b.asIDE(), project, module, kind);
+				.getPreprocessorDefs(b, project, module, kind);
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
@@ -207,7 +199,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> externalCallCompletions(
-			final BuildBackend b, final String moduleName, final int offset,
+			final IdeBackend b, final String moduleName, final int offset,
 			final String aprefix, final int k) throws ErlangRpcException,
 			BackendException, RpcException, OtpErlangRangeException {
 		// we have an external call
