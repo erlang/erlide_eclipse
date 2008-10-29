@@ -233,6 +233,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 	@Override
 	public boolean performOk() {
+		RuntimeInfoManager.getDefault().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
 		ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -289,6 +290,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	}
 
 	public void infoChanged() {
+		if (runtimeName.isDisposed()) {
+			return;
+		}
 		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
 				.toArray(new String[] {});
 		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
