@@ -238,6 +238,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				checkboxTreeViewer.setGrayed(item, false);
 				updateMenuCategoryCheckedState(item.parent);
 
+				updateLaunchConfigurationDialog();
 			}
 
 		});
