@@ -29,7 +29,7 @@ import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -213,9 +213,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		// if (!ActionUtil.isProcessable(fEditor)) {
 		// return;
 		// }
-		// TODO how in the world can we find the proper build backend?
-		final BuildBackend b = BackendManager.getDefault().getIdeBackend()
-				.asBuild();
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();

@@ -99,26 +99,24 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			List<ICompletionProposal> result;
 			if (colonPos >= 0) {
 				final String moduleName = aPrefix.substring(0, colonPos);
-				result = externalCallCompletions(moduleName, offset, aPrefix
-						.substring(colonPos + 1), colonPos, b);
+				result = externalCallCompletions(b, moduleName, offset, aPrefix
+						.substring(colonPos + 1), colonPos);
 			} else if (hashMarkPos >= 0) {
 				if (dotPos >= 0) {
-					final String recordName = aPrefix.substring(hashMarkPos + 1,
-							dotPos);
-					result = recordFieldCompletions(recordName, offset, aPrefix
-							.substring(dotPos + 1), hashMarkPos, b);
+					final String recordName = aPrefix.substring(
+							hashMarkPos + 1, dotPos);
+					result = recordFieldCompletions(b, recordName, offset,
+							aPrefix.substring(dotPos + 1), hashMarkPos);
 				} else {
-					result = macroOrRecordCompletions(offset, aPrefix
-							.substring(hashMarkPos + 1), b,
+					result = macroOrRecordCompletions(b, offset, aPrefix
+							.substring(hashMarkPos + 1),
 							IErlElement.Kind.RECORD_DEF);
 				}
 			} else if (interrogationMarkPos >= 0) {
-				result = macroOrRecordCompletions(offset, aPrefix
-						.substring(interrogationMarkPos + 1), b,
+				result = macroOrRecordCompletions(b, offset, aPrefix
+						.substring(interrogationMarkPos + 1),
 						IErlElement.Kind.MACRO_DEF);
-			}
-
-			else {
+			} else {
 				result = moduleCompletions(offset, aPrefix, colonPos, b);
 			}
 			if (result == null) {
@@ -132,15 +130,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> recordFieldCompletions(
-			final String recordName, final int offset, final String aprefix,
-			final int hashMarkPos, final BuildBackend b) {
+			final BuildBackend b, final String recordName, final int offset,
+			final String aprefix, final int hashMarkPos) {
 		if (module == null) {
 			return null;
 		}
 		final IProject project = (IProject) module.getProject().getResource();
-		final IErlRecordDef recordDef = (IErlRecordDef) ErlModelUtils
-				.findPreprocessorDef(b, project, module, recordName,
-						IErlElement.Kind.RECORD_DEF);
+		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b
+				.asIDE(), project, module, recordName,
+				IErlElement.Kind.RECORD_DEF);
+		if (p == null || !(p instanceof IErlRecordDef)) {
+			return null;
+		}
+		final IErlRecordDef recordDef = (IErlRecordDef) p;
 		final List<String> fields = recordDef.getFields();
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(
 				fields.size());
@@ -178,21 +180,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	/**
+	 * @param b
 	 * @param offset
 	 * @param aPrefix
-	 * @param b
 	 * @param kind
 	 * @return
 	 */
 	private List<ICompletionProposal> macroOrRecordCompletions(
-			final int offset, final String aPrefix, final BuildBackend b,
+			final BuildBackend b, final int offset, final String aPrefix,
 			final Kind kind) {
 		if (module == null) {
 			return null;
 		}
 		final IProject project = (IProject) module.getProject().getResource();
 		final List<IErlPreprocessorDef> defs = ErlModelUtils
-				.getPreprocessorDefs(b, project, module, kind);
+				.getPreprocessorDefs(b.asIDE(), project, module, kind);
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
@@ -205,8 +207,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> externalCallCompletions(
-			final String moduleName, final int offset, final String aprefix,
-			final int k, final BuildBackend b) throws ErlangRpcException,
+			final BuildBackend b, final String moduleName, final int offset,
+			final String aprefix, final int k) throws ErlangRpcException,
 			BackendException, RpcException, OtpErlangRangeException {
 		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()

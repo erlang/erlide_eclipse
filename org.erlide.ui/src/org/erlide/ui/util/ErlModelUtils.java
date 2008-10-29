@@ -41,7 +41,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
@@ -116,7 +116,7 @@ public class ErlModelUtils {
 	}
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
-			final BuildBackend b, final IProject project,
+			final IdeBackend b, final IProject project,
 			final IErlModule module, final IErlElement.Kind kind) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
 		final List<IErlModule> modulesFound = new ArrayList<IErlModule>(1);
@@ -155,7 +155,7 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlPreprocessorDef findPreprocessorDef(final BuildBackend b,
+	public static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind type) {
 		try {
@@ -175,10 +175,10 @@ public class ErlModelUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static IErlPreprocessorDef findPreprocessorDef(
-			final BuildBackend b, final IProject project, IErlModule m,
-			final String definedName, final IErlElement.Kind type,
-			final List<IErlModule> modulesDone) throws CoreException {
+	private static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
+			final IProject project, IErlModule m, final String definedName,
+			final IErlElement.Kind type, final List<IErlModule> modulesDone)
+			throws CoreException {
 		if (m == null) {
 			return null;
 		}
@@ -228,8 +228,8 @@ public class ErlModelUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static List<IErlModule> getModulesWithIncludes(
-			final BuildBackend b, final IProject project, final IErlModule m,
+	private static List<IErlModule> getModulesWithIncludes(final IdeBackend b,
+			final IProject project, final IErlModule m,
 			final List<IErlModule> modulesFound) throws CoreException {
 		if (m == null) {
 			return null;
@@ -275,7 +275,7 @@ public class ErlModelUtils {
 	 * @throws ErlModelException
 	 * @throws PartInitException
 	 */
-	public static boolean openPreprocessorDef(final BuildBackend b,
+	public static boolean openPreprocessorDef(final IdeBackend b,
 			final IProject project, final IWorkbenchPage page, IErlModule m,
 			final String definedName, final IErlElement.Kind type,
 			final List<IErlModule> modulesDone) throws CoreException,

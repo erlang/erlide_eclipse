@@ -8,7 +8,6 @@ import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc {
 	public static OtpErlangObject getProposalsWithDoc(final BuildBackend b,
@@ -53,21 +52,5 @@ public class ErlideDoc {
 			e.printStackTrace();
 		}
 		return res;
-	}
-
-	public static OtpErlangTuple findFirstVar(final BuildBackend b,
-			final String name, final String source) {
-		OtpErlangObject res;
-		try {
-			res = b.rpcx("erlide_open", "find_first_var", "ss", name, source);
-			if (res instanceof OtpErlangTuple) {
-				return (OtpErlangTuple) res;
-			}
-		} catch (final RpcException e) {
-			e.printStackTrace();
-		} catch (final BackendException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

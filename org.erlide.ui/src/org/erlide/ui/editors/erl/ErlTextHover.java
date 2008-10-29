@@ -114,8 +114,8 @@ public class ErlTextHover implements ITextHover,
 						"record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
 				final IErlPreprocessorDef pd = ErlModelUtils
-						.findPreprocessorDef(b, proj, fModule, definedName,
-								kindToFind);
+						.findPreprocessorDef(b.asIDE(), proj, fModule,
+								definedName, kindToFind);
 				if (pd != null) {
 					return pd.getExtra();
 				}

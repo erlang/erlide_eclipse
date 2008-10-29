@@ -46,8 +46,7 @@ import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -59,7 +58,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideDoc;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
@@ -285,15 +283,7 @@ public class OpenAction extends SelectionDispatchAction {
 	public void run() {
 		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
 		final IErlModule module = fEditor.getModule();
-		final IProject proj = module != null ? (IProject) module.getProject()
-				.getResource() : null;
-		BuildBackend b = null;
-		try {
-			b = BackendManager.getDefault().getBuild(proj);
-		} catch (final BackendException e1) {
-			e1.printStackTrace();
-			return;
-		}
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
@@ -358,7 +348,7 @@ public class OpenAction extends SelectionDispatchAction {
 				final ISourceRange range = sref.getSourceRange();
 				final String s = fEditor.getDocument().get(range.getOffset(),
 						range.getLength());
-				final OtpErlangTuple res2 = ErlideDoc.findFirstVar(b, res
+				final OtpErlangTuple res2 = ErlideOpen.findFirstVar(b, res
 						.getName(), s);
 				if (res2 == null) {
 					return;

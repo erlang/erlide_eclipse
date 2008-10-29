@@ -47,7 +47,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
+import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -754,8 +754,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
 				// TODO how in the world can we find the proper build backend?
-				final BuildBackend b = BackendManager.getDefault()
-						.getIdeBackend().asBuild();
+				final IdeBackend b = BackendManager.getDefault()
+						.getIdeBackend();
 				final ISelection ssel = erlangEditor.getSite()
 						.getSelectionProvider().getSelection();
 				final ITextSelection textSel = (ITextSelection) ssel;
