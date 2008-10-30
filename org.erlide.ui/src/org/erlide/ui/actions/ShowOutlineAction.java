@@ -10,19 +10,18 @@ import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 
 public class ShowOutlineAction extends TextEditorAction {
 
-	public ShowOutlineAction(ResourceBundle bundle, String prefix,
-			ITextEditor editor) {
+	public ShowOutlineAction(final ResourceBundle bundle, final String prefix,
+			final ITextEditor editor) {
 		super(bundle, prefix, editor);
 	}
 
 	@Override
 	public void run() {
 		if (getTextEditor() instanceof ErlangEditor) {
-			ErlangEditor editor = (ErlangEditor) getTextEditor();
-			QuickOutlinePopupDialog quickOutlinePopupDialog = new QuickOutlinePopupDialog(
+			final ErlangEditor editor = (ErlangEditor) getTextEditor();
+			final QuickOutlinePopupDialog quickOutlinePopupDialog = new QuickOutlinePopupDialog(
 					getTextEditor().getSite().getShell(), SWT.NONE, editor,
 					editor);
-			quickOutlinePopupDialog.setSize(400, 200);
 			quickOutlinePopupDialog.setVisible(true);
 		}
 	}
