@@ -1,5 +1,6 @@
 package erlang;
 
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendEvalResult;
@@ -22,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
-	public static void init(IdeBackend backend, String javaNode) {
+	public static void init(final IdeBackend backend, final String javaNode) {
 		try {
 			backend.rpcx("erlide_backend", "init", "a", javaNode);
 		} catch (final Exception e) {
@@ -78,8 +79,7 @@ public class ErlideBackend {
 					+ "\"");
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			return t1.elementAt(1);
 		}
 		throw new ErlangParseException("Could not parse term \"" + string
@@ -101,8 +101,7 @@ public class ErlideBackend {
 					+ "\": " + e.getMessage());
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			return t1.elementAt(1);
 		}
 		throw new BackendException("Could not tokenize string \"" + string
@@ -124,8 +123,7 @@ public class ErlideBackend {
 					+ "\": " + e.getMessage());
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			return t1.elementAt(1);
 		}
 		throw new BackendException("Could not parse string \"" + string
@@ -267,21 +265,23 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static void startTracer(ExecutionBackend b, OtpErlangPid tracer) {
+	public static void startTracer(final ExecutionBackend b,
+			final OtpErlangPid tracer) {
 		try {
 			ErlLogger.debug("Start tracer to %s", tracer);
 			b.rpcx("erlide_backend", "start_tracer", "ps", tracer);
-		} catch (RpcException e) {
-		} catch (BackendException e) {
+		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 		}
 	}
 
-	public static void startTracer(ExecutionBackend b, String logname) {
+	public static void startTracer(final ExecutionBackend b,
+			final String logname) {
 		try {
 			ErlLogger.debug("Start tracer to %s", logname);
 			b.rpcx("erlide_backend", "start_tracer", "s", logname);
-		} catch (RpcException e) {
-		} catch (BackendException e) {
+		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 		}
 	}
 

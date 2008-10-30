@@ -34,9 +34,11 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModelStatusConstants;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Provides convenient utility methods to other types in this package.
@@ -138,7 +140,7 @@ public class Util {
 		final int length = messageWithNoDoubleQuotes.length;
 		int start = 0;
 		int end = length;
-		StringBuilder output = new StringBuilder();
+		final StringBuilder output = new StringBuilder();
 		while (true) {
 			end = CharOperation.indexOf('{', messageWithNoDoubleQuotes, start);
 			if (end > -1) {
@@ -538,7 +540,7 @@ public class Util {
 	 * Finds the first line separator used by the given text.
 	 * 
 	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-	 *                </code>, or <code>null</code> if none found
+	 *         </code>, or <code>null</code> if none found
 	 */
 	public static String findLineSeparator(final char[] text) {
 		// find the first line separator
@@ -1520,10 +1522,10 @@ public class Util {
 	 * machine-independent manner.
 	 * <p>
 	 * First, two bytes are written to the output stream as if by the
-	 * <code>writeShort</code> method giving the number of bytes to follow. This
-	 * value is the number of bytes actually written out, not the length of the
-	 * string. Following the length, each character of the string is output, in
-	 * sequence, using the UTF-8 encoding for the character.
+	 * <code>writeShort</code> method giving the number of bytes to follow.
+	 * This value is the number of bytes actually written out, not the length of
+	 * the string. Following the length, each character of the string is output,
+	 * in sequence, using the UTF-8 encoding for the character.
 	 * 
 	 * @param str
 	 *            a string to be written.
@@ -1928,6 +1930,21 @@ public class Util {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param tag
+	 * @return
+	 */
+	public static boolean isOk(final OtpErlangObject tag) {
+		if (tag instanceof OtpErlangAtom) {
+			final OtpErlangAtom a = (OtpErlangAtom) tag;
+			return a.atomValue().compareTo("ok") == 0;
+		} else if (tag instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) tag;
+			return isOk(t.elementAt(0));
+		}
+		return false;
 	}
 
 }

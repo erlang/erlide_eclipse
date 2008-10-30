@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -58,8 +59,7 @@ public class ErlideScanner2 {
 			return null;
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
-
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			final OtpErlangObject ot = t1.elementAt(1);
 			if (ot instanceof OtpErlangTuple) {
 				final OtpErlangTuple tt = (OtpErlangTuple) ot;
@@ -155,8 +155,7 @@ public class ErlideScanner2 {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": funny return value" + t1);
 		}
-		OtpErlangAtom tag = (OtpErlangAtom) t1.elementAt(0);
-		if (tag.atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1.elementAt(0))) {
 			if (t1.elementAt(1) instanceof OtpErlangList) {
 				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {

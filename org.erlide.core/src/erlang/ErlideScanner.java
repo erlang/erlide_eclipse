@@ -5,21 +5,21 @@ import java.util.List;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner {
 
-	public static void initialScan(String module, String moduleFileName,
-			String initialText) {
+	public static void initialScan(final String module,
+			final String moduleFileName, final String initialText) {
 		ErlLogger.debug("initialScan " + module + " init len"
 				+ initialText.length());
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
@@ -33,7 +33,7 @@ public class ErlideScanner {
 		}
 	}
 
-	public static void destroy(String module) {
+	public static void destroy(final String module) {
 		try {
 			BackendManager.getDefault().getIdeBackend().rpcx("erlide_scanner",
 					"destroy", "a", module);
@@ -43,7 +43,7 @@ public class ErlideScanner {
 	}
 
 	@SuppressWarnings("boxing")
-	public static ErlToken getTokenAt(String module, int offset) {
+	public static ErlToken getTokenAt(final String module, final int offset) {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend()
@@ -59,7 +59,7 @@ public class ErlideScanner {
 		ErlLogger.debug("getTokenAt got %s", r1);
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			final OtpErlangTuple tt = (OtpErlangTuple) t1.elementAt(1);
 			return new ErlToken(tt, 0);
 		}
@@ -155,8 +155,8 @@ public class ErlideScanner {
 	// }
 
 	@SuppressWarnings("boxing")
-	public static void replaceText(String module, int offset, int removeLength,
-			String newText) {
+	public static void replaceText(final String module, final int offset,
+			final int removeLength, final String newText) {
 		ErlLogger.debug("replaceText " + module + " (" + offset + ":"
 				+ removeLength + ":" + newText.length() + ")");
 		try {
@@ -182,8 +182,8 @@ public class ErlideScanner {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static List<ErlToken> lightScanString(String string, int offset)
-			throws BackendException {
+	public static List<ErlToken> lightScanString(final String string,
+			final int offset) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = BackendManager.getDefault().getIdeBackend().rpcx(
@@ -199,7 +199,7 @@ public class ErlideScanner {
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
 		List<ErlToken> toks = null;
-		if (((OtpErlangAtom) t1.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(t1)) {
 			if (t1.elementAt(1) instanceof OtpErlangList) {
 				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {

@@ -68,9 +68,7 @@ public class ErlParser {
 			// FIXME this doesn't work...
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
-		if (res != null
-				&& ((OtpErlangAtom) res.elementAt(0)).atomValue().compareTo(
-						"ok") == 0) {
+		if (Util.isOk(res)) {
 			final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
 			forms = (OtpErlangList) t.elementAt(1);
 			comments = (OtpErlangList) t.elementAt(2);

@@ -2,6 +2,7 @@ package erlang;
 
 import java.util.List;
 
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
@@ -125,8 +126,7 @@ public class ErlideDebug {
 					return moduleAtom.atomValue().equals("module");
 				}
 			}
-			final OtpErlangAtom ok = (OtpErlangAtom) res;
-			return ok.atomValue().equals("ok");
+			return Util.isOk(res);
 		} catch (final RpcException e) {
 			e.printStackTrace();
 		} catch (final BackendException e) {
@@ -283,8 +283,7 @@ public class ErlideDebug {
 					"sx", expression, meta);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
-				final OtpErlangAtom ok = (OtpErlangAtom) t.elementAt(0);
-				if (ok.atomValue().equals("ok")) {
+				if (Util.isOk(t)) {
 					return t.elementAt(1);
 				}
 			}

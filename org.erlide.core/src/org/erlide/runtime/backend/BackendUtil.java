@@ -19,12 +19,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -41,9 +41,8 @@ public class BackendUtil {
 		if (!(v0 instanceof OtpErlangTuple)) {
 			return v0;
 		}
-
 		final OtpErlangTuple v = (OtpErlangTuple) v0;
-		if (((OtpErlangAtom) v.elementAt(0)).atomValue().compareTo("ok") == 0) {
+		if (Util.isOk(v)) {
 			return v.elementAt(1);
 		}
 		return v;
