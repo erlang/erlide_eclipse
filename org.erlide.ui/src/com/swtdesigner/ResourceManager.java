@@ -153,6 +153,14 @@ public class ResourceManager extends SWTResourceManager {
     			I.next().dispose();
     		m_URLImageMap.clear();
     	}
+    	// dispose decorated images
+		for (Iterator<HashMap<Image, Image>> I = m_ImageToDecoratorMap.values().iterator(); I.hasNext();) {
+			HashMap<Image, Image> decoratedMap = I.next();
+			for (Iterator<Image> J = decoratedMap.values().iterator(); J.hasNext();) {
+				Image decoratedImage = J.next();
+				decoratedImage.dispose();
+			}
+		}
     }
 
     //////////////////////////////

@@ -49,6 +49,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlLogger;
@@ -160,7 +161,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -425,6 +426,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final IPath projectPath = project.getLocation();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
+
+		String s = resource.getFileExtension();
+		if (!s.equals("erl")) {
+			System.out.println("?!?!");
+		}
 
 		deleteMarkers(resource);
 		if (isInExtCodePath(resource, project)
@@ -877,9 +883,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -907,9 +912,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {
@@ -1054,7 +1058,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				List<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (ErlangIncludeFile ifile : incs) {
 					if (comparePath(ifile.getFilename(), resource.getName())) {
-						compileFile(my_project, m.getResource());
+						if (m.getModuleKind() == ModuleKind.ERL) {
+							compileFile(my_project, m.getResource());
+						}
 						break;
 					}
 				}
