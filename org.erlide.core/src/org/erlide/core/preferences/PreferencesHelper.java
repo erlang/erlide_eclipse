@@ -31,6 +31,11 @@ public class PreferencesHelper {
 		this.qualifier = qualifier;
 	}
 
+	public PreferencesHelper(String qualifier, IScopeContext storeContext) {
+		this(qualifier, new IScopeContext[] { new InstanceScope(),
+				new ConfigurationScope(), new DefaultScope() }, storeContext);
+	}
+
 	public PreferencesHelper(String qualifier, IProject project,
 			IScopeContext storeContext) {
 		this(qualifier, new IScopeContext[] { new ProjectScope(project),
@@ -84,12 +89,12 @@ public class PreferencesHelper {
 
 	public void putBoolean(String key, boolean value) {
 		String def = service.getString(qualifier, key, null, nextContexts);
-		if (def != null && Boolean.getBoolean(def) != value) {
+		if (def == null || Boolean.getBoolean(def) != value) {
 			storeContext.getNode(qualifier).putBoolean(key, value);
 		}
 	}
 
-	private IScopeContext[] getNextContexts(IScopeContext[] list,
+	public static IScopeContext[] getNextContexts(IScopeContext[] list,
 			IScopeContext item) {
 		List<IScopeContext> result = new ArrayList<IScopeContext>();
 		boolean found = false;
@@ -104,28 +109,49 @@ public class PreferencesHelper {
 		return result.toArray(new IScopeContext[0]);
 	}
 
-	public void putByteArray(String key, byte[] defaultValue) {
-		storeContext.getNode(qualifier).putByteArray(key, defaultValue);
+	public void putByteArray(String key, byte[] value) {
+		byte[] def = service.getByteArray(qualifier, key, null, nextContexts);
+		if (def == null || !def.equals(value)) {
+			storeContext.getNode(qualifier).putByteArray(key, value);
+		}
 	}
 
-	public void putDouble(String key, double defaultValue) {
-		storeContext.getNode(qualifier).putDouble(key, defaultValue);
+	public void putDouble(String key, double value) {
+		double def = service
+				.getDouble(qualifier, key, Double.NaN, nextContexts);
+		if (def == Double.NaN || def != value) {
+			storeContext.getNode(qualifier).putDouble(key, value);
+		}
 	}
 
-	public void putFloat(String key, float defaultValue) {
-		storeContext.getNode(qualifier).putFloat(key, defaultValue);
+	public void putFloat(String key, float value) {
+		float def = service.getFloat(qualifier, key, Float.NaN, nextContexts);
+		if (def == Float.NaN || def != value) {
+			storeContext.getNode(qualifier).putFloat(key, value);
+		}
 	}
 
-	public void putInt(String key, int defaultValue) {
-		storeContext.getNode(qualifier).putInt(key, defaultValue);
+	public void putInt(String key, int value) {
+		int def = service.getInt(qualifier, key, Integer.MIN_VALUE,
+				nextContexts);
+		if (def == Integer.MIN_VALUE || def != value) {
+			storeContext.getNode(qualifier).putInt(key, value);
+		}
 	}
 
-	public void putLong(String key, long defaultValue) {
-		storeContext.getNode(qualifier).putLong(key, defaultValue);
+	public void putLong(String key, long value) {
+		long def = service
+				.getLong(qualifier, key, Long.MIN_VALUE, nextContexts);
+		if (def == Long.MIN_VALUE || def != value) {
+			storeContext.getNode(qualifier).putLong(key, value);
+		}
 	}
 
-	public void putString(String key, String defaultValue) {
-		storeContext.getNode(qualifier).put(key, defaultValue);
+	public void putString(String key, String value) {
+		String def = service.getString(qualifier, key, null, nextContexts);
+		if (def == null || !def.equals(value)) {
+			storeContext.getNode(qualifier).put(key, value);
+		}
 	}
 
 	//

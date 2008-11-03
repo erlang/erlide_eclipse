@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.erlide.testing;
 
+import org.erlide.core.preferences.CoreTests;
+import org.erlide.runtime.backend.RuntimeTests;
 import org.erlide.testing.java.ErlRpcTest;
 import org.erlide.testing.java.PatternMatchTest;
-import org.erlide.testing.java.core.preferences.CoreTests;
-import org.erlide.testing.java.runtime.backend.RuntimeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

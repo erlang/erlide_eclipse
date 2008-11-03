@@ -15,6 +15,7 @@ Export-Package: erlang,
  org.erlide.core.builder,
  org.erlide.core.erlang,
  org.erlide.core.erlang.util,
+ org.erlide.core.preferences,
  org.erlide.core.search,
  org.erlide.core.util,
  org.erlide.runtime;
