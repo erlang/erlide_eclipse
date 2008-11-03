@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osgi.internal.verifier.Base64;
 import org.osgi.service.prefs.Preferences;
 
 public class PreferencesHelper {
@@ -60,7 +61,10 @@ public class PreferencesHelper {
 	}
 
 	public byte[] getByteArray(String key, byte[] defaultValue) {
-		return service.getByteArray(qualifier, key, defaultValue, loadContexts);
+		byte[] b = service.getByteArray(qualifier, key, defaultValue,
+				loadContexts);
+		// there's a bug in PreferenceService.getByteArray, it doesn't decode
+		return Base64.decode(b);
 	}
 
 	public double getDouble(String key, double defaultValue) {
@@ -198,7 +202,7 @@ public class PreferencesHelper {
 	/*
 	 * Return a relative path
 	 */
-	public static String makeRelative(String path) {
+	private static String makeRelative(String path) {
 		String result = path;
 		if (path == null) {
 			return EMPTY_STRING;
@@ -213,7 +217,7 @@ public class PreferencesHelper {
 	 * Return a 2 element String array. element 0 - the path element 1 - the key
 	 * The path may be null. The key is never null.
 	 */
-	public static String[] decodePath(String fullPath) {
+	private static String[] decodePath(String fullPath) {
 		String key = null;
 		String path = null;
 

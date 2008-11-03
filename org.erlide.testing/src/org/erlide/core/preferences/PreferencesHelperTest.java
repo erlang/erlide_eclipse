@@ -75,7 +75,7 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void simpleSet() {
+	public void string_set() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		String key = "val1";
@@ -85,7 +85,7 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void simpleSet_default_1() {
+	public void string_default_1() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		String key = "val2";
@@ -100,7 +100,7 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void simpleSet_default_2() {
+	public void string_default_2() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		String key = "val3";
@@ -115,14 +115,35 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void simpleSet_byteArray() {
+	public void byteArray_set() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		String key = "val4";
 		byte[] val = new byte[] { 1, 3, 5, 7 };
 		helper.putByteArray(key, val);
-		String zz = helper.getString(key, null);
 		byte[] res = helper.getByteArray(key, null);
-		Assert.assertEquals("smurf", res);
+		Assert.assertEquals(val, res);
+	}
+
+	@Test
+	public void double_set() {
+		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+				new InstanceScope());
+		String key = "val5";
+		float val = 3.1415926f;
+		helper.putDouble(key, val);
+		double res = helper.getDouble(key, Double.NaN);
+		Assert.assertEquals(val, res);
+	}
+
+	@Test
+	public void long_set() {
+		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+				new InstanceScope());
+		String key = "val6";
+		long val = 314159;
+		helper.putLong(key, val);
+		long res = helper.getLong(key, Long.MIN_VALUE);
+		Assert.assertEquals(val, res);
 	}
 }
