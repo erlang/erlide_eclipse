@@ -20,7 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-public class ErlangTest extends AbstractErlangTest {
+public class RpcTest extends AbstractErlangTest {
 
 	@Test
 	public void testRpc() {

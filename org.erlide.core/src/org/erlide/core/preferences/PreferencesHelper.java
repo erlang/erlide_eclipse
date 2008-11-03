@@ -20,11 +20,13 @@ public class PreferencesHelper {
 	private IScopeContext storeContext;
 	private IPreferencesService service;
 	private String qualifier;
+	private IScopeContext[] nextContexts;
 
 	public PreferencesHelper(String qualifier, IScopeContext[] loadContexts,
 			IScopeContext storeContext) {
 		this.loadContexts = loadContexts;
 		this.storeContext = storeContext;
+		nextContexts = getNextContexts(loadContexts, storeContext);
 		service = Platform.getPreferencesService();
 		this.qualifier = qualifier;
 	}
@@ -81,7 +83,25 @@ public class PreferencesHelper {
 	}
 
 	public void putBoolean(String key, boolean value) {
-		storeContext.getNode(qualifier).putBoolean(key, value);
+		String def = service.getString(qualifier, key, null, nextContexts);
+		if (def != null && Boolean.getBoolean(def) != value) {
+			storeContext.getNode(qualifier).putBoolean(key, value);
+		}
+	}
+
+	private IScopeContext[] getNextContexts(IScopeContext[] list,
+			IScopeContext item) {
+		List<IScopeContext> result = new ArrayList<IScopeContext>();
+		boolean found = false;
+		for (IScopeContext ctx : list) {
+			if (found) {
+				result.add(ctx);
+			}
+			if (ctx.equals(item)) {
+				found = true;
+			}
+		}
+		return result.toArray(new IScopeContext[0]);
 	}
 
 	public void putByteArray(String key, byte[] defaultValue) {

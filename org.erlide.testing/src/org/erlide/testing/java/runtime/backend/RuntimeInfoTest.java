@@ -1,4 +1,4 @@
-package org.erlide.testing.java;
+package org.erlide.testing.java.runtime.backend;
 
 import static org.junit.Assert.assertTrue;
 
