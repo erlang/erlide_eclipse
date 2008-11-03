@@ -38,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
@@ -436,6 +437,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 			fProblemMarkerManager = new ProblemMarkerManager();
 		}
 		return fProblemMarkerManager;
+	}
+
+	public String getEbinDir() {
+		return ErlideUtil.getEbinDir(getBundle());
 	}
 
 }

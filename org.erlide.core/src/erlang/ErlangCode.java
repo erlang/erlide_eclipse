@@ -2,7 +2,6 @@ package erlang;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -14,49 +13,47 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class ErlangCode {
 
-	public static void addPathA(final ExecutionBackend fBackend,
-			final String path) {
+	public static void addPathA(final IBackend backend, final String path) {
 		try {
-			fBackend.rpc("code", "add_patha", "s", path);
+			backend.rpc("code", "add_patha", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
 	}
 
-	public static void addPathZ(final ExecutionBackend fBackend,
-			final String path) {
+	public static void addPathZ(final IBackend backend, final String path) {
 		try {
-			fBackend.rpc("code", "add_pathz", "s", path);
+			backend.rpc("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
 	}
 
-	public static void removePathZ(final ExecutionBackend fBackend, String path) {
+	public static void removePathZ(final IBackend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			final RpcResult rr = fBackend.rpc("filename", "join", "x",
+			final RpcResult rr = backend.rpc("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
 
-			fBackend.rpc("code", "del_path", null, new OtpErlangString(path));
+			backend.rpc("code", "del_path", null, new OtpErlangString(path));
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
 	}
 
-	public static void removePathA(final ExecutionBackend fBackend, String path) {
+	public static void removePathA(final IBackend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			final RpcResult rr = fBackend.rpc("filename", "join", "x",
+			final RpcResult rr = backend.rpc("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
 
-			fBackend.rpc("code", "del_path", "s", path);
+			backend.rpc("code", "del_path", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}

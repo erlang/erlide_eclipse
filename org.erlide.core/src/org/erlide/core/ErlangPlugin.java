@@ -41,8 +41,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
-import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
@@ -707,7 +707,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 
-		BackendManager.getDefault().register(InterfacePlugin.getDefault());
 		BackendManager.getDefault().register(this);
 
 		registerOpenProjects();
@@ -876,8 +875,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public void start() {
-		// TODO Auto-generated method stub
+	}
 
+	public String getEbinDir() {
+		return ErlideUtil.getEbinDir(getBundle());
 	}
 
 }

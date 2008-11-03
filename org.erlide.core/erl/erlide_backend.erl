@@ -29,7 +29,7 @@
          execute/2,
 
          compile_string/1,
-         start_tracer/1
+         start_tracer/1	
 ]).
 
 init(JavaNode) ->
@@ -219,3 +219,4 @@ start_tracer(Log) when is_list(Log) ->
     dbg:p(all, [all]),
 
     TPid.
+

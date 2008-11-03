@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -26,11 +24,12 @@ import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendUtil;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.IBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -40,7 +39,7 @@ import erlang.ErlideBackend;
 
 public class CodeManager implements IRegistryChangeListener {
 
-	private final ExecutionBackend fBackend;
+	private final IBackend fBackend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
@@ -48,7 +47,7 @@ public class CodeManager implements IRegistryChangeListener {
 	private final List<ICodeBundle> plugins;
 
 	// only to be called by AbstractBackend
-	CodeManager(final ExecutionBackend b) {
+	CodeManager(final IBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
@@ -162,7 +161,8 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @return boolean
 	 */
 	protected boolean loadBeam(final String moduleName, final URL beamPath) {
-		final OtpErlangBinary bin = getBeamBinary(moduleName, beamPath);
+		final OtpErlangBinary bin = ErlideUtil.getBeamBinary(moduleName,
+				beamPath);
 		if (bin == null) {
 			return false;
 		}
@@ -241,7 +241,14 @@ public class CodeManager implements IRegistryChangeListener {
 	public void register(final ICodeBundle p) {
 		if (plugins.indexOf(p) < 0) {
 			plugins.add(p);
-			loadPluginCode(p);
+			final String localDir = p.getEbinDir().replaceAll("\\\\", "/");
+			final boolean accessible = ErlideUtil.isAccessible(fBackend,
+					localDir);
+			if (localDir != null && accessible) {
+				ErlangCode.addPathA(fBackend, localDir);
+			} else {
+				loadPluginCode(p);
+			}
 			p.start();
 		}
 	}
@@ -326,21 +333,4 @@ public class CodeManager implements IRegistryChangeListener {
 						.getUniqueIdentifier());
 	}
 
-	public static OtpErlangBinary getBeamBinary(final String moduleName,
-			final URL beamPath) {
-		try {
-			final FileInputStream s = (FileInputStream) beamPath.openStream();
-			final int sz = (int) s.getChannel().size();
-			final byte buf[] = new byte[sz];
-			try {
-				s.read(buf);
-				return new OtpErlangBinary(buf);
-			} finally {
-				s.close();
-			}
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 }

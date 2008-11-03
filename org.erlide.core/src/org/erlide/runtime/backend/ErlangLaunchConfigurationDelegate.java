@@ -37,10 +37,10 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
-import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.IErlDebugConstants;
 import org.osgi.framework.Bundle;
@@ -173,7 +173,7 @@ public class ErlangLaunchConfigurationDelegate extends
 	private void distributeDebuggerCode(final ExecutionBackend backend) {
 		final String debuggerModules[] = { "erlide_dbg_debugged",
 				"erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
-				"erlide_dbg_iload", "erlide_dbg_iserver",  "erlide_int", "int"};
+				"erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
 		final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
 				debuggerModules.length);
 		for (final String module : debuggerModules) {
@@ -229,7 +229,7 @@ public class ErlangLaunchConfigurationDelegate extends
 							final String m = path.removeFileExtension()
 									.lastSegment();
 							try {
-								return CodeManager.getBeamBinary(m, b
+								return ErlideUtil.getBeamBinary(m, b
 										.getEntry(s));
 							} catch (final Exception ex) {
 								ex.printStackTrace();

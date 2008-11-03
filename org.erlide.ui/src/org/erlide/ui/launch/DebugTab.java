@@ -203,6 +203,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				DebugTreeItem item = (DebugTreeItem) event.getElement();
 				boolean checked = event.getChecked();

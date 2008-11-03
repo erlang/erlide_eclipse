@@ -664,4 +664,5 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	public boolean getTrapExit() {
 		return trapexit;
 	}
+
 }

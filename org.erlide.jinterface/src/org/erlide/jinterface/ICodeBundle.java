@@ -8,4 +8,6 @@ public interface ICodeBundle {
 
 	void start();
 
+	String getEbinDir();
+
 }

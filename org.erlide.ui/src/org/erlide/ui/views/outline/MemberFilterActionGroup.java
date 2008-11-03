@@ -120,10 +120,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param availableFilters
 	 *            Specifies which filter action should be contained.
 	 *            <code>FILTER_NONPUBLIC</code>, <code>FILTER_STATIC</code>,
-	 *            <code>FILTER_FIELDS</code> and
-	 *            <code>FILTER_LOCALTYPES</code> or a combination of these
-	 *            constants are possible values. Use <code>ALL_FILTERS</code>
-	 *            to select all available filters.
+	 *            <code>FILTER_FIELDS</code> and <code>FILTER_LOCALTYPES</code>
+	 *            or a combination of these constants are possible values. Use
+	 *            <code>ALL_FILTERS</code> to select all available filters.
 	 * 
 	 * @since 3.0
 	 */
@@ -286,9 +285,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param filterProperty
 	 *            the filter to be tested. Valid values are
 	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>,
-	 *            <code>FILTER_PRIVATE</code> and
-	 *            <code>FILTER_LOCALTYPES</code> as defined by this action
-	 *            group
+	 *            <code>FILTER_PRIVATE</code> and <code>FILTER_LOCALTYPES</code>
+	 *            as defined by this action group
 	 */
 	public boolean hasMemberFilter(final int filterProperty) {
 		return fFilter.hasFilter(filterProperty);
@@ -431,8 +429,11 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 */
 	public class MemberFilter extends ViewerFilter {
 
+		@SuppressWarnings("hiding")
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
+		@SuppressWarnings("hiding")
 		public static final int FILTER_ATTRIBUTES = 2;
+		@SuppressWarnings("hiding")
 		public static final int FILTER_MACRO_RECORD_DEFS = 4;
 		// public static final int FILTER_LOCALTYPES = 8;
 
@@ -461,7 +462,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#isFilterProperty(java.lang.Object,
-		 *      java.lang.String)
+		 * java.lang.String)
 		 */
 		public boolean isFilterProperty(final Object element,
 				final Object property) {
@@ -470,7 +471,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
+		 * java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public boolean select(final Viewer viewer, final Object parentElement,
