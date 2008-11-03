@@ -56,12 +56,10 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	public synchronized void store() {
 		IEclipsePreferences root = getRootPreferenceNode();
-		String[] children;
 		try {
-			children = root.childrenNames();
-			for (String name : children) {
-				root.node(name).removeNode();
-			}
+			root.removeNode();
+			root = getRootPreferenceNode();
+
 			for (RuntimeInfo rt : fRuntimes.values()) {
 				rt.store(root);
 			}

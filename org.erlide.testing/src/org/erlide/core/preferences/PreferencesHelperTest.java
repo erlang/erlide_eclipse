@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -15,19 +16,15 @@ import org.osgi.service.prefs.BackingStoreException;
 public class PreferencesHelperTest {
 
 	private static final String QUALIFIER = "org.erlide.testing";
-	private static final String KEY = "val";
+	private static final String KEY = "key";
+	private static final String PATH = "child";
 
 	@Before
-	public void setUp() {
-		try {
-			new InstanceScope().getNode(QUALIFIER).removeNode();
-			new InstanceScope().getNode(QUALIFIER).flush();
-			new ConfigurationScope().getNode(QUALIFIER).removeNode();
-			new ConfigurationScope().getNode(QUALIFIER).flush();
-			new DefaultScope().getNode(QUALIFIER).removeNode();
-			new DefaultScope().getNode(QUALIFIER).flush();
-		} catch (BackingStoreException e) {
-		}
+	public void setUp() throws BackingStoreException {
+		new InstanceScope().getNode(QUALIFIER).removeNode();
+		new ConfigurationScope().getNode(QUALIFIER).removeNode();
+		new DefaultScope().getNode(QUALIFIER).removeNode();
+		Platform.getPreferencesService().getRootNode().flush();
 	}
 
 	@Test
@@ -73,7 +70,7 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void string_default_0() {
+	public void default_0() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		helper.putString(KEY, "balm");
@@ -86,7 +83,7 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void string_default_1() {
+	public void default_1() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		new DefaultScope().getNode(QUALIFIER).put(KEY, "balm");
@@ -100,13 +97,27 @@ public class PreferencesHelperTest {
 	}
 
 	@Test
-	public void string_default_2() {
+	public void default_2() {
 		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
 		helper.putString(KEY, "balm");
 		String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
 		Assert.assertNull(res);
+		res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
+		Assert.assertNotNull(res);
+		res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
+		Assert.assertNull(res);
+	}
+
+	@Test
+	public void default_3() {
+		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+				new InstanceScope());
+		new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
+		helper.putString(KEY, "smurf");
+		String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
+		Assert.assertNotNull(res);
 		res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
 		Assert.assertNotNull(res);
 		res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
@@ -162,4 +173,5 @@ public class PreferencesHelperTest {
 		int res = helper.getInt(KEY, Integer.MIN_VALUE);
 		Assert.assertEquals(val, res);
 	}
+
 }
