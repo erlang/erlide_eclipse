@@ -921,6 +921,14 @@
             id="org.erlide.ui.epmd"
             name="Epmd view">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.eclipse.debug.ui"
+            class="org.erlide.debug.ui.views.InterpretedModulesView"
+            icon="icons/modulenavigator.gif"
+            id="org.erlide.ui.debug.interpretedModulesView"
+            name="Interpreted Modules">
+      </view>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
@@ -960,6 +968,15 @@
          <actionSet
                id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
          </actionSet>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <view
+               id="org.erlide.ui.debug.interpretedModulesView"
+               relationship="stack"
+               relative="org.eclipse.debug.ui.DebugView"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
  <extension

@@ -11,8 +11,10 @@ package org.erlide.runtime.debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -45,6 +47,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private static final IThread[] NO_PROCS = new IThread[] {};
 
+	public static final int INTERPRETED_MODULES_CHANGED = 0;
+
 	private final List<ErlangProcess> fProcesses;
 	final ExecutionBackend fBackend;
 	private final ILaunch fLaunch;
@@ -55,6 +59,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private boolean fShowSystemProcesses = false;
 	private boolean fShowErlideProcesses = false;
 	private final IProject[] projects;
+	private final Set<String> interpretedModules;
 
 	private final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 	private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new HashMap<OtpErlangPid, OtpErlangPid>();
@@ -69,6 +74,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fTerminated = false;
 		this.projects = projects;
 		fProcesses = new ArrayList<ErlangProcess>();
+		interpretedModules = new HashSet<String>();
 
 		((AbstractBackend) b).addErlRpcMessageListener(this);
 
@@ -343,7 +349,16 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			final String status = statusA.atomValue();
 			erlangProcess.setStatus(status);
 			erlangProcess.fireCreationEvent();
+		} else if (event.equals("interpret")) {
+			final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
+			interpretedModules.add(m.atomValue());
+			fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
+					INTERPRETED_MODULES_CHANGED));
 		}
+	}
+
+	public Set<String> getInterpretedModules() {
+		return interpretedModules;
 	}
 
 	private ErlangProcess addErlangProcess(final OtpErlangPid pid) {
