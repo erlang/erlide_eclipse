@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -34,15 +35,16 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	private String text;
 	private ITextSelection selection;
 
-	public ErlangTextEditorAction(ResourceBundle bundle, String prefix,
-			ITextEditor editor, String erlModule, String erlFunction) {
+	public ErlangTextEditorAction(final ResourceBundle bundle,
+			final String prefix, final ITextEditor editor,
+			final String erlModule, final String erlFunction) {
 		super(bundle, prefix, editor);
 		fErlModule = erlModule;
 		fErlFunction = erlFunction;
 	}
 
-	public ErlangTextEditorAction(ResourceBundle bundle, String prefix,
-			ITextEditor editor) {
+	public ErlangTextEditorAction(final ResourceBundle bundle,
+			final String prefix, final ITextEditor editor) {
 		this(bundle, prefix, editor, null, null);
 	}
 
@@ -77,14 +79,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 						ActionMessages.IndentAction_error_message, e, null);
 				return;
 			}
-
-			final String newText;
-			if (r1 instanceof OtpErlangList) {
-				newText = "";
-			} else {
-				final OtpErlangString s1 = (OtpErlangString) r1;
-				newText = s1.stringValue();
-			}
+			final String newText = Util.stringValue(r1);
 			// final int lastLineOffset = document.getLineOffset(lastLine);
 			final int nLines = endLine - startLine + 1;
 			final Runnable runnable = new Runnable() {
@@ -136,9 +131,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * @throws BackendException
 	 * @throws ErlangRpcException
 	 */
-	protected OtpErlangObject callErlang(ITextSelection aSelection, String aText)
-			throws Exception {
-		IdeBackend b = BackendManager.getDefault().getIdeBackend();
+	protected OtpErlangObject callErlang(final ITextSelection aSelection,
+			final String aText) throws Exception {
+		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		final OtpErlangObject r1 = ErlideBackend.call(b, fErlModule,
 				fErlFunction, aSelection.getOffset(), aText);
 		return r1;
@@ -156,7 +151,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * @param newLength
 	 *            the selection range
 	 */
-	protected void selectAndReveal(int newOffset, int newLength) {
+	protected void selectAndReveal(final int newOffset, final int newLength) {
 		final ITextEditor editor = getTextEditor();
 		if (editor instanceof ErlangEditor) {
 			final ErlangEditor erlEditor = (ErlangEditor) editor;
