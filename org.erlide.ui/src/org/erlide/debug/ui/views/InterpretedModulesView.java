@@ -34,10 +34,10 @@ import org.erlide.runtime.debug.ErlangDebugTarget;
 
 public class InterpretedModulesView extends ViewPart {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
-	private List<IErlModule> interpretedModules;
+	CheckboxTreeViewer checkboxTreeViewer;
+	List<IErlModule> interpretedModules;
 
-	private class TreeLabelProvider extends LabelProvider implements
+	class TreeLabelProvider extends LabelProvider implements
 			IDebugEventSetListener {
 		@Override
 		public String getText(final Object element) {
@@ -67,12 +67,12 @@ public class InterpretedModulesView extends ViewPart {
 		}
 	}
 
-	private class DebugTreeItem {
-		private IErlElement item = null;
+	class DebugTreeItem {
+		IErlElement item = null;
 		private DebugTreeItem parent = null;
 		private final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
-		private boolean isFullyChecked() {
+		boolean isFullyChecked() {
 			for (final DebugTreeItem i : children) {
 				if (!interpretedModules.contains(i.item)) {
 					return false;
@@ -81,7 +81,7 @@ public class InterpretedModulesView extends ViewPart {
 			return true;
 		}
 
-		private boolean isFullyUnchecked() {
+		boolean isFullyUnchecked() {
 			for (final DebugTreeItem i : children) {
 				if (interpretedModules.contains(i.item)) {
 					return false;
@@ -92,7 +92,7 @@ public class InterpretedModulesView extends ViewPart {
 
 	}
 
-	private class TreeContentProvider implements IStructuredContentProvider,
+	class TreeContentProvider implements IStructuredContentProvider,
 			ITreeContentProvider {
 		private String[] projects;
 		private ILaunchConfiguration input;
@@ -164,7 +164,7 @@ public class InterpretedModulesView extends ViewPart {
 		}
 	}
 
-	private void updateMenuCategoryCheckedState(final DebugTreeItem item) {
+	void updateMenuCategoryCheckedState(final DebugTreeItem item) {
 		if (item == null) {
 			return;
 		}

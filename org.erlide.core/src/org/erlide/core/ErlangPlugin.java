@@ -676,6 +676,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			dir = dir == null ? "c:/" : dir;
 			fh = new FileHandler(dir + "_erlide.log");
 			fh.setFormatter(erlSimpleFormatter);
+			fh.setLevel(java.util.logging.Level.FINEST);
 			logger.addHandler(fh);
 
 			final ConsoleHandler consoleHandler = new ConsoleHandler();
@@ -685,7 +686,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			consoleHandler.setLevel(lvl);
 			logger.addHandler(consoleHandler);
 
-			logger.setLevel(lvl);
+			logger.setLevel(java.util.logging.Level.FINEST);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
