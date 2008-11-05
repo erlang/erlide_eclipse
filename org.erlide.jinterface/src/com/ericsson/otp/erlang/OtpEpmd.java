@@ -472,55 +472,53 @@ public class OtpEpmd {
 
 		try {
 			final OtpOutputStream obuf = new OtpOutputStream();
-			s = new Socket(address, epmdPort);
+			try {
+				s = new Socket(address, epmdPort);
 
-			obuf.write2BE(1);
-			obuf.write1(names4req);
+				obuf.write2BE(1);
+				obuf.write1(names4req);
+				// send request
+				obuf.writeTo(s.getOutputStream());
 
-			// send request
-			obuf.writeTo(s.getOutputStream());
-
-			if (traceLevel >= traceThreshold) {
-				System.out.println("-> NAMES (r4) ");
-			}
-
-			// get reply
-			final byte[] buffer = new byte[256];
-			final ByteArrayOutputStream out = new ByteArrayOutputStream(256);
-			while (true) {
-				final int bytesRead = s.getInputStream().read(buffer);
-				if (bytesRead == -1) {
-					break;
+				if (traceLevel >= traceThreshold) {
+					System.out.println("-> NAMES (r4) ");
 				}
-				out.write(buffer, 0, bytesRead);
+
+				// get reply
+				final byte[] buffer = new byte[256];
+				final ByteArrayOutputStream out = new ByteArrayOutputStream(256);
+				while (true) {
+					final int bytesRead = s.getInputStream().read(buffer);
+					if (bytesRead == -1) {
+						break;
+					}
+					out.write(buffer, 0, bytesRead);
+				}
+				final byte[] tmpbuf = out.toByteArray();
+				final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+				ibuf.read4BE(); // read port int
+				// final int port = ibuf.read4BE();
+				// check if port = epmdPort
+
+				final int n = tmpbuf.length;
+				final byte[] buf = new byte[n - 4];
+				System.arraycopy(tmpbuf, 4, buf, 0, n - 4);
+				final String all = new String(buf);
+				return all.split("\n");
+			} finally {
+				try {
+					s.close();
+				} catch (IOException e) {
+				}
 			}
-
-			final byte[] tmpbuf = out.toByteArray();
-			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
-			ibuf.read4BE(); // read port int
-			// final int port = ibuf.read4BE();
-			// check if port = epmdPort
-
-			final int n = tmpbuf.length;
-			final byte[] buf = new byte[n - 4];
-			System.arraycopy(tmpbuf, 4, buf, 0, n - 4);
-			final String all = new String(buf);
-			return all.split("\n");
 
 		} catch (final IOException e) {
-			// epmd closed the connection = fail
-			if (s != null) {
-				s.close();
-			}
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
 			throw new IOException(
 					"Nameserver not responding when requesting names");
 		} catch (final OtpErlangDecodeException e) {
-			if (s != null) {
-				s.close();
-			}
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
