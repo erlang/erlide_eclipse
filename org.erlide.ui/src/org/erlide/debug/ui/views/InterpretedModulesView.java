@@ -69,8 +69,8 @@ public class InterpretedModulesView extends ViewPart {
 
 	class DebugTreeItem {
 		IErlElement item = null;
-		private DebugTreeItem parent = null;
-		private final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
+		DebugTreeItem parent = null;
+		final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		boolean isFullyChecked() {
 			for (final DebugTreeItem i : children) {
@@ -96,7 +96,7 @@ public class InterpretedModulesView extends ViewPart {
 			ITreeContentProvider {
 		private String[] projects;
 		private ILaunchConfiguration input;
-		private DebugTreeItem root;
+		DebugTreeItem root;
 
 		public void inputChanged(final Viewer viewer, final Object oldInput,
 				final Object newInput) {
