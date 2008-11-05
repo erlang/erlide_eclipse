@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.erlide.testing.java;
 
-import java.util.HashMap;
-
+import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
 import org.erlide.jinterface.OtpVariable;
+import org.erlide.jinterface.TermParser;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -28,6 +28,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class PatternMatchTest {
 
 	@Test
+	public void testFormatParser() throws Exception {
+		OtpErlangObject res = new TermParser().parse("{hej,ho}");
+	}
+
+	@Test
 	public void testMatch() {
 		OtpErlangObject p = new OtpErlangList(new OtpVariable("V"),
 				new OtpErlangTuple(new OtpVariable("W")));
@@ -35,9 +40,9 @@ public class PatternMatchTest {
 				new OtpErlangTuple(new OtpErlangAtom("b")));
 		OtpErlangObject t2 = new OtpErlangList(new OtpErlangAtom("a"),
 				new OtpErlangTuple(new OtpErlangAtom("a")));
-		HashMap<String, OtpErlangObject> b = new HashMap<String, OtpErlangObject>();
-		HashMap<String, OtpErlangObject> r;
-		HashMap<String, OtpErlangObject> r2;
+		Bindings b = new Bindings();
+		Bindings r;
+		Bindings r2;
 
 		r = match(p, t1, b);
 
@@ -54,10 +59,9 @@ public class PatternMatchTest {
 	 * @param b
 	 * @return
 	 */
-	private HashMap<String, OtpErlangObject> match(OtpErlangObject p,
-			OtpErlangObject t1, HashMap<String, OtpErlangObject> b) {
+	private Bindings match(OtpErlangObject p, OtpErlangObject t1, Bindings b) {
 		// ErlLogger.debug("-----------------------");
-		HashMap<String, OtpErlangObject> r;
+		Bindings r;
 		// ErlLogger.debug("matching \n " + p.toString() + "\n " +
 		// t1.toString() +" \n
 		// B=" + b);

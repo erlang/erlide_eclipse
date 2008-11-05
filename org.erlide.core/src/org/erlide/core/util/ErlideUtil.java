@@ -96,7 +96,7 @@ public class ErlideUtil {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
-				Enumeration e = b.getEntryPaths(dir_path);
+				Enumeration<?> e = b.getEntryPaths(dir_path);
 				if (e == null) {
 					ErlLogger.debug("* !!! error loading plugin "
 							+ b.getSymbolicName());
@@ -150,8 +150,8 @@ public class ErlideUtil {
 		}
 	}
 
-	public static String getEbinDir(Bundle b) {
-		URL entry = b.getEntry("ebin");
+	public static String getPath(String name, Bundle b) {
+		URL entry = b.getEntry(name);
 		if (entry != null) {
 			URLConnection connection;
 			try {
@@ -172,6 +172,10 @@ public class ErlideUtil {
 			}
 		}
 		return null;
+	}
+
+	public static String getEbinDir(Bundle bundle) {
+		return getPath("ebin", bundle);
 	}
 
 }

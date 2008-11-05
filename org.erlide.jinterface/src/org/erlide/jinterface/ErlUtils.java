@@ -10,7 +10,6 @@
 package org.erlide.jinterface;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -22,36 +21,40 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlUtils {
 
-	/**
-	 * @param term
-	 * @param pattern
-	 * @return Map of matched variables. Null means no match, an empty list
-	 *         means no variables were bound.
+	/*
+	 * for example, format("{hello, ~s, [~a, _]}", "myname", "mykey")
 	 */
-	public static HashMap<String, OtpErlangObject> match(
-			OtpErlangObject pattern, OtpErlangObject term,
-			HashMap<String, OtpErlangObject> bindings) {
+	public static OtpErlangObject format(String fmt, Object... args) {
+		return null;
+	}
+
+	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term) {
+		return match(pattern, term, new Bindings());
+	}
+
+	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term,
+			Bindings bindings) {
 		// ErlLogger.debug("matching \n " + pattern.toString() + "\n "
 		// + term.toString() + "\n B=" + bindings);
 
 		if (pattern instanceof OtpVariable) {
-			return matchVariable(pattern, term, bindings);
+			return matchVariable((OtpVariable) pattern, term, bindings);
 		}
-		final String pcn = pattern.getClass().getName();
-		if (!pcn.equals(term.getClass().getName())) {
+		final Class<?> pc = pattern.getClass();
+		if (!pc.equals(term.getClass())) {
 			return null;
 		}
 
-		if (pcn.endsWith("OtpErlangAtom")) {
+		if (pc == OtpErlangAtom.class) {
 			return matchAtom((OtpErlangAtom) pattern, (OtpErlangAtom) term,
 					bindings);
-		} else if (pcn.endsWith("OtpErlangLong")) {
+		} else if (pc == OtpErlangLong.class) {
 			return matchLong((OtpErlangLong) pattern, (OtpErlangLong) term,
 					bindings);
-		} else if (pcn.endsWith("OtpErlangList")) {
+		} else if (pc == OtpErlangList.class) {
 			return matchList((OtpErlangList) pattern, (OtpErlangList) term,
 					bindings);
-		} else if (pcn.endsWith("OtpErlangTuple")) {
+		} else if (pc == OtpErlangTuple.class) {
 			return matchTuple((OtpErlangTuple) pattern, (OtpErlangTuple) term,
 					bindings);
 		}
@@ -64,20 +67,16 @@ public class ErlUtils {
 	 * @param bindings
 	 * @return
 	 */
-	private static HashMap<String, OtpErlangObject> matchVariable(
-			OtpErlangObject pattern, OtpErlangObject term,
-			HashMap<String, OtpErlangObject> bindings) {
+	private static Bindings matchVariable(OtpVariable var,
+			OtpErlangObject term, Bindings bindings) {
 		// System.out.println("match variable");
 
-		@SuppressWarnings("unchecked")
-		final HashMap<String, OtpErlangObject> result = (HashMap<String, OtpErlangObject>) bindings
-				.clone();
+		final Bindings result = new Bindings(bindings);
 
-		final OtpVariable v = (OtpVariable) pattern;
-		final OtpErlangObject old = bindings.get(v.getName());
+		final OtpErlangObject old = bindings.get(var.getName());
 		// no previous binding
 		if (old == null) {
-			result.put(v.getName(), term);
+			result.put(var.getName(), term);
 			return result;
 		}
 		return old.equals(term) ? result : null;
@@ -88,9 +87,8 @@ public class ErlUtils {
 	 * @param term
 	 * @return
 	 */
-	private static HashMap<String, OtpErlangObject> matchAtom(
-			OtpErlangAtom pattern, OtpErlangAtom term,
-			HashMap<String, OtpErlangObject> bindings) {
+	private static Bindings matchAtom(OtpErlangAtom pattern,
+			OtpErlangAtom term, Bindings bindings) {
 		// System.out.println("match atom");
 
 		if (pattern.atomValue().equals(term.atomValue())) {
@@ -105,9 +103,8 @@ public class ErlUtils {
 	 * @param bindings
 	 * @return
 	 */
-	private static HashMap<String, OtpErlangObject> matchLong(
-			OtpErlangLong pattern, OtpErlangLong term,
-			HashMap<String, OtpErlangObject> bindings) {
+	private static Bindings matchLong(OtpErlangLong pattern,
+			OtpErlangLong term, Bindings bindings) {
 		// System.out.println("match long");
 
 		try {
@@ -127,17 +124,14 @@ public class ErlUtils {
 	 * @param bindings
 	 * @return
 	 */
-	private static HashMap<String, OtpErlangObject> matchList(
-			OtpErlangList pattern, OtpErlangList term,
-			HashMap<String, OtpErlangObject> bindings) {
+	private static Bindings matchList(OtpErlangList pattern,
+			OtpErlangList term, Bindings bindings) {
 		// System.out.println("match list");
 		if (pattern.arity() != term.arity()) {
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
-		HashMap<String, OtpErlangObject> result = (HashMap<String, OtpErlangObject>) bindings
-				.clone();
+		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < pattern.arity(); i++) {
 			result = match(pattern.elementAt(i), term.elementAt(i), result);
 			if (result == null) {
@@ -154,17 +148,14 @@ public class ErlUtils {
 	 * @param bindings
 	 * @return
 	 */
-	private static HashMap<String, OtpErlangObject> matchTuple(
-			OtpErlangTuple pattern, OtpErlangTuple term,
-			HashMap<String, OtpErlangObject> bindings) {
+	private static Bindings matchTuple(OtpErlangTuple pattern,
+			OtpErlangTuple term, Bindings bindings) {
 		// System.out.println("match tuple");
 		if (pattern.arity() != term.arity()) {
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
-		HashMap<String, OtpErlangObject> result = (HashMap<String, OtpErlangObject>) bindings
-				.clone();
+		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < pattern.arity(); i++) {
 			result = match(pattern.elementAt(i), term.elementAt(i), result);
 			if (result == null) {
@@ -175,16 +166,10 @@ public class ErlUtils {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected HashMap mergeBindings(HashMap m1, HashMap m2) {
-		final HashMap res = (HashMap) m1.clone();
-		return res;
-	}
-
 	public OtpErlangObject format(String fmt, OtpErlangObject... args) {
 		OtpErlangObject result;
 		try {
-			result = TermParser2.parse(fmt);
+			result = TermParser.parse(fmt);
 			result = fill(result, Arrays.asList(args));
 		} catch (Exception e) {
 			result = null;

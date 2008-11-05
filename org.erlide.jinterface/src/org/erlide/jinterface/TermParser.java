@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.erlide.jinterface.TermParser2.Token.TokenKind;
+import org.erlide.jinterface.TermParser.Token.TokenKind;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class TermParser2 {
+public class TermParser {
 
 	private static Map<String, OtpErlangObject> cache = new HashMap<String, OtpErlangObject>();
 

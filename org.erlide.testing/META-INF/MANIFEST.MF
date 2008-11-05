@@ -7,7 +7,7 @@ Bundle-Localization: plugin
 Bundle-Vendor: %providerName
 Bundle-Activator: org.erlide.testing.ErlideTestingPlugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.3.1",
+ org.eclipse.core.resources,
  org.erlide.jinterface,
  org.erlide.core,
  org.erlide.ui,
