@@ -594,6 +594,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		if (node.equals(fPeer)) {
 			setAvailable(up);
 		}
+		BackendManager.getDefault().remoteNodeStatus(node, up, info);
 	}
 
 	private void setAvailable(final boolean up) {

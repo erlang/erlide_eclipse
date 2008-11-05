@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -492,6 +493,21 @@ public final class BackendManager implements IResourceChangeListener,
 
 	public EpmdWatcher getEpmdWatcher() {
 		return epmdWatcher;
+	}
+
+	public void remoteNodeStatus(String node, boolean up, Object info) {
+		if (!up) {
+			for (Entry<IProject, Set<ExecutionBackend>> e : fExecutionBackends
+					.entrySet()) {
+				for (ExecutionBackend be : e.getValue()) {
+					String bnode = be.getInfo().getNodeName();
+					if (buildNodeName(bnode).equals(node)) {
+						removeExecution(e.getKey(), be);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }
