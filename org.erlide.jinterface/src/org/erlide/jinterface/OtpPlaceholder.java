@@ -13,16 +13,16 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpOutputStream;
 
 /**
- * Provides a Java representation of Erlang variables. !!! These are to NOT to
- * be sent to an Erlang node !!!! Their use is in pattern matching only.
+ * Provides a Java representation of Erlang format placeholders. !!! These are
+ * to NOT to be sent to an Erlang node !!!! Their use is in formatting only.
  */
-public class OtpVariable extends OtpErlangObject {
+public class OtpPlaceholder extends OtpErlangObject {
 
 	private static final long serialVersionUID = -6099217323357230588L;
 
 	private String name;
 
-	public OtpVariable(String n) {
+	public OtpPlaceholder(String n) {
 		name = n;
 	}
 
@@ -32,16 +32,16 @@ public class OtpVariable extends OtpErlangObject {
 
 	@Override
 	public String toString() {
-		return "'%" + name + "'";
+		return name;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpVariable)) {
+		if (!(o instanceof OtpPlaceholder)) {
 			return false;
 		}
 
-		final OtpVariable l = (OtpVariable) o;
+		final OtpPlaceholder l = (OtpPlaceholder) o;
 		return name.equals(l.name);
 	}
 

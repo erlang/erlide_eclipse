@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.erlide.jinterface;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -24,7 +26,7 @@ public class ErlUtils {
 	 * @param term
 	 * @param pattern
 	 * @return Map of matched variables. Null means no match, an empty list
-	 * 	means no variables were bound.
+	 *         means no variables were bound.
 	 */
 	public static HashMap<String, OtpErlangObject> match(
 			OtpErlangObject pattern, OtpErlangObject term,
@@ -179,4 +181,23 @@ public class ErlUtils {
 		return res;
 	}
 
+	public OtpErlangObject format(String fmt, OtpErlangObject... args) {
+		OtpErlangObject result;
+		try {
+			result = TermParser2.parse(fmt);
+			result = fill(result, Arrays.asList(args));
+		} catch (Exception e) {
+			result = null;
+		}
+		return result;
+	}
+
+	private OtpErlangObject fill(OtpErlangObject result,
+			List<OtpErlangObject> asList) {
+		// TODO implement
+		if (result instanceof OtpErlangList) {
+		} else if (result instanceof OtpErlangTuple) {
+		}
+		return result;
+	}
 }
