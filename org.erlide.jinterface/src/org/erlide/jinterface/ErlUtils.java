@@ -24,8 +24,22 @@ public class ErlUtils {
 	/*
 	 * for example, format("{hello, ~s, [~a, _]}", "myname", "mykey")
 	 */
-	public static OtpErlangObject format(String fmt, Object... args) {
-		return null;
+	public static OtpErlangObject format(String fmt, OtpErlangObject... args)
+			throws ParserException {
+		OtpErlangObject result;
+		result = TermParser.parse(fmt);
+		result = fill(result, Arrays.asList(args));
+		return result;
+	}
+
+	public static Bindings match(String pattern, OtpErlangObject term)
+			throws Exception {
+		return match(TermParser.parse(pattern), term, new Bindings());
+	}
+
+	public static Bindings match(String pattern, OtpErlangObject term,
+			Bindings bindings) throws Exception {
+		return match(TermParser.parse(pattern), term, bindings);
 	}
 
 	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term) {
@@ -61,12 +75,15 @@ public class ErlUtils {
 		return null;
 	}
 
-	/**
-	 * @param pattern
-	 * @param term
-	 * @param bindings
-	 * @return
-	 */
+	private static OtpErlangObject fill(OtpErlangObject result,
+			List<OtpErlangObject> asList) {
+		// TODO implement
+		if (result instanceof OtpErlangList) {
+		} else if (result instanceof OtpErlangTuple) {
+		}
+		return result;
+	}
+
 	private static Bindings matchVariable(OtpVariable var,
 			OtpErlangObject term, Bindings bindings) {
 		// System.out.println("match variable");
@@ -82,11 +99,6 @@ public class ErlUtils {
 		return old.equals(term) ? result : null;
 	}
 
-	/**
-	 * @param pattern
-	 * @param term
-	 * @return
-	 */
 	private static Bindings matchAtom(OtpErlangAtom pattern,
 			OtpErlangAtom term, Bindings bindings) {
 		// System.out.println("match atom");
@@ -97,12 +109,6 @@ public class ErlUtils {
 		return null;
 	}
 
-	/**
-	 * @param pattern
-	 * @param term
-	 * @param bindings
-	 * @return
-	 */
 	private static Bindings matchLong(OtpErlangLong pattern,
 			OtpErlangLong term, Bindings bindings) {
 		// System.out.println("match long");
@@ -118,12 +124,6 @@ public class ErlUtils {
 		}
 	}
 
-	/**
-	 * @param pattern
-	 * @param term
-	 * @param bindings
-	 * @return
-	 */
 	private static Bindings matchList(OtpErlangList pattern,
 			OtpErlangList term, Bindings bindings) {
 		// System.out.println("match list");
@@ -142,12 +142,6 @@ public class ErlUtils {
 		return result;
 	}
 
-	/**
-	 * @param pattern
-	 * @param term
-	 * @param bindings
-	 * @return
-	 */
 	private static Bindings matchTuple(OtpErlangTuple pattern,
 			OtpErlangTuple term, Bindings bindings) {
 		// System.out.println("match tuple");
@@ -166,23 +160,4 @@ public class ErlUtils {
 		return result;
 	}
 
-	public OtpErlangObject format(String fmt, OtpErlangObject... args) {
-		OtpErlangObject result;
-		try {
-			result = TermParser.parse(fmt);
-			result = fill(result, Arrays.asList(args));
-		} catch (Exception e) {
-			result = null;
-		}
-		return result;
-	}
-
-	private OtpErlangObject fill(OtpErlangObject result,
-			List<OtpErlangObject> asList) {
-		// TODO implement
-		if (result instanceof OtpErlangList) {
-		} else if (result instanceof OtpErlangTuple) {
-		}
-		return result;
-	}
 }

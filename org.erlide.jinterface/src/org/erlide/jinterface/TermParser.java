@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.erlide.jinterface.TermParser.Token.TokenKind;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -17,9 +15,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class TermParser {
 
+	private TermParser() {
+	}
+
 	private static Map<String, OtpErlangObject> cache = new HashMap<String, OtpErlangObject>();
 
-	public static OtpErlangObject parse(String s) throws Exception {
+	public static OtpErlangObject parse(String s) throws ParserException {
 		OtpErlangObject value = cache.get(s);
 		if (value == null) {
 			value = parse(scan(s));
@@ -28,7 +29,8 @@ public class TermParser {
 		return value;
 	}
 
-	private static OtpErlangObject parse(List<Token> tokens) throws Exception {
+	private static OtpErlangObject parse(List<Token> tokens)
+			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
@@ -55,23 +57,24 @@ public class TermParser {
 					new Stack<OtpErlangObject>());
 			break;
 		case TUPLEEND:
-			throw new Exception("unexpected " + t.toString());
+			throw new ParserException("unexpected " + t.toString());
 		case LISTSTART:
 			result = parseSequence(tokens, TokenKind.LISTEND,
 					new Stack<OtpErlangObject>());
 			break;
 		case LISTEND:
-			throw new Exception("unexpected " + t.toString());
+			throw new ParserException("unexpected " + t.toString());
 		case COMMA:
-			throw new Exception("unexpected " + t.toString());
+			throw new ParserException("unexpected " + t.toString());
 		case UNKNOWN:
-			throw new Exception("unknown token" + t.toString());
+			throw new ParserException("unknown token" + t.toString());
 		}
 		return result;
 	}
 
 	private static OtpErlangObject parseSequence(List<Token> tokens,
-			TokenKind stop, Stack<OtpErlangObject> stack) throws Exception {
+			TokenKind stop, Stack<OtpErlangObject> stack)
+			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
@@ -93,10 +96,11 @@ public class TermParser {
 		return null;
 	}
 
-	static class Token {
-		static enum TokenKind {
-			ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, UNKNOWN;
-		}
+	private static enum TokenKind {
+		ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, UNKNOWN;
+	}
+
+	private static class Token {
 
 		TokenKind kind;
 		int start;
@@ -163,7 +167,11 @@ public class TermParser {
 				result.end--;
 			} else if (c == '~') {
 				result.kind = TokenKind.PLACEHOLDER;
-				result.end = result.start + 2;
+				while (result.end < s.length()
+						&& ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) {
+					c = s.charAt(result.end++);
+				}
+				result.end--;
 			} else if (c == '{') {
 				result.kind = TokenKind.TUPLESTART;
 				result.end = result.start + 1;

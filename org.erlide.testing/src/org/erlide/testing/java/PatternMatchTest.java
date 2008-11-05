@@ -11,14 +11,10 @@ package org.erlide.testing.java;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
-import org.erlide.jinterface.OtpVariable;
 import org.erlide.jinterface.TermParser;
 import org.junit.Test;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * 
@@ -29,17 +25,14 @@ public class PatternMatchTest {
 
 	@Test
 	public void testFormatParser() throws Exception {
-		OtpErlangObject res = new TermParser().parse("{hej,ho}");
+		OtpErlangObject res = TermParser.parse("{hej, ho}");
 	}
 
 	@Test
-	public void testMatch() {
-		OtpErlangObject p = new OtpErlangList(new OtpVariable("V"),
-				new OtpErlangTuple(new OtpVariable("W")));
-		OtpErlangObject t1 = new OtpErlangList(new OtpErlangAtom("a"),
-				new OtpErlangTuple(new OtpErlangAtom("b")));
-		OtpErlangObject t2 = new OtpErlangList(new OtpErlangAtom("a"),
-				new OtpErlangTuple(new OtpErlangAtom("a")));
+	public void testMatch() throws Exception {
+		OtpErlangObject p = TermParser.parse("[W, V]");
+		OtpErlangObject t1 = TermParser.parse("[a, b]");
+		OtpErlangObject t2 = TermParser.parse("[a, a]");
 		Bindings b = new Bindings();
 		Bindings r;
 		Bindings r2;
@@ -53,12 +46,6 @@ public class PatternMatchTest {
 		r2 = match(p, t2, b);
 	}
 
-	/**
-	 * @param p
-	 * @param t1
-	 * @param b
-	 * @return
-	 */
 	private Bindings match(OtpErlangObject p, OtpErlangObject t1, Bindings b) {
 		// ErlLogger.debug("-----------------------");
 		Bindings r;
@@ -70,4 +57,15 @@ public class PatternMatchTest {
 		return r;
 	}
 
+	private Bindings match(String p, OtpErlangObject t1, Bindings b)
+			throws Exception {
+		// ErlLogger.debug("-----------------------");
+		Bindings r;
+		// ErlLogger.debug("matching \n " + p.toString() + "\n " +
+		// t1.toString() +" \n
+		// B=" + b);
+		r = ErlUtils.match(p, t1, b);
+		// ErlLogger.debug("R=" + r);
+		return r;
+	}
 }
