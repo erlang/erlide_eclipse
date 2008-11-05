@@ -25,7 +25,7 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcUtil;
-import org.erlide.jinterface.rpc.RpcConverter.Signature;
+import org.erlide.jinterface.rpc.Signature;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
@@ -331,6 +331,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 				}
 				ErlLogger.debug("handleReceiveEvent() - Event! "
 						+ msg.toString());
+				// ErlUtils.match("stopped", msg)
 				if (msg instanceof OtpErlangAtom) {
 					final String sys = ((OtpErlangAtom) msg).atomValue();
 					if (sys.compareTo("stopped") == 0) {

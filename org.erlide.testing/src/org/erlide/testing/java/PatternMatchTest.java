@@ -9,12 +9,16 @@
  *******************************************************************************/
 package org.erlide.testing.java;
 
+import junit.framework.Assert;
+
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
-import org.erlide.jinterface.TermParser;
 import org.junit.Test;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * 
@@ -24,48 +28,99 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class PatternMatchTest {
 
 	@Test
-	public void testFormatParser() throws Exception {
-		OtpErlangObject res = TermParser.parse("{hej, ho}");
+	public void testFormatParser_simple() throws Exception {
+		OtpErlangObject value = ErlUtils.format("~w", "a", "hej");
+		OtpErlangObject expected = ErlUtils.parse("hej");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testFormatParser_simple_1() throws Exception {
+		OtpErlangObject value = ErlUtils.format("~w", "");
+		OtpErlangObject expected = ErlUtils.parse("~w");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testFormatParser_list() throws Exception {
+		OtpErlangObject value = ErlUtils
+				.format("[~w,2,~w]", "aa", "hej", "brr");
+		OtpErlangObject expected = ErlUtils.parse("[hej,2,brr]");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testFormatParser_tuple() throws Exception {
+		OtpErlangObject value = ErlUtils
+				.format("{~w,2,~w}", "aa", "hej", "brr");
+		OtpErlangObject expected = ErlUtils.parse("{hej,2,brr}");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testFormatParser_full() throws Exception {
+		OtpErlangObject value = ErlUtils.format("[~w,{2,~w},5]", "aa", "hej",
+				"brr");
+		OtpErlangObject expected = ErlUtils.parse("[hej,{2,brr},5]");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testMatch_novar() throws Exception {
+		OtpErlangObject p = ErlUtils.parse("[a, {b}]");
+		OtpErlangObject t1 = ErlUtils.parse("[a, {b}]");
+		Bindings r = ErlUtils.match(p, t1);
+		Assert.assertNotNull(r);
 	}
 
 	@Test
 	public void testMatch() throws Exception {
-		OtpErlangObject p = TermParser.parse("[W, V]");
-		OtpErlangObject t1 = TermParser.parse("[a, b]");
-		OtpErlangObject t2 = TermParser.parse("[a, a]");
-		Bindings b = new Bindings();
-		Bindings r;
-		Bindings r2;
-
-		r = match(p, t1, b);
-
-		r2 = match(p, t1, r);
-
-		r2 = match(p, t2, r);
-
-		r2 = match(p, t2, b);
+		Bindings r = ErlUtils.match("[W, V]", "[a, b]");
+		Assert.assertEquals(r.get("W"), new OtpErlangAtom("a"));
+		Assert.assertEquals(r.get("V"), new OtpErlangAtom("b"));
 	}
 
-	private Bindings match(OtpErlangObject p, OtpErlangObject t1, Bindings b) {
-		// ErlLogger.debug("-----------------------");
-		Bindings r;
-		// ErlLogger.debug("matching \n " + p.toString() + "\n " +
-		// t1.toString() +" \n
-		// B=" + b);
-		r = ErlUtils.match(p, t1, b);
-		// ErlLogger.debug("R=" + r);
-		return r;
+	@Test
+	public void testMatch_1() throws Exception {
+		Bindings r = ErlUtils.match("[W, V]", "[\"a\", {[1, 2]}]");
+		Assert.assertEquals(r.get("W"), new OtpErlangString("a"));
+		Assert.assertEquals(r.get("V"), ErlUtils.parse("{[1, 2]}"));
 	}
 
-	private Bindings match(String p, OtpErlangObject t1, Bindings b)
-			throws Exception {
-		// ErlLogger.debug("-----------------------");
-		Bindings r;
-		// ErlLogger.debug("matching \n " + p.toString() + "\n " +
-		// t1.toString() +" \n
-		// B=" + b);
-		r = ErlUtils.match(p, t1, b);
-		// ErlLogger.debug("R=" + r);
-		return r;
+	@Test
+	public void testMatch_same() throws Exception {
+		Bindings r = ErlUtils.match("[W, {V}]", "[a, {a}]");
+		Assert.assertEquals(r.get("W"), new OtpErlangAtom("a"));
 	}
+
+	@Test
+	public void testMatch_any() throws Exception {
+		Bindings r = ErlUtils.match("[_, {_}]", "[a, {b}]");
+		Assert.assertNotNull(r);
+	}
+
+	@Test
+	public void testMatch_same_fail() throws Exception {
+		Bindings r = ErlUtils.match("[W, {W}]", "[a, {b}]");
+		Assert.assertNull(r);
+	}
+
+	@Test
+	public void testMatch_sig_a() throws Exception {
+		Bindings r = ErlUtils.match("W:a", "zzz");
+		Assert.assertEquals(r.get("W"), new OtpErlangAtom("zzz"));
+	}
+
+	@Test
+	public void testMatch_sig_i() throws Exception {
+		Bindings r = ErlUtils.match("W:i", "222");
+		Assert.assertEquals(r.get("W"), new OtpErlangLong(222));
+	}
+
+	@Test
+	public void testMatch_sig_fail() throws Exception {
+		Bindings r = ErlUtils.match("W:i", "zzz");
+		Assert.assertNull(r);
+	}
+
 }

@@ -272,8 +272,8 @@ public class RpcConverter {
 	 * <dt>r</dt>
 	 * <dd>reference</dd>
 	 * <dt>j</dt>
-	 * <dd>java reference (a distinguished reference, to be used with e->j
-	 * rpcs) </dd>
+	 * <dd>java reference (a distinguished reference, to be used with e->j rpcs)
+	 * </dd>
 	 * <dt>l*</dt>
 	 * <dd>list, the next type descriptor specifies the items' type</dd>
 	 * <dt>f</dt>
@@ -582,38 +582,6 @@ public class RpcConverter {
 		return dev != null && "true".equals(dev);
 	}
 
-	public static class Signature {
-		public char kind = 'x';
-		public Signature[] content = null;
-
-		public Signature(final char str) {
-			kind = str;
-		}
-
-		public Signature(final char crt, final Signature sub) {
-			kind = crt;
-			content = new Signature[] { sub };
-		}
-
-		public Signature(final char crt, final Signature[] sub) {
-			kind = crt;
-			content = sub;
-		}
-
-		@Override
-		public String toString() {
-			String res = "";
-			if (content != null) {
-				res = "(";
-				for (final Signature s : content) {
-					res += s.toString() + ",";
-				}
-				res = res.substring(0, res.length() - 1) + ")";
-			}
-			return kind + res;
-		}
-	}
-
 	public static Signature[] parseSignature(String signature)
 			throws RpcException {
 		final List<Signature> type = new ArrayList<Signature>();
@@ -659,6 +627,20 @@ public class RpcConverter {
 		} else {
 			throw new RpcException("unknown signature code: " + crt);
 		}
+	}
+
+	public static boolean matchSignature(OtpErlangObject term,
+			Signature signature) {
+		if (signature.kind == 'x') {
+			return true;
+		}
+		if (term instanceof OtpErlangAtom) {
+			return signature.kind == 'a';
+		}
+		if (term instanceof OtpErlangLong) {
+			return signature.kind == 'i';
+		}
+		return false;
 	}
 
 }

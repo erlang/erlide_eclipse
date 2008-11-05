@@ -18,7 +18,7 @@ import com.ericsson.otp.erlang.OtpOutputStream;
  */
 public class OtpPlaceholder extends OtpErlangObject {
 
-	private static final long serialVersionUID = -6099217323357230588L;
+	private static final long serialVersionUID = -1L;
 
 	private String name;
 

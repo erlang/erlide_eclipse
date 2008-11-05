@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.jinterface;
 
+import org.erlide.jinterface.rpc.Signature;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpOutputStream;
 
@@ -18,21 +20,32 @@ import com.ericsson.otp.erlang.OtpOutputStream;
  */
 public class OtpVariable extends OtpErlangObject {
 
-	private static final long serialVersionUID = -6099217323357230588L;
+	private static final long serialVersionUID = -1L;
 
 	private String name;
+	private Signature sign;
 
 	public OtpVariable(String n) {
-		name = n;
+		String[] v = n.split(":");
+		name = v[0];
+		if (v.length > 1) {
+			sign = new Signature(v[1].charAt(0));
+		} else {
+			sign = new Signature('x');
+		}
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public Signature getSignature() {
+		return sign;
+	}
+
 	@Override
 	public String toString() {
-		return "'%" + name + "'";
+		return "'%" + name + ":" + sign.kind + "'";
 	}
 
 	@Override
@@ -42,12 +55,12 @@ public class OtpVariable extends OtpErlangObject {
 		}
 
 		final OtpVariable l = (OtpVariable) o;
-		return name.equals(l.name);
+		return name.equals(l.name) && sign.equals(l.sign);
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return name.hashCode() + sign.hashCode() * 31;
 	}
 
 	@Override

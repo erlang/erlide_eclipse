@@ -155,7 +155,7 @@ public class TermParser {
 				result.kind = TokenKind.VARIABLE;
 				while (result.end < s.length() && (c >= 'a' && c <= 'z')
 						|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
-						|| c == '_') {
+						|| c == '_' || c == ':') {
 					c = s.charAt(result.end++);
 				}
 				result.end--;
@@ -167,7 +167,8 @@ public class TermParser {
 				result.end--;
 			} else if (c == '~') {
 				result.kind = TokenKind.PLACEHOLDER;
-				while (result.end < s.length()
+				c = s.charAt(++result.end);
+				while (result.end <= s.length()
 						&& ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) {
 					c = s.charAt(result.end++);
 				}
@@ -193,7 +194,9 @@ public class TermParser {
 			}
 			result.text = s.substring(result.start, result.end);
 			char ch = result.text.charAt(0);
-			if (ch == '"' || ch == '\'') {
+			if (ch == '~') {
+				result.text = result.text.substring(1);
+			} else if (ch == '"' || ch == '\'') {
 				result.text = result.text
 						.substring(1, result.text.length() - 1);
 			}

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import org.erlide.jinterface.rpc.IConvertible;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcConverter.Signature;
+import org.erlide.jinterface.rpc.Signature;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -206,7 +206,7 @@ public class RpcConverterTest {
 	@Test
 	public void cvtConvertible_2() throws RpcException {
 		Object x = "hej";
-		OtpErlangObject obj = new OtpErlangAtom("hej då");
+		OtpErlangObject obj = new OtpErlangAtom("hej dï¿½");
 		Object y = RpcConverter.erlang2java(obj, Cvt.class);
 		assertTrue(x.equals(y));
 	}
