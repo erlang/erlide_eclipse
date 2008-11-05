@@ -346,10 +346,8 @@ public class ErlideDebug {
 					"distribute_debugger_code", "lx", modules);
 			return o;
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

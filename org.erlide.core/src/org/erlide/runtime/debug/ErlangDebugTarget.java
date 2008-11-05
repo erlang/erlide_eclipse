@@ -149,6 +149,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		DebugPlugin.getDefault().getBreakpointManager()
 				.removeBreakpointListener(this);
+
+		fireTerminateEvent();
 	}
 
 	/**
@@ -418,10 +420,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public void putMetaPid(final OtpErlangPid metaPid, final OtpErlangPid pid) {
 		metaPids.put(pid, metaPid);
 		pidsFromMeta.put(metaPid, pid);
-	}
-
-	private void terminated() {
-		fireTerminateEvent();
 	}
 
 	public boolean handleMsg(final OtpErlangObject msg) {
