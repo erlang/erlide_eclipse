@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -81,9 +83,13 @@ public class ErlangLaunchConfigurationDelegate extends
 			final int debugFlags = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_FLAGS,
 					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-			final List<String> interpretedModules = config.getAttribute(
+			final List<String> interpretedModulesList = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
+			final Set<String> interpretedModules = new HashSet<String>();
+			for (final String s : interpretedModulesList) {
+				interpretedModules.add(s);
+			}
 
 			System.out.println("Debug:: about to start a backend in " + mode
 					+ " mode, with attributes::");

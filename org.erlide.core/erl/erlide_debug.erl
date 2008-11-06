@@ -157,16 +157,16 @@ distribute_debugger_code(Modules) ->
 %%                   end,
 %%                   DebuggerModules).
 
-log(E) ->
-    case file:open("/Users/jakob/Desktop/log.txt", [append]) of
-        {ok, F} ->
-            io:format(F, "~p\n", [E]),
-            file:close(F);
-        _ ->
-            ok
-    end.
-%% log(_) ->
-%%     ok.
+%% log(E) ->
+%%     case file:open("/Users/jakob/Desktop/log.txt", [append]) of
+%%         {ok, F} ->
+%%             io:format(F, "~p\n", [E]),
+%%             file:close(F);
+%%         _ ->
+%%             ok
+%%     end.
+log(_) ->
+    ok.
 
     
 

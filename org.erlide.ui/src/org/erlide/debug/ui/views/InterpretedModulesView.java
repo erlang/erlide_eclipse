@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
@@ -40,7 +41,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
 	private CheckboxTreeViewer checkboxTreeViewer;
 	private ErlangDebugTarget erlangDebugTarget;
-	boolean distributed;
+	private boolean distributed;
+	private ICheckStateListener checkStateListener;
 
 	@Override
 	public void setFocus() {
@@ -59,7 +61,9 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		if (!isAvailable() || !isVisible()) {
 			return;
 		}
-
+		final TreeContentProvider contentProvider = (TreeContentProvider) checkboxTreeViewer
+				.getContentProvider();
+		contentProvider.setRoot(new DebugTreeItem(null, null));
 		final List<IFile> interpretedModules = new ArrayList<IFile>();
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
@@ -82,8 +86,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 						interpretedModules);
 			}
 		}
-		final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
-				.getContentProvider()).getRoot();
+		checkboxTreeViewer.refresh();
+		final DebugTreeItem root = contentProvider.getRoot();
 		if (root != null) {
 			root.setChecked(checkboxTreeViewer, interpretedModules);
 		}
@@ -131,7 +135,15 @@ public class InterpretedModulesView extends AbstractDebugView implements
 			final Set<IFile> interpretedModules = new HashSet<IFile>(interpret
 					.size());
 			DebugTab.addModules(interpret, interpretedModules);
-			root.setChecked(checkboxTreeViewer, interpretedModules);
+			checkboxTreeViewer.getControl().getDisplay().syncExec(
+					new Runnable() {
+
+						public void run() {
+							root.setChecked(checkboxTreeViewer,
+									interpretedModules);
+						}
+
+					});
 		}
 	}
 
@@ -149,26 +161,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
 	@Override
 	protected Viewer createViewer(final Composite parent) {
-		// final Composite comp = new Composite(parent, SWT.NONE);
-		// setControl(comp);
-		// final GridLayout topLayout = new GridLayout();
-		// comp.setLayout(topLayout);
-
-		// final Group interpretedModulesGroup = new Group(comp, SWT.NONE);
-		// interpretedModulesGroup.setText("Interpreted modules");
-		// final GridData gd_interpretedModulesGroup = new GridData();
-		// interpretedModulesGroup.setLayoutData(gd_interpretedModulesGroup);
-		// interpretedModulesGroup.setLayout(new GridLayout());
-		//
-		// final Label anyModuleHavingLabel = new Label(interpretedModulesGroup,
-		// SWT.WRAP);
-		// anyModuleHavingLabel.setLayoutData(new GridData(279, SWT.DEFAULT));
-		// anyModuleHavingLabel
-		// .setText("Any module having breakpoints enabled will be dynamically
-		// added to the list.");
-
 		checkboxTreeViewer = new CheckboxTreeViewer(parent, SWT.BORDER);
-		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+		checkStateListener = new ICheckStateListener() {
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
 						.getElement();
@@ -177,28 +171,26 @@ public class InterpretedModulesView extends AbstractDebugView implements
 					checkboxTreeViewer.setSubtreeChecked(dti, checked);
 				} else {
 					final String module = dti.getItem().getName();
+					final String moduleWoExtension = Util
+							.withoutExtension(module);
 					final String project = dti.getItem().getProject().getName();
 					final boolean interpret = checked;
 					final ExecutionBackend backend = erlangDebugTarget
 							.getBackend();
-					ErlangLaunchConfigurationDelegate.interpret(backend,
-							project, module, distributed, interpret);
+
+					if (erlangDebugTarget.getInterpretedModules().contains(
+							moduleWoExtension) != interpret) {
+						ErlangLaunchConfigurationDelegate.interpret(backend,
+								project, module, distributed, interpret);
+					}
 				}
 			}
 
-		});
+		};
+		checkboxTreeViewer.addCheckStateListener(checkStateListener);
 		checkboxTreeViewer.setLabelProvider(new DebugTab.TreeLabelProvider());
 		checkboxTreeViewer
 				.setContentProvider(new DebugTab.TreeContentProvider());
-		// final Tree tree = checkboxTreeViewer.getTree();
-		// final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true,
-		// true);
-		// gd_tree.minimumWidth = 250;
-		// gd_tree.minimumHeight = 120;
-		// gd_tree.widthHint = 256;
-		// gd_tree.heightHint = 220;
-		// tree.setLayoutData(gd_tree);
-
 		DebugUITools.getDebugContextManager().addDebugContextListener(this);
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		return checkboxTreeViewer;
@@ -207,7 +199,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
 	@Override
 	protected void fillContextMenu(final IMenuManager menu) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

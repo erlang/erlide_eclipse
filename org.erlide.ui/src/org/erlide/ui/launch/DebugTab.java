@@ -199,7 +199,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		public void inputChanged(final Viewer viewer, final Object oldInput,
 				final Object newInput) {
 			try {
-				root = new DebugTreeItem(null, null);
+				setRoot(new DebugTreeItem(null, null));
 				if (newInput instanceof ILaunchConfiguration) {
 					final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
 					final String projs = input.getAttribute(
@@ -212,9 +212,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 							.getRoot();
 					for (final String projName : projNames) {
 						final IProject p = wr.getProject(projName);
-						final DebugTreeItem dti = new DebugTreeItem(p, root);
+						final DebugTreeItem dti = new DebugTreeItem(p, getRoot());
 						dti.recursiveAddAllErlangModules(p);
-						root.children.add(dti);
+						getRoot().children.add(dti);
 					}
 				}
 			} catch (final CoreException e1) {
@@ -225,7 +225,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 
 		public Object[] getElements(final Object inputElement) {
-			return getChildren(root);
+			return getChildren(getRoot());
 		}
 
 		public Object[] getChildren(final Object parentElement) {
@@ -247,6 +247,10 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		 */
 		public DebugTreeItem getRoot() {
 			return root;
+		}
+
+		public void setRoot(DebugTreeItem root) {
+			this.root = root;
 		}
 	}
 
@@ -363,7 +367,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			checkboxTreeViewer.setInput(config);
 			checkboxTreeViewer.expandAll();
 			final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
-					.getContentProvider()).root;
+					.getContentProvider()).getRoot();
 			root.setChecked(checkboxTreeViewer, interpretedModules);
 		}
 	}

@@ -22,7 +22,7 @@
 -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
 %% External exports
--export([start/2, stop/0, interpret/3, interpreted/0, line_breakpoint/3]).
+-export([start/2, stop/0, interpret/3, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 
@@ -47,9 +47,7 @@
                 
                 backtrace, % integer() Number of call frames to fetch
                 
-                attach,    % false | {Flags, Function}
-                
-                interpreted% list of interpreted filenames
+                attach     % false | {Flags, Function}
                }).
 
 -define(SERVER, ?MODULE).
@@ -115,8 +113,7 @@ init(CallingPid, Mode, Flags) ->
     %% Initial process state
     State1 = #state{mode    = Mode,
                     starter = Bool,
-                    pinfos  = [],
-                    interpreted = []
+                    pinfos  = []
                    },
     
     State2 = State1#state{attach = Flags},
@@ -218,23 +215,9 @@ gui_cmd(kill_all_processes, State) ->
 
 gui_cmd({interpret, {AbsBeam, Dist, true}}, State) ->
     Res = erlide_int:interpret_beam(AbsBeam, Dist),
-    case Res of 
-        {module, _} ->
-            {Res, State#state{interpreted=[AbsBeam | State#state.interpreted]}};
-        _ ->
-            {Res, State}
-    end;
+    {Res, State};
 gui_cmd({interpret, {AbsBeam, Dist, false}}, State) ->
     Res = erlide_int:n2(AbsBeam, Dist),
-    case Res of 
-        {module, _} ->
-            Interpreted = lists:delete(AbsBeam, State#state.interpreted),
-            {Res, State#state{interpreted=Interpreted}};
-        _ ->
-            {Res, State}
-    end;
-gui_cmd({interpreted, []}, State) ->
-    Res = State#state.interpreted,
     {Res, State};
 gui_cmd(delete_all, State) ->
     lists:foreach(fun(Mod) -> erlide_int:nn(Mod) end, erlide_int:interpreted()),
@@ -397,9 +380,6 @@ int_cmd(_Other, State) ->
 interpret(Module, Dist, Interpret) ->
     cmd(interpret, {Module, Dist, Interpret}).
 
-interpreted() ->
-    cmd(interpreted, []).
-
 suspend(MetaPid) ->
     cmd(suspend, MetaPid).
 
@@ -549,10 +529,17 @@ msg(Pid, Msg) ->
     _Res = (catch(Pid ! Msg)),
     ok.
 
-log(E) ->
-    erlide_debug:log(E).
+%% log(E) ->
+%%     erlide_debug:log(E).
+
+log(_) ->
+    ok.
 
 send_attached_to_java(P, Pid) ->
     log({attached, P, Pid}),
     msg(Pid, {attached, P}),
     log(attached_sent).
+
+
+
+
