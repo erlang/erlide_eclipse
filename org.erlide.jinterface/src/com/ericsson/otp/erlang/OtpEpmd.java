@@ -507,7 +507,9 @@ public class OtpEpmd {
 				return all.split("\n");
 			} finally {
 				try {
-					s.close();
+					if (s != null) {
+						s.close();
+					}
 				} catch (IOException e) {
 				}
 			}
