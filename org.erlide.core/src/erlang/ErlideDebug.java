@@ -114,10 +114,10 @@ public class ErlideDebug {
 
 	@SuppressWarnings("boxing")
 	public static boolean interpret(final IBackend backend,
-			final String module, final boolean distributed) {
+			final String module, final boolean distributed, final boolean interpret) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
-					"interpret", "so", module, distributed);
+					"interpret", "soo", module, distributed, interpret);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangObject o = t.elementAt(0);

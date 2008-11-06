@@ -356,6 +356,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			interpretedModules.add(m.atomValue());
 			fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
 					INTERPRETED_MODULES_CHANGED));
+		} else if (event.equals("no_interpret")) {
+			final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
+			interpretedModules.remove(m.atomValue());
+			fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
+					INTERPRETED_MODULES_CHANGED));
 		}
 	}
 

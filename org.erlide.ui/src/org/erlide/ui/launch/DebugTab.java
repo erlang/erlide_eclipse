@@ -11,8 +11,17 @@
 package org.erlide.ui.launch;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -35,28 +44,27 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlModule.ModuleKind;
+import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.debug.IErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
-	CheckboxTreeViewer checkboxTreeViewer;
+	private CheckboxTreeViewer checkboxTreeViewer;
 	private Button attachOnFirstCallCheck;
 	private Button attachOnBreakpointCheck;
 	private Button attachOnExitCheck;
 	private Button distributedDebugCheck;
-	List<IErlModule> interpretedModules;
+	private Set<IFile> interpretedModules;
 
-	class TreeLabelProvider extends LabelProvider {
+	public static class TreeLabelProvider extends LabelProvider {
+		public TreeLabelProvider() {
+			super();
+		}
+
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			if (element instanceof DebugTreeItem) {
 				return ((DebugTreeItem) element).item.getName();
 			}
@@ -64,108 +72,186 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			return null;
 		}
 	}
 
-	class DebugTreeItem {
-		IErlElement item = null;
-		DebugTreeItem parent = null;
-		List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
+	public static class DebugTreeItem {
+		private final IResource item;
+		private final DebugTreeItem parent;
+		private final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
-		boolean isFullyChecked() {
-			for (DebugTreeItem i : children) {
-				if (!interpretedModules.contains(i.item)) {
-					return false;
+		public DebugTreeItem(final IResource item, final DebugTreeItem parent) {
+			this.item = item;
+			this.parent = parent;
+		}
+
+		public DebugTreeItem getParent() {
+			return parent;
+		}
+
+		public IResource getItem() {
+			return item;
+		}
+
+		public List<DebugTreeItem> getChildren() {
+			return children;
+		}
+
+		public boolean isChecked(final Collection<IFile> interpretedModules) {
+			if (item instanceof IFile) {
+				return interpretedModules.contains(item);
+			} else {
+				for (final DebugTreeItem i : children) {
+					if (!i.isChecked(interpretedModules)) {
+						return false;
+					}
 				}
 			}
 			return true;
 		}
 
-		boolean isFullyUnchecked() {
-			for (DebugTreeItem i : children) {
-				if (interpretedModules.contains(i.item)) {
-					return false;
+		public boolean isUnchecked(final Collection<IFile> interpretedModules) {
+			if (item instanceof IFile) {
+				return !interpretedModules.contains(item);
+			} else {
+				for (final DebugTreeItem i : children) {
+					if (!i.isUnchecked(interpretedModules)) {
+						return false;
+					}
 				}
 			}
 			return true;
 		}
 
-	}
-
-	class TreeContentProvider implements IStructuredContentProvider,
-			ITreeContentProvider {
-		String[] projects;
-		ILaunchConfiguration input;
-		DebugTreeItem root;
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			String projs;
-			if (newInput instanceof ILaunchConfiguration) {
-				input = (ILaunchConfiguration) newInput;
-				root = new DebugTreeItem();
-				try {
-					projs = input.getAttribute(IErlLaunchAttributes.PROJECTS,
-							"").trim();
-				} catch (final CoreException e1) {
-					projs = "";
-				}
-				projects = projs.length() == 0 ? new String[] {} : projs
-						.split(";");
-				for (String p : projects) {
-					IErlProject pj = ErlangCore.getModel().getErlangProject(p);
-					DebugTreeItem m = new DebugTreeItem();
-					m.item = pj;
-					root.children.add(m);
-
-					try {
-						List<IErlModule> ms = pj.getModules();
-						for (IErlModule mm : ms) {
-							if (mm.getModuleKind() == ModuleKind.ERL) {
-								DebugTreeItem mi = new DebugTreeItem();
-								mi.item = mm;
-								mi.parent = m;
-								m.children.add(mi);
+		private boolean recursiveAddAllErlangModules(final IContainer container) {
+			boolean result = false;
+			try {
+				for (final IResource r : container.members()) {
+					if (r instanceof IContainer) {
+						final IContainer c = (IContainer) r;
+						if (c.isAccessible()) {
+							final DebugTreeItem dti = new DebugTreeItem(r, this);
+							if (dti.recursiveAddAllErlangModules(c)) {
+								children.add(dti);
+								result = true;
 							}
 						}
-					} catch (ErlModelException e) {
-						e.printStackTrace();
+					} else if (r instanceof IFile) {
+						final IFile f = (IFile) r;
+						if (f.getName().endsWith(".erl")
+								&& ErlangBuilder
+										.isInCodePath(r, r.getProject())) {
+							children.add(new DebugTreeItem(r, this));
+							result = true;
+						}
 					}
-
 				}
+			} catch (final CoreException e) {
+			}
+			return result;
+		}
+
+		private void setGrayChecked(
+				final CheckboxTreeViewer checkboxTreeViewer,
+				final boolean grayed, final boolean checked) {
+			checkboxTreeViewer.setParentsGrayed(this, grayed);
+			checkboxTreeViewer.setChecked(this, checked);
+		}
+
+		private void updateMenuCategoryCheckedState(
+				final Collection<IFile> interpretedModules,
+				final CheckboxTreeViewer checkboxTreeViewer) {
+			if (isChecked(interpretedModules)) {
+				setGrayChecked(checkboxTreeViewer, false, true);
+			} else if (isUnchecked(interpretedModules)) {
+				setGrayChecked(checkboxTreeViewer, false, false);
 			} else {
-				projects = null;
-				root = new DebugTreeItem();
+				setGrayChecked(checkboxTreeViewer, true, true);
+			}
+			if (parent != null) {
+				parent.updateMenuCategoryCheckedState(interpretedModules,
+						checkboxTreeViewer);
+			}
+		}
+
+		public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
+				final Collection<IFile> list) {
+			if (list.contains(item)) {
+				setGrayChecked(checkboxTreeViewer, false, true);
+			}
+			for (final DebugTreeItem c : children) {
+				c.setChecked(checkboxTreeViewer, list);
+				c.updateMenuCategoryCheckedState(list, checkboxTreeViewer);
+			}
+		}
+	}
+
+	public static class TreeContentProvider implements
+			IStructuredContentProvider, ITreeContentProvider {
+		private DebugTreeItem root;
+
+		public TreeContentProvider() {
+			super();
+		}
+
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
+			try {
+				root = new DebugTreeItem(null, null);
+				if (newInput instanceof ILaunchConfiguration) {
+					final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
+					final String projs = input.getAttribute(
+							IErlLaunchAttributes.PROJECTS, "").trim();
+					final String[] projNames = projs.split(";");
+					if (projNames == null) {
+						return;
+					}
+					final IWorkspaceRoot wr = ResourcesPlugin.getWorkspace()
+							.getRoot();
+					for (final String projName : projNames) {
+						final IProject p = wr.getProject(projName);
+						final DebugTreeItem dti = new DebugTreeItem(p, root);
+						dti.recursiveAddAllErlangModules(p);
+						root.children.add(dti);
+					}
+				}
+			} catch (final CoreException e1) {
 			}
 		}
 
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object inputElement) {
-			return root.children.toArray();
+		public Object[] getElements(final Object inputElement) {
+			return getChildren(root);
 		}
 
-		public Object[] getChildren(Object parentElement) {
-			DebugTreeItem item = (DebugTreeItem) parentElement;
-			return item.children.toArray();
+		public Object[] getChildren(final Object parentElement) {
+			final DebugTreeItem dti = (DebugTreeItem) parentElement;
+			return dti.children.toArray();
 		}
 
-		public Object getParent(Object element) {
-			if (element instanceof DebugTreeItem) {
-				return ((DebugTreeItem) element).parent;
-			}
-			return null;
+		public Object getParent(final Object element) {
+			final DebugTreeItem dti = (DebugTreeItem) element;
+			return dti.parent;
 		}
 
-		public boolean hasChildren(Object element) {
+		public boolean hasChildren(final Object element) {
 			return getChildren(element).length > 0;
+		}
+
+		/**
+		 * @return the root
+		 */
+		public DebugTreeItem getRoot() {
+			return root;
 		}
 	}
 
 	public void createControl(final Composite parent) {
-		interpretedModules = new ArrayList<IErlModule>();
+		interpretedModules = new HashSet<IFile>();
 
 		final Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
@@ -205,39 +291,21 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
 			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
-				DebugTreeItem item = (DebugTreeItem) event.getElement();
-				boolean checked = event.getChecked();
-
-				if (checked) {
-					if (item.item instanceof IErlModule) {
-						if (!interpretedModules.contains(item.item)) {
-							interpretedModules.add((IErlModule) item.item);
-						}
-					} else {
-						for (DebugTreeItem c : item.children) {
-							if (!interpretedModules.contains(c.item)) {
-								interpretedModules.add((IErlModule) c.item);
-							}
-						}
-					}
-				} else {
-					if (item.item instanceof IErlModule) {
-						interpretedModules.remove(item.item);
-					} else {
-						for (DebugTreeItem c : item.children) {
-							interpretedModules.remove(c.item);
-						}
-					}
-				}
+				final DebugTreeItem item = (DebugTreeItem) event.getElement();
+				final boolean checked = event.getChecked();
+				updateOnCheck(item, checked);
 
 				checkboxTreeViewer.setSubtreeChecked(item, checked);
 				// set gray state of the element's category subtree, all items
 				// should not be grayed
-				for (DebugTreeItem i : item.children) {
+				for (final DebugTreeItem i : item.children) {
 					checkboxTreeViewer.setGrayed(i, false);
 				}
 				checkboxTreeViewer.setGrayed(item, false);
-				updateMenuCategoryCheckedState(item.parent);
+				if (item.parent != null) {
+					item.parent.updateMenuCategoryCheckedState(
+							interpretedModules, checkboxTreeViewer);
+				}
 
 				updateLaunchConfigurationDialog();
 			}
@@ -245,7 +313,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		});
 		checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
 		checkboxTreeViewer.setContentProvider(new TreeContentProvider());
-		Tree tree = checkboxTreeViewer.getTree();
+		final Tree tree = checkboxTreeViewer.getTree();
 		final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd_tree.minimumWidth = 250;
 		gd_tree.minimumHeight = 120;
@@ -254,21 +322,19 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		tree.setLayoutData(gd_tree);
 	}
 
-	void updateMenuCategoryCheckedState(DebugTreeItem item) {
-		if (item == null) {
-			return;
-		}
-		if (item.isFullyChecked()) {
-			checkboxTreeViewer.setParentsGrayed(item, false);
-			checkboxTreeViewer.setChecked(item, true);
-		} else if (item.isFullyUnchecked()) {
-			checkboxTreeViewer.setParentsGrayed(item, false);
-			checkboxTreeViewer.setChecked(item, false);
+	protected void updateOnCheck(final DebugTreeItem item, final boolean checked) {
+		if (item.item instanceof IFile) {
+			final IFile file = (IFile) item.item;
+			if (checked) {
+				interpretedModules.add(file);
+			} else {
+				interpretedModules.remove(file);
+			}
 		} else {
-			checkboxTreeViewer.setParentsGrayed(item, true);
-			checkboxTreeViewer.setChecked(item, true);
+			for (final DebugTreeItem i : item.children) {
+				updateOnCheck(i, checked);
+			}
 		}
-		updateMenuCategoryCheckedState(item.parent);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -278,21 +344,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			interpret = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
-		} catch (CoreException e1) {
+		} catch (final CoreException e1) {
 			interpret = new ArrayList<String>();
 		}
-		interpretedModules = new ArrayList<IErlModule>();
-		for (String m : interpret) {
-			String[] pm = m.split(":");
-			IErlProject prj = ErlangCore.getModel().getErlangProject(pm[0]);
-			try {
-				IErlModule mod = prj.getModule(pm[1]);
-				if (mod != null) {
-					interpretedModules.add(mod);
-				}
-			} catch (ErlModelException e) {
-			}
-		}
+		interpretedModules = new HashSet<IFile>();
+		addModules(interpret, interpretedModules);
 
 		int debugFlags;
 		try {
@@ -306,28 +362,59 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		if (checkboxTreeViewer != null) {
 			checkboxTreeViewer.setInput(config);
 			checkboxTreeViewer.expandAll();
-			DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+			final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
 					.getContentProvider()).root;
-			setChecked(root, interpretedModules);
-		} else {
-
+			root.setChecked(checkboxTreeViewer, interpretedModules);
 		}
 	}
 
-	private void setChecked(DebugTreeItem item, List<IErlModule> list) {
-		if (list.contains(item.item)) {
-			checkboxTreeViewer.setChecked(item, true);
+	/**
+	 * @param interpret
+	 */
+	public static void addModules(final Collection<String> interpret,
+			final Collection<IFile> interpretedModules) {
+		final IWorkspaceRoot wr = ResourcesPlugin.getWorkspace().getRoot();
+		for (final String m : interpret) {
+			final String[] pm = m.split(":");
+			IResource file;
+			if (pm.length > 1) {
+				final IProject project = wr.getProject(pm[0]);
+				file = recuFindMember(project, pm[1]);
+			} else {
+				file = recuFindMember(wr, m + ".erl");
+			}
+			if (file instanceof IFile) {
+				interpretedModules.add((IFile) file);
+			}
 		}
-		for (DebugTreeItem c : item.children) {
-			setChecked(c, list);
-			updateMenuCategoryCheckedState(item);
+	}
+
+	private static IResource recuFindMember(final IResource item,
+			final String name) {
+		if (item instanceof IFile) {
+			final IFile file = (IFile) item;
+			if (file.getName().equals(name)) {
+				return file;
+			}
+		} else if (item instanceof IContainer) {
+			final IContainer container = (IContainer) item;
+			try {
+				for (final IResource r : container.members()) {
+					final IResource result = recuFindMember(r, name);
+					if (result != null) {
+						return result;
+					}
+				}
+			} catch (final CoreException e) {
+			}
 		}
+		return null;
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
 		try {
 			setDefaults(config.getWorkingCopy());
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 	}
@@ -335,13 +422,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
 				getFlagChechboxes());
-
-		List<String> r = new ArrayList<String>();
-		for (IErlModule m : interpretedModules) {
-			r.add(m.getProject().getName() + ":" + m.getName());
+		final List<String> r = new ArrayList<String>();
+		for (final IFile file : interpretedModules) {
+			r.add(file.getProject().getName() + ":" + file.getName());
 		}
 		config.setAttribute(IErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
-
 	}
 
 	public String getName() {

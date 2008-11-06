@@ -154,8 +154,8 @@ public class ResourceUtil {
 	// return null;
 	// }
 
-	private static IResource recursiveFindNamedResource(IContainer container,
-			String name) throws CoreException {
+	private static IResource recursiveFindNamedResource(
+			final IContainer container, final String name) throws CoreException {
 		if (!container.isAccessible()) {
 			return null;
 		}
@@ -177,7 +177,7 @@ public class ResourceUtil {
 	}
 
 	public static IResource recursiveFindNamedResourceWithReferences(
-			IContainer container, String name) throws CoreException {
+			final IContainer container, final String name) throws CoreException {
 		final IResource r = recursiveFindNamedResource(container, name);
 		if (r != null) {
 			return r;
@@ -192,20 +192,19 @@ public class ResourceUtil {
 		return null;
 	}
 
-	private static void recursiveGetAllErlangFiles(List<String> erlangFiles,
-			IContainer container) {
+	private static void recursiveGetAllErlangModules(final List<IFile> result,
+			final IContainer container) {
 		try {
 			for (final IResource r : container.members()) {
 				if (r instanceof IContainer) {
 					final IContainer c = (IContainer) r;
 					if (c.isAccessible()) {
-						recursiveGetAllErlangFiles(erlangFiles, c);
+						recursiveGetAllErlangModules(result, c);
 					}
 				} else if (r instanceof IFile) {
 					final IFile f = (IFile) r;
-					final String n = f.getName();
-					if (n.endsWith(".erl")) {
-						erlangFiles.add(n.substring(0, n.length() - 4));
+					if (f.getName().endsWith(".erl")) {
+						result.add(f);
 					}
 				}
 			}
@@ -214,9 +213,22 @@ public class ResourceUtil {
 	}
 
 	public static List<String> getAllErlangFiles() {
-		final List<String> result = new ArrayList<String>(100);
-		final IContainer root = ResourcesPlugin.getWorkspace().getRoot();
-		recursiveGetAllErlangFiles(result, root);
+		final List<IFile> erlangModules = getAllErlangModules();
+		final List<String> result = new ArrayList<String>(erlangModules.size());
+		for (final IFile f : erlangModules) {
+			final String n = f.getName();
+			result.add(n.substring(0, n.length() - 4));
+		}
+		return result;
+	}
+
+	public static List<IFile> getAllErlangModules() {
+		return getAllErlangModules(ResourcesPlugin.getWorkspace().getRoot());
+	}
+
+	public static List<IFile> getAllErlangModules(final IContainer container) {
+		final List<IFile> result = new ArrayList<IFile>(100);
+		recursiveGetAllErlangModules(result, container);
 		return result;
 	}
 

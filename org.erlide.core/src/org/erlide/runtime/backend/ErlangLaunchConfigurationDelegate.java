@@ -150,7 +150,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				}
 				for (final String pm : interpretedModules) {
 					final String[] pms = pm.split(":");
-					interpret(backend, pms[0], pms[1], distributed);
+					interpret(backend, pms[0], pms[1], distributed, true);
 				}
 				// send started to target
 				target.sendStarted();
@@ -242,8 +242,9 @@ public class ErlangLaunchConfigurationDelegate extends
 		return null;
 	}
 
-	private void interpret(final ExecutionBackend backend,
-			final String project, final String module, final boolean distributed) {
+	public static void interpret(final ExecutionBackend backend,
+			final String project, final String module,
+			final boolean distributed, final boolean interpret) {
 		final IErlProject eprj = ErlangCore.getModel()
 				.getErlangProject(project);
 		final IProject iprj = eprj.getProject();
@@ -253,9 +254,10 @@ public class ErlangLaunchConfigurationDelegate extends
 					+ ".beam";
 			final IFile f = r.getFile(beam);
 			if (f.exists()) {
-				ErlLogger.debug("interpret " + beam);
+				final String de = interpret ? "" : "de";
+				ErlLogger.debug(de + "interpret " + beam);
 				ErlideDebug.interpret(backend, f.getLocation().toString(),
-						distributed);
+						distributed, interpret);
 			} else {
 				ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
 						+ module);
