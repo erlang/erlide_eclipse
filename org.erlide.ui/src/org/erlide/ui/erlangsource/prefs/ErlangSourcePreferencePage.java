@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Lukas Larsson
  *******************************************************************************/
@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.templates.Template;
@@ -43,7 +42,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -129,7 +127,9 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse
+	 * .swt.widgets.Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
@@ -220,7 +220,9 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
+	 * .swt.events.SelectionEvent)
 	 */
 	public void widgetDefaultSelected(SelectionEvent e) {
 		// TODO Auto-generated method stub
@@ -230,7 +232,9 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
+	 * .events.SelectionEvent)
 	 */
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() == new_button) {
@@ -393,28 +397,12 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		MessageDialog.openError(getShell(), title, message);
 	}
 
-	/**
-	 * Try to get an rgb value
-	 * 
-	 * @param value
-	 *            the object
-	 * @return
-	 */
-	/* FIXME: getRGB */
-	@SuppressWarnings("unused")
-	private static RGB getRGB(Object value) {
-		if (value instanceof RGB) {
-			return (RGB) value;
-		} else if (value instanceof String) {
-			return StringConverter.asRGB((String) value);
-		}
-		return null;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 * @see
+	 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(
+	 * org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 		final StructuredSelection selection = (StructuredSelection) event
@@ -442,7 +430,8 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	class TemplateLabelProvider extends LabelProvider {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 		 */
 		@Override
 		public String getText(Object element) {
@@ -460,7 +449,9 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	static class TemplateContentProvider implements ITreeContentProvider {
 
 		/*
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(
+		 * java.lang.Object)
 		 */
 		public Object[] getElements(Object inputElement) {
 			final Iterator<?> it = ErlangSourceContextTypeComment.getDefault()
@@ -481,8 +472,9 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		}
 
 		/*
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
+		 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 		 */
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}

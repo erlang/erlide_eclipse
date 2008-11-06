@@ -10,6 +10,7 @@
 package org.erlide.jinterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.erlide.jinterface.rpc.RpcConverter;
@@ -27,26 +28,25 @@ public class ErlUtils {
 	}
 
 	/**
-	 * for example, <code> format("{hello, ~s, [~a, _]}", "myname", "mykey")
-	 * </code> gives the equivalent of
-	 * <code> {hello, "myname", [mykey, _]}
+	 * Build an Erlang (extended) term from a textual description. For example,
+	 * <code> format("{hello, ~s, [~a, _]}", "myname", "mykey")
+	 * </code> gives the equivalent of <code> {hello, "myname", [mykey, _]}
 	 * </code>.
+	 * <p>
+	 * Items beginning with ~ are placeholders that will be replaced with the
+	 * corresponding argument (from left to right). The text after the ~ is the
+	 * type signature of the argument, so that automatic conversion Java->Erlang
+	 * can be done. See RpcConverter.java2erlang for details.
 	 * 
 	 * @throws RpcException
+	 * @see org.erlide.jinterface.rpc.RpcConverter
 	 */
-	public static OtpErlangObject format(String fmt, String sign,
-			Object... args) throws ParserException, RpcException {
+	public static OtpErlangObject format(String fmt, Object... args)
+			throws ParserException, RpcException {
 		OtpErlangObject result;
 		result = parse(fmt);
-		List<OtpErlangObject> values = new ArrayList<OtpErlangObject>(
-				args.length);
-		Signature[] signs = RpcConverter.parseSignature(sign);
-		if (signs.length != args.length) {
-			throw new ParserException("signature doesn't match value list");
-		}
-		for (int i = 0; i < signs.length; i++) {
-			values.add(RpcConverter.java2erlang(args[i], signs[i]));
-		}
+		List<Object> values = new ArrayList<Object>(args.length);
+		values = new ArrayList<Object>(Arrays.asList(args));
 		result = fill(result, values);
 		return result;
 	}
@@ -80,6 +80,19 @@ public class ErlUtils {
 		return match(pattern, parse(term), new Bindings());
 	}
 
+	/**
+	 * Match two Erlang terms.
+	 * <p>
+	 * Variables can have a type signature attached, like for example
+	 * <code>Var:i</code>. Its meaning is that the type of the value must match
+	 * too.
+	 * <p>
+	 * The returned value is null if there was any mismatch, otherwise it is a
+	 * map of variable names to matched values. <br>
+	 * TODO should we throw an exception instead?
+	 * 
+	 * @throws RpcException
+	 */
 	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term,
 			Bindings bindings) {
 		if (pattern instanceof OtpVariable) {
@@ -116,7 +129,7 @@ public class ErlUtils {
 	}
 
 	private static OtpErlangObject fill(OtpErlangObject template,
-			List<OtpErlangObject> values) {
+			List<Object> values) throws RpcException, ParserException {
 		if (values.size() == 0) {
 			return template;
 		}
@@ -137,7 +150,15 @@ public class ErlUtils {
 			}
 			return new OtpErlangTuple(result.toArray(elements));
 		} else if (template instanceof OtpPlaceholder) {
-			return values.remove(0);
+			OtpPlaceholder holder = (OtpPlaceholder) template;
+			Object ret = values.remove(0);
+			Signature[] signs = Signature.parse(holder.getName());
+			if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
+				throw new ParserException("funny placeholder");
+			}
+			Signature sign = (signs.length == 0) ? new Signature('x')
+					: signs[0];
+			return RpcConverter.java2erlang(ret, sign);
 		} else {
 			return template;
 		}

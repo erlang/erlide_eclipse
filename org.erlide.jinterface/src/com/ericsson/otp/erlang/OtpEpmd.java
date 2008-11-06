@@ -506,11 +506,8 @@ public class OtpEpmd {
 				final String all = new String(buf);
 				return all.split("\n");
 			} finally {
-				try {
-					if (s != null) {
-						s.close();
-					}
-				} catch (IOException e) {
+				if (s != null) {
+					s.close();
 				}
 			}
 

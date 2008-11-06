@@ -383,7 +383,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			args0 = new OtpErlangObject[] {};
 		}
 
-		Signature[] type = RpcConverter.parseSignature(signature);
+		Signature[] type = Signature.parse(signature);
 		if (type == null) {
 			type = new Signature[args0.length];
 			for (int i = 0; i < type.length; i++) {

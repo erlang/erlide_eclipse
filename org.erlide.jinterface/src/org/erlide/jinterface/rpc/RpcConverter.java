@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.erlide.jinterface.rpc;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +32,40 @@ import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Helps converting Java values to Erlang terms, and back. The type information
+ * is provided through a string signature, as below.
+ * 
+ * <dl>
+ * <dt>x</dt>
+ * <dd>Uses simple conversion, complex types are expected to be OtpErlangObjecs
+ * already.</dd>
+ * <dt>i</dt>
+ * <dd>integer</dd>
+ * <dt>s</dt>
+ * <dd>string</dd>
+ * <dt>a</dt>
+ * <dd>atom</dd>
+ * <dt>d</dt>
+ * <dd>float</dd>
+ * <dt>p</dt>
+ * <dd>pid</dd>
+ * <dt>r</dt>
+ * <dd>reference</dd>
+ * <dt>j</dt>
+ * <dd>java reference (a distinguished reference, to be used with e->j rpcs)</dd>
+ * <dt>l*</dt>
+ * <dd>list, the next type descriptor specifies the items' type</dd>
+ * <dt>f</dt>
+ * <dd>fun -- currently not implemented</dd>
+ * <dt>o</dt>
+ * <dd>boolean (the atoms true/false)</dd>
+ * <dt>0-9</dt>
+ * <dd>tuple, the number is the arity and the types of the elements follow in
+ * order. Only arities between 0 and 9 are supported.</dd>
+ * </dl>
+ * 
+ */
 public class RpcConverter {
 
 	public static Class<?> getClassByName(final String arg) {
@@ -255,35 +288,6 @@ public class RpcConverter {
 
 	/**
 	 * Converts Java objects to Erlang terms.<br/>
-	 * <dl>
-	 * <dt>x</dt>
-	 * <dd>Uses simple conversion, complex types are expected to be
-	 * OtpErlangObjecs already.</dd>
-	 * <dt>i</dt>
-	 * <dd>integer</dd>
-	 * <dt>s</dt>
-	 * <dd>string</dd>
-	 * <dt>a</dt>
-	 * <dd>atom</dd>
-	 * <dt>d</dt>
-	 * <dd>float</dd>
-	 * <dt>p</dt>
-	 * <dd>pid</dd>
-	 * <dt>r</dt>
-	 * <dd>reference</dd>
-	 * <dt>j</dt>
-	 * <dd>java reference (a distinguished reference, to be used with e->j rpcs)
-	 * </dd>
-	 * <dt>l*</dt>
-	 * <dd>list, the next type descriptor specifies the items' type</dd>
-	 * <dt>f</dt>
-	 * <dd>fun -- currently not implemented</dd>
-	 * <dt>o</dt>
-	 * <dd>boolean (the atoms true/false)</dd>
-	 * <dt>0-9</dt>
-	 * <dd>tuple, the number is the arity and the types of the elements follow
-	 * in order. Only arities between 0 and 9 are supported.</dd>
-	 * </dl>
 	 * 
 	 * @param obj
 	 *            the object to be converted
@@ -294,7 +298,7 @@ public class RpcConverter {
 	 */
 	public static OtpErlangObject java2erlang(final Object obj,
 			final String type) throws RpcException {
-		return java2erlang(obj, parseOne(type).sign);
+		return java2erlang(obj, Signature.parse(type)[0]);
 	}
 
 	@SuppressWarnings("boxing")
@@ -582,53 +586,6 @@ public class RpcConverter {
 		return dev != null && "true".equals(dev);
 	}
 
-	public static Signature[] parseSignature(String signature)
-			throws RpcException {
-		final List<Signature> type = new ArrayList<Signature>();
-		if (signature == null) {
-			return null;
-			// throw new RpcException("Signature is null");
-		}
-		while (signature.length() > 0) {
-			final State e = parseOne(signature);
-			type.add(e.sign);
-			signature = e.rest;
-		}
-		return type.toArray(new Signature[type.size()]);
-	}
-
-	private static class State {
-		public State(final Signature signature, final String substring) {
-			sign = signature;
-			rest = substring;
-		}
-
-		Signature sign;
-		String rest;
-	}
-
-	private static State parseOne(final String signature) throws RpcException {
-		final char crt = signature.charAt(0);
-		if ("xidabrjfpso".indexOf(crt) >= 0) {
-			return new State(new Signature(crt), signature.substring(1));
-		} else if (crt == 'l') {
-			final State sub = parseOne(signature.substring(1));
-			return new State(new Signature(crt, sub.sign), sub.rest);
-		} else if ("0123456789".indexOf(crt) >= 0) {
-			final int n = Integer.parseInt(signature.substring(0, 1));
-			final Signature[] sub = new Signature[n];
-			String s = signature.substring(1);
-			for (int i = 0; i < n; i++) {
-				final State state = parseOne(s);
-				sub[i] = state.sign;
-				s = state.rest;
-			}
-			return new State(new Signature('t', sub), s);
-		} else {
-			throw new RpcException("unknown signature code: " + crt);
-		}
-	}
-
 	public static boolean matchSignature(OtpErlangObject term,
 			Signature signature) {
 		if (signature.kind == 'x') {
@@ -643,4 +600,8 @@ public class RpcConverter {
 		return false;
 	}
 
+	public static boolean matchSignature(OtpErlangObject term, String signature)
+			throws RpcException {
+		return matchSignature(term, Signature.parse(signature)[0]);
+	}
 }

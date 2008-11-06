@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -125,14 +125,14 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_0() throws RpcException {
 		String sig = null;
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		assertTrue(result == null);
 	}
 
 	@Test
 	public void parseSignature_1() throws RpcException {
 		String sig = "aslsilpfd";
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		String expect = "[a, s, l(s), i, l(p), f, d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
@@ -140,7 +140,7 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_2() throws RpcException {
 		String sig = "llxi";
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		String expect = "[l(l(x)), i]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
@@ -148,7 +148,7 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_3() throws RpcException {
 		String sig = "2axd";
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		String expect = "[t(a,x), d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
@@ -156,7 +156,7 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_4() throws RpcException {
 		String sig = "l3axl2sad";
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		String expect = "[l(t(a,x,l(t(s,a)))), d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
@@ -164,7 +164,7 @@ public class RpcConverterTest {
 	@Test
 	public void parseSignature_5() throws RpcException {
 		String sig = "32sadax";
-		Signature[] result = RpcConverter.parseSignature(sig);
+		Signature[] result = Signature.parse(sig);
 		String expect = "[t(t(s,a),d,a), x]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}

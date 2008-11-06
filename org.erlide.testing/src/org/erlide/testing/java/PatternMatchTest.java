@@ -28,39 +28,43 @@ import com.ericsson.otp.erlang.OtpErlangString;
 public class PatternMatchTest {
 
 	@Test
-	public void testFormatParser_simple() throws Exception {
-		OtpErlangObject value = ErlUtils.format("~w", "a", "hej");
+	public void testFormatParser_simple_1() throws Exception {
+		OtpErlangObject value = ErlUtils.format("~a", "hej");
 		OtpErlangObject expected = ErlUtils.parse("hej");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
-	public void testFormatParser_simple_1() throws Exception {
-		OtpErlangObject value = ErlUtils.format("~w", "");
-		OtpErlangObject expected = ErlUtils.parse("~w");
+	public void testFormatParser_simple_2() throws Exception {
+		OtpErlangObject value = ErlUtils.format("~s", "hej");
+		OtpErlangObject expected = ErlUtils.parse("\"hej\"");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void testFormatParser_simple_3() throws Exception {
+		OtpErlangObject value = ErlUtils.format("~x");
+		OtpErlangObject expected = ErlUtils.parse("~x");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testFormatParser_list() throws Exception {
-		OtpErlangObject value = ErlUtils
-				.format("[~w,2,~w]", "aa", "hej", "brr");
+		OtpErlangObject value = ErlUtils.format("[~a,2,~a]", "hej", "brr");
 		OtpErlangObject expected = ErlUtils.parse("[hej,2,brr]");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testFormatParser_tuple() throws Exception {
-		OtpErlangObject value = ErlUtils
-				.format("{~w,2,~w}", "aa", "hej", "brr");
+		OtpErlangObject value = ErlUtils.format("{~a,2,~a}", "hej", "brr");
 		OtpErlangObject expected = ErlUtils.parse("{hej,2,brr}");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testFormatParser_full() throws Exception {
-		OtpErlangObject value = ErlUtils.format("[~w,{2,~w},5]", "aa", "hej",
-				"brr");
+		OtpErlangObject value = ErlUtils.format("[~a,{2,~a},5]", "hej", "brr");
 		OtpErlangObject expected = ErlUtils.parse("[hej,{2,brr},5]");
 		Assert.assertEquals(expected, value);
 	}
