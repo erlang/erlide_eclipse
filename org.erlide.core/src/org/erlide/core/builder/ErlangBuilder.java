@@ -161,7 +161,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -427,7 +427,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 
-		String s = resource.getFileExtension();
+		final String s = resource.getFileExtension();
 		if (!s.equals("erl")) {
 			System.out.println("?!?!");
 		}
@@ -472,21 +472,22 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		IResource br = project.findMember(beam);
 
 		try {
-			boolean shouldCompile = (br == null);
+			boolean shouldCompile = br == null;
 
 			if (br != null) {
-				IErlProject eprj = ErlangCore.getModel().findErlangProject(
-						project);
+				final IErlProject eprj = ErlangCore.getModel()
+						.findErlangProject(project);
 				if (eprj != null) {
-					IErlModule m = eprj.getModule(resource.getName());
+					final IErlModule m = eprj.getModule(resource.getName());
 					if (m != null) {
-						List<ErlangIncludeFile> incs = m.getIncludedFiles();
-						for (ErlangIncludeFile ifile : incs) {
-							IResource rifile = findResourceByName(project,
-									ifile.getFilename());
+						final List<ErlangIncludeFile> incs = m
+								.getIncludedFiles();
+						for (final ErlangIncludeFile ifile : incs) {
+							final IResource rifile = findResourceByName(
+									project, ifile.getFilename());
 							if (rifile != null
-									&& (rifile.getLocalTimeStamp() > br
-											.getLocalTimeStamp())) {
+									&& rifile.getLocalTimeStamp() > br
+											.getLocalTimeStamp()) {
 								shouldCompile = true;
 								break;
 							}
@@ -496,8 +497,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 
 			if (br != null) {
-				shouldCompile |= (br.getLocalTimeStamp() < resource
-						.getLocalTimeStamp());
+				shouldCompile |= br.getLocalTimeStamp() < resource
+						.getLocalTimeStamp();
 			}
 
 			if (shouldCompile) {
@@ -615,8 +616,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unused")
-	private List<IErlComment> getComments(IResource resource) {
-		List<IErlComment> result = new ArrayList<IErlComment>();
+	private List<IErlComment> getComments(final IResource resource) {
+		final List<IErlComment> result = new ArrayList<IErlComment>();
 		return result;
 	}
 
@@ -703,16 +704,17 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	private static boolean isInCodePath(final IResource resource,
+	public static boolean isInCodePath(final IResource resource,
 			final IProject project) {
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getFullPath();
-
 		final String[] srcs = prefs.getSourceDirs();
+		final IPath exceptLastSegment = resource.getFullPath()
+				.removeLastSegments(1);
 		for (final String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
-			if (sp.equals(resource.getFullPath().removeLastSegments(1))) {
+			if (sp.equals(exceptLastSegment)) {
 				return true;
 			}
 		}
@@ -725,11 +727,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
 		final IPath projectPath = project.getFullPath();
-
 		final String[] srcs = prefs.getSourceDirs();
+		final IPath fullPath = resource.getFullPath();
 		for (final String element : srcs) {
 			final IPath sp = projectPath.append(new Path(element));
-			if (sp.isPrefixOf(resource.getFullPath())) {
+			if (sp.isPrefixOf(fullPath)) {
 				return true;
 			}
 		}
@@ -737,13 +739,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		return false;
 	}
 
-	boolean isInIncludedPath(IResource resource, IProject my_project) {
-		List<String> inc = new ArrayList<String>();
+	boolean isInIncludedPath(final IResource resource, final IProject my_project) {
+		final List<String> inc = new ArrayList<String>();
 		getIncludeDirs(my_project, inc);
 
-		for (String s : inc) {
-			IPath p = new Path(s);
-			IPath resourcePath = resource.getLocation();
+		for (final String s : inc) {
+			final IPath p = new Path(s);
+			final IPath resourcePath = resource.getLocation();
 			if (p.isPrefixOf(resourcePath)) {
 				return true;
 			}
@@ -762,8 +764,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				resource.getLocation());
 	}
 
-	private static boolean comparePath(String p1, String p2) {
-		boolean WINDOWS = java.io.File.separatorChar == '\\';
+	private static boolean comparePath(final String p1, final String p2) {
+		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		if (WINDOWS) {
 			return p1.equalsIgnoreCase(p2);
 		} else {
@@ -885,9 +887,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -915,9 +916,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
+		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 *      .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {
@@ -1055,12 +1055,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	void checkDependents(final IResource resource, final IProject my_project)
 			throws ErlModelException {
-		IErlProject eprj = ErlangCore.getModel().findErlangProject(my_project);
+		final IErlProject eprj = ErlangCore.getModel().findErlangProject(
+				my_project);
 		if (eprj != null) {
-			List<IErlModule> ms = eprj.getModules();
-			for (IErlModule m : ms) {
-				List<ErlangIncludeFile> incs = m.getIncludedFiles();
-				for (ErlangIncludeFile ifile : incs) {
+			final List<IErlModule> ms = eprj.getModules();
+			for (final IErlModule m : ms) {
+				final List<ErlangIncludeFile> incs = m.getIncludedFiles();
+				for (final ErlangIncludeFile ifile : incs) {
 					if (comparePath(ifile.getFilename(), resource.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
 							compileFile(my_project, m.getResource());

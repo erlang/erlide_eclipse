@@ -32,7 +32,7 @@
          step_over/1, 
          step_into/1, 
          step_return/1,
-         interpret/2, 
+         interpret/3, 
          all_stack_frames/1, 
          eval/2, 
          set_variable_value/4,
@@ -107,8 +107,8 @@ is_erlide_process(Pid) when pid(Pid)->
 get_dist(true) -> distributed;
 get_dist(false) -> local.
 
-interpret(File, Dist) ->
-    erlide_dbg_mon:interpret(File, get_dist(Dist)).
+interpret(File, Dist, Interpret) ->
+    erlide_dbg_mon:interpret(File, get_dist(Dist), Interpret).
 
 line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),
@@ -157,15 +157,16 @@ distribute_debugger_code(Modules) ->
 %%                   end,
 %%                   DebuggerModules).
 
-log(_E) ->
-%%     case file:open("/Users/jakob/Desktop/log.txt", [append]) of
-%%         {ok, F} ->
-%%             io:format(F, "~p\n", [E]),
-%%             file:close(F);
-%%         _ ->
-%%             ok
-%%     end.
-    ok.
+log(E) ->
+    case file:open("/Users/jakob/Desktop/log.txt", [append]) of
+        {ok, F} ->
+            io:format(F, "~p\n", [E]),
+            file:close(F);
+        _ ->
+            ok
+    end.
+%% log(_) ->
+%%     ok.
 
     
 

@@ -397,13 +397,14 @@ handle_cast({set_exit_info, Meta, ExitInfo}, State) ->
 
 %% Code loading
 handle_cast({delete, Mod}, State) ->
-
+    log({delete, Mod}),
     %% Remove the ETS table with information about the module
     Db = State#state.db,
     case ets:lookup(Db, {Mod, refs}) of
 	[] -> % Mod is not interpreted
 	    {noreply, State};
 	[{{Mod, refs}, ModDbs}] ->
+            log(deleting),
 	    ets:delete(Db, {Mod, refs}),
 	    AllPids = lists:foldl(
 			fun(ModDb, PidsAcc) ->
@@ -578,6 +579,7 @@ get_proc({Type, Pid}, Procs) ->
 	false -> false
     end.
 
-log(_) ->
-    ok.
-%% erlide_debug:log(E).
+%% log(_) ->
+%%     ok.
+log(E) ->
+    erlide_debug:log(E).

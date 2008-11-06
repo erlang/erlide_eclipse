@@ -18,7 +18,7 @@
 -module(erlide_int).
 
 %% External exports
--export([i/1, i/2, ni/1, ni/2, n/1, nn/1, interpreted/0, file/1,
+-export([i/1, i/2, ni/1, ni/2, n/1, nn/1, n2/2, interpreted/0, file/1,
 	 interpretable/1, interpret_beam/2]).
 -export([auto_attach/0, auto_attach/1, auto_attach/2,
 	 stack_trace/0, stack_trace/1]).
@@ -705,7 +705,7 @@ del_mod(AbsMod, Dist) ->
     Mod = if
 	      is_atom(AbsMod) -> AbsMod;
 	      is_list(AbsMod) ->
-		  list_to_atom(filename:basename(AbsMod,".erl"))
+		  list_to_atom(filename:basename(AbsMod, ".beam"))
 	  end,
     erlide_dbg_iserver:safe_cast({delete, Mod}),
     everywhere(Dist,
