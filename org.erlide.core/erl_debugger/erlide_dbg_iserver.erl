@@ -579,7 +579,7 @@ get_proc({Type, Pid}, Procs) ->
 	false -> false
     end.
 
-%% log(_) ->
-%%     ok.
-log(E) ->
-    erlide_debug:log(E).
+log(_) ->
+    ok.
+%% log(E) ->
+%%     erlide_debug:log(E).
