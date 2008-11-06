@@ -169,14 +169,14 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		public Object[] getElements(final Object inputElement) {
 			final java.util.List<String> ps = new ArrayList<String>();
 
-			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-					.getProjects();
+			final IProject[] projects = ResourcesPlugin.getWorkspace()
+					.getRoot().getProjects();
 			for (final IProject p : projects) {
 				if (p.isAccessible()) {
 					IProjectNature n = null;
 					try {
 						n = p.getNature(ErlangPlugin.NATURE_ID);
-					} catch (CoreException e) {
+					} catch (final CoreException e) {
 					}
 					if (n == null) {
 						ErlLogger.debug(
@@ -247,11 +247,17 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		} catch (final CoreException e1) {
 			projs = "";
 		}
-		final String[] projects = projs.split(";");
+		final String[] projectNames = projs.split(";");
 		projectsTable.setAllChecked(false);
-		for (final String p : projects) {
+		for (final String p : projectNames) {
 			projectsTable.setChecked(p, true);
 		}
+		// final Set<IProject> projects = new HashSet<IProject>();
+		// ErlangLaunchConfigurationDelegate.addBreakpointProjectsAndModules(
+		// projects, new HashSet<String>());
+		// for (final IProject p : projects) {
+		// projectsTable.setChecked(p.getName(), true);
+		// }
 		final int itemCount = projectsTable.getTable().getItemCount();
 		if (itemCount == 1) {
 			projectsTable.setChecked(projectsTable.getTable().getItem(0), true);
@@ -285,7 +291,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		final List<IProject> projects = getSelectedProjects();
 		final StringBuilder projectNames = new StringBuilder();
-		for (IProject p : projects) {
+		for (final IProject p : projects) {
 			projectNames.append(p.getName()).append(";");
 		}
 		if (projectNames.length() > 0) {
@@ -301,8 +307,8 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	public List<IProject> getSelectedProjects() {
 		final Object[] sel = projectsTable.getCheckedElements();
-		List<IProject> result = new ArrayList<IProject>();
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final List<IProject> result = new ArrayList<IProject>();
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		for (final Object o : sel) {
 			final String p = (String) o;
 			result.add(root.getProject(p));

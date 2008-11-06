@@ -11,8 +11,10 @@
 package org.erlide.runtime.backend;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcException;
@@ -169,7 +171,7 @@ public interface IBackend {
 
 	void removePath(final boolean usePathZ, final String path);
 
-	void registerProjects(String[] projectNames);
+	void registerProjects(Collection<IProject> projects);
 
 	public void setTrapExit(boolean trapexit);
 

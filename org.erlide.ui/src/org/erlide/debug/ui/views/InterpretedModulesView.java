@@ -36,6 +36,12 @@ import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 
+/**
+ * A view with a checkbox tree of interpreted modules checking/unchecking
+ * interpretes/de-interpretes a module
+ * 
+ * @author jakob
+ */
 public class InterpretedModulesView extends AbstractDebugView implements
 		IDebugEventSetListener, IDebugContextListener {
 
@@ -192,6 +198,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		checkboxTreeViewer
 				.setContentProvider(new DebugTab.TreeContentProvider());
 		DebugUITools.getDebugContextManager().addDebugContextListener(this);
+		DebugPlugin.getDefault().addDebugEventListener(this);
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		return checkboxTreeViewer;
 	}

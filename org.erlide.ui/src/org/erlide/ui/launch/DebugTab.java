@@ -45,10 +45,20 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.builder.ErlangBuilder;
+import org.erlide.debug.ui.views.InterpretedModulesView;
+import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.debug.IErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
+/**
+ * A tab in the Launch Config with erlang debugger parameters: the debug flags
+ * for attaching and distruibuted debugging a checkbox tree of modules to
+ * interpret upon launching. The checkbox tree classes are reused by
+ * {@link InterpretedModulesView}
+ * 
+ * @author vlad and jakob
+ */
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
 	private CheckboxTreeViewer checkboxTreeViewer;
@@ -140,9 +150,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 						}
 					} else if (r instanceof IFile) {
 						final IFile f = (IFile) r;
-						if (f.getName().endsWith(".erl")
-								&& ErlangBuilder
-										.isInCodePath(r, r.getProject())) {
+						if (f.getName().endsWith(".erl") && isInCodePath(r)) {
 							children.add(new DebugTreeItem(r, this));
 							result = true;
 						}
@@ -212,7 +220,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 							.getRoot();
 					for (final String projName : projNames) {
 						final IProject p = wr.getProject(projName);
-						final DebugTreeItem dti = new DebugTreeItem(p, getRoot());
+						final DebugTreeItem dti = new DebugTreeItem(p,
+								getRoot());
 						dti.recursiveAddAllErlangModules(p);
 						getRoot().children.add(dti);
 					}
@@ -242,18 +251,20 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			return getChildren(element).length > 0;
 		}
 
-		/**
-		 * @return the root
-		 */
 		public DebugTreeItem getRoot() {
 			return root;
 		}
 
-		public void setRoot(DebugTreeItem root) {
+		public void setRoot(final DebugTreeItem root) {
 			this.root = root;
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	public void createControl(final Composite parent) {
 		interpretedModules = new HashSet<IFile>();
 
@@ -326,6 +337,25 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		tree.setLayoutData(gd_tree);
 	}
 
+	/**
+	 * Check if module is on its project's source path
+	 * 
+	 * @param r
+	 *            module to check
+	 * @return true if module is on the source-path
+	 */
+	public static boolean isInCodePath(final IResource r) {
+		return ErlangBuilder.isInCodePath(r, r.getProject());
+	}
+
+	/**
+	 * Recursively update checkboxes
+	 * 
+	 * @param item
+	 *            item to check or uncheck
+	 * @param checked
+	 *            true if checked
+	 */
 	protected void updateOnCheck(final DebugTreeItem item, final boolean checked) {
 		if (item.item instanceof IFile) {
 			final IFile file = (IFile) item.item;
@@ -341,16 +371,39 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
 	@SuppressWarnings("unchecked")
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
 		List<String> interpret;
+		String prjs;
 		try {
 			interpret = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
+			prjs = config.getAttribute(IErlLaunchAttributes.PROJECTS, "")
+					.trim();
 		} catch (final CoreException e1) {
 			interpret = new ArrayList<String>();
+			prjs = "";
 		}
+		final String[] projectNames = prjs.length() == 0 ? new String[] {}
+				: prjs.split(";");
+		final Set<IProject> projects = new HashSet<IProject>();
+		for (final String s : projectNames) {
+			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject(s);
+			if (project == null) {
+				continue;
+			}
+			projects.add(project);
+		}
+
+		ErlangLaunchConfigurationDelegate.addBreakpointProjectsAndModules(
+				projects, interpret);
 		interpretedModules = new HashSet<IFile>();
 		addModules(interpret, interpretedModules);
 
@@ -373,7 +426,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	/**
+	 * Find modules from string list add to IFile-list
+	 * 
 	 * @param interpret
+	 *            the list of strings from prefs (projectName:fileName;... or
+	 *            moduleName;...)
+	 * @param interpretedModules
+	 *            collection that the IFile-s are added to
 	 */
 	public static void addModules(final Collection<String> interpret,
 			final Collection<IFile> interpretedModules) {
@@ -393,6 +452,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
+	/**
+	 * Find a named member
+	 * 
+	 * @param item
+	 * @param name
+	 * @return
+	 */
 	private static IResource recuFindMember(final IResource item,
 			final String name) {
 		if (item instanceof IFile) {
@@ -415,6 +481,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse.debug.core.ILaunchConfiguration)
+	 */
 	public void initializeFrom(final ILaunchConfiguration config) {
 		try {
 			setDefaults(config.getWorkingCopy());
@@ -423,6 +494,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
 				getFlagChechboxes());
@@ -442,6 +518,12 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		return true;
 	}
 
+	/**
+	 * check or uncheck the four flag checkboxes
+	 * 
+	 * @param debugFlags
+	 *            flags
+	 */
 	private void setFlagCheckboxes(final int debugFlags) {
 		if (attachOnFirstCallCheck == null) {
 			// I don't know why these are null sometimes...
@@ -457,6 +539,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		distributedDebugCheck.setSelection(flag != 0);
 	}
 
+	/**
+	 * get flag settings by reading checkboxes
+	 * 
+	 * @return flags as int
+	 */
 	private int getFlagChechboxes() {
 		int result = 0;
 		if (attachOnFirstCallCheck.getSelection()) {

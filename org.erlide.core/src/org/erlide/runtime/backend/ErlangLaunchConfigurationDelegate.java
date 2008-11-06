@@ -13,6 +13,7 @@ package org.erlide.runtime.backend;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -21,7 +22,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,9 +33,12 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
@@ -108,6 +114,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			}
 			System.out.println("---------------");
 
+			final Set<IProject> projects = new HashSet<IProject>();
 			for (final String s : projectNames) {
 				final IProject project = ResourcesPlugin.getWorkspace()
 						.getRoot().getProject(s);
@@ -115,7 +122,9 @@ public class ErlangLaunchConfigurationDelegate extends
 					ErlLogger.error("Launch: project not found: '%s'!", s);
 					return;
 				}
+				projects.add(project);
 			}
+			addBreakpointProjectsAndModules(projects, interpretedModules);
 
 			final RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager
 					.getDefault().getRuntime(runtime), false);
@@ -140,11 +149,9 @@ public class ErlangLaunchConfigurationDelegate extends
 			final ExecutionBackend backend = b.asExecution();
 
 			// launch.addProcess(null);
-			backend.registerProjects(projectNames);
+			backend.registerProjects(projects);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// add debug target
-				final IProject[] projects = BackendUtil
-						.getProjects(projectNames);
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
 						backend, projects, debugFlags);
 				// target.getWaiter().doWait();
@@ -173,6 +180,25 @@ public class ErlangLaunchConfigurationDelegate extends
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
+		}
+	}
+
+	public static void addBreakpointProjectsAndModules(
+			final Collection<IProject> projects,
+			final Collection<String> interpretedModules) {
+		final IBreakpointManager bpm = DebugPlugin.getDefault()
+				.getBreakpointManager();
+		for (final IBreakpoint bp : bpm
+				.getBreakpoints(IErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
+			final IMarker m = bp.getMarker();
+			final IResource r = m.getResource();
+			final String name = r.getName();
+			if (org.erlide.core.erlang.util.Util.isErlangFileName(name)) {
+				final IProject p = r.getProject();
+				if (projects.contains(p)) {
+					interpretedModules.add(p.getName() + ":" + name);
+				}
+			}
 		}
 	}
 

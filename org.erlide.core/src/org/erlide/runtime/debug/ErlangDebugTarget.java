@@ -10,6 +10,7 @@
 package org.erlide.runtime.debug;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,8 +59,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private boolean fTerminated;
 	private boolean fShowSystemProcesses = false;
 	private boolean fShowErlideProcesses = false;
-	private final IProject[] projects;
 	private final Set<String> interpretedModules;
+	private final Collection<IProject> projects;
 
 	private final Map<OtpErlangPid, OtpErlangPid> metaPids = new HashMap<OtpErlangPid, OtpErlangPid>();
 	private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new HashMap<OtpErlangPid, OtpErlangPid>();
@@ -67,7 +68,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	// private final WaitingForDebuggerListener waiter;
 
 	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
-			final IProject[] projects, final int debugFlags) {
+			final Collection<IProject> projects, final int debugFlags) {
 		super(null);
 		fBackend = b;
 		fLaunch = launch;

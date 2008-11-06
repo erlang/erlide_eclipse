@@ -13,11 +13,11 @@ package org.erlide.runtime.backend.internal;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.erlide.core.ErlangPlugin;
@@ -583,7 +583,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			// sometimes the code server isn't started until we try to
 			// load code, this seems to fix it.
 			rpcx("code", "module_info", "");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 		}
 	}
 
@@ -643,10 +643,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		fCodeManager.addPath(usePathZ, path);
 	}
 
-	public void registerProjects(final String[] projectNames) {
-		for (final String s : projectNames) {
-			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-					.getProject(s);
+	public void registerProjects(final Collection<IProject> projects) {
+		for (final IProject project : projects) {
 			BackendManager.getDefault().addExecution(project, this);
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					project);
