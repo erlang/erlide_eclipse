@@ -29,18 +29,21 @@
          execute/2,
 
          compile_string/1,
-         start_tracer/1	
+         start_tracer/1
 ]).
 
 init(JavaNode) ->
     spawn(fun()->
-        RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
-        register(erlide_rex, RpcPid),
-        
-        watch_eclipse(JavaNode)
-        
-    end),
-                
+                  case whereis(erlide_rex) of
+                      undefined ->
+                          RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
+                          register(erlide_rex, RpcPid);
+                      _ ->
+                          ok
+                  end,
+                  watch_eclipse(JavaNode)
+          end),
+
     ok.
 
 watch_eclipse(JavaNode) ->
@@ -51,9 +54,9 @@ watch_eclipse(JavaNode) ->
                       {nodedown, JavaNode} ->
                           Fmt = "This file can safely be removed! ~n~n"
                                     ++ "~p: eclipse node ~p went down",
-                          file:write_file("safe_erlide.log", 
-                                          io_lib:format(Fmt, 
-                                                        [calendar:local_time(), 
+                          file:write_file("safe_erlide.log",
+                                          io_lib:format(Fmt,
+                                                        [calendar:local_time(),
                                                          JavaNode])),
                           init:stop(),
                           ok
@@ -202,7 +205,7 @@ compile_string(Str) ->
 start_tracer(Pid) when is_pid(Pid) ->
     erlide_log:log("started tracer!!!"),
 
-    Fun = fun 
+    Fun = fun
              (Msg, _)-> Pid ! {trace, Msg}
           end,
     {ok, TPid} = dbg:tracer(process, {Fun, ok}),
