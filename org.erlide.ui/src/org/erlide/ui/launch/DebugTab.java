@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.builder.ErlangBuilder;
-import org.erlide.debug.ui.views.InterpretedModulesView;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.debug.IErlDebugConstants;
@@ -55,7 +54,7 @@ import org.erlide.ui.util.SWTUtil;
  * A tab in the Launch Config with erlang debugger parameters: the debug flags
  * for attaching and distruibuted debugging a checkbox tree of modules to
  * interpret upon launching. The checkbox tree classes are reused by
- * {@link InterpretedModulesView}
+ * InterpretedModulesView
  * 
  * @author vlad and jakob
  */
@@ -66,7 +65,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	private Button attachOnBreakpointCheck;
 	private Button attachOnExitCheck;
 	private Button distributedDebugCheck;
-	private Set<IFile> interpretedModules;
+	private List<IFile> interpretedModules;
 
 	public static class TreeLabelProvider extends LabelProvider {
 		public TreeLabelProvider() {
@@ -266,7 +265,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(final Composite parent) {
-		interpretedModules = new HashSet<IFile>();
+		interpretedModules = new ArrayList<IFile>();
 
 		final Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
@@ -360,7 +359,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		if (item.item instanceof IFile) {
 			final IFile file = (IFile) item.item;
 			if (checked) {
-				interpretedModules.add(file);
+				if (!interpretedModules.contains(file)) {
+					interpretedModules.add(file);
+				}
 			} else {
 				interpretedModules.remove(file);
 			}
@@ -402,9 +403,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			projects.add(project);
 		}
 
-		ErlangLaunchConfigurationDelegate.addBreakpointProjectsAndModules(
-				projects, interpret);
-		interpretedModules = new HashSet<IFile>();
+		interpret = ErlangLaunchConfigurationDelegate
+				.addBreakpointProjectsAndModules(projects, interpret);
+		interpretedModules = new ArrayList<IFile>();
 		addModules(interpret, interpretedModules);
 
 		int debugFlags;
@@ -447,7 +448,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				file = recuFindMember(wr, m + ".erl");
 			}
 			if (file instanceof IFile) {
-				interpretedModules.add((IFile) file);
+				if (!interpretedModules.contains(file)) {
+					interpretedModules.add((IFile) file);
+				}
 			}
 		}
 	}

@@ -89,13 +89,9 @@ public class ErlangLaunchConfigurationDelegate extends
 			final int debugFlags = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_FLAGS,
 					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-			final List<String> interpretedModulesList = config.getAttribute(
+			List<String> interpretedModules = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
-			final Set<String> interpretedModules = new HashSet<String>();
-			for (final String s : interpretedModulesList) {
-				interpretedModules.add(s);
-			}
 
 			System.out.println("Debug:: about to start a backend in " + mode
 					+ " mode, with attributes::");
@@ -124,7 +120,8 @@ public class ErlangLaunchConfigurationDelegate extends
 				}
 				projects.add(project);
 			}
-			addBreakpointProjectsAndModules(projects, interpretedModules);
+			interpretedModules = addBreakpointProjectsAndModules(projects,
+					interpretedModules);
 
 			final RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager
 					.getDefault().getRuntime(runtime), false);
@@ -183,11 +180,12 @@ public class ErlangLaunchConfigurationDelegate extends
 		}
 	}
 
-	public static void addBreakpointProjectsAndModules(
+	public static List<String> addBreakpointProjectsAndModules(
 			final Collection<IProject> projects,
-			final Collection<String> interpretedModules) {
+			final List<String> interpretedModules) {
 		final IBreakpointManager bpm = DebugPlugin.getDefault()
 				.getBreakpointManager();
+		final List<String> result = new ArrayList<String>(interpretedModules);
 		for (final IBreakpoint bp : bpm
 				.getBreakpoints(IErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
 			final IMarker m = bp.getMarker();
@@ -196,10 +194,14 @@ public class ErlangLaunchConfigurationDelegate extends
 			if (org.erlide.core.erlang.util.Util.isErlangFileName(name)) {
 				final IProject p = r.getProject();
 				if (projects.contains(p)) {
-					interpretedModules.add(p.getName() + ":" + name);
+					final String s = p.getName() + ":" + name;
+					if (!result.contains(s)) {
+						result.add(s);
+					}
 				}
 			}
 		}
+		return result;
 	}
 
 	private void distributeDebuggerCode(final ExecutionBackend backend) {
