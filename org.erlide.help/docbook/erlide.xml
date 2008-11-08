@@ -20,455 +20,6 @@
         <info>
             <title>Getting started</title>
         </info>
-        <sect1 xml:id="quickstart">
-            <info>
-                <title>Quick start</title>
-                <author>
-                    <personname>
-                        <firstname>Eli</firstname>
-                        <surname>Liang</surname>
-                    </personname>
-                </author>
-            </info>
-            <epigraph><para>Thanks to Eli Liang for writing this guide.</para></epigraph>
-            <para>The steps outlined here use the Eclipse 3.4 menu names, for 3.3 the procedure is
-                highly similar. <orderedlist>
-                    <listitem>
-                        <para>Start eclipse</para>
-                    </listitem>
-                    <listitem>
-                        <para>If it prompts you to choose workspace, select the folder you want to
-                            work in. For this tutorial you might want to use a fresh one.</para>
-                    </listitem>
-                    <listitem>
-                        <para>On the menu bar, Choose <menuchoice>
-                                <guimenu>Help</guimenu>
-                                <guimenuitem>Software Updates...</guimenuitem>
-                            </menuchoice>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the <menuchoice>
-                                <guilabel>Installed Software</guilabel>
-                            </menuchoice> tab. If "Erlang IDE" appears under name, then go to <xref
-                                linkend="step17"/>. </para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the <guilabel>Available Software</guilabel> tab.</para>
-                    </listitem>
-                    <listitem>
-                        <para>Click the <guibutton>Add Site...</guibutton> button on the right.
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>In the <guilabel>Location</guilabel> field, enter
-                                <userinput>http://erlide.sourceforge.net/update</userinput>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click <guibutton>OK</guibutton>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Check the box left of
-                                <guilabel>http://erlide.sourceforge.net/update</guilabel></para>
-                    </listitem>
-                    <listitem>
-                        <para>Check the box left of <guilabel>Unstable builds</guilabel></para>
-                    </listitem>
-                    <listitem>
-                        <para>Click the <guibutton>Install...</guibutton> button on the right
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>When the Install dialog pops, click on the <guibutton>Next</guibutton>
-                            button </para>
-                    </listitem>
-                    <listitem>
-                        <para>Accept the terms of the license agreement. </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click <guibutton>Finish</guibutton>.</para>
-                    </listitem>
-                    <listitem>
-                        <para>Click <guibutton>Yes</guibutton> to restart.</para>
-                    </listitem>
-                    <listitem>
-                        <para>Go to <xref linkend="step20"/> below</para>
-                    </listitem>
-                    <listitem xml:id="step17">
-                        <para>Select (click on) <guilabel>Erlang IDE</guilabel>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click on the <guibutton>Update</guibutton> button on the right</para>
-                    </listitem>
-                    <listitem>
-                        <para>Follow the directions to update and restart Eclipse.</para>
-                    </listitem>
-                    <listitem xml:id="step20">
-                        <para>Click on the Workbench icon on the right side of the main eclipse
-                            window</para>
-                    </listitem>
-                    <listitem>
-                        <para>On menu bar, choose <menuchoice>
-                                <guimenu>Windows</guimenu>
-                                <guisubmenu>Preferences</guisubmenu>
-                                <guisubmenu>Erlang</guisubmenu>
-                                <guimenuitem>Install runtimes</guimenuitem>
-                            </menuchoice></para>
-                    </listitem>
-                    <listitem>
-                        <para>See if there is a runtime listed in the drop down field called
-                            "Runtime used by Erlide itself (restart is required)". If there is
-                            something there, hit Cancel and go on to <xref linkend="step28"/>.
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>click on the "Add..." button. </para>
-                    </listitem>
-                    <listitem>
-                        <para>In the Runtime name field, enter <userinput>erl5.6.4</userinput>.
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>In the Location field, browse to the very top level folder of the
-                            Erlang tree. this should be a folder called "erl5.6.4" or something like
-                            that. </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click OK. Then Click "Apply" and "OK" in the Install runtimes
-                            pane.</para>
-                    </listitem>
-                    <listitem>
-                        <para>On menu bar, choose File -> Restart</para>
-                    </listitem>
-                    <listitem xml:id="step28">
-                        <para>On menu bar, chose Windows -> Open Perspective -> Other... -> Erlang.
-                            Click <guibutton>OK</guibutton>.</para>
-                    </listitem>
-                    <listitem>
-                        <para>On menu bar, chose File -> New -> Project...</para>
-                    </listitem>
-                    <listitem>
-                        <para>In wizard, chose Erlang -> Erlang Project and click Next</para>
-                    </listitem>
-                    <listitem>
-                        <para>In Project name field, type
-                            <userinput>HelloWorldProject</userinput></para>
-                    </listitem>
-                    <listitem>
-                        <para>Click <guibutton>Finish</guibutton>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>On menu bar, choose Project and make sure that <guimenuitem>Build
-                                Automatically</guimenuitem> option is checked</para>
-                    </listitem>
-                    <listitem>
-                        <para>The left pane is the Erlang Navigator. Right-click the
-                            HelloWorldProject branch. In the context menu that pops, select New ->
-                            Other... -> Erlang -> Module and click Next (can also just select "New
-                            Module" directly) </para>
-                    </listitem>
-                    <listitem>
-                        <para>In the wizard, in the Module name field, type
-                                <userinput>hello</userinput>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click Finish </para>
-                    </listitem>
-                    <listitem>
-                        <para>On menu bar, choose Run -> Run Configurations... </para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the "Erlang application" </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click the New Launch configuration button (left side above the field
-                            with "type filter text") </para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the "New configuration"</para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the "Main tab" in the right pane</para>
-                    </listitem>
-                    <listitem>
-                        <para>Check the box left of the HelloWorldProject</para>
-                    </listitem>
-                    <listitem>
-                        <para>Select the "Runtimes" tab in the right pane </para>
-                    </listitem>
-                    <listitem>
-                        <para>In the filed titled <guilabel>Node name</guilabel>, enter
-                                <userinput>erlide</userinput></para>
-                    </listitem>
-                    <listitem>
-                        <para>Check the box to the left of "Start the Erlang node if not running
-                            presently"</para>
-                    </listitem>
-                    <listitem>
-                        <para>Click "Apply" and "Run"</para>
-                    </listitem>
-                    <listitem>
-                        <para>In the center code pane (titled "hello.erl"), enter the following
-                            code: hello/0 (within the brackets for the export, so it reads
-                            "-export([hello/0]).")</para>
-                    </listitem>
-                    <listitem>
-                        <para>On the next line after the export, enter the following code:
-                            <screen>hello() -> io:format("Hello World!~n", []).</screen></para>
-                    </listitem>
-                    <listitem>
-                        <para>In the menu bar, choose File -> Save As...</para>
-                    </listitem>
-                    <listitem>
-                        <para>Double-click on the folder titled "HelloWorldProject" in the dialog
-                            box</para>
-                    </listitem>
-                    <listitem>
-                        <para>Click on (select) the folder titled "src" in the dialog box. The field
-                            entitled <guilabel>Enter or select the parent folder:</guilabel> should
-                            now read <computeroutput>HelloWorldProject/src</computeroutput>
-                        </para>
-                    </listitem>
-                    <listitem>
-                        <para>Click OK. The file "hello.erl" is saved in the src directory and
-                            automatically built.</para>
-                    </listitem>
-                    <listitem>
-                        <para>The lower pane has a number of tabs. Select the "Console" tab.</para>
-                    </listitem>
-                    <listitem>
-                        <para>In the console pane, enter the following command "hello:hello()." and
-                            hit return. The output from the program will appear. </para>
-                    </listitem>
-                    <listitem>
-                        <para>To exit, in the menu bar, choose File -> Close, and then File ->
-                            Exit</para>
-                    </listitem>
-                </orderedlist></para>
-        </sect1>
-        <sect1>
-            <info>
-                <title>Hello World</title>
-                <author>
-                    <personname>
-                        <firstname>Alain</firstname>
-                        <surname>O'Dea</surname>
-                    </personname>
-                </author>
-            </info>
-            <epigraph><para>Thanks to Alain O'Dea for writing this guide.</para></epigraph>
-            <sect2>
-                <title>Install Erlang/OTP (if you have not already)</title>
-                <para>
-                    <itemizedlist>
-                        <listitem>
-                            <para><emphasis>Ubuntu Linux</emphasis>: run the following in Terminal:
-                                <screen>                        sudo apt-get update
-                        sudo apt-get install erlang</screen></para>
-                        </listitem>
-                        <listitem>
-                            <para><emphasis>Windows</emphasis>: run the Windows Installer for Erlang
-                                R12B-4 </para>
-                        </listitem>
-                        <listitem>
-                            <para><emphasis>Mac OS X</emphasis>: install MacPorts and then run the
-                                following in Terminal:
-                                <screen>                            sudo port selfupdate
-                            sudo port install erlang                        </screen></para>
-                        </listitem>
-                    </itemizedlist>
-                </para>
-            </sect2>
-            <sect2>
-                <title>Install Eclipse and ErlIDE</title>
-                <para>
-                    <orderedlist>
-                        <listitem>
-                            <para>Download Eclipse IDE for Java Developers</para>
-                        </listitem>
-                        <listitem>
-                            <para>Extract it where you want to run it from (there is no installer,
-                                just an archive)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Launch Eclipse by double-clicking eclipse (Linux), eclipse.exe
-                                (Windows), or Eclipse (Mac) in the eclipse folder</para>
-                        </listitem>
-                        <listitem>
-                            <para>Select Help (menu) → Software Updates... (a dialog will
-                                appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click Add Site...(another dialog will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Enter http://erlide.sourceforge.net/update into the Location
-                                field, then click OK (dialog will close)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Select the checkbox by http://erlide.sourceforge.net/update and
-                                click Install... (another dialog will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para> Select Next</para>
-                        </listitem>
-                        <listitem>
-                            <para>Select I accept ... radio button and click Finish (a progress
-                                dialog will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para> (wait for confirmation dialog) Select Yes (Eclipse will
-                                restart)</para>
-                        </listitem>
-                    </orderedlist>
-                </para>
-            </sect2>
-            <sect2>
-                <title>Add Primary Erlang Runtime</title>
-                <para>Without these steps things like syntax highlighting, code completion and other
-                    significant aspects of the ErlIDE UI will not work properly. The IDE will
-                    function basically, but it will not work as intended. <orderedlist>
-                        <listitem>
-                            <para>Select Window (menu) → Preferences... (Windows/Linux) or Eclipse
-                                (menu) → Preferences... (Mac) (a dialog will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Expand Erlang and select Installed runtimes</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click Add... (a dialog will appear) and Enter Erlang in the
-                                Runtime name field</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click Browse... and select the root of your Erlang/OTP install
-                                (mine is /opt/local/lib/erlang), then click OK (dialog will
-                                close)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click OK (preferences dialog will close)</para>
-                        </listitem>
-                    </orderedlist></para>
-            </sect2>
-            <sect2>
-                <title>Create Hello World Project</title>
-                <para>
-                    <orderedlist>
-                        <listitem>
-                            <para>(wait for Eclipse to restart) Select Window (menu) → Close All
-                                Perspectives</para>
-                        </listitem>
-                        <listitem>
-                            <para>Select Window (menu) → Open Perspective → Other... (a dialog will
-                                appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Select Erlang and click OK (dialog will close and Erlang
-                                Perspective will load)</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Erlang Navigator bring up the context menu
-                                (right-click/control-click) and select New Erlang Project (a dialog
-                                will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Enter hello_world in the Project Name field and click Finish
-                                (dialog will close and hello_world project will appear in Erlang
-                                Navigator view)</para>
-                        </listitem>
-                    </orderedlist>
-                </para>
-            </sect2>
-            <sect2>
-                <title>Start Erlang Node To Run Code</title>
-                <para>
-                    <orderedlist>
-                        <listitem>
-                            <para>Select hello_world project, bring up the context menu and select
-                                Run As → Run Configurations... (a dialog will appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Enter hello_world in the Name field</para>
-                        </listitem>
-                        <listitem>
-                            <para>Double-click Erlang application (a new confguration will appear in
-                                the right-hand panel)</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Main tab under Projects click the checkbox beside
-                                hello_world</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Runtimes tab click the checkbox beside Start the Erlang
-                                node if not running already and enter hello_world in the Node name
-                                field</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click Run (dialog will close and Console will appear with
-                                hello_world Erlang node)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Leave the Console running for the next part</para>
-                        </listitem>
-                    </orderedlist>
-                </para>
-            </sect2>
-            <sect2>
-                <title>Write Hello World Live!</title>
-                <para>
-                    <orderedlist>
-                        <listitem>
-                            <para>On the hello_world project bring up the context menu
-                                (right-click/control-click) and select New Module (dialog will
-                                appear)</para>
-                        </listitem>
-                        <listitem>
-                            <para>Enter hello_world in Module name field</para>
-                        </listitem>
-                        <listitem>
-                            <para>To the left of the Apply button, enter say_hello in the first box
-                                and 0 in the second box and click Apply</para>
-                        </listitem>
-                        <listitem>
-                            <para>Click Finish (dialog will close and an editor for hello_world.erl
-                                will be opened)</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Console type hello_world:say_hello().</para>
-                        </listitem>
-                        <listitem>
-                            <para>Oops! It displays ok and shows no greeting! Let's fix that</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the hello_world.erl editor replace ok in say_hello with
-                                io:format("Hello World!") and save (Ctrl-S/Command-S)</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Console type hello_world:say_hello().</para>
-                        </listitem>
-                        <listitem>
-                            <para>Great! It displays "Hello World!" for us! Let's get it to say
-                                something else</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the hello_world.erl editor replace "Hello World!" in say_hello
-                                with "Hello ErlIDE!") and save (Ctrl-S/Command-S)</para>
-                        </listitem>
-                        <listitem>
-                            <para>In the Console type hello_world:say_hello().</para>
-                        </listitem>
-                        <listitem>
-                            <para>Nifty! It displays "Hello ErlIDE!" for us! We can change the code
-                                at runtime.</para>
-                        </listitem>
-                    </orderedlist>
-                </para>
-            </sect2>
-        </sect1>
         <sect1 xml:id="instalation_guide">
             <info>
                 <title>Installation guide</title>
@@ -526,19 +77,486 @@
                 </itemizedlist>
             </para>
         </sect1>
+        <sect1 xml:id="tutorials">
+            <info>
+                <title>Tutorials</title>
+            </info>
+            <sect2 xml:id="quickstart">
+                <info>
+                    <title>Quick start</title>
+                    <author>
+                        <personname>
+                            <firstname>Eli</firstname>
+                            <surname>Liang</surname>
+                        </personname>
+                    </author>
+                </info>
+                <epigraph>
+                    <para>Thanks to Eli Liang for writing this guide.</para>
+                </epigraph>
+                <para>The steps outlined here use the Eclipse 3.4 menu names, for 3.3 the procedure
+                    is highly similar. <orderedlist>
+                        <listitem>
+                            <para>Start eclipse</para>
+                        </listitem>
+                        <listitem>
+                            <para>If it prompts you to choose workspace, select the folder you want
+                                to work in. For this tutorial you might want to use a fresh
+                                one.</para>
+                        </listitem>
+                        <listitem>
+                            <para>On the menu bar, Choose <menuchoice>
+                                    <guimenu>Help</guimenu>
+                                    <guimenuitem>Software Updates...</guimenuitem>
+                                </menuchoice>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the <menuchoice>
+                                    <guilabel>Installed Software</guilabel>
+                                </menuchoice> tab. If "Erlang IDE" appears under name, then go to
+                                    <xref linkend="step17"/>. </para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the <guilabel>Available Software</guilabel> tab.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Click the <guibutton>Add Site...</guibutton> button on the right.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>In the <guilabel>Location</guilabel> field, enter
+                                    <userinput>http://erlide.sourceforge.net/update</userinput>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click <guibutton>OK</guibutton>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Check the box left of
+                                    <guilabel>http://erlide.sourceforge.net/update</guilabel></para>
+                        </listitem>
+                        <listitem>
+                            <para>Check the box left of <guilabel>Unstable builds</guilabel></para>
+                        </listitem>
+                        <listitem>
+                            <para>Click the <guibutton>Install...</guibutton> button on the right
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>When the Install dialog pops, click on the
+                                    <guibutton>Next</guibutton> button </para>
+                        </listitem>
+                        <listitem>
+                            <para>Accept the terms of the license agreement. </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click <guibutton>Finish</guibutton>.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Click <guibutton>Yes</guibutton> to restart.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Go to <xref linkend="step20"/> below</para>
+                        </listitem>
+                        <listitem xml:id="step17">
+                            <para>Select (click on) <guilabel>Erlang IDE</guilabel>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click on the <guibutton>Update</guibutton> button on the
+                                right</para>
+                        </listitem>
+                        <listitem>
+                            <para>Follow the directions to update and restart Eclipse.</para>
+                        </listitem>
+                        <listitem xml:id="step20">
+                            <para>Click on the Workbench icon on the right side of the main eclipse
+                                window</para>
+                        </listitem>
+                        <listitem>
+                            <para>On menu bar, choose <menuchoice>
+                                    <guimenu>Windows</guimenu>
+                                    <guisubmenu>Preferences</guisubmenu>
+                                    <guisubmenu>Erlang</guisubmenu>
+                                    <guimenuitem>Install runtimes</guimenuitem>
+                                </menuchoice></para>
+                        </listitem>
+                        <listitem>
+                            <para>See if there is a runtime listed in the drop down field called
+                                <guilabel>Runtime used by Erlide itself (restart is required)</guilabel>. If there is
+                                something there, hit <guibutton>Cancel</guibutton> and go on to <xref linkend="step28"/>.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click on the <guibutton>Add...</guibutton> button. </para>
+                        </listitem>
+                        <listitem>
+                            <para>In the <guilabel>Runtime name</guilabel> field, enter <userinput>erl5.6.4</userinput>.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>In the <guilabel>Location</guilabel> field, browse to the very top level folder of the
+                                Erlang tree. This should be a folder called "erl5.6.4" or something
+                                like that. </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click <guibutton>OK</guibutton>. Then Click <guibutton>Apply</guibutton> and
+                                    <guibutton>OK</guibutton> in the <guilabel>Install runtimes</guilabel> pane.</para>
+                        </listitem>
+                        <listitem>
+                            <para>On menu bar, choose <menuchoice>
+                                    <guimenu>File</guimenu>
+                                    <guimenuitem>Restart</guimenuitem>
+                                </menuchoice></para>
+                        </listitem>
+                        <listitem xml:id="step28">
+                            <para>On menu bar, chose Windows -> Open Perspective -> Other... ->
+                                Erlang. Click <guibutton>OK</guibutton>.</para>
+                        </listitem>
+                        <listitem>
+                            <para>On menu bar, chose File -> New -> Project...</para>
+                        </listitem>
+                        <listitem>
+                            <para>In wizard, chose Erlang -> Erlang Project and click Next</para>
+                        </listitem>
+                        <listitem>
+                            <para>In Project name field, type
+                                    <userinput>HelloWorldProject</userinput></para>
+                        </listitem>
+                        <listitem>
+                            <para>Click <guibutton>Finish</guibutton>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>On menu bar, choose Project and make sure that <guimenuitem>Build
+                                    Automatically</guimenuitem> option is checked</para>
+                        </listitem>
+                        <listitem>
+                            <para>The left pane is the Erlang Navigator. Right-click the
+                                HelloWorldProject branch. In the context menu that pops, select New
+                                -> Other... -> Erlang -> Module and click Next (can also just select
+                                "New Module" directly) </para>
+                        </listitem>
+                        <listitem>
+                            <para>In the wizard, in the Module name field, type
+                                    <userinput>hello</userinput>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click Finish </para>
+                        </listitem>
+                        <listitem>
+                            <para>On menu bar, choose Run -> Run Configurations... </para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the "Erlang application" </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click the New Launch configuration button (left side above the
+                                field with "type filter text") </para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the "New configuration"</para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the "Main tab" in the right pane</para>
+                        </listitem>
+                        <listitem>
+                            <para>Check the box left of the HelloWorldProject</para>
+                        </listitem>
+                        <listitem>
+                            <para>Select the "Runtimes" tab in the right pane </para>
+                        </listitem>
+                        <listitem>
+                            <para>In the filed titled <guilabel>Node name</guilabel>, enter
+                                    <userinput>erlide</userinput></para>
+                        </listitem>
+                        <listitem>
+                            <para>Check the box to the left of "Start the Erlang node if not running
+                                presently"</para>
+                        </listitem>
+                        <listitem>
+                            <para>Click "Apply" and "Run"</para>
+                        </listitem>
+                        <listitem>
+                            <para>In the center code pane (titled "hello.erl"), enter the following
+                                code: hello/0 (within the brackets for the export, so it reads
+                                "-export([hello/0]).")</para>
+                        </listitem>
+                        <listitem>
+                            <para>On the next line after the export, enter the following code:
+                                <screen>hello() -> io:format("Hello World!~n", []).</screen></para>
+                        </listitem>
+                        <listitem>
+                            <para>In the menu bar, choose File -> Save As...</para>
+                        </listitem>
+                        <listitem>
+                            <para>Double-click on the folder titled "HelloWorldProject" in the
+                                dialog box</para>
+                        </listitem>
+                        <listitem>
+                            <para>Click on (select) the folder titled "src" in the dialog box. The
+                                field entitled <guilabel>Enter or select the parent
+                                    folder:</guilabel> should now read
+                                    <computeroutput>HelloWorldProject/src</computeroutput>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Click OK. The file "hello.erl" is saved in the src directory and
+                                automatically built.</para>
+                        </listitem>
+                        <listitem>
+                            <para>The lower pane has a number of tabs. Select the "Console"
+                                tab.</para>
+                        </listitem>
+                        <listitem>
+                            <para>In the console pane, enter the following command "hello:hello()."
+                                and hit return. The output from the program will appear. </para>
+                        </listitem>
+                        <listitem>
+                            <para>To exit, in the menu bar, choose File -> Close, and then File ->
+                                Exit</para>
+                        </listitem>
+                    </orderedlist></para>
+            </sect2>
+            <sect2>
+                <info>
+                    <title>Hello World</title>
+                    <author>
+                        <personname>
+                            <firstname>Alain</firstname>
+                            <surname>O'Dea</surname>
+                        </personname>
+                    </author>
+                </info>
+                <epigraph>
+                    <para>Thanks to Alain O'Dea for writing this guide.</para>
+                </epigraph>
+                <sect3>
+                    <title>Install Erlang/OTP (if you have not already)</title>
+                    <para>
+                        <itemizedlist>
+                            <listitem>
+                                <para><emphasis>Ubuntu Linux</emphasis>: run the following in
+                                    Terminal:
+                                    <screen>                        sudo apt-get update
+                        sudo apt-get install erlang</screen></para>
+                            </listitem>
+                            <listitem>
+                                <para><emphasis>Windows</emphasis>: run the Windows Installer for
+                                    Erlang </para>
+                            </listitem>
+                            <listitem>
+                                <para><emphasis>Mac OS X</emphasis>: install MacPorts and then run
+                                    the following in Terminal:
+                                    <screen>                            sudo port selfupdate
+                            sudo port install erlang                        </screen></para>
+                            </listitem>
+                        </itemizedlist>
+                    </para>
+                </sect3>
+                <sect3>
+                    <title>Install Eclipse and ErlIDE</title>
+                    <para>
+                        <orderedlist>
+                            <listitem>
+                                <para>Download Eclipse IDE for Java Developers</para>
+                            </listitem>
+                            <listitem>
+                                <para>Extract it where you want to run it from (there is no
+                                    installer, just an archive)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Launch Eclipse by double-clicking eclipse (Linux), eclipse.exe
+                                    (Windows), or Eclipse (Mac) in the eclipse folder</para>
+                            </listitem>
+                            <listitem>
+                                <para>Select <guimenu>Help (menu) → Software Updates...</guimenu> (a
+                                    dialog will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click Add Site...(another dialog will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Enter http://erlide.sourceforge.net/update into the Location
+                                    field, then click OK (dialog will close)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Select the checkbox by http://erlide.sourceforge.net/update
+                                    and click Install... (another dialog will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para> Select Next</para>
+                            </listitem>
+                            <listitem>
+                                <para>Select I accept ... radio button and click Finish (a progress
+                                    dialog will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para> (wait for confirmation dialog) Select Yes (Eclipse will
+                                    restart)</para>
+                            </listitem>
+                        </orderedlist>
+                    </para>
+                </sect3>
+                <sect3>
+                    <title>Add Primary Erlang Runtime</title>
+                    <para>Without these steps things like syntax highlighting, code completion and
+                        other significant aspects of the ErlIDE UI will not work properly. The IDE
+                        will function basically, but it will not work as intended. <orderedlist>
+                            <listitem>
+                                <para>Select Window (menu) → Preferences... (Windows/Linux) or
+                                    Eclipse (menu) → Preferences... (Mac) (a dialog will
+                                    appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Expand Erlang and select Installed runtimes</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click Add... (a dialog will appear) and Enter Erlang in the
+                                    Runtime name field</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click Browse... and select the root of your Erlang/OTP install
+                                    (mine is /opt/local/lib/erlang), then click OK (dialog will
+                                    close)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click OK (preferences dialog will close)</para>
+                            </listitem>
+                        </orderedlist></para>
+                </sect3>
+                <sect3>
+                    <title>Create Hello World Project</title>
+                    <para>
+                        <orderedlist>
+                            <listitem>
+                                <para>(wait for Eclipse to restart) Select Window (menu) → Close All
+                                    Perspectives</para>
+                            </listitem>
+                            <listitem>
+                                <para>Select Window (menu) → Open Perspective → Other... (a dialog
+                                    will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Select Erlang and click OK (dialog will close and Erlang
+                                    Perspective will load)</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Erlang Navigator bring up the context menu
+                                    (right-click/control-click) and select New Erlang Project (a
+                                    dialog will appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Enter hello_world in the Project Name field and click Finish
+                                    (dialog will close and hello_world project will appear in Erlang
+                                    Navigator view)</para>
+                            </listitem>
+                        </orderedlist>
+                    </para>
+                </sect3>
+                <sect3>
+                    <title>Start Erlang Node To Run Code</title>
+                    <para>
+                        <orderedlist>
+                            <listitem>
+                                <para>Select hello_world project, bring up the context menu and
+                                    select Run As → Run Configurations... (a dialog will
+                                    appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Enter hello_world in the Name field</para>
+                            </listitem>
+                            <listitem>
+                                <para>Double-click Erlang application (a new confguration will
+                                    appear in the right-hand panel)</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Main tab under Projects click the checkbox beside
+                                    hello_world</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Runtimes tab click the checkbox beside Start the Erlang
+                                    node if not running already and enter hello_world in the Node
+                                    name field</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click Run (dialog will close and Console will appear with
+                                    hello_world Erlang node)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Leave the Console running for the next part</para>
+                            </listitem>
+                        </orderedlist>
+                    </para>
+                </sect3>
+                <sect3>
+                    <title>Write Hello World Live!</title>
+                    <para>
+                        <orderedlist>
+                            <listitem>
+                                <para>On the hello_world project bring up the context menu
+                                    (right-click/control-click) and select New Module (dialog will
+                                    appear)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Enter hello_world in Module name field</para>
+                            </listitem>
+                            <listitem>
+                                <para>To the left of the Apply button, enter say_hello in the first
+                                    box and 0 in the second box and click Apply</para>
+                            </listitem>
+                            <listitem>
+                                <para>Click Finish (dialog will close and an editor for
+                                    hello_world.erl will be opened)</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Console type hello_world:say_hello().</para>
+                            </listitem>
+                            <listitem>
+                                <para>Oops! It displays ok and shows no greeting! Let's fix
+                                    that</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the hello_world.erl editor replace ok in say_hello with
+                                    io:format("Hello World!") and save (Ctrl-S/Command-S)</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Console type hello_world:say_hello().</para>
+                            </listitem>
+                            <listitem>
+                                <para>Great! It displays "Hello World!" for us! Let's get it to say
+                                    something else</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the hello_world.erl editor replace "Hello World!" in
+                                    say_hello with "Hello ErlIDE!") and save
+                                    (Ctrl-S/Command-S)</para>
+                            </listitem>
+                            <listitem>
+                                <para>In the Console type hello_world:say_hello().</para>
+                            </listitem>
+                            <listitem>
+                                <para>Nifty! It displays "Hello ErlIDE!" for us! We can change the
+                                    code at runtime.</para>
+                            </listitem>
+                        </orderedlist>
+                    </para>
+                </sect3>
+            </sect2>
+        </sect1>
         <sect1 xml:id="features">
             <info>
                 <title>Features</title>
             </info>
-            <note>
-                <para>This chapter is just a quick-and-dirty listing of the current features. Help
-                    with the documentation will be very much appreciated.</para>
-            </note>
             <para>
                 <variablelist>
                     <varlistentry>
-                        <term>Project wizard</term>
+                        <term>Wizards</term>
                         <listitem>
+                            <bridgehead>New Project wizard</bridgehead>
                             <para>Create projects with the <menuchoice>
                                     <guisubmenu>File</guisubmenu>
                                     <guisubmenu>New</guisubmenu>
@@ -546,12 +564,8 @@
                                     <guimenuitem>Erlang</guimenuitem>
                                 </menuchoice> project wizard. If the project isn't new, you can do
                                 an automatic search for source files, by using the "Discover paths"
-                                option. Review the result and add other needed directories</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Module wizard</term>
-                        <listitem>
+                                option. Review the result and add other needed directories.</para>
+                            <bridgehead>New Module wizard</bridgehead>
                             <para>Create files by right-clicking on the desired directory in the
                                 resource view, and choosing either <menuchoice>
                                     <guisubmenu>File</guisubmenu>
@@ -570,52 +584,92 @@
                     <varlistentry>
                         <term>Configuration </term>
                         <listitem>
-                            <para>Can be configured in <menuchoice>
+                            <para>Preferences related to erlide can be found at <menuchoice>
                                     <guimenu>Window</guimenu>
                                     <guisubmenu>Preferences</guisubmenu>
                                     <guimenuitem>Erlang</guimenuitem>
-                                </menuchoice>. Note that not all options are functional yet.</para>
+                                </menuchoice>. Please note that not all options are functional
+                                yet.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
                         <term>Editor</term>
                         <listitem>
-                            <para>Some useful commands in the editor are: <itemizedlist>
+                            <para> The editor has all the generic Eclipse functionality and adds
+                                several Erlang-specific features:<itemizedlist>
                                     <listitem>
-                                        <para> put cursor on a function call (only standard OTP
-                                            modules are supported currently) and its documentation
-                                            will pop up </para>
+                                        <para>Syntax highlighting </para>
                                     </listitem>
                                     <listitem>
-                                        <para>put cursor in a function name and press
-                                                <keysym>F3</keysym> and the source of the function's
-                                            definition will be shown (if available)</para>
+                                        <para>Indentation of Erlang code</para>
                                     </listitem>
                                     <listitem>
-                                        <para>writing for example <userinput>lists:r</userinput>
-                                            will pop up a list of possible completions of the
-                                            function call.</para>
+                                        <para>OTP documentation shown for external calls by hovering
+                                            the cursor over a function call</para>
                                     </listitem>
                                     <listitem>
-                                        <para>right clicking in the editor will show a menu where
-                                            some Erlang options are at the bottom. </para>
+                                        <para>Automatic completion of erlang functions and records
+                                        </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Go to declaration of function, macro or record:
+                                                <keysym>F3</keysym> when the cursor is inside that
+                                            element's name.</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Show declaration of macros and records as a hover
+                                            window</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Bracket matching </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Selective display of functions and declarations
+                                            (folding) </para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>context-sensitive menu when right clicking in the
+                                            editor</para>
                                     </listitem>
                                 </itemizedlist></para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
+                        <term>Builder</term>
+                        <listitem>
+                            <para>Building is automatic whenever a file is saved (if <menuchoice>
+                                    <guimenu>Project</guimenu>
+                                    <guimenuitem>Build automatically</guimenuitem>
+                                </menuchoice> is enabled) and the modified module is also reloaded
+                                in any Erlang backend that is linked to that project.</para>
+                            <para>Provision for different runtimes, local or remote. Compile on one
+                                runtime, test and debug on another </para>
+                            <para>Show errors and warnings in code and in problems view </para>
+                            <para>Automatically mark and list comments with TODO and FIXME </para>
+                            <para>Erlang log printouts with link to code line</para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
                         <term>Outline view</term>
                         <listitem>
-                            <para>The outline view allows navigation in a module and an overview of
-                                the functions in it. Clicking on an item will show its definition in
-                                the editor.</para>
+                            <para>Shows the structure of an Erlang module. The outline view allows
+                                navigation in a module and an overview of the functions in it.
+                                Clicking on an item will show its definition in the editor. The
+                                shown functions and declarations can be filtered and sorted. </para>
+                            <para>In the editor a Quick outline dialog can be used for navigation (<keycombo>
+                                    <keycap function="control">Ctrl</keycap>
+                                    <keycap>O</keycap>
+                                </keycombo>)</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
                         <term>Erlang console</term>
                         <listitem>
                             <para>The console lets you interact with the Erlang node that is behind
-                                the scenes.</para>
+                                the scenes. At the moment it is not as useful as it may be, as it
+                                only connects to the backend that hosts the Erlide functionality,
+                                not the ones where the code under development is run. This will be
+                                fixed in the future.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -645,17 +699,15 @@
                                     <guisubmenu>Show view</guisubmenu>
                                     <guimenuitem>Erlang</guimenuitem>
                                 </menuchoice>) will display the documentation for the function where
-                                the cursor is (only OTP libraries)</para>
+                                the cursor is (only OTP libraries at the moment)</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
-                        <term>Builder</term>
+                        <term>Debugger</term>
                         <listitem>
-                            <para>Building is automatic whenever a file is saved (if <menuchoice>
-                                    <guimenu>Project</guimenu>
-                                    <guimenuitem>Build automatically</guimenuitem>
-                                </menuchoice> is enabled) and the modified module is also reloaded
-                                in the Erlang backend.</para>
+                            <para>Breakpoints, single-stepping Inspection and modification of local
+                                variables </para>
+                            <para>Distributed debugger, debug on multiple nodes</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -674,7 +726,7 @@
                 </info>
                 <para>For those not familiar with Eclipse, some short tips and tricks:<itemizedlist>
                         <listitem>
-                            <para><keycombo action="simul">
+                            <para><keycombo>
                                     <keycap function="control">Ctrl</keycap>
                                     <keycap function="shift">Shift</keycap>
                                     <keycap>L</keycap>
@@ -682,163 +734,6 @@
                                 commands</para>
                         </listitem>
                     </itemizedlist></para>
-            </sect2>
-        </sect1>
-        <sect1 xml:id="tutorials">
-            <info>
-                <title>Tutorials</title>
-            </info>
-            <sect2>
-                <info>
-                    <title>Basic tutorial</title>
-                </info>
-                <para>This Getting Started tutorial is designed to help you learn about using the
-                    Erlang IDE (Erlide) in the workbench. This tutorial assumes the following:<itemizedlist>
-                        <listitem>
-                            <para>That you are starting with a brand new workbench installation with
-                                all the default settings and preferences.</para>
-                        </listitem>
-                        <listitem>
-                            <para>That the Erlide plugin is properly installed and running.</para>
-                        </listitem>
-                        <listitem>
-                            <para>That you are familiar with the basic workbench mechanisms (e.g.,
-                                views, text searching, perspectives, etc.)</para>
-                        </listitem>
-                    </itemizedlist></para>
-                <sect3>
-                    <info>
-                        <title>Preparing the workbench</title>
-                    </info>
-                    <para>In this section, you will verify that the workbench is properly set up for
-                        Erlang development. See the <link linkend="instalation_guide">installation
-                            guide</link>.</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Creating your first Erlang project</title>
-                    </info>
-                    <para>In this section, you will create a new Erlang project.</para>
-                    <para>Inside Eclipse select the menu item <menuchoice>
-                            <guimenu>File</guimenu>
-                            <guisubmenu>New...</guisubmenu>
-                            <guimenuitem>Project...</guimenuitem>
-                        </menuchoice> to open the New Project wizard. Select <guimenu>Erlang
-                            Project</guimenu> then click <guibutton>Next</guibutton> to start the
-                        New Erlang Project wizard: on this page, type <userinput>ErlDemo</userinput>
-                        in the Project name field.</para>
-                    <para>In the Resource Explorer, make sure that the src directory under the
-                        ErlDemo project is selected. Select the menu item <menuchoice>
-                            <guimenu>File</guimenu>
-                            <guisubmenu>New...</guisubmenu>
-                            <guimenuitem>File</guimenuitem>
-                        </menuchoice> and enter <userinput>mytest.erl</userinput>.</para>
-                    <para>Related concepts: Erlang projects,Erlang views</para>
-                    <para>Related tasks: Working with build paths,Creating a new Erlang
-                        project,Using the Package Explorer</para>
-                    <para>Related reference: New Erlang Project Wizard</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Browsing Erlang elements using the resource explorer</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Editing Erlang elements</title>
-                    </info>
-                    <sect4>
-                        <info>
-                            <title>Opening an Erlang editor</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                    <sect4>
-                        <info>
-                            <title>Adding new functions</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                    <sect4>
-                        <info>
-                            <title>Using content assist</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                    <sect4>
-                        <info>
-                            <title>Identifying problems in your code</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                    <sect4>
-                        <info>
-                            <title>Using code templates</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                    <sect4>
-                        <info>
-                            <title>Using the local history</title>
-                        </info>
-                        <para>TBD</para>
-                    </sect4>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Creating an Erlang module</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Renaming Erlang elements</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Moving and copying Erlang elements</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Navigate to an Erlang element's declaration</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Searching the workbench</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Running your programs</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Debugging your programs</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-                <sect3>
-                    <info>
-                        <title>Evaluating expressions</title>
-                    </info>
-                    <para>TBD</para>
-                </sect3>
-            </sect2>
-            <sect2>
-                <info>
-                    <title>Configuration tutorial</title>
-                </info>
-                <para>TBD</para>
             </sect2>
         </sect1>
         <sect1 xml:id="concepts">
@@ -929,8 +824,10 @@
             <orderedlist inheritnum="ignore" continuation="restarts">
                 <listitem>
                     <para> Click <menuchoice>
-                            <guimenu>File &gt; New &gt; Other... &gt; Erlang
-                                Project</guimenu>
+                            <guimenu>File</guimenu>
+                            <guisubmenu>New</guisubmenu>
+                            <guisubmenu>Other...</guisubmenu>
+                            <guimenuitem>Erlang Project</guimenuitem>
                         </menuchoice> or use the context menu in the navigator, right-clicking and
                         choosing <menuchoice role="bold">
                             <guimenu>New</guimenu>
@@ -952,7 +849,7 @@
                     </mediaobject>
                 </listitem>
                 <listitem>
-                    <para> Click <guibutton role="bold">Next</guibutton>.</para>
+                    <para> Click <guibutton>Next</guibutton>.</para>
                 </listitem>
                 <listitem>
                     <para> In the <emphasis role="bold">Project Build Preferences</emphasis> boxes,
@@ -965,8 +862,7 @@
                     </mediaobject>
                 </listitem>
                 <listitem>
-                    <para> To create your project, click <guibutton role="bold"
-                        >Finish</guibutton>.</para>
+                    <para> To create your project, click <guibutton>Finish</guibutton>.</para>
                 </listitem>
             </orderedlist>
         </sect1>
@@ -1018,9 +914,8 @@
                     </mediaobject>
                 </listitem>
                 <listitem>
-                    <para> In the Erlang Project Import Wizard, <guibutton role="bold"
-                            >Browse...</guibutton> for <emphasis role="bold">Erlang
-                            project</emphasis></para>
+                    <para> In the Erlang Project Import Wizard, <guibutton>Browse...</guibutton> for
+                            <emphasis role="bold">Erlang project</emphasis></para>
                     <mediaobject>
                         <imageobject>
                             <imagedata fileref="../images/import_wizard02.png" format="PNG"/>
@@ -1035,8 +930,7 @@
                         selected files and selected folders to workspace.</para>
                 </listitem>
                 <listitem>
-                    <para> To import your project, click <guibutton role="bold"
-                        >Finish</guibutton>.</para>
+                    <para> To import your project, click <guibutton>Finish</guibutton>.</para>
                 </listitem>
             </orderedlist>
         </sect1>
