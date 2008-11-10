@@ -50,7 +50,9 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		}
 
 		/*
-		 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#createControl(org.eclipse.swt.widgets.Group)
+		 * @see
+		 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
+		 * createControl(org.eclipse.swt.widgets.Group)
 		 */
 		public Control createControl(Composite composite) {
 			final Composite inner = new Composite(composite, SWT.NONE);
@@ -240,14 +242,17 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			}
 
 			/*
-			 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-			 *      java.lang.Object, java.lang.Object)
+			 * @see
+			 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
+			 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 			 */
 			public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			}
 
 			/*
-			 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+			 * @see
+			 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements
+			 * (java.lang.Object)
 			 */
 			public Object[] getElements(Object inputElement) {
 				return fProviderDescriptors.values().toArray();
@@ -256,7 +261,9 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		viewer.setLabelProvider(new LabelProvider() {
 
 			/*
-			 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
+			 * @see
+			 * org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object
+			 * )
 			 */
 			@Override
 			public Image getImage(Object element) {
@@ -264,7 +271,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			}
 
 			/*
-			 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+			 * @see
+			 * org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 			 */
 			@Override
 			public String getText(Object element) {

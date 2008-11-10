@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2008 Vlad Dumitrescu and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vlad Dumitrescu
+ *******************************************************************************/
 package org.erlide.ui.prefs;
 
 import org.eclipse.swt.widgets.Composite;
@@ -21,16 +31,16 @@ public interface IPreferenceConfigurationBlock {
 	void initialize();
 
 	/**
-	 * Called when the <code>OK</code> button is pressed on the preference
-	 * page. Implementations should commit the configured preference settings
-	 * into their form of preference storage.
+	 * Called when the <code>OK</code> button is pressed on the preference page.
+	 * Implementations should commit the configured preference settings into
+	 * their form of preference storage.
 	 */
 	void performOk();
 
 	/**
-	 * Called when the <code>Defaults</code> button is pressed on the
-	 * preference page. Implementation should reset any preference settings to
-	 * their default values and adjust the controls accordingly.
+	 * Called when the <code>Defaults</code> button is pressed on the preference
+	 * page. Implementation should reset any preference settings to their
+	 * default values and adjust the controls accordingly.
 	 */
 	void performDefaults();
 
