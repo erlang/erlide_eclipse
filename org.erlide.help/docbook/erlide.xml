@@ -342,8 +342,8 @@
                             <listitem>
                                 <para><emphasis>Ubuntu Linux</emphasis>: run the following in
                                     Terminal:
-                                    <screen>                        sudo apt-get update
-                        sudo apt-get install erlang</screen></para>
+                                    <screen><command>sudo apt-get update</command>
+<command>sudo apt-get install erlang</command></screen></para>
                             </listitem>
                             <listitem>
                                 <para><emphasis>Windows</emphasis>: run the Windows Installer for
@@ -352,8 +352,8 @@
                             <listitem>
                                 <para><emphasis>Mac OS X</emphasis>: install MacPorts and then run
                                     the following in Terminal:
-                                    <screen>                            sudo port selfupdate
-                            sudo port install erlang                        </screen></para>
+                                    <screen><command>sudo port selfupdate</command>
+<command>sudo port install erlang</command></screen></para>
                             </listitem>
                         </itemizedlist>
                     </para>
@@ -522,7 +522,13 @@
                             </listitem>
                             <listitem>
                                 <para>In the hello_world.erl editor replace ok in say_hello with
-                                    io:format("Hello World!") and save (Ctrl-S/Command-S)</para>
+                                    io:format("Hello World!") and save (<keycombo>
+                                        <keycap function="control">Ctrl</keycap>
+                                        <keycap>S</keycap>
+                                    </keycombo> or <keycombo>
+                                        <keycap function="command">Command</keycap>
+                                        <keycap>S</keycap>
+                                    </keycombo>)</para>
                             </listitem>
                             <listitem>
                                 <para>In the Console type hello_world:say_hello().</para>
@@ -533,8 +539,13 @@
                             </listitem>
                             <listitem>
                                 <para>In the hello_world.erl editor replace "Hello World!" in
-                                    say_hello with "Hello ErlIDE!") and save
-                                    (Ctrl-S/Command-S)</para>
+                                    say_hello with "Hello ErlIDE!") and save (<keycombo>
+                                        <keycap function="control">Ctrl</keycap>
+                                        <keycap>S</keycap>
+                                    </keycombo> or <keycombo>
+                                        <keycap function="command">Command</keycap>
+                                        <keycap>S</keycap>
+                                    </keycombo>)</para>
                             </listitem>
                             <listitem>
                                 <para>In the Console type hello_world:say_hello().</para>
@@ -955,11 +966,17 @@
                     <para> Syntax highlighting</para>
                 </listitem>
                 <listitem>
-                    <para> Content/code assist</para>
+                    <para> Content/code assist; auto completion of function calls, display of
+                        function documentation)</para>
                 </listitem>
             </itemizedlist>
             <para>The most common way to invoke the Erlang editor is to open a file from the Erlang
-                Navigator.</para>
+                Navigator. If you want to open an Erlang file by name, the keyboard shortcut is
+                    <keycombo>
+                    <keycap function="control">Ctrl</keycap>
+                    <keycap function="shift">Shift</keycap>
+                    <keycap>R</keycap>
+                </keycombo>.</para>
         </sect1>
         <sect1 xml:id="running_project">
             <info>
@@ -1035,227 +1052,6 @@
                     <imagedata fileref="../images/erlangNavigatorView.png" format="PNG"/>
                 </imageobject>
             </mediaobject>
-            <sect2>
-                <info>
-                    <title>Toolbar</title>
-                </info>
-                <informaltable frame="all">
-                    <tgroup cols="3">
-                        <colspec colname="c1"/>
-                        <colspec colname="c2"/>
-                        <colspec colname="c3"/>
-                        <tbody>
-                            <row>
-                                <entry>
-                                    <emphasis role="bold">Icon</emphasis>
-                                </entry>
-                                <entry>
-                                    <emphasis role="bold">Name</emphasis>
-                                </entry>
-                                <entry align="left">
-                                    <emphasis role="bold">Description</emphasis>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry align="center" valign="top">
-                                    <inlinemediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="../images/icon_con_min.png"
-                                                format="PNG"/>
-                                        </imageobject>
-                                    </inlinemediaobject>
-                                </entry>
-                                <entry valign="top">
-                                    <para>Minimize</para>
-                                </entry>
-                                <entry valign="top"> Minimizes the view. </entry>
-                            </row>
-                            <row>
-                                <entry align="center" valign="top">
-                                    <inlinemediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="../images/icon_con_max.png"
-                                                format="PNG"/>
-                                        </imageobject>
-                                    </inlinemediaobject>
-                                </entry>
-                                <entry valign="top"> Maximize </entry>
-                                <entry valign="top"> Maximizes the view. </entry>
-                            </row>
-                            <row>
-                                <entry align="center" valign="top">
-                                    <inlinemediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="../images/icon_collapse_all.png"
-                                                format="PNG"/>
-                                        </imageobject>
-                                    </inlinemediaobject>
-                                </entry>
-                                <entry valign="top">
-                                    <para>Collapse All </para>
-                                </entry>
-                                <entry valign="top"> This command collapses the tree expansion state
-                                    of all resources in the view. </entry>
-                            </row>
-                            <row>
-                                <entry align="center" valign="top">
-                                    <para>
-                                        <inlinemediaobject>
-                                            <imageobject>
-                                                <imagedata
-                                                  fileref="../images/icon_link_with_editor.png"
-                                                  format="PNG"/>
-                                            </imageobject>
-                                        </inlinemediaobject>
-                                    </para>
-                                </entry>
-                                <entry valign="top">
-                                    <para>Link with Editor </para>
-                                </entry>
-                                <entry valign="top">
-                                    <para>This command toggles whether the view selection is linked
-                                        to the active editor. When this option is selected, changing
-                                        the active editor will automatically update the selection to
-                                        the resource being edited.</para>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry align="center" valign="top">
-                                    <inlinemediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="../images/icon_menu.png"
-                                                format="PNG"/>
-                                        </imageobject>
-                                    </inlinemediaobject>
-                                </entry>
-                                <entry valign="top">
-                                    <para>Menu</para>
-                                </entry>
-                                <entry valign="top">
-                                    <para>Click the black upside-down triangle icon to open a menu
-                                        of items specific to the view.</para>
-                                    <para>
-                                        <variablelist>
-                                            <varlistentry>
-                                                <term>Filters</term>
-                                                <listitem>
-                                                  <para>This command allows you to select filters to
-                                                  apply to the view so that you can show or hide
-                                                  various resources as needed. File types selected
-                                                  in the list will not be shown in the Erlang
-                                                  Navigator view.</para>
-                                                </listitem>
-                                            </varlistentry>
-                                            <varlistentry>
-                                                <term>Link with Editor</term>
-                                                <listitem>
-                                                  <para>See the toolbar item description
-                                                  above.</para>
-                                                </listitem>
-                                            </varlistentry>
-                                            <varlistentry>
-                                                <term>Select Working Set</term>
-                                                <listitem>
-                                                  <para>Opens the <emphasis role="bold">Select
-                                                  Working Set</emphasis> dialog to allow selecting a
-                                                  working set for the view.</para>
-                                                </listitem>
-                                            </varlistentry>
-                                            <varlistentry>
-                                                <term>Deselect Working Set</term>
-                                                <listitem>
-                                                  <para>Deselects the current working set.</para>
-                                                </listitem>
-                                            </varlistentry>
-                                            <varlistentry>
-                                                <term>Edit Active Working Set</term>
-                                                <listitem>
-                                                  <para>Opens the <emphasis role="bold">Edit Working
-                                                  Set</emphasis> dialog to allow changing the
-                                                  current working set.</para>
-                                                </listitem>
-                                            </varlistentry>
-                                            <varlistentry>
-                                                <term>Top Level Elements</term>
-                                                <listitem>
-                                                  <para>
-                                                  <itemizedlist>
-                                                  <listitem>
-                                                  <para><emphasis role="bold">By project</emphasis>
-                                                  : </para>
-                                                  </listitem>
-                                                  <listitem>
-                                                  <para><emphasis role="bold">By working
-                                                  sets</emphasis> : </para>
-                                                  </listitem>
-                                                  </itemizedlist>
-                                                  </para>
-                                                </listitem>
-                                            </varlistentry>
-                                        </variablelist>
-                                    </para>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                </informaltable>
-            </sect2>
-            <sect2>
-                <info>
-                    <title>Erlang Navigator view icons</title>
-                </info>
-                <para>The table below lists the icons displayed in the Erlang Navigator view.</para>
-                <informaltable frame="all">
-                    <tgroup cols="2">
-                        <colspec colname="c1" colwidth="19*"/>
-                        <colspec colname="c2" colwidth="81*"/>
-                        <tbody>
-                            <row>
-                                <entry align="left" valign="middle">
-                                    <para>
-                                        <emphasis role="bold">Icon</emphasis>
-                                    </para>
-                                </entry>
-                                <entry>
-                                    <para>
-                                        <emphasis role="bold">Description</emphasis>
-                                    </para>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry align="left" valign="middle">
-                                    <para>
-                                        <inlinemediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="../images/erlang_srcFile.gif"
-                                                  format="GIF"/>
-                                            </imageobject>
-                                        </inlinemediaobject>
-                                    </para>
-                                </entry>
-                                <entry>
-                                    <para>Erlang file</para>
-                                </entry>
-                            </row>
-                            <row>
-                                <entry align="left" valign="middle">
-                                    <para>
-                                        <inlinemediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="../images/methpri_obj.gif"
-                                                  format="GIF"/>
-                                            </imageobject>
-                                        </inlinemediaobject>
-                                    </para>
-                                </entry>
-                                <entry>
-                                    <para>Function</para>
-                                </entry>
-                            </row>
-                        </tbody>
-                    </tgroup>
-                </informaltable>
-            </sect2>
         </sect1>
     </chapter>
     <chapter xml:id="developer_reference">
