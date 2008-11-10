@@ -69,9 +69,19 @@ public class ErlParser {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
 		if (Util.isOk(res)) {
-			final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
-			forms = (OtpErlangList) t.elementAt(1);
-			comments = (OtpErlangList) t.elementAt(2);
+			if (res.elementAt(1) instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
+				if (forms instanceof OtpErlangList
+						&& comments instanceof OtpErlangList) {
+					forms = (OtpErlangList) t.elementAt(1);
+					comments = (OtpErlangList) t.elementAt(2);
+				} else {
+					ErlLogger.warn("parser for %s got: %s", module.getName(),
+							res);
+				}
+			} else {
+				ErlLogger.warn("parser for %s got: %s", module.getName(), res);
+			}
 		} else {
 			ErlLogger.debug("rpc err:: " + res);
 		}

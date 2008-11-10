@@ -548,7 +548,7 @@ public class Util {
 	 * Finds the first line separator used by the given text.
 	 * 
 	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-	 *         </code>, or <code>null</code> if none found
+	 *                </code>, or <code>null</code> if none found
 	 */
 	public static String findLineSeparator(final char[] text) {
 		// find the first line separator
@@ -1530,10 +1530,10 @@ public class Util {
 	 * machine-independent manner.
 	 * <p>
 	 * First, two bytes are written to the output stream as if by the
-	 * <code>writeShort</code> method giving the number of bytes to follow.
-	 * This value is the number of bytes actually written out, not the length of
-	 * the string. Following the length, each character of the string is output,
-	 * in sequence, using the UTF-8 encoding for the character.
+	 * <code>writeShort</code> method giving the number of bytes to follow. This
+	 * value is the number of bytes actually written out, not the length of the
+	 * string. Following the length, each character of the string is output, in
+	 * sequence, using the UTF-8 encoding for the character.
 	 * 
 	 * @param str
 	 *            a string to be written.
@@ -1832,8 +1832,8 @@ public class Util {
 	}
 
 	/**
-	 * Returns true iff str.toLowerCase().endsWith(".erl") implementation is not
-	 * creating extra strings.
+	 * Returns true iff str.toLowerCase().endsWith(".erl"). Implementation is
+	 * not creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final String name) {
 		if (name == null) {
@@ -1857,8 +1857,8 @@ public class Util {
 	}
 
 	/**
-	 * Returns true iff str.toLowerCase().endsWith(".erl") implementation is not
-	 * creating extra strings.
+	 * Returns true iff str.toLowerCase().endsWith(".erl"). Implementation is
+	 * not creating extra strings.
 	 */
 	public static final boolean isErlangFileName(final char[] name) {
 		if (name == null) {

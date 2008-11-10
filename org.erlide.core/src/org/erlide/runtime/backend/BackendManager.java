@@ -24,8 +24,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -47,8 +45,7 @@ import org.erlide.runtime.backend.internal.StandaloneBackend;
 import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
-public final class BackendManager implements IResourceChangeListener,
-		IEpmdListener {
+public final class BackendManager implements IEpmdListener {
 
 	private static BackendManager MANAGER;
 
@@ -85,12 +82,6 @@ public final class BackendManager implements IResourceChangeListener,
 		fExecutionBackends = new HashMap<IProject, Set<ExecutionBackend>>();
 		fListeners = new ArrayList<IBackendListener>();
 		fPlugins = new ArrayList<ICodeBundle>();
-
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				this,
-				IResourceChangeEvent.PRE_CLOSE
-						| IResourceChangeEvent.PRE_DELETE
-						| IResourceChangeEvent.POST_CHANGE);
 
 		epmdWatcher = new EpmdWatcher();
 		epmdWatcher.addEpmdListener(this);
@@ -421,18 +412,6 @@ public final class BackendManager implements IResourceChangeListener,
 			ErlLogger.error(e);
 		}
 		return host;
-	}
-
-	public void resourceChanged(final IResourceChangeEvent event) {
-		// ErlLogger.debug("+BM: " + event.getType() + " " +
-		// event.getResource()
-		// + event.getDelta());
-		switch (event.getType()) {
-		case IResourceChangeEvent.PRE_CLOSE:
-		case IResourceChangeEvent.PRE_DELETE:
-			break;
-
-		}
 	}
 
 	synchronized public void updateBackendStatus(String host,

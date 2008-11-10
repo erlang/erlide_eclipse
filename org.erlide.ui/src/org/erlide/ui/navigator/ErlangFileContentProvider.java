@@ -25,6 +25,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
@@ -142,10 +143,12 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 * .eclipse.core.resources.IResourceChangeEvent)
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
-
 		final IResourceDelta delta = event.getDelta();
 		try {
-			delta.accept(this);
+			if (delta != null) {
+				ErlLogger.debug("change " + event.toString());
+				delta.accept(this);
+			}
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -168,6 +171,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			return true;
 		case IResource.FILE:
 			final IFile file = (IFile) source;
+			// FIXME add other erlang extensions too
 			if (ERLANGFILE_EXT.equals(file.getFileExtension())) {
 				// updateModel(file);
 				doRefresh(file);
