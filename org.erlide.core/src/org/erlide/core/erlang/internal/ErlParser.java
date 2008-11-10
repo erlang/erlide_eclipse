@@ -71,8 +71,8 @@ public class ErlParser {
 		if (Util.isOk(res)) {
 			if (res.elementAt(1) instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
-				if (forms instanceof OtpErlangList
-						&& comments instanceof OtpErlangList) {
+				if (t.elementAt(1) instanceof OtpErlangList
+						&& t.elementAt(2) instanceof OtpErlangList) {
 					forms = (OtpErlangList) t.elementAt(1);
 					comments = (OtpErlangList) t.elementAt(2);
 				} else {
