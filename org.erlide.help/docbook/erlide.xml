@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en-US">
-    <info>
-        <title>Erlide, the Erlang IDE</title>
-        <author>
+    <info><title>Erlide, the Erlang IDE</title><author>
             <personname>
                 <firstname>Vlad</firstname>
                 <surname>Dumitrescu</surname>
@@ -36,7 +34,8 @@
                             but <emphasis>3.4</emphasis> works just as well.</para>
                     </listitem>
                     <listitem>
-                        <para>If your network uses a proxy, fill in the appropriate data in <menuchoice>
+                        <para>If your network uses a proxy, fill in the appropriate data in
+                                <menuchoice>
                                 <guimenu>Window</guimenu>
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu> Install/Update</guisubmenu>
@@ -185,25 +184,27 @@
                         </listitem>
                         <listitem>
                             <para>See if there is a runtime listed in the drop down field called
-                                <guilabel>Runtime used by Erlide itself (restart is required)</guilabel>. If there is
-                                something there, hit <guibutton>Cancel</guibutton> and go on to <xref linkend="step28"/>.
-                            </para>
+                                    <guilabel>Runtime used by Erlide itself (restart is
+                                    required)</guilabel>. If there is something there, hit
+                                    <guibutton>Cancel</guibutton> and go on to <xref
+                                    linkend="step28"/>. </para>
                         </listitem>
                         <listitem>
                             <para>Click on the <guibutton>Add...</guibutton> button. </para>
                         </listitem>
                         <listitem>
-                            <para>In the <guilabel>Runtime name</guilabel> field, enter <userinput>erl5.6.4</userinput>.
-                            </para>
+                            <para>In the <guilabel>Runtime name</guilabel> field, enter
+                                    <userinput>erl5.6.4</userinput>. </para>
                         </listitem>
                         <listitem>
-                            <para>In the <guilabel>Location</guilabel> field, browse to the very top level folder of the
-                                Erlang tree. This should be a folder called "erl5.6.4" or something
-                                like that. </para>
+                            <para>In the <guilabel>Location</guilabel> field, browse to the very top
+                                level folder of the Erlang tree. This should be a folder called
+                                "erl5.6.4" or something like that. </para>
                         </listitem>
                         <listitem>
-                            <para>Click <guibutton>OK</guibutton>. Then Click <guibutton>Apply</guibutton> and
-                                    <guibutton>OK</guibutton> in the <guilabel>Install runtimes</guilabel> pane.</para>
+                            <para>Click <guibutton>OK</guibutton>. Then Click
+                                    <guibutton>Apply</guibutton> and <guibutton>OK</guibutton> in
+                                the <guilabel>Install runtimes</guilabel> pane.</para>
                         </listitem>
                         <listitem>
                             <para>On menu bar, choose <menuchoice>
@@ -656,7 +657,8 @@
                                 navigation in a module and an overview of the functions in it.
                                 Clicking on an item will show its definition in the editor. The
                                 shown functions and declarations can be filtered and sorted. </para>
-                            <para>In the editor a Quick outline dialog can be used for navigation (<keycombo>
+                            <para>In the editor a Quick outline dialog can be used for navigation
+                                    (<keycombo>
                                     <keycap function="control">Ctrl</keycap>
                                     <keycap>O</keycap>
                                 </keycombo>)</para>
@@ -754,7 +756,10 @@
                             <para>Describes an Erlang installation by pointing to its home directory
                                 and optionally adding extra code path entries and/or arguments. For
                                 example, one might want to have two R12B runtimes defined, one with
-                                and one without SMP enabled.</para>
+                                and one without SMP enabled. At the moment, this installation must
+                                be a full installation (from the source with documentation) but at a
+                                future time we will support other repository formats (CEAN,
+                                Faxien).</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -782,10 +787,11 @@
                                 <varlistentry>
                                     <term>Build backend</term>
                                     <listitem>
-                                        <para>Each project has a build backend where the compilation
-                                            is done. This is where the OTP documentation is taken
-                                            from. It is specified in the project's properties and
-                                            defaults to the IDE backend.</para>
+                                        <para>Each project references a build backend where the
+                                            compilation is done. This is also where the OTP
+                                            documentation is taken from. It is specified in the
+                                            project's properties and defaults to the IDE
+                                            backend.</para>
                                     </listitem>
                                 </varlistentry>
                                 <varlistentry>
@@ -800,15 +806,7 @@
                         </listitem>
                     </varlistentry>
                 </variablelist>
-                <para>When a backend is about to be created, the following algorithm is used: <itemizedlist>
-                        <listitem>
-                            <para>if an Erlang node with the given name exists, use it;</para>
-                        </listitem>
-                        <listitem>
-                            <para>if not, start one (if the backend is managed) else give an
-                                error.</para>
-                        </listitem>
-                    </itemizedlist></para>
+                <para>Specifying </para>
             </sect2>
         </sect1>
     </chapter>
@@ -816,7 +814,7 @@
         <info>
             <title>Reference</title>
         </info>
-        <sect1>
+        <sect1 xml:id="create_project">
             <info>
                 <title>Creating a project</title>
             </info>
@@ -866,32 +864,7 @@
                 </listitem>
             </orderedlist>
         </sect1>
-        <sect1>
-            <info>
-                <title>Configuring a project</title>
-            </info>
-            <para>In the Navigator pane, right-click on the project and choose <menuchoice>
-                    <guimenu>Properties</guimenu>
-                    <guimenuitem>Erlang</guimenuitem>
-                </menuchoice>. The dialog allows you to specify the project's settings.</para>
-            <para>
-                <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="../images/projectproperties.png" format="PNG"/>
-                    </imageobject>
-                </mediaobject>
-            </para>
-            <para>The build backend specifies the Erlang node on which the compilation will be done.
-                By default, we use the same backend as the one the IDE is using and in most cases
-                this is sufficient. See the <link linkend="backends">Backends</link> section for
-                more details.</para>
-            <para>The "make unique" box lets you decide if the specified name will get a unique
-                suffix in order to ensure that there will be no conflict with running nodes (the use
-                case is when there are several users running Erlide on the same machine, it's
-                difficult to ensure that they won't use the same name for nodes). The suffix is
-                derived from the workspace path, so it is deterministic. </para>
-        </sect1>
-        <sect1>
+        <sect1 xml:id="import_project">
             <info>
                 <title>Importing an Erlang Project</title>
             </info>
@@ -934,7 +907,33 @@
                 </listitem>
             </orderedlist>
         </sect1>
-        <sect1>
+        <sect1 xml:id="configure_project">
+            <info>
+                <title>Configuring a project</title>
+            </info>
+            <para>In the Navigator pane, right-click on the project and choose <menuchoice>
+                    <guimenu>Properties</guimenu>
+                    <guimenuitem>Erlang</guimenuitem>
+                </menuchoice>. The dialog allows you to specify the project's settings.</para>
+            <para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/projectproperties.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </para>
+            <para>The build backend specifies the Erlang node on which the compilation will be done.
+                By default, we use the same backend as the one the IDE is using and in most cases
+                this is sufficient. See the <link linkend="backends">Backends</link> section for
+                more details. </para>
+            <para>The "make unique" box lets you decide if the specified name will get a unique
+                suffix in order to ensure that there will be no conflict with other running nodes
+                (the use case is when there are several users running Erlide on the same machine,
+                it's difficult to ensure that they won't use the same name for nodes). The suffix is
+                derived from the workspace path, so it is deterministic. </para>
+            <para>An empty cookie field means thet the user's default cookie will be used.</para>
+        </sect1>
+        <sect1 xml:id="editor_view">
             <info>
                 <title>Editor view</title>
             </info>
@@ -961,6 +960,44 @@
             </itemizedlist>
             <para>The most common way to invoke the Erlang editor is to open a file from the Erlang
                 Navigator.</para>
+        </sect1>
+        <sect1 xml:id="running_project">
+            <info>
+                <title>Running and debugging Erlang code</title>
+            </info>
+            <para>The Eclipse way to specify how to run the code that is being developed is called
+                    <emphasis>launch configurations</emphasis>. Erlide provides support for creating
+                and executing Erlang-specific launch configurations. These configurations can be
+                created and edited by opening the <menuchoice>
+                    <guimenu>Run</guimenu>
+                    <guimenuitem>Run configurations...</guimenuitem>
+                </menuchoice> dialog (or the <menuchoice>
+                    <guimenu>Debug</guimenu>
+                    <guimenuitem>Debug configurations...</guimenuitem>
+                </menuchoice> one, which offers some additional debug-specific options). </para>
+            <para>The main tab lets you select the projects whose code will be loaded and executed.
+                There is also provision for defining one's own initialization by providing a
+                function and arguments to be called. <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/debug_main.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject></para>
+            <para>The runtimes tab lets you define the runtime that will be used and the node's name
+                and cookie. The cookie is optional, defaulting to the user's default cookie. <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/debug_runtimes.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject></para>
+            <para> For a debug launch config, the debug tab contains the related options. The one
+                that is erlide specific is the list of interpreted modules. The selected modules
+                will be interpreted alongside with any module (from the referenced projects) that
+                contains an enabled breakpoint. A similar list is available in the
+                    <guilabel>Interpreted modules</guilabel> view, allowing to change the status of
+                the modules while debugging.<mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/debug_debug.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject></para>
         </sect1>
         <sect1 xml:id="navigator">
             <info>
@@ -1220,24 +1257,6 @@
                 </informaltable>
             </sect2>
         </sect1>
-        <sect1 xml:id="actions">
-            <info>
-                <title>Actions</title>
-            </info>
-            <para>TBD</para>
-        </sect1>
-        <sect1>
-            <info>
-                <title>Views and editors</title>
-            </info>
-            <para>TBD</para>
-        </sect1>
-        <sect1>
-            <info>
-                <title>Menus</title>
-            </info>
-            <para>TBD</para>
-        </sect1>
     </chapter>
     <chapter xml:id="developer_reference">
         <info>
@@ -1249,10 +1268,11 @@
             </info>
             <para>Install Eclipse SDK, Erlang R11 and Erlide as usual.</para>
             <important>
-                <para>For developing Erlide, you can only use R11 for the IDE runtime.</para>
+                <para>For developing Erlide, you can only use R11 for the IDE runtime. This is
+                    because we need have to support R11 at the user's site.</para>
             </important>
         </sect1>
-        <sect1>
+        <sect1 xml:id="repository_dev">
             <info>
                 <title>Retrieve the code from repository</title>
             </info>
@@ -1282,7 +1302,7 @@
                     <guimenuitem>Existing projects into workspace</guimenuitem>
                 </menuchoice>. Import all projects and turn automatic build back on.</para>
         </sect1>
-        <sect1>
+        <sect1 xml:id="build_dev">
             <info>
                 <title>Build</title>
             </info>
@@ -1317,7 +1337,8 @@
                     <itemizedlist>
                         <listitem>
                             <para>After compiling the plugins, you can try starting the newly build
-                                Erlide. For this you have to create a run configuration. Choose <menuchoice>
+                                Erlide. For this you have to create a run configuration. Choose
+                                    <menuchoice>
                                     <guimenu>Run</guimenu>
                                     <guisubmenu>Run...</guisubmenu>
                                     <guisubmenu>Eclipse Application</guisubmenu>
@@ -1345,7 +1366,7 @@
                 </para>
             </sect2>
         </sect1>
-        <sect1>
+        <sect1 xml:id="plugins_dev">
             <info>
                 <title>Plugin description</title>
             </info>
@@ -1408,7 +1429,7 @@
                 </variablelist>
             </para>
         </sect1>
-        <sect1>
+        <sect1 xml:id="process_dev">
             <info>
                 <title>Development process</title>
             </info>
