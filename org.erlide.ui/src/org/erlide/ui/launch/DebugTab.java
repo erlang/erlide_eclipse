@@ -211,6 +211,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
 					final String projs = input.getAttribute(
 							IErlLaunchAttributes.PROJECTS, "").trim();
+					if (projs.length() == 0) {
+						return;
+					}
 					final String[] projNames = projs.split(";");
 					if (projNames == null) {
 						return;
