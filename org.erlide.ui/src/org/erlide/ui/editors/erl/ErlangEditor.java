@@ -100,9 +100,9 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -341,7 +341,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
 				IErlangHelpContextIds.INDENT_ACTION);
-		if (BackendManager.isTest()) {
+		if (ErlideUtil.isTest()) {
 			testAction = new TestAction(ErlangEditorMessages
 					.getBundleForConstructedKeys(), "Test.", this, getModule());
 			testAction
@@ -383,7 +383,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected void editorContextMenuAboutToShow(final IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 
-		if (BackendManager.isTest()) {
+		if (ErlideUtil.isTest()) {
 			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
 		}
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);

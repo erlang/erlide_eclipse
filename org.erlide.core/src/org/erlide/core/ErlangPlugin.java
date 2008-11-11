@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -676,10 +675,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
 
 		String dev = "";
-		if (BackendManager.isDeveloper()) {
+		if (ErlideUtil.isDeveloper()) {
 			dev = " erlide developer version ***";
 		}
-		if (BackendManager.isTest()) {
+		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
 		ErlLogger
@@ -785,9 +784,9 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public static void log(IStatus status) {
-		ILog log = getDefault().getLog();
-		if (log != null) {
-			log.log(status);
+		ErlangPlugin plugin = getDefault();
+		if (plugin != null) {
+			plugin.getLog().log(status);
 		}
 	}
 

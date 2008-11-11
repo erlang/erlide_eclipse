@@ -181,4 +181,28 @@ public class ErlideUtil {
 		return getPath("ebin", bundle);
 	}
 
+	public static boolean isDeveloper() {
+		final String dev = System.getProperty("erlide.devel");
+		return dev != null && "true".equals(dev);
+	}
+
+	public static boolean isTest() {
+		final String test = System.getProperty("erlide.test");
+		return test != null && "true".equals(test);
+	}
+
+	public static boolean isEricssonUser() {
+		final String dev = System.getProperty("erlide.ericsson.user");
+		if (dev == null || !("true".equals(dev))) {
+			return false;
+		}
+		String s;
+		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+			s = "\\\\projhost\\tecsas\\shade\\erlide";
+		} else {
+			s = "/proj/tecsas/SHADE/erlide";
+		}
+		return new File(s).exists();
+	}
+
 }

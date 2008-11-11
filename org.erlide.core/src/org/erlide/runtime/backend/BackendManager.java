@@ -246,16 +246,6 @@ public final class BackendManager implements IEpmdListener {
 		return System.getProperty("erlide.label", null);
 	}
 
-	public static boolean isDeveloper() {
-		final String dev = System.getProperty("erlide.devel");
-		return dev != null && "true".equals(dev);
-	}
-
-	public static boolean isTest() {
-		final String test = System.getProperty("erlide.test");
-		return test != null && "true".equals(test);
-	}
-
 	public void addBackendListener(final IBackendListener listener) {
 		fListeners.add(listener);
 	}

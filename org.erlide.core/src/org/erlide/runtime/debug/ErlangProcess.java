@@ -195,6 +195,12 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		ErlLogger.debug("breakAt getMeta() " + getMeta());
 		final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
 				fBackend, getMeta());
+		if (stackAndBindings == null) {
+			ErlLogger.debug("could not retrieve stack -"
+					+ "- are there more than one debug sessions started?");
+			return;
+		}
+		ErlLogger.debug("breakAt getMeta() " + stackAndBindings);
 		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings
 				.elementAt(0);
 		OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);

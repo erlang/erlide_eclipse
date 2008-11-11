@@ -128,7 +128,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 		new InitializeAfterLoadJob().schedule();
 
-		if (BackendManager.isDeveloper()) {
+		if (ErlideUtil.isDeveloper()) {
 			BackendManagerPopup.init();
 		}
 
