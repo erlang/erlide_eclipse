@@ -63,7 +63,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
-			"erlide.connect.delay", "500"));
+			"erlide.connect.delay", "250"));
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = Boolean
