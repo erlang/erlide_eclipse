@@ -17,15 +17,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,6 +40,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.ui.prefs.tickets.TicketInfo;
 
 public class ReportPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
@@ -56,28 +52,6 @@ public class ReportPreferencePage extends PreferencePage implements
 	Text fbody;
 	Text ftitle;
 
-	class ReportData {
-		String title;
-		String contact;
-		String body;
-		String plog;
-		String elog;
-
-		public ReportData(String title, String body, String contact,
-				boolean attach) {
-			this.title = title;
-			this.contact = contact;
-			this.body = body;
-			if (attach) {
-				this.plog = fetchPlatformLog();
-				this.elog = fetchErlideLog();
-			}
-		}
-	}
-
-	final private String URL = "https://shibumi.fogbugz.com/ScoutSubmit.asp?"
-			+ "ScoutUserName=field_tester&ScoutProject=erlide&ScoutArea=Misc&"
-			+ "Extra=%s&Description=%s&Email=%s";
 	private Label responseLabel;
 	Button attachTechnicalDataButton;
 
@@ -149,14 +123,24 @@ public class ReportPreferencePage extends PreferencePage implements
 
 	protected void postReport() {
 		final String location = getLocation();
-		Job j = new Job("send error report") {
-			ReportData data = new ReportData(ftitle.getText(), fcontact
-					.getText(), fbody.getText(), attachTechnicalDataButton
-					.getSelection());
+		final boolean attach = attachTechnicalDataButton.getSelection();
+		final String title = ftitle.getText();
+		final String contact = fcontact.getText();
+		final String body = fbody.getText();
 
+		Job j = new Job("send error report") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
+				String plog = "N/A";
+				String elog = "N/A";
+				if (attach) {
+					plog = fetchPlatformLog();
+					elog = fetchErlideLog();
+				}
+				TicketInfo data = new TicketInfo(title, contact, body, plog,
+						elog);
 				sendToDisk(location, data);
+				// new AssemblaHandler().send(data);
 				return Status.OK_STATUS;
 			}
 		};
@@ -188,20 +172,20 @@ public class ReportPreferencePage extends PreferencePage implements
 				+ ".txt";
 	}
 
-	void sendToDisk(String location, ReportData data) {
+	void sendToDisk(String location, TicketInfo data) {
 		File report = new File(location);
 		try {
 			report.createNewFile();
 			OutputStream out = new FileOutputStream(report);
 			PrintWriter pw = new PrintWriter(out);
 			try {
-				pw.println(data.title);
-				pw.println(data.contact);
-				pw.println(data.body);
+				pw.println(data.summary);
+				pw.println(data.reporter);
+				pw.println(data.description);
 				pw.println("\n==================================\n");
-				pw.println(data.plog);
+				pw.println(data.platformLog);
 				pw.println("\n==================================\n");
-				pw.println(data.elog);
+				pw.println(data.erlideLog);
 			} finally {
 				pw.flush();
 				out.close();
@@ -213,69 +197,14 @@ public class ReportPreferencePage extends PreferencePage implements
 
 	}
 
-	@SuppressWarnings("unused")
-	private void sendToFogBugz() {
-		String extra;
-		String descr;
-		String email;
-		try {
-			extra = URLEncoder.encode(fbody.getText(), "UTF-8");
-			descr = URLEncoder.encode(ftitle.getText(), "UTF-8");
-			email = URLEncoder.encode(fcontact.getText(), "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-			extra = "";
-			descr = "";
-			email = "";
-		}
-		final String fe = extra;
-		final String fd = descr;
-		final String fm = email;
-
-		Job j = new Job("send error report") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					Proxy proxy = Proxy.NO_PROXY;
-					if ("true".equals(System.getProperty("proxySet"))) {
-						proxy = new Proxy(Proxy.Type.HTTP,
-								new InetSocketAddress(System
-										.getProperty("proxyHost"), Integer
-										.parseInt(System
-												.getProperty("proxyPort"))));
-					}
-					URLConnection c = new URL(String.format(URL, fe, fd, fm))
-							.openConnection(proxy);
-
-					// TODO use POST!
-
-					BufferedReader dis = new BufferedReader(
-							new InputStreamReader(c.getInputStream()));
-					String inputLine;
-
-					while ((inputLine = dis.readLine()) != null) {
-						System.out.println(inputLine);
-					}
-					dis.close();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		j.setPriority(Job.SHORT);
-		j.setSystem(true);
-		// j.schedule();
-	}
-
 	public void init(IWorkbench workbench) {
 	}
 
 	String fetchPlatformLog() {
-		StringBuffer result = new StringBuffer();
+		List<String> result = new ArrayList<String>();
 		File log = Platform.getLogFileLocation().toFile();
+		int i = 0;
+		int last = 0;
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(log), "UTF-8"));
@@ -288,12 +217,23 @@ public class ReportPreferencePage extends PreferencePage implements
 				if (line.length() == 0) {
 					continue;
 				}
-				result.append(line).append('\n');
+				result.add(line);
+				if (line.startsWith("!SESSION ")) {
+					last = i;
+				}
+				i++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result.toString();
+		for (int j = 0; j < last; j++) {
+			result.remove(0);
+		}
+		StringBuffer buf = new StringBuffer();
+		for (String s : result) {
+			buf.append(s).append("\n");
+		}
+		return buf.toString();
 	}
 
 	String fetchErlideLog() {
