@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -784,7 +785,10 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+		ILog log = getDefault().getLog();
+		if (log != null) {
+			log.log(status);
+		}
 	}
 
 	public static void logErrorMessage(String message) {
