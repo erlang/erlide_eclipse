@@ -241,12 +241,19 @@ public class CodeManager implements IRegistryChangeListener {
 	public void register(final ICodeBundle p) {
 		if (plugins.indexOf(p) < 0) {
 			plugins.add(p);
-			final String localDir = p.getEbinDir().replaceAll("\\\\", "/");
-			final boolean accessible = ErlideUtil.isAccessible(fBackend,
-					localDir);
-			if (localDir != null && accessible) {
-				ErlangCode.addPathA(fBackend, localDir);
+			String ebinDir = p.getEbinDir();
+			if (ebinDir != null) {
+				final String localDir = ebinDir.replaceAll("\\\\", "/");
+				final boolean accessible = ErlideUtil.isAccessible(fBackend,
+						localDir);
+				if (accessible) {
+					ErlangCode.addPathA(fBackend, localDir);
+				} else {
+					loadPluginCode(p);
+				}
 			} else {
+				ErlLogger.warn("Could not find 'ebin' in bundle %s.", p
+						.getBundle().getSymbolicName());
 				loadPluginCode(p);
 			}
 			p.start();

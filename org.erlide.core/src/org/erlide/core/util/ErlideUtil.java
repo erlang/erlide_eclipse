@@ -72,6 +72,11 @@ public class ErlideUtil {
 	@SuppressWarnings("unchecked")
 	public static void unpackBeamFiles(ICodeBundle p) {
 		String location = p.getEbinDir();
+		if (location == null) {
+			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()
+					.getSymbolicName());
+			return;
+		}
 		File ebinDir = new File(location + "/ebin");
 		ebinDir.mkdirs();
 		for (String fn : ebinDir.list()) {
@@ -164,11 +169,9 @@ public class ErlideUtil {
 					return path;
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.error(e);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.error(e);
 			}
 		}
 		return null;
