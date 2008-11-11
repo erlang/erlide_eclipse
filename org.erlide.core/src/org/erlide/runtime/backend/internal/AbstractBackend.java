@@ -62,6 +62,9 @@ import erlang.ErlideBackend;
 public abstract class AbstractBackend extends OtpNodeStatus implements
 		IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
 
+	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
+			"erlide.connect.delay", "500"));
+
 	// use this for debugging
 	private static final boolean CHECK_RPC = Boolean
 			.getBoolean("org.erlide.checkrpc");
@@ -144,7 +147,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 50;
 			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, 200);
+				fAvailable = fNode.ping(fPeer, RETRY_DELAY);
 				tries--;
 			}
 			ErlLogger.debug("connected!");
