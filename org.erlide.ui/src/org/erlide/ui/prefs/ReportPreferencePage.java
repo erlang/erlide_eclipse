@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -40,6 +40,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -48,7 +49,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class ReportPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private Label locationLabel;
+	private Button sendButton;
+	private Label responseLabel_1;
+	private Text locationLabel;
 	Text fcontact;
 	Text fbody;
 	Text ftitle;
@@ -106,7 +109,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				.setText("Attach technical data (eclipse and erlide logs)");
 		attachTechnicalDataButton.setBounds(46, 256, 260, 20);
 
-		final Button sendButton = new Button(panel, SWT.NONE);
+		sendButton = new Button(panel, SWT.NONE);
 		sendButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -122,14 +125,22 @@ public class ReportPreferencePage extends PreferencePage implements
 
 		responseLabel = new Label(panel, SWT.CENTER);
 		responseLabel.setVisible(false);
-		responseLabel.setText("The report was saved in the location below,"
-				+ " you can close this window.");
+		responseLabel
+				.setText("The report was saved in the location below, you can now close this window.");
 		responseLabel.setBounds(47, 315, 415, 15);
 
-		locationLabel = new Label(panel, SWT.CENTER | SWT.WRAP);
+		locationLabel = new Text(panel, SWT.CENTER | SWT.WRAP | SWT.READ_ONLY);
+		locationLabel.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WIDGET_BACKGROUND));
 		locationLabel.setText("location");
-		locationLabel.setBounds(46, 336, 415, 38);
+		locationLabel.setBounds(46, 336, 415, 23);
 		locationLabel.setVisible(false);
+
+		responseLabel_1 = new Label(panel, SWT.CENTER);
+		responseLabel_1.setBounds(47, 364, 415, 15);
+		responseLabel_1.setVisible(false);
+		responseLabel_1
+				.setText("Please attach the report if you are writing a trouble ticket.");
 
 		noDefaultAndApplyButton();
 
@@ -156,6 +167,8 @@ public class ReportPreferencePage extends PreferencePage implements
 		responseLabel.setVisible(true);
 		locationLabel.setText(location);
 		locationLabel.setVisible(true);
+		responseLabel_1.setVisible(true);
+		sendButton.setEnabled(false);
 	}
 
 	String getLocation() {
