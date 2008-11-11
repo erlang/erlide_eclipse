@@ -33,8 +33,10 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -166,14 +168,34 @@ public class ErlangLaunchConfigurationDelegate extends
 				target.sendStarted();
 			}
 
-			if (module.length() > 0 && function.length() > 0) {
-				if (args.length() > 0) {
-					// TODO issue #84
-					backend.rpc(module, function, "s", args);
-				} else {
-					backend.rpc(module, function, "");
-				}
-			}
+			DebugPlugin.getDefault().addDebugEventListener(
+					new IDebugEventSetListener() {
+
+						public void handleDebugEvents(DebugEvent[] events) {
+
+							try {
+								if (module.length() > 0
+										&& function.length() > 0) {
+									if (args.length() > 0) {
+										// TODO issue #84
+										backend
+												.rpc(module, function, "s",
+														args);
+									} else {
+										backend.rpc(module, function, "");
+									}
+								}
+							} catch (Exception e) {
+								ErlLogger
+										.debug(
+												"Could not run initial call %s:%s(\"%s\")",
+												module, function, args);
+								e.printStackTrace();
+							}
+							DebugPlugin.getDefault().removeDebugEventListener(
+									this);
+						}
+					});
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
 			e.printStackTrace();
