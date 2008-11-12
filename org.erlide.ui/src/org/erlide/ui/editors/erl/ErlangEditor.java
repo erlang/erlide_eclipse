@@ -673,10 +673,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input element is
-	 * reconciled in advance. If it is <code>false</code> this method only
-	 * returns a result if the editor's input element does not need to be
-	 * reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input
+	 * element is reconciled in advance. If it is <code>false</code> this
+	 * method only returns a result if the editor's input element does not need
+	 * to be reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -761,9 +761,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -861,8 +860,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to be
-	 *            done
+	 *            <code>true</code> if check for active outline page needs to
+	 *            be done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1171,9 +1170,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see
-				 * org.eclipse.jface.text.information.IInformationProviderExtension2
-				 * #getInformationPresenterControlCreator()
+				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
+				 *      #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */
@@ -1324,8 +1322,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				true, true);
 		while (e.hasNext()) {
 			final Annotation a = e.next();
-			if ((a instanceof IErlangAnnotation && ((IErlangAnnotation) a)
-					.hasOverlay())
+			if (a instanceof IErlangAnnotation
+					&& ((IErlangAnnotation) a).hasOverlay()
 					|| !isNavigationTarget(a)) {
 				continue;
 			}
@@ -1339,9 +1337,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& p.offset + p.getLength() == offset + length) {// ||
 				// p.includes(offset))
 				// {
-				if (containingAnnotation == null
-						|| (forward && p.length >= containingAnnotationPosition.length)
-						|| (!forward && p.length < containingAnnotationPosition.length)) {
+				if (containingAnnotation == null || forward
+						&& p.length >= containingAnnotationPosition.length
+						|| !forward
+						&& p.length < containingAnnotationPosition.length) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1356,7 +1355,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					}
 
 					if (currentDistance < distance
-							|| (currentDistance == distance && p.length < nextAnnotationPosition.length)) {
+							|| currentDistance == distance
+							&& p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;
@@ -1369,7 +1369,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					}
 
 					if (currentDistance < distance
-							|| (currentDistance == distance && p.length < nextAnnotationPosition.length)) {
+							|| currentDistance == distance
+							&& p.length < nextAnnotationPosition.length) {
 						distance = currentDistance;
 						nextAnnotation = a;
 						nextAnnotationPosition = p;

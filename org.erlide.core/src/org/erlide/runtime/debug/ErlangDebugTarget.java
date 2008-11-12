@@ -447,12 +447,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				handleIntEvent((OtpErlangTuple) t.elementAt(1));
 			} else if (event.equals("attached")) {
 				final OtpErlangPid pid = (OtpErlangPid) t.elementAt(1);
-				final OtpErlangPid self = fBackend.getEventPid();
-				final OtpErlangPid metaPid = ErlideDebug.attached(fBackend,
-						pid, self);
-				ErlLogger.debug("attached " + pid + "  meta " + metaPid);
-				if (metaPid != null) {
-					putMetaPid(metaPid, pid);
+				if (getMetaFromPid(pid) == null) {
+					final OtpErlangPid self = fBackend.getEventPid();
+					final OtpErlangPid metaPid = ErlideDebug.attached(fBackend,
+							pid, self);
+					ErlLogger.debug("attached " + pid + "  meta " + metaPid);
+					if (metaPid != null) {
+						putMetaPid(metaPid, pid);
+					}
 				}
 			}
 			return true;

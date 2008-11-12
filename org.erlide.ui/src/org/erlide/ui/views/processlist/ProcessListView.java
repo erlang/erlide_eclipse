@@ -48,6 +48,7 @@ import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IBackendVisitor;
+import org.erlide.runtime.backend.RuntimeInfo;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -73,11 +74,12 @@ public class ProcessListView extends ViewPart {
 
 		}
 
-		public void inputChanged(Viewer vwr, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer vwr, final Object oldInput,
+				final Object newInput) {
 			// TODO subscribe to backendmanager events
 		}
 
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			return BackendManager.getDefault().getAllBackends();
 		}
 	}
@@ -85,18 +87,19 @@ public class ProcessListView extends ViewPart {
 	public static class BackendLabelProvider extends LabelProvider {
 
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			return null;
 		}
 
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			final IBackend b = (IBackend) element;
-			final String s = b.getInfo().getName();
-			if (s == null) {
-				return "<default>";
-			}
-			return s;
+			final RuntimeInfo info = b.getInfo();
+			final String s = info.getName();
+			// if (s == null) {
+			// return "<default>";
+			// }
+			return s + "  " + info.getNodeName();
 		}
 
 	}
@@ -123,7 +126,8 @@ public class ProcessListView extends ViewPart {
 	class ViewContentProvider implements IStructuredContentProvider,
 			IBackendEventListener {
 
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer v, final Object oldInput,
+				final Object newInput) {
 		}
 
 		public void dispose() {
@@ -133,7 +137,7 @@ public class ProcessListView extends ViewPart {
 			}
 		}
 
-		public Object[] getElements(Object parent) {
+		public Object[] getElements(final Object parent) {
 			final ExecutionBackend bk = getBackend();
 			if (bk == null) {
 				return new OtpErlangObject[] {};
@@ -157,7 +161,7 @@ public class ProcessListView extends ViewPart {
 		/**
 		 * @see org.erlide.runtime.backend.IBackendEventListener#eventReceived(com.ericsson.otp.erlang.OtpErlangObject)
 		 */
-		public void eventReceived(OtpErlangObject event) {
+		public void eventReceived(final OtpErlangObject event) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					viewer.refresh();
@@ -169,7 +173,7 @@ public class ProcessListView extends ViewPart {
 	static class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
-		public String getColumnText(Object obj, int index) {
+		public String getColumnText(final Object obj, final int index) {
 			final OtpErlangTuple t = (OtpErlangTuple) obj;
 			final OtpErlangObject e = t.elementAt(index + 1);
 			if (e instanceof OtpErlangString) {
@@ -178,7 +182,7 @@ public class ProcessListView extends ViewPart {
 			return e.toString();
 		}
 
-		public Image getColumnImage(Object obj, int index) {
+		public Image getColumnImage(final Object obj, final int index) {
 			if (index == 0) {
 				return getImage(obj);
 			}
@@ -186,7 +190,7 @@ public class ProcessListView extends ViewPart {
 		}
 
 		@Override
-		public Image getImage(Object obj) {
+		public Image getImage(final Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
 					ISharedImages.IMG_OBJ_ELEMENT);
 		}
@@ -206,7 +210,7 @@ public class ProcessListView extends ViewPart {
 	 * it.
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		label = new Label(parent, SWT.NULL);
 		backends = new ComboViewer(parent, SWT.SINGLE | SWT.V_SCROLL);
 		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
@@ -284,13 +288,13 @@ public class ProcessListView extends ViewPart {
 		label.setText("Erlang backend node");
 
 		// TODO this is wrong - all backends should be inited
-		IBackend ideBackend = BackendManager.getDefault().getIdeBackend();
+		final IBackend ideBackend = BackendManager.getDefault().getIdeBackend();
 		if (ideBackend != null) {
 			ErlideProclist.processListInit(ideBackend.asExecution());
 		}
 		BackendManager.getDefault().forEachProjectBackend(
 				new IBackendVisitor() {
-					public void run(IBackend b) {
+					public void run(final IBackend b) {
 						ErlideProclist.processListInit(b.asExecution());
 					}
 				});
@@ -315,7 +319,7 @@ public class ProcessListView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				ProcessListView.this.fillContextMenu(manager);
 			}
 		});
@@ -330,18 +334,18 @@ public class ProcessListView extends ViewPart {
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		manager.add(refreshAction);
 		manager.add(new Separator());
 	}
 
-	void fillContextMenu(IMenuManager manager) {
+	void fillContextMenu(final IMenuManager manager) {
 		manager.add(refreshAction);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(refreshAction);
 	}
 
@@ -398,13 +402,13 @@ public class ProcessListView extends ViewPart {
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
-			public void doubleClick(DoubleClickEvent event) {
+			public void doubleClick(final DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
 	}
 
-	void showMessage(String message) {
+	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
 				"Process list view", message);
 	}

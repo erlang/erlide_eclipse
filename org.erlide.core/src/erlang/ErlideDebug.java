@@ -72,9 +72,13 @@ public class ErlideDebug {
 		OtpErlangObject res = null;
 		try {
 			res = backend.rpcx("erlide_debug", "attached", "xx", pid, jpid);
-			final OtpErlangTuple t = (OtpErlangTuple) res;
-			final OtpErlangPid meta = (OtpErlangPid) t.elementAt(1);
-			return meta;
+			if (res instanceof OtpErlangTuple) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				final OtpErlangPid meta = (OtpErlangPid) t.elementAt(1);
+				return meta;
+			} else {
+				return null;
+			}
 		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,7 +118,8 @@ public class ErlideDebug {
 
 	@SuppressWarnings("boxing")
 	public static boolean interpret(final IBackend backend,
-			final String module, final boolean distributed, final boolean interpret) {
+			final String module, final boolean distributed,
+			final boolean interpret) {
 		try {
 			final OtpErlangObject res = backend.rpcx("erlide_debug",
 					"interpret", "soo", module, distributed, interpret);
