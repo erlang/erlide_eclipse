@@ -696,14 +696,16 @@
                                 only connects to the backend that hosts the Erlide functionality,
                                 not the ones where the code under development is run. This will be
                                 fixed in the future.</para>
-                            <para>The console has history
-                                        (<keycombo><keycap>Ctrl</keycap><keycap>Up</keycap></keycombo>
-                                and
-                                <keycombo><keycap>Ctrl</keycap><keycap>Down</keycap></keycombo>),
-                                syntax highlighting, code completion and other experimental
-                                features, like colored background for text depending on which
-                                process it was written from (useful when several processes output
-                                trace messages).</para>
+                            <para>The console has history (<keycombo>
+                                    <keycap>Ctrl</keycap>
+                                    <keycap>Up</keycap>
+                                </keycombo> and <keycombo>
+                                    <keycap>Ctrl</keycap>
+                                    <keycap>Down</keycap>
+                                </keycombo>), syntax highlighting, code completion and other
+                                experimental features, like colored background for text depending on
+                                which process it was written from (useful when several processes
+                                output trace messages).</para>
                             <para>When lrunning/debugging, a "normal" console will show up and it
                                 can be used to interact with the runtime, but it has limited
                                 functionality.</para>
@@ -746,9 +748,11 @@
                     <varlistentry>
                         <term>Debugger</term>
                         <listitem>
-                            <para>Breakpoints, single-stepping Inspection and modification of local
-                                variables. Breakpoints can be set by double-clicking on the
-                                left-side gutter in the editor.</para>
+                            <para>We offer all the features of the standard debugger, because we are
+                                using it.</para>
+                            <para>Breakpoints, single-stepping. Breakpoints can be set by
+                                double-clicking on the left-side gutter in the editor.</para>
+                            <para>Inspection and modification of local variables.</para>
                             <para>Distributed debugger, debug on multiple nodes.</para>
                         </listitem>
                     </varlistentry>
@@ -1051,6 +1055,24 @@
                         <imagedata fileref="../images/debug_debug.png" format="PNG"/>
                     </imageobject>
                 </mediaobject></para>
+            <sect2>
+                <info>
+                    <title>Debugging</title>
+                </info>
+                <para>While in the debugger, you can do most of the things that are expected while
+                    debugging: set breakpoints, execute code one line at the time, viewing local
+                    variables and even modifying them. Until a more detailed documentation of the
+                    debugger will be written, here come a couple of pictures showing a line of code
+                    executed with a changed variable. Before: <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/dbg1.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject> ... and after: <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="../images/dbg2.png" format="PNG"/>
+                        </imageobject>
+                    </mediaobject></para>
+            </sect2>
         </sect1>
         <sect1 xml:id="navigator">
             <info>
