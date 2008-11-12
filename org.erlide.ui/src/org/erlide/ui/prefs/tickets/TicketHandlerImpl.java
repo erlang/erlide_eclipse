@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -27,18 +27,21 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 
 	public TicketStatus send(TicketInfo info) {
 		String msg = infoToMessage(info);
-		URL url;
-		String resp;
 		try {
-			url = getLoginURL("", "");
+			URL url = getLoginURL(System
+					.getProperty("erlide.assembla.user", ""), System
+					.getProperty("erlide.assembla.password", ""));
+			if (url == null) {
+				return new TicketStatus(false, 0);
+			}
 			login(url);
 			url = getURL();
-			resp = post(url, msg);
+			String resp = post(url, msg);
 			TicketStatus result = parseMessage(resp);
 			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			return new TicketStatus(false, 0);
 		}
 	}
 

@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.ui.prefs.tickets.AssemblaHandler;
 import org.erlide.ui.prefs.tickets.TicketInfo;
 
 public class ReportPreferencePage extends PreferencePage implements
@@ -140,7 +141,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				TicketInfo data = new TicketInfo(title, contact, body, plog,
 						elog);
 				sendToDisk(location, data);
-				// new AssemblaHandler().send(data);
+				new AssemblaHandler().send(data);
 				return Status.OK_STATUS;
 			}
 		};
