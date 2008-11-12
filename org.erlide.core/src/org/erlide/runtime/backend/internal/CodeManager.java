@@ -44,14 +44,14 @@ public class CodeManager implements IRegistryChangeListener {
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
 
-	private final List<ICodeBundle> plugins;
+	private final List<ICodeBundle> codeBundles;
 
 	// only to be called by AbstractBackend
 	CodeManager(final IBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
-		plugins = new ArrayList<ICodeBundle>(10);
+		codeBundles = new ArrayList<ICodeBundle>(10);
 	}
 
 	private PathItem findItem(final List<PathItem> l, final String p) {
@@ -239,16 +239,20 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @see org.erlide.runtime.backend.ICodeManager#register(ICodeBundle)
 	 */
 	public void register(final ICodeBundle p) {
-		if (plugins.indexOf(p) < 0) {
-			plugins.add(p);
+		if (codeBundles.indexOf(p) < 0) {
+			codeBundles.add(p);
 			String ebinDir = p.getEbinDir();
 			if (ebinDir != null) {
 				final String localDir = ebinDir.replaceAll("\\\\", "/");
 				final boolean accessible = ErlideUtil.isAccessible(fBackend,
 						localDir);
 				if (accessible) {
+					ErlLogger.debug("adding %s to code path for %s", localDir,
+							fBackend.getInfo());
 					ErlangCode.addPathA(fBackend, localDir);
 				} else {
+					ErlLogger.debug("loading %s for %s", p.getBundle()
+							.getSymbolicName(), fBackend.getInfo());
 					loadPluginCode(p);
 				}
 			} else {
@@ -264,7 +268,7 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
 	 */
 	public void unregister(final ICodeBundle p) {
-		plugins.remove(p);
+		codeBundles.remove(p);
 		unloadPluginCode(p);
 	}
 

@@ -579,6 +579,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 				getCodeManager().register(element);
 			}
 		}
+		try {
+			OtpErlangObject path = rpcx("code", "get_path", "");
+			ErlLogger.debug("code path for %s: %s", getName(), path);
+		} catch (Throwable e) {
+		}
 	}
 
 	public void startCodeServer() {

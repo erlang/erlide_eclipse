@@ -400,8 +400,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	}
 
 	public void start() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static void createStandardGroups(final IMenuManager menu) {
