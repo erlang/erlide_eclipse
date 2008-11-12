@@ -64,13 +64,14 @@ import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 
 /**
- * The <code>ErlModelManager</code> manages instances of <code>IErlModel</code>.
- * <code>IElementChangedListener</code>s register with the
- * <code>ErlModelManager</code>, and receive <code>ElementChangedEvent</code>s
- * for all <code>IErlModel</code>s.
+ * The <code>ErlModelManager</code> manages instances of
+ * <code>IErlModel</code>. <code>IElementChangedListener</code>s register
+ * with the <code>ErlModelManager</code>, and receive
+ * <code>ElementChangedEvent</code>s for all <code>IErlModel</code>s.
  * <p>
  * The single instance of <code>ErlModelManager</code> is available from the
  * static method <code>ErlModelManager.getErlangModelManager()</code>.
@@ -134,17 +135,17 @@ public class ErlModelManager implements IErlModelManager {
 
 	/**
 	 * Returns the Erlang element corresponding to the given resource, or
-	 * <code>null</code> if unable to associate the given resource with a Erlang
-	 * element.
+	 * <code>null</code> if unable to associate the given resource with a
+	 * Erlang element.
 	 * <p>
 	 * The resource must be one of:
 	 * <ul>
 	 * <li>a project - the element returned is the corresponding
 	 * <code>IErlProject</code></li>
-	 * <li>a <code>.erl</code> file - the element returned is the corresponding
-	 * <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the corresponding
-	 * <code>IErlBeamFile</code></li>
+	 * <li>a <code>.erl</code> file - the element returned is the
+	 * corresponding <code>IErlModule</code></li>
+	 * <li>a <code>.beam</code> file - the element returned is the
+	 * corresponding <code>IErlBeamFile</code></li>
 	 * <li>a folder - the element returned is the corresponding
 	 * <code>IErlPackage</code> -- not implemented yet</li>
 	 * <li>the workspace root resource - the element returned is the
@@ -176,16 +177,16 @@ public class ErlModelManager implements IErlModelManager {
 
 	/**
 	 * Returns the Erlang element corresponding to the given file, its project
-	 * being the given project. Returns <code>null</code> if unable to associate
-	 * the given file with a Erlang element.
+	 * being the given project. Returns <code>null</code> if unable to
+	 * associate the given file with a Erlang element.
 	 * 
 	 * <p>
 	 * The file must be one of:
 	 * <ul>
-	 * <li>a <code>.erl</code> file - the element returned is the corresponding
-	 * <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the corresponding
-	 * <code>IClassFile</code></li>
+	 * <li>a <code>.erl</code> file - the element returned is the
+	 * corresponding <code>IErlModule</code></li>
+	 * <li>a <code>.beam</code> file - the element returned is the
+	 * corresponding <code>IClassFile</code></li>
 	 * </ul>
 	 * <p>
 	 * Creating a Erlang element has the side effect of creating and opening all
@@ -254,7 +255,7 @@ public class ErlModelManager implements IErlModelManager {
 			return (IErlModule) elements.get(key);
 		}
 		final String ext = file.getFileExtension();
-		if (ErlModule.isModuleExt(ext)) {
+		if (ErlideUtil.isModuleExt(ext)) {
 			String initialText = null;
 			if (file.exists()) {
 				try {
@@ -290,7 +291,7 @@ public class ErlModelManager implements IErlModelManager {
 		}
 		final IPath path = new Path(key);
 		final String ext = path.getFileExtension();
-		if (ErlModule.isModuleExt(ext)) {
+		if (ErlideUtil.isModuleExt(ext)) {
 			final IErlModule module = new ErlModule(project, name, ext, text,
 					null);
 			elements.put(key, module);
@@ -331,8 +332,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * <ul>
 	 * <li>a <code>.Erlang</code> file - the element returned is the
 	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the corresponding
-	 * <code>IBeamFile</code></li>
+	 * <li>a <code>.beam</code> file - the element returned is the
+	 * corresponding <code>IBeamFile</code></li>
 	 * </ul>
 	 * <p>
 	 * Creating a Erlang element has the side effect of creating and opening all
@@ -362,8 +363,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @param folder
 	 *            the given folder
 	 * @return the package fragment or package fragment root corresponding to
-	 *         the given folder, or <code>null</code> if unable to associate the
-	 *         given folder with a Erlang element
+	 *         the given folder, or <code>null</code> if unable to associate
+	 *         the given folder with a Erlang element
 	 */
 	public IErlElement create(final IFolder folder) {
 		return create(folder, null/* unknown Erlang project */);
@@ -371,8 +372,8 @@ public class ErlModelManager implements IErlModelManager {
 
 	/**
 	 * Returns the Erlang element corresponding to the given resource, or
-	 * <code>null</code> if unable to associate the given resource with a Erlang
-	 * element.
+	 * <code>null</code> if unable to associate the given resource with a
+	 * Erlang element.
 	 * <p>
 	 * The resource must be one of:
 	 * <ul>
@@ -382,8 +383,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * corresponding <code>IErlModule</code></li>
 	 * <li>a <code>.class</code> file - the element returned is the
 	 * corresponding <code>IClassFile</code></li>
-	 * <li>a <code>.jar</code> file - the element returned is the corresponding
-	 * <code>IPackageFragmentRoot</code></li>
+	 * <li>a <code>.jar</code> file - the element returned is the
+	 * corresponding <code>IPackageFragmentRoot</code></li>
 	 * <li>a folder - the element returned is the corresponding
 	 * <code>IPackageFragmentRoot</code> or <code>IPackageFragment</code></li>
 	 * <li>the workspace root resource - the element returned is the
@@ -396,8 +397,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @param resource
 	 *            the given resource
 	 * @return the Erlang element corresponding to the given resource, or
-	 *         <code>null</code> if unable to associate the given resource with
-	 *         a Erlang element
+	 *         <code>null</code> if unable to associate the given resource
+	 *         with a Erlang element
 	 */
 	public IErlElement create(final IResource resource) {
 		return create(resource, null);
@@ -474,7 +475,7 @@ public class ErlModelManager implements IErlModelManager {
 			}
 
 			ErlLogger.debug("change " + event.toString());
-			for (IResource rsrc : changed) {
+			for (final IResource rsrc : changed) {
 				ErlangCore.getModelManager().create(rsrc);
 			}
 		}
@@ -564,8 +565,9 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see org.erlide.core.erlang.IErlModelManager#prepareToSave(org.eclipse.core.resources.ISaveContext)
 	 */
 	public void prepareToSave(final ISaveContext context) /*
-														 * throws CoreException
-														 */
+	 * throws
+	 * CoreException
+	 */
 	{
 		// nothing to do
 	}
@@ -730,8 +732,8 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	/* Unused */
 	/*
-	 * private void saveBuiltState(PerProjectInfo info) throws CoreException {
-	 * // if (ErlangBuilder.DEBUG) // ErlLogger.debug(Util.bind( //
+	 * private void saveBuiltState(PerProjectInfo info) throws CoreException { //
+	 * if (ErlangBuilder.DEBUG) // ErlLogger.debug(Util.bind( //
 	 * "build.saveStateProgress", info.project.getName())); //$NON-NLS-1$ final
 	 * File file = getSerializationFile(info.fProject); if (file == null) {
 	 * return; } // long t = System.currentTimeMillis(); try { final
@@ -740,18 +742,18 @@ public class ErlModelManager implements IErlModelManager {
 	 * out.writeUTF("STATE"); //$NON-NLS-1$ if (info.fSavedState == null) {
 	 * out.writeBoolean(false); } else { out.writeBoolean(true); //
 	 * ErlangBuilder.writeState(info.savedState, out); } } finally {
-	 * out.close(); } } catch (final RuntimeException e) { try { file.delete();
-	 * } catch (final SecurityException se) { // could not delete file: cannot
-	 * do much more } throw new CoreException( new Status( IStatus.ERROR,
+	 * out.close(); } } catch (final RuntimeException e) { try { file.delete(); }
+	 * catch (final SecurityException se) { // could not delete file: cannot do
+	 * much more } throw new CoreException( new Status( IStatus.ERROR,
 	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
 	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ }
 	 * catch (final IOException e) { try { file.delete(); } catch (final
 	 * SecurityException se) { // could not delete file: cannot do much more }
 	 * throw new CoreException( new Status( IStatus.ERROR,
 	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
-	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ }
-	 * // if (ErlangBuilder.DEBUG) // { // t = System.currentTimeMillis() - t;
-	 * // ErlLogger.debug(Util.bind( // "build.saveStateComplete",
+	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ } //
+	 * if (ErlangBuilder.DEBUG) // { // t = System.currentTimeMillis() - t; //
+	 * ErlLogger.debug(Util.bind( // "build.saveStateComplete",
 	 * String.valueOf(t))); //$NON-NLS-1$ // } }
 	 */
 

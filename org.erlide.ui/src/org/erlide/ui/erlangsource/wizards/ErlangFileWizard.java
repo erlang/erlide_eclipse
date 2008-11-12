@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -37,6 +38,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.erlide.core.util.ErlideUtil;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -111,9 +113,9 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	 * or just replace its contents, and open the editor on the newly created
 	 * file.
 	 */
-
-	void doFinish(String containerName, String fileName, String skeleton,
-			IProgressMonitor monitor) throws CoreException {
+	public void doFinish(final String containerName, final String fileName,
+			final String skeleton, final IProgressMonitor monitor)
+			throws CoreException {
 
 		// ErlLogger.debug("Generating a file with skeleton: "+skeleton);
 
@@ -126,9 +128,14 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 					+ "\" does not exist.");
 		}
 		final IContainer container = (IContainer) resource;
-		final IFile file = container.getFile(new Path(fileName + ".erl"));
+		IPath path = new Path(fileName);
+		final String ext = path.getFileExtension();
+		if (!ErlideUtil.isModuleExt(ext)) {
+			path = path.addFileExtension("erl");
+		}
+		final IFile file = container.getFile(path);
 		try {
-			final InputStream stream = openContentStream(skeleton, fileName);
+			final InputStream stream = openContentStream(skeleton);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -160,12 +167,11 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	 * We will initialize file contents with a sample text.
 	 */
 
-	private InputStream openContentStream(String skeleton, String filename) {
-
+	private InputStream openContentStream(final String skeleton) {
 		return new ByteArrayInputStream(skeleton.getBytes());
 	}
 
-	private void throwCoreException(String message) throws CoreException {
+	private void throwCoreException(final String message) throws CoreException {
 		final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
 				IStatus.OK, message, null);
 		throw new CoreException(status);
@@ -177,7 +183,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	 * 
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(final IWorkbench workbench,
+			final IStructuredSelection selection) {
 		fSelection = selection;
 	}
 

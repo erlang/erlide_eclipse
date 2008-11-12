@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
@@ -62,9 +63,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	private Text fileText;
 	private Combo applications;
 	private Combo skeleton;
-	FunctionGroup functionGroup;
+	private FunctionGroup functionGroup;
 	private final ISelection fSelection;
-	Template[] behaviours;
+	private final Template[] behaviours;
 	private final ModifyListener fModifyListener;
 
 	/**
@@ -210,8 +211,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 	 * Uses the standard container selection dialog to choose the new value for
 	 * the container field.
 	 */
-
-	void handleBrowse() {
+	private void handleBrowse() {
 		final ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 				"Select new file container");
@@ -226,8 +226,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/**
 	 * Ensures that both text fields are set.
 	 */
-
-	void dialogChanged() {
+	private void dialogChanged() {
 		final IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(getContainerName()));
 		final String fileName = getFileName();
@@ -295,7 +294,11 @@ public class ErlangFileWizardPage extends WizardPage implements
 
 	private String parse(final Template template,
 			final TemplateContextType contextType) {
-		ModuleVariableResolver.getDefault().setModule(getFileName());
+		String s = getFileName();
+		if (ErlideUtil.hasModuleExt(s)) {
+			s = ErlideUtil.withoutExtension(s);
+		}
+		ModuleVariableResolver.getDefault().setModule(s);
 
 		ExportedFunctionsVariableResolver.getDefault().clearFunctions();
 		LocalFunctionsVariableResolver.getDefault().clearFunctions();

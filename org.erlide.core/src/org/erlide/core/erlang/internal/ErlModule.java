@@ -35,6 +35,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
@@ -48,7 +49,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
 	private final List<IErlComment> comments;
-	private String initialText;
+	private final String initialText;
 	private IErlScanner scanner;
 	private final IFile fFile;
 	private boolean parsed = false;
@@ -63,7 +64,7 @@ public class ErlModule extends Openable implements IErlModule {
 			final String ext, final String initialText, final IFile file) {
 		super(parent, name);
 		fFile = file;
-		moduleKind = extToModuleKind(ext);
+		moduleKind = ErlideUtil.extToModuleKind(ext);
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
 		this.initialText = initialText;
@@ -383,22 +384,6 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public IErlProject getProject() {
 		return (IErlProject) getParent();
-	}
-
-	private static ModuleKind extToModuleKind(final String ext) {
-		if (ext.equalsIgnoreCase("hrl")) {
-			return ModuleKind.HRL;
-		} else if (ext.equalsIgnoreCase("erl")) {
-			return ModuleKind.ERL;
-		} else if (ext.equalsIgnoreCase("yrl")) {
-			return ModuleKind.YRL;
-		} else {
-			return ModuleKind.BAD;
-		}
-	}
-
-	public static boolean isModuleExt(final String ext) {
-		return extToModuleKind(ext) != ModuleKind.BAD;
 	}
 
 	public Kind getKind() {

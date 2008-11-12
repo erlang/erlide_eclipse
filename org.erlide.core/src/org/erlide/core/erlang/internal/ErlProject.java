@@ -42,6 +42,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ISuffixConstants;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlangProjectProperties;
 
 /**
@@ -179,12 +180,7 @@ public class ErlProject extends Openable implements IErlProject,
 			} else if (element instanceof IFile) {
 				final IFile f = (IFile) element;
 				final String ext = f.getFileExtension();
-				if (ext != null && ErlModule.isModuleExt(ext)) {
-					// int l = f.getFileExtension().length();
-					// String mn = f.getName().substring(0, f.getName().length()
-					// - l - 1);
-
-					// ErlLogger.debug("--- l " + f.getName());
+				if (ext != null && ErlideUtil.isModuleExt(ext)) {
 					final IErlModule m = ErlangCore.getModelManager()
 							.createModuleFrom(f, this);
 					modules.add(m);
@@ -320,8 +316,8 @@ public class ErlProject extends Openable implements IErlProject,
 		 * arguments = new String[] { path.toString() }; } if
 		 * (ErlangCore.ERROR.equals(getOption(
 		 * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
-		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING;
-		 * } break; }
+		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
+		 * break; }
 		 */
 	}
 
@@ -382,8 +378,8 @@ public class ErlProject extends Openable implements IErlProject,
 		 * TODO: realizate findElement(IPath path) final String extension =
 		 * path.getFileExtension(); if
 		 * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
-		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath
-		 * = path.removeLastSegments(1); final String packageName =
+		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
+		 * path.removeLastSegments(1); final String packageName =
 		 * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
 		 * typeName = path.lastSegment(); typeName = typeName.substring(0,
 		 * typeName.length() - extension.length() - 1); String qualifiedName =
@@ -475,7 +471,7 @@ public class ErlProject extends Openable implements IErlProject,
 	public IPath getOutputLocation(final boolean createMarkers,
 			final boolean logProblems) throws ErlModelException {
 
-		ErlangProjectProperties props = new ErlangProjectProperties(
+		final ErlangProjectProperties props = new ErlangProjectProperties(
 				getProject());
 		return new Path(props.getOutputDir());
 	}
@@ -618,9 +614,9 @@ public class ErlProject extends Openable implements IErlProject,
 		if (!hasChildren()) {
 			open(null);
 		}
-		List<? extends IErlElement> r = getChildren();
-		ArrayList<IErlModule> result = new ArrayList<IErlModule>();
-		for (IErlElement e : r) {
+		final List<? extends IErlElement> r = getChildren();
+		final ArrayList<IErlModule> result = new ArrayList<IErlModule>();
+		for (final IErlElement e : r) {
 			result.add((IErlModule) e);
 		}
 		return result;

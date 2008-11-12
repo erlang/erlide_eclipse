@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
@@ -177,7 +177,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 					checkboxTreeViewer.setSubtreeChecked(dti, checked);
 				} else {
 					final String module = dti.getItem().getName();
-					final String moduleWoExtension = Util
+					final String moduleWoExtension = ErlideUtil
 							.withoutExtension(module);
 					final String project = dti.getItem().getProject().getName();
 					final boolean interpret = checked;

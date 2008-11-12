@@ -22,9 +22,12 @@ import java.util.Enumeration;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
+import org.erlide.core.erlang.IErlModule.ModuleKind;
+import org.erlide.core.erlang.internal.ErlModule;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
@@ -42,18 +45,21 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideUtil {
 
-	public static boolean isAccessible(IBackend backend, String localDir) {
+	public static boolean isAccessible(final IBackend backend,
+			final String localDir) {
 		try {
-			OtpErlangObject r = backend.rpcx("file", "read_file_info", "s",
-					localDir);
-			OtpErlangTuple result = (OtpErlangTuple) r;
-			String tag = ((OtpErlangAtom) result.elementAt(0)).atomValue();
+			final OtpErlangObject r = backend.rpcx("file", "read_file_info",
+					"s", localDir);
+			final OtpErlangTuple result = (OtpErlangTuple) r;
+			final String tag = ((OtpErlangAtom) result.elementAt(0))
+					.atomValue();
 			if ("ok".equals(tag)) {
-				OtpErlangTuple info = (OtpErlangTuple) result.elementAt(1);
-				String access = info.elementAt(3).toString();
-				int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
+				final OtpErlangTuple info = (OtpErlangTuple) result
+						.elementAt(1);
+				final String access = info.elementAt(3).toString();
+				final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
 				return (access.equals("read") || access.equals("read_write"))
-						&& ((mode & 4) == 4);
+						&& (mode & 4) == 4;
 			} else {
 				return false;
 			}
@@ -62,7 +68,7 @@ public class ErlideUtil {
 			ErlLogger.error(e);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
-		} catch (OtpErlangRangeException e) {
+		} catch (final OtpErlangRangeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -70,20 +76,20 @@ public class ErlideUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void unpackBeamFiles(ICodeBundle p) {
-		String location = p.getEbinDir();
+	public static void unpackBeamFiles(final ICodeBundle p) {
+		final String location = p.getEbinDir();
 		if (location == null) {
 			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()
 					.getSymbolicName());
 			return;
 		}
-		File ebinDir = new File(location + "/ebin");
+		final File ebinDir = new File(location + "/ebin");
 		ebinDir.mkdirs();
-		for (String fn : ebinDir.list()) {
+		for (final String fn : ebinDir.list()) {
 			if (fn.charAt(0) == '.') {
 				continue;
 			}
-			File b = new File(fn);
+			final File b = new File(fn);
 			b.delete();
 		}
 
@@ -101,7 +107,7 @@ public class ErlideUtil {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
-				Enumeration<?> e = b.getEntryPaths(dir_path);
+				final Enumeration<?> e = b.getEntryPaths(dir_path);
 				if (e == null) {
 					ErlLogger.debug("* !!! error loading plugin "
 							+ b.getSymbolicName());
@@ -114,19 +120,21 @@ public class ErlideUtil {
 							&& "beam".compareTo(path.getFileExtension()) == 0) {
 						final String m = path.removeFileExtension()
 								.lastSegment();
-						URL url = b.getEntry(s);
+						final URL url = b.getEntry(s);
 						ErlLogger.debug(" unpack: " + m);
-						File beam = new File(ebinDir, m + ".erl");
+						final File beam = new File(ebinDir, m + ".erl");
 						try {
 							beam.createNewFile();
-							FileOutputStream fs = new FileOutputStream(beam);
+							final FileOutputStream fs = new FileOutputStream(
+									beam);
 							try {
-								OtpErlangBinary bin = getBeamBinary(m, url);
+								final OtpErlangBinary bin = getBeamBinary(m,
+										url);
 								fs.write(bin.binaryValue());
 							} finally {
 								fs.close();
 							}
-						} catch (IOException e1) {
+						} catch (final IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
@@ -155,29 +163,29 @@ public class ErlideUtil {
 		}
 	}
 
-	public static String getPath(String name, Bundle b) {
-		URL entry = b.getEntry(name);
+	public static String getPath(final String name, final Bundle b) {
+		final URL entry = b.getEntry(name);
 		if (entry != null) {
 			URLConnection connection;
 			try {
 				connection = entry.openConnection();
 				if (connection instanceof BundleURLConnection) {
-					URL fileURL = ((BundleURLConnection) connection)
+					final URL fileURL = ((BundleURLConnection) connection)
 							.getFileURL();
-					URI uri = new URI(fileURL.toString());
-					String path = new File(uri).getAbsolutePath();
+					final URI uri = new URI(fileURL.toString());
+					final String path = new File(uri).getAbsolutePath();
 					return path;
 				}
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				ErlLogger.error(e);
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				ErlLogger.error(e);
 			}
 		}
 		return null;
 	}
 
-	public static String getEbinDir(Bundle bundle) {
+	public static String getEbinDir(final Bundle bundle) {
 		return getPath("ebin", bundle);
 	}
 
@@ -193,7 +201,7 @@ public class ErlideUtil {
 
 	public static boolean isEricssonUser() {
 		final String dev = System.getProperty("erlide.ericsson.user");
-		if (dev == null || !("true".equals(dev))) {
+		if (dev == null || !"true".equals(dev)) {
 			return false;
 		}
 		String s;
@@ -203,6 +211,35 @@ public class ErlideUtil {
 			s = "/proj/tecsas/SHADE/erlide";
 		}
 		return new File(s).exists();
+	}
+
+	public static boolean isModuleExt(final String ext) {
+		return extToModuleKind(ext) != ErlModule.ModuleKind.BAD;
+	}
+
+	public static ModuleKind extToModuleKind(final String ext) {
+		if (ext.equalsIgnoreCase("hrl")) {
+			return ModuleKind.HRL;
+		} else if (ext.equalsIgnoreCase("erl")) {
+			return ModuleKind.ERL;
+		} else if (ext.equalsIgnoreCase("yrl")) {
+			return ModuleKind.YRL;
+		} else {
+			return ModuleKind.BAD;
+		}
+	}
+
+	public static boolean hasModuleExt(final String s) {
+		final IPath p = new Path(s);
+		return isModuleExt(p.getFileExtension());
+	}
+
+	public static String withoutExtension(final String name) {
+		final int i = name.lastIndexOf('.');
+		if (i == -1) {
+			return name;
+		}
+		return name.substring(0, i);
 	}
 
 }
