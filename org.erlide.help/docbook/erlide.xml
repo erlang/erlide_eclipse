@@ -1081,14 +1081,13 @@
                     >https://erlide.svn.sourceforge.net/svnroot/erlide</link>. </para>
             <para>I recommend to check out and commit the code by following the procedure below, not
                 by checking out from within
-                Eclipse.<screen language="bash">
-<prompt>$</prompt><command> cd erlide.workspace</command>  # use your workspace's folder
-<prompt>$</prompt><command> svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</command>
-      </screen>This
-                is because from within Eclipse we can get atomic commits only per each project. In
-                order to get those across all projects, the operations need to be done at the
-                workspace level and thus the workspace needs to be a versioned directory. This is
-                important when branching and tagging.</para>
+                Eclipse.<screen language="bash"><prompt>$</prompt> <command>cd erlide.workspace</command>  # use your workspace's folder
+<prompt>$</prompt> <command>svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</command></screen>
+                On Windows, you can use TortoiseSVN to achieve the same effect.</para>
+            <para>This is because from within Eclipse we can get atomic commits only per each
+                project. In order to get those across all projects, the operations need to be done
+                at the workspace level and thus the workspace needs to be a versioned directory.
+                This is important when branching and tagging.</para>
             <para>Then go back to Eclipse and shut down the automatic builder (<menuchoice>
                     <guimenu>Project</guimenu>
                     <guimenuitem>Build Automatically</guimenuitem>
@@ -1178,20 +1177,15 @@
                     <varlistentry>
                         <term>org.erlide.core</term>
                         <listitem>
-                            <para>Here we find the classes that model the Erlang code.</para>
+                            <para>Here we find the classes that model the Erlang code and that
+                            </para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
                         <term>org.erlide.jinterface</term>
                         <listitem>
-                            <para>This is a wrapper around jinterface plus some minor
-                                additions.</para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>org.erlide.launching</term>
-                        <listitem>
-                            <para>This plugin manages Erlang backends.</para>
+                            <para>This is a wrapper around jinterface plus some extensions. It is
+                                Eclipse-independent.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
@@ -1240,18 +1234,16 @@
                     <para>The source code is stored in a Subversion repository. We use a standard
                         structure, where the Eclipse project directories lie directly under the
                         trunk:
-                        <screen>
-/
+                        <screen>/
   branches/
     RB_x/
       org.erlide.*
   tags/
     REL_y/
-    org.erlide.*
+      org.erlide.*
   trunk/
-    org.erlide.*
-</screen>This
-                        way, we can do a checkout on the whole trunk directly in a workspace
+    org.erlide.*</screen>
+                        This way, we can do a checkout on the whole trunk directly in a workspace
                         directory. This will allow to do atomic commits across all projects by using
                         an external <command>svn</command> client, because from within Eclipse the
                         atomicity is per project (a limitation of the Eclipse plugins).</para>
@@ -1263,11 +1255,15 @@
                     <para>
                         <itemizedlist spacing="compact">
                             <listitem>
-                                <para>The trunk will contain the bleeding edge of
-                                    development.</para>
+                                <para>The trunk will contain the bleeding edge of development, but
+                                    it should be buildable at any time.</para>
                             </listitem>
                             <listitem>
                                 <para>Release branches will be named RB-x.x </para>
+                            </listitem>
+                            <listitem>
+                                <para>Larger features should be implemented in separate
+                                    branches.</para>
                             </listitem>
                         </itemizedlist>
                     </para>
@@ -1278,6 +1274,13 @@
                     <title>Commit policies</title>
                 </info>
                 <para>To be specified.</para>
+            </sect2>
+            <sect2>
+                <info>
+                    <title>Testing</title>
+                </info>
+                <para>We strive to add both unit tests and "sanity" tests (the latter ones should
+                    check that a build is somewhat sane and didn't mess up anything basic). </para>
             </sect2>
         </sect1>
     </chapter>
