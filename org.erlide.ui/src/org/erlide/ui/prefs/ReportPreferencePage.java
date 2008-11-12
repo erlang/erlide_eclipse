@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.ui.prefs.tickets.AssemblaHandler;
 import org.erlide.ui.prefs.tickets.TicketInfo;
 
 public class ReportPreferencePage extends PreferencePage implements
@@ -141,7 +140,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				TicketInfo data = new TicketInfo(title, contact, body, plog,
 						elog);
 				sendToDisk(location, data);
-				new AssemblaHandler().send(data);
+				// new AssemblaHandler().send(data);
 				return Status.OK_STATUS;
 			}
 		};
@@ -204,8 +203,6 @@ public class ReportPreferencePage extends PreferencePage implements
 	String fetchPlatformLog() {
 		List<String> result = new ArrayList<String>();
 		File log = Platform.getLogFileLocation().toFile();
-		int i = 0;
-		int last = 0;
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(log), "UTF-8"));
@@ -218,17 +215,13 @@ public class ReportPreferencePage extends PreferencePage implements
 				if (line.length() == 0) {
 					continue;
 				}
-				result.add(line);
 				if (line.startsWith("!SESSION ")) {
-					last = i;
+					result.clear();
 				}
-				i++;
+				result.add(line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		for (int j = 0; j < last; j++) {
-			result.remove(0);
 		}
 		StringBuffer buf = new StringBuffer();
 		for (String s : result) {
