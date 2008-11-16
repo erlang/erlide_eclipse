@@ -171,7 +171,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			DebugPlugin.getDefault().addDebugEventListener(
 					new IDebugEventSetListener() {
 
-						public void handleDebugEvents(DebugEvent[] events) {
+						public void handleDebugEvents(final DebugEvent[] events) {
 
 							try {
 								if (module.length() > 0
@@ -185,7 +185,7 @@ public class ErlangLaunchConfigurationDelegate extends
 										backend.rpc(module, function, "");
 									}
 								}
-							} catch (Exception e) {
+							} catch (final Exception e) {
 								ErlLogger
 										.debug(
 												"Could not run initial call %s:%s(\"%s\")",
@@ -213,7 +213,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			final IMarker m = bp.getMarker();
 			final IResource r = m.getResource();
 			final String name = r.getName();
-			if (org.erlide.core.erlang.util.Util.isErlangFileName(name)) {
+			if (ErlideUtil.hasERLExt(name)) {
 				final IProject p = r.getProject();
 				if (projects.contains(p)) {
 					final String s = p.getName() + ":" + name;
@@ -306,8 +306,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		final IProject iprj = eprj.getProject();
 		try {
 			final IFolder r = iprj.getFolder(eprj.getOutputLocation());
-			final String beam = module.substring(0, module.length() - 4)
-					+ ".beam";
+			final String beam = ErlideUtil.withoutExtension(module) + ".beam";
 			final IFile f = r.getFile(beam);
 			if (f.exists()) {
 				final String de = interpret ? "" : "de";

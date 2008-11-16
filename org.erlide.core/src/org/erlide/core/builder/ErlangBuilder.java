@@ -475,8 +475,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			boolean shouldCompile = br == null;
 
 			if (br != null) {
-				final IErlProject eprj = ErlangCore.getModel()
-						.findErlangProject(project);
+				final IErlProject eprj = ErlangCore.getModel().findProject(
+						project);
 				if (eprj != null) {
 					final IErlModule m = eprj.getModule(resource.getName());
 					if (m != null) {
@@ -590,7 +590,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	private void createTaskMarkers(final IProject project,
 			final IResource resource) {
-		final IErlProject p = ErlangCore.getModel().findErlangProject(project);
+		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
 			try {
 				final IErlModule m = p.getModule(resource.getName());
@@ -1055,8 +1055,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	void checkDependents(final IResource resource, final IProject my_project)
 			throws ErlModelException {
-		final IErlProject eprj = ErlangCore.getModel().findErlangProject(
-				my_project);
+		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {

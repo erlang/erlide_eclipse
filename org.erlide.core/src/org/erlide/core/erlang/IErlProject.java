@@ -45,34 +45,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * <code>ErlangCore.create(project)</code>.
  * </p>
  * 
- * @see ErlangCore#create(org.eclipse.core.resources.IProject)
+ * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */
-public interface IErlProject extends IParent, IErlElement, IOpenable {
-
-	/**
-	 * Returns the <code>IErlElement</code> corresponding to the given
-	 * classpath-relative path, or <code>null</code> if no such
-	 * <code>IErlElement</code> is found. The result is one of an
-	 * <code>IErlModule</code>, <code>IClassFile</code>, or
-	 * <code>IPackageFragment</code>.
-	 * <p>
-	 * When looking for a package fragment, there might be several potential
-	 * matches; only one of them is returned.
-	 * 
-	 * <p>
-	 * For example, the path "erl/lang/mod.erl", would result in the
-	 * <code>IErlModule</code> or <code>IBeamFile</code> corresponding to
-	 * "erl.lang.mod".
-	 * 
-	 * @param path
-	 *            the given classpath-relative path
-	 * @throws ErlModelException
-	 *             if the given path is <code>null</code> or absolute
-	 * @return the <code>IErlElement</code> corresponding to the given
-	 *         classpath-relative path, or <code>null</code> if no such
-	 *         <code>IErlElement</code> is found
-	 */
-	public IErlElement findElement(IPath path) throws ErlModelException;
+public interface IErlProject extends IErlFolder {
 
 	/**
 	 * Returns an array of non-Erlang resources directly contained in this
@@ -179,7 +154,5 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 			throws ErlModelException;
 
 	List<IErlModule> getModules() throws ErlModelException;
-
-	IErlModule getModule(String name) throws ErlModelException;
 
 }

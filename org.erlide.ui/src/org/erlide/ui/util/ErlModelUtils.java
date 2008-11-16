@@ -67,12 +67,10 @@ public class ErlModelUtils {
 	}
 
 	public static IErlModule getModule(final IFile file) {
-		final String prj = file.getProject().getName();
-		final IErlModel mdl = ErlangCore.getModel();
-
+		final IErlModel model = ErlangCore.getModel();
 		try {
-			mdl.open(null);
-			return mdl.getErlangProject(prj).getModule(file.getName());
+			model.open(null);
+			return model.getModule(file);
 		} catch (final ErlModelException e) {
 			return null;
 		}
@@ -85,13 +83,11 @@ public class ErlModelUtils {
 	public static IErlProject getErlProject(final IEditorInput editorInput) {
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
-			final IErlModel mdl = ErlangCore.getModel();
-
+			final IErlModel model = ErlangCore.getModel();
 			final String prj = input.getFile().getProject().getName();
-
 			try {
-				mdl.open(null);
-				return mdl.getErlangProject(prj);
+				model.open(null);
+				return model.getErlangProject(prj);
 			} catch (final ErlModelException e) {
 				return null;
 			}

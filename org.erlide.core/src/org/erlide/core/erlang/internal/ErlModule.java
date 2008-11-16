@@ -60,17 +60,17 @@ public class ErlModule extends Openable implements IErlModule {
 	private boolean scannerDisposed = false;
 	private final ModuleKind moduleKind;
 
-	protected ErlModule(final IErlProject parent, final String name,
-			final String ext, final String initialText, final IFile file) {
-		super(parent, name);
+	protected ErlModule(final IErlElement parent, final String nameWithExt,
+			final String initialText, final IFile file) {
+		super(parent, ErlideUtil.withoutExtension(nameWithExt));
 		fFile = file;
-		moduleKind = ErlideUtil.extToModuleKind(ext);
+		moduleKind = ErlideUtil.nameToModuleKind(nameWithExt);
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
 		this.initialText = initialText;
-		setIsStructureKnown(false);
+		// setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
-			ErlLogger.debug("...creating " + parent.getName() + "/" + name
+			ErlLogger.debug("...creating " + parent.getName() + "/" + getName()
 					+ " " + moduleKind);
 		}
 	}
@@ -78,9 +78,10 @@ public class ErlModule extends Openable implements IErlModule {
 	@Override
 	synchronized protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
-		if (ErlModelManager.verbose) {
-			ErlLogger.debug("* build structure " + fName);
-		}
+		logBuildStructure(underlyingResource);
+		// if (ErlModelManager.verbose) {
+		// ErlLogger.debug("* build structure " + fName);
+		// }
 
 		final ErlParser parser = new ErlParser();
 		if (initialText != null) {
@@ -356,10 +357,8 @@ public class ErlModule extends Openable implements IErlModule {
 		fIgnoreNextReconcile = true;
 	}
 
-	public String getModuleName() {
-		final String s = getName();
-		final int i = s.lastIndexOf('.');
-		return s.substring(0, i);
+	private String getModuleName() {
+		return ErlideUtil.withoutExtension(getName());
 	}
 
 	public void disposeScanner() {

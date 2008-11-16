@@ -11,13 +11,9 @@ package org.erlide.core.erlang;
 
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.internal.ErlElement;
 import org.erlide.core.erlang.internal.ErlModel;
@@ -25,30 +21,6 @@ import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 
 public interface IErlModelManager extends ISaveParticipant {
-
-	/**
-	 * Returns the Erlang element corresponding to the given resource, or
-	 * <code>null</code> if unable to associate the given resource with a
-	 * Erlang element.
-	 * <p>
-	 * The resource must be one of:
-	 * <ul>
-	 * <li>a project - the element returned is the corresponding
-	 * <code>IErlProject</code> </li>
-	 * <li>a <code>.erl</code> file - the element returned is the
-	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the
-	 * corresponding <code>IErlBeamFile</code></li>
-	 * <li>a folder - the element returned is the corresponding
-	 * <code>IErlPackage</code> -- not implemented yet</li>
-	 * <li>the workspace root resource - the element returned is the
-	 * <code>IErlModel</code></li>
-	 * </ul>
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 */
-	IErlElement create(IResource resource, IErlProject project);
 
 	/**
 	 * Returns the Erlang element corresponding to the given file, its project
@@ -67,149 +39,16 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	IErlElement create(IFile file, IErlProject project);
+	IErlElement create(IResource resource, IErlElement parent);
 
 	/**
-	 * Returns the package fragment or package fragment root corresponding to
-	 * the given folder, its parent or great parent being the given project. or
-	 * <code>null</code> if unable to associate the given folder with a Erlang
-	 * element.
-	 * <p>
-	 * Note that a package fragment root is returned rather than a default
-	 * package.
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 */
-	IErlElement create(IFolder folder, IErlProject project);
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
-	 *      org.erlide.core.erlang.IErlProject)
-	 */
-	IErlModule createModuleFrom(IFile file, IErlProject project);
-
-	/**
-	 * Create a module given name, text and project
+	 * Create a module given name, text and parent (most often an IErlFolder)
 	 * <p>
 	 * Currently used by compare functions
 	 */
 	public IErlModule createModuleFrom(String name, String text,
-			IErlProject project);
+			IErlElement parent);
 
-	/**
-	 * Returns the Erlang project corresponding to the given project.
-	 * <p>
-	 * Creating a Erlang Project has the side effect of creating and opening all
-	 * of the project's parents if they are not yet open.
-	 * <p>
-	 * Note that no check is done at this time on the existence or the Erlang
-	 * nature of this project.
-	 * 
-	 * @param project
-	 *            the given project
-	 * @return the Erlang project corresponding to the given project, null if
-	 *         the given project is null
-	 */
-	IErlProject create(IProject project);
-
-	IErlProject createEmptyProject();
-
-	/**
-	 * Returns the Erlang element corresponding to the given file, or
-	 * <code>null</code> if unable to associate the given file with a Erlang
-	 * element.
-	 * 
-	 * <p>
-	 * The file must be one of:
-	 * <ul>
-	 * <li>a <code>.Erlang</code> file - the element returned is the
-	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.class</code> file - the element returned is the
-	 * corresponding <code>IClassFile</code></li>
-	 * <li>a <code>.jar</code> file - the element returned is the
-	 * corresponding <code>IPackageFragmentRoot</code></li>
-	 * </ul>
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 * 
-	 * @param file
-	 *            the given file
-	 * @return the Erlang element corresponding to the given file, or
-	 *         <code>null</code> if unable to associate the given file with a
-	 *         Erlang element
-	 */
-	IErlElement create(IFile file);
-
-	/**
-	 * Returns the package fragment or package fragment root corresponding to
-	 * the given folder, or <code>null</code> if unable to associate the given
-	 * folder with a Erlang element.
-	 * <p>
-	 * Note that a package fragment root is returned rather than a default
-	 * package.
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 * 
-	 * @param folder
-	 *            the given folder
-	 * @return the package fragment or package fragment root corresponding to
-	 *         the given folder, or <code>null</code> if unable to associate
-	 *         the given folder with a Erlang element
-	 */
-	IErlElement create(IFolder folder);
-
-	/**
-	 * Returns the Erlang element corresponding to the given resource, or
-	 * <code>null</code> if unable to associate the given resource with a
-	 * Erlang element.
-	 * <p>
-	 * The resource must be one of:
-	 * <ul>
-	 * <li>a project - the element returned is the corresponding
-	 * <code>IErlProject</code></li>
-	 * <li>a <code>.Erlang</code> file - the element returned is the
-	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.class</code> file - the element returned is the
-	 * corresponding <code>IClassFile</code></li>
-	 * <li>a <code>.jar</code> file - the element returned is the
-	 * corresponding <code>IPackageFragmentRoot</code></li>
-	 * <li>a folder - the element returned is the corresponding
-	 * <code>IPackageFragmentRoot</code> or <code>IPackageFragment</code>
-	 * </li>
-	 * <li>the workspace root resource - the element returned is the
-	 * <code>IErlModel</code></li>
-	 * </ul>
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 * 
-	 * @param resource
-	 *            the given resource
-	 * @return the Erlang element corresponding to the given resource, or
-	 *         <code>null</code> if unable to associate the given resource
-	 *         with a Erlang element
-	 */
-	IErlElement create(IResource resource);
-
-	/**
-	 * Returns element from path
-	 * 
-	 * @param path
-	 * @return IErlElement
-	 */
-	public IErlElement create(IPath path);
-
-	/**
-	 * Returns the Erlang model.
-	 * 
-	 * @param root
-	 *            the given root
-	 * @return the Erlang model, or <code>null</code> if the root is null
-	 */
-	IErlModel create(IWorkspaceRoot root);
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
@@ -319,5 +158,4 @@ public interface IErlModelManager extends ISaveParticipant {
 	 */
 
 	void fire(int post_change);
-
 }

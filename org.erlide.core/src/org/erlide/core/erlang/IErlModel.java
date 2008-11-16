@@ -12,6 +12,7 @@ package org.erlide.core.erlang;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -45,29 +46,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author qvladum
  */
 public interface IErlModel extends IErlElement, IOpenable, IParent {
-
-	/**
-	 * Returns whether this Erlang model contains an <code>IErlElement</code>
-	 * whose resource is the given resource or a non-Erlang resource which is
-	 * the given resource.
-	 * <p>
-	 * Note: no existency check is performed on the argument resource. If it is
-	 * not accessible (see <code>IResource.isAccessible()</code>) yet but
-	 * would be located in Erlang model range, then it will return
-	 * <code>true</code>.
-	 * </p>
-	 * <p>
-	 * If the resource is accessible, it can be reached by navigating the Erlang
-	 * model down using the <code>getChildren()</code> and/or
-	 * <code>getNonErlangResources()</code> methods.
-	 * </p>
-	 * 
-	 * @param resource
-	 *            the resource to check
-	 * @return true if the resource is accessible through the Erlang model
-	 * 
-	 */
-	boolean contains(IResource resource);
 
 	/**
 	 * Copies the given elements to the specified container(s). If one container
@@ -314,8 +292,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	void removeModelChangeListener(IErlModelChangeListener listener);
 
-	IErlProject findErlangProject(IProject project);
-
 	String UNKNOWN_MODULE = null;
 
 	int UNKNOWN_ARITY = -1;
@@ -329,8 +305,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * @param arity
 	 * @return
 	 */
-	List<IErlFunction> findFunction(String project, String module,
-			String function, int arity);
+	IErlElement findElement(IResource resource);
 
-	List<IErlModule> findModule(String project, String module);
+	IErlProject findProject(IProject p);
+
+	IErlModule getModule(IFile file);
+
+	IErlModule getModule(String name);
 }

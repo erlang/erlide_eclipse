@@ -65,13 +65,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	boolean hasResourceChanged();
 
 	/**
-	 * Returns name without extension (useful for sending module atom to Erlang)
-	 * 
-	 * @return name without extension
-	 */
-	String getModuleName();
-
-	/**
 	 * Is this module a real one, or a header file?
 	 * 
 	 * @return true if .erl, false if .hrl

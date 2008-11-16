@@ -50,7 +50,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
@@ -126,7 +125,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#editorContextMenuAboutToShow(org.eclipse.jface.action.IMenuManager)
 	 */
 	@Override
-	protected void editorContextMenuAboutToShow(IMenuManager menu) {
+	protected void editorContextMenuAboutToShow(final IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		addGroup(menu, ITextEditorActionConstants.GROUP_EDIT,
 				IContextMenuConstants.GROUP_GENERATE);
@@ -144,7 +143,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		return fEvaluating;
 	}
 
-	public void evalSelection(Result resultMode) {
+	public void evalSelection(final Result resultMode) {
 		if (!isInErlProject()) {
 			reportNotInErlProjectError();
 			return;
@@ -226,7 +225,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	}
 
 	public void addScratchStateChangedListener(
-			IScratchStateChangedListener listener) {
+			final IScratchStateChangedListener listener) {
 		if (fScratchStateListeners != null
 				&& !fScratchStateListeners.contains(listener)) {
 			fScratchStateListeners.add(listener);
@@ -234,7 +233,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	}
 
 	public void removeScratchStateChangedListener(
-			IScratchStateChangedListener listener) {
+			final IScratchStateChangedListener listener) {
 		if (fScratchStateListeners != null) {
 			fScratchStateListeners.remove(listener);
 		}
@@ -268,7 +267,8 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		}
 
 		// FIXME IBackend
-		final BackendEvalResult r = ErlideBackend.eval(null, scratch, fBindings);
+		final BackendEvalResult r = ErlideBackend
+				.eval(null, scratch, fBindings);
 
 		if (r.isOk()) {
 			fBindings = r.getBindings();
@@ -295,7 +295,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	/**
 	 * @param r
 	 */
-	protected String formatInspect(OtpErlangObject r) {
+	protected String formatInspect(final OtpErlangObject r) {
 		String res = r.toString();
 		final int resLength = res.length();
 		if (resLength > 30) {
@@ -308,7 +308,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		return res;
 	}
 
-	protected void showError(IStatus status) {
+	protected void showError(final IStatus status) {
 		evaluationEnds();
 		if (!status.isOK()) {
 			ErrorDialog
@@ -319,13 +319,13 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		}
 	}
 
-	protected void showError(String message) {
+	protected void showError(final String message) {
 		final Status status = new Status(IStatus.ERROR,
 				ErlideUIPlugin.PLUGIN_ID, IStatus.ERROR, message, null);
 		showError(status);
 	}
 
-	protected void displayResult(OtpErlangObject result) {
+	protected void displayResult(final OtpErlangObject result) {
 		// FIXME IBackend
 		final String message = ErlideBackend.format(null, "~p", result);// result.toString();
 		try {
@@ -340,7 +340,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		final String delimiter = document.getLegalLineDelimiters()[0];
 
 		final StringBuilder errorString = new StringBuilder();
-		for (String element : errors) {
+		for (final String element : errors) {
 			errorString.append(element).append(delimiter);
 		}
 
@@ -364,13 +364,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		if (input instanceof IFileEditorInput) {
 			final IFileEditorInput file = (IFileEditorInput) input;
 			final IProject p = file.getFile().getProject();
-			try {
-				if (p.getNature(ErlangPlugin.NATURE_ID) != null) {
-					return ErlangCore.getModelManager().create(p);
-				}
-			} catch (final CoreException ce) {
-				throw new ErlModelException(ce);
-			}
+			return ErlangCore.getModel().findProject(p);
 		}
 		return null;
 	}
@@ -417,7 +411,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		async(r);
 	}
 
-	protected void showStatus(String message) {
+	protected void showStatus(final String message) {
 		final IEditorSite site = (IEditorSite) getSite();
 		final EditorActionBarContributor contributor = (EditorActionBarContributor) site
 				.getActionBarContributor();
@@ -494,7 +488,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#performSaveAs(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	protected void performSaveAs(IProgressMonitor progressMonitor) {
+	protected void performSaveAs(final IProgressMonitor progressMonitor) {
 		final Shell shell = getSite().getShell();
 		final SaveAsDialog dialog = new SaveAsDialog(shell);
 		dialog.open();
@@ -576,7 +570,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	/**
 	 * Executes the given runnable in the Display thread
 	 */
-	protected void async(Runnable r) {
+	protected void async(final Runnable r) {
 		final Control control = getVerticalRuler().getControl();
 		if (!control.isDisposed()) {
 			control.getDisplay().asyncExec(r);

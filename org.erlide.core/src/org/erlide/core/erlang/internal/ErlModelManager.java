@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -43,9 +42,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
@@ -56,10 +53,12 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
+import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
@@ -81,18 +80,19 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * Unique handle onto the ErlModel
 	 */
-	final ErlModel erlangModel = new ErlModel();
+	private final ErlModel erlangModel = new ErlModel();
 
 	private final HashSet<String> optionNames = new HashSet<String>(20);
 
-	private final Map<String, IErlElement> elements = new HashMap<String, IErlElement>(
-			10);
+	// private final Map<String, IErlElement> elements = new HashMap<String,
+	// IErlElement>(
+	// 10);
 
 	/**
 	 * Queue of reconcile deltas on working copies that have yet to be fired.
 	 * This is a table form IWorkingCopy to IErlElementDelta
 	 */
-	HashMap<IWorkingCopy, IErlElementDelta> reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
+	private HashMap<IWorkingCopy, IErlElementDelta> reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
 
 	/**
 	 * The singleton manager
@@ -103,7 +103,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Queue of deltas created explicitly by the model that have yet to be
 	 * fired.
 	 */
-	List<IErlElementDelta> erlModelDeltas = Collections
+	private final List<IErlElementDelta> erlModelDeltas = Collections
 			.synchronizedList(new ArrayList<IErlElementDelta>());
 
 	public static final int DEFAULT_CHANGE_EVENT = 0; // must not collide with
@@ -155,24 +155,37 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(final IResource resource,
-			final IErlProject project) {
+	public IErlElement create(final IResource resource, final IErlElement parent) {
 		if (resource == null) {
 			return null;
 		}
 		final int type = resource.getType();
 		switch (type) {
 		case IResource.PROJECT:
-			return create((IProject) resource);
+			return createProject((IProject) resource); // , parent);
 		case IResource.FILE:
-			return create((IFile) resource, project);
+			return createFile((IFile) resource, parent);
 		case IResource.FOLDER:
-			return create((IFolder) resource, project);
+			return createFolder((IFolder) resource, parent);
 		case IResource.ROOT:
-			return create((IWorkspaceRoot) resource);
+			return createRoot((IWorkspaceRoot) resource);
 		default:
 			return null;
 		}
+	}
+
+	private void remove(final IResource rsrc) {
+		final IErlElement e = erlangModel.findElement(rsrc);
+
+		final IParent p = (IParent) e.getParent();
+		p.removeChild(e);
+		// TODO should we make change events and fire them?
+	}
+
+	private void change(final IResource rsrc) {
+		remove(rsrc);
+		create(rsrc);
+		// TODO should we make change events and fire them?
 	}
 
 	/**
@@ -192,68 +205,62 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(final IFile file, IErlProject project) {
+	public IErlElement createFile(final IFile file, final IErlElement parent) {
 		if (file == null) {
 			return null;
 		}
-		if (project == null) {
-			project = erlangModel.findErlangProject(file.getProject());
-		}
-		if (project == null) {
-			project = create(file.getProject());
-		}
+		// if (project == null) {
+		// project = erlangModel.findErlangProject(file.getProject());
+		// }
+		// if (project == null) {
+		// project = createProject(file.getProject());
+		// }
 
+		// TODO should we make change events and fire them?
 		if (file.getFileExtension() != null) {
 			final String name = file.getName();
-			if (Util.isErlangFileName(name)) {
-				return createModuleFrom(file, project);
+			if (ErlideUtil.hasModuleExt(name)) {
+				return createModuleFrom(file, parent);
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the package fragment or package fragment root corresponding to
-	 * the given folder, its parent or great parent being the given project. or
-	 * <code>null</code> if unable to associate the given folder with a Erlang
-	 * element.
-	 * <p>
-	 * Note that a package fragment root is returned rather than a default
-	 * package.
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement create(final IFolder folder, IErlProject project) {
+	public IErlFolder createFolder(final IFolder folder,
+			final IErlElement parent) {
 		if (folder == null) {
 			return null;
 		}
-		if (project == null) {
-			project = create(folder.getProject());
-		}
-		final IErlElement element = null;
+		return new ErlFolder(folder, parent);
+		// if (project == null) {
+		// project = create(folder.getProject());
+		// }
+		// final IErlElement element = null;
 		// determineIfOnClasspath(folder, project);
-		return element;
+		// return element;
 	}
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
-	public IErlModule createModuleFrom(final IFile file, IErlProject project) {
+	public IErlModule createModuleFrom(final IFile file,
+			final IErlElement parent) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
 		if (file == null) {
 			return null;
 		}
 
-		if (project == null) {
-			project = create(file.getProject());
-		}
+		// if (project == null) {
+		// project = createProject(file.getProject());
+		// }
 
-		final String key = project.getName() + "/" + file.getName();
-		if (elements.containsKey(key)) {
-			return (IErlModule) elements.get(key);
-		}
+		// final String key = parent.getName() + "/" + file.getName();
+		// if (elements.containsKey(key)) {
+		// return (IErlModule) elements.get(key);
+		// }
 		final String ext = file.getFileExtension();
 		if (ErlideUtil.isModuleExt(ext)) {
 			String initialText = null;
@@ -265,10 +272,10 @@ public class ErlModelManager implements IErlModelManager {
 					initialText = "";
 				}
 			}
-			final IErlModule module = new ErlModule(project, file.getName(),
-					ext, initialText, file);
-			project.addChild(module);
-			elements.put(key, module);
+			final IErlModule module = new ErlModule(parent, file.getName(),
+					initialText, file);
+			((IParent) parent).addChild(module);
+			// elements.put(key, module);
 			return module;
 		}
 		return null;
@@ -279,22 +286,21 @@ public class ErlModelManager implements IErlModelManager {
 	 *      org.erlide.core.erlang.IErlProject)
 	 */
 	public IErlModule createModuleFrom(final String name, final String text,
-			final IErlProject project) {
+			final IErlElement parent) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
-		if (name == null || text == null || project == null) {
+		if (name == null || text == null) {
 			return null;
 		}
 
-		final String key = project.getName() + "/" + name;
-		if (elements.containsKey(key)) {
-			return (IErlModule) elements.get(key);
-		}
-		final IPath path = new Path(key);
-		final String ext = path.getFileExtension();
-		if (ErlideUtil.isModuleExt(ext)) {
-			final IErlModule module = new ErlModule(project, name, ext, text,
-					null);
-			elements.put(key, module);
+		// final String key = project.getName() + "/" + name;
+		// if (elements.containsKey(key)) {
+		// return (IErlModule) elements.get(key);
+		// }
+		// final IPath path = new Path(key);
+		// final String ext = path.getFileExtension();
+		if (ErlideUtil.hasModuleExt(name)) {
+			final IErlModule module = new ErlModule(parent, name, text, null);
+			// elements.put(key, module);
 			return module;
 		}
 		return null;
@@ -314,11 +320,10 @@ public class ErlModelManager implements IErlModelManager {
 	 * @return the Erlang project corresponding to the given project, null if
 	 *         the given project is null
 	 */
-	public IErlProject create(final IProject project) {
+	public IErlProject createProject(final IProject project) {
 		if (project == null) {
 			return null;
 		}
-
 		return erlangModel.makeErlangProject(project);
 	}
 
@@ -345,31 +350,22 @@ public class ErlModelManager implements IErlModelManager {
 	 *         <code>null</code> if unable to associate the given file with a
 	 *         Erlang element
 	 */
-	public IErlElement create(final IFile file) {
-		return create(file, null/* unknown Erlang project */);
-	}
-
+	// public IErlElement create(final IFile file) {
+	// return create(file, null/* unknown Erlang project */);
+	// }
 	/**
-	 * Returns the package fragment or package fragment root corresponding to
-	 * the given folder, or <code>null</code> if unable to associate the given
-	 * folder with a Erlang element.
+	 * Create IErlFolder from folder
 	 * <p>
-	 * Note that a package fragment root is returned rather than a default
-	 * package.
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
+	 * Creating an Erlang element has the side effect of creating and opening
+	 * all of the element's parents if they are not yet open.
 	 * 
 	 * @param folder
 	 *            the given folder
-	 * @return the package fragment or package fragment root corresponding to
-	 *         the given folder, or <code>null</code> if unable to associate
-	 *         the given folder with a Erlang element
+	 * @return an Erlang folder
 	 */
-	public IErlElement create(final IFolder folder) {
-		return create(folder, null/* unknown Erlang project */);
-	}
-
+	// public IErlFolder create(final IFolder folder) {
+	// return create(folder, null/* unknown Erlang project */);
+	// }
 	/**
 	 * Returns the Erlang element corresponding to the given resource, or
 	 * <code>null</code> if unable to associate the given resource with a
@@ -411,7 +407,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *            the given root
 	 * @return the Erlang model, or <code>null</code> if the root is null
 	 */
-	public IErlModel create(final IWorkspaceRoot root) {
+	private IErlModel createRoot(final IWorkspaceRoot root) {
 		if (root == null) {
 			return null;
 		}
@@ -425,43 +421,52 @@ public class ErlModelManager implements IErlModelManager {
 		return createModuleFrom(file, null);
 	}
 
-	/**
-	 * Update the classpath variable cache
-	 */
-	public static class PluginPreferencesListener implements
-			Preferences.IPropertyChangeListener {
+	// /**
+	// * Update the classpath variable cache
+	// */
+	// public static class PluginPreferencesListener implements
+	// Preferences.IPropertyChangeListener {
+	//
+	// /**
+	// * @see
+	// org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(Preferences.PropertyChangeEvent)
+	// */
+	// public void propertyChange(final Preferences.PropertyChangeEvent event) {
+	//
+	// // String propertyName = event.getProperty();
+	// }
+	// }
 
-		/**
-		 * @see org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(Preferences.PropertyChangeEvent)
-		 */
-		public void propertyChange(final Preferences.PropertyChangeEvent event) {
-
-			// String propertyName = event.getProperty();
-		}
-	}
-
-	class ResourceChangeListener implements IResourceChangeListener {
+	private class ResourceChangeListener implements IResourceChangeListener {
 		public void resourceChanged(final IResourceChangeEvent event) {
 			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 				return;
 			}
 			final IResourceDelta rootDelta = event.getDelta();
+			final ArrayList<IResource> added = new ArrayList<IResource>();
 			final ArrayList<IResource> changed = new ArrayList<IResource>();
+			final ArrayList<IResource> removed = new ArrayList<IResource>();
 			final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) {
-					// only interested in changed resources (not added or
-					// removed)
-					if (delta.getKind() != IResourceDelta.ADDED) {
-						return true;
-					}
+					ErlLogger.debug("delta " + delta.getKind() + " for "
+							+ delta.getResource().getLocation());
 					IResource resource = delta.getResource();
-					// only interested in files with the erl extension
-					// TODO hrl files too
-					if (resource.getType() == IResource.FILE
-							&& Util.isErlangFileName(resource.getName())) {
-						changed.add(resource);
+					boolean erlangFile = resource.getType() == IResource.FILE
+							&& ErlideUtil.hasModuleExt(resource.getName());
+					boolean erlangProject = resource.getType() == IResource.PROJECT
+							&& ErlideUtil.hasErlangNature((IProject) resource);
+					if (erlangFile || erlangProject) {
+						if (delta.getKind() != IResourceDelta.ADDED) {
+							added.add(resource);
+						}
+						if (delta.getKind() != IResourceDelta.CHANGED) {
+							changed.add(resource);
+						}
+						if (delta.getKind() != IResourceDelta.REMOVED) {
+							removed.add(resource);
+						}
 					}
-					return true;
+					return !erlangFile;
 				}
 			};
 			try {
@@ -469,14 +474,14 @@ public class ErlModelManager implements IErlModelManager {
 			} catch (final CoreException e) {
 				e.printStackTrace();
 			}
-			// nothing more to do if there were no changed text files
-			if (changed.size() == 0) {
-				return;
+			for (final IResource rsrc : added) {
+				create(rsrc);
 			}
-
-			ErlLogger.debug("change " + event.toString());
 			for (final IResource rsrc : changed) {
-				ErlangCore.getModelManager().create(rsrc);
+				change(rsrc);
+			}
+			for (final IResource rsrc : removed) {
+				remove(rsrc);
 			}
 		}
 	}
@@ -526,7 +531,7 @@ public class ErlModelManager implements IErlModelManager {
 	 */
 	public Object getLastBuiltState(final IProject project,
 			final IProgressMonitor monitor) {
-		if (!ErlangCore.hasErlangNature(project)) {
+		if (!ErlideUtil.hasErlangNature(project)) {
 			return null;
 		}
 
@@ -933,7 +938,7 @@ public class ErlModelManager implements IErlModelManager {
 	 *      java.lang.Object)
 	 */
 	public void setLastBuiltState(final IProject project, final Object state) {
-		if (ErlangCore.hasErlangNature(project)) {
+		if (ErlideUtil.hasErlangNature(project)) {
 			// should never be requested on non-Erlang projects
 			// final PerProjectInfo info = getPerProjectInfo(project, true);
 			// info.fTriedRead = true; // no point trying to re-read once using
@@ -1033,35 +1038,35 @@ public class ErlModelManager implements IErlModelManager {
 		return optionNames;
 	}
 
-	public IErlElement create(final IPath path) {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		// Assume it is fullpath relative to workspace
-		IResource res = root.findMember(path);
-		if (res == null) {
-			final IPath rootPath = root.getLocation();
-			if (rootPath.equals(path)) {
-				return getDefault().getErlangModel();
-			}
-			res = root.getContainerForLocation(path);
-			if (res == null || !res.exists()) {
-				res = root.getFileForLocation(path);
-			}
-			if (res != null && !res.exists()) {
-				res = null;
-			}
-		}
-
-		// In case this is an external resource see if we can find
-		// a file for it.
-		if (res == null) {
-			final IFile[] files = root.findFilesForLocation(path);
-			if (files.length > 0) {
-				res = files[0];
-			}
-		}
-
-		return create(res, null);
-	}
+	// public IErlElement create(final IPath path) {
+	// final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+	// // Assume it is fullpath relative to workspace
+	// IResource res = root.findMember(path);
+	// if (res == null) {
+	// final IPath rootPath = root.getLocation();
+	// if (rootPath.equals(path)) {
+	// return getDefault().getErlangModel();
+	// }
+	// res = root.getContainerForLocation(path);
+	// if (res == null || !res.exists()) {
+	// res = root.getFileForLocation(path);
+	// }
+	// if (res != null && !res.exists()) {
+	// res = null;
+	// }
+	// }
+	//
+	// // In case this is an external resource see if we can find
+	// // a file for it.
+	// if (res == null) {
+	// final IFile[] files = root.findFilesForLocation(path);
+	// if (files.length > 0) {
+	// res = files[0];
+	// }
+	// }
+	//
+	// return create(res, null);
+	// }
 
 	public void fire(final int eventType) {
 		fire(null, eventType);
@@ -1071,7 +1076,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * Fire C Model deltas, flushing them after the fact. If the firing mode has
 	 * been turned off, this has no effect.
 	 */
-	void fire(final IErlElementDelta customDeltas, final int eventType) {
+	private void fire(final IErlElementDelta customDeltas, final int eventType) {
 		if (fFire) {
 			IErlElementDelta deltaToNotify;
 			if (customDeltas == null) {

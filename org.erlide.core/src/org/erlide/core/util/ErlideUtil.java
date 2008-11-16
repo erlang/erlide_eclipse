@@ -19,6 +19,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -26,8 +28,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.core.erlang.internal.ErlModule;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
@@ -214,7 +216,7 @@ public class ErlideUtil {
 	}
 
 	public static boolean isModuleExt(final String ext) {
-		return extToModuleKind(ext) != ErlModule.ModuleKind.BAD;
+		return extToModuleKind(ext) != ModuleKind.BAD;
 	}
 
 	public static ModuleKind extToModuleKind(final String ext) {
@@ -229,9 +231,13 @@ public class ErlideUtil {
 		}
 	}
 
-	public static boolean hasModuleExt(final String s) {
-		final IPath p = new Path(s);
-		return isModuleExt(p.getFileExtension());
+	public static ModuleKind nameToModuleKind(final String name) {
+		final IPath p = new Path(name);
+		return extToModuleKind(p.getFileExtension());
+	}
+
+	public static boolean hasModuleExt(final String name) {
+		return nameToModuleKind(name) != ModuleKind.BAD;
 	}
 
 	public static String withoutExtension(final String name) {
@@ -240,6 +246,29 @@ public class ErlideUtil {
 			return name;
 		}
 		return name.substring(0, i);
+	}
+
+	public static boolean hasERLExt(final String name) {
+		return nameToModuleKind(name) == ModuleKind.ERL;
+	}
+
+	/**
+	 * Returns true if the given project is accessible and it has a Erlang
+	 * nature, otherwise false.
+	 * 
+	 * @param project
+	 *            IProject
+	 * @return boolean
+	 */
+	public static boolean hasErlangNature(final IProject project) {
+		if (project != null) {
+			try {
+				return project.hasNature(ErlangPlugin.NATURE_ID);
+			} catch (final CoreException e) {
+				// project does not exist or is not open
+			}
+		}
+		return false;
 	}
 
 }

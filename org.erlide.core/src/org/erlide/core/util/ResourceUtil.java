@@ -254,6 +254,6 @@ public class ResourceUtil {
 	}
 
 	private static IErlProject getErlProject(final IProject project) {
-		return ErlangCore.getModel().findErlangProject(project);
+		return ErlangCore.getModel().findProject(project);
 	}
 }

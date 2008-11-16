@@ -11,6 +11,7 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.util.ErlideUtil;
 
 import erlang.OpenResult;
 
@@ -62,8 +63,9 @@ public class SearchUtil {
 			final IErlElement element) {
 		if (element instanceof IErlFunction) {
 			final IErlFunction function = (IErlFunction) element;
-			return new ErlangExternalFunctionCallRef(function.getModule()
-					.getModuleName(), function.getName(), function.getArity());
+			return new ErlangExternalFunctionCallRef(ErlideUtil
+					.withoutExtension(function.getModule().getName()), function
+					.getName(), function.getArity());
 		} else if (element instanceof IErlFunctionClause) {
 			final IErlFunctionClause clause = (IErlFunctionClause) element;
 			getRefFromErlElement(clause.getParent());

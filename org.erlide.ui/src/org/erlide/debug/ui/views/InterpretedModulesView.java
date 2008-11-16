@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -26,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
@@ -48,7 +47,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
 	private CheckboxTreeViewer checkboxTreeViewer;
 	private ErlangDebugTarget erlangDebugTarget;
 	private boolean distributed;
-	private ICheckStateListener checkStateListener;
 
 	@Override
 	public void setFocus() {
@@ -70,7 +68,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		final TreeContentProvider contentProvider = (TreeContentProvider) checkboxTreeViewer
 				.getContentProvider();
 		contentProvider.setRoot(new DebugTreeItem(null, null));
-		final List<IFile> interpretedModules = new ArrayList<IFile>();
+		final List<IErlModule> interpretedModules = new ArrayList<IErlModule>();
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			final Object o = structuredSelection.getFirstElement();
@@ -115,7 +113,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 			} catch (final CoreException e1) {
 				interpret = new ArrayList<String>();
 			}
-			final ArrayList<IFile> interpretedModules = new ArrayList<IFile>(
+			final ArrayList<IErlModule> interpretedModules = new ArrayList<IErlModule>(
 					interpret.size());
 			DebugTab.addModules(interpret, interpretedModules);
 		}
@@ -138,17 +136,15 @@ public class InterpretedModulesView extends AbstractDebugView implements
 			}
 			final Set<String> interpret = erlangDebugTarget
 					.getInterpretedModules();
-			final Set<IFile> interpretedModules = new HashSet<IFile>(interpret
-					.size());
+			final Set<IErlModule> interpretedModules = new HashSet<IErlModule>(
+					interpret.size());
 			DebugTab.addModules(interpret, interpretedModules);
 			checkboxTreeViewer.getControl().getDisplay().syncExec(
 					new Runnable() {
-
 						public void run() {
 							root.setChecked(checkboxTreeViewer,
 									interpretedModules);
 						}
-
 					});
 		}
 	}
@@ -168,18 +164,19 @@ public class InterpretedModulesView extends AbstractDebugView implements
 	@Override
 	protected Viewer createViewer(final Composite parent) {
 		checkboxTreeViewer = new CheckboxTreeViewer(parent, SWT.BORDER);
-		checkStateListener = new ICheckStateListener() {
+		final ICheckStateListener checkStateListener = new ICheckStateListener() {
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
 						.getElement();
 				final boolean checked = event.getChecked();
-				if (dti.getItem() instanceof IContainer) {
+				if (dti.getChildren().size() > 0) {
 					checkboxTreeViewer.setSubtreeChecked(dti, checked);
 				} else {
 					final String module = dti.getItem().getName();
 					final String moduleWoExtension = ErlideUtil
 							.withoutExtension(module);
-					final String project = dti.getItem().getProject().getName();
+					final String project = dti.getItem().getErlProject()
+							.getName();
 					final boolean interpret = checked;
 					final ExecutionBackend backend = erlangDebugTarget
 							.getBackend();
@@ -238,5 +235,4 @@ public class InterpretedModulesView extends AbstractDebugView implements
 				.getActiveContext();
 		contextActivated(selection);
 	}
-
 }

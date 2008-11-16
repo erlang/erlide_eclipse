@@ -35,6 +35,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModelStatusConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -814,7 +815,7 @@ public class Util {
 	 * @see IClasspathEntry#getInclusionPatterns
 	 * @see IClasspathEntry#getExclusionPatterns
 	 */
-	static final boolean isExcluded(final IPath resourcePath,
+	private static final boolean isExcluded(final IPath resourcePath,
 			final char[][] inclusionPatterns, final char[][] exclusionPatterns,
 			final boolean isFolderPath) {
 		if (inclusionPatterns == null && exclusionPatterns == null) {
@@ -865,7 +866,7 @@ public class Util {
 	 * 
 	 * @see IClasspathEntry#getExclusionPatterns
 	 */
-	static final boolean isExcluded(final IResource resource,
+	private static final boolean isExcluded(final IResource resource,
 			final char[][] inclusionPatterns, final char[][] exclusionPatterns) {
 		final IPath path = resource.getFullPath();
 		// ensure that folders are only excluded if all of their children are
@@ -1824,55 +1825,6 @@ public class Util {
 	}
 
 	/**
-	 * Returns true iff str.toLowerCase().endsWith(".erl"). Implementation is
-	 * not creating extra strings.
-	 */
-	public static final boolean isErlangFileName(final String name) {
-		if (name == null) {
-			return false;
-		}
-		final int nameLength = name.length();
-		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
-		if (nameLength < suffixLength) {
-			return false;
-		}
-
-		for (int i = 0; i < suffixLength; i++) {
-			final char c = name.charAt(nameLength - i - 1);
-			final int suffixIndex = suffixLength - i - 1;
-			if (c != ISuffixConstants.SUFFIX_erl[suffixIndex]
-					&& c != ISuffixConstants.SUFFIX_ERL[suffixIndex]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Returns true iff str.toLowerCase().endsWith(".erl"). Implementation is
-	 * not creating extra strings.
-	 */
-	public static final boolean isErlangFileName(final char[] name) {
-		if (name == null) {
-			return false;
-		}
-		final int nameLength = name.length;
-		final int suffixLength = ISuffixConstants.SUFFIX_ERL.length;
-		if (nameLength < suffixLength) {
-			return false;
-		}
-
-		for (int i = 0, offset = nameLength - suffixLength; i < suffixLength; i++) {
-			final char c = name[offset + i];
-			if (c != ISuffixConstants.SUFFIX_erl[i]
-					&& c != ISuffixConstants.SUFFIX_ERL[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * Converts an array of Objects into String.
 	 */
 	public static String toString(final Object[] objects) {
@@ -1919,6 +1871,14 @@ public class Util {
 		return Boolean.FALSE;
 	}
 
+	/**
+	 * Get the string value of an Erlang string, empty if empty list
+	 * 
+	 * @param o
+	 *            Erlang string or list
+	 * @return string value
+	 * @throws OtpErlangDecodeException
+	 */
 	public static String stringValue(final OtpErlangObject o) {
 		if (o instanceof OtpErlangString) {
 			final OtpErlangString s = (OtpErlangString) o;
@@ -1933,15 +1893,18 @@ public class Util {
 	}
 
 	/**
-	 * @param tag
-	 * @return
+	 * Return true if it's the atom ok or a tuple {ok, ...}
+	 * 
+	 * @param o
+	 *            atom or tuple
+	 * @return true if ok
 	 */
-	public static boolean isOk(final OtpErlangObject tag) {
-		if (tag instanceof OtpErlangAtom) {
-			final OtpErlangAtom a = (OtpErlangAtom) tag;
+	public static boolean isOk(final OtpErlangObject o) {
+		if (o instanceof OtpErlangAtom) {
+			final OtpErlangAtom a = (OtpErlangAtom) o;
 			return a.atomValue().compareTo("ok") == 0;
-		} else if (tag instanceof OtpErlangTuple) {
-			final OtpErlangTuple t = (OtpErlangTuple) tag;
+		} else if (o instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) o;
 			return isOk(t.elementAt(0));
 		}
 		return false;

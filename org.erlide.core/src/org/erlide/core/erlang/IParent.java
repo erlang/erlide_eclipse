@@ -44,6 +44,9 @@ public interface IParent {
 	 */
 	boolean hasChildren();
 
-	public void addChild(IErlElement child);
+	void addChild(IErlElement child);
 
+	void removeChild(IErlElement e);
+
+	IErlElement getChildNamed(String s);
 }

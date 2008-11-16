@@ -32,15 +32,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFolder;
+import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
-import org.erlide.core.erlang.IErlModelStatus;
-import org.erlide.core.erlang.IErlModelStatusConstants;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ISuffixConstants;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -64,8 +62,7 @@ import org.erlide.runtime.ErlangProjectProperties;
  * 
  * @see IErlProject
  */
-public class ErlProject extends Openable implements IErlProject,
-		ISuffixConstants {
+public class ErlProject extends Openable implements IErlProject {
 
 	/**
 	 * Whether the underlying file system is case sensitive.
@@ -100,7 +97,7 @@ public class ErlProject extends Openable implements IErlProject,
 		nonErlangResources = null;
 	}
 
-	ErlProject(final IProject project, final ErlElement parent) {
+	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
 		fProject = project;
 		nonErlangResources = null;
@@ -128,72 +125,42 @@ public class ErlProject extends Openable implements IErlProject,
 	@Override
 	protected boolean buildStructure(final IProgressMonitor pm,
 			final IResource underlyingResource) throws ErlModelException {
+		logBuildStructure(underlyingResource);
 		// check whether the Erlang project can be opened
 		if (!underlyingResource.isAccessible()) {
 			throw newNotPresentException();
 		}
-		// ErlLogger.debug("--- " + getProject().getName() + "? " + fChildren);
-		// if (fChildren != null && !fChildren.isEmpty()) {
-		// ErlLogger.debug("--- !");
-		// return true;
-		// }
-
-		// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		// final IWorkspaceRoot wRoot = workspace.getRoot();
-
-		final ArrayList<IErlModule> modules = new ArrayList<IErlModule>(10);
 		try {
-			// TODO use project preferences to find which dirs are source dirs
-			// final ErlangProjectProperties pprop = new
-			// ErlangProjectProperties(getProject());
-
 			final IContainer c = (IContainer) underlyingResource;
 			final IResource[] elems = c.members();
+			final ArrayList<IErlElement> children = new ArrayList<IErlElement>(
+					elems.length);
+			final IErlModelManager modelManager = ErlangCore.getModelManager();
+			for (final IResource element : elems) {
+				if (element instanceof IFolder) {
+					final IFolder f = (IFolder) element;
+					final IErlFolder ef = (IErlFolder) modelManager.create(f,
+							this);
+					children.add(ef);
+				} else if (element instanceof IFile) {
+					final IFile f = (IFile) element;
+					if (ErlideUtil.hasModuleExt(f.getName())) {
+						final IErlModule m = (IErlModule) modelManager.create(
+								f, this);
+						children.add(m);
+					}
+				}
+			}
 
-			// ErlLogger.debug("--- >>> " + this.getElementName());
-
-			// TODO should do this lazily!
-			buildStructure(elems, modules);
+			setChildren(children);
 
 		} catch (final CoreException e) {
 			e.printStackTrace();
+			setChildren(new ArrayList<IErlModule>());
+			return false;
 		}
-		setChildren(modules);
-		if (fChildren != null) {
-			// ErlLogger.debug("---YY " + fChildren.size());
-		}
-
 		return true;
 	}
-
-	private void buildStructure(final IResource[] elems,
-			final List<IErlModule> modules) {
-		for (final IResource element : elems) {
-			// ErlLogger.debug("---< " + elems[fi].getName());
-			if (element instanceof IFolder) {
-				final IFolder ff = (IFolder) element;
-				try {
-					buildStructure(ff.members(), modules);
-				} catch (final CoreException e) {
-					; // ignore
-				}
-			} else if (element instanceof IFile) {
-				final IFile f = (IFile) element;
-				final String ext = f.getFileExtension();
-				if (ext != null && ErlideUtil.isModuleExt(ext)) {
-					final IErlModule m = ErlangCore.getModelManager()
-							.createModuleFrom(f, this);
-					modules.add(m);
-				}
-			}
-		}
-
-	}
-
-	// @Override
-	// protected void closing(Object info) {
-	// super.closing(info);
-	// }
 
 	/**
 	 * Computes the collection of modules (local ones) and set it on the given
@@ -295,31 +262,31 @@ public class ErlProject extends Openable implements IErlProject,
 		return true;
 	}
 
-	/**
-	 * TODO: Record a new marker denoting a classpath problem
-	 */
-	void createCodeProblemMarker(final IErlModelStatus status) {
-		/*
-		 * final IMarker marker = null; int severity; String[] arguments = new
-		 * String[0]; final boolean isCycleProblem = false,
-		 * isClasspathFileFormatProblem = false; switch (status.getCode()) {
-		 * 
-		 * case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL: final String
-		 * setting = getOption( ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
-		 * if (ErlangCore.ERROR.equals(setting)) { severity =
-		 * IMarker.SEVERITY_ERROR; } else if
-		 * (ErlangCore.WARNING.equals(setting)) { severity =
-		 * IMarker.SEVERITY_WARNING; } else { return; // setting == IGNORE }
-		 * break;
-		 * 
-		 * default: final IPath path = status.getPath(); if (path != null) {
-		 * arguments = new String[] { path.toString() }; } if
-		 * (ErlangCore.ERROR.equals(getOption(
-		 * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
-		 * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
-		 * break; }
-		 */
-	}
+	// /**
+	// * TODO: Record a new marker denoting a classpath problem
+	// */
+	// void createCodeProblemMarker(final IErlModelStatus status) {
+	// /*
+	// * final IMarker marker = null; int severity; String[] arguments = new
+	// * String[0]; final boolean isCycleProblem = false,
+	// * isClasspathFileFormatProblem = false; switch (status.getCode()) {
+	// *
+	// * case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL: final String
+	// * setting = getOption( ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
+	// * if (ErlangCore.ERROR.equals(setting)) { severity =
+	// * IMarker.SEVERITY_ERROR; } else if
+	// * (ErlangCore.WARNING.equals(setting)) { severity =
+	// * IMarker.SEVERITY_WARNING; } else { return; // setting == IGNORE }
+	// * break;
+	// *
+	// * default: final IPath path = status.getPath(); if (path != null) {
+	// * arguments = new String[] { path.toString() }; } if
+	// * (ErlangCore.ERROR.equals(getOption(
+	// * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
+	// * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
+	// * break; }
+	// */
+	// }
 
 	/**
 	 * /** Removes the Erlang nature from the project.
@@ -362,33 +329,34 @@ public class ErlProject extends Openable implements IErlProject,
 
 	@Override
 	public boolean exists() {
-		return ErlangCore.hasErlangNature(fProject);
+		return ErlideUtil.hasErlangNature(fProject);
 	}
 
-	/**
-	 * @see IErlProject
-	 */
-	public IErlElement findElement(final IPath path) throws ErlModelException {
-
-		if (path == null || path.isAbsolute()) {
-			throw new ErlModelException(new ErlModelStatus(
-					IErlModelStatusConstants.INVALID_PATH, path));
-		}
-		/*
-		 * TODO: realizate findElement(IPath path) final String extension =
-		 * path.getFileExtension(); if
-		 * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
-		 * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
-		 * path.removeLastSegments(1); final String packageName =
-		 * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
-		 * typeName = path.lastSegment(); typeName = typeName.substring(0,
-		 * typeName.length() - extension.length() - 1); String qualifiedName =
-		 * null; if (packageName.length() > 0) { qualifiedName = packageName +
-		 * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; } }
-		 * else { // unsupported extension return null; }
-		 */
-		return null;
-	}
+	// /**
+	// * @see IErlProject
+	// */
+	// public IErlElement findElement(final IPath path) throws ErlModelException
+	// {
+	//
+	// if (path == null || path.isAbsolute()) {
+	// throw new ErlModelException(new ErlModelStatus(
+	// IErlModelStatusConstants.INVALID_PATH, path));
+	// }
+	// /*
+	// * TODO: realizate findElement(IPath path) final String extension =
+	// * path.getFileExtension(); if
+	// * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
+	// * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
+	// * path.removeLastSegments(1); final String packageName =
+	// * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
+	// * typeName = path.lastSegment(); typeName = typeName.substring(0,
+	// * typeName.length() - extension.length() - 1); String qualifiedName =
+	// * null; if (packageName.length() > 0) { qualifiedName = packageName +
+	// * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; } }
+	// * else { // unsupported extension return null; }
+	// */
+	// return null;
+	// }
 
 	/**
 	 * Remove all markers denoting classpath problems
@@ -611,15 +579,7 @@ public class ErlProject extends Openable implements IErlProject,
 	}
 
 	public List<IErlModule> getModules() throws ErlModelException {
-		if (!hasChildren()) {
-			open(null);
-		}
-		final List<? extends IErlElement> r = getChildren();
-		final ArrayList<IErlModule> result = new ArrayList<IErlModule>();
-		for (final IErlElement e : r) {
-			result.add((IErlModule) e);
-		}
-		return result;
+		return ErlFolder.getModules(this);
 	}
 
 	/**
@@ -693,7 +653,7 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	IResource[] getNonErlangResources(final ErlProject project) {
+	private IResource[] getNonErlangResources(final ErlProject project) {
 
 		if (nonErlangResources == null) {
 			nonErlangResources = null;
@@ -704,23 +664,25 @@ public class ErlProject extends Openable implements IErlProject,
 	/**
 	 * Set the fNonErlangResources to res value
 	 */
-	void setNonErlangResources(final IResource[] resources) {
-
+	private void setNonErlangResources(final IResource[] resources) {
 		nonErlangResources = resources;
 	}
 
-	public IErlModule getModule(final String name) throws ErlModelException {
-		if (!hasChildren()) {
-			open(null);
-		}
-		for (final IErlElement element : fChildren) {
-			final IErlModule m = (IErlModule) element;
-			if (m != null && m.getName().equals(name)) {
-				return m;
-			}
-		}
-		return null;
-	}
+	// public IErlModule getModule(final String name) throws ErlModelException {
+	// if (!hasChildren()) {
+	// open(null);
+	// }
+	// for (final IErlElement element : fChildren) {
+	// if (element instanceof IErlModule) {
+	// final IErlModule m = (IErlModule) element;
+	// if (m != null && m.getName().equals(name)) {
+	// return m;
+	// }
+	// }
+	//
+	// }
+	// return null;
+	// }
 
 	public boolean isVisibleInOutline() {
 		return false;
@@ -732,4 +694,13 @@ public class ErlProject extends Openable implements IErlProject,
 
 	}
 
+	public boolean isOnSourcePath() {
+		return true; // FIXME eller? ska man kolla nature? fast det är väl
+		// redan klart... kanske den inte ska ärva från
+		// IErlFolder? jaja....
+	}
+
+	public IErlModule getModule(final String name) {
+		return ErlFolder.getModule(this, name);
+	}
 }

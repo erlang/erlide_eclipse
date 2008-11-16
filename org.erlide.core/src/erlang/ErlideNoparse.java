@@ -14,7 +14,6 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
@@ -73,18 +72,6 @@ public class ErlideNoparse {
 		}
 	}
 
-	public static IErlModule getModule(final IFile file) {
-		final String prj = file.getProject().getName();
-		final IErlModel mdl = ErlangCore.getModel();
-
-		try {
-			mdl.open(null);
-			return mdl.getErlangProject(prj).getModule(file.getName());
-		} catch (final ErlModelException e) {
-		}
-		return null;
-	}
-
 	public static IErlFunction getFunction(final IErlModule module,
 			final String name, final int arity) {
 		try {
@@ -123,7 +110,7 @@ public class ErlideNoparse {
 				if (file == null) {
 					continue;
 				}
-				final IErlModule module = getModule(file);
+				final IErlModule module = ErlangCore.getModel().getModule(file);
 				for (final OtpErlangObject o : funs.elements()) {
 					final OtpErlangTuple t2 = (OtpErlangTuple) o;
 					final OtpErlangTuple ft = (OtpErlangTuple) t2.elementAt(0);

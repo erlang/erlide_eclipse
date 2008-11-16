@@ -1,7 +1,6 @@
 package org.erlide.ui.views;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
@@ -31,11 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.runtime.ErlLogger;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -74,11 +69,11 @@ public class TraceLogView extends ViewPart {
 
 	class TreeObject implements IAdaptable {
 
-		private String name;
+		private final String name;
 
 		private TreeParent parent;
 
-		public TreeObject(String name) {
+		public TreeObject(final String name) {
 			this.name = name;
 		}
 
@@ -86,7 +81,7 @@ public class TraceLogView extends ViewPart {
 			return name;
 		}
 
-		public void setParent(TreeParent parent) {
+		public void setParent(final TreeParent parent) {
 			this.parent = parent;
 		}
 
@@ -100,26 +95,26 @@ public class TraceLogView extends ViewPart {
 		}
 
 		@SuppressWarnings("unchecked")
-		public Object getAdapter(Class key) {
+		public Object getAdapter(final Class key) {
 			return null;
 		}
 	}
 
 	class TreeParent extends TreeObject {
 
-		private ArrayList<TreeObject> children;
+		private final ArrayList<TreeObject> children;
 
-		public TreeParent(String name) {
+		public TreeParent(final String name) {
 			super(name);
 			children = new ArrayList<TreeObject>();
 		}
 
-		public void addChild(TreeObject child) {
+		public void addChild(final TreeObject child) {
 			children.add(child);
 			child.setParent(this);
 		}
 
-		public void removeChild(TreeObject child) {
+		public void removeChild(final TreeObject child) {
 			children.remove(child);
 			child.setParent(null);
 		}
@@ -138,14 +133,14 @@ public class TraceLogView extends ViewPart {
 
 		private TreeParent invisibleRoot;
 
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer v, final Object oldInput,
+				final Object newInput) {
 			if (newInput instanceof IErlModule[]) {
 				// TreeObject to1 = new TreeObject("Leaf 1");
 				final IErlModule[] x = (IErlModule[]) newInput;
 				invisibleRoot = new TreeParent("");
 				for (final IErlModule module : x) {
-					invisibleRoot.addChild(new TreeObject(module
-							.getName()));
+					invisibleRoot.addChild(new TreeObject(module.getName()));
 				}
 			}
 		}
@@ -153,7 +148,7 @@ public class TraceLogView extends ViewPart {
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object parent) {
+		public Object[] getElements(final Object parent) {
 			if (parent.equals(getViewSite())) {
 				if (invisibleRoot == null) {
 					initialize();
@@ -163,21 +158,21 @@ public class TraceLogView extends ViewPart {
 			return getChildren(parent);
 		}
 
-		public Object getParent(Object child) {
+		public Object getParent(final Object child) {
 			if (child instanceof TreeObject) {
 				return ((TreeObject) child).getParent();
 			}
 			return null;
 		}
 
-		public Object[] getChildren(Object parent) {
+		public Object[] getChildren(final Object parent) {
 			if (parent instanceof TreeParent) {
 				return ((TreeParent) parent).getChildren();
 			}
 			return new Object[0];
 		}
 
-		public boolean hasChildren(Object parent) {
+		public boolean hasChildren(final Object parent) {
 			if (parent instanceof TreeParent) {
 				return ((TreeParent) parent).hasChildren();
 			}
@@ -213,12 +208,12 @@ public class TraceLogView extends ViewPart {
 	static class ViewLabelProvider extends LabelProvider {
 
 		@Override
-		public String getText(Object obj) {
+		public String getText(final Object obj) {
 			return obj.toString();
 		}
 
 		@Override
-		public Image getImage(Object obj) {
+		public Image getImage(final Object obj) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			if (obj instanceof TreeParent) {
 				imageKey = ISharedImages.IMG_OBJ_FOLDER;
@@ -242,7 +237,7 @@ public class TraceLogView extends ViewPart {
 	 * it.
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
@@ -260,7 +255,7 @@ public class TraceLogView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				TraceLogView.this.fillContextMenu(manager);
 			}
 		});
@@ -275,13 +270,13 @@ public class TraceLogView extends ViewPart {
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
 		manager.add(action2);
 	}
 
-	void fillContextMenu(IMenuManager manager) {
+	void fillContextMenu(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 		manager.add(new Separator());
@@ -290,7 +285,7 @@ public class TraceLogView extends ViewPart {
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 		manager.add(new Separator());
@@ -315,22 +310,22 @@ public class TraceLogView extends ViewPart {
 			@Override
 			public void run() {
 				// testing
-				final IErlModel mdl = ErlangCore.getModel();
-				final List<IErlModule> ms = mdl.findModule("test", ".*");
-				ErlLogger.debug("found(\"*\") " + ms.size());
-				for (IErlModule element : ms) {
-					ErlLogger.debug("  " + element.getName());
-				}
-
-				final List<IErlFunction> fs = mdl.findFunction("test", ".*",
-						"st.*", IErlModel.UNKNOWN_ARITY);
-				ErlLogger.debug("found(\"*\") " + fs.size());
-				for (IErlFunction element : fs) {
-					ErlLogger.debug("  " + element.getName() + "/"
-							+ element.getArity());
-				}
-
-				viewer.setInput(ms);
+				// final IErlModel mdl = ErlangCore.getModel();
+				// final List<IErlModule> ms = mdl.findModule("test", ".*");
+				// ErlLogger.debug("found(\"*\") " + ms.size());
+				// for (IErlModule element : ms) {
+				// ErlLogger.debug(" " + element.getName());
+				// }
+				//
+				// final List<IErlFunction> fs = mdl.findFunction("test", ".*",
+				// "st.*", IErlModel.UNKNOWN_ARITY);
+				// ErlLogger.debug("found(\"*\") " + fs.size());
+				// for (IErlFunction element : fs) {
+				// ErlLogger.debug(" " + element.getName() + "/"
+				// + element.getArity());
+				// }
+				//
+				// viewer.setInput(ms);
 				//
 
 				showMessage("Action 2 executed");
@@ -355,13 +350,13 @@ public class TraceLogView extends ViewPart {
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
-			public void doubleClick(DoubleClickEvent event) {
+			public void doubleClick(final DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
 	}
 
-	void showMessage(String message) {
+	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
 				"Trace Log View", message);
 	}

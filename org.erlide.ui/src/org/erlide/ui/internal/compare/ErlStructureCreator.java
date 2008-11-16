@@ -30,7 +30,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IParent;
 import org.erlide.ui.ErlideUIPlugin;
 
@@ -41,27 +40,24 @@ public class ErlStructureCreator implements IStructureCreator {
 
 	private static final String NAME = "ErlStructureCreator.name"; //$NON-NLS-1$
 
-	private final IErlProject fProject;
+	// private final IErlProject fProject;
 
 	private final String fName;
 
-	public ErlStructureCreator(String title) {
-		this();
-	}
-
 	public ErlStructureCreator() {
-		this(ErlangCore.getModelManager().createEmptyProject(), "comptemp.erl");
-		// FIXME title??
+		// this(ErlangCore.getModelManager().createEmptyProject(),
+		// "comptemp.erl");
+		this("comptemp.erl");
 	}
 
 	/**
 	 * @param project
 	 * @param name
 	 */
-	public ErlStructureCreator(IErlProject project, String name) {
+	public ErlStructureCreator(final String name) {
 		super();
 		// TODO Auto-generated constructor stub
-		fProject = project;
+		// fProject = project;
 		fName = name;
 	}
 
@@ -75,7 +71,7 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * @see IStructureCreator#getStructure
 	 */
-	public IStructureComparator getStructure(Object input) {
+	public IStructureComparator getStructure(final Object input) {
 
 		String s = null;
 		if (input instanceof IStreamContentAccessor) {
@@ -91,7 +87,7 @@ public class ErlStructureCreator implements IStructureCreator {
 		final Document doc = new Document(s);
 
 		final IErlModule module = ErlangCore.getModelManager()
-				.createModuleFrom(fName, s, fProject);
+				.createModuleFrom(fName, s, null);
 		ErlNode root = null;
 		try {
 			module.open(null);
@@ -104,14 +100,14 @@ public class ErlStructureCreator implements IStructureCreator {
 		return root;
 	}
 
-	private ErlNode recursiveMakeErlNodes(IErlElement element, ErlNode parent,
-			Document doc) throws ErlModelException {
+	private ErlNode recursiveMakeErlNodes(final IErlElement element,
+			final ErlNode parent, final Document doc) throws ErlModelException {
 		final ErlNode n = new ErlNode(parent, element.getKind(), element
 				.getName(), doc, 0, 0);
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
 			final List<? extends IErlElement> children = p.getChildren();
-			for (IErlElement element0 : children) {
+			for (final IErlElement element0 : children) {
 				recursiveMakeErlNodes(element0, n, doc);
 			}
 		}
@@ -128,7 +124,7 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * @see IStructureCreator#locate
 	 */
-	public IStructureComparator locate(Object path, Object source) {
+	public IStructureComparator locate(final Object path, final Object source) {
 		return null;
 	}
 
@@ -142,13 +138,14 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * @see IStructureCreator#rewriteTree
 	 */
-	public void rewriteTree(Differencer differencer, IDiffContainer root) {
+	public void rewriteTree(final Differencer differencer,
+			final IDiffContainer root) {
 	}
 
 	/**
 	 * @see IStructureCreator#save
 	 */
-	public void save(IStructureComparator structure, Object input) {
+	public void save(final IStructureComparator structure, final Object input) {
 		if (input instanceof IEditableContent && structure instanceof ErlNode) {
 			final IDocument doc = ((ErlNode) structure).getDocument();
 			final IEditableContent bca = (IEditableContent) input;
@@ -160,7 +157,7 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * @see IStructureCreator#getContents
 	 */
-	public String getContents(Object node, boolean ignoreWhitespace) {
+	public String getContents(final Object node, final boolean ignoreWhitespace) {
 		if (node instanceof IStreamContentAccessor) {
 			final IStreamContentAccessor sca = (IStreamContentAccessor) node;
 			try {
@@ -174,7 +171,7 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * Returns null if an error occurred.
 	 */
-	private static String readString(InputStream is) {
+	private static String readString(final InputStream is) {
 		if (is == null) {
 			return null;
 		}

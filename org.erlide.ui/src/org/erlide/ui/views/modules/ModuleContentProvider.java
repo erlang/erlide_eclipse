@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.PluginUtils;
@@ -65,7 +66,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
-	public Object[] getChildren(Object parentElement) {
+	public Object[] getChildren(final Object parentElement) {
 		try {
 			if (parentElement instanceof IWorkspaceRoot) {
 				return getWorkspaceChildren((IWorkspaceRoot) parentElement);
@@ -92,7 +93,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * 
 	 * @throws CoreException
 	 */
-	private Object[] getContainerChildren(IContainer con) throws CoreException {
+	private Object[] getContainerChildren(final IContainer con)
+			throws CoreException {
 
 		if (PluginUtils.isOnSourcePath(con)) {
 		}
@@ -100,13 +102,13 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		final IResource[] resources = con.members(IResource.DEPTH_ZERO);
 
 		final List<IResource> lst = new ArrayList<IResource>(resources.length);
-		for (IResource element : resources) {
+		for (final IResource element : resources) {
 			if (element instanceof IContainer) {
 				lst.add(element);
 			}
 		}
 
-		for (IResource element : resources) {
+		for (final IResource element : resources) {
 			if (element instanceof IFile) {
 				lst.add(element);
 			}
@@ -124,7 +126,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * 
 	 * @throws CoreException
 	 */
-	private Object[] getProjectChildren(IErlProject project)
+	private Object[] getProjectChildren(final IErlProject project)
 			throws CoreException {
 		final IErlModule[] resources = project.getModules().toArray(
 				new IErlModule[0]);
@@ -132,11 +134,11 @@ public class ModuleContentProvider implements ITreeContentProvider,
 
 		final List<IResource> lst = new ArrayList<IResource>(resources.length
 				+ nonerl.length);
-		for (IErlModule element : resources) {
+		for (final IErlModule element : resources) {
 			ErlLogger.debug("> " + element.getName());
 		}
 
-		for (IResource element : nonerl) {
+		for (final IResource element : nonerl) {
 			if (element instanceof IContainer) {
 				lst.add(element);
 			}
@@ -159,16 +161,16 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * @throws CoreException
 	 *             if a problem occures
 	 */
-	private Object[] getWorkspaceChildren(IWorkspaceRoot root)
+	private Object[] getWorkspaceChildren(final IWorkspaceRoot root)
 			throws CoreException {
 		final List<IErlProject> list = new LinkedList<IErlProject>();
 
 		final IProject[] projects = root.getProjects();
-
-		for (IProject element : projects) {
+		final IErlModel model = ErlangCore.getModel();
+		for (final IProject element : projects) {
 			if (isErlangProject(element)) {
-				final IErlProject ep = ErlangCore.getModelManager().create(
-						element);
+				final IErlProject ep = (IErlProject) ErlangCore
+						.getModelManager().create(element, model);
 				list.add(ep);
 			}
 		}
@@ -185,14 +187,15 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * @throws CoreException
 	 *             if a problem occures
 	 */
-	private boolean isErlangProject(IProject project) throws CoreException {
+	private boolean isErlangProject(final IProject project)
+			throws CoreException {
 		if (!project.isOpen()) {
 			return true;
 		}
 
 		final String[] natureIds = project.getDescription().getNatureIds();
 
-		for (String element : natureIds) {
+		for (final String element : natureIds) {
 			if (ErlangPlugin.NATURE_ID.equals(element)) {
 				return true;
 			}
@@ -203,7 +206,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
-	public Object getParent(Object element) {
+	public Object getParent(final Object element) {
 		if (element instanceof IResource) {
 			return ((IResource) element).getParent();
 		}
@@ -214,7 +217,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
-	public boolean hasChildren(Object element) {
+	public boolean hasChildren(final Object element) {
 		try {
 			if (element instanceof IWorkspaceRoot) {
 				return ((IWorkspaceRoot) element).members().length != 0;
@@ -239,7 +242,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * 
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
-	public Object[] getElements(Object inputElement) {
+	public Object[] getElements(final Object inputElement) {
 		return getChildren(inputElement);
 	}
 
@@ -255,7 +258,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
 	 *      java.lang.Object, java.lang.Object)
 	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
 
 		controlViewer = viewer;
 		IWorkspace oldWorkspace = null;
@@ -310,7 +314,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 	 * @param delta
 	 *            the delta to process
 	 */
-	protected void processDelta(IResourceDelta delta) {
+	protected void processDelta(final IResourceDelta delta) {
 		// This method runs inside a syncExec. The widget may have been
 		// destroyed
 		// by the time this is run. Check for this and do nothing if so.
@@ -329,7 +333,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 		// overwrite B.
 		final IResourceDelta[] affectedChildren = delta
 				.getAffectedChildren(IResourceDelta.CHANGED);
-		for (IResourceDelta element : affectedChildren) {
+		for (final IResourceDelta element : affectedChildren) {
 			if ((element.getFlags() & IResourceDelta.TYPE) != 0) {
 				((StructuredViewer) controlViewer).refresh(resource);
 				return;
@@ -349,7 +353,7 @@ public class ModuleContentProvider implements ITreeContentProvider,
 			return;
 		}
 
-		for (IResourceDelta element : affectedChildren) {
+		for (final IResourceDelta element : affectedChildren) {
 			processDelta(element);
 		}
 
