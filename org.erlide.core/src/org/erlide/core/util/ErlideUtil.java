@@ -220,6 +220,9 @@ public class ErlideUtil {
 	}
 
 	public static ModuleKind extToModuleKind(final String ext) {
+		if (ext == null) {
+			return ModuleKind.BAD;
+		}
 		if (ext.equalsIgnoreCase("hrl")) {
 			return ModuleKind.HRL;
 		} else if (ext.equalsIgnoreCase("erl")) {
