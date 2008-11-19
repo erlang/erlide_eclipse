@@ -192,7 +192,7 @@ guess_arity(Tokens, N) ->
 
 %% skip over an expression, checking parens, operators etc
 %%
-skip_expr([#token{kind=T} | Before]) when T =:= '{'; T =:= '['; T =:= '(' ->
+skip_expr([#token{kind=T} | Before]) when T =:= '{'; T =:= '['; T =:= '('; T =:= '<<' ->
     A = skip_paren(Before, erlide_text:matching_paren(T)),
     ?D(A),
     case is_op2(A) of
@@ -228,7 +228,7 @@ skip_paren([], _) ->
     [];
 skip_paren([#token{kind=P} | Rest], P) ->
     Rest;
-skip_paren([#token{kind=T} | Before], P) when T =:= '{'; T =:= '('; T =:= '[' ->
+skip_paren([#token{kind=T} | Before], P) when T =:= '{'; T =:= '('; T =:= '['; T =:= '<<' ->
     skip_paren(skip_paren(Before, erlide_text:matching_paren(T)), P);
 skip_paren([_ | Before], P) ->
     skip_paren(Before, P).
