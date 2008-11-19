@@ -57,6 +57,7 @@ import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
+import org.erlide.ui.views.outline.MemberFilterActionGroup.MemberFilter;
 
 /**
  * AbstractInfoPopupDialog
@@ -184,6 +185,10 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		widget.setLayoutData(data);
 		// Create the tree viewer
 		fTreeViewer = new TreeViewer(widget);
+		// Add member filter, don't show attributes
+		final MemberFilter noAttributesFilter = new MemberFilter();
+		noAttributesFilter.addFilter(MemberFilter.FILTER_ATTRIBUTES);
+		fTreeViewer.addFilter(noAttributesFilter);
 		// Add the name pattern filter
 		fNamePatternFilter = new QuickOutlineNamePatternFilter();
 		fTreeViewer.addFilter(fNamePatternFilter);
@@ -256,7 +261,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @param tree
 	 * @param e
 	 */
-	void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
+	private void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
 		// Ensure a selection was made, the first mouse button was
 		// used and the event happened in the tree
 		if (tree.getSelectionCount() < 1 || e.button != 1
@@ -532,7 +537,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/**
 	 * 
 	 */
-	void gotoSelectedElement() {
+	private void gotoSelectedElement() {
 		final Object selectedElement = getSelectedElement();
 		ErlLogger.debug("&&>> " + selectedElement);
 		if (selectedElement == null) {
@@ -614,7 +619,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @param update
 	 *            <code>true</code> if the viewer should be updated
 	 */
-	void setMatcherString(final String pattern, final boolean update) {
+	private void setMatcherString(final String pattern, final boolean update) {
 		if (pattern.length() == 0) {
 			fStringMatcher = null;
 		} else {

@@ -9,46 +9,26 @@
  *******************************************************************************/
 package org.erlide.ui.views.outline;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.ui.views.outline.ErlangOutlinePage.NoModuleElement;
 
 public class ErlangContentProvider implements ITreeContentProvider {
-
-	/* FIXME: NO_MODULE -- remove or use */
-	@SuppressWarnings("unused")
-	private final Object[] NO_MODULE = new Object[] { new NoModuleElement() };
 
 	private final Object[] NO_CHILDREN = new Object[] {};
 
 	private ElementChangedListener fListener;
 
-	private boolean fDetailed;
-
-	public ErlangContentProvider(boolean detailed) {
-		fDetailed = detailed;
-	}
-
-	public Object[] getChildren(Object parent) {
+	public Object[] getChildren(final Object parent) {
 		if (parent instanceof IParent) {
-			final IParent c = (IParent) parent;
+			final IParent p = (IParent) parent;
 			try {
-				IErlElement[] res = c.getChildren().toArray(new IErlElement[0]);
-				if (fDetailed) {
-					return res;
-				}
-				return filter(res);
+				return p.getChildren().toArray();
 			} catch (final ErlModelException x) {
 				if (!x.isDoesNotExist()) {
 					ErlLogger.debug("element missing: " + x.getMessage());
@@ -58,35 +38,11 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		return NO_CHILDREN;
 	}
 
-	synchronized private Object[] filter(IErlElement[] res) {
-		List<IErlElement> list = Arrays.asList(res);
-		List<IErlElement> list2 = new ArrayList<IErlElement>(5);
-		for (IErlElement element : list) {
-			if (!(element instanceof IErlAttribute)) {
-				list2.add(element);
-			}
-		}
-		return list2.toArray();
-	}
-
-	public Object[] getElements(Object parent) {
-		if (parent instanceof IParent) {
-			try {
-				IErlElement[] res = ((IParent) parent).getChildren().toArray(
-						new IErlElement[0]);
-				if (fDetailed) {
-					return res;
-				}
-				return filter(res);
-			} catch (final ErlModelException e) {
-				e.printStackTrace();
-				return NO_CHILDREN;
-			}
-		}
+	public Object[] getElements(final Object parent) {
 		return getChildren(parent);
 	}
 
-	public Object getParent(Object child) {
+	public Object getParent(final Object child) {
 		if (child instanceof IErlElement) {
 			final IErlElement e = (IErlElement) child;
 			return e.getParent();
@@ -94,23 +50,15 @@ public class ErlangContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
-	public boolean hasChildren(Object parent) {
+	public boolean hasChildren(final Object parent) {
 		if (parent instanceof IParent) {
-			final IParent c = (IParent) parent;
-			try {
-				final IErlElement[] children = c.getChildren().toArray(
-						new IErlElement[0]);
-				return (children != null && children.length > 0);
-			} catch (final ErlModelException x) {
-				if (!x.isDoesNotExist()) {
-					ErlLogger.debug("element missing: " + x.getMessage());
-				}
-			}
+			final IParent p = (IParent) parent;
+			return p.hasChildren();
 		}
 		return false;
 	}
 
-	public boolean isDeleted(Object o) {
+	public boolean isDeleted(final Object o) {
 		return false;
 	}
 
@@ -125,8 +73,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
 	/*
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		boolean isModule = (newInput instanceof IErlModule);
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
+		boolean isModule = newInput instanceof IErlModule;
 
 		// ErlLogger.debug("content set input:: " + newInput);
 		if (isModule && fListener == null) {

@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -56,7 +57,6 @@ import org.erlide.ui.editors.erl.ISortableContentOutlinePage;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 
 /**
@@ -77,8 +77,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 
 		/*
-		 * @see
-		 * ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
+		 * @see ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
 		 */
 		@Override
 		protected void handleLabelProviderChanged(
@@ -129,8 +128,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
 	 */
 	@Override
 	public ISelection getSelection() {
@@ -140,8 +138,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
 	 */
 	@Override
 	protected TreeViewer getTreeViewer() {
@@ -161,16 +158,15 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
-	 * .eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
+	 *      .eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setSelection(final ISelection selection) {
 		fOutlineViewer.setSelection(selection);
 	}
 
-	IErlModule fModule;
+	private IErlModule fModule;
 
 	private ErlangEditor fEditor;
 	private final String fToolTipText = "Sort";
@@ -236,13 +232,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	@Override
 	public void createControl(final Composite parent) {
+		// FIXME we still don't get a popup menu, we should have one...
+
 		final Tree tree = new Tree(parent, SWT.MULTI);
 		fOutlineViewer = new ErlangOutlineViewer(tree);
-		fOutlineViewer.setContentProvider(new ErlangContentProvider(true));
-		final ErlangLabelProvider erlangLabelProvider = new ErlangLabelProvider();
-		erlangLabelProvider.addLabelDecorator(new ProblemsLabelDecorator());
-		fOutlineViewer.setLabelProvider(erlangLabelProvider);
-		fOutlineViewer.addSelectionChangedListener(this);
+		fOutlineViewer.setContentProvider(fEditor
+				.createOutlineContentProvider());
+		fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
+		fOutlineViewer.addPostSelectionChangedListener(this);
 		fOutlineViewer.setInput(fModule);
 
 		final MenuManager manager = new MenuManager();
@@ -255,6 +252,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 			}
 		});
 		final IPageSite site = getSite();
+		final Menu menu = manager.createContextMenu(tree);
+		tree.setMenu(menu);
 
 		site.registerContextMenu(ErlangPlugin.PLUGIN_ID + ".outline", manager,
 				fOutlineViewer);
@@ -277,7 +276,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		fActionGroups.fillContextMenu(menu);
 	}
 
-	static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
+	public static class NoModuleElement extends WorkbenchAdapter implements
+			IAdaptable {
 
 		/*
 		 * 

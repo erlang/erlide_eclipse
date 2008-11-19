@@ -1478,7 +1478,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public ITreeContentProvider createOutlineContentProvider() {
-		return new ErlangContentProvider(false);
+		return new ErlangContentProvider();
 	}
 
 	public ILabelProvider createOutlineLabelProvider() {
