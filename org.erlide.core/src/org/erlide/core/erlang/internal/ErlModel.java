@@ -206,17 +206,18 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see IErlModel
 	 */
 	public IErlProject getErlangProject(final String projectName) {
-		for (final IErlElement element : fChildren) {
-			if (element.getName().equals(projectName)) {
-				return (IErlProject) element;
-			}
+		final IErlElement e = getChildNamed(projectName);
+		if (e != null) {
+			return (IErlProject) e;
 		}
 		return makeErlangProject(getWorkspace().getRoot().getProject(
 				projectName));
 	}
 
 	public IErlProject makeErlangProject(final IProject project) {
-		return new ErlProject(project, this);
+		final IErlProject ep = new ErlProject(project, this);
+		addChild(ep);
+		return ep;
 	}
 
 	/**
@@ -429,112 +430,51 @@ public class ErlModel extends Openable implements IErlModel {
 		return false;
 	}
 
-	// /**
-	// * @see org.erlide.core.erlang.IErlModel#findFunction(java.lang.String,
-	// * java.lang.String, int)
-	// */
-	// public List<IErlFunction> findFunction(final String projectName,
-	// final String moduleName, final String function, final int arity) {
-	// final ArrayList<IErlFunction> funs = new ArrayList<IErlFunction>(20);
-	//
-	// final List<IErlModule> modules = findModule(project, module);
-	// for (final IErlModule mod : modules) {
-	// try {
-	// for (final IErlElement el : mod.getChildren()) {
-	// if (el instanceof IErlFunction) {
-	// final IErlFunction fun = (IErlFunction) el;
-	// final boolean arityOk = arity == UNKNOWN_ARITY
-	// || arity == fun.getArity();
-	// if (arityOk && fun.getName().matches(function)) {
-	// funs.add(fun);
-	// }
-	// }
-	// }
-	// } catch (final ErlModelException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// return funs;
-	// }
-
-	// private List<IErlModule> findModule(IResource r, String module) {
-	//		
-	// }
-	//
-	// public List<IErlModule> findModule(final String project, String module) {
-	// // TODO maybe we should do a module visitor instead?
-	// final ArrayList<IErlModule> mods = new ArrayList<IErlModule>(20);
-	// final IErlProject prj = getErlangProject(project);
-	// try {
-	// for (final IErlElement el : prj.getChildren()) {
-	// if (el instanceof IErlModule) {
-	// final IErlModule mod = (IErlModule) el;
-	// if (mod.getName().matches(module)) {
-	// mods.add(mod);
-	// }
-	// }
-	// }
-	// } catch (final ErlModelException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return mods;
-	// }
-
 	@Override
 	protected void closing(final Object info) throws ErlModelException {
 		// TODO Auto-generated method stub
-
-	}
-
-	private IErlElement findElement(final IParent p, final IResource rsrc) {
-		try {
-			for (final IErlElement child : p.getChildren()) {
-				if (child.getResource() == rsrc) {
-					return child;
-				}
-				if (child instanceof IParent) {
-					final IErlElement e = findElement((IParent) child, rsrc);
-					if (e != null) {
-						return e;
-					}
-				}
-			}
-		} catch (final ErlModelException e) {
-		}
-		return null;
 	}
 
 	public IErlElement findElement(final IResource rsrc) {
-		return findElement(this, rsrc);
+		return findElement(rsrc, false);
 	}
 
-	public IErlModule getModule(final IFile file) {
-		final IErlElement element = findElement(file);
-		if (element != null) {
-			return (IErlModule) element;
-		}
-		// Ok, if it's not found, we'll try to build it...
-		final IPath path = file.getFullPath();
+	public IErlElement findElement(final IResource rsrc,
+			final boolean openElements) {
+		final IPath path = rsrc.getFullPath();
 		IParent p = this;
 		for (final String segment : path.segments()) {
 			final IErlElement c = p.getChildNamed(segment);
-			if (c instanceof IOpenable) {
-				final IOpenable o = (IOpenable) c;
-				try {
-					o.open(null);
-				} catch (final ErlModelException e) {
-					e.printStackTrace();
-					return null;
+			if (c == null) {
+				return null;
+			}
+			if (openElements) {
+				if (c instanceof IOpenable) {
+					final IOpenable o = (IOpenable) c;
+					try {
+						o.open(null);
+					} catch (final ErlModelException e) {
+						e.printStackTrace();
+						return null;
+					}
 				}
 			}
-			if (c.getResource().equals(file)) {
-				return (IErlModule) c;
+			final IResource resource = c.getResource();
+			if (resource != null && resource.equals(rsrc)) {
+				return c;
 			}
 			p = (IParent) c;
 		}
 		return null;
+	}
+
+	public IErlModule getModule(final IFile file) {
+		IErlElement element = findElement(file, false);
+		if (element == null) {
+			// Ok, if it's not found, we'll try to build it...
+			element = findElement(file, true);
+		}
+		return (IErlModule) element;
 	}
 
 	public IErlProject findProject(final IProject project) {

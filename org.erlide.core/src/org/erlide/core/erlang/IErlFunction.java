@@ -27,4 +27,11 @@ public interface IErlFunction extends IErlMember, IParent {
 	List<IErlFunctionClause> getClauses();
 
 	ErlangFunction getFunction();
+
+	String getNameWithArity();
+
+	/**
+	 * @return the function name with _ for each parameter, used for completion
+	 */
+	String getNameWithParameters();
 }

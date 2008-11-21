@@ -382,7 +382,12 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlProject getProject() {
-		return (IErlProject) getParent();
+		for (IErlElement p = this; p != null; p = p.getParent()) {
+			if (p instanceof IErlProject) {
+				return (IErlProject) p;
+			}
+		}
+		return null;
 	}
 
 	public Kind getKind() {

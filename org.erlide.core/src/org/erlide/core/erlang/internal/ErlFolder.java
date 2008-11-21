@@ -19,6 +19,12 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.core.util.PluginUtils;
 
+/**
+ * Implementation of folder in erlang model
+ * 
+ * @author Jakob C
+ * 
+ */
 public class ErlFolder extends Openable implements IErlFolder {
 	private final IFolder folder;
 
@@ -94,7 +100,9 @@ public class ErlFolder extends Openable implements IErlFolder {
 		for (final IErlElement e : parent.getChildren()) {
 			if (e instanceof IErlFolder) {
 				final IErlFolder f = (IErlFolder) e;
-				result.addAll(f.getModules());
+				if (f.isOnSourcePath()) { // FIXME is this what you want?
+					result.addAll(f.getModules());
+				}
 			} else if (e instanceof IErlModule) {
 				result.add((IErlModule) e);
 			}

@@ -24,11 +24,16 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.util.ErlangFunction;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
@@ -48,7 +53,7 @@ import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final ISourceViewer sourceViewer;
-	String prefix;
+	private final String prefix;
 	private final IErlModule module;
 
 	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
@@ -59,23 +64,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		this.prefix = prefix;
 		this.module = module;
 	}
-
-	// @Deprecated
-	// private OtpErlangList getDocumentationFor(final OtpErlangList list,
-	// final String mod) {
-	// try {
-	// final String s = ErlideUIPlugin.getDefault().getStateLocation()
-	// .toString();
-	// final OtpErlangObject r1 = ErlideDoc.getFunDoc(list, mod, s);
-	// if (r1 instanceof OtpErlangList) {
-	// return (OtpErlangList) r1;
-	// }
-	// return null;
-	// } catch (final Exception e) {
-	//
-	// }
-	// return null;
-	// }
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
@@ -91,9 +79,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final int interrogationMarkPos = aPrefix.indexOf('?');
 			List<ICompletionProposal> result;
 			if (colonPos >= 0) {
+				final IErlProject project = module.getProject();
 				final String moduleName = aPrefix.substring(0, colonPos);
-				result = externalCallCompletions(b, moduleName, offset, aPrefix
-						.substring(colonPos + 1), colonPos);
+				result = externalCallCompletions(b, project, moduleName,
+						offset, aPrefix.substring(colonPos + 1), colonPos);
 			} else if (hashMarkPos >= 0) {
 				if (dotPos >= 0) {
 					final String recordName = aPrefix.substring(
@@ -110,7 +99,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						.substring(interrogationMarkPos + 1),
 						IErlElement.Kind.MACRO_DEF);
 			} else {
-				result = moduleCompletions(b, offset, aPrefix, colonPos);
+				result = moduleOrLocalCallCompletions(b, offset, aPrefix,
+						colonPos);
 			}
 			if (result == null) {
 				return NO_COMPLETIONS;
@@ -147,11 +137,37 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
-	private List<ICompletionProposal> moduleCompletions(final IdeBackend b,
-			final int offset, final String aprefix, final int k) {
+	private List<ICompletionProposal> moduleOrLocalCallCompletions(
+			final IdeBackend b, final int offset, final String aprefix,
+			final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-		final List<String> allErlangFiles = org.erlide.core.util.ResourceUtil
-				.getAllErlangFiles();
+		// add declared functions in module
+		try {
+			for (final IErlElement e : module.getChildren()) {
+				if (e instanceof IErlFunction) {
+					final IErlFunction f = (IErlFunction) e;
+					addFunctionCompletion(offset, aprefix, result, f, false);
+				}
+			}
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		}
+		// add imported functions in module
+		for (final IErlImport imp : module.getImports()) {
+			for (final ErlangFunction ef : imp.getFunctions()) {
+				addFunctionCompletion(offset, aprefix, result, ef);
+			}
+		}
+		// add modules
+		final List<IErlModule> modules = ErlModelUtils
+				.getModulesWithReferencedProjects(module.getProject());
+		final List<String> allErlangFiles = new ArrayList<String>();
+		for (final IErlModule m : modules) {
+			final String name = m.getName();
+			if (!allErlangFiles.contains(name)) {
+				allErlangFiles.add(name);
+			}
+		}
 		OtpErlangObject res = null;
 		res = ErlideDoc.getModules(b, aprefix, allErlangFiles);
 		if (res instanceof OtpErlangList) {
@@ -199,52 +215,128 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> externalCallCompletions(
-			final IdeBackend b, final String moduleName, final int offset,
-			final String aprefix, final int k) throws ErlangRpcException,
-			BackendException, RpcException, OtpErlangRangeException {
+			final IdeBackend b, final IErlProject project,
+			final String moduleName, final int offset, final String aprefix,
+			final int k) throws ErlangRpcException, BackendException,
+			RpcException, OtpErlangRangeException {
+		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-				moduleName, aprefix, stateDir);
-		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-		// final OtpErlangObject res = ErlideDoc
-		// .getExported(b, prefix, moduleName);
-		if (res instanceof OtpErlangList) {
-			final OtpErlangList resl = (OtpErlangList) res;
-			for (int i = 0; i < resl.arity(); i++) {
-				// {FunWithArity, FunWithParameters, [{Offset, Length}], Doc}
-				final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
-				final String funWithArity = ((OtpErlangString) f.elementAt(0))
-						.stringValue();
-				final String funWithParameters = ((OtpErlangString) f
-						.elementAt(1)).stringValue();
-				final OtpErlangList parOffsets = (OtpErlangList) f.elementAt(2);
-				final int nPars = parOffsets.arity();
-				String docStr = null;
-				if (f.arity() > 3) {
-					final OtpErlangObject elt = f.elementAt(3);
-					if (elt instanceof OtpErlangString) {
-						docStr = ((OtpErlangString) elt).stringValue();
+		// first check in project and refs
+		final IErlModule m = ErlModelUtils.getModule(moduleName);
+		if (m != null) {
+			try {
+				m.open(null);
+				for (final IErlElement e : m.getChildren()) {
+					if (e instanceof IErlFunction) {
+						final IErlFunction f = (IErlFunction) e;
+						addFunctionCompletion(offset, aprefix, result, f, true);
 					}
 				}
-				final String cpl = funWithParameters
-						.substring(aprefix.length());
-				final List<Point> offsetsAndLengths = getOffsetsAndLengths(
-						parOffsets, offset);
-				int offs = cpl.length();
-				if (nPars > 0) {
-					offs = offsetsAndLengths.get(0).x;
-				}
-				// final ICompletionProposal c = new CompletionProposal(cpl,
-				// offset, 0, offs, null, funWithArity, null, docStr);
-
-				final ICompletionProposal c = new ErlCompletionProposal(
-						offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
-						null, null, docStr, sourceViewer);
-
-				result.add(c);
+			} catch (final ErlModelException e) {
+				e.printStackTrace();
 			}
+		} else {
+			// then check built stuff (and otp)
+			final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+					moduleName, aprefix, stateDir);
+			// final OtpErlangObject res = ErlideDoc
+			// .getExported(b, prefix, moduleName);
+			if (res instanceof OtpErlangList) {
+				final OtpErlangList resl = (OtpErlangList) res;
+				for (int i = 0; i < resl.arity(); i++) {
+					// {FunWithArity, FunWithParameters, [{Offset, Length}],
+					// Doc}
+					final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
+					final String funWithArity = ((OtpErlangString) f
+							.elementAt(0)).stringValue();
+					final String funWithParameters = ((OtpErlangString) f
+							.elementAt(1)).stringValue();
+					final OtpErlangList parOffsets = (OtpErlangList) f
+							.elementAt(2);
+					final int nPars = parOffsets.arity();
+					String docStr = null;
+					if (f.arity() > 3) {
+						final OtpErlangObject elt = f.elementAt(3);
+						if (elt instanceof OtpErlangString) {
+							docStr = ((OtpErlangString) elt).stringValue();
+						}
+					}
+					final String cpl = funWithParameters.substring(aprefix
+							.length());
+					final List<Point> offsetsAndLengths = getOffsetsAndLengths(
+							parOffsets, offset);
+					int offs = cpl.length();
+					if (nPars > 0) {
+						offs = offsetsAndLengths.get(0).x;
+					}
+
+					final ICompletionProposal c = new ErlCompletionProposal(
+							offsetsAndLengths, funWithArity, cpl, offset, 0,
+							offs, null, null, docStr, sourceViewer);
+
+					result.add(c);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @param offset
+	 * @param aprefix
+	 * @param result
+	 * @param function
+	 * @param externalsOnly
+	 *            TODO
+	 */
+	private void addFunctionCompletion(final int offset, final String aprefix,
+			final List<ICompletionProposal> result,
+			final IErlFunction function, boolean externalsOnly) {
+		if ((!externalsOnly || function.isExported())
+				&& function.getName().startsWith(aprefix)) {
+			int offs = function.getName().length() - aprefix.length();
+			final List<Point> offsetsAndLengths = getOffsetsAndLengths(function
+					.getArity(), offset + offs + 1);
+			if (offsetsAndLengths.size() > 0) {
+				offs = offsetsAndLengths.get(0).x;
+			}
+			final String funWithArity = function.getNameWithArity();
+			final String funWithParameters = function.getNameWithParameters();
+			final String cpl = funWithParameters.substring(aprefix.length());
+			final ICompletionProposal c = new ErlCompletionProposal(
+					offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
+					null, null, null, sourceViewer);
+			result.add(c);
+		}
+	}
+
+	private void addFunctionCompletion(final int offset, final String aprefix,
+			final List<ICompletionProposal> result,
+			final ErlangFunction function) {
+		if (function.name.startsWith(aprefix)) {
+			int offs = function.name.length() - aprefix.length();
+			final List<Point> offsetsAndLengths = getOffsetsAndLengths(
+					function.arity, offset + offs + 1);
+			if (offsetsAndLengths.size() > 0) {
+				offs = offsetsAndLengths.get(0).x;
+			}
+			final String funWithArity = function.getNameWithArity();
+			final String funWithParameters = function.getNameWithParameters();
+			final String cpl = funWithParameters.substring(aprefix.length());
+			final ICompletionProposal c = new ErlCompletionProposal(
+					offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
+					null, null, null, sourceViewer);
+			result.add(c);
+		}
+	}
+
+	private List<Point> getOffsetsAndLengths(final int arity,
+			final int replacementOffset) {
+		final ArrayList<Point> result = new ArrayList<Point>(arity);
+		for (int i = 0; i < arity; i++) {
+			result.add(new Point(replacementOffset + i * 3, 1));
 		}
 		return result;
 	}

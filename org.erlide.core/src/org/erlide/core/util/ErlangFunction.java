@@ -1,5 +1,7 @@
 package org.erlide.core.util;
 
+import org.erlide.core.erlang.internal.ErlFunction;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -62,6 +64,14 @@ public class ErlangFunction {
 	@Override
 	public String toString() {
 		return name + "/" + Integer.toString(arity);
+	}
+
+	public String getNameWithArity() {
+		return toString();
+	}
+
+	public String getNameWithParameters() {
+		return ErlFunction.getNameWithParameters(name, arity);
 	}
 
 }

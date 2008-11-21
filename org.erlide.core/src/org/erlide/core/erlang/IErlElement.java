@@ -184,4 +184,6 @@ public interface IErlElement extends IAdaptable {
 	 */
 	boolean isStructureKnown() throws ErlModelException;
 
+	void resourceChanged();
+
 }

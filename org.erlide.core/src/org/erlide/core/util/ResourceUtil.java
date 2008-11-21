@@ -10,14 +10,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -192,45 +188,47 @@ public class ResourceUtil {
 		return null;
 	}
 
-	private static void recursiveGetAllErlangModules(final List<IFile> result,
-			final IContainer container) {
-		try {
-			for (final IResource r : container.members()) {
-				if (r instanceof IContainer) {
-					final IContainer c = (IContainer) r;
-					if (c.isAccessible()) {
-						recursiveGetAllErlangModules(result, c);
-					}
-				} else if (r instanceof IFile) {
-					final IFile f = (IFile) r;
-					if (f.getName().endsWith(".erl")) {
-						result.add(f);
-					}
-				}
-			}
-		} catch (final CoreException e) {
-		}
-	}
-
-	public static List<String> getAllErlangFiles() {
-		final List<IFile> erlangModules = getAllErlangModules();
-		final List<String> result = new ArrayList<String>(erlangModules.size());
-		for (final IFile f : erlangModules) {
-			final String n = f.getName();
-			result.add(n.substring(0, n.length() - 4));
-		}
-		return result;
-	}
-
-	public static List<IFile> getAllErlangModules() {
-		return getAllErlangModules(ResourcesPlugin.getWorkspace().getRoot());
-	}
-
-	public static List<IFile> getAllErlangModules(final IContainer container) {
-		final List<IFile> result = new ArrayList<IFile>(100);
-		recursiveGetAllErlangModules(result, container);
-		return result;
-	}
+	// private static void recursiveGetAllErlangModules(final List<IFile>
+	// result,
+	// final IContainer container) {
+	// try {
+	// for (final IResource r : container.members()) {
+	// if (r instanceof IContainer) {
+	// final IContainer c = (IContainer) r;
+	// if (c.isAccessible()) {
+	// recursiveGetAllErlangModules(result, c);
+	// }
+	// } else if (r instanceof IFile) {
+	// final IFile f = (IFile) r;
+	// if (f.getName().endsWith(".erl")) {
+	// result.add(f);
+	// }
+	// }
+	// }
+	// } catch (final CoreException e) {
+	// }
+	// }
+	//
+	// public static List<String> getAllErlangFiles() {
+	// final List<IFile> erlangModules = getAllErlangModules();
+	// final List<String> result = new ArrayList<String>(erlangModules.size());
+	// for (final IFile f : erlangModules) {
+	// final String n = f.getName();
+	// result.add(n.substring(0, n.length() - 4));
+	// }
+	// return result;
+	// }
+	//
+	// public static List<IFile> getAllErlangModules() {
+	// return getAllErlangModules(ResourcesPlugin.getWorkspace().getRoot());
+	// }
+	//
+	// public static List<IFile> getAllErlangModules(final IContainer container)
+	// {
+	// final List<IFile> result = new ArrayList<IFile>(100);
+	// recursiveGetAllErlangModules(result, container);
+	// return result;
+	// }
 
 	/**
 	 * <p>

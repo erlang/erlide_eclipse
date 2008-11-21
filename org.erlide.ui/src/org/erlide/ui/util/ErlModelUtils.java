@@ -58,7 +58,6 @@ public class ErlModelUtils {
 	}
 
 	public static IErlModule getModule(final IEditorInput editorInput) {
-
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
 			return getModule(input.getFile());
@@ -72,8 +71,18 @@ public class ErlModelUtils {
 			model.open(null);
 			return model.getModule(file);
 		} catch (final ErlModelException e) {
-			return null;
 		}
+		return null;
+	}
+
+	public static IErlModule getModule(final String moduleName) {
+		final IErlModel model = ErlangCore.getModel();
+		try {
+			model.open(null);
+			return model.getModule(moduleName);
+		} catch (final ErlModelException e) {
+		}
+		return null;
 	}
 
 	public static IErlProject getErlProject(final ITextEditor editor) {
@@ -452,5 +461,26 @@ public class ErlModelUtils {
 		if (mod != null) {
 			getModule(editor).reenableScanner();
 		}
+	}
+
+	public static List<IErlModule> getModulesWithReferencedProjects(
+			final IErlProject project) {
+		final IErlModel model = ErlangCore.getModel();
+		final List<IErlModule> result = new ArrayList<IErlModule>();
+		try {
+			result.addAll(project.getModules());
+			for (final IProject p : project.getProject()
+					.getReferencedProjects()) {
+				final IErlProject ep = model.findProject(p);
+				if (ep != null) {
+					result.addAll(ep.getModules());
+				}
+			}
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		} catch (final CoreException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

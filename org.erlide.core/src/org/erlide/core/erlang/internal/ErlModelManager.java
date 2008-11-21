@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -159,6 +160,10 @@ public class ErlModelManager implements IErlModelManager {
 		if (resource == null) {
 			return null;
 		}
+		final IErlElement e = erlangModel.findElement(resource);
+		if (e != null) {
+			return e; // TODO or should this give an exception?
+		}
 		final int type = resource.getType();
 		switch (type) {
 		case IResource.PROJECT:
@@ -172,20 +177,24 @@ public class ErlModelManager implements IErlModelManager {
 		default:
 			return null;
 		}
+		// TODO should we make Erlidemodelevents and fire them?
 	}
 
 	private void remove(final IResource rsrc) {
 		final IErlElement e = erlangModel.findElement(rsrc);
-
-		final IParent p = (IParent) e.getParent();
-		p.removeChild(e);
-		// TODO should we make change events and fire them?
+		if (e != null) {
+			final IParent p = (IParent) e.getParent();
+			p.removeChild(e);
+		}
+		// TODO should we make Erlidemodelevents and fire them?
 	}
 
 	private void change(final IResource rsrc) {
-		remove(rsrc);
-		create(rsrc);
-		// TODO should we make change events and fire them?
+		final IErlElement e = erlangModel.findElement(rsrc);
+		if (e != null) {
+			e.resourceChanged();
+		}
+		// TODO should we make Erlidemodelevents and fire them?
 	}
 
 	/**
@@ -205,23 +214,18 @@ public class ErlModelManager implements IErlModelManager {
 	 * Creating a Erlang element has the side effect of creating and opening all
 	 * of the element's parents if they are not yet open.
 	 */
-	public IErlElement createFile(final IFile file, final IErlElement parent) {
+	public IErlElement createFile(final IFile file, IErlElement parent) {
 		if (file == null) {
 			return null;
 		}
-		// if (project == null) {
-		// project = erlangModel.findErlangProject(file.getProject());
-		// }
-		// if (project == null) {
-		// project = createProject(file.getProject());
-		// }
-
-		// TODO should we make change events and fire them?
-		if (file.getFileExtension() != null) {
-			final String name = file.getName();
-			if (ErlideUtil.hasModuleExt(name)) {
-				return createModuleFrom(file, parent);
+		if (parent == null) {
+			final IContainer parentResource = file.getParent();
+			if (parentResource != null) {
+				parent = erlangModel.findElement(parentResource);
 			}
+		}
+		if (ErlideUtil.hasModuleExt(file.getName())) {
+			return createModuleFrom(file, parent);
 		}
 		return null;
 	}
@@ -233,13 +237,10 @@ public class ErlModelManager implements IErlModelManager {
 		if (folder == null) {
 			return null;
 		}
-		return new ErlFolder(folder, parent);
-		// if (project == null) {
-		// project = create(folder.getProject());
-		// }
-		// final IErlElement element = null;
-		// determineIfOnClasspath(folder, project);
-		// return element;
+		final IErlFolder f = new ErlFolder(folder, parent);
+		final IParent p = (IParent) parent;
+		p.addChild(f);
+		return f;
 	}
 
 	/**
@@ -455,14 +456,18 @@ public class ErlModelManager implements IErlModelManager {
 							&& ErlideUtil.hasModuleExt(resource.getName());
 					boolean erlangProject = resource.getType() == IResource.PROJECT
 							&& ErlideUtil.hasErlangNature((IProject) resource);
-					if (erlangFile || erlangProject) {
-						if (delta.getKind() != IResourceDelta.ADDED) {
+					boolean erlangFolder = resource.getType() == IResource.FOLDER;
+					// &&
+					// ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((IFolder)
+					// resource);
+					if (erlangFile || erlangProject || erlangFolder) {
+						if (delta.getKind() == IResourceDelta.ADDED) {
 							added.add(resource);
 						}
-						if (delta.getKind() != IResourceDelta.CHANGED) {
+						if (delta.getKind() == IResourceDelta.CHANGED) {
 							changed.add(resource);
 						}
-						if (delta.getKind() != IResourceDelta.REMOVED) {
+						if (delta.getKind() == IResourceDelta.REMOVED) {
 							removed.add(resource);
 						}
 					}
@@ -569,11 +574,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#prepareToSave(org.eclipse.core.resources.ISaveContext)
 	 */
-	public void prepareToSave(final ISaveContext context) /*
-	 * throws
-	 * CoreException
-	 */
-	{
+	public void prepareToSave(final ISaveContext context) {
 		// nothing to do
 	}
 
@@ -1027,8 +1028,8 @@ public class ErlModelManager implements IErlModelManager {
 	 * @see ElementChangedEvent
 	 */
 	public void addElementChangedListener(final IElementChangedListener listener) {
-		addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE
-				| ElementChangedEvent.POST_RECONCILE);
+		addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+		// | ElementChangedEvent.POST_RECONCILE);
 	}
 
 	/**

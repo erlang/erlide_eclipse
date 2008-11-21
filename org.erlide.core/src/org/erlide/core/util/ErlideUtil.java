@@ -6,6 +6,7 @@
  *
  * Contributors:
  *     Vlad Dumitrescu
+ *     Jakob C
  *******************************************************************************/
 package org.erlide.core.util;
 
@@ -18,7 +19,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -34,6 +37,7 @@ import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
@@ -274,4 +278,20 @@ public class ErlideUtil {
 		return false;
 	}
 
+	public static boolean isOnSourcePathOrParentToFolderOnSourcePath(
+			final IFolder folder) {
+		final IProject project = folder.getProject();
+		final IPath folderPath = folder.getFullPath();
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		final List<String> sourcePaths = ErlidePrefConverter
+				.convertToList(prefs.getSourceDirsString());
+		for (final String p : sourcePaths) {
+			final IPath path = project.getFolder(p).getFullPath();
+			if (folderPath.isPrefixOf(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

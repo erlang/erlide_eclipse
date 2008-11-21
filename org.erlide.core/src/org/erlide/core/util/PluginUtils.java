@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.util;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -24,7 +23,7 @@ import org.erlide.runtime.ErlangProjectProperties;
  * Simple utility functions
  * 
  * 
- * @author Eric Merritt [cyberlync at yahoo dot com]
+ * @author Eric Merritt [cyberlync at yahoo dot com] Vlad Jakob C
  */
 public class PluginUtils {
 
@@ -35,7 +34,7 @@ public class PluginUtils {
 	 *            details on the error
 	 * @return IStatus
 	 */
-	public static IStatus makeStatus(Exception x) {
+	public static IStatus makeStatus(final Exception x) {
 		return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID, 0, x
 				.getMessage(), x);
 	}
@@ -47,30 +46,21 @@ public class PluginUtils {
 	 *            the container
 	 * @return the indicator of the source path
 	 */
-	public static boolean isOnSourcePath(IContainer con) {
+	public static boolean isOnSourcePath(final IContainer con) {
 		final IProject project = con.getProject();
-
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-
 		final List<String> sourcePaths = ErlidePrefConverter
 				.convertToList(prefs.getSourceDirsString());
-
-		final Iterator<String> iter = sourcePaths.iterator();
-
-		IPath compare;
 		final IPath path = con.getFullPath();
-		while (iter.hasNext()) {
-			compare = project.getFile(iter.next()).getFullPath();
-
-			if (path.equals(compare)) {
+		for (final String i : sourcePaths) {
+			if (project.getFolder(i).getFullPath().equals(path)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 }

@@ -608,6 +608,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		isStructureKnown = newIsStructureKnown;
 	}
 
+	public void resourceChanged() {
+		// FIXME is this enough? it will rebuild at next occasion, and modules
+		// are handled with reconciles, containers children through add and
+		// remove, but... e.g. name change of folder?
+		setIsStructureKnown(false);
+	}
+
 	protected String pp(final OtpErlangObject e) {
 		if (e == null) {
 			return "";

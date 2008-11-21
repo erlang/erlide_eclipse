@@ -42,6 +42,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
@@ -199,15 +200,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	public void setInput(final IEditorInput editorInput) {
 		// ErlLogger.log("> outline set input "+editorInput);
 		fModule = ErlModelUtils.getModule(editorInput);
-		// if (myMdl != null) {
-		// try {
-		// myMdl.open(null);
-		// } catch (final ErlModelException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// refresh();
-		// }
+		try {
+			fModule.open(null);
+		} catch (final ErlModelException e) {
+		}
 	}
 
 	public void refresh() {
