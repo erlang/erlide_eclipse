@@ -373,7 +373,6 @@ public class ErlangProjectImportWizardPage extends
 
 					// IFolder projectFolder = projectPath.getFolder(file
 					// .getName());
-					// System.out.println(projectFolder.toString());
 					//
 					// if (projectFolder.exists()) {
 					// MessageDialog dialog = new MessageDialog(new Shell(

@@ -60,12 +60,9 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 							}
 						} catch (final OtpErlangExit e) {
 							// backend crashed -- restart?
-
-							ErlangPlugin.log(e);
-							e.printStackTrace();
+							ErlLogger.warn(e);
 						} catch (final OtpErlangException e) {
-							ErlangPlugin.log(e);
-							e.printStackTrace();
+							ErlLogger.warn(e);
 						}
 					} while (msg != null && !fStopJob
 							&& received < MAX_RECEIVED);
@@ -126,7 +123,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 						.uIntValue(), level.atomValue().toUpperCase(), "%s %s",
 						logEvent.toString(), ss);
 			} catch (final OtpErlangRangeException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 		final List<IBackendEventListener> list = fBackend.getEventListeners(id);

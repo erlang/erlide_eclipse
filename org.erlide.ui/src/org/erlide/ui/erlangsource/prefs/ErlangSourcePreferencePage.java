@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
 
 /**
@@ -97,7 +98,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			ErlangSourceContextTypeComment.getDefault().getTemplateStore()
 					.load();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -119,7 +120,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			ErlangSourceContextTypeComment.getDefault().getTemplateStore()
 					.save();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return super.performOk();
 	}

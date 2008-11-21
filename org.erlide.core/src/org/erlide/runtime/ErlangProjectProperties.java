@@ -85,9 +85,9 @@ public class ErlangProjectProperties {
 				stream.close();
 				loaded = true;
 			} catch (final FileNotFoundException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			} catch (final IOException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 
 			fSourceDirs = prefs.getProperty(IPrefConstants.SOURCE_DIRS,

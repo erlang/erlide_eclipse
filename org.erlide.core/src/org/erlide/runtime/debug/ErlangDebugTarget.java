@@ -164,7 +164,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		try {
 			resume();
 		} catch (final DebugException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					erlangLineBreakpoint.install(this);
 				}
 			} catch (final CoreException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 
@@ -234,8 +234,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					breakpointRemoved(breakpoint, null);
 				}
 			} catch (final CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 	}
@@ -294,8 +293,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			try {
 				line = lineL.intValue();
 			} catch (final OtpErlangRangeException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				ErlLogger.warn(e1);
 			}
 			final OtpErlangPid pid = getPidFromMeta(metaPid);
 			ErlangProcess erlangProcess = getErlangProcess(pid);

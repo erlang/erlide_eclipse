@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
@@ -327,9 +328,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 					template.getPattern().length());
 			tb = context.evaluate(template);
 		} catch (final BadLocationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final TemplateException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 		if (tb == null) {
@@ -341,8 +342,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
-	 *      .swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
+	 * .swt.events.SelectionEvent)
 	 */
 	public void widgetDefaultSelected(final SelectionEvent e) {
 		// TODO Auto-generated method stub
@@ -352,8 +354,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
-	 *      .events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
+	 * .events.SelectionEvent)
 	 */
 	public void widgetSelected(final SelectionEvent e) {
 

@@ -320,11 +320,9 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 							return new IBreakpoint[] { lineBreakpoint };
 						}
 					} catch (final DebugException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						ErlLogger.warn(e);
 					} catch (final CoreException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						ErlLogger.warn(e);
 					}
 				}
 			}

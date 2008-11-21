@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package erlang;
 
@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -36,9 +37,9 @@ public class ErlideImport {
 					importSources);
 			return new ErlProjectImport(res);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}

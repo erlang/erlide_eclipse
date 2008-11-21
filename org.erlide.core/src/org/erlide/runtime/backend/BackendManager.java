@@ -47,9 +47,11 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager implements IEpmdListener {
 
-	private static BackendManager MANAGER;
+	private volatile static BackendManager MANAGER;
+	private static Object lock = new Object();
 
-	private IdeBackend fLocalBackend;
+	private volatile IdeBackend fLocalBackend;
+	private final Object fLocalBackendLock = new Object();
 	private final Map<IProject, BuildBackend> fBuildBackends;
 	private final Object fBuildBackendsLock = new Object();
 	private final Map<IProject, Set<ExecutionBackend>> fExecutionBackends;
@@ -71,7 +73,11 @@ public final class BackendManager implements IEpmdListener {
 
 	public static BackendManager getDefault() {
 		if (MANAGER == null) {
-			MANAGER = new BackendManager();
+			synchronized (lock) {
+				if (MANAGER == null) {
+					MANAGER = new BackendManager();
+				}
+			}
 		}
 		return MANAGER;
 	}
@@ -213,29 +219,30 @@ public final class BackendManager implements IEpmdListener {
 		 */
 	}
 
-	public synchronized IdeBackend getIdeBackend() {
-		// ErlLogger.debug("** getIdeBackend: " + this + " " + fLocalBackend
-		// + "		 " + Thread.currentThread());
-		// Thread.dumpStack();
+	public IdeBackend getIdeBackend() {
 		if (fLocalBackend == null) {
-			// ErlLogger.debug("** create InternalBackend: "
-			// + Thread.currentThread());
-
-			final RuntimeInfo erlideRuntime = RuntimeInfoManager.getDefault()
-					.getErlideRuntime();
-			if (erlideRuntime != null) {
-				try {
-					String defLabel = getLabelProperty();
-					if (defLabel != null) {
-						erlideRuntime.setNodeName(defLabel);
-					} else {
-						erlideRuntime.setNodeName("erlide_"
-								+ getErlideNameSuffix());
+			synchronized (fLocalBackendLock) {
+				if (fLocalBackend == null) {
+					final RuntimeInfo erlideRuntime = RuntimeInfo.copy(
+							RuntimeInfoManager.getDefault().getErlideRuntime(),
+							false);
+					if (erlideRuntime != null) {
+						try {
+							String defLabel = getLabelProperty();
+							if (defLabel != null) {
+								erlideRuntime.setNodeName(defLabel);
+							} else {
+								erlideRuntime.setNodeName("erlide_"
+										+ getErlideNameSuffix());
+							}
+							erlideRuntime.setCookie("erlide");
+							fLocalBackend = create(erlideRuntime,
+									EnumSet.of(BackendOptions.AUTOSTART), null)
+									.asIDE();
+						} catch (BackendException e) {
+							// erlideRuntime can't be null here
+						}
 					}
-					fLocalBackend = create(erlideRuntime,
-							EnumSet.of(BackendOptions.AUTOSTART), null).asIDE();
-				} catch (BackendException e) {
-					// erlideRuntime can't be null here
 				}
 			}
 		}
@@ -343,13 +350,13 @@ public final class BackendManager implements IEpmdListener {
 		if (fPlugins.indexOf(p) < 0) {
 			fPlugins.add(p);
 			if (fLocalBackend != null) {
-				fLocalBackend.startCodeServer();
 				fLocalBackend.getCodeManager().register(p);
+				fLocalBackend.checkCodePath();
 			}
 			forEachProjectBackend(new IBackendVisitor() {
 				public void run(final IBackend b) {
-					b.startCodeServer();
 					b.getCodeManager().register(p);
+					b.checkCodePath();
 				}
 			});
 		}

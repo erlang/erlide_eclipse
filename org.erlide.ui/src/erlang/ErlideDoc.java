@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -17,9 +18,9 @@ public class ErlideDoc {
 			res = b.rpcx("erlide_otp_doc", "get_proposals", "ass", mod, prefix,
 					stateDir);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return res;
 	}
@@ -31,9 +32,9 @@ public class ErlideDoc {
 			res = b.rpcx("erlide_otp_doc", "get_modules", "sls", prefix,
 					projectModules);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return res;
 	}
@@ -47,9 +48,9 @@ public class ErlideDoc {
 			res = b.rpcx("erlide_otp_doc", "get_doc_from_scan_tuples", "ailos",
 					module, offset, imports, stateDir);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return res;
 	}

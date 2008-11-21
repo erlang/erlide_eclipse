@@ -78,7 +78,8 @@ public class ModuleContentProvider implements ITreeContentProvider,
 				return null;
 			}
 		} catch (final CoreException ce) {
-			ce.printStackTrace(); // for now dont do a thing
+			ErlLogger.warn(ce);
+			// for now dont do a thing
 		}
 		return null;
 

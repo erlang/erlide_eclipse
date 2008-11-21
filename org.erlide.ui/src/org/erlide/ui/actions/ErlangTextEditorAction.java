@@ -16,6 +16,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -98,8 +99,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 								- startLineOffset, newText);
 						selectAndReveal(startLineOffset, newText.length());
 					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						ErlLogger.warn(e);
 					}
 					if (target != null) {
 						target.endCompoundChange();
@@ -118,8 +118,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 				runnable.run();
 			}
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 	}

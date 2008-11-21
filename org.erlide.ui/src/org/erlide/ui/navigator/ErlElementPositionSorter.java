@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.runtime.ErlLogger;
 
 public class ErlElementPositionSorter extends ViewerSorter {
 
@@ -26,8 +27,7 @@ public class ErlElementPositionSorter extends ViewerSorter {
 						return 0;
 					}
 				} catch (final ErlModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 		}

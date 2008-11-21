@@ -49,6 +49,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+@SuppressWarnings("restriction")
 public class ErlideUtil {
 
 	public static boolean isAccessible(final IBackend backend,
@@ -71,12 +72,11 @@ public class ErlideUtil {
 			}
 
 		} catch (final RpcException e) {
-			ErlLogger.error(e);
+			ErlLogger.error(e.getMessage());
 		} catch (final BackendException e) {
-			ErlLogger.error(e);
+			ErlLogger.error(e.getMessage());
 		} catch (final OtpErlangRangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.error(e);
 		}
 		return false;
 	}
@@ -141,8 +141,7 @@ public class ErlideUtil {
 								fs.close();
 							}
 						} catch (final IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							ErlLogger.warn(e1);
 						}
 					}
 				}
@@ -164,13 +163,14 @@ public class ErlideUtil {
 				s.close();
 			}
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return null;
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	public static String getPath(final String name, final Bundle b) {
-		final URL entry = b.getEntry(name);
+		final URL entry = b.getEntry(name.replace(" ", "%20"));
 		if (entry != null) {
 			URLConnection connection;
 			try {
@@ -183,9 +183,9 @@ public class ErlideUtil {
 					return path;
 				}
 			} catch (final IOException e) {
-				ErlLogger.error(e);
+				ErlLogger.warn(e.getMessage());
 			} catch (final URISyntaxException e) {
-				ErlLogger.error(e);
+				ErlLogger.warn(e.getMessage());
 			}
 		}
 		return null;
@@ -229,13 +229,14 @@ public class ErlideUtil {
 		}
 		if (ext.equalsIgnoreCase("hrl")) {
 			return ModuleKind.HRL;
-		} else if (ext.equalsIgnoreCase("erl")) {
-			return ModuleKind.ERL;
-		} else if (ext.equalsIgnoreCase("yrl")) {
-			return ModuleKind.YRL;
-		} else {
-			return ModuleKind.BAD;
 		}
+		if (ext.equalsIgnoreCase("erl")) {
+			return ModuleKind.ERL;
+		}
+		if (ext.equalsIgnoreCase("yrl")) {
+			return ModuleKind.YRL;
+		}
+		return ModuleKind.BAD;
 	}
 
 	public static ModuleKind nameToModuleKind(final String name) {

@@ -74,6 +74,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
@@ -155,7 +156,7 @@ public class ErlangConsoleView extends ViewPart implements
 			j.setPriority(Job.SHORT);
 			j.schedule(400);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -627,7 +628,7 @@ public class ErlangConsoleView extends ViewPart implements
 			asst.setAutoActivationDelay(500);
 			asst.enableAutoInsert(true);
 			asst.enablePrefixCompletion(false);
-			//asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
+			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
 			// );
 
 			asst

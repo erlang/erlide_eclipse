@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2003 Berthold Daum.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
- * 
+ *
  * Contributors:
  *     Berthold Daum
  *******************************************************************************/
@@ -37,6 +37,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * @author Berthold Daum
@@ -348,9 +349,9 @@ public abstract class OverlayPage extends PropertyPage implements
 			// and show it
 			showPreferencePage(pageId, page);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

@@ -262,7 +262,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
 			final String key = event.getKey();
-			System.out.println("event:: " + key);
+			ErlLogger.debug("event:: " + key);
 			if (key.indexOf('/') != -1
 					&& key.split("/")[0]
 							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
@@ -674,10 +674,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input
-	 * element is reconciled in advance. If it is <code>false</code> this
-	 * method only returns a result if the editor's input element does not need
-	 * to be reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input element is
+	 * reconciled in advance. If it is <code>false</code> this method only
+	 * returns a result if the editor's input element does not need to be
+	 * reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -762,8 +762,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -861,8 +862,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to
-	 *            be done
+	 *            <code>true</code> if check for active outline page needs to be
+	 *            done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1000,7 +1001,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// ErlLogger.debug(".. sel" + reference.getSource()
 			// + myOutlinePage);
 			// } catch (final ErlModelException e) {
-			// e.printStackTrace();
+			// ErlLogger.warn(e);
 			// }
 			if (myOutlinePage != null) {
 				fOutlineSelectionChangedListener.uninstall(myOutlinePage);
@@ -1175,8 +1176,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
-				 *      #getInformationPresenterControlCreator()
+				 * @see
+				 * org.eclipse.jface.text.information.IInformationProviderExtension2
+				 * #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */

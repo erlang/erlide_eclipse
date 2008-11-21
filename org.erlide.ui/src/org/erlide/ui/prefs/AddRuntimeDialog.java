@@ -158,7 +158,9 @@ extends StatusDialog implements IListAdapter<String> {
 				"Move down" };
 		fCodePath = new ListDialogField<String>(this, buttons,
 				new StringLabelProvider());
-		fCodePath.setLabelText("PathA");
+		fCodePath.setLabelText("Code path");
+		// TODO enable this when it will work (#163)
+		fCodePath.setEnabled(false);
 
 		fArgs = new StringDialogField();
 		fArgs.setLabelText("E&xtra args"); //$NON-NLS-1$

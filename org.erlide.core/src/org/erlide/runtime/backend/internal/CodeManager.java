@@ -211,7 +211,7 @@ public class CodeManager implements IRegistryChangeListener {
 								ErlLogger.error("Could not load %s", m);
 							}
 						} catch (final Exception ex) {
-							ex.printStackTrace();
+							ErlLogger.warn(ex);
 						}
 					}
 				}

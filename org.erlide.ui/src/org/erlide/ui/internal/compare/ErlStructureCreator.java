@@ -31,10 +31,11 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
- * 
+ *
  */
 public class ErlStructureCreator implements IStructureCreator {
 
@@ -93,8 +94,7 @@ public class ErlStructureCreator implements IStructureCreator {
 			module.open(null);
 			root = recursiveMakeErlNodes(module, null, doc);
 		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 		return root;

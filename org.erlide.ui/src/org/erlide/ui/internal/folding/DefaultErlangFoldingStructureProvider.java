@@ -46,6 +46,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
@@ -151,7 +152,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	class ElementChangedListener implements IElementChangedListener {
 
 		/*
-		 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)
+		 * @see
+		 * org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse
+		 * .jdt.core.ElementChangedEvent)
 		 */
 		public void elementChanged(final ElementChangedEvent e) {
 			IErlElementDelta delta = e.getDelta();
@@ -182,7 +185,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
+		 * @seeorg.eclipse.jface.text.source.projection.IProjectionPosition#
+		 * computeFoldingRegions(org.eclipse.jface.text.IDocument)
 		 */
 		public IRegion[] computeProjectionRegions(final IDocument document)
 				throws BadLocationException {
@@ -287,7 +291,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		// }
 
 		/*
-		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
+		 * @seeorg.eclipse.jface.text.source.projection.IProjectionPosition#
+		 * computeCaptionOffset(org.eclipse.jface.text.IDocument)
 		 */
 		public int computeCaptionOffset(final IDocument document) {
 			// return 0;
@@ -327,7 +332,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org.eclipse.jface.text.IDocument)
+		 * @seeorg.eclipse.jface.text.source.projection.IProjectionPosition#
+		 * computeFoldingRegions(org.eclipse.jface.text.IDocument)
 		 */
 		public IRegion[] computeProjectionRegions(final IDocument document)
 				throws BadLocationException {
@@ -390,7 +396,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		/*
-		 * @see org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org.eclipse.jface.text.IDocument)
+		 * @seeorg.eclipse.jface.text.source.projection.IProjectionPosition#
+		 * computeCaptionOffset(org.eclipse.jface.text.IDocument)
 		 */
 		public int computeCaptionOffset(final IDocument document)
 				throws BadLocationException {
@@ -499,7 +506,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionEnabled()
+	 * @seeorg.eclipse.jface.text.source.projection.IProjectionListener#
+	 * projectionEnabled()
 	 */
 	public void projectionEnabled() {
 		// http://home.ott.oti.com/teams/wswb/anon/out/vms/index.html
@@ -523,7 +531,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionDisabled()
+	 * @seeorg.eclipse.jface.text.source.projection.IProjectionListener#
+	 * projectionDisabled()
 	 */
 	public void projectionDisabled() {
 		fCachedDocument = null;
@@ -576,7 +585,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			computeAdditions((IParent) erlModule, map);
 			computeAdditions(erlModule.getComments(), map);
 		} catch (final ErlModelException x) {
-			x.printStackTrace();
+			ErlLogger.warn(x);
 		}
 	}
 
@@ -588,7 +597,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		try {
 			computeAdditions(parent.getChildren(), map);
 		} catch (final ErlModelException x) {
-			x.printStackTrace();
+			ErlLogger.warn(x);
 		}
 	}
 
@@ -653,15 +662,14 @@ public class DefaultErlangFoldingStructureProvider implements
 	// }
 
 	/**
-	 * Computes the projection ranges for a given <code>IErlElement</code>.
-	 * More than one range may be returned if the element has a leading comment
-	 * which gets folded separately. If there are no foldable regions,
+	 * Computes the projection ranges for a given <code>IErlElement</code>. More
+	 * than one range may be returned if the element has a leading comment which
+	 * gets folded separately. If there are no foldable regions,
 	 * <code>null</code> is returned.
 	 * 
 	 * @param element
 	 *            the erlang element that can be folded
-	 * @return the regions to be folded, or <code>null</code> if there are
-	 *         none
+	 * @return the regions to be folded, or <code>null</code> if there are none
 	 */
 	private IRegion computeProjectionRanges(final IErlElement element) {
 
@@ -890,9 +898,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/**
-	 * Finds a match for <code>tuple</code> in a collection of annotations.
-	 * The positions for the <code>ErlangProjectionAnnotation</code> instances
-	 * in <code>annotations</code> can be found in the passed
+	 * Finds a match for <code>tuple</code> in a collection of annotations. The
+	 * positions for the <code>ErlangProjectionAnnotation</code> instances in
+	 * <code>annotations</code> can be found in the passed
 	 * <code>positionMap</code> or <code>fCachedModel</code> if
 	 * <code>positionMap</code> is <code>null</code>.
 	 * <p>
@@ -970,6 +978,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	/*
 	 * @see IErlangFoldingStructureProviderExtension#collapseMembers()
+	 * 
 	 * @since 3.2
 	 */
 	public void collapseMembers() {
@@ -978,6 +987,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	/*
 	 * @see IErlangFoldingStructureProviderExtension#collapseComments()
+	 * 
 	 * @since 3.2
 	 */
 	public void collapseComments() {
@@ -985,7 +995,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#collapseElements(org.eclipse.jdt.core.IErlElement[])
+	 * @see
+	 * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
+	 * #collapseElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void collapseElements(final IErlElement[] elements) {
 		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
@@ -994,7 +1006,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension#expandElements(org.eclipse.jdt.core.IErlElement[])
+	 * @see
+	 * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
+	 * #expandElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void expandElements(final IErlElement[] elements) {
 		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
@@ -1049,7 +1063,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide.core.erlang.IErlElement)
+	 * @see
+	 * org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide
+	 * .core.erlang.IErlElement)
 	 */
 	public void elementChanged(final IErlElement element) {
 		// TODO fixa elementchangelistener n?n g?ng

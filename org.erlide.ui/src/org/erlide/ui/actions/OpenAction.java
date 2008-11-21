@@ -65,8 +65,7 @@ import erlang.OpenResult;
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>ICompilationUnit</code>, <code>IMember</code> or
- * <code>IFile</code>.
+ * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -83,7 +82,8 @@ public class OpenAction extends SelectionDispatchAction {
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
 	 * selection provided by the site's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
+	 * org.eclipse.jface.viewers.IStructuredSelection</code>
+	 * .
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
@@ -308,7 +308,7 @@ public class OpenAction extends SelectionDispatchAction {
 							r = EditorUtility.openExternal(includeFile);
 						}
 					} catch (final Exception e) {
-						e.printStackTrace();
+						ErlLogger.warn(e);
 					}
 				}
 				if (r instanceof IFile) {
@@ -377,7 +377,7 @@ public class OpenAction extends SelectionDispatchAction {
 						definedName, type, new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 }

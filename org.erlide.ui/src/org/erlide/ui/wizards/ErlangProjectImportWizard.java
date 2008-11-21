@@ -40,6 +40,7 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.core.util.PluginUtils;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
@@ -231,7 +232,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 *            details on the error
 	 */
 	private void reportError(final Exception x) {
-		x.printStackTrace();
+		ErlLogger.error(x);
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
 				.getResourceString("wizards.errors.projecterrordesc"),
 				ErlideUIPlugin

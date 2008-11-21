@@ -48,7 +48,7 @@ public class ErlLogger {
 			return;
 		}
 		final StackTraceElement el = getCaller();
-		final String str = String.format(fmt, o);
+		final String str = o.length == 0 ? fmt : String.format(fmt, o);
 		Logger.getLogger("org.erlide").logp(
 				java.util.logging.Level.FINER,
 				el.getClassName(),
@@ -78,7 +78,7 @@ public class ErlLogger {
 		if (kind.intValue() < minLevel) {
 			return;
 		}
-		final String str = String.format(fmt, o);
+		final String str = o.length == 0 ? fmt : String.format(fmt, o);
 		Logger.getLogger("org.erlide").finer(
 				"(" + module + ":" + line + ") : " + str);
 	}

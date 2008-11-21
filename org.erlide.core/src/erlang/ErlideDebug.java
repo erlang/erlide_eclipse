@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
@@ -28,11 +29,9 @@ public class ErlideDebug {
 					.rpcx("erlide_debug", "processes", "oo",
 							showSystemProcesses, showErlideProcesses));
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return procs;
 	}
@@ -44,11 +43,9 @@ public class ErlideDebug {
 		try {
 			res = backend.rpcx("erlide_debug", "start_debug", "i", debugFlags);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		final OtpErlangPid pid = (OtpErlangPid) res;
 		return pid;
@@ -80,11 +77,9 @@ public class ErlideDebug {
 				return null;
 			}
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -133,9 +128,9 @@ public class ErlideDebug {
 			}
 			return Util.isOk(res);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return false;
 	}
@@ -161,11 +156,9 @@ public class ErlideDebug {
 			backend.rpcx("erlide_debug", "line_breakpoint", "sia", module,
 					line, a);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -174,11 +167,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "send_started", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -187,11 +178,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "resume", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -200,11 +189,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "suspend", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -215,11 +202,9 @@ public class ErlideDebug {
 					"bindings", "x", meta);
 			return (OtpErlangList) res;
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -229,11 +214,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "step_over", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -242,11 +225,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "step_return", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -255,11 +236,9 @@ public class ErlideDebug {
 		try {
 			backend.rpcx("erlide_debug", "step_into", "x", meta);
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -272,11 +251,9 @@ public class ErlideDebug {
 				return (OtpErlangTuple) res;
 			}
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -293,11 +270,9 @@ public class ErlideDebug {
 				}
 			}
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -337,9 +312,9 @@ public class ErlideDebug {
 			}
 			return null;
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return "error";
 	}
@@ -351,9 +326,9 @@ public class ErlideDebug {
 					"distribute_debugger_code", "lx", modules);
 			return o;
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}

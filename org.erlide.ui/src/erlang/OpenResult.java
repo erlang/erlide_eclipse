@@ -1,5 +1,7 @@
 package erlang;
 
+import org.erlide.runtime.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -58,7 +60,7 @@ public class OpenResult {
 				name = a.atomValue();
 			}
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

@@ -190,7 +190,7 @@ public class ErlangLaunchConfigurationDelegate extends
 										.debug(
 												"Could not run initial call %s:%s(\"%s\")",
 												module, function, args);
-								e.printStackTrace();
+								ErlLogger.warn(e);
 							}
 							DebugPlugin.getDefault().removeDebugEventListener(
 									this);
@@ -198,7 +198,7 @@ public class ErlangLaunchConfigurationDelegate extends
 					});
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -288,7 +288,7 @@ public class ErlangLaunchConfigurationDelegate extends
 								return ErlideUtil.getBeamBinary(m, b
 										.getEntry(s));
 							} catch (final Exception ex) {
-								ex.printStackTrace();
+								ErlLogger.warn(ex);
 							}
 						}
 					}
@@ -319,7 +319,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			}
 
 		} catch (final ErlModelException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 	}

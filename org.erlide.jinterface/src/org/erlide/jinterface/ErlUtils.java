@@ -166,7 +166,6 @@ public class ErlUtils {
 
 	private static Bindings matchList(OtpErlangObject[] patterns,
 			OtpErlangObject[] terms, Bindings bindings) {
-		// System.out.println("match list");
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
 			result = match(patterns[i], terms[i], result);

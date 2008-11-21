@@ -43,9 +43,9 @@ public class ErlideNoparse {
 					"assss", scannerModuleName, moduleFileName, initialText,
 					stateDir, erlidePath);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return res;
 	}
@@ -57,9 +57,9 @@ public class ErlideNoparse {
 			res = (OtpErlangTuple) b.rpcx(ERLIDE_NOPARSE, "reparse", "a",
 					scannerModuleName);
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return res;
 	}
@@ -68,7 +68,7 @@ public class ErlideNoparse {
 		try {
 			b.rpcx(ERLIDE_NOPARSE, "destroy", "a", module);
 		} catch (final Exception e) {
-			ErlLogger.debug(e);
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -85,8 +85,7 @@ public class ErlideNoparse {
 				}
 			}
 		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -141,11 +140,9 @@ public class ErlideNoparse {
 			}
 			return result;
 		} catch (final RpcException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -162,10 +159,8 @@ public class ErlideNoparse {
 				}
 			}
 		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
-		// TODO Auto-generated method stub
 		return null;
 	}
 

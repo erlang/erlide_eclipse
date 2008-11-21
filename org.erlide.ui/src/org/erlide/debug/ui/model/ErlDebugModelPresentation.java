@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.runtime.debug.ErlangProcess;
@@ -38,7 +39,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public ErlDebugModelPresentation() {
 		super();
@@ -48,8 +49,9 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.IDebugModelPresentation#setAttribute(java.lang.String,
-	 *      java.lang.Object)
+	 * @see
+	 * org.eclipse.debug.ui.IDebugModelPresentation#setAttribute(java.lang.String
+	 * , java.lang.Object)
 	 */
 	public void setAttribute(final String attribute, final Object value) {
 		// TODO Auto-generated method stub
@@ -71,7 +73,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.IDebugModelPresentation#getText(java.lang.Object)
+	 * @see
+	 * org.eclipse.debug.ui.IDebugModelPresentation#getText(java.lang.Object)
 	 */
 	@Override
 	public String getText(final Object element) {
@@ -105,8 +108,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 			return stackFrame.getModule() + ".erl : "
 					+ stackFrame.getLineNumber();
 		} catch (final DebugException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}
@@ -137,8 +139,9 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.IDebugModelPresentation#computeDetail(org.eclipse.debug.core.model.IValue,
-	 *      org.eclipse.debug.ui.IValueDetailListener)
+	 * @see
+	 * org.eclipse.debug.ui.IDebugModelPresentation#computeDetail(org.eclipse
+	 * .debug.core.model.IValue, org.eclipse.debug.ui.IValueDetailListener)
 	 */
 	public void computeDetail(final IValue value,
 			final IValueDetailListener listener) {
@@ -176,8 +179,9 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
-	 *      java.lang.String)
+	 * @see
+	 * org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang
+	 * .Object, java.lang.String)
 	 */
 	@Override
 	public boolean isLabelProperty(final Object element, final String property) {
@@ -200,7 +204,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ISourcePresentation#getEditorInput(java.lang.Object)
+	 * @see
+	 * org.eclipse.debug.ui.ISourcePresentation#getEditorInput(java.lang.Object)
 	 */
 	public IEditorInput getEditorInput(final Object element) {
 		if (element instanceof IFile) {
@@ -216,8 +221,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ISourcePresentation#getEditorId(org.eclipse.ui.IEditorInput,
-	 *      java.lang.Object)
+	 * @seeorg.eclipse.debug.ui.ISourcePresentation#getEditorId(org.eclipse.ui.
+	 * IEditorInput, java.lang.Object)
 	 */
 	public String getEditorId(final IEditorInput input, final Object element) {
 		if (element instanceof IFile || element instanceof ILineBreakpoint) {

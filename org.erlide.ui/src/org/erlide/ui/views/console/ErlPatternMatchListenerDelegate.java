@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -21,6 +21,7 @@ import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.console.IPatternMatchListenerDelegate;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
+import org.erlide.runtime.ErlLogger;
 
 public class ErlPatternMatchListenerDelegate implements
 		IPatternMatchListenerDelegate {
@@ -57,7 +58,7 @@ public class ErlPatternMatchListenerDelegate implements
 						break;
 					}
 				} catch (final CoreException e) {
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 			IFile file = null;
@@ -68,7 +69,7 @@ public class ErlPatternMatchListenerDelegate implements
 					.parseInt(v[1]));
 			fConsole.addHyperlink(link, event.getOffset(), event.getLength());
 		} catch (final BadLocationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

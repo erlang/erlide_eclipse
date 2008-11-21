@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.ui.editors.erl.test;
 
@@ -46,7 +46,7 @@ public class TestAction extends TextEditorAction {
 					.createScannerModuleName(module), text);
 			ErlLogger.debug("%s", s);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

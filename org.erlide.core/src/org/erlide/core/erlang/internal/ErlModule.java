@@ -339,7 +339,7 @@ public class ErlModule extends Openable implements IErlModule {
 		try {
 			open(mon);
 		} catch (final ErlModelException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

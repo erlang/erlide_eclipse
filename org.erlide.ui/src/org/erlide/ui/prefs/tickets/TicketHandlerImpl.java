@@ -19,6 +19,8 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.erlide.runtime.ErlLogger;
+
 public abstract class TicketHandlerImpl implements TicketHandler {
 
 	public TicketHandlerImpl() {
@@ -40,7 +42,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 			TicketStatus result = parseMessage(resp);
 			return result;
 		} catch (IOException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return new TicketStatus(false, 0);
 		}
 	}

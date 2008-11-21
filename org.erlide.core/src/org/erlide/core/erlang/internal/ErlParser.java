@@ -264,7 +264,7 @@ public class ErlParser {
 		try {
 			setNamePos(cl, cnamePos);
 		} catch (final OtpErlangRangeException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		setPos(cl, cpos);
 		return cl;

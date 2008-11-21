@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.prefs.tickets.TicketInfo;
 
 public class ReportPreferencePage extends PreferencePage implements
@@ -191,8 +192,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				out.close();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 	}
@@ -221,7 +221,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				result.add(line);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		StringBuffer buf = new StringBuffer();
 		for (String s : result) {
@@ -252,7 +252,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				result.append(line).append('\n');
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return result.toString();
 	}

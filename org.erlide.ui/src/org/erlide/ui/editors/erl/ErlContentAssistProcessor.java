@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -35,6 +35,7 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -107,7 +108,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			}
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return NO_COMPLETIONS;
 		}
 	}

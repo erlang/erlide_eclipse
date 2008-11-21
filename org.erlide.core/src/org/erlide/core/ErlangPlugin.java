@@ -166,8 +166,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 * @param element
 	 *            the Erlang element for which the marker needs to be configured
 	 * @throws CoreException
-	 *             if the <code>IMarker.setAttribute</code> on the marker
-	 *             fails
+	 *             if the <code>IMarker.setAttribute</code> on the marker fails
 	 */
 	public void configureErlangElementMarker(final IMarker marker,
 			final IErlElement element) throws CoreException {
@@ -197,7 +196,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.debug.sourceFile&quot;
 	 *                               - possible values:   { &quot;generate&quot;, &quot;do not generate&quot; }
 	 *                               - default:           &quot;generate&quot;
-	 * 
 	 *                           COMPILER / Edoc Comment Support
 	 *                              When this support is disabled, the compiler will ignore all Edoc problems options settings
 	 *                              and will not report any Edoc problem. It will also not find any reference in Edoc comment and
@@ -205,49 +203,42 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.doc.comment.support&quot;
 	 *                               - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
 	 *                               - default:           &quot;enabled&quot;
-	 * 
 	 *                           COMPILER / Reporting Deprecation
 	 *                              When enabled, the compiler will signal use of deprecated API either as an
 	 *                              error or a warning.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.deprecation&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;warning&quot;
-	 * 
 	 *                           COMPILER / Reporting Unused Local
 	 *                              When enabled, the compiler will issue an error or a warning for unused local
 	 *                              variables (that is, variables never read from)
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.unusedLocal&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Unused Parameter
 	 *                              When enabled, the compiler will issue an error or a warning for unused method
 	 *                              parameters (that is, parameters never read from)
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.unusedParameter&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Unused Private Functions
 	 *                              When enabled, the compiler will issue an error or a warning whenever a private
 	 *                              method or field is declared but never used within the same unit.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.unusedPrivateFunctions&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Local Variable Declaration Hiding another Variable
 	 *                              When enabled, the compiler will issue an error or a warning whenever a local variable
 	 *                              declaration is hiding some field or local variable (either locally, inherited or defined in enclosing type).
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.localVariableHiding&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Invalid Edoc Comment
 	 *                              This is the generic control for the severity of Edoc problems.
 	 *                              When enabled, the compiler will issue an error or a warning for a problem in Edoc.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.invalidEdoc&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Invalid Edoc Tags
 	 *                              When enabled, the compiler will signal unbound or unexpected reference tags in Edoc.
 	 *                              A 'throws' tag referencing an undeclared exception would be considered as unexpected.
@@ -259,7 +250,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.invalidEdocTags&quot;
 	 *                               - possible values:   { &quot;disabled&quot;, &quot;enabled&quot; }
 	 *                               - default:           &quot;enabled&quot;
-	 * 
 	 *                           COMPILER / Reporting Missing Edoc Tags
 	 *                              This is the generic control for the severity of Edoc missing tag problems.
 	 *                              When enabled, the compiler will issue an error or a warning when tags are missing in Edoc comments.
@@ -270,7 +260,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocTags&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Reporting Missing Edoc Comments
 	 *                              This is the generic control for the severity of missing Edoc comment problems.
 	 *                              When enabled, the compiler will issue an error or a warning when Edoc comments are missing.
@@ -281,20 +270,17 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocComments&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           COMPILER / Setting Compliance Level
 	 *                              Select the compliance level for the compiler. In &quot;R9&quot; mode, source and target settings
 	 *                              should not go beyond &quot;R9&quot; level.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.compliance&quot;
 	 *                               - possible values:   { &quot;R9&quot;, &quot;R10&quot; }
 	 *                               - default:           &quot;R10&quot;
-	 * 
 	 *                           COMPILER / Maximum number of problems reported per compilation unit
 	 *                              Specify the maximum number of problems reported on each compilation unit.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.maxProblemPerUnit&quot;
 	 *                               - possible values:    &quot;&lt;n&gt;&quot; where &lt;n&gt; is zero or a positive integer (if zero then all problems are reported).
 	 *                               - default:           &quot;100&quot;
-	 * 
 	 *                           COMPILER / Define the Automatic Task Tags
 	 *                              When the tag list is not empty, the compiler will issue a task marker whenever it encounters
 	 *                              one of the corresponding tag inside any comment in Erlang source code.
@@ -307,7 +293,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.taskTags&quot;
 	 *                               - possible values:   { &quot;&lt;tag&gt;[,&lt;tag&gt;]*&quot; } where &lt;tag&gt; is a String without any wild-card or leading/trailing spaces
 	 *                               - default:           &quot;TODO,FIXME,XXX&quot;
-	 * 
 	 *                           COMPILER / Define the Automatic Task Priorities
 	 *                              In parallel with the Automatic Task Tags, this list defines the priorities (high, normal or low)
 	 *                              of the task markers issued by the compiler.
@@ -315,33 +300,28 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.taskPriorities&quot;
 	 *                               - possible values:   { &quot;&lt;priority&gt;[,&lt;priority&gt;]*&quot; } where &lt;priority&gt; is one of &quot;HIGH&quot;, &quot;NORMAL&quot; or &quot;LOW&quot;
 	 *                               - default:           &quot;NORMAL,HIGH,NORMAL&quot;
-	 * 
 	 *                           COMPILER / Determine whether task tags are case-sensitive
 	 *                              When enabled, task tags are considered in a case-sensitive way.
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.taskCaseSensitive&quot;
 	 *                               - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
 	 *                               - default:           &quot;enabled&quot;
-	 * 
 	 *                           BUILDER / Abort if Invalid Classpath
 	 *                              Allow to toggle the builder to abort if the classpath is invalid
 	 *                               - option id:         &quot;org.erlide.core.erlang.builder.invalidClasspath&quot;
 	 *                               - possible values:   { &quot;abort&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;abort&quot;
-	 * 
 	 *                           BUILDER / Cleaning Output Folder(s)
 	 *                              Indicate whether the ErlangBuilder is allowed to clean the output folders
 	 *                              when performing full build operations.
 	 *                               - option id:         &quot;org.erlide.core.erlang.builder.cleanOutputFolder&quot;
 	 *                               - possible values:   { &quot;clean&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;clean&quot;
-	 * 
 	 *                           BUILDER / Reporting Duplicate Resources
 	 *                              Indicate the severity of the problem reported when more than one occurrence
 	 *                              of a resource is to be copied into the output location.
 	 *                               - option id:         &quot;org.erlide.core.erlang.builder.duplicateResourceTask&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot; }
 	 *                               - default:           &quot;warning&quot;
-	 * 
 	 *                           ErlangCORE / Computing Project Build Order
 	 *                              Indicate whether ErlangCore should enforce the project build order to be based on
 	 *                              the classpath prerequisite chain. When requesting to compute, this takes over
@@ -349,20 +329,17 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *                               - option id:         &quot;org.erlide.core.erlang.computeErlangBuildOrder&quot;
 	 *                               - possible values:   { &quot;compute&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 * 
 	 *                           ErlangCORE / Reporting Incomplete Classpath
 	 *                              Indicate the severity of the problem reported when an entry on the classpath does not exist,
 	 *                              is not legite or is not visible (for example, a referenced project is closed).
 	 *                               - option id:         &quot;org.erlide.core.erlang.incompleteClasspath&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;}
 	 *                               - default:           &quot;error&quot;
-	 * 
 	 *                           ErlangCORE / Reporting Classpath Cycle
 	 *                              Indicate the severity of the problem reported when a project is involved in a cycle.
 	 *                               - option id:         &quot;org.erlide.core.erlang.circularClasspath&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot; }
 	 *                               - default:           &quot;error&quot;
-	 * 
 	 *                           ErlangCORE / Reporting Incompatible ERTS Level for Required Binaries
 	 *                              Indicate the severity of the problem reported when a project prerequisites another project
 	 *                              or library with an incompatible target ERTS level (e.g. project targeting R7 vm, but compiled against R10 libraries).
@@ -427,8 +404,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 	/**
 	 * Helper method for returning one option value only. Equivalent to
-	 * <code>(String)ErlangCore.getOptions().get(optionName)</code> Note that
-	 * it may answer <code>null</code> if this option does not exist.
+	 * <code>(String)ErlangCore.getOptions().get(optionName)</code> Note that it
+	 * may answer <code>null</code> if this option does not exist.
 	 * <p>
 	 * For a complete description of the configurable options, see
 	 * <code>getDefaultOptions</code>.
@@ -523,8 +500,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 * @param action
 	 *            the action to perform
 	 * @param monitor
-	 *            a progress monitor, or <code>null</code> if progress
-	 *            reporting and cancellation are not desired
+	 *            a progress monitor, or <code>null</code> if progress reporting
+	 *            and cancellation are not desired
 	 * @throws CoreException
 	 *             if the operation failed.
 	 */
@@ -562,11 +539,11 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 *            the action to perform
 	 * @param rule
 	 *            the scheduling rule to use when running this operation, or
-	 *            <code>null</code> if there are no scheduling restrictions
-	 *            for this operation.
+	 *            <code>null</code> if there are no scheduling restrictions for
+	 *            this operation.
 	 * @param monitor
-	 *            a progress monitor, or <code>null</code> if progress
-	 *            reporting and cancellation are not desired
+	 *            a progress monitor, or <code>null</code> if progress reporting
+	 *            and cancellation are not desired
 	 * @throws CoreException
 	 *             if the operation failed.
 	 */
@@ -694,10 +671,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 			logger.setLevel(java.util.logging.Level.FINEST);
 		} catch (final SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
@@ -807,7 +782,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 					}
 				}
 			} catch (final CoreException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 	}

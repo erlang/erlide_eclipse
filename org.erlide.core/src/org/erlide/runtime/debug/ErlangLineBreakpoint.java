@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
 
 import erlang.ErlideDebug;
@@ -66,8 +67,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 		try {
 			line = getLineNumber();
 		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		final IResource r = getMarker().getResource();
 		final String module = r.getLocation().toPortableString();

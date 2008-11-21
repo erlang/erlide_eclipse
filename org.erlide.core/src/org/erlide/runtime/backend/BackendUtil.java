@@ -22,6 +22,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
 import org.osgi.framework.Bundle;
 
@@ -67,7 +68,7 @@ public class BackendUtil {
 			dir = FileLocator.toFileURL(url).getPath().substring(1);
 		} catch (final IOException e) {
 			dir = "!?";
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return dir;
 	}

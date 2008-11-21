@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2003 Berthold Daum.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
- * 
+ *
  * Contributors:
  *     Berthold Daum
  *******************************************************************************/
@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * @author Berthold Daum
@@ -82,8 +83,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	/**
 	 * Constructor
 	 * 
-	 * @param style -
-	 *            layout style
+	 * @param style
+	 *            - layout style
 	 */
 	public FieldEditorOverlayPage(int style) {
 		super(style);
@@ -92,10 +93,10 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	/**
 	 * Constructor
 	 * 
-	 * @param title -
-	 *            title string
-	 * @param style -
-	 *            layout style
+	 * @param title
+	 *            - title string
+	 * @param style
+	 *            - layout style
 	 */
 	public FieldEditorOverlayPage(String title, int style) {
 		super(title, style);
@@ -104,12 +105,12 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	/**
 	 * Constructor
 	 * 
-	 * @param title -
-	 *            title string
-	 * @param image -
-	 *            title image
-	 * @param style -
-	 *            layout style
+	 * @param title
+	 *            - title string
+	 * @param image
+	 *            - title image
+	 * @param style
+	 *            - layout style
 	 */
 	public FieldEditorOverlayPage(String title, ImageDescriptor image, int style) {
 		super(title, image, style);
@@ -183,8 +184,9 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 		}
 		super.createControl(parent);
 		// Update state of all subclass controls
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			updateFieldEditors();
+		}
 	}
 
 	/**
@@ -195,8 +197,9 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			createSelectionGroup(parent);
+		}
 		return super.createContents(parent);
 	}
 
@@ -204,8 +207,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * Creates and initializes a selection group with two choice buttons and one
 	 * push button.
 	 * 
-	 * @param parent -
-	 *            the parent composite
+	 * @param parent
+	 *            - the parent composite
 	 */
 	private void createSelectionGroup(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -238,8 +241,9 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 			if (TRUE.equals(use)) {
 				useProjectSettingsButton.setSelection(true);
 				configureButton.setEnabled(false);
-			} else
+			} else {
 				useWorkspaceSettingsButton.setSelection(true);
+			}
 		} catch (CoreException e) {
 			useWorkspaceSettingsButton.setSelection(true);
 		}
@@ -248,10 +252,10 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	/**
 	 * Convenience method creating a radio button
 	 * 
-	 * @param parent -
-	 *            the parent composite
-	 * @param label -
-	 *            the button label
+	 * @param parent
+	 *            - the parent composite
+	 * @param label
+	 *            - the button label
 	 * @return - the new button
 	 */
 	private Button createRadioButton(Composite parent, String label) {
@@ -276,8 +280,9 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	@Override
 	public IPreferenceStore getPreferenceStore() {
-		if (isPropertyPage())
+		if (isPropertyPage()) {
 			return overlayStore;
+		}
 		return super.getPreferenceStore();
 	}
 
@@ -294,8 +299,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * Enables or disables the field editors and buttons of this page Subclasses
 	 * may override.
 	 * 
-	 * @param enabled -
-	 *            true if enabled
+	 * @param enabled
+	 *            - true if enabled
 	 */
 	protected void updateFieldEditors(boolean enabled) {
 		Composite parent = getFieldEditorParent();
@@ -361,19 +366,19 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 			// and show it
 			showPreferencePage(pageId, page);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
 	/**
 	 * Show a single preference pages
 	 * 
-	 * @param id -
-	 *            the preference page identification
-	 * @param page -
-	 *            the preference page
+	 * @param id
+	 *            - the preference page identification
+	 * @param page
+	 *            - the preference page
 	 */
 	protected void showPreferencePage(String id, IPreferencePage page) {
 		final IPreferenceNode targetNode = new PreferenceNode(id, page);

@@ -76,9 +76,9 @@ public class ErlideOpen {
 				return (OtpErlangTuple) res;
 			}
 		} catch (final RpcException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BackendException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return null;
 	}

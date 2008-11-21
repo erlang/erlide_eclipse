@@ -1018,7 +1018,7 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.erlide.ui.search.category.search"
@@ -1051,6 +1051,6 @@
             id="org.erlide.ui.ErlangSearchResultPage"
             searchResultClass="org.erlide.ui.search.ErlangSearchResult">
       </viewPage>
-   </extension>
+   </extension-->
 
 </plugin>

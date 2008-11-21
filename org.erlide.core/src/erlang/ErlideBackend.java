@@ -43,7 +43,7 @@ public class ErlideBackend {
 			r = b.rpc("lists", "flatten", "x", r.getValue());
 			res = ((OtpErlangString) r.getValue()).stringValue();
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.error(e);
 			res = err.toString();
 		}
 		return res;

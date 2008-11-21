@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
@@ -54,6 +53,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
+import erlang.ErlangCode;
 import erlang.ErlideBackend;
 
 /**
@@ -73,29 +73,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
-	class ThreadLocalMbox extends ThreadLocal<Object> {
-
-		@Override
-		protected Object initialValue() {
-			final Object res = fNode.createMbox();
-			if (res == null) {
-				final String[] ss = fNode.getNames();
-				final StringBuilder sb = new StringBuilder();
-				for (final String element : ss) {
-					sb.append(element).append(" ");
-				}
-				ErlLogger.debug(sb.toString());
-			}
-			return res;
-		}
-
-		public OtpMbox getMbox() {
-			final OtpMbox res = (OtpMbox) super.get();
-			return res;
-		}
-	}
-
-	private ThreadLocalMbox ftMBox; // outgoing rpc and send
 	private OtpMbox ftRpcBox; // incoming rpc and events
 	protected static String fHost;
 	protected OtpNode fNode;
@@ -138,24 +115,35 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			} else {
 				fNode = new OtpNode(BackendManager.getJavaNodeName(), cookie);
 			}
+			final String nodeCookie = fNode.cookie();
+			final int len = nodeCookie.length();
+			final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
+					: nodeCookie;
+			ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed,
+					len, cookie);
 			fNode.registerStatusHandler(this);
 			fPeer = BackendManager.buildNodeName(label);
-			ErlLogger.debug("java node is " + fNode.node()
-					+ "; erlang peer is " + fPeer);
 
-			ftMBox = new ThreadLocalMbox();
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 50;
 			while (!fAvailable && tries > 0) {
 				fAvailable = fNode.ping(fPeer, RETRY_DELAY);
 				tries--;
 			}
-			ErlLogger.debug("connected!");
+			fAvailable &= ErlangCode.waitForCodeServer(this);
+
+			if (fAvailable) {
+				ErlLogger.debug("connected!");
+			} else {
+				ErlLogger
+						.error("could not connect to backend! Please check runtime settings.");
+			}
 
 		} catch (final Exception e) {
-			e.printStackTrace();
-			ErlangPlugin.log(e);
+			ErlLogger.error(e);
 			fAvailable = false;
+			ErlLogger
+					.error("could not connect to backend! Please check runtime settings.");
 		}
 	}
 
@@ -245,7 +233,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			sa.append("'").append(x.toString()).append("',");
 		}
 		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
-		final String msg = String.format("%s <- %s:%s(%s) %% %s", r.getValue(),
+		final String msg = String.format("%s <- %s:%s(%s) @ %s", r.getValue(),
 				m, f, ss, getInfo().toString());
 		throw new BackendException(msg);
 	}
@@ -267,7 +255,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			}
 		} catch (final RpcException e) {
 			// shouldn't happen
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -282,7 +270,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			}
 		} catch (final RpcException e) {
 			// shouldn't happen
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -365,10 +353,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			}
 			// ErlLogger.debug("exited event thread");
 		} catch (final OtpErlangExit e) {
-			ErlLogger.debug("Erlide backend: event source crashed.\n"
+			ErlLogger.warn("Erlide backend: event source crashed.\n"
 					+ e.getMessage());
 		} catch (final OtpErlangDecodeException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -415,9 +403,9 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			}
 
 			if (timeout < 0) {
-				res = getMbox().receive();
+				res = mbox.receive();
 			} else {
-				res = getMbox().receive(timeout);
+				res = mbox.receive(timeout);
 			}
 			if (CHECK_RPC) {
 				ErlLogger.debug("    <= " + res);
@@ -434,20 +422,18 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			res = ((OtpErlangTuple) res).elementAt(1);
 			result = new RpcResult(res);
 		} catch (final OtpErlangExit e) {
-			e.printStackTrace();
-			ErlangPlugin.log(e);
+			ErlLogger.warn(e);
 		} catch (final OtpErlangDecodeException e) {
-			e.printStackTrace();
-			ErlangPlugin.log(e);
+			ErlLogger.warn(e);
 		}
 		return result;
 	}
 
 	private OtpMbox getMbox() {
-		if (ftMBox == null) {
+		if (fNode == null) {
 			return null;
 		}
-		return ftMBox.getMbox();
+		return fNode.createMbox();
 	}
 
 	private OtpMbox getEventBox() {
@@ -510,15 +496,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		}
 	}
 
-	public OtpErlangObject receive(final int timeout) throws OtpErlangExit,
-			OtpErlangDecodeException {
-		final OtpMbox mbox = getMbox();
-		if (mbox == null) {
-			return null;
-		}
-		return mbox.receive(timeout);
-	}
-
 	public OtpErlangObject receiveRpc(final long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException {
 		final OtpMbox eventBox = getEventBox();
@@ -573,25 +550,21 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public void connectAndRegister(final List<ICodeBundle> plugins) {
 		connect();
-		startCodeServer();
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
 				getCodeManager().register(element);
 			}
 		}
+		checkCodePath();
+	}
+
+	public void checkCodePath() {
 		try {
 			OtpErlangObject path = rpcx("code", "get_path", "");
 			ErlLogger.debug("code path for %s: %s", getName(), path);
 		} catch (Throwable e) {
-		}
-	}
-
-	public void startCodeServer() {
-		try {
-			// sometimes the code server isn't started until we try to
-			// load code, this seems to fix it.
-			rpcx("code", "module_info", "");
-		} catch (final Exception e) {
+			ErlLogger.warn("error getting path for %s: %s", getName(), e
+					.getMessage());
 		}
 	}
 
@@ -614,8 +587,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	@Override
 	public void connAttempt(final String node, final boolean incoming,
 			final Object info) {
-		final String direction = incoming ? "incoming" : "outgoing";
-		ErlLogger.debug(String.format("@@: Connection attempt: %s %s %s", node,
+		final String direction = incoming ? "in" : "out";
+		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
 				direction, info));
 	}
 

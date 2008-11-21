@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -40,6 +40,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -130,7 +131,7 @@ public class ErlModelUtils {
 			modulesWithIncludes = getModulesWithIncludes(b, project, module,
 					modulesFound);
 		} catch (final CoreException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		for (final IErlModule m : modulesWithIncludes) {
 			res.addAll(m.getPreprocessorDefs(kind));
@@ -208,7 +209,7 @@ public class ErlModelUtils {
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 			if (re != null && re instanceof IFile) {
@@ -256,7 +257,7 @@ public class ErlModelUtils {
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 			if (re != null && re instanceof IFile) {
@@ -307,7 +308,7 @@ public class ErlModelUtils {
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
-						e.printStackTrace();
+						ErlLogger.warn(e);
 					}
 				}
 				if (re != null && re instanceof IFile) {
@@ -389,7 +390,7 @@ public class ErlModelUtils {
 			try {
 				r = EditorUtility.openExternal(path);
 			} catch (final Exception e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 		if (r != null && r instanceof IFile) {
@@ -398,9 +399,9 @@ public class ErlModelUtils {
 				final IEditorPart editor = EditorUtility.openInEditor(f);
 				openFunctionInEditor(fun, arity, editor);
 			} catch (final PartInitException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			} catch (final ErlModelException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 	}

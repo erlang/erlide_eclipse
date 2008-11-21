@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Lukas Larsson
  *******************************************************************************/
@@ -18,13 +18,16 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
+import org.erlide.runtime.ErlLogger;
 
 public class FileCommentVariableResolver extends TemplateVariableResolver {
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
 	protected String resolve(TemplateContext context) {
@@ -40,10 +43,10 @@ public class FileCommentVariableResolver extends TemplateVariableResolver {
 		try {
 			tb = commentContext.evaluate(template);
 		} catch (final BadLocationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return "Error: " + e.getMessage();
 		} catch (final TemplateException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 			return "Error: " + template.getName() + " could not be validated!";
 		}
 

@@ -4,21 +4,22 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
 <meta name="description"
-  content="Erlide, the Erlang IDE. Powered by Eclipse." />
+	content="Erlide, the Erlang IDE. Powered by Eclipse." />
 <meta name="keywords" content="erlang,ide,eclipse,java,plugin" />
 <meta name="author"
-  content="Vlad Dumitrescu  / Original design: Andreas Viklund - http://andreasviklund.com/" />
+	content="Vlad Dumitrescu  / Original design: Andreas Viklund - http://andreasviklund.com/" />
 <link rel="stylesheet" type="text/css" href="andreas03.css" />
 <link rel="alternate" type="application/rss+xml"
-  title="Erlide Project News"
-  href="http://sourceforge.net/export/rss2_projnews.php?group_id=58889&rss_fulltext=1" />
+	title="Erlide Project News"
+	href="http://sourceforge.net/export/rss2_projnews.php?group_id=58889&rss_fulltext=1" />
 <title>Erlide - the Erlang IDE. Powered by Eclipse.</title>
 </head>
 
 <body>
 <div id="thetop"><a id="top"></a>
-<p class="hide" style="margin-bottom: 0">Skip to: <a href="#sitemenu" accesskey="2">Site menu</a>
-| <a href="#maincontent" accesskey="3">Main content</a></p>
+<p class="hide" style="margin-bottom: 0">Skip to: <a
+	href="#sitemenu" accesskey="2">Site menu</a> | <a href="#maincontent"
+	accesskey="3">Main content</a></p>
 </div>
 
 <div id="container">
@@ -30,68 +31,67 @@
 
 <div id="intro">
 <h2><a id="maincontent"></a>Turbo charged Erlang development!</h2>
-<p style="margin-bottom: 0;"><a href="http://www.erlang.org">Erlang</a> is a open-sourced
-concurrency-oriented programming language, developed by <a
-  href="http://www.ericsson.com">Ericsson</a>. It has proven itself in
-many industrial applications as a powerful tool. Now we are building a
-development environment that will boost programmer efficiency even more.</p>
+<p style="margin-bottom: 0;"><a href="http://www.erlang.org">Erlang</a>
+is a open-sourced concurrency-oriented programming language, developed
+by <a href="http://www.ericsson.com">Ericsson</a>. It has proven itself
+in many industrial applications as a powerful tool. Now we are building
+a development environment that will boost programmer efficiency even
+more.</p>
 </div>
 <div class="clear"></div>
 
 <h3 class="headerstyle">Overview</h3>
-
-<p class="block"><b> ~~~~ A new version is coming soon! Stay tuned!</b></p>
-
-<p>The latest version is <strong>0.3.56</strong> and offers the
-following features:</p>
+<p>We are proud to announce the latest version that is <strong>0.4.0</strong>
+and offers the following features:</p>
 <ul>
-  <li>works with <b>Eclipse 3.3, Java 1.5 and Erlang R12B</b>. The older versions targeting Eclipse 3.2, Java 1.4 and Erlang R11 are no longer available (but from the CVS). </li>
-
-  <li><img src="img/new.gif" /> Support for linked resources</li>
-  <li>Improved Import, can now create links to projects</li>
-  <li>Improved Erlang navigator, Tree model even for .hrl files</li>
-  <li>Support for starting Erlang projects</li>
-  <li>Improved Erlang Console</li>
-	
+	<li>Works with <b>Eclipse 3.3, Java 1.5 and Erlang R11B</b>, or
+	later.</li>
+	<li><img src="img/new.gif" alt="" /> Debugger!</li>
+	<li><img src="img/new.gif" alt="" /> Improved stability and
+	performance</li>
+	<li>Improved Import, can now create links to projects</li>
+	<li>Improved Erlang navigator, Tree model even for .hrl files</li>
+	<li>Support for starting Erlang projects</li>
+	<li>The documentation has been updated and revamped, so be sure to
+	check it out.</li>
 </ul>
-<p>The IDE is functional even if I still
-consider the status alpha. Some features are functional in the normal
-case, but might not handle errors very well. There are also debug
-printouts and messages here and there.</p>
-
-<p>[<b>*</b>] If installed in the system in the standard place. Some
-versions of the documentation are known to produce erroneous printouts,
-but we're working on that. Also only tested on Windows and a Ubuntu
-Linux.</p>
+<p>With this issue, the project's status is also raised to <strong>beta</strong>,
+because the important pieces are now in place. In the nearest future we
+will focus on the remaining details/bugs and also start integrating new
+features, like for example refactoring or a viewer for trace logs.</p>
 
 <h3 class="headerstyle" id="installation">Installation</h3>
 
-<p>To use ErlIDE you need the freeware IDE Eclipse, version 3.3 or later. You can download 
-Eclipse from <a href="http://www.eclipse.org/downloads/">eclipse.org/downloads</a>, the version
-called "Eclipse IDE for Java Developers" is the smallest download there, but any of the
-versions listed can be used.</p>
-<p>An Erlang runtime also has to be installed, go to <a href="http://www.erlang.org/download.html">
-http://www.erlang.org/download.html</a>, we recommend the version R11B-5, but any later version
-can be used. If you are running on Windows, just install the version downloaded, in other cases
-you will have to build an Erlang OTP first, please refer to the Erlang README.</p>
-<p>The ErlIDE plug-in for Eclipse is available through an update site: start Eclipse
-and select "Help/Software Updates/Find and Install..." from the menu. Click "Search for
-new features to install" and "Next>" and then "New remote site". The name of the site should be
-"ErlIDE" and the URL is "http://erlide.sourceforge.net/update", if you proceed, Eclipse will download
-and install the ErlIDE plug-in.</p>
-<p>When Eclipse is restarted, you will be prompted to point out where ErlIDE can find the Erlang
-installation. On a Unix/Linux/Mac system this is typically /usr/local/lib/erlang, on windows
-it is C:\\Program Files\\erl5.5.5. (With other numbers for other releases.)</p>
+<p>To use ErlIDE you need Eclipse, version 3.3 or later. You can
+download Eclipse from <a href="http://www.eclipse.org/downloads/">eclipse.org/downloads</a>,
+the version called "Eclipse IDE for Java Developers" is the smallest
+download there, but any of the versions listed can be used.</p>
+<p>An Erlang runtime also has to be installed, go to <a
+	href="http://www.erlang.org/download.html">
+http://www.erlang.org/download.html</a>, we recommend the version R11B-5,
+but any later version can be used. If you are running on Windows, just
+install the version downloaded, in other cases you will have to build an
+Erlang OTP first, please refer to the Erlang README.</p>
+<p>The ErlIDE plug-in for Eclipse is available through an update
+site: start Eclipse and select "Help/Software Updates/Find and
+Install..." from the menu. Click "Search for new features to install"
+and "Next>" and then "New remote site". The name of the site should be
+"ErlIDE" and the URL is "http://erlide.sourceforge.net/update", if you
+proceed, Eclipse will download and install the ErlIDE plug-in.</p>
+<p>When Eclipse is restarted, you will be prompted to point out
+where ErlIDE can find the Erlang installation. On a Unix/Linux/Mac
+system this is typically /usr/local/lib/erlang, on windows it is
+C:\\Program Files\\erl5.5.5. (With other numbers for other releases.)</p>
 
 <h3 class="headerstyle" id="faq">FAQ</h3>
 
 <p class="block"><strong>How do I get started?</strong></p>
 
 <p>First, you have to install Erlang. Look for your platform at <a
-  href="http://www.erlang.org/download.html">the Erlang download site</a> and
-follow the instructions.</p>
-<p>Then in Eclipse, choose <code>Help->Software Updates->Find and
-install...->New features</code> and create a new remote update site,
+	href="http://www.erlang.org/download.html">the Erlang download site</a>
+and follow the instructions.</p>
+<p>Then in Eclipse, choose <code>Help->Software Updates->Find
+and install...->New features</code> and create a new remote update site,
 pointing it at <a href="http://erlide.sourceforge.net/update">http://erlide.sourceforge.net/update</a>
 . Follow then the normal installation procedures.</p>
 <p>When restarting Eclipse, you will have to configure the plugin by
@@ -100,106 +100,119 @@ you can explore and send bug reports!</p>
 <p>"Small" releases (x.x.N) will mostly be available only from the
 update site, not as an archive download.</p>
 
-<p class="block"><strong>When I press a key, it takes one second to see
-the result in the editor!?!?</strong></p>
+<p class="block"><strong>What if I find a bug, or miss a
+feature?</strong></p>
 
-<p>Make sure you create a project and open an Erlang file inside it. The
-above happens when opening a file with <code>File->Open file...</code>.</p>
+<p>We know that there is still a lot of work to do. If you encounter
+problems, please follow these steps:
+<ul>
+	<li>Go to <code>Window->Preferences->Erlang->Report
+	problems</code></li>
+	<li>Fill in a summary and a description of what you did when the
+	problem occurred</li>
+	<li>Pres "Send" and a file will be created in your home directory,
+	attach it to a bug report at the <a
+		href="http://sourceforge.net/tracker/?group_id=58889&atid=489191">tracker</a>
+	or to a mail to <a href="erlide-bugs@lists.sourceforge.net">erlide-bugs@lists.sourceforge.net</a>.</li>
+</ul>
+</p>
+<p>For feature requests, you can just post a ticket or send a mail,
+without any attachment.</p>
 
 <p class="block"><strong>Can I help?</strong></p>
 
-<p>Sure! All help is welcome, because there's <strong>plenty</strong> to
-do.</p>
+<p>Sure! All help is welcome, because there's <strong>plenty</strong>
+to do.</p>
 <p>Register as a developer by contacting <a
-  href="mailto:vladdu@users.sourceforge.net">me (Vlad)</a>, or develop by
-yourself some cool feature and submit it later. If the feature is
-something you'd expect in any decent IDE, please check first if it isn't
-already under development.</p>
+	href="mailto:vladdu@users.sourceforge.net">me (Vlad)</a>, or develop by
+yourself some cool feature and submit it later. Please check first with
+us if it isn't already under development.</p>
 
-<p class="block"><strong>What is your timeplan?</strong></p>
+<p class="block"><strong>Why isn't Emacs (or vim) good
+enough?</strong></p>
 
-<p>The nearest milestone is in April 2008, when we expect to have basic
-debugging support and decent indentation and code formatting. </p>
-<p>Later in 2008, we plan to support Refactoring, EDoc documenation, and
-structured search in Erlang code.</p>
+<p>They are okay, if they work for you. Eclipse is best for project
+oriented work, not for quickly hacking one file. Right now, I believe we
+are about on par with the functionality Emacs offers, and we're going
+forward (while I haven't seen any development for the Erlang mode or
+Distel since a long time).</p>
 
-<p class="block"><strong>Why isn't Emacs (or vim) good enough?</strong></p>
+<p class="block"><strong>When I press a key, it takes one
+second to see the result in the editor!?!?</strong></p>
 
-<p>They are good, no doubt about it! However, a graphical UI (as opposed
-to a text UI) offers much more potential for useful features, especially
-since Eclipse is such a nice platform. Just to mention one: an
-integrated debugger.</p>
-<p>Much of the functionality we are developing will be possible to use
-from Emacs too, since it is implemented in Erlang. If you feel that text
-UI is your thing, please go ahead and implement an Emacs frontend!</p>
-<p>There are some recent enhancements to Emacs and vim modes, but I dare
-to say that when we'll be ready, we're going to offer better
-functionality, because Erlide talks to Erlang directly and can use all
-its libraries. <br />
-For example, please compare the Emacs syntax highlighting with the
-Erlide one, when you enter <code>Ch = $"</code> in the middle of a
-module and you'll remember what I mean.</p>
+<p>Make sure you create a project and open an Erlang file inside it.
+The above happens when opening a file with <code>File->Open
+file...</code>.</p>
 
-<p class="internallink" style="margin-bottom: 0;">[ <a href="#top">Back to top</a> ]</p>
+<p class="internallink" style="margin-bottom: 0;">[ <a href="#top">Back
+to top</a> ]</p>
 
 </div>
 
 <div id="sidebar">
 
 <h2 class="sidelink menuheader"><a id="sitemenu"></a>Site menu:</h2>
-<a class="sidelink" href="index.html">Overview</a> <span class="hide"> |</span>
-<a class="sidelink" href="#installation">Installation</a>
-<a class="sidelink" href="#faq">FAQ</a> <span class="hide"> | </span> <a
-  class="sidelink" href="http://sourceforge.net/projects/erlide">Project
+<a class="sidelink" href="index.html">Overview</a> <span class="hide">
+|</span> <a class="sidelink" href="#installation">Installation</a> <a
+	class="sidelink" href="#faq">FAQ</a> <span class="hide"> | </span> <a
+	class="sidelink" href="http://sourceforge.net/projects/erlide">Project
 site</a> <span class="hide"> | </span> <a class="sidelink"
-  href="http://sourceforge.net/project/showfiles.php?group_id=58889">Downloads</a>
-<span class="hide"> | </span>
-<a class="sidelink" href="doc/index.html">Documentation</a> <span class="hide"> | </span> <a class="sidelink"
-  href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS feeds</a> <span
-  class="hide"> | </span>
-<p><form action="http://www.eclipseplugincentral.com/Web_Links.html" method="post">
+	href="http://sourceforge.net/project/showfiles.php?group_id=58889">Downloads</a>
+<span class="hide"> | </span> <a class="sidelink" href="erlide.html">Documentation</a>
+<span class="hide"> | </span> <a class="sidelink"
+	href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS
+feeds</a> <span class="hide"> | </span>
+<p>
+<form action="http://www.eclipseplugincentral.com/Web_Links.html"
+	method="post">
 <table border="0" width="120" cellspacing="0" cellpadding="0">
-<tr><td align="center"><b>Rate the plugin!</b></a></td></tr>
-<tr><td>
-<table border="0" cellspacing="0" cellpadding="0" align="center">
-<tr><td valign="top">
-<select name="rating">
-<option selected>--</option>
-<option>10</option>
-<option>9</option>
-<option>8</option>
-<option>7</option>
-<option>6</option>
-<option>5</option>
-<option>4</option>
-<option>3</option>
-<option>2</option>
-<option>1</option>
-</select>
-</td><td valign="top">
-<input type="hidden" name="ratinglid" value="468"/>
-<input type="hidden" name="ratinguser" value="outside"/>
-<input type="hidden" name="req" value="addrating"/>
-<input type="submit" value="Vote!"/>
-</td></tr></table>
-</td></tr></table>
+	<tr>
+		<td align="center"><b>Rate the plugin!</b></a></td>
+	</tr>
+	<tr>
+		<td>
+		<table border="0" cellspacing="0" cellpadding="0" align="center">
+			<tr>
+				<td valign="top"><select name="rating">
+					<option selected>--</option>
+					<option>10</option>
+					<option>9</option>
+					<option>8</option>
+					<option>7</option>
+					<option>6</option>
+					<option>5</option>
+					<option>4</option>
+					<option>3</option>
+					<option>2</option>
+					<option>1</option>
+				</select></td>
+				<td valign="top"><input type="hidden" name="ratinglid"
+					value="468" /> <input type="hidden" name="ratinguser"
+					value="outside" /> <input type="hidden" name="req"
+					value="addrating" /> <input type="submit" value="Vote!" /></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
 </form>
 </p>
 <p>Kindly hosted by <a href="http://sourceforge.net"><img
-  src="http://sflogo.sourceforge.net/sflogo.php?group_id=58889&amp;type=2"
-  width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></p>
+	src="http://sflogo.sourceforge.net/sflogo.php?group_id=58889&amp;type=2"
+	width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></p>
 <p><a href="http://www.erlang.org"><img src="img/erlang110.gif"
-  width="110" height="96" alt="Erlang logo" /></a></p>
+	width="110" height="96" alt="Erlang logo" /></a></p>
 <p><a href="http://www.eclipse.org"><img
-  src="img/rea_eclipse_pos_logo_fc_sm.jpg" width="128" height="75"
-  alt="Eclipse logo" /></a></p>
+	src="img/rea_eclipse_pos_logo_fc_sm.jpg" width="128" height="75"
+	alt="Eclipse logo" /></a></p>
 <p><a href="http://www.instantiations.com"><img
-  src="img/builtwith-instantiations1.png" width="133" height="43"
-  alt="Built with Instantiations" /></a></p>
+	src="img/builtwith-instantiations1.png" width="133" height="43"
+	alt="Built with Instantiations" /></a></p>
 <a class="hide" href="#top" accesskey="1">Top of page</a>
 
 <h3>Links</h3>
-<p style="margin-bottom: 0;">- <a href="http://www.erlang.org">Open source Erlang</a><br />
+<p style="margin-bottom: 0;">- <a href="http://www.erlang.org">Open
+source Erlang</a><br />
 - <a href="http://www.erlang.se">Commercial Erlang</a><br />
 - <a href="http://www.eclipse.org">Eclipse</a><br />
 - <a href="http://www.trapexit.org">Trapexit</a>, an Erlang community<br />
@@ -211,7 +224,7 @@ site</a> <span class="hide"> | </span> <a class="sidelink"
 
 <div id="footer">Last updated: 2007-12-27<br />
 &copy; 2005 Vlad Dumitrescu. Design by <a
-  href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
+	href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

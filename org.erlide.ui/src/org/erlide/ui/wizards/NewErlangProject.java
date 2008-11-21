@@ -215,7 +215,6 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			// final String out = project.getLocation().append(
 			// prefs.getOutputDir()).toString();
 		} catch (final CoreException x) {
-			x.printStackTrace();
 			reportError(x);
 		} finally {
 			monitor.done();
@@ -264,7 +263,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 *            details on the error
 	 */
 	private void reportError(Exception x) {
-		x.printStackTrace();
+		ErlLogger.error(x);
 		ErrorDialog.openError(getShell(), ErlideUIPlugin
 				.getResourceString("wizards.errors.projecterrordesc"),
 				ErlideUIPlugin

@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.core.builder.CompilerPreferences;
+import org.erlide.runtime.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CompilerPreferencePage extends PreferencePage implements
@@ -157,8 +158,7 @@ public class CompilerPreferencePage extends PreferencePage implements
 		try {
 			prefs.load();
 		} catch (BackingStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

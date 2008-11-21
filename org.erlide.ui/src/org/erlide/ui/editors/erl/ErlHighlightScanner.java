@@ -25,6 +25,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.prefs.HighlightStyle;
@@ -197,7 +198,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 			final String str = document.get(rangeOffset, rangeLength);
 			setText(str);
 		} catch (final BadLocationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

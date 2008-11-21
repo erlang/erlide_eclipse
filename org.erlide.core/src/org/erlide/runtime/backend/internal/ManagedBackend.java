@@ -31,8 +31,7 @@ public class ManagedBackend extends AbstractBackend {
 		super(info);
 	}
 
-	// private ErtsProcess fRuntime;
-	private Process fRuntime;
+	Process fRuntime;
 
 	@Override
 	public void connect() {
@@ -85,6 +84,21 @@ public class ManagedBackend extends AbstractBackend {
 		final File workingDirectory = new File(getInfo().getWorkingDir());
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
+			Runnable watcher = new Runnable() {
+				public void run() {
+					try {
+						int v = fRuntime.waitFor();
+						ErlLogger
+								.error(
+										"IDE backend process terminated with exit code %d.",
+										v);
+					} catch (InterruptedException e) {
+						ErlLogger.warn("ide backend watcher was interrupted");
+					}
+				}
+			};
+			new Thread(watcher).start();
+
 			if (launch != null) {
 				erts = new ErtsProcess(launch, fRuntime, getInfo()
 						.getNodeName(), null);

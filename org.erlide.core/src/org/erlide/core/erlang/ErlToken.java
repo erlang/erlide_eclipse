@@ -62,7 +62,7 @@ public class ErlToken {
 				offset = ((OtpErlangLong) e.elementAt(1)).intValue();
 			}
 		} catch (final OtpErlangRangeException e1) {
-			e1.printStackTrace();
+			ErlLogger.warn(e1);
 			offset = 0;
 		}
 		OtpErlangObject ee = null;
@@ -101,7 +101,7 @@ public class ErlToken {
 					try {
 						buf.append(((OtpErlangLong) element).intValue());
 					} catch (final OtpErlangRangeException e1) {
-						e1.printStackTrace();
+						ErlLogger.warn(e1);
 					}
 				}
 				text = buf.toString();
@@ -135,8 +135,7 @@ public class ErlToken {
 			offset = ((OtpErlangLong) parts[3]).intValue();
 			length = ((OtpErlangLong) parts[4]).intValue();
 		} catch (final OtpErlangRangeException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			ErlLogger.warn(e1);
 		}
 		// value = ((OtpErlangAtom) parts[5]).atomValue();
 		if (parts[6] instanceof OtpErlangString) {
@@ -162,7 +161,8 @@ public class ErlToken {
 	}
 
 	/*
-	 * public ErlToken(String k, String c) { kind = k; text = c; fTuple = null; }
+	 * public ErlToken(String k, String c) { kind = k; text = c; fTuple = null;
+	 * }
 	 */
 	public String getContent() {
 		return text;

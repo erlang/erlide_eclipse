@@ -133,9 +133,6 @@ public interface IBackend {
 
 	String getCurrentVersion();
 
-	OtpErlangObject receive(int i) throws OtpErlangExit,
-			OtpErlangDecodeException;
-
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
 			OtpErlangDecodeException;
 
@@ -177,5 +174,5 @@ public interface IBackend {
 
 	public boolean getTrapExit();
 
-	void startCodeServer();
+	public void checkCodePath();
 }

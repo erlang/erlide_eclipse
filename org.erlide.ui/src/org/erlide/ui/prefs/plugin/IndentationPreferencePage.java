@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.util.StatusInfo;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -164,7 +165,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		try {
 			node.flush();
 		} catch (final BackingStoreException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

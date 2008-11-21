@@ -58,6 +58,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -76,8 +77,7 @@ public class EditorUtility {
 			try {
 				return editor.getEditorInput().equals(getEditorInput(element));
 			} catch (final ErlModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 		return false;
@@ -95,8 +95,7 @@ public class EditorUtility {
 		try {
 			input = getEditorInput(inputElement);
 		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 		if (input != null) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.erlide.ui.util;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * 
@@ -40,9 +41,9 @@ public class Util {
 			edit.apply(document, TextEdit.NONE);
 			return document.get();
 		} catch (final MalformedTreeException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		} catch (final BadLocationException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return original;
 	}

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.net.io.Util;
+import org.erlide.runtime.ErlLogger;
 
 /*******************************************************************************
  * The reader thread reads from a local input source (presumably stdin) and
@@ -64,7 +65,7 @@ public class RemoteConnector {
 						remoteOutput.flush();
 					}
 				} catch (final IOException e) {
-					// e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 		};
@@ -79,7 +80,7 @@ public class RemoteConnector {
 					}
 					Util.copyStream(remoteInput, localOutput);
 				} catch (final IOException e) {
-					e.printStackTrace();
+					ErlLogger.warn(e);
 					// System.exit(1);
 				}
 			}
@@ -111,8 +112,7 @@ public class RemoteConnector {
 			rOutput.flush();
 			Thread.yield();
 		} catch (final IOException e1) {
-			// TODO Auto-generated catch block
-			// e1.printStackTrace();
+			ErlLogger.warn(e1);
 		}
 	}
 

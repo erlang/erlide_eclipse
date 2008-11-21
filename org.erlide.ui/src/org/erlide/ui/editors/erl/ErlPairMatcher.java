@@ -13,6 +13,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
+import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -39,8 +40,9 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.ICharacterPairMatcher#match(org.eclipse.jface.text.IDocument,
-	 *      int)
+	 * @see
+	 * org.eclipse.jface.text.source.ICharacterPairMatcher#match(org.eclipse
+	 * .jface.text.IDocument, int)
 	 */
 	public IRegion match(IDocument document, int offset) {
 		fOffset = offset;
@@ -72,8 +74,7 @@ public class ErlPairMatcher implements ICharacterPairMatcher {
 				return true;
 			}
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 		return false;

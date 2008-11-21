@@ -34,6 +34,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * Implementation of

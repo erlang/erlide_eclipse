@@ -226,8 +226,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		try {
 			topfolder.accept(v);
 		} catch (final CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		return findResult;
 	}

@@ -9,6 +9,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
 public class OpenErlangAction extends Action {
@@ -63,11 +64,9 @@ public class OpenErlangAction extends Action {
 						true);
 				EditorUtility.revealInEditor(part, element);
 			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			} catch (ErlModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 	}

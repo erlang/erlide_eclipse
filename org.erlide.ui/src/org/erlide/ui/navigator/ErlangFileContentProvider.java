@@ -70,8 +70,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 				result = parent.getChildren().toArray(new IErlElement[0]);
 			}
 		} catch (final ErlModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		// ErlLogger.debug("// " + result.length + " children");
 		return result;
@@ -93,8 +92,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 				try {
 					return mod.getCorrespondingResource();
 				} catch (final ErlModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			}
 		}
@@ -112,8 +110,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 				try {
 					mod.open(null);
 				} catch (final ErlModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 				result = mod.hasChildren();
 			}
@@ -150,7 +147,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 				delta.accept(this);
 			}
 		} catch (final CoreException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

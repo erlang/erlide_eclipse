@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *     Vlad Dumitrescu
@@ -23,6 +23,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -69,8 +70,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		try {
 			indentAfterNewLine(d, c);
 		} catch (final BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -86,8 +86,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 				start = member.getSourceRange().getOffset();
 				txt = d.get(start, offset - start);
 			} catch (final ErlModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 		if (txt == null) {
@@ -98,8 +97,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		final int lineLength = d.getLineLength(lineN);
 		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
-			final IdeBackend b = BackendManager.getDefault()
-					.getIdeBackend();
+			final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 			int tabw = ErlideUIPlugin
 					.getDefault()
 					.getPreferenceStore()
@@ -123,7 +121,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 			c.text += getIndent(res.indentWith);
 			c.length += res.removeNext;
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

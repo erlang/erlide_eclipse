@@ -77,7 +77,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			}
 			root.flush();
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			try {
 				old.flush();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 			store();
 		}
@@ -119,7 +119,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			root.removeNode();
 			p.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 		//
 
@@ -170,7 +170,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 				fRuntimes.put(name, rt);
 			}
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 		if (getDefaultRuntime() == null) {

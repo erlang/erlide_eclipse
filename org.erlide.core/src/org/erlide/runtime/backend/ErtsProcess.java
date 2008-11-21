@@ -110,7 +110,7 @@ public class ErtsProcess extends RuntimeProcess {
 				streamsProxy.write(string);
 				ErlLogger.debug("#>>#" + string);
 			} catch (final IOException e) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.console;
 
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -31,7 +32,7 @@ public class BackendShell {
 		try {
 			server = ErlideReshd.start(fBackend);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 	}
 

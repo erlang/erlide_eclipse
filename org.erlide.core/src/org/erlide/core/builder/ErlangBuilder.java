@@ -159,7 +159,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -379,7 +379,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Method clean
-	 * 
+	 *
 	 * @param monitor
 	 *            IProgressMonitor
 	 * @throws CoreException
@@ -416,7 +416,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Method compileFile
-	 * 
+	 *
 	 * @param project
 	 *            IProject
 	 * @param resource
@@ -556,7 +556,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				}
 			}
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlLogger.warn(e);
 		}
 
 	}
@@ -775,7 +775,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Add error markers from a list of error tuples
-	 * 
+	 *
 	 * @param resource
 	 * @param errorList
 	 */
@@ -886,7 +886,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
 		 *      .core.resources.IResourceDelta)
 		 */
@@ -915,7 +915,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
 		 *      .core.resources.IResourceDelta)
 		 */
@@ -1174,7 +1174,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Compile Erlang module, given output directory and include directory
-	 * 
+	 *
 	 * @throws ErlangRpcException
 	 * @param fn
 	 * @param outputdir

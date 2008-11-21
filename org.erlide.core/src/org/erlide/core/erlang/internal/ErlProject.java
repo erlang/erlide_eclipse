@@ -41,6 +41,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 
 /**
@@ -377,7 +378,7 @@ public class ErlProject extends Openable implements IErlProject {
 		} catch (final CoreException e) {
 			// could not flush markers: not much we can do
 			if (ErlModelManager.verbose) {
-				e.printStackTrace();
+				ErlLogger.warn(e);
 			}
 		}
 	}
