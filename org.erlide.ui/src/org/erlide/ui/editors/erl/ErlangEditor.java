@@ -116,7 +116,6 @@ import org.erlide.ui.editors.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.prefs.PreferenceConstants;
-import org.erlide.ui.prefs.plugin.ErlidePreferencePage;
 import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ErlangEditorErrorTickUpdater;
@@ -209,7 +208,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			((ITextViewerExtension) sourceViewer)
 					.removeVerifyKeyListener(getBracketInserter());
 		}
-		final IEclipsePreferences node = ErlidePreferencePage.getPrefsNode();
+		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.removePreferenceChangeListener(fPreferenceChangeListener);
 		if (fActionGroups != null) {
 			fActionGroups.dispose();
@@ -299,7 +298,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		} else {
 			externalModules = "";
 		}
-
+		final String globalExternalModules = getGlobalExternalModulesFile();
+		externalModules = ErlangProjectProperties.pack(new String[] {
+				externalModules, globalExternalModules });
 		// ActionGroup oeg, ovg, jsg;
 		ActionGroup esg;
 		fActionGroups = new CompositeActionGroup(new ActionGroup[] {
@@ -1056,7 +1057,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		fInformationPresenter.setSizeConstraints(60, 10, true, true);
 		fInformationPresenter.install(getSourceViewer());
 
-		final IEclipsePreferences node = ErlidePreferencePage.getPrefsNode();
+		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 	}
 
@@ -1087,6 +1088,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.get(SmartTypingPreferencePage.PARENS));
 		bracketInserter.setEmbraceSelectionEnabled(autoClosePrefs
 				.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+	}
+
+	private String getGlobalExternalModulesFile() {
+		return ErlideUIPlugin.getPrefsNode().get("external_files", "");
 	}
 
 	protected boolean isActivePart() {

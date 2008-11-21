@@ -314,10 +314,13 @@ public class ErlangProjectProperties {
 	public static String pack(final String[] strs) {
 		final StringBuilder b = new StringBuilder();
 		for (int i = 0; i < strs.length; i++) {
-			b.append(strs[i]);
-			if (i < strs.length - 1) {
+			if (strs[i] != null && strs[i].length() > 0) {
+				b.append(strs[i]);
 				b.append(PATH_SEP);
 			}
+		}
+		if (b.length() > 0) {
+			b.deleteCharAt(b.length() - 1);
 		}
 		return b.toString();
 	}

@@ -201,7 +201,7 @@ get_ext_aux([L | Rest], PathVars, Acc0) ->
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D({ExternalModules, PathVars}),
-    L = get_external_modules_file(ExternalModules, PathVars),
+    L = lists:concat([get_external_modules_file(EM, PathVars) || EM <- string:tokens(ExternalModules, ";")]),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->

@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.internal.ScrolledPageContent;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -130,7 +131,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_Parens);
 		buttons.add(b);
 
-		b = addCheckBox(composite, ErlEditorMessages.SmartTypingPrefs_EmbraceSelection);
+		b = addCheckBox(composite,
+				ErlEditorMessages.SmartTypingPrefs_EmbraceSelection);
 		buttons.add(b);
 	}
 
@@ -156,7 +158,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
 	@Override
 	protected void putPreferences() {
-		final Preferences node = getPrefsNode();
+		final Preferences node = ErlideUIPlugin.getPrefsNode();
 		for (int i = 0; i < SMART_TYPING_KEYS.length; ++i) {
 			final boolean b = buttons.get(i).getSelection();
 			node.putBoolean(SMART_TYPING_KEY + "/" + SMART_TYPING_KEYS[i], b); //$NON-NLS-1$
@@ -168,7 +170,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
-	@SuppressWarnings("boxing") //$NON-NLS-1$
+	@SuppressWarnings("boxing")
 	private void setToPreferences() {
 		final List<Boolean> l = getPreferences();
 		for (int i = 0; i < l.size(); ++i) {
@@ -177,7 +179,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
-	@SuppressWarnings("boxing") //$NON-NLS-1$
+	@SuppressWarnings("boxing")
 	public static List<Boolean> getPreferences() {
 		final List<String> p = getPreferences(SMART_TYPING_KEY,
 				SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS);

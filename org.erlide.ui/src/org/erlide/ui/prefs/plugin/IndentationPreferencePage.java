@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.StatusInfo;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -150,7 +151,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 
 	@Override
 	protected void putPreferences() {
-		final Preferences node = getPrefsNode();
+		final Preferences node = ErlideUIPlugin.getPrefsNode();
 		for (int i = 0; i < INDENT_KEYS.length; ++i) {
 			int n;
 			if (i < N_NUMERIC_KEYS) {

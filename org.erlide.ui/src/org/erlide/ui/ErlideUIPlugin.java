@@ -19,6 +19,9 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -439,6 +442,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 	public String getEbinDir() {
 		return ErlideUtil.getEbinDir(getBundle());
+	}
+
+	public static IEclipsePreferences getPrefsNode() {
+		final String qualifier = ErlideUIPlugin.PLUGIN_ID;
+		final IScopeContext context = new InstanceScope();
+		final IEclipsePreferences eclipsePreferences = context
+				.getNode(qualifier);
+		return eclipsePreferences;
 	}
 
 }
