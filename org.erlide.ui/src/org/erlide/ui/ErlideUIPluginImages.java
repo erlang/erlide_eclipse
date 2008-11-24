@@ -83,6 +83,9 @@ public class ErlideUIPluginImages {
 	public static final String IMG_MACRO_DEF = NAME_PREFIX
 			+ "typevariable_obj.gif"; //$NON-NLS-1$
 
+	public static final String IMG_SRC_FOLDER = NAME_PREFIX
+			+ "erlang_src_folder_obj.gif"; //$NON-NLS-1$
+
 	public static final ImageDescriptor DESC_ALPHAB_SORT = createManaged(
 			T_ELCL, IMG_ALPHAB_SORT);
 
@@ -118,6 +121,9 @@ public class ErlideUIPluginImages {
 
 	public static final ImageDescriptor DESC_MACRO_DEF = createManaged(T_OBJ,
 			IMG_MACRO_DEF);
+
+	public static final ImageDescriptor DESC_SRC_FOLDER = createManaged(T_OBJ,
+			IMG_SRC_FOLDER);
 
 	public static final ImageDescriptor DESC_ATTRIBUTE = createManaged(T_OBJ,
 			IMG_ATTRIBUTE);

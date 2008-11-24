@@ -85,9 +85,10 @@ public class ErlModule extends Openable implements IErlModule {
 
 		final ErlParser parser = new ErlParser();
 		if (initialText != null) {
-			final String path = underlyingResource != null ? underlyingResource
-					.getFullPath().toString() : "";
-			isStructureKnown = parser.parse(this, initialText, !parsed, path);
+			final String path = getFilePath();
+			final String erlidePath = getErlidePath();
+			isStructureKnown = parser.parse(this, initialText, !parsed, path,
+					erlidePath);
 		}
 		parsed = isStructureKnown;
 		final IErlModel model = getModel();
@@ -107,6 +108,23 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 
 		return isStructureKnown();
+	}
+
+	/**
+	 * @param underlyingResource
+	 * @param path
+	 * @return
+	 */
+	protected String getErlidePath() {
+		return fFile.getFullPath().toString();
+	}
+
+	/**
+	 * @param underlyingResource
+	 * @return
+	 */
+	protected String getFilePath() {
+		return fFile.getFullPath().toString();
 	}
 
 	public IErlElement getElementAt(final int position)
@@ -305,7 +323,9 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	private IErlScanner getNewScanner() {
-		return new ErlScanner(this, initialText, fFile.getFullPath().toString());
+		final String path = getFilePath();
+		final String erlidePath = getErlidePath();
+		return new ErlScanner(this, initialText, path, erlidePath);
 	}
 
 	public void fixExportedFunctions() {
@@ -392,6 +412,9 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public Kind getKind() {
 		return Kind.MODULE;
+	}
+
+	public void dispose() {
 	}
 
 }

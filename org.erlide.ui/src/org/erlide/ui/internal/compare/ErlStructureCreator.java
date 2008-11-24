@@ -52,7 +52,6 @@ public class ErlStructureCreator implements IStructureCreator {
 	}
 
 	/**
-	 * @param project
 	 * @param name
 	 */
 	public ErlStructureCreator(final String name) {
@@ -88,7 +87,7 @@ public class ErlStructureCreator implements IStructureCreator {
 		final Document doc = new Document(s);
 
 		final IErlModule module = ErlangCore.getModelManager()
-				.createModuleFrom(fName, s, null);
+				.getModuleFromText(fName, s, null);
 		ErlNode root = null;
 		try {
 			module.open(null);
@@ -102,8 +101,7 @@ public class ErlStructureCreator implements IStructureCreator {
 
 	private ErlNode recursiveMakeErlNodes(final IErlElement element,
 			final ErlNode parent, final Document doc) throws ErlModelException {
-		final ErlNode n = new ErlNode(parent, element.getKind(), element
-				.getName(), doc, 0, 0);
+		final ErlNode n = ErlNode.createErlNode(parent, element, doc);
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
 			final List<? extends IErlElement> children = p.getChildren();
@@ -124,7 +122,7 @@ public class ErlStructureCreator implements IStructureCreator {
 	/**
 	 * @see IStructureCreator#locate
 	 */
-	public IStructureComparator locate(final Object path, final Object source) {
+	public IStructureComparator locate(final Object path, final Object input) {
 		return null;
 	}
 

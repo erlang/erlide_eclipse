@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -485,6 +487,20 @@ public class ErlModelManager implements IErlModelManager {
 			for (final IResource rsrc : changed) {
 				change(rsrc);
 			}
+			// make sure we don't dispose trees before leaves...
+			Collections.sort(removed, new Comparator<IResource>() {
+
+				public int compare(final IResource o1, final IResource o2) {
+					if (o1.equals(o2)) {
+						return 0;
+					} else if (o1.getFullPath().isPrefixOf(o2.getFullPath())) {
+						return 1;
+					} else {
+						return -1;
+					}
+				}
+
+			});
 			for (final IResource rsrc : removed) {
 				remove(rsrc);
 			}
@@ -1302,6 +1318,35 @@ public class ErlModelManager implements IErlModelManager {
 
 	public IErlProject createEmptyProject() {
 		return new ErlProject();
+	}
+
+	private static Map<Object, IErlModule> moduleMap = new HashMap<Object, IErlModule>();
+	private static Map<IErlModule, Object> mapModule = new HashMap<IErlModule, Object>();
+
+	public IErlModule getModuleFromFile(final String name,
+			final String initialText, final String path, final Object key) {
+		IErlModule m = moduleMap.get(key);
+		if (m == null) {
+			m = new ErlModuleWithoutResource(null, name, initialText, path);
+			if (key != null) {
+				moduleMap.put(key, m);
+				mapModule.put(m, key);
+			}
+		}
+		return m;
+	}
+
+	public void removeModule(final IErlModule module) {
+		final Object key = mapModule.get(module);
+		if (key != null) {
+			mapModule.remove(module);
+			moduleMap.remove(key);
+		}
+	}
+
+	public IErlModule getModuleFromText(final String name,
+			final String initialText, final Object key) {
+		return getModuleFromFile(name, initialText, "", key);
 	}
 
 }

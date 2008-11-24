@@ -157,7 +157,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 
-	InformationPresenter fInformationPresenter;
+	private InformationPresenter fInformationPresenter;
 
 	private ShowOutlineAction fShowOutline;
 
@@ -201,8 +201,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			colorManager = null;
 		}
 
-		disposeScanner();
-
 		final ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension) {
 			((ITextViewerExtension) sourceViewer)
@@ -215,6 +213,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			fActionGroups = null;
 		}
 		fErlangEditorErrorTickUpdater.dispose();
+
+		disposeModule();
+
 		super.dispose();
 	}
 
@@ -244,9 +245,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return ErlModelUtils.getScanner(this);
 	}
 
-	public void disposeScanner() {
+	public void disposeModule() {
 		ErlModelUtils.disposeScanner(this);
 		ErlModelUtils.disposeParser(this);
+		ErlModelUtils.disposeModule(this);
 	}
 
 	public ICharacterPairMatcher getBracketMatcher() {
@@ -615,7 +617,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@Override
 	protected void doSetInput(final IEditorInput input) throws CoreException {
-		disposeScanner();
+		disposeModule();
 
 		super.doSetInput(input);
 
@@ -669,7 +671,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public IErlModule getModule() {
-		return ErlModelUtils.getModule(getEditorInput());
+		return ErlModelUtils.getModule(getEditorInput(), getDocumentProvider());
 	}
 
 	/**
@@ -815,7 +817,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/**
 	 * Creates the outline page used with this editor.
 	 * 
-	 * @return the created Java outline page
+	 * @return the created Erlang outline page
 	 */
 	protected ErlangOutlinePage createOutlinePage() {
 		final ErlangOutlinePage page = new ErlangOutlinePage(
@@ -826,7 +828,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	/**
-	 * Informs the editor that its outliner has been closed.
+	 * Informs the editor that its outline has been closed.
 	 */
 	public void outlinePageClosed() {
 		if (myOutlinePage != null) {
@@ -1072,8 +1074,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return fBracketInserter;
 	}
 
-	@SuppressWarnings("boxing")
-	void getSmartTypingPrefs() {
+	private void getSmartTypingPrefs() {
 		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
 				.getPreferences();
 		final ErlangEditorBracketInserter bracketInserter = getBracketInserter();

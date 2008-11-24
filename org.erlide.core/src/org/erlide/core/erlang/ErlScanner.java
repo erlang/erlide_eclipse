@@ -31,16 +31,11 @@ public class ErlScanner implements IErlScanner {
 	private String moduleFileName;
 	private final String erlidePath;
 
-	public ErlScanner(final IErlModule module, final String initialText,
+	public ErlScanner(final IErlModule module, final String initialText,final String moduleFileName,
 			final String erlidePath) {
 		this.module = module;
 		moduleName = createScannerModuleName(module);
-		moduleFileName = "";
-		final IResource r = module.getResource();
-		if (r instanceof IFile) {
-			final IFile f = (IFile) r;
-			moduleFileName = f.getLocation().toString();
-		}
+		this.moduleFileName = moduleFileName;
 		this.erlidePath = erlidePath;
 		ErlideScanner2.initialScan(moduleName, moduleFileName, initialText,
 				erlidePath);

@@ -11,8 +11,10 @@
 package org.erlide.core.erlang.internal;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -499,4 +501,5 @@ public class ErlModel extends Openable implements IErlModel {
 		}
 		return null;
 	}
+
 }

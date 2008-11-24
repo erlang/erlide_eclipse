@@ -50,7 +50,8 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
 
 		final IEditorInput input = fErlangEditor.getEditorInput();
 		if (input != null) { // might run async, tests needed
-			final IErlModule module = ErlModelUtils.getModule(input);
+			final IErlModule module = ErlModelUtils.getModule(input,
+					fErlangEditor.getDocumentProvider());
 			if (module != null) {
 				final IResource resource = module.getResource();
 				for (int i = 0; i < changedResources.length; i++) {

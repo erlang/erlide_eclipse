@@ -22,11 +22,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -52,18 +56,11 @@ import erlang.OpenResult;
 public class ErlModelUtils {
 
 	public static IErlModule getModule(final ITextEditor editor) {
-		if (editor == null) {
+		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
 			return null;
 		}
-		return getModule(editor.getEditorInput());
-	}
-
-	public static IErlModule getModule(final IEditorInput editorInput) {
-		if (editorInput instanceof IFileEditorInput) {
-			final IFileEditorInput input = (IFileEditorInput) editorInput;
-			return getModule(input.getFile());
-		}
-		return null;
+		final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) editor;
+		return getModule(editor.getEditorInput(), adte.getDocumentProvider());
 	}
 
 	public static IErlModule getModule(final IFile file) {
@@ -416,10 +413,12 @@ public class ErlModelUtils {
 	 */
 	public static boolean openFunctionInEditor(final String fun,
 			final int arity, final IEditorPart editor) throws ErlModelException {
-		if (editor == null) {
+		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
 			return false;
 		}
-		final IErlModule module = getModule(editor.getEditorInput());
+		final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) editor;
+		final IErlModule module = getModule(editor.getEditorInput(), adte
+				.getDocumentProvider());
 		if (module == null) {
 			return false;
 		}
@@ -446,21 +445,28 @@ public class ErlModelUtils {
 	public static void disposeScanner(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
-			getModule(editor).disposeScanner();
+			mod.disposeScanner();
 		}
 	}
 
 	public static void disposeParser(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
-			getModule(editor).disposeParser();
+			mod.disposeParser();
+		}
+	}
+
+	public static void disposeModule(final ErlangEditor editor) {
+		final IErlModule mod = getModule(editor);
+		if (mod != null) {
+			mod.dispose();
 		}
 	}
 
 	public static void reenableScanner(final ErlangEditor editor) {
 		final IErlModule mod = getModule(editor);
 		if (mod != null) {
-			getModule(editor).reenableScanner();
+			mod.reenableScanner();
 		}
 	}
 
@@ -484,4 +490,27 @@ public class ErlModelUtils {
 		}
 		return result;
 	}
+
+	// FIXME: move this to a separate class, that somehow listens to something
+	// so that the map is not filled with old disposed stuff
+
+	public static IErlModule getModule(final IEditorInput editorInput,
+			final IDocumentProvider documentProvider) {
+		if (editorInput == null) {
+			return null;
+		}
+		if (editorInput instanceof IFileEditorInput) {
+			final IFileEditorInput input = (IFileEditorInput) editorInput;
+			return getModule(input.getFile());
+		}
+		if (editorInput instanceof IURIEditorInput) {
+			final IURIEditorInput ue = (IURIEditorInput) editorInput;
+			final String path = ue.getURI().getPath();
+			final IDocument doc = documentProvider.getDocument(editorInput);
+			return ErlangCore.getModelManager().getModuleFromFile(
+					editorInput.getName(), doc.get(), path, editorInput);
+		}
+		return null;
+	}
+
 }

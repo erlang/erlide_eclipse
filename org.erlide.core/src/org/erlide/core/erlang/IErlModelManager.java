@@ -49,7 +49,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	public IErlModule createModuleFrom(String name, String text,
 			IErlElement parent);
 
-
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
 	 */
@@ -158,4 +157,12 @@ public interface IErlModelManager extends ISaveParticipant {
 	 */
 
 	void fire(int post_change);
+
+	IErlModule getModuleFromFile(String name, String initialText, String path,
+			Object key);
+
+	IErlModule getModuleFromText(String name, String initialText, Object key);
+
+	public void removeModule(final IErlModule module);
+
 }

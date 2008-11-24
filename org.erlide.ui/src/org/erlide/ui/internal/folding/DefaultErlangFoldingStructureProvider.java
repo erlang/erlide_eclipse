@@ -549,7 +549,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 
 		initializePreferences();
-		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput());
+		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput(),
+				fEditor.getDocumentProvider());
 		fModule = m;
 		// if (fModule == null) {
 		// return;

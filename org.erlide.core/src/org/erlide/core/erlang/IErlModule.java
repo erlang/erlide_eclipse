@@ -103,4 +103,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	void reenableScanner();
 
 	void disposeParser();
+
+	void dispose();
 }

@@ -777,6 +777,9 @@
                         value="yrl">
                   </test>
                </and>
+               <instanceof
+                     value="org.eclipse.core.resources.IFolder">
+               </instanceof>
             </or>
          </triggerPoints>
          <possibleChildren>

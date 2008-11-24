@@ -36,7 +36,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
 	private static final String ERLANGFILE_EXT = "erl"; //$NON-NLS-1$
 
-	StructuredViewer viewer;
+	private StructuredViewer viewer;
 
 	/**
 	 * Create the PropertiesContentProvider instance.
@@ -55,7 +55,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/**
 	 * Return the model elements for a *.erl IFile or NO_CHILDREN for otherwise.
 	 */
-	public Object[] getChildren(Object parentElement) {
+	public Object[] getChildren(final Object parentElement) {
 		Object[] result = NO_CHILDREN;
 		try {
 			if (parentElement instanceof IFile) {
@@ -83,7 +83,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	 *            The IFile which contains the persisted model
 	 */
 
-	public Object getParent(Object element) {
+	public Object getParent(final Object element) {
 		if (element instanceof IErlElement) {
 			final IErlElement elt = (IErlElement) element;
 			final IErlElement parent = elt.getParent();
@@ -99,7 +99,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		return null;
 	}
 
-	public boolean hasChildren(Object element) {
+	public boolean hasChildren(final Object element) {
 		boolean result = false;
 		if (element instanceof IParent) {
 			final IParent parent = (IParent) element;
@@ -119,7 +119,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		return result;
 	}
 
-	public Object[] getElements(Object inputElement) {
+	public Object[] getElements(final Object inputElement) {
 		return getChildren(inputElement);
 	}
 
@@ -128,18 +128,18 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		ErlangCore.getModel().removeModelChangeListener(this);
 	}
 
-	public void inputChanged(Viewer aViewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer aViewer, final Object oldInput,
+			final Object newInput) {
 		viewer = (StructuredViewer) aViewer;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
-	 * .eclipse.core.resources.IResourceChangeEvent)
+	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
+	 *      .eclipse.core.resources.IResourceChangeEvent)
 	 */
-	public void resourceChanged(IResourceChangeEvent event) {
+	public void resourceChanged(final IResourceChangeEvent event) {
 		final IResourceDelta delta = event.getDelta();
 		try {
 			if (delta != null) {
@@ -154,11 +154,10 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
-	 * .resources.IResourceDelta)
+	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
+	 *      .resources.IResourceDelta)
 	 */
-	public boolean visit(IResourceDelta delta) {
+	public boolean visit(final IResourceDelta delta) {
 
 		final IResource source = delta.getResource();
 		switch (source.getType()) {
@@ -181,7 +180,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	private void doRefresh(final IFile file) {
 		new UIJob("Update Erlang Model in CommonViewer") { //$NON-NLS-1$
 			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
+			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (viewer != null && !viewer.getControl().isDisposed()) {
 					viewer.refresh(file);
 				}
@@ -190,7 +189,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		}.schedule();
 	}
 
-	public void elementChanged(IErlElement element) {
+	public void elementChanged(final IErlElement element) {
 		if (element instanceof IErlModule) {
 			final IErlModule m = (IErlModule) element;
 			final IResource r = m.getResource();
@@ -201,18 +200,18 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class required) {
+	public Object getAdapter(final Class required) {
 		if (SaveablesProvider.class.equals(required)) {
 			return new SaveablesProvider() {
 
 				@Override
-				public Object[] getElements(Saveable saveable) {
+				public Object[] getElements(final Saveable saveable) {
 					// TODO Auto-generated method stub
 					return null;
 				}
 
 				@Override
-				public Saveable getSaveable(Object element) {
+				public Saveable getSaveable(final Object element) {
 					// TODO Auto-generated method stub
 					return null;
 				}

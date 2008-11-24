@@ -292,7 +292,8 @@ public class OpenAction extends SelectionDispatchAction {
 					.createScannerModuleName(fEditor.getModule()), offset,
 					fExternalModules, pathVars);
 			ErlLogger.debug("open " + res);
-			final IProject project = module == null ? null : module
+			final IProject project = module == null
+					|| module.getErlProject() == null ? null : module
 					.getErlProject().getProject();
 			if (res.isExternalCall()) {
 				ErlModelUtils.openExternalFunction(res, project);

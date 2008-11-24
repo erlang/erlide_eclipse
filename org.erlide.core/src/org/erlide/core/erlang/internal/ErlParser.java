@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
-import org.eclipse.core.resources.IResource;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlComment;
@@ -45,7 +44,8 @@ public class ErlParser {
 	 * @return -record(model, {forms, comments}).
 	 */
 	public boolean parse(final IErlModule module, final String initialText,
-			final boolean initialParse, final String erlidePath) {
+			final boolean initialParse, final String moduleFilePath,
+			final String erlidePath) {
 		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
@@ -55,15 +55,10 @@ public class ErlParser {
 				+ initialText.length() + " initialParse=" + initialParse);
 
 		if (initialParse) {
-			String moduleFileName = "";
-			final IResource resource = module.getResource();
-			if (resource != null) {
-				moduleFileName = resource.getLocation().toString();
-			}
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
-					moduleFileName, initialText, stateDir, erlidePath);
+					moduleFilePath, initialText, stateDir, erlidePath);
 		} else {
 			// FIXME this doesn't work...
 			res = ErlideNoparse.reparse(b, scannerModuleName);
