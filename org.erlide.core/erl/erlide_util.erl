@@ -26,8 +26,12 @@ check_cached(SourceFileName, CacheFileName, Version, RenewFun) ->
     check_cached(SourceFileName, CacheFileName, Version, RenewFun, fun(D) -> D end).
 
 check_cached(SourceFileName, CacheFileName, Version, RenewFun, CacheFun) ->
-    {ok, Info} = file:read_file_info(SourceFileName),
-    SourceModDate = Info#file_info.mtime,
+    SourceModDate = case file:read_file_info(SourceFileName) of
+                        {ok, Info} ->
+                            Info#file_info.mtime;
+                        {error, enoent} ->
+                            {{1900, 1, 1}, {0, 0, 0}}
+                    end,
     case read_cache_date_and_version(CacheFileName) of
         {SourceModDate, Version} ->
             read_cache(CacheFileName, CacheFun);

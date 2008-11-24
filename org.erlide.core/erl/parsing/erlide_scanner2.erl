@@ -393,12 +393,12 @@ do_cmd(create, {Mod, ErlidePath}, Modules) ->
         | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(destroy, Mod, Modules) ->
     lists:keydelete(Mod, #module.name, Modules);
-do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
-	?Debug({rescan, _Mod}),
-	Modules;
 do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, Modules) ->
     NewMod = do_scan_uncached(Mod, ModuleFileName, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
+do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
+    ?Debug({rescan, _Mod}),
+    Modules;
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath}, Modules) ->
     NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
@@ -414,10 +414,11 @@ do_cmd(get_token_at, {Mod, Offset}, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_token_at(Module, Offset), Modules};
 do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
-%% 	?Debug({replace_text, Mod}),
-	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
-	NewMod = replace_text(Module, Offset, RemoveLength, NewText),
-	[NewMod | lists:keydelete(Mod, #module.name, Modules)];
+    ?D({replace_text, Mod}),
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    NewMod = replace_text(Module, Offset, RemoveLength, NewText),
+    ?D(NewMod),
+    [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(get_text, Mod, Modules) ->
 	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
 	{lines_to_text(Module#module.lines), Modules};

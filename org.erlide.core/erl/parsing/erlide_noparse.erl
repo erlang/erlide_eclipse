@@ -385,6 +385,8 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
             external_refs=ExternalRefs}.
 
+scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
+    erlide_scanner2:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath),
     S = erlide_scanner2:getTokens(ScannerName),
