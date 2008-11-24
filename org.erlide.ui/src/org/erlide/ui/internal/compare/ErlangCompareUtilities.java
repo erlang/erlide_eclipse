@@ -129,8 +129,8 @@ class ErlangCompareUtilities {
 		final IErlElement.Kind kind = e.getKind();
 		sb.append(kind);
 		sb.append(e.toString());
-		//		
-		//		
+		//
+		//
 		// switch (kind) {
 		// case MODULE:
 		// sb.append(e.getName());
@@ -263,8 +263,9 @@ class ErlangCompareUtilities {
 	// }
 	/**
 	 * Reads the contents of the given input stream into a string. The function
-	 * assumes that the input stream uses the platform's default encoding (<code>ResourcesPlugin.getEncoding()</code>).
-	 * Returns null if an error occurred.
+	 * assumes that the input stream uses the platform's default encoding (
+	 * <code>ResourcesPlugin.getEncoding()</code>). Returns null if an error
+	 * occurred.
 	 */
 	private static String readString(final InputStream is, final String encoding) {
 		if (is == null) {
@@ -332,8 +333,8 @@ class ErlangCompareUtilities {
 	/**
 	 * Breaks the contents of the given input stream into an array of strings.
 	 * The function assumes that the input stream uses the platform's default
-	 * encoding (<code>ResourcesPlugin.getEncoding()</code>). Returns null
-	 * if an error occurred.
+	 * encoding (<code>ResourcesPlugin.getEncoding()</code>). Returns null if an
+	 * error occurred.
 	 */
 	static String[] readLines(final InputStream is2, final String encoding) {
 
@@ -341,7 +342,7 @@ class ErlangCompareUtilities {
 		try {
 			reader = new BufferedReader(new InputStreamReader(is2, encoding));
 			StringBuffer sb = new StringBuffer();
-			final List list = new ArrayList();
+			final List<String> list = new ArrayList<String>();
 			while (true) {
 				int c = reader.read();
 				if (c == -1) {
@@ -366,7 +367,7 @@ class ErlangCompareUtilities {
 			if (sb.length() > 0) {
 				list.add(sb.toString());
 			}
-			return (String[]) list.toArray(new String[list.size()]);
+			return list.toArray(new String[list.size()]);
 
 		} catch (final IOException ex) {
 			return null;
