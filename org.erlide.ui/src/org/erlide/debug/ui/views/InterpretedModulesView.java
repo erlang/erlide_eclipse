@@ -60,7 +60,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void contextActivated(final ISelection selection) {
 		if (!isAvailable() || !isVisible()) {
 			return;

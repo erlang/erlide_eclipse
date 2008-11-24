@@ -85,6 +85,7 @@ public class ManagedBackend extends AbstractBackend {
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
 			Runnable watcher = new Runnable() {
+				@SuppressWarnings("boxing")
 				public void run() {
 					try {
 						int v = fRuntime.waitFor();

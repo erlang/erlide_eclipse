@@ -61,7 +61,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		}
 		URLConnection conn;
 
-		conn = url.openConnection();
+		conn = url.openConnection(proxy);
 		conn.setDoOutput(true);
 		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 		wr.write(message);
@@ -91,7 +91,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		}
 		URLConnection conn;
 
-		conn = url.openConnection();
+		conn = url.openConnection(proxy);
 
 		// Get the response
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn

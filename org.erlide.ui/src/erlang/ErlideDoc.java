@@ -39,6 +39,7 @@ public class ErlideDoc {
 		return res;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangObject getDocFromScan(final IdeBackend b,
 			final int offset, final String stateDir, final String module,
 			final List<IErlImport> imports) {

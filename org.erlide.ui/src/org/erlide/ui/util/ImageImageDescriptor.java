@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
   */
@@ -26,26 +25,36 @@ public class ImageImageDescriptor extends ImageDescriptor {
 	 */
 	public ImageImageDescriptor(Image image) {
 		super();
-		fImage= image;
+		fImage = image;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ImageDescriptor#getImageData()
 	 */
+	@Override
 	public ImageData getImageData() {
 		return fImage.getImageData();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see Object#equals(Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
-		return (obj != null) && getClass().equals(obj.getClass()) && fImage.equals(((ImageImageDescriptor)obj).fImage);
+		return (obj != null) && getClass().equals(obj.getClass())
+				&& fImage.equals(((ImageImageDescriptor) obj).fImage);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return fImage.hashCode();
 	}

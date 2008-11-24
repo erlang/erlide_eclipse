@@ -81,7 +81,6 @@ public class ErlideUtil {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void unpackBeamFiles(final ICodeBundle p) {
 		final String location = p.getEbinDir();
 		if (location == null) {

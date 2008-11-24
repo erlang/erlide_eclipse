@@ -55,12 +55,9 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
  */
 public class MemberFilterActionGroup extends ActionGroup {
 
-	public static final int FILTER_LOCAL_FUNCTIONS = MemberFilter.FILTER_LOCAL_FUNCTIONS;
-	public static final int FILTER_ATTRIBUTES = MemberFilter.FILTER_ATTRIBUTES;
-	public static final int FILTER_MACRO_RECORD_DEFS = MemberFilter.FILTER_MACRO_RECORD_DEFS;
-
-	public static final int ALL_FILTERS = FILTER_LOCAL_FUNCTIONS
-			| FILTER_ATTRIBUTES | FILTER_MACRO_RECORD_DEFS;
+	public static final int ALL_FILTERS = MemberFilter.FILTER_LOCAL_FUNCTIONS
+			| MemberFilter.FILTER_ATTRIBUTES
+			| MemberFilter.FILTER_MACRO_RECORD_DEFS;
 
 	private static final String TAG_HIDEATTRIBUTES = "hideattributes"; //$NON-NLS-1$
 	private static final String TAG_HIDELOCALFUNCTIONS = "hidelocalfunctions"; //$NON-NLS-1$
@@ -120,10 +117,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param availableFilters
 	 *            Specifies which filter action should be contained.
 	 *            <code>FILTER_NONPUBLIC</code>, <code>FILTER_STATIC</code>,
-	 *            <code>FILTER_FIELDS</code> and
-	 *            <code>FILTER_LOCALTYPES</code> or a combination of these
-	 *            constants are possible values. Use <code>ALL_FILTERS</code>
-	 *            to select all available filters.
+	 *            <code>FILTER_FIELDS</code> and <code>FILTER_LOCALTYPES</code>
+	 *            or a combination of these constants are possible values. Use
+	 *            <code>ALL_FILTERS</code> to select all available filters.
 	 * 
 	 * @since 3.0
 	 */
@@ -141,7 +137,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 		fFilterActions = new ArrayList<MemberFilterAction>();
 
 		// export directives
-		int filterProperty = FILTER_ATTRIBUTES;
+		int filterProperty = MemberFilter.FILTER_ATTRIBUTES;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
@@ -151,7 +147,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 			title = ActionMessages.MemberFilterActionGroup_hide_attributes_label;
 			helpContext = IErlangHelpContextIds.FILTER_ATTRIBUTES_ACTION;
 			final MemberFilterAction hideAttributes = new MemberFilterAction(
-					this, title, FILTER_ATTRIBUTES, helpContext, filterEnabled);
+					this, title, MemberFilter.FILTER_ATTRIBUTES, helpContext,
+					filterEnabled);
 			hideAttributes
 					.setDescription(ActionMessages.MemberFilterActionGroup_hide_attributes_description);
 			hideAttributes
@@ -162,7 +159,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 		}
 
 		// non-exported
-		filterProperty = FILTER_LOCAL_FUNCTIONS;
+		filterProperty = MemberFilter.FILTER_LOCAL_FUNCTIONS;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
@@ -183,7 +180,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 		}
 
 		// macros and record definitions
-		filterProperty = FILTER_MACRO_RECORD_DEFS;
+		filterProperty = MemberFilter.FILTER_MACRO_RECORD_DEFS;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
@@ -286,9 +283,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 * @param filterProperty
 	 *            the filter to be tested. Valid values are
 	 *            <code>FILTER_FIELDS</code>, <code>FILTER_PUBLIC</code>,
-	 *            <code>FILTER_PRIVATE</code> and
-	 *            <code>FILTER_LOCALTYPES</code> as defined by this action
-	 *            group
+	 *            <code>FILTER_PRIVATE</code> and <code>FILTER_LOCALTYPES</code>
+	 *            as defined by this action group
 	 */
 	public boolean hasMemberFilter(final int filterProperty) {
 		return fFilter.hasFilter(filterProperty);
@@ -302,11 +298,14 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 */
 	public void saveState(final IMemento memento) {
 		memento.putString(TAG_HIDEATTRIBUTES, String
-				.valueOf(hasMemberFilter(FILTER_ATTRIBUTES)));
+				.valueOf(hasMemberFilter(MemberFilter.FILTER_ATTRIBUTES)));
 		memento.putString(TAG_HIDELOCALFUNCTIONS, String
-				.valueOf(hasMemberFilter(FILTER_LOCAL_FUNCTIONS)));
-		memento.putString(TAG_HIDEMACRORECORDDEF, String
-				.valueOf(hasMemberFilter(FILTER_MACRO_RECORD_DEFS)));
+				.valueOf(hasMemberFilter(MemberFilter.FILTER_LOCAL_FUNCTIONS)));
+		memento
+				.putString(
+						TAG_HIDEMACRORECORDDEF,
+						String
+								.valueOf(hasMemberFilter(MemberFilter.FILTER_MACRO_RECORD_DEFS)));
 	}
 
 	/**
@@ -319,8 +318,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento from which the state is restored
 	 */
 	public void restoreState(final IMemento memento) {
-		setMemberFilters(new int[] { FILTER_ATTRIBUTES, FILTER_LOCAL_FUNCTIONS,
-				FILTER_MACRO_RECORD_DEFS }, new boolean[] {
+		setMemberFilters(new int[] { MemberFilter.FILTER_ATTRIBUTES,
+				MemberFilter.FILTER_LOCAL_FUNCTIONS,
+				MemberFilter.FILTER_MACRO_RECORD_DEFS }, new boolean[] {
 				Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
 						.booleanValue(),
 				Boolean.valueOf(memento.getString(TAG_HIDELOCALFUNCTIONS))
@@ -431,11 +431,8 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 */
 	public static class MemberFilter extends ViewerFilter {
 
-		@SuppressWarnings("hiding")
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
-		@SuppressWarnings("hiding")
 		public static final int FILTER_ATTRIBUTES = 2;
-		@SuppressWarnings("hiding")
 		public static final int FILTER_MACRO_RECORD_DEFS = 4;
 		// public static final int FILTER_LOCALTYPES = 8;
 
@@ -464,7 +461,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#isFilterProperty(java.lang.Object,
-		 *      java.lang.String)
+		 * java.lang.String)
 		 */
 		public boolean isFilterProperty(final Object element,
 				final Object property) {
@@ -473,7 +470,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		/*
 		 * @see ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
+		 * java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public boolean select(final Viewer viewer, final Object parentElement,

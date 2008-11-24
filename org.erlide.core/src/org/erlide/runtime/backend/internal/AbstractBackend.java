@@ -102,6 +102,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		return fNode.ping(fPeer, 500);
 	}
 
+	@SuppressWarnings("boxing")
 	protected void doConnect(final String label) {
 		ErlLogger.debug("connect to:: '" + label + "' "
 				+ Thread.currentThread());
