@@ -78,8 +78,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 
 		/*
-		 * @see
-		 * ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
+		 * @see ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
 		 */
 		@Override
 		protected void handleLabelProviderChanged(
@@ -130,8 +129,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
 	 */
 	@Override
 	public ISelection getSelection() {
@@ -141,8 +139,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
 	 */
 	@Override
 	protected TreeViewer getTreeViewer() {
@@ -162,9 +159,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
-	 * .eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
+	 *      .eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setSelection(final ISelection selection) {
@@ -182,7 +178,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	private MemberFilterActionGroup fMemberFilterActionGroup;
 
-	private IDocumentProvider myDocProvider;
+	private final IDocumentProvider fDocumentProvider;
 
 	/**
 	 * 
@@ -193,7 +189,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 */
 	public ErlangOutlinePage(final IDocumentProvider documentProvider,
 			final ErlangEditor editor) {
-		myDocProvider = documentProvider;
+		// myDocProvider = documentProvider;
+		fDocumentProvider = documentProvider;
 		fEditor = editor;
 		ErlangCore.getModel().addModelChangeListener(this);
 	}
@@ -205,9 +202,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 */
 	public void setInput(final IEditorInput editorInput) {
 		// ErlLogger.log("> outline set input "+editorInput);
-		fModule = ErlModelUtils.getModule(editorInput, myDocProvider);
+		fModule = ErlModelUtils.getModule(editorInput, fDocumentProvider);
 		try {
-			fModule.open(null);
+			if (fModule != null) {
+				fModule.open(null);
+			}
 		} catch (final ErlModelException e) {
 		}
 	}

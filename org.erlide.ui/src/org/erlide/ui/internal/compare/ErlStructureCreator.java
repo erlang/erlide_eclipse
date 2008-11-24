@@ -30,12 +30,13 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
- *
+ * 
  */
 public class ErlStructureCreator implements IStructureCreator {
 
@@ -102,6 +103,10 @@ public class ErlStructureCreator implements IStructureCreator {
 	private ErlNode recursiveMakeErlNodes(final IErlElement element,
 			final ErlNode parent, final Document doc) throws ErlModelException {
 		final ErlNode n = ErlNode.createErlNode(parent, element, doc);
+		if (element instanceof IOpenable) {
+			final IOpenable o = (IOpenable) element;
+			o.open(null);
+		}
 		if (element instanceof IParent) {
 			final IParent p = (IParent) element;
 			final List<? extends IErlElement> children = p.getChildren();

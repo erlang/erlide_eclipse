@@ -11,6 +11,8 @@
 package org.erlide.ui.views.outline;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -18,8 +20,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -108,6 +113,13 @@ public class ErlangElementImageProvider {
 				// on the build path
 			}
 			return getWorkbenchImageDescriptor(file, flags);
+		} else if (element instanceof IFolder) {
+			final IErlModel model = ErlangCore.getModel();
+			final IErlFolder ef = (IErlFolder) model
+					.findElement((IResource) element);
+			if (ef != null && ef.isOnSourcePath()) {
+				final ImageDescriptor desc = getErlImageDescriptor(ef, flags);
+			}
 		} else if (element instanceof IAdaptable) {
 			return getWorkbenchImageDescriptor((IAdaptable) element, flags);
 		}
@@ -206,6 +218,8 @@ public class ErlangElementImageProvider {
 			return ErlideUIPluginImages.DESC_UNKNOWN;
 		} else if (element.getKind() == IErlElement.Kind.MODULE) {
 			return ErlideUIPluginImages.DESC_MODULE;
+		} else if (element.getKind() == IErlElement.Kind.FOLDER) {
+			return ErlideUIPluginImages.DESC_SRC_FOLDER;
 		}
 
 		// Assert.isTrue(false, "ErlangElementImageProvider: wrong image");

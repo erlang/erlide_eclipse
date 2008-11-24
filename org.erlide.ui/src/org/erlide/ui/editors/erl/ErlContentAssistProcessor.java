@@ -80,7 +80,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final int interrogationMarkPos = aPrefix.indexOf('?');
 			List<ICompletionProposal> result;
 			if (colonPos >= 0) {
-				final IErlProject project = module.getProject();
+				final IErlProject project = module == null ? null : module
+						.getProject();
 				final String moduleName = aPrefix.substring(0, colonPos);
 				result = externalCallCompletions(b, project, moduleName,
 						offset, aPrefix.substring(colonPos + 1), colonPos);
