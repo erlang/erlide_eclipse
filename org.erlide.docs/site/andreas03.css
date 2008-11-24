@@ -56,7 +56,8 @@ p {
 
 #logo h1 {
   margin: 50px 5px 1px 5px;
-  letter-spacing: -3px;
+  font-family: "Georgia", serif;
+  font-weight: 800;
 }
 
 #logo a {
