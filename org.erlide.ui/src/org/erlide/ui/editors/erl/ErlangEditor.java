@@ -16,8 +16,10 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
@@ -103,6 +105,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.IPrefConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -1094,7 +1097,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private String getGlobalExternalModulesFile() {
-		return ErlideUIPlugin.getPrefsNode().get("external_files", "");
+		IPreferencesService service = Platform.getPreferencesService();
+		String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
+				IPrefConstants.PROJECT_EXTERNAL_MODULES, "", null);
+		ErlLogger.debug("external modules file: '%s'", s);
+		return s;
 	}
 
 	protected boolean isActivePart() {

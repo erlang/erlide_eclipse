@@ -16,10 +16,11 @@ import org.erlide.testing.java.ErlRpcTest;
 import org.erlide.testing.java.PatternMatchTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ErlRpcTest.class, PatternMatchTest.class,
-		CoreTests.class, RuntimeTests.class })
+@SuiteClasses( { ErlRpcTest.class, PatternMatchTest.class, CoreTests.class,
+		RuntimeTests.class })
 public class JavaTests {
 
 }
