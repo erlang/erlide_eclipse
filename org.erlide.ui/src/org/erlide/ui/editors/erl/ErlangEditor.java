@@ -105,7 +105,6 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.IPrefConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -1099,7 +1098,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private String getGlobalExternalModulesFile() {
 		IPreferencesService service = Platform.getPreferencesService();
 		String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-				IPrefConstants.PROJECT_EXTERNAL_MODULES, "", null);
+				"external_files", "", null);
 		ErlLogger.debug("external modules file: '%s'", s);
 		return s;
 	}
