@@ -38,12 +38,12 @@ public class ErlangProjectProperties {
 
 	private IProject project;
 
-	private String fSourceDirs = IPrefConstants.DEFAULT_SOURCE_DIRS;
-	private String fUsePathZ = IPrefConstants.DEFAULT_USE_PATHZ;
-	private String fOutputDir = IPrefConstants.DEFAULT_OUTPUT_DIR;
-	private String fIncludeDirs = IPrefConstants.DEFAULT_INCLUDE_DIRS;
-	private String fExternalIncludes = IPrefConstants.DEFAULT_EXTERNAL_INCLUDES;
-	private String fExternalModules = IPrefConstants.DEFAULT_EXTERNAL_MODULES;
+	private String fSourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
+	private String fUsePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
+	private String fOutputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
+	private String fIncludeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
+	private String fExternalIncludes = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+	private String fExternalModules = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 
 	private String fRuntimeName;
 	private String fNodeName;
@@ -57,7 +57,7 @@ public class ErlangProjectProperties {
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		fRuntimeName = IPrefConstants.DEFAULT_RUNTIME_NAME;
+		fRuntimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
 	}
 
 	public ErlangProjectProperties(final IProject prj) {
@@ -90,28 +90,28 @@ public class ErlangProjectProperties {
 				ErlLogger.warn(e);
 			}
 
-			fSourceDirs = prefs.getProperty(IPrefConstants.SOURCE_DIRS,
-					IPrefConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = prefs.getProperty(IPrefConstants.INCLUDE_DIRS,
-					IPrefConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = prefs.getProperty(IPrefConstants.OUTPUT_DIR,
-					IPrefConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = prefs.getProperty(IPrefConstants.USE_PATHZ,
-					IPrefConstants.DEFAULT_USE_PATHZ);
+			fSourceDirs = prefs.getProperty(ProjectPreferencesConstants.SOURCE_DIRS,
+					ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+			fIncludeDirs = prefs.getProperty(ProjectPreferencesConstants.INCLUDE_DIRS,
+					ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+			fOutputDir = prefs.getProperty(ProjectPreferencesConstants.OUTPUT_DIR,
+					ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+			fUsePathZ = prefs.getProperty(ProjectPreferencesConstants.USE_PATHZ,
+					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
 			fExternalIncludes = prefs.getProperty(
-					IPrefConstants.EXTERNAL_INCLUDES,
-					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fRuntimeName = prefs.getProperty(IPrefConstants.RUNTIME_NAME,
-					IPrefConstants.DEFAULT_RUNTIME_NAME);
-			fNodeName = prefs.getProperty(IPrefConstants.NODE_NAME,
-					IPrefConstants.DEFAULT_NODENAME);
+					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
+			fRuntimeName = prefs.getProperty(ProjectPreferencesConstants.RUNTIME_NAME,
+					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
+			fNodeName = prefs.getProperty(ProjectPreferencesConstants.NODE_NAME,
+					ProjectPreferencesConstants.DEFAULT_NODENAME);
 			fUnique = Boolean.parseBoolean(prefs.getProperty(
-					IPrefConstants.MK_UNIQUE, "true"));
-			fCookie = prefs.getProperty(IPrefConstants.COOKIE,
-					IPrefConstants.DEFAULT_COOKIE);
+					ProjectPreferencesConstants.MK_UNIQUE, "true"));
+			fCookie = prefs.getProperty(ProjectPreferencesConstants.COOKIE,
+					ProjectPreferencesConstants.DEFAULT_COOKIE);
 			fExternalModules = prefs.getProperty(
-					IPrefConstants.PROJECT_EXTERNAL_MODULES,
-					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
+					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
 		}
 		if (!loaded) {
 			// ErlLogger.debug("project %s, loading from .settings", project
@@ -121,27 +121,27 @@ public class ErlangProjectProperties {
 			final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 			// new settings
-			fSourceDirs = node.get(IPrefConstants.SOURCE_DIRS,
-					IPrefConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = node.get(IPrefConstants.INCLUDE_DIRS,
-					IPrefConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = node.get(IPrefConstants.OUTPUT_DIR,
-					IPrefConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = node.get(IPrefConstants.USE_PATHZ,
-					IPrefConstants.DEFAULT_USE_PATHZ);
-			fExternalIncludes = node.get(IPrefConstants.EXTERNAL_INCLUDES,
-					IPrefConstants.DEFAULT_EXTERNAL_INCLUDES);
-			fRuntimeName = node.get(IPrefConstants.RUNTIME_NAME,
-					IPrefConstants.DEFAULT_RUNTIME_NAME);
-			fNodeName = node.get(IPrefConstants.NODE_NAME,
-					IPrefConstants.DEFAULT_NODENAME);
-			fUnique = Boolean.parseBoolean(node.get(IPrefConstants.MK_UNIQUE,
+			fSourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
+					ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+			fIncludeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
+					ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+			fOutputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
+					ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+			fUsePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
+					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
+			fExternalIncludes = node.get(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
+			fRuntimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME,
+					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
+			fNodeName = node.get(ProjectPreferencesConstants.NODE_NAME,
+					ProjectPreferencesConstants.DEFAULT_NODENAME);
+			fUnique = Boolean.parseBoolean(node.get(ProjectPreferencesConstants.MK_UNIQUE,
 					"true"));
-			fCookie = node.get(IPrefConstants.COOKIE,
-					IPrefConstants.DEFAULT_COOKIE);
+			fCookie = node.get(ProjectPreferencesConstants.COOKIE,
+					ProjectPreferencesConstants.DEFAULT_COOKIE);
 			fExternalModules = node.get(
-					IPrefConstants.PROJECT_EXTERNAL_MODULES,
-					IPrefConstants.DEFAULT_EXTERNAL_MODULES);
+					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
 		}
 	}
 
@@ -157,16 +157,16 @@ public class ErlangProjectProperties {
 		final ProjectScope s = new ProjectScope(project);
 		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
-		node.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
-		node.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);
-		node.put(IPrefConstants.OUTPUT_DIR, fOutputDir);
-		node.put(IPrefConstants.USE_PATHZ, fUsePathZ);
-		node.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
-		node.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
-		node.put(IPrefConstants.NODE_NAME, fNodeName);
-		node.put(IPrefConstants.MK_UNIQUE, Boolean.toString(fUnique));
-		node.put(IPrefConstants.COOKIE, fCookie);
-		node.put(IPrefConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
+		node.put(ProjectPreferencesConstants.SOURCE_DIRS, fSourceDirs);
+		node.put(ProjectPreferencesConstants.INCLUDE_DIRS, fIncludeDirs);
+		node.put(ProjectPreferencesConstants.OUTPUT_DIR, fOutputDir);
+		node.put(ProjectPreferencesConstants.USE_PATHZ, fUsePathZ);
+		node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES, fExternalIncludes);
+		node.put(ProjectPreferencesConstants.RUNTIME_NAME, fRuntimeName);
+		node.put(ProjectPreferencesConstants.NODE_NAME, fNodeName);
+		node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean.toString(fUnique));
+		node.put(ProjectPreferencesConstants.COOKIE, fCookie);
+		node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES, fExternalModules);
 
 		try {
 			node.flush();
@@ -182,17 +182,17 @@ public class ErlangProjectProperties {
 			final File codepath = cp.getRawLocation().toFile();
 			final Properties prefs = new Properties();
 
-			prefs.put(IPrefConstants.SOURCE_DIRS, fSourceDirs);
-			prefs.put(IPrefConstants.INCLUDE_DIRS, fIncludeDirs);
-			prefs.put(IPrefConstants.OUTPUT_DIR, fOutputDir);
-			prefs.put(IPrefConstants.USE_PATHZ, fUsePathZ);
-			prefs.put(IPrefConstants.EXTERNAL_INCLUDES, fExternalIncludes);
-			prefs.put(IPrefConstants.RUNTIME_NAME, fRuntimeName);
-			prefs.put(IPrefConstants.NODE_NAME, fNodeName);
-			prefs.put(IPrefConstants.MK_UNIQUE, Boolean.toString(fUnique));
-			prefs.put(IPrefConstants.COOKIE, fCookie);
+			prefs.put(ProjectPreferencesConstants.SOURCE_DIRS, fSourceDirs);
+			prefs.put(ProjectPreferencesConstants.INCLUDE_DIRS, fIncludeDirs);
+			prefs.put(ProjectPreferencesConstants.OUTPUT_DIR, fOutputDir);
+			prefs.put(ProjectPreferencesConstants.USE_PATHZ, fUsePathZ);
+			prefs.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES, fExternalIncludes);
+			prefs.put(ProjectPreferencesConstants.RUNTIME_NAME, fRuntimeName);
+			prefs.put(ProjectPreferencesConstants.NODE_NAME, fNodeName);
+			prefs.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean.toString(fUnique));
+			prefs.put(ProjectPreferencesConstants.COOKIE, fCookie);
 			prefs
-					.put(IPrefConstants.PROJECT_EXTERNAL_MODULES,
+					.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 							fExternalModules);
 
 			try {
