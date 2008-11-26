@@ -22,7 +22,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -219,10 +219,10 @@ public class ReferencesSearchGroup extends ActionGroup {
 	private void updateGlobalActionHandlers() {
 		if (fActionBars != null) {
 			fActionBars.setGlobalActionHandler(
-					IErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
+					ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
 					fFindReferencesAction);
 			fActionBars.setGlobalActionHandler(
-					IErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
+					ErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
 					fFindReferencesInProjectAction);
 			// fActionBars.setGlobalActionHandler(
 			// IErlideUIConstants.FIND_REFERENCES_IN_WORKING_SET,

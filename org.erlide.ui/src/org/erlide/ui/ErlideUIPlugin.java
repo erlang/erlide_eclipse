@@ -242,7 +242,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	protected void createImageDescriptor(final String id, final URL baseURL) {
 		URL url = null;
 		try {
-			url = new URL(baseURL, IErlideUIConstants.ICON_PATH + id);
+			url = new URL(baseURL, ErlideUIConstants.ICON_PATH + id);
 		} catch (final MalformedURLException e) {
 			// ignore exception
 		}
@@ -288,26 +288,26 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 		final URL baseURL = getBundle().getEntry("/");
 
-		createImageDescriptor(IErlideUIConstants.IMG_CONSOLE, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_NEW_PROJECT_WIZARD,
+		createImageDescriptor(ErlideUIConstants.IMG_CONSOLE, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD,
 				baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
+		createImageDescriptor(ErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
 				baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_FILE_LABEL, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_FOLDER_LABLE, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_DISABLED_REFRESH, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_REFRESH, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_DISABLED_IMPORT, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_IMPORT, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_DISABLED_EXPORT, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_EXPORT, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_COLLAPSEALL, baseURL);
-		createImageDescriptor(IErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
+		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_FILE_LABEL, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABLE, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_REFRESH, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_REFRESH, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_IMPORT, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_IMPORT, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_EXPORT, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_EXPORT, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_COLLAPSEALL, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
 				baseURL);
 
-		createImageDescriptor(IErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
 	}
 
 	/**

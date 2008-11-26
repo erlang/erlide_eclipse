@@ -64,7 +64,7 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
@@ -505,7 +505,7 @@ public class LiveExpressionsView extends ViewPart implements
 		refreshAction.setText("Refresh");
 		refreshAction.setToolTipText("Refresh expressions");
 		refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_REFRESH));
+				.getImageDescriptor(ErlideUIConstants.IMG_REFRESH));
 
 		fAddAction = new Action() {
 

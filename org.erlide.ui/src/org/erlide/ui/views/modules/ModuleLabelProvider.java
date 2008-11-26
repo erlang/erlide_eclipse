@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 
 /**
  * Provides custom labels for the namespace
@@ -39,22 +39,22 @@ public class ModuleLabelProvider implements ILabelProvider {
 			final IErlProject project = (IErlProject) element;
 			if (project.isOpen()) {
 				return ErlideUIPlugin.getDefault().getImage(
-						IErlideUIConstants.IMG_PROJECT_LABEL);
+						ErlideUIConstants.IMG_PROJECT_LABEL);
 			}
 			return ErlideUIPlugin.getDefault().getImage(
-					IErlideUIConstants.IMG_PROJECT_CLOSED_LABEL);
+					ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL);
 		} else if (element instanceof IContainer) {
 			if (PluginUtils.isOnSourcePath((IContainer) element)) {
 				return ErlideUIPlugin.getDefault().getImage(
-						IErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL);
+						ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL);
 			}
 
 			return ErlideUIPlugin.getDefault().getImage(
-					IErlideUIConstants.IMG_FOLDER_LABLE);
+					ErlideUIConstants.IMG_FOLDER_LABLE);
 
 		} else if (element instanceof IFile) {
 			return ErlideUIPlugin.getDefault().getImage(
-					IErlideUIConstants.IMG_FILE_LABEL);
+					ErlideUIConstants.IMG_FILE_LABEL);
 		}
 
 		return null;

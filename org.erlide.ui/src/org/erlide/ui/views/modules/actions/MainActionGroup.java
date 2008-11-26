@@ -32,7 +32,7 @@ import org.eclipse.ui.actions.ImportResourcesAction;
 import org.eclipse.ui.actions.NewWizardMenu;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.util.PluginUtils;
 import org.erlide.ui.views.modules.ModuleNavigator;
 
@@ -130,16 +130,16 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 		importAction = new ImportResourcesAction(navigator.getSite()
 				.getWorkbenchWindow());
 		importAction.setDisabledImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_DISABLED_IMPORT));
+				.getImageDescriptor(ErlideUIConstants.IMG_DISABLED_IMPORT));
 		importAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_IMPORT));
+				.getImageDescriptor(ErlideUIConstants.IMG_IMPORT));
 
 		exportAction = new ExportResourcesAction(navigator.getSite()
 				.getWorkbenchWindow());
 		exportAction.setDisabledImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_DISABLED_EXPORT));
+				.getImageDescriptor(ErlideUIConstants.IMG_DISABLED_EXPORT));
 		exportAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_EXPORT));
+				.getImageDescriptor(ErlideUIConstants.IMG_EXPORT));
 
 		collapseAllAction = new CollapseAllAction(
 				navigator,
@@ -149,7 +149,7 @@ public class MainActionGroup extends ModuleNavigatorActionGroup {
 				.setToolTipText(ErlideUIPlugin
 						.getResourceString("views.modules.actions.main.collapsealltooltip"));
 		collapseAllAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_COLLAPSEALL));
+				.getImageDescriptor(ErlideUIConstants.IMG_COLLAPSEALL));
 
 	}
 

@@ -33,7 +33,7 @@ import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.views.modules.ModuleNavigator;
 
 /**
@@ -205,9 +205,9 @@ public class WorkspaceActionGroup extends ModuleNavigatorActionGroup {
 		closeProjectAction = new CloseResourceAction(shell);
 		refreshAction = new RefreshAction(shell);
 		refreshAction.setDisabledImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_DISABLED_REFRESH));
+				.getImageDescriptor(ErlideUIConstants.IMG_DISABLED_REFRESH));
 		refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-				.getImageDescriptor(IErlideUIConstants.IMG_REFRESH));
+				.getImageDescriptor(ErlideUIConstants.IMG_REFRESH));
 		buildAction = new BuildAction(shell,
 				IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		rebuildAction = new BuildAction(shell,

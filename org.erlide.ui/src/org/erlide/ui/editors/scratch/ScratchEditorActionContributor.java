@@ -14,7 +14,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 
 /**
  * Contributions of the Erlang Scratch Editor to the Workbench's tool and menu
@@ -43,7 +43,7 @@ public class ScratchEditorActionContributor extends
 
 		if (fStopAction == null || fEvaluateAction == null) {
 			toolBarManager.add(new Separator(
-					IErlideUIConstants.EVALUATION_GROUP));
+					ErlideUIConstants.EVALUATION_GROUP));
 			return;
 		}
 		toolBarManager.add(fEvaluateAction);

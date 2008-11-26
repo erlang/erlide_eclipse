@@ -39,7 +39,7 @@ import org.erlide.core.util.PluginUtils;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.IErlideUIConstants;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
 /**
@@ -83,7 +83,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 					.getResourceString("wizards.descs.newproject"));
 			namePage.setImageDescriptor(ErlideUIPlugin.getDefault()
 					.getImageDescriptor(
-							IErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+							ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
 			addPage(namePage);
 
 			buildPage = new ProjectPreferencesWizardPage(
@@ -94,7 +94,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 					.getResourceString("wizards.descs.buildprefs"));
 			buildPage.setImageDescriptor(ErlideUIPlugin.getDefault()
 					.getImageDescriptor(
-							IErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+							ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
 			addPage(buildPage);
 		} catch (final Exception x) {
 			reportError(x);
