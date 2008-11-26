@@ -1098,7 +1098,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private String getGlobalExternalModulesFile() {
 		IPreferencesService service = Platform.getPreferencesService();
 		String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-				"external_files", "", null);
+				"default_external_modules", "", null);
 		ErlLogger.debug("external modules file: '%s'", s);
 		return s;
 	}
