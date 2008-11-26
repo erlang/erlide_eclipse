@@ -629,9 +629,9 @@ i_end_paren(R0, I) ->
 i_end_paren_1([#token{kind=Kind} | _] = R, I) when Kind==')'; Kind=='}'; Kind==']'; Kind=='>>'; Kind==eof ->
     i_kind(Kind, R, I).
 
-i_form_list([R0|T], I) ->
+i_form_list(R0, I) ->
     R = i_form(R0, I),
-    i_form_list(T, I).
+    i_form_list(R, I).
 
 i_form(R0, I) ->
     R1 = i_comments(R0, I),
