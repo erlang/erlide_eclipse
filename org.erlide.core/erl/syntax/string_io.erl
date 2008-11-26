@@ -296,7 +296,7 @@ string_buffer_after_read( String_buffer, How_many )
 string_buffer_after_read( String_buffer, New_remaining ) ->
 	#string_buffer{remaining=Remaining, remaining_length=Remaining_length} =
 		String_buffer,
-	New_remaining_length = erl.lang.list:length( New_remaining ),
+	New_remaining_length = length( New_remaining ),
 	Read_length = Remaining_length - New_remaining_length,
 	Read = lists:sublist( Remaining, Read_length ),
 	string_buffer_modify( String_buffer, Read, New_remaining, New_remaining_length ).
