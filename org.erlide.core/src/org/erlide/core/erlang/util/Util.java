@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
@@ -541,7 +540,7 @@ public class Util {
 	 * Finds the first line separator used by the given text.
 	 * 
 	 * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-	 *         </code>, or <code>null</code> if none found
+	 *                </code>, or <code>null</code> if none found
 	 */
 	public static String findLineSeparator(final char[] text) {
 		// find the first line separator
@@ -696,8 +695,7 @@ public class Util {
 		try {
 			return Util.getInputStreamAsByteArray(stream, -1);
 		} catch (final IOException e) {
-			throw new ErlModelException(e,
-					ErlModelStatusConstants.IO_EXCEPTION);
+			throw new ErlModelException(e, ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -735,8 +733,7 @@ public class Util {
 		try {
 			return Util.getInputStreamAsCharArray(stream, -1, encoding);
 		} catch (final IOException e) {
-			throw new ErlModelException(e,
-					ErlModelStatusConstants.IO_EXCEPTION);
+			throw new ErlModelException(e, ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -858,21 +855,6 @@ public class Util {
 		}
 
 		return false;
-	}
-
-	/*
-	 * Returns whether the given resource matches one of the exclusion patterns.
-	 * NOTE: should not be asked directly using pkg root pathes
-	 * 
-	 * @see IClasspathEntry#getExclusionPatterns
-	 */
-	private static final boolean isExcluded(final IResource resource,
-			final char[][] inclusionPatterns, final char[][] exclusionPatterns) {
-		final IPath path = resource.getFullPath();
-		// ensure that folders are only excluded if all of their children are
-		// excluded
-		return isExcluded(path, inclusionPatterns, exclusionPatterns, resource
-				.getType() == IResource.FOLDER);
 	}
 
 	/**
@@ -1523,10 +1505,10 @@ public class Util {
 	 * machine-independent manner.
 	 * <p>
 	 * First, two bytes are written to the output stream as if by the
-	 * <code>writeShort</code> method giving the number of bytes to follow.
-	 * This value is the number of bytes actually written out, not the length of
-	 * the string. Following the length, each character of the string is output,
-	 * in sequence, using the UTF-8 encoding for the character.
+	 * <code>writeShort</code> method giving the number of bytes to follow. This
+	 * value is the number of bytes actually written out, not the length of the
+	 * string. Following the length, each character of the string is output, in
+	 * sequence, using the UTF-8 encoding for the character.
 	 * 
 	 * @param str
 	 *            a string to be written.

@@ -1,7 +1,10 @@
 package org.erlide.core.builder;
 
-public interface CompilerPreferencesConstants {
+public class CompilerPreferencesConstants {
 
-	public String DEBUG_INFO = "debugInfo";
+	public final static String DEBUG_INFO = "debugInfo";
+
+	private CompilerPreferencesConstants() {
+	}
 
 }
