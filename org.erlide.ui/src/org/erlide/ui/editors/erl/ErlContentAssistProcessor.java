@@ -54,15 +54,13 @@ import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final ISourceViewer sourceViewer;
-	private final String prefix;
 	private final IErlModule module;
 
 	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
 	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-			final String prefix, final IErlModule module) {
+			final IErlModule module) {
 		this.sourceViewer = sourceViewer;
-		this.prefix = prefix;
 		this.module = module;
 	}
 

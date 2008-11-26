@@ -210,7 +210,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final ContentAssistant asst = new ContentAssistant();
 
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, "", editor.getModule()),
+					sourceViewer, editor.getModule()),
 					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);

@@ -622,7 +622,7 @@ public class ErlangConsoleView extends ViewPart implements
 			// TODO vi vill ha in en punkt här, men den får return till
 			// styledtext o skickar allt för tidigt...
 			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, "", null), IDocument.DEFAULT_CONTENT_TYPE);
+					sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);
