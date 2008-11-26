@@ -34,6 +34,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlElement;
@@ -51,7 +52,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.IErlangStatusConstants;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -222,7 +222,7 @@ public class OpenAction extends SelectionDispatchAction {
 			} catch (final ErlModelException e) {
 				ErlangPlugin.log(new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID,
-						IErlangStatusConstants.INTERNAL_ERROR,
+						ErlangStatusConstants.INTERNAL_ERROR,
 						"OpenAction_error_message", e));
 
 				ErrorDialog.openError(getShell(), getDialogTitle(),

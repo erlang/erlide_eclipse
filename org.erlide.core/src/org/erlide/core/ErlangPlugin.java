@@ -796,7 +796,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 	public static void logErrorMessage(final String message) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, message, null));
+				ErlangStatusConstants.INTERNAL_ERROR, message, null));
 	}
 
 	public static void logErrorStatus(final String message, final IStatus status) {
@@ -805,14 +805,14 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			return;
 		}
 		final MultiStatus multi = new MultiStatus(PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, message, null);
+				ErlangStatusConstants.INTERNAL_ERROR, message, null);
 		multi.add(status);
 		log(multi);
 	}
 
 	public static void log(final Throwable e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
+				ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
 				e));
 	}
 

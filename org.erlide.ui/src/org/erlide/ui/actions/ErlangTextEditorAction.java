@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -22,7 +23,6 @@ import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.util.IErlangStatusConstants;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -73,7 +73,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 				final String e = r1.toString();
 				ErlangPlugin.log(new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID,
-						IErlangStatusConstants.INTERNAL_ERROR,
+						ErlangStatusConstants.INTERNAL_ERROR,
 						"IndentAction_error_message" + e, null));
 
 				ErrorDialog.openError(textEditor.getSite().getShell(),

@@ -41,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
@@ -51,7 +52,6 @@ import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.RuntimePreferencePage;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
-import org.erlide.ui.util.IErlangStatusConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
 import org.osgi.framework.BundleContext;
@@ -289,8 +289,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		final URL baseURL = getBundle().getEntry("/");
 
 		createImageDescriptor(ErlideUIConstants.IMG_CONSOLE, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD,
-				baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
 				baseURL);
@@ -340,7 +339,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 	public static void log(final Exception e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
+				ErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
 	}
 
 	public static void log(final IStatus status) {
@@ -349,7 +348,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 
 	public static void logErrorMessage(final String message) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, message, null));
+				ErlangStatusConstants.INTERNAL_ERROR, message, null));
 	}
 
 	public static void logErrorStatus(final String message, final IStatus status) {
@@ -358,14 +357,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 			return;
 		}
 		final MultiStatus multi = new MultiStatus(PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, message, null);
+				ErlangStatusConstants.INTERNAL_ERROR, message, null);
 		multi.add(status);
 		log(multi);
 	}
 
 	public static void log(final Throwable e) {
 		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				IErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
+				ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
 				e));
 	}
 
