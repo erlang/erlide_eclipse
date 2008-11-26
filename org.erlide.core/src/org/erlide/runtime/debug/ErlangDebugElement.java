@@ -19,7 +19,7 @@ public class ErlangDebugElement extends DebugElement {
 	}
 
 	public String getModelIdentifier() {
-		return IErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
+		return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
 	}
 
 	// @SuppressWarnings("unchecked")

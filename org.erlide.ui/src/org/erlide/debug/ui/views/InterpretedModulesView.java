@@ -30,7 +30,7 @@ import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
@@ -80,8 +80,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 				try {
 					final int debugFlags = launchConfiguration.getAttribute(
 							IErlLaunchAttributes.DEBUG_FLAGS,
-							IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-					distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+							ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+					distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 				} catch (final CoreException e1) {
 					distributed = false;
 				}

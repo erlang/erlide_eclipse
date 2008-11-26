@@ -30,7 +30,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	}
 
 	public String getModelIdentifier() {
-		return IErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
+		return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
 	}
 
 	public void createMarker(final IResource resource, final int lineNumber)
@@ -58,7 +58,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	 */
 	public void install(final ErlangDebugTarget atarget) {
 		target = atarget;
-		createRequest(IErlDebugConstants.REQUEST_INSTALL);
+		createRequest(ErlDebugConstants.REQUEST_INSTALL);
 	}
 
 	private void createRequest(final int request) {
@@ -119,7 +119,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 
 	public void remove(final ErlangDebugTarget atarget) {
 		target = atarget;
-		createRequest(IErlDebugConstants.REQUEST_REMOVE);
+		createRequest(ErlDebugConstants.REQUEST_REMOVE);
 	}
 
 }

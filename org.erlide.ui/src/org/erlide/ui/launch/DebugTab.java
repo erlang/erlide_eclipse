@@ -54,7 +54,7 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
 /**
@@ -409,9 +409,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		int debugFlags;
 		try {
 			debugFlags = config.getAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
-					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 		} catch (final CoreException e) {
-			debugFlags = IErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+			debugFlags = ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
 		}
 		setFlagCheckboxes(debugFlags);
 
@@ -511,13 +511,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			// I don't know why these are null sometimes...
 			return;
 		}
-		int flag = debugFlags & IErlDebugConstants.ATTACH_ON_FIRST_CALL;
+		int flag = debugFlags & ErlDebugConstants.ATTACH_ON_FIRST_CALL;
 		attachOnFirstCallCheck.setSelection(flag != 0);
-		flag = debugFlags & IErlDebugConstants.ATTACH_ON_BREAKPOINT;
+		flag = debugFlags & ErlDebugConstants.ATTACH_ON_BREAKPOINT;
 		attachOnBreakpointCheck.setSelection(flag != 0);
-		flag = debugFlags & IErlDebugConstants.ATTACH_ON_EXIT;
+		flag = debugFlags & ErlDebugConstants.ATTACH_ON_EXIT;
 		attachOnExitCheck.setSelection(flag != 0);
-		flag = debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG;
+		flag = debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG;
 		distributedDebugCheck.setSelection(flag != 0);
 	}
 
@@ -529,16 +529,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	private int getFlagChechboxes() {
 		int result = 0;
 		if (attachOnFirstCallCheck.getSelection()) {
-			result |= IErlDebugConstants.ATTACH_ON_FIRST_CALL;
+			result |= ErlDebugConstants.ATTACH_ON_FIRST_CALL;
 		}
 		if (attachOnBreakpointCheck.getSelection()) {
-			result |= IErlDebugConstants.ATTACH_ON_BREAKPOINT;
+			result |= ErlDebugConstants.ATTACH_ON_BREAKPOINT;
 		}
 		if (attachOnExitCheck.getSelection()) {
-			result |= IErlDebugConstants.ATTACH_ON_EXIT;
+			result |= ErlDebugConstants.ATTACH_ON_EXIT;
 		}
 		if (distributedDebugCheck.getSelection()) {
-			result |= IErlDebugConstants.DISTRIBUTED_DEBUG;
+			result |= ErlDebugConstants.DISTRIBUTED_DEBUG;
 		}
 		return result;
 	}

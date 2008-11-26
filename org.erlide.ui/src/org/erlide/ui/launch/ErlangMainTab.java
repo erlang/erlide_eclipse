@@ -45,7 +45,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
@@ -236,7 +236,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(IErlLaunchAttributes.FUNCTION, "");
 		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, "");
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
-				IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+				ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {

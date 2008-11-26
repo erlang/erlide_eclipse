@@ -9,7 +9,7 @@ import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -151,7 +151,7 @@ public class ErlideDebug {
 	public static void addDeleteLineBreakpoint(final IBackend backend,
 			final String module, final int line, final int action) {
 		try {
-			final String a = action == IErlDebugConstants.REQUEST_INSTALL ? "add"
+			final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
 					: "delete";
 			backend.rpcx("erlide_debug", "line_breakpoint", "sia", module,
 					line, a);

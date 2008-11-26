@@ -52,7 +52,7 @@ import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -90,7 +90,7 @@ public class ErlangLaunchConfigurationDelegate extends
 					IErlLaunchAttributes.START_ME, false);
 			final int debugFlags = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_FLAGS,
-					IErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 			List<String> interpretedModules = config.getAttribute(
 					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
@@ -156,7 +156,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				// target.getWaiter().doWait();
 				launch.addDebugTarget(target);
 				// interpret everything we can
-				final boolean distributed = (debugFlags & IErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+				final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 				if (distributed) {
 					distributeDebuggerCode(backend);
 				}
@@ -209,7 +209,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				.getBreakpointManager();
 		final List<String> result = new ArrayList<String>(interpretedModules);
 		for (final IBreakpoint bp : bpm
-				.getBreakpoints(IErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
+				.getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
 			final IMarker m = bp.getMarker();
 			final IResource r = m.getResource();
 			final String name = r.getName();

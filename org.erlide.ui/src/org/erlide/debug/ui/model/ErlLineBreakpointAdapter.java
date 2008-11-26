@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
-import org.erlide.runtime.debug.IErlDebugConstants;
+import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -45,7 +45,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			final int lineNumber = textSelection.getStartLine();
 			final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
 					.getBreakpointManager().getBreakpoints(
-							IErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
+							ErlDebugConstants.ID_ERLANG_DEBUG_MODEL);
 			for (final IBreakpoint breakpoint : breakpoints) {
 				if (resource.equals(breakpoint.getMarker().getResource())) {
 					if (breakpoint instanceof ILineBreakpoint) {
