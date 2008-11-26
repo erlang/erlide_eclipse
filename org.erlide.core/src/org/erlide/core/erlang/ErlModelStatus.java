@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -24,11 +24,11 @@ import org.erlide.core.erlang.util.Util;
  */
 
 public class ErlModelStatus extends Status implements IErlModelStatus,
-		IErlModelStatusConstants, IResourceStatus {
+		IResourceStatus {
 
 	/**
-	 * The elements related to the failure, or <code>null</code> if no
-	 * elements are involved.
+	 * The elements related to the failure, or <code>null</code> if no elements
+	 * are involved.
 	 */
 	protected IErlElement[] fElements = new IErlElement[0];
 
@@ -39,8 +39,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	protected IPath fPath;
 
 	/**
-	 * The <code>String</code> related to the failure, or <code>null</code>
-	 * if no <code>String</code> is involved.
+	 * The <code>String</code> related to the failure, or <code>null</code> if
+	 * no <code>String</code> is involved.
 	 */
 	protected String fString;
 
@@ -156,7 +156,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
 	public ErlModelStatus(CoreException coreException) {
-		super(ERROR, ErlangPlugin.PLUGIN_ID, CORE_EXCEPTION,
+		super(ERROR, ErlangPlugin.PLUGIN_ID,
+				ErlModelStatusConstants.CORE_EXCEPTION,
 				"ErlModelStatus", coreException); //$NON-NLS-1$
 		fElements = ErlElement.NO_ELEMENTS;
 	}
@@ -190,36 +191,36 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 		final Throwable exception = getException();
 		if (exception == null) {
 			switch (getCode()) {
-			case CORE_EXCEPTION:
+			case ErlModelStatusConstants.CORE_EXCEPTION:
 				return Util.bind("status.coreException"); //$NON-NLS-1$
 
-			case BUILDER_INITIALIZATION_ERROR:
+			case ErlModelStatusConstants.BUILDER_INITIALIZATION_ERROR:
 				return Util.bind("build.initializationError"); //$NON-NLS-1$
 
-			case BUILDER_SERIALIZATION_ERROR:
+			case ErlModelStatusConstants.BUILDER_SERIALIZATION_ERROR:
 				return Util.bind("build.serializationError"); //$NON-NLS-1$
 
-			case DEVICE_PATH:
+			case ErlModelStatusConstants.DEVICE_PATH:
 				return Util.bind(
 						"status.cannotUseDeviceOnPath", getPath().toString()); //$NON-NLS-1$
 
-			case ELEMENT_DOES_NOT_EXIST:
+			case ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST:
 				return Util
 						.bind(
 								"element.doesNotExist", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
-			case INDEX_OUT_OF_BOUNDS:
+			case ErlModelStatusConstants.INDEX_OUT_OF_BOUNDS:
 				return Util.bind("status.indexOutOfBounds"); //$NON-NLS-1$
 
-			case INVALID_CONTENTS:
+			case ErlModelStatusConstants.INVALID_CONTENTS:
 				return Util.bind("status.invalidContents"); //$NON-NLS-1$
 
-			case INVALID_DESTINATION:
+			case ErlModelStatusConstants.INVALID_DESTINATION:
 				return Util
 						.bind(
 								"status.invalidDestination", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
-			case INVALID_ELEMENT_TYPES:
+			case ErlModelStatusConstants.INVALID_ELEMENT_TYPES:
 				final StringBuilder buff = new StringBuilder(Util
 						.bind("operation.notSupported")); //$NON-NLS-1$
 				for (int i = 0; i < fElements.length; i++) {
@@ -231,10 +232,10 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 				}
 				return buff.toString();
 
-			case INVALID_NAME:
+			case ErlModelStatusConstants.INVALID_NAME:
 				return Util.bind("status.invalidName", fString); //$NON-NLS-1$
 
-			case INVALID_PATH:
+			case ErlModelStatusConstants.INVALID_PATH:
 				if (fString != null) {
 					return fString;
 				}
@@ -242,16 +243,16 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 						.bind(
 								"status.invalidPath", (getPath() == null) ? "null" : getPath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
 
-			case INVALID_PROJECT:
+			case ErlModelStatusConstants.INVALID_PROJECT:
 				return Util.bind("status.invalidProject", fString); //$NON-NLS-1$
 
-			case INVALID_RESOURCE:
+			case ErlModelStatusConstants.INVALID_RESOURCE:
 				return Util.bind("status.invalidResource", fString); //$NON-NLS-1$
 
-			case INVALID_RESOURCE_TYPE:
+			case ErlModelStatusConstants.INVALID_RESOURCE_TYPE:
 				return Util.bind("status.invalidResourceType", fString); //$NON-NLS-1$
 
-			case INVALID_SIBLING:
+			case ErlModelStatusConstants.INVALID_SIBLING:
 				if (fString != null) {
 					return Util.bind("status.invalidSibling", fString); //$NON-NLS-1$
 				}
@@ -259,10 +260,10 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 						.bind(
 								"status.invalidSibling", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
-			case IO_EXCEPTION:
+			case ErlModelStatusConstants.IO_EXCEPTION:
 				return Util.bind("status.IOException"); //$NON-NLS-1$
 
-			case NAME_COLLISION:
+			case ErlModelStatusConstants.NAME_COLLISION:
 				if (fElements != null && fElements.length > 0) {
 					// IErlElement element = elements[0];
 					// String name = element.getElementName();
@@ -272,36 +273,36 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 				}
 				return Util.bind("status.nameCollision", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-			case NO_ELEMENTS_TO_PROCESS:
+			case ErlModelStatusConstants.NO_ELEMENTS_TO_PROCESS:
 				return Util.bind("operation.needElements"); //$NON-NLS-1$
 
-			case NULL_NAME:
+			case ErlModelStatusConstants.NULL_NAME:
 				return Util.bind("operation.needName"); //$NON-NLS-1$
 
-			case NULL_PATH:
+			case ErlModelStatusConstants.NULL_PATH:
 				return Util.bind("operation.needPath"); //$NON-NLS-1$
 
-			case NULL_STRING:
+			case ErlModelStatusConstants.NULL_STRING:
 				return Util.bind("operation.needString"); //$NON-NLS-1$
 
-			case PATH_OUTSIDE_PROJECT:
+			case ErlModelStatusConstants.PATH_OUTSIDE_PROJECT:
 				return Util
 						.bind(
 								"operation.pathOutsideProject", fString, ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
-			case READ_ONLY:
+			case ErlModelStatusConstants.READ_ONLY:
 				final IErlElement element = fElements[0];
 				final String name = element.getName();
 				return Util.bind("status.readOnly", name); //$NON-NLS-1$
 
-			case RELATIVE_PATH:
+			case ErlModelStatusConstants.RELATIVE_PATH:
 				return Util.bind(
 						"operation.needAbsolutePath", getPath().toString()); //$NON-NLS-1$
 
-			case UPDATE_CONFLICT:
+			case ErlModelStatusConstants.UPDATE_CONFLICT:
 				return Util.bind("status.updateConflict"); //$NON-NLS-1$
 
-			case NO_LOCAL_CONTENTS:
+			case ErlModelStatusConstants.NO_LOCAL_CONTENTS:
 				return Util
 						.bind("status.noLocalContents", getPath().toString()); //$NON-NLS-1$
 			}
@@ -356,7 +357,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus,
 	 * @see IErlModelStatus#isDoesNotExist()
 	 */
 	public boolean isDoesNotExist() {
-		return getCode() == ELEMENT_DOES_NOT_EXIST;
+		return getCode() == ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST;
 	}
 
 	/**

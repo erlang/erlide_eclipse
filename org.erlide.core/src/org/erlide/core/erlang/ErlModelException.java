@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IStatus;
  * </p>
  * 
  * @see IErlModelStatus
- * @see IErlModelStatusConstants
+ * @see ErlModelStatusConstants
  */
 public class ErlModelException extends CoreException {
 
@@ -46,7 +46,7 @@ public class ErlModelException extends CoreException {
 	 * @param code
 	 *            one of the Erlang-specific status codes declared in
 	 *            <code>IErlModelStatusConstants</code>
-	 * @see IErlModelStatusConstants
+	 * @see ErlModelStatusConstants
 	 * @see org.eclipse.core.runtime.IStatus#ERROR
 	 */
 	public ErlModelException(Throwable e, int code) {
@@ -125,7 +125,7 @@ public class ErlModelException extends CoreException {
 	 * @return <code>true</code> if this exception indicates that a Erlang
 	 *         model element does not exist
 	 * @see IErlModelStatus#isDoesNotExist()
-	 * @see IErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
+	 * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
 	 */
 	public boolean isDoesNotExist() {
 		final IErlModelStatus erlangModelStatus = getErlangModelStatus();

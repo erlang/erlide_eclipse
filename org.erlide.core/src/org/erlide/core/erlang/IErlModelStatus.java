@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IStatus;
  * </p>
  * 
  * @see org.eclipse.core.runtime.IStatus
- * @see IErlModelStatusConstants
+ * @see ErlModelStatusConstants
  */
 public interface IErlModelStatus extends IStatus {
 
@@ -45,7 +45,7 @@ public interface IErlModelStatus extends IStatus {
 	 * related to this particular status code.
 	 * 
 	 * @return the list of Erlang element culprits
-	 * @see IErlModelStatusConstants
+	 * @see ErlModelStatusConstants
 	 */
 	IErlElement[] getElements();
 
@@ -56,10 +56,10 @@ public interface IErlModelStatus extends IStatus {
 	 * or <code>RELATIVE_PATH</code>.
 	 * 
 	 * @return the path that caused the failure, or <code>null</code> if none
-	 * @see IErlModelStatusConstants#DEVICE_PATH
-	 * @see IErlModelStatusConstants#INVALID_PATH
-	 * @see IErlModelStatusConstants#PATH_OUTSIDE_PROJECT
-	 * @see IErlModelStatusConstants#RELATIVE_PATH
+	 * @see ErlModelStatusConstants#DEVICE_PATH
+	 * @see ErlModelStatusConstants#INVALID_PATH
+	 * @see ErlModelStatusConstants#PATH_OUTSIDE_PROJECT
+	 * @see ErlModelStatusConstants#RELATIVE_PATH
 	 */
 	IPath getPath();
 
@@ -69,7 +69,7 @@ public interface IErlModelStatus extends IStatus {
 	 * particular status code.
 	 * 
 	 * @return the string culprit, or <code>null</code> if none
-	 * @see IErlModelStatusConstants
+	 * @see ErlModelStatusConstants
 	 * @deprecated Use IStatus#getMessage instead
 	 */
 	@Deprecated
@@ -82,7 +82,7 @@ public interface IErlModelStatus extends IStatus {
 	 * 
 	 * @return <code>true</code> if the status code indicates that a Erlang
 	 *         model element does not exist
-	 * @see IErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
+	 * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
 	 */
 	boolean isDoesNotExist();
 }

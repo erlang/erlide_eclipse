@@ -32,7 +32,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModelStatusConstants;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -697,7 +697,7 @@ public class Util {
 			return Util.getInputStreamAsByteArray(stream, -1);
 		} catch (final IOException e) {
 			throw new ErlModelException(e,
-					IErlModelStatusConstants.IO_EXCEPTION);
+					ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -730,13 +730,13 @@ public class Util {
 			stream = new BufferedInputStream(file.getContents(true));
 		} catch (final CoreException e) {
 			throw new ErlModelException(e,
-					IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST);
+					ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST);
 		}
 		try {
 			return Util.getInputStreamAsCharArray(stream, -1, encoding);
 		} catch (final IOException e) {
 			throw new ErlModelException(e,
-					IErlModelStatusConstants.IO_EXCEPTION);
+					ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();

@@ -25,7 +25,7 @@ import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModelStatusConstants;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
@@ -403,7 +403,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	protected ErlModelException newNotPresentException() {
 		ErlLogger.debug("not found: " + fName);
 		return new ErlModelException(new ErlModelStatus(
-				IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
+				ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
 	}
 
 	/**

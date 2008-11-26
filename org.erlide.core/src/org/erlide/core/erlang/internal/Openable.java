@@ -22,7 +22,7 @@ import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
-import org.erlide.core.erlang.IErlModelStatusConstants;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.runtime.ErlLogger;
 
@@ -361,7 +361,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 			throws ErlModelException {
 		if (isReadOnly()) {
 			throw new ErlModelException(new ErlModelStatus(
-					IErlModelStatusConstants.READ_ONLY, this));
+					ErlModelStatusConstants.READ_ONLY, this));
 		}
 		// final IBuffer buf = getBuffer();
 		// if (buf != null) { // some Openables (like a ErlProject) don't have a

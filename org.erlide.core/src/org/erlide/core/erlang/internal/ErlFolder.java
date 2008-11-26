@@ -13,7 +13,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModelManager;
-import org.erlide.core.erlang.IErlModelStatusConstants;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
@@ -48,7 +48,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 			}
 		} catch (final CoreException e) {
 			throw new ErlModelException(e,
-					IErlModelStatusConstants.CORE_EXCEPTION);
+					ErlModelStatusConstants.CORE_EXCEPTION);
 		}
 		return true;
 	}
