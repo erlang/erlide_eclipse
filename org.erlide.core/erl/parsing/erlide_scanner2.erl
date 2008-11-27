@@ -448,6 +448,8 @@ token_to_string(#token{text=Text}) when is_list(Text) ->
 	Text;
 token_to_string(#token{value=Value}) when is_list(Value) ->
 	Value;
+token_to_string(#token{kind=atom, value=Value}) ->
+    atom_to_list(Value);
 token_to_string(#token{value=Value}) when Value =/= undefined ->
     atom_to_list(Value);
 token_to_string(#token{kind=Kind}) ->
