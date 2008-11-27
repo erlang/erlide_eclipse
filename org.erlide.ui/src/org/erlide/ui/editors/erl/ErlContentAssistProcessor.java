@@ -141,31 +141,33 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IdeBackend b, final int offset, final String aprefix,
 			final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-		// add declared functions in module
-		try {
-			for (final IErlElement e : module.getChildren()) {
-				if (e instanceof IErlFunction) {
-					final IErlFunction f = (IErlFunction) e;
-					addFunctionCompletion(offset, aprefix, result, f, false);
+		final List<String> allErlangFiles = new ArrayList<String>();
+		if (module != null) {
+			// add declared functions in module
+			try {
+				for (final IErlElement e : module.getChildren()) {
+					if (e instanceof IErlFunction) {
+						final IErlFunction f = (IErlFunction) e;
+						addFunctionCompletion(offset, aprefix, result, f, false);
+					}
+				}
+			} catch (final ErlModelException e) {
+				e.printStackTrace();
+			}
+			// add imported functions in module
+			for (final IErlImport imp : module.getImports()) {
+				for (final ErlangFunction ef : imp.getFunctions()) {
+					addFunctionCompletion(offset, aprefix, result, ef);
 				}
 			}
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
-		}
-		// add imported functions in module
-		for (final IErlImport imp : module.getImports()) {
-			for (final ErlangFunction ef : imp.getFunctions()) {
-				addFunctionCompletion(offset, aprefix, result, ef);
-			}
-		}
-		// add modules
-		final List<IErlModule> modules = ErlModelUtils
-				.getModulesWithReferencedProjects(module.getProject());
-		final List<String> allErlangFiles = new ArrayList<String>();
-		for (final IErlModule m : modules) {
-			final String name = m.getName();
-			if (!allErlangFiles.contains(name)) {
-				allErlangFiles.add(name);
+			// add modules
+			final List<IErlModule> modules = ErlModelUtils
+					.getModulesWithReferencedProjects(module.getProject());
+			for (final IErlModule m : modules) {
+				final String name = m.getName();
+				if (!allErlangFiles.contains(name)) {
+					allErlangFiles.add(name);
+				}
 			}
 		}
 		OtpErlangObject res = null;
