@@ -19,8 +19,8 @@ public class ErlideOpen {
 
 	public static String getIncludeLib(final IdeBackend b, String s)
 			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangObject t = b.rpcx("erlide_open", "get_include_lib",
-				null, s);
+		final OtpErlangObject t = b.rpcx("erlide_open", "get_include_lib", "s",
+				s);
 		if (t instanceof OtpErlangTuple) {
 			final OtpErlangObject es = ((OtpErlangTuple) t).elementAt(1);
 			s = ((OtpErlangString) es).stringValue();
