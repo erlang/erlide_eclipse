@@ -30,10 +30,10 @@
 open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
     try
-        {TokensWComments, BeforeReversed} = 
+        {TokensWComments, BeforeReversed} =
             erlide_scanner2:getTokenWindow(Mod, Offset, 5, 50),
         ?D({TokensWComments, BeforeReversed}),
-        try_open(Mod, Offset, TokensWComments, BeforeReversed, 
+        try_open(Mod, Offset, TokensWComments, BeforeReversed,
                  ExternalModules, PathVars),
         error
     catch
@@ -126,7 +126,7 @@ get_include_lib(Path) ->
 find_lib_dir(Dir) ->
     [Lib | Rest] = filename:split(Dir),
     {code:lib_dir(Lib), Rest}.
-    
+
 
 open_info(L, W, ExternalModules, PathVars) ->
     ?D({open_info, W, L}),
@@ -201,7 +201,7 @@ get_ext_aux([L | Rest], PathVars, Acc0) ->
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D({ExternalModules, PathVars}),
-    L = lists:concat([get_external_modules_file(EM, PathVars) || EM <- string:tokens(ExternalModules, ";")]),
+    L = lists:append([get_external_modules_file(EM, PathVars) || EM <- string:tokens(ExternalModules, ";")]),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
@@ -229,7 +229,7 @@ split_lines([$\r | Rest], LineAcc, Acc) ->
 	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([C | Rest], LineAcc, Acc) ->
 	split_lines(Rest, [C | LineAcc], Acc).
-                                                              
+
 get_source(Mod) ->
     L = Mod:module_info(compile),
     {value, {source, Path}} = lists:keysearch(source, 1, L),
