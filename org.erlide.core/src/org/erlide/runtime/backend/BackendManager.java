@@ -118,7 +118,7 @@ public final class BackendManager implements IEpmdListener {
 			throws BackendException {
 
 		String nodeName = info.getNodeName();
-		boolean exists = BackendManager.findRunningNode(nodeName);
+		boolean exists = findRunningNode(nodeName);
 		AbstractBackend b = null;
 
 		boolean isRemoteNode = nodeName.contains("@");
@@ -145,7 +145,7 @@ public final class BackendManager implements IEpmdListener {
 		return b;
 	}
 
-	public BuildBackend getBuild(final IProject project)
+	public BuildBackend getBuildBackend(final IProject project)
 			throws BackendException {
 		synchronized (fBuildBackendsLock) {
 			final RuntimeInfo info = getRuntimeInfo(project);

@@ -207,7 +207,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// } catch (final CoreException e1) {
 		// }
 
-		final BuildBackend b = BackendManager.getDefault().getBuild(
+		final BuildBackend b = BackendManager.getDefault().getBuildBackend(
 				getProject());
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);

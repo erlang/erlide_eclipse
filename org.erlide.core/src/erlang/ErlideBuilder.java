@@ -21,7 +21,7 @@ public class ErlideBuilder {
 			final String fn, final String output) {
 		try {
 			final BuildBackend b = BackendManager.getDefault()
-					.getBuild(project);
+					.getBuildBackend(project);
 			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
 					30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
@@ -39,7 +39,7 @@ public class ErlideBuilder {
 			final List<String> includedirs) {
 		try {
 			final BuildBackend b = BackendManager.getDefault()
-					.getBuild(project);
+					.getBuildBackend(project);
 			// FIXME add an option for the compiler options
 			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
 					outputdir, includedirs, new String[] { "debug_info" });

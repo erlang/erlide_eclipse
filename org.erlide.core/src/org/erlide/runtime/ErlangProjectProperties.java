@@ -230,7 +230,7 @@ public class ErlangProjectProperties {
 	public void setOutputDir(final String outputDir) {
 		if (!fOutputDir.equals(outputDir)) {
 			try {
-				final BuildBackend b = BackendManager.getDefault().getBuild(
+				final BuildBackend b = BackendManager.getDefault().getBuildBackend(
 						project);
 				String p = project.getLocation().append(fOutputDir).toString();
 				b.removePath(getUsePathZ(), p);
