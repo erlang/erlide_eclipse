@@ -32,20 +32,27 @@
                                     <strong class="userinput"><code>hello</code></strong>
                             </p></li><li><p>Click Finish </p></li><li><p>On menu bar, choose Run -&gt; Run Configurations... </p></li><li><p>Select the "Erlang application" </p></li><li><p>Click the New Launch configuration button (left side above the
                                 field with "type filter text") </p></li><li><p>Select the "New configuration"</p></li><li><p>Select the "Main tab" in the right pane</p></li><li><p>Check the box left of the HelloWorldProject</p></li><li><p>Select the "Runtimes" tab in the right pane </p></li><li><p>In the filed titled <span class="guilabel">Node name</span>, enter
-                                    <strong class="userinput"><code>erlide</code></strong></p></li><li><p>Check the box to the left of "Start the Erlang node if not running
-                                presently"</p></li><li><p>Click "Apply" and "Run"</p></li><li><p>In the center code pane (titled "hello.erl"), enter the following
-                                code: hello/0 (within the brackets for the export, so it reads
-                                "-export([hello/0]).")</p></li><li><p>On the next line after the export, enter the following code:
+                                    <strong class="userinput"><code>erlide</code></strong></p></li><li><p>In some environments, Java and Erlang look for the default
+                                    <code class="filename">.erlang.cookie</code> file in different places,
+                                and if you get connection problems you should enter some value for
+                                the <span class="guilabel">Cookie</span> field. If the node is already
+                                running, you have to use the same cookie value; otherwise, any
+                                string will do.</p></li><li><p>Check the box to the left of "Start the Erlang node if not running
+                                presently"</p></li><li><p>Click "Apply" and "Run"</p></li><li><p>In the center code pane (titled "<span class="guilabel">hello.erl</span>"),
+                                enter the following code: <strong class="userinput"><code>hello/0</code></strong> (within the
+                                brackets for the export, so it reads
+                                    "<code class="code">-export([hello/0]).</code>")</p></li><li><p>On the next line after the export, enter the following code:
                                 <pre class="screen">hello() -&gt; io:format("Hello World!~n", []).</pre></p></li><li><p>In the menu bar, choose File -&gt; Save As...</p></li><li><p>Double-click on the folder titled "HelloWorldProject" in the
-                                dialog box</p></li><li><p>Click on (select) the folder titled "src" in the dialog box. The
-                                field entitled <span class="guilabel">Enter or select the parent
-                                    folder:</span> should now read
+                                dialog box</p></li><li><p>Click on (select) the folder titled "<code class="filename">src</code>" in
+                                the dialog box. The field entitled <span class="guilabel">Enter or select the
+                                    parent folder:</span> should now read
                                     <code class="computeroutput">HelloWorldProject/src</code>
-                            </p></li><li><p>Click OK. The file "hello.erl" is saved in the src directory and
-                                automatically built.</p></li><li><p>The lower pane has a number of tabs. Select the "Console"
-                                tab.</p></li><li><p>In the console pane, enter the following command "hello:hello()."
-                                and hit return. The output from the program will appear. </p></li><li><p>To exit, in the menu bar, choose File -&gt; Close, and then File -&gt;
-                                Exit</p></li></ol></div></p></div><div class="sect2" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="N101B6">Hello World</h3></div><div><div class="author"><h3 class="author"><span class="firstname">Alain</span> <span class="surname">O'Dea</span></h3></div></div></div></div><div class="epigraph"><p>Thanks to Alain O'Dea for writing this guide.</p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N101C6">Install Erlang/OTP (if you have not already)</h4></div></div></div><p>
+                            </p></li><li><p>Click OK. The file "<code class="filename">hello.erl</code>" is saved in
+                                the src directory and automatically built.</p></li><li><p>The lower pane has a number of tabs. Select the "Console"
+                                tab.</p></li><li><p>In the console pane, enter the following command
+                                    "<strong class="userinput"><code>hello:hello().</code></strong>" and hit return. The
+                                output from the program will appear. </p></li><li><p>To exit, in the menu bar, choose File -&gt; Close, and then File -&gt;
+                                Exit</p></li></ol></div></p></div><div class="sect2" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="N101D1">Hello World</h3></div><div><div class="author"><h3 class="author"><span class="firstname">Alain</span> <span class="surname">O'Dea</span></h3></div></div></div></div><div class="epigraph"><p>Thanks to Alain O'Dea for writing this guide.</p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N101E1">Install Erlang/OTP (if you have not already)</h4></div></div></div><p>
                         <div class="itemizedlist"><ul><li><p><span class="emphasis"><em>Ubuntu Linux</em></span>: run the following in
                                     Terminal:
                                     <pre class="screen"><span class="command"><strong>sudo apt-get update</strong></span>
@@ -54,7 +61,7 @@
                                     the following in Terminal:
                                     <pre class="screen"><span class="command"><strong>sudo port selfupdate</strong></span>
 <span class="command"><strong>sudo port install erlang</strong></span></pre></p></li></ul></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N101E8">Install Eclipse and ErlIDE</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10203">Install Eclipse and ErlIDE</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>Download Eclipse IDE for Java Developers</p></li><li><p>Extract it where you want to run it from (there is no
                                     installer, just an archive)</p></li><li><p>Launch Eclipse by double-clicking eclipse (Linux), eclipse.exe
                                     (Windows), or Eclipse (Mac) in the eclipse folder</p></li><li><p>Select <span class="guimenu">Help (menu) &rarr; Software Updates...</span> (a
@@ -63,14 +70,14 @@
                                     and click Install... (another dialog will appear)</p></li><li><p> Select Next</p></li><li><p>Select I accept ... radio button and click Finish (a progress
                                     dialog will appear)</p></li><li><p> (wait for confirmation dialog) Select Yes (Eclipse will
                                     restart)</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10210">Add Primary Erlang Runtime</h4></div></div></div><p>Without these steps things like syntax highlighting, code completion and
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1022B">Add Primary Erlang Runtime</h4></div></div></div><p>Without these steps things like syntax highlighting, code completion and
                         other significant aspects of the ErlIDE UI will not work properly. The IDE
                         will function basically, but it will not work as intended. <div class="orderedlist"><ol type="1"><li><p>Select Window (menu) &rarr; Preferences... (Windows/Linux) or
                                     Eclipse (menu) &rarr; Preferences... (Mac) (a dialog will
                                     appear)</p></li><li><p>Expand Erlang and select Installed runtimes</p></li><li><p>Click Add... (a dialog will appear) and Enter Erlang in the
                                     Runtime name field</p></li><li><p>Click Browse... and select the root of your Erlang/OTP install
                                     (mine is /opt/local/lib/erlang), then click OK (dialog will
-                                    close)</p></li><li><p>Click OK (preferences dialog will close)</p></li></ol></div></p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10225">Create Hello World Project</h4></div></div></div><p>
+                                    close)</p></li><li><p>Click OK (preferences dialog will close)</p></li></ol></div></p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10240">Create Hello World Project</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>(wait for Eclipse to restart) Select Window (menu) &rarr; Close All
                                     Perspectives</p></li><li><p>Select Window (menu) &rarr; Open Perspective &rarr; Other... (a dialog
                                     will appear)</p></li><li><p>Select Erlang and click OK (dialog will close and Erlang
@@ -79,24 +86,37 @@
                                     dialog will appear)</p></li><li><p>Enter hello_world in the Project Name field and click Finish
                                     (dialog will close and hello_world project will appear in Erlang
                                     Navigator view)</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1023B">Start Erlang Node To Run Code</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10256">Start Erlang Node To Run Code</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>Select hello_world project, bring up the context menu and
-                                    select Run As &rarr; Run Configurations... (a dialog will
-                                    appear)</p></li><li><p>Enter hello_world in the Name field</p></li><li><p>Double-click Erlang application (a new confguration will
-                                    appear in the right-hand panel)</p></li><li><p>In the Main tab under Projects click the checkbox beside
+                                    select <span class="guimenu">Run As </span> &rarr; <span class="guimenuitem">Run Configurations...</span> (a dialog will appear)</p></li><li><p>Enter <strong class="userinput"><code>hello_world</code></strong> in the Name
+                                    field</p></li><li><p>Double-click <span class="guilabel">Erlang application</span> (a new
+                                    confguration will appear in the right-hand panel)</p></li><li><p>In the Main tab under Projects click the checkbox beside
                                     hello_world</p></li><li><p>In the Runtimes tab click the checkbox beside Start the Erlang
-                                    node if not running already and enter hello_world in the Node
-                                    name field</p></li><li><p>Click Run (dialog will close and Console will appear with
+                                    node if not running already and enter
+                                        <strong class="userinput"><code>hello_world</code></strong> in the Node name field.
+                                </p></li><li><p>In some environments, the cookie value needs to be specified
+                                    (because Java and Erlang don't find the same default
+                                    cookie).</p></li><li><p>Click Run (dialog will close and Console will appear with
                                     hello_world Erlang node)</p></li><li><p>Leave the Console running for the next part</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10257">Write Hello World Live!</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10284">Write Hello World Live!</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>On the hello_world project bring up the context menu
-                                    (right-click/control-click) and select New Module (dialog will
-                                    appear)</p></li><li><p>Enter hello_world in Module name field</p></li><li><p>To the left of the Apply button, enter say_hello in the first
-                                    box and 0 in the second box and click Apply</p></li><li><p>Click Finish (dialog will close and an editor for
-                                    hello_world.erl will be opened)</p></li><li><p>In the Console type hello_world:say_hello().</p></li><li><p>Oops! It displays ok and shows no greeting! Let's fix
-                                    that</p></li><li><p>In the hello_world.erl editor replace ok in say_hello with
-                                    io:format("Hello World!") and save (<span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>S</strong></span> or <span class="keycap"><strong>Command</strong></span>+<span class="keycap"><strong>S</strong></span>)</p></li><li><p>In the Console type hello_world:say_hello().</p></li><li><p>Great! It displays "Hello World!" for us! Let's get it to say
-                                    something else</p></li><li><p>In the hello_world.erl editor replace "Hello World!" in
-                                    say_hello with "Hello ErlIDE!") and save (<span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>S</strong></span> or <span class="keycap"><strong>Command</strong></span>+<span class="keycap"><strong>S</strong></span>)</p></li><li><p>In the Console type hello_world:say_hello().</p></li><li><p>Nifty! It displays "Hello ErlIDE!" for us! We can change the
-                                    code at runtime.</p></li></ol></div>
+                                    (right-click/control-click) and select <span class="guilabel">New
+                                        Module</span> (dialog will appear)</p></li><li><p>Enter <strong class="userinput"><code>hello_world</code></strong> in Module name
+                                    field</p></li><li><p>To the left of the Apply button, enter
+                                        <strong class="userinput"><code>say_hello</code></strong> in the first box and
+                                        <strong class="userinput"><code>0</code></strong> in the second box and click
+                                        <span class="guibutton">Apply</span></p></li><li><p>Click <span class="guibutton">Finish</span> (dialog will close and an
+                                    editor for <code class="filename">hello_world.erl</code> will be
+                                    opened)</p></li><li><p>In the Console type
+                                        <strong class="userinput"><code>hello_world:say_hello().</code></strong></p></li><li><p>Oops! It displays ok and shows no greeting! Let's fix
+                                    that</p></li><li><p>In the hello_world.erl editor replace <code class="code">ok</code> in
+                                    say_hello with <strong class="userinput"><code>io:format("Hello World!")</code></strong>
+                                    and save (<span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>S</strong></span> or <span class="keycap"><strong>Command</strong></span>+<span class="keycap"><strong>S</strong></span>)</p></li><li><p>In the Console type
+                                        <strong class="userinput"><code>hello_world:say_hello().</code></strong></p></li><li><p>Great! It displays "Hello World!" for us! Let's get it to say
+                                    something else</p></li><li><p>In the hello_world.erl editor replace <code class="code">"Hello
+                                        World!"</code> in say_hello with <code class="code">"Hello
+                                        ErlIDE!"</code>) and save (<span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>S</strong></span> or <span class="keycap"><strong>Command</strong></span>+<span class="keycap"><strong>S</strong></span>)</p></li><li><p>In the Console type
+                                        <strong class="userinput"><code>hello_world:say_hello().</code></strong></p></li><li><p>Nifty! It displays <code class="computeroutput">"Hello
+                                        ErlIDE!"</code> for us! We can change the code at
+                                    runtime.</p></li></ol></div>
                     </p></div></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="instalation_guide.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="gettingStarted.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="features.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Installation guide&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Features</td></tr></table></div></body></html>

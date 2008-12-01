@@ -275,6 +275,14 @@
                                     <userinput>erlide</userinput></para>
                         </listitem>
                         <listitem>
+                            <para>In some environments, Java and Erlang look for the default
+                                    <filename>.erlang.cookie</filename> file in different places,
+                                and if you get connection problems you should enter some value for
+                                the <guilabel>Cookie</guilabel> field. If the node is already
+                                running, you have to use the same cookie value; otherwise, any
+                                string will do.</para>
+                        </listitem>
+                        <listitem>
                             <para>Check the box to the left of "Start the Erlang node if not running
                                 presently"</para>
                         </listitem>
@@ -282,9 +290,10 @@
                             <para>Click "Apply" and "Run"</para>
                         </listitem>
                         <listitem>
-                            <para>In the center code pane (titled "hello.erl"), enter the following
-                                code: hello/0 (within the brackets for the export, so it reads
-                                "-export([hello/0]).")</para>
+                            <para>In the center code pane (titled "<guilabel>hello.erl</guilabel>"),
+                                enter the following code: <userinput>hello/0</userinput> (within the
+                                brackets for the export, so it reads
+                                    "<code>-export([hello/0]).</code>")</para>
                         </listitem>
                         <listitem>
                             <para>On the next line after the export, enter the following code:
@@ -298,23 +307,24 @@
                                 dialog box</para>
                         </listitem>
                         <listitem>
-                            <para>Click on (select) the folder titled "src" in the dialog box. The
-                                field entitled <guilabel>Enter or select the parent
-                                    folder:</guilabel> should now read
+                            <para>Click on (select) the folder titled "<filename>src</filename>" in
+                                the dialog box. The field entitled <guilabel>Enter or select the
+                                    parent folder:</guilabel> should now read
                                     <computeroutput>HelloWorldProject/src</computeroutput>
                             </para>
                         </listitem>
                         <listitem>
-                            <para>Click OK. The file "hello.erl" is saved in the src directory and
-                                automatically built.</para>
+                            <para>Click OK. The file "<filename>hello.erl</filename>" is saved in
+                                the src directory and automatically built.</para>
                         </listitem>
                         <listitem>
                             <para>The lower pane has a number of tabs. Select the "Console"
                                 tab.</para>
                         </listitem>
                         <listitem>
-                            <para>In the console pane, enter the following command "hello:hello()."
-                                and hit return. The output from the program will appear. </para>
+                            <para>In the console pane, enter the following command
+                                    "<userinput>hello:hello().</userinput>" and hit return. The
+                                output from the program will appear. </para>
                         </listitem>
                         <listitem>
                             <para>To exit, in the menu bar, choose File -> Close, and then File ->
@@ -464,15 +474,18 @@
                         <orderedlist>
                             <listitem>
                                 <para>Select hello_world project, bring up the context menu and
-                                    select Run As → Run Configurations... (a dialog will
-                                    appear)</para>
+                                    select <menuchoice>
+                                        <guimenu>Run As </guimenu>
+                                        <guimenuitem>Run Configurations...</guimenuitem>
+                                    </menuchoice> (a dialog will appear)</para>
                             </listitem>
                             <listitem>
-                                <para>Enter hello_world in the Name field</para>
+                                <para>Enter <userinput>hello_world</userinput> in the Name
+                                    field</para>
                             </listitem>
                             <listitem>
-                                <para>Double-click Erlang application (a new confguration will
-                                    appear in the right-hand panel)</para>
+                                <para>Double-click <guilabel>Erlang application</guilabel> (a new
+                                    confguration will appear in the right-hand panel)</para>
                             </listitem>
                             <listitem>
                                 <para>In the Main tab under Projects click the checkbox beside
@@ -480,8 +493,14 @@
                             </listitem>
                             <listitem>
                                 <para>In the Runtimes tab click the checkbox beside Start the Erlang
-                                    node if not running already and enter hello_world in the Node
-                                    name field</para>
+                                    node if not running already and enter
+                                        <userinput>hello_world</userinput> in the Node name field.
+                                </para>
+                            </listitem>
+                            <listitem>
+                                <para>In some environments, the cookie value needs to be specified
+                                    (because Java and Erlang don't find the same default
+                                    cookie).</para>
                             </listitem>
                             <listitem>
                                 <para>Click Run (dialog will close and Console will appear with
@@ -499,30 +518,36 @@
                         <orderedlist>
                             <listitem>
                                 <para>On the hello_world project bring up the context menu
-                                    (right-click/control-click) and select New Module (dialog will
-                                    appear)</para>
+                                    (right-click/control-click) and select <guilabel>New
+                                        Module</guilabel> (dialog will appear)</para>
                             </listitem>
                             <listitem>
-                                <para>Enter hello_world in Module name field</para>
+                                <para>Enter <userinput>hello_world</userinput> in Module name
+                                    field</para>
                             </listitem>
                             <listitem>
-                                <para>To the left of the Apply button, enter say_hello in the first
-                                    box and 0 in the second box and click Apply</para>
+                                <para>To the left of the Apply button, enter
+                                        <userinput>say_hello</userinput> in the first box and
+                                        <userinput>0</userinput> in the second box and click
+                                        <guibutton>Apply</guibutton></para>
                             </listitem>
                             <listitem>
-                                <para>Click Finish (dialog will close and an editor for
-                                    hello_world.erl will be opened)</para>
+                                <para>Click <guibutton>Finish</guibutton> (dialog will close and an
+                                    editor for <filename>hello_world.erl</filename> will be
+                                    opened)</para>
                             </listitem>
                             <listitem>
-                                <para>In the Console type hello_world:say_hello().</para>
+                                <para>In the Console type
+                                        <userinput>hello_world:say_hello().</userinput></para>
                             </listitem>
                             <listitem>
                                 <para>Oops! It displays ok and shows no greeting! Let's fix
                                     that</para>
                             </listitem>
                             <listitem>
-                                <para>In the hello_world.erl editor replace ok in say_hello with
-                                    io:format("Hello World!") and save (<keycombo>
+                                <para>In the hello_world.erl editor replace <code>ok</code> in
+                                    say_hello with <userinput>io:format("Hello World!")</userinput>
+                                    and save (<keycombo>
                                         <keycap function="control">Ctrl</keycap>
                                         <keycap>S</keycap>
                                     </keycombo> or <keycombo>
@@ -531,15 +556,17 @@
                                     </keycombo>)</para>
                             </listitem>
                             <listitem>
-                                <para>In the Console type hello_world:say_hello().</para>
+                                <para>In the Console type
+                                        <userinput>hello_world:say_hello().</userinput></para>
                             </listitem>
                             <listitem>
                                 <para>Great! It displays "Hello World!" for us! Let's get it to say
                                     something else</para>
                             </listitem>
                             <listitem>
-                                <para>In the hello_world.erl editor replace "Hello World!" in
-                                    say_hello with "Hello ErlIDE!") and save (<keycombo>
+                                <para>In the hello_world.erl editor replace <code>"Hello
+                                        World!"</code> in say_hello with <code>"Hello
+                                        ErlIDE!"</code>) and save (<keycombo>
                                         <keycap function="control">Ctrl</keycap>
                                         <keycap>S</keycap>
                                     </keycombo> or <keycombo>
@@ -548,11 +575,13 @@
                                     </keycombo>)</para>
                             </listitem>
                             <listitem>
-                                <para>In the Console type hello_world:say_hello().</para>
+                                <para>In the Console type
+                                        <userinput>hello_world:say_hello().</userinput></para>
                             </listitem>
                             <listitem>
-                                <para>Nifty! It displays "Hello ErlIDE!" for us! We can change the
-                                    code at runtime.</para>
+                                <para>Nifty! It displays <computeroutput>"Hello
+                                        ErlIDE!"</computeroutput> for us! We can change the code at
+                                    runtime.</para>
                             </listitem>
                         </orderedlist>
                     </para>
@@ -858,6 +887,23 @@
                         </listitem>
                     </varlistentry>
                 </variablelist>
+                <note>
+                    <bridgehead>A note about cookies</bridgehead>
+                    <para>In some environments, Java and Erlang don't look for the default
+                            <filename>.erlang.cookie</filename> file in the same places. This will
+                        result in failure to connect the two nodes. There are two ways to solve
+                        that: <itemizedlist>
+                            <listitem>
+                                <para>check where the two VMs look for the file and make sure that
+                                    identical copies are found in each place</para>
+                            </listitem>
+                            <listitem>
+                                <para>enter some value in the cookie field. If the Erlang node is
+                                    already running, then of course the entered value should be
+                                    identical to the one it uses.</para>
+                            </listitem>
+                        </itemizedlist></para>
+                </note>
             </sect2>
         </sect1>
     </chapter>
