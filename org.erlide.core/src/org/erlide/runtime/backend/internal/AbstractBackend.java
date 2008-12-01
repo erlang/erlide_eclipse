@@ -419,6 +419,13 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 				}
 				return RpcResult.error("timeout");
 			}
+			if (!(res instanceof OtpErlangTuple)) {
+				if (CHECK_RPC) {
+					ErlLogger.debug("    weird result: " + module + ":" + fun
+							+ "(" + new OtpErlangList(args) + ") -> " + res);
+				}
+				return RpcResult.error("bad result: " + res);
+			}
 
 			res = ((OtpErlangTuple) res).elementAt(1);
 			result = new RpcResult(res);
