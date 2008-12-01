@@ -23,6 +23,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlUtils {
 
+	private ErlUtils() {
+	}
+
 	public static OtpErlangObject parse(String string) throws ParserException {
 		return TermParser.parse(string);
 	}
