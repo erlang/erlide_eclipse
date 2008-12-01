@@ -60,11 +60,11 @@ public class ErlModule extends Openable implements IErlModule {
 	private boolean scannerDisposed = false;
 	private final ModuleKind moduleKind;
 
-	protected ErlModule(final IErlElement parent, final String nameWithExt,
+	protected ErlModule(final IErlElement parent, final String name,
 			final String initialText, final IFile file) {
-		super(parent, ErlideUtil.withoutExtension(nameWithExt));
+		super(parent, name);
 		fFile = file;
-		moduleKind = ErlideUtil.nameToModuleKind(nameWithExt);
+		moduleKind = ErlideUtil.nameToModuleKind(name);
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
 		this.initialText = initialText;

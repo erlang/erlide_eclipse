@@ -9,14 +9,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModelManager;
-import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.util.ErlideUtil;
 import org.erlide.core.util.PluginUtils;
 
 /**
@@ -66,6 +66,10 @@ public class ErlFolder extends Openable implements IErlFolder {
 
 	public static IErlModule getModule(final IParent parent, final String name) {
 		try {
+			if (parent instanceof IOpenable) {
+				final IOpenable o = (IOpenable) parent;
+				o.open(null);
+			}
 			for (final IErlElement e : parent.getChildren()) {
 				if (e instanceof IErlModule) {
 					final IErlModule m = (IErlModule) e;
@@ -125,15 +129,5 @@ public class ErlFolder extends Openable implements IErlFolder {
 
 	public boolean isOnSourcePath() {
 		return PluginUtils.isOnSourcePath(folder);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.erlide.core.erlang.internal.ErlElement#getChildNamed(java.lang.String)
-	 */
-	@Override
-	public IErlElement getChildNamed(final String name) {
-		return super.getChildNamed(ErlideUtil.withoutExtension(name));
 	}
 }
