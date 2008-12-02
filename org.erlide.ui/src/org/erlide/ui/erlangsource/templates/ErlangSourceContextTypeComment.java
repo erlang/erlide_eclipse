@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Lukas Larsson
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.erlide.ui.ErlideUIPlugin;
 public class ErlangSourceContextTypeComment extends TemplateContextType {
 
 	/** Key to store custom templates. */
-	private static final String ERLANGSOURCE_TEMPLATES_KEY = "org.eclide.ui.erlangsource.template"; //$NON-NLS-1$
+	private static final String ERLANGSOURCE_TEMPLATES_KEY = "org.erlide.ui.erlangsource.template"; //$NON-NLS-1$
 
 	/** This context's ids */
 	public static final String ERLANGSOURCE_CONTEXT_TYPE_COMMENTS = "org.erlide.ui.erlangsource.template.context.generate"; //$NON-NLS-1$
@@ -89,7 +89,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 						.log(
 								new Status(
 										IStatus.ERROR,
-										"org.eclide.ui.erlangsource.template", IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
+										"org.erlide.ui.erlangsource.template", IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return fStore;
