@@ -109,8 +109,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 		final String kind = tk.getKind();
 		if (kind.equals("string")) {
 			return t_string;
-		} else if (kind.equals("reserved")) {
-			return t_keyword;
 		} else if (kind.equals("atom")) {
 			return t_atom;
 		} else if (kind.equals("var")) {
@@ -127,6 +125,8 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return t_float;
 		} else if (kind.equals("comment")) {
 			return t_comment;
+		} else if (kind.charAt(0) >= 'a' && kind.charAt(0) <= 'z') {
+			return t_keyword;
 		} else {
 			return t_default; // Token.UNDEFINED;
 		}
