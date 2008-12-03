@@ -100,7 +100,18 @@ check_add_newline(S, Prefs) ->
     end.
 
 fix_tokens(Tokens, NL) ->
-    [erlide_scanner:mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
+    [mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
+
+mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
+mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
+    #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
+mktoken({K, {{L, O}, G}}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
+mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
+mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
+    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
 
 -record(i, {anchor, indent_line, current, in_block, prefs, old_line}).
 

@@ -475,11 +475,13 @@ public class ErlModelUtils {
 		final IErlModel model = ErlangCore.getModel();
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		try {
+			project.open(null);
 			result.addAll(project.getModules());
 			for (final IProject p : project.getProject()
 					.getReferencedProjects()) {
 				final IErlProject ep = model.findProject(p);
 				if (ep != null) {
+					ep.open(null);
 					result.addAll(ep.getModules());
 				}
 			}

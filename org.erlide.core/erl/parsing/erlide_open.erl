@@ -31,7 +31,7 @@ open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner2:getTokenWindow(Mod, Offset, 5, 50),
+            erlide_scanner:getTokenWindow(Mod, Offset, 5, 50),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Mod, Offset, TokensWComments, BeforeReversed,
                  ExternalModules, PathVars),
@@ -48,13 +48,13 @@ open(Mod, Offset, ExternalModules, PathVars) ->
 try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars) ->
     ?D(TokensWComments),
     Tokens = strip_comments(TokensWComments),
-	?D(Tokens),
+    ?D(Tokens),
     o_tokens(Tokens, ExternalModules, PathVars, BeforeReversed),
-	case BeforeReversed of
-		[] ->
-			not_found;
-		[B | Rest] ->
-			try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
+    case BeforeReversed of
+        [] ->
+            not_found;
+        [B | Rest] ->
+            try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
     end.
 
 consider_local([]) ->

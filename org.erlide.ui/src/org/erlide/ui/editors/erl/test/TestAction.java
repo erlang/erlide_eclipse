@@ -13,7 +13,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
-import erlang.ErlideScanner2;
+import erlang.ErlideScanner;
 
 /**
  * @author jakob
@@ -42,7 +42,7 @@ public class TestAction extends TextEditorAction {
 				.getDocument(textEditor.getEditorInput());
 		final String text = document.get();
 		try {
-			final String s = ErlideScanner2.checkAll(ErlScanner
+			final String s = ErlideScanner.checkAll(ErlScanner
 					.createScannerModuleName(module), text);
 			ErlLogger.debug("%s", s);
 		} catch (final BackendException e) {

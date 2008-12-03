@@ -9,7 +9,8 @@
          get_all_links_to_other/0,
          get_exported/2,
          get_modules/2,
-         get_proposals/3]).
+         get_proposals/3,
+         get_all_doc_dirs/0]).
 
 -include_lib("kernel/include/file.hrl").
 
@@ -19,9 +20,6 @@
 -include("erlide_scanner.hrl").
 
 -define(CACHE_VERSION, 2).
-
-%-define(SCANNER, erlide_scanner).
--define(SCANNER, erlide_scanner2).
 
 %% recursively return tags for which Fun returns true
 %%
@@ -413,7 +411,7 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
 		?D({DocFileName, IndexFileName, Renew}),
-        Doc = erlide_util:check_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
+        Doc = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
         ?D({doc, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)

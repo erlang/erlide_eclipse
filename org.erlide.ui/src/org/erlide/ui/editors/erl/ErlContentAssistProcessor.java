@@ -34,6 +34,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -164,9 +165,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final List<IErlModule> modules = ErlModelUtils
 					.getModulesWithReferencedProjects(module.getProject());
 			for (final IErlModule m : modules) {
-				final String name = m.getName();
-				if (!allErlangFiles.contains(name)) {
-					allErlangFiles.add(name);
+				if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
+					final String name = ErlideUtil
+							.withoutExtension(m.getName());
+					if (!allErlangFiles.contains(name)) {
+						allErlangFiles.add(name);
+					}
 				}
 			}
 		}
@@ -295,22 +299,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	 */
 	private void addFunctionCompletion(final int offset, final String aprefix,
 			final List<ICompletionProposal> result,
-			final IErlFunction function, boolean externalsOnly) {
-		if ((!externalsOnly || function.isExported())
-				&& function.getName().startsWith(aprefix)) {
-			int offs = function.getName().length() - aprefix.length();
-			final List<Point> offsetsAndLengths = getOffsetsAndLengths(function
-					.getArity(), offset + offs + 1);
-			if (offsetsAndLengths.size() > 0) {
-				offs = offsetsAndLengths.get(0).x;
-			}
-			final String funWithArity = function.getNameWithArity();
-			final String funWithParameters = function.getNameWithParameters();
-			final String cpl = funWithParameters.substring(aprefix.length());
-			final ICompletionProposal c = new ErlCompletionProposal(
-					offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
-					null, null, null, sourceViewer);
-			result.add(c);
+			final IErlFunction function, final boolean externalsOnly) {
+		if (!externalsOnly || function.isExported()) {
+			addFunctionCompletion(offset, aprefix, result, function
+					.getFunction());
 		}
 	}
 
@@ -318,18 +310,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final List<ICompletionProposal> result,
 			final ErlangFunction function) {
 		if (function.name.startsWith(aprefix)) {
-			int offs = function.name.length() - aprefix.length();
+			final int offs = function.name.length() - aprefix.length();
 			final List<Point> offsetsAndLengths = getOffsetsAndLengths(
 					function.arity, offset + offs + 1);
-			if (offsetsAndLengths.size() > 0) {
-				offs = offsetsAndLengths.get(0).x;
-			}
 			final String funWithArity = function.getNameWithArity();
 			final String funWithParameters = function.getNameWithParameters();
 			final String cpl = funWithParameters.substring(aprefix.length());
+			int cursorPosition = cpl.length();
+			if (offsetsAndLengths.size() > 0) {
+				cursorPosition = offsetsAndLengths.get(0).x;
+			}
 			final ICompletionProposal c = new ErlCompletionProposal(
-					offsetsAndLengths, funWithArity, cpl, offset, 0, offs,
-					null, null, null, sourceViewer);
+					offsetsAndLengths, funWithArity, cpl, offset, 0,
+					cursorPosition, null, null, null, sourceViewer);
 			result.add(c);
 		}
 	}

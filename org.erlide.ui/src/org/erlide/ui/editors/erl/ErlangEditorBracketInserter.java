@@ -30,7 +30,7 @@ import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
-import erlang.ErlideScanner2;
+import erlang.ErlideScanner;
 
 class ErlangEditorBracketInserter implements VerifyKeyListener,
 		ILinkedModeListener {
@@ -223,7 +223,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 			final String selStr = fEmbraceSelection ? document.get(offset,
 					length) : "";
 			try {
-				tokens = ErlideScanner2.lightScanString(str, 0);
+				tokens = ErlideScanner.lightScanString(str, 0);
 			} catch (final BackendException e) {
 			}
 

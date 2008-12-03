@@ -34,7 +34,7 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 import org.osgi.service.prefs.Preferences;
 
-import erlang.ErlideScanner2;
+import erlang.ErlideScanner;
 
 /**
  * Erlang syntax fScanner
@@ -211,7 +211,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 			fCrtToken = -1;
 
 			final String str = document;
-			fTokens = ErlideScanner2.lightScanString(str, rangeOffset);
+			fTokens = ErlideScanner.lightScanString(str, rangeOffset);
 
 		} catch (final ErlangRpcException e) {
 			// e.printStackTrace();

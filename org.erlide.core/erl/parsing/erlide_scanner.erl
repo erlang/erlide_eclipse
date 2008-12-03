@@ -1,7 +1,7 @@
 %% Author: jakob
 %% Created: 24 apr 2008
 %% Description: 
--module(erlide_scanner2).
+-module(erlide_scanner).
 
 %%
 %% Include files
@@ -31,7 +31,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 12).
+-define(CACHE_VERSION, 13).
 
 -define(SERVER, ?MODULE).
 
@@ -84,15 +84,32 @@ replaceText(Module, Offset, RemoveLength, NewText)
     server_cmd(replace_text, {Module, Offset, RemoveLength, NewText}).
 
 check_all(Module, Text) when is_atom(Module), is_list(Text) ->
-    case getText(Module) of
-        Text ->
-            "match";
-        ModText -> 
-            "text mismatch!\n-----------------\""++ModText++"\"\n----------------\n\""++Text++"\""
-    end.
-
+    MatchTest = match_test(Module, Text),
+    ScanTest = scan_test(Module),
+    MatchTest ++ ScanTest.
+        
+    
 logging(OnOff) ->
     server_cmd(logging, OnOff).
+
+match_test(Module, Text) ->
+    case getText(Module) of
+        Text ->
+            "match\n";
+        ModText -> 
+            "text mismatch!\n-----------------\""++ModText++"\"\n----------------\n\""++Text++"\"\n"
+    end.
+
+scan_test(Module) ->
+    ModText = getText(Module),
+    M = do_scan(dont_care, ModText, "don't care"),
+    T = get_all_tokens(M),
+    case getTokens(Module) of
+        T ->
+            "scan match\n";
+        _ ->
+            "scan mismatch!\n"
+    end.
 
 %%
 %% Local Functions
@@ -204,7 +221,7 @@ loop(Modules) ->
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> do_scan(ScannerName, InitialText, ErlidePath) end,
-    erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
+    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
 
 do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     {ok, B} = file:read_file(ModuleFileName),
@@ -220,7 +237,7 @@ do_scan(ScannerName, InitialText, ErlidePath) ->
 
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of
-	    {ok, T, _} ->
+        {ok, T, _} ->
             {Length, erlide_scan:filter_ws(T)};
         {error, _, _} ->
             {Length, [{string, {{0, 0}, length(S)}, S, "\"" ++ S ++ "\""}]}
@@ -277,20 +294,19 @@ get_lines_before_and_upto(Lines, Offset) ->
 get_lines_before_and_upto(L, CurOfs, _, Offset, Acc) when L == []; CurOfs >= Offset ->
     Acc;
 get_lines_before_and_upto([{Length, L} | Rest], CurOfs, N, Offset, Acc) ->
-	get_lines_before_and_upto(Rest, CurOfs+Length, N+1, Offset, [{CurOfs, N, L} | Acc]).
+    get_lines_before_and_upto(Rest, CurOfs+Length, N+1, Offset, [{CurOfs, N, L} | Acc]).
 
 get_tokens_before_aux(L, _, N, Acc) when L == []; N == 0 ->
-	Acc;
+    Acc;
 get_tokens_before_aux([{LineOfs, LineNo, Tokens} | Rest], Offset, N0, Acc0) ->
-	{N1, Acc1} = get_tokens_before_aux2(lists:reverse(Tokens), Offset, LineOfs, LineNo, N0, Acc0),
-	get_tokens_before_aux(Rest, Offset, N1, Acc1).
+    {N1, Acc1} = get_tokens_before_aux2(lists:reverse(Tokens), Offset, LineOfs, LineNo, N0, Acc0),
+    get_tokens_before_aux(Rest, Offset, N1, Acc1).
 
 get_tokens_before_aux2(L, _, _, _, N, Acc) when L == []; N == 0 ->
-	{N, Acc};
+    {N, Acc};
 get_tokens_before_aux2([T | Rest], Offset, LineOfs, LineNo, N, Acc) ->
     case token_pos(T) of
-        {{_, Ofs}, Len}
-          when Offset >= LineOfs+Ofs+Len ->
+        {{_, Ofs}, Len} when Offset >= LineOfs+Ofs+Len ->
             get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N-1, [mktoken(T, LineOfs, LineNo) | Acc]);
         _ ->
             get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N, Acc)
@@ -319,23 +335,23 @@ get_tokens_at_aux([], _, M, _, Acc) ->
 get_tokens_at_aux(_, _, M, N, Acc) when M == N ->
     {M, lists:reverse(Acc)};
 get_tokens_at_aux([T | Rest], Offset, M, N, Acc) ->
-	case token_pos(T) of
+    case token_pos(T) of
         {{_, Ofs}, Len}
           when Offset < Ofs+Len ->
             get_tokens_at_aux(Rest, Offset, M+1, N, [T | Acc]);
-		_ ->
+        _ ->
             get_tokens_at_aux(Rest, Offset, M, N, Acc)
-	end.
+    end.
 
 
 get_all_tokens(#module{tokens=Tokens}) ->
-	get_all_tokens(Tokens, 0, 0, []).
+    get_all_tokens(Tokens, 0, 0, []).
 
 get_all_tokens([], _, _, Acc) ->
     lists:flatten(Acc); % instead of append(reverse())
 get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
-	T = mktokens(Tokens, Pos, Line),
-	get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
+    T = mktokens(Tokens, Pos, Line),
+    get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
 get_token_window(Module, Offset, Before, After) ->
     ?D({Module, Offset, Before, After}),
@@ -378,19 +394,19 @@ cmd(Cmd, From, Args, Modules) ->
         end
     catch
         exit:Error ->
-			reply(Cmd, From, {exit, Error}),
+            reply(Cmd, From, {exit, Error}),
             Modules;
         error:Error ->
-			reply(Cmd, From, {error, Error}),
+            reply(Cmd, From, {error, Error}),
             Modules
     end.
 
 reply(Cmd, From, R) ->
-	From ! {Cmd, self(), R}.
+    From ! {Cmd, self(), R}.
 
 do_cmd(create, {Mod, ErlidePath}, Modules) ->
-	[#module{name=Mod, erlide_path=ErlidePath} 
-        | lists:keydelete(Mod, #module.name, Modules)];
+    [#module{name=Mod, erlide_path=ErlidePath} 
+    | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(destroy, Mod, Modules) ->
     lists:keydelete(Mod, #module.name, Modules);
 do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, Modules) ->
@@ -420,14 +436,14 @@ do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
     ?D(NewMod),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(get_text, Mod, Modules) ->
-	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
-	{lines_to_text(Module#module.lines), Modules};
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {lines_to_text(Module#module.lines), Modules};
 do_cmd(get_text_line, {Mod, Line}, Modules) ->
-	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     L = lists:nth(Line+1, Module#module.lines),
-	{L, Modules};
+    {L, Modules};
 do_cmd(get_tokens, Mod, Modules) ->
-	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_all_tokens(Module), Modules};
 do_cmd(logging, OnOff, Modules) ->
     put(log, []),
@@ -435,14 +451,14 @@ do_cmd(logging, OnOff, Modules) ->
 do_cmd(dump_log, [], Modules) ->
     {get(log), Modules};
 do_cmd(get_token_window, {Mod, Offset, Before, After}, Modules) ->
-	{value, Module} = lists:keysearch(Mod, #module.name, Modules),
-	{get_token_window(Module, Offset, Before, After), Modules}.
+    {value, Module} = lists:keysearch(Mod, #module.name, Modules),
+    {get_token_window(Module, Offset, Before, After), Modules}.
 
 tokens_to_string(T) ->
     ?D(T),
     S = tokens_to_string(T, []),
-	?D(S),
-	S.
+    ?D(S),
+    S.
 
 token_to_string(#token{text=Text}) when is_list(Text) ->
 	Text;

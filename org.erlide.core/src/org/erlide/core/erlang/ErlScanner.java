@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
-import erlang.ErlideScanner2;
+import erlang.ErlideScanner;
 
 /**
  * Erlang syntax scanner
@@ -37,7 +37,7 @@ public class ErlScanner implements IErlScanner {
 		moduleName = createScannerModuleName(module);
 		this.moduleFileName = moduleFileName;
 		this.erlidePath = erlidePath;
-		ErlideScanner2.initialScan(moduleName, moduleFileName, initialText,
+		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
 				erlidePath);
 		// create();
 		// insertText(0, initialText);
@@ -66,7 +66,7 @@ public class ErlScanner implements IErlScanner {
 	// }
 
 	public void dispose() {
-		ErlideScanner2.destroy(moduleName);
+		ErlideScanner.destroy(moduleName);
 	}
 
 	// public void insertText(int offset, String text) {
@@ -83,11 +83,11 @@ public class ErlScanner implements IErlScanner {
 
 	public void replaceText(final int offset, final int removeLength,
 			final String newText) {
-		ErlideScanner2.replaceText(moduleName, offset, removeLength, newText);
+		ErlideScanner.replaceText(moduleName, offset, removeLength, newText);
 	}
 
 	public ErlToken getTokenAt(final int offset) {
-		return ErlideScanner2.getTokenAt(moduleName, offset);
+		return ErlideScanner.getTokenAt(moduleName, offset);
 	}
 
 	// public ErlToken[] getTokensAround(int offset) {
@@ -110,7 +110,7 @@ public class ErlScanner implements IErlScanner {
 	}
 
 	public void rescan(final String fullText) {
-		ErlideScanner2.initialScan(moduleName, moduleFileName, fullText,
+		ErlideScanner.initialScan(moduleName, moduleFileName, fullText,
 				erlidePath);
 	}
 

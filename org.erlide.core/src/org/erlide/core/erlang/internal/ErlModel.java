@@ -11,10 +11,8 @@
 package org.erlide.core.erlang.internal;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -36,7 +34,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
 
 /**
  * Implementation of
@@ -86,31 +83,6 @@ public class ErlModel extends Openable implements IErlModel {
 
 		return true;
 	}
-
-	// /*
-	// * @see IErlModel
-	// */
-	// public boolean contains(final IResource resource) {
-	// switch (resource.getType()) {
-	// case IResource.ROOT:
-	// case IResource.PROJECT:
-	// return true;
-	// }
-	// // file or folder
-	// List<IErlProject> projects;
-	// try {
-	// projects = getErlangProjects();
-	// } catch (final ErlModelException e) {
-	// return false;
-	// }
-	// for (final IErlProject element : projects) {
-	// final ErlProject project = (ErlProject) element;
-	// if (!project.contains(resource)) {
-	// return false;
-	// }
-	// }
-	// return true;
-	// }
 
 	/**
 	 * @see IErlModel
@@ -163,24 +135,6 @@ public class ErlModel extends Openable implements IErlModel {
 	public int hashCode() {
 		return super.hashCode();
 	}
-
-	// /**
-	// * Finds the given project in the list of the Erlang model's children.
-	// * Returns null if not found.
-	// */
-	// public IErlProject findErlangProject(final IProject project) {
-	// try {
-	// final List<IErlProject> projects = getErlangProjects();
-	// for (final IErlProject erlangProject : projects) {
-	// if (project.equals(erlangProject.getProject())) {
-	// return erlangProject;
-	// }
-	// }
-	// } catch (final ErlModelException e) {
-	// // Erlang model doesn't exist: cannot find any project
-	// }
-	// return null;
-	// }
 
 	/**
 	 * @see IErlElement

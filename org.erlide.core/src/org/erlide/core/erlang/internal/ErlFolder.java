@@ -105,6 +105,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 			if (e instanceof IErlFolder) {
 				final IErlFolder f = (IErlFolder) e;
 				if (f.isOnSourcePath()) { // FIXME is this what you want?
+					f.open(null);
 					result.addAll(f.getModules());
 				}
 			} else if (e instanceof IErlModule) {

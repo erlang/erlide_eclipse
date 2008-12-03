@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 11).
+-define(CACHE_VERSION, 12).
 -define(SERVER, ?MODULE).
 
 -include("erlide.hrl").
@@ -71,10 +71,10 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     try
     	?D({StateDir, ModuleFileName, ErlidePath}),
         RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) end,
-        CacheFun = fun(D) -> erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
+        CacheFun = fun(D) -> erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-        Res = erlide_util:check_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
+        Res = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
         update_state(ScannerName, Res),
         {ok, Res}
     catch
@@ -122,8 +122,8 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
     Model.
 
 parse_test(ScannerName, File) ->
-    erlide_scanner2:scan_uncached(ScannerName, File, ""),
-    Toks = erlide_scanner2:getTokens(ScannerName),
+    erlide_scanner:scan_uncached(ScannerName, File, ""),
+    Toks = erlide_scanner:getTokens(ScannerName),
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
@@ -223,7 +223,7 @@ field_list_from_tokens(_) ->
     [].
 
 to_string(Tokens) ->
-    S = erlide_scanner2:tokens_to_string(Tokens),
+    S = erlide_scanner:tokens_to_string(Tokens),
     unspacify(S).
 
 unspacify(S) ->
@@ -386,10 +386,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             external_refs=ExternalRefs}.
 
 scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
-    erlide_scanner2:getTokens(ScannerName);    
+    erlide_scanner:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
-    erlide_scanner2:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath),
-    S = erlide_scanner2:getTokens(ScannerName),
+    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath),
+    S = erlide_scanner:getTokens(ScannerName),
     S.
 
 %% ex(Module) ->
@@ -433,7 +433,7 @@ get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
     XC = #external_call{module = M, function=F, arity=Arity, position=Position},
     [XC | get_refs(Rest)];
 get_refs([#token{kind='?', offset=Offset}, 
-          #token{kind=atom, value=M, offset=Offset2, length=Length2} | Rest]) ->
+          #token{kind=atom, value=_M, text=M, offset=Offset2, length=Length2} | Rest]) ->
     Position = #position{offset=Offset, length=Length2+Offset2-Offset},
     MR = #macro_ref{macro=M, position=Position},
     [MR | get_refs(Rest)];

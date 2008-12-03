@@ -192,8 +192,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				setGrayChecked(checkboxTreeViewer, false, true);
 			}
 			for (final DebugTreeItem c : children) {
-				c.updateMenuCategoryCheckedState(checkboxTreeViewer);
 				c.setChecked(checkboxTreeViewer, list);
+				c.updateMenuCategoryCheckedState(checkboxTreeViewer);
 			}
 		}
 	}
@@ -267,9 +267,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
-	 * .swt.widgets.Composite)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
+	 *      .swt.widgets.Composite)
 	 */
 	public void createControl(final Composite parent) {
 		interpretedModules = new ArrayList<IErlModule>();
@@ -371,9 +370,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
-	 * debug.core.ILaunchConfigurationWorkingCopy)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
+	 *      debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	@SuppressWarnings("unchecked")
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
@@ -404,6 +402,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		interpret = ErlangLaunchConfigurationDelegate
 				.addBreakpointProjectsAndModules(projects, interpret);
 		interpretedModules = new ArrayList<IErlModule>();
+		;
 		addModules(interpret, interpretedModules);
 
 		int debugFlags;
@@ -439,16 +438,19 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		for (final String i : interpret) {
 			final String[] pm = i.split(":");
 			IErlModule m = null;
+			final String mName = pm[1];
 			if (pm.length > 1) {
 				final IErlProject p = model.getErlangProject(pm[0]);
 				try {
-					m = p.getModule(pm[1] + ".erl");
+					final String s = ErlideUtil.hasModuleExt(mName) ? mName
+							: mName + ".erl";
+					m = p.getModule(s);
 				} catch (final ErlModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
-				m = model.getModule(pm[1] + ".erl");
+				m = model.getModule(mName + ".erl");
 			}
 			if (m != null) {
 				if (!interpretedModules.contains(m)) {
@@ -461,9 +463,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
-	 * .debug.core.ILaunchConfiguration)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
+	 *      .debug.core.ILaunchConfiguration)
 	 */
 	public void initializeFrom(final ILaunchConfiguration config) {
 		try {
@@ -476,9 +477,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
-	 * .debug.core.ILaunchConfigurationWorkingCopy)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
+	 *      .debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
