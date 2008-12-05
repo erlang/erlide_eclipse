@@ -771,7 +771,12 @@
                                     <guisubmenu>Show view</guisubmenu>
                                     <guimenuitem>Erlang</guimenuitem>
                                 </menuchoice>) will display the documentation for the function where
-                                the cursor is (only OTP libraries at the moment)</para>
+                                the cursor is. The documentation is also shown in a hover window,
+                                when the mouse cursor is above a function call.</para>
+                            <para>The OTP documentation is shown, if installed on your system. Also,
+                                if the project contains HTML documentation that is located in an
+                                OTP-like location (i.e. in a <filename>doc/html</filename> directory
+                                in the project ), then this documentation is also shown.</para>
                         </listitem>
                     </varlistentry>
                     <varlistentry>
