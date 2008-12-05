@@ -17,6 +17,7 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.core.util.PluginUtils;
 
 /**
@@ -64,6 +65,13 @@ public class ErlFolder extends Openable implements IErlFolder {
 		}
 	}
 
+	/**
+	 * Find named module, search recursively. Should we use a visitor instead?
+	 * 
+	 * @param parent
+	 * @param name
+	 * @return
+	 */
 	public static IErlModule getModule(final IParent parent, final String name) {
 		try {
 			if (parent instanceof IOpenable) {
@@ -73,8 +81,15 @@ public class ErlFolder extends Openable implements IErlFolder {
 			for (final IErlElement e : parent.getChildren()) {
 				if (e instanceof IErlModule) {
 					final IErlModule m = (IErlModule) e;
-					if (m.getName().equals(name)) {
-						return m;
+					if (ErlideUtil.hasExtension(name)) {
+						if (m.getName().equals(name)) {
+							return m;
+						}
+					} else {
+						if (ErlideUtil.withoutExtension(m.getName()).equals(
+								name)) {
+							return m;
+						}
 					}
 				} else if (e instanceof IParent) {
 					final IParent p = (IParent) e;

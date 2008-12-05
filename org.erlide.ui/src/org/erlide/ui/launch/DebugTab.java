@@ -442,7 +442,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			if (pm.length > 1) {
 				final IErlProject p = model.getErlangProject(pm[0]);
 				try {
-					final String s = ErlideUtil.hasModuleExt(mName) ? mName
+					final String s = ErlideUtil.hasModuleExtension(mName) ? mName
 							: mName + ".erl";
 					m = p.getModule(s);
 				} catch (final ErlModelException e) {

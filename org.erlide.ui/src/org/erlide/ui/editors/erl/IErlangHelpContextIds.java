@@ -36,4 +36,6 @@ public class IErlangHelpContextIds {
 
 	public static final String FILTER_MACRO_RECORD_DEFS_ACTION = "filterMacroRecordDefs";
 
+	public static final String EDOC_CONFIGURATION_PROPERTY_PAGE = "edocPropertyPage";
+
 }

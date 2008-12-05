@@ -51,8 +51,8 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
-import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlDebugConstants;
+import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -166,36 +166,51 @@ public class ErlangLaunchConfigurationDelegate extends
 				}
 				// send started to target
 				target.sendStarted();
-			}
 
-			DebugPlugin.getDefault().addDebugEventListener(
-					new IDebugEventSetListener() {
+				DebugPlugin.getDefault().addDebugEventListener(
+						new IDebugEventSetListener() {
 
-						public void handleDebugEvents(final DebugEvent[] events) {
+							public void handleDebugEvents(
+									final DebugEvent[] events) {
 
-							try {
-								if (module.length() > 0
-										&& function.length() > 0) {
-									if (args.length() > 0) {
-										// TODO issue #84
-										backend
-												.rpc(module, function, "s",
-														args);
-									} else {
-										backend.rpc(module, function, "");
+								try {
+									if (module.length() > 0
+											&& function.length() > 0) {
+										if (args.length() > 0) {
+											// TODO issue #84
+											backend.rpc(module, function, "s",
+													args);
+										} else {
+											backend.rpc(module, function, "");
+										}
 									}
+								} catch (final Exception e) {
+									ErlLogger
+											.debug(
+													"Could not run initial call %s:%s(\"%s\")",
+													module, function, args);
+									ErlLogger.warn(e);
 								}
-							} catch (final Exception e) {
-								ErlLogger
-										.debug(
-												"Could not run initial call %s:%s(\"%s\")",
-												module, function, args);
-								ErlLogger.warn(e);
+								DebugPlugin.getDefault()
+										.removeDebugEventListener(this);
 							}
-							DebugPlugin.getDefault().removeDebugEventListener(
-									this);
+						});
+			} else {
+				try {
+					if (module.length() > 0 && function.length() > 0) {
+						if (args.length() > 0) {
+							// TODO issue #84
+							backend.rpc(module, function, "s", args);
+						} else {
+							backend.rpc(module, function, "");
 						}
-					});
+					}
+				} catch (final Exception e) {
+					ErlLogger.debug("Could not run initial call %s:%s(\"%s\")",
+							module, function, args);
+					ErlLogger.warn(e);
+				}
+			}
 		} catch (final Exception e) {
 			ErlLogger.debug("Could not launch Erlang:::");
 			ErlLogger.warn(e);
@@ -213,7 +228,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			final IMarker m = bp.getMarker();
 			final IResource r = m.getResource();
 			final String name = r.getName();
-			if (ErlideUtil.hasERLExt(name)) {
+			if (ErlideUtil.hasERLExtension(name)) {
 				final IProject p = r.getProject();
 				if (projects.contains(p)) {
 					final String s = p.getName() + ":" + name;

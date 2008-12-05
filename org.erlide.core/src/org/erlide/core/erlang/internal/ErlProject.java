@@ -145,7 +145,7 @@ public class ErlProject extends Openable implements IErlProject {
 					children.add(ef);
 				} else if (element instanceof IFile) {
 					final IFile f = (IFile) element;
-					if (ErlideUtil.hasModuleExt(f.getName())) {
+					if (ErlideUtil.hasModuleExtension(f.getName())) {
 						final IErlModule m = (IErlModule) modelManager.create(
 								f, this);
 						children.add(m);

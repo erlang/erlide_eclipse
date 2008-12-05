@@ -73,7 +73,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
 	}
 
 	/** List of offsets (x) and lengths (y) for linked mode replacements */
-	List<Point> offsetsAndLengths;
+	private final List<Point> offsetsAndLengths;
 	/** The string to be displayed in the completion proposal popup. */
 	private final String displayString;
 	/** The replacement string. */

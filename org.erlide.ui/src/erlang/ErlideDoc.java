@@ -3,6 +3,7 @@ package erlang;
 import java.util.List;
 
 import org.erlide.core.erlang.IErlImport;
+import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IdeBackend;
@@ -54,5 +55,18 @@ public class ErlideDoc {
 			ErlLogger.warn(e);
 		}
 		return res;
+	}
+
+	public static String getOtpDocLoation(final IdeBackend b) {
+		OtpErlangObject res = null;
+		try {
+			res = b.rpcx("erlide_otp_doc", "get_otp_doc_location", "");
+			return Util.stringValue(res);
+		} catch (final RpcException e) {
+			ErlLogger.warn(e);
+		} catch (final BackendException e) {
+			ErlLogger.warn(e);
+		}
+		return "";
 	}
 }

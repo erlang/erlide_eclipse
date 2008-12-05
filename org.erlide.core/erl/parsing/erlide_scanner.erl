@@ -1,4 +1,4 @@
-%% Author: jakob
+ %% Author: jakob
 %% Created: 24 apr 2008
 %% Description: 
 -module(erlide_scanner).
@@ -31,9 +31,9 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 13).
+-define(CACHE_VERSION, 14).
 
--define(SERVER, ?MODULE).
+-define(SERVER, erlide_scanner).
 
 create(Module, ErlidePath) when is_atom(Module) ->
     server_cmd(create, {Module, ErlidePath}).
@@ -173,13 +173,38 @@ ends_with_newline("") -> false;
 ends_with_newline("\n") -> true;
 ends_with_newline("\r") -> true;
 ends_with_newline("\r\n") -> true;
-ends_with_newline([_C | R]) -> ends_with_newline(R).
+ends_with_newline([_C | R]) ->
+    ends_with_newline(R).
+
+%%
+%% Nicer version of string:substring/2 accepting out-of-bounds parameters
+%% (should be removed eventually)
+%%
+substr(Text, Start) when Start>length(Text) ->
+    "";
+substr(Text, Start) when Start < 1 ->
+    Text;
+substr(Text, Start) ->
+    string:substr(Text, Start).    
+
+%%
+%% Nicer version of string:substring/3 accepting out-of-bounds parameters
+%% (should be removed eventually)
+%%
+substr(Text, Start, Length) when Start>length(Text); Length=<0 ->
+    "";
+substr(Text, Start, Length) when Start < 1 ->
+    substr(Text, 1, Length+Start-1);
+substr(Text, Start, Length) when Start+Length>length(Text) ->
+    substr(Text, Start, length(Text)-(Start+Length));
+substr(Text, Start, Length) ->
+    string:substr(Text, Start, Length).    
 
 replace_between_lines(From, Length, With, Lines) ->
     {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
-    FirstPiece = string:substr(Line1, 1, From-Pos1),
+    FirstPiece = substr(Line1, 1, From-Pos1),
     {LineNo2, Pos2, _Length2, Line2, Beyond2} = find_line_w_offset(From+Length, Lines),
-    LastPiece = string:substr(Line2, From+Length-Pos2+1),
+    LastPiece = substr(Line2, From+Length-Pos2+1),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
     NOldLines = case {Beyond1, Beyond2} of
                     {on_eof, on_eof} -> 0;

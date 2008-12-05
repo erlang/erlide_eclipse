@@ -199,6 +199,20 @@
 		     </adapt>
         </enabledWhen>
       </page>
+      <page
+            class="org.erlide.ui.properties.EdocConfigurationPropertyPage"
+            id="org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"
+            name="Edoc">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.erlide.core.erlnature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
       <!--page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"

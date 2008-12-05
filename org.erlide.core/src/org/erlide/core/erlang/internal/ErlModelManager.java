@@ -226,7 +226,7 @@ public class ErlModelManager implements IErlModelManager {
 				parent = erlangModel.findElement(parentResource);
 			}
 		}
-		if (ErlideUtil.hasModuleExt(file.getName())) {
+		if (ErlideUtil.hasModuleExtension(file.getName())) {
 			return createModuleFrom(file, parent);
 		}
 		return null;
@@ -265,7 +265,7 @@ public class ErlModelManager implements IErlModelManager {
 		// return (IErlModule) elements.get(key);
 		// }
 		final String ext = file.getFileExtension();
-		if (ErlideUtil.isModuleExt(ext)) {
+		if (ErlideUtil.isModuleExtension(ext)) {
 			String initialText = null;
 			if (file.exists()) {
 				try {
@@ -301,7 +301,7 @@ public class ErlModelManager implements IErlModelManager {
 		// }
 		// final IPath path = new Path(key);
 		// final String ext = path.getFileExtension();
-		if (ErlideUtil.hasModuleExt(name)) {
+		if (ErlideUtil.hasModuleExtension(name)) {
 			final IErlModule module = new ErlModule(parent, name, text, null);
 			// elements.put(key, module);
 			return module;
@@ -455,7 +455,7 @@ public class ErlModelManager implements IErlModelManager {
 							+ delta.getResource().getLocation());
 					IResource resource = delta.getResource();
 					boolean erlangFile = resource.getType() == IResource.FILE
-							&& ErlideUtil.hasModuleExt(resource.getName());
+							&& ErlideUtil.hasModuleExtension(resource.getName());
 					boolean erlangProject = resource.getType() == IResource.PROJECT
 							&& ErlideUtil.hasErlangNature((IProject) resource);
 					boolean erlangFolder = resource.getType() == IResource.FOLDER;

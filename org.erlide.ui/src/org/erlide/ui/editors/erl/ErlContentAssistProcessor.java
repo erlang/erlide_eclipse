@@ -230,63 +230,88 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		// first check in project and refs
-		final IErlModule m = ErlModelUtils.getModule(moduleName);
-		if (m != null) {
-			try {
-				m.open(null);
-				for (final IErlElement e : m.getChildren()) {
-					if (e instanceof IErlFunction) {
-						final IErlFunction f = (IErlFunction) e;
-						addFunctionCompletion(offset, aprefix, result, f, true);
-					}
-				}
-			} catch (final ErlModelException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// then check built stuff (and otp)
-			final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-					moduleName, aprefix, stateDir);
-			// final OtpErlangObject res = ErlideDoc
-			// .getExported(b, prefix, moduleName);
-			if (res instanceof OtpErlangList) {
-				final OtpErlangList resl = (OtpErlangList) res;
-				for (int i = 0; i < resl.arity(); i++) {
-					// {FunWithArity, FunWithParameters, [{Offset, Length}],
-					// Doc}
-					final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
-					final String funWithArity = ((OtpErlangString) f
-							.elementAt(0)).stringValue();
-					final String funWithParameters = ((OtpErlangString) f
-							.elementAt(1)).stringValue();
-					final OtpErlangList parOffsets = (OtpErlangList) f
-							.elementAt(2);
-					final int nPars = parOffsets.arity();
-					String docStr = null;
-					if (f.arity() > 3) {
-						final OtpErlangObject elt = f.elementAt(3);
-						if (elt instanceof OtpErlangString) {
-							docStr = ((OtpErlangString) elt).stringValue();
+		final List<IErlModule> modules = ErlModelUtils
+				.getModulesWithReferencedProjects(project);
+		for (final IErlModule m : modules) {
+			if (ErlideUtil.withoutExtension(m.getName()).equals(moduleName)) {
+				try {
+					m.open(null);
+					for (final IErlElement e : m.getChildren()) {
+						if (e instanceof IErlFunction) {
+							final IErlFunction f = (IErlFunction) e;
+							addFunctionCompletion(offset, aprefix, result, f,
+									true);
 						}
 					}
-					final String cpl = funWithParameters.substring(aprefix
-							.length());
-					final List<Point> offsetsAndLengths = getOffsetsAndLengths(
-							parOffsets, offset);
-					int offs = cpl.length();
-					if (nPars > 0) {
-						offs = offsetsAndLengths.get(0).x;
-					}
-
-					final ICompletionProposal c = new ErlCompletionProposal(
-							offsetsAndLengths, funWithArity, cpl, offset, 0,
-							offs, null, null, docStr, sourceViewer);
-
-					result.add(c);
+				} catch (final ErlModelException e) {
+					e.printStackTrace();
 				}
 			}
 		}
+		// then check built stuff (and otp)
+		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+				moduleName, aprefix, stateDir);
+		// final OtpErlangObject res = ErlideDoc
+		// .getExported(b, prefix, moduleName);
+		if (res instanceof OtpErlangList) {
+			final OtpErlangList resl = (OtpErlangList) res;
+			for (int i = 0; i < resl.arity(); i++) {
+				// {FunWithArity, FunWithParameters, [{Offset, Length}],
+				// Doc}
+				final OtpErlangTuple f = (OtpErlangTuple) resl.elementAt(i);
+				final String funWithArity = ((OtpErlangString) f.elementAt(0))
+						.stringValue();
+				final String funWithParameters = ((OtpErlangString) f
+						.elementAt(1)).stringValue();
+				final OtpErlangList parOffsets = (OtpErlangList) f.elementAt(2);
+				final int nPars = parOffsets.arity();
+				String docStr = null;
+				if (f.arity() > 3) {
+					final OtpErlangObject elt = f.elementAt(3);
+					if (elt instanceof OtpErlangString) {
+						docStr = ((OtpErlangString) elt).stringValue();
+					}
+				}
+				final String cpl = funWithParameters
+						.substring(aprefix.length());
+				final List<Point> offsetsAndLengths = getOffsetsAndLengths(
+						parOffsets, offset);
+				int offs = cpl.length();
+				if (nPars > 0) {
+					offs = offsetsAndLengths.get(0).x;
+				}
+
+				addFunctionCompletion(offset, result, funWithArity, docStr,
+						cpl, offsetsAndLengths, offs);
+			}
+		}
 		return result;
+	}
+
+	/**
+	 * @param offset
+	 * @param result
+	 * @param funWithArity
+	 * @param docStr
+	 * @param cpl
+	 * @param offsetsAndLengths
+	 * @param cursorPosition
+	 */
+	private void addFunctionCompletion(final int offset,
+			final List<ICompletionProposal> result, final String funWithArity,
+			final String docStr, final String cpl,
+			final List<Point> offsetsAndLengths, final int cursorPosition) {
+		// first check if it's already there...
+		for (final ICompletionProposal c : result) {
+			if (c.getDisplayString().equals(funWithArity)) {
+				return;
+			}
+		}
+		final ICompletionProposal c = new ErlCompletionProposal(
+				offsetsAndLengths, funWithArity, cpl, offset, 0,
+				cursorPosition, null, null, docStr, sourceViewer);
+
+		result.add(c);
 	}
 
 	/**
@@ -320,10 +345,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			if (offsetsAndLengths.size() > 0) {
 				cursorPosition = offsetsAndLengths.get(0).x;
 			}
-			final ICompletionProposal c = new ErlCompletionProposal(
-					offsetsAndLengths, funWithArity, cpl, offset, 0,
-					cursorPosition, null, null, null, sourceViewer);
-			result.add(c);
+			addFunctionCompletion(offset, result, funWithArity, null, cpl,
+					offsetsAndLengths, cursorPosition);
 		}
 	}
 

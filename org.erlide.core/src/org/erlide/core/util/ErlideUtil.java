@@ -218,11 +218,11 @@ public class ErlideUtil {
 		return new File(s).exists();
 	}
 
-	public static boolean isModuleExt(final String ext) {
-		return extToModuleKind(ext) != ModuleKind.BAD;
+	public static boolean isModuleExtension(final String ext) {
+		return extensionToModuleKind(ext) != ModuleKind.BAD;
 	}
 
-	public static ModuleKind extToModuleKind(final String ext) {
+	public static ModuleKind extensionToModuleKind(final String ext) {
 		if (ext == null) {
 			return ModuleKind.BAD;
 		}
@@ -240,11 +240,16 @@ public class ErlideUtil {
 
 	public static ModuleKind nameToModuleKind(final String name) {
 		final IPath p = new Path(name);
-		return extToModuleKind(p.getFileExtension());
+		return extensionToModuleKind(p.getFileExtension());
 	}
 
-	public static boolean hasModuleExt(final String name) {
+	public static boolean hasModuleExtension(final String name) {
 		return nameToModuleKind(name) != ModuleKind.BAD;
+	}
+
+	public static boolean hasExtension(final String name) {
+		final int i = name.lastIndexOf('.');
+		return i != -1;
 	}
 
 	public static String withoutExtension(final String name) {
@@ -255,7 +260,7 @@ public class ErlideUtil {
 		return name.substring(0, i);
 	}
 
-	public static boolean hasERLExt(final String name) {
+	public static boolean hasERLExtension(final String name) {
 		return nameToModuleKind(name) == ModuleKind.ERL;
 	}
 

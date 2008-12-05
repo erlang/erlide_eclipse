@@ -296,7 +296,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 	private String parse(final Template template,
 			final TemplateContextType contextType) {
 		String s = getFileName();
-		if (ErlideUtil.hasModuleExt(s)) {
+		if (ErlideUtil.hasModuleExtension(s)) {
 			s = ErlideUtil.withoutExtension(s);
 		}
 		ModuleVariableResolver.getDefault().setModule(s);
