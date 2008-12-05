@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -101,6 +102,12 @@ public class ErlHighlightScanner implements ITokenScanner,
 				data.getStyle());
 	}
 
+	private static final List<String> RESERVED = Arrays.asList(new String[] {
+			"after", "begin", "case", "try", "cond", "catch", "andalso",
+			"orelse", "end", "fun", "if", "let", "of", "query", "receive",
+			"when", "bnot", "not", "div", "rem", "band", "and", "bor", "bxor",
+			"bsl", "bsr", "or", "xor", "spec", });
+
 	public IToken convert(final ErlToken tk) {
 		if (tk == ErlToken.EOF) {
 			return Token.EOF;
@@ -125,7 +132,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return t_float;
 		} else if (kind.equals("comment")) {
 			return t_comment;
-		} else if (kind.charAt(0) >= 'a' && kind.charAt(0) <= 'z') {
+		} else if (RESERVED.contains(kind)) {
 			return t_keyword;
 		} else {
 			return t_default; // Token.UNDEFINED;
