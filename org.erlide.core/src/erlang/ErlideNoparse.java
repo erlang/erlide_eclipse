@@ -54,8 +54,8 @@ public class ErlideNoparse {
 			final String scannerModuleName) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.rpcx(ERLIDE_NOPARSE, "reparse", "a",
-					scannerModuleName);
+			res = (OtpErlangTuple) b.rpcx(ERLIDE_NOPARSE, "reparse", 20000,
+					"a", scannerModuleName);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
