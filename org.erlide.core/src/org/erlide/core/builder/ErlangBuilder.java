@@ -159,9 +159,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -379,7 +379,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Method clean
-	 *
+	 * 
 	 * @param monitor
 	 *            IProgressMonitor
 	 * @throws CoreException
@@ -416,7 +416,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Method compileFile
-	 *
+	 * 
 	 * @param project
 	 *            IProject
 	 * @param resource
@@ -443,8 +443,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
-
-		createTaskMarkers(project, resource);
 
 		final String outputDir = projectPath.append(prefs.getOutputDir())
 				.toString();
@@ -505,6 +503,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				if (br != null) {
 					br.delete(true, null);
 				}
+
+				createTaskMarkers(project, resource);
 
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("compiling %s", resource.getName());
@@ -775,7 +775,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Add error markers from a list of error tuples
-	 *
+	 * 
 	 * @param resource
 	 * @param errorList
 	 */
@@ -886,9 +886,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		/*
 		 * (non-Javadoc)
-		 *
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * 
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
@@ -915,9 +916,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 		/*
 		 * (non-Javadoc)
-		 *
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 *      .core.resources.IResourceDelta)
+		 * 
+		 * @see
+		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
+		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 			if (mon.isCanceled()) {
@@ -1174,7 +1176,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	/**
 	 * Compile Erlang module, given output directory and include directory
-	 *
+	 * 
 	 * @throws ErlangRpcException
 	 * @param fn
 	 * @param outputdir
