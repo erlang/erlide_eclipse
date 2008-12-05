@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.PreferencesUtils;
 
 /**
  * Simple utility functions
@@ -53,8 +54,8 @@ public class PluginUtils {
 		 */
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final List<String> sourcePaths = ErlidePrefConverter
-				.convertToList(prefs.getSourceDirsString());
+		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
+				.getSourceDirsString());
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (project.getFolder(i).getFullPath().equals(path)) {

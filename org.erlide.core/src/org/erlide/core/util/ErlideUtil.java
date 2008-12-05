@@ -38,6 +38,7 @@ import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
@@ -289,8 +290,8 @@ public class ErlideUtil {
 		final IPath folderPath = folder.getFullPath();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				project);
-		final List<String> sourcePaths = ErlidePrefConverter
-				.convertToList(prefs.getSourceDirsString());
+		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
+				.getSourceDirsString());
 		for (final String p : sourcePaths) {
 			final IPath path = project.getFolder(p).getFullPath();
 			if (folderPath.isPrefixOf(path)) {
