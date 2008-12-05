@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -170,7 +169,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	private IErlModule fModule;
 
 	private ErlangEditor fEditor;
-	private final String fToolTipText = "Sort";
 
 	private CompositeActionGroup fActionGroups;
 
@@ -179,6 +177,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	private MemberFilterActionGroup fMemberFilterActionGroup;
 
 	private final IDocumentProvider fDocumentProvider;
+
+	private SortAction fSortAction;
 
 	/**
 	 * 
@@ -343,9 +343,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	 */
 	private void registerToolbarActions(final IActionBars actionBars) {
 		final IToolBarManager toolBarManager = actionBars.getToolBarManager();
-		final ViewerComparator vc = new ErlElementSorter();
-		toolBarManager.add(new SortAction(getTreeViewer(), fToolTipText, vc,
-				null, false, ErlideUIPlugin.getDefault().getPreferenceStore()));
+		fSortAction = new SortAction(getTreeViewer(), "Sort",
+				new ErlElementSorter(ErlElementSorter.SORT_ON_NAME),
+				new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
+				false, ErlideUIPlugin.getDefault().getPreferenceStore());
+		toolBarManager.add(fSortAction);
 		fMemberFilterActionGroup = new MemberFilterActionGroup(fOutlineViewer,
 				"org.eclipse.jdt.ui.JavaOutlinePage"); //$NON-NLS-1$
 		fMemberFilterActionGroup.contributeToToolBar(toolBarManager);

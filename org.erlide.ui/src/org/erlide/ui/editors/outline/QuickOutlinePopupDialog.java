@@ -153,7 +153,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		fSortAction = new SortAction(
 				fTreeViewer,
 				ErlideUIMessages.PDEMultiPageContentOutline_SortingAction_tooltip,
-				new ErlElementSorter(), null, false, null);
+				new ErlElementSorter(ErlElementSorter.SORT_ON_NAME),
+				new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
+				false, null);
 	}
 
 	/*

@@ -59,6 +59,9 @@ public class ErlideUIPluginImages {
 	public static final String IMG_ALPHAB_SORT = NAME_PREFIX
 			+ "alphab_sort_co.gif"; //$NON-NLS-1$
 
+	public static final String IMG_EXPORTED_SORT = NAME_PREFIX
+			+ "exported_sort_co.gif"; //$NON-NLS-1$
+
 	public static final String IMG_FUNCTION_EXPORTED = NAME_PREFIX
 			+ "methpub_obj.gif"; //$NON-NLS-1$
 
@@ -88,6 +91,9 @@ public class ErlideUIPluginImages {
 
 	public static final ImageDescriptor DESC_ALPHAB_SORT = createManaged(
 			T_ELCL, IMG_ALPHAB_SORT);
+
+	public static final ImageDescriptor DESC_EXPORTED_SORT = createManaged(
+			T_ELCL, IMG_EXPORTED_SORT);
 
 	public static final String IMG_HIDE_LOCAL_FUNCTIONS = NAME_PREFIX
 			+ "hide_local_functions.gif"; //$NON-NLS-1$
