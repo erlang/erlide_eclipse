@@ -13,6 +13,7 @@ package org.erlide.runtime.backend.internal;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -231,7 +232,12 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		}
 		final StringBuffer sa = new StringBuffer();
 		for (final Object x : a) {
-			sa.append("'").append(x.toString()).append("',");
+			String val = x.toString();
+			if (x.getClass().isArray()
+					&& !x.getClass().getComponentType().isPrimitive()) {
+				val = Arrays.toString((Object[]) x);
+			}
+			sa.append("'").append(val).append("',");
 		}
 		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
 		final String msg = String.format("%s <- %s:%s(%s) @ %s", r.getValue(),

@@ -91,18 +91,23 @@ public class RpcConverterTest {
 	}
 
 	@Test
+	public void cvtStringOk_1() throws RpcException {
+		test("astring", "a", new OtpErlangAtom("astring"));
+	}
+
+	@Test
 	public void cvtStringOk_2() throws RpcException {
 		test("astring", "s", new OtpErlangString("astring"));
 	}
 
 	@Test
-	public void cvtStringOk_3() throws RpcException {
-		test("astring", "b", new OtpErlangBinary("astring".getBytes()));
+	public void cvtStringOk_4() throws RpcException {
+		test("", "s", new OtpErlangString(""));
 	}
 
 	@Test
-	public void cvtStringOk_1() throws RpcException {
-		test("astring", "a", new OtpErlangAtom("astring"));
+	public void cvtStringOk_3() throws RpcException {
+		test("astring", "b", new OtpErlangBinary("astring".getBytes()));
 	}
 
 	@Test(expected = RpcException.class)
