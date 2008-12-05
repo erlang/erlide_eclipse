@@ -15,6 +15,7 @@
    <feature url="features/org.erlide_0.4.2.1.jar" id="org.erlide" version="0.4.2.1">
       <category name="stable"/>
    </feature>
+   <feature url="features/org.erlide_0.4.2.2.jar" id="org.erlide" version="0.4.2.2"/>
    <category-def name="stable" label="Stable builds">
       <description>
          These builds have been around a little longer and are reasonably stable.
