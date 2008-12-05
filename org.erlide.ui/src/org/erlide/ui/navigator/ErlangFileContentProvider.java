@@ -105,15 +105,10 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			final IParent parent = (IParent) element;
 			result = parent.hasChildren();
 		} else if (element instanceof IFile) {
-			final IErlModule mod = ErlModelUtils.getModule((IFile) element);
-			if (mod != null) {
-				try {
-					mod.open(null);
-				} catch (final ErlModelException e) {
-					ErlLogger.warn(e);
-				}
-				result = mod.hasChildren();
-			}
+			// it was too slow to open all modules to find out;
+			// empty modules aren't widely used anyway :-)
+			result = true;
+
 		}
 		// ErlLogger.debug("// hasChildren " + result);
 		return result;
@@ -136,8 +131,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
-	 *      .eclipse.core.resources.IResourceChangeEvent)
+	 * @see
+	 * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
+	 * .eclipse.core.resources.IResourceChangeEvent)
 	 */
 	public void resourceChanged(final IResourceChangeEvent event) {
 		final IResourceDelta delta = event.getDelta();
@@ -154,8 +150,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
-	 *      .resources.IResourceDelta)
+	 * @see
+	 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
+	 * .resources.IResourceDelta)
 	 */
 	public boolean visit(final IResourceDelta delta) {
 
@@ -178,7 +175,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	private void doRefresh(final IFile file) {
-		new UIJob("Update Erlang Model in CommonViewer") { //$NON-NLS-1$
+		new UIJob("Update Erlang Model in CommonViewer") {
 			@Override
 			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (viewer != null && !viewer.getControl().isDisposed()) {
