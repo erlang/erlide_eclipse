@@ -11,7 +11,7 @@
                         <scenarioAssociation-array>
                             <scenarioAssociation>
                                 <field name="name">
-                                    <String xml:space="preserve">Docbook HTML modified</String>
+                                    <String xml:space="preserve">Eclipse infocenter</String>
                                 </field>
                                 <field name="type">
                                     <String xml:space="preserve">XSL</String>
