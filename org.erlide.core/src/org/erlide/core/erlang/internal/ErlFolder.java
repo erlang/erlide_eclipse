@@ -119,12 +119,13 @@ public class ErlFolder extends Openable implements IErlFolder {
 		for (final IErlElement e : parent.getChildren()) {
 			if (e instanceof IErlFolder) {
 				final IErlFolder f = (IErlFolder) e;
-				if (f.isOnSourcePath()) { // FIXME is this what you want?
-					f.open(null);
-					result.addAll(f.getModules());
-				}
+				f.open(null);
+				result.addAll(f.getModules());
 			} else if (e instanceof IErlModule) {
-				result.add((IErlModule) e);
+				final IErlFolder f = (IErlFolder) parent;
+				if (f.isOnSourcePath()) {
+					result.add((IErlModule) e);
+				}
 			}
 		}
 		return result;
