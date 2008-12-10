@@ -174,6 +174,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// monitor = new NullProgressMonitor();
 		// }
 
+		ErlangProjectProperties pp = new ErlangProjectProperties(getProject());
+		if (pp.isReference()) {
+			return null;
+		}
+
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("building!...");
 		}

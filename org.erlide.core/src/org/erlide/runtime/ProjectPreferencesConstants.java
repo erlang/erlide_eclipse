@@ -47,6 +47,9 @@ public class ProjectPreferencesConstants {
 
 	public static final String MK_UNIQUE = "make_unique";
 
+	public static final String PROJECT_TYPE = "type";
+	public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
+
 	private ProjectPreferencesConstants() {
 	}
 
