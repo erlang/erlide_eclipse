@@ -474,6 +474,9 @@ public class ErlModelUtils {
 			final IErlProject project) {
 		final IErlModel model = ErlangCore.getModel();
 		final List<IErlModule> result = new ArrayList<IErlModule>();
+		if (project == null) {
+			return result;
+		}
 		try {
 			project.open(null);
 			result.addAll(project.getModules());
@@ -486,9 +489,9 @@ public class ErlModelUtils {
 				}
 			}
 		} catch (final ErlModelException e) {
-			e.printStackTrace();
+			ErlLogger.error(e);
 		} catch (final CoreException e) {
-			e.printStackTrace();
+			ErlLogger.error(e);
 		}
 		return result;
 	}
