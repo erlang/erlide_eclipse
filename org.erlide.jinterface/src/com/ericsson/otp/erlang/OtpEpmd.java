@@ -368,7 +368,8 @@ public class OtpEpmd {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on " + node.host()
+			throw new IOException("Nameserver not responding on "
+					+ InetAddress.getLocalHost() + " | " + node.host()
 					+ " when publishing " + node.alive());
 		}
 
