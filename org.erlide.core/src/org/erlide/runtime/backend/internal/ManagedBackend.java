@@ -91,8 +91,8 @@ public class ManagedBackend extends AbstractBackend {
 						int v = fRuntime.waitFor();
 						ErlLogger
 								.error(
-										"IDE backend process terminated with exit code %d.",
-										v);
+										"Backend runtime %s terminated with exit code %d.",
+										getInfo().getNodeName(), v);
 					} catch (InterruptedException e) {
 						ErlLogger.warn("ide backend watcher was interrupted");
 					}
