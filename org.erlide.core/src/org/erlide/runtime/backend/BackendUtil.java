@@ -9,22 +9,16 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.FileLocator;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.ErlangEvalException;
-import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -58,19 +52,6 @@ public class BackendUtil {
 	public static BackendEvalResult eval(final ExecutionBackend b,
 			final String string) {
 		return ErlideBackend.eval(b, string, null);
-	}
-
-	public static String getLocalPath(final String string) {
-		String dir = "?";
-		final Bundle b = ErlangPlugin.getDefault().getBundle();
-		final URL url = b.getEntry(string);
-		try {
-			dir = FileLocator.toFileURL(url).getPath().substring(1);
-		} catch (final IOException e) {
-			dir = "!?";
-			ErlLogger.warn(e);
-		}
-		return dir;
 	}
 
 	public static void generateRpcStub(final String className,

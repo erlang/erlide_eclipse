@@ -11,7 +11,6 @@
 package org.erlide.core;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -558,47 +557,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 			// workspace.run(new BatchOperation(action), rule,
 			// IWorkspace.AVOID_UPDATE, monitor);
 		}
-	}
-
-	/**
-	 * Sets the current table of options. All and only the options explicitly
-	 * included in the given table are remembered; all previous option settings
-	 * are forgotten, including ones not explicitly mentioned.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param newOptions
-	 *            the new options (key type: <code>String</code>; value type:
-	 *            <code>String</code>), or <code>null</code> to reset all
-	 *            options to their default values
-	 * @see ErlangCore#getDefaultOptions()
-	 */
-	public static void setOptions(Hashtable<String, String> newOptions) {
-
-		// see #initializeDefaultPluginPreferences() for changing default
-		// settings
-		final Preferences preferences = getDefault().getPluginPreferences();
-
-		if (newOptions == null) {
-			newOptions = ErlangPlugin.getDefaultOptions();
-		}
-		final Enumeration<String> keys = newOptions.keys();
-		while (keys.hasMoreElements()) {
-			final String key = keys.nextElement();
-			if (!ErlangCore.getModelManager().getOptionNames().contains(key)) {
-				continue; // unrecognized option
-			}
-			if (key.equals(ErlangCore.CORE_ENCODING)) {
-				continue; // skipped, contributed by resource prefs
-			}
-			final String value = newOptions.get(key);
-			preferences.setValue(key, value);
-		}
-
-		// persist options
-		getDefault().savePluginPreferences();
 	}
 
 	/*
