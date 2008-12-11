@@ -514,4 +514,5 @@ public final class ErlangCore {
 	public static final BackendManager getBackendManager() {
 		return BackendManager.getDefault();
 	}
+
 }

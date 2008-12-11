@@ -50,7 +50,7 @@ public class ErlangProjectProperties {
 
 	private boolean fUnique = true;
 
-	private enum ProjectType {
+	public enum ProjectType {
 		NORMAL, REFERENCE, OTP
 	};
 

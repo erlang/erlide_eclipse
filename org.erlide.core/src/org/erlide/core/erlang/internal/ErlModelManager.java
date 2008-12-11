@@ -172,7 +172,7 @@ public class ErlModelManager implements IErlModelManager {
 		// TODO should we make Erlidemodelevents and fire them?
 	}
 
-	private void remove(final IResource rsrc) {
+	void remove(final IResource rsrc) {
 		final IErlElement e = erlangModel.findElement(rsrc);
 		if (e != null) {
 			final IParent p = (IParent) e.getParent();
@@ -181,7 +181,7 @@ public class ErlModelManager implements IErlModelManager {
 		// TODO should we make Erlidemodelevents and fire them?
 	}
 
-	private void change(final IResource rsrc) {
+	void change(final IResource rsrc) {
 		final IErlElement e = erlangModel.findElement(rsrc);
 		if (e != null) {
 			e.resourceChanged();
@@ -327,6 +327,14 @@ public class ErlModelManager implements IErlModelManager {
 		return erlangModel.makeErlangProject(project);
 	}
 
+	public IErlProject createOtpProject(final IProject project)
+			throws CoreException {
+		if (project == null) {
+			return null;
+		}
+		return erlangModel.createOtpProject(project);
+	}
+
 	/**
 	 * Returns the Erlang element corresponding to the given file, or
 	 * <code>null</code> if unable to associate the given file with a Erlang
@@ -429,7 +437,8 @@ public class ErlModelManager implements IErlModelManager {
 	//
 	// /**
 	// * @see
-	// org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(Preferences.PropertyChangeEvent)
+	//org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange
+	// (Preferences.PropertyChangeEvent)
 	// */
 	// public void propertyChange(final Preferences.PropertyChangeEvent event) {
 	//
@@ -437,7 +446,7 @@ public class ErlModelManager implements IErlModelManager {
 	// }
 	// }
 
-	private class ResourceChangeListener implements IResourceChangeListener {
+	class ResourceChangeListener implements IResourceChangeListener {
 		public void resourceChanged(final IResourceChangeEvent event) {
 			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 				return;
@@ -458,7 +467,8 @@ public class ErlModelManager implements IErlModelManager {
 							&& ErlideUtil.hasErlangNature((IProject) resource);
 					boolean erlangFolder = resource.getType() == IResource.FOLDER;
 					// &&
-					// ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((IFolder)
+					// ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
+					// IFolder)
 					// resource);
 					if (erlangFile || erlangProject || erlangFolder) {
 						if (delta.getKind() == IResourceDelta.ADDED) {

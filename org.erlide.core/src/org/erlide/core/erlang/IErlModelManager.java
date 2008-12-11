@@ -11,8 +11,10 @@ package org.erlide.core.erlang;
 
 import java.util.HashSet;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.erlang.internal.ErlElement;
 import org.erlide.core.erlang.internal.ErlModel;
 import org.erlide.core.erlang.util.ElementChangedEvent;
@@ -38,6 +40,13 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * of the element's parents if they are not yet open.
 	 */
 	IErlElement create(IResource resource, IErlElement parent);
+
+	/**
+	 * Create a reference OTP project
+	 * 
+	 * @throws CoreException
+	 */
+	IErlProject createOtpProject(IProject project) throws CoreException;
 
 	/**
 	 * Create a module given name, text and parent (most often an IErlFolder)

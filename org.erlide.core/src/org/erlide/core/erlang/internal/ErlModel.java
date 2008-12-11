@@ -17,12 +17,15 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -34,6 +37,8 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.ErlangProjectProperties.ProjectType;
 
 /**
  * Implementation of
@@ -456,4 +461,56 @@ public class ErlModel extends Openable implements IErlModel {
 		return null;
 	}
 
+	public IErlProject createOtpProject(IProject project) throws CoreException {
+		final IPath location = project.getLocation();
+
+		final IErlProject p = ErlangCore.getModel().getErlangProject(
+				project.getName());
+
+		ErlangProjectProperties props = new ErlangProjectProperties(project);
+		props.setType(ProjectType.OTP);
+
+		final IFile file = project.getFile(".");
+		if (!file.isLinked()) {
+			file.createLink(location, IResource.NONE, null);
+		}
+
+		List<String> dirs;
+		dirs = findOtpSourceDirs(new File(location.toString()));
+		props.setSourceDirs(dirs.toArray(new String[0]));
+		dirs = findOtpIncludeDirs(new File(location.toString()));
+		props.setIncludeDirs(dirs.toArray(new String[0]));
+
+		props.store();
+		p.open(null);
+		return p;
+	}
+
+	private static List<String> findOtpSourceDirs(File file) {
+		List<String> result = new ArrayList<String>();
+		return result;
+	}
+
+	private static List<String> findOtpIncludeDirs(File file) {
+		List<String> result = new ArrayList<String>();
+		return result;
+	}
+
+	public static final IProject newProject(String name, String path)
+			throws CoreException {
+		final IWorkspace ws = ResourcesPlugin.getWorkspace();
+		final IProject project = ws.getRoot().getProject(name);
+		if (!project.exists()) {
+			project.create(null);
+			project.open(null);
+			final IProjectDescription description = project.getDescription();
+			description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+			description.setName(name);
+			project.setDescription(description, null);
+		}
+		if (!project.isOpen()) {
+			project.open(null);
+		}
+		return project;
+	}
 }
