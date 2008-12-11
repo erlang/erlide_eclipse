@@ -3,7 +3,7 @@
 %% Description: TODO: Add description to erlide_util
 -module(erlide_util).
 
-%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 %%
 %% Include files
@@ -17,17 +17,23 @@
 %%
 -export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4]).
 
+-ifdef(DEBUG).
+-compile(export_all).
+-endif.
+
 %%
 %% API Functions
 %%
 
 check_cached(SourceFileName, CacheFileName, Version) ->
+    ?D({SourceFileName, CacheFileName}),
     SourceModDate = case file:read_file_info(SourceFileName) of
                         {ok, Info} ->
                             Info#file_info.mtime;
                         {error, enoent} ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
+    ?D(SourceModDate),
     case read_cache_date_and_version(CacheFileName) of
         {SourceModDate, Version} ->
             {ok, read_cache(CacheFileName)};
@@ -50,9 +56,11 @@ check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun) ->
 check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, CachedFun) ->
     case check_cached(SourceFileName, CacheFileName, Version) of
         {ok, Cached} ->
+            ?D(from_cache),
             CachedFun(Cached);
         {no_cache, SourceModDate} ->
             Term = RenewFun(SourceFileName),
+            ?D(renewing),
             renew_cache(SourceModDate, Version, CacheFileName, Term),
             Term
     end.
