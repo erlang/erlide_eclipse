@@ -45,7 +45,6 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.osgi.framework.BundleContext;
 
@@ -610,7 +609,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		BackendManager.getDefault().removePlugin(this);
+		ErlangCore.getBackendManager().removePlugin(this);
 
 		try {
 			try {
@@ -622,7 +621,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 				ErlangCore.getModelManager().shutdown();
 			} finally {
-				BackendManager.getDefault().removePlugin(this);
+				ErlangCore.getBackendManager().removePlugin(this);
 
 				// ensure we call super.stop as the last thing
 				super.stop(context);
@@ -689,7 +688,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 						+ getBundle().getHeaders().get("Bundle-Version")
 						+ " ***" + dev);
 
-		BackendManager.getDefault().register(this);
+		ErlangCore.getBackendManager().register(this);
 
 		registerOpenProjects();
 
@@ -775,7 +774,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 							element);
 					final String path = element.getLocation().append(
 							prefs.getOutputDir()).toString();
-					final IdeBackend b = BackendManager.getDefault()
+					final IdeBackend b = ErlangCore.getBackendManager()
 							.getIdeBackend();
 					if (b != null) {
 						b.addPath(prefs.getUsePathZ(), path);

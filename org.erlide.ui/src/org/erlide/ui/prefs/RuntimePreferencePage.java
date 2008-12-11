@@ -63,6 +63,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.ErlideUIPlugin;
@@ -127,7 +128,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		setDescription("Add, remove or edit runtime definitions.\n"
 				+ "The checked one will be used by default in new projects "
 				+ "to build the project's code.");
-		manager = RuntimeInfoManager.getDefault();
+		manager = ErlangCore.getRuntimeInfoManager();
 		performDefaults();
 	}
 

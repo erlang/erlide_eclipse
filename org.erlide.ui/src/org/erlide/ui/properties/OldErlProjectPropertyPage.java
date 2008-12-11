@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoListener;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
@@ -57,7 +57,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	public OldErlProjectPropertyPage() {
 		super();
-		RuntimeInfoManager.getDefault().addListener(this);
+		ErlangCore.getRuntimeInfoManager().addListener(this);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		if (RuntimeInfoManager.getDefault().getDefaultRuntime() == null) {
+		if (ErlangCore.getRuntimeInfoManager().getDefaultRuntime() == null) {
 			ErlideUIPlugin.openPreferencePage();
 		}
 
@@ -211,9 +211,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		include.setText(prefs.getIncludeDirsString());
 		output.setText(prefs.getOutputDir());
 
-		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
-				.toArray(new String[] {});
-		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+		String[] runtimes = ErlangCore.getRuntimeInfoManager()
+				.getRuntimeNames().toArray(new String[] {});
+		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
 		String rt = prefs.getRuntimeName();
@@ -233,7 +233,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 	@Override
 	public boolean performOk() {
-		RuntimeInfoManager.getDefault().removeListener(this);
+		ErlangCore.getRuntimeInfoManager().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
 		ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -293,9 +293,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		if (runtimeName.isDisposed()) {
 			return;
 		}
-		String[] runtimes = RuntimeInfoManager.getDefault().getRuntimeNames()
-				.toArray(new String[] {});
-		final RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+		String[] runtimes = ErlangCore.getRuntimeInfoManager()
+				.getRuntimeNames().toArray(new String[] {});
+		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
 		if (defaultRuntime != null) {

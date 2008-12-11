@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
@@ -590,7 +591,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		if (node.equals(fPeer)) {
 			setAvailable(up);
 		}
-		BackendManager.getDefault().remoteNodeStatus(node, up, info);
+		ErlangCore.getBackendManager().remoteNodeStatus(node, up, info);
 	}
 
 	private void setAvailable(final boolean up) {
@@ -640,7 +641,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public void registerProjects(final Collection<IProject> projects) {
 		for (final IProject project : projects) {
-			BackendManager.getDefault().addExecution(project, this);
+			ErlangCore.getBackendManager().addExecution(project, this);
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
 					project);
 			final String outDir = project.getLocation().append(

@@ -59,12 +59,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.BackendEvalResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIConstants;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
@@ -192,7 +192,7 @@ public class LiveExpressionsView extends ViewPart implements
 				IResourceChangeEvent.POST_BUILD);
 
 		// TODO make the backend configurable (as for console)
-		fBackend = (ExecutionBackend) BackendManager.getDefault()
+		fBackend = (ExecutionBackend) ErlangCore.getBackendManager()
 				.getIdeBackend();
 	}
 

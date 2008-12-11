@@ -54,7 +54,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RpcResult;
@@ -212,7 +211,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// } catch (final CoreException e1) {
 		// }
 
-		final BuildBackend b = BackendManager.getDefault().getBuildBackend(
+		final BuildBackend b = ErlangCore.getBackendManager().getBuildBackend(
 				getProject());
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);

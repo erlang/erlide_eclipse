@@ -2,7 +2,7 @@
  * Copyright (c) 2007 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.runtime.backend.BackendManager;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.IdeBackend;
 
@@ -44,7 +44,7 @@ public class ErlangErlBuilder extends IncrementalProjectBuilder implements
 		}
 
 		// ?????
-		final IdeBackend ideBackend = BackendManager.getDefault()
+		final IdeBackend ideBackend = ErlangCore.getBackendManager()
 				.getIdeBackend();
 		if (ideBackend != null) {
 			ideBackend.addEventListener("build", this);

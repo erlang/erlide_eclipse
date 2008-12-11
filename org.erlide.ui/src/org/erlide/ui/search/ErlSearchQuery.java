@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.runtime.backend.BackendManager;
 
 import erlang.ErlideNoparse;
 
@@ -74,7 +74,7 @@ public class ErlSearchQuery implements ISearchQuery {
 			throws OperationCanceledException {
 		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
 		// in... ev portionera ut lite
-		fResult = ErlideNoparse.find(BackendManager.getDefault()
+		fResult = ErlideNoparse.find(ErlangCore.getBackendManager()
 				.getIdeBackend(), searchRef);
 		fSearchResult.setResult(fResult);
 		final List<Match> l = new ArrayList<Match>();

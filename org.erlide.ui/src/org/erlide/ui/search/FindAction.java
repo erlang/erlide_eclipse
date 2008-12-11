@@ -24,11 +24,11 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -213,7 +213,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		// if (!ActionUtil.isProcessable(fEditor)) {
 		// return;
 		// }
-		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();

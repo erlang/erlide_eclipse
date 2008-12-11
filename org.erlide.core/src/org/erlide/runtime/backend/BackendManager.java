@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.IEpmdListener;
@@ -158,8 +159,8 @@ public final class BackendManager implements IEpmdListener {
 				}
 				return fLocalBackend.asBuild();
 			}
-			final String ideName = BackendManager.getDefault().getIdeBackend()
-					.getInfo().getNodeName();
+			final String ideName = ErlangCore.getBackendManager()
+					.getIdeBackend().getInfo().getNodeName();
 			if (info.getNodeName() == null
 					|| info.getNodeName().equals(ideName)
 					|| info.getNodeName().equals("")) {
@@ -224,8 +225,8 @@ public final class BackendManager implements IEpmdListener {
 			synchronized (fLocalBackendLock) {
 				if (fLocalBackend == null) {
 					final RuntimeInfo erlideRuntime = RuntimeInfo.copy(
-							RuntimeInfoManager.getDefault().getErlideRuntime(),
-							false);
+							ErlangCore.getRuntimeInfoManager()
+									.getErlideRuntime(), false);
 					if (erlideRuntime != null) {
 						try {
 							String defLabel = getLabelProperty();

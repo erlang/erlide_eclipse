@@ -43,7 +43,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.runtime.backend.BackendManager;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
@@ -80,7 +80,7 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public Object[] getElements(final Object inputElement) {
-			return BackendManager.getDefault().getAllBackends();
+			return ErlangCore.getBackendManager().getAllBackends();
 		}
 	}
 
@@ -288,11 +288,12 @@ public class ProcessListView extends ViewPart {
 		label.setText("Erlang backend node");
 
 		// TODO this is wrong - all backends should be inited
-		final IBackend ideBackend = BackendManager.getDefault().getIdeBackend();
+		final IBackend ideBackend = ErlangCore.getBackendManager()
+				.getIdeBackend();
 		if (ideBackend != null) {
 			ErlideProclist.processListInit(ideBackend.asExecution());
 		}
-		BackendManager.getDefault().forEachProjectBackend(
+		ErlangCore.getBackendManager().forEachProjectBackend(
 				new IBackendVisitor() {
 					public void run(final IBackend b) {
 						ErlideProclist.processListInit(b.asExecution());
@@ -301,7 +302,7 @@ public class ProcessListView extends ViewPart {
 
 		backends.setContentProvider(new BackendContentProvider());
 		backends.setLabelProvider(new BackendLabelProvider());
-		backends.setInput(BackendManager.getDefault());
+		backends.setInput(ErlangCore.getBackendManager());
 
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
@@ -428,7 +429,7 @@ public class ProcessListView extends ViewPart {
 			final IBackend b = (IBackend) sel.getFirstElement();
 			return b.asExecution();
 		}
-		final IBackend b = BackendManager.getDefault().getIdeBackend();
+		final IBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (b != null) {
 			backends.setSelection(new StructuredSelection(b));
 			return b.asExecution();

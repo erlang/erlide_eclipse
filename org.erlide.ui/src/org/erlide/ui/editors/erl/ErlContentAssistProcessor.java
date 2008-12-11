@@ -25,6 +25,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
@@ -37,7 +38,6 @@ import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -67,7 +67,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
-		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			final IDocument doc = viewer.getDocument();
 			final String aPrefix = lastText(doc, offset);

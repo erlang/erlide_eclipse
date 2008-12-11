@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
 import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
@@ -47,7 +47,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	private Collection<RuntimeInfo> runtimes;
 
 	public void createControl(final Composite parent) {
-		runtimes = RuntimeInfoManager.getDefault().getRuntimes();
+		runtimes = ErlangCore.getRuntimeInfoManager().getRuntimes();
 
 		final Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
@@ -76,7 +76,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			rtl.add(r.getName());
 		}
 		String[] rts = rtl.toArray(new String[] {});
-		RuntimeInfo defaultRuntime = RuntimeInfoManager.getDefault()
+		RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
 				defaultRuntime.getName());

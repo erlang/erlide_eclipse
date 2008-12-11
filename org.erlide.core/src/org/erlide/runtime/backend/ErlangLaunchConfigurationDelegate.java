@@ -125,8 +125,8 @@ public class ErlangLaunchConfigurationDelegate extends
 			interpretedModules = addBreakpointProjectsAndModules(projects,
 					interpretedModules);
 
-			final RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager
-					.getDefault().getRuntime(runtime), false);
+			final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
+					.getRuntimeInfoManager().getRuntime(runtime), false);
 			rt.setNodeName(nodeName);
 			rt.setCookie(cookie);
 
@@ -139,8 +139,8 @@ public class ErlangLaunchConfigurationDelegate extends
 				options.add(BackendOptions.AUTOSTART);
 			}
 
-			final IBackend b = BackendManager.getDefault().create(rt, options,
-					launch);
+			final IBackend b = ErlangCore.getBackendManager().create(rt,
+					options, launch);
 			if (b == null) {
 				ErlLogger.error("Launch: got null backend!");
 				return;

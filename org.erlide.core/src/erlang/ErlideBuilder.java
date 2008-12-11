@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -20,7 +20,7 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final IProject project,
 			final String fn, final String output) {
 		try {
-			final BuildBackend b = BackendManager.getDefault()
+			final BuildBackend b = ErlangCore.getBackendManager()
 					.getBuildBackend(project);
 			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
 					30000, "ss", fn, output);
@@ -38,7 +38,7 @@ public class ErlideBuilder {
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		try {
-			final BuildBackend b = BackendManager.getDefault()
+			final BuildBackend b = ErlangCore.getBackendManager()
 					.getBuildBackend(project);
 			// FIXME add an option for the compiler options
 			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
@@ -66,7 +66,8 @@ public class ErlideBuilder {
 
 	public static void loadModule(final IProject project, final String module) {
 		try {
-			for (IBackend b : BackendManager.getDefault().getExecution(project)) {
+			for (IBackend b : ErlangCore.getBackendManager().getExecution(
+					project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
 				b.rpcx("erlide_builder", "load", "a", module);

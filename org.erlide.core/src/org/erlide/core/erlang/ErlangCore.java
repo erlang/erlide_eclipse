@@ -12,6 +12,8 @@ package org.erlide.core.erlang;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
  * <p>
@@ -497,11 +499,19 @@ public final class ErlangCore {
 	 */
 	public static final String CLEAN = "clean"; //$NON-NLS-1$
 
-	public static IErlModelManager getModelManager() {
+	public static final IErlModelManager getModelManager() {
 		return ErlModelManager.getDefault();
 	}
 
-	public static IErlModel getModel() {
+	public static final IErlModel getModel() {
 		return getModelManager().getErlangModel();
+	}
+
+	public static final RuntimeInfoManager getRuntimeInfoManager() {
+		return RuntimeInfoManager.getDefault();
+	}
+
+	public static final BackendManager getBackendManager() {
+		return BackendManager.getDefault();
 	}
 }

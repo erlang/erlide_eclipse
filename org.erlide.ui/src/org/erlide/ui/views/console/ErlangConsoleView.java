@@ -74,8 +74,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.IBackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
@@ -141,7 +141,7 @@ public class ErlangConsoleView extends ViewPart implements
 			final Job j = new Job("shell opener") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					fBackend = BackendManager.getDefault().getIdeBackend();
+					fBackend = ErlangCore.getBackendManager().getIdeBackend();
 					if (fBackend == null) {
 						schedule(400);
 					} else {

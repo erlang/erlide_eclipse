@@ -17,9 +17,9 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -98,7 +98,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void notify(final OtpErlangObject msg) {
-		BackendManager.getDefault().getIdeBackend().send("erlide_code_db", msg);
+		ErlangCore.getBackendManager().getIdeBackend().send("erlide_code_db",
+				msg);
 	}
 
 	public void setProgressMonitor(final IProgressMonitor monitor) {

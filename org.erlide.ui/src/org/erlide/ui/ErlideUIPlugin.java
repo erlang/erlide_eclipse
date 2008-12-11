@@ -42,11 +42,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.RuntimePreferencePage;
@@ -126,8 +126,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		RpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
-		BackendManager.getDefault().register(ErlangPlugin.getDefault());
-		BackendManager.getDefault().register(this);
+		ErlangCore.getBackendManager().register(ErlangPlugin.getDefault());
+		ErlangCore.getBackendManager().register(this);
 
 		new InitializeAfterLoadJob().schedule();
 
@@ -135,7 +135,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 			BackendManagerPopup.init();
 		}
 
-		final RuntimeInfoManager rim = RuntimeInfoManager.getDefault();
+		final RuntimeInfoManager rim = ErlangCore.getRuntimeInfoManager();
 		if (rim.getRuntimeNames().size() == 0) {
 			// openPreferencePage();
 		}
@@ -156,7 +156,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 				dialog.create();
 				dialog.setMessage(page.getTitle());
 				dialog.open();
-				RuntimeInfoManager.getDefault().load();
+				ErlangCore.getRuntimeInfoManager().load();
 			}
 		});
 	}
@@ -171,7 +171,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		BackendManager.getDefault().removePlugin(this);
+		ErlangCore.getBackendManager().removePlugin(this);
 
 		super.stop(context);
 	}

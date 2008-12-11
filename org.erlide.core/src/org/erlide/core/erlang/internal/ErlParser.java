@@ -11,12 +11,12 @@ package org.erlide.core.erlang.internal;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -46,7 +46,7 @@ public class ErlParser {
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse, final String moduleFilePath,
 			final String erlidePath) {
-		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
@@ -164,8 +164,8 @@ public class ErlParser {
 		if ("error".equals(type.atomValue())) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-			final String msg = ErlideBackend.format_error(BackendManager
-					.getDefault().getIdeBackend(), er);
+			final String msg = ErlideBackend.format_error(ErlangCore
+					.getBackendManager().getIdeBackend(), er);
 
 			final ErlMessage e = new ErlMessage(parent,
 					ErlMessage.MessageKind.ERROR, msg);
@@ -450,7 +450,7 @@ public class ErlParser {
 			return new OtpErlangList(res);
 		}
 		try {
-			return ErlideBackend.concreteSyntax(BackendManager.getDefault()
+			return ErlideBackend.concreteSyntax(ErlangCore.getBackendManager()
 					.getIdeBackend(), val);
 		} catch (final Exception e) {
 			return val;

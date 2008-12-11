@@ -24,11 +24,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.runtime.backend.BackendManager;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.IBackend;
 import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -264,7 +263,7 @@ public class ErlangProjectProperties {
 	public void setOutputDir(final String outputDir) {
 		if (!fOutputDir.equals(outputDir)) {
 			try {
-				final BuildBackend b = BackendManager.getDefault()
+				final BuildBackend b = ErlangCore.getBackendManager()
 						.getBuildBackend(project);
 				String p = project.getLocation().append(fOutputDir).toString();
 				b.removePath(getUsePathZ(), p);
@@ -286,8 +285,8 @@ public class ErlangProjectProperties {
 	public void setUsePathZ(final boolean pz) {
 		final boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
-			for (final IBackend b : BackendManager.getDefault().getExecution(
-					project)) {
+			for (final IBackend b : ErlangCore.getBackendManager()
+					.getExecution(project)) {
 
 				final String p = project.getLocation().append(fOutputDir)
 						.toString();
@@ -401,8 +400,8 @@ public class ErlangProjectProperties {
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
-		final RuntimeInfo rt = RuntimeInfo.copy(RuntimeInfoManager.getDefault()
-				.getRuntime(fRuntimeName), false);
+		final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
+				.getRuntimeInfoManager().getRuntime(fRuntimeName), false);
 		if (rt != null) {
 			rt.setNodeName(fNodeName);
 			rt.setUniqueName(fUnique);

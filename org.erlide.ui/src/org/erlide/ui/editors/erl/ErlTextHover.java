@@ -31,11 +31,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
@@ -92,7 +92,7 @@ public class ErlTextHover implements ITextHover,
 		// e1.printStackTrace();
 		// return null;
 		// }
-		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);

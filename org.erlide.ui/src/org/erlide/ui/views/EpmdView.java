@@ -16,9 +16,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.IEpmdListener;
-import org.erlide.runtime.backend.BackendManager;
 
 public class EpmdView extends ViewPart implements IEpmdListener {
 
@@ -77,7 +77,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 	EpmdWatcher epmdWatcher;
 
 	public EpmdView() {
-		epmdWatcher = BackendManager.getDefault().getEpmdWatcher();
+		epmdWatcher = ErlangCore.getBackendManager().getEpmdWatcher();
 		epmdWatcher.addEpmdListener(this);
 	}
 

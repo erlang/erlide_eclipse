@@ -41,12 +41,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -247,7 +247,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	// private Button[] fIncludeMasks;
 
 	/**
-	 * 
+	 *
 	 */
 	public ErlangSearchPage() {
 		fPreviousSearchPatterns = new ArrayList<SearchPatternData>();
@@ -452,8 +452,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-	 *      .Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	public void createControl(final Composite parent) {
 		initializeDialogUnits(parent);
@@ -754,7 +755,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
 				// TODO how in the world can we find the proper build backend?
-				final IdeBackend b = BackendManager.getDefault()
+				final IdeBackend b = ErlangCore.getBackendManager()
 						.getIdeBackend();
 				final ISelection ssel = erlangEditor.getSite()
 						.getSelectionProvider().getSelection();

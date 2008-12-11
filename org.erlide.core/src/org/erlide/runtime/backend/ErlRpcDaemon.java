@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.IRpcHandler;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
@@ -39,7 +40,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 	List<IErlRpcMessageListener> fErlRpcMessageListeners = new ArrayList<IErlRpcMessageListener>();
 
 	public void start() {
-		BackendManager.getDefault().addBackendListener(this);
+		ErlangCore.getBackendManager().addBackendListener(this);
 
 		final Job handlerJob = new Job("Erlang RPC daemon") {
 			private List<OtpErlangObject> msgs = new ArrayList<OtpErlangObject>(

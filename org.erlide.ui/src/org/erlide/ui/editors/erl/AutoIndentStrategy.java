@@ -21,10 +21,10 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -97,7 +97,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		final int lineLength = d.getLineLength(lineN);
 		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
-			final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+			final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 			int tabw = ErlideUIPlugin
 					.getDefault()
 					.getPreferenceStore()
