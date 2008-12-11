@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.editors.scratch;
 
 /**
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 
@@ -122,7 +122,9 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#editorContextMenuAboutToShow(org.eclipse.jface.action.IMenuManager)
+	 * @see
+	 * org.eclipse.ui.texteditor.AbstractTextEditor#editorContextMenuAboutToShow
+	 * (org.eclipse.jface.action.IMenuManager)
 	 */
 	@Override
 	protected void editorContextMenuAboutToShow(final IMenuManager menu) {
@@ -175,8 +177,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			return;
 		}
 		final boolean build = !erlProject.getProject().getWorkspace()
-				.isAutoBuilding()
-				|| !erlProject.hasBuildState();
+				.isAutoBuilding();
 
 		if (build) {
 			if (!performIncrementalBuild()) {
@@ -438,7 +439,9 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#updateSelectionDependentActions()
+	 * @see
+	 * org.eclipse.ui.texteditor.AbstractTextEditor#updateSelectionDependentActions
+	 * ()
 	 */
 	@Override
 	protected void updateSelectionDependentActions() {

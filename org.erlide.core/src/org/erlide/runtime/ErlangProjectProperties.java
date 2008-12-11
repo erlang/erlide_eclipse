@@ -67,21 +67,20 @@ public class ErlangProjectProperties {
 	}
 
 	public ErlangProjectProperties(final IProject prj) {
-		super();
-		project = prj;
-		load();
+		this(prj, ProjectType.NORMAL);
 	}
 
 	public ErlangProjectProperties(final IProject prj, ProjectType type) {
 		super();
 		project = prj;
+		// TODO load() should not be in constructor!
 		load();
 		this.type = type;
 	}
 
-	public void load() {
+	public ErlangProjectProperties load() {
 		if (project == null) {
-			return;
+			return this;
 		}
 
 		// if .codepath exists, read from it, otherwise from .settings
@@ -169,6 +168,7 @@ public class ErlangProjectProperties {
 					ProjectPreferencesConstants.PROJECT_TYPE,
 					ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
 		}
+		return this;
 	}
 
 	public void store() {
@@ -455,6 +455,10 @@ public class ErlangProjectProperties {
 
 	public boolean isNormal() {
 		return type == ProjectType.NORMAL;
+	}
+
+	public void setType(ProjectType type) {
+		this.type = type;
 	}
 
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -11,10 +11,8 @@ package org.erlide.core.erlang;
 
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.internal.ErlElement;
 import org.erlide.core.erlang.internal.ErlModel;
 import org.erlide.core.erlang.util.ElementChangedEvent;
@@ -24,16 +22,16 @@ public interface IErlModelManager extends ISaveParticipant {
 
 	/**
 	 * Returns the Erlang element corresponding to the given file, its project
-	 * being the given project. Returns <code>null</code> if unable to
-	 * associate the given file with a Erlang element.
+	 * being the given project. Returns <code>null</code> if unable to associate
+	 * the given file with a Erlang element.
 	 * 
 	 * <p>
 	 * The file must be one of:
 	 * <ul>
-	 * <li>a <code>.erl</code> file - the element returned is the
-	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the
-	 * corresponding <code>IClassFile</code></li>
+	 * <li>a <code>.erl</code> file - the element returned is the corresponding
+	 * <code>IErlModule</code></li>
+	 * <li>a <code>.beam</code> file - the element returned is the corresponding
+	 * <code>IClassFile</code></li>
 	 * </ul>
 	 * <p>
 	 * Creating a Erlang element has the side effect of creating and opening all
@@ -59,12 +57,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	 */
 	ErlModel getErlangModel();
 
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getLastBuiltState(org.eclipse.core.resources.IProject,
-	 *      org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	Object getLastBuiltState(IProject project, IProgressMonitor monitor);
-
 	/*
 	 * Removes all cached info for the given element (including all children)
 	 * from the cache. Returns the info for the given element, or null if it was
@@ -74,12 +66,6 @@ public interface IErlModelManager extends ISaveParticipant {
 	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
 	 */
 	Object removeInfoAndChildren(ErlElement element) throws ErlModelException;
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#setLastBuiltState(org.eclipse.core.resources.IProject,
-	 *      java.lang.Object)
-	 */
-	void setLastBuiltState(IProject project, Object state);
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#shutdown()

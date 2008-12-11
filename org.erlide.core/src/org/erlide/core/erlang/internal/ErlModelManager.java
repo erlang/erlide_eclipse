@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,15 +38,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.BuilderUtils;
-import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.erlang.ErlElementDelta;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -555,34 +545,6 @@ public class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getLastBuiltState(org.eclipse.core.resources.IProject,
-	 *      org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public Object getLastBuiltState(final IProject project,
-			final IProgressMonitor monitor) {
-		if (!ErlideUtil.hasErlangNature(project)) {
-			return null;
-		}
-
-		// final PerProjectInfo info = getPerProjectInfo(project, true);
-		// // create if missing
-		// if (!info.fTriedRead) {
-		// info.fTriedRead = true;
-		// try {
-		// if (monitor != null) {
-		// monitor.subTask(Util.bind(
-		// "build.readStateProgress", project.getName())); //$NON-NLS-1$
-		// }
-		// info.fSavedState = readState(project);
-		// } catch (final CoreException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// return info.fSavedState;
-		return null;
-	}
-
-	/**
 	 * Returns the File to use for saving and restoring the last built state for
 	 * the given project.
 	 */
@@ -641,50 +603,6 @@ public class ErlModelManager implements IErlModelManager {
 	// this.cache.putInfo(element, info);
 	// }
 	// }
-	/**
-	 * Reads the build state for the relevant project.
-	 */
-	protected Object readState(final IProject project) throws CoreException {
-		final File file = getSerializationFile(project);
-		if (file != null && file.exists()) {
-			try {
-				final DataInputStream in = new DataInputStream(
-						new BufferedInputStream(new FileInputStream(file)));
-				try {
-					final String pluginID = in.readUTF();
-					if (!pluginID.equals(ErlangPlugin.PLUGIN_ID)) {
-						throw new IOException(Util
-								.bind("build.wrongFileFormat")); //$NON-NLS-1$
-					}
-					final String kind = in.readUTF();
-					if (!kind.equals("STATE")) {
-						throw new IOException(Util
-								.bind("build.wrongFileFormat")); //$NON-NLS-1$
-					}
-					if (in.readBoolean()) {
-						return ErlangBuilder.readState(project, in);
-					}
-					if (BuilderUtils.isDebugging()) {
-						System.out
-								.println("Saved state thinks last build failed for "
-										+ project.getName());
-					}
-				} finally {
-					in.close();
-				}
-			} catch (final IOException e) {
-				ErlLogger.warn(e);
-				throw new CoreException(
-						new Status(
-								IStatus.ERROR,
-								ErlangPlugin.PLUGIN_ID,
-								Platform.PLUGIN_ERROR,
-								"Error reading last build state for project " + project.getName(), e)); //$NON-NLS-1$
-			}
-		}
-		return null;
-	}
-
 	/*
 	 * Removes all cached info for the given element (including all children)
 	 * from the cache. Returns the info for the given element, or null if it was
@@ -755,36 +673,6 @@ public class ErlModelManager implements IErlModelManager {
 	 * CoreException { // passed this point, save actions are non trivial if
 	 * (context.getKind() == ISaveContext.SNAPSHOT) { return; } // save built
 	 * state if (info.fTriedRead) { saveBuiltState(info); } }
-	 */
-
-	/**
-	 * Saves the built state for the project.
-	 */
-	/* Unused */
-	/*
-	 * private void saveBuiltState(PerProjectInfo info) throws CoreException {
-	 * // if (ErlangBuilder.DEBUG) // ErlLogger.debug(Util.bind( //
-	 * "build.saveStateProgress", info.project.getName())); //$NON-NLS-1$ final
-	 * File file = getSerializationFile(info.fProject); if (file == null) {
-	 * return; } // long t = System.currentTimeMillis(); try { final
-	 * DataOutputStream out = new DataOutputStream( new BufferedOutputStream(new
-	 * FileOutputStream(file))); try { out.writeUTF(ErlangPlugin.PLUGIN_ID);
-	 * out.writeUTF("STATE"); //$NON-NLS-1$ if (info.fSavedState == null) {
-	 * out.writeBoolean(false); } else { out.writeBoolean(true); //
-	 * ErlangBuilder.writeState(info.savedState, out); } } finally {
-	 * out.close(); } } catch (final RuntimeException e) { try { file.delete();
-	 * } catch (final SecurityException se) { // could not delete file: cannot
-	 * do much more } throw new CoreException( new Status( IStatus.ERROR,
-	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
-	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ }
-	 * catch (final IOException e) { try { file.delete(); } catch (final
-	 * SecurityException se) { // could not delete file: cannot do much more }
-	 * throw new CoreException( new Status( IStatus.ERROR,
-	 * ErlangPlugin.PLUGIN_ID, Platform.PLUGIN_ERROR, Util .bind(
-	 * "build.cannotSaveState", info.fProject.getName()), e)); //$NON-NLS-1$ }
-	 * // if (ErlangBuilder.DEBUG) // { // t = System.currentTimeMillis() - t;
-	 * // ErlLogger.debug(Util.bind( // "build.saveStateComplete",
-	 * String.valueOf(t))); //$NON-NLS-1$ // } }
 	 */
 
 	/**
@@ -955,32 +843,6 @@ public class ErlModelManager implements IErlModelManager {
 			workspace.setDescription(description);
 		} catch (final CoreException e) {
 			throw new ErlModelException(e);
-		}
-	}
-
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#setLastBuiltState(org.eclipse.core.resources.IProject,
-	 *      java.lang.Object)
-	 */
-	public void setLastBuiltState(final IProject project, final Object state) {
-		if (ErlideUtil.hasErlangNature(project)) {
-			// should never be requested on non-Erlang projects
-			// final PerProjectInfo info = getPerProjectInfo(project, true);
-			// info.fTriedRead = true; // no point trying to re-read once using
-			// // setter
-			// info.fSavedState = state;
-		}
-		if (state == null) {
-			// delete state file to ensure a full build happens if the workspace
-			// crashes
-			try {
-				final File file = getSerializationFile(project);
-				if (file != null && file.exists()) {
-					file.delete();
-				}
-			} catch (final SecurityException se) {
-				// could not delete file: cannot do much more
-			}
 		}
 	}
 

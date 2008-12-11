@@ -61,7 +61,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @exception Error
 	 *                if called more than once
 	 */
-	protected ErlModel() {
+	ErlModel() {
 		super(null, ""); //$NON-NLS-1$
 	}
 

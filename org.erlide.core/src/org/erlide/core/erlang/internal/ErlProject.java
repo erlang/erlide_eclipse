@@ -480,13 +480,6 @@ public class ErlProject extends Openable implements IErlProject {
 		return fProject;
 	}
 
-	/**
-	 * @see IErlProject
-	 */
-	public boolean hasBuildState() {
-		return ErlangCore.getModelManager().getLastBuiltState(fProject, null) != null;
-	}
-
 	@Override
 	public int hashCode() {
 		if (fProject == null) {

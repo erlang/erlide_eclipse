@@ -37,8 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Erlang project elements need to be opened before they can be navigated or
  * manipulated. The children of a Erlang project are the package fragment roots
  * that are defined by the classpath and contained in this project (in other
- * words, it does not include package fragment roots for other projects).
- * </p>
+ * words, it does not include package fragment roots for other projects). </p>
  * <p>
  * This interface is not intended to be implemented by clients. An instance of
  * one of these handles can be created via
@@ -93,11 +92,11 @@ public interface IErlProject extends IErlFolder {
 	IPath getOutputLocation() throws ErlModelException;
 
 	/**
-	 * Returns the <code>IProject</code> on which this
-	 * <code>IErlProject</code> was created. This is handle-only method.
+	 * Returns the <code>IProject</code> on which this <code>IErlProject</code>
+	 * was created. This is handle-only method.
 	 * 
-	 * @return the <code>IProject</code> on which this
-	 *         <code>IErlProject</code> was created
+	 * @return the <code>IProject</code> on which this <code>IErlProject</code>
+	 *         was created
 	 */
 	IProject getProject();
 
@@ -116,15 +115,6 @@ public interface IErlProject extends IErlFolder {
 	String[] getRequiredProjectNames() throws ErlModelException;
 
 	/**
-	 * Returns whether this project has been built at least once and thus
-	 * whether it has a build state.
-	 * 
-	 * @return true if this project has been built at least once, false
-	 *         otherwise
-	 */
-	boolean hasBuildState();
-
-	/**
 	 * Sets the default output location of this project to the location
 	 * described by the given workspace-relative absolute path.
 	 * 
@@ -141,9 +131,10 @@ public interface IErlProject extends IErlFolder {
 	 *             (ELEMENT_DOES_NOT_EXIST)</li>
 	 *             <li>The path refers to a location not contained in this
 	 *             project ( <code>PATH_OUTSIDE_PROJECT</code>)
-	 *             <li>The path is not an absolute path (<code>RELATIVE_PATH</code>)
-	 *             <li>The path is nested inside a package fragment root of
-	 *             this project ( <code>INVALID_PATH</code>)
+	 *             <li>The path is not an absolute path (
+	 *             <code>RELATIVE_PATH</code>)
+	 *             <li>The path is nested inside a package fragment root of this
+	 *             project ( <code>INVALID_PATH</code>)
 	 *             <li>The output location is being modified during resource
 	 *             change event notification (CORE_EXCEPTION)
 	 *             </ul>
