@@ -212,7 +212,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 	 * Uses the standard container selection dialog to choose the new value for
 	 * the container field.
 	 */
-	private void handleBrowse() {
+	void handleBrowse() {
 		final ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 				"Select new file container");
@@ -227,7 +227,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 	/**
 	 * Ensures that both text fields are set.
 	 */
-	private void dialogChanged() {
+	void dialogChanged() {
 		final IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(getContainerName()));
 		final String fileName = getFileName();

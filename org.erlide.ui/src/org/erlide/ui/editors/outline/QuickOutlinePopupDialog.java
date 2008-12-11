@@ -124,7 +124,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.PopupDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.PopupDialog#createDialogArea(org.eclipse.swt
+	 * .widgets.Composite)
 	 */
 	@Override
 	protected Control createDialogArea(final Composite parent) {
@@ -161,7 +163,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.PopupDialog#fillDialogMenu(org.eclipse.jface.action.IMenuManager)
+	 * @see
+	 * org.eclipse.jface.dialogs.PopupDialog#fillDialogMenu(org.eclipse.jface
+	 * .action.IMenuManager)
 	 */
 	@Override
 	protected void fillDialogMenu(final IMenuManager dialogMenu) {
@@ -263,7 +267,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @param tree
 	 * @param e
 	 */
-	private void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
+	void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
 		// Ensure a selection was made, the first mouse button was
 		// used and the event happened in the tree
 		if (tree.getSelectionCount() < 1 || e.button != 1
@@ -292,7 +296,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#addDisposeListener(org.eclipse.swt.events.DisposeListener)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#addDisposeListener(org.eclipse
+	 * .swt.events.DisposeListener)
 	 */
 	public void addDisposeListener(final DisposeListener listener) {
 		getShell().addDisposeListener(listener);
@@ -301,7 +307,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#addFocusListener(org.eclipse.swt.events.FocusListener)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#addFocusListener(org.eclipse
+	 * .swt.events.FocusListener)
 	 */
 	public void addFocusListener(final FocusListener listener) {
 		getShell().addFocusListener(listener);
@@ -343,7 +351,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#removeDisposeListener(org.eclipse.swt.events.DisposeListener)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#removeDisposeListener(org.
+	 * eclipse.swt.events.DisposeListener)
 	 */
 	public void removeDisposeListener(final DisposeListener listener) {
 		getShell().removeDisposeListener(listener);
@@ -352,7 +362,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#removeFocusListener(org.eclipse.swt.events.FocusListener)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#removeFocusListener(org.eclipse
+	 * .swt.events.FocusListener)
 	 */
 	public void removeFocusListener(final FocusListener listener) {
 		getShell().removeFocusListener(listener);
@@ -361,7 +373,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#setBackgroundColor(org.eclipse.swt.graphics.Color)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#setBackgroundColor(org.eclipse
+	 * .swt.graphics.Color)
 	 */
 	public void setBackgroundColor(final Color background) {
 		applyBackgroundColor(background, getContents());
@@ -390,7 +404,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#setForegroundColor(org.eclipse.swt.graphics.Color)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#setForegroundColor(org.eclipse
+	 * .swt.graphics.Color)
 	 */
 	public void setForegroundColor(final Color foreground) {
 		applyForegroundColor(foreground, getContents());
@@ -399,7 +415,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#setInformation(java.lang.String)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#setInformation(java.lang.String
+	 * )
 	 */
 	public void setInformation(final String information) {
 		// Ignore
@@ -409,7 +427,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControl#setLocation(org.eclipse.swt.graphics.Point)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControl#setLocation(org.eclipse.swt
+	 * .graphics.Point)
 	 */
 	public void setLocation(final Point location) {
 		/*
@@ -443,7 +463,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.jface.text.IInformationControl#setSizeConstraints(int,
-	 *      int)
+	 * int)
 	 */
 	public void setSizeConstraints(final int maxWidth, final int maxHeight) {
 		// Ignore
@@ -478,7 +498,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang.Object)
+	 * @see
+	 * org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang
+	 * .Object)
 	 */
 	public void setInput(final Object input) {
 		// Input comes from ErlangSourceInfoProvider.getInformation2()
@@ -492,7 +514,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+	 * @see
+	 * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt
+	 * .events.DisposeEvent)
 	 */
 	public void widgetDisposed(final DisposeEvent e) {
 		// Note: We do not reuse the dialog
@@ -503,7 +527,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.PopupDialog#createTitleControl(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.PopupDialog#createTitleControl(org.eclipse.
+	 * swt.widgets.Composite)
 	 */
 	@Override
 	protected Control createTitleControl(final Composite parent) {
@@ -539,7 +565,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/**
 	 * 
 	 */
-	private void gotoSelectedElement() {
+	void gotoSelectedElement() {
 		final Object selectedElement = getSelectedElement();
 		ErlLogger.debug("&&>> " + selectedElement);
 		if (selectedElement == null) {
@@ -621,7 +647,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 * @param update
 	 *            <code>true</code> if the viewer should be updated
 	 */
-	private void setMatcherString(final String pattern, final boolean update) {
+	void setMatcherString(final String pattern, final boolean update) {
 		if (pattern.length() == 0) {
 			fStringMatcher = null;
 		} else {

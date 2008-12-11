@@ -96,7 +96,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	public static class DebugTreeItem {
 		private final IErlElement item;
 		private final DebugTreeItem parent;
-		private final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
+		final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		public DebugTreeItem(final IErlElement item, final DebugTreeItem parent) {
 			this.item = item;
@@ -133,7 +133,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			return true;
 		}
 
-		private boolean recursiveAddAllErlangModules(final IErlElement l) {
+		boolean recursiveAddAllErlangModules(final IErlElement l) {
 			if (l instanceof IErlModule) {
 				children.add(new DebugTreeItem(l, this));
 				return true;
@@ -267,8 +267,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
-	 *      .swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
+	 * .swt.widgets.Composite)
 	 */
 	public void createControl(final Composite parent) {
 		interpretedModules = new ArrayList<IErlModule>();
@@ -370,8 +371,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
-	 *      debug.core.ILaunchConfigurationWorkingCopy)
+	 * @see
+	 * org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
+	 * debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	@SuppressWarnings("unchecked")
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
@@ -463,8 +465,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
-	 *      .debug.core.ILaunchConfiguration)
+	 * @see
+	 * org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
+	 * .debug.core.ILaunchConfiguration)
 	 */
 	public void initializeFrom(final ILaunchConfiguration config) {
 		try {
@@ -477,8 +480,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
-	 *      .debug.core.ILaunchConfigurationWorkingCopy)
+	 * @see
+	 * org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
+	 * .debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
