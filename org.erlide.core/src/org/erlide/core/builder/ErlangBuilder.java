@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.erlang.ErlModelException;
@@ -162,45 +161,64 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	@Override
 	@SuppressWarnings("unchecked")
+	@Override
 	protected IProject[] build(final int kind, final Map args,
 			final IProgressMonitor monitor) throws CoreException {
-		// ReflectionUtils.exportClass(ErlangBuilder.class);
-		// if (monitor == null)
-		// {
-		// ErlLogger.debug("** null monitor in build!?");
-		// monitor = new NullProgressMonitor();
-		// }
-
-		ErlangProjectProperties pp = new ErlangProjectProperties(getProject());
+		currentProject = getProject();
+		if (currentProject == null || !currentProject.isAccessible()) {
+			return new IProject[0];
+		}
+		ErlangProjectProperties pp = new ErlangProjectProperties(currentProject);
 		if (pp.isReference()) {
 			return null;
 		}
 
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("building!...");
+			ErlLogger.debug("Starting build of " + currentProject.getName() //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
 		}
-		if (fInternal) {
-			if (kind == FULL_BUILD) {
-				fullBuild(args, monitor);
-			} else {
-				final IResourceDelta delta = getDelta(getProject());
-				if (hasHrl(delta)) {
-					fullBuild(args, monitor);
-				} else {
-					incrementalBuild(args, delta, monitor);
-				}
-			}
-		} else {
-			build_remote(kind, args, monitor);
-		}
-
+		notifier = new BuildNotifier(monitor, currentProject);
+		notifier.begin();
 		try {
-			checkForClashes();
-		} catch (final Exception e) {
-		}
+			initializeBuilder();
 
+			if (fInternal) {
+				if (kind == FULL_BUILD) {
+					fullBuild(args, notifier);
+				} else {
+					final IResourceDelta delta = getDelta(getProject());
+					if (hasHrl(delta)) {
+						fullBuild(args, notifier);
+					} else {
+						incrementalBuild(args, delta, notifier);
+					}
+				}
+			} else {
+				build_remote(kind, args, notifier);
+			}
+
+			try {
+				checkForClashes();
+			} catch (final Exception e) {
+			}
+
+		} catch (final CoreException e) {
+			log(e, "JavaBuilder handling CoreException while building: "
+					+ currentProject.getName());
+			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+					BuilderMessages.build_inconsistentProject, e
+							.getLocalizedMessage()));
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		} finally {
+			notifier.done();
+			cleanup();
+		}
+		if (BuilderUtils.isDebugging()) {
+			ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
+		}
 		return null;
 	}
 
@@ -338,29 +356,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void fullBuild(final Map args, final IProgressMonitor monitor)
+	protected void fullBuild(final Map args, final BuildNotifier notifier)
 			throws CoreException {
 		final int n = getErlangResourcesCount(getProject());
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("full build..." + getProject() + " " + n);
 		}
 
-		monitor.beginTask("Performing full build", n);
+		notifier.setProgressPerCompilationUnit(1.0f / n);
 		try {
-			// IWorkspaceRunnable op = new
-			// CleanOutFoldersOperation(getProject());
-			// ResourcesPlugin.getWorkspace().run(op,
-			// new SubProgressMonitor(monitor, 15));
-
-			final IProgressMonitor subMon = new SubProgressMonitor(monitor, n);
-			subMon.beginTask("Compiling", IProgressMonitor.UNKNOWN);
-			try {
-				getProject().accept(new ErlangResourceVisitor(subMon));
-			} finally {
-				subMon.done();
-			}
+			getProject().accept(new ErlangResourceVisitor(notifier));
 		} finally {
-			monitor.done();
+			notifier.done();
 		}
 	}
 
@@ -380,18 +387,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	@SuppressWarnings("unchecked")
 	protected void incrementalBuild(final Map args, final IResourceDelta delta,
-			final IProgressMonitor monitor) throws CoreException {
+			final BuildNotifier notifier) throws CoreException {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("incr build...");
 		}
 		final IResourceDelta[] chd = delta.getAffectedChildren();
 		final int n = chd.length;
-		monitor.beginTask("Compiling Erlang files", n);
+		notifier.setProgressPerCompilationUnit(1.0f / n);
 		try {
 			// the visitor does the work.
-			delta.accept(new ErlangDeltaVisitor(monitor));
+			delta.accept(new ErlangDeltaVisitor(notifier));
 		} finally {
-			monitor.done();
+			notifier.done();
 		}
 	}
 
@@ -900,10 +907,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
-		private final IProgressMonitor mon;
+		private final BuildNotifier mon;
 
-		public ErlangDeltaVisitor(final IProgressMonitor submon) {
-			mon = submon;
+		public ErlangDeltaVisitor(final BuildNotifier notifier) {
+			mon = notifier;
 		}
 
 		/*
@@ -914,9 +921,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		 * .core.resources.IResourceDelta)
 		 */
 		public boolean visit(final IResourceDelta delta) throws CoreException {
-			if (mon.isCanceled()) {
-				return false;
-			}
+
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
 			final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -935,7 +940,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				case IResourceDelta.CHANGED:
 					// handle changed resource
 					if (!resource.isDerived()) {
+						mon.aboutToCompile(resource);
 						compileFile(my_project, resource);
+						mon.compiled(resource);
 					}
 					break;
 				case IResourceDelta.REMOVED:
@@ -956,15 +963,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							.removeFileExtension().addFileExtension("yrl");
 					final IResource yrl = my_project.findMember(yrlp);
 					if (yrl != null) {
+						mon.aboutToCompile(resource);
 						compileYrlFile(my_project, yrl);
+						mon.compiled(resource);
 					}
 
 					break;
 				}
-				if (BuilderUtils.isDebugging()) {
-					ErlLogger.debug("...worked... " + resource);
-				}
-				mon.worked(1);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -979,13 +984,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					break;
 				case IResourceDelta.REMOVED:
 				case IResourceDelta.CHANGED:
-					checkDependents(resource, my_project);
+					checkDependents(resource, my_project, notifier);
 					break;
 				}
-				if (BuilderUtils.isDebugging()) {
-					ErlLogger.debug("...worked... " + resource);
-				}
-				mon.worked(1);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -998,7 +999,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
+					mon.aboutToCompile(resource);
 					compileYrlFile(my_project, resource);
+					mon.compiled(resource);
 					break;
 
 				case IResourceDelta.REMOVED:
@@ -1013,7 +1016,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					}
 					break;
 				}
-				mon.worked(1);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -1030,12 +1032,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					searcher.init(p[0]);
 					my_project.accept(searcher);
 					if (searcher.fResult != null) {
-						ErlLogger.debug("recompiling " + searcher.fResult);
+						mon.aboutToCompile(resource);
 						compileFile(my_project, searcher.fResult);
+						mon.compiled(resource);
 					}
 					break;
 				}
-				mon.worked(1);
 			}
 			// return true to continue visiting children.
 			if (resource.getType() == IResource.FOLDER
@@ -1047,8 +1049,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	}
 
-	void checkDependents(final IResource resource, final IProject my_project)
-			throws ErlModelException {
+	void checkDependents(final IResource resource, final IProject my_project,
+			final BuildNotifier mon) throws ErlModelException {
 		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
@@ -1057,7 +1059,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				for (final ErlangIncludeFile ifile : incs) {
 					if (comparePath(ifile.getFilename(), resource.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
+							mon.aboutToCompile(m.getResource());
 							compileFile(my_project, m.getResource());
+							mon.compiled(m.getResource());
 						}
 						break;
 					}
@@ -1068,16 +1072,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	class ErlangResourceVisitor implements IResourceVisitor {
 
-		private final IProgressMonitor monitor;
+		private final BuildNotifier monitor;
 
-		public ErlangResourceVisitor(final IProgressMonitor subMon) {
-			monitor = subMon;
+		public ErlangResourceVisitor(final BuildNotifier notifier) {
+			monitor = notifier;
 		}
 
 		public boolean visit(final IResource resource) throws CoreException {
-			if (monitor.isCanceled()) {
-				return false;
-			}
 			final IProject my_project = resource.getProject();
 
 			if (resource.getType() == IResource.FILE
@@ -1087,11 +1088,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& !resource.isDerived()) {
 
 				try {
-					if (BuilderUtils.isDebugging()) {
-						ErlLogger.debug("Full: " + resource.getName());
-					}
+					monitor.aboutToCompile(resource);
 					compileFile(resource.getProject(), resource);
-					monitor.worked(1);
+					monitor.compiled(resource);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -1100,10 +1099,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& resource.getFileExtension() != null
 					&& "hrl".equals(resource.getFileExtension())
 					&& isInIncludedPath(resource, my_project)) {
-				if (BuilderUtils.isDebugging()) {
-					ErlLogger.debug("Full: " + resource.getName());
-				}
-				checkDependents(resource, my_project);
+				checkDependents(resource, my_project, notifier);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -1111,11 +1107,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 					&& isInExtCodePath(resource, my_project)) {
 
 				try {
-					if (BuilderUtils.isDebugging()) {
-						ErlLogger.debug("Full: " + resource.getName());
-					}
+					monitor.aboutToCompile(resource);
 					compileYrlFile(resource.getProject(), resource);
-					monitor.worked(1);
+					monitor.compiled(resource);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -1273,61 +1267,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected IProject[] build_1(final int kind, final Map ignored,
-			final IProgressMonitor monitor) throws CoreException {
-		currentProject = getProject();
-		if (currentProject == null || !currentProject.isAccessible()) {
-			return new IProject[0];
-		}
-
-		if (BuilderUtils.isDebugging()) {
-			System.out
-					.println("\nStarting build of " + currentProject.getName() //$NON-NLS-1$
-							+ " @ " + new Date(System.currentTimeMillis()));
-		}
-		notifier = new BuildNotifier(monitor, currentProject);
-		notifier.begin();
-		try {
-			notifier.checkCancel();
-			initializeBuilder();
-
-			if (kind == FULL_BUILD) {
-				buildAll();
-			} else {
-				if (true) // hasStructuralDelta())
-				{ // double check that a jar file didn't get replaced in a
-					// binary project
-					buildAll();
-				} else {
-					// buildDeltas();
-				}
-			}
-		} catch (final CoreException e) {
-			log(e, "JavaBuilder handling CoreException while building: "
-					+ currentProject.getName());
-			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
-					BuilderMessages.build_inconsistentProject, e
-							.getLocalizedMessage()));
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} finally {
-			notifier.done();
-			cleanup();
-		}
-		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis()));
-		}
-		return null;
-	}
-
-	private void buildAll() {
-		notifier.checkCancel();
-		notifier.subTask(BuilderMessages.build_preparingBuild);
-		// fullBuild();
-	}
-
 	protected void clean_1(final IProgressMonitor monitor) throws CoreException {
 		currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
@@ -1391,8 +1330,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	@SuppressWarnings("unchecked")
 	protected IProject[] build_remote(final int kind, final Map args,
-			final IProgressMonitor monitor) throws CoreException {
-		monitor.beginTask("Remote building", 100);
+			final BuildNotifier notifier) throws CoreException {
 		try {
 			// args.put("server", "gsnbuild1");
 			// args.put("remoteuser", "qvladum");
@@ -1471,7 +1409,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				e.printStackTrace();
 			}
 		} finally {
-			monitor.done();
+			notifier.done();
 		}
 		return null;
 	}

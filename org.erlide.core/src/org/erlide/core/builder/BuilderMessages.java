@@ -15,12 +15,12 @@ import org.eclipse.osgi.util.NLS;
 
 public final class BuilderMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.erlide.core.builder.builder.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.erlide.core.builder.messages"; //$NON-NLS-1$
 
 	private BuilderMessages() {
 	}
 
-	public static String buildOneWarning;
+	public static String build_oneWarning;
 	public static String build_multipleWarnings;
 	public static String build_multipleErrors;
 	public static String build_oneError;
@@ -29,11 +29,9 @@ public final class BuilderMessages extends NLS {
 	public static String build_foundHeader;
 	public static String build_fixedHeader;
 	public static String build_inconsistentProject;
-	public static String build_incompleteClassPath;
 	public static String build_missingSourceFile;
 	public static String build_preparingBuild;
 	public static String build_readingDelta;
-	public static String build_abortDueToClasspathProblems;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, BuilderMessages.class);

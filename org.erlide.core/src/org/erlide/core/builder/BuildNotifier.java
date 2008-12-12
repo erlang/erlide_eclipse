@@ -22,33 +22,20 @@ import org.erlide.runtime.ErlLogger;
 public class BuildNotifier {
 
 	protected IProgressMonitor fMonitor;
-
 	protected boolean fCancelling;
-
 	protected float percentComplete;
-
 	protected float progressPerCompilationUnit;
-
 	protected int fNewErrorCount;
-
 	protected int fFixedErrorCount;
-
 	protected int fNewWarningCount;
-
 	protected int fFixedWarningCount;
-
 	protected int fWorkDone;
-
 	protected int fTotalWork;
-
 	protected String previousSubtask;
 
 	public static int newErrorCount = 0;
-
 	public static int fixedErrorCount = 0;
-
 	public static int newWarningCount = 0;
-
 	public static int fixedWarningCount = 0;
 
 	public static void resetProblemCounters() {
@@ -73,10 +60,13 @@ public class BuildNotifier {
 	 * Notification before a compile that a unit is about to be compiled.
 	 */
 	public void aboutToCompile(IResource unit) {
+		checkCancel();
 		final String message = BuilderMessages.bind(
-				BuilderMessages.build_compiling, unit.getFullPath()
-						.removeLastSegments(1).makeRelative().toString());
+				BuilderMessages.build_compiling, unit.getName());
 		subTask(message);
+		if (BuilderUtils.isDebugging()) {
+			ErlLogger.debug(message);
+		}
 	}
 
 	public void begin() {
@@ -114,9 +104,11 @@ public class BuildNotifier {
 	 */
 	public void compiled(IResource unit) {
 		final String message = BuilderMessages.bind(
-				BuilderMessages.build_compiling, unit.getFullPath()
-						.removeLastSegments(1).makeRelative().toString());
+				BuilderMessages.build_compiling, unit.getName());
 		subTask(message);
+		if (BuilderUtils.isDebugging()) {
+			ErlLogger.debug(message);
+		}
 		updateProgressDelta(progressPerCompilationUnit);
 		checkCancelWithinCompiler();
 	}
@@ -166,7 +158,7 @@ public class BuildNotifier {
 			}
 			if (displayBoth || fNewWarningCount > 0) {
 				if (fNewWarningCount == 1) {
-					buffer.append(BuilderMessages.buildOneWarning);
+					buffer.append(BuilderMessages.build_oneWarning);
 				} else {
 					buffer.append(BuilderMessages.bind(
 							BuilderMessages.build_multipleWarnings, String
@@ -201,7 +193,7 @@ public class BuildNotifier {
 				}
 				if (fFixedWarningCount > 0) {
 					if (fFixedWarningCount == 1) {
-						buffer.append(BuilderMessages.buildOneWarning);
+						buffer.append(BuilderMessages.build_oneWarning);
 					} else {
 						buffer.append(BuilderMessages.bind(
 								BuilderMessages.build_multipleWarnings, String
