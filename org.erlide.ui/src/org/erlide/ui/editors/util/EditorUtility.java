@@ -72,7 +72,8 @@ import org.erlide.ui.prefs.PreferenceConstants;
  */
 public class EditorUtility {
 
-	public static boolean isEditorInput(Object element, IEditorPart editor) {
+	public static boolean isEditorInput(final Object element,
+			final IEditorPart editor) {
 		if (editor != null) {
 			try {
 				return editor.getEditorInput().equals(getEditorInput(element));
@@ -89,7 +90,7 @@ public class EditorUtility {
 	 * @return the IEditorPart if shown, null if element is not open in an
 	 *         editor
 	 */
-	public static IEditorPart isOpenInEditor(Object inputElement) {
+	public static IEditorPart isOpenInEditor(final Object inputElement) {
 		IEditorInput input = null;
 
 		try {
@@ -110,12 +111,12 @@ public class EditorUtility {
 
 	/**
 	 * Opens a Java editor for an element such as <code>IJavaElement</code>,
-	 * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
-	 * default.
+	 * <code>IFile</code>, or <code>IStorage</code>. The editor is
+	 * activated by default.
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */
-	public static IEditorPart openInEditor(Object inputElement)
+	public static IEditorPart openInEditor(final Object inputElement)
 			throws ErlModelException, PartInitException {
 		return openInEditor(inputElement, true);
 	}
@@ -125,8 +126,8 @@ public class EditorUtility {
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */
-	public static IEditorPart openInEditor(Object inputElement, boolean activate)
-			throws ErlModelException, PartInitException {
+	public static IEditorPart openInEditor(final Object inputElement,
+			final boolean activate) throws ErlModelException, PartInitException {
 
 		if (inputElement instanceof IFile) {
 			return openInEditor((IFile) inputElement, activate);
@@ -144,7 +145,8 @@ public class EditorUtility {
 	/**
 	 * Selects a Java Element in an editor
 	 */
-	public static void revealInEditor(IEditorPart part, IErlElement element) {
+	public static void revealInEditor(final IEditorPart part,
+			final IErlElement element) {
 		if (element == null) {
 			return;
 		}
@@ -158,7 +160,8 @@ public class EditorUtility {
 	/**
 	 * Selects and reveals the given region in the given editor part.
 	 */
-	public static void revealInEditor(IEditorPart part, IRegion region) {
+	public static void revealInEditor(final IEditorPart part,
+			final IRegion region) {
 		if (part != null && region != null) {
 			revealInEditor(part, region.getOffset(), region.getLength());
 		}
@@ -167,8 +170,8 @@ public class EditorUtility {
 	/**
 	 * Selects and reveals the given offset and length in the given editor part.
 	 */
-	public static void revealInEditor(IEditorPart editor, final int offset,
-			final int length) {
+	public static void revealInEditor(final IEditorPart editor,
+			final int offset, final int length) {
 		if (editor instanceof ITextEditor) {
 			((ITextEditor) editor).selectAndReveal(offset, length);
 			return;
@@ -234,8 +237,8 @@ public class EditorUtility {
 		}
 	}
 
-	private static IEditorPart openInEditor(IFile file, boolean activate)
-			throws PartInitException {
+	private static IEditorPart openInEditor(final IFile file,
+			final boolean activate) throws PartInitException {
 		if (file != null) {
 			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
 			if (p != null) {
@@ -248,8 +251,9 @@ public class EditorUtility {
 		return null;
 	}
 
-	private static IEditorPart openInEditor(IEditorInput input,
-			String editorID, boolean activate) throws PartInitException {
+	private static IEditorPart openInEditor(final IEditorInput input,
+			final String editorID, final boolean activate)
+			throws PartInitException {
 		if (input != null) {
 			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
 			if (p != null) {
@@ -262,7 +266,7 @@ public class EditorUtility {
 		return null;
 	}
 
-	private static void initializeHighlightRange(IEditorPart editorPart) {
+	private static void initializeHighlightRange(final IEditorPart editorPart) {
 		if (editorPart instanceof ITextEditor) {
 			final IAction toggleAction = editorPart
 					.getEditorSite()
@@ -301,7 +305,8 @@ public class EditorUtility {
 	 * @deprecated Made it public again for java debugger UI.
 	 */
 	@Deprecated
-	public static String getEditorID(IEditorInput input, Object inputObject) {
+	public static String getEditorID(final IEditorInput input,
+			final Object inputObject) {
 		IEditorDescriptor editorDescriptor;
 		try {
 			if (input instanceof IFileEditorInput) {
@@ -338,7 +343,7 @@ public class EditorUtility {
 		return null;
 	}
 
-	public static IEditorInput getEditorInput(Object input)
+	public static IEditorInput getEditorInput(final Object input)
 			throws ErlModelException {
 		if (input instanceof IErlElement) {
 			return getEditorInput((IErlElement) input);
@@ -355,8 +360,8 @@ public class EditorUtility {
 	}
 
 	/**
-	 * If the current active editor edits a java element return it, else return
-	 * null
+	 * If the current active editor edits a erlang element return it, else
+	 * return null
 	 */
 	public static IErlElement getActiveEditorErlangInput() {
 		final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
@@ -383,7 +388,7 @@ public class EditorUtility {
 	 * @return the SWT modifier bit, or <code>0</code> if no match was found
 	 * @since 2.1.1
 	 */
-	public static int findLocalizedModifier(String modifierName) {
+	public static int findLocalizedModifier(final String modifierName) {
 		if (modifierName == null) {
 			return 0;
 		}
@@ -450,8 +455,8 @@ public class EditorUtility {
 	// String[] {modifierString, newModifierString});
 	// }
 	/**
-	 * Returns the Java project for a given editor input or <code>null</code> if
-	 * no corresponding Java project exists.
+	 * Returns the Java project for a given editor input or <code>null</code>
+	 * if no corresponding Java project exists.
 	 * 
 	 * @param input
 	 *            the editor input
@@ -501,7 +506,7 @@ public class EditorUtility {
 		return result.toArray(new IEditorPart[result.size()]);
 	}
 
-	static public IFile openExternal(String path) throws CoreException {
+	static public IFile openExternal(final String path) throws CoreException {
 		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 		// TODO is this a good way?
 		final String prjName = "External Files";

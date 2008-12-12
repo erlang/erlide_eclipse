@@ -27,7 +27,9 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -47,6 +49,7 @@ import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
@@ -514,6 +517,28 @@ public class ErlModelUtils {
 			final IDocument doc = documentProvider.getDocument(editorInput);
 			return ErlangCore.getModelManager().getModuleFromFile(
 					editorInput.getName(), doc.get(), path, editorInput);
+		}
+		return null;
+	}
+
+	public static IErlElement getEditorInputErlElement(final IEditorInput input) {
+		final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
+		for (final IWorkbenchWindow workbenchWindow : workbench
+				.getWorkbenchWindows()) {
+			final IWorkbenchPage page = workbenchWindow.getActivePage();
+			if (page != null) {
+				final IEditorPart part = page.getActiveEditor();
+				if (part != null) {
+					if (part instanceof AbstractDecoratedTextEditor) {
+						final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) part;
+						final IErlModule module = getModule(part
+								.getEditorInput(), adte.getDocumentProvider());
+						if (module != null) {
+							return module;
+						}
+					}
+				}
+			}
 		}
 		return null;
 	}

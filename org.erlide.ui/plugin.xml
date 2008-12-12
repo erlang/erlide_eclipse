@@ -155,7 +155,7 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="org.erlide.ui.navigator.ErlangCommonNavigator"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"
             name="Erlang Navigator">
