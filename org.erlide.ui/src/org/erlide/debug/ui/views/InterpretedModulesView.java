@@ -29,8 +29,8 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IErlLaunchAttributes;
-import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlDebugConstants;
+import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
@@ -44,7 +44,7 @@ import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 public class InterpretedModulesView extends AbstractDebugView implements
 		IDebugEventSetListener, IDebugContextListener {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
+	CheckboxTreeViewer checkboxTreeViewer;
 	private ErlangDebugTarget erlangDebugTarget;
 	private boolean distributed;
 
