@@ -186,4 +186,10 @@ public interface IErlElement extends IAdaptable {
 
 	void resourceChanged();
 
+	/**
+	 * @param visitor
+	 * @throws ErlModelException
+	 */
+	void accept(IErlElementVisitor visitor) throws ErlModelException;
+
 }
