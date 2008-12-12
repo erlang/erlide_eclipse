@@ -263,16 +263,30 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	private boolean hasHrl(final IResourceDelta delta) {
-		if (delta == null) {
+		if (delta == null
+				|| !((delta.getKind() == IResourceDelta.ADDED) || (delta
+						.getKind() == IResourceDelta.CHANGED))) {
 			return false;
 		}
 
-		final HrlDeltaVisitor v = new HrlDeltaVisitor();
-		try {
-			delta.accept(v);
-		} catch (final CoreException e) {
+		final IResource resource = delta.getResource();
+		if (resource.getType() == IResource.FILE
+				&& resource.getFileExtension() != null
+				&& "hrl".compareTo(resource.getFileExtension()) == 0) {
+			return true;
+
 		}
-		return v.hasAny;
+
+		IResourceDelta[] children = delta
+				.getAffectedChildren(IResourceDelta.ADDED
+						| IResourceDelta.CHANGED);
+		for (IResourceDelta child : children) {
+			if (hasHrl(child)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected void deleteMarkers(final IResource resource) {
@@ -882,32 +896,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	static class HrlDeltaVisitor implements IResourceDeltaVisitor {
-
-		public boolean hasAny = false;
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
-		 * .core.resources.IResourceDelta)
-		 */
-		public boolean visit(final IResourceDelta delta) throws CoreException {
-			final IResource resource = delta.getResource();
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "hrl".compareTo(resource.getFileExtension()) == 0) {
-				hasAny = true;
-				return false;
-			}
-
-			// return true to continue visiting children.
-			return true;
-		}
-
 	}
 
 	class ErlangDeltaVisitor implements IResourceDeltaVisitor {
