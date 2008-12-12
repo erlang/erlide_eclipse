@@ -437,7 +437,7 @@ public class ErlModelManager implements IErlModelManager {
 	//
 	// /**
 	// * @see
-	//org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange
+	// org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange
 	// (Preferences.PropertyChangeEvent)
 	// */
 	// public void propertyChange(final Preferences.PropertyChangeEvent event) {
@@ -457,8 +457,10 @@ public class ErlModelManager implements IErlModelManager {
 			final ArrayList<IResource> removed = new ArrayList<IResource>();
 			final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) {
-					ErlLogger.debug("delta " + delta.getKind() + " for "
-							+ delta.getResource().getLocation());
+					if (verbose) {
+						ErlLogger.debug("delta " + delta.getKind() + " for "
+								+ delta.getResource().getLocation());
+					}
 					IResource resource = delta.getResource();
 					boolean erlangFile = resource.getType() == IResource.FILE
 							&& ErlideUtil
