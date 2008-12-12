@@ -168,7 +168,6 @@ public class ErlideUtil {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	public static String getPath(final String name, final Bundle b) {
 		final URL entry = b.getEntry(name.replace(" ", "%20"));
 		if (entry != null) {

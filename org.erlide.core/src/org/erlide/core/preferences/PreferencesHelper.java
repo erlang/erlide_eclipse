@@ -11,10 +11,8 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.osgi.internal.verifier.Base64;
 import org.osgi.service.prefs.BackingStoreException;
 
-@SuppressWarnings("restriction")
 public class PreferencesHelper {
 
 	private IScopeContext[] loadContexts;
@@ -60,7 +58,6 @@ public class PreferencesHelper {
 		return service.getBoolean(qualifier, key, defaultValue, loadContexts);
 	}
 
-	@SuppressWarnings("restriction")
 	public byte[] getByteArray(String key, byte[] defaultValue) {
 		byte[] b = service.getByteArray(qualifier, key, defaultValue,
 				loadContexts);
