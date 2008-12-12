@@ -49,7 +49,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
 	private final List<IErlComment> comments;
-	private final String initialText;
+	private String initialText;
 	private IErlScanner scanner;
 	private final IFile fFile;
 	private boolean parsed = false;
@@ -84,7 +84,7 @@ public class ErlModule extends Openable implements IErlModule {
 		// }
 
 		final ErlParser parser = new ErlParser();
-		if (initialText != null) {
+		if (initialText != null) { // TODO? && !isStructureKnown) {
 			final String path = getFilePath();
 			final String erlidePath = getErlidePath();
 			isStructureKnown = parser.parse(this, initialText, !parsed, path,
