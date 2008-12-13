@@ -186,10 +186,19 @@ public interface IErlElement extends IAdaptable {
 
 	void resourceChanged();
 
+	static final int VISIT_REFERENCED = 0x0001;
+	static final int VISIT_EXTERNALS = 0x0002;
+	static final int VISIT_LEAFS_ONLY = 0x0004;
+
 	/**
+	 * The good ole visitor pattern
+	 * 
 	 * @param visitor
+	 * @param flags
+	 * @param leafKind
 	 * @throws ErlModelException
 	 */
-	void accept(IErlElementVisitor visitor) throws ErlModelException;
+	void accept(IErlElementVisitor visitor, int flags, IErlElement.Kind leafKind)
+			throws ErlModelException;
 
 }

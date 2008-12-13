@@ -29,6 +29,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModelManager;
@@ -37,6 +38,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.ErlangProjectProperties.ProjectType;
 
@@ -50,6 +52,7 @@ import org.erlide.runtime.ErlangProjectProperties.ProjectType;
  * @see IErlModel
  */
 public class ErlModel extends Openable implements IErlModel {
+
 	/**
 	 * A array with all the non-erlang projects contained by this model
 	 */
@@ -461,13 +464,15 @@ public class ErlModel extends Openable implements IErlModel {
 		return null;
 	}
 
-	public IErlProject createOtpProject(IProject project) throws CoreException {
+	public IErlProject createOtpProject(final IProject project)
+			throws CoreException {
 		final IPath location = project.getLocation();
 
 		final IErlProject p = ErlangCore.getModel().getErlangProject(
 				project.getName());
 
-		ErlangProjectProperties props = new ErlangProjectProperties(project);
+		final ErlangProjectProperties props = new ErlangProjectProperties(
+				project);
 		props.setType(ProjectType.OTP);
 
 		final IFile file = project.getFile(".");
@@ -486,17 +491,17 @@ public class ErlModel extends Openable implements IErlModel {
 		return p;
 	}
 
-	private static List<String> findOtpSourceDirs(File file) {
-		List<String> result = new ArrayList<String>();
+	private static List<String> findOtpSourceDirs(final File file) {
+		final List<String> result = new ArrayList<String>();
 		return result;
 	}
 
-	private static List<String> findOtpIncludeDirs(File file) {
-		List<String> result = new ArrayList<String>();
+	private static List<String> findOtpIncludeDirs(final File file) {
+		final List<String> result = new ArrayList<String>();
 		return result;
 	}
 
-	public static final IProject newProject(String name, String path)
+	public static final IProject newProject(final String name, final String path)
 			throws CoreException {
 		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 		final IProject project = ws.getRoot().getProject(name);
@@ -512,5 +517,47 @@ public class ErlModel extends Openable implements IErlModel {
 			project.open(null);
 		}
 		return project;
+	}
+
+	public final void accept(final IErlElement element,
+			final IErlElementVisitor visitor, final int flags,
+			final IErlElement.Kind leafKind) throws ErlModelException {
+		if (element.getKind() == leafKind) {
+			visitor.visit(element);
+		} else {
+			boolean visitChildren = true;
+			if ((flags & IErlElement.VISIT_LEAFS_ONLY) == 0) {
+				visitChildren = visitor.visit(element);
+			}
+			if (visitChildren && element instanceof IParent) {
+				final IParent parent = (IParent) element;
+				for (final IErlElement child : parent.getChildren()) {
+					accept(child, visitor, flags, leafKind);
+				}
+				if (parent instanceof IErlProject) {
+					final IErlProject project = (IErlProject) parent;
+					if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
+						final IProject p = project.getProject();
+						try {
+							for (final IProject referenced : p
+									.getReferencedProjects()) {
+								final IErlElement e = findElement(referenced);
+								if (e instanceof IErlProject) {
+									final IErlProject ep = (IErlProject) e;
+									accept(ep, visitor, flags
+											& ~IErlElement.VISIT_REFERENCED,
+											leafKind);
+								}
+							}
+						} catch (final CoreException e) {
+							ErlLogger.warn(e);
+						}
+					}
+					if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
+						; // FIXME hur ska vi göra detta nu då...
+					}
+				}
+			}
+		}
 	}
 }

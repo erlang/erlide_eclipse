@@ -26,7 +26,6 @@ import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementVisitor;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
@@ -240,11 +239,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	/**
 	 * @see IErlElement
 	 */
-	public IErlModel getModel() {
+	public ErlModel getModel() {
 		IErlElement current = this;
 		do {
-			if (current instanceof IErlModel) {
-				return (IErlModel) current;
+			if (current instanceof ErlModel) {
+				return (ErlModel) current;
 			}
 		} while ((current = current.getParent()) != null);
 		return null;
@@ -706,16 +705,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return null;
 	}
 
-	public void accept(final IErlElementVisitor visitor)
-			throws ErlModelException {
-		if (visitor.visit(this)) {
-			if (this instanceof IParent) {
-				final IParent p = (IParent) this;
-				for (final IErlElement e : p.getChildren()) {
-					e.accept(visitor);
-				}
-			}
-		}
+	public final void accept(final IErlElementVisitor visitor, final int flags,
+			final IErlElement.Kind leafKind) throws ErlModelException {
+		getModel().accept(this, visitor, flags, leafKind);
 	}
 
 }
