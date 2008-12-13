@@ -1,5 +1,6 @@
 package org.erlide.core.util;
 
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.internal.ErlFunction;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -51,7 +52,10 @@ public class ErlangFunction {
 		}
 		if (obj instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) obj;
-			return f.arity == arity && f.name.equals(name);
+			if (f.name.equals(name)) {
+				return f.arity == arity || f.arity == IErlModel.UNKNOWN_ARITY
+						|| arity == IErlModel.UNKNOWN_ARITY;
+			}
 		}
 		return false;
 	}
