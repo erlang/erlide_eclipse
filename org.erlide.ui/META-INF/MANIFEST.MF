@@ -9,7 +9,6 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.novocode.naf.swt.custom,
  erlang,
- org.erlide.debug.ui,
  org.erlide.debug.ui.model,
  org.erlide.ui;
   uses:="org.eclipse.core.runtime,

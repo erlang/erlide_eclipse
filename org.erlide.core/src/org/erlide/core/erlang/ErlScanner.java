@@ -12,15 +12,12 @@ package org.erlide.core.erlang;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
 import erlang.ErlideScanner;
 
 /**
  * Erlang syntax scanner
- * 
- * @author Vlad
  */
 public class ErlScanner implements IErlScanner {
 
@@ -31,8 +28,8 @@ public class ErlScanner implements IErlScanner {
 	private String moduleFileName;
 	private final String erlidePath;
 
-	public ErlScanner(final IErlModule module, final String initialText,final String moduleFileName,
-			final String erlidePath) {
+	public ErlScanner(final IErlModule module, final String initialText,
+			final String moduleFileName, final String erlidePath) {
 		this.module = module;
 		moduleName = createScannerModuleName(module);
 		this.moduleFileName = moduleFileName;

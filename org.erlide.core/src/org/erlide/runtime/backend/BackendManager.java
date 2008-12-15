@@ -48,21 +48,15 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager implements IEpmdListener {
 
-	private volatile static BackendManager MANAGER;
-	private static Object lock = new Object();
-
 	private volatile IdeBackend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
 	private final Map<IProject, BuildBackend> fBuildBackends;
 	private final Object fBuildBackendsLock = new Object();
 	private final Map<IProject, Set<ExecutionBackend>> fExecutionBackends;
-	// private final Object fExecutionBackendsLock = new Object();
 	protected List<IBackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
 	private EpmdWatcher epmdWatcher;
-
-	// private final Object fExternalBackendsLock = new Object();
 
 	public enum BackendEvent {
 		ADDED, REMOVED
@@ -72,15 +66,12 @@ public final class BackendManager implements IEpmdListener {
 		DEBUG, AUTOSTART, TRAP_EXIT
 	};
 
+	private static class LazyBackendManagerHolder {
+		public static final BackendManager instance = new BackendManager();
+	}
+
 	public static BackendManager getDefault() {
-		if (MANAGER == null) {
-			synchronized (lock) {
-				if (MANAGER == null) {
-					MANAGER = new BackendManager();
-				}
-			}
-		}
-		return MANAGER;
+		return LazyBackendManagerHolder.instance;
 	}
 
 	private BackendManager() {

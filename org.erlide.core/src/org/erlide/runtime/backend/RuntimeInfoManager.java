@@ -30,7 +30,6 @@ import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfoManager implements IPreferenceChangeListener {
 
-	private static RuntimeInfoManager manager;
 	private RuntimeInfo erlideRuntime;
 
 	private RuntimeInfoManager() {
@@ -38,11 +37,12 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		load();
 	}
 
+	private static class LazyRuntimeInfoManagerHolder {
+		public static final RuntimeInfoManager instance = new RuntimeInfoManager();
+	}
+
 	public synchronized static RuntimeInfoManager getDefault() {
-		if (manager == null) {
-			manager = new RuntimeInfoManager();
-		}
-		return manager;
+		return LazyRuntimeInfoManagerHolder.instance;
 	}
 
 	private final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
