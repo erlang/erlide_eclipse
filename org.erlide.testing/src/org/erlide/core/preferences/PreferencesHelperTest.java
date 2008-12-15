@@ -17,7 +17,6 @@ public class PreferencesHelperTest {
 
 	private static final String QUALIFIER = "org.erlide.testing";
 	private static final String KEY = "key";
-	private static final String PATH = "child";
 
 	@Before
 	public void setUp() throws BackingStoreException {

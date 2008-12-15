@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
-import java.awt.Button;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.dialogs.Dialog;
@@ -41,10 +39,10 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 
 	public static final String PROP_ID = "org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"; //$NON-NLS-1$
 
-	private boolean fIsValidElement;
+	// private boolean fIsValidElement;
 
-	private IPath fContainerPath;
-	private URL fInitalLocation;
+	// private IPath fContainerPath;
+	private URL fInitialLocation;
 
 	public EdocConfigurationPropertyPage() {
 	}
@@ -73,17 +71,17 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected Control createContents(final Composite parent) {
-		fInitalLocation = null;
+		fInitialLocation = null;
 		final String s = ErlideDoc.getOtpDocLoation(ErlangCore
 				.getBackendManager().getIdeBackend());
 		try {
-			fInitalLocation = new URL("file", null, s);
+			fInitialLocation = new URL("file", null, s);
 		} catch (final MalformedURLException e) {
 			ErlLogger.warn(e);
 		}
 
 		final Control control = new Composite(parent, SWT.NONE);
-		final Button button = new Button("test");
+		// final Button button = new Button("test");
 		// final Label label = new Label("Edoc location!!");
 
 		Dialog.applyDialogFont(control);

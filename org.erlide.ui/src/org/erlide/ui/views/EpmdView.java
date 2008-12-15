@@ -3,7 +3,6 @@ package org.erlide.ui.views;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -102,8 +101,8 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 	}
 
 	private void initializeToolBar() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
-				.getToolBarManager();
+		// IToolBarManager toolBarManager = getViewSite().getActionBars()
+		// .getToolBarManager();
 	}
 
 	public void updateBackendStatus(String host, List<String> started,

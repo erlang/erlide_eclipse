@@ -122,7 +122,7 @@ tokens_ws({Cs,_Stack,_Toks,Pos,eof,_Fun}, eof, _) ->
     {done,{eof,Pos},Cs};
 tokens_ws({Cs,Stack,Toks,Pos,_State,Errors,Fun}, eof, _) ->
     Fun(Cs++eof, Stack, Toks, Pos, eof, Errors);
-tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) -> 
+tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) ->
     Fun(Cs++Chars, Stack, Toks, Pos, State, Errors).
 
 
@@ -680,19 +680,6 @@ reserved_word('or') -> true;
 reserved_word('xor') -> true;
 reserved_word('spec') -> true;
 reserved_word(_) -> false.
-
-get_compiler_options() ->
-    %% Who said that Erlang has no global variables?
-    case get(compiler_options) of
-    undefined ->
-        Opts = case catch ets:lookup(compiler__tab, compiler_options) of
-               [{compiler_options,O}] -> O;
-               _ -> []
-           end,
-        put(compiler_options, Opts),
-        Opts;
-    Opts -> Opts
-    end.
 
 %% comments are used only for highlighting
 filter_comments(L) ->

@@ -130,7 +130,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		include.setLayoutData(gd);
 		include.addListener(SWT.Modify, modifyListener);
 
-		final Label label_1 = new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
 		nodeNameLabel_1.setText("Build backend:");
