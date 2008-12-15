@@ -16,6 +16,9 @@ import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlUtils;
+import org.erlide.jinterface.ParserException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IdeBackend;
 
@@ -64,21 +67,20 @@ public class ErlParser {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
 		if (Util.isOk(res)) {
-			if (res.elementAt(1) instanceof OtpErlangTuple) {
-				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
-				if (t.elementAt(1) instanceof OtpErlangList
-						&& t.elementAt(2) instanceof OtpErlangList) {
-					forms = (OtpErlangList) t.elementAt(1);
-					comments = (OtpErlangList) t.elementAt(2);
-				} else {
-					ErlLogger.warn("parser for %s got: %s", module.getName(),
-							res);
-				}
+			Bindings bindings = null;
+			try {
+				bindings = ErlUtils.match("{ok, {_, Forms, Comments}}", res);
+			} catch (ParserException e) {
+				e.printStackTrace();
+			}
+			if (bindings != null) {
+				forms = (OtpErlangList) bindings.get("Forms");
+				comments = (OtpErlangList) bindings.get("Comments");
 			} else {
-				ErlLogger.warn("parser for %s got: %s", module.getName(), res);
+				ErlLogger.error("parser for %s got: %s", module.getName(), res);
 			}
 		} else {
-			ErlLogger.debug("rpc err:: " + res);
+			ErlLogger.error("rpc error in %s: %s", module.getName(), res);
 		}
 		final ErlModule mm = (ErlModule) module;
 		mm.reset();
