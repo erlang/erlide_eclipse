@@ -94,8 +94,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public static class DebugTreeItem {
-		private final IErlElement item;
-		private final DebugTreeItem parent;
+		final IErlElement item;
+		final DebugTreeItem parent;
 		final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		public DebugTreeItem(final IErlElement item, final DebugTreeItem parent) {

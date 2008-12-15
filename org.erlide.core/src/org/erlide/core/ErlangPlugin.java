@@ -745,7 +745,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public static void log(final IStatus status) {
-		ErlangPlugin plugin = getDefault();
 		if (plugin != null) {
 			plugin.getLog().log(status);
 		}

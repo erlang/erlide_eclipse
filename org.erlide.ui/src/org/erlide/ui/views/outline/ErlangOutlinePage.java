@@ -77,7 +77,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		}
 
 		/*
-		 * @see ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
+		 * @see
+		 * ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
 		 */
 		@Override
 		protected void handleLabelProviderChanged(
@@ -128,7 +129,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
 	 */
 	@Override
 	public ISelection getSelection() {
@@ -138,7 +140,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
 	 */
 	@Override
 	protected TreeViewer getTreeViewer() {
@@ -158,15 +161,16 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
-	 *      .eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
+	 * .eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setSelection(final ISelection selection) {
 		fOutlineViewer.setSelection(selection);
 	}
 
-	private IErlModule fModule;
+	IErlModule fModule;
 
 	private ErlangEditor fEditor;
 

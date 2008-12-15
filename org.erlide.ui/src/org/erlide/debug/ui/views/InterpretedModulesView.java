@@ -45,8 +45,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		IDebugEventSetListener, IDebugContextListener {
 
 	CheckboxTreeViewer checkboxTreeViewer;
-	private ErlangDebugTarget erlangDebugTarget;
-	private boolean distributed;
+	ErlangDebugTarget erlangDebugTarget;
+	boolean distributed;
 
 	@Override
 	public void setFocus() {

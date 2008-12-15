@@ -172,7 +172,7 @@ public class ErlModelManager implements IErlModelManager {
 		// TODO should we make Erlidemodelevents and fire them?
 	}
 
-	private void remove(final IResource rsrc) {
+	void remove(final IResource rsrc) {
 		final IErlElement e = erlangModel.findElement(rsrc);
 		if (e != null) {
 			final IParent p = (IParent) e.getParent();
@@ -181,7 +181,7 @@ public class ErlModelManager implements IErlModelManager {
 		// TODO should we make Erlidemodelevents and fire them?
 	}
 
-	private void change(final IResource rsrc) {
+	void change(final IResource rsrc) {
 		final IErlElement e = erlangModel.findElement(rsrc);
 		if (e != null) {
 			e.resourceChanged();

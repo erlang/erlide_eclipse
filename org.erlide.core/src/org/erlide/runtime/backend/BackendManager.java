@@ -66,6 +66,7 @@ public final class BackendManager implements IEpmdListener {
 		DEBUG, AUTOSTART, TRAP_EXIT
 	};
 
+	@SuppressWarnings("synthetic-access")
 	private static class LazyBackendManagerHolder {
 		public static final BackendManager instance = new BackendManager();
 	}

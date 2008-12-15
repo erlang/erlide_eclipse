@@ -36,7 +36,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
 	private static final String ERLANGFILE_EXT = "erl"; //$NON-NLS-1$
 
-	private StructuredViewer viewer;
+	StructuredViewer viewer;
 
 	/**
 	 * Create the PropertiesContentProvider instance.

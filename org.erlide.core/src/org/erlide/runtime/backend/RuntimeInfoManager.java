@@ -37,6 +37,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		load();
 	}
 
+	@SuppressWarnings("synthetic-access")
 	private static class LazyRuntimeInfoManagerHolder {
 		public static final RuntimeInfoManager instance = new RuntimeInfoManager();
 	}
