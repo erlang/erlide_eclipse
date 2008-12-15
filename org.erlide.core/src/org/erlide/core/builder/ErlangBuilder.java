@@ -161,8 +161,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 
 		} catch (final CoreException e) {
-			log(e, "JavaBuilder handling CoreException while building: "
-					+ currentProject.getName());
+			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
 					BuilderMessages.build_inconsistentProject, e
@@ -330,7 +329,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 			}
 
 		} catch (final CoreException e) {
-
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
@@ -1022,17 +1020,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 
 	private void initializeBuilder() throws CoreException {
 		workspaceRoot = currentProject.getWorkspace().getRoot();
-	}
-
-	public void log(Throwable e, final String message) {
-		Throwable nestedException;
-		if (e instanceof ErlModelException
-				&& (nestedException = ((ErlModelException) e).getException()) != null) {
-			e = nestedException;
-		}
-		final IStatus status = new Status(IStatus.ERROR,
-				ErlangPlugin.PLUGIN_ID, IStatus.ERROR, message, e);
-		ErlangPlugin.getDefault().getLog().log(status);
 	}
 
 	@SuppressWarnings("unchecked")
