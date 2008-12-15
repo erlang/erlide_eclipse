@@ -254,12 +254,16 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 */
 	public void send(final OtpErlangPid pid, final Object msg) {
 		try {
-			final OtpMbox mbox = getMbox();
-			if (mbox != null) {
-				if (CHECK_RPC) {
-					ErlLogger.debug("SEND :: " + pid + " " + msg);
+			final OtpMbox mbox = fNode.createMbox();
+			try {
+				if (mbox != null) {
+					if (CHECK_RPC) {
+						ErlLogger.debug("SEND :: " + pid + " " + msg);
+					}
+					mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
 				}
-				mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
+			} finally {
+				fNode.closeMbox(mbox);
 			}
 		} catch (final RpcException e) {
 			// shouldn't happen
@@ -269,12 +273,16 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public void send(final String name, final Object msg) {
 		try {
-			final OtpMbox mbox = getMbox();
-			if (mbox != null) {
-				if (CHECK_RPC) {
-					ErlLogger.debug("SEND :: " + name + " " + msg);
+			final OtpMbox mbox = fNode.createMbox();
+			try {
+				if (mbox != null) {
+					if (CHECK_RPC) {
+						ErlLogger.debug("SEND :: " + name + " " + msg);
+					}
+					mbox.send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
 				}
-				mbox.send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
+			} finally {
+				fNode.closeMbox(mbox);
 			}
 		} catch (final RpcException e) {
 			// shouldn't happen
@@ -400,25 +408,28 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		RpcResult result = null;
 		OtpErlangObject res = null;
 		try {
-			final OtpMbox mbox = getMbox();
+			final OtpMbox mbox = fNode.createMbox();
 			if (mbox == null) {
 				return RpcResult.error("missing receive mailbox");
 			}
-			res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
-			send("rex", res);
-			if (CHECK_RPC) {
-				ErlLogger.debug("RPC :: " + res);
-			}
+			try {
+				res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
+				send("rex", res);
+				if (CHECK_RPC) {
+					ErlLogger.debug("RPC :: " + res);
+				}
 
-			if (timeout < 0) {
-				res = mbox.receive();
-			} else {
-				res = mbox.receive(timeout);
+				if (timeout < 0) {
+					res = mbox.receive();
+				} else {
+					res = mbox.receive(timeout);
+				}
+				if (CHECK_RPC) {
+					ErlLogger.debug("    <= " + res);
+				}
+			} finally {
+				fNode.closeMbox(mbox);
 			}
-			if (CHECK_RPC) {
-				ErlLogger.debug("    <= " + res);
-			}
-
 			if (res == null) {
 				if (CHECK_RPC) {
 					ErlLogger.debug("    timed out: " + module + ":" + fun
@@ -444,13 +455,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		return result;
 	}
 
-	private OtpMbox getMbox() {
-		if (fNode == null) {
-			return null;
-		}
-		return fNode.createMbox();
-	}
-
 	private OtpMbox getEventBox() {
 		return ftRpcBox;
 	}
@@ -461,14 +465,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			return null;
 		}
 		return eventBox.self();
-	}
-
-	public OtpErlangPid getRpcPid() {
-		final OtpMbox mbox = getMbox();
-		if (mbox == null) {
-			return new OtpErlangPid("", 0, 0, 0);
-		}
-		return mbox.self();
 	}
 
 	public String getCurrentVersion() {

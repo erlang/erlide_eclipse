@@ -76,6 +76,7 @@ public class ErlangBridge {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			// TODO where is the mbox closed?
 			mbox = lnode.createMbox();
 		}
 

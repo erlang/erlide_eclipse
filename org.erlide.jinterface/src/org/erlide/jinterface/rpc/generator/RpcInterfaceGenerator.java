@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -48,12 +48,17 @@ public class RpcInterfaceGenerator {
 			OtpNode node = new OtpNode("dummy");
 
 			OtpMbox mbox = node.createMbox();
-			OtpErlangObject msg = RpcUtil.buildRpcCall(mbox.self(), "erlang",
-					"module_info",
-					new OtpErlangObject[] { new OtpErlangAtom("exports") });
-			mbox.send("rex", "wolf", msg);
 			OtpErlangObject res = null;
 			try {
+				try {
+					OtpErlangObject msg = RpcUtil
+							.buildRpcCall(mbox.self(), "erlang", "module_info",
+									new OtpErlangObject[] { new OtpErlangAtom(
+											"exports") });
+					mbox.send("rex", "wolf", msg);
+				} finally {
+					node.closeMbox(mbox);
+				}
 				res = mbox.receive(1000);
 			} catch (OtpErlangExit e) {
 				// TODO Auto-generated catch block

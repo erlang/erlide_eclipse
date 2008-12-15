@@ -129,8 +129,6 @@ public interface IBackend {
 
 	OtpErlangPid getEventPid();
 
-	OtpErlangPid getRpcPid();
-
 	String getCurrentVersion();
 
 	OtpErlangObject receiveRpc(long timeout) throws OtpErlangExit,
