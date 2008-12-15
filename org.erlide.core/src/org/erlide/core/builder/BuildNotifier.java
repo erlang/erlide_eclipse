@@ -61,8 +61,9 @@ public class BuildNotifier {
 	 */
 	public void aboutToCompile(IResource unit) {
 		checkCancel();
-		final String message = BuilderMessages.bind(
-				BuilderMessages.build_compiling, unit.getParent().getName());
+		final String message = BuilderMessages
+				.bind(BuilderMessages.build_compiling, unit.getParent()
+						.getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug(message);
@@ -103,8 +104,9 @@ public class BuildNotifier {
 	 * compiled.
 	 */
 	public void compiled(IResource unit) {
-		final String message = BuilderMessages.bind(
-				BuilderMessages.build_compiling, unit.getParent().getName());
+		final String message = BuilderMessages
+				.bind(BuilderMessages.build_compiling, unit.getParent()
+						.getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug(message);
