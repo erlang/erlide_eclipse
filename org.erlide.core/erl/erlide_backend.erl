@@ -33,7 +33,7 @@
 ]).
 
 init(JavaNode) ->
-    spawn(fun()->
+    spawn(fun()-> 
                   case whereis(erlide_rex) of
                       undefined ->
                           RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),

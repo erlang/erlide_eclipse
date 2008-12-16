@@ -1,6 +1,6 @@
 package org.erlide.core.erlang.internal;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -115,7 +115,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 
 	public static List<IErlModule> getModules(final IParent parent)
 			throws ErlModelException {
-		final List<IErlModule> result = new LinkedList<IErlModule>();
+		final List<IErlModule> result = new ArrayList<IErlModule>();
 		for (final IErlElement e : parent.getChildren()) {
 			if (e instanceof IErlFolder) {
 				final IErlFolder f = (IErlFolder) e;
