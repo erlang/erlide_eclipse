@@ -465,10 +465,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				if (br != null) {
 					br.refreshLocal(IResource.DEPTH_ONE, null);
 				}
-				br = project.findMember(beam);
-				if (br != null) {
-					br.setDerived(true);
-				}
 
 				// ErlLogger.debug("t = " + t);
 				// process compilation messages
@@ -479,6 +475,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("skipping %s", resource.getName());
 				}
+			}
+			br = project.findMember(beam);
+			if (br != null) {
+				br.setDerived(true);
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
