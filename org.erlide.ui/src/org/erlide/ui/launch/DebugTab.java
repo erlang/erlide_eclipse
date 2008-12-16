@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,7 +64,6 @@ import org.erlide.ui.util.SWTUtil;
  * interpret upon launching. The checkbox tree classes are reused by
  * InterpretedModulesView
  * 
- * @author vlad and jakob
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
@@ -82,7 +82,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		@Override
 		public String getText(final Object element) {
 			if (element instanceof DebugTreeItem) {
-				return ((DebugTreeItem) element).item.getName();
+				IErlElement item = ((DebugTreeItem) element).item;
+				if (item == null) {
+					ErlLogger.warn("Null item in DebugTreeItem %s", element
+							.toString());
+					return "---";
+				}
+				return item.getName();
 			}
 			return super.getText(element);
 		}
@@ -95,16 +101,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 	public static class DebugTreeItem {
 		final IErlElement item;
-		final DebugTreeItem parent;
+		final WeakReference<DebugTreeItem> parent;
 		final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		public DebugTreeItem(final IErlElement item, final DebugTreeItem parent) {
 			this.item = item;
-			this.parent = parent;
+			this.parent = new WeakReference<DebugTreeItem>(parent);
 		}
 
 		public DebugTreeItem getParent() {
-			return parent;
+			return parent.get();
 		}
 
 		public IErlElement getItem() {
@@ -133,33 +139,34 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			return true;
 		}
 
-		boolean recursiveAddAllErlangModules(final IErlElement l) {
-			if (l instanceof IErlModule) {
-				children.add(new DebugTreeItem(l, this));
+		boolean addAllErlangModules(final IErlElement elem) {
+			if (elem instanceof IErlModule) {
+				children.add(new DebugTreeItem(elem, this));
 				return true;
-			} else if (l instanceof IParent) {
+			} else if (elem instanceof IParent) {
 				try {
-					if (l instanceof IErlFolder) {
-						final IErlFolder f = (IErlFolder) l;
+					if (elem instanceof IErlFolder) {
+						final IErlFolder f = (IErlFolder) elem;
 						if (!f.isOnSourcePath()) {
 							return false;
 						}
 					}
-					if (l instanceof IOpenable) {
-						final IOpenable o = (IOpenable) l;
+					if (elem instanceof IOpenable) {
+						final IOpenable o = (IOpenable) elem;
 						o.open(null);
 					}
-					final DebugTreeItem dti = new DebugTreeItem(l, this);
-					final IParent p = (IParent) l;
-					boolean b = false;
+					final DebugTreeItem dti = new DebugTreeItem(elem, this);
+					final IParent p = (IParent) elem;
+					boolean addedAny = false;
 					for (final IErlElement i : p.getChildren()) {
-						b = dti.recursiveAddAllErlangModules(i) || b;
+						addedAny |= dti.addAllErlangModules(i);
 					}
-					if (b) {
+					if (addedAny) {
 						children.add(dti);
 					}
 					return true;
 				} catch (final ErlModelException e) {
+					ErlLogger.warn(e);
 				}
 			}
 			return false;
@@ -174,26 +181,25 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 		private void updateMenuCategoryCheckedState(
 				final CheckboxTreeViewer checkboxTreeViewer) {
-			if (areChildrenChecked(checkboxTreeViewer)) {
-				setGrayChecked(checkboxTreeViewer, false, true);
-			} else if (areChildrenUnchecked(checkboxTreeViewer)) {
+			if (areChildrenUnchecked(checkboxTreeViewer)) {
 				setGrayChecked(checkboxTreeViewer, false, false);
+			} else if (areChildrenChecked(checkboxTreeViewer)) {
+				setGrayChecked(checkboxTreeViewer, false, true);
 			} else {
 				setGrayChecked(checkboxTreeViewer, true, true);
 			}
-			if (parent != null) {
-				parent.updateMenuCategoryCheckedState(checkboxTreeViewer);
+			if (getParent() != null) {
+				getParent().updateMenuCategoryCheckedState(checkboxTreeViewer);
 			}
 		}
 
 		public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
 				final Collection<IErlModule> list) {
-			if (list.contains(item)) {
-				setGrayChecked(checkboxTreeViewer, false, true);
-			}
+			setGrayChecked(checkboxTreeViewer, false, list.contains(item));
 			for (final DebugTreeItem c : children) {
 				c.setChecked(checkboxTreeViewer, list);
-				c.updateMenuCategoryCheckedState(checkboxTreeViewer);
+				c.getParent()
+						.updateMenuCategoryCheckedState(checkboxTreeViewer);
 			}
 		}
 	}
@@ -223,10 +229,10 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					}
 					final IErlModel model = ErlangCore.getModel();
 					for (final String projName : projNames) {
-						final IErlElement e = model.getChildNamed(projName);
-						final DebugTreeItem dti = new DebugTreeItem(e,
+						final IErlElement prj = model.getErlangProject(projName);
+						final DebugTreeItem dti = new DebugTreeItem(prj,
 								getRoot());
-						dti.recursiveAddAllErlangModules(e);
+						dti.addAllErlangModules(prj);
 						getRoot().children.add(dti);
 					}
 				}
@@ -248,7 +254,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 		public Object getParent(final Object element) {
 			final DebugTreeItem dti = (DebugTreeItem) element;
-			return dti.parent;
+			return dti.getParent();
 		}
 
 		public boolean hasChildren(final Object element) {
@@ -323,9 +329,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					checkboxTreeViewer.setGrayed(i, false);
 				}
 				checkboxTreeViewer.setGrayed(item, false);
-				if (item.parent != null) {
-					item.parent
-							.updateMenuCategoryCheckedState(checkboxTreeViewer);
+				if (item.getParent() != null) {
+					item.getParent().updateMenuCategoryCheckedState(
+							checkboxTreeViewer);
 				}
 
 				updateLaunchConfigurationDialog();
@@ -404,7 +410,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		interpret = ErlangLaunchConfigurationDelegate
 				.addBreakpointProjectsAndModules(projects, interpret);
 		interpretedModules = new ArrayList<IErlModule>();
-		;
+
 		addModules(interpret, interpretedModules);
 
 		int debugFlags;
@@ -440,19 +446,18 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		for (final String i : interpret) {
 			final String[] pm = i.split(":");
 			IErlModule m = null;
-			final String mName = pm[1];
 			if (pm.length > 1) {
 				final IErlProject p = model.getErlangProject(pm[0]);
+				final String mName = pm[1];
 				try {
 					final String s = ErlideUtil.hasModuleExtension(mName) ? mName
 							: mName + ".erl";
 					m = p.getModule(s);
 				} catch (final ErlModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ErlLogger.warn(e);
 				}
 			} else {
-				m = model.getModule(mName + ".erl");
+				m = model.getModule(i + ".erl");
 			}
 			if (m != null) {
 				if (!interpretedModules.contains(m)) {
