@@ -49,4 +49,6 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 	IErlModule getModule(String name) throws ErlModelException;
 
 	boolean isOnSourcePath();
+
+	boolean isSourcePathParent();
 }

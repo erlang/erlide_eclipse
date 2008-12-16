@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.erlide.core.util;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -59,6 +60,24 @@ public class PluginUtils {
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (project.getFolder(i).getFullPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isSourcePathParent(IFolder con) {
+		final IProject project = con.getProject();
+		/*
+		 * Get the project settings so that we can find the source nodes
+		 */
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
+				project);
+		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
+				.getSourceDirsString());
+		final IPath path = con.getFullPath();
+		for (final String i : sourcePaths) {
+			if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
 				return true;
 			}
 		}

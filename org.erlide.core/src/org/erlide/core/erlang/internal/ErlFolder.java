@@ -147,4 +147,8 @@ public class ErlFolder extends Openable implements IErlFolder {
 	public boolean isOnSourcePath() {
 		return PluginUtils.isOnSourcePath(folder);
 	}
+
+	public boolean isSourcePathParent() {
+		return PluginUtils.isSourcePathParent(folder);
+	}
 }

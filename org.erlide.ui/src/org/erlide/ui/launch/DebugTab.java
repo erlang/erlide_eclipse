@@ -147,7 +147,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				try {
 					if (elem instanceof IErlFolder) {
 						final IErlFolder f = (IErlFolder) elem;
-						if (!f.isOnSourcePath()) {
+						if (!f.isSourcePathParent()) {
 							return false;
 						}
 					}
@@ -229,7 +229,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					}
 					final IErlModel model = ErlangCore.getModel();
 					for (final String projName : projNames) {
-						final IErlElement prj = model.getErlangProject(projName);
+						final IErlElement prj = model
+								.getErlangProject(projName);
 						final DebugTreeItem dti = new DebugTreeItem(prj,
 								getRoot());
 						dti.addAllErlangModules(prj);
