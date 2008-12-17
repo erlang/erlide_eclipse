@@ -299,4 +299,9 @@ public class ErlideUtil {
 		}
 		return false;
 	}
+
+	public static String basenameWithoutExtension(final String m) {
+		final IPath p = new Path(m);
+		return withoutExtension(p.lastSegment());
+	}
 }
