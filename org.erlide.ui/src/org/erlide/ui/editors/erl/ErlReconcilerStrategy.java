@@ -85,7 +85,8 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	public void initialReconcile() {
 		// initialInsert = true;
 		fModule = ErlModelUtils.getModule(fEditor);
-		ErlLogger.debug("## initial reconcile " + fModule + ": ");
+		ErlLogger.debug("## initial reconcile "
+				+ (fModule != null ? fModule.getName() : ""));
 		// Assert.isNotNull(fModule);
 		// if (fModule != null) {
 		// fModule.getScanner();

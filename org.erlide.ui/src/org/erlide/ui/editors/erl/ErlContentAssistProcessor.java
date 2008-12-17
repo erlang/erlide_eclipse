@@ -13,7 +13,9 @@ package org.erlide.ui.editors.erl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -37,6 +39,7 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -56,13 +59,17 @@ import erlang.ErlideDoc;
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final ISourceViewer sourceViewer;
 	private final IErlModule module;
+	private final String externalModules;
+	private ArrayList<Tuple> pathVars;
 
 	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
 	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-			final IErlModule module) {
+			final IErlModule module, final String externalModules) {
 		this.sourceViewer = sourceViewer;
 		this.module = module;
+		this.externalModules = externalModules;
+		initPathVars();
 	}
 
 	public ICompletionProposal[] computeCompletionProposals(
@@ -171,6 +178,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					if (!allErlangFiles.contains(name)) {
 						allErlangFiles.add(name);
 					}
+				}
+			}
+			// add external modules
+			final List<String> mods = ErlModelUtils.getExternalModules(b,
+					aprefix, externalModules, pathVars);
+			for (final String m : mods) {
+				final String name = ErlideUtil.basenameWithoutExtension(m);
+				if (!allErlangFiles.contains(name)) {
+					allErlangFiles.add(name);
 				}
 			}
 		}
@@ -415,4 +431,16 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	public IContextInformationValidator getContextInformationValidator() {
 		return null;
 	}
+
+	private void initPathVars() {
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		final String[] names = pvm.getPathVariableNames();
+		pathVars = new ArrayList<Tuple>(names.length);
+		for (final String name : names) {
+			pathVars.add(new Tuple().add(name).add(
+					pvm.getValue(name).toOSString()));
+		}
+	}
+
 }

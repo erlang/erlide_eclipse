@@ -182,6 +182,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
 
+	private String fExternalModules = null;
+
 	/**
 	 * Simple constructor
 	 * 
@@ -292,19 +294,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void createActions() {
 		super.createActions();
-		String externalModules;
-		final IEditorInput input = getEditorInput();
-		if (input instanceof IFileEditorInput) {
-			final IFileEditorInput fileInput = (IFileEditorInput) input;
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					fileInput.getFile().getProject());
-			externalModules = prefs.getExternalModules();
-		} else {
-			externalModules = "";
-		}
-		final String globalExternalModules = getGlobalExternalModulesFile();
-		externalModules = ErlangProjectProperties.pack(new String[] {
-				externalModules, globalExternalModules });
 		// ActionGroup oeg, ovg, jsg;
 		ActionGroup esg;
 		fActionGroups = new CompositeActionGroup(new ActionGroup[] {
@@ -313,7 +302,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				esg = new ErlangSearchActionGroup(this) });
 		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-		openAction = new OpenAction(getSite(), externalModules);
+		openAction = new OpenAction(getSite(), getExternalModules());
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -1095,8 +1084,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private String getGlobalExternalModulesFile() {
-		IPreferencesService service = Platform.getPreferencesService();
-		String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
+		final IPreferencesService service = Platform.getPreferencesService();
+		final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
 				"default_external_modules", "", null);
 		ErlLogger.debug("external modules file: '%s'", s);
 		return s;
@@ -1548,6 +1537,24 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	public ActionGroup getActionGroup() {
 		return fActionGroups;
+	}
+
+	public String getExternalModules() {
+		if (fExternalModules == null) {
+			final IEditorInput input = getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				final IFileEditorInput fileInput = (IFileEditorInput) input;
+				final ErlangProjectProperties prefs = new ErlangProjectProperties(
+						fileInput.getFile().getProject());
+				fExternalModules = prefs.getExternalModules();
+			} else {
+				fExternalModules = "";
+			}
+			final String globalExternalModules = getGlobalExternalModulesFile();
+			fExternalModules = ErlangProjectProperties.pack(new String[] {
+					fExternalModules, globalExternalModules });
+		}
+		return fExternalModules;
 	}
 
 }

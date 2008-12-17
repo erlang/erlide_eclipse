@@ -1,5 +1,6 @@
 package erlang;
 
+import org.erlide.core.util.ErlangFunction;
 import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -78,6 +79,10 @@ public class OpenResult {
 
 	public int getArity() {
 		return arity;
+	}
+
+	public ErlangFunction getFunction() {
+		return new ErlangFunction(fun, arity);
 	}
 
 	public String getPath() {
