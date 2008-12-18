@@ -44,8 +44,10 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
+import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
+import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.IdeBackend;
@@ -106,15 +108,13 @@ public class ErlModelUtils {
 	}
 
 	public static IErlFunction findFunction(final IErlModule module,
-			final String function, final int arity) throws ErlModelException {
+			final ErlangFunction erlangFunction) throws ErlModelException {
 		final List<? extends IErlElement> children = module.getChildren();
 		for (final IErlElement element : children) {
 			if (element instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) element;
-				if (arity == IErlModel.UNKNOWN_ARITY || f.getArity() == arity) {
-					if (f.getName().equals(function)) {
-						return f;
-					}
+				if (f.getFunction().equals(erlangFunction)) {
+					return f;
 				}
 			}
 		}
@@ -373,13 +373,13 @@ public class ErlModelUtils {
 	 */
 	public static void openExternalFunction(final OpenResult res,
 			final IProject project) throws CoreException {
-		openExternalFunction(res.getName(), res.getFun(), res.getArity(), res
-				.getPath(), project);
+		openExternalFunction(res.getName(), res.getFunction(), res.getPath(),
+				project);
 	}
 
-	public static void openExternalFunction(final String mod, final String fun,
-			final int arity, final String path, final IProject project)
-			throws CoreException {
+	public static void openExternalFunction(final String mod,
+			final ErlangFunction function, final String path,
+			final IProject project) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
@@ -397,7 +397,7 @@ public class ErlModelUtils {
 			final IFile f = (IFile) r;
 			try {
 				final IEditorPart editor = EditorUtility.openInEditor(f);
-				openFunctionInEditor(fun, arity, editor);
+				openFunctionInEditor(function, editor);
 			} catch (final PartInitException e) {
 				ErlLogger.warn(e);
 			} catch (final ErlModelException e) {
@@ -414,8 +414,9 @@ public class ErlModelUtils {
 	 * @param editor
 	 * @throws ErlModelException
 	 */
-	public static boolean openFunctionInEditor(final String fun,
-			final int arity, final IEditorPart editor) throws ErlModelException {
+	public static boolean openFunctionInEditor(
+			final ErlangFunction erlangFunction, final IEditorPart editor)
+			throws ErlModelException {
 		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
 			return false;
 		}
@@ -426,7 +427,7 @@ public class ErlModelUtils {
 			return false;
 		}
 		module.open(null);
-		final IErlFunction function = findFunction(module, fun, arity);
+		final IErlFunction function = findFunction(module, erlangFunction);
 		if (function == null) {
 			return false;
 		}
@@ -497,6 +498,13 @@ public class ErlModelUtils {
 			ErlLogger.error(e);
 		}
 		return result;
+	}
+
+	public static List<String> getExternalModules(final IdeBackend b,
+			final String prefix, final String externalModules,
+			final List<Tuple> pathVars) {
+		return ErlideOpen.getExternalModules(b, prefix, externalModules,
+				pathVars);
 	}
 
 	// FIXME: move this to a separate class, that somehow listens to something

@@ -28,7 +28,6 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
@@ -43,7 +42,6 @@ import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
@@ -65,7 +63,8 @@ import erlang.OpenResult;
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
+ * <code>ICompilationUnit</code>, <code>IMember</code> or
+ * <code>IFile</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -82,8 +81,7 @@ public class OpenAction extends SelectionDispatchAction {
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
 	 * selection provided by the site's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>
-	 * .
+	 * org.eclipse.jface.viewers.IStructuredSelection</code> .
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
@@ -317,18 +315,12 @@ public class OpenAction extends SelectionDispatchAction {
 					EditorUtility.openInEditor(f);
 				}
 			} else if (res.isLocalCall()) { // local call
-				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
-				if (page == null) {
-					return;
-				}
-				final IEditorPart editor = page.getActiveEditor();
-				if (!ErlModelUtils.openFunctionInEditor(res.getFun(), res
-						.getArity(), editor)) { // not local imports
+				if (!ErlModelUtils.openFunctionInEditor(res.getFunction(),
+						fEditor)) { // not local imports
 					if (module == null) {
 						return;
 					}
-					final IErlImport ei = module.findImport(new ErlangFunction(
-							res.getFun(), res.getArity()));
+					final IErlImport ei = module.findImport(res.getFunction());
 					if (ei == null) {
 						return;
 					}
@@ -339,8 +331,8 @@ public class OpenAction extends SelectionDispatchAction {
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
-						ErlModelUtils.openExternalFunction(mod, res.getFun(),
-								res.getArity(), path, project);
+						ErlModelUtils.openExternalFunction(mod, res
+								.getFunction(), path, project);
 					}
 				}
 			} else if (res.isVariable()) {

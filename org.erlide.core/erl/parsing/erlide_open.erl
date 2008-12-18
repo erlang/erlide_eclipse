@@ -11,7 +11,8 @@
          open_info/4,
          find_first_var/2,
          get_source_from_module/3,
-         get_include_lib/1]).
+         get_include_lib/1,
+         get_external_modules/3]).
 
 %%
 %% Include files
@@ -56,6 +57,15 @@ try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars
         [B | Rest] ->
             try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
     end.
+
+has_prefix(Prefix, FileName) ->
+    lists:prefix(Prefix, filename:basename(FileName)).
+
+get_external_modules(Prefix, ExternalModulesFiles, PathVars) ->
+    ?D(Prefix),
+    ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
+    ?D(ExternalModulesFiles),
+    {ok, [XM || XM <- ExternalModules, has_prefix(Prefix, XM)]}.
 
 consider_local([]) ->
 	true;
@@ -152,9 +162,11 @@ open_info(L, W, ExternalModules, PathVars) ->
 
 get_source_from_module(Mod, ExternalModules, PathVars) ->
     case catch get_source(Mod) of
-        {'EXIT', _} ->
+        {'EXIT', _E} ->
+            ?D(_E),
             get_source_from_external_modules(Mod, ExternalModules, PathVars);
         [] ->
+            ?D([]),
             get_source_from_external_modules(Mod, ExternalModules, PathVars);
         Other ->
             Other
@@ -232,11 +244,14 @@ split_lines([C | Rest], LineAcc, Acc) ->
 
 get_source(Mod) ->
     L = Mod:module_info(compile),
+    ?D(L),
     {value, {source, Path}} = lists:keysearch(source, 1, L),
     case filelib:is_regular(Path) of
         true ->
+            ?D(Path),
             Path;
         false ->
+            ?D(false),
             get_source_ebin(Mod)
     end.
 
