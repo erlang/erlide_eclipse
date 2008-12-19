@@ -17,6 +17,8 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -31,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -51,6 +54,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private MockupPreferenceStore mockPrefs;
 	private Button uz;
 	private Text externalIncludes;
+	private Text externalModules;
+	private Button externalModulesBrowse;
 
 	/**
 	 * Constructor for ErlProjectPropertyPage.
@@ -64,7 +69,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		if (ErlangCore.getRuntimeInfoManager().getDefaultRuntime() == null) {
 			ErlideUIPlugin.openPreferencePage();
 		}
@@ -80,7 +85,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		gl.numColumns = 3;
 		composite.setLayout(gl);
 
-		String resourceString = ErlideUIPlugin
+		final String resourceString = ErlideUIPlugin
 				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
 		final Label outLabel = new Label(composite, SWT.NONE);
@@ -97,24 +102,24 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		output.addListener(SWT.Modify, modifyListener);
 		// TODO use resource!
 		uz = new Button(composite, SWT.CHECK);
-		this.uz.setToolTipText("place at end of code:path");
-		this.uz.setText("place last in path");
-		this.uz.setLayoutData(new GridData());
+		uz.setToolTipText("place at end of code:path");
+		uz.setText("place last in path");
+		uz.setLayoutData(new GridData());
 		uz.addListener(SWT.Modify, modifyListener);
 
-		Label l1 = new Label(composite, SWT.NONE);
+		final Label l1 = new Label(composite, SWT.NONE);
 		l1.setText("Source directories:");
-		String resourceString2 = ErlideUIPlugin
+		final String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
-		this.source.setToolTipText("enter a list of folders");
+		source.setToolTipText("enter a list of folders");
 		gd = new GridData(SWT.FILL, SWT.TOP, false, false);
 		gd.widthHint = 325;
 		source.setLayoutData(gd);
 		source.addListener(SWT.Modify, modifyListener);
 
-		String resourceString3 = ErlideUIPlugin
+		final String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
 
 		final Label label = new Label(composite, SWT.NONE);
@@ -124,7 +129,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		includesLabel.setText("Include directories:");
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
-		this.include.setToolTipText("enter a list of folders");
+		include.setToolTipText("enter a list of folders");
 		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gd.widthHint = 313;
 		include.setLayoutData(gd);
@@ -170,6 +175,33 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final GridData gd_cookie = new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 2, 1);
 		cookie.setLayoutData(gd_cookie);
+		if (ErlideUtil.isTest()) {
+			new Label(composite, SWT.NONE);
+			final Label l = new Label(composite, SWT.NONE);
+			l.setText("External Modules:");
+
+			externalModules = new Text(composite, SWT.BORDER);
+			final GridData gd1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			gd1.minimumWidth = 50;
+			gd1.widthHint = 256;
+			externalModules.setLayoutData(gd1);
+
+			externalModules.addListener(SWT.Modify, modifyListener);
+
+			externalModulesBrowse = new Button(composite, SWT.PUSH);
+			externalModulesBrowse.setText("Browse...");
+			externalModulesBrowse.addSelectionListener(new SelectionListener() {
+
+				public void widgetDefaultSelected(final SelectionEvent e) {
+				}
+
+				public void widgetSelected(final SelectionEvent e) {
+					handleExternalModulesBrowseSelected(externalModules,
+							"Select file with external modules");
+				}
+
+			});
+		}
 
 		performDefaults();
 		setValid(testPageComplete());
@@ -177,8 +209,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		return composite;
 	}
 
-	protected void handleExternalModulesBrowseSelected() {
-		String last = externalIncludes.getText();
+	protected void handleExternalModulesBrowseSelected(final Text text,
+			final String selectTipString) {
+		String last = text.getText();
 		// if (last.length() == 0) {
 		// last =
 		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
@@ -188,22 +221,23 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		} else {
 			last = last.trim();
 		}
-		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
-		dialog.setText("Select file with external modules");
+		final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+		dialog.setText(selectTipString);
 		dialog.setFileName(last);
 		dialog.setFilterExtensions(new String[] { "*.erlidex" });
-		String result = dialog.open();
+		final String result = dialog.open();
 		if (result == null) {
 			return;
 		}
-		externalIncludes.setText(result);
+		// externalIncludes.setText(result);
+		text.setText(result);
 	}
 
 	@Override
 	protected void performDefaults() {
 		// Populate the owner text field with the default value
 		final IAdaptable prj = getElement();
-		ErlangProjectProperties prefs = new ErlangProjectProperties(
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				(IProject) prj.getAdapter(IProject.class));
 
 		uz.setSelection(prefs.getUsePathZ());
@@ -211,20 +245,23 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		include.setText(prefs.getIncludeDirsString());
 		output.setText(prefs.getOutputDir());
 
-		String[] runtimes = ErlangCore.getRuntimeInfoManager()
+		final String[] runtimes = ErlangCore.getRuntimeInfoManager()
 				.getRuntimeNames().toArray(new String[] {});
 		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
-		String rt = prefs.getRuntimeName();
+		final String rt = prefs.getRuntimeName();
 		if (rt != null) {
-			int db = Arrays.binarySearch(runtimes, rt);
+			final int db = Arrays.binarySearch(runtimes, rt);
 			runtimeName.select(db);
 		} else if (defaultRuntime != null) {
-			int db = Arrays.binarySearch(runtimes, defaultRuntime.getName());
+			final int db = Arrays.binarySearch(runtimes, defaultRuntime
+					.getName());
 			runtimeName.select(db);
 		}
-
+		if (ErlideUtil.isTest()) {
+			externalModules.setText(prefs.getExternalModules());
+		}
 		nodeName.setText(prefs.getNodeName());
 		cookie.setText(prefs.getCookie());
 		makeUniqueButton.setSelection(prefs.isUniqueName());
@@ -236,7 +273,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		ErlangCore.getRuntimeInfoManager().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
-		ErlangProjectProperties prefs = new ErlangProjectProperties(
+		final ErlangProjectProperties prefs = new ErlangProjectProperties(
 				(IProject) prj.getAdapter(IProject.class));
 
 		prefs.setOutputDir(output.getText());
@@ -247,6 +284,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		prefs.setNodeName(nodeName.getText());
 		prefs.setCookie(cookie.getText());
 		prefs.setUniqueName(makeUniqueButton.getSelection());
+		if (ErlideUtil.isTest()) {
+			prefs.setExternalModules(externalModules.getText());
+		}
 		prefs.store();
 		return true;
 	}
@@ -258,13 +298,13 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	};
 
 	protected boolean testPageComplete() {
-		if ((output.getText() == null || output.getText().trim().length() == 0)) {
+		if (output.getText() == null || output.getText().trim().length() == 0) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.outputrequired"));
 			return false;
 		}
 
-		if ((source.getText() == null || source.getText().trim().length() == 0)) {
+		if (source.getText() == null || source.getText().trim().length() == 0) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.sourcerequired"));
 			return false;
@@ -285,7 +325,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		return true;
 	}
 
-	public void propertyChange(PropertyChangeEvent event) {
+	public void propertyChange(final PropertyChangeEvent event) {
 		ErlLogger.debug("*+> " + event);
 	}
 
@@ -293,13 +333,14 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		if (runtimeName.isDisposed()) {
 			return;
 		}
-		String[] runtimes = ErlangCore.getRuntimeInfoManager()
+		final String[] runtimes = ErlangCore.getRuntimeInfoManager()
 				.getRuntimeNames().toArray(new String[] {});
 		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
 		if (defaultRuntime != null) {
-			int db = Arrays.binarySearch(runtimes, defaultRuntime.getName());
+			final int db = Arrays.binarySearch(runtimes, defaultRuntime
+					.getName());
 			runtimeName.select(db);
 		}
 	}

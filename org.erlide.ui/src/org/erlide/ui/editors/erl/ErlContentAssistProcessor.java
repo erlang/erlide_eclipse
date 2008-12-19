@@ -264,11 +264,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 		}
-		// then check built stuff (and otp)
+		// then check built stuff and otp
 		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
 				moduleName, aprefix, stateDir);
-		// final OtpErlangObject res = ErlideDoc
-		// .getExported(b, prefix, moduleName);
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resl = (OtpErlangList) res;
 			for (int i = 0; i < resl.arity(); i++) {
@@ -301,6 +299,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						cpl, offsetsAndLengths, offs);
 			}
 		}
+		// lastly, check external modules
+		// TODO
 		return result;
 	}
 
