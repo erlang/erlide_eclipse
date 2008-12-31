@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ErtsProcess;
@@ -51,18 +50,6 @@ public class ManagedBackend extends AbstractBackend {
 	public void dispose() {
 		stop();
 		super.dispose();
-	}
-
-	@Override
-	public void sendToDefaultShell(final String string) throws IOException {
-		if (streamsProxy != null) {
-			streamsProxy.write(string);
-		}
-	}
-
-	@Override
-	public void addStdListener(final IStreamListener dsp) {
-		erts.addStdListener(dsp);
 	}
 
 	@Override

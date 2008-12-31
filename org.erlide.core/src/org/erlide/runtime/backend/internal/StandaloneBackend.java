@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
-import java.io.IOException;
-
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.IStreamListener;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -38,18 +35,6 @@ public class StandaloneBackend extends AbstractBackend {
 	@Override
 	public void dispose() {
 		super.dispose();
-	}
-
-	/**
-	 * @param string
-	 * @throws IOException
-	 */
-	@Override
-	public void sendToDefaultShell(final String string) throws IOException {
-	}
-
-	@Override
-	public void addStdListener(final IStreamListener dsp) {
 	}
 
 	@Override

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -135,8 +134,6 @@ public interface IBackend {
 			OtpErlangDecodeException;
 
 	IShellManager getShellManager();
-
-	void sendToDefaultShell(String msg) throws IOException;
 
 	boolean ping();
 

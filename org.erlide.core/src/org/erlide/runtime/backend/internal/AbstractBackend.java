@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.IStreamListener;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.rpc.RpcConverter;
@@ -519,10 +518,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	public IShellManager getShellManager() {
 		return fShellManager;
 	}
-
-	public abstract void sendToDefaultShell(String msg) throws IOException;
-
-	public abstract void addStdListener(IStreamListener dsp);
 
 	public void initErlang() {
 		ErlideBackend.init(this, BackendManager
