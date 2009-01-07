@@ -22,57 +22,60 @@
 -module(refac_new_fun).
 
 -export([fun_extraction/4, fun_extraction_eclipse/4]).
+-export([side_cond_analysis/4, vars_to_export/4]).
 
+-include("../hrl/wrangler.hrl").
 %% =============================================================================================
 %% @spec new_fun(FileName::filename(), Start::Pos, End::Pos, NewFunName::string())-> term()
 %%         
+-spec(fun_extraction/4::(filename(), pos(), pos(), string()) ->
+	      {'error', string()} | {'ok', string()}).
 fun_extraction(FileName, Start, End, NewFunName) ->
     fun_extraction(FileName, Start, End, NewFunName, emacs).
 
+-spec(fun_extraction_eclipse/4::(filename(), pos(), pos(), string()) ->
+	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
 fun_extraction_eclipse(FileName, Start, End, NewFunName) ->
     fun_extraction(FileName, Start, End, NewFunName, eclipse).
 
 
 fun_extraction(FileName, Start, End, NewFunName,Editor) ->
-    io:format("\n[CMD: fun_extraction, ~p, ~p, ~p, ~p]\n", [FileName, Start, End, NewFunName]),
+    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, ~p, ~p, ~p).\n", [?MODULE,FileName, Start, End, NewFunName]),
     case refac_util:is_fun_name(NewFunName) of 
 	true ->
-	    case refac_util:parse_annotate_file(FileName,true, []) of 
-		{ok, {AnnAST, Info}} ->
-		    case pos_to_expr(FileName, AnnAST, {Start, End}) of 
-			[] -> {error, "You have not selected an expression!"};
-			ExpList ->
-			     {ok,Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
-			     case side_cond_analysis(Info, Fun, ExpList, list_to_atom(NewFunName)) of 
-				 {ok, {BdVars, FrVars}} ->
-				     FunName = refac_syntax:atom_value(refac_syntax:function_name(Fun)),
-				     FunArity = refac_syntax:function_arity(Fun),
-				     VarsToExport=vars_to_export(Fun, End, BdVars, ExpList), 
-				     AnnAST1=do_fun_extraction(AnnAST,ExpList, NewFunName, FrVars, VarsToExport, FunName, FunArity),
-				     case Editor of 
-					 emacs ->
-					     refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-					     {ok, "Refactor succeeded"};
-					 eclipse ->
-					      Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
-					     {ok, Res}
-				     end;
-				 {error, Reason} -> {error, Reason}
-			       end
-		    end;
-		{error, Reason} -> {error, Reason}
+	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, []),
+	    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
+		[] -> {error, "You have not selected an expression!"};
+		ExpList ->
+		    {ok,Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
+		    case side_cond_analysis(Info, Fun, ExpList, list_to_atom(NewFunName)) of 
+			{ok, {BdVars, FrVars}} ->
+			    FunName = refac_syntax:atom_value(refac_syntax:function_name(Fun)),
+			    FunArity = refac_syntax:function_arity(Fun),
+			    VarsToExport=vars_to_export(Fun, End, BdVars, ExpList), 
+			    AnnAST1=do_fun_extraction(AnnAST,ExpList, NewFunName, FrVars, VarsToExport, FunName, FunArity),
+			    case Editor of 
+				emacs ->
+				    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
+				    {ok, "Refactor succeeded"};
+				eclipse ->
+				    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+				    {ok, Res}
+			    end;
+			{error, Reason} -> {error, Reason}
+		    end
 	    end;
 	false  -> {error, "Invalid function name!"}
     end.  
 
 side_cond_analysis(Info, Fun, ExpList, NewFunName) ->
     FrBdVars = lists:map(fun(E)-> envs_bounds_frees(E) end, ExpList),
-    BdVars = lists:usort(lists:concat(lists:map(fun({{bound, Vars}, _}) -> Vars end, FrBdVars))),
-    FrVars1 = lists:usort(lists:concat(lists:map(fun({_, {free, Vars}}) -> Vars end, FrBdVars))),
+    BdVars = lists:usort(lists:flatmap(fun({{bound, Vars}, _}) -> Vars end, FrBdVars)),
+    FrVars1 = lists:usort(lists:flatmap(fun({_, {free, Vars}}) -> Vars end, FrBdVars)),
     FrVars = lists:map(fun({VarName, _Pos}) -> VarName end, lists:subtract(FrVars1, BdVars)),
-    InscopeFuns = lists:map(fun({_M, F, A}) ->
+    InScopeFuns = lists:map(fun({_M, F, A}) ->
 				    {F, A} end, refac_util:inscope_funs(Info)),
-    case lists:member({NewFunName, length(FrVars)}, InscopeFuns) of
+    case lists:member({NewFunName, length(FrVars)}, InScopeFuns) of
 	true ->
 	    {error, "The given function name has been used by this module, please choose another name!"};
 	_ ->
@@ -235,7 +238,7 @@ vars_to_export(Fun,ExprEndPos, ExprBdVars, _ExpList) ->
     VarsToExport = lists:usort([V || {V, SourcePos, DefPos} <- AllVars,
 			      SourcePos > ExprEndPos,
 			      lists:subtract(DefPos, ExprBdVarsPos) == []]),
-   %% io:format("VarsToExport:\n~p\n",[VarsToExport]),
+   %% ?wrangler_io("VarsToExport:\n~p\n",[VarsToExport]),
     VarsToExport.
 
 collect_vars(Tree) ->
@@ -243,9 +246,12 @@ collect_vars(Tree) ->
  		   case refac_syntax:type(T) of 
  		       variable ->
 			   SourcePos = refac_syntax:get_pos(T),
-			   {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(T)),
-			   VarName = refac_syntax:variable_name(T),
-			   S++[{VarName, SourcePos, DefinePos}];
+			   case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of
+			       {value, {def, DefinePos}} ->
+				   VarName = refac_syntax:variable_name(T),
+				   S++[{VarName, SourcePos, DefinePos}];
+			       _ -> S
+			   end;
 		       _  -> S
  		   end
 	    end,
@@ -271,60 +277,3 @@ filter_exprs_via_ast(Tree, ExpList) ->
 	_  -> ExpList
     end.
 		    
-
-%% get the list sequence of expressions contained in Tree between locations Start and End.
-pos_to_expr(FName, Tree, {Start, End}) ->
-    {ok, Toks} = refac_epp:scan_file(FName, [], []),
-    Exprs = pos_to_expr(Tree, {Start, End}),
-    filter_exprs_via_toks(Toks, Exprs).
- 
-filter_exprs_via_toks(_Toks, []) ->
-    [];
-filter_exprs_via_toks(_Toks, [E]) ->
-    [E];
-filter_exprs_via_toks(Toks, [E1,E2|Es]) ->
-    {_StartLoc, EndLoc} = refac_util:get_range(E1),
-    {StartLoc1, _EndLoc1} = refac_util:get_range(E2),
-    Toks1 = lists:dropwhile(fun(T) ->
-				    token_loc(T) =< EndLoc end, Toks),
-    Toks2 = lists:takewhile(fun(T) ->
-				    token_loc(T) < StartLoc1 end, Toks1),
-    case lists:any(fun(T) -> token_val(T) =/= ',' end, Toks2) of 
-	false ->
-	    [E1]++ filter_exprs_via_toks(Toks, [E2|Es]);
-	_  -> [E1]
-    end.
-	
-%% get the list of expressions contained in Tree between locations Start and End.		
-pos_to_expr(Tree, {Start, End}) ->
-    {S, E} = refac_util:get_range(Tree),
-    if (S >= Start) and (E =< End) ->
-	    case refac_util:is_expr(Tree) of
-		true -> [Tree];
-		_ ->
-		    Ts = refac_syntax:subtrees(Tree),
-		    R0 = [[pos_to_expr(T, {Start, End}) || T <- G]
-			  || G <- Ts],
-		    lists:flatten(R0)
-	    end;
-       (S > End) or (E < Start) -> [];
-       (S < Start) or (E > End) ->
-	    Ts = refac_syntax:subtrees(Tree),
-	    R0 = [[pos_to_expr(T, {Start, End}) || T <- G]
-		  || G <- Ts],
-	    lists:flatten(R0);
-       true -> []
-    end.
-
-token_loc(T) ->
-      case T of 
-	{_, L, _V} -> L;
-	{_, L1} -> L1
-      end.
-
-%% get the value of a token.
-token_val(T) ->
-    case T of 
-	{_, _, V} -> V;
-	{V, _} -> V
-    end.

@@ -25,8 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Wrangler refactoring parameters. Refactorings which extends
- * <code>WranglerRefactoring</code> class always has an object from this class.
- * It makes easy to get necessary information for the several kinds of
+ * <code>WranglerRefactoring</code> class always has an object from this
+ * class. It makes easy to get necessary information for the several kinds of
  * refactorings.
  * 
  * @author Gyorgy Orosz
@@ -44,9 +44,9 @@ public class RefactoringParameters {
 	private IDocument doc;
 
 	/**
-	 * Default constructor. The necessaryinformation is <b>not</b> given by this
-	 * constructor, but <code>SetEditorPart</code> and <code>SetSelection</code>
-	 * method.
+	 * Default constructor. The necessaryinformation is <b>not</b> given by
+	 * this constructor, but <code>SetEditorPart</code> and
+	 * <code>SetSelection</code> method.
 	 */
 	public RefactoringParameters() {
 		super();
@@ -217,7 +217,6 @@ public class RefactoringParameters {
 			throws CoreException {
 		if (res instanceof IContainer) {
 			IContainer c = (IContainer) res;
-			IResource[] a = c.members();
 			for (IResource r : c.members()) {
 				findModulesRecursively(r, files);
 			}

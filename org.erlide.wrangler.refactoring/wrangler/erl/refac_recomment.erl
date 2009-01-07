@@ -122,7 +122,7 @@ recomment_forms(Tree, Cs, Insert) ->
 	form_list ->
 	    Tree1 = refac_syntax:flatten_form_list(Tree),
 	    Node = build_tree(Tree1),
-            %% Here we make a small assumption about the substructure of
+	    %% Here we make a small assumption about the substructure of
 	    %% a `form_list' tree: it has exactly one group of subtrees.
 	    [Node1] = node_subtrees(Node),
 	    List = filter_forms(node_subtrees(Node1)),

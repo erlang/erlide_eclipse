@@ -39,27 +39,32 @@
 
 -export([batch_rename_mod/3]).
 
+-include("../hrl/wrangler.hrl").
+
 %% =====================================================================
 %% @spec batch_rename_mod(OldNamePattern::string(), NewNamePattern::string(), 
 %%                        SearchPaths::[string()])-> ok | {error, string()}
 %%   
+
+-spec(batch_rename_mod/3::(string(), string(), [dir()])->
+	     ok | {error, string()}).
 batch_rename_mod(OldNamePattern, NewNamePattern,SearchPaths) ->
-    io:format("\n[CMD: batch_rename_mod, ~p, ~p, ~p]\n", [OldNamePattern, NewNamePattern, SearchPaths]),
+    ?wrangler_io("\n[CMD: batch_rename_mod, ~p, ~p, ~p]\n", [OldNamePattern, NewNamePattern, SearchPaths]),
     %% Get all the erlang file which will be affected by this refactoring.
     Files = lists:append([[filename:join([Pwd,File])||
 			      File <- filelib:wildcard("*.erl", Pwd)]   
 			  || Pwd <- SearchPaths]),
     Mods = lists:map(fun({M, _Dir}) -> M end, refac_util:get_modules_by_file(Files)),
-    io:format("Mods:\n~p\n", [Mods]),
+    ?wrangler_io("Mods:\n~p\n", [Mods]),
     Old_New_Mod_Names = lists:map(fun(M) -> {list_to_atom(M), 
 					     list_to_atom(get_new_name(M, OldNamePattern, NewNamePattern))} end, Mods),
-    io:format("Old_New_Mod_Names:\n~p\n", [Old_New_Mod_Names]),
+    ?wrangler_io("Old_New_Mod_Names:\n~p\n", [Old_New_Mod_Names]),
     HeaderFiles = refac_util:expand_files(SearchPaths, ".hrl"),
     %% Refactor both .erl and .hrl files, but does not change .hrl file name.
     Results = batch_rename_mod(Files++HeaderFiles, Old_New_Mod_Names),  
     refac_util:write_refactored_files(Results),
     ChangedFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
-    io:format("\n The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+    ?wrangler_io("\n The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
     ok.
     %%{ok, ChangedFiles}.
 
@@ -68,26 +73,25 @@ batch_rename_mod(Files, Old_New_Mod_Names) ->
     case Files of 
 	[] -> [];
 	[F|Fs] ->  
-	    io:format("The current file under refactoring is:\n~p\n",[F]),
-	    case refac_util:parse_annotate_file(F,true, []) of
-		{ok, {AnnAST, Info}} ->
-		    {AnnAST1, Changed} = do_rename_mod(AnnAST, Old_New_Mod_Names),
-		    if Changed ->
-			    NewFileName = 
-				case get_module_name(Info) of 
-				    {ok, OldModName} ->
-					{value, {OldModName, NewModName}} = 
-					    lists:keysearch(OldModName, 1, Old_New_Mod_Names), 
+	    ?wrangler_io("The current file under refactoring is:\n~p\n",[F]),
+	    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F,true, []),
+	    {AnnAST1, Changed} = do_rename_mod(AnnAST, Old_New_Mod_Names),
+	    if Changed ->
+		    NewFileName = 
+			case get_module_name(Info) of 
+			    {ok, OldModName} ->
+				case lists:keysearch(OldModName, 1, Old_New_Mod_Names) of 
+				    {value, {OldModName, NewModName}}  ->
 					if OldModName == NewModName -> F;
 					   true -> 
 						filename:join([filename:dirname(F), atom_to_list(NewModName)++".erl"])
 					end;
-				    _ ->  F
-				end,				   
-			    [{{F,NewFileName}, AnnAST1}|batch_rename_mod(Fs, Old_New_Mod_Names)];
-		       true -> batch_rename_mod(Fs, Old_New_Mod_Names)
-		    end;
-		{error, Reason} -> {error, Reason}
+				    false -> {error, "Could not infer new module name"}
+				end;
+			    _ ->  F
+			end,				   
+		    [{{F,NewFileName}, AnnAST1}|batch_rename_mod(Fs, Old_New_Mod_Names)];
+	       true -> batch_rename_mod(Fs, Old_New_Mod_Names)
 	    end
     end.
 
@@ -155,7 +159,7 @@ get_new_name(Sub, NewRegExp) ->
 	0 -> NewRegExp;
 	N -> Prefix = string:sub_string(NewRegExp, 1, N-1), 
 	     case Sub of 
-		 [] -> exit(error,"Can not infer new module names, please check the new module name pattern specified!");
+		 [] -> exit({error,"Can not infer new module names, please check the new module name pattern specified!"});
 		 _  -> Sub1 = hd(Sub),
 		       get_new_name(tl(Sub), Prefix++Sub1++string:sub_string(NewRegExp,N+1))
 	     end

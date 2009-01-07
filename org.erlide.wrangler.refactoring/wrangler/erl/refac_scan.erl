@@ -13,7 +13,7 @@
 %% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
 %% AB. All Rights Reserved.''
 %%
-%%     $Id: refac_scan.erl,v 1.1 2008/05/20 14:49:41 go30 Exp $
+%%     $Id: refac_scan.erl,v 1.5 2008-04-30 09:28:12 hl Exp $
 %%
 %% Modified: 17 Jan 2007 by  Huiqing Li <hl@kent.ac.uk>
 %%
@@ -140,7 +140,7 @@ tokens({Cs, Stack, Toks, {Line, Col}, State, Errors,
 
 %% String
 more(Cs, Stack, Toks, {Line, Col}, eos, Errors, Fun) ->
-    erlang:fault(badstate,
+    erlang:error(badstate,
 		 [Cs, Stack, Toks, {Line, Col}, eos, Errors, Fun]);
 % %% Debug clause for chopping string into 1-char segments
 % more(Cs, Stack, Toks, Pos, [H|T], Errors, Fun) ->
@@ -149,7 +149,7 @@ more(Cs, Stack, Toks, {Line, Col}, [], Errors, Fun) ->
     Fun(Cs ++ eof, Stack, Toks, {Line, Col}, eos, Errors);
 %% Stream
 more(Cs, Stack, Toks, {Line, Col}, eof, Errors, Fun) ->
-    erlang:fault(badstate,
+    erlang:error(badstate,
 		 [Cs, Stack, Toks, {Line, Col}, eof, Errors, Fun]);
 more(Cs, Stack, Toks, {Line, Col}, io, Errors, Fun) ->
     {more, {Cs, Stack, Toks, {Line, Col}, io, Errors, Fun}}.
@@ -211,7 +211,7 @@ scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors)
 
 scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors)
     when C >= $\200,
-	 C =< $  ->                        % Control chars -skip
+	 C =< $\240 ->                        % Control chars -skip
     scan(Cs, Stack, Toks, {Line, Col + 1}, State, Errors);
 scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
     when C >= $a,
@@ -364,6 +364,10 @@ scan(":-" ++ Cs, Stack, Toks, {Line, Col}, State,
      Errors) ->
     scan(Cs, Stack, [{':-', {Line, Col}} | Toks],
 	 {Line, Col + 2}, State, Errors);
+%% :: for typed records
+scan("::"++Cs, Stack, Toks, {Line, Col}, State, Errors) ->
+    scan(Cs, Stack, [{'::',{Line, Col}}|Toks], {Line, Col+2}, State, Errors);
+
 scan(":" = Cs, Stack, Toks, {Line, Col}, State,
      Errors) ->
     more(Cs, Stack, Toks, {Line, Col}, State, Errors,
@@ -390,10 +394,10 @@ scan_atom(Cs, Name, Toks, {Line, Col}, State, Errors) ->
       Atom when is_atom(Atom) ->
 	  case reserved_word(Atom) of
 	    true ->
-		scan(Cs, [], [{Atom, {Line, Col}} | Toks],
+		  scan(Cs, [], [{Atom, {Line, Col}} | Toks],
 		     {Line, Col + length(Name)}, State, Errors);
 	    false ->
-		scan(Cs, [], [{atom, {Line, Col}, Atom} | Toks],
+		  scan(Cs, [], [{atom, {Line, Col}, Atom} | Toks],
 		     {Line, Col + length(Name)}, State, Errors)
 	  end;
       _ ->
@@ -817,7 +821,7 @@ scan_dot([C | Cs], _Stack, Toks, {Line, Col}, State,
 	 {Line, Col + 1}, State);
 scan_dot([C | Cs], _Stack, Toks, {Line, Col}, State,
 	 Errors)
-    when C >= $\200, C =< $  ->
+    when C >= $\200, C =< $\240 ->
     done(Cs, Errors, [{dot, {Line, Col}} | Toks],
 	 {Line, Col + 1}, State);
 scan_dot([], Stack, Toks, {Line, Col}, State, Errors) ->
@@ -866,6 +870,7 @@ reserved_word('bsl') -> true;
 reserved_word('bsr') -> true;
 reserved_word('or') -> true;
 reserved_word('xor') -> true;
+reserved_word('spec') -> true;
 reserved_word(_) -> false.
 
 get_compiler_options() ->

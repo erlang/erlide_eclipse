@@ -41,80 +41,68 @@
 
 -export([rename_var/5, rename_var_eclipse/5]).
 
--export([pre_cond_check/4, cond_check/3, rename/3]).
+-export([pre_cond_check/4, rename/3]).
+
+-include("../hrl/wrangler.hrl").
 
 %% =====================================================================
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
 %%
+
+-spec(rename_var/5::(filename(), integer(), integer(), string(), [dir()]) ->
+	     {error, string()} | {ok, string()}).
 rename_var(FName, Line, Col, NewName, SearchPaths) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, emacs).
 
+-spec(rename_var_eclipse/5::(filename(), integer(), integer(), string(), [dir()]) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_var_eclipse(FName, Line, Col, NewName, SearchPaths) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, eclipse).
 
 rename_var(FName, Line, Col, NewName, SearchPaths, Editor) ->
-    io:format("\n[CMD: rename_var, ~p, ~p, ~p, ~p, "
-	      "~p]\n",
-	      [FName, Line, Col, NewName, SearchPaths]),
+    ?wrangler_io("\nCMD: ~p:rename_var(~p, ~p, ~p, ~p, ~p).\n", [?MODULE,FName, Line, Col, NewName, SearchPaths]),
     case refac_util:is_var_name(NewName) of
-      true ->
-	  case refac_util:parse_annotate_file(FName, false, SearchPaths) of
-	    {ok, {AnnAST, _Info0}} ->
-		NewName1 = list_to_atom(NewName), 
-		  case refac_util:parse_annotate_file(FName, true, SearchPaths) of
-		  {ok, {AnnAST1, _Info1}} ->
-		      case refac_util:pos_to_var_name(AnnAST, {Line, Col}) of
-			{ok, {VarName, DefinePos, C}} ->
-			    if DefinePos == [{0, 0}] -> {error, "Renaming of a free variable is not supported!"};
+	true ->
+	    {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths),
+	    NewName1 = list_to_atom(NewName), 
+	    {ok, {AnnAST1, _Info1}}= refac_util:parse_annotate_file(FName, true, SearchPaths),  %%refac_ast_server:get_ast(FName) 
+	    case refac_util:pos_to_var_name(AnnAST, {Line, Col}) of
+		{ok, {VarName, DefinePos, C}} ->
+		    if DefinePos == [{0, 0}] -> {error, "Renaming of a free variable is not supported!"};
+		       true ->
+			    if VarName /= NewName1 ->
+				    case C of
+					macro_name ->
+					    {error, "Sorry, renaming of macro names is not supported yet."};
+					_ ->
+					    case cond_check(AnnAST1, DefinePos, NewName1) of
+						{true, _} ->
+						    {error,
+						     "New name already declared in the same scope."};
+							{_, true} -> {error, "New name could cause name shadowing."};
+						_ ->
+						    {AnnAST2, _Changed} = rename(AnnAST1, DefinePos, NewName1),
+						    case Editor of 
+							emacs ->
+							    refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]),
+							    {ok, "Refactor succeeded"};
+							eclipse ->
+							    {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST2)}]}
+						    end 
+					    end
+				    end;
 			       true ->
-				   if VarName /= NewName1 ->
-					  case C of
-					    macro_name ->
-						{error,
-						 "Sorry, renaming of macro names is not "
-						 "supported yet."};
-					    _ ->
-						  case cond_check(AnnAST1, DefinePos, NewName1) of
-						      {true, _} ->
-							{error,
-						       "New name already declared in the same "
-						       "scope."};
-						    {_, true} -> {error, "New name could cause name shadowing."};
-						    _ ->
-							  {AnnAST2, _Changed} = rename(AnnAST1, DefinePos, NewName1),
-						     %%  case post_refac_check(FName, AnnAST2, SearchPaths) of
-%% 							ok ->
-							  case Editor of 
-							      emacs ->
-								  refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]),
-								  {ok, "Refactor succeeded"};
-							      eclipse ->
-								 {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST2)}]}
-							  end 
-  
-						%% 	error ->
-%% 							    {error,
-%% 							     "Sorry,wrangler could not rename this "
-%% 							     "variable."}
-%% 						      end
-						  end
-					  end;
-				      true ->
-					   case Editor of 
-					       emacs ->
-						   refac_util:write_refactored_files([{{FName, FName}, AnnAST1}]),
-						   {ok, "Refactor succeeded"};
-					       _ ->
-						  {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST1)}]}  
-					   end
-				   end
-			    end;
-			  {error, _Reason} -> {error, "You have not selected a variable name!"}
-		      end;
-		    {error, Reason} -> {error, Reason}
-		end;
-	      {error, Reason} -> {error, Reason}
-	  end;
+				    case Editor of 
+					emacs ->
+					    refac_util:write_refactored_files([{{FName, FName}, AnnAST1}]),
+					    {ok, "Refactor succeeded"};
+					_ ->
+					    {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST1)}]}  
+				    end
+			    end
+		    end;
+		{error, _Reason} -> {error, "You have not selected a variable name, or the variable selected does not belong to a syntactically well-formed function!"}
+	    end;
 	false -> {error, "Invalid new variable name."}
     end.
 
@@ -162,13 +150,16 @@ cond_check(Tree, Pos, NewName) ->
     %% 				       F_Member = fun (P) -> lists:member(P,Poss) end,
     %% 				       lists:any(F_Member, Pos) and lists:member(NewName, Names)
     %% 			       end, Env_Bd_Fr_Vars),
-    %%     io:format("BindingChange1,2:\n~p\n",[{BindingChange1,BindingChange2}]),
+    %%     ?wrangler_io("BindingChange1,2:\n~p\n",[{BindingChange1,BindingChange2}]),
     {Clash, Shadow1 or Shadow2}.  %%, (BindingChange1 or BindingChange2)}.
 
 
 %% =====================================================================
 %% @spec rename(Tree::syntaxTree(), DefinePos::{integer(),integer()}, NewName::string())-> term()
 %%
+
+-spec(rename/3::(syntaxTree(), [{integer(), integer()}], atom()) ->
+	     {syntaxTree(), boolean()}).
 rename(Tree, DefinePos, NewName) ->
     refac_util:stop_tdTP(fun do_rename/2, Tree, {DefinePos, NewName}).
 
@@ -188,6 +179,9 @@ do_rename(Tree, {DefinePos, NewName}) ->
 %% ===========================================================================
 %% The following functions are temporally for testing purpose only, and will be removed.
 %%=============================================================================
+
+-spec(pre_cond_check/4::(syntaxTree(), integer(), integer(), atom())->
+	     boolean()).
 pre_cond_check(AST, Line, Col, NewName) ->
     {ok, {VarName, DefinePos, _C}} = refac_util:pos_to_var_name(AST, {Line, Col}),
     case VarName == NewName of 
@@ -197,25 +191,6 @@ pre_cond_check(AST, Line, Col, NewName) ->
 		  {false, false} -> true;
 		  _ -> false
 	      end
-    end.
-
-post_refac_check(FileName, AST, SearchPaths) ->
-    TempFileName = filename:join([filename:dirname(FileName),
-				  filename:rootname(filename:basename(FileName)) ++ "_refac_temp"]),
-    file:write_file(TempFileName, list_to_binary(refac_prettypr:print_ast(AST))),
-    case refac_epp:parse_file(TempFileName, true, SearchPaths) of
-      {ok, Forms1} ->
-	  Forms = refac_syntax:form_list(tl(Forms1)),
-	  AnnAST = refac_syntax_lib:annotate_bindings(Forms, ordsets:new()),
-	  case refac_util:analyze_free_vars(AnnAST) of
-	    {error, Reason} -> 
-		  io:format("Reason:\n~p\n",[Reason]),
-		  file:delete(TempFileName), error;
-	    _ -> file:delete(TempFileName), ok
-	  end;
-      {error, Reason} -> 
-	     io:format("Reason:\n~p\n",[Reason]),
-	    file:delete(TempFileName), error
     end.
 
 %% =====================================================================

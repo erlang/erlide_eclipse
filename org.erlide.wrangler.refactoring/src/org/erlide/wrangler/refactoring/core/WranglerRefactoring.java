@@ -13,6 +13,7 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
@@ -43,7 +44,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	protected IdeBackend managedBackend;
 	protected String newName;
 
-	private RPCMessage message;
+	protected RPCMessage message;
 
 	/**
 	 * Sole constructor. Initializes the necessary components.
@@ -73,10 +74,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 		} catch (WranglerException e) {
 			String s = e.getLocalizedMessage();
 			rs = RefactoringStatus.createFatalErrorStatus(s);
-		} catch (IOException e) {
-			return RefactoringStatus
-					.createErrorStatus("I/O error during the refactoring:\n"
-							+ e.getMessage());
 		} catch (ErlangRpcException e) {
 			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		} catch (RpcException e) {
@@ -158,7 +155,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	@Override
 	public Change createChange(IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
-		CompositeChange cChange = new CompositeChange("wrangler made changes");
+		CompositeChange cChange = new CompositeChange("Wrangler");
 
 		List<FileResourceChanges> fileRs = message.getResult();
 		try {
@@ -177,11 +174,11 @@ public abstract class WranglerRefactoring extends Refactoring {
 
 		Change otherChange = doOtherChanges();
 		if (null != otherChange) {
-			int a;
 			cChange.add(otherChange);
 		}
 
 		change = cChange;
+		// ErlLogger.debug("changes to be applied:" + change.);
 		return change;
 	}
 
@@ -197,20 +194,37 @@ public abstract class WranglerRefactoring extends Refactoring {
 	/**
 	 * Sends the RPC to Wrangler, then checks the result and stores it.
 	 * 
-	 * @throws ErlangRpcException
 	 * @throws RpcException
-	 * @throws WranglerException
-	 * @throws IOException
 	 * @throws CoreException
+	 * @throws ErlangRpcException
+	 * @throws WranglerException
 	 */
-	protected void doRefactoring() throws ErlangRpcException, RpcException,
-			WranglerException, IOException, CoreException {
+	protected void doRefactoring() throws RpcException, ErlangRpcException,
+			CoreException, WranglerException {
 
 		String filePath = parameters.getFilePath();
-		RpcResult res = sendRPC(filePath, parameters.getSearchPath());
+		ErlLogger.debug("selected file for " + getName() + " refactoring:"
+				+ filePath);
+		// TODO: remove this try block, beacuse it is unneccessary
+		try {
+			RpcResult res = sendRPC(filePath, parameters.getSearchPath());
+			ErlLogger.debug("raw result: " + res);
+			RPCMessage m = convertRpcResultToRPCMessage(res);
+			ErlLogger.debug("RpcResult converted to RpcMessage");
+			message = m;
 
-		RPCMessage m = convertRpcResultToRPCMessage(res);
-		message = m;
+		} catch (ErlangRpcException e) {
+			ErlLogger.debug(e);
+			throw e;
+		} catch (RpcException e) {
+			ErlLogger.debug(e);
+			throw e;
+		} catch (WranglerException e) {
+			throw e;
+		} catch (CoreException e) {
+			ErlLogger.error(e);
+			throw e;
+		}
 	}
 
 	/**
@@ -227,7 +241,8 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 * @throws RpcException
 	 */
 	protected abstract RpcResult sendRPC(String filePath,
-			OtpErlangList searchPath) throws ErlangRpcException, RpcException;
+			OtpErlangList searchPath) throws ErlangRpcException, RpcException,
+			CoreException;
 
 	/**
 	 * @param m

@@ -6,12 +6,8 @@ package org.erlide.wrangler.refactoring.core.exception;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
+@SuppressWarnings("serial")
 public abstract class WranglerException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	protected WranglerException(String message) {
 		super(message);

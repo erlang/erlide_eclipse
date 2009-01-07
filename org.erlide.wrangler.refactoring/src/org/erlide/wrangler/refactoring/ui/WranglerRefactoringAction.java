@@ -29,7 +29,8 @@ public abstract class WranglerRefactoringAction implements
 	protected String refactoringName;
 
 	public void dispose() {
-		refactoringWizard.dispose();
+		if (refactoringWizard != null)
+			refactoringWizard.dispose();
 	}
 
 	public void init(IWorkbenchWindow window) {

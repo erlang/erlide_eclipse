@@ -1,9 +1,8 @@
-package org.erlide.wrangler.refactoring.core.renamemodule;
+package org.erlide.wrangler.refactoring.ui;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
-import org.erlide.wrangler.refactoring.ui.WranglerNewDataInputPage;
 import org.erlide.wrangler.refactoring.util.NameChecker;
 
 public class NewModuleNameInputPage extends WranglerNewDataInputPage {

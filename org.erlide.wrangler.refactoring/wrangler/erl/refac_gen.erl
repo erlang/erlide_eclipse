@@ -75,64 +75,65 @@
 
 -module(refac_gen).
 
+-include("../hrl/wrangler.hrl").
+
 -export([generalise/5, generalise_eclipse/5]).
 
 %% temporally exported for testing purposed.
--export([pre_cond_checking/2, do_generalisation/6, application_info/1, gen_fun_1/7, gen_fun_2/7, gen_fun_1_eclipse/7, gen_fun_2_eclipse/7]).
+-export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/7, gen_fun_2/7, gen_fun_1_eclipse/7, gen_fun_2_eclipse/7]).
 
 %% =====================================================================
 %% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[string()])-> term()
 %%         Pos = {integer(), integer()}
+-spec(generalise/5::(filename(),pos(), pos(),string(), [dir()]) -> {ok, string()} | {error, string()}).	     
 
 generalise(FileName, Start, End, ParName, SearchPaths) ->
     generalise(FileName, Start, End, ParName, SearchPaths, emacs).
 
+-spec(generalise_eclipse/5::(filename(),pos(), pos(),string(), dir()) -> {ok, [{filename(), filename(), string()}]}).
 generalise_eclipse(FileName, Start, End, ParName, SearchPaths) ->
     generalise(FileName, Start, End, ParName, SearchPaths, eclipse).
     
-generalise(FileName, Start, End, ParName, SearchPaths, Editor) ->
-    io:format("\n[CMD: gen_fun, ~p, ~p, ~p, ~p]\n", [FileName, Start, End, ParName]),
+generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths, Editor) ->
+    ?wrangler_io("\nCMD: ~p:generalise(~p, {~p,~p}, {~p,~p}, ~p,~p).\n", [?MODULE,FileName, Line, Col, Line1, Col1, ParName, SearchPaths]),
     case refac_util:is_var_name(ParName) of 
 	true ->
-	    case refac_util:parse_annotate_file(FileName,true, SearchPaths) of 
-		{ok, {AnnAST, Info}} ->
-		    case refac_util:pos_to_expr(AnnAST, Start, End) of  
-			{ok, Exp1} ->{ok, Fun} = refac_util:expr_to_fun(AnnAST, Exp1),
-				     FunName = refac_syntax:data(refac_syntax:function_name(Fun)),
-				     FunArity = refac_syntax:function_arity(Fun),
-				     Inscope_Funs = lists:map(fun({_M1,F, A})->{F, A} end, 
-							      refac_util:inscope_funs(Info)),
-				     case lists:member({FunName, FunArity+1}, Inscope_Funs) of 
-					 true ->{error, "Function "++ atom_to_list(FunName)++"/"++
-						 integer_to_list(FunArity+1)++" is already in scope!"};
-					 _   -> FunDefPos =get_fun_def_loc(Fun), 
-						ParName1 = list_to_atom(ParName),
-						case gen_cond_analysis(Fun, Exp1, ParName1) of 
-						    ok -> 
-							Exp_Free_Vars = refac_util:get_free_vars(Exp1),
-							case Exp_Free_Vars==[] of 
-							    true -> SideEffect = refac_util:has_side_effect(FileName, Exp1, SearchPaths),
-								    case SideEffect of  
-									unknown -> {unknown_side_effect, [ParName1, FunName, FunArity, FunDefPos,Exp1]};
-									_ ->AnnAST1=gen_fun(AnnAST, ParName1, 
-											    FunName, FunArity, FunDefPos,Info, Exp1, SideEffect),
-									    case Editor of 
-										emacs ->
-										    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-										    {ok, "Refactor succeeded"};
-										eclipse  ->
-										    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
-										    {ok, Res}
-									    end
-									end;	     
-							    false ->
-								{free_vars, [ParName1, FunName, FunArity, FunDefPos, Exp1]}
-							end;
-						    {error, Reason} -> {error, Reason}
-						end 
-				     end;
-			{error, none} -> {error, "You have not selected an expression!"}
-		    end;
+	    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths),
+	    case refac_util:pos_to_expr(AnnAST, Start, End) of  
+		{ok, Exp1} ->{ok, Fun} = refac_util:expr_to_fun(AnnAST, Exp1),
+			     FunName = refac_syntax:data(refac_syntax:function_name(Fun)),
+			     FunArity = refac_syntax:function_arity(Fun),
+			     Inscope_Funs = lists:map(fun({_M1,F, A})->{F, A} end, 
+						      refac_util:inscope_funs(Info)),
+			     case lists:member({FunName, FunArity+1}, Inscope_Funs) of 
+				 true ->{error, "Function "++ atom_to_list(FunName)++"/"++
+					 integer_to_list(FunArity+1)++" is already in scope!"};
+				 _   -> FunDefPos =get_fun_def_loc(Fun), 
+					ParName1 = list_to_atom(ParName),
+					case gen_cond_analysis(Fun, Exp1, ParName1) of 
+					    ok -> 
+						Exp_Free_Vars = refac_util:get_free_vars(Exp1),
+						case Exp_Free_Vars==[] of 
+						    true -> SideEffect = refac_util:has_side_effect(FileName, Exp1, SearchPaths),
+							    case SideEffect of  
+								unknown -> {unknown_side_effect, [ParName1, FunName, FunArity, FunDefPos,Exp1]};
+								_ ->AnnAST1=gen_fun(AnnAST, ParName1, 
+										    FunName, FunArity, FunDefPos,Info, Exp1, SideEffect),
+								    case Editor of 
+									emacs ->
+									    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
+									    {ok, "Refactor succeeded"};
+									eclipse  ->
+									    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+									    {ok, Res}
+								    end
+							    end;	     
+						    false ->
+							{free_vars, [ParName1, FunName, FunArity, FunDefPos, Exp1]}
+						end;
+					    {error, Reason} -> {error, Reason}
+					end 
+			     end;
 		{error, Reason} -> {error, Reason}
 	    end;
 	false  -> {error, "Invalid parameter name!"}
@@ -196,9 +197,12 @@ gen_fun(Tree, ParName, FunName, Arity, DefPos,Info, Exp, SideEffect) ->
        {Tree2, _} = refac_util:stop_tdTP(fun do_gen_fun/2, Tree1, {ParName, FunName, Arity, DefPos,Info, Exp,SideEffect}),
        Tree2.
 
+
+-spec(gen_fun_1/7::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree()) -> {ok, string()}).
 gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp) ->
     gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, emacs).
 
+-spec(gen_fun_1_eclipse/7::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree()) -> {ok, [{filename(), filename(),string()}]}).
 gen_fun_1_eclipse(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp) ->
     gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, eclipse).
 
@@ -219,10 +223,11 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, Editor) ->
 	    {ok, Res}
     end.
 
+-spec(gen_fun_2/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) -> {ok, string()}).
 gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths) ->
     gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, emacs).
 
-
+-spec(gen_fun_2_eclipse/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) ->{ok, [{filename(), filename(),string()}]}).
 gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths) ->
     gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, eclipse).
 
@@ -342,7 +347,7 @@ add_actual_parameter(Tree, {FunName, Arity,Exp, Info})->
 
 do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
   {ok, ModName} = get_module_name(Info),
-   Message = fun (Pos) -> io:format("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler " 
+   Message = fun (Pos) -> ?wrangler_io("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler " 
 				    "could not decide whether this site should be refactored, please check manually!\n",
 				    [Pos])
 	     end,
@@ -456,7 +461,7 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 
 transform_spawn_call(Node,{FunName, Arity, Exp, Info}) ->
     {ok, ModName} = get_module_name(Info),
-     Message = fun (Pos) -> io:format("WARNING: function ***spawn*** is used at location({line, col}):~p, and wrangler " 
+     Message = fun (Pos) -> ?wrangler_io("WARNING: function ***spawn*** is used at location({line, col}):~p, and wrangler " 
 				    "could not decide whether this site should be refactored, please check!!!\n",
 				     [Pos])
 	      end,
@@ -574,7 +579,7 @@ application_info(Node) ->
 			    end;
 		_  -> {{none,expressionoperator}, Arity}
 	    end;
-	_ -> erlang:fault(not_an_application)
+	_ -> erlang:error(badarg)
     end.
 
 %% =====================================================================
@@ -598,8 +603,10 @@ get_fun_def_loc(Node) ->
 %%------------------------------------------------------------------------------------
 %% The following functions have been used for testing purposed, and will be refactored.
 %%---------------------------------------------------------------------------------------
+-spec(pre_cond_checking/2::({syntaxTree(), moduleInfo()}, {filename(), {pos(), pos()}, string(), [dir()]}) ->boolean()).
+	     
 pre_cond_checking({AnnAST,Info}, {_FileName, {Start, End}, ParName, _SearthPaths}) ->
-     ok = pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info).
+     ok == pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info).
      
 pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info) ->
     case refac_util:is_var_name(ParName) of 
@@ -615,12 +622,14 @@ pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info) ->
 				  _   ->  ParName1 = list_to_atom(ParName),
 					  gen_cond_analysis(Fun, Exp, ParName1)
 			      end;
-		     {error, none}  -> {error, "You have not selected an expression!"}
+		     {error, Reason}  -> {error, Reason}
 		 end;
     	false  -> {error, "Invalid parameter name!"}
     end.  
 
 
+
+-spec(do_generalisation/6::(filename(), syntaxTree(), {pos(), pos()}, string(), moduleInfo(), [dir()]) -> syntaxTree()).	     
 do_generalisation(FileName,AnnAST, {Start, End}, ParName,Info, SearchPaths)->
     {ok, Exp1} = refac_util:pos_to_expr(AnnAST, Start, End),
     {ok, Fun} =  refac_util:expr_to_fun(AnnAST, Exp1),

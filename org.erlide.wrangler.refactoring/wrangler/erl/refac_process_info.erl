@@ -17,7 +17,7 @@
 
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
-
+%% Modified by Gyorgy Orosz, 2008.10.28.
 %% TODO: data flow analysis to get the values actual parameters of spawn.
 %%  handling of send expressions (to detive the initial fun info of the dest process.
 
@@ -367,7 +367,7 @@ backward_slice(Expr, FunDef) ->
     Body = refac_syntax:clause_body(hd(refac_syntax:function_clauses(NewFun1))),
     Body1 = rm_unused_exprs(Body),
    %% io:format(lists:concat(lists:map(fun(B) ->"\n"++refac_prettypr:format(B)++"\n" end, Body1))),
-    io:format("R:\n~p\n", [try_evaluation(Body)]),
+   %% io:format("R:\n~p\n", [try_evaluation(Body)]),
     try_evaluation(Body).
  
 
@@ -449,8 +449,8 @@ rm_unused_exprs(Exprs) ->
    %%io:format(lists:concat(lists:map(fun(B) ->refac_prettypr:format(B) end, Exprs))),
     LastExpr = lists:last(Exprs),
     FreeVars = refac_util:get_free_vars(LastExpr),
-    io:format("LastExpr:\n~p\n", [refac_prettypr:format(LastExpr)]),
-    io:format("FreeVars:\n~p\n", [FreeVars]),
+   %% io:format("LastExpr:\n~p\n", [refac_prettypr:format(LastExpr)]),
+   %% io:format("FreeVars:\n~p\n", [FreeVars]),
     ReversedPrevExprs = tl(lists:reverse(Exprs)),
     Res = rm_unused_exprs_1(ReversedPrevExprs, FreeVars, [LastExpr]),
    %%io:format("Result:\n"),
@@ -581,7 +581,7 @@ do_annotate_special_fun_apps(Node, {ModName, FunName, Arity, EnvPid, FunDef}) ->
 		    Arguments = refac_syntax:application_arguments(Node),
 		    InitialFun = HandleSpawn({Mod, Fun, Ari},Arguments),
 		    Node1 = refac_util:update_ann(Node, {process, [{pid,InitialFun}]}),  %% TODO: Some spawn variants return both pid() and reference().
-		    io:format("Pid:\n~p\n", [InitialFun]),
+		    %%io:format("Pid:\n~p\n", [InitialFun]),
 		    Node1;
 		_ ->case is_self_app(Node) of
 			true ->
@@ -866,7 +866,7 @@ fun_typesig_loop(Env) ->
 	    From ! {self(), Env},
 	    fun_typesig_loop(Env);
 	stop ->
-	    io:format("Types:\n~p\n", [Env]),
+	    %%io:format("Types:\n~p\n", [Env]),
 	    ok
     end.
 	    

@@ -30,9 +30,8 @@ public class PatametersNumberInputPage extends WranglerNewDataInputPage {
 					setPageComplete(false);
 					setErrorMessage(null);
 				} else {
-					int num;
 					try {
-						num = Integer.valueOf(s);
+						Integer.valueOf(s);
 						setPageComplete(true);
 						setErrorMessage(null);
 					} catch (NumberFormatException e1) {

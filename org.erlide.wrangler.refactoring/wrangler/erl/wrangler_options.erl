@@ -1,4 +1,4 @@
-
+ 
 %% This module is not used at the moment.
 
 -module(wrangler_options).
@@ -7,6 +7,8 @@
 
 -include("../hrl/wrangler.hrl").
 
+-spec(build/1::([{atom(), [dir()]|[atom()]}]) ->
+	     #options{}).
 build(Opts) ->
   build_options(Opts, #options{}).
 
@@ -19,7 +21,7 @@ build_options([Term={OptionName,Value}|Rest], Options) ->
     plt_libs ->
       build_options(Rest, Options#options{plt_libs=Value});
      _ ->
-      io:format("Bad Options:~p:\n", [Term])
+      ?wrangler_io("Bad Options:~p:\n", [Term])
   end;
 build_options([Term|_Rest], _Options) ->
      io:format("Bad Options:~p:\n", [Term]);

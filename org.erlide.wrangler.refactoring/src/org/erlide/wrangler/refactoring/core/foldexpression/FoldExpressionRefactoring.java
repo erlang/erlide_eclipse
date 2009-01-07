@@ -3,6 +3,7 @@ package org.erlide.wrangler.refactoring.core.foldexpression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.jinterface.rpc.RpcException;
@@ -58,16 +59,18 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws ErlangRpcException, RpcException {
+			throws ErlangRpcException, RpcException, CoreException {
 		return managedBackend.rpc("wrangler", "fold_expression_1_eclipse",
-				"sxx", filePath, funClauseDef, selectedPositions);
+				"sxxx", filePath, funClauseDef, selectedPositions, parameters
+						.getSearchPath());
 	}
 
 	private RPCMessage callFoldExpression() throws RpcException,
-			WranglerException {
+			WranglerException, CoreException {
 		RpcResult res = managedBackend.rpc("wrangler",
-				"fold_expression_eclipse", "sii", parameters.getFilePath(),
-				parameters.getStartLine(), parameters.getStartColumn());
+				"fold_expr_by_loc_eclipse", "siix", parameters.getFilePath(),
+				parameters.getStartLine(), parameters.getStartColumn(),
+				parameters.getSearchPath());
 		FoldExpressionRPCMessage m = new FoldExpressionRPCMessage(res, this);
 		m.checkIsOK();
 		return m;
@@ -89,6 +92,8 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 			String s = e.getLocalizedMessage();
 			rs = RefactoringStatus.createFatalErrorStatus(s);
 		} catch (RpcException e) {
+			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
+		} catch (CoreException e) {
 			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		}
 		return rs;

@@ -12,7 +12,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
-import org.erlide.wrangler.refactoring.core.renamemodule.NewModuleNameInputPage;
+import org.erlide.wrangler.refactoring.ui.NewModuleNameInputPage;
 import org.erlide.wrangler.refactoring.util.NameChecker;
 
 public class TargetModuleNameInputPage extends NewModuleNameInputPage {

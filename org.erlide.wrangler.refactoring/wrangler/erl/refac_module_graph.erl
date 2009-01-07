@@ -18,104 +18,99 @@
 %%======================================================================
 
 -module(refac_module_graph).
--export([module_graph/3]). 
+-export([module_graph/1, collect_called_modules/1]). 
 
 -include("../hrl/wrangler.hrl").
+-spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
+module_graph(SearchPaths) ->
+    ?wrangler_io("\nStart calculating module graph ...\n",[]),
+    Files = refac_util:expand_files(SearchPaths, ".erl"),
+    ModMap = refac_util:get_modules_by_file(Files),
+    Res =analyze_all_files(ModMap, SearchPaths),
+    ?wrangler_io("\nModule graph calculation finished.\n",[]),
+    Res.
+    
+    
+analyze_all_files([], _SearchPaths)->
+    Acc = ets:foldr(fun({{Mod, Dir}, CalledMods, _TimeStamp}, S) 
+		       -> [{{Mod, Dir}, CalledMods}|S]
+		    end, [], ?ModuleGraphTab),
+    reverse_module_graph(Acc);
 
-module_graph(Files, ModuleGraphFile, SearchPaths) ->
-     Ext = ".erl",
-     NewFiles = refac_util:expand_files(Files, Ext),
-     ModMap = refac_util:get_modules_by_file(NewFiles),
-     case file:read_file(ModuleGraphFile) of 
-	 {ok, Res} -> {module_graph, _, List} = analyze_all_files(ModMap, [], {ModuleGraphFile, binary_to_term(Res)}, SearchPaths),
-		      List;
-	 _ -> {module_graph, _, List} = analyze_all_files(ModMap, [], {ModuleGraphFile, []},SearchPaths),
-	      List
-     end.
-	     
-
-analyze_all_files([{Mod, Dir}|Left], Acc, {ModuleGraphFile, ModuleGraph}, SearchPaths) ->  
-  ModuleGraphModifiedTime = filelib:last_modified(ModuleGraphFile),
-  FileName = filename:join(Dir,Mod++".erl"),
-  FileModifiedTime = filelib:last_modified(FileName),
-  R = lists:keysearch({Mod, Dir},1, ModuleGraph),
-  if (FileModifiedTime < ModuleGraphModifiedTime) and (R /= false) ->
-	  {value, R1} = R,
-	  analyze_all_files(Left, [R1|Acc], {ModuleGraphFile, ModuleGraph}, SearchPaths);
-     true ->
-	  case analyze_mod({Mod, Dir}, SearchPaths) of
-	      {error, Reason} ->
-		  erlang:error(Reason);
-		  %% analyze_all_files(Left, Acc, {ModuleGraphFile, ModuleGraph}, SearchPaths);
-	      {called_modules, Called} ->
-		  analyze_all_files(Left, [{{Mod,Dir}, Called}|lists:keydelete({Mod, Dir}, 1, Acc)],
-				    {ModuleGraphFile, ModuleGraph}, SearchPaths)
-	  end
-  end; 	   
-  
-analyze_all_files([], Acc, {ModuleGraphFile, _ModuleGraph}, _SearchPaths)->
-    case file:open(ModuleGraphFile,[write,binary]) of 
-	{ok, File} -> file:write_file(ModuleGraphFile, term_to_binary(Acc)),
-		      file:close(File);
-	{error, Reason} ->  io:format("Could not open the module graph output file, Reason ~p\n",
-				      [Reason])
-    end,
-    {module_graph, Acc, reverse_module_graph(Acc)}.
-
+analyze_all_files([{Mod, Dir}|Left], SearchPaths) ->  
+    FileName = filename:join(Dir,Mod++".erl"),
+    FileModifiedTime = filelib:last_modified(FileName),
+    R = ets:lookup(?ModuleGraphTab, {Mod, Dir}),
+    case R of
+	[] -> {called_modules, Called} = analyze_mod({Mod, Dir}, SearchPaths),
+	      ets:insert(?ModuleGraphTab, {{Mod, Dir}, Called, filelib:last_modified(FileName)}),
+	      analyze_all_files(Left, SearchPaths);
+	[{{Mod, Dir}, _CalledMods, TimeStamp}] ->
+	    case FileModifiedTime > TimeStamp of 
+		true -> 
+		    ets:delete(?ModuleGraphTab, {Mod, Dir}),
+		    {called_modules, CalledMods1} = analyze_mod({Mod, Dir}, SearchPaths),
+		    ets:insert(?ModuleGraphTab, {{Mod, Dir}, CalledMods1, filelib:last_modified(FileName)}),
+		    analyze_all_files(Left, SearchPaths);
+		false  ->
+		    analyze_all_files(Left, SearchPaths)		   
+	    end
+  end.
+		  
 
 analyze_mod({Mod, Dir}, SearchPaths) ->
     DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
     DefaultIncl2 = [filename:join(Dir, X) || X <- DefaultIncl1],
     Includes = SearchPaths ++ DefaultIncl2, 
     File = filename:join(Dir, Mod++".erl"),
-    case refac_util:parse_annotate_file(File, false, Includes) of 
-	{ok, {AnnAST, Info}} ->
-	    ImportedMods = case lists:keysearch(imports,1, Info) of 
-			       {value, {imports, Imps}} -> lists:map(fun({M, _Funs}) -> M end, Imps);
-			       _  -> []
-			   end,
-	    CalledMods = collect_called_modules(AnnAST),
-	    {called_modules, ImportedMods++CalledMods};
-	{error, Reason} -> 
-	    {error, Reason}
-    end.
+    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(File, true, Includes),
+    ImportedMods = case lists:keysearch(imports,1, Info) of 
+		       {value, {imports, Imps}} -> lists:map(fun({M, _Funs}) -> M end, Imps);
+		       false  -> []
+		   end,
+    CalledMods = collect_called_modules(AnnAST),
+    {called_modules, ImportedMods++CalledMods}.
 
-
+-spec(collect_called_modules(AnnAST::syntaxTree()) ->
+	     [modulename()]).
 collect_called_modules(AnnAST) ->
-    Fun = fun(T, S) -> 
- 		 case refac_syntax:type(T) of 
- 		     application -> 
- 			 Operator = refac_syntax:application_operator(T),
- 			 case refac_syntax:type(Operator) of 
-			     module_qualifier ->
-				 Mod  = refac_syntax:module_qualifier_argument(Operator),
-				 case refac_syntax:type(Mod) of 
-				     atom ->  ordsets:add_element(refac_syntax:atom_value(Mod), S);
-				     _ ->  S 
-				 end;
-			     atom -> 
-				 Op = refac_syntax:atom_value(Operator),
-				 Arguments = refac_syntax:application_arguments(T),
-				 Arity = length(Arguments),
-				 SpecialFuns = [{apply,3},{spawn,3},{spawn,4},{spawn_link,3},{spawn_link,4}],
-				 case lists:member({Op, Arity},SpecialFuns) of 
-				     true ->
-					 Mod = hd(Arguments),
-					 Mod1 = refac_util:try_evaluation([refac_syntax:revert(Mod)]),
-					 case Mod1 of 
-					     {value, M} -> ordsets:add_element(M, S);
-					     _ -> S
-					 end;
-				     _  -> S
-				 end;	 
-			     _ -> S
-			 end;
-		     _ -> S
-		 end
-	 end,
+    Fun = fun(T, S) ->
+		  case refac_syntax:type(T) of 
+		      application ->
+			  Op = refac_syntax:application_operator(T),
+			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of 
+			      {value, {fun_def, {M, F, A, _, _}}} ->
+				S1 = ordsets:add_element(M, S),
+				SpecialFuns1 = [{erlang,apply,3},{erlang, spawn,3},{erlang, spawn_link,3}, 
+						{erlang, spawn_monitor, 3}, {erlang, spawn_opt, 4}],
+				SpecialFuns2 = [{erlang, spawn, 4}, {erlang,spawn_link, 4}, {erlang, spawn_opt, 5}],
+				case lists:member({M, F, A}, SpecialFuns1) of 
+				    true ->
+					Args = refac_syntax:application_arguments(T),
+					M1 = hd(Args),
+					case refac_util:try_evaluation([refac_syntax:revert(M1)]) of
+					    {value, M} -> ordsets:add_element(M, S1);
+					    _ -> S1
+					end;
+				    false ->
+					case lists:member({M, F, A}, SpecialFuns2) of 
+					    true ->
+						Args = refac_syntax:application_arguments(T),
+						M1 = element(2,list_to_tuple(Args)),
+						case refac_util:try_evaluation([refac_syntax:revert(M1)]) of
+						    {value, M2} -> ordsets:add_element(M2, S1);
+						    _ -> S1
+						end;
+					    _ -> S1
+					end
+				end;
+			      _ -> S
+			  end;
+		      _ -> S		  
+		  end
+	  end,
      lists:usort(refac_syntax_lib:fold(Fun, [], AnnAST)).
-
-
+    
 reverse_module_graph(List) ->
     reverse_module_graph_1(List,List, []).
 reverse_module_graph_1([], _List,Acc) ->

@@ -13,6 +13,8 @@
 
 -include("../hrl/wrangler.hrl").
 
+
+-spec(construct/1::(dir())-> {scc_order(),external_calls()}).
 construct(List) ->
   {Calls, FunDefMap, ExternalCalls} = preprocess(List),
   Edges = get_edges(Calls),  
@@ -21,16 +23,16 @@ construct(List) ->
   SCCEdges = get_scc_edges(Nodes, SccMap, Calls),
   SCCOrder = order_sccs(SCCs, SCCEdges),
   FinalOrder = finalize_order(SCCOrder, SCCs, FunDefMap), 
-  #callgraph{scc_order=FinalOrder, external_calls=ExternalCalls}.
+  {FinalOrder, ExternalCalls}.
 
 preprocess(List1) ->
-  List2 = [{Fun, CalledFuns} || {{Fun, _FunDef}, CalledFuns} <- List1],
-  FunCallsOrdDict = orddict:from_list(List2),
-  Funs = ordsets:from_list([X || {X, _} <- FunCallsOrdDict]),
-  List3 = [{Fun, FunDef} || {{Fun, FunDef}, _CalledFuns} <- List1],
-  FunDefOrdDict = gb_trees:from_orddict(orddict:from_list(List3)),
-  ExternalCalls = find_ext_called_funs(Funs, FunCallsOrdDict),
-  {filter_calls(FunCallsOrdDict, Funs), FunDefOrdDict, ExternalCalls}.
+    List2 = [{Fun, CalledFuns} || {{Fun, _FunDef}, CalledFuns} <- List1],
+    FunCallsOrdDict = orddict:from_list(List2),
+    Funs = ordsets:from_list([X || {X, _} <- FunCallsOrdDict]),
+    List3 = [{Fun, FunDef} || {{Fun, FunDef}, _CalledFuns} <- List1],
+    FunDefOrdDict = gb_trees:from_orddict(orddict:from_list(List3)),
+    ExternalCalls = find_ext_called_funs(Funs, FunCallsOrdDict),
+    {filter_calls(FunCallsOrdDict, Funs), FunDefOrdDict, ExternalCalls}.
 
 filter_calls(FunCallsOrdDict, Funs) ->
   FilterFun = fun(X)->ordsets:is_element(X, Funs)end,

@@ -75,9 +75,10 @@ print_ast(AST, Options) ->
 		paper = proplists:get_value(paper, Options, ?PAPER),
 		ribbon = proplists:get_value(ribbon, Options, ?RIBBON),
 		user = proplists:get_value(user, Options)},
-    Es = seq_pr(erl_syntax:form_list_elements(AST), none, reset_prec(Ctxt), fun lay/2), 
+    Fs = erl_syntax:form_list_elements(AST),
+    Es = seq_pr(Fs, none, reset_prec(Ctxt), fun lay/2), 
     LayoutedEs = lists:map(fun(E) -> refac_prettypr_0:layout(E) end, Es),
-    vertical_concat(LayoutedEs).
+    vertical_concat(lists:zip(LayoutedEs,Fs)).
 
 seq_pr([H | T], Separator, Ctxt, Fun) ->
     {Paper, Ribbon} = get_paper_ribbon_width(H),
@@ -91,26 +92,65 @@ seq_pr([H | T], Separator, Ctxt, Fun) ->
 seq_pr([], _, _, _) ->
     [].
 
-
 vertical_concat(Es) ->
     vertical_concat(Es,"").
 vertical_concat([], Acc) ->
     Acc;
-vertical_concat([H|T], Acc) ->
+vertical_concat([{E, Form}|T], Acc) ->
+    SpecialForm=fun(F) ->
+			 case refac_syntax:type(F) of
+			     error_marker -> true;
+			     attribute-> case refac_syntax:atom_value(refac_syntax:attribute_name(F)) of
+					     type -> true;
+					     spec -> true;
+					     _ -> false
+					 end;
+			     _ -> false			 
+			 end
+		 end,
+    F = refac_util:concat_toks(refac_util:get_toks(Form)),
+    {ok, EToks, _} = refac_scan:string(E),    
+    {ok, FToks, _} = refac_scan:string(F),
+    EStr = process_str(refac_util:concat_toks(EToks)),
+    FStr = process_str(refac_util:concat_toks(FToks)),
     Acc1 = case Acc of 
 	       "" -> Acc;
-	       _ -> Acc++"\n\n"
+	       _ ->case (EStr==FStr) or SpecialForm(Form) of
+ 			true -> Acc;
+ 			false -> Acc++"\n"
+ 		    end
 	   end,
+    Str = case (EStr == FStr) or SpecialForm(Form) of 
+	      true -> 
+		  F;
+	      false->
+		  case T of 
+		      [] -> E;
+		      [{_E1,_Form1}|_] ->
+			   E ++"\n"
+		  end
+	  end,	      
     case T of 
-	[] -> Acc1++H;   
-	_  -> vertical_concat(T, Acc1++H)
+	[] -> Acc1++Str;   
+	_  -> vertical_concat(T, Acc1++Str)
     end.
-    
+
+
+process_str(S) ->
+    lists:flatmap(fun(C) ->
+			  case C of 
+			      ' ' -> [];
+			      $\" ->[];
+                              _ -> [C]
+                          end
+		  end, S).
+	        
 
 get_paper_ribbon_width(Form) ->    
     case refac_syntax:type(Form) of
 	attribute -> {?PAPER, ?RIBBON};
-	_ -> Fun = fun(T,Acc) -> 
+	_ ->
+	    Fun = fun(T,Acc) -> 
 			   {S, E} = refac_util:get_range(T),
 			   [S,E]++ Acc
 		   end,
@@ -121,7 +161,10 @@ get_paper_ribbon_width(Form) ->
 		       GroupedRanges = group_by(1, (lists:filter(fun(Loc) ->
 									 (Loc>= Start) and (Loc=<End) end, AllRanges))),
 		       MinMaxCols=lists:map(fun(Rs) ->Cols = lists:map(fun({_Ln, Col}) -> Col end, Rs),
-						      {lists:min(Cols),lists:max(Cols)}
+						      case Cols of 
+							  [] -> {1, 80};
+							  _ -> {lists:min(Cols),lists:max(Cols)}
+						      end
 					    end,  GroupedRanges),
 		       Paper = lists:max(lists:map(fun({_Min, Max}) ->
 							   Max end, MinMaxCols)),
@@ -135,7 +178,7 @@ get_paper_ribbon_width(Form) ->
 				     true -> ?RIBBON;
 				     _  -> Ribbon
 				 end,	
-		       {Paper1+6, Ribbon1+6}  %% adjustion to take the ending tokens such as brackets/commas into account.
+		       {Paper1+5, Ribbon1+5}  %% adjustion to take the ending tokens such as brackets/commas into account.
 	     end
     end.
 
@@ -1001,7 +1044,9 @@ lay_2(Node, Ctxt) ->
 	warning_marker ->
 	    E = erl_syntax:warning_marker_info(Node),
 	    beside(text("%% WARNING: "),
-		   lay_error_info(E, reset_prec(Ctxt)))
+		   lay_error_info(E, reset_prec(Ctxt)));
+	type -> empty()  %% tempory fix!!
+		    
     end.
 
 lay_parentheses(D, _Ctxt) ->

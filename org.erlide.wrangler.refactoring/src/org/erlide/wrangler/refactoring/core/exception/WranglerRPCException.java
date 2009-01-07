@@ -7,12 +7,8 @@ package org.erlide.wrangler.refactoring.core.exception;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
+@SuppressWarnings("serial")
 public class WranglerRPCException extends WranglerException {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Sole constructor with built-in message

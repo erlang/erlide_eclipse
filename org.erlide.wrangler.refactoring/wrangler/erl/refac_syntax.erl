@@ -20,7 +20,7 @@
 %%
 %% Author contact: richardc@csd.uu.se
 %%
-%% $Id: refac_syntax.erl,v 1.1 2008/05/20 14:49:40 go30 Exp $
+%% $Id: refac_syntax.erl,v 1.5 2008/04/30 09:28:12 hl Exp $
 %%
 %% Modified: 17 Jan 2007 by  Huiqing Li <hl@kent.ac.uk>
 %% =====================================================================
@@ -409,7 +409,7 @@ type(Node) ->
       {'if', _, _} -> if_expr;
       {'receive', _, _, _, _} -> receive_expr;
       {'receive', _, _} -> receive_expr;
-      {attribute, _, _, _} -> attribute;
+      {attribute, _, _, _} ->   attribute;
       {bin, _, _} -> binary;
       {bin_element, _, _, _, _} -> binary_field;
       {block, _, _} -> block_expr;
@@ -435,8 +435,9 @@ type(Node) ->
       {remote, _, _, _} -> module_qualifier;
       {rule, _, _, _, _} -> rule;
       {'try', _, _, _, _, _} -> try_expr;
+      {type, _, _, _} -> type;     
       {tuple, _, _} -> tuple;
-      _ -> erlang:fault({badarg, Node})
+        _ -> erlang:error({badarg, Node})
     end.
 
 %% =====================================================================
@@ -497,6 +498,7 @@ is_leaf(Node) ->
       underscore -> true;
       variable -> true;
       warning_marker -> true;
+      type -> true;   %% a temporary fix;
       _ -> false
     end.
 
@@ -1976,8 +1978,6 @@ list_elements(Node) ->
     lists:reverse(list_elements(Node, [])).
 
 list_elements(Node, As) ->
-    %io:format("Nodetype:\n~p\n", [type(Node)]),
-    %io:format("Node:\n~p\n", [Node]),
     case type(Node) of
       list ->
 	  As1 = lists:reverse(list_prefix(Node)) ++ As,
@@ -2712,12 +2712,22 @@ attribute_arguments(Node) ->
 		{Type, Entries} = Data,
 		[set_pos(atom(Type), Pos),
 		 set_pos(tuple(unfold_record_fields(Entries)), Pos)];
+	       spec ->
+  		  {FunSpec, TypeSpec} = Data,
+  		  case FunSpec of 
+  		      {Fun, Arity} -> [set_pos(tuple([set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)]
+  		  end;	
+	      type ->
+		  {TypeName, TypeSpec1, TypeSpec2} = Data,
+		  [set_pos(atom(TypeName), Pos), TypeSpec1, list(TypeSpec2)];
+	      
 	    _ ->
-		%% Standard single-term generic attribute.
-		[set_pos(abstract(Data), Pos)]
+	       [set_pos(abstract(Data), Pos)]
 	  end;
       Node1 -> (data(Node1))#attribute.args
     end.
+
+  
 
 %% =====================================================================
 %% @spec arity_qualifier(Body::syntaxTree(), Arity::syntaxTree()) ->
@@ -3893,6 +3903,7 @@ record_expr_fields(Node) ->
       Node1 -> (data(Node1))#record_expr.fields
     end.
 
+
 %% =====================================================================
 %% @spec application(Module, Function::syntaxTree(),
 %%                   Arguments::[syntaxTree()]) -> syntaxTree()
@@ -3927,6 +3938,7 @@ application(Module, Name, Arguments) ->
 %% @see application/3
 
 -record(application, {operator, arguments}).
+
 
 %% type(Node) = application
 %% data(Node) = #application{operator :: Operator,
@@ -4881,10 +4893,16 @@ revert_implicit_fun(Node) ->
 
 implicit_fun_name(Node) ->
     case unwrap(Node) of
-      {'fun', Pos, {function, Atom, Arity}} ->
-	  arity_qualifier(set_pos(atom(Atom), Pos),
-			  set_pos(integer(Arity), Pos));
-      Node1 -> data(Node1)
+	{'fun', Pos, {function, Atom, Arity}} ->
+	    arity_qualifier(set_pos(atom(Atom), Pos),
+			    set_pos(integer(Arity), Pos));
+	{'fun', Pos, {function, Module, Atom, Arity}} ->
+	    module_qualifier(set_pos(atom(Module), Pos),
+			     arity_qualifier(
+			       set_pos(atom(Atom), Pos),
+			       set_pos(integer(Arity), Pos)));
+	Node1 ->
+	    data(Node1)
     end.
 
 %% =====================================================================
@@ -5081,7 +5099,7 @@ abstract(T) when is_tuple(T) ->
 abstract(T) when is_binary(T) ->
     binary([binary_field(integer(B))
 	    || B <- binary_to_list(T)]);
-abstract(T) -> erlang:fault({badarg, T}).
+abstract(T) -> erlang:error({badarg, T}).
 
 abstract_list([T | Ts]) ->
     [abstract(T) | abstract_list(Ts)];
@@ -5144,7 +5162,7 @@ concrete(Node) ->
 					     end,
 					     [], true),
 	  B;
-      _ -> erlang:fault({badarg, Node})
+      _ -> erlang:error({badarg, Node})
     end.
 
 concrete_list([E | Es]) ->
@@ -5301,11 +5319,11 @@ revert_forms(T) ->
 	  case catch {ok, revert_forms_1(form_list_elements(T1))}
 	      of
 	    {ok, Fs} -> Fs;
-	    {error, R} -> erlang:fault({error, R});
+	    {error, R} -> erlang:error({error, R});
 	    {'EXIT', R} -> exit(R);
 	    R -> throw(R)
 	  end;
-      _ -> erlang:fault({badarg, T})
+      _ -> erlang:error({badarg, T})
     end.
 
 revert_forms_1([T | Ts]) ->
@@ -5382,10 +5400,10 @@ revert_forms_1([]) -> [].
 %% @see copy_attrs/2
 
 subtrees(T) ->
-      case is_leaf(T) of
+    case is_leaf(T) of
       true -> [];
       false ->
-	  case type(T) of
+	    case type(T) of
 	    application ->
 		[[application_operator(T)], application_arguments(T)];
 	    arity_qualifier ->
@@ -5394,8 +5412,9 @@ subtrees(T) ->
 	    attribute ->
 		case attribute_arguments(T) of
 		  none -> [[attribute_name(T)]];
-		  As -> [[attribute_name(T)], As]
-		end;
+		    As ->
+			[[attribute_name(T)], As]
+		    end;
 	    binary -> [binary_fields(T)];
 	    binary_field ->
 		case binary_field_types(T) of
@@ -5483,8 +5502,9 @@ subtrees(T) ->
 	    try_expr ->
 		[try_expr_body(T), try_expr_clauses(T),
 		 try_expr_handlers(T), try_expr_after(T)];
-	    tuple -> [tuple_elements(T)]
-	  end
+	    tuple -> [tuple_elements(T)];
+	    type -> []
+	      end
     end.
 
 %% =====================================================================
@@ -5587,6 +5607,7 @@ make_tree(size_qualifier, [[N], [A]]) ->
 make_tree(try_expr, [B, C, H, A]) ->
     try_expr(B, C, H, A);
 make_tree(tuple, [E]) -> tuple(E).
+
 
 %% =====================================================================
 %% @spec meta(Tree::syntaxTree()) -> syntaxTree()
@@ -5793,7 +5814,7 @@ is_tree(_) -> false.
 
 data(#tree{data = D}) -> D;
 data(#wrapper{tree=D}) -> D;  %% Added by Huiqing Li. (Is this correct?)
-data(T) -> erlang:fault({badarg, T}).  %% TODO: CHANGE THIS BACK.
+data(T) -> erlang:error({badarg, T}).  %% TODO: CHANGE THIS BACK.
 
 % =====================================================================
 %% Primitives for backwards compatibility; for internal use only

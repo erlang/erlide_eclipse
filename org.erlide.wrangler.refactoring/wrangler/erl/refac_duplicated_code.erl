@@ -1,7 +1,7 @@
 %% =====================================================================
 %% Duplicated Code Detection.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
+%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
 
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -20,94 +20,191 @@
 
 -module(refac_duplicated_code).
 
--export([duplicated_code/3, suffix_tree/2, remove_var_literals/1, test/0,test2/0,test1/0]).
+-export([duplicated_code/3]).
 
--compile(export_all).
 
+-export([duplicated_code_1/3]).
+
+-export([init/1]).
 %% TODO:  
 %% 1) does recusive function calls affect the result?
 %% 2) does qualifed names affect the result? 
 %% 3) ****when an erlang file does not compile, the detector should still return the result before trim_clones.
 
 
--define(DEFAULT_MIN_CLONE_LEN, 5).  %% in the number of tokens.
+-include("../hrl/wrangler.hrl").
 
-test() ->
-    duplicated_code(["refac_batch_rename_mod.erl", "refac_callgraph.erl", 
-		      "refac_duplicated_code.erl",
-                    %%  "refac_epp_dodger.erl", 
-		      "refac_expr_search.erl", "refac_util.erl",
-		      "refac_epp.erl",
- 		     "refac_fold_expression.erl", "refac_gen.erl",
- 		     "refac_io.erl", "refac_module_graph.erl",
- 		     "refac_move_fun.erl", "refac_new_fun.erl",
-%% 		     "refac_parse.erl",
- 		     "refac_prettypr.erl", "refac_recomment.erl",
- 		     "refac_rename_fun.erl", "refac_rename_mod.erl",
- 		     "refac_rename_var.erl", 
-		     "refac_scan.erl", 
- 		     "refac_syntax.erl",
-                    "refac_syntax_lib.erl", 
-		    "wrangler.erl", "wrangler_distel.erl", "wrangler_options.erl"], "30", "2").
+%% minimal number of tokens.
+-define(DEFAULT_MIN_CLONE_LEN, 20).
+
+%% Minimal number of duplication times.
+-define(DEFAULT_MIN_CLONE_MEMBER, 1).
 
 
-test1()->
-   duplicated_code(["refac_duplicated_code.erl"], "30","2").
+%% -define(DEBUG, true).
 
-test2()->
-    Files = refac_util:expand_files(["c:/cygwin/home/hl/CodeBase/ic-0.1.2"], ".erl"),
-    io:format("Files:\n~p\n", [Files]),
-    duplicated_code(Files, "30","2").
+-ifdef(DEBUG).
+-define(debug(__String, __Args), ?wrangler_io(__String, __Args)).
+-else.
+-define(debug(__String, __Args), ok).
+-endif.
+
+start_suffix_tree_clone_detector() ->
+    SuffixTreeExec = filename:join(?WRANGLER_DIR, "bin/suffixtree"),
+    start(SuffixTreeExec).
+
+start(ExtPrg) ->
+    process_flag(trap_exit, true),
+    spawn_link(?MODULE, init, [ExtPrg]).
+
+stop_suffix_tree_clone_detector() -> case catch (?MODULE ! stop) of 
+					 _ -> ok
+				     end.
+
+
+get_clones_by_suffix_tree(FileNames,MinLength, MinClones) ->
+    %% tokenize Erlang source files and concat the tokens into a single list.
+    {Toks, ProcessedToks} = tokenize(FileNames),
+    OutFileName = filename:join(filename:dirname(hd(FileNames)), "wrangler_suffix_tree"), 
+    case file:write_file(OutFileName, ProcessedToks) of 
+	ok -> case  catch call_port({get, MinLength, MinClones, OutFileName}) of
+		  {ok, _Res} ->
+		      ?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
+		      stop_suffix_tree_clone_detector(),
+		      {ok, [Cs]} = file:consult(OutFileName),
+		      file:delete(OutFileName),
+		      {Toks, Cs};
+		  _ -> 
+		      stop_suffix_tree_clone_detector(),
+		      file:delete(OutFileName),
+		      get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones)
+		    
+	      end;	
+	_ ->  get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones)
+    end.
+
+get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones) ->
+    ?wrangler_io("\nWrangler failed to use the C suffixtree implementation;"
+                 "Initial clones are calculated using Erlang suffixtree implementation.\n",[]),
+    Tree = suffix_tree(alphabet() ++ "&", ProcessedToks ++ "&"),
+    Cs = lists:flatten(lists:map(fun (B) ->
+					 collect_clones(MinLength, MinClones, B)
+				 end,
+				 Tree)),
+    Cs1 = remove_sub_clones(Cs),
+    {Toks, Cs1}.
+    
+call_port(Msg) ->
+    (?MODULE) ! {call, self(), Msg},
+    receive Result -> Result end.
+
+init(ExtPrg) ->
+    case whereis(?MODULE) of 
+	undefined -> ok;
+	_ -> unregister(?MODULE)
+    end,
+    register(?MODULE, self()),
+    process_flag(trap_exit, true),
+    Port = open_port({spawn, ExtPrg}, [{packet, 2}, binary, exit_status]),
+    ?debug("Port:~p\n", [Port]),
+    loop(Port).
+
+loop(Port) ->
+    receive
+    {call, Caller, Msg} ->
+	    ?debug("Calling port with ~p~n", [Msg]),
+	    erlang:port_command(Port, term_to_binary(Msg)),
+	    receive
+		{Port, {data, Data}} ->
+		    Caller ! binary_to_term(Data);
+		{Port, {exit_status, Status}} when Status > 128 ->
+		    ?debug("Port terminated with signal: ~p~n", [Status-128]),
+		    exit({port_terminated, Status});
+		{Port, {exit_status, Status}} ->
+		    ?debug("Port terminated with status: ~p~n", [Status]),
+		    exit({port_terminated, Status});
+		{'EXIT', Port, Reason} ->
+		    exit(Reason)
+	    end,
+	    loop(Port);
+    stop ->
+        erlang:port_close(Port),
+        exit(normal)
+    end.
+
+ 
 
 %% ==================================================================================
 %% @doc Find duplicated code in a Erlang source files.
 %% <p> This function only reports the duplicated code fragments found. It does not actually 
 %% remove those duplicated code. Two parameters can be provided 
 %% by the user to specify the minimum code clones to report, and they are:  
-%% \emph{the  minimum number of lines of a code clone} and \emph{the minimum number of 
+%% \emph{the minimum number of lines of a code clone} and \emph{the minimum number of 
 %% duplicated times}, the default values 2 for both parameters.
 %% </p>
 %% ====================================================================================
 %% @spec duplicated_code(FileName::filename(),MinLines::integer(),MinClones::integer()) -> term().
 %%  
+-spec(duplicated_code/3::([dir()], string(), string()) ->{ok, string()}).
 
-duplicated_code(FileNames, MinLength1, MinClones1) ->
-    MinLength = list_to_integer(MinLength1),
-    MinClones = list_to_integer(MinClones1),
-    %% tokenize Erlang source files and concat them into a single list.
-    {Toks, ProcessedToks} = tokenize(FileNames),
-    io:format("Suffix Tree construction\n"),
-    Tree = suffix_tree(alphabet()++"&",ProcessedToks++"&"),  %% '&' does not occur in program source.
-    %%Clone collection from the suffix tree.
-    io:format("Clone collection\n"),
-    Cs=lists:flatten(lists:map(fun(B) -> collect_clones(MinLength,MinClones,B) end, Tree)),
-     %% filter out sub-clones.
-    io:format("Filter out sub clones\n"),
-    Cs1 = filter_out_sub_clones(Cs),
-    io:format("CloneNumbers:\n~p\n", [length(Cs1)]),
-    %% put atom names back into the token streams, and get the new clones.
-    io:format("put atoms back\n"),
-    Cs2 = clones_with_atoms(Cs1, Toks, MinLength, MinClones),
-    %%io:format("Cs2:\n~p\n", [Cs2]),
-    io:format("Filter out sub clones\n"),
-    Cs3 = filter_out_sub_clones(Cs2),
-    %% combine clones which are next to each other. (ideally a fixpoint should be reached).
-    io:format("Combine with neighbours\n"),
-    Cs4 = combine_neighbour_clones(Cs3, MinLength, MinClones),
-    %% Trim both ends of the clones to remove those parts that does not form a meaningful syntax phrases.
-    io:format("Before Trimming:\n~p\n", [length(Cs4)]),
-     io:format("Trim clones\n"),
-     %%io:format("Before trimming \n"),
-     %%io:format("Cs5:\n~p\n", [Cs4]),
-     Cs5 = trim_clones(FileNames, Cs4, MinLength, MinClones),
-     Cs6 = remove_sub_clones(Cs5),
-     case length(FileNames) of 
-  	  1 ->  display_clones(Cs6);
-  	 _ -> display_clones1(Cs6)
-       end,
-    io:format("Final clones:\n~p\n", [length(Cs6)]),
+duplicated_code(DirFileList, MinLength1, MinClones1) ->
+    ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p).\n", [?MODULE, DirFileList, MinLength1, MinClones1]),
+    ?debug("current time:~p\n", [time()]),
+    start_suffix_tree_clone_detector(),
+    {Cs5, FileNames} = duplicated_code_detection(DirFileList, MinClones1, MinLength1),
+    ?debug("Filtering out sub-clones.\n", []),
+    Cs6 = remove_sub_clones(Cs5),
+    ?debug("current time:~p\n", [time()]),
+    case length(FileNames) of
+         1 -> display_clones(Cs6);
+         _ -> display_clones1(Cs6)
+      end,
+    ?debug("No of Clones found:\n~p\n", [length(Cs6)]),
+    ?debug("Clones:\n~p\n", [Cs6]),
     {ok, "Duplicated code detection finished."}.
-   
+
+-spec(duplicated_code_1/3::(dir(), [integer()], [integer()]) ->
+	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+
+duplicated_code_1(DirFileList, MinLength1, MinClones1) ->
+    {Cs5, _} = duplicated_code_detection(DirFileList, MinClones1,
+					 MinLength1),
+    remove_sub_clones(Cs5).
+ 
+
+duplicated_code_detection(DirFileList, MinClones1, MinLength1) ->
+    FileNames = refac_util:expand_files(DirFileList, ".erl"),
+    ?debug("Files:\n~p\n", [FileNames]),
+    MinLength = case MinLength1 == [] orelse
+		    list_to_integer(MinLength1) =< 0
+		    of
+		    true -> ?DEFAULT_MIN_CLONE_LEN;
+		    _ -> list_to_integer(MinLength1)
+		end,
+    %% By 'MinClones', I mean the minimal number of members in a clone class,
+    %% therefore it should be one more than the number of times a piece of code is cloned.
+    MinClones = case MinClones1 == [] orelse
+		    list_to_integer(MinClones1) < (?DEFAULT_MIN_CLONE_MEMBER)
+		    of
+		    true -> (?DEFAULT_MIN_CLONE_MEMBER) + 1;
+		    _ -> list_to_integer(MinClones1) + 1
+		end,
+    ?debug("Constructing suffix tree and collecting clones from the suffix tree.\n", []),
+    {Toks,Cs}= get_clones_by_suffix_tree(FileNames, MinLength, MinClones),
+    ?debug("Initial numberclones from suffix tree:~p\n", [length(Cs)]),
+    %% This step is necessary to reduce large number of sub-clones.
+    ?debug("Type 4 clones:\n~p\n", [length(Cs)]),
+    ?debug("Putting atoms back.\n",[]),
+    Cs1 = clones_with_atoms(Cs, Toks, MinLength, MinClones),
+    ?debug("Filtering out sub-clones.\n", []),
+    Cs2 = remove_sub_clones(Cs1),
+    ?debug("Combine with neighbours\n",[]),
+    Cs3 = combine_neighbour_clones(Cs2, MinLength, MinClones),
+    ?debug("Type3 without trimming:~p\n", [length(Cs3)]),
+    ?debug("Trimming clones.\n", []),
+    Cs4 = trim_clones(FileNames, Cs3, MinLength, MinClones),
+    {Cs4, FileNames}.
+
 
 %% =====================================================================
 %% tokennization of an Erlang file.
@@ -116,7 +213,7 @@ tokenize(FileList) ->
     TokLists = lists:map(fun(F) -> Toks= refac_util:tokenize(F),
 			    lists:map(fun(T)->add_filename_to_token(F,T) end, Toks)			    
 		  end, FileList),
-    Toks = lists:concat(TokLists),
+    Toks = lists:append(TokLists),
     R = [T1 || T <- Toks, T1 <- [process_a_tok(T)]],
     {Toks, lists:concat(R)}.
 
@@ -129,17 +226,17 @@ process_a_tok(T) ->
 	{string, _L3, _V3} -> 'S';  
 	{float, _, _} ->'F';        
 	{char, _, _} ->'C' ;        
-	{A, _} -> case lists:keysearch(A, 1, alphabet_1()) of 
+	{A, _} -> case lists:keysearch(A, 1, alphabet_1()) of
 		      {value, {A, Value}} -> Value;
-		      _  -> erlang:error(io:format("Unhandled token:\n~p\n", [T]))
+		      _  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [T]))
 		  end
     end.
 
 %% =====================================================================
 %% Construction of suffix tree.
 suffix_tree(Alpha, T) -> 
-     Tree = suffix_tree_1(Alpha, length(T),suffixes(T)),
-     post_process_suffix_tree(Tree).
+    Tree = suffix_tree_1(Alpha, length(T),suffixes(T)),
+    post_process_suffix_tree(Tree).
   
 
 suffix_tree_1(_Alpha, _Len, [[]]) -> leaf;
@@ -149,7 +246,7 @@ suffix_tree_1(Alpha, Len, Suffixes)->
  	[SA | SSA] <- [select(Suffixes, A)],
  	Lens <- [lists:map(fun(S) -> length(S)+1 end, [SA|SSA])],
  	{CP1, SSR} <- [edge_cst([SA|SSA])],
-        SubLens <- [lists:map(fun(L) -> {Len-L, Len-L+CP1} end, Lens)]].
+        SubLens <- [lists:map(fun(L) -> {Len-L+1, Len-L+CP1+1} end, Lens)]].
 
 select(SS,A) -> 
        [U || [C|U] <- SS, A==C].
@@ -180,23 +277,28 @@ add_frequency({branch, {Range, Len}, Branches})
  		 F1 = lists:foldl(fun({branch,{_R, {_L, F}}, _C}, Sum)-> F + Sum end,0, Bs),
  		 {branch, {Range, {Len, F1}}, Bs}.
 
-
+  
 %% ===========================================================================
 %% combine the ranges within two continuous branches if possible.
 extend_range(SuffixTree) ->
     extend_range([],SuffixTree).
-extend_range(_Prev_Range, {branch, {Range, {Len, Freq}}, leaf}) ->
-     {branch, {Range, {Len,Freq}}, leaf};
-extend_range(Prev_Range,{branch, {Range, {Len, Freq}}, Bs}) -> 
-     ExtendedRange = lists:map(fun(R) -> combine_range(Prev_Range, R) end, Range),
-     case overlapped_range(ExtendedRange) orelse
- 	 (lists:subtract(ExtendedRange, Range) =/= ExtendedRange) of 
- 	true -> Bs1=lists:map(fun(B) -> extend_range(Range, B) end, Bs), 
- 		{branch, {Range, {Len, Freq}}, Bs1};
- 	false -> Bs1 = lists:map(fun(B) -> extend_range(ExtendedRange,B) end, Bs),
- 		 {S, E} = hd(ExtendedRange),
- 		 {branch, {ExtendedRange, {E-S+1, Freq}}, Bs1}
-     end.
+
+extend_range(Prev_Range, {branch, {Range, {_Len, Freq}}, leaf}) ->
+    ExtendedRange = lists:map(fun (R) -> combine_range(Prev_Range, R) end, Range),
+    {S, E} = hd(ExtendedRange),
+    {branch, {ExtendedRange, {E-S+1, Freq}}, leaf};
+extend_range(Prev_Range, {branch, {Range, {Len, Freq}}, Bs}) ->
+    ExtendedRange = lists:map(fun (R) -> combine_range(Prev_Range, R) end, Range),
+    case overlapped_range(ExtendedRange) of 
+	true ->  Bs1 = lists:map(fun (B) -> extend_range(Range, B) end, Bs),
+		 {branch, {Range, {Len, Freq}}, Bs1};
+	_ -> 
+	    Bs1 = lists:map(fun (B) -> extend_range(ExtendedRange, B) end, Bs),
+	    {S, E} = hd(ExtendedRange),
+	    {branch, {ExtendedRange, {E - S + 1, Freq}}, Bs1}
+    end.
+    
+
 
 overlapped_range(R) -> overlapped_range_1(lists:usort(R)).
 
@@ -210,64 +312,27 @@ combine_range(Prev_Range, {StartLoc, EndLoc}) ->
 	{value, {StartLoc1, _EndLoc1}} ->
 	    {StartLoc1, EndLoc};
 	_  -> {StartLoc, EndLoc}
-    end.    
+    end.
 
 %% =====================================================================
 %% Collect those clones that satisfy the selecting criteria from the suffix trees.
 
 %% Problem: here 'Len' refers to the no. of tokens instead of no. of lines.
-collect_clones(MinLength, MinFreq, {branch, {Range, {Len, F}}, Others}) -> 
-    MinLength1 = case (MinLength >=?DEFAULT_MIN_CLONE_LEN) of    
-		    true -> MinLength;
-		    _ -> ?DEFAULT_MIN_CLONE_LEN    %% in the case that the user-specified length is less t
-		 end,	
-    C = case (F >= MinFreq) andalso (Len>= MinLength1) of 
-	    true   -> 
-		%%io:format("C:\n~p\n", [{Range, Len, F}]),
-		[{Range,Len, F}];
-	    false  ->
-		[]
+collect_clones(MinLength, MinFreq, {branch, {Range, {Len, F}}, Others}) ->
+    MinLength1 = case MinLength >= (?DEFAULT_MIN_CLONE_LEN) of
+		   true -> MinLength;
+		   _ ->
+		       ?DEFAULT_MIN_CLONE_LEN    %% in the case that the user-specified length is less t
+		 end,
+    C = case F >= MinFreq andalso Len >= MinLength1 of
+	  true -> [{Range, Len, F}];
+	  false -> []
 	end,
-    case Others of 
-	leaf -> C;
-	Bs -> lists:foldl(fun(B, C1)-> collect_clones(MinLength, MinFreq, B) ++ C1 end, C, Bs)
+    case Others of
+      leaf -> C;
+      Bs -> lists:foldl(fun (B, C1) -> collect_clones(MinLength, MinFreq, B) ++ C1 end, C, Bs)
     end.
     
-
-%% ==================================================================================
-%% This phase filters out sub-clones.
-
-filter_out_sub_clones(Cs) ->
-    Cs1 =lists:sort(fun({_Range1, Len1, F1},{_Range2, Len2, F2})
-			-> {Len1, F1} >= {Len2,F2}
-		     end, Cs),
-    filter_out_sub_clones_1(Cs1, [],[]).
-filter_out_sub_clones_1([], Acc, _ExistingRanges) -> Acc;
-filter_out_sub_clones_1([C={Range, _Len, _F}|Cs], Acc,ExistingRanges) -> 
-     case lists:subtract(Range, ExistingRanges) of 
-	[] -> filter_out_sub_clones_1(Cs, Acc, ExistingRanges);
-	Range  ->
-	    case lists:any(fun(E) -> sub_range(C, E) end, Acc) of   
-		     true ->  filter_out_sub_clones_1(Cs, Acc, ExistingRanges);  %% C is a sub-clone of the existing clones.
-		     false -> filter_out_sub_clones_1(Cs, Acc++[C], Range++ExistingRanges)
-		 end;
-	_  -> Acc1 = lists:map(fun({R, L, F}) ->
-				       R1 = lists:subtract(Range, R),
-				       case R1 =/= Range of 
-					   true -> NewRange = lists:usort(Range++R),
-						   {NewRange, L, length(NewRange)};
-					   _  -> {R, L, F}
-				       end
-			       end, Acc),
-	      filter_out_sub_clones_1(Cs, Acc1, ExistingRanges++Range)   
-   end.
-
-sub_range({Range1, Len1, F1}, {Range2, Len2, F2}) ->		       
-    case (F1  =<F2) andalso (Len1=<Len2) of 
-	true ->
-            lists:all(fun({S, E}) -> lists:any(fun({S1,E1})-> (S1=<S) andalso (E=<E1) end, Range2) end, Range1);
-	    false -> false
-    end.   
 
 %% ==================================================================================
 %% This phase brings back those atoms back into the token stream, and get the resulted clones.
@@ -277,16 +342,16 @@ clones_with_atoms(Cs, Toks, MinLength, MinClones) ->
 			    clones_with_atoms_1(Range, Toks, MinLength, MinClones) end, Cs)),
     Cs2 = simplify_filter_results(Cs1, [], MinLength, MinClones),
     [{R, L, F} || {R, L, F} <-Cs2, L >= MinLength, F >=MinClones].
-  
- 
+
 clones_with_atoms_1(Range, Toks, _MinLength, MinClones) ->
-    ListsOfSubToks=lists:map(fun({S, E}) ->
-			 Toks1 = lists:sublist(Toks, S+1, (E-S+1)),
-		         remove_var_literals(Toks1) 
-		      end, Range),
+    ListsOfSubToks = lists:map(fun ({S, E}) ->
+				       Toks1 = lists:sublist(Toks, S, E - S),
+				       remove_var_literals(Toks1)
+			       end,
+			       Range),
     ZippedToks = zip_list(ListsOfSubToks),
-    Cs =clones_with_atoms_2([ZippedToks], []),
-    [ C || C <- Cs, length(hd(C)) >= MinClones].
+    Cs = clones_with_atoms_2([ZippedToks], []),
+    [C || C <- Cs, length(hd(C)) >= MinClones].
 	    
 	    
    %%  [ C || C <- Cs, length(C) >=MinLength, length(hd(C))>=MinClones].
@@ -307,7 +372,7 @@ clones_with_atoms_2([ZippedToks|Others], Acc) ->
 group_by([]) -> [];
 group_by(SortedList=[{_Seq, Tok}|_T]) -> 
     {Es1, Es2} =lists:splitwith(fun({_S,T})-> rm_loc_in_tok(T) == rm_loc_in_tok(Tok) end, SortedList),
-    [Es1 | group_by(Es2)]. 
+    [Es1 | group_by(Es2)].
     
 
 get_sub_cs(_ZippedToks, [], Acc) -> Acc;
@@ -342,64 +407,63 @@ remove_var_literals_1(T) ->
  	{char, L, _}  -> {char, L, 'C'};
  	{atom, L, _} -> {atom, L, 'A'};
  	{A, L} ->{A, L};
- 	Other  -> erlang:error(io:format("Unhandled token:\n~p\n", [Other]))
-     end.    
-    
+ 	Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [Other]))
+     end.
+
 %% use locations intead of tokens to represent the clones.
-simplify_filter_results([],Acc, _MinLength, _MinClones) ->
-    Acc;
-simplify_filter_results([C|Cs], Acc, MinLength, MinClones) ->
-   StartEndTokens = lists:zip(hd(C), lists:last(C)),
-   Ranges = lists:map(fun({StartTok, EndTok}) ->
-			      {token_loc(StartTok), token_loc(EndTok)} end, StartEndTokens),
-   %% case (length(C) >= MinLines) andalso (length(hd(C))>=MinClones) of 
-    case (length(hd(C)) >= MinClones) of 
-       true -> simplify_filter_results(Cs, Acc++[{Ranges, length(C), length(StartEndTokens)}], MinLength, MinClones);
-       _ ->   simplify_filter_results(Cs, Acc, MinLength, MinClones)
-   end.
+simplify_filter_results([], Acc, _MinLength, _MinClones) -> Acc;
+simplify_filter_results([C | Cs], Acc, MinLength, MinClones) ->
+    StartEndTokens = lists:zip(hd(C), lists:last(C)),
+    Ranges = lists:map(fun ({StartTok, EndTok}) -> {token_loc(StartTok), token_loc(EndTok)} end, StartEndTokens),
+    %% case (length(C) >= MinLines) andalso (length(hd(C))>=MinClones) of
+    case length(hd(C)) >= MinClones of
+      true -> simplify_filter_results(Cs, Acc ++ [{Ranges, length(C), length(StartEndTokens)}], MinLength, MinClones);
+      _ -> simplify_filter_results(Cs, Acc, MinLength, MinClones)
+    end.
 
 
 %%===========================================================================
 
 %% combine clones which are next to each other. (ideally a fixpoint should be reached).
 combine_neighbour_clones(Cs, MinLength, MinClones) ->
-    Cs1 = combine_neighbour_clones(Cs, []),
-    Cs2= [{R, L, F} || {R, L, F} <-Cs1, L >= MinLength, F >=MinClones],
-    remove_sub_clones(Cs2).
+     Cs1 = combine_neighbour_clones(Cs, []),
+     Cs2= [{R, L, F} || {R, L, F} <-Cs1, L >= MinLength, F >=MinClones],
+     remove_sub_clones(Cs2).
 		   
 combine_neighbour_clones([], Acc) -> Acc;
 combine_neighbour_clones([C|Cs], Acc) ->
-    C1 = case Acc of 
-	     [] -> [C] ;
-	     _ -> lists:map(fun(Clone)-> connect_clones(C, Clone) end, Acc)
-	 end,
-    C2 = lists:usort(C1),
-    combine_neighbour_clones(Cs, Acc++C2).
+     C1 = case Acc of 
+ 	     [] -> [C] ;
+ 	     _ -> lists:map(fun(Clone)-> connect_clones(C, Clone) end, Acc)
+ 	 end,
+     C2 = lists:usort(C1),
+     combine_neighbour_clones(Cs, Acc++C2).
 			   
 
 connect_clones(C1={Range1, Len1, F1}, {Range2, Len2, F2}) ->  %% assume F1=<F2.
-     StartLocs1 = lists:map(fun({S,_E}) -> S  end, Range1),
-     EndLocs1 = lists:map(fun({_S, E}) -> E end, Range1),
-     StartLocs2 = lists:map(fun({S,_E}) -> S  end, Range2),
-     EndLocs2 = lists:map(fun({_S, E}) -> E end, Range2),
-     case F1 =< F2 of 
-	 true
-	   -> case lists:subtract(StartLocs1, EndLocs2) of 
-		  [] -> R1 = lists:filter(fun({_S, E}) -> lists:member(E, StartLocs1) end, Range2),
-			R2= lists:map(fun({S, _E}) -> S end, R1),
-			{lists:zip(R2, EndLocs1), Len1+Len2, F1};
-		  _  -> 
-		      case lists:subtract(EndLocs1, StartLocs2) of 
-			  [] -> R3= lists:filter(fun({S,_E}) ->lists:member(S, EndLocs1) end, Range2),
-				R4 = lists:map(fun({_S,E}) -> E end, R3),
-				{lists:zip(StartLocs1, R4), Len1+Len2, F1};
-			  _ -> C1
-		      end
-	      end; 
-	 _  -> C1
-     end.
+      StartLocs1 = lists:map(fun({S,_E}) -> S  end, Range1),
+      EndLocs1 = lists:map(fun({_S, E}) -> E end, Range1),
+      StartLocs2 = lists:map(fun({S,_E}) -> S  end, Range2),
+      EndLocs2 = lists:map(fun({_S, E}) -> E end, Range2),
+      case F1 =< F2 of 
+ 	 true
+ 	   -> case lists:subtract(StartLocs1, EndLocs2) of 
+ 		  [] -> R1 = lists:filter(fun({_S, E}) -> lists:member(E, StartLocs1) end, Range2),
+ 			R2= lists:map(fun({S, _E}) -> S end, R1),
+ 			{lists:zip(R2, EndLocs1), Len1+Len2, F1};
+ 		  _  -> 
+ 		      case lists:subtract(EndLocs1, StartLocs2) of 
+ 			  [] -> R3= lists:filter(fun({S,_E}) ->lists:member(S, EndLocs1) end, Range2),
+ 				R4 = lists:map(fun({_S,E}) -> E end, R3),
+ 				{lists:zip(StartLocs1, R4), Len1+Len2, F1};
+ 			  _ -> C1
+ 		      end
+ 	      end; 
+ 	 _  -> C1
+      end.
 
 
+%%================================================================================
 
 remove_sub_clones(Cs) ->
     Cs1 = lists:sort(fun({_Range1, Len1, F1},{_Range2, Len2, F2})
@@ -410,11 +474,20 @@ remove_sub_clones(Cs) ->
 remove_sub_clones([], Acc_Cs) ->
        Acc_Cs;
 remove_sub_clones([C|Cs], Acc_Cs) ->
-    R = lists:any(fun(C1)-> sub_range(C, C1) end, Acc_Cs),
+    R = lists:any(fun(C1)-> sub_clone(C, C1) end, Acc_Cs),
     case R of 
 	true ->remove_sub_clones(Cs, Acc_Cs);
 	_ -> remove_sub_clones(Cs, Acc_Cs++[C])
-    end.	     
+    end.
+
+sub_clone({Range1, Len1, F1}, {Range2, Len2, F2}) ->
+    case F1=<F2 andalso Len1=<Len2 of 
+	true ->
+	    lists:all(fun ({S, E}) -> lists:any(fun ({S1, E1}) -> S1 =< S andalso E =< E1 end, Range2) end, Range1);
+	false ->
+	    false
+    end.
+
 		  
 %% ================================================================================== 
 %% trim both end of each clones to exclude those tokens that does not form a meaninhful syntax phrase.
@@ -423,26 +496,33 @@ compile_files(Files) ->
     compile_files(Files, []).
 compile_files([], Acc) -> Acc; 
 compile_files([F|Fs], Acc) -> 
-    case refac_util:parse_annotate_file(F,true, []) of
-	{ok, {AnnAST, _Info}} -> compile_files(Fs, [{F, AnnAST}|Acc]);
-	{error, _Reason} -> compile_files(Fs, Acc)
-    end.
+    {ok, {AnnAST, _Info}} =  refac_util:parse_annotate_file(F,true, []),
+    compile_files(Fs, [{F, AnnAST}|Acc]).
+
      
-tokenize_files(Files) ->
-    tokenize_files(Files, []).
-tokenize_files([], Acc) ->
+tokenize_files(Files, WithLayout) ->
+    tokenize_files(Files, WithLayout, []).
+tokenize_files([],_, Acc) ->
      Acc;
-tokenize_files([F|Fs], Acc) ->
-     Toks= refac_util:tokenize(F),
-     tokenize_files(Fs, [{F, Toks}|Acc]).
+tokenize_files([F|Fs], WithLayout, Acc) ->
+     Toks= tokenize_file(F, WithLayout),
+     tokenize_files(Fs, WithLayout, [{F, Toks}|Acc]).
     
+tokenize_file(F, WithLayout) ->
+    case WithLayout of 
+	true -> {ok, Bin} = file:read_file(F),
+		{ok, Ts, _} = refac_scan_with_layout:string(erlang:binary_to_list(Bin)),
+		Ts;
+	_ -> Ts = refac_util:tokenize(F),
+	     Ts
+    end.
     
 trim_clones(FileNames, Cs, MinLength, MinClones) -> 
     AnnASTs = compile_files(FileNames),
-    ToksLists = tokenize_files(FileNames),
+    ToksLists = tokenize_files(FileNames, false),
     Fun0 = fun(R={{File, StartLn, StartCol},{File, EndLn, EndCol}})->
 		  case lists:keysearch(File, 1, AnnASTs) of
-		      {value, {File, AnnAST}} -> Phrases =  pos_to_expr_or_fun(AnnAST, {{StartLn, StartCol}, {EndLn, EndCol}}),
+		      {value, {File, AnnAST}} -> Phrases =  refac_util:pos_to_syntax_units(AnnAST, {StartLn, StartCol}, {EndLn, EndCol}, fun is_expr_or_fun/1),
 						 BdStruct = refac_expr_search:var_binding_structure(Phrases),
 						 {R, BdStruct};	   
 			 _  -> {R, []}
@@ -457,12 +537,12 @@ trim_clones(FileNames, Cs, MinLength, MinClones) ->
 			    case lists:keysearch(File1, 1, AnnASTs) of
 				{value, {File1, AnnAST}} ->
 				    {value, {File1, Toks}} = lists:keysearch(File1, 1, ToksLists),
-				    Units = pos_to_syntax_units(AnnAST, Toks, {{L1, C1},{L2, C2}}), 
+				    Units = pos_to_syntax_units(AnnAST, {{L1, C1},{L2, C2}}), 
 				    case Units =/= [] of 
 					true -> 
 					    Fun2 = fun(U) ->
-							   {StartLoc, _} = hd(U),
-							   {_, EndLoc} = lists:last(U),
+							   {StartLoc, _} = refac_util:get_range(hd(U)),
+ 							   {_, EndLoc} = refac_util:get_range(lists:last(U)),
 							   Toks1 =lists:dropwhile(fun(T) ->token_loc(T)=< S end, Toks),
 							   Toks11 = lists:takewhile(fun(T) ->token_loc(T) =< StartLoc end, Toks1),
 							   Toks2 = lists:dropwhile(fun(T) ->token_loc(T) =< EndLoc end, Toks1),
@@ -472,28 +552,26 @@ trim_clones(FileNames, Cs, MinLength, MinClones) ->
 							   Toks31= lists:takewhile(fun(T)-> token_loc(T) =< EndLoc end, Toks3),
 							   NewLen = length(Toks31),
 							   case NewLen >=MinLength of 
-							       true ->  NewRange = trim_range(tl(Range), {Len1, Len2}),
-									{StartLn, StartCol} = StartLoc,
-									{EndLn, EndCol} = EndLoc,
-									[{[{{File1, StartLn, StartCol}, {File1, EndLn, EndCol}}|NewRange], NewLen, F}];
-							       false -> []
+							       true ->  
+								   NewRange = trim_range(tl(Range), {Len1, Len2}),
+								   {StartLn, StartCol} = StartLoc,
+								   {EndLn, EndCol} = EndLoc,
+								   [{[{{File1, StartLn, StartCol}, {File1, EndLn, EndCol}}|NewRange], NewLen, F}];
+							       false -> 
+								   []
 							   end
 						   end,
-					      lists:concat(lists:map(Fun2, Units));
+					      lists:append(lists:map(Fun2, Units));
 					_ -> []
 				    end;
-				{error, _Reason} -> []
+				false -> []
 			    end	
 		  end
 	  end,
-    Cs2= lists:concat(lists:map(Fun, Cs)),
-    %%io:format("Cs2:\n~p\n", [Cs2]),
-    %%Cs22= remove_sub_clones(Cs2),
-    io:format("Before binding checking:\n~p\n", [length(Cs2)]),
+    Cs2= lists:append(lists:map(Fun, Cs)),
     Cs3 =[lists:map(fun(C) -> {C, Len, length(C)} end, group_by(2, lists:map(Fun0, Range)))
 		    || {Range, Len, _F}<- Cs2],
-    %%io:format("Cs3:\n~p\n",[Cs3]),
-    Cs4 = lists:concat(Cs3),
+    Cs4 = lists:append(Cs3),
     Cs5 =[{[R||{R,_Bd} <-Range], Len, F} || {Range, Len, F} <- Cs4, Len>=MinLength, F>=MinClones],
     lists:usort(Cs5).
 
@@ -510,67 +588,100 @@ group_by_1(N, TupleList=[E|_Es]) ->
     
 trim_range(Range, {Len1, Len2}) ->
     lists:map(fun({S,E}) -> trim_range_1({S,E}, {Len1, Len2}) end, Range).
-trim_range_1({{File, StartLn, StartCol}, {File, EndLn, EndCol}}, {Len1, Len2}) ->
+trim_range_1(_Range={{File, StartLn, StartCol}, {File, EndLn, EndCol}}, {Len1, Len2}) ->
     S = {StartLn, StartCol},
     E = {EndLn, EndCol},
-    Toks= refac_util:tokenize(File),
+    Toks =tokenize_file(File, false),
     Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =/=S end, Toks),
     Toks2 = lists:nthtail(Len1, Toks1),
-    Toks3 = lists:takewhile(fun(T) -> token_loc(T) =/=E end, Toks1) ++
-	    [hd(lists:dropwhile(fun(T) ->token_loc(T) =/= E end,Toks1))],    
-    Toks4 = lists:nthtail(Len2, lists:reverse(Toks3)),
     {StartLn1, StartCol1} = token_loc(hd(Toks2)),
-    {EndLn1, EndCol1} = token_loc(hd(Toks4)),
+    {Toks3, _Toks4} = lists:splitwith(fun(T) -> token_loc(T) =< E end, Toks1),
+    LastTok = hd(lists:nthtail(Len2, lists:reverse(Toks3))),
+    {L, C} = token_loc(LastTok),
+    {EndLn1, EndCol1} = {L, C+token_len(LastTok)-1},
     {{File, StartLn1, StartCol1}, {File, EndLn1, EndCol1}}.
-		    
 
+token_len(T) ->
+    V = token_val(T),
+    token_len_1(V).
+
+token_len_1(V) when is_atom(V) ->
+    length(atom_to_list(V));
+token_len_1(V) when is_integer(V) ->
+    length(integer_to_list(V));
+token_len_1(V) when is_list(V)->
+    length(V);
+token_len_1(V) when is_float(V) ->
+    %% this is not what I want; but have not figure out how to do it.
+    length(float_to_list(V)); 
+token_len_1(V) when is_binary(V) ->
+    length(binary_to_list(V));
+token_len_1(V) -> erlang:error(?wrangler_io("Unhandled data type:\n~p\n", [V])).
+       
 
 %% display the found-out clones to the user.
 display_clones1(Cs) ->
-   io:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+   ?wrangler_io("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
    display_clones1_1(Cs).
 display_clones1_1([]) ->		      
-    io:format("\n");
+    ?wrangler_io("\n",[]);
 display_clones1_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs]) ->
-    io:format("\nThe code in ~p between lines: ~p-~p has been duplicated ~p time(s) at the following"
-               " location(s):",[File, {StartLine, StartCol}, {EndLine, EndCol}, F-1]),
-    display_clones1_2(Range),
+    case F-1 of 
+	1 ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated once at the following location:\n",
+			 [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+	       display_clones1_2(Range);
+	2 ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated twice at the following location(s):\n",
+			 [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+	       display_clones1_2(Range);
+	_ ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated ~p times at the following location(s):\n",
+			 [File, StartLine, StartCol-1, EndLine, EndCol-1, F-1]),
+	       display_clones1_2(Range)
+    end,
     display_clones1_1(Cs).
 
 display_clones1_2([]) ->
-      io:format("\n");
+      ?wrangler_io("\n",[]);
 display_clones1_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs]) ->
     case Rs == [] of 
 	true ->
-	    io:format(" File: ~p, ~p-~p.", [File, {StartLine, StartCol}, {EndLine, EndCol}]);
+	    ?wrangler_io(" File: ~p,{~p,~p}-{~p,~p}.", [File, StartLine, StartCol-1, EndLine, EndCol-1]);
 	false ->
-	    io:format(" File: ~p, ~p-~p,", [File, {StartLine, StartCol}, {EndLine, EndCol}])
+	    ?wrangler_io(" File: ~p, {~p,~p}-{~p,~p},", [File, StartLine, StartCol-1, EndLine, EndCol-1])
     end,
     display_clones1_2(Rs).
 
 %% ===========================================================================
 %% display the found-out clones to the user.
 display_clones(Cs) ->
-   io:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+   ?wrangler_io("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
    display_clones_1(Cs).
 display_clones_1([]) ->		      
-    io:format("\n");
+    ?wrangler_io("\n",[]);
 display_clones_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs]) ->
-    io:format("\nThe code between  ~p-~p has been duplicated ~p time(s) at the following"
-			  " location(s):",[{StartLine, StartCol}, {EndLine,EndCol}, F-1]),
-	     
-    display_clones_2(Range),
+    case F-1 of 
+	1 ->  ?wrangler_io("\nThe code between  ~p-~p has been duplicated once at the following"
+			" location:",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),		     
+	      display_clones_2(Range);
+	2 ->  ?wrangler_io("\nThe code between  ~p-~p has been duplicated twice at the following"
+			" location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),
+	      
+	      display_clones_2(Range);
+	_ ->   ?wrangler_io("\nThe code between  ~p-~p has been duplicated ~p times  at the following"
+			 " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}, F-1]),
+	       
+	       display_clones_2(Range)
+    end,	       
     display_clones_1(Cs).
 
 display_clones_2([]) ->
-      io:format("\n");
+      ?wrangler_io("\n",[]);
 display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs]) ->
     case Rs == [] of 
 	true ->
-	    io:format("  ~p-~p.", [{StartLine,StartCol},{EndLine, EndCol}]);
+	    ?wrangler_io("  ~p-~p.", [{StartLine,StartCol-1},{EndLine, EndCol-1}]);
 		
 	_ ->
-	    io:format(" ~p-~p,", [{StartLine, StartCol}, {EndLine, EndCol}])
+	    ?wrangler_io(" ~p-~p,", [{StartLine, StartCol-1}, {EndLine, EndCol-1}])
     end,
     display_clones_2(Rs).
 
@@ -598,9 +709,8 @@ rm_loc_in_tok(T) ->
 	{char, _L, V}  -> {char, D, V};
 	{atom, _L, V} -> {atom, D, V};
 	{A, _L} ->{A, D};
-	Other  -> erlang:error(io:format("Unhandled token:\n~p\n", [Other]))
+	Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [Other]))
     end.
-
 
 %% get the location of a token.
 token_loc(T) ->
@@ -616,7 +726,7 @@ token_val(T) ->
 	{V, _} -> V
     end.
 
-
+ 
 add_filename_to_token(FileName,T) ->
     case T of 
 	{C, {Ln,Col}, V} ->
@@ -626,90 +736,25 @@ add_filename_to_token(FileName,T) ->
     end.
 	    				
 
-pos_to_syntax_units(Tree, Toks, {Start,End}) ->    
-    ExprOrFuns = pos_to_expr_or_fun(Tree, {Start, End}),
-    Res = group_syntax_units(Toks, ExprOrFuns),
-    lists:filter(fun(E) -> E =/=[] end, Res).
 
-
-pos_to_expr_or_fun(Tree, {Start, End}) ->
-    {S, E} = refac_util:get_range(Tree),
-    if (S >= Start) and (E =< End) ->
-	     case is_expr_or_fun(Tree) of
-		true -> [Tree];
-		_ ->
-		    Ts = refac_syntax:subtrees(Tree),
-		    R0 = [[pos_to_expr_or_fun(T, {Start, End}) || T <- G]
-			  || G <- Ts],
-		    lists:flatten(R0)
-	    end;
-       (S > End) or (E < Start) -> [];
-       (S < Start) or (E > End) ->
-	    Ts = refac_syntax:subtrees(Tree),
-	    R0 = [[pos_to_expr_or_fun(T, {Start, End}) || T <- G]
-		  || G <- Ts],
-	    lists:flatten(R0);
-       true -> []
+pos_to_syntax_units(Tree, {Start,{EndLine, EndCol}}) ->    
+    %% The next expression is only a quick fix;
+    %% EndCol currently refers to the start loc of a token, 
+    %% but to be correct, it should be the end loc of the token.
+    ExprOrFuns = refac_util:pos_to_syntax_units(Tree, Start, {EndLine, EndCol+5}, fun is_expr_or_fun/1),
+    case ExprOrFuns of 
+	[] -> [];
+	_ -> [ExprOrFuns]
     end.
 
-is_expr(Node) ->
-    As = refac_syntax:get_ann(Node),
-    case lists:keysearch(category,1, As) of 
-	{value, {category, C}} ->case C of
-				     expression -> true;
-				     guard_expression -> true;
-				     match_expression -> true;
-				     _  -> false
-				 end;
-	_ -> false
-    end. 
+
 is_expr_or_fun(Node) ->
     case refac_syntax:type(Node) of 
 	function -> true;
-	_ -> is_expr(Node) 
+	_ -> refac_util:is_expr(Node) 
     end.
-    
-get_expr_or_fun_seq(_Toks, []) ->
-     [];
-get_expr_or_fun_seq(_Toks, [E]) ->
-    [refac_util:get_range(E)];
-get_expr_or_fun_seq(Toks, [E1,E2|Es]) ->
-    case is_expr(E1)of 
-	true ->
-	    {StartLoc, EndLoc} = refac_util:get_range(E1),
-	    {StartLoc1, _EndLoc} = refac_util:get_range(E2),
-	    Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =< EndLoc end, Toks),
-	    Toks2 = lists:takewhile(fun(T) -> token_loc(T) < StartLoc1 end, Toks1),
-	    case lists:any(fun(T) -> token_val(T) =/= ',' end, Toks2) or not(is_expr(E2)) of 
-		true  -> [{StartLoc, EndLoc}];
-		_ -> [{StartLoc, EndLoc}]++ get_expr_or_fun_seq(Toks, [E2|Es])
-	    end;
-	false  -> 
-	    case refac_syntax:type(E1) of 
-		function ->  {StartLoc, EndLoc} = refac_util:get_range(E1),
-			     {StartLoc1, _EndLoc} = refac_util:get_range(E2),
-			     Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =< EndLoc end, Toks),
-			     Toks2 = lists:takewhile(fun(T) -> token_loc(T) < StartLoc1 end, Toks1),
-			     case lists:any(fun(T) -> token_val(T) =/= '.' end, Toks2) or not(refac_syntax:type(E2)==function) of 
-				 true  -> [{StartLoc, EndLoc}];
-				 _ -> [{StartLoc, EndLoc}]++ get_expr_or_fun_seq(Toks, [E2|Es])
-			     end;
-		_ ->
-		    get_expr_or_fun_seq(Toks, [E2|Es])
-	    end
-    end.
-  
-			 
-group_syntax_units(Toks, Es) ->
-    Seq = get_expr_or_fun_seq(Toks, Es), 
-    Es1 = lists:nthtail(length(Seq), Es),
-    case  Es1 of 
-	[] ->
-	     [Seq];
-	_  -> [Seq|group_syntax_units(Toks, Es1)]
-   end.
 
-    
+
 %% =====================================================================
 %% get the alphabet on which the suffix tree is going to be built.
 alphabet() ->
@@ -730,7 +775,7 @@ alphabet_1() ->
     {'receive',y}, {'rem',z},
     {'try','B'},
     {'when','D'},
-    {'xor','E'},     
+    {'xor','E'}, 
     {'<<', 'G'},
     {'<-', 'H'},
     {'<=', 'J'},
@@ -746,6 +791,8 @@ alphabet_1() ->
     {'/=',  'U'},
     {'||',  'W'},
     {':-',  'X'},
+    {'spec', 'Y'},
+    {'::', 'Z'},
     {'(','('},
     {')',')'}, 
     {'{','{'},

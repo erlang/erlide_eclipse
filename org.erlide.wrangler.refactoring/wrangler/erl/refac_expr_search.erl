@@ -18,9 +18,9 @@
 %% 
 -module(refac_expr_search).
 
--export([expr_search/3, var_binding_structure/1, pos_to_expr/3]).
+-export([expr_search/3, var_binding_structure/1]).
 
-
+-include("../hrl/wrangler.hrl").
 %% ================================================================================================
 %% @doc Search a user-selected expression or a sequence of expressions from an Erlang source file.
 %%
@@ -35,37 +35,33 @@
 %% expressions is a sequence of expressions separated by ','.
 %% <p>
 %% =================================================================================================
-%% @spec serch(FileName::filename(), Start::Pos, End::Pos)-> term().
+%% @spec expr_search(FileName::filename(), Start::Pos, End::Pos)-> term().
 %% =================================================================================================         
+
+-spec(expr_search/3::(filename(), pos(), pos()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
 expr_search(FileName, Start, End) ->
-    case refac_util:parse_annotate_file(FileName,true, []) of 
-	{ok, {AnnAST, _Info}} -> 
-	      case pos_to_expr(FileName, AnnAST, {Start, End}) of 
-		[E|Es] -> 
-		   %%io:format("Selected Expression:\n~p\n", [[E|Es]]),
-		    Res = case Es == [] of 
-			      true ->
-				  search_one_expr(AnnAST, E);
-			      _ -> 
-				  search_expr_seq(AnnAST, [E|Es])
-			  end,
-		      case length(Res) of  
-			0 -> io:format("No identical expression has been found.\n"), %% This shouldn't happen.
-			     {ok, []};
-			1 -> io:format("No identical expression has been found. \n"),
-			     {ok, []};
-		  %%	2 -> io:format(" One expression which is identical (up to variable renaming and literal substitution) to the selected"
- 			%%	       " expression has been found. \n"), 
- 			  %%   {ok, Res};	
+    ?wrangler_io("\nCMD: ~p:expr_search(~p, ~p,~p).\n", [?MODULE, FileName, Start, End]),
+    {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, []),
+    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
+	[E|Es] -> 
+	    Res = case Es == [] of 
+		      true ->
+			  search_one_expr(AnnAST, E);
+		      _ -> 
+			  search_expr_seq(AnnAST, [E|Es])
+		  end,
+	    case length(Res) of  
+		0 -> ?wrangler_io("No identical expression has been found.\n",[]), %% This shouldn't happen.
+		     {ok, []};
+		1 -> ?wrangler_io("No identical expression has been found. \n",[]),
+		     {ok, []};
+		N -> ?wrangler_io("~p identical expressions (including the selected expression,and up to variable renaming and literal substitution) "
+				       " have been found. \n", [N]),
+		     {ok, Res}
+	    end;
+	_   -> {error, "You have not selected an expression!"}
+    end.	    
 	  
-			N -> io:format("~p identical expressions (including the selected expression,and up to variable renaming and literal substitution) "
-				       " have been fould. \n", [N]),
-			     {ok, Res}
-		    end;
-		_   -> {error, "You have not selected an expression!"}
-	    end;	    
-	{error, Reason} -> {error, Reason}
-    end.  
 
 %% Search the clones of an expression from Tree.
 search_one_expr(Tree, Exp) ->
@@ -93,8 +89,9 @@ search_one_expr(Tree, Exp) ->
 %% search the clones of an expresion sequence from Tree.			
 search_expr_seq(Tree, ExpList) ->
     AllExpList = contained_exprs(Tree, length(ExpList)),
-    Res =lists:concat(lists:map(fun(EL) ->
-				   get_clone(ExpList, EL) end, AllExpList)),
+   %% ExpList1 = lists:map(fun(T) ->simplify_expr(T) end, ExpList),
+    Res =lists:flatmap(fun(EL) ->
+			       get_clone(ExpList, EL) end, AllExpList),
     Res.
     
     
@@ -109,8 +106,8 @@ get_clone(List1, List2) ->
 		true ->
 		    List22 = lists:sublist(List2, Len1),
 		    BdList1 = var_binding_structure(List1),
-		    BdList22 = var_binding_structure(List22),
-		    case BdList1 == BdList22 of 
+		    BdList2 = var_binding_structure(List22),
+		    case BdList1 == BdList2 of 
 			true -> E1 = hd(List22),
 				En = lists:last(List22),
 			        {{StartLn, StartCol}, _EndLoc} = refac_util:get_range(E1),
@@ -140,11 +137,10 @@ do_simplify_expr(Node) ->
 		char ->
 		    refac_syntax:default_literals_vars(Node, '%');
 		string ->
-		    refac_syntax:default_literals_vars(Node, "*");
+		    refac_syntax:default_literals_vars(Node, '%');
 		atom -> case lists:keysearch(fun_def,1,refac_syntax:get_ann(Node)) of 
-			    %% or  refac_syntax:default_literals_vars(Node, '%')?  TODO: Think again.
-			    false ->refac_syntax:default_literals_vars(Node, refac_syntax:atom_value(Node)) ;
-			    _ ->    refac_syntax:default_literals_vars(Node, refac_syntax:atom_value(Node))
+			    false ->refac_syntax:default_literals_vars(Node, '%') ;
+			    _ -> refac_syntax:default_literals_vars(Node, refac_syntax:atom_value(Node))
 			end;
 		nil -> refac_syntax:default_literals_vars(Node, nil);
 		underscore ->refac_syntax:default_literals_vars(Node, '&');
@@ -176,54 +172,13 @@ contained_exprs(Tree, MinLen) ->
 	end,
     Es = refac_syntax_lib:fold(F, [], Tree),
     [E ||  E <- Es, length(E) >= MinLen].
-		
+		 
 
 
-%% get the list sequence of expressions contained in Tree between locations Start and End.
-pos_to_expr(FName, Tree, {Start, End}) ->
-    {ok, Toks} = refac_epp:scan_file(FName, [], []),
-    Exprs = pos_to_expr(Tree, {Start, End}),
-    filter_exprs(Toks, Exprs).
-
-filter_exprs(_Toks, []) ->
-    [];
-filter_exprs(_Toks, [E]) ->
-    [E];
-filter_exprs(Toks, [E1,E2|Es]) ->
-    {_StartLoc, EndLoc} = refac_util:get_range(E1),
-    {StartLoc1, _EndLoc1} = refac_util:get_range(E2),
-    Toks1 = lists:dropwhile(fun(T) ->
-				    token_loc(T) =< EndLoc end, Toks),
-    Toks2 = lists:takewhile(fun(T) ->
-				    token_loc(T) < StartLoc1 end, Toks1),
-    case lists:any(fun(T) -> token_val(T) =/= ',' end, Toks2) of 
-	false ->
-	    [E1]++ filter_exprs(Toks, [E2|Es]);
-	_  -> [E1]
-    end.
-
-%% get the list of expressions contained in Tree between locations Start and End.		
-pos_to_expr(Tree, {Start, End}) ->
-    {S, E} = refac_util:get_range(Tree),
-    if (S >= Start) and (E =< End) ->
-	    case refac_util:is_expr(Tree) of
-		true -> [Tree];
-		_ ->
-		    Ts = refac_syntax:subtrees(Tree),
-		    R0 = [[pos_to_expr(T, {Start, End}) || T <- G]
-			  || G <- Ts],
-		    lists:flatten(R0)
-	    end;
-       (S > End) or (E < Start) -> [];
-       (S < Start) or (E > End) ->
-	    Ts = refac_syntax:subtrees(Tree),
-	    R0 = [[pos_to_expr(T, {Start, End}) || T <- G]
-		  || G <- Ts],
-	    lists:flatten(R0);
-       true -> []
-    end.
+      
 
 %% get the binding structure of variables.
+-spec(var_binding_structure/1::([syntaxTree()]) -> [{integer(), integer()}]).	     
 var_binding_structure(ASTList) ->
     Fun1 = fun (T, S) ->
 		   case refac_syntax:type(T) of
@@ -242,27 +197,22 @@ var_binding_structure(ASTList) ->
 		   end
 	   end,
     %% collect all variables including their defining and occuring locations. 
-    B = lists:concat(lists:map(fun(T) -> refac_syntax_lib:fold(Fun1, ordsets:new(), T) end, ASTList)),
+    B = lists:flatmap(fun(T) -> refac_syntax_lib:fold(Fun1, ordsets:new(), T) end, ASTList),
     %% collect defining locations.
-    DefLocs = lists:usort(lists:flatten(lists:map(fun ({_Name, _SrcLoc,
-					  DefLoc}) ->
-					    DefLoc
-				    end,
-				    B))),
+  %%  DefLocs = lists:usort(lists:flatten(lists:map(fun ({_Name, _SrcLoc, DefLoc}) ->  DefLoc end, B))),
     %% collect occuring locations.
-    SrcLocs = lists:map(fun ({_Name, SrcLoc, _DefLoc}) ->
-				SrcLoc
-			end,
-			B),
-    Locs = lists:usort(lists:flatten(DefLocs ++ SrcLocs)),
-    Res = case Locs of 
+    SrcLocs = lists:map(fun ({_Name, SrcLoc, _DefLoc}) -> SrcLoc end, B),
+    Res = case SrcLocs of 
 	      [] -> 
 		  [];
-	      _ ->  IndexedLocs = lists:zip(Locs, lists:seq(1, length(Locs))),
+	      _ ->  IndexedLocs = lists:zip(SrcLocs, lists:seq(1, length(SrcLocs))),
 		    B1 = lists:usort(lists:map(fun ({_Name, SrcLoc, DefLoc}) ->
-						       DefLoc1 = hd(DefLoc),             %% DefLoc is  a list, does this cause problems? CHECK IT.
+						       DefLoc1 = hd(DefLoc),             %% DefLoc is  a list, does this cause problems? .
 						       {value, {SrcLoc, Index1}} = lists:keysearch(SrcLoc, 1, IndexedLocs),
-						       {value, {DefLoc1, Index2}} = lists:keysearch(DefLoc1, 1, IndexedLocs),
+						       Index2 = case lists:keysearch(DefLoc1, 1, IndexedLocs) of 
+								    {value, {_, Ind}} -> Ind;
+								    _ -> 0 %% free variable
+								end,
 						       {Index1, Index2}
 					       end,
 					       B)),
@@ -270,33 +220,3 @@ var_binding_structure(ASTList) ->
 	  end,
     Res.
 
-
-%% groupby(N, TupleList) ->
-%%     TupleList1 = lists:keysort(N, TupleList),
-%%     groupby_1(N, TupleList1, []).
-
-%% groupby_1(_N, [], Acc) ->
-%%     Acc;
-%% groupby_1(N,TupleList=[T|_Ts], Acc) ->
-%%     E = element(N, T),
-%%     {TupleList1, TupleList2} = lists:partition(fun(T1) ->
-%% 						       element(N,T1) == E end, TupleList),
-%%     TupleList3 = lists:map(fun(L) -> {L1, L2} = lists:split(N-1, tuple_to_list(L)),
-%% 				    L1 ++ [0] ++ tl(L2)
-%% 			  end, TupleList1),
-%%     groupby_1(N, TupleList2, Acc++[TupleList3]).
-			     
-		    
-%% get the location of a token.
-token_loc(T) ->
-      case T of 
-	{_, L, _V} -> L;
-	{_, L1} -> L1
-      end.
-
-%% get the value of a token.
-token_val(T) ->
-    case T of 
-	{_, _, V} -> V;
-	{V, _} -> V
-    end.

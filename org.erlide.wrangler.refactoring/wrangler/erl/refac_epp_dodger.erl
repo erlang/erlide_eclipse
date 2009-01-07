@@ -1,8 +1,4 @@
 %% =====================================================================
-%% epp_dodger - bypasses the Erlang preprocessor.
-%%
-%% Copyright (C) 2001-2006 Richard Carlsson
-%%
 %% This library is free software; you can redistribute it and/or modify
 %% it under the terms of the GNU Lesser General Public License as
 %% published by the Free Software Foundation; either version 2 of the
@@ -18,25 +14,23 @@
 %% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 %% USA
 %%
-%% Author contact: richardc@csd.uu.se
+%% $Id$
 %%
-%% $Id: refac_epp_dodger.erl,v 1.1 2008/05/20 14:49:41 go30 Exp $
-%%
-%% Modified: 17 Jan 2007 by  Huiqing Li <hl@kent.ac.uk>
+%% @copyright 2001-2006 Richard Carlsson
+%% @author Richard Carlsson <richardc@it.uu.se>
+%% @end
 %% =====================================================================
-%%
+
 %% @doc `epp_dodger' - bypasses the Erlang preprocessor.
 %%
 %% <p>This module tokenises and parses most Erlang source code without
 %% expanding preprocessor directives and macro applications, as long as
 %% these are syntactically "well-behaved". Because the normal parse
-%% trees of the `erl_parse' module cannot represent these
-%% things (normally, they are expanded by the Erlang preprocessor
-%% {@link epp} before the parser sees them), an extended syntax
-%% tree is created, using the {@link refac_syntax} module.</p>
-%% 
-%% @end
-%% =====================================================================
+%% trees of the `erl_parse' module cannot represent these things
+%% (normally, they are expanded by the Erlang preprocessor {@link
+%% //stdlib/epp} before the parser sees them), an extended syntax tree
+%% is created, using the {@link erl_syntax} module.</p>
+
 
 %% NOTES:
 %%
@@ -93,14 +87,14 @@
 %%                      Module::atom(),
 %%                      Descriptor::term()}.
 %% 
-%% This is a so-called Erlang I/O ErrorInfo structure; see the stdlib
-%% {@link io} module for details.
+%% This is a so-called Erlang I/O ErrorInfo structure; see the {@link
+%% //stdlib/io} module for details.
 
 
 %% =====================================================================
 %% @spec parse_file(File) -> {ok, Forms} | {error, errorinfo()}
 %%       File = file:filename()
-%%       Forms = [refac_syntax:syntaxTree()]
+%%       Forms = [erl_syntax:syntaxTree()]
 %% 
 %% @equiv parse_file(File, [])
 
@@ -179,7 +173,7 @@ quick_parse_file(File, Options) ->
 parse_file(File, Parser, Options) ->
     case file:open(File, [read]) of
         {ok, Dev} ->
-            try Parser(Dev, {1,1}, Options)
+            try Parser(Dev, {1,1}, Options)  %% Modified by Huiqing Li
             after file:close(Dev)
 	    end;
         {error, IoErr} ->
@@ -192,7 +186,7 @@ parse_file(File, Parser, Options) ->
 %% @equiv parse(IODevice, 1)
 
 parse(Dev) ->
-    parse(Dev, {1,1}).
+    parse(Dev, {1,1}). %% Modified by Huiqing Li
 
 %% @spec parse(IODevice, StartLine) -> {ok, Forms} | {error, errorinfo()}
 %%       IODevice = pid()
@@ -229,7 +223,7 @@ parse(Dev, L0, Options) ->
 %% @equiv quick_parse(IODevice, 1)
 
 quick_parse(Dev) ->
-    quick_parse(Dev, {1,1}).
+    quick_parse(Dev, {1,1}).  %% Modified by Huiqing Li
 
 %% @spec quick_parse(IODevice, StartLine) ->
 %%           {ok, Forms} | {error, errorinfo()}
@@ -361,7 +355,8 @@ quick_parse_form(Dev, L0, Options) ->
 parse_form(Dev, L0, Parser, Options) ->
     NoFail = proplists:get_bool(no_fail, Options),
     Opt = #opt{clever = proplists:get_bool(clever, Options)},
-    case refac_io:scan_erl_form(Dev, "", L0) of
+    Res = refac_io:scan_erl_form(Dev, "", L0),
+     case Res of    %%Modified by Huiqing Li
         {ok, Ts, L1} ->
             case catch {ok, Parser(Ts, Opt)} of
                 {'EXIT', Term} ->
@@ -674,8 +669,11 @@ rewrite_form({function, L, ?pp_form, _,
     refac_syntax:set_pos(refac_syntax:attribute(A, rewrite_list(As)), L);
 rewrite_form({function, L, ?pp_form, _, [{clause, _, [], [], [A]}]}) ->
     refac_syntax:set_pos(refac_syntax:attribute(A), L);
+rewrite_form(T={attribute, _, spec, _}) -> T;
+rewrite_form(T={attribute, _, type, _}) -> 
+     T;
 rewrite_form(T) ->
-    rewrite(T).
+      rewrite(T).
 
 rewrite_list([T | Ts]) ->
     [rewrite(T) | rewrite_list(Ts)];

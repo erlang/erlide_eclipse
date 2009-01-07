@@ -14,7 +14,7 @@
 %% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 %% USA
 %%
-%% $Id: refac_prettypr_0.erl,v 1.1 2008/05/20 14:49:41 go30 Exp $
+%% $Id: refac_prettypr_0.erl,v 1.2 2008-04-30 09:28:12 hl Exp $
 %%
 %% @copyright 2000-2006 Richard Carlsson
 %% @author Richard Carlsson <richardc@it.uu.se>
@@ -54,7 +54,8 @@
 -record(nest, {n, d}).
 -record(beside, {d1, d2}).
 -record(above, {d1, d2}).
--record(sep, {ds, i = 0 :: integer(), p = false :: bool()}).
+
+-record(sep, {ds, i = 0, p = false}).
 
 
 %% ---------------------------------------------------------------------

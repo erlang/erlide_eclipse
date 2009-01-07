@@ -32,8 +32,12 @@ public class FoldExpressionRPCMessage extends RPCMessage {
 		 * checks if there is any error, in case of true throws an exception
 		 */
 		super.checkOkResultCases(tuple);
-		refactoring.setFunClauseDef(tuple.elementAt(1));
-		OtpErlangList l = (OtpErlangList) tuple.elementAt(2);
-		refactoring.setFoundPositions(l);
+		OtpErlangTuple returnValue = (OtpErlangTuple) tuple.elementAt(1);
+
+		OtpErlangList positions = (OtpErlangList) returnValue.elementAt(1);
+		OtpErlangTuple syntaxTree = (OtpErlangTuple) returnValue.elementAt(0);
+		refactoring.setFunClauseDef(syntaxTree);
+
+		refactoring.setFoundPositions(positions);
 	}
 }

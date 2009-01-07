@@ -21,7 +21,7 @@
 %% Author contact: richardc@csd.uu.se
 %%
 %% Modified: 17 Jan 2007 by  Huiqing Li <hl@kent.ac.uk>
-%% $Id: refac_syntax_lib.erl,v 1.1 2008/05/20 14:49:40 go30 Exp $
+%% $Id: refac_syntax_lib.erl,v 1.3 2008-04-30 09:28:12 hl Exp $
 %%
 %% =====================================================================
 %%
@@ -431,7 +431,7 @@ annotate_bindings(Tree) ->
     case lists:keysearch(env, 1, As) of
       {value, {env, InVars}} ->
 	  annotate_bindings(Tree, InVars);
-      _ -> erlang:fault(badarg)
+      _ -> erlang:error(badarg)
     end.
 
 vann(Tree, Env) ->
@@ -449,8 +449,8 @@ vann(Tree, Env) ->
 		Free = L,
 		Def = [vann_1(V3) || V3 <- L]
 	  end,
-	  %%io:format("Tree, Env, Bound, Free, Def:\n~p\n", [{Tree, Env, Bound, Free, Def}]),
-          %%io:format("R:\n~p\n", [ann_bindings(Tree, Env, Bound, Free, Def)]),
+	  %%?wrangler_io("Tree, Env, Bound, Free, Def:\n~p\n", [{Tree, Env, Bound, Free, Def}]),
+          %%?wrangler_io("R:\n~p\n", [ann_bindings(Tree, Env, Bound, Free, Def)]),
 	  {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
       match_expr -> vann_match_expr(Tree, Env);
       case_expr -> vann_case_expr(Tree, Env);
@@ -468,6 +468,9 @@ vann(Tree, Env) ->
       %% Added by HL, begin.
       attribute -> case  refac_syntax:atom_value(refac_syntax:attribute_name(Tree)) of 
 		       define -> vann_define(Tree,Env);
+		       ifdef -> {Tree, [], []};  
+		       inndef ->{Tree, [], []};
+		       undef -> {Tree, [], []};
 		       _ -> F = vann_list_join(Env),
 			    {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[],[]}, Tree),
 			    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
@@ -866,12 +869,12 @@ vann_define(D, Env) ->
 	    _  -> {vann_pattern(MacroHead, Env),[]}
 	end,
    Env1 = ordsets:union(Env, Bound),
-   %%io:format("Env1:\n~p\n", [Env1]),
-   %%io:format("MarcoBody:\n~p\n", [MacroBody]),
+   %%?wrangler_io("Env1:\n~p\n", [Env1]),
+   %%?wrangler_io("MarcoBody:\n~p\n", [MacroBody]),
    {MacroBody1, _Bound1, _Free1} = vann(MacroBody, Env1),
-   %%io:format("MacroBody1:\n~p\n", [MacroBody1]),
+   %%?wrangler_io("MacroBody1:\n~p\n", [MacroBody1]),
    MacroBody2 = adjust_define_body(MacroBody1, Env1),
-   %%io:format("MacroBody2:\n~p\n", [MacroBody2]),
+   %%?wrangler_io("MacroBody2:\n~p\n", [MacroBody2]),
    D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1, MacroBody2])),
    %%or  {ann_bindings(D1, Env, Bs, Free2), Bs, Free2}.  ?
    {ann_bindings(D1, Env, [], []), [], []}.   
@@ -1349,7 +1352,8 @@ analyze_form(Node) ->
       _ ->
 	  case refac_syntax:is_form(Node) of
 	    true -> refac_syntax:type(Node);
-	    false -> throw(syntax_error)
+	    false -> 
+		  throw(syntax_error)
 	  end
     end.
 
@@ -1433,6 +1437,8 @@ analyze_attribute(file, Node) ->
 analyze_attribute(record, Node) ->
     analyze_record_attribute(Node);
 analyze_attribute(define, _Node) -> define;
+analyze_attribute(spec, _Node) -> spec;
+analyze_attribute(type, _Node) -> type;
 analyze_attribute(_, Node) ->
     %% A "wild" attribute (such as e.g. a `compile' directive).
     analyze_wild_attribute(Node).

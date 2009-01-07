@@ -63,7 +63,7 @@ public class Diff {
 	 * Constructs the Diff object for the two arrays, using the given
 	 * comparator.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings( { "unchecked" })
 	public Diff(Object[] a, Object[] b, Comparator comp) {
 		this.a = a;
 		this.b = b;

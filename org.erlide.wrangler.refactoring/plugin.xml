@@ -90,21 +90,19 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="org.erlide.wrangler.refactoring.renameVariable"
+            contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+R V">
       </key>
       <key
             commandId="org.erlide.wrangler.refactoring.renameFunction"
+            contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+R F">
       </key>
       <key
-            commandId="org.erlide.wrangler.refactoring.renameModule"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M2+M3+R M">
-      </key>
-      <key
             commandId="org.erlide.wrangler.refactoring.moveFunction"
+            contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+V F">
       </key>
@@ -126,12 +124,6 @@
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.renameFunction"
             name="Rename function">
-      </command>
-      <command
-            category="org.erlide.wrangler.refactoring"
-            categoryId="org.erlide.wrangler.refactoring"
-            id="org.erlide.wrangler.refactoring.renameModule"
-            name="Rename module">
       </command>
       <command
             category="org.erlide.wrangler.refactoring"

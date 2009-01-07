@@ -46,7 +46,8 @@ public class ComparerTool {
 	}
 
 	/**
-	 * Creates <code>Edit</code> object from a <code>Difference</code> object
+	 * Creates <code>Edit</code> object from a <code>Difference</code>
+	 * object
 	 * 
 	 * @param diff
 	 * @return
