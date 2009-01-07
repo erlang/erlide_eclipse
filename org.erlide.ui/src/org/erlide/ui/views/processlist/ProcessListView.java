@@ -164,7 +164,9 @@ public class ProcessListView extends ViewPart {
 		public void eventReceived(final OtpErlangObject event) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					viewer.refresh();
+					if (!viewer.getControl().isDisposed()) {
+						viewer.refresh();
+					}
 				}
 			});
 		}

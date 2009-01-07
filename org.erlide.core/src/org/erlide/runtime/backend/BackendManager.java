@@ -67,11 +67,11 @@ public final class BackendManager implements IEpmdListener {
 	};
 
 	@SuppressWarnings("synthetic-access")
-	private static class LazyBackendManagerHolder {
+	private static final class LazyBackendManagerHolder {
 		public static final BackendManager instance = new BackendManager();
 	}
 
-	public static BackendManager getDefault() {
+	public static final BackendManager getDefault() {
 		return LazyBackendManagerHolder.instance;
 	}
 

@@ -632,7 +632,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		ErlLogger.debug("Starting LAUNCHING " + Thread.currentThread());
+		ErlLogger.debug("Starting CORE " + Thread.currentThread());
 
 		String dev = "";
 		if (ErlideUtil.isDeveloper()) {
