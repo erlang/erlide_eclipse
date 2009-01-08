@@ -173,7 +173,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final String contentType) {
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module != null) {
-			return new ErlTextHover(module);
+			return new ErlTextHover(module, editor.getExternalIncludes());
 		}
 		return null;
 	}
@@ -209,9 +209,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (getEditor() != null) {
 			final ContentAssistant asst = new ContentAssistant();
 
-			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, editor.getModule(), editor
-							.getExternalModules()),
+			asst.setContentAssistProcessor(
+					new ErlContentAssistProcessor(sourceViewer, editor
+							.getModule(), editor.getExternalModules(), editor
+							.getExternalIncludes()),
 					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);

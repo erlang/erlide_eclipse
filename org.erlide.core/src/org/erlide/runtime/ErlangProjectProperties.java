@@ -69,7 +69,7 @@ public class ErlangProjectProperties {
 		this(prj, ProjectType.NORMAL);
 	}
 
-	public ErlangProjectProperties(final IProject prj, ProjectType type) {
+	public ErlangProjectProperties(final IProject prj, final ProjectType type) {
 		super();
 		project = prj;
 		// TODO load() should not be in constructor!
@@ -113,9 +113,6 @@ public class ErlangProjectProperties {
 			fUsePathZ = prefs.getProperty(
 					ProjectPreferencesConstants.USE_PATHZ,
 					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-			fExternalIncludes = prefs.getProperty(
-					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
 			fRuntimeName = prefs.getProperty(
 					ProjectPreferencesConstants.RUNTIME_NAME,
 					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
@@ -129,6 +126,9 @@ public class ErlangProjectProperties {
 			fExternalModules = prefs.getProperty(
 					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
+			fExternalIncludes = prefs.getProperty(
+					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
 			type = ProjectType.valueOf(prefs.getProperty(
 					ProjectPreferencesConstants.PROJECT_TYPE,
 					ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
@@ -149,9 +149,6 @@ public class ErlangProjectProperties {
 					ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
 			fUsePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
 					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-			fExternalIncludes = node.get(
-					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
 			fRuntimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME,
 					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
 			fNodeName = node.get(ProjectPreferencesConstants.NODE_NAME,
@@ -163,6 +160,9 @@ public class ErlangProjectProperties {
 			fExternalModules = node.get(
 					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
+			fExternalIncludes = node.get(
+					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
 			type = ProjectType.valueOf(node.get(
 					ProjectPreferencesConstants.PROJECT_TYPE,
 					ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
@@ -375,7 +375,15 @@ public class ErlangProjectProperties {
 	}
 
 	public void setExternalIncludes(final String[] externalIncludes) {
-		fExternalIncludes = pack(externalIncludes);
+		final String packed = pack(externalIncludes);
+		setExternalIncludes(packed);
+	}
+
+	/**
+	 * @param packed
+	 */
+	public void setExternalIncludes(final String packed) {
+		fExternalIncludes = packed;
 	}
 
 	public IProject getProject() {
@@ -456,7 +464,7 @@ public class ErlangProjectProperties {
 		return type == ProjectType.NORMAL;
 	}
 
-	public void setType(ProjectType type) {
+	public void setType(final ProjectType type) {
 		this.type = type;
 	}
 

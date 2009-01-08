@@ -12,7 +12,8 @@
          find_first_var/2,
          get_source_from_module/3,
          get_include_lib/1,
-         get_external_modules/3]).
+         get_external_modules/3,
+         get_external_include/3]).
 
 %%
 %% Include files
@@ -263,8 +264,23 @@ find_first_var(Var, S) ->
             Other
     end.
 
+get_external_include(FilePath, ExternalIncludes, PathVars) ->
+    ExtIncPaths = get_external_modules_file(ExternalIncludes, PathVars),
+    get_ext_inc(ExtIncPaths, FilePath).
+
 %% Local Functions
 %%
+
+get_ext_inc([], _) ->
+    "";
+get_ext_inc([P | Rest], FilePath) ->
+    S = filename:join(P, FilePath),
+    case filelib:is_regular(S) of
+        true ->
+            {ok, S};
+        false ->
+            get_ext_inc(Rest, FilePath)
+    end.
 
 get_source_ebin(Mod) ->
     EbinPath = code:which(Mod),

@@ -50,6 +50,7 @@ import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -123,13 +124,14 @@ public class ErlModelUtils {
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
 			final IdeBackend b, final IProject project,
-			final IErlModule module, final IErlElement.Kind kind) {
+			final IErlModule module, final IErlElement.Kind kind,
+			final String externalIncludes, final List<Tuple> pathVars) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
 		final List<IErlModule> modulesFound = new ArrayList<IErlModule>(1);
 		List<IErlModule> modulesWithIncludes = modulesFound;
 		try {
 			modulesWithIncludes = getModulesWithIncludes(b, project, module,
-					modulesFound);
+					externalIncludes, pathVars, modulesFound);
 		} catch (final CoreException e) {
 			ErlLogger.warn(e);
 		}
@@ -163,10 +165,11 @@ public class ErlModelUtils {
 
 	public static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
 			final IProject project, final IErlModule module,
-			final String definedName, final IErlElement.Kind type) {
+			final String definedName, final IErlElement.Kind type,
+			final String externalIncludes, final List<Tuple> pathVars) {
 		try {
 			return findPreprocessorDef(b, project, module, definedName, type,
-					new ArrayList<IErlModule>());
+					externalIncludes, pathVars, new ArrayList<IErlModule>());
 		} catch (final CoreException e) {
 			return null;
 		}
@@ -177,13 +180,16 @@ public class ErlModelUtils {
 	 * @param m
 	 * @param definedName
 	 * @param type
+	 * @param externalIncludes
+	 *            TODO
 	 * @param modulesDone
 	 * @return
 	 * @throws CoreException
 	 */
 	private static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
 			final IProject project, IErlModule m, final String definedName,
-			final IErlElement.Kind type, final List<IErlModule> modulesDone)
+			final IErlElement.Kind type, final String externalIncludes,
+			final List<Tuple> pathVars, final List<IErlModule> modulesDone)
 			throws CoreException {
 		if (m == null) {
 			return null;
@@ -205,7 +211,8 @@ public class ErlModelUtils {
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s);
+						s = findIncludeFile(project, s, externalIncludes,
+								pathVars);
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
@@ -216,7 +223,8 @@ public class ErlModelUtils {
 				m = getModule((IFile) re);
 				if (m != null && !modulesDone.contains(m)) {
 					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
-							project, m, definedName, type, modulesDone);
+							project, m, definedName, type, externalIncludes,
+							pathVars, modulesDone);
 					if (pd2 != null) {
 						return pd2;
 					}
@@ -236,6 +244,7 @@ public class ErlModelUtils {
 	 */
 	private static List<IErlModule> getModulesWithIncludes(final IdeBackend b,
 			final IProject project, final IErlModule m,
+			final String externalIncludes, final List<Tuple> pathVars,
 			final List<IErlModule> modulesFound) throws CoreException {
 		if (m == null) {
 			return null;
@@ -253,7 +262,8 @@ public class ErlModelUtils {
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s);
+						s = findIncludeFile(project, s, externalIncludes,
+								pathVars);
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
@@ -263,7 +273,8 @@ public class ErlModelUtils {
 			if (re != null && re instanceof IFile) {
 				final IErlModule included = getModule((IFile) re);
 				if (included != null && !modulesFound.contains(included)) {
-					getModulesWithIncludes(b, project, included, modulesFound);
+					getModulesWithIncludes(b, project, included,
+							externalIncludes, pathVars, modulesFound);
 				}
 			}
 		}
@@ -284,6 +295,7 @@ public class ErlModelUtils {
 	public static boolean openPreprocessorDef(final IdeBackend b,
 			final IProject project, final IWorkbenchPage page, IErlModule m,
 			final String definedName, final IErlElement.Kind type,
+			final String externalIncludes, final List<Tuple> pathVars,
 			final List<IErlModule> modulesDone) throws CoreException,
 			ErlModelException, PartInitException {
 		if (m == null) {
@@ -304,7 +316,8 @@ public class ErlModelUtils {
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(b, s);
 						} else {
-							s = findIncludeFile(project, s);
+							s = findIncludeFile(project, s, externalIncludes,
+									pathVars);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
@@ -315,7 +328,8 @@ public class ErlModelUtils {
 					m = getModule((IFile) re);
 					if (m != null && !modulesDone.contains(m)) {
 						if (openPreprocessorDef(b, project, page, m,
-								definedName, type, modulesDone)) {
+								definedName, type, externalIncludes, pathVars,
+								modulesDone)) {
 							return true;
 						}
 					}
@@ -339,10 +353,14 @@ public class ErlModelUtils {
 	 *            the project with include dirs
 	 * @param filePath
 	 *            the path to the include file
+	 * @param externalIncludes
+	 *            TODO
+	 * @param pathVars
 	 * @return the path to the include file
 	 */
 	public static String findIncludeFile(final IProject project,
-			final String filePath) {
+			final String filePath, final String externalIncludes,
+			final List<Tuple> pathVars) {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final ErlangProjectProperties prefs = new ErlangProjectProperties(
@@ -354,6 +372,11 @@ public class ErlModelUtils {
 			if (f.exists()) {
 				return p.toString();
 			}
+		}
+		final String s = ErlideOpen.getExternalInclude(BackendManager.getDefault()
+				.getIdeBackend(), filePath, externalIncludes, pathVars);
+		if (s != null) {
+			return s;
 		}
 		return filePath;
 	}

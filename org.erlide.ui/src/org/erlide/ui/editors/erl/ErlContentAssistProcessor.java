@@ -60,15 +60,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final ISourceViewer sourceViewer;
 	private final IErlModule module;
 	private final String externalModules;
+	private final String externalIncludes;
 	private ArrayList<Tuple> pathVars;
 
 	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 
 	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-			final IErlModule module, final String externalModules) {
+			final IErlModule module, final String externalModules,
+			final String externalIncludes) {
 		this.sourceViewer = sourceViewer;
 		this.module = module;
 		this.externalModules = externalModules;
+		this.externalIncludes = externalIncludes;
 		initPathVars();
 	}
 
@@ -128,7 +131,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 		final IProject project = (IProject) module.getProject().getResource();
 		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b,
-				project, module, recordName, IErlElement.Kind.RECORD_DEF);
+				project, module, recordName, IErlElement.Kind.RECORD_DEF,
+				externalIncludes, pathVars);
 		if (p == null || !(p instanceof IErlRecordDef)) {
 			return null;
 		}
@@ -224,7 +228,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 		final IProject project = (IProject) module.getProject().getResource();
 		final List<IErlPreprocessorDef> defs = ErlModelUtils
-				.getPreprocessorDefs(b, project, module, kind);
+				.getPreprocessorDefs(b, project, module, kind,
+						externalIncludes, pathVars);
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
@@ -433,14 +438,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private void initPathVars() {
+		pathVars = getPathVars();
+	}
+
+	/**
+	 * @return
+	 */
+	public static ArrayList<Tuple> getPathVars() {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final String[] names = pvm.getPathVariableNames();
-		pathVars = new ArrayList<Tuple>(names.length);
+		final ArrayList<Tuple> pv = new ArrayList<Tuple>(names.length);
 		for (final String name : names) {
-			pathVars.add(new Tuple().add(name).add(
-					pvm.getValue(name).toOSString()));
+			pv.add(new Tuple().add(name).add(pvm.getValue(name).toOSString()));
 		}
+		return pv;
 	}
 
 }

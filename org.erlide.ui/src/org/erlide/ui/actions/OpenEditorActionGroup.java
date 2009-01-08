@@ -53,9 +53,9 @@ public class OpenEditorActionGroup extends ActionGroup {
 	 * @param part
 	 *            the view part that owns this action group
 	 */
-	public OpenEditorActionGroup(IViewPart part) {
+	public OpenEditorActionGroup(final IViewPart part) {
 		fSite = part.getSite();
-		fOpen = new OpenAction(fSite, "");
+		fOpen = new OpenAction(fSite, "", "");
 		fOpen
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		initialize(fSite.getSelectionProvider());
@@ -71,7 +71,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 		return fOpen;
 	}
 
-	private void initialize(ISelectionProvider provider) {
+	private void initialize(final ISelectionProvider provider) {
 		final ISelection selection = provider.getSelection();
 		fOpen.update(selection);
 		if (!fIsEditorOwner) {
@@ -83,7 +83,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 	 * (non-Javadoc) Method declared in ActionGroup
 	 */
 	@Override
-	public void fillActionBars(IActionBars actionBar) {
+	public void fillActionBars(final IActionBars actionBar) {
 		super.fillActionBars(actionBar);
 		setGlobalActionHandlers(actionBar);
 	}
@@ -92,7 +92,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 	 * (non-Javadoc) Method declared in ActionGroup
 	 */
 	@Override
-	public void fillContextMenu(IMenuManager menu) {
+	public void fillContextMenu(final IMenuManager menu) {
 		super.fillContextMenu(menu);
 		appendToGroup(menu, fOpen);
 		if (!fIsEditorOwner) {
@@ -110,18 +110,18 @@ public class OpenEditorActionGroup extends ActionGroup {
 		super.dispose();
 	}
 
-	private void setGlobalActionHandlers(IActionBars actionBars) {
+	private void setGlobalActionHandlers(final IActionBars actionBars) {
 		actionBars.setGlobalActionHandler(
 				IErlangEditorActionDefinitionIds.OPEN_EDITOR, fOpen);
 	}
 
-	private void appendToGroup(IMenuManager menu, IAction action) {
+	private void appendToGroup(final IMenuManager menu, final IAction action) {
 		if (action.isEnabled()) {
 			menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, action);
 		}
 	}
 
-	private void addOpenWithMenu(IMenuManager menu) {
+	private void addOpenWithMenu(final IMenuManager menu) {
 		final ISelection selection = getContext().getSelection();
 		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return;

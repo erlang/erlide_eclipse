@@ -184,6 +184,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private String fExternalModules = null;
 
+	private String fExternalIncludes;
+
 	/**
 	 * Simple constructor
 	 * 
@@ -302,7 +304,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				esg = new ErlangSearchActionGroup(this) });
 		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-		openAction = new OpenAction(getSite(), getExternalModules());
+		openAction = new OpenAction(getSite(), getExternalModules(),
+				getExternalIncludes());
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -1087,7 +1090,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IPreferencesService service = Platform.getPreferencesService();
 		final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
 				"default_external_modules", "", null);
-		ErlLogger.debug("external modules file: '%s'", s);
+		if (s.length() > 0) {
+			ErlLogger.debug("external modules file: '%s'", s);
+		}
+		return s;
+	}
+
+	private String getGlobalExternalIncludesFile() {
+		final IPreferencesService service = Platform.getPreferencesService();
+		final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
+				"default_external_includes", "", null);
+		if (s.length() > 0) {
+			ErlLogger.debug("external includes file: '%s'", s);
+		}
 		return s;
 	}
 
@@ -1555,6 +1570,24 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					fExternalModules, globalExternalModules });
 		}
 		return fExternalModules;
+	}
+
+	public String getExternalIncludes() {
+		if (fExternalIncludes == null) {
+			final IEditorInput input = getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				final IFileEditorInput fileInput = (IFileEditorInput) input;
+				final ErlangProjectProperties prefs = new ErlangProjectProperties(
+						fileInput.getFile().getProject());
+				fExternalIncludes = prefs.getExternalIncludesString();
+			} else {
+				fExternalIncludes = "";
+			}
+			final String globalExternalIncludes = getGlobalExternalIncludesFile();
+			fExternalIncludes = ErlangProjectProperties.pack(new String[] {
+					fExternalIncludes, globalExternalIncludes });
+		}
+		return fExternalIncludes;
 	}
 
 }

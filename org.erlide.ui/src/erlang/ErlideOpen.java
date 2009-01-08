@@ -106,4 +106,23 @@ public class ErlideOpen {
 		}
 		return new ArrayList<String>();
 	}
+
+	public static String getExternalInclude(final IdeBackend b,
+			final String filePath, final String externalIncludes,
+			final List<Tuple> pathVars) {
+		try {
+			final OtpErlangObject res = b.rpcx("erlide_open",
+					"get_external_include", "sslx", filePath, externalIncludes,
+					fixPathVars(pathVars));
+			if (Util.isOk(res)) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				return Util.stringValue(t.elementAt(1));
+			}
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

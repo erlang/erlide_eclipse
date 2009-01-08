@@ -53,12 +53,13 @@ public class ErlTextHover implements ITextHover,
 
 	// private ITextEditor fEditor;
 	private List<IErlImport> fImports;
-
 	private final IErlModule fModule;
+	private final String fExternalIncludes;
 
-	public ErlTextHover(final IErlModule module) {
+	public ErlTextHover(final IErlModule module, final String externalIncludes) {
 		fImports = null;
 		fModule = module;
+		fExternalIncludes = externalIncludes;
 	}
 
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
@@ -117,7 +118,8 @@ public class ErlTextHover implements ITextHover,
 						.getResource();
 				final IErlPreprocessorDef pd = ErlModelUtils
 						.findPreprocessorDef(b, proj, fModule, definedName,
-								kindToFind);
+								kindToFind, fExternalIncludes,
+								ErlContentAssistProcessor.getPathVars());
 				if (pd != null) {
 					return pd.getExtra();
 				}
@@ -198,7 +200,8 @@ public class ErlTextHover implements ITextHover,
 
 	public static String getHoverTextForOffset(final int offset,
 			final ErlangEditor editor) {
-		final ErlTextHover h = new ErlTextHover(ErlModelUtils.getModule(editor));
+		final ErlTextHover h = new ErlTextHover(
+				ErlModelUtils.getModule(editor), editor.getExternalIncludes());
 		final ITextViewer tv = editor.getViewer();
 		final IRegion r = h.getHoverRegion(tv, offset);
 		if (r == null) {

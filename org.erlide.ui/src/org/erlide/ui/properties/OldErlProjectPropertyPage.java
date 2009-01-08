@@ -54,6 +54,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private MockupPreferenceStore mockPrefs;
 	private Button uz;
 	private Text externalIncludes;
+	private Button externalIncludesBrowse;
 	private Text externalModules;
 	private Button externalModulesBrowse;
 
@@ -177,7 +178,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		cookie.setLayoutData(gd_cookie);
 		if (ErlideUtil.isTest()) {
 			new Label(composite, SWT.NONE);
-			final Label l = new Label(composite, SWT.NONE);
+			Label l = new Label(composite, SWT.NONE);
 			l.setText("External Modules:");
 
 			externalModules = new Text(composite, SWT.BORDER);
@@ -196,11 +197,37 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				}
 
 				public void widgetSelected(final SelectionEvent e) {
-					handleExternalModulesBrowseSelected(externalModules,
-							"Select file with external modules");
+					handleBrowseSelected(externalModules,
+							"Select file with external modules", "*.erlidex");
 				}
 
 			});
+			l = new Label(composite, SWT.NONE);
+			l.setText("External Include:");
+
+			externalIncludes = new Text(composite, SWT.BORDER);
+			final GridData gd2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			gd2.minimumWidth = 50;
+			gd2.widthHint = 256;
+			externalIncludes.setLayoutData(gd2);
+
+			externalIncludes.addListener(SWT.Modify, modifyListener);
+
+			externalIncludesBrowse = new Button(composite, SWT.PUSH);
+			externalIncludesBrowse.setText("Browse...");
+			externalIncludesBrowse
+					.addSelectionListener(new SelectionListener() {
+
+						public void widgetDefaultSelected(final SelectionEvent e) {
+						}
+
+						public void widgetSelected(final SelectionEvent e) {
+							handleBrowseSelected(externalIncludes,
+									"Select file with external includes",
+									"*.erlidex");
+						}
+
+					});
 		}
 
 		performDefaults();
@@ -209,13 +236,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		return composite;
 	}
 
-	protected void handleExternalModulesBrowseSelected(final Text text,
-			final String selectTipString) {
+	protected void handleBrowseSelected(final Text text,
+			final String selectTipString, final String extension) {
 		String last = text.getText();
-		// if (last.length() == 0) {
-		// last =
-		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
-		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$
 		} else {
@@ -224,12 +247,11 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
 		dialog.setText(selectTipString);
 		dialog.setFileName(last);
-		dialog.setFilterExtensions(new String[] { "*.erlidex" });
+		dialog.setFilterExtensions(new String[] { extension });
 		final String result = dialog.open();
 		if (result == null) {
 			return;
 		}
-		// externalIncludes.setText(result);
 		text.setText(result);
 	}
 
@@ -261,6 +283,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		}
 		if (ErlideUtil.isTest()) {
 			externalModules.setText(prefs.getExternalModules());
+			externalIncludes.setText(prefs.getExternalIncludesString());
 		}
 		nodeName.setText(prefs.getNodeName());
 		cookie.setText(prefs.getCookie());
@@ -286,6 +309,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		prefs.setUniqueName(makeUniqueButton.getSelection());
 		if (ErlideUtil.isTest()) {
 			prefs.setExternalModules(externalModules.getText());
+			prefs.setExternalIncludes(externalIncludes.getText());
 		}
 		prefs.store();
 		return true;

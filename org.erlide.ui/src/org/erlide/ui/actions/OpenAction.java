@@ -74,9 +74,10 @@ import erlang.OpenResult;
  */
 public class OpenAction extends SelectionDispatchAction {
 
-	private ErlangEditor fEditor;
-	private String fExternalModules;
-	private List<Tuple> pathVars;
+	// private ErlangEditor fEditor;
+	private final String fExternalModules;
+	private final String fExternalIncludes;
+	private final List<Tuple> pathVars;
 
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
@@ -89,26 +90,15 @@ public class OpenAction extends SelectionDispatchAction {
 	 *            the externalModules file that can be searched for references
 	 *            to external modules
 	 */
-	public OpenAction(final IWorkbenchSite site, final String externalModules) {
+	public OpenAction(final IWorkbenchSite site, final String externalModules,
+			final String externalIncludes) {
 		super(site);
 		fExternalModules = externalModules;
+		fExternalIncludes = externalIncludes;
 		setText(ActionMessages.OpenAction_label);
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
-		initPathVars();
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
-
-	}
-
-	public OpenAction(final ErlangEditor editor, final String externalModules) {
-		this(editor.getEditorSite(), externalModules);
-		fEditor = editor;
-		fExternalModules = externalModules;
-		initPathVars();
-		setText(ActionMessages.OpenAction_declaration_label);
-	}
-
-	private void initPathVars() {
+		// initPathVars();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final String[] names = pvm.getPathVariableNames();
@@ -117,7 +107,28 @@ public class OpenAction extends SelectionDispatchAction {
 			pathVars.add(new Tuple().add(name).add(
 					pvm.getValue(name).toOSString()));
 		}
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
+
 	}
+
+	// public OpenAction(final ErlangEditor editor, final String
+	// externalModules,
+	// final String externalIncludes) {
+	// this(editor.getEditorSite(), externalModules, externalIncludes);
+	// fEditor = editor;
+	// setText(ActionMessages.OpenAction_declaration_label);
+	// }
+
+	// private void initPathVars() {
+	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+	// .getPathVariableManager();
+	// final String[] names = pvm.getPathVariableNames();
+	// pathVars = new ArrayList<Tuple>(names.length);
+	// for (final String name : names) {
+	// pathVars.add(new Tuple().add(name).add(
+	// pvm.getValue(name).toOSString()));
+	// }
+	// }
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
@@ -214,7 +225,7 @@ public class OpenAction extends SelectionDispatchAction {
 		for (Object element : elements) {
 			try {
 				element = getElementToOpen(element);
-				final boolean activateOnOpen = fEditor != null ? true
+				final boolean activateOnOpen = getSite() != null ? true
 						: OpenStrategy.activateOnOpen();
 				ErlModelUtils.openElementInNewEditor(element, activateOnOpen);
 			} catch (final ErlModelException e) {
@@ -279,15 +290,16 @@ public class OpenAction extends SelectionDispatchAction {
 
 	@Override
 	public void run() {
-		fEditor = (ErlangEditor) getSite().getPage().getActiveEditor();
-		final IErlModule module = fEditor.getModule();
+		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
+				.getActiveEditor();
+		final IErlModule module = editor.getModule();
 		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
 		try {
 			final OpenResult res = ErlideOpen.open(b, ErlScanner
-					.createScannerModuleName(fEditor.getModule()), offset,
+					.createScannerModuleName(editor.getModule()), offset,
 					fExternalModules, pathVars);
 			ErlLogger.debug("open " + res);
 			final IProject project = module == null
@@ -302,7 +314,8 @@ public class OpenAction extends SelectionDispatchAction {
 				if (r == null) {
 					try {
 						final String includeFile = ErlModelUtils
-								.findIncludeFile(project, res.getName());
+								.findIncludeFile(project, res.getName(),
+										fExternalIncludes, pathVars);
 						if (includeFile != null) {
 							r = EditorUtility.openExternal(includeFile);
 						}
@@ -314,9 +327,9 @@ public class OpenAction extends SelectionDispatchAction {
 					final IFile f = (IFile) r;
 					EditorUtility.openInEditor(f);
 				}
-			} else if (res.isLocalCall()) { // local call
+			} else if (res.isLocalCall()) {
 				if (!ErlModelUtils.openFunctionInEditor(res.getFunction(),
-						fEditor)) { // not local imports
+						editor)) { // not local imports
 					if (module == null) {
 						return;
 					}
@@ -336,10 +349,10 @@ public class OpenAction extends SelectionDispatchAction {
 					}
 				}
 			} else if (res.isVariable()) {
-				final IErlElement e = fEditor.getElementAt(offset, false);
+				final IErlElement e = editor.getElementAt(offset, false);
 				final ISourceReference sref = (ISourceReference) e;
 				final ISourceRange range = sref.getSourceRange();
-				final String s = fEditor.getDocument().get(range.getOffset(),
+				final String s = editor.getDocument().get(range.getOffset(),
 						range.getLength());
 				final OtpErlangTuple res2 = ErlideOpen.findFirstVar(b, res
 						.getName(), s);
@@ -349,7 +362,7 @@ public class OpenAction extends SelectionDispatchAction {
 				final OtpErlangTuple t = (OtpErlangTuple) res2.elementAt(1);
 				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
 				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				fEditor.setHighlightRange(pos
+				editor.setHighlightRange(pos
 						+ sref.getSourceRange().getOffset(), len, true);
 			} else if (res.isRecord() || res.isMacro()) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
@@ -367,7 +380,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 						: IErlElement.Kind.RECORD_DEF;
 				ErlModelUtils.openPreprocessorDef(b, project, page, module,
-						definedName, type, new ArrayList<IErlModule>());
+						definedName, type, fExternalIncludes, pathVars,
+						new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
