@@ -10,13 +10,13 @@
 
 -record(attr, {pos = {0,0}, ann = [], com = none}).
 
-%% Will be edited by Makefile 
+%% Will be edited by Makefile
 %% -define(WRANGLER_DIR, "C:/cygwin/home/hl/wrangler/share/distel/wrangler").
 
 %% Edited by Gyorgy Orosz
 -define(WRANGLER_DIR, filename:dirname(lists:filter(fun(X)-> lists:suffix("wrangler/ebin", X) end, code:get_path()))  ).
 
--define(DEFAULT_LOC, 
+-define(DEFAULT_LOC,
         {0, 0}).  %% default defining location.
 -define(DEFAULT_MODULE,
 	unknown).  %% default module name.
@@ -31,7 +31,7 @@
 -else.
 -define(wrangler_io(__String, __Args), ok).
 -endif.
-      
+
 
 -type(filename()::string()).
 -type(modulename()::atom()).
@@ -45,7 +45,7 @@
 -type(boolean()::true|false).
 -type(key():: attributes | errors | exports | functions | imports | module | records | rules | warnings).
 -type(moduleInfo()::[{key(), any()}]).  %% any() should be refined.
--type(term()::any()).
+%-type(term()::any()).
 -type(editor()::emacs|eclipse).
 -type(whitespace() :: '\t' | '\n' | ' ').
 -type(token() :: {'var', pos(), atom()} | {'integer', pos(), integer()} | {'string', pos(), string()}
@@ -57,4 +57,4 @@
 -type(callercallee()::[{{modulename(), functionname(), arity()}, [{modulename(), functionname(), arity()}]}]).
 -type(external_calls()::[{atom(), atom(), integer()}]).
 -record(callgraph, {'callercallee', 'scc_order', 'external_calls'}).
-      
+
