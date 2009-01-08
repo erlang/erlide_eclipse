@@ -58,6 +58,7 @@ public class ErlideOpen {
 		return pathVars2;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OpenResult open(final IdeBackend b, final String scannerName,
 			final int offset, final String externalModules,
 			final List<Tuple> pathVars) throws RpcException, BackendException {
