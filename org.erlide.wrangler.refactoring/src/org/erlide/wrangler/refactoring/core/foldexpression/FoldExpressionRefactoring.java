@@ -65,6 +65,7 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 						.getSearchPath());
 	}
 
+	@SuppressWarnings("boxing")
 	private RPCMessage callFoldExpression() throws RpcException,
 			WranglerException, CoreException {
 		RpcResult res = managedBackend.rpc("wrangler",

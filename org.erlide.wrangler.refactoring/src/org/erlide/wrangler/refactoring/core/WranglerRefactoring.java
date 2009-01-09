@@ -33,12 +33,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public abstract class WranglerRefactoring extends Refactoring {
 
-	static protected OtpErlangTuple createPos(Integer line, Integer coloumn) {
+	static protected OtpErlangTuple createPos(int line, int coloumn) {
 		return new OtpErlangTuple(new OtpErlangInt(line), new OtpErlangInt(
 				coloumn));
 	}
 
-	protected Integer coloumn, line;
+	protected int column, line;
 	protected Change change;
 	protected RefactoringParameters parameters;
 	protected IdeBackend managedBackend;

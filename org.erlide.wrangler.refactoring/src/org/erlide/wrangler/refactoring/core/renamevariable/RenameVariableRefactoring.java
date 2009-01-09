@@ -19,6 +19,7 @@ public class RenameVariableRefactoring extends RenameRefactoring {
 		return "Rename variable";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {

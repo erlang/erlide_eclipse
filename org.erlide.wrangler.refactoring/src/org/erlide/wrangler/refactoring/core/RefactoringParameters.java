@@ -25,8 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Wrangler refactoring parameters. Refactorings which extends
- * <code>WranglerRefactoring</code> class always has an object from this
- * class. It makes easy to get necessary information for the several kinds of
+ * <code>WranglerRefactoring</code> class always has an object from this class.
+ * It makes easy to get necessary information for the several kinds of
  * refactorings.
  * 
  * @author Gyorgy Orosz
@@ -37,16 +37,16 @@ public class RefactoringParameters {
 	private ITextEditor editor;
 	private IFile file;
 	private ITextSelection selection;
-	private Integer startLine;
-	private Integer startColoumn;
-	private Integer endLine;
-	private Integer endColoumn;
+	private int startLine;
+	private int startColumn;
+	private int endLine;
+	private int endColumn;
 	private IDocument doc;
 
 	/**
-	 * Default constructor. The necessaryinformation is <b>not</b> given by
-	 * this constructor, but <code>SetEditorPart</code> and
-	 * <code>SetSelection</code> method.
+	 * Default constructor. The necessaryinformation is <b>not</b> given by this
+	 * constructor, but <code>SetEditorPart</code> and <code>SetSelection</code>
+	 * method.
 	 */
 	public RefactoringParameters() {
 		super();
@@ -137,16 +137,16 @@ public class RefactoringParameters {
 	/**
 	 * @return the active selection's ending column number
 	 */
-	public Integer getEndColumn() {
-		endColoumn = calculateColumnFromOffset(selection.getOffset()
+	public int getEndColumn() {
+		endColumn = calculateColumnFromOffset(selection.getOffset()
 				+ selection.getLength()) - 1;
-		return endColoumn;
+		return endColumn;
 	}
 
 	/**
 	 * @return the active selection's ending line number
 	 */
-	public Integer getEndLine() {
+	public int getEndLine() {
 		endLine = selection.getEndLine() + 1;
 		return endLine;
 	}
@@ -246,15 +246,15 @@ public class RefactoringParameters {
 	/**
 	 * @return the active selection's starting column number
 	 */
-	public Integer getStartColumn() {
-		startColoumn = calculateColumnFromOffset(selection.getOffset());
-		return startColoumn;
+	public int getStartColumn() {
+		startColumn = calculateColumnFromOffset(selection.getOffset());
+		return startColumn;
 	}
 
 	/**
 	 * @return the active selection's starting line number
 	 */
-	public Integer getStartLine() {
+	public int getStartLine() {
 		startLine = selection.getStartLine() + 1;
 		return startLine;
 	}

@@ -19,6 +19,7 @@ public class TupleParametersRefactoring extends WranglerRefactoring {
 		return "Tuple function parameters";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {

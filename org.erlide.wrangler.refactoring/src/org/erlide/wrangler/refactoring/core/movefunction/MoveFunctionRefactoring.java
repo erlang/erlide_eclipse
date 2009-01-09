@@ -26,6 +26,7 @@ public class MoveFunctionRefactoring extends WranglerRefactoring {
 		return "Move function";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {
