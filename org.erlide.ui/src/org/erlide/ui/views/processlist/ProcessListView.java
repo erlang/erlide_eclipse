@@ -46,8 +46,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.ExecutionBackend;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IBackendEventListener;
-import org.erlide.runtime.backend.IBackendVisitor;
+import org.erlide.runtime.backend.BackendEventListener;
+import org.erlide.runtime.backend.BackendVisitor;
 import org.erlide.runtime.backend.RuntimeInfo;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -124,7 +124,7 @@ public class ProcessListView extends ViewPart {
 	 * example).
 	 */
 	class ViewContentProvider implements IStructuredContentProvider,
-			IBackendEventListener {
+			BackendEventListener {
 
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
@@ -159,7 +159,7 @@ public class ProcessListView extends ViewPart {
 		}
 
 		/**
-		 * @see org.erlide.runtime.backend.IBackendEventListener#eventReceived(com.ericsson.otp.erlang.OtpErlangObject)
+		 * @see org.erlide.runtime.backend.BackendEventListener#eventReceived(com.ericsson.otp.erlang.OtpErlangObject)
 		 */
 		public void eventReceived(final OtpErlangObject event) {
 			Display.getDefault().asyncExec(new Runnable() {
@@ -296,7 +296,7 @@ public class ProcessListView extends ViewPart {
 			ErlideProclist.processListInit(ideBackend.asExecution());
 		}
 		ErlangCore.getBackendManager().forEachProjectBackend(
-				new IBackendVisitor() {
+				new BackendVisitor() {
 					public void run(final IBackend b) {
 						ErlideProclist.processListInit(b.asExecution());
 					}

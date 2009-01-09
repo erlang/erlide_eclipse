@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
+ * Copyright (c) 2004 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
- * http://www.eclipse.org/legal/epl-v10.html
+ * are made available under the terms of the Common Public License v1.0
+ * which accompanies this distribution.
  * 
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-public interface IBackendVisitor {
+public interface BackendListener {
 
-	void run(IBackend b);
+	public void backendAdded(IBackend b);
+
+	public void backendRemoved(IBackend b);
 
 }

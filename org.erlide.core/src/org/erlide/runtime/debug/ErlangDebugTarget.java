@@ -31,7 +31,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IErlRpcMessageListener;
+import org.erlide.runtime.backend.ErlRpcMessageListener;
 import org.erlide.runtime.backend.internal.AbstractBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -44,7 +44,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDebug;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements
-		IDebugTarget, IErlRpcMessageListener {
+		IDebugTarget, ErlRpcMessageListener {
 
 	private static final IThread[] NO_PROCS = new IThread[] {};
 
@@ -471,7 +471,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.runtime.backend.IErlRpcMessageListener#handleMsgs(java.util.List)
+	 * @see org.erlide.runtime.backend.ErlRpcMessageListener#handleMsgs(java.util.List)
 	 */
 	public void handleMsgs(final List<OtpErlangObject> msgs) {
 		for (int i = 0; i < msgs.size(); ++i) {

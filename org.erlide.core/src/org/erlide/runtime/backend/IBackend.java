@@ -120,9 +120,9 @@ public interface IBackend {
 
 	void send(String name, Object msg);
 
-	void addEventListener(String event, IBackendEventListener l);
+	void addEventListener(String event, BackendEventListener l);
 
-	void removeEventListener(String event, IBackendEventListener l);
+	void removeEventListener(String event, BackendEventListener l);
 
 	CodeManager getCodeManager();
 
@@ -137,7 +137,7 @@ public interface IBackend {
 
 	boolean ping();
 
-	List<IBackendEventListener> getEventListeners(String event);
+	List<BackendEventListener> getEventListeners(String event);
 
 	RuntimeInfo getInfo();
 

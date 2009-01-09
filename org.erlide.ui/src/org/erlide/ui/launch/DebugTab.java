@@ -54,7 +54,7 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
-import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
@@ -219,7 +219,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				if (newInput instanceof ILaunchConfiguration) {
 					final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
 					final String projs = input.getAttribute(
-							IErlLaunchAttributes.PROJECTS, "").trim();
+							ErlLaunchAttributes.PROJECTS, "").trim();
 					if (projs.length() == 0) {
 						return;
 					}
@@ -388,9 +388,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		String prjs;
 		try {
 			interpret = config.getAttribute(
-					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
-			prjs = config.getAttribute(IErlLaunchAttributes.PROJECTS, "")
+			prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "")
 					.trim();
 		} catch (final CoreException e1) {
 			interpret = new ArrayList<String>();
@@ -416,7 +416,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 		int debugFlags;
 		try {
-			debugFlags = config.getAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
+			debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
 					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 		} catch (final CoreException e) {
 			debugFlags = ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
@@ -491,14 +491,14 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * .debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
+		config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
 				getFlagChechboxes());
 		final List<String> r = new ArrayList<String>();
 		for (final IErlModule m : interpretedModules) {
 			r.add(m.getProject().getName() + ":"
 					+ ErlideUtil.withoutExtension(m.getName()));
 		}
-		config.setAttribute(IErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
+		config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
 	}
 
 	public String getName() {

@@ -16,11 +16,11 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IBackendListener;
+import org.erlide.runtime.backend.BackendListener;
 
-public class BackendManagerPopup implements IBackendListener {
+public class BackendManagerPopup implements BackendListener {
 
-	private static final IBackendListener fInstance = new BackendManagerPopup();
+	private static final BackendListener fInstance = new BackendManagerPopup();
 
 	private static final int DELAY = 5000;
 

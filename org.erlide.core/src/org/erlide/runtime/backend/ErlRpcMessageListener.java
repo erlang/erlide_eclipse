@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface IErlRpcMessageListener {
+public interface ErlRpcMessageListener {
 	/**
 	 * Handle messages and remove them if handled
 	 * 

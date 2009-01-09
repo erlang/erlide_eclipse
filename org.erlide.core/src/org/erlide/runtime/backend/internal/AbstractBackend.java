@@ -33,8 +33,8 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BuildBackend;
 import org.erlide.runtime.backend.ErlRpcDaemon;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IBackendEventListener;
-import org.erlide.runtime.backend.IErlRpcMessageListener;
+import org.erlide.runtime.backend.BackendEventListener;
+import org.erlide.runtime.backend.ErlRpcMessageListener;
 import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -70,7 +70,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	private static final boolean CHECK_RPC = Boolean
 			.getBoolean("org.erlide.checkrpc");
 
-	final private HashMap<String, ArrayList<IBackendEventListener>> fEventListeners;
+	final private HashMap<String, ArrayList<BackendEventListener>> fEventListeners;
 	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
@@ -91,7 +91,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 			throw new BackendException(
 					"Can't create backend without runtime information");
 		}
-		fEventListeners = new HashMap<String, ArrayList<IBackendEventListener>>();
+		fEventListeners = new HashMap<String, ArrayList<BackendEventListener>>();
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
 		fInfo = info;
@@ -172,11 +172,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		return rpcDaemon;
 	}
 
-	public void addErlRpcMessageListener(final IErlRpcMessageListener l) {
+	public void addErlRpcMessageListener(final ErlRpcMessageListener l) {
 		rpcDaemon.addErlRpcMessageListener(l);
 	}
 
-	public void removeErlRpcMessageListener(final IErlRpcMessageListener l) {
+	public void removeErlRpcMessageListener(final ErlRpcMessageListener l) {
 		rpcDaemon.removeErlRpcMessageListener(l);
 	}
 
@@ -298,10 +298,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 *            IBackendEventListener
 	 */
 	public void addEventListener(final String event,
-			final IBackendEventListener l) {
-		ArrayList<IBackendEventListener> ls = fEventListeners.get(event);
+			final BackendEventListener l) {
+		ArrayList<BackendEventListener> ls = fEventListeners.get(event);
 		if (ls == null) {
-			ls = new ArrayList<IBackendEventListener>(20);
+			ls = new ArrayList<BackendEventListener>(20);
 			fEventListeners.put(event, ls);
 		}
 		if (ls.indexOf(l) < 0) {
@@ -318,8 +318,8 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 *            IBackendEventListener
 	 */
 	public void removeEventListener(final String event,
-			final IBackendEventListener l) {
-		final ArrayList<IBackendEventListener> ls = fEventListeners.get(event);
+			final BackendEventListener l) {
+		final ArrayList<BackendEventListener> ls = fEventListeners.get(event);
 		if (ls != null) {
 			ls.remove(l);
 		}
@@ -356,10 +356,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 						event = ((OtpErlangTuple) msg).elementAt(0).toString();
 					}
 					if (event != null) {
-						final ArrayList<IBackendEventListener> ls = fEventListeners
+						final ArrayList<BackendEventListener> ls = fEventListeners
 								.get(event);
 						if (ls != null) {
-							for (final IBackendEventListener l : ls) {
+							for (final BackendEventListener l : ls) {
 								l.eventReceived(msg);
 							}
 						}
@@ -525,7 +525,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		getRpcDaemon().start();
 	}
 
-	public List<IBackendEventListener> getEventListeners(final String event) {
+	public List<BackendEventListener> getEventListeners(final String event) {
 		return fEventListeners.get(event);
 	}
 

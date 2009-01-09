@@ -28,7 +28,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.ui.launch.DebugTab;
@@ -79,7 +79,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 				checkboxTreeViewer.expandAll();
 				try {
 					final int debugFlags = launchConfiguration.getAttribute(
-							IErlLaunchAttributes.DEBUG_FLAGS,
+							ErlLaunchAttributes.DEBUG_FLAGS,
 							ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 					distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 				} catch (final CoreException e1) {
@@ -107,7 +107,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 			List<String> interpret;
 			try {
 				interpret = launchConfiguration.getAttribute(
-						IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+						ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 						new ArrayList<String>());
 			} catch (final CoreException e1) {
 				interpret = new ArrayList<String>();

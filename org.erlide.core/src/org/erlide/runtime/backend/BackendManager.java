@@ -53,7 +53,7 @@ public final class BackendManager implements IEpmdListener {
 	private final Map<IProject, BuildBackend> fBuildBackends;
 	private final Object fBuildBackendsLock = new Object();
 	private final Map<IProject, Set<ExecutionBackend>> fExecutionBackends;
-	protected List<IBackendListener> fListeners;
+	protected List<BackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
 	private EpmdWatcher epmdWatcher;
@@ -79,7 +79,7 @@ public final class BackendManager implements IEpmdListener {
 		fLocalBackend = null;
 		fBuildBackends = new HashMap<IProject, BuildBackend>();
 		fExecutionBackends = new HashMap<IProject, Set<ExecutionBackend>>();
-		fListeners = new ArrayList<IBackendListener>();
+		fListeners = new ArrayList<BackendListener>();
 		fPlugins = new ArrayList<ICodeBundle>();
 
 		epmdWatcher = new EpmdWatcher();
@@ -246,11 +246,11 @@ public final class BackendManager implements IEpmdListener {
 		return System.getProperty("erlide.label", null);
 	}
 
-	public void addBackendListener(final IBackendListener listener) {
+	public void addBackendListener(final BackendListener listener) {
 		fListeners.add(listener);
 	}
 
-	public void removeBackendListener(final IBackendListener listener) {
+	public void removeBackendListener(final BackendListener listener) {
 		fListeners.remove(listener);
 	}
 
@@ -263,7 +263,7 @@ public final class BackendManager implements IEpmdListener {
 	 */
 	class BackendChangeNotifier implements ISafeRunnable {
 
-		private IBackendListener fListener;
+		private BackendListener fListener;
 
 		private BackendEvent fType;
 
@@ -311,7 +311,7 @@ public final class BackendManager implements IEpmdListener {
 			fType = type;
 			final Object[] copiedListeners = fListeners.toArray();
 			for (final Object element : copiedListeners) {
-				fListener = (IBackendListener) element;
+				fListener = (BackendListener) element;
 				SafeRunner.run(this);
 			}
 			fChanged = null;
@@ -346,7 +346,7 @@ public final class BackendManager implements IEpmdListener {
 				fLocalBackend.getCodeManager().register(p);
 				fLocalBackend.checkCodePath();
 			}
-			forEachProjectBackend(new IBackendVisitor() {
+			forEachProjectBackend(new BackendVisitor() {
 				public void run(final IBackend b) {
 					b.getCodeManager().register(p);
 					b.checkCodePath();
@@ -360,14 +360,14 @@ public final class BackendManager implements IEpmdListener {
 		if (fLocalBackend != null) {
 			fLocalBackend.getCodeManager().unregister(p);
 		}
-		forEachProjectBackend(new IBackendVisitor() {
+		forEachProjectBackend(new BackendVisitor() {
 			public void run(final IBackend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
 	}
 
-	public void forEachProjectBackend(final IBackendVisitor visitor) {
+	public void forEachProjectBackend(final BackendVisitor visitor) {
 		synchronized (fBuildBackendsLock) {
 			for (final IBackend b : fBuildBackends.values()) {
 				try {

@@ -71,28 +71,28 @@ public class ErlangLaunchConfigurationDelegate extends
 			throws CoreException {
 		try {
 			final String prjs = config.getAttribute(
-					IErlLaunchAttributes.PROJECTS, "").trim();
+					ErlLaunchAttributes.PROJECTS, "").trim();
 			final String[] projectNames = prjs.length() == 0 ? new String[] {}
 					: prjs.split(";");
 			final String module = config.getAttribute(
-					IErlLaunchAttributes.MODULE, "").trim();
+					ErlLaunchAttributes.MODULE, "").trim();
 			final String function = config.getAttribute(
-					IErlLaunchAttributes.FUNCTION, "").trim();
+					ErlLaunchAttributes.FUNCTION, "").trim();
 			final String args = config.getAttribute(
-					IErlLaunchAttributes.ARGUMENTS, "").trim();
+					ErlLaunchAttributes.ARGUMENTS, "").trim();
 			final String runtime = config.getAttribute(
-					IErlLaunchAttributes.RUNTIME_NAME, "").trim();
+					ErlLaunchAttributes.RUNTIME_NAME, "").trim();
 			final String nodeName = config.getAttribute(
-					IErlLaunchAttributes.NODE_NAME, "").trim();
+					ErlLaunchAttributes.NODE_NAME, "").trim();
 			final String cookie = config.getAttribute(
-					IErlLaunchAttributes.COOKIE, "").trim();
+					ErlLaunchAttributes.COOKIE, "").trim();
 			final boolean startMe = config.getAttribute(
-					IErlLaunchAttributes.START_ME, false);
+					ErlLaunchAttributes.START_ME, false);
 			final int debugFlags = config.getAttribute(
-					IErlLaunchAttributes.DEBUG_FLAGS,
+					ErlLaunchAttributes.DEBUG_FLAGS,
 					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 			List<String> interpretedModules = config.getAttribute(
-					IErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
 
 			System.out.println("Debug:: about to start a backend in " + mode

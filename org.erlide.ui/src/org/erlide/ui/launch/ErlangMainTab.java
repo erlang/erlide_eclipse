@@ -44,7 +44,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
@@ -231,11 +231,11 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IErlLaunchAttributes.PROJECTS, "");
-		config.setAttribute(IErlLaunchAttributes.MODULE, "");
-		config.setAttribute(IErlLaunchAttributes.FUNCTION, "");
-		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, "");
-		config.setAttribute(IErlLaunchAttributes.DEBUG_FLAGS,
+		config.setAttribute(ErlLaunchAttributes.PROJECTS, "");
+		config.setAttribute(ErlLaunchAttributes.MODULE, "");
+		config.setAttribute(ErlLaunchAttributes.FUNCTION, "");
+		config.setAttribute(ErlLaunchAttributes.ARGUMENTS, "");
+		config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
 				ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 	}
 
@@ -243,7 +243,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		projectsTable.setInput(config);
 		String projs;
 		try {
-			projs = config.getAttribute(IErlLaunchAttributes.PROJECTS, "");
+			projs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "");
 		} catch (final CoreException e1) {
 			projs = "";
 		}
@@ -265,21 +265,21 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 		try {
 			final String attribute = config.getAttribute(
-					IErlLaunchAttributes.MODULE, "");
+					ErlLaunchAttributes.MODULE, "");
 			moduleText.setText(attribute);
 		} catch (final CoreException e) {
 			moduleText.setText("");
 		}
 		try {
 			final String attribute = config.getAttribute(
-					IErlLaunchAttributes.FUNCTION, "");
+					ErlLaunchAttributes.FUNCTION, "");
 			funcText.setText(attribute);
 		} catch (final CoreException e) {
 			funcText.setText("");
 		}
 		try {
 			final String attribute = config.getAttribute(
-					IErlLaunchAttributes.ARGUMENTS, "");
+					ErlLaunchAttributes.ARGUMENTS, "");
 			argsText.setText(attribute);
 		} catch (final CoreException e) {
 			argsText.setText("");
@@ -297,12 +297,12 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		if (projectNames.length() > 0) {
 			projectNames.setLength(projectNames.length() - 1);
 		}
-		config.setAttribute(IErlLaunchAttributes.PROJECTS, projectNames
+		config.setAttribute(ErlLaunchAttributes.PROJECTS, projectNames
 				.toString());
 
-		config.setAttribute(IErlLaunchAttributes.MODULE, moduleText.getText());
-		config.setAttribute(IErlLaunchAttributes.FUNCTION, funcText.getText());
-		config.setAttribute(IErlLaunchAttributes.ARGUMENTS, argsText.getText());
+		config.setAttribute(ErlLaunchAttributes.MODULE, moduleText.getText());
+		config.setAttribute(ErlLaunchAttributes.FUNCTION, funcText.getText());
+		config.setAttribute(ErlLaunchAttributes.ARGUMENTS, argsText.getText());
 	}
 
 	public List<IProject> getSelectedProjects() {

@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
+public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
@@ -37,7 +37,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		fBackend = b;
 	}
 
-	List<IErlRpcMessageListener> fErlRpcMessageListeners = new ArrayList<IErlRpcMessageListener>();
+	List<ErlRpcMessageListener> fErlRpcMessageListeners = new ArrayList<ErlRpcMessageListener>();
 
 	public void start() {
 		ErlangCore.getBackendManager().addBackendListener(this);
@@ -67,7 +67,7 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 						}
 					} while (msg != null && !fStopJob
 							&& received < MAX_RECEIVED);
-					for (IErlRpcMessageListener i : fErlRpcMessageListeners) {
+					for (ErlRpcMessageListener i : fErlRpcMessageListeners) {
 						i.handleMsgs(msgs);
 					}
 					if (msgs.size() > 0) {
@@ -127,9 +127,9 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 				ErlLogger.warn(e);
 			}
 		}
-		final List<IBackendEventListener> list = fBackend.getEventListeners(id);
+		final List<BackendEventListener> list = fBackend.getEventListeners(id);
 		if (list != null) {
-			for (final IBackendEventListener client : list) {
+			for (final BackendEventListener client : list) {
 				client.eventReceived(event);
 			}
 		}
@@ -153,11 +153,11 @@ public class ErlRpcDaemon implements IBackendListener, IRpcHandler {
 		job.schedule();
 	}
 
-	public void addErlRpcMessageListener(final IErlRpcMessageListener l) {
+	public void addErlRpcMessageListener(final ErlRpcMessageListener l) {
 		fErlRpcMessageListeners.add(l);
 	}
 
-	public void removeErlRpcMessageListener(final IErlRpcMessageListener l) {
+	public void removeErlRpcMessageListener(final ErlRpcMessageListener l) {
 		fErlRpcMessageListeners.remove(l);
 	}
 }

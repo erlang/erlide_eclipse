@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.ui.util.SWTUtil;
 
@@ -145,23 +145,23 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IErlLaunchAttributes.START_ME, false);
-		config.setAttribute(IErlLaunchAttributes.RUNTIME_NAME,
-				IErlLaunchAttributes.DEFAULT_RUNTIME_NAME);
-		config.setAttribute(IErlLaunchAttributes.NODE_NAME, "");
-		config.setAttribute(IErlLaunchAttributes.COOKIE, "");
+		config.setAttribute(ErlLaunchAttributes.START_ME, false);
+		config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+				ErlLaunchAttributes.DEFAULT_RUNTIME_NAME);
+		config.setAttribute(ErlLaunchAttributes.NODE_NAME, "");
+		config.setAttribute(ErlLaunchAttributes.COOKIE, "");
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
 		try {
 			final String runtimeName = config.getAttribute(
-					IErlLaunchAttributes.RUNTIME_NAME, "");
+					ErlLaunchAttributes.RUNTIME_NAME, "");
 			runtimesCombo.select(runtimesCombo.indexOf(runtimeName));
 		} catch (final CoreException e) {
 			runtimesCombo.setText("");
 		}
 		try {
-			String node = config.getAttribute(IErlLaunchAttributes.NODE_NAME,
+			String node = config.getAttribute(ErlLaunchAttributes.NODE_NAME,
 					"");
 			nameText.setText(node);
 		} catch (CoreException e) {
@@ -169,14 +169,14 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		}
 		try {
 			String cookie = config
-					.getAttribute(IErlLaunchAttributes.COOKIE, "");
+					.getAttribute(ErlLaunchAttributes.COOKIE, "");
 			cookieText.setText(cookie);
 		} catch (CoreException e) {
 			cookieText.setText("");
 		}
 		try {
 			boolean startMe = config.getAttribute(
-					IErlLaunchAttributes.START_ME, false);
+					ErlLaunchAttributes.START_ME, false);
 			startNodeCheckbox.setSelection(startMe);
 		} catch (CoreException e) {
 			startNodeCheckbox.setSelection(false);
@@ -184,12 +184,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IErlLaunchAttributes.RUNTIME_NAME, runtimesCombo
+		config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimesCombo
 				.getText());
-		config.setAttribute(IErlLaunchAttributes.START_ME, startNodeCheckbox
+		config.setAttribute(ErlLaunchAttributes.START_ME, startNodeCheckbox
 				.getSelection());
-		config.setAttribute(IErlLaunchAttributes.NODE_NAME, nameText.getText());
-		config.setAttribute(IErlLaunchAttributes.COOKIE, cookieText.getText());
+		config.setAttribute(ErlLaunchAttributes.NODE_NAME, nameText.getText());
+		config.setAttribute(ErlLaunchAttributes.COOKIE, cookieText.getText());
 	}
 
 	public String getName() {

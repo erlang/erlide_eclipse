@@ -11,7 +11,7 @@ package org.erlide.runtime.backend;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface IBackendEventListener {
+public interface BackendEventListener {
 
 	/*
 	 * This executes in a separate thread! Any UI work must be done with a

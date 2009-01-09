@@ -12,7 +12,7 @@ package org.erlide.runtime.backend;
 
 import org.erlide.core.ErlangPlugin;
 
-public interface IErlLaunchAttributes {
+public interface ErlLaunchAttributes {
 
 	final String prefix = ErlangPlugin.PLUGIN_ID;
 

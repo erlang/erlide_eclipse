@@ -12,7 +12,7 @@ import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 import org.erlide.runtime.backend.BackendUtil;
-import org.erlide.runtime.backend.IErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlLaunchAttributes;
 
 public class ErlangSourcePathComputerDelegate implements
 		ISourcePathComputerDelegate {
@@ -22,7 +22,7 @@ public class ErlangSourcePathComputerDelegate implements
 			final IProgressMonitor monitor) throws CoreException {
 		final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
 		final String projectNames = configuration.getAttribute(
-				IErlLaunchAttributes.PROJECTS, "");
+				ErlLaunchAttributes.PROJECTS, "");
 		final IProject[] projects = BackendUtil.getProjects(projectNames);
 		for (final IProject p : projects) {
 			containers.add(new ProjectSourceContainer(p, false));

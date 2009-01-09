@@ -77,7 +77,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IBackendEventListener;
+import org.erlide.runtime.backend.BackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
@@ -97,7 +97,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import erlang.ErlideBackend;
 
 public class ErlangConsoleView extends ViewPart implements
-		IBackendEventListener {
+		BackendEventListener {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
