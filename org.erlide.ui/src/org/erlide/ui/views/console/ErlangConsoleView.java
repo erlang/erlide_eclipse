@@ -76,7 +76,7 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -128,7 +128,7 @@ public class ErlangConsoleView extends ViewPart implements
 	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 	TableViewer consoleTable;
 	ErlConsoleDocument fDoc;
-	IBackend fBackend;
+	Backend fBackend;
 	BackendShell fShell;
 	final List<String> history = new ArrayList<String>(10);
 	StyledText consoleInput;

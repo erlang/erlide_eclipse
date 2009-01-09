@@ -62,7 +62,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.BackendUtil;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -86,7 +86,7 @@ public class LiveExpressionsView extends ViewPart implements
 	private Action refreshAction;
 	private Action fAddAction;
 	Action fRemoveAction;
-	ExecutionBackend fBackend;
+	Backend fBackend;
 
 	static private class LiveExpr {
 
@@ -192,7 +192,7 @@ public class LiveExpressionsView extends ViewPart implements
 				IResourceChangeEvent.POST_BUILD);
 
 		// TODO make the backend configurable (as for console)
-		fBackend = (ExecutionBackend) ErlangCore.getBackendManager()
+		fBackend = (Backend) ErlangCore.getBackendManager()
 				.getIdeBackend();
 	}
 

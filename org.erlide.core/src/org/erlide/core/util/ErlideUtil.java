@@ -39,7 +39,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.PreferencesUtils;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 
@@ -53,7 +53,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 @SuppressWarnings("restriction")
 public class ErlideUtil {
 
-	public static boolean isAccessible(final IBackend backend,
+	public static boolean isAccessible(final Backend backend,
 			final String localDir) {
 		try {
 			final OtpErlangObject r = backend.rpcx("file", "read_file_info",

@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Vlad Dumitrescu
- *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
 import java.io.File;
@@ -16,25 +6,25 @@ import java.io.IOException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IDisposable;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
-/**
- * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
- */
-public class ManagedBackend extends AbstractBackend {
-
-	public ManagedBackend(RuntimeInfo info) throws BackendException {
-		super(info);
-	}
+public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
 	Process fRuntime;
+	private Backend backend;
 
-	@Override
+	public ManagedLauncher() {
+	}
+
+	public void setBackend(Backend backend) {
+		this.backend = backend;
+	}
+
 	public void connect() {
-		doConnect(getName());
+		backend.doConnect(backend.getName());
 	}
 
 	public void stop() {
@@ -43,16 +33,10 @@ public class ManagedBackend extends AbstractBackend {
 		}
 	}
 
-	/**
-	 * Method dispose
-	 */
-	@Override
 	public void dispose() {
 		stop();
-		super.dispose();
 	}
 
-	@Override
 	public void initializeRuntime(ILaunch launch) {
 		startRuntime(launch);
 	}
@@ -61,14 +45,15 @@ public class ManagedBackend extends AbstractBackend {
 	private ErtsProcess erts;
 
 	private void startRuntime(ILaunch launch) {
-		if (getInfo() == null) {
+		final RuntimeInfo info = backend.getInfo();
+		if (info == null) {
 			return;
 		}
 
-		String cmd = getInfo().getCmdLine();
+		String cmd = info.getCmdLine();
 
 		ErlLogger.debug("START node :> " + cmd);
-		final File workingDirectory = new File(getInfo().getWorkingDir());
+		final File workingDirectory = new File(info.getWorkingDir());
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
 			Runnable watcher = new Runnable() {
@@ -79,7 +64,7 @@ public class ManagedBackend extends AbstractBackend {
 						ErlLogger
 								.error(
 										"Backend runtime %s terminated with exit code %d.",
-										getInfo().getNodeName(), v);
+										info.getNodeName(), v);
 					} catch (InterruptedException e) {
 						ErlLogger.warn("ide backend watcher was interrupted");
 					}
@@ -88,8 +73,8 @@ public class ManagedBackend extends AbstractBackend {
 			new Thread(watcher).start();
 
 			if (launch != null) {
-				erts = new ErtsProcess(launch, fRuntime, getInfo()
-						.getNodeName(), null);
+				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
+						null);
 				launch.addProcess(erts);
 			}
 		} catch (final IOException e) {
@@ -97,7 +82,6 @@ public class ManagedBackend extends AbstractBackend {
 		}
 
 		// streamsProxy = new StreamsProxy(fRuntime, null);
-		fShellManager = new BackendShellManager(this);
 	}
 
 }

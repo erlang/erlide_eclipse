@@ -30,9 +30,8 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErlRpcMessageListener;
-import org.erlide.runtime.backend.internal.AbstractBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -51,7 +50,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public static final int INTERPRETED_MODULES_CHANGED = 0;
 
 	private final List<ErlangProcess> fProcesses;
-	final ExecutionBackend fBackend;
+	final Backend fBackend;
 	private final ILaunch fLaunch;
 	private boolean fDisconnected = false;
 	// private final DebuggerListener fDbgListener;
@@ -67,7 +66,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	// private final WaitingForDebuggerListener waiter;
 
-	public ErlangDebugTarget(final ILaunch launch, final ExecutionBackend b,
+	public ErlangDebugTarget(final ILaunch launch, final Backend b,
 			final Collection<IProject> projects, final int debugFlags) {
 		super(null);
 		fBackend = b;
@@ -77,7 +76,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fProcesses = new ArrayList<ErlangProcess>();
 		interpretedModules = new HashSet<String>();
 
-		((AbstractBackend) b).addErlRpcMessageListener(this);
+		b.addErlRpcMessageListener(this);
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
@@ -261,7 +260,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return null;
 	}
 
-	public ExecutionBackend getBackend() {
+	public Backend getBackend() {
 		return fBackend;
 	}
 

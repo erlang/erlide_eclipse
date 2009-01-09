@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend.internal;
+package org.erlide.runtime.backend;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,19 +29,12 @@ import org.erlide.jinterface.rpc.Signature;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.ErlRpcDaemon;
-import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.BackendEventListener;
-import org.erlide.runtime.backend.ErlRpcMessageListener;
-import org.erlide.runtime.backend.IdeBackend;
-import org.erlide.runtime.backend.RpcResult;
-import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
+import org.erlide.runtime.backend.internal.CodeManager;
+import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -60,8 +53,7 @@ import erlang.ErlideBackend;
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public abstract class AbstractBackend extends OtpNodeStatus implements
-		IdeBackend, BuildBackend, ExecutionBackend, IDisposable {
+public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "250"));
@@ -83,10 +75,12 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
 	private ErlRpcDaemon rpcDaemon;
+	private RuntimeLauncher launcher;
 
 	private boolean trapexit;
 
-	public AbstractBackend(final RuntimeInfo info) throws BackendException {
+	public Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
+			throws BackendException {
 		if (info == null) {
 			throw new BackendException(
 					"Can't create backend without runtime information");
@@ -95,16 +89,20 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
 		fInfo = info;
+		this.launcher = launcher;
+		this.launcher.setBackend(this);
 	}
 
-	public abstract void connect();
+	public void connect() {
+		launcher.connect();
+	}
 
 	public boolean ping() {
 		return fNode.ping(fPeer, 500);
 	}
 
 	@SuppressWarnings("boxing")
-	protected void doConnect(final String label) {
+	public void doConnect(final String label) {
 		ErlLogger.debug("connect to:: '" + label + "' "
 				+ Thread.currentThread());
 		// Thread.dumpStack();
@@ -158,9 +156,11 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		if (fNode != null) {
 			fNode.close();
 		}
-
 		if (fShellManager instanceof IDisposable) {
 			((IDisposable) fShellManager).dispose();
+		}
+		if (launcher instanceof IDisposable) {
+			((IDisposable) launcher).dispose();
 		}
 		getRpcDaemon().stop();
 	}
@@ -295,7 +295,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 * @param event
 	 *            String
 	 * @param l
-	 *            IBackendEventListener
+	 *            BackendEventListener
 	 */
 	public void addEventListener(final String event,
 			final BackendEventListener l) {
@@ -315,7 +315,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	 * @param event
 	 *            String
 	 * @param l
-	 *            IBackendEventListener
+	 *            BackendEventListener
 	 */
 	public void removeEventListener(final String event,
 			final BackendEventListener l) {
@@ -532,7 +532,7 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.runtime.backend.IBackend#getInfo()
+	 * @see org.erlide.runtime.backend.Backend#getInfo()
 	 */
 	public RuntimeInfo getInfo() {
 		return fInfo;
@@ -545,7 +545,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 		return fInfo.getNodeName();
 	}
 
-	public abstract void initializeRuntime(ILaunch launch);
+	public void initializeRuntime(ILaunch launch) {
+		launcher.initializeRuntime(launch);
+		fShellManager = new BackendShellManager(this);
+	}
 
 	public void setRemoteRex(final OtpErlangPid watchdog) {
 		try {
@@ -598,18 +601,6 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 				direction, info));
 	}
 
-	public IdeBackend asIDE() {
-		return this;
-	}
-
-	public BuildBackend asBuild() {
-		return this;
-	}
-
-	public ExecutionBackend asExecution() {
-		return this;
-	}
-
 	public void setDebug(final boolean b) {
 		fDebug = b;
 	}
@@ -650,6 +641,10 @@ public abstract class AbstractBackend extends OtpNodeStatus implements
 
 	public boolean getTrapExit() {
 		return trapexit;
+	}
+
+	public void stop() {
+		launcher.stop();
 	}
 
 }

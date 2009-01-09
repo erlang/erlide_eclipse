@@ -5,13 +5,13 @@ import java.util.List;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
-	public static OtpErlangObject getProposalsWithDoc(final IdeBackend b,
+	public static OtpErlangObject getProposalsWithDoc(final Backend b,
 			final String mod, final String prefix, final String stateDir) {
 		OtpErlangObject res = null;
 		try {
@@ -25,7 +25,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static OtpErlangObject getModules(final IdeBackend b,
+	public static OtpErlangObject getModules(final Backend b,
 			final String prefix, final List<String> projectModules) {
 		OtpErlangObject res = null;
 		try {
@@ -40,7 +40,7 @@ public class ErlideDoc {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject getDocFromScan(final IdeBackend b,
+	public static OtpErlangObject getDocFromScan(final Backend b,
 			final int offset, final String stateDir, final String module,
 			final List<IErlImport> imports) {
 		OtpErlangObject res = null;
@@ -56,7 +56,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static String getOtpDocLoation(final IdeBackend b) {
+	public static String getOtpDocLoation(final Backend b) {
 		OtpErlangObject res = null;
 		// try {
 		// // commented out since target doesn't exist

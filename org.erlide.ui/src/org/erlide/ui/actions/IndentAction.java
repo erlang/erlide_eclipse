@@ -9,7 +9,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
@@ -56,7 +56,7 @@ public class IndentAction extends ErlangTextEditorAction {
 
 		final Map<String, String> prefs = IndentationPreferencePage
 				.getKeysAndPrefs();
-		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final OtpErlangObject r1 = ErlideIndent.indentLines(b, selection
 				.getOffset(), text, tabw, prefs);
 		return r1;

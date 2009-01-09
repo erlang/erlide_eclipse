@@ -14,15 +14,15 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 
 public class BackendShellManager implements IShellManager, IDisposable {
 
 	private final HashMap<String, BackendShell> fShells;
 
-	private final IBackend fBackend;
+	private final Backend fBackend;
 
-	public BackendShellManager(IBackend backend) {
+	public BackendShellManager(Backend backend) {
 		fBackend = backend;
 		fShells = new HashMap<String, BackendShell>(5);
 	}

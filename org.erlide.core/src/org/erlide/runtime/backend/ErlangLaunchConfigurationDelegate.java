@@ -139,13 +139,13 @@ public class ErlangLaunchConfigurationDelegate extends
 				options.add(BackendOptions.AUTOSTART);
 			}
 
-			final IBackend b = ErlangCore.getBackendManager().create(rt,
+			final Backend b = ErlangCore.getBackendManager().create(rt,
 					options, launch);
 			if (b == null) {
 				ErlLogger.error("Launch: got null backend!");
 				return;
 			}
-			final ExecutionBackend backend = b.asExecution();
+			final Backend backend = b;
 
 			// launch.addProcess(null);
 			backend.registerProjects(projects);
@@ -241,7 +241,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		return result;
 	}
 
-	private void distributeDebuggerCode(final ExecutionBackend backend) {
+	private void distributeDebuggerCode(final Backend backend) {
 		final String debuggerModules[] = { "erlide_dbg_debugged",
 				"erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
 				"erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
@@ -269,7 +269,7 @@ public class ErlangLaunchConfigurationDelegate extends
 	 *            the execution backend
 	 * @return
 	 */
-	private OtpErlangBinary getBeam(final String module, final IBackend backend) {
+	private OtpErlangBinary getBeam(final String module, final Backend backend) {
 		final Bundle b = ErlangPlugin.getDefault().getBundle();
 		final String beamname = module + ".beam";
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
@@ -313,9 +313,9 @@ public class ErlangLaunchConfigurationDelegate extends
 		return null;
 	}
 
-	public static void interpret(final ExecutionBackend backend,
-			final String project, final String module,
-			final boolean distributed, final boolean interpret) {
+	public static void interpret(final Backend backend, final String project,
+			final String module, final boolean distributed,
+			final boolean interpret) {
 		final IErlProject eprj = ErlangCore.getModel()
 				.getErlangProject(project);
 		final IProject iprj = eprj.getProject();

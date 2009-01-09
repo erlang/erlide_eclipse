@@ -29,11 +29,11 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 	// batch at most this many messages at once
 	protected static final int MAX_RECEIVED = 10;
 
-	IBackend fBackend = null;
+	Backend fBackend = null;
 
 	boolean fStopJob = false;
 
-	public ErlRpcDaemon(final IBackend b) {
+	public ErlRpcDaemon(final Backend b) {
 		fBackend = b;
 	}
 
@@ -92,10 +92,10 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 		fStopJob = true;
 	}
 
-	public void backendAdded(final IBackend b) {
+	public void backendAdded(final Backend b) {
 	}
 
-	public void backendRemoved(final IBackend b) {
+	public void backendRemoved(final Backend b) {
 		if (b == fBackend) {
 			stop();
 		}

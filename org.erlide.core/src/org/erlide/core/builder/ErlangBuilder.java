@@ -53,8 +53,7 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -179,7 +178,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	private void checkForClashes() throws BackendException {
-		final BuildBackend b = ErlangCore.getBackendManager().getBuildBackend(
+		final Backend b = ErlangCore.getBackendManager().getBuildBackend(
 				getProject());
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
@@ -447,7 +446,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 							.removeFileExtension().lastSegment();
 					// final OtpErlangBinary code = (OtpErlangBinary) t
 					// .elementAt(2);
-					// for (IBackend b :
+					// for (Backend b :
 					// BackendManager.getDefault().getExecution(
 					// project)) {
 					// distributeModule(b, beamf, code);
@@ -691,7 +690,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	}
 
 	@SuppressWarnings("unused")
-	private static void distributeModule(final IBackend b, final String beamf,
+	private static void distributeModule(final Backend b, final String beamf,
 			final OtpErlangBinary code) {
 		if (b == null) {
 			return;

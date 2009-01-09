@@ -39,20 +39,18 @@ import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.internal.AbstractBackend;
-import org.erlide.runtime.backend.internal.ManagedBackend;
-import org.erlide.runtime.backend.internal.StandaloneBackend;
+import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager implements IEpmdListener {
 
-	private volatile IdeBackend fLocalBackend;
+	private volatile Backend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
-	private final Map<IProject, BuildBackend> fBuildBackends;
+	private final Map<IProject, Backend> fBuildBackends;
 	private final Object fBuildBackendsLock = new Object();
-	private final Map<IProject, Set<ExecutionBackend>> fExecutionBackends;
+	private final Map<IProject, Set<Backend>> fBackends;
 	protected List<BackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
@@ -77,8 +75,8 @@ public final class BackendManager implements IEpmdListener {
 
 	private BackendManager() {
 		fLocalBackend = null;
-		fBuildBackends = new HashMap<IProject, BuildBackend>();
-		fExecutionBackends = new HashMap<IProject, Set<ExecutionBackend>>();
+		fBuildBackends = new HashMap<IProject, Backend>();
+		fBackends = new HashMap<IProject, Set<Backend>>();
 		fListeners = new ArrayList<BackendListener>();
 		fPlugins = new ArrayList<ICodeBundle>();
 
@@ -106,23 +104,25 @@ public final class BackendManager implements IEpmdListener {
 		return fUniqueId;
 	}
 
-	public IBackend create(final RuntimeInfo info,
+	public Backend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, ILaunch launch)
 			throws BackendException {
 
 		String nodeName = info.getNodeName();
 		boolean exists = findRunningNode(nodeName);
-		AbstractBackend b = null;
+		Backend b = null;
 
 		boolean isRemoteNode = nodeName.contains("@");
 		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
-			b = new StandaloneBackend(info);
+			b = new Backend(info, RuntimeLauncherFactory
+					.createStandaloneLauncher());
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
-			b = new ManagedBackend(info);
+			b = new Backend(info, RuntimeLauncherFactory
+					.createManagedLauncher());
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
@@ -138,7 +138,7 @@ public final class BackendManager implements IEpmdListener {
 		return b;
 	}
 
-	public BuildBackend getBuildBackend(final IProject project)
+	public Backend getBuildBackend(final IProject project)
 			throws BackendException {
 		synchronized (fBuildBackendsLock) {
 			final RuntimeInfo info = getRuntimeInfo(project);
@@ -149,7 +149,7 @@ public final class BackendManager implements IEpmdListener {
 					throw new BackendException(
 							"IDE backend is not created - check configuration!");
 				}
-				return fLocalBackend.asBuild();
+				return fLocalBackend;
 			}
 			final String ideName = ErlangCore.getBackendManager()
 					.getIdeBackend().getInfo().getNodeName();
@@ -160,10 +160,10 @@ public final class BackendManager implements IEpmdListener {
 					throw new BackendException(
 							"IDE backend is not created - check configuration!");
 				}
-				return fLocalBackend.asBuild();
+				return fLocalBackend;
 			}
 
-			BuildBackend b = fBuildBackends.get(project);
+			Backend b = fBuildBackends.get(project);
 			if (b != null && !b.ping()) {
 				fBuildBackends.remove(info.getName());
 				fireUpdate(b, BackendEvent.REMOVED);
@@ -174,8 +174,7 @@ public final class BackendManager implements IEpmdListener {
 					info.setNodeName(project.getName());
 				}
 				try {
-					b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null)
-							.asBuild();
+					b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
 				} catch (BackendException e) {
 					// info can't be null here
 				}
@@ -186,13 +185,12 @@ public final class BackendManager implements IEpmdListener {
 		}
 	}
 
-	synchronized public Set<ExecutionBackend> getExecution(
-			final IProject project) {
-		Set<ExecutionBackend> bs = fExecutionBackends.get(project);
+	synchronized public Set<Backend> getExecution(final IProject project) {
+		Set<Backend> bs = fBackends.get(project);
 		if (bs == null) {
 			return Collections.emptySet();
 		}
-		return new HashSet<ExecutionBackend>(bs);
+		return new HashSet<Backend>(bs);
 	}
 
 	public static RuntimeInfo getRuntimeInfo(final IProject project) {
@@ -212,7 +210,7 @@ public final class BackendManager implements IEpmdListener {
 		 */
 	}
 
-	public IdeBackend getIdeBackend() {
+	public Backend getIdeBackend() {
 		if (fLocalBackend == null) {
 			synchronized (fLocalBackendLock) {
 				if (fLocalBackend == null) {
@@ -229,9 +227,8 @@ public final class BackendManager implements IEpmdListener {
 										+ getErlideNameSuffix());
 							}
 							erlideRuntime.setCookie("erlide");
-							fLocalBackend = create(erlideRuntime,
-									EnumSet.of(BackendOptions.AUTOSTART), null)
-									.asIDE();
+							fLocalBackend = create(erlideRuntime, EnumSet
+									.of(BackendOptions.AUTOSTART), null);
 						} catch (BackendException e) {
 							// erlideRuntime can't be null here
 						}
@@ -254,7 +251,7 @@ public final class BackendManager implements IEpmdListener {
 		fListeners.remove(listener);
 	}
 
-	private void fireUpdate(final IBackend b, final BackendEvent type) {
+	private void fireUpdate(final Backend b, final BackendEvent type) {
 		new BackendChangeNotifier().notify(b, type);
 	}
 
@@ -267,7 +264,7 @@ public final class BackendManager implements IEpmdListener {
 
 		private BackendEvent fType;
 
-		private IBackend fChanged;
+		private Backend fChanged;
 
 		/*
 		 * (non-Javadoc)
@@ -302,7 +299,7 @@ public final class BackendManager implements IEpmdListener {
 		/**
 		 * Notifies the given listener of the adds/removes
 		 */
-		public void notify(final IBackend b, final BackendEvent type) {
+		public void notify(final Backend b, final BackendEvent type) {
 			if (fListeners == null) {
 				return;
 			}
@@ -319,17 +316,17 @@ public final class BackendManager implements IEpmdListener {
 		}
 	}
 
-	public IBackend[] getAllBackends() {
+	public Backend[] getAllBackends() {
 		synchronized (fBuildBackendsLock) {
 			final Object[] ob = fBuildBackends.values().toArray();
-			Set<ExecutionBackend> ebs = new HashSet<ExecutionBackend>();
-			for (Set<ExecutionBackend> b : fExecutionBackends.values()) {
+			Set<Backend> ebs = new HashSet<Backend>();
+			for (Set<Backend> b : fBackends.values()) {
 				ebs.addAll(b);
 			}
 			final Object[] eb = ebs.toArray();
-			IdeBackend b = getIdeBackend();
+			Backend b = getIdeBackend();
 			int x = (b == null) ? 0 : 1;
-			final IBackend[] res = new IBackend[ob.length + eb.length + x];
+			final Backend[] res = new Backend[ob.length + eb.length + x];
 			System.arraycopy(ob, 0, res, 0, ob.length);
 			System.arraycopy(eb, 0, res, ob.length, eb.length);
 			if (b != null) {
@@ -347,7 +344,7 @@ public final class BackendManager implements IEpmdListener {
 				fLocalBackend.checkCodePath();
 			}
 			forEachProjectBackend(new BackendVisitor() {
-				public void run(final IBackend b) {
+				public void run(final Backend b) {
 					b.getCodeManager().register(p);
 					b.checkCodePath();
 				}
@@ -361,7 +358,7 @@ public final class BackendManager implements IEpmdListener {
 			fLocalBackend.getCodeManager().unregister(p);
 		}
 		forEachProjectBackend(new BackendVisitor() {
-			public void run(final IBackend b) {
+			public void run(final Backend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
@@ -369,7 +366,7 @@ public final class BackendManager implements IEpmdListener {
 
 	public void forEachProjectBackend(final BackendVisitor visitor) {
 		synchronized (fBuildBackendsLock) {
-			for (final IBackend b : fBuildBackends.values()) {
+			for (final Backend b : fBuildBackends.values()) {
 				try {
 					visitor.run(b);
 				} catch (final Exception e) {
@@ -409,7 +406,7 @@ public final class BackendManager implements IEpmdListener {
 		for (final String b : started) {
 			String name = b + "@" + host;
 			ErlLogger.info("(epmd) started: '%s'", name);
-			for (final IBackend bb : getAllBackends()) {
+			for (final Backend bb : getAllBackends()) {
 				if (bb != null) {
 					((OtpNodeStatus) bb).remoteStatus(name, true, null);
 				}
@@ -418,7 +415,7 @@ public final class BackendManager implements IEpmdListener {
 		for (final String b : stopped) {
 			String name = b + "@" + host;
 			ErlLogger.info("(epmd) stopped: '%s'", name);
-			for (final IBackend bb : getAllBackends()) {
+			for (final Backend bb : getAllBackends()) {
 				if (bb != null) {
 					((OtpNodeStatus) bb).remoteStatus(name, false, null);
 				}
@@ -427,21 +424,20 @@ public final class BackendManager implements IEpmdListener {
 
 	}
 
-	synchronized public void addExecution(IProject project, ExecutionBackend b) {
-		Set<ExecutionBackend> list = fExecutionBackends.get(project);
+	synchronized public void addExecution(IProject project, Backend b) {
+		Set<Backend> list = fBackends.get(project);
 		if (list == null) {
-			list = new HashSet<ExecutionBackend>();
-			fExecutionBackends.put(project, list);
+			list = new HashSet<Backend>();
+			fBackends.put(project, list);
 		}
 		list.add(b);
 	}
 
-	synchronized public void removeExecution(IProject project,
-			ExecutionBackend b) {
-		Set<ExecutionBackend> list = fExecutionBackends.get(project);
+	synchronized public void removeExecution(IProject project, Backend b) {
+		Set<Backend> list = fBackends.get(project);
 		if (list == null) {
-			list = new HashSet<ExecutionBackend>();
-			fExecutionBackends.put(project, list);
+			list = new HashSet<Backend>();
+			fBackends.put(project, list);
 		}
 		list.remove(b);
 	}
@@ -466,9 +462,9 @@ public final class BackendManager implements IEpmdListener {
 
 	public void remoteNodeStatus(String node, boolean up, Object info) {
 		if (!up) {
-			for (Entry<IProject, Set<ExecutionBackend>> e : fExecutionBackends
+			for (Entry<IProject, Set<Backend>> e : fBackends
 					.entrySet()) {
-				for (ExecutionBackend be : e.getValue()) {
+				for (Backend be : e.getValue()) {
 					String bnode = be.getInfo().getNodeName();
 					if (buildNodeName(bnode).equals(node)) {
 						removeExecution(e.getKey(), be);

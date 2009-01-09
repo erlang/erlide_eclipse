@@ -34,7 +34,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -631,7 +631,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			return "(" + rr + ")";
 		} else if (e instanceof OtpErlangTuple) {
 			try {
-				final IdeBackend b = ErlangCore.getBackendManager()
+				final Backend b = ErlangCore.getBackendManager()
 						.getIdeBackend();
 				return ErlideBackend.prettyPrint(b, e);
 			} catch (final Exception e1) {

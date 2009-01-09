@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -67,7 +67,7 @@ public class Activator extends AbstractUIPlugin {
 
 			ErlLogger.debug("Wrangler beam files found at: " + wranglerPath);
 
-			IdeBackend mb = BackendManager.getDefault().getIdeBackend();
+			Backend mb = BackendManager.getDefault().getIdeBackend();
 
 			ErlLogger.debug("Managed backend found:" + mb.getJavaNodeName());
 

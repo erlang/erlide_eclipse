@@ -267,7 +267,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			scratch += '.';
 		}
 
-		// FIXME IBackend
+		// FIXME Backend
 		final BackendEvalResult r = ErlideBackend
 				.eval(null, scratch, fBindings);
 
@@ -285,7 +285,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 				break;
 			}
 		} else {
-			// FIXME IBackend
+			// FIXME Backend
 			final String msg = ErlideBackend.format(null, "~p", r
 					.getErrorReason());
 			showError("Evaluation failed. Reason: \n" + msg);
@@ -327,7 +327,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	}
 
 	protected void displayResult(final OtpErlangObject result) {
-		// FIXME IBackend
+		// FIXME Backend
 		final String message = ErlideBackend.format(null, "~p", result);// result.toString();
 		try {
 			getSourceViewer().getDocument().replace(fScratchEnd, 0, message);

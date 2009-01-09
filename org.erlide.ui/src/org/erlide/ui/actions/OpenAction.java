@@ -45,7 +45,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -293,7 +293,7 @@ public class OpenAction extends SelectionDispatchAction {
 		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
 				.getActiveEditor();
 		final IErlModule module = editor.getModule();
-		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();

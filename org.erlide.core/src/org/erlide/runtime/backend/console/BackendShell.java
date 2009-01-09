@@ -11,7 +11,7 @@
 package org.erlide.runtime.backend.console;
 
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -22,10 +22,10 @@ import erlang.ErlideReshd;
 
 public class BackendShell {
 
-	private final IBackend fBackend;
+	private final Backend fBackend;
 	private OtpErlangPid server;
 
-	public BackendShell(IBackend backend, String id) {
+	public BackendShell(Backend backend, String id) {
 		fBackend = backend;
 		// fId = id;
 

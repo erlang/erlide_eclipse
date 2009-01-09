@@ -37,8 +37,8 @@ import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IdeBackend;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -393,7 +393,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void disposeParser() {
-		final IdeBackend b = BackendManager.getDefault().getIdeBackend();
+		final Backend b = BackendManager.getDefault().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
 	}
 

@@ -19,7 +19,7 @@ import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -132,7 +132,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	protected OtpErlangObject callErlang(final ITextSelection aSelection,
 			final String aText) throws Exception {
-		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final OtpErlangObject r1 = ErlideBackend.call(b, fErlModule,
 				fErlFunction, aSelection.getOffset(), aText);
 		return r1;

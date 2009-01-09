@@ -44,7 +44,7 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -732,7 +732,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 							element);
 					final String path = element.getLocation().append(
 							prefs.getOutputDir()).toString();
-					final IdeBackend b = ErlangCore.getBackendManager()
+					final Backend b = ErlangCore.getBackendManager()
 							.getIdeBackend();
 					if (b != null) {
 						b.addPath(prefs.getUsePathZ(), path);

@@ -50,8 +50,8 @@ import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -123,7 +123,7 @@ public class ErlModelUtils {
 	}
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
-			final IdeBackend b, final IProject project,
+			final Backend b, final IProject project,
 			final IErlModule module, final IErlElement.Kind kind,
 			final String externalIncludes, final List<Tuple> pathVars) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
@@ -163,7 +163,7 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
+	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind type,
 			final String externalIncludes, final List<Tuple> pathVars) {
@@ -186,7 +186,7 @@ public class ErlModelUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static IErlPreprocessorDef findPreprocessorDef(final IdeBackend b,
+	private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, IErlModule m, final String definedName,
 			final IErlElement.Kind type, final String externalIncludes,
 			final List<Tuple> pathVars, final List<IErlModule> modulesDone)
@@ -242,7 +242,7 @@ public class ErlModelUtils {
 	 * @return
 	 * @throws CoreException
 	 */
-	private static List<IErlModule> getModulesWithIncludes(final IdeBackend b,
+	private static List<IErlModule> getModulesWithIncludes(final Backend b,
 			final IProject project, final IErlModule m,
 			final String externalIncludes, final List<Tuple> pathVars,
 			final List<IErlModule> modulesFound) throws CoreException {
@@ -292,7 +292,7 @@ public class ErlModelUtils {
 	 * @throws ErlModelException
 	 * @throws PartInitException
 	 */
-	public static boolean openPreprocessorDef(final IdeBackend b,
+	public static boolean openPreprocessorDef(final Backend b,
 			final IProject project, final IWorkbenchPage page, IErlModule m,
 			final String definedName, final IErlElement.Kind type,
 			final String externalIncludes, final List<Tuple> pathVars,
@@ -523,7 +523,7 @@ public class ErlModelUtils {
 		return result;
 	}
 
-	public static List<String> getExternalModules(final IdeBackend b,
+	public static List<String> getExternalModules(final Backend b,
 			final String prefix, final String externalModules,
 			final List<Tuple> pathVars) {
 		return ErlideOpen.getExternalModules(b, prefix, externalModules,

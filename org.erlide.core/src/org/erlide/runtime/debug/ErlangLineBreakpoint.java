@@ -18,7 +18,7 @@ import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideDebug;
 
@@ -62,7 +62,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	}
 
 	private void createRequest(final int request) {
-		final IBackend b = target.getBackend();
+		final Backend b = target.getBackend();
 		int line = -1;
 		try {
 			line = getLineNumber();

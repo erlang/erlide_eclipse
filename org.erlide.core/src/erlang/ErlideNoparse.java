@@ -18,7 +18,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -33,7 +33,7 @@ public class ErlideNoparse {
 
 	private static final String ERLIDE_NOPARSE = "erlide_noparse";
 
-	public static OtpErlangTuple initialParse(final IdeBackend b,
+	public static OtpErlangTuple initialParse(final Backend b,
 			final String scannerModuleName, final String moduleFileName,
 			final String initialText, final String stateDir,
 			final String erlidePath) {
@@ -50,7 +50,7 @@ public class ErlideNoparse {
 		return res;
 	}
 
-	public static OtpErlangTuple reparse(final IdeBackend b,
+	public static OtpErlangTuple reparse(final Backend b,
 			final String scannerModuleName) {
 		OtpErlangTuple res = null;
 		try {
@@ -64,7 +64,7 @@ public class ErlideNoparse {
 		return res;
 	}
 
-	public static void destroy(final IdeBackend b, final String module) {
+	public static void destroy(final Backend b, final String module) {
 		try {
 			b.rpcx(ERLIDE_NOPARSE, "destroy", "a", module);
 		} catch (final Exception e) {
@@ -91,7 +91,7 @@ public class ErlideNoparse {
 	}
 
 	@SuppressWarnings("boxing")
-	public static List<ErlangExternalFunctionCallRef> find(final IdeBackend b,
+	public static List<ErlangExternalFunctionCallRef> find(final Backend b,
 			final ErlangExternalFunctionCallRef ref) {
 		try {
 			final OtpErlangList res = (OtpErlangList) b.rpcx(ERLIDE_NOPARSE,

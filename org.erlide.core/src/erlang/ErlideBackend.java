@@ -3,11 +3,8 @@ package erlang;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendEvalResult;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.ExecutionBackend;
-import org.erlide.runtime.backend.IBackend;
-import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
@@ -23,7 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
-	public static void init(final IdeBackend backend, final String javaNode) {
+	public static void init(final Backend backend, final String javaNode) {
 		try {
 			backend.rpcx("erlide_backend", "init", "a", javaNode);
 		} catch (final Exception e) {
@@ -31,7 +28,7 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String format_error(final IdeBackend b,
+	public static String format_error(final Backend b,
 			final OtpErlangObject object) {
 		final OtpErlangTuple err = (OtpErlangTuple) object;
 		final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
@@ -49,7 +46,7 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static String format(final IdeBackend b, final String fmt,
+	public static String format(final Backend b, final String fmt,
 			final OtpErlangObject... args) {
 		try {
 			final String r = b
@@ -69,8 +66,8 @@ public class ErlideBackend {
 	 * @return OtpErlangobject
 	 * @throws ErlangParseException
 	 */
-	public static OtpErlangObject parseTerm(final IdeBackend b,
-			final String string) throws ErlangParseException {
+	public static OtpErlangObject parseTerm(final Backend b, final String string)
+			throws ErlangParseException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = b.rpcx("erlide_backend", "parse_term", "s", string);
@@ -91,7 +88,7 @@ public class ErlideBackend {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static OtpErlangObject scanString(final IdeBackend b,
+	public static OtpErlangObject scanString(final Backend b,
 			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
@@ -113,7 +110,7 @@ public class ErlideBackend {
 	 * @return
 	 * @throws BackendException
 	 */
-	public static OtpErlangObject parseString(final IBackend b,
+	public static OtpErlangObject parseString(final Backend b,
 			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
@@ -130,7 +127,7 @@ public class ErlideBackend {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
-	public static String prettyPrint(final IBackend b, final String text)
+	public static String prettyPrint(final Backend b, final String text)
 			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
@@ -147,8 +144,8 @@ public class ErlideBackend {
 	 * @param bindings
 	 * @return
 	 */
-	public static BackendEvalResult eval(final ExecutionBackend b,
-			final String string, final OtpErlangObject bindings) {
+	public static BackendEvalResult eval(final Backend b, final String string,
+			final OtpErlangObject bindings) {
 		final BackendEvalResult result = new BackendEvalResult();
 		OtpErlangObject r1;
 		try {
@@ -173,7 +170,7 @@ public class ErlideBackend {
 		return result;
 	}
 
-	public static void generateRpcStub(final BuildBackend b, final String s) {
+	public static void generateRpcStub(final Backend b, final String s) {
 		// try {
 		// final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 		// if (!r.isOk()) {
@@ -184,7 +181,7 @@ public class ErlideBackend {
 		// }
 	}
 
-	public static boolean loadBeam(final IBackend backend,
+	public static boolean loadBeam(final Backend backend,
 			final String moduleName, final OtpErlangBinary bin) {
 		OtpErlangObject r = null;
 		try {
@@ -217,7 +214,7 @@ public class ErlideBackend {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject call(final IdeBackend b, final String module,
+	public static OtpErlangObject call(final Backend b, final String module,
 			final String fun, final int offset, final String text)
 			throws BackendException, RpcException {
 		try {
@@ -228,7 +225,7 @@ public class ErlideBackend {
 		}
 	}
 
-	public static OtpErlangObject concreteSyntax(final IBackend b,
+	public static OtpErlangObject concreteSyntax(final Backend b,
 			final OtpErlangObject val) throws BackendException, RpcException {
 		try {
 			return b.rpcx("erlide_syntax", "concrete", "x", val);
@@ -237,7 +234,7 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String getScriptId(final IBackend b)
+	public static String getScriptId(final Backend b)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject r;
 		r = b.rpcx("init", "script_id", "");
@@ -250,14 +247,14 @@ public class ErlideBackend {
 		return "";
 	}
 
-	public static String prettyPrint(final IdeBackend b, final OtpErlangObject e)
+	public static String prettyPrint(final Backend b, final OtpErlangObject e)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject p = b.rpcx("erlide_pp", "expr", "x", e);
 		p = b.rpcx("lists", "flatten", null, p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
-	public static OtpErlangObject convertErrors(final BuildBackend b,
+	public static OtpErlangObject convertErrors(final Backend b,
 			final String lines) throws ErlangRpcException, BackendException,
 			RpcException {
 		OtpErlangObject res;
@@ -265,8 +262,7 @@ public class ErlideBackend {
 		return res;
 	}
 
-	public static void startTracer(final ExecutionBackend b,
-			final OtpErlangPid tracer) {
+	public static void startTracer(final Backend b, final OtpErlangPid tracer) {
 		try {
 			ErlLogger.debug("Start tracer to %s", tracer);
 			b.rpcx("erlide_backend", "start_tracer", "ps", tracer);
@@ -275,8 +271,7 @@ public class ErlideBackend {
 		}
 	}
 
-	public static void startTracer(final ExecutionBackend b,
-			final String logname) {
+	public static void startTracer(final Backend b, final String logname) {
 		try {
 			ErlLogger.debug("Start tracer to %s", logname);
 			b.rpcx("erlide_backend", "start_tracer", "s", logname);

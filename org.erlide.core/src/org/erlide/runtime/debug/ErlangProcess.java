@@ -20,7 +20,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -53,7 +53,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	private OtpErlangPid cachedMetaPid = null;
 
-	private final ExecutionBackend fBackend;
+	private final Backend fBackend;
 
 	private String fStatus;
 

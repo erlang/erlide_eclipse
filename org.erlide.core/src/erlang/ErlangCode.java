@@ -2,7 +2,7 @@ package erlang;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
@@ -18,7 +18,7 @@ public class ErlangCode {
 	private ErlangCode() {
 	}
 
-	public static boolean waitForCodeServer(final IBackend backend) {
+	public static boolean waitForCodeServer(final Backend backend) {
 		try {
 			OtpErlangObject r;
 			int i = 10;
@@ -41,7 +41,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void addPathA(final IBackend backend, final String path) {
+	public static void addPathA(final Backend backend, final String path) {
 		try {
 			backend.rpc("code", "add_patha", "s", path);
 		} catch (final Exception e) {
@@ -49,7 +49,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void addPathZ(final IBackend backend, final String path) {
+	public static void addPathZ(final Backend backend, final String path) {
 		try {
 			backend.rpc("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
@@ -57,7 +57,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathZ(final IBackend backend, String path) {
+	public static void removePathZ(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			final RpcResult rr = backend.rpc("filename", "join", "x",
@@ -72,7 +72,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static void removePathA(final IBackend backend, String path) {
+	public static void removePathA(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			final RpcResult rr = backend.rpc("filename", "join", "x",
@@ -87,7 +87,7 @@ public class ErlangCode {
 		}
 	}
 
-	public static RpcResult loadBinary(final IBackend b, final String beamf,
+	public static RpcResult loadBinary(final Backend b, final String beamf,
 			final OtpErlangBinary code) throws ErlangRpcException, RpcException {
 		RpcResult result;
 		try {
@@ -98,7 +98,7 @@ public class ErlangCode {
 		return result;
 	}
 
-	public static void delete(final IBackend fBackend, final String moduleName) {
+	public static void delete(final Backend fBackend, final String moduleName) {
 		try {
 			fBackend.rpc("code", "delete", "a", moduleName);
 		} catch (final Exception e) {

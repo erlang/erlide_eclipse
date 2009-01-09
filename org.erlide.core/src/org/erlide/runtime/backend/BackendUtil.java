@@ -49,18 +49,17 @@ public class BackendUtil {
 	 * @return OtpErlangObject
 	 * @throws ErlangEvalException
 	 */
-	public static BackendEvalResult eval(final ExecutionBackend b,
-			final String string) {
+	public static BackendEvalResult eval(final Backend b, final String string) {
 		return ErlideBackend.eval(b, string, null);
 	}
 
 	public static void generateRpcStub(final String className,
-			final boolean onlyDeclared, final BuildBackend b) {
+			final boolean onlyDeclared, final Backend b) {
 		generateRpcStub(RpcConverter.getClassByName(className), onlyDeclared, b);
 	}
 
 	public static void generateRpcStub(final Class<?> cls,
-			final boolean onlyDeclared, final BuildBackend b) {
+			final boolean onlyDeclared, final Backend b) {
 		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		ErlideBackend.generateRpcStub(b, s);
 	}

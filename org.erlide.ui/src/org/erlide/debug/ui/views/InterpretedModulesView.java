@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
-import org.erlide.runtime.backend.ExecutionBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugTarget;
@@ -177,7 +177,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
 					final String project = dti.getItem().getErlProject()
 							.getName();
 					final boolean interpret = checked;
-					final ExecutionBackend backend = erlangDebugTarget
+					final Backend backend = erlangDebugTarget
 							.getBackend();
 
 					if (erlangDebugTarget.getInterpretedModules().contains(

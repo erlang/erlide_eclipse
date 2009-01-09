@@ -11,8 +11,8 @@ package org.erlide.runtime.backend;
 
 public interface BackendListener {
 
-	public void backendAdded(IBackend b);
+	public void backendAdded(Backend b);
 
-	public void backendRemoved(IBackend b);
+	public void backendRemoved(Backend b);
 
 }

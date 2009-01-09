@@ -12,6 +12,6 @@ package org.erlide.runtime.backend;
 
 public interface BackendVisitor {
 
-	void run(IBackend b);
+	void run(Backend b);
 
 }

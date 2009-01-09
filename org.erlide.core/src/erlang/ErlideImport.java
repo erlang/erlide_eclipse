@@ -8,7 +8,7 @@ import java.util.List;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -29,7 +29,7 @@ public class ErlideImport {
 	 * 
 	 * @return
 	 */
-	public static ErlProjectImport importProject(IdeBackend b,
+	public static ErlProjectImport importProject(Backend b,
 			final String prefix, final List<String> importSources) {
 		OtpErlangObject res = null;
 		try {

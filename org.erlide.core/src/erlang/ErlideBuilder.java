@@ -7,8 +7,7 @@ import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.BuildBackend;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
@@ -20,8 +19,8 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final IProject project,
 			final String fn, final String output) {
 		try {
-			final BuildBackend b = ErlangCore.getBackendManager()
-					.getBuildBackend(project);
+			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
+					project);
 			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
 					30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
@@ -38,8 +37,8 @@ public class ErlideBuilder {
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		try {
-			final BuildBackend b = ErlangCore.getBackendManager()
-					.getBuildBackend(project);
+			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
+					project);
 			// FIXME add an option for the compiler options
 			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
 					outputdir, includedirs, new String[] { "debug_info" });
@@ -49,7 +48,7 @@ public class ErlideBuilder {
 		}
 	}
 
-	public static OtpErlangList getSourceClashes(final BuildBackend b,
+	public static OtpErlangList getSourceClashes(final Backend b,
 			final String[] dirList) throws ErlangRpcException,
 			BackendException, RpcException {
 		final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
@@ -57,7 +56,7 @@ public class ErlideBuilder {
 		return res;
 	}
 
-	public static OtpErlangList getCodeClashes(final BuildBackend b)
+	public static OtpErlangList getCodeClashes(final Backend b)
 			throws ErlangRpcException, BackendException, RpcException {
 		final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
 				"code_clash", null);
@@ -66,7 +65,7 @@ public class ErlideBuilder {
 
 	public static void loadModule(final IProject project, final String module) {
 		try {
-			for (IBackend b : ErlangCore.getBackendManager().getExecution(
+			for (Backend b : ErlangCore.getBackendManager().getExecution(
 					project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());

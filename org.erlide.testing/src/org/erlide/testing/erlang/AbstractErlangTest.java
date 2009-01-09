@@ -13,7 +13,7 @@ package org.erlide.testing.erlang;
 import static org.junit.Assert.fail;
 
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.IBackend;
+import org.erlide.runtime.backend.Backend;
 import org.junit.After;
 import org.junit.Before;
 
@@ -23,7 +23,7 @@ public abstract class AbstractErlangTest {
 
 	protected static final OtpErlangObject[] NO_ARGS = new OtpErlangObject[] {};
 
-	private IBackend fBackend;
+	private Backend fBackend;
 
 	@Before
 	public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public abstract class AbstractErlangTest {
 		fBackend = null;
 	}
 
-	protected IBackend getBackend() {
+	protected Backend getBackend() {
 		return fBackend;
 	}
 

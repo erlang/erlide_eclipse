@@ -20,7 +20,7 @@ import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
 import org.erlide.jinterface.ParserException;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -49,7 +49,7 @@ public class ErlParser {
 	public boolean parse(final IErlModule module, final String initialText,
 			final boolean initialParse, final String moduleFilePath,
 			final String erlidePath) {
-		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);

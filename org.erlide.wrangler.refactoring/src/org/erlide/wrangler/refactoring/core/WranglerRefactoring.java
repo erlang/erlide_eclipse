@@ -14,8 +14,8 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.IdeBackend;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.Activator;
@@ -41,7 +41,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	protected int column, line;
 	protected Change change;
 	protected RefactoringParameters parameters;
-	protected IdeBackend managedBackend;
+	protected Backend managedBackend;
 	protected String newName;
 
 	protected RPCMessage message;

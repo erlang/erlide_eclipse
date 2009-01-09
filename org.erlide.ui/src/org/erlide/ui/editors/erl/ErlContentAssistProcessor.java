@@ -41,7 +41,7 @@ import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.IdeBackend;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
@@ -77,7 +77,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
-		final IdeBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			final IDocument doc = viewer.getDocument();
 			final String aPrefix = lastText(doc, offset);
@@ -124,7 +124,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> recordFieldCompletions(
-			final IdeBackend b, final String recordName, final int offset,
+			final Backend b, final String recordName, final int offset,
 			final String aprefix, final int hashMarkPos) {
 		if (module == null) {
 			return null;
@@ -150,7 +150,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> moduleOrLocalCallCompletions(
-			final IdeBackend b, final int offset, final String aprefix,
+			final Backend b, final int offset, final String aprefix,
 			final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		final List<String> allErlangFiles = new ArrayList<String>();
@@ -221,7 +221,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	 * @return
 	 */
 	private List<ICompletionProposal> macroOrRecordCompletions(
-			final IdeBackend b, final int offset, final String aPrefix,
+			final Backend b, final int offset, final String aPrefix,
 			final Kind kind) {
 		if (module == null) {
 			return null;
@@ -242,7 +242,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> externalCallCompletions(
-			final IdeBackend b, final IErlProject project,
+			final Backend b, final IErlProject project,
 			final String moduleName, final int offset, final String aprefix,
 			final int k) throws ErlangRpcException, BackendException,
 			RpcException, OtpErlangRangeException {
