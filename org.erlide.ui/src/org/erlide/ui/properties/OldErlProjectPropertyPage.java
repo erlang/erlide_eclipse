@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
-import java.util.Arrays;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.PreferencePage;
@@ -272,13 +270,27 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
-		final String rt = prefs.getRuntimeName();
+		String rt = prefs.getRuntimeName();
+		int db = -1;
 		if (rt != null) {
-			final int db = Arrays.binarySearch(runtimes, rt);
-			runtimeName.select(db);
+			db = 0;
+			for (String info : runtimes) {
+				if (info.equals(rt)) {
+					break;
+				}
+				db++;
+			}
 		} else if (defaultRuntime != null) {
-			final int db = Arrays.binarySearch(runtimes, defaultRuntime
-					.getName());
+			rt = defaultRuntime.getName();
+			db = 0;
+			for (String info : runtimes) {
+				if (info.equals(rt)) {
+					break;
+				}
+				db++;
+			}
+		}
+		if (db >= 0 && db < runtimes.length) {
 			runtimeName.select(db);
 		}
 		if (ErlideUtil.isTest()) {
@@ -363,9 +375,16 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getDefaultRuntime();
 		runtimeName.setItems(runtimes);
 		if (defaultRuntime != null) {
-			final int db = Arrays.binarySearch(runtimes, defaultRuntime
-					.getName());
-			runtimeName.select(db);
+			int db = 0;
+			for (String info : runtimes) {
+				if (info.equals(defaultRuntime.getName())) {
+					break;
+				}
+				db++;
+			}
+			if (db >= 0 && db < runtimes.length) {
+				runtimeName.select(db);
+			}
 		}
 	}
 

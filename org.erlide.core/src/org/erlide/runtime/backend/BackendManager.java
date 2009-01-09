@@ -151,11 +151,7 @@ public final class BackendManager implements IEpmdListener {
 				}
 				return fLocalBackend;
 			}
-			final String ideName = ErlangCore.getBackendManager()
-					.getIdeBackend().getInfo().getNodeName();
-			if (info.getNodeName() == null
-					|| info.getNodeName().equals(ideName)
-					|| info.getNodeName().equals("")) {
+			if (info.getNodeName() == null || info.getNodeName().equals("")) {
 				if (fLocalBackend == null) {
 					throw new BackendException(
 							"IDE backend is not created - check configuration!");
@@ -462,8 +458,7 @@ public final class BackendManager implements IEpmdListener {
 
 	public void remoteNodeStatus(String node, boolean up, Object info) {
 		if (!up) {
-			for (Entry<IProject, Set<Backend>> e : fBackends
-					.entrySet()) {
+			for (Entry<IProject, Set<Backend>> e : fBackends.entrySet()) {
 				for (Backend be : e.getValue()) {
 					String bnode = be.getInfo().getNodeName();
 					if (buildNodeName(bnode).equals(node)) {
