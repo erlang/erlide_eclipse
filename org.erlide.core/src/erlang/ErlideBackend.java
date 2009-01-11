@@ -213,18 +213,6 @@ public class ErlideBackend {
 		return false;
 	}
 
-	@SuppressWarnings("boxing")
-	public static OtpErlangObject call(final Backend b, final String module,
-			final String fun, final int offset, final String text)
-			throws BackendException, RpcException {
-		try {
-			final OtpErlangObject r1 = b.rpcx(module, fun, "si", text, offset);
-			return r1;
-		} catch (final NoBackendException e) {
-			return new OtpErlangString("");
-		}
-	}
-
 	public static OtpErlangObject concreteSyntax(final Backend b,
 			final OtpErlangObject val) throws BackendException, RpcException {
 		try {
