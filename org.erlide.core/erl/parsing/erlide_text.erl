@@ -11,7 +11,7 @@
 %%
 %% Exported Functions
 %%
--export([get_text_and_lines/2,
+-export([get_text_and_lines/3,
          split_lines/1,
          check_function_call/2,
          check_variable_macro_or_record/2,
@@ -22,7 +22,7 @@
          guess_arity/1,
          clean_tokens/2,
          get_line_offsets/1,
-         detab/2,
+         detab/3, entab/3, start_column/2,
          left_strip/1, right_strip/1, strip/1]).
 
 %-define(DEBUG, 1).
@@ -35,15 +35,15 @@
 %% API Functions
 %%
 
-%% get_text_and_lines(Text, From) -> {First, Lines}
-%%     Text = string(), From = integer(), First = string(), Lines = [string()]
+%% get_text_and_lines(Text, From, Length) -> {First, FirstLineNumber, Lines}
+%%     Text = string(), From = Length = FirstLineNumber = integer(), First = string(), Lines = [string()]
 %%
 %% @doc Given text and a From position, return a tuple with
 %% the text upto From and a list of the rest of the lines
 %% @spec get_text_and_lines(S::string(), From::integer()) -> {First::string(), Rest::[{string()}]}
-get_text_and_lines(S, From) ->
+get_text_and_lines(S, From, Length) ->
     L = split_lines(S),
-    get_text_and_lines(L, From, []).
+    get_text_and_lines(L, From, Length, []).
 
 %% @doc Get function call from token list
 %% @spec check_function_call(Tokens::list(), Index::integer()) -> 
@@ -89,12 +89,15 @@ check_variable_macro_or_record(_, _) ->
 %% Local Functions
 %%
 
-get_text_and_lines([], _From, Acc) ->
-    {"", Acc};
-get_text_and_lines([{Pos, Line} | Rest], From, Acc) when Pos =< From ->
+%% get text and lines within selection (From, From + Length) from reversed line list
+get_text_and_lines([], _From, _Length, Acc) ->
+    {"", 0, Acc};
+get_text_and_lines([{Pos, Line} | Rest], From, _Length, Acc) when Pos =< From ->
     {text_from_r_lines(Rest), length(Rest)+1, [Line | Acc]};
-get_text_and_lines([{_, Line} | Rest], From, Acc) ->
-    get_text_and_lines(Rest, From, [Line | Acc]).
+get_text_and_lines([{Pos, _Line} | Rest], From, Length, Acc) when Pos >= From + Length ->
+    get_text_and_lines(Rest, From, Length, Acc);
+get_text_and_lines([{_Pos, Line} | Rest], From, Length, Acc) ->
+    get_text_and_lines(Rest, From, Length, [Line | Acc]).
 
 text_from_r_lines(Lines) ->
     lists:append(lists:reverse([L || {_, L} <- Lines])).
@@ -274,24 +277,57 @@ clean_tokens([#token{kind='#'} = Q, #token{kind=Kind, value=Value} | Rest], W, I
 clean_tokens([T | Rest], W, I, Acc) ->
     clean_tokens(Rest, W, I+1, [T | Acc]).
 
-%% detab(string(), integer()) -> string()
+%% detab(string(), integer(), left | all) -> string()
 %% replace tabs (\t) with spaces
-detab(S, Tablength) ->
-	detab(S, Tablength, 0, "").
+detab(S, Tablength, all) ->
+    detab(S, Tablength, 0, "");
+detab(S, Tablength, left) ->
+    detab_left(S, Tablength, 0, "").
 
 detab("", _, _, Acc) ->
-	lists:reverse(Acc);
+    lists:reverse(Acc);
 detab("\t"++Rest, Tablength, I, Acc) ->
     S = get_tab_spaces(I, Tablength),
-	detab(Rest, Tablength, I+length(S), S ++ Acc);
+    detab(Rest, Tablength, I+length(S), S ++ Acc);
 detab([EOL | Rest], Tablength, _I, Acc) when EOL =:= $\n; EOL =:= $\r ->
-	detab(Rest, Tablength, 0, [EOL | Acc]);
+    detab(Rest, Tablength, 0, [EOL | Acc]);
 detab([C | Rest], Tablength, I, Acc) ->
-	detab(Rest, Tablength, I+1, [C | Acc]).
+    detab(Rest, Tablength, I+1, [C | Acc]).
+
+detab_left("", _, _, Acc) ->
+    lists:reverse(Acc);
+detab_left(" " ++ Rest, Tablength, I, Acc) ->
+    detab_left(Rest, Tablength, I+1, " "++Acc);
+detab_left("\t" ++ Rest, Tablength, I, Acc) ->
+    S = get_tab_spaces(I, Tablength),
+    detab_left(Rest, Tablength, I+length(S), S ++ Acc);
+detab_left(Rest, _Tablength, _I, Acc) ->
+    lists:reverse(Acc, Rest).
+
+get_tab_n_spaces(I, Tablength) ->
+    Tablength - I rem Tablength.
 
 get_tab_spaces(I, Tablength) ->
-	Rest = Tablength - I rem Tablength,
+	Rest = get_tab_n_spaces(I, Tablength),
 	string:chars($ , Rest).
+
+start_column(S, Tablength) ->
+    {N, _} = initial_whitespace(S, Tablength, 0),
+    N.
+
+initial_whitespace(" " ++ S, Tablength, I) ->
+    initial_whitespace(S, Tablength, I+1);
+initial_whitespace("\t" ++ S, Tablength, I) ->
+    initial_whitespace(S, Tablength, I+get_tab_n_spaces(I, Tablength));
+initial_whitespace(S, _Tablength, I) ->
+    {I, S}.
+
+%% entab(string(), integer(), left) -> string()
+%% replace initial spaces with tabs
+
+entab(S, Tablength, left) ->
+    {N, Rest} = initial_whitespace(S, Tablength, 0),
+    lists:append([string:chars($\t, N div Tablength), string:chars($ , N rem Tablength), Rest]).
 
 %% get_line_offsets/1
 %%

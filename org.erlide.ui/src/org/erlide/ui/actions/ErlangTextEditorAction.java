@@ -46,25 +46,21 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		this(bundle, prefix, editor, null, null);
 	}
 
+	/**
+	 * Extend the selection that the action will work on. Default
+	 * implementation, extend to whole lines. Might be overridden.
+	 * 
+	 * @param document
+	 *            text {@link IDocument}
+	 * @param selection
+	 *            original selection
+	 * @return new {@link ITextSelection} extended to the whole lines
+	 *         intersected by selection
+	 */
 	protected ITextSelection extendSelection(final IDocument document,
 			final ITextSelection selection) {
-		int startLine = selection.getStartLine();
-		if (startLine == -1) {
-			try {
-				startLine = document.getLineOfOffset(selection.getOffset());
-			} catch (final BadLocationException e) {
-				return selection;
-			}
-		}
-		int endLine = selection.getEndLine();
-		if (endLine == -1) {
-			try {
-				endLine = document.getLineOfOffset(selection.getOffset()
-						+ selection.getLength());
-			} catch (final BadLocationException e) {
-				return selection;
-			}
-		}
+		final int startLine = selection.getStartLine();
+		final int endLine = selection.getEndLine();
 		int startLineOffset;
 		try {
 			startLineOffset = document.getLineOffset(startLine);
@@ -73,15 +69,24 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			return new TextSelection(document, startLineOffset, endTextOffset
 					- startLineOffset);
 		} catch (final BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return selection;
 	}
 
+	/**
+	 * Provide the text selection that is needed to execute the command. Default
+	 * implementation, take all text from start of document.
+	 * 
+	 * @param document
+	 *            text {@link IDocument}
+	 * @param selection
+	 *            selection affected by command (extended by extendSelection)
+	 * @return new {@link ITextSelection} with all text up to selection
+	 */
 	protected ITextSelection getTextSelection(final IDocument document,
 			final ITextSelection selection) {
-		return new TextSelection(0, selection.getOffset()
+		return new TextSelection(document, 0, selection.getOffset()
 				+ selection.getLength());
 	}
 
@@ -110,25 +115,6 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-		// if (r1 instanceof OtpErlangList) {
-		// final OtpErlangList l = (OtpErlangList) r1;
-		// for (int i = 0, n = l.arity(); i < n; ++i) {
-		// OtpErlangObject o = l.elementAt(i);
-		// if (o instanceof OtpErlangLong) {
-		// final OtpErlangLong lo = (OtpErlangLong) o;
-		// final int intValue = lo.intValue();
-		// if (intValue < 0 || intValue > 255) {
-		// int ix = intValue;
-		// ix = -ix;
-		// ix = -ix;
-		// }
-		// } else {
-		// OtpErlangObject ix = o;
-		// o = ix;
-		// ix = o;
-		// }
-		// }
-		// }
 		final String newText = Util.stringValue(r1);
 		if (newText == null) {
 			final String e = r1.toString();

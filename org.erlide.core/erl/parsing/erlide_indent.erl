@@ -13,11 +13,10 @@
 %%
 
 -export([indent_line/5,
-         indent_lines/4]).
+         indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
 %% -define(DEBUG, 1).
-%% -define(TRACE, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -46,7 +45,7 @@ indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
     indent_line(St, OldLine, CommandText, -1, Tablength, Prefs).
 
 indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
-    S = erlide_text:detab(St, Tablength),
+    S = erlide_text:detab(St, Tablength, all),
     StrippedCommandText = erlide_text:left_strip(CommandText),
     {Indent, AddNL} = check_add_newline(StrippedCommandText, Prefs),
     case Indent of
@@ -64,7 +63,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                     case indent(Tr, LineOffsets, LineN, Prefs, erlide_text:left_strip(OldLine)) of
                         {I, true} ->
                             ?D(I),
-                            {I, initial_whitespace(OldLine), AddNL};
+                            {I, erlide_text:start_column(OldLine, Tablength), AddNL};
                         {I, false} ->
                             ?D(I),
                             case AddNL of
@@ -129,22 +128,17 @@ indent(Tokens, LineOffsets, LineN, Prefs, OldLine) ->
     I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P, in_block=true, old_line=OldLine},
     ?D({I, LineOffsets}),
     try
-        trace_start(),
         i_form_list(Tokens, I),
-        trace_stop(),
         ?D(no_catch),
         {4, I#i.in_block}
     catch
         throw:{indent, A, C, Inblock} ->
-            trace_stop(),
             ?D({indent, A, C, Inblock}),
             {get_indent_of(A, C, LineOffsets), Inblock};
         throw:{indent_eof, A, C, Inblock} ->
-            trace_stop(),
             ?D({indent_eof, A, C, Inblock}),
             {get_indent_of(A, C, LineOffsets), Inblock};
         throw:{indent_checked, N, Inblock} ->
-            trace_stop(),
             ?D(N),
             {N, Inblock};
         error:_E ->
@@ -160,8 +154,8 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
     ?D({O, LO, C, _A}),
     TI+C.
 
-indent_lines(S, From, Tablength, Prefs) ->
-    {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From),
+indent_lines(S, From, Length, Tablength, Prefs) ->
+    {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From, Length),
     do_indent_lines(Lines, Tablength, First, Prefs, FirstLineNum, "").
 
 %%
@@ -173,10 +167,9 @@ indent_lines(S, From, Tablength, Prefs) ->
 do_indent_lines([], _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
-%%     ?D({Text++Acc, Line}),
     {NewI, _OldI, _AddNL} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
-    NewLine = reindent_line(Line, NewI),
-%%     ?D({NewI, _OldI, Line, NewLine}),
+    NewLine0 = reindent_line(Line, NewI),
+    NewLine = erlide_text:entab(NewLine0, Tablength, left),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
 
 %% TODO: Add description of asd/function_arity
@@ -187,13 +180,6 @@ reindent_line("\t" ++ S, I) ->
     reindent_line(S, I);
 reindent_line(S, I) ->
     lists:duplicate(I, $ )++S.
-
-initial_whitespace(" " ++ S) ->
-    1 + initial_whitespace(S);
-initial_whitespace("\t" ++ S) ->
-    1 + initial_whitespace(S);
-initial_whitespace(_) ->
-    0.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -811,19 +797,6 @@ scan(S) ->
         Error ->
             Error
      end.
-
--ifdef(TRACE).
-trace_start() ->
-    user_default:da(?MODULE).
-trace_stop() ->
-    user_default:dbgoff(),
-    user_default:dbgtc("x.log", "x.txt").
--else.
-trace_start() ->
-	nope.
-trace_stop() ->
-	ok.
--endif.
 
 
 

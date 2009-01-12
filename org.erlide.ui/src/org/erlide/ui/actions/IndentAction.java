@@ -57,15 +57,19 @@ public class IndentAction extends ErlangTextEditorAction {
 			try {
 				final IErlElement e1 = m.getElementAt(offset1);
 				final IErlElement e2 = m.getElementAt(offset2);
-				if (e1 instanceof ISourceReference
-						&& e2 instanceof ISourceReference) {
+				if (e1 instanceof ISourceReference) {
 					final ISourceReference ref1 = (ISourceReference) e1;
-					final ISourceReference ref2 = (ISourceReference) e2;
 					final ISourceRange r1 = ref1.getSourceRange();
-					final ISourceRange r2 = ref2.getSourceRange();
-					return extendSelection(document, new TextSelection(
-							document, r1.getOffset(), r2.getOffset()
-									+ r2.getLength()));
+					if (e1 == e2) {
+						return extendSelection(document, new TextSelection(
+								document, r1.getOffset(), r1.getLength()));
+					} else if (e2 instanceof ISourceReference) {
+						final ISourceReference ref2 = (ISourceReference) e2;
+						final ISourceRange r2 = ref2.getSourceRange();
+						return extendSelection(document, new TextSelection(
+								document, r1.getOffset(), r2.getOffset()
+										- r1.getOffset() + r2.getLength()));
+					}
 				}
 			} catch (final ErlModelException e) {
 			}
@@ -101,5 +105,4 @@ public class IndentAction extends ErlangTextEditorAction {
 				text, tabw, prefs);
 		return r1;
 	}
-
 }
