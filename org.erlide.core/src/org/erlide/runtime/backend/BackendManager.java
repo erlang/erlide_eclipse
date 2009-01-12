@@ -219,8 +219,8 @@ public final class BackendManager implements IEpmdListener {
 							if (defLabel != null) {
 								erlideRuntime.setNodeName(defLabel);
 							} else {
-								erlideRuntime.setNodeName("erlide_"
-										+ getErlideNameSuffix());
+								erlideRuntime.setNodeName(getErlideNameSuffix()
+										+ "_erlide");
 							}
 							erlideRuntime.setCookie("erlide");
 							fLocalBackend = create(erlideRuntime, EnumSet
