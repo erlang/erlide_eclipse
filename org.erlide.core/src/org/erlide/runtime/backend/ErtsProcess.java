@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -114,6 +115,18 @@ public class ErtsProcess extends RuntimeProcess {
 			}
 		}
 
+	}
+
+	@Override
+	protected void terminated() {
+		ErlLogger.debug("ErtsProcess terminated: %s", getLabel());
+		super.terminated();
+	}
+
+	@Override
+	public void terminate() throws DebugException {
+		ErlLogger.debug("ErtsProcess will be terminated: %s", getLabel());
+		super.terminate();
 	}
 
 }

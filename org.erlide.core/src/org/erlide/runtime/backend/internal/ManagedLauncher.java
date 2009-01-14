@@ -61,16 +61,16 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 				public void run() {
 					try {
 						int v = fRuntime.waitFor();
-						ErlLogger
-								.error(
-										"Backend runtime %s terminated with exit code %d.",
-										info.getNodeName(), v);
+						final String msg = "Backend runtime %s terminated with exit code %d.";
+						ErlLogger.error(msg, info.getNodeName(), v);
 					} catch (InterruptedException e) {
-						ErlLogger.warn("ide backend watcher was interrupted");
+						ErlLogger.warn("Backend watcher was interrupted");
 					}
 				}
 			};
-			new Thread(watcher).start();
+			final Thread thread = new Thread(null, watcher, "Backend watcher");
+			thread.setDaemon(false);
+			thread.start();
 
 			if (launch != null) {
 				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),

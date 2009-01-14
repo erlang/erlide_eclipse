@@ -20,7 +20,9 @@ import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 public abstract class WranglerNewDataInputPage extends UserInputWizardPage {
 
 	protected Label renameLabel;
+
 	protected Text newDataText;
+
 	protected Composite composite;
 
 	protected String refactoringName;
@@ -107,6 +109,7 @@ public abstract class WranglerNewDataInputPage extends UserInputWizardPage {
 	private void initNewNameModifyListener() {
 		newDataText.addModifyListener(new ModifyListener() {
 
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(ModifyEvent e) {
 				WranglerRefactoring refac = (WranglerRefactoring) getRefactoring();
 				refac.setNewName(newDataText.getText());

@@ -98,13 +98,12 @@ public class EpmdWatcher {
 				epmdStarted = true;
 			} catch (final IOException e) {
 				if (epmdStarted) {
-					InterfacePlugin
-							.getDefault()
-							.getLog()
-							.log(
-									new Status(IStatus.WARNING,
-											InterfacePlugin.PLUGIN_ID,
-											"Erlide warning: epmd daemon went down..."));
+					final String msg = "Erlide warning: epmd daemon went down on host "
+							+ entry.getKey() + "...";
+					InterfacePlugin.getDefault().getLog().log(
+							new Status(IStatus.WARNING,
+									InterfacePlugin.PLUGIN_ID, msg));
+					System.out.println(msg);
 					epmdStarted = false;
 				}
 			}

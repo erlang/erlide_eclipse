@@ -904,5 +904,6 @@
     </meta>
     <projectTree name="erlide.xpr">
         <file name="erlide.xml"/>
+        <file name="../../org.erlide.docs/site/test.html"/>
     </projectTree>
 </project>

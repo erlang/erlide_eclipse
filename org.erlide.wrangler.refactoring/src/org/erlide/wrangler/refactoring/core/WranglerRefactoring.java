@@ -12,10 +12,10 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RpcResult;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.Activator;
@@ -39,9 +39,13 @@ public abstract class WranglerRefactoring extends Refactoring {
 	}
 
 	protected int column, line;
+
 	protected Change change;
+
 	protected RefactoringParameters parameters;
+
 	protected Backend managedBackend;
+
 	protected String newName;
 
 	protected RPCMessage message;
@@ -54,7 +58,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 */
 	public WranglerRefactoring(RefactoringParameters parameters) {
 		this.parameters = parameters;
-		this.managedBackend = BackendManager.getDefault().getIdeBackend();
+		this.managedBackend = ErlangCore.getBackendManager().getIdeBackend();
 	}
 
 	/*

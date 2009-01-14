@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
@@ -38,7 +39,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendManager;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -393,7 +393,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void disposeParser() {
-		final Backend b = BackendManager.getDefault().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
 	}
 

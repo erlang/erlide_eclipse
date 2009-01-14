@@ -51,7 +51,6 @@ import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -123,9 +122,9 @@ public class ErlModelUtils {
 	}
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
-			final Backend b, final IProject project,
-			final IErlModule module, final IErlElement.Kind kind,
-			final String externalIncludes, final List<Tuple> pathVars) {
+			final Backend b, final IProject project, final IErlModule module,
+			final IErlElement.Kind kind, final String externalIncludes,
+			final List<Tuple> pathVars) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
 		final List<IErlModule> modulesFound = new ArrayList<IErlModule>(1);
 		List<IErlModule> modulesWithIncludes = modulesFound;
@@ -373,8 +372,9 @@ public class ErlModelUtils {
 				return p.toString();
 			}
 		}
-		final String s = ErlideOpen.getExternalInclude(BackendManager.getDefault()
-				.getIdeBackend(), filePath, externalIncludes, pathVars);
+		final String s = ErlideOpen.getExternalInclude(ErlangCore
+				.getBackendManager().getIdeBackend(), filePath,
+				externalIncludes, pathVars);
 		if (s != null) {
 			return s;
 		}

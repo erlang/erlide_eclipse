@@ -18,7 +18,7 @@ import org.erlide.wrangler.refactoring.util.NameChecker;
 public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 
 	// private Button checkIsNewModule;
-	private Combo moduleCombo;
+	Combo moduleCombo;
 
 	public TargetModuleNameInputPage(String name) {
 		super(name);

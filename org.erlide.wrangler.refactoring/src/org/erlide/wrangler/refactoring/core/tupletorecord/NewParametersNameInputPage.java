@@ -13,7 +13,8 @@ import org.erlide.wrangler.refactoring.util.NameChecker;
 public class NewParametersNameInputPage extends WranglerNewDataInputPage {
 
 	private Label extraLabel;
-	private Text newExtraDataText;
+
+	Text newExtraDataText;
 
 	public NewParametersNameInputPage(String name) {
 		super(name);
@@ -73,6 +74,7 @@ public class NewParametersNameInputPage extends WranglerNewDataInputPage {
 
 		newExtraDataText.addModifyListener(new ModifyListener() {
 
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(ModifyEvent e) {
 				String s = newExtraDataText.getText();
 				TupleToRecordRefactoring refac = (TupleToRecordRefactoring) getRefactoring();
