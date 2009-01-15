@@ -37,6 +37,7 @@ public class ComparerTool {
 	 * @param charArray
 	 * @return list of chars
 	 */
+	@SuppressWarnings("boxing")
 	private static ArrayList<Character> convertArrayToArrayList(char[] charArray) {
 		ArrayList<Character> result = new ArrayList<Character>();
 		for (char c : charArray) {
@@ -46,8 +47,7 @@ public class ComparerTool {
 	}
 
 	/**
-	 * Creates <code>Edit</code> object from a <code>Difference</code>
-	 * object
+	 * Creates <code>Edit</code> object from a <code>Difference</code> object
 	 * 
 	 * @param diff
 	 * @return
@@ -188,6 +188,7 @@ public class ComparerTool {
 	 * @throws IOException
 	 *             if any i/o error occurs this exception is raised.
 	 */
+	@SuppressWarnings("boxing")
 	static private ArrayList<Character> readFile(File file) throws IOException {
 		ArrayList<Character> result = new ArrayList<Character>();
 		BufferedReader input = new BufferedReader(new FileReader(file));
