@@ -16,6 +16,7 @@
 %% Exported Functions
 %%
 -export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4]).
+-export([pack/1, unpack/1]).
 
 -ifdef(DEBUG).
 -compile(export_all).
@@ -24,6 +25,18 @@
 %%
 %% API Functions
 %%
+
+-define(SEP, ";").
+
+unpack(F) ->
+    string:tokens(F, ?SEP).
+
+pack([]) ->
+    [];
+pack([A]) ->
+    A;
+pack([A | [_ | _] = Rest]) ->
+    A++?SEP++pack(Rest).
 
 check_cached(SourceFileName, CacheFileName, Version) ->
     ?D({SourceFileName, CacheFileName}),

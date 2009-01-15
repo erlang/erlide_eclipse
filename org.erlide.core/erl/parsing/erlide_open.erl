@@ -16,6 +16,8 @@
          get_external_module/3,
          get_external_include/3]).
 
+%% TODO (JC) there are some code duplication in external modules (and includes) handling
+
 %%
 %% Include files
 %%
@@ -67,16 +69,12 @@ has_name(Name, FileName) ->
     Name == filename:rootname(filename:basename(FileName)).
 
 get_external_modules(Prefix, ExternalModulesFiles, PathVars) ->
-    ?D(Prefix),
     ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
-    ?D(ExternalModulesFiles),
     {ok, [XM || XM <- ExternalModules, has_prefix(Prefix, XM)]}.
 
-get_external_module(Prefix, ExternalModulesFiles, PathVars) ->
-    ?D(Prefix),
+get_external_module(Name, ExternalModulesFiles, PathVars) ->
     ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
-    ?D(ExternalModules),
-    case [XM || XM <- ExternalModules, has_name(Prefix, XM)] of
+    case [XM || XM <- ExternalModules, has_name(Name, XM)] of
         [Path | _] ->
             {ok, Path};
         _ ->
@@ -188,8 +186,8 @@ get_source_from_module(Mod, ExternalModules, PathVars) ->
             Other
     end.
 
-get_external_modules_file(FileName, PathVars) ->
-    get_external_modules_file(FileName, PathVars, []).
+get_external_modules_file(PackedFileNames, PathVars) ->
+    get_external_modules_file(erlide_util:unpack(PackedFileNames), PathVars, []).
 
 replace_path_var(FileName, PathVars) ->
     case filename:split(FileName) of
@@ -207,11 +205,14 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_modules_file(FileName0, PathVars, Acc) ->
-    FileName = replace_path_var(FileName0, PathVars),
+get_external_modules_file([], _PathVars, Acc) ->
+    Acc;
+get_external_modules_file([FileNames0 | Rest], PathVars, Acc) ->
+    FileName = replace_path_var(FileNames0, PathVars),
     case file:read_file(FileName) of
         {ok, B} ->
-            get_ext_aux(split_lines(B), PathVars, Acc);
+            R = get_ext_aux(split_lines(B), PathVars, Acc),
+            get_external_modules_file(Rest, PathVars, R ++ Acc);
         _ ->
             Acc
     end.
@@ -229,7 +230,7 @@ get_ext_aux([L | Rest], PathVars, Acc0) ->
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D({ExternalModules, PathVars}),
-    L = lists:append([get_external_modules_file(EM, PathVars) || EM <- string:tokens(ExternalModules, ";")]),
+    L = get_external_modules_file(ExternalModules, PathVars),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
