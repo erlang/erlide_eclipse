@@ -20,11 +20,13 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
-	public static void init(final Backend backend, final String javaNode) {
+	public static boolean init(final Backend backend, final String javaNode) {
 		try {
 			backend.rpcx("erlide_backend", "init", "a", javaNode);
+			return true;
 		} catch (final Exception e) {
-			ErlLogger.debug(e);
+			ErlLogger.error(e);
+			return false;
 		}
 	}
 
