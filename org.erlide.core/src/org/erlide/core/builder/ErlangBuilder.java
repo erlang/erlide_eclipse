@@ -436,6 +436,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				r = compileFile(project, resource.getLocation().toString(),
 						outputDir, includeDirs);
 				if (r == null) {
+					ErlangBuilderMarkerGenerator.addProblemMarker(resource,
+							null, "Could not compile file", 0,
+							IMarker.SEVERITY_ERROR);
 					return;
 				}
 				final OtpErlangTuple t = (OtpErlangTuple) r;

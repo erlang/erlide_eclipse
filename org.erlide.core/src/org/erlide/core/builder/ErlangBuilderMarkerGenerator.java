@@ -11,6 +11,7 @@ import org.erlide.core.IMarkerGenerator;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -99,8 +100,8 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 	 */
 	public static void addErrorMarkers(final IMarkerGenerator mg,
 			final IResource resource, final OtpErlangList errorList) {
-		for (int i = 0; i < errorList.arity(); i++) {
-			final OtpErlangTuple data = (OtpErlangTuple) errorList.elementAt(i);
+		for (OtpErlangObject odata : errorList.elements()) {
+			final OtpErlangTuple data = (OtpErlangTuple) odata;
 
 			final String msg = ((OtpErlangString) data.elementAt(2))
 					.stringValue();
@@ -110,6 +111,19 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			if (!comparePath(resource.getLocation().toString(), fileName)) {
 				res = findResource(resource.getProject(), fileName);
 				if (res == null) {
+					// the error is in a hrl file that is not in the project
+
+					// try {
+					// final String includeFile = ErlModelUtils
+					// .findIncludeFile(project, res.getName(),
+					// fExternalIncludes, pathVars);
+					// if (includeFile != null) {
+					// r = EditorUtility.openExternal(includeFile);
+					// }
+					// } catch (final Exception e) {
+					// ErlLogger.warn(e);
+					// }
+
 					res = resource;
 				}
 			}
@@ -150,8 +164,10 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 					.createMarker(ErlangBuilder.PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
-			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
-					.toString());
+			if (compiledFile != null) {
+				marker.setAttribute(IMarker.SOURCE_ID, compiledFile
+						.getFullPath().toString());
+			}
 			if (lineNumber == -1) {
 				lineNumber = 1;
 			}
