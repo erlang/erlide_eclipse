@@ -30,10 +30,10 @@
 
          compile_string/1,
          start_tracer/1
-]).
+        ]).
 
 init(JavaNode) ->
-    spawn(fun()-> 
+    spawn(fun()->
                   case whereis(erlide_rex) of
                       undefined ->
                           RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
@@ -146,8 +146,8 @@ parse_string(S) ->
 execute(StrFun, Args) ->
     StrMod = "-module(erlide_execute_tmp).\n"++
                  "-export([exec/1]).\n"++
-                     "exec(ZZArgs) -> Fun = "++StrFun++",\n"++
-                                                           " catch Fun(ZZArgs).\n",
+                 "exec(ZZArgs) -> Fun = "++StrFun++",\n"++
+                 " catch Fun(ZZArgs).\n",
     catch case parse_string(StrMod) of
               {ok, Mod} ->
                   {ok, erlide_execute_tmp,Bin} = compile:forms(Mod, [report,binary]),
@@ -177,18 +177,18 @@ parse(Toks) ->
     {ok, Res}.
 
 split_dot(L) ->
-split_dot(L, [], []).
+    split_dot(L, [], []).
 
 split_dot([], R, []) ->
-lists:reverse(R);
+    lists:reverse(R);
 split_dot([], R, V) ->
-lists:reverse([V|R]);
+    lists:reverse([V|R]);
 split_dot([{eof}|T], R, V) ->
-split_dot(T, R, V);
+    split_dot(T, R, V);
 split_dot([{dot, _}=H|T], R, V) ->
-split_dot(T, [lists:reverse([H|V])|R], []);
+    split_dot(T, [lists:reverse([H|V])|R], []);
 split_dot([H|T], R, V) ->
-split_dot(T, R, [H|V]).
+    split_dot(T, R, [H|V]).
 
 compile_string(Str) ->
     {ok, T, _} = erl_scan:string(Str),

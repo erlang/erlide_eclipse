@@ -1,4 +1,4 @@
-#Wed Oct 01 09:45:16 CEST 2008
+#Thu Jan 15 14:30:57 CET 2009
 source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing;erl_debugger
 backend_cookie=
 backend_name=r11
@@ -8,4 +8,5 @@ include_dirs=include
 use_pathz=true
 output_dir=ebin
 backend_node=erlide
+type=NORMAL
 external_modules=
