@@ -13,6 +13,7 @@
          get_source_from_module/3,
          get_include_lib/1,
          get_external_modules/3,
+         get_external_module/3,
          get_external_include/3]).
 
 %%
@@ -62,11 +63,25 @@ try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars
 has_prefix(Prefix, FileName) ->
     lists:prefix(Prefix, filename:basename(FileName)).
 
+has_name(Name, FileName) ->
+    Name == filename:rootname(filename:basename(FileName)).
+
 get_external_modules(Prefix, ExternalModulesFiles, PathVars) ->
     ?D(Prefix),
     ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
     ?D(ExternalModulesFiles),
     {ok, [XM || XM <- ExternalModules, has_prefix(Prefix, XM)]}.
+
+get_external_module(Prefix, ExternalModulesFiles, PathVars) ->
+    ?D(Prefix),
+    ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
+    ?D(ExternalModules),
+    case [XM || XM <- ExternalModules, has_name(Prefix, XM)] of
+        [Path | _] ->
+            {ok, Path};
+        _ ->
+            not_found
+    end.
 
 consider_local([]) ->
 	true;

@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -123,9 +124,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private List<ICompletionProposal> recordFieldCompletions(
-			final Backend b, final String recordName, final int offset,
-			final String aprefix, final int hashMarkPos) {
+	private List<ICompletionProposal> recordFieldCompletions(final Backend b,
+			final String recordName, final int offset, final String aprefix,
+			final int hashMarkPos) {
 		if (module == null) {
 			return null;
 		}
@@ -150,8 +151,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> moduleOrLocalCallCompletions(
-			final Backend b, final int offset, final String aprefix,
-			final int k) {
+			final Backend b, final int offset, final String aprefix, final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		final List<String> allErlangFiles = new ArrayList<String>();
 		if (module != null) {
@@ -220,9 +220,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	 * @param kind
 	 * @return
 	 */
-	private List<ICompletionProposal> macroOrRecordCompletions(
-			final Backend b, final int offset, final String aPrefix,
-			final Kind kind) {
+	private List<ICompletionProposal> macroOrRecordCompletions(final Backend b,
+			final int offset, final String aPrefix, final Kind kind) {
 		if (module == null) {
 			return null;
 		}
@@ -241,18 +240,27 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
-	private List<ICompletionProposal> externalCallCompletions(
-			final Backend b, final IErlProject project,
-			final String moduleName, final int offset, final String aprefix,
-			final int k) throws ErlangRpcException, BackendException,
-			RpcException, OtpErlangRangeException {
+	private List<ICompletionProposal> externalCallCompletions(final Backend b,
+			final IErlProject project, final String moduleName,
+			final int offset, final String aprefix, final int k)
+			throws ErlangRpcException, BackendException, RpcException,
+			OtpErlangRangeException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		// first check in project and refs
+		// first check in project, refs and external modules
 		final List<IErlModule> modules = ErlModelUtils
 				.getModulesWithReferencedProjects(project);
+		try {
+			final IErlModule external = ErlModelUtils.getExternalModule(
+					moduleName, externalModules, pathVars);
+			if (external != null) {
+				modules.add(external);
+			}
+		} catch (final CoreException e1) {
+			e1.printStackTrace();
+		}
 		for (final IErlModule m : modules) {
 			if (ErlideUtil.withoutExtension(m.getName()).equals(moduleName)) {
 				try {
@@ -269,6 +277,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 		}
+
 		// then check built stuff and otp
 		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
 				moduleName, aprefix, stateDir);

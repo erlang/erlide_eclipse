@@ -51,11 +51,11 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private Text include;
 	private MockupPreferenceStore mockPrefs;
 	private Button uz;
-	Text externalIncludes;
+	private Text externalIncludes;
 	private Button externalIncludesBrowse;
-	Text externalModules;
+	private Text externalModules;
 	private Button externalModulesBrowse;
-
+	
 	/**
 	 * Constructor for ErlProjectPropertyPage.
 	 */

@@ -126,4 +126,22 @@ public class ErlideOpen {
 		}
 		return null;
 	}
+
+	public static String getExternalModule(final Backend b, final String mod,
+			final String externalModules, final List<Tuple> pathVars) {
+		try {
+			final OtpErlangObject res = b.rpcx("erlide_open",
+					"get_external_module", "sslx", mod, externalModules,
+					fixPathVars(pathVars));
+			if (Util.isOk(res)) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				return Util.stringValue(t.elementAt(1));
+			}
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -22,8 +22,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -58,6 +56,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -507,10 +506,8 @@ public class EditorUtility {
 	}
 
 	static public IFile openExternal(final String path) throws CoreException {
-		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 		// TODO is this a good way?
-		final String prjName = "External Files";
-		final IProject project = ws.getRoot().getProject(prjName);
+		final IProject project = ResourceUtil.getExternalFilesProject();
 		if (!project.exists()) {
 			project.create(null);
 			project.open(null);
@@ -529,7 +526,8 @@ public class EditorUtility {
 		if (!file.isLinked()) {
 			file.createLink(location, IResource.NONE, null);
 		}
-		final IErlProject p = ErlangCore.getModel().getErlangProject(prjName);
+		final IErlProject p = ErlangCore.getModel().getErlangProject(
+				project.getName());
 		p.open(null);
 		return file;
 	}

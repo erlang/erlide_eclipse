@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -253,5 +255,11 @@ public class ResourceUtil {
 
 	private static IErlProject getErlProject(final IProject project) {
 		return ErlangCore.getModel().findProject(project);
+	}
+
+	public static IProject getExternalFilesProject() {
+		final String prjName = "External Files";
+		final IWorkspace ws = ResourcesPlugin.getWorkspace();
+		return ws.getRoot().getProject(prjName);
 	}
 }

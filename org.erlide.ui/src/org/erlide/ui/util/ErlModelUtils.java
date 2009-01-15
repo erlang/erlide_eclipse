@@ -429,6 +429,34 @@ public class ErlModelUtils {
 		}
 	}
 
+	public static IErlModule getExternalModule(final String mod,
+			final String externalModules, final List<Tuple> pathVars)
+			throws CoreException {
+		final String path = ErlideOpen.getExternalModule(ErlangCore
+				.getBackendManager().getIdeBackend(), mod, externalModules,
+				pathVars);
+		if (path != null) {
+			final String modFileName = mod + ".erl";
+			IResource r = null;
+			final IProject p = ResourceUtil.getExternalFilesProject();
+			if (p != null) {
+				r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
+						modFileName);
+				if (r != null) {
+					try {
+						r = EditorUtility.openExternal(path);
+						if (r != null) {
+							return getModule((IFile) r);
+						}
+					} catch (final Exception e) {
+						ErlLogger.warn(e);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Activate editor and select erlang function
 	 * 
