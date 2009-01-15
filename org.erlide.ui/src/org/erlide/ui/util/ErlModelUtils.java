@@ -437,21 +437,10 @@ public class ErlModelUtils {
 				pathVars);
 		if (path != null) {
 			final String modFileName = mod + ".erl";
-			IResource r = null;
 			final IProject p = ResourceUtil.getExternalFilesProject();
 			if (p != null) {
-				r = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
-						modFileName);
-				if (r != null) {
-					try {
-						r = EditorUtility.openExternal(path);
-						if (r != null) {
-							return getModule((IFile) r);
-						}
-					} catch (final Exception e) {
-						ErlLogger.warn(e);
-					}
-				}
+				final IFile f = EditorUtility.openExternal(path);
+				return getModule(f);
 			}
 		}
 		return null;

@@ -20,7 +20,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -50,7 +49,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -506,18 +504,7 @@ public class EditorUtility {
 	}
 
 	static public IFile openExternal(final String path) throws CoreException {
-		// TODO is this a good way?
 		final IProject project = ResourceUtil.getExternalFilesProject();
-		if (!project.exists()) {
-			project.create(null);
-			project.open(null);
-			final IProjectDescription description = project.getDescription();
-			description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-			project.setDescription(description, null);
-		}
-		if (!project.isOpen()) {
-			project.open(null);
-		}
 		if (path == null) {
 			return null;
 		}

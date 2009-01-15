@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -260,6 +261,23 @@ public class ResourceUtil {
 	public static IProject getExternalFilesProject() {
 		final String prjName = "External Files";
 		final IWorkspace ws = ResourcesPlugin.getWorkspace();
-		return ws.getRoot().getProject(prjName);
+		final IProject project = ws.getRoot().getProject(prjName);
+		if (!project.exists()) {
+			try {
+				project.create(null);
+				project.open(null);
+				final IProjectDescription description = project
+						.getDescription();
+				description
+						.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+				project.setDescription(description, null);
+				if (!project.isOpen()) {
+					project.open(null);
+				}
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return project;
 	}
 }
