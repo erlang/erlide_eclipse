@@ -43,6 +43,8 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.runtime.backend.Backend;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -646,6 +648,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 		ErlangCore.getBackendManager().register(this);
 
+		registerOpenProjects();
+
 		// final IErlModelManager manager = ErlangCore.getModelManager();
 		// try {
 		// // request state folder creation (workaround 19885)
@@ -712,6 +716,32 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		// throw e;
 		// }
 		ErlLogger.debug("Started CORE");
+	}
+
+	private static void registerOpenProjects() {
+		final IWorkspace root = ResourcesPlugin.getWorkspace();
+		final IProject[] projects = root.getRoot().getProjects();
+
+		// String[] nameOfProjects = new String[projects.length];
+
+		for (final IProject element : projects) {
+			try {
+				if (element.isOpen()
+						&& element.hasNature(ErlangPlugin.NATURE_ID)) {
+					final ErlangProjectProperties prefs = new ErlangProjectProperties(
+							element);
+					final String path = element.getLocation().append(
+							prefs.getOutputDir()).toString();
+					final Backend b = ErlangCore.getBackendManager()
+							.getIdeBackend();
+					if (b != null) {
+						b.addPath(prefs.getUsePathZ(), path);
+					}
+				}
+			} catch (final CoreException e) {
+				ErlLogger.warn(e);
+			}
+		}
 	}
 
 	public static void log(final IStatus status) {
