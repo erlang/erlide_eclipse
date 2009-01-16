@@ -17,13 +17,19 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -76,7 +82,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 
 	/**
 	 * Provide the text selection that is needed to execute the command. Default
-	 * implementation, take all text from start of document.
+	 * implementation, extend to Erlang elements selected.
 	 * 
 	 * @param document
 	 *            text {@link IDocument}
@@ -86,8 +92,36 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 */
 	protected ITextSelection getTextSelection(final IDocument document,
 			final ITextSelection selection) {
-		return new TextSelection(document, 0, selection.getOffset()
-				+ selection.getLength());
+		final IErlModule m = ErlModelUtils.getModule(getTextEditor());
+		if (m != null) {
+			final int offset1 = selection.getOffset(), offset2 = offset1
+					+ selection.getLength();
+			try {
+				final IErlElement e1 = m.getElementAt(offset1);
+				final IErlElement e2 = m.getElementAt(offset2);
+				if (e1 instanceof ISourceReference) {
+					final ISourceReference ref1 = (ISourceReference) e1;
+					final ISourceRange r1 = ref1.getSourceRange();
+					if (e1 == e2) {
+						return extendSelection(document, new TextSelection(
+								document, r1.getOffset(), r1.getLength()));
+					} else if (e2 == null) {
+						return extendSelection(document, new TextSelection(
+								document, r1.getOffset(), selection.getLength()
+										+ selection.getOffset()
+										- r1.getOffset()));
+					} else if (e2 instanceof ISourceReference) {
+						final ISourceReference ref2 = (ISourceReference) e2;
+						final ISourceRange r2 = ref2.getSourceRange();
+						return extendSelection(document, new TextSelection(
+								document, r1.getOffset(), r2.getOffset()
+										- r1.getOffset() + r2.getLength()));
+					}
+				}
+			} catch (final ErlModelException e) {
+			}
+		}
+		return extendSelection(document, selection);
 	}
 
 	@Override

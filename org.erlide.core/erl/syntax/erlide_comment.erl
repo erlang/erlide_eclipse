@@ -10,7 +10,7 @@
 %%
 %% Exported Functions
 %%
--export([toggle_comment/2]).
+-export([toggle_comment/3]).
 
 %-define(DEBUG, 1). %
 
@@ -20,9 +20,9 @@
 %% API Functions
 %%
 
-toggle_comment(Text, From) ->
-    ?D({Text, From}),
-    {_, _, Lines} = erlide_text:get_text_and_lines(Text, From),
+toggle_comment(Text, From, Length) ->
+    ?D({Text, From, Length}),
+    {_, _, Lines} = erlide_text:get_text_and_lines(Text, From, Length),
     ?D(Lines),
     LineF = case lists:all(fun(L) -> is_comment_line(L) end, Lines) of
                    true ->
