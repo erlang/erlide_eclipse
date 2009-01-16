@@ -436,7 +436,6 @@ public class ErlModelUtils {
 				.getBackendManager().getIdeBackend(), mod, externalModules,
 				pathVars);
 		if (path != null) {
-			final String modFileName = mod + ".erl";
 			final IProject p = ResourceUtil.getExternalFilesProject();
 			if (p != null) {
 				final IFile f = EditorUtility.openExternal(path);
