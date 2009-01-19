@@ -1,7 +1,7 @@
 #Thu Jan 15 14:30:57 CET 2009
 source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing;erl_debugger
 backend_cookie=
-backend_name=r11
+backend_name=
 external_includes=
 make_unique=true
 include_dirs=include
