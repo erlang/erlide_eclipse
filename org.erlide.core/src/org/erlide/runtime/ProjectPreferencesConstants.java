@@ -40,7 +40,7 @@ public class ProjectPreferencesConstants {
 	public static final String DEFAULT_NODENAME = "erlide";
 
 	public static final String USE_PATHZ = "use_pathz";
-	public static final String DEFAULT_USE_PATHZ = "true";
+	public static final String DEFAULT_USE_PATHZ = "false";
 
 	public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
 	public static final String DEFAULT_EXTERNAL_MODULES = "";
