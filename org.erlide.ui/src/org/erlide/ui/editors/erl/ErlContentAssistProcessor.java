@@ -11,6 +11,7 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IPathVariableManager;
@@ -36,6 +37,8 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
@@ -55,6 +58,7 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlideContextAssist;
 import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
@@ -87,6 +91,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final int colonPos = aPrefix.indexOf(':');
 			final int hashMarkPos = aPrefix.indexOf('#');
 			final int dotPos = aPrefix.indexOf('.');
+			final int leftBracketPos = aPrefix.indexOf('{');
 			final int interrogationMarkPos = aPrefix.indexOf('?');
 			List<ICompletionProposal> result;
 			if (colonPos >= 0) {
@@ -101,6 +106,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 							hashMarkPos + 1, dotPos);
 					result = recordFieldCompletions(b, recordName, offset,
 							aPrefix.substring(dotPos + 1), hashMarkPos);
+				} else if (leftBracketPos > hashMarkPos) {
+					final String recordName = aPrefix.substring(
+							hashMarkPos + 1, leftBracketPos);
+					final int n = atomPrefixLength(doc, offset);
+					result = recordFieldCompletions(b, recordName, offset,
+							aPrefix.substring(aPrefix.length() - n),
+							hashMarkPos);
 				} else {
 					result = macroOrRecordCompletions(b, offset, aPrefix
 							.substring(hashMarkPos + 1),
@@ -143,8 +155,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				fields.size());
 		for (final String field : fields) {
 			if (field.startsWith(aprefix)) {
-				result.add(new CompletionProposal(field, offset
-						- aprefix.length(), aprefix.length(), field.length()));
+				final int alength = aprefix.length();
+				result.add(new CompletionProposal(field, offset - alength,
+						alength, field.length()));
 			}
 		}
 		return result;
@@ -154,7 +167,29 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final Backend b, final int offset, final String aprefix, final int k) {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		final List<String> allErlangFiles = new ArrayList<String>();
+		final int alength = aprefix.length();
 		if (module != null) {
+			// add variables
+			final IErlElement el = getElementAt(offset);
+			if (el instanceof ISourceReference) {
+				try {
+					final ISourceRange r = ((ISourceReference) el)
+							.getSourceRange();
+					final int o = r.getOffset();
+					final IDocument doc = sourceViewer.getDocument();
+					final String src = doc.get(o, offset - o - alength);
+					final Collection<String> vars = ErlideContextAssist
+							.getVariables(b, src, aprefix);
+					for (final String var : vars) {
+						result.add(new CompletionProposal(var,
+								offset - alength, alength, var.length()));
+					}
+				} catch (final ErlModelException e) {
+					e.printStackTrace();
+				} catch (final BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
 			// add declared functions in module
 			try {
 				for (final IErlElement e : module.getChildren()) {
@@ -203,10 +238,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				if (o instanceof OtpErlangString) {
 					final OtpErlangString s = (OtpErlangString) o;
 					final String cpl = s.stringValue() + ":";
-					result
-							.add(new CompletionProposal(cpl, offset
-									- aprefix.length(), aprefix.length(), cpl
-									.length()));
+					result.add(new CompletionProposal(cpl, offset - alength,
+							alength, cpl.length()));
 				}
 			}
 		}
@@ -406,12 +439,26 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
+	private int atomPrefixLength(final IDocument doc, final int offset) {
+		try {
+			for (int n = offset - 1; n >= 0; n--) {
+				final char c = doc.getChar(n);
+				if (!isErlangIdentifierChar(c)) {
+					return offset - n - 1;
+				}
+			}
+		} catch (final BadLocationException e) {
+		}
+		return 0;
+	}
+
 	private String lastText(final IDocument doc, final int offset) {
+		// TODO rewrite so it handles stuff like #record{field1 = a, field2
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
 				final char c = doc.getChar(n);
 				if (!isErlangIdentifierChar(c) && c != ':' && c != '.'
-						&& c != '#' && c != '?') {
+						&& c != '#' && c != '?' && c != '{') {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}
@@ -419,6 +466,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		} catch (final BadLocationException e) {
 		}
 		return "";
+	}
+
+	private IErlElement getElementAt(final int offset) {
+		if (module == null) {
+			return null;
+		}
+		try {
+			return module.getElementAt(offset);
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	static private boolean isErlangIdentifierChar(final char char1) {

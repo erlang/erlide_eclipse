@@ -58,6 +58,12 @@ all() ->
 xdump() ->
     server_cmd(xdump, []).
 
+cdump() ->
+    server_cmd(cdump, []).
+
+vdump() ->
+    server_cmd(vdump, []).
+
 dump_module(Module) when is_atom(Module) ->
     server_cmd(dump_module, Module).
 
@@ -555,6 +561,10 @@ do_cmd(find, {external_call, {M, F, A}}, Modules) ->
     {find_external_call({M, F, A}, Modules), Modules};
 do_cmd(dump_log, [], Modules) ->
     {get(log), Modules};
+do_cmd(cdump, [], Modules) ->
+    {do_cdump(Modules), Modules};
+do_cmd(vdump, [], Modules) ->
+    {do_vdump(Modules), Modules};
 do_cmd(xdump, [], Modules) ->
     {do_xdump(Modules), Modules}.
 
@@ -625,9 +635,68 @@ do_xdump1(#module{model=M}) ->
     [[F#function.external_refs | [C#clause.external_refs || C <- F#function.clauses]]
     || F <- Forms, is_record(F, function)].
 
+do_cdump(Modules) ->
+    [{M#module.name, M#module.erlide_path, do_cdump1(M)} || M <- Modules].
 
+do_cdump1(#module{model=M}) ->
+    Forms = M#model.forms,
+    [[{F#function.name, F#function.code, [{C#clause.args, C#clause.code} || C <- F#function.clauses]}]
+    || F <- Forms, is_record(F, function)].
 
+do_vdump(Modules) ->
+    [{M#module.name, M#module.erlide_path, do_vdump1(M)} || M <- Modules].
 
+is_var(#token{kind=var}) -> true;
+is_var(_) -> false.
+
+vars(Tokens) when is_list(Tokens) ->
+    [Token || Token <- Tokens, is_var(Token)];
+vars(_) ->
+    [].
+
+do_vdump1(#module{model=M}) ->
+    Forms = M#model.forms,
+    [[{F#function.name, vars(F#function.code), [{C#clause.head, vars(C#clause.code)} || C <- F#function.clauses]}]
+    || F <- Forms, is_record(F, function)].
+    
+do_get_vars(FOrC, Module) ->
+    case find_function_or_clause(FOrC, Module) of
+        #function{code=Code} ->
+            {ok, vars(Code)};
+        #clause{code=Code} ->
+            {ok, vars(Code)};
+        _ ->
+            not_found
+    end.
+
+find_function_or_clause({F, A, Head}, Module) ->
+    ffoc((Module#module.model)#model.forms, F, A, Head);
+find_function_or_clause({F, A}, Module) ->
+    ffoc((Module#module.model)#model.forms, F, A).
+
+ffoc([], _F, _A) ->
+    not_found;
+ffoc([#function{name=F, arity=A} = Function | _], F, A) ->
+    Function;
+ffoc([_ | R], F, A) ->
+    ffoc(R, F, A).
+
+ffoc(L, F, A, Head) ->
+    case ffoc(L, F, A) of
+        #function{clauses=C} ->
+            ffoc(C, Head);
+        not_found ->
+            not_found
+    end.
+
+ffoc([], _Head) ->
+    not_found;
+ffoc([#clause{head=Head} = Clause | _], Head) ->
+    Clause;
+ffoc([_ | R], Head) ->
+    ffoc(R, Head).
+
+       
 
 
 
