@@ -1,11 +1,12 @@
-#Tue Oct 28 09:16:07 CET 2008
+#Wed Jan 21 15:06:41 CET 2009
 source_dirs=wrangler/erl
 backend_cookie=
-backend_name=Erlang R12B
+backend_name=R12B
 external_includes=
 make_unique=true
 include_dirs=wrangler/hrl
 use_pathz=true
 output_dir=wrangler/ebin
 backend_node=erlide
+type=NORMAL
 external_modules=

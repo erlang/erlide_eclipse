@@ -1,6 +1,6 @@
-#Tue Oct 28 09:16:04 CET 2008
+#Wed Jan 21 15:06:39 CET 2009
 backend_cookie=
-backend_name=Erlang R12B
+backend_name=R12B
 backend_node=erlide
 eclipse.preferences.version=1
 external_includes=
@@ -9,4 +9,5 @@ include_dirs=wrangler/hrl
 make_unique=true
 output_dir=wrangler/ebin
 source_dirs=wrangler/erl
+type=NORMAL
 use_pathz=true
