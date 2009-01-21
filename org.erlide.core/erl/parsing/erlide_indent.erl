@@ -342,12 +342,12 @@ i_binary_expr(R0, I0) ->
 
 i_binary_sub_expr(R0, I0) ->
     case i_sniff(R0) of
-        #token{kind='('} ->
-            i_expr(R0, I0, none); % funkar detta med t.ex. (1+4):8? testa!
-		#token{kind=Kind} when Kind==var; Kind==string; Kind==integer ->
-            R1 = i_comments(R0, I0),
-			R2 = i_kind(Kind, R1, I0),
-            {i_1_expr(R2, I0), hd(R1)}
+	#token{kind=Kind} when Kind=='(' ->
+	    i_expr(R0, I0, none); % funkar detta med t.ex. (1+4):8? testa!
+	#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==char ->
+	    R1 = i_comments(R0, I0),
+	    R2 = i_kind(Kind, R1, I0),
+	    {i_1_expr(R2, I0), hd(R1)}
     end.
             
 i_binary_specifiers(R0, I) ->
@@ -364,13 +364,13 @@ i_binary_specifiers(R0, I) ->
 
 i_binary_specifier(R0, I) ->
     case i_sniff(R0) of
-        #token{kind='('} ->
-            {R1, _A} = i_expr(R0, I, none), % funkar detta med t.ex. (1+4):8? testa!
-			R1;
-		#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==atom ->
-            R1 = i_comments(R0, I),
-			R2 = i_kind(Kind, R1, I),
-            i_1_expr(R2, I)
+	#token{kind='('} ->
+	    {R1, _A} = i_expr(R0, I, none), % funkar detta med t.ex. (1+4):8? testa!
+	    R1;
+	#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==atom; Kind==char ->
+	    R1 = i_comments(R0, I),
+	    R2 = i_kind(Kind, R1, I),
+	    i_1_expr(R2, I)
     end.
 
 i_predicate_list(R, I) ->
