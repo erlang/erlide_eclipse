@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            category="org.erlide.wrangler.refactoring"
+            categoryId="org.erlide.wrangler.refactoring"
+            id="org.erlide.wrangler.refactoring.renameModule"
+            name="Rename module">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.erlide.wrangler.refactoring.renameModule"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+R M">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="org.erlide.wranglerrefactoring.erlideContributor"
+            targetID="org.erlide.ui.editors.erl.ErlangEditor">
+         <action
+               class="org.erlide.wrangler.refactoring.core.renamemodule.RenameModuleAction"
+               definitionId="org.erlide.wrangler.refactoring.renameModule"
+               id="org.erlide.wranglerrefactoring.renamemodule"
+               label="Rename &amp;module..."
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+         </action>
+      </editorContribution>
+   </extension>
+
+</fragment>
