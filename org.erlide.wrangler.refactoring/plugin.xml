@@ -114,19 +114,16 @@
             name="Refactoring">
       </category>
       <command
-            category="org.erlide.wrangler.refactoring"
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.renameVariable"
             name="Rename variable">
       </command>
       <command
-            category="org.erlide.wrangler.refactoring"
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.renameFunction"
             name="Rename function">
       </command>
       <command
-            category="org.erlide.wrangler.refactoring"
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.moveFunction"
             name="Move function">
