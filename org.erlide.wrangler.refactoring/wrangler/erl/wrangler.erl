@@ -652,8 +652,8 @@ try_refactoring(Mod, Fun, Args) ->
     case catch apply(Mod, Fun, Args) of 
 	{ok, Res} ->
 	    {ok, Res};
-	{error, Reason} -> {error, Reason};
-	_  -> {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
+	{error, Reason} -> {error, Reason}
+	%%_  -> {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
     end.
 
     
