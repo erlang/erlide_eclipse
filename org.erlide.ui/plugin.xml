@@ -719,7 +719,7 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <commonFilter
             description="Hide non-Erlang projects"
-            id="org.erlide.ui.navigator.filters.hideNonJavaProjects"
+            id="org.erlide.ui.navigator.filters.hideNonErlangProjects"
             name="Hide non-Erlang projects">
          <filterExpression>
             <not>
