@@ -65,7 +65,7 @@ public class ErlideBuilder {
 
 	public static void loadModule(final IProject project, final String module) {
 		try {
-			for (Backend b : ErlangCore.getBackendManager().getExecution(
+			for (Backend b : ErlangCore.getBackendManager().getExecutionBackends(
 					project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());

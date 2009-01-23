@@ -85,14 +85,6 @@ public class ErlTextHover implements ITextHover,
 		}
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		// final IProject proj = (IProject) fModule.getProject().getResource();
-		// BuildBackend b;
-		// try {
-		// b = BackendManager.getDefault().getBuild(proj);
-		// } catch (final BackendException e1) {
-		// e1.printStackTrace();
-		// return null;
-		// }
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(fModule), fImports);

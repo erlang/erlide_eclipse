@@ -181,12 +181,12 @@ public final class BackendManager implements IEpmdListener {
 		}
 	}
 
-	synchronized public Set<Backend> getExecution(final IProject project) {
+	synchronized public Set<Backend> getExecutionBackends(final IProject project) {
 		Set<Backend> bs = fBackends.get(project);
 		if (bs == null) {
 			return Collections.emptySet();
 		}
-		return new HashSet<Backend>(bs);
+		return Collections.unmodifiableSet(bs);
 	}
 
 	public static RuntimeInfo getRuntimeInfo(final IProject project) {

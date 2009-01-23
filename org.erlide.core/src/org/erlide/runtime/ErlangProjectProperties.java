@@ -284,7 +284,7 @@ public class ErlangProjectProperties {
 	public void setUsePathZ(final boolean pz) {
 		final boolean z = Boolean.parseBoolean(fUsePathZ);
 		if (z != pz) {
-			for (final Backend b : ErlangCore.getBackendManager().getExecution(
+			for (final Backend b : ErlangCore.getBackendManager().getExecutionBackends(
 					project)) {
 
 				final String p = project.getLocation().append(fOutputDir)
