@@ -19,11 +19,15 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.jinterface.ErlUtils;
+import org.erlide.jinterface.ParserException;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		IReconcilingStrategyExtension {
@@ -53,10 +57,26 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 		reconcileModel(fDoc, dirtyRegion);
 	}
 
+	@SuppressWarnings("boxing")
 	private OtpErlangObject mkReconcileMsg(final String string,
 			final DirtyRegion dirtyRegion, final IRegion subRegion) {
-		final OtpErlangAtom cmd = new OtpErlangAtom(string);
-		return cmd;
+		OtpErlangObject msg = new OtpErlangString(
+				"reconcile (message build failed)");
+		try {
+			String text = dirtyRegion.getText();
+			if (text == null) {
+				text = "";
+			}
+			msg = ErlUtils.format("{~a, {~i, ~i, ~a, ~b}, {~i, ~i}}", string,
+					dirtyRegion.getOffset(), dirtyRegion.getLength(),
+					dirtyRegion.getType(), text, subRegion.getOffset(),
+					subRegion.getLength());
+		} catch (ParserException e) {
+			e.printStackTrace();
+		} catch (RpcException e) {
+			e.printStackTrace();
+		}
+		return msg;
 	}
 
 	public void reconcile(final IRegion partition) {
@@ -99,6 +119,9 @@ public class ErlReconcilerStrategy implements IReconcilingStrategy,
 	}
 
 	private void notify(final OtpErlangObject msg) {
+		if (System.getProperty("erlide.reconcile.debug") != null) {
+			ErlLogger.debug("RECONCILE %s", msg.toString());
+		}
 		ErlangCore.getBackendManager().getIdeBackend().send("erlide_code_db",
 				msg);
 	}
