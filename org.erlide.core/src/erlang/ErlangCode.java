@@ -27,7 +27,7 @@ public class ErlangCode {
 				Thread.sleep(200);
 				i--;
 			} while (!(r instanceof OtpErlangPid) && i > 0);
-			if (i == 0) {
+			if (!(r instanceof OtpErlangPid)) {
 				ErlLogger.error("code server did not start in time for %s",
 						backend.getInfo().getName());
 				return false;
