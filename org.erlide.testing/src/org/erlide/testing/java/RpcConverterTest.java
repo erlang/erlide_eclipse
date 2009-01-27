@@ -18,6 +18,8 @@ import org.erlide.jinterface.rpc.IConvertible;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Signature;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -35,6 +37,16 @@ public class RpcConverterTest {
 			throws RpcException {
 		OtpErlangObject result = RpcConverter.java2erlang(o, sig);
 		assertTrue(expect.equals(result));
+	}
+
+	@Before
+	public void setUp() {
+		Signature.setUseCache(false);
+	}
+
+	@After
+	public void tearDown() {
+		Signature.setUseCache(true);
 	}
 
 	@SuppressWarnings("boxing")

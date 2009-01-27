@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class Signature {
 	private static final Map<String, Signature[]> cache = new HashMap<String, Signature[]>();
+	private static boolean useCache = true;
 
 	public char kind = 'x';
 	public Signature[] content = null;
@@ -53,9 +54,12 @@ public class Signature {
 			return null;
 			// throw new RpcException("Signature is null");
 		}
-		Signature[] result = cache.get(signature);
-		if (result != null) {
-			return result;
+		Signature[] result;
+		if (useCache) {
+			result = cache.get(signature);
+			if (result != null) {
+				return result;
+			}
 		}
 		final List<Signature> type = new ArrayList<Signature>();
 		while (signature.length() > 0) {
@@ -64,7 +68,9 @@ public class Signature {
 			signature = e.rest;
 		}
 		result = type.toArray(new Signature[type.size()]);
-		cache.put(signature, result);
+		if (useCache) {
+			cache.put(signature, result);
+		}
 		return result;
 	}
 
@@ -99,6 +105,11 @@ public class Signature {
 		} else {
 			throw new RpcException("unknown signature code: " + crt);
 		}
+	}
+
+	/** To be used only by the unit tests. */
+	public static void setUseCache(boolean use) {
+		useCache = use;
 	}
 
 }
