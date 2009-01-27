@@ -255,9 +255,8 @@ public class OtpEpmd {
 
 			if (n < 0) {
 				// this was an r3 node => not a failure (yet)
-				if (s != null) {
-					s.close();
-				}
+
+				s.close();
 				throw new IOException("Nameserver not responding on "
 						+ node.host() + " when looking up " + node.alive());
 			}
@@ -334,9 +333,7 @@ public class OtpEpmd {
 			int n = s.getInputStream().read(tmpbuf);
 
 			if (n < 0) {
-				if (s != null) {
-					s.close();
-				}
+				s.close();
 				if (traceLevel >= traceThreshold) {
 					System.out.println("<- (no response)");
 				}
