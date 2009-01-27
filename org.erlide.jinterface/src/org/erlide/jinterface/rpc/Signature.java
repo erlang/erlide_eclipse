@@ -10,9 +10,13 @@
 package org.erlide.jinterface.rpc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Signature {
+	private static final Map<String, Signature[]> cache = new HashMap<String, Signature[]>();
+
 	public char kind = 'x';
 	public Signature[] content = null;
 
@@ -43,18 +47,25 @@ public class Signature {
 		return this.kind + res;
 	}
 
-	public static Signature[] parse(String signature) throws RpcException {
-		final List<Signature> type = new ArrayList<Signature>();
+	public static synchronized Signature[] parse(String signature)
+			throws RpcException {
 		if (signature == null) {
 			return null;
 			// throw new RpcException("Signature is null");
 		}
+		Signature[] result = cache.get(signature);
+		if (result != null) {
+			return result;
+		}
+		final List<Signature> type = new ArrayList<Signature>();
 		while (signature.length() > 0) {
 			final ParseState e = parseOne(signature);
 			type.add(e.sign);
 			signature = e.rest;
 		}
-		return type.toArray(new Signature[type.size()]);
+		result = type.toArray(new Signature[type.size()]);
+		cache.put(signature, result);
+		return result;
 	}
 
 	private static class ParseState {
