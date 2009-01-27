@@ -42,6 +42,9 @@
    <feature url="features/org.erlide_0.4.3.5.jar" id="org.erlide" version="0.4.3.5">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.4.3.6.jar" id="org.erlide" version="0.4.3.6">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="Stable builds">
       <description>
          These builds have been around a little longer and are reasonably stable.
