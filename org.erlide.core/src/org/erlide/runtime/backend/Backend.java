@@ -392,12 +392,13 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		Signature[] type = Signature.parse(signature);
 		if (type == null) {
 			type = new Signature[args0.length];
-			for (int i = 0; i < type.length; i++) {
+			for (int i = 0; i < args0.length; i++) {
 				type[i] = new Signature('x');
 			}
 		}
 		if (type.length != args0.length) {
-			throw new RpcException("Signature doesn't match parameter number");
+			throw new RpcException("Signature doesn't match parameter number: "
+					+ type.length + "/" + args0.length);
 		}
 		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
 		for (int i = 0; i < args.length; i++) {

@@ -48,11 +48,10 @@ public class Signature {
 		return this.kind + res;
 	}
 
-	public static synchronized Signature[] parse(String signature)
+	public static synchronized Signature[] parse(final String signature)
 			throws RpcException {
 		if (signature == null) {
-			return null;
-			// throw new RpcException("Signature is null");
+			return new Signature[0];
 		}
 		Signature[] result;
 		if (useCache) {
@@ -61,11 +60,12 @@ public class Signature {
 				return result;
 			}
 		}
+		String sign = signature;
 		final List<Signature> type = new ArrayList<Signature>();
-		while (signature.length() > 0) {
-			final ParseState e = parseOne(signature);
+		while (sign.length() > 0) {
+			final ParseState e = parseOne(sign);
 			type.add(e.sign);
-			signature = e.rest;
+			sign = e.rest;
 		}
 		result = type.toArray(new Signature[type.size()]);
 		if (useCache) {
