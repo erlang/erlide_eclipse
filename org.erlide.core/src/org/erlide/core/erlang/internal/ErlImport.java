@@ -4,11 +4,11 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.util.ErlangFunction;
+import org.erlide.jinterface.JInterfaceFactory;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlImport extends ErlImportExport implements IErlImport {
 
@@ -47,6 +47,7 @@ public class ErlImport extends ErlImportExport implements IErlImport {
 	@Override
 	public OtpErlangObject toErlangObject() {
 		final OtpErlangObject funcs = super.toErlangObject();
-		return new OtpErlangTuple(new OtpErlangAtom(getImportModule()), funcs);
+		return JInterfaceFactory.mkTuple(new OtpErlangAtom(getImportModule()),
+				funcs);
 	}
 }

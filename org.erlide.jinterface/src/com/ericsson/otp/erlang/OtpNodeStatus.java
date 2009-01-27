@@ -34,9 +34,8 @@ package com.ericsson.otp.erlang;
  * <p>
  * <b> Note that this class is likely to change in the near future </b>
  * </p>
- */
+ **/
 public class OtpNodeStatus {
-
 	public OtpNodeStatus() {
 	}
 
@@ -54,7 +53,7 @@ public class OtpNodeStatus {
 	 *            exception that was raised causing the event in question (may
 	 *            be null).
 	 * 
-	 */
+	 **/
 	public void remoteStatus(String node, boolean up, Object info) {
 	}
 
@@ -71,7 +70,7 @@ public class OtpNodeStatus {
 	 *            additional info that may be available, for example an
 	 *            exception that was raised causing the event in question (may
 	 *            be null).
-	 */
+	 **/
 	public void localStatus(String node, boolean up, Object info) {
 	}
 
@@ -89,7 +88,7 @@ public class OtpNodeStatus {
 	 *            additional info that may be available, for example an
 	 *            exception that was raised causing the event in question (may
 	 *            be null).
-	 */
+	 **/
 	public void connAttempt(String node, boolean incoming, Object info) {
 	}
 }

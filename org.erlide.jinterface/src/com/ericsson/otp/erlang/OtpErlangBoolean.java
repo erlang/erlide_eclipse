@@ -17,13 +17,14 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang booleans, which are special cases of
  * atoms with values 'true' and 'false'.
- */
-public class OtpErlangBoolean extends OtpErlangAtom {
-
+ **/
+public class OtpErlangBoolean extends OtpErlangAtom implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = 1087178844844988393L;
 
@@ -31,8 +32,8 @@ public class OtpErlangBoolean extends OtpErlangAtom {
 	 * Create a boolean from the given value
 	 * 
 	 * @param t
-	 * 		the boolean value to represent as an atom.
-	 */
+	 *            the boolean value to represent as an atom.
+	 **/
 	public OtpErlangBoolean(boolean t) {
 		super(t);
 	}
@@ -44,9 +45,9 @@ public class OtpErlangBoolean extends OtpErlangAtom {
 	 * atom values, the boolean will have the value false.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang atom.
-	 */
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang atom.
+	 **/
 	public OtpErlangBoolean(OtpInputStream buf) throws OtpErlangDecodeException {
 		super(buf);
 	}

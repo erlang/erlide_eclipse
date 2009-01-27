@@ -17,12 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang integral types.
- */
-public class OtpErlangUInt extends OtpErlangLong {
-
+ **/
+public class OtpErlangUInt extends OtpErlangLong implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = -1450956122937471885L;
 
@@ -30,15 +31,15 @@ public class OtpErlangUInt extends OtpErlangLong {
 	 * Create an Erlang integer from the given value.
 	 * 
 	 * @param i
-	 * 		the non-negative int value to use.
+	 *            the non-negative int value to use.
 	 * 
 	 * @exception OtpErlangRangeException
-	 * 		if the value is negative.
-	 */
+	 *                if the value is negative.
+	 **/
 	public OtpErlangUInt(int i) throws OtpErlangRangeException {
 		super(i);
 
-		/* final int j = */uIntValue();
+		int j = uIntValue();
 	}
 
 	/**
@@ -46,20 +47,20 @@ public class OtpErlangUInt extends OtpErlangLong {
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded value.
+	 *            the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang integer.
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang integer.
 	 * 
 	 * @exception OtpErlangRangeException
-	 * 		if the value is too large to be represented as an int, or the value
-	 * 		is negative.
-	 */
+	 *                if the value is too large to be represented as an int, or
+	 *                the value is negative.
+	 **/
 	public OtpErlangUInt(OtpInputStream buf) throws OtpErlangRangeException,
 			OtpErlangDecodeException {
 		super(buf);
 
-		/* final int j = */uIntValue();
+		int j = uIntValue();
 	}
 }

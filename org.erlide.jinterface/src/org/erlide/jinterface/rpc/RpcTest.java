@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-
 public class RpcTest {
 
 	public RpcTest() {

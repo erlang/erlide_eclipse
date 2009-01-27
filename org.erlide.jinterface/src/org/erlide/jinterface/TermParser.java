@@ -109,7 +109,7 @@ public class TermParser {
 
 		@Override
 		public String toString() {
-			return "<" + kind.toString() + ": !" + text + "!>";
+			return "<" + this.kind.toString() + ": !" + this.text + "!>";
 		}
 
 		public static Token nextToken(String s) {

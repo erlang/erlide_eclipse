@@ -24,13 +24,12 @@ import java.net.UnknownHostException;
  * Represents a remote OTP node. It acts only as a container for the nodename
  * and other node-specific information that is needed by the
  * {@link OtpConnection} class.
- */
+ **/
 public class OtpPeer extends AbstractNode {
-
 	int distChoose = 0; /*
-	 * this is set by OtpConnection and is the highest
-	 * common protocol version we both support
-	 */
+						 * this is set by OtpConnection and is the highest
+						 * common protocol version we both support
+						 */
 
 	OtpPeer() {
 		super();
@@ -41,7 +40,7 @@ public class OtpPeer extends AbstractNode {
 	 * 
 	 * @param node
 	 *            the name of the node.
-	 */
+	 **/
 	public OtpPeer(String node) {
 		super(node);
 	}
@@ -63,8 +62,8 @@ public class OtpPeer extends AbstractNode {
 	 * @exception OtpAuthException
 	 *                if the connection was refused by the remote node.
 	 * 
-	 * @deprecated Use the corresponding method in {@link OtpSelf} instead.
-	 */
+	 @deprecated Use the corresponding method in {@link OtpSelf} instead.
+	 **/
 	@Deprecated
 	public OtpConnection connect(OtpSelf self) throws IOException,
 			UnknownHostException, OtpAuthException {

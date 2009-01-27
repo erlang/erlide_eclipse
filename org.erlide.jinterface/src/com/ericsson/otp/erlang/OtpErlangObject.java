@@ -22,9 +22,8 @@ import java.io.Serializable;
 /**
  * Base class of the Erlang data type classes. This class is used to represent
  * an arbitrary Erlang term.
- */
+ **/
 public abstract class OtpErlangObject implements Serializable, Cloneable {
-
 	// don't change this!
 	static final long serialVersionUID = -8435938572339430044L;
 
@@ -32,7 +31,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
 	 * @return the printable representation of the object. This is usually
 	 *         similar to the representation used by Erlang for the same type of
 	 *         object.
-	 */
+	 **/
 	@Override
 	public abstract String toString();
 
@@ -43,7 +42,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
 	 * 
 	 * @param buf
 	 *            an output stream to which the encoded term should be written.
-	 */
+	 **/
 	public abstract void encode(OtpOutputStream buf);
 
 	/**
@@ -60,7 +59,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
 	 * @exception OtpErlangDecodeException
 	 *                if the stream does not contain a valid representation of
 	 *                an Erlang term.
-	 */
+	 **/
 	public static OtpErlangObject decode(OtpInputStream buf)
 			throws OtpErlangDecodeException {
 		return buf.read_any();
@@ -74,7 +73,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
 	 *            the object to compare to.
 	 * 
 	 * @return true if the objects are identical.
-	 */
+	 **/
 	@Override
 	public abstract boolean equals(Object o);
 
@@ -82,7 +81,7 @@ public abstract class OtpErlangObject implements Serializable, Cloneable {
 	public Object clone() {
 		try {
 			return super.clone();
-		} catch (final CloneNotSupportedException e) {
+		} catch (CloneNotSupportedException e) {
 			/* cannot happen */
 			throw new InternalError(e.toString());
 		}

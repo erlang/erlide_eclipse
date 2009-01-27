@@ -40,17 +40,14 @@ import java.net.UnknownHostException;
  * 
  * <pre>
  * OtpSelf self = new OtpSelf(&quot;client&quot;, &quot;authcookie&quot;); // identify self
- * 
  * OtpPeer other = new OtpPeer(&quot;server&quot;); // identify peer
  * 
  * OtpConnection conn = self.connect(other); // connect to peer
  * </pre>
  * 
- */
+ **/
 public class OtpSelf extends OtpLocalNode {
-
 	private ServerSocket sock;
-
 	private OtpErlangPid pid;
 
 	/**
@@ -69,7 +66,7 @@ public class OtpSelf extends OtpLocalNode {
 	 * @param node
 	 *            the name of this node.
 	 * 
-	 */
+	 **/
 	public OtpSelf(String node) throws IOException {
 		this(node, defaultCookie, 0);
 	}
@@ -83,7 +80,7 @@ public class OtpSelf extends OtpLocalNode {
 	 * @param cookie
 	 *            the authorization cookie that will be used by this node when
 	 *            it communicates with other nodes.
-	 */
+	 **/
 	public OtpSelf(String node, String cookie) throws IOException {
 		this(node, cookie, 0);
 	}
@@ -93,13 +90,12 @@ public class OtpSelf extends OtpLocalNode {
 
 		sock = new ServerSocket(port);
 
-		if (port != 0) {
+		if (port != 0)
 			this.port = port;
-		} else {
+		else
 			this.port = sock.getLocalPort();
-		}
 
-		pid = createPid();
+		this.pid = createPid();
 	}
 
 	/**
@@ -110,7 +106,7 @@ public class OtpSelf extends OtpLocalNode {
 	 * 
 	 * @return the Erlang PID that will be used as the sender id in all
 	 *         anonymous messages sent by this node.
-	 */
+	 **/
 	public OtpErlangPid pid() {
 		return pid;
 	}
@@ -137,11 +133,10 @@ public class OtpSelf extends OtpLocalNode {
 	 * 
 	 * @exception java.io.IOException
 	 *                if the port mapper could not be contacted.
-	 */
+	 **/
 	public boolean publishPort() throws IOException {
-		if (getEpmd() != null) {
+		if (getEpmd() != null)
 			return false; // already published
-		}
 
 		OtpEpmd.publishPort(this);
 		return (getEpmd() != null);
@@ -150,17 +145,16 @@ public class OtpSelf extends OtpLocalNode {
 	/**
 	 * Unregister the server node's name and port number from the Erlang port
 	 * mapper, thus preventing any new connections from remote nodes.
-	 */
+	 **/
 	public void unPublishPort() {
 		// unregister with epmd
 		OtpEpmd.unPublishPort(this);
 
 		// close the local descriptor (if we have one)
 		try {
-			if (super.epmd != null) {
+			if (super.epmd != null)
 				super.epmd.close();
-			}
-		} catch (final IOException e) {/* ignore close errors */
+		} catch (IOException e) {/* ignore close errors */
 		}
 		super.epmd = null;
 	}
@@ -178,7 +172,7 @@ public class OtpSelf extends OtpLocalNode {
 	 * @exception OtpAuthException
 	 *                if a remote node attempted to connect, but was not
 	 *                authorized to connect.
-	 */
+	 **/
 	public OtpConnection accept() throws IOException, OtpAuthException {
 		Socket newsock = null;
 
@@ -186,12 +180,11 @@ public class OtpSelf extends OtpLocalNode {
 			try {
 				newsock = sock.accept();
 				return new OtpConnection(this, newsock);
-			} catch (final IOException e) {
+			} catch (IOException e) {
 				try {
-					if (newsock != null) {
+					if (newsock != null)
 						newsock.close();
-					}
-				} catch (final IOException f) {/* ignore close errors */
+				} catch (IOException f) {/* ignore close errors */
 				}
 				throw e;
 			}
@@ -214,7 +207,7 @@ public class OtpSelf extends OtpLocalNode {
 	 * 
 	 * @exception OtpAuthException
 	 *                if the connection was refused by the remote node.
-	 */
+	 **/
 	public OtpConnection connect(OtpPeer other) throws IOException,
 			UnknownHostException, OtpAuthException {
 		return new OtpConnection(this, other);

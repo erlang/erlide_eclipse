@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.assertTrue;
 
+import org.erlide.jinterface.JInterfaceFactory;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -27,9 +28,9 @@ public class RpcTest extends AbstractErlangTest {
 		OtpErlangAtom a = new OtpErlangAtom("1");
 		OtpErlangLong b = new OtpErlangLong(2);
 		OtpErlangLong c = new OtpErlangLong(3);
-		OtpErlangList l1 = new OtpErlangList(a, b, c);
+		OtpErlangList l1 = JInterfaceFactory.mkList(a, b, c);
 
-		OtpErlangList l2 = new OtpErlangList(c, b, a);
+		OtpErlangList l2 = JInterfaceFactory.mkList(c, b, a);
 		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 		assertTrue(rr.equals(l2));
 	}

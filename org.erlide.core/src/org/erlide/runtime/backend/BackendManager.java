@@ -228,6 +228,8 @@ public final class BackendManager implements IEpmdListener {
 						} catch (BackendException e) {
 							// erlideRuntime can't be null here
 						}
+					} else {
+
 					}
 				}
 			}

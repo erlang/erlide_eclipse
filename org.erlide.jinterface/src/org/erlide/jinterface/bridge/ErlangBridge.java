@@ -72,12 +72,12 @@ public class ErlangBridge {
 				this.module = intf;
 			}
 			try {
-				lnode = new OtpNode("dummy");
+				this.lnode = new OtpNode("dummy");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			// TODO where is the mbox closed?
-			mbox = lnode.createMbox();
+			this.mbox = this.lnode.createMbox();
 		}
 
 		public Object invoke(Object proxy, Method method, Object[] args)
@@ -87,13 +87,13 @@ public class ErlangBridge {
 			for (int i = 0; i < args.length; i++) {
 				eargs[i + 1] = RpcConverter.java2erlang(args[i], "x");
 			}
-			OtpErlangObject msg = RpcUtil.buildRpcCall(mbox.self(), module,
-					method.getName(), eargs);
+			OtpErlangObject msg = RpcUtil.buildRpcCall(this.mbox.self(),
+					this.module, method.getName(), eargs);
 
 			System.out.println("-->" + msg);
 
 			// mbox.send("rex", node, msg);
-			OtpErlangTuple res = (OtpErlangTuple) mbox.receive(5000);
+			OtpErlangTuple res = (OtpErlangTuple) this.mbox.receive(5000);
 			if (res == null) {
 				return null;
 			}

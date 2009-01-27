@@ -7,6 +7,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -94,7 +95,7 @@ public class ErlideScanner {
 	 * @return
 	 * @throws BackendException
 	 */
-	private static final OtpErlangTuple TUPLE00 = new OtpErlangTuple(
+	private static final OtpErlangTuple TUPLE00 = JInterfaceFactory.mkTuple(
 			new OtpErlangLong(0), new OtpErlangLong(0));
 
 	public static List<ErlToken> lightScanString(final String string,

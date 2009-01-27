@@ -62,52 +62,37 @@ import java.net.UnknownHostException;
  * Instances of this class cannot be created directly, use one of the subclasses
  * instead.
  * </p>
- */
+ **/
 public class AbstractNode {
-
 	static String localHost = null;
-
 	String node;
-
 	String host;
-
 	String alive;
-
 	String cookie;
-
 	static String defaultCookie = null;
 
 	// Node types
 	static final int NTYPE_R6 = 110; // 'n' post-r5, all nodes
-
 	static final int NTYPE_R4_ERLANG = 109; // 'm' Only for source compatibility
-
 	static final int NTYPE_R4_HIDDEN = 104; // 'h' Only for source compatibility
 
 	// Node capability flags
 	static final int dFlagPublished = 1;
-
 	static final int dFlagAtomCache = 2;
-
 	static final int dFlagExtendedReferences = 4;
-
 	static final int dFlagDistMonitor = 8;
-
 	static final int dFlagFunTags = 16;
-
 	static final int dFlagExtendedPidsPorts = 256;
+	static final int dFlagBitBinaries = 1024;
+	static final int dFlagNewFloats = 2048;
 
 	int ntype = NTYPE_R6;
-
 	int proto = 0; // tcp/ip
-
 	int distHigh = 5; // Cannot talk to nodes before R6
-
 	int distLow = 5; // Cannot talk to nodes before R6
-
 	int creation = 0;
-
-	int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts;
+	int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
+			| dFlagBitBinaries | dFlagNewFloats;
 
 	/* initialize hostname and default cookie */
 	static {
@@ -117,31 +102,29 @@ public class AbstractNode {
 			 * Make sure it's a short name, i.e. strip of everything after first
 			 * '.'
 			 */
-			final int dot = localHost.indexOf(".");
-			if (dot != -1) {
+			int dot = localHost.indexOf(".");
+			if (dot != -1)
 				localHost = localHost.substring(0, dot);
-			}
-		} catch (final UnknownHostException e) {
+		} catch (UnknownHostException e) {
 			localHost = "localhost";
 		}
 
-		final String dotCookieFilename = System.getProperty("user.home")
+		String dotCookieFilename = System.getProperty("user.home")
 				+ File.separator + ".erlang.cookie";
 		BufferedReader br = null;
 
 		try {
-			final File dotCookieFile = new File(dotCookieFilename);
+			File dotCookieFile = new File(dotCookieFilename);
 
 			br = new BufferedReader(new FileReader(dotCookieFile));
 			defaultCookie = br.readLine().trim();
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			defaultCookie = "";
 		} finally {
 			try {
-				if (br != null) {
+				if (br != null)
 					br.close();
-				}
-			} catch (final IOException e) {
+			} catch (IOException e) {
 			}
 		}
 	}
@@ -151,18 +134,18 @@ public class AbstractNode {
 
 	/**
 	 * Create a node with the given name and the default cookie.
-	 */
+	 **/
 	protected AbstractNode(String node) {
 		this(node, defaultCookie);
 	}
 
 	/**
 	 * Create a node with the given name and cookie.
-	 */
+	 **/
 	protected AbstractNode(String name, String cookie) {
 		this.cookie = cookie;
 
-		final int i = name.indexOf('@', 0);
+		int i = name.indexOf('@', 0);
 		if (i < 0) {
 			alive = name;
 			host = localHost;
@@ -182,7 +165,7 @@ public class AbstractNode {
 	 * Get the name of this node.
 	 * 
 	 * @return the name of the node represented by this object.
-	 */
+	 **/
 	public String node() {
 		return node;
 	}
@@ -193,7 +176,7 @@ public class AbstractNode {
 	 * the part of the nodename following the '@'.
 	 * 
 	 * @return the hostname component of the nodename.
-	 */
+	 **/
 	public String host() {
 		return host;
 	}
@@ -204,7 +187,7 @@ public class AbstractNode {
 	 * the part of the nodename preceding the '@'.
 	 * 
 	 * @return the alivename component of the nodename.
-	 */
+	 **/
 	public String alive() {
 		return alive;
 	}
@@ -213,7 +196,7 @@ public class AbstractNode {
 	 * Get the authorization cookie used by this node.
 	 * 
 	 * @return the authorization cookie used by this node.
-	 */
+	 **/
 	public String cookie() {
 		return cookie;
 	}
@@ -239,7 +222,7 @@ public class AbstractNode {
 	}
 
 	// package scope
-	synchronized int creation() {
+	int creation() {
 		return creation;
 	}
 
@@ -247,9 +230,9 @@ public class AbstractNode {
 	 * Set the authorization cookie used by this node.
 	 * 
 	 * @return the previous authorization cookie used by this node.
-	 */
+	 **/
 	public String setCookie(String cookie) {
-		final String prev = this.cookie;
+		String prev = this.cookie;
 		this.cookie = cookie;
 		return prev;
 	}

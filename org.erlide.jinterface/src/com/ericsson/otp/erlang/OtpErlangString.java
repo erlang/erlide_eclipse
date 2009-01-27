@@ -17,12 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang strings.
- */
-public class OtpErlangString extends OtpErlangObject {
-
+ **/
+public class OtpErlangString extends OtpErlangObject implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = -7053595217604929233L;
 
@@ -30,7 +31,7 @@ public class OtpErlangString extends OtpErlangObject {
 
 	/**
 	 * Create an Erlang string from the given string.
-	 */
+	 **/
 	public OtpErlangString(String str) {
 		this.str = str;
 	}
@@ -40,12 +41,12 @@ public class OtpErlangString extends OtpErlangObject {
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded string.
+	 *            the stream containing the encoded string.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang string.
-	 */
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang string.
+	 **/
 	public OtpErlangString(OtpInputStream buf) throws OtpErlangDecodeException {
 		str = buf.read_string();
 	}
@@ -54,10 +55,10 @@ public class OtpErlangString extends OtpErlangObject {
 	 * Get the actual string contained in this object.
 	 * 
 	 * @return the raw string contained in this object, without regard to Erlang
-	 * 	quoting rules.
+	 *         quoting rules.
 	 * 
 	 * @see #toString
-	 */
+	 **/
 	public String stringValue() {
 		return str;
 	}
@@ -68,7 +69,7 @@ public class OtpErlangString extends OtpErlangObject {
 	 * @return the string contained in this object, quoted.
 	 * 
 	 * @see #stringValue
-	 */
+	 **/
 	@Override
 	public String toString() {
 		return "\"" + str + "\"";
@@ -78,8 +79,9 @@ public class OtpErlangString extends OtpErlangObject {
 	 * Convert this string to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 * 		an output stream to which the encoded string should be written.
-	 */
+	 *            an output stream to which the encoded string should be
+	 *            written.
+	 **/
 	@Override
 	public void encode(OtpOutputStream buf) {
 		buf.write_string(str);
@@ -91,24 +93,19 @@ public class OtpErlangString extends OtpErlangObject {
 	 * OtpErlangStrings with each other and with Strings.
 	 * 
 	 * @param o
-	 * 		the OtpErlangString or String to compare to.
+	 *            the OtpErlangString or String to compare to.
 	 * 
 	 * @return true if the strings consist of the same sequence of characters,
-	 * 	false otherwise.
-	 */
+	 *         false otherwise.
+	 **/
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof String) {
-			return str.compareTo((String) o) == 0;
+			return this.str.compareTo((String) o) == 0;
 		} else if (o instanceof OtpErlangString) {
-			return str.compareTo(((OtpErlangString) o).str) == 0;
+			return this.str.compareTo(((OtpErlangString) o).str) == 0;
 		}
 
 		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return str.hashCode();
 	}
 }

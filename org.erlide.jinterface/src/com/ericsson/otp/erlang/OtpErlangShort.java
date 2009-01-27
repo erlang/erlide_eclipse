@@ -17,12 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang integral types.
- */
-public class OtpErlangShort extends OtpErlangLong {
-
+ **/
+public class OtpErlangShort extends OtpErlangLong implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = 7162345156603088099L;
 
@@ -30,8 +31,8 @@ public class OtpErlangShort extends OtpErlangLong {
 	 * Create an Erlang integer from the given value.
 	 * 
 	 * @param s
-	 * 		the short value to use.
-	 */
+	 *            the short value to use.
+	 **/
 	public OtpErlangShort(short s) {
 		super(s);
 	}
@@ -41,20 +42,20 @@ public class OtpErlangShort extends OtpErlangLong {
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded value.
+	 *            the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang integer.
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang integer.
 	 * 
 	 * @exception OtpErlangRangeException
-	 * 		if the value is too large to be represented as a short.
-	 */
+	 *                if the value is too large to be represented as a short.
+	 **/
 	public OtpErlangShort(OtpInputStream buf) throws OtpErlangRangeException,
 			OtpErlangDecodeException {
 		super(buf);
 
-		/* final short j = */shortValue();
+		short j = shortValue();
 	}
 
 }

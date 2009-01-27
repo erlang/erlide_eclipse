@@ -17,19 +17,19 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang refs. There are two styles of Erlang
  * refs, old style (one id value) and new style (array of id values). This class
  * manages both types.
- */
-public class OtpErlangRef extends OtpErlangObject {
-
+ **/
+public class OtpErlangRef extends OtpErlangObject implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = -7022666480768586521L;
 
 	private String node;
-
 	private int creation;
 
 	// old style refs have one 18-bit id
@@ -40,17 +40,17 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Create a unique Erlang ref belonging to the local node.
 	 * 
 	 * @param self
-	 * 		the local node.
+	 *            the local node.
 	 * 
-	 * @deprecated use OtpLocalNode:createRef() instead
-	 */
+	 @deprecated use OtpLocalNode:createRef() instead
+	 **/
 	@Deprecated
 	public OtpErlangRef(OtpLocalNode self) {
-		final OtpErlangRef r = self.createRef();
+		OtpErlangRef r = self.createRef();
 
-		ids = r.ids;
-		creation = r.creation;
-		node = r.node;
+		this.ids = r.ids;
+		this.creation = r.creation;
+		this.node = r.node;
 	}
 
 	/**
@@ -58,37 +58,38 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded ref.
+	 *            the stream containing the encoded ref.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang ref.
-	 */
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang ref.
+	 **/
 	public OtpErlangRef(OtpInputStream buf) throws OtpErlangDecodeException {
-		final OtpErlangRef r = buf.read_ref();
+		OtpErlangRef r = buf.read_ref();
 
-		node = r.node();
-		creation = r.creation();
+		this.node = r.node();
+		this.creation = r.creation();
 
-		ids = r.ids();
+		this.ids = r.ids();
 	}
 
 	/**
 	 * Create an old style Erlang ref from its components.
 	 * 
 	 * @param node
-	 * 		the nodename.
+	 *            the nodename.
 	 * 
 	 * @param id
-	 * 		an arbitrary number. Only the low order 18 bits will be used.
+	 *            an arbitrary number. Only the low order 18 bits will be used.
 	 * 
 	 * @param creation
-	 * 		another arbitrary number. Only the low order 2 bits will be used.
-	 */
+	 *            another arbitrary number. Only the low order 2 bits will be
+	 *            used.
+	 **/
 	public OtpErlangRef(String node, int id, int creation) {
 		this.node = node;
-		ids = new int[1];
-		ids[0] = id & 0x3ffff; // 18 bits
+		this.ids = new int[1];
+		this.ids[0] = id & 0x3ffff; // 18 bits
 		this.creation = creation & 0x03; // 2 bits
 	}
 
@@ -96,17 +97,18 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Create a new style Erlang ref from its components.
 	 * 
 	 * @param node
-	 * 		the nodename.
+	 *            the nodename.
 	 * 
 	 * @param ids
-	 * 		an array of arbitrary numbers. Only the low order 18 bits of the
-	 * 		first number will be used. If the array contains only one number, an
-	 * 		old style ref will be written instead. At most three numbers will be
-	 * 		read from the array.
+	 *            an array of arbitrary numbers. Only the low order 18 bits of
+	 *            the first number will be used. If the array contains only one
+	 *            number, an old style ref will be written instead. At most
+	 *            three numbers will be read from the array.
 	 * 
 	 * @param creation
-	 * 		another arbitrary number. Only the low order 2 bits will be used.
-	 */
+	 *            another arbitrary number. Only the low order 2 bits will be
+	 *            used.
+	 **/
 	public OtpErlangRef(String node, int[] ids, int creation) {
 		this.node = node;
 		this.creation = creation & 0x03; // 2 bits
@@ -118,9 +120,8 @@ public class OtpErlangRef extends OtpErlangObject {
 		this.ids[1] = 0;
 		this.ids[2] = 0;
 
-		if (len > 3) {
+		if (len > 3)
 			len = 3;
-		}
 		System.arraycopy(ids, 0, this.ids, 0, len);
 		this.ids[0] &= 0x3ffff; // only 18 significant bits in first number
 	}
@@ -130,7 +131,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * If this is a new style ref, the first id number is returned.
 	 * 
 	 * @return the id number from the ref.
-	 */
+	 **/
 	public int id() {
 		return ids[0];
 	}
@@ -141,7 +142,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * length 3.
 	 * 
 	 * @return the array of id numbers from the ref.
-	 */
+	 **/
 	public int[] ids() {
 		return ids;
 	}
@@ -150,7 +151,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Determine whether this is a new style ref.
 	 * 
 	 * @return true if this ref is a new style ref, false otherwise.
-	 */
+	 **/
 	public boolean isNewRef() {
 		return (ids.length > 1);
 	}
@@ -159,7 +160,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Get the creation number from the ref.
 	 * 
 	 * @return the creation number from the ref.
-	 */
+	 **/
 	public int creation() {
 		return creation;
 	}
@@ -168,7 +169,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Get the node name from the ref.
 	 * 
 	 * @return the node name from the ref.
-	 */
+	 **/
 	public String node() {
 		return node;
 	}
@@ -178,7 +179,7 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * #Ref&lt;node.id&gt;
 	 * 
 	 * @return the string representation of the ref.
-	 */
+	 **/
 	@Override
 	public String toString() {
 		String s = "#Ref<" + node;
@@ -196,8 +197,8 @@ public class OtpErlangRef extends OtpErlangObject {
 	 * Convert this ref to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 * 		an output stream to which the encoded ref should be written.
-	 */
+	 *            an output stream to which the encoded ref should be written.
+	 **/
 	@Override
 	public void encode(OtpOutputStream buf) {
 		buf.write_ref(node, ids, creation);
@@ -206,45 +207,32 @@ public class OtpErlangRef extends OtpErlangObject {
 	/**
 	 * Determine if two refs are equal. Refs are equal if their components are
 	 * equal. New refs and old refs are considered equal if the node, creation
-	 * and first id number are equal.
+	 * and first id numnber are equal.
 	 * 
 	 * @param o
-	 * 		the other ref to compare to.
+	 *            the other ref to compare to.
 	 * 
 	 * @return true if the refs are equal, false otherwise.
-	 */
+	 **/
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpErlangRef)) {
+		if (!(o instanceof OtpErlangRef))
 			return false;
-		}
 
-		final OtpErlangRef ref = (OtpErlangRef) o;
+		OtpErlangRef ref = (OtpErlangRef) o;
 
-		if (!(node.equals(ref.node()) && creation == ref.creation())) {
+		if (!(this.node.equals(ref.node()) && this.creation == ref.creation()))
 			return false;
-		}
 
 		if (this.isNewRef() && ref.isNewRef()) {
-			return (ids[0] == ref.ids[0] && ids[1] == ref.ids[1] && ids[2] == ref.ids[2]);
+			return (this.ids[0] == ref.ids[0] && this.ids[1] == ref.ids[1] && this.ids[2] == ref.ids[2]);
 		}
-		return (ids[0] == ref.ids[0]);
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = node.hashCode() + creation;
-		if (isNewRef()) {
-			hash += ids[0] + ids[1] + ids[2];
-		} else {
-			hash += ids[0];
-		}
-		return hash & 0xFFFFFF;
+		return (this.ids[0] == ref.ids[0]);
 	}
 
 	@Override
 	public Object clone() {
-		final OtpErlangRef newRef = (OtpErlangRef) (super.clone());
+		OtpErlangRef newRef = (OtpErlangRef) (super.clone());
 		newRef.ids = ids.clone();
 		return newRef;
 	}

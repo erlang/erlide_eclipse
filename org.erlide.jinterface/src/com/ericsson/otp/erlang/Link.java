@@ -19,9 +19,7 @@ package com.ericsson.otp.erlang;
 
 // package scope
 class Link {
-
 	private OtpErlangPid local;
-
 	private OtpErlangPid remote;
 
 	public Link(OtpErlangPid local, OtpErlangPid remote) {
@@ -38,11 +36,11 @@ class Link {
 	}
 
 	public boolean contains(OtpErlangPid pid) {
-		return (local.equals(pid) || remote.equals(pid));
+		return (this.local.equals(pid) || this.remote.equals(pid));
 	}
 
-	public boolean equals(OtpErlangPid local_, OtpErlangPid remote_) {
-		return ((local.equals(local_) && remote.equals(remote_)) || (local
-				.equals(remote_) && remote.equals(local_)));
+	public boolean equals(OtpErlangPid local, OtpErlangPid remote) {
+		return ((this.local.equals(local) && this.remote.equals(remote)) || (this.local
+				.equals(remote) && this.remote.equals(local)));
 	}
 }

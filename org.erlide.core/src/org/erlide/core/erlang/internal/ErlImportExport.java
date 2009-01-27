@@ -7,6 +7,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlangFunction;
+import org.erlide.jinterface.JInterfaceFactory;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -50,8 +51,8 @@ public abstract class ErlImportExport extends ErlMember implements IParent {
 				.size()];
 		int i = 0;
 		for (final ErlangFunction f : fFunctions) {
-			funcTuples[i++] = new OtpErlangTuple(new OtpErlangAtom(f.name),
-					new OtpErlangLong(f.arity));
+			funcTuples[i++] = JInterfaceFactory.mkTuple(new OtpErlangAtom(
+					f.name), new OtpErlangLong(f.arity));
 		}
 		return new OtpErlangList(funcTuples);
 	}

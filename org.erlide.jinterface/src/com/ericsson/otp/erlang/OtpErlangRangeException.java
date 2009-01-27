@@ -28,17 +28,11 @@ package com.ericsson.otp.erlang;
  * @see OtpErlangShort
  * @see OtpErlangUShort
  * @see OtpErlangLong
- */
+ **/
 public class OtpErlangRangeException extends OtpErlangException {
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Provides a detailed message.
-	 */
+	 **/
 	public OtpErlangRangeException(String msg) {
 		super(msg);
 	}

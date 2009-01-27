@@ -19,13 +19,11 @@ package com.ericsson.otp.erlang;
 
 final class OtpSystem {
 
-	private static boolean xpidsports;
+	// Place status variables here
 
 	static {
 
-		final String rel = System.getProperty("OtpCompatRel", "0");
-
-		xpidsports = true;
+		String rel = System.getProperty("OtpCompatRel", "0");
 
 		try {
 
@@ -39,20 +37,16 @@ final class OtpSystem {
 			case 7:
 			case 8:
 			case 9:
-				xpidsports = false;
-				break;
 			case 0:
 			default:
 				break;
 			}
-		} catch (final NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			/* Ignore ... */
 		}
 
 	}
 
-	protected static final boolean useExtendedPidsPorts() {
-		return xpidsports;
-	}
+	// Place query functions here
 
 }

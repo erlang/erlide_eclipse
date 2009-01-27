@@ -17,15 +17,16 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang floats and doubles. Erlang defines
  * only one floating point numeric type, however this class and its subclass
  * {@link OtpErlangFloat} are used to provide representations corresponding to
  * the Java types Double and Float.
- */
-public class OtpErlangDouble extends OtpErlangObject {
-
+ **/
+public class OtpErlangDouble extends OtpErlangObject implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = 132947104811974021L;
 
@@ -33,7 +34,7 @@ public class OtpErlangDouble extends OtpErlangObject {
 
 	/**
 	 * Create an Erlang float from the given double value.
-	 */
+	 **/
 	public OtpErlangDouble(double d) {
 		this.d = d;
 	}
@@ -43,21 +44,21 @@ public class OtpErlangDouble extends OtpErlangObject {
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded value.
+	 *            the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang float.
-	 */
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang float.
+	 **/
 	public OtpErlangDouble(OtpInputStream buf) throws OtpErlangDecodeException {
-		d = buf.read_double();
+		this.d = buf.read_double();
 	}
 
 	/**
 	 * Get the value, as a double.
 	 * 
 	 * @return the value of this object, as a double.
-	 */
+	 **/
 	public double doubleValue() {
 		return d;
 	}
@@ -68,10 +69,10 @@ public class OtpErlangDouble extends OtpErlangObject {
 	 * @return the value of this object, as a float.
 	 * 
 	 * @exception OtpErlangRangeException
-	 * 		if the value cannot be represented as a float.
-	 */
+	 *                if the value cannot be represented as a float.
+	 **/
 	public float floatValue() throws OtpErlangRangeException {
-		final float f = (float) d;
+		float f = (float) d;
 
 		if (f != d) {
 			throw new OtpErlangRangeException("Value too large for float: " + d);
@@ -84,7 +85,7 @@ public class OtpErlangDouble extends OtpErlangObject {
 	 * Get the string representation of this double.
 	 * 
 	 * @return the string representation of this double.
-	 */
+	 **/
 	@Override
 	public String toString() {
 		return "" + d;
@@ -94,11 +95,11 @@ public class OtpErlangDouble extends OtpErlangObject {
 	 * Convert this double to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 * 		an output stream to which the encoded value should be written.
-	 */
+	 *            an output stream to which the encoded value should be written.
+	 **/
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_double(d);
+		buf.write_double(this.d);
 	}
 
 	/**
@@ -106,22 +107,16 @@ public class OtpErlangDouble extends OtpErlangObject {
 	 * same value.
 	 * 
 	 * @param o
-	 * 		the float to compare to.
+	 *            the float to compare to.
 	 * 
 	 * @return true if the floats have the same value.
-	 */
+	 **/
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpErlangDouble)) {
+		if (!(o instanceof OtpErlangDouble))
 			return false;
-		}
 
-		final OtpErlangDouble d_ = (OtpErlangDouble) o;
-		return d == d_.d;
-	}
-
-	@Override
-	public int hashCode() {
-		return Double.valueOf(d).hashCode();
+		OtpErlangDouble d = (OtpErlangDouble) o;
+		return this.d == d.d;
 	}
 }

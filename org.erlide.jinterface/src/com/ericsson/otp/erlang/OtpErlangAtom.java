@@ -17,32 +17,33 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang atoms. Atoms can be created from
  * strings whose length is not more than {@link #maxAtomLength maxAtomLength}
  * characters.
- */
-public class OtpErlangAtom extends OtpErlangObject {
-
+ **/
+public class OtpErlangAtom extends OtpErlangObject implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = -3204386396807876641L;
 
 	/** The maximun allowed length of an atom, in characters */
 	public static final int maxAtomLength = 0xff; // one byte length
 
-	private final String atom;
+	private String atom;
 
 	/**
 	 * Create an atom from the given string.
 	 * 
 	 * @param atom
-	 * 		the string to create the atom from.
+	 *            the string to create the atom from.
 	 * 
 	 * @exception java.lang.IllegalArgumentException
-	 * 		if the string is empty ("") or contains more than {@link
-	 * 		#maxAtomLength maxAtomLength} characters.
-	 */
+	 *                if the string is empty ("") or contains more than
+	 *                {@link #maxAtomLength maxAtomLength} characters.
+	 **/
 	public OtpErlangAtom(String atom) {
 		if (atom == null || atom.length() < 1) {
 			throw new java.lang.IllegalArgumentException(
@@ -61,31 +62,31 @@ public class OtpErlangAtom extends OtpErlangObject {
 	 * external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded atom.
+	 *            the stream containing the encoded atom.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang atom.
-	 */
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang atom.
+	 **/
 	public OtpErlangAtom(OtpInputStream buf) throws OtpErlangDecodeException {
-		atom = buf.read_atom();
+		this.atom = buf.read_atom();
 	}
 
 	/**
 	 * Create an atom whose value is "true" or "false".
-	 */
+	 **/
 	public OtpErlangAtom(boolean t) {
-		atom = String.valueOf(t);
+		this.atom = String.valueOf(t);
 	}
 
 	/**
 	 * Get the actual string contained in this object.
 	 * 
 	 * @return the raw string contained in this object, without regard to Erlang
-	 * 	quoting rules.
+	 *         quoting rules.
 	 * 
 	 * @see #toString
-	 */
+	 **/
 	public String atomValue() {
 		return atom;
 	}
@@ -94,10 +95,10 @@ public class OtpErlangAtom extends OtpErlangObject {
 	 * The boolean value of this atom.
 	 * 
 	 * @return the value of this atom expressed as a boolean value. If the atom
-	 * 	consists of the characters "true" (independent of case) the value will
-	 * 	be true. For any other values, the value will be false.
+	 *         consists of the characters "true" (independent of case) the value
+	 *         will be true. For any other values, the value will be false.
 	 * 
-	 */
+	 **/
 	public boolean booleanValue() {
 		return Boolean.valueOf(atomValue()).booleanValue();
 	}
@@ -111,48 +112,43 @@ public class OtpErlangAtom extends OtpErlangObject {
 	 * @return the printname representation of this atom object.
 	 * 
 	 * @see #atomValue
-	 */
+	 **/
 	@Override
 	public String toString() {
 		if (atomNeedsQuoting(atom)) {
 			return "'" + escapeSpecialChars(atom) + "'";
+		} else {
+			return atom;
 		}
-		return atom;
 	}
 
 	/**
 	 * Determine if two atoms are equal.
 	 * 
 	 * @param o
-	 * 		the other object to compare to.
+	 *            the other object to compare to.
 	 * 
 	 * @return true if the atoms are equal, false otherwise.
-	 */
+	 **/
 	@Override
 	public boolean equals(Object o) {
 
-		if (!(o instanceof OtpErlangAtom)) {
+		if (!(o instanceof OtpErlangAtom))
 			return false;
-		}
 
-		final OtpErlangAtom atom_ = (OtpErlangAtom) o;
-		return atom.compareTo(atom_.atom) == 0;
-	}
-
-	@Override
-	public int hashCode() {
-		return atom.hashCode();
+		OtpErlangAtom atom = (OtpErlangAtom) o;
+		return this.atom.compareTo(atom.atom) == 0;
 	}
 
 	/**
 	 * Convert this atom to the equivalent Erlang external representation.
 	 * 
 	 * @param buf
-	 * 		an output stream to which the encoded atom should be written.
-	 */
+	 *            an output stream to which the encoded atom should be written.
+	 **/
 	@Override
 	public void encode(OtpOutputStream buf) {
-		buf.write_atom(atom);
+		buf.write_atom(this.atom);
 	}
 
 	/* the following four predicates are helpers for the toString() method */
@@ -176,20 +172,17 @@ public class OtpErlangAtom extends OtpErlangObject {
 	private boolean atomNeedsQuoting(String s) {
 		char c;
 
-		if (s.length() == 0) {
+		if (s.length() == 0)
 			return true;
-		}
-		if (!isErlangLower(s.charAt(0))) {
+		if (!isErlangLower(s.charAt(0)))
 			return true;
-		}
 
-		final int len = s.length();
+		int len = s.length();
 		for (int i = 1; i < len; i++) {
 			c = s.charAt(i);
 
-			if (!isErlangLetter(c) && !isErlangDigit(c) && c != '@') {
+			if (!isErlangLetter(c) && !isErlangDigit(c) && c != '@')
 				return true;
-			}
 		}
 		return false;
 	}
@@ -201,9 +194,9 @@ public class OtpErlangAtom extends OtpErlangObject {
 	 */
 	private String escapeSpecialChars(String s) {
 		char c;
-		final StringBuilder so = new StringBuilder();
+		StringBuffer so = new StringBuffer();
 
-		final int len = s.length();
+		int len = s.length();
 		for (int i = 0; i < len; i++) {
 			c = s.charAt(i);
 
@@ -262,7 +255,7 @@ public class OtpErlangAtom extends OtpErlangObject {
 			default:
 				// some other character classes
 				if (c < 027) {
-					// control chars show as \^@", "\^A" etc
+					// control chars show as "\^@", "\^A" etc
 					so.append("\\^" + (char) (('A' - 1) + c));
 				} else if (c > 126) {
 					// 8-bit chars show as \345 \344 \366 etc
@@ -271,7 +264,6 @@ public class OtpErlangAtom extends OtpErlangObject {
 					// character is printable without modification!
 					so.append(c);
 				}
-				break;
 			}
 		}
 		return new String(so);

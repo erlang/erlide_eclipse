@@ -13,7 +13,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -27,12 +26,9 @@ public class IoRequest implements Comparable<IoRequest> {
 		public long microsecs;
 
 		public Timestamp(OtpErlangTuple obj) {
-			try {
-				megasecs = ((OtpErlangLong) (obj.elementAt(0))).longValue();
-				secs = ((OtpErlangLong) (obj.elementAt(1))).longValue();
-				microsecs = ((OtpErlangLong) (obj.elementAt(2))).longValue();
-			} catch (OtpErlangRangeException e) {
-			}
+			megasecs = ((OtpErlangLong) (obj.elementAt(0))).longValue();
+			secs = ((OtpErlangLong) (obj.elementAt(1))).longValue();
+			microsecs = ((OtpErlangLong) (obj.elementAt(2))).longValue();
 		}
 
 		Timestamp() {

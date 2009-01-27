@@ -17,30 +17,30 @@ public class Signature {
 	public Signature[] content = null;
 
 	public Signature(final char str) {
-		kind = str;
+		this.kind = str;
 	}
 
 	public Signature(final char crt, final Signature sub) {
-		kind = crt;
-		content = new Signature[] { sub };
+		this.kind = crt;
+		this.content = new Signature[] { sub };
 	}
 
 	public Signature(final char crt, final Signature[] sub) {
-		kind = crt;
-		content = sub;
+		this.kind = crt;
+		this.content = sub;
 	}
 
 	@Override
 	public String toString() {
 		String res = "";
-		if (content != null) {
+		if (this.content != null) {
 			res = "(";
-			for (final Signature s : content) {
+			for (final Signature s : this.content) {
 				res += s.toString() + ",";
 			}
 			res = res.substring(0, res.length() - 1) + ")";
 		}
-		return kind + res;
+		return this.kind + res;
 	}
 
 	public static Signature[] parse(String signature) throws RpcException {
@@ -59,15 +59,16 @@ public class Signature {
 
 	private static class ParseState {
 		public ParseState(final Signature signature, final String substring) {
-			sign = signature;
-			rest = substring;
+			this.sign = signature;
+			this.rest = substring;
 		}
 
 		Signature sign;
 		String rest;
 	}
 
-	private static ParseState parseOne(final String signature) throws RpcException {
+	private static ParseState parseOne(final String signature)
+			throws RpcException {
 		final char crt = signature.charAt(0);
 		if ("xidabrjfpso".indexOf(crt) >= 0) {
 			return new ParseState(new Signature(crt), signature.substring(1));

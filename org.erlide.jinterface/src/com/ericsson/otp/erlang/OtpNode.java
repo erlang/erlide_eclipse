@@ -3,16 +3,16 @@
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
+ * 
  * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
  * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
  * AB. All Rights Reserved.''
- *
+ * 
  *     $Id$
  */
 package com.ericsson.otp.erlang;
@@ -55,16 +55,15 @@ import java.util.Iterator;
  * automatically as Erlang does, you must start it manually or through some
  * other means. See the Erlang documentation for more information about this.
  * </p>
- */
+ **/
 public class OtpNode extends OtpLocalNode {
-
 	private boolean initDone = false;
 
 	// thread to manage incoming connections
 	private Acceptor acceptor = null;
 
 	// keep track of all connections
-	Hashtable<String, OtpCookedConnection> connections = null;
+	Hashtable connections = null;
 
 	// keep track of all mailboxes
 	Mailboxes mboxes = null;
@@ -91,7 +90,7 @@ public class OtpNode extends OtpLocalNode {
 	 * @exception IOException
 	 *                if communication could not be initialized.
 	 * 
-	 */
+	 **/
 	public OtpNode(String node) throws IOException {
 		this(node, defaultCookie, 0);
 	}
@@ -109,7 +108,7 @@ public class OtpNode extends OtpLocalNode {
 	 * @exception IOException
 	 *                if communication could not be initialized.
 	 * 
-	 */
+	 **/
 	public OtpNode(String node, String cookie) throws IOException {
 		this(node, cookie, 0);
 	}
@@ -131,19 +130,18 @@ public class OtpNode extends OtpLocalNode {
 	 * @exception IOException
 	 *                if communication could not be initialized.
 	 * 
-	 */
+	 **/
 	public OtpNode(String node, String cookie, int port) throws IOException {
 		super(node, cookie);
 
 		init(port);
 	}
 
-	private synchronized void init(int port_) throws IOException {
+	private synchronized void init(int port) throws IOException {
 		if (!initDone) {
-			connections = new Hashtable<String, OtpCookedConnection>(17,
-					(float) 0.95);
+			connections = new Hashtable(17, (float) 0.95);
 			mboxes = new Mailboxes();
-			acceptor = new Acceptor(port_);
+			acceptor = new Acceptor(port);
 			initDone = true;
 		}
 	}
@@ -151,17 +149,17 @@ public class OtpNode extends OtpLocalNode {
 	/**
 	 * Close the node. Unpublish the node from Epmd (preventing new connections)
 	 * and close all existing connections.
-	 */
+	 **/
 	public synchronized void close() {
 		acceptor.quit();
 		OtpCookedConnection conn;
-		final Collection<OtpCookedConnection> coll = connections.values();
-		final Iterator<OtpCookedConnection> it = coll.iterator();
+		Collection coll = connections.values();
+		Iterator it = coll.iterator();
 
 		mboxes.clear();
 
 		while (it.hasNext()) {
-			conn = it.next();
+			conn = (OtpCookedConnection) it.next();
 			it.remove();
 			conn.close();
 		}
@@ -180,7 +178,7 @@ public class OtpNode extends OtpLocalNode {
 	 * {@link OtpMbox#self pid}.
 	 * 
 	 * @return a mailbox.
-	 */
+	 **/
 	public OtpMbox createMbox() {
 		return mboxes.create();
 	}
@@ -191,19 +189,20 @@ public class OtpNode extends OtpLocalNode {
 	 * @param mbox
 	 *            the mailbox to close.
 	 * 
-	 * <p>
-	 * After this operation, the mailbox will no longer be able to receive
-	 * messages. Any delivered but as yet unretrieved messages can still be
-	 * retrieved however.
-	 * </p>
+	 *            <p>
+	 *            After this operation, the mailbox will no longer be able to
+	 *            receive messages. Any delivered but as yet unretrieved
+	 *            messages can still be retrieved however.
+	 *            </p>
 	 * 
-	 * <p>
-	 * If there are links from the mailbox to other {@link OtpErlangPid pids},
-	 * they will be broken when this method is called and exit signals with
-	 * reason 'normal' will be sent.
-	 * </p>
+	 *            <p>
+	 *            If there are links from the mailbox to other
+	 *            {@link OtpErlangPid pids}, they will be broken when this
+	 *            method is called and exit signals with reason 'normal' will be
+	 *            sent.
+	 *            </p>
 	 * 
-	 */
+	 **/
 	public void closeMbox(OtpMbox mbox) {
 		closeMbox(mbox, new OtpErlangAtom("normal"));
 	}
@@ -216,19 +215,20 @@ public class OtpNode extends OtpLocalNode {
 	 * @param reason
 	 *            an Erlang term describing the reason for the termination.
 	 * 
-	 * <p>
-	 * After this operation, the mailbox will no longer be able to receive
-	 * messages. Any delivered but as yet unretrieved messages can still be
-	 * retrieved however.
-	 * </p>
+	 *            <p>
+	 *            After this operation, the mailbox will no longer be able to
+	 *            receive messages. Any delivered but as yet unretrieved
+	 *            messages can still be retrieved however.
+	 *            </p>
 	 * 
-	 * <p>
-	 * If there are links from the mailbox to other {@link OtpErlangPid pids},
-	 * they will be broken when this method is called and exit signals with the
-	 * given reason will be sent.
-	 * </p>
+	 *            <p>
+	 *            If there are links from the mailbox to other
+	 *            {@link OtpErlangPid pids}, they will be broken when this
+	 *            method is called and exit signals with the given reason will
+	 *            be sent.
+	 *            </p>
 	 * 
-	 */
+	 **/
 	public void closeMbox(OtpMbox mbox, OtpErlangObject reason) {
 		if (mbox != null) {
 			mboxes.remove(mbox);
@@ -249,7 +249,7 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 * @return a mailbox, or null if the name was already in use.
 	 * 
-	 */
+	 **/
 	public OtpMbox createMbox(String name) {
 		return mboxes.create(name);
 	}
@@ -271,7 +271,7 @@ public class OtpNode extends OtpLocalNode {
 	 *            the mailbox to associate with the name.
 	 * 
 	 * @return true if the name was available, or false otherwise.
-	 */
+	 **/
 	public boolean registerName(String name, OtpMbox mbox) {
 		return mboxes.register(name, mbox);
 	}
@@ -281,7 +281,7 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 * @return an array of Strings, containins all known registered names on
 	 *         this node.
-	 */
+	 **/
 
 	public String[] getNames() {
 		return mboxes.names();
@@ -293,27 +293,26 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 * @return the {@link OtpErlangPid pid} corresponding to the registered
 	 *         name, or null if the name is not known on this node.
-	 */
+	 **/
 	public OtpErlangPid whereis(String name) {
-		final OtpMbox m = mboxes.get(name);
-		if (m != null) {
+		OtpMbox m = mboxes.get(name);
+		if (m != null)
 			return m.self();
-		}
 		return null;
 	}
 
 	/**
-	 * Register interest in certain system events. The
-	 * {@link OtpNodeStatus OtpNodeStatus} handler object contains callback
-	 * methods, that will be called when certain events occur.
+	 * Register interest in certain system events. The {@link OtpNodeStatus
+	 * OtpNodeStatus} handler object contains callback methods, that will be
+	 * called when certain events occur.
 	 * 
-	 * @param handler_
+	 * @param handler
 	 *            the callback object to register. To clear the handler, specify
 	 *            null as the handler to use.
 	 * 
-	 */
-	public synchronized void registerStatusHandler(OtpNodeStatus handler_) {
-		handler = handler_;
+	 **/
+	public synchronized void registerStatusHandler(OtpNodeStatus handler) {
+		this.handler = handler;
 	}
 
 	/**
@@ -337,7 +336,7 @@ public class OtpNode extends OtpLocalNode {
 	 * 	;
 	 * </pre>
 	 * 
-	 * @param node_
+	 * @param node
 	 *            the name of the node to ping.
 	 * 
 	 * @param timeout
@@ -346,7 +345,7 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 * @return true if the node was alive and the correct ping response was
 	 *         returned. false if the correct response was not returned on time.
-	 */
+	 **/
 	/*
 	 * internal info about the message formats...
 	 * 
@@ -355,31 +354,25 @@ public class OtpNode extends OtpLocalNode {
 	 * 
 	 * the reply: <- SEND {2,'',#Pid<bingo@aule.1.0>} {#Ref<bingo@aule.2>,yes}
 	 */
-	public boolean ping(String node_, long timeout) {
-		if (node_.equals(node)) {
+	public boolean ping(String node, long timeout) {
+		if (node.equals(this.node))
 			return true;
-		} else if (node_.indexOf('@', 0) < 0
-				&& node_.equals(node.substring(0, node.indexOf('@', 0)))) {
+		else if (node.indexOf('@', 0) < 0
+				&& node.equals(this.node
+						.substring(0, this.node.indexOf('@', 0))))
 			return true;
-		}
 
 		// other node
 		OtpMbox mbox = null;
 		try {
 			mbox = createMbox();
-			mbox.send("net_kernel", node_, getPingTuple(mbox));
-			final OtpErlangObject reply = mbox.receive(timeout);
+			mbox.send("net_kernel", node, getPingTuple(mbox));
+			OtpErlangObject reply = mbox.receive(timeout);
 
-			final OtpErlangTuple t = (OtpErlangTuple) reply;
-			if (t == null) {
-				return false;
-			}
-			final OtpErlangAtom a = (OtpErlangAtom) (t.elementAt(1));
-			if (a == null) {
-				return false;
-			}
+			OtpErlangTuple t = (OtpErlangTuple) reply;
+			OtpErlangAtom a = (OtpErlangAtom) (t.elementAt(1));
 			return "yes".equals(a.atomValue());
-		} catch (final Exception e) {
+		} catch (Exception e) {
 		} finally {
 			closeMbox(mbox);
 		}
@@ -388,19 +381,19 @@ public class OtpNode extends OtpLocalNode {
 
 	/* create the outgoing ping message */
 	private OtpErlangTuple getPingTuple(OtpMbox mbox) {
-		final OtpErlangObject[] ping = new OtpErlangObject[3];
-		final OtpErlangObject[] pid = new OtpErlangObject[2];
-		final OtpErlangObject[] node_ = new OtpErlangObject[2];
+		OtpErlangObject[] ping = new OtpErlangObject[3];
+		OtpErlangObject[] pid = new OtpErlangObject[2];
+		OtpErlangObject[] node = new OtpErlangObject[2];
 
 		pid[0] = mbox.self();
 		pid[1] = createRef();
 
-		node_[0] = new OtpErlangAtom("is_auth");
-		node_[1] = new OtpErlangAtom(node());
+		node[0] = new OtpErlangAtom("is_auth");
+		node[1] = new OtpErlangAtom(node());
 
 		ping[0] = new OtpErlangAtom("$gen_call");
 		ping[1] = new OtpErlangTuple(pid);
-		ping[2] = new OtpErlangTuple(node_);
+		ping[2] = new OtpErlangTuple(node);
 
 		return new OtpErlangTuple(ping);
 	}
@@ -412,21 +405,21 @@ public class OtpNode extends OtpLocalNode {
 	private boolean netKernel(OtpMsg m) {
 		OtpMbox mbox = null;
 		try {
-			final OtpErlangTuple t = (OtpErlangTuple) (m.getMsg());
-			final OtpErlangTuple req = (OtpErlangTuple) t.elementAt(1); // actual
-			// request
+			OtpErlangTuple t = (OtpErlangTuple) (m.getMsg());
+			OtpErlangTuple req = (OtpErlangTuple) t.elementAt(1); // actual
+																	// request
 
-			final OtpErlangPid pid = (OtpErlangPid) req.elementAt(0); // originating
-			// pid
+			OtpErlangPid pid = (OtpErlangPid) req.elementAt(0); // originating
+																// pid
 
-			final OtpErlangObject[] pong = new OtpErlangObject[2];
+			OtpErlangObject[] pong = new OtpErlangObject[2];
 			pong[0] = req.elementAt(1); // his #Ref
 			pong[1] = new OtpErlangAtom("yes");
 
 			mbox = createMbox();
 			mbox.send(pid, new OtpErlangTuple(pong));
 			return true;
-		} catch (final Exception e) {
+		} catch (Exception e) {
 		} finally {
 			closeMbox(mbox);
 		}
@@ -441,24 +434,23 @@ public class OtpNode extends OtpLocalNode {
 		OtpMbox mbox = null;
 
 		try {
-			final int t = m.type();
+			int t = m.type();
 
 			if (t == OtpMsg.regSendTag) {
-				final String name = m.getRecipientName();
+				String name = m.getRecipientName();
 				/* special case for netKernel requests */
-				if (name.equals("net_kernel")) {
+				if (name.equals("net_kernel"))
 					return netKernel(m);
-				}
-				mbox = mboxes.get(name);
+				else
+					mbox = mboxes.get(name);
 			} else {
 				mbox = mboxes.get(m.getRecipientPid());
 			}
 
-			if (mbox == null) {
+			if (mbox == null)
 				return false;
-			}
 			mbox.deliver(m);
-		} catch (final Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 
@@ -477,24 +469,24 @@ public class OtpNode extends OtpLocalNode {
 	/*
 	 * find or create a connection to the given node
 	 */
-	OtpCookedConnection getConnection(String node_) {
+	OtpCookedConnection getConnection(String node) {
 		OtpPeer peer = null;
 		OtpCookedConnection conn = null;
 
 		synchronized (connections) {
 			// first just try looking up the name as-is
-			conn = connections.get(node_);
+			conn = (OtpCookedConnection) connections.get(node);
 
 			if (conn == null) {
 				// in case node had no '@' add localhost info and try again
-				peer = new OtpPeer(node_);
-				conn = connections.get(peer.node());
+				peer = new OtpPeer(node);
+				conn = (OtpCookedConnection) connections.get(peer.node());
 
 				if (conn == null) {
 					try {
 						conn = new OtpCookedConnection(this, peer);
 						addConnection(conn);
-					} catch (final Exception e) {
+					} catch (Exception e) {
 						/* false = outgoing */
 						connAttempt(peer.node(), false, e);
 					}
@@ -504,7 +496,7 @@ public class OtpNode extends OtpLocalNode {
 		}
 	}
 
-	protected void addConnection(OtpCookedConnection conn) {
+	private void addConnection(OtpCookedConnection conn) {
 		if ((conn != null) && (conn.name != null)) {
 			connections.put(conn.name, conn);
 			remoteStatus(conn.name, true, null);
@@ -518,35 +510,31 @@ public class OtpNode extends OtpLocalNode {
 	}
 
 	/* use these wrappers to call handler functions */
-	private synchronized void remoteStatus(String node_, boolean up, Object info) {
-		if (handler == null) {
+	private synchronized void remoteStatus(String node, boolean up, Object info) {
+		if (handler == null)
 			return;
-		}
 		try {
-			handler.remoteStatus(node_, up, info);
-		} catch (final Exception e) {
+			handler.remoteStatus(node, up, info);
+		} catch (Exception e) {
 		}
 	}
 
-	protected synchronized void localStatus(String node_, boolean up,
-			Object info) {
-		if (handler == null) {
+	private synchronized void localStatus(String node, boolean up, Object info) {
+		if (handler == null)
 			return;
-		}
 		try {
-			handler.localStatus(node_, up, info);
-		} catch (final Exception e) {
+			handler.localStatus(node, up, info);
+		} catch (Exception e) {
 		}
 	}
 
-	protected synchronized void connAttempt(String node_, boolean incoming,
+	private synchronized void connAttempt(String node, boolean incoming,
 			Object info) {
-		if (handler == null) {
+		if (handler == null)
 			return;
-		}
 		try {
-			handler.connAttempt(node_, incoming, info);
-		} catch (final Exception e) {
+			handler.connAttempt(node, incoming, info);
+		} catch (Exception e) {
 		}
 	}
 
@@ -555,43 +543,32 @@ public class OtpNode extends OtpLocalNode {
 	 * references
 	 */
 	public class Mailboxes {
-
-		private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null; // mbox
-
-		// pids
-		// here
-
-		private Hashtable<String, WeakReference<OtpMbox>> byName = null; // mbox
-
-		// names
-		// here
+		private Hashtable byPid = null; // mbox pids here
+		private Hashtable byName = null; // mbox names here
 
 		public Mailboxes() {
-			byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17,
-					(float) 0.95);
-			byName = new Hashtable<String, WeakReference<OtpMbox>>(17,
-					(float) 0.95);
+			byPid = new Hashtable(17, (float) 0.95);
+			byName = new Hashtable(17, (float) 0.95);
 		}
 
 		public OtpMbox create(String name) {
 			OtpMbox m = null;
 
 			synchronized (byName) {
-				if (get(name) != null) {
+				if (get(name) != null)
 					return null;
-				}
-				final OtpErlangPid pid = OtpNode.this.createPid();
+				OtpErlangPid pid = OtpNode.this.createPid();
 				m = new OtpMbox(OtpNode.this, pid, name);
-				byPid.put(pid, new WeakReference<OtpMbox>(m));
-				byName.put(name, new WeakReference<OtpMbox>(m));
+				byPid.put(pid, new WeakReference(m));
+				byName.put(name, new WeakReference(m));
 			}
 			return m;
 		}
 
 		public OtpMbox create() {
-			final OtpErlangPid pid = OtpNode.this.createPid();
-			final OtpMbox m = new OtpMbox(OtpNode.this, pid);
-			byPid.put(pid, new WeakReference<OtpMbox>(m));
+			OtpErlangPid pid = OtpNode.this.createPid();
+			OtpMbox m = new OtpMbox(OtpNode.this, pid);
+			byPid.put(pid, new WeakReference(m));
 			return m;
 		}
 
@@ -604,13 +581,13 @@ public class OtpNode extends OtpLocalNode {
 			String allnames[] = null;
 
 			synchronized (byName) {
-				final int n = byName.size();
-				final java.util.Enumeration<String> keys = byName.keys();
+				int n = byName.size();
+				java.util.Enumeration keys = byName.keys();
 				allnames = new String[n];
 
 				int i = 0;
 				while (keys.hasMoreElements()) {
-					allnames[i++] = keys.nextElement();
+					allnames[i++] = (String) (keys.nextElement());
 				}
 			}
 			return allnames;
@@ -624,10 +601,9 @@ public class OtpNode extends OtpLocalNode {
 				}
 			} else {
 				synchronized (byName) {
-					if (get(name) != null) {
+					if (get(name) != null)
 						return false;
-					}
-					byName.put(name, new WeakReference<OtpMbox>(mbox));
+					byName.put(name, new WeakReference(mbox));
 					mbox.name = name;
 				}
 			}
@@ -640,14 +616,13 @@ public class OtpNode extends OtpLocalNode {
 		 * find it again.
 		 */
 		public OtpMbox get(String name) {
-			final WeakReference<OtpMbox> wr = byName.get(name);
+			WeakReference wr = (WeakReference) byName.get(name);
 
 			if (wr != null) {
-				final OtpMbox m = wr.get();
+				OtpMbox m = (OtpMbox) wr.get();
 
-				if (m != null) {
+				if (m != null)
 					return m;
-				}
 				byName.remove(name);
 			}
 			return null;
@@ -659,14 +634,13 @@ public class OtpNode extends OtpLocalNode {
 		 * find it again.
 		 */
 		public OtpMbox get(OtpErlangPid pid) {
-			final WeakReference<OtpMbox> wr = byPid.get(pid);
+			WeakReference wr = (WeakReference) byPid.get(pid);
 
 			if (wr != null) {
-				final OtpMbox m = wr.get();
+				OtpMbox m = (OtpMbox) wr.get();
 
-				if (m != null) {
+				if (m != null)
 					return m;
-				}
 				byPid.remove(pid);
 			}
 			return null;
@@ -674,9 +648,8 @@ public class OtpNode extends OtpLocalNode {
 
 		public void remove(OtpMbox mbox) {
 			byPid.remove(mbox.self);
-			if (mbox.name != null) {
+			if (mbox.name != null)
 				byName.remove(mbox.name);
-			}
 		}
 	}
 
@@ -684,19 +657,16 @@ public class OtpNode extends OtpLocalNode {
 	 * this thread simply listens for incoming connections
 	 */
 	public class Acceptor extends Thread {
-
 		private ServerSocket sock;
-
-		private int port_;
-
+		private int port;
 		private volatile boolean done = false;
 
 		Acceptor(int port) throws IOException {
-			// final IOException e;
+			IOException e;
 
-			sock = new ServerSocket(port);
-			port_ = sock.getLocalPort();
-			OtpNode.this.port = port_;
+			this.sock = new ServerSocket(port);
+			this.port = sock.getLocalPort();
+			OtpNode.this.port = this.port;
 
 			this.setDaemon(true);
 			this.setName("acceptor");
@@ -705,9 +675,8 @@ public class OtpNode extends OtpLocalNode {
 		}
 
 		private boolean publishPort() throws IOException {
-			if (getEpmd() != null) {
+			if (getEpmd() != null)
 				return false; // already published
-			}
 			OtpEpmd.publishPort(OtpNode.this);
 			return true;
 		}
@@ -730,24 +699,22 @@ public class OtpNode extends OtpLocalNode {
 
 		private void closeSock(ServerSocket s) {
 			try {
-				if (s != null) {
+				if (s != null)
 					s.close();
-				}
-			} catch (final Exception e) {
+			} catch (Exception e) {
 			}
 		}
 
 		private void closeSock(Socket s) {
 			try {
-				if (s != null) {
+				if (s != null)
 					s.close();
-				}
-			} catch (final Exception e) {
+			} catch (Exception e) {
 			}
 		}
 
 		public int port() {
-			return port_;
+			return this.port;
 		}
 
 		@Override
@@ -762,15 +729,14 @@ public class OtpNode extends OtpLocalNode {
 
 				try {
 					newsock = sock.accept();
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					// Problem in java1.2.2: accept throws SocketException
 					// when socket is closed. This will happen when
 					// acceptor.quit()
 					// is called. acceptor.quit() will call localStatus(...), so
 					// we have to check if that's where we come from.
-					if (!done) {
+					if (!done)
 						localStatus(node, false, e);
-					}
 					break accept_loop;
 				}
 
@@ -779,13 +745,19 @@ public class OtpNode extends OtpLocalNode {
 						conn = new OtpCookedConnection(OtpNode.this, newsock);
 						addConnection(conn);
 					}
-				} catch (final OtpAuthException e) {
-					connAttempt("unknown", true, e);
+				} catch (OtpAuthException e) {
+					if (conn != null && conn.name != null)
+						connAttempt(conn.name, true, e);
+					else
+						connAttempt("unknown", true, e);
 					closeSock(newsock);
-				} catch (final IOException e) {
-					connAttempt("unknown", true, e);
+				} catch (IOException e) {
+					if (conn != null && conn.name != null)
+						connAttempt(conn.name, true, e);
+					else
+						connAttempt("unknown", true, e);
 					closeSock(newsock);
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					closeSock(newsock);
 					closeSock(sock);
 					localStatus(node, false, e);

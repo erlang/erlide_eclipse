@@ -1,6 +1,5 @@
 package org.erlide.jinterface.rpc;
 
-
 public class Tuple extends BaseTuple {
 
 	// Display a comma-separated list of elements.

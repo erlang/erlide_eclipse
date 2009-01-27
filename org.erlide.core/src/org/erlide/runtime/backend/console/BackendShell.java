@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.console;
 
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideReshd;
 
@@ -44,8 +44,8 @@ public class BackendShell {
 
 	public void send(String string) {
 		if (server != null) {
-			fBackend.send(server, new OtpErlangTuple(
-					new OtpErlangAtom("input"), new OtpErlangString(string)));
+			fBackend.send(server, JInterfaceFactory.mkTuple(new OtpErlangAtom(
+					"input"), new OtpErlangString(string)));
 		}
 	}
 

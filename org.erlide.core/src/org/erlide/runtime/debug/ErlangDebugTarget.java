@@ -29,6 +29,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErlRpcMessageListener;
@@ -80,8 +81,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, new OtpErlangTuple(new OtpErlangAtom("parent"), b
-				.getEventPid()));
+		fBackend.send(pid, JInterfaceFactory.mkTuple(
+				new OtpErlangAtom("parent"), b.getEventPid()));
 
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
 				this);

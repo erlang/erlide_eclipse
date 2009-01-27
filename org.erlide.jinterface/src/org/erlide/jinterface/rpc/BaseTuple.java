@@ -22,12 +22,12 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 
 	// Add elements to the tuple. Supports dot-chaining.
 	protected BaseTuple addElement(Object o) {
-		elements.add(o);
+		this.elements.add(o);
 		return this;
 	}
 
 	public Object get(int i) {
-		return elements.get(i);
+		return this.elements.get(i);
 	}
 
 	protected BaseTuple addElement(int i) {
@@ -47,7 +47,7 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 		if (that.elements.size() != this.elements.size()) {
 			return false;
 		}
-		for (int i = 0; i < elements.size(); ++i) {
+		for (int i = 0; i < this.elements.size(); ++i) {
 			if (!that.elements.get(i).equals(this.elements.get(i))) {
 				return false;
 			}
@@ -59,7 +59,7 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	@Override
 	public int hashCode() {
 		int result = 0;
-		Iterator<Object> it = elements.iterator();
+		Iterator<Object> it = this.elements.iterator();
 		while (it.hasNext()) {
 			result = result * 37 + it.next().hashCode();
 		}
@@ -70,22 +70,22 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	// specified in the constructor.
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder(open);
-		Iterator<Object> it = elements.iterator();
+		StringBuilder result = new StringBuilder(this.open);
+		Iterator<Object> it = this.elements.iterator();
 		while (it.hasNext()) {
 			result.append(it.next());
 			if (it.hasNext()) {
-				result.append(separator);
+				result.append(this.separator);
 			}
 		}
-		return result.append(close).toString();
+		return result.append(this.close).toString();
 	}
 
 	// Order by the most significant element first.
 	// The tuples must agree in size and type.
 	@SuppressWarnings("unchecked")
 	public int compareTo(BaseTuple that) {
-		for (int i = 0; i < elements.size(); ++i) {
+		for (int i = 0; i < this.elements.size(); ++i) {
 			int compare = ((Comparable<Object>) this.elements.get(i))
 					.compareTo(that.elements.get(i));
 			if (compare != 0) {

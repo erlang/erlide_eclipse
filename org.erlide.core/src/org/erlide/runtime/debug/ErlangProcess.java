@@ -97,10 +97,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
 				"reductions");
 		if (res != null) {
-			try {
-				return ((OtpErlangLong) res).longValue();
-			} catch (final OtpErlangRangeException e) {
-			}
+			return ((OtpErlangLong) res).longValue();
 		}
 		return -1;
 	}

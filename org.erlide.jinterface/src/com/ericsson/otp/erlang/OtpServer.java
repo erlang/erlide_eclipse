@@ -46,11 +46,10 @@ import java.io.IOException;
  * 
  * @see OtpSelf
  * 
- * @deprecated the functionality of this class has been moved to {@link OtpSelf}.
- */
+ @deprecated the functionality of this class has been moved to {@link OtpSelf}.
+ **/
 @Deprecated
 public class OtpServer extends OtpSelf {
-
 	/**
 	 * Create an {@link OtpServer} from an existing {@link OtpSelf}.
 	 * 
@@ -60,7 +59,7 @@ public class OtpServer extends OtpSelf {
 	 * @exception java.io.IOException
 	 *                if a ServerSocket could not be created.
 	 * 
-	 */
+	 **/
 	public OtpServer(OtpSelf self) throws IOException {
 		super(self.node(), self.cookie());
 	}
@@ -80,7 +79,7 @@ public class OtpServer extends OtpSelf {
 	 * @exception java.io.IOException
 	 *                if a ServerSocket could not be created.
 	 * 
-	 */
+	 **/
 	public OtpServer(String node, String cookie) throws IOException {
 		super(node, cookie);
 	}
@@ -102,7 +101,7 @@ public class OtpServer extends OtpSelf {
 	 *                if a ServerSocket could not be created or if the chosen
 	 *                port number was not available.
 	 * 
-	 */
+	 **/
 	public OtpServer(String node, String cookie, int port) throws IOException {
 		super(node, cookie, port);
 	}

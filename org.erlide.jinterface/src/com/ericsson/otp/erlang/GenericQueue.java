@@ -23,19 +23,13 @@ package com.ericsson.otp.erlang;
  */
 
 public class GenericQueue {
-
 	private static final int open = 0;
-
 	private static final int closing = 1;
-
 	private static final int closed = 2;
 
 	private int status;
-
 	private Bucket head;
-
 	private Bucket tail;
-
 	private int count;
 
 	private void init() {
@@ -66,7 +60,7 @@ public class GenericQueue {
 	 *            Object to insert in the queue
 	 */
 	public synchronized void put(Object o) {
-		final Bucket b = new Bucket(o);
+		Bucket b = new Bucket(o);
 
 		if (tail != null) {
 			tail.setNext(b);
@@ -78,7 +72,7 @@ public class GenericQueue {
 		count++;
 
 		// notify any waiting tasks
-		this.notifyAll();
+		this.notify();
 	}
 
 	/**
@@ -93,7 +87,7 @@ public class GenericQueue {
 		while ((o = tryGet()) == null) {
 			try {
 				this.wait();
-			} catch (final InterruptedException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 		return o;
@@ -114,34 +108,31 @@ public class GenericQueue {
 	 *         time.
 	 */
 	public synchronized Object get(long timeout) throws InterruptedException {
-		if (status == closed) {
+		if (status == closed)
 			return null;
-		}
 
 		long currentTime = System.currentTimeMillis();
-		final long stopTime = currentTime + timeout;
+		long stopTime = currentTime + timeout;
 		Object o = null;
 
 		while (true) {
-			if ((o = tryGet()) != null) {
+			if ((o = tryGet()) != null)
 				return o;
-			}
 
 			currentTime = System.currentTimeMillis();
-			if (stopTime <= currentTime) {
+			if (stopTime <= currentTime)
 				throw new InterruptedException("Get operation timed out");
-			}
 
 			try {
 				this.wait(stopTime - currentTime);
-			} catch (final InterruptedException e) {
+			} catch (InterruptedException e) {
 				// ignore, but really should retry operation instead
 			}
 		}
 	}
 
 	// attempt to retrieve message from queue head
-	public synchronized Object tryGet() {
+	public Object tryGet() {
 		Object o = null;
 
 		if (head != null) {
@@ -166,10 +157,8 @@ public class GenericQueue {
 	 * The Bucket class. The queue is implemented as a linked list of Buckets.
 	 * The container holds the queued object and a reference to the next Bucket.
 	 */
-	static class Bucket {
-
+	class Bucket {
 		private Bucket next;
-
 		private Object contents;
 
 		public Bucket(Object o) {

@@ -23,16 +23,16 @@ public class OtpPlaceholder extends OtpErlangObject {
 	private String name;
 
 	public OtpPlaceholder(String n) {
-		name = n;
+		this.name = n;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -42,12 +42,12 @@ public class OtpPlaceholder extends OtpErlangObject {
 		}
 
 		final OtpPlaceholder l = (OtpPlaceholder) o;
-		return name.equals(l.name);
+		return this.name.equals(l.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return this.name.hashCode();
 	}
 
 	@Override

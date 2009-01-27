@@ -49,6 +49,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.InterfacePlugin;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlDebugConstants;
@@ -252,8 +253,8 @@ public class ErlangLaunchConfigurationDelegate extends
 			if (b != null) {
 				final OtpErlangString filename = new OtpErlangString(module
 						+ ".erl");
-				final OtpErlangTuple t = new OtpErlangTuple(new OtpErlangAtom(
-						module), filename, b);
+				final OtpErlangTuple t = JInterfaceFactory.mkTuple(
+						new OtpErlangAtom(module), filename, b);
 				modules.add(t);
 			}
 		}

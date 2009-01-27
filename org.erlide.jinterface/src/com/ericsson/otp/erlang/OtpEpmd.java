@@ -44,13 +44,12 @@ import java.net.Socket;
  * 
  * <p>
  * This class contains only static methods, there are no constructors.
- */
+ **/
 public class OtpEpmd {
-
 	// common values
 	private static final int epmdPort = 4369;
-
 	private static final byte stopReq = (byte) 115;
+
 	// version specific value
 	private static final byte port3req = (byte) 112;
 	private static final byte publish3req = (byte) 97;
@@ -63,18 +62,17 @@ public class OtpEpmd {
 	private static final byte names4req = (byte) 110;
 
 	private static int traceLevel = 0;
-
 	private static final int traceThreshold = 4;
 
 	static {
 		// debug this connection?
-		final String trace = System.getProperties().getProperty(
-				"OtpConnection.trace");
+		String trace = System.getProperties()
+				.getProperty("OtpConnection.trace");
 		try {
 			if (trace != null) {
 				traceLevel = Integer.valueOf(trace).intValue();
 			}
-		} catch (final NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			traceLevel = 0;
 		}
 	}
@@ -92,11 +90,11 @@ public class OtpEpmd {
 	 * 
 	 * @exception java.io.IOException
 	 *                if there was no response from the name server.
-	 */
+	 **/
 	public static int lookupPort(AbstractNode node) throws IOException {
 		try {
 			return r4_lookupPort(node);
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			return r3_lookupPort(node);
 		}
 	}
@@ -113,13 +111,13 @@ public class OtpEpmd {
 	 * 
 	 * @exception java.io.IOException
 	 *                if there was no response from the name server.
-	 */
+	 **/
 	public static boolean publishPort(OtpLocalNode node) throws IOException {
 		Socket s = null;
 
 		try {
 			s = r4_publish(node);
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			s = r3_publish(node);
 		}
 
@@ -137,13 +135,13 @@ public class OtpEpmd {
 	 * 
 	 * <p>
 	 * This method does not report any failures.
-	 */
+	 **/
 	public static void unPublishPort(OtpLocalNode node) {
 		Socket s = null;
 
 		try {
-			s = new Socket(InetAddress.getLocalHost(), epmdPort);
-			final OtpOutputStream obuf = new OtpOutputStream();
+			s = new Socket((String) null, epmdPort);
+			OtpOutputStream obuf = new OtpOutputStream();
 			obuf.write2BE(node.alive().length() + 1);
 			obuf.write1(stopReq);
 			obuf.writeN(node.alive().getBytes());
@@ -154,13 +152,13 @@ public class OtpEpmd {
 						+ node.port());
 				System.out.println("<- OK (assumed)");
 			}
-		} catch (final Exception e) {/* ignore all failures */
+		} catch (Exception e) {/* ignore all failures */
 		} finally {
 			try {
 				if (s != null) {
 					s.close();
 				}
-			} catch (final IOException e) { /* ignore close failure */
+			} catch (IOException e) { /* ignore close failure */
 			}
 			s = null;
 		}
@@ -171,7 +169,7 @@ public class OtpEpmd {
 		Socket s = null;
 
 		try {
-			final OtpOutputStream obuf = new OtpOutputStream();
+			OtpOutputStream obuf = new OtpOutputStream();
 			s = new Socket(node.host(), epmdPort);
 
 			// build and send epmd request
@@ -188,19 +186,19 @@ public class OtpEpmd {
 			}
 
 			// receive and decode reply
-			final byte[] tmpbuf = new byte[100];
+			byte[] tmpbuf = new byte[100];
 
 			s.getInputStream().read(tmpbuf);
-			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+			OtpInputStream ibuf = new OtpInputStream(tmpbuf);
 
 			port = ibuf.read2BE();
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
 			throw new IOException("Nameserver not responding on " + node.host()
 					+ " when looking up " + node.alive());
-		} catch (final OtpErlangDecodeException e) {
+		} catch (OtpErlangDecodeException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
@@ -211,7 +209,7 @@ public class OtpEpmd {
 				if (s != null) {
 					s.close();
 				}
-			} catch (final IOException e) { /* ignore close errors */
+			} catch (IOException e) { /* ignore close errors */
 			}
 			s = null;
 		}
@@ -231,7 +229,7 @@ public class OtpEpmd {
 		Socket s = null;
 
 		try {
-			final OtpOutputStream obuf = new OtpOutputStream();
+			OtpOutputStream obuf = new OtpOutputStream();
 			s = new Socket(node.host(), epmdPort);
 
 			// build and send epmd request
@@ -251,22 +249,24 @@ public class OtpEpmd {
 			// resptag[1], result[1], port[2], ntype[1], proto[1],
 			// disthigh[2], distlow[2], nlen[2], alivename[n],
 			// elen[2], edata[m]
-			final byte[] tmpbuf = new byte[100];
+			byte[] tmpbuf = new byte[100];
 
-			final int n = s.getInputStream().read(tmpbuf);
+			int n = s.getInputStream().read(tmpbuf);
 
 			if (n < 0) {
 				// this was an r3 node => not a failure (yet)
-				s.close();
+				if (s != null) {
+					s.close();
+				}
 				throw new IOException("Nameserver not responding on "
 						+ node.host() + " when looking up " + node.alive());
 			}
 
-			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+			OtpInputStream ibuf = new OtpInputStream(tmpbuf);
 
-			final int response = ibuf.read1();
+			int response = ibuf.read1();
 			if (response == port4resp) {
-				final int result = ibuf.read1();
+				int result = ibuf.read1();
 				if (result == 0) {
 					port = ibuf.read2BE();
 
@@ -277,13 +277,13 @@ public class OtpEpmd {
 					// ignore rest of fields
 				}
 			}
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (no response)");
 			}
 			throw new IOException("Nameserver not responding on " + node.host()
 					+ " when looking up " + node.alive());
-		} catch (final OtpErlangDecodeException e) {
+		} catch (OtpErlangDecodeException e) {
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
@@ -294,7 +294,7 @@ public class OtpEpmd {
 				if (s != null) {
 					s.close();
 				}
-			} catch (final IOException e) { /* ignore close errors */
+			} catch (IOException e) { /* ignore close errors */
 			}
 			s = null;
 		}
@@ -309,13 +309,12 @@ public class OtpEpmd {
 		return port;
 	}
 
-	private static synchronized Socket r3_publish(OtpLocalNode node)
-			throws IOException {
+	private static Socket r3_publish(OtpLocalNode node) throws IOException {
 		Socket s = null;
 
 		try {
-			s = new Socket(InetAddress.getLocalHost(), epmdPort);
-			final OtpOutputStream obuf = new OtpOutputStream();
+			OtpOutputStream obuf = new OtpOutputStream();
+			s = new Socket((String) null, epmdPort);
 
 			obuf.write2BE(node.alive().length() + 3);
 
@@ -330,19 +329,21 @@ public class OtpEpmd {
 						+ node.port());
 			}
 
-			final byte[] tmpbuf = new byte[100];
+			byte[] tmpbuf = new byte[100];
 
-			final int n = s.getInputStream().read(tmpbuf);
+			int n = s.getInputStream().read(tmpbuf);
 
 			if (n < 0) {
-				s.close();
+				if (s != null) {
+					s.close();
+				}
 				if (traceLevel >= traceThreshold) {
 					System.out.println("<- (no response)");
 				}
 				return null;
 			}
 
-			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+			OtpInputStream ibuf = new OtpInputStream(tmpbuf);
 
 			if (ibuf.read1() == publish3ok) {
 				node.creation = ibuf.read2BE();
@@ -351,7 +352,7 @@ public class OtpEpmd {
 				}
 				return s; // success - don't close socket
 			}
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			// epmd closed the connection = fail
 			if (s != null) {
 				s.close();
@@ -361,19 +362,20 @@ public class OtpEpmd {
 			}
 			throw new IOException("Nameserver not responding on " + node.host()
 					+ " when publishing " + node.alive());
-		} catch (final OtpErlangDecodeException e) {
+		} catch (OtpErlangDecodeException e) {
 			if (s != null) {
 				s.close();
 			}
 			if (traceLevel >= traceThreshold) {
 				System.out.println("<- (invalid response)");
 			}
-			throw new IOException("Nameserver not responding on "
-					+ InetAddress.getLocalHost() + " | " + node.host()
+			throw new IOException("Nameserver not responding on " + node.host()
 					+ " when publishing " + node.alive());
 		}
 
-		s.close();
+		if (s != null) {
+			s.close();
+		}
 		return null; // failure
 	}
 
@@ -384,13 +386,12 @@ public class OtpEpmd {
 	 * we manage to successfully communicate with an r4 epmd, we return either
 	 * the socket, or null, depending on the result.
 	 */
-	private static synchronized Socket r4_publish(OtpLocalNode node)
-			throws IOException {
+	private static Socket r4_publish(OtpLocalNode node) throws IOException {
 		Socket s = null;
 
 		try {
-			final OtpOutputStream obuf = new OtpOutputStream();
-			s = new Socket(InetAddress.getLocalHost(), epmdPort);
+			OtpOutputStream obuf = new OtpOutputStream();
+			s = new Socket((String) null, epmdPort);
 
 			obuf.write2BE(node.alive().length() + 13);
 
@@ -416,21 +417,23 @@ public class OtpEpmd {
 			}
 
 			// get reply
-			final byte[] tmpbuf = new byte[100];
-			final int n = s.getInputStream().read(tmpbuf);
+			byte[] tmpbuf = new byte[100];
+			int n = s.getInputStream().read(tmpbuf);
 
 			if (n < 0) {
 				// this was an r3 node => not a failure (yet)
-				s.close();
+				if (s != null) {
+					s.close();
+				}
 				throw new IOException("Nameserver not responding on "
 						+ node.host() + " when publishing " + node.alive());
 			}
 
-			final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+			OtpInputStream ibuf = new OtpInputStream(tmpbuf);
 
-			final int response = ibuf.read1();
+			int response = ibuf.read1();
 			if (response == publish4resp) {
-				final int result = ibuf.read1();
+				int result = ibuf.read1();
 				if (result == 0) {
 					node.creation = ibuf.read2BE();
 					if (traceLevel >= traceThreshold) {
@@ -439,7 +442,7 @@ public class OtpEpmd {
 					return s; // success
 				}
 			}
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			// epmd closed the connection = fail
 			if (s != null) {
 				s.close();
@@ -449,7 +452,7 @@ public class OtpEpmd {
 			}
 			throw new IOException("Nameserver not responding on " + node.host()
 					+ " when publishing " + node.alive());
-		} catch (final OtpErlangDecodeException e) {
+		} catch (OtpErlangDecodeException e) {
 			if (s != null) {
 				s.close();
 			}
@@ -460,7 +463,9 @@ public class OtpEpmd {
 					+ " when publishing " + node.alive());
 		}
 
-		s.close();
+		if (s != null) {
+			s.close();
+		}
 		return null;
 	}
 

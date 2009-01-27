@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangBigLong;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangByte;
 import com.ericsson.otp.erlang.OtpErlangChar;
@@ -337,7 +336,7 @@ public class RpcConverter {
 				failConversion(obj, type);
 			} else if (type.kind == 'i') {
 				if (obj instanceof BigInteger) {
-					return new OtpErlangBigLong((BigInteger) obj);
+					return new OtpErlangLong((BigInteger) obj);
 				}
 				return new OtpErlangLong(((Number) obj).longValue());
 			} else {
@@ -479,7 +478,7 @@ public class RpcConverter {
 			return new OtpErlangLong((Long) obj);
 		}
 		if (obj instanceof BigInteger) {
-			return new OtpErlangBigLong((BigInteger) obj);
+			return new OtpErlangLong((BigInteger) obj);
 		}
 		if (obj instanceof Float) {
 			return new OtpErlangFloat((Float) obj);

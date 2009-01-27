@@ -35,10 +35,10 @@ public class InterfacePlugin extends Plugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle = ResourceBundle
+			this.resourceBundle = ResourceBundle
 					.getBundle("org.erlide.jinterface.InterfacePluginResources");
 		} catch (final MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 
@@ -83,7 +83,7 @@ public class InterfacePlugin extends Plugin {
 	 * Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 
 }

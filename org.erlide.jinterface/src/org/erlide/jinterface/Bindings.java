@@ -20,7 +20,7 @@ public class Bindings {
 	private final Map<String, OtpErlangObject> bindings;
 
 	public Bindings() {
-		bindings = new HashMap<String, OtpErlangObject>();
+		this.bindings = new HashMap<String, OtpErlangObject>();
 	}
 
 	public Bindings(Bindings other) {
@@ -29,19 +29,19 @@ public class Bindings {
 	}
 
 	public void merge(Bindings other) {
-		bindings.putAll(other.bindings);
+		this.bindings.putAll(other.bindings);
 	}
 
 	public OtpErlangObject get(String name) {
-		return bindings.get(name);
+		return this.bindings.get(name);
 	}
 
 	public void put(String name, OtpErlangObject value) {
-		bindings.put(name, value);
+		this.bindings.put(name, value);
 	}
 
 	public Map<String, OtpErlangObject> getAll() {
-		return Collections.unmodifiableMap(bindings);
+		return Collections.unmodifiableMap(this.bindings);
 	}
 
 }

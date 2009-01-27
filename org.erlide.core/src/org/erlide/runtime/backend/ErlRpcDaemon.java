@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.IRpcHandler;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
@@ -136,8 +137,8 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 	}
 
 	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
-		fBackend.send(from, new OtpErlangTuple(new OtpErlangAtom("reply"),
-				result));
+		fBackend.send(from, JInterfaceFactory.mkTuple(
+				new OtpErlangAtom("reply"), result));
 	}
 
 	public void executeRpc(final Runnable runnable) {

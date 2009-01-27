@@ -21,7 +21,6 @@ import org.erlide.jinterface.rpc.Signature;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangBigLong;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangDouble;
 import com.ericsson.otp.erlang.OtpErlangFloat;
@@ -53,7 +52,7 @@ public class RpcConverterTest {
 	@Test
 	public void cvtIntegerOk_3() throws RpcException {
 		BigInteger bigInteger = new BigInteger("39799999999999999999999", 10);
-		test(bigInteger, "i", new OtpErlangBigLong(bigInteger));
+		test(bigInteger, "i", new OtpErlangLong(bigInteger));
 	}
 
 	@SuppressWarnings("boxing")

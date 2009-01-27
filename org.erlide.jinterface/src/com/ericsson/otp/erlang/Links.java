@@ -19,9 +19,7 @@ package com.ericsson.otp.erlang;
 
 // package scope
 class Links {
-
 	Link[] links;
-
 	int count;
 
 	Links() {
@@ -34,9 +32,11 @@ class Links {
 	}
 
 	synchronized void addLink(OtpErlangPid local, OtpErlangPid remote) {
-		if (find(local, remote) == -1) {
+		int i;
+
+		if ((i = find(local, remote)) == -1) {
 			if (count >= links.length) {
-				final Link[] tmp = new Link[count * 2];
+				Link[] tmp = new Link[count * 2];
 				System.arraycopy(links, 0, tmp, 0, count);
 				links = tmp;
 			}
@@ -60,9 +60,8 @@ class Links {
 
 	synchronized int find(OtpErlangPid local, OtpErlangPid remote) {
 		for (int i = 0; i < count; i++) {
-			if (links[i].equals(local, remote)) {
+			if (links[i].equals(local, remote))
 				return i;
-			}
 		}
 		return -1;
 	}

@@ -20,9 +20,8 @@ package com.ericsson.otp.erlang;
 /**
  * Provides a collection of constants used when encoding and decoding Erlang
  * terms.
- */
+ **/
 public class OtpExternal {
-
 	// no constructor
 	private OtpExternal() {
 	}
@@ -35,6 +34,7 @@ public class OtpExternal {
 
 	/** The tag used for floating point numbers */
 	public static final int floatTag = 99;
+	public static final int newFloatTag = 70;
 
 	/** The tag used for atoms */
 	public static final int atomTag = 100;
@@ -66,6 +66,9 @@ public class OtpExternal {
 	/** The tag used for binaries */
 	public static final int binTag = 109;
 
+	/** The tag used for bitstrs */
+	public static final int bitBinTag = 77;
+
 	/** The tag used for small bignums */
 	public static final int smallBigTag = 110;
 
@@ -74,6 +77,9 @@ public class OtpExternal {
 
 	/** The tag used for new style references */
 	public static final int newRefTag = 114;
+
+	/** The tag used for compressed terms */
+	public static final int compressedTag = 80;
 
 	/** The version number used to mark serialized Erlang terms */
 	public static final int versionTag = 131;

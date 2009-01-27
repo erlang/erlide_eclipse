@@ -17,12 +17,13 @@
  */
 package com.ericsson.otp.erlang;
 
+import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang integral types.
- */
-public class OtpErlangByte extends OtpErlangLong {
-
+ **/
+public class OtpErlangByte extends OtpErlangLong implements Serializable,
+		Cloneable {
 	// don't change this!
 	static final long serialVersionUID = 5778019796466613446L;
 
@@ -30,8 +31,8 @@ public class OtpErlangByte extends OtpErlangLong {
 	 * Create an Erlang integer from the given value.
 	 * 
 	 * @param b
-	 * 		the byte value to use.
-	 */
+	 *            the byte value to use.
+	 **/
 	public OtpErlangByte(byte b) {
 		super(b);
 	}
@@ -41,19 +42,19 @@ public class OtpErlangByte extends OtpErlangLong {
 	 * Erlang external format.
 	 * 
 	 * @param buf
-	 * 		the stream containing the encoded value.
+	 *            the stream containing the encoded value.
 	 * 
 	 * @exception OtpErlangDecodeException
-	 * 		if the buffer does not contain a valid external representation of an
-	 * 		Erlang integer.
+	 *                if the buffer does not contain a valid external
+	 *                representation of an Erlang integer.
 	 * 
 	 * @exception OtpErlangRangeException
-	 * 		if the value is too large to be represented as a byte.
-	 */
+	 *                if the value is too large to be represented as a byte.
+	 **/
 	public OtpErlangByte(OtpInputStream buf) throws OtpErlangRangeException,
 			OtpErlangDecodeException {
 		super(buf);
 
-		/* final byte i = */byteValue();
+		byte i = byteValue();
 	}
 }

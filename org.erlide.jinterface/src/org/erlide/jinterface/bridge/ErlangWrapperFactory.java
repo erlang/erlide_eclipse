@@ -2,7 +2,6 @@ package org.erlide.jinterface.bridge;
 
 import java.lang.reflect.Proxy;
 
-
 /**
  * 
  * 

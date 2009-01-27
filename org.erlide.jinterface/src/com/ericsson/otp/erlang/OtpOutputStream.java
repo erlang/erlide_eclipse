@@ -3,25 +3,23 @@
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
+ * 
  * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
  * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
  * AB. All Rights Reserved.''
- *
- *     $Id: OtpOutputStream.java,v 1.11 2006/08/30 20:55:56 vladdu Exp $
- */
-/*
- * Added BigInteger support -- Vlad Dumitrescu
+ * 
+ *     $Id$
  */
 package com.ericsson.otp.erlang;
 
+//import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -34,47 +32,36 @@ import java.text.DecimalFormat;
  * Note that this class is not synchronized, if you need synchronization you
  * must provide it yourself.
  * 
- */
-public class OtpOutputStream {
-
-	/** The default initial size of the stream. * */
+ **/
+public class OtpOutputStream extends ByteArrayOutputStream {
+	/** The default initial size of the stream. **/
 	public static final int defaultInitialSize = 2048;
 
-	/** The default increment used when growing the stream. * */
+	/** The default increment used when growing the stream. **/
 	public static final int defaultIncrement = 2048;
-
-	private byte[] buf = null;
-
-	private int size = 0;
-
-	private int count = 0;
 
 	// static formats, used to encode floats and doubles
 	private static final DecimalFormat eform = new DecimalFormat("e+00;e-00");
-
 	private static final BigDecimal ten = new BigDecimal(10.0);
-
 	private static final BigDecimal one = new BigDecimal(1.0);
 
 	/**
-	 * Create a stream with the default initial size.
-	 */
+	 * Create a stream with the default initial size (2048 bytes).
+	 **/
 	public OtpOutputStream() {
 		this(defaultInitialSize);
 	}
 
 	/**
 	 * Create a stream with the specified initial size.
-	 */
-	public OtpOutputStream(int lsize) {
-		size = lsize;
-		buf = new byte[lsize];
-		count = 0;
+	 **/
+	public OtpOutputStream(int size) {
+		super(size);
 	}
 
 	/**
 	 * Create a stream containing the encoded version of the given Erlang term.
-	 */
+	 **/
 	public OtpOutputStream(OtpErlangObject o) {
 		this();
 		this.write_any(o);
@@ -83,7 +70,7 @@ public class OtpOutputStream {
 	// package scope
 	/*
 	 * Get the contents of the output stream as an input stream instead. This is
-	 * used internally in {@link OtpCconnection}for tracing outgoing packages.
+	 * used internally in {@link OtpCconnection} for tracing outgoing packages.
 	 * 
 	 * @param offset where in the output stream to read data from when creating
 	 * the input stream. The offset is necessary because header contents start 5
@@ -93,34 +80,16 @@ public class OtpOutputStream {
 	 * @return an input stream containing the same raw data.
 	 */
 	OtpInputStream getOtpInputStream(int offset) {
-		return new OtpInputStream(buf, offset, count - offset);
-	}
-
-	/**
-	 * Reset the stream so that it can be reused.
-	 */
-	public void reset() {
-		count = 0;
+		return new OtpInputStream(super.buf, offset, super.count - offset);
 	}
 
 	/**
 	 * Get the current position in the stream.
 	 * 
 	 * @return the current position in the stream.
-	 */
+	 **/
 	public int getPos() {
-		return count;
-	}
-
-	/**
-	 * Get the contents of the stream in a byte array.
-	 * 
-	 * @return a byte array containing a copy of the stream contents.
-	 */
-	public byte[] toByteArray() {
-		final byte[] ba = new byte[count];
-		System.arraycopy(buf, 0, ba, 0, count);
-		return ba;
+		return super.count;
 	}
 
 	/**
@@ -129,53 +98,37 @@ public class OtpOutputStream {
 	 * @param b
 	 *            the byte to write.
 	 * 
-	 */
+	 **/
 	public void write(byte b) {
-		if (count >= size) {
-			// System.err.println("Expanding buffer from " + size + " to " +
-			// size + defaultIncrement);
-			final byte[] tmp = new byte[size + defaultIncrement];
-			System.arraycopy(buf, 0, tmp, 0, count);
-			size += defaultIncrement;
-			buf = tmp;
+		if (super.count >= super.buf.length) {
+			// System.err.println("Expanding buffer from " + this.buf.length
+			// + " to " + (this.buf.length+defaultIncrement));
+			byte[] tmp = new byte[super.buf.length + defaultIncrement];
+			System.arraycopy(super.buf, 0, tmp, 0, super.count);
+			super.buf = tmp;
 		}
-
-		buf[count++] = b;
+		super.buf[super.count++] = b;
 	}
 
 	/**
 	 * Write an array of bytes to the stream.
 	 * 
-	 * @param lbuf
+	 * @param buf
 	 *            the array of bytes to write.
 	 * 
-	 */
-	public void write(byte[] lbuf) {
-		if (count + lbuf.length > size) {
-			// System.err.println("Expanding buffer from " +
-			// size + " to " + buf.length + size + defaultIncrement);
-			final byte[] tmp = new byte[size + lbuf.length + defaultIncrement];
-			System.arraycopy(buf, 0, tmp, 0, count);
-			size += defaultIncrement + lbuf.length;
-			buf = tmp;
+	 **/
+	@Override
+	public void write(byte[] buf) {
+		if (super.count + buf.length > super.buf.length) {
+			// System.err.println("Expanding buffer from " + super.buf.length
+			// + " to " + (buf.length + super.buf.lengt + defaultIncrement));
+			byte[] tmp = new byte[super.buf.length + buf.length
+					+ defaultIncrement];
+			System.arraycopy(super.buf, 0, tmp, 0, super.count);
+			super.buf = tmp;
 		}
-
-		System.arraycopy(lbuf, 0, buf, count, lbuf.length);
-		count += lbuf.length;
-	}
-
-	/**
-	 * Write the contents of the stream to an OutputStream.
-	 * 
-	 * @param os
-	 *            the OutputStream to write to.
-	 * 
-	 * @throws java.io.IOException
-	 *             if there is an error writing to the OutputStream.
-	 */
-	public void writeTo(OutputStream os) throws IOException {
-		os.write(buf, 0, count);
-		os.flush();
+		System.arraycopy(buf, 0, super.buf, super.count, buf.length);
+		super.count += buf.length;
 	}
 
 	/**
@@ -184,7 +137,7 @@ public class OtpOutputStream {
 	 * @param n
 	 *            the value to use.
 	 * 
-	 */
+	 **/
 	public void write1(long n) {
 		write((byte) (n & 0xff));
 	}
@@ -195,7 +148,7 @@ public class OtpOutputStream {
 	 * @param buf
 	 *            the array of bytes to write.
 	 * 
-	 */
+	 **/
 	public void writeN(byte[] bytes) {
 		write(bytes);
 	}
@@ -206,16 +159,20 @@ public class OtpOutputStream {
 	 * current size.
 	 * 
 	 * @return the size of the internal buffer used by the stream.
-	 */
-	public int size() {
-		return size;
+	 **/
+	public int length() {
+		return super.buf.length;
 	}
 
 	/**
 	 * Get the number of bytes in the stream.
 	 * 
 	 * @return the number of bytes in the stream.
-	 */
+	 * 
+	 * @deprecated As of Jinterface 1.4, replaced by super.size().
+	 * @see #size()
+	 **/
+	@Deprecated
 	public int count() {
 		return count;
 	}
@@ -225,7 +182,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void write2BE(long n) {
 		write((byte) ((n & 0xff00) >> 8));
 		write((byte) (n & 0xff));
@@ -236,11 +193,29 @@ public class OtpOutputStream {
 	 * 
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void write4BE(long n) {
 		write((byte) ((n & 0xff000000) >> 24));
 		write((byte) ((n & 0xff0000) >> 16));
 		write((byte) ((n & 0xff00) >> 8));
+		write((byte) (n & 0xff));
+	}
+
+	/**
+	 * Write the low eight (all) bytes of a value to the stream in big endian
+	 * order.
+	 * 
+	 * @param n
+	 *            the value to use.
+	 **/
+	public void write8BE(long n) {
+		write((byte) ((n >> 56) & 0xff));
+		write((byte) ((n >> 48) & 0xff));
+		write((byte) ((n >> 40) & 0xff));
+		write((byte) ((n >> 32) & 0xff));
+		write((byte) ((n >> 24) & 0xff));
+		write((byte) ((n >> 16) & 0xff));
+		write((byte) ((n >> 8) & 0xff));
 		write((byte) (n & 0xff));
 	}
 
@@ -251,7 +226,7 @@ public class OtpOutputStream {
 	 *            the value to use.
 	 * @param b
 	 *            the number of bytes to write from the little end.
-	 */
+	 **/
 	public void writeLE(long n, int b) {
 		for (int i = 0; i < b; i++) {
 			write((byte) (n & 0xff));
@@ -264,7 +239,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void write2LE(long n) {
 		write((byte) (n & 0xff));
 		write((byte) ((n & 0xff00) >> 8));
@@ -275,7 +250,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void write4LE(long n) {
 		write((byte) (n & 0xff));
 		write((byte) ((n & 0xff00) >> 8));
@@ -289,7 +264,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void write8LE(long n) {
 		write((byte) ((n) & 0xff));
 		write((byte) ((n >> 8) & 0xff));
@@ -306,15 +281,17 @@ public class OtpOutputStream {
 	 * the specified position. If the position specified is beyond the end of
 	 * the stream, this method will have no effect.
 	 * 
-	 * Normally this method should be used in conjunction with {@link#getPos()
-	 * getPos()}, when is is necessary to insert data into the stream before it
-	 * is known what the actual value should be. For example:
+	 * Normally this method should be used in conjunction with {@link #size()
+	 * size()}, when is is necessary to insert data into the stream before it is
+	 * known what the actual value should be. For example:
 	 * 
 	 * <pre>
-	 *    int pos = s.getPos();
+	 * int pos = s.size();
 	 *    s.write4BE(0); // make space for length data,
-	 *    // but final value is not yet known
-	 *    [ ...more write statements...]
+	 *                   // but final value is not yet known
+	 * 
+	 *     [ ...more write statements...]
+	 * 
 	 *    // later... when we know the length value
 	 *    s.poke4BE(pos, length);
 	 * </pre>
@@ -324,9 +301,9 @@ public class OtpOutputStream {
 	 *            the position in the stream.
 	 * @param n
 	 *            the value to use.
-	 */
+	 **/
 	public void poke4BE(int offset, long n) {
-		if (offset < count) {
+		if (offset < super.count) {
 			buf[offset + 0] = ((byte) ((n & 0xff000000) >> 24));
 			buf[offset + 1] = ((byte) ((n & 0xff0000) >> 16));
 			buf[offset + 2] = ((byte) ((n & 0xff00) >> 8));
@@ -339,7 +316,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param atom
 	 *            the string to write.
-	 */
+	 **/
 	public void write_atom(String atom) {
 		this.write1(OtpExternal.atomTag);
 		this.write2BE(atom.length());
@@ -351,10 +328,29 @@ public class OtpOutputStream {
 	 * 
 	 * @param bin
 	 *            the array of bytes to write.
-	 */
+	 **/
 	public void write_binary(byte[] bin) {
 		this.write1(OtpExternal.binTag);
 		this.write4BE(bin.length);
+		this.writeN(bin);
+	}
+
+	/**
+	 * Write an array of bytes to the stream as an Erlang bitstr.
+	 * 
+	 * @param bin
+	 *            the array of bytes to write.
+	 * @param pad_bits
+	 *            the number of zero pad bits at the low end of the last byte
+	 **/
+	public void write_bitstr(byte[] bin, int pad_bits) {
+		if (pad_bits == 0) {
+			write_binary(bin);
+			return;
+		}
+		this.write1(OtpExternal.bitBinTag);
+		this.write4BE(bin.length);
+		this.write1(8 - pad_bits);
 		this.writeN(bin);
 	}
 
@@ -363,7 +359,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param b
 	 *            the boolean value to write.
-	 */
+	 **/
 	public void write_boolean(boolean b) {
 		this.write_atom(String.valueOf(b));
 	}
@@ -374,7 +370,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param b
 	 *            the byte to use.
-	 */
+	 **/
 	public void write_byte(byte b) {
 		this.write_long(b & 0xffL, true);
 	}
@@ -386,7 +382,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param c
 	 *            the character to use.
-	 */
+	 **/
 	public void write_char(char c) {
 		this.write_long(c & 0xffffL, true);
 	}
@@ -396,48 +392,10 @@ public class OtpOutputStream {
 	 * 
 	 * @param d
 	 *            the double to use.
-	 */
+	 **/
 	public void write_double(double d) {
-		BigDecimal val;
-		int exp = 0;
-		int sign = 0;
-		String str;
-
-		// remove sign to simplify decimal shift
-		if (d >= 0) {
-			val = new BigDecimal(d);
-		} else {
-			sign = 1;
-			val = new BigDecimal(-d);
-		}
-
-		// move the decimal point until we have a single units digit
-		if (val.signum() != 0) {
-			// until greater than or equal to 1.0 -> multiply by 10
-			while (val.compareTo(one) < 0) {
-				val = val.movePointRight(1);
-				exp--;
-			}
-			// until strictly less than 10.0 -> divide by 10
-			while (val.compareTo(ten) >= 0) {
-				val = val.movePointLeft(1);
-				exp++;
-			}
-		}
-
-		// get 20 decimal digits, put sign back, add new exponent
-		val = val.setScale(20, BigDecimal.ROUND_HALF_EVEN);
-		str = ((sign == 1) ? "-" : "") + val.toString() + eform.format(exp);
-
-		// write the value
-		this.write1(OtpExternal.floatTag);
-		this.writeN(str.getBytes());
-
-		// pad with zeros to 31 bytes
-		int i = str.getBytes().length;
-		for (; i < 31; i++) {
-			this.write1(0);
-		}
+		this.write1(OtpExternal.newFloatTag);
+		this.write8BE(Double.doubleToLongBits(d));
 	}
 
 	/**
@@ -445,14 +403,44 @@ public class OtpOutputStream {
 	 * 
 	 * @param f
 	 *            the float to use.
-	 */
+	 **/
 	public void write_float(float f) {
 		this.write_double(f);
 	}
 
+	public void write_big_integer(BigInteger v) {
+		if (v.bitLength() < 64) {
+			this.write_long(v.longValue(), true);
+			return;
+		}
+		int signum = v.signum();
+		if (signum < 0) {
+			v = v.negate();
+		}
+		byte[] magnitude = v.toByteArray();
+		int n = magnitude.length;
+		// Reverse the array to make it little endian.
+		for (int i = 0, j = n; i < j--; i++) {
+			// Swap [i] with [j]
+			byte b = magnitude[i];
+			magnitude[i] = magnitude[j];
+			magnitude[j] = b;
+		}
+		if ((n & 0xFF) == n) {
+			this.write1(OtpExternal.smallBigTag);
+			this.write1(n); // length
+		} else {
+			this.write1(OtpExternal.largeBigTag);
+			this.write4BE(n); // length
+		}
+		this.write1(signum < 0 ? 1 : 0); // sign
+		// Write the array
+		this.writeN(magnitude);
+	}
+
 	void write_long(long v, boolean unsigned) {
 		/*
-		 * If v <0 and unsigned==true the value
+		 * If v<0 and unsigned==true the value
 		 * java.lang.Long.MAX_VALUE-java.lang.Long.MIN_VALUE+1+v is written, i.e
 		 * v is regarded as unsigned two's complement.
 		 */
@@ -465,15 +453,12 @@ public class OtpOutputStream {
 			if ((v < 0 && unsigned) || v < OtpExternal.erlMin
 					|| v > OtpExternal.erlMax) {
 				// some kind of bignum
-				final long abs = (unsigned ? v : ((v < 0) ? -v : v));
-				final int sign = (unsigned ? 0 : ((v < 0) ? 1 : 0));
+				long abs = (unsigned ? v : (v < 0 ? -v : v));
+				int sign = (unsigned ? 0 : (v < 0 ? 1 : 0));
 				int n;
 				long mask;
-				for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = ((mask << 8) | 0xffL)) {
-					; // count
-				}
-				// nonzero
-				// bytes
+				for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = (mask << 8) | 0xffL)
+					; // count nonzero bytes
 				this.write1(OtpExternal.smallBigTag);
 				this.write1(n); // length
 				this.write1(sign); // sign
@@ -490,7 +475,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param l
 	 *            the long to use.
-	 */
+	 **/
 	public void write_long(long l) {
 		this.write_long(l, false);
 	}
@@ -501,7 +486,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param ul
 	 *            the long to use.
-	 */
+	 **/
 	public void write_ulong(long ul) {
 		this.write_long(ul, true);
 	}
@@ -511,7 +496,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param i
 	 *            the integer to use.
-	 */
+	 **/
 	public void write_int(int i) {
 		this.write_long(i, false);
 	}
@@ -522,7 +507,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param ui
 	 *            the integer to use.
-	 */
+	 **/
 	public void write_uint(int ui) {
 		this.write_long(ui & 0xFFFFffffL, true);
 	}
@@ -532,7 +517,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param s
 	 *            the short to use.
-	 */
+	 **/
 	public void write_short(short s) {
 		this.write_long(s, false);
 	}
@@ -543,7 +528,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param s
 	 *            the short to use.
-	 */
+	 **/
 	public void write_ushort(short us) {
 		this.write_long(us & 0xffffL, true);
 	}
@@ -555,7 +540,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param arity
 	 *            the number of elements in the list.
-	 */
+	 **/
 	public void write_list_head(int arity) {
 		if (arity == 0) {
 			this.write_nil();
@@ -567,7 +552,7 @@ public class OtpOutputStream {
 
 	/**
 	 * Write an empty Erlang list to the stream.
-	 */
+	 **/
 	public void write_nil() {
 		this.write1(OtpExternal.nilTag);
 	}
@@ -579,7 +564,7 @@ public class OtpOutputStream {
 	 * 
 	 * @param arity
 	 *            the number of elements in the tuple.
-	 */
+	 **/
 	public void write_tuple_head(int arity) {
 		if (arity < 0xff) {
 			this.write1(OtpExternal.smallTupleTag);
@@ -600,19 +585,19 @@ public class OtpOutputStream {
 	 *            an arbitrary number. Only the low order 15 bits will be used.
 	 * 
 	 * @param serial
-	 *            another arbitrary number. Only the low order 3 bits will be
+	 *            another arbitrary number. Only the low order 13 bits will be
 	 *            used.
 	 * 
 	 * @param creation
 	 *            yet another arbitrary number. Only the low order 2 bits will
 	 *            be used.
 	 * 
-	 */
+	 **/
 	public void write_pid(String node, int id, int serial, int creation) {
 		this.write1(OtpExternal.pidTag);
 		this.write_atom(node);
 		this.write4BE(id & 0x7fff); // 15 bits
-		this.write4BE(serial & 0x7); // 3 bits
+		this.write4BE(serial & 0x1fff); // 13 bits
 		this.write1(creation & 0x3); // 2 bits
 	}
 
@@ -623,17 +608,17 @@ public class OtpOutputStream {
 	 *            the nodename.
 	 * 
 	 * @param id
-	 *            an arbitrary number. Only the low order 18 bits will be used.
+	 *            an arbitrary number. Only the low order 28 bits will be used.
 	 * 
 	 * @param creation
 	 *            another arbitrary number. Only the low order 2 bits will be
 	 *            used.
 	 * 
-	 */
+	 **/
 	public void write_port(String node, int id, int creation) {
 		this.write1(OtpExternal.portTag);
 		this.write_atom(node);
-		this.write4BE(id & 0x3ffff); // 18 bits
+		this.write4BE(id & 0xfffffff); // 28 bits
 		this.write1(creation & 0x3); // 2 bits
 	}
 
@@ -650,7 +635,7 @@ public class OtpOutputStream {
 	 *            another arbitrary number. Only the low order 2 bits will be
 	 *            used.
 	 * 
-	 */
+	 **/
 	public void write_ref(String node, int id, int creation) {
 		this.write1(OtpExternal.refTag);
 		this.write_atom(node);
@@ -674,12 +659,11 @@ public class OtpOutputStream {
 	 *            another arbitrary number. Only the low order 2 bits will be
 	 *            used.
 	 * 
-	 */
+	 **/
 	public void write_ref(String node, int[] ids, int creation) {
 		int arity = ids.length;
-		if (arity > 3) {
+		if (arity > 3)
 			arity = 3; // max 3 words in ref
-		}
 
 		if (arity == 1) {
 			// use old method
@@ -700,9 +684,8 @@ public class OtpOutputStream {
 			this.write4BE(ids[0] & 0x3ffff);
 
 			// remaining ones are left as is
-			for (int i = 1; i < arity; i++) {
+			for (int i = 1; i < arity; i++)
 				this.write4BE(ids[i]);
-			}
 		}
 	}
 
@@ -711,37 +694,36 @@ public class OtpOutputStream {
 	 * 
 	 * @param s
 	 *            the string to write.
-	 */
+	 **/
 	public void write_string(String s) {
-		final int len = s.length();
+		int len = s.length();
 
 		switch (len) {
 		case 0:
 			this.write_nil();
 			break;
 		default:
-			final byte[] bytebuf = s.getBytes();
+			byte[] bytebuf = s.getBytes();
 
 			/*
-			 * check if the length of the byte array is equal to the length of
-			 * the list or if list length > 64K
+			 * switch to se if the length of the byte array is equal to the
+			 * length of the list, or if the string is too long for the stream
+			 * protocol
 			 */
-			if (bytebuf.length == len && len < 65535) { /* Usual */
+			if ((bytebuf.length == len) && (len <= 65535)) { /* Usual */
 				this.write1(OtpExternal.stringTag);
 				this.write2BE(len);
 				this.writeN(bytebuf);
 			} else { /* Unicode */
-				final char[] charbuf = s.toCharArray();
+				char[] charbuf = s.toCharArray();
 
 				this.write_list_head(len);
 
-				for (int i = 0; i < len; i++) {
+				for (int i = 0; i < len; i++)
 					this.write_char(charbuf[i]);
-				}
 
 				this.write_nil();
 			}
-			break;
 		}
 	}
 
@@ -751,6 +733,27 @@ public class OtpOutputStream {
 	 * public void write_string(String s) { this.write1(OtpExternal.stringTag);
 	 * this.write2BE(s.length()); this.writeN(s.getBytes()); }
 	 */
+	/**
+	 * Write an arbitrary Erlang term to the stream in compressed format.
+	 * 
+	 * @param o
+	 *            the Erlang tem to write.
+	 */
+	public void write_compressed(OtpErlangObject o) {
+		OtpOutputStream oos = new OtpOutputStream(o);
+		this.write1(OtpExternal.compressedTag);
+		this.write4BE(oos.size());
+		java.io.FilterOutputStream fos = new java.io.FilterOutputStream(this);
+		java.util.zip.DeflaterOutputStream dos = new java.util.zip.DeflaterOutputStream(
+				fos);
+		try {
+			oos.writeTo(dos);
+			dos.close();
+		} catch (IOException e) {
+			throw new java.lang.IllegalArgumentException(
+					"Intremediate stream failed for Erlang object " + o);
+		}
+	}
 
 	/**
 	 * Write an arbitrary Erlang term to the stream.
@@ -762,38 +765,4 @@ public class OtpOutputStream {
 		// calls one of the above functions, depending on o
 		o.encode(this);
 	}
-
-	/**
-	 * @param integer
-	 */
-	public void write_biglong(BigInteger v) {
-		final long l = v.longValue();
-		if (BigInteger.valueOf(l).compareTo(v) == 0) {
-			write_long(l);
-		} else {
-			final BigInteger abs = v.abs();
-			final int sign = v.signum();
-			int n;
-			long mask;
-
-			// count nonzero bytes
-			for (mask = 0xFFFFffffL, n = 4; abs.and(BigInteger.valueOf(mask))
-					.compareTo(abs) != 0; n++, mask = ((mask << 8) | 0xffL)) {
-				;
-			}
-
-			if (n > 255) {
-				this.write1(OtpExternal.largeBigTag);
-				this.write4LE(n); // length
-			} else {
-				this.write1(OtpExternal.smallBigTag);
-				this.write1(n); // length
-			}
-			this.write1(sign); // sign
-			this.writeN(abs.toByteArray()); // value. obs! little endian
-			// TODO check!!
-		}
-
-	}
-
 }

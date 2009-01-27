@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
@@ -52,8 +53,10 @@ public class ErlideOpen {
 	private static List<OtpErlangTuple> fixPathVars(final List<Tuple> pathVars) {
 		final List<OtpErlangTuple> pathVars2 = new ArrayList<OtpErlangTuple>();
 		for (final Tuple t : pathVars) {
-			pathVars2.add(new OtpErlangTuple(new OtpErlangString((String) t
-					.get(0)), new OtpErlangString((String) t.get(1))));
+			pathVars2
+					.add(JInterfaceFactory.mkTuple(new OtpErlangString(
+							(String) t.get(0)), new OtpErlangString((String) t
+							.get(1))));
 		}
 		return pathVars2;
 	}

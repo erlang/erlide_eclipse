@@ -21,72 +21,53 @@ package com.ericsson.otp.erlang;
 class OtpMD5 {
 
 	/*
-	 * * MD5 constants
+	 * MD5 constants
 	 */
 	static final long S11 = 7;
-
 	static final long S12 = 12;
-
 	static final long S13 = 17;
-
 	static final long S14 = 22;
-
 	static final long S21 = 5;
-
 	static final long S22 = 9;
-
 	static final long S23 = 14;
-
 	static final long S24 = 20;
-
 	static final long S31 = 4;
-
 	static final long S32 = 11;
-
 	static final long S33 = 16;
-
 	static final long S34 = 23;
-
 	static final long S41 = 6;
-
 	static final long S42 = 10;
-
 	static final long S43 = 15;
-
 	static final long S44 = 21;
 
 	/*
 	 * Has to be this large to avoid sign problems
 	 */
 
-	private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL,
-			0x10325476L };
-
-	private final long count[] = { 0L, 0L };
-
+	private long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L };
+	private long count[] = { 0L, 0L };
 	private int buffer[];
 
 	public OtpMD5() {
 		buffer = new int[64];
 		int i;
-		for (i = 0; i < 64; ++i) {
+		for (i = 0; i < 64; ++i)
 			buffer[i] = 0;
-		}
 	}
 
 	private int[] to_bytes(String s) {
-		final char tmp[] = s.toCharArray();
-		final int ret[] = new int[tmp.length];
+		char tmp[] = s.toCharArray();
+		int ret[] = new int[tmp.length];
 		int i;
 
 		for (i = 0; i < tmp.length; ++i) {
-			ret[i] = tmp[i] & 0xFF;
+			ret[i] = (tmp[i]) & 0xFF;
 		}
 		return ret;
 	}
 
 	private int[] clean_bytes(int bytes[]) {
-		final int ret[] = new int[bytes.length];
+		int ret[] = new int[bytes.length];
 		int i;
 
 		for (i = 0; i < bytes.length; ++i) {
@@ -96,7 +77,7 @@ class OtpMD5 {
 	}
 
 	/*
-	 * * A couple of operations where 32 bit over/under-flow is expected
+	 * A couple of operations where 32 bit over/under-flow is expected
 	 */
 
 	private long shl(long what, int steps) {
@@ -116,23 +97,21 @@ class OtpMD5 {
 	}
 
 	private void to_buffer(int to_start, int[] from, int from_start, int num) {
-		while (num-- > 0) {
+		while (num-- > 0)
 			buffer[to_start++] = from[from_start++];
-		}
 	}
 
 	private void do_update(int bytes[]) {
 		int index = (int) ((count[0] >>> 3) & 0x3F);
-		final long inlen = bytes.length;
-		final long addcount = shl(inlen, 3);
-		final long partlen = 64 - index;
+		long inlen = bytes.length;
+		long addcount = shl(inlen, 3);
+		long partlen = 64 - index;
 		int i;
 
 		count[0] = plus(count[0], addcount);
 
-		if (count[0] < addcount) {
+		if (count[0] < addcount)
 			++count[1];
-		}
 
 		count[1] = plus(count[1], shr(inlen, 29));
 
@@ -142,9 +121,8 @@ class OtpMD5 {
 			to_buffer(index, bytes, 0, (int) partlen);
 			transform(buffer, 0);
 
-			for (i = (int) partlen; i + 63 < inlen; i += 64) {
+			for (i = (int) partlen; i + 63 < inlen; i += 64)
 				transform(bytes, i);
-			}
 
 			index = 0;
 		} else {
@@ -159,17 +137,22 @@ class OtpMD5 {
 
 	}
 
-	/*
-	 * private void dumpstate() { System.out.println("state = {" + state[0] + ", " +
-	 * state[1] + ", " + state[2] + ", " + state[3] + "}");
-	 * System.out.println("count = {" + count[0] + ", " + count[1] + "}");
-	 * System.out.print("buffer = {"); int i; for (i = 0; i < 64; ++i) { if (i >
-	 * 0) { System.out.print(", "); } System.out.print(buffer[i]); }
-	 * System.out.println("}"); }
-	 */
+	private void dumpstate() {
+		System.out.println("state = {" + state[0] + ", " + state[1] + ", "
+				+ state[2] + ", " + state[3] + "}");
+		System.out.println("count = {" + count[0] + ", " + count[1] + "}");
+		System.out.print("buffer = {");
+		int i;
+		for (i = 0; i < 64; ++i) {
+			if (i > 0)
+				System.out.print(", ");
+			System.out.print(buffer[i]);
+		}
+		System.out.println("}");
+	}
 
 	/*
-	 * * The transformation functions
+	 * The transformation functions
 	 */
 
 	private long F(long x, long y, long z) {
@@ -220,9 +203,9 @@ class OtpMD5 {
 		int i, j;
 
 		for (i = 0, j = 0; j < len; i++, j += 4) {
-			output[i] = input[j + in_from] | shl(input[j + in_from + 1], 8) |
-					shl(input[j + in_from + 2], 16) |
-					shl(input[j + in_from + 3], 24);
+			output[i] = (input[j + in_from]) | shl(input[j + in_from + 1], 8)
+					| shl(input[j + in_from + 2], 16)
+					| shl(input[j + in_from + 3], 24);
 		}
 	}
 
@@ -231,7 +214,7 @@ class OtpMD5 {
 		long b = state[1];
 		long c = state[2];
 		long d = state[3];
-		final long x[] = new long[16];
+		long x[] = new long[16];
 
 		decode(x, block, from, 64);
 
@@ -321,7 +304,7 @@ class OtpMD5 {
 	}
 
 	private int[] encode(long[] input, int len) {
-		final int output[] = new int[len];
+		int output[] = new int[len];
 		int i, j;
 		for (i = 0, j = 0; j < len; i++, j += 4) {
 			output[j] = (int) (input[i] & 0xff);
@@ -333,10 +316,9 @@ class OtpMD5 {
 	}
 
 	public int[] final_bytes() {
-		final int bits[] = encode(count, 8);
+		int bits[] = encode(count, 8);
 		int index, padlen;
-		int[] padding;
-		int i;
+		int padding[], i;
 		int[] digest;
 
 		index = (int) ((count[0] >>> 3) & 0x3f);
@@ -344,9 +326,8 @@ class OtpMD5 {
 		/* padlen > 0 */
 		padding = new int[padlen];
 		padding[0] = 0x80;
-		for (i = 1; i < padlen; ++i) {
+		for (i = 1; i < padlen; ++i)
 			padding[i] = 0;
-		}
 
 		do_update(padding);
 

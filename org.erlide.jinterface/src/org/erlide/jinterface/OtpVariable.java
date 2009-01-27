@@ -27,25 +27,25 @@ public class OtpVariable extends OtpErlangObject {
 
 	public OtpVariable(String n) {
 		String[] v = n.split(":");
-		name = v[0];
+		this.name = v[0];
 		if (v.length > 1) {
-			sign = new Signature(v[1].charAt(0));
+			this.sign = new Signature(v[1].charAt(0));
 		} else {
-			sign = new Signature('x');
+			this.sign = new Signature('x');
 		}
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Signature getSignature() {
-		return sign;
+		return this.sign;
 	}
 
 	@Override
 	public String toString() {
-		return "'%" + name + ":" + sign.kind + "'";
+		return "'%" + this.name + ":" + this.sign.kind + "'";
 	}
 
 	@Override
@@ -55,12 +55,12 @@ public class OtpVariable extends OtpErlangObject {
 		}
 
 		final OtpVariable l = (OtpVariable) o;
-		return name.equals(l.name) && sign.equals(l.sign);
+		return this.name.equals(l.name) && this.sign.equals(l.sign);
 	}
 
 	@Override
 	public int hashCode() {
-		return name.hashCode() + sign.hashCode() * 31;
+		return this.name.hashCode() + this.sign.hashCode() * 31;
 	}
 
 	@Override

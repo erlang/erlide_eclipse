@@ -41,8 +41,13 @@ public abstract class AbstractErlangTest {
 
 	public OtpErlangObject runErlangTest(String m, String f,
 			OtpErlangObject... args) {
+		final Backend backend = getBackend();
+		if (backend == null) {
+			fail("Backend is null");
+			return null;
+		}
 		try {
-			return getBackend().rpcx(m, f, null, (Object[]) args);
+			return backend.rpcx(m, f, null, (Object[]) args);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("RPC failed: " + e.getMessage());

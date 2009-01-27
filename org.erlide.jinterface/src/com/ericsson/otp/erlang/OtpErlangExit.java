@@ -22,23 +22,16 @@ package com.ericsson.otp.erlang;
  * for a number of reasons, for example:
  * 
  * <ul>
- * <li> an error in communication has occurred
- * <li> a remote process has sent an exit signal
- * <li> a linked process has exited
+ * <li>an error in communication has occurred
+ * <li>a remote process has sent an exit signal
+ * <li>a linked process has exited
  * </ul>
  * 
  * @see OtpConnection
- */
+ **/
 
 public class OtpErlangExit extends OtpErlangException {
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 1L;
-
 	OtpErlangObject reason = null;
-
 	OtpErlangPid pid = null;
 
 	/**
@@ -46,7 +39,7 @@ public class OtpErlangExit extends OtpErlangException {
 	 * 
 	 * @param reason
 	 *            the reason this exit signal has been sent.
-	 */
+	 **/
 	public OtpErlangExit(OtpErlangObject reason) {
 		super(reason.toString());
 		this.reason = reason;
@@ -62,7 +55,7 @@ public class OtpErlangExit extends OtpErlangException {
 	 *            the reason this exit signal has been sent.
 	 * 
 	 * @see #OtpErlangExit(OtpErlangObject)
-	 */
+	 **/
 	public OtpErlangExit(String reason) {
 		this(new OtpErlangAtom(reason));
 	}
@@ -75,7 +68,7 @@ public class OtpErlangExit extends OtpErlangException {
 	 * 
 	 * @param pid
 	 *            the pid that sent this exit.
-	 */
+	 **/
 	public OtpErlangExit(OtpErlangObject reason, OtpErlangPid pid) {
 		super(reason.toString());
 		this.reason = reason;
@@ -95,22 +88,22 @@ public class OtpErlangExit extends OtpErlangException {
 	 *            the pid that sent this exit.
 	 * 
 	 * @see #OtpErlangExit(OtpErlangObject, OtpErlangPid)
-	 */
+	 **/
 	public OtpErlangExit(String reason, OtpErlangPid pid) {
 		this(new OtpErlangAtom(reason), pid);
 	}
 
 	/**
 	 * Get the reason associated with this exit signal.
-	 */
+	 **/
 	public OtpErlangObject reason() {
-		return reason;
+		return this.reason;
 	}
 
 	/**
 	 * Get the pid that sent this exit.
-	 */
+	 **/
 	public OtpErlangPid pid() {
-		return pid;
+		return this.pid;
 	}
 }

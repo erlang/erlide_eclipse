@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.erlide.jinterface.JInterfaceFactory;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -31,8 +33,8 @@ public class RpcUtil {
 
 	private static class MethodDescription {
 		public MethodDescription(String meth, Class<?>[] args) {
-			name = meth;
-			argTypes = args;
+			this.name = meth;
+			this.argTypes = args;
 		}
 
 		String name;
@@ -51,8 +53,8 @@ public class RpcUtil {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
-		return new OtpErlangTuple(pid, new OtpErlangTuple(new OtpErlangAtom(
-				"call"), m, f, a, new OtpErlangAtom("user")));
+		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
+				new OtpErlangAtom("call"), m, f, a, new OtpErlangAtom("user")));
 	}
 
 	public static void handleRequests(List<OtpErlangObject> msgs,
@@ -166,14 +168,16 @@ public class RpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return new OtpErlangTuple(new OtpErlangAtom("error"),
-							new OtpErlangString(String.format("Bad RPC: %s", e
-									.getMessage())));
+					return JInterfaceFactory.mkTuple(
+							new OtpErlangAtom("error"), new OtpErlangString(
+									String
+											.format("Bad RPC: %s", e
+													.getMessage())));
 				}
 
 			}
 			log("RPC: unknown receiver: " + target);
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown object ref %s%n", target)));
 
@@ -188,13 +192,13 @@ public class RpcUtil {
 			} catch (Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
-				return new OtpErlangTuple(new OtpErlangAtom("error"),
+				return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 						new OtpErlangString(String.format("Bad RPC: %s", e
 								.getMessage())));
 			}
 		} else {
 			log("unknown receiver: " + target);
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown receiver %s", target)));
 		}
@@ -203,7 +207,7 @@ public class RpcUtil {
 	@SuppressWarnings("unchecked")
 	private static MethodDescription getDescription(OtpErlangObject target) {
 		if (!(target instanceof OtpErlangTuple)) {
-			target = new OtpErlangTuple(target, new OtpErlangList());
+			target = JInterfaceFactory.mkTuple(target, new OtpErlangList());
 		}
 		OtpErlangTuple t = (OtpErlangTuple) target;
 		String name = getString(t.elementAt(0));
@@ -283,7 +287,7 @@ public class RpcUtil {
 			for (Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"can't find method %s of %s(%s)", method.name, cls
 									.getName(), paramstr)));
@@ -291,7 +295,7 @@ public class RpcUtil {
 			Throwable cause = x.getCause();
 			log(String.format("invocation of %s failed: %s", method.name, cause
 					.getMessage()));
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, cause
 									.getMessage())));
@@ -302,7 +306,7 @@ public class RpcUtil {
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
 					x.getMessage(), paramstr));
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, x
 									.getMessage())));
@@ -313,7 +317,7 @@ public class RpcUtil {
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
 					.getName(), e.getMessage(), paramstr));
-			return new OtpErlangTuple(new OtpErlangAtom("error"),
+			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", cls.getName(), e
 									.getMessage())));
@@ -331,7 +335,8 @@ public class RpcUtil {
 	/**
 	 * This is a generic alternative to callMethod. Tests if an argument is
 	 * assignable to the declared method's type. It isn't yet adapted to
-	 * java-rpc.<br/> Based on the paper at
+	 * java-rpc.<br/>
+	 * Based on the paper at
 	 * http://www.jgroups.org/javagroupsnew/docs/papers/MethodResolution.ps.gz
 	 * 
 	 * @param message
