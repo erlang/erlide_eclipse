@@ -13,6 +13,7 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
@@ -34,8 +35,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public abstract class WranglerRefactoring extends Refactoring {
 
 	static protected OtpErlangTuple createPos(int line, int coloumn) {
-		return new OtpErlangTuple(new OtpErlangInt(line), new OtpErlangInt(
-				coloumn));
+		return JInterfaceFactory.mkTuple(new OtpErlangInt(line),
+				new OtpErlangInt(coloumn));
 	}
 
 	protected int column, line;
