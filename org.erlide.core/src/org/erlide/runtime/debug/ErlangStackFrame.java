@@ -48,7 +48,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 				final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
 				final OtpErlangObject value = t.elementAt(1);
 				framesReversed.add(new ErlangVariable(target,
-						nameA.atomValue(), false, value, parent, stackFrameNo));
+						nameA.atomValue(), false, value, parent, module, stackFrameNo));
 			}
 		}
 		final List<ErlangVariable> frames = new ArrayList<ErlangVariable>(

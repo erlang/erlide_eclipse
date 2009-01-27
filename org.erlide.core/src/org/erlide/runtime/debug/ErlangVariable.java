@@ -30,11 +30,11 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 
 	public ErlangVariable(final IDebugTarget target, final String name,
 			final boolean subVariable, final OtpErlangObject value,
-			final ErlangProcess process, final int stackFrameNo) {
+			final ErlangProcess process, String moduleName, final int stackFrameNo) {
 		super(target);
 		this.name = name;
 		this.subVariable = subVariable;
-		this.value = new ErlangValue(getDebugTarget(), name, value, process);
+		this.value = new ErlangValue(getDebugTarget(), name, value, process, moduleName);
 		this.process = process;
 		this.stackFrameNo = stackFrameNo;
 	}

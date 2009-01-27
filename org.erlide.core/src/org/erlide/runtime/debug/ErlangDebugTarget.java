@@ -481,4 +481,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			}
 		}
 	}
+
+	public Collection<IProject> getProjects() {
+		return projects;
+	}
 }

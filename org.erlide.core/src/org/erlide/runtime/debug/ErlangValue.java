@@ -9,10 +9,19 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.jinterface.rpc.Tuple;
+import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -28,6 +37,10 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	protected OtpErlangObject value;
 	protected String varName; // to use with getVariables
 	private final ErlangProcess process;
+	protected String moduleName;
+	protected IErlRecordDef record; // set if this value is a record
+
+	// FIXME JC Maybe we should use polymorphism for this one?
 
 	// public ErlangValue(final IDebugTarget target, ErlangVariable variable,
 	// final String stringValue) {
@@ -37,15 +50,45 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	// }
 
 	public ErlangValue(final IDebugTarget target, final String varName,
-			final OtpErlangObject value, final ErlangProcess process) {
+			final OtpErlangObject value, final ErlangProcess process,
+			final String moduleName) {
 		super(target);
 		this.value = value;
 		this.varName = varName;
 		this.process = process;
+		this.moduleName = moduleName;
+		checkRecord(value);
+	}
+
+	private void checkRecord(final OtpErlangObject o) {
+		record = null;
+		if (o instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) o;
+			final OtpErlangObject h = t.elementAt(0);
+			if (h instanceof OtpErlangAtom) {
+				final OtpErlangAtom a = (OtpErlangAtom) h;
+				final ErlangDebugTarget target = (ErlangDebugTarget) getDebugTarget();
+				final Backend b = target.getBackend();
+				final IErlPreprocessorDef pd = ModelUtils
+						.findPreprocessorDef(b, target.getProjects(),
+								moduleName, a.atomValue(),
+								IErlElement.Kind.RECORD_DEF, "",
+								new ArrayList<Tuple>());
+				if (pd != null) {
+					final IErlRecordDef r = (IErlRecordDef) pd;
+					final List<String> fields = r.getFields();
+					if (fields != null && fields.size() + 1 == t.arity()) {
+						record = r;
+					}
+				}
+			}
+		}
 	}
 
 	public String getReferenceTypeName() throws DebugException {
-		if (value instanceof OtpErlangString) {
+		if (record != null) {
+			return "record";
+		} else if (value instanceof OtpErlangString) {
 			return "string";
 		} else if (value instanceof OtpErlangAtom) {
 			return "atom";
@@ -67,6 +110,19 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	}
 
 	public String getValueString() throws DebugException {
+		if (record != null) {
+			final StringBuilder b = new StringBuilder();
+			final List<String> fields = record.getFields();
+			final OtpErlangTuple t = (OtpErlangTuple) value;
+			b.append(t.elementAt(0)).append("#{");
+			for (int i = 0; i < fields.size(); i++) {
+				b.append(fields.get(i)).append("=").append(
+						t.elementAt(i + 1).toString()).append(", ");
+			}
+			b.setLength(b.length() - 2);
+			b.append("}");
+			return b.toString();
+		}
 		return value.toString();
 	}
 
@@ -75,12 +131,17 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	}
 
 	public IVariable[] getVariables() throws DebugException {
-		final int arity = getArity();
+		int arity = getArity();
 		if (arity != -1) {
+			final int ofs = record != null ? 1 : 0;
+			arity -= ofs;
 			final IVariable[] result = new IVariable[arity];
 			for (int i = 0; i < arity; ++i) {
-				result[i] = new ErlangVariable(getDebugTarget(), varName + ":"
-						+ i, true, getElementAt(i), process, -1);
+				final String name = record != null ? record.getFields().get(i)
+						: varName + ":" + i;
+				result[i] = new ErlangVariable(getDebugTarget(), name, true,
+						getElementAt(i), process, moduleName, -1);
+
 			}
 			return result;
 		}
@@ -94,7 +155,8 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 	protected OtpErlangObject getElementAt(final int index) {
 		if (value instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) value;
-			return t.elementAt(index);
+			final int ofs = record != null ? 1 : 0;
+			return t.elementAt(index + ofs);
 		} else if (value instanceof OtpErlangList) {
 			final OtpErlangList l = (OtpErlangList) value;
 			return l.elementAt(index);
