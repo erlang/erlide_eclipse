@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -108,7 +107,7 @@ public class ErlideUtil {
 
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
 		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-				InterfacePlugin.PLUGIN_ID, "codepath");
+				ErlangPlugin.PLUGIN_ID, "codepath");
 		for (final IConfigurationElement el : els) {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {

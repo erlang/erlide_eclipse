@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendUtil;
@@ -182,7 +181,7 @@ public class CodeManager implements IRegistryChangeListener {
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
 		reg.addRegistryChangeListener(this);
 		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-				InterfacePlugin.PLUGIN_ID, "codepath");
+				ErlangPlugin.PLUGIN_ID, "codepath");
 		for (final IConfigurationElement el : els) {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {

@@ -48,7 +48,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
@@ -275,7 +274,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		final String beamname = module + ".beam";
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
 		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-				InterfacePlugin.PLUGIN_ID, "codepath");
+				ErlangPlugin.PLUGIN_ID, "codepath");
 		// TODO: this code assumes that the debugged target and the
 		// erlide-plugin uses the same Erlang version, how can we escape this?
 		final String ver = backend.getCurrentVersion();
