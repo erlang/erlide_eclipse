@@ -1550,6 +1550,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.resetReconciler();
 	}
 
+	public void reconcileNow() {
+		((EditorConfiguration) getSourceViewerConfiguration()).reconcileNow();
+	}
+
 	public ActionGroup getActionGroup() {
 		return fActionGroups;
 	}

@@ -93,8 +93,10 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	void initialReconcile();
 
-	public void reconcileText(int offset, int removeLength, String newText,
+	void reconcileText(int offset, int removeLength, String newText,
 			IProgressMonitor mon);
+
+	void postReconcile(IProgressMonitor mon);
 
 	void finalReconcile();
 

@@ -49,7 +49,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
 	private final List<IErlComment> comments;
-	private String initialText;
+	private final String initialText;
 	private IErlScanner scanner;
 	private final IFile fFile;
 	private boolean parsed = false;
@@ -356,10 +356,21 @@ public class ErlModule extends Openable implements IErlModule {
 			setIsStructureKnown(false);
 		}
 		fIgnoreNextReconcile = false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public void postReconcile(final IProgressMonitor mon) {
 		try {
 			open(mon);
 		} catch (final ErlModelException e) {
 			ErlLogger.warn(e);
+		}
+		if (mon != null) {
+			mon.worked(1);
 		}
 	}
 

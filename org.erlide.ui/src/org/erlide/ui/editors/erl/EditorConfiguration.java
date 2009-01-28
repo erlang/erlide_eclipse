@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
+import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
 import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
@@ -52,7 +54,7 @@ import org.erlide.ui.util.IColorManager;
  */
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
-	final ErlangEditor editor;
+	private final ErlangEditor editor;
 
 	private ITextDoubleClickStrategy doubleClickStrategy;
 
@@ -196,10 +198,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IReconciler getReconciler(final ISourceViewer sourceViewer) {
 		final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-		reconciler = new ErlReconciler(strategy, true);
-		// reconciler.setIsIncrementalReconciler(false);
+		reconciler = new ErlReconciler(strategy, true, true);
 		reconciler.setProgressMonitor(new NullProgressMonitor());
-		reconciler.setDelay(300);
+		reconciler.setDelay(500);
 		return reconciler;
 	}
 
@@ -344,10 +345,15 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	public void resetReconciler() {
-		if (reconciler == null) {
-			return;
+		if (reconciler != null) {
+			reconciler.forceReconciling();
 		}
-		reconciler.forceReconciling();
+	}
+
+	public void reconcileNow() {
+		if (reconciler != null) {
+			reconciler.reconcileNow();
+		}
 	}
 
 }

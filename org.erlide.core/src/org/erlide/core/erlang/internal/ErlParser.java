@@ -64,13 +64,14 @@ public class ErlParser {
 					moduleFilePath, initialText, stateDir, erlidePath);
 		} else {
 			// FIXME this doesn't work...
+			ErlLogger.info("reparse " + module.getName());
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
 		if (Util.isOk(res)) {
 			Bindings bindings = null;
 			try {
 				bindings = ErlUtils.match("{ok, {_, Forms, Comments}}", res);
-			} catch (ParserException e) {
+			} catch (final ParserException e) {
 				e.printStackTrace();
 			}
 			if (bindings != null) {

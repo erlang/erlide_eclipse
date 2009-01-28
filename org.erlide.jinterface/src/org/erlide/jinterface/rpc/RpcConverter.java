@@ -513,6 +513,9 @@ public class RpcConverter {
 		if (obj instanceof OtpErlangBinary) {
 			return (OtpErlangObject) obj;
 		}
+		if (obj instanceof OtpErlangString) {
+			return (OtpErlangObject) obj;
+		}
 		if (obj instanceof OtpErlangObject) {
 			if (RpcConverter.isDeveloper()) {
 				StackTraceElement el = null;
@@ -585,8 +588,8 @@ public class RpcConverter {
 		return dev != null && "true".equals(dev);
 	}
 
-	public static boolean matchSignature(OtpErlangObject term,
-			Signature signature) {
+	public static boolean matchSignature(final OtpErlangObject term,
+			final Signature signature) {
 		if (signature.kind == 'x') {
 			return true;
 		}
@@ -599,8 +602,8 @@ public class RpcConverter {
 		return false;
 	}
 
-	public static boolean matchSignature(OtpErlangObject term, String signature)
-			throws RpcException {
+	public static boolean matchSignature(final OtpErlangObject term,
+			final String signature) throws RpcException {
 		return matchSignature(term, Signature.parse(signature)[0]);
 	}
 }
