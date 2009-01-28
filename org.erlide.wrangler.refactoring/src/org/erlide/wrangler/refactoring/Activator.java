@@ -12,9 +12,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.RpcResult;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

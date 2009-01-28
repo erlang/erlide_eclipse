@@ -20,6 +20,8 @@ import org.erlide.jinterface.JInterfaceFactory;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -27,6 +29,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpMbox;
+import com.ericsson.otp.erlang.OtpNode;
 
 public class RpcUtil {
 	static final String REF_NODE = "jRPC";
@@ -42,6 +46,113 @@ public class RpcUtil {
 	}
 
 	private static final boolean VERBOSE = false;
+
+	// use this for debugging
+	private static final boolean CHECK_RPC = Boolean
+			.getBoolean("org.erlide.checkrpc");
+
+	public static void send(OtpNode node, OtpErlangPid pid, Object msg)
+			throws RpcException {
+		final OtpMbox mbox = node.createMbox();
+		try {
+			if (mbox != null) {
+				if (CHECK_RPC) {
+					debug("SEND :: " + pid + " " + msg);
+				}
+				mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
+			}
+		} finally {
+			node.closeMbox(mbox);
+		}
+	}
+
+	public static void send(final OtpNode node, String peer, String name,
+			final Object msg) throws RpcException {
+		final OtpMbox mbox = node.createMbox();
+		try {
+			if (mbox != null) {
+				if (CHECK_RPC) {
+					debug("SEND :: " + name + " " + msg);
+				}
+				mbox.send(name, peer, RpcConverter.java2erlang(msg, "x"));
+			}
+		} finally {
+			node.closeMbox(mbox);
+		}
+	}
+
+	public static RpcResult sendRpc(final OtpNode node, String peer,
+			final String module, final String fun, final int timeout,
+			final String signature, Object... args0) throws RpcException {
+		if (args0 == null) {
+			args0 = new OtpErlangObject[] {};
+		}
+
+		Signature[] type = Signature.parse(signature);
+		if (type == null) {
+			type = new Signature[args0.length];
+			for (int i = 0; i < args0.length; i++) {
+				type[i] = new Signature('x');
+			}
+		}
+		if (type.length != args0.length) {
+			throw new RpcException("Signature doesn't match parameter number: "
+					+ type.length + "/" + args0.length);
+		}
+		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
+		}
+
+		RpcResult result = null;
+		OtpErlangObject res = null;
+		try {
+			final OtpMbox mbox = node.createMbox();
+			if (mbox == null) {
+				return RpcResult.error("missing receive mailbox");
+			}
+			try {
+				res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
+				RpcUtil.send(node, peer, "rex", res);
+				if (CHECK_RPC) {
+					debug("RPC :: " + res);
+				}
+
+				if (timeout < 0) {
+					res = mbox.receive();
+				} else {
+					res = mbox.receive(timeout);
+				}
+				if (CHECK_RPC) {
+					debug("    <= " + res);
+				}
+			} finally {
+				node.closeMbox(mbox);
+			}
+			if (res == null) {
+				if (CHECK_RPC) {
+					debug("    timed out: " + module + ":" + fun + "("
+							+ new OtpErlangList(args) + ")");
+				}
+				return RpcResult.error("timeout");
+			}
+			if (!(res instanceof OtpErlangTuple)) {
+				if (CHECK_RPC) {
+					debug("    weird result: " + module + ":" + fun + "("
+							+ new OtpErlangList(args) + ") -> " + res);
+				}
+				return RpcResult.error("bad result: " + res);
+			}
+
+			res = ((OtpErlangTuple) res).elementAt(1);
+			result = new RpcResult(res);
+		} catch (final OtpErlangExit e) {
+			warn(e);
+		} catch (final OtpErlangDecodeException e) {
+			warn(e);
+		}
+		return result;
+	}
 
 	// eclipse uses different classloaders for each plugin. this one is non-ui
 	// so we have to set it from a ui one (when that one is initialized) so that
@@ -436,6 +547,11 @@ public class RpcUtil {
 		if (VERBOSE) {
 			log(s);
 		}
+	}
+
+	private static void warn(Exception e) {
+		log(e.getMessage());
+		e.printStackTrace();
 	}
 
 }

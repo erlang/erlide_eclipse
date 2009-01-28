@@ -41,10 +41,10 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.ICodeBundle;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.BundleContext;
 
 /**

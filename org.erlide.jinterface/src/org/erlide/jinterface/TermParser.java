@@ -12,6 +12,8 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpPlaceholder;
+import com.ericsson.otp.erlang.OtpVariable;
 
 public class TermParser {
 

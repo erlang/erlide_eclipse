@@ -34,7 +34,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.EpmdWatcher;
-import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
@@ -399,7 +398,7 @@ public final class BackendManager implements IEpmdListener {
 		return host;
 	}
 
-	synchronized public void updateBackendStatus(String host,
+	synchronized public void updateNodeStatus(String host,
 			final List<String> started, final List<String> stopped) {
 		for (final String b : started) {
 			String name = b + "@" + host;

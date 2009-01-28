@@ -33,13 +33,13 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.jinterface.ICodeBundle;
 import org.erlide.jinterface.InterfacePlugin;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 

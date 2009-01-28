@@ -20,6 +20,8 @@ import org.erlide.jinterface.rpc.Signature;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpPlaceholder;
+import com.ericsson.otp.erlang.OtpVariable;
 
 public class ErlUtils {
 

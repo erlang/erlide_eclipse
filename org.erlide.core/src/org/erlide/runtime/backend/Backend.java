@@ -21,11 +21,9 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.ICodeBundle;
-import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
-import org.erlide.jinterface.rpc.Signature;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
@@ -39,7 +37,6 @@ import org.erlide.runtime.backend.internal.RuntimeLauncher;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -57,10 +54,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "250"));
-
-	// use this for debugging
-	private static final boolean CHECK_RPC = Boolean
-			.getBoolean("org.erlide.checkrpc");
 
 	final private HashMap<String, ArrayList<BackendEventListener>> fEventListeners;
 	private final CodeManager fCodeManager;
@@ -253,18 +246,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	public void send(final OtpErlangPid pid, final Object msg) {
 		try {
-			final OtpMbox mbox = fNode.createMbox();
-			try {
-				if (mbox != null) {
-					if (CHECK_RPC) {
-						ErlLogger.debug("SEND :: " + pid + " " + msg);
-					}
-					mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
-				}
-			} finally {
-				fNode.closeMbox(mbox);
-			}
-		} catch (final RpcException e) {
+			RpcUtil.send(fNode, pid, msg);
+		} catch (RpcException e) {
 			// shouldn't happen
 			ErlLogger.warn(e);
 		}
@@ -272,17 +255,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public void send(final String name, final Object msg) {
 		try {
-			final OtpMbox mbox = fNode.createMbox();
-			try {
-				if (mbox != null) {
-					if (CHECK_RPC) {
-						ErlLogger.debug("SEND :: " + name + " " + msg);
-					}
-					mbox.send(name, fPeer, RpcConverter.java2erlang(msg, "x"));
-				}
-			} finally {
-				fNode.closeMbox(mbox);
-			}
+			RpcUtil.send(fNode, fPeer, name, msg);
 		} catch (final RpcException e) {
 			// shouldn't happen
 			ErlLogger.warn(e);
@@ -385,74 +358,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (!fAvailable) {
 			return RpcResult.error("not connected");
 		}
-		if (args0 == null) {
-			args0 = new OtpErlangObject[] {};
-		}
-
-		Signature[] type = Signature.parse(signature);
-		if (type == null) {
-			type = new Signature[args0.length];
-			for (int i = 0; i < args0.length; i++) {
-				type[i] = new Signature('x');
-			}
-		}
-		if (type.length != args0.length) {
-			throw new RpcException("Signature doesn't match parameter number: "
-					+ type.length + "/" + args0.length);
-		}
-		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
-		for (int i = 0; i < args.length; i++) {
-			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
-		}
-
-		RpcResult result = null;
-		OtpErlangObject res = null;
-		try {
-			final OtpMbox mbox = fNode.createMbox();
-			if (mbox == null) {
-				return RpcResult.error("missing receive mailbox");
-			}
-			try {
-				res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
-				send("rex", res);
-				if (CHECK_RPC) {
-					ErlLogger.debug("RPC :: " + res);
-				}
-
-				if (timeout < 0) {
-					res = mbox.receive();
-				} else {
-					res = mbox.receive(timeout);
-				}
-				if (CHECK_RPC) {
-					ErlLogger.debug("    <= " + res);
-				}
-			} finally {
-				fNode.closeMbox(mbox);
-			}
-			if (res == null) {
-				if (CHECK_RPC) {
-					ErlLogger.debug("    timed out: " + module + ":" + fun
-							+ "(" + new OtpErlangList(args) + ")");
-				}
-				return RpcResult.error("timeout");
-			}
-			if (!(res instanceof OtpErlangTuple)) {
-				if (CHECK_RPC) {
-					ErlLogger.debug("    weird result: " + module + ":" + fun
-							+ "(" + new OtpErlangList(args) + ") -> " + res);
-				}
-				return RpcResult.error("bad result: " + res);
-			}
-
-			res = ((OtpErlangTuple) res).elementAt(1);
-			result = new RpcResult(res);
-		} catch (final OtpErlangExit e) {
-			ErlLogger.warn(e);
-		} catch (final OtpErlangDecodeException e) {
-			ErlLogger.warn(e);
-		}
-		return result;
+		return RpcUtil.sendRpc(fNode, fPeer, module, fun, timeout, signature,
+				args0);
 	}
 
 	private OtpMbox getEventBox() {

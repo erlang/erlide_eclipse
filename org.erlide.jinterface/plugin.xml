@@ -2,10 +2,4 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
-   <extension
-         point="org.erlide.jinterface.codepath">
-      <bundle_dir
-            path="/ebin">
-      </bundle_dir>
-   </extension>
 </plugin>

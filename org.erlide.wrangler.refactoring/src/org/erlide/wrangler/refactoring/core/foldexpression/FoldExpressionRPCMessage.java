@@ -2,7 +2,7 @@ package org.erlide.wrangler.refactoring.core.foldexpression;
 
 import java.util.List;
 
-import org.erlide.runtime.backend.RpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.FileResourceChanges;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
 import org.erlide.wrangler.refactoring.core.exception.WranglerRefactoringException;

@@ -1,4 +1,4 @@
-package org.erlide.jinterface;
+package org.erlide.runtime.backend;
 
 import org.osgi.framework.Bundle;
 

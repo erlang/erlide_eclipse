@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import com.ericsson.otp.erlang.OtpEpmd;
 
 /**
@@ -74,7 +71,7 @@ public class EpmdWatcher {
 
 				if (started.size() > 0 || stopped.size() > 0) {
 					for (IEpmdListener listener : this.listeners) {
-						listener.updateBackendStatus(host, started, stopped);
+						listener.updateNodeStatus(host, started, stopped);
 					}
 					for (String s : started) {
 						List<IEpmdMonitor> ms = this.monitors.get(s);
@@ -100,9 +97,9 @@ public class EpmdWatcher {
 				if (this.epmdStarted) {
 					final String msg = "Erlide warning: epmd daemon went down on host "
 							+ entry.getKey() + "...";
-					InterfacePlugin.getDefault().getLog().log(
-							new Status(IStatus.WARNING,
-									InterfacePlugin.PLUGIN_ID, msg));
+					// InterfacePlugin.getDefault().getLog().log(
+					// new Status(IStatus.WARNING,
+					// InterfacePlugin.PLUGIN_ID, msg));
 					System.out.println(msg);
 					this.epmdStarted = false;
 				}

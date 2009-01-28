@@ -105,7 +105,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 		// .getToolBarManager();
 	}
 
-	public void updateBackendStatus(String host, List<String> started,
+	public void updateNodeStatus(String host, List<String> started,
 			List<String> stopped) {
 		model = epmdWatcher.getData();
 		Display.getDefault().asyncExec(new Runnable() {

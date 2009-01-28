@@ -3,7 +3,7 @@ package org.erlide.wrangler.refactoring.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.runtime.backend.RpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerRPCException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerRefactoringException;
