@@ -1277,6 +1277,12 @@
             <para>
                 <variablelist>
                     <varlistentry>
+                        <term>com.ericsson.jinterface</term>
+                        <listitem>
+                            <para>This is a wrapper around the jinterface library from OTP. </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
                         <term>org.erlide</term>
                         <listitem>
                             <para>The feature that groups together all the deliverable plugins.
@@ -1293,7 +1299,7 @@
                     <varlistentry>
                         <term>org.erlide.jinterface</term>
                         <listitem>
-                            <para>This is a wrapper around jinterface plus some extensions. It is
+                            <para>This contains our extensions to jinterface. It is
                                 Eclipse-independent.</para>
                         </listitem>
                     </varlistentry>

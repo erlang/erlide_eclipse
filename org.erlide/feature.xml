@@ -270,4 +270,11 @@ litigation.
          install-size="0"
          version="0.4.3.7"/>
 
+   <plugin
+         id="com.ericsson.jinterface"
+         download-size="0"
+         install-size="0"
+         version="0.4.3.7"
+         unpack="false"/>
+
 </feature>
