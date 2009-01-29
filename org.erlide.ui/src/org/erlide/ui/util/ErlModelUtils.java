@@ -156,12 +156,6 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlFunction findFunctionFromPos(final IErlModule module,
-			final int offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind type,
