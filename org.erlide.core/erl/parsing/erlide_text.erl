@@ -277,7 +277,7 @@ clean_tokens([#token{kind='#'} = Q, #token{kind=Kind, value=Value} | Rest], W, I
 clean_tokens([T | Rest], W, I, Acc) ->
     clean_tokens(Rest, W, I+1, [T | Acc]).
 
-%% detab(string(), integer(), left | all) -> string()
+%% detab(string(), integer(), left |ï¿½all) -> string()
 %% replace tabs (\t) with spaces
 detab(S, Tablength, all) ->
     detab(S, Tablength, 0, "");
@@ -325,6 +325,8 @@ initial_whitespace(S, _Tablength, I) ->
 %% entab(string(), integer(), left) -> string()
 %% replace initial spaces with tabs
 
+entab(S, Tablength, left) when Tablength < 2 ->
+    S;
 entab(S, Tablength, left) ->
     {N, Rest} = initial_whitespace(S, Tablength, 0),
     lists:append([string:chars($\t, N div Tablength), string:chars($ , N rem Tablength), Rest]).

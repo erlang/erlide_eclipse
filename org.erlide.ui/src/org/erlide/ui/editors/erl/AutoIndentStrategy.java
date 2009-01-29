@@ -80,17 +80,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		final String oldLine = d.get(offset, lineLength + lineOffset - offset);
 		try {
 			final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			int tabw = ErlideUIPlugin
-					.getDefault()
-					.getPreferenceStore()
-					.getInt(
-							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-			if (tabw == 0) {
-				tabw = EditorsUI
-						.getPreferenceStore()
-						.getInt(
-								AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-			}
+			final int tabw = getTabWidthFromPreferences();
 
 			final Map<String, String> prefs = IndentationPreferencePage
 					.getKeysAndPrefs();
@@ -105,6 +95,30 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	public static int getTabWidthFromPreferences() {
+		if (EditorsUI
+				.getPreferenceStore()
+				.getBoolean(
+						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS)) {
+			return 0;
+		}
+		int tabw = ErlideUIPlugin
+				.getDefault()
+				.getPreferenceStore()
+				.getInt(
+						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+		if (tabw == 0) {
+			tabw = EditorsUI
+					.getPreferenceStore()
+					.getInt(
+							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+		}
+		return tabw;
 	}
 
 	/**

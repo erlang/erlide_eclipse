@@ -4,12 +4,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.editors.erl.AutoIndentStrategy;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -41,18 +39,7 @@ public class IndentAction extends ErlangTextEditorAction {
 	@Override
 	protected OtpErlangObject callErlang(final int offset, final int length,
 			final String text) throws Exception {
-		int tabw = ErlideUIPlugin
-				.getDefault()
-				.getPreferenceStore()
-				.getInt(
-						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-		if (tabw == 0) {
-			tabw = EditorsUI
-					.getPreferenceStore()
-					.getInt(
-							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-		}
-
+		final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
 		final Map<String, String> prefs = IndentationPreferencePage
 				.getKeysAndPrefs();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
