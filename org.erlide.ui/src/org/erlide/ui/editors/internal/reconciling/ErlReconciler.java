@@ -145,6 +145,16 @@ public class ErlReconciler implements IReconciler {
 		}
 
 		/**
+		 * Set reset flag to false, so that it will reconcile, only to be used
+		 * by {@link ErlReconciler#reconcileNow()}
+		 */
+		public void unreset() {
+			synchronized (this) {
+				fReset = false;
+			}
+		}
+
+		/**
 		 * The background activity. Waits until there is something in the queue
 		 * managing the changes that have been applied to the text viewer.
 		 * Removes the first change from the queue and process it. If
@@ -268,7 +278,7 @@ public class ErlReconciler implements IReconciler {
 				fThread.fIsDirty = true;
 			}
 
-			// fThread.reset();
+			fThread.reset();
 
 		}
 
@@ -640,6 +650,7 @@ public class ErlReconciler implements IReconciler {
 	}
 
 	public void reconcileNow() {
+		fThread.unreset();
 		synchronized (fDirtyRegionQueue) {
 			fDirtyRegionQueue.notify();
 		}

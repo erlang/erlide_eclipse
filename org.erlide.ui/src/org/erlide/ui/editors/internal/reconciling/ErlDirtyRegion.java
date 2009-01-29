@@ -54,12 +54,18 @@ public class ErlDirtyRegion {
 	 *            the dirty region with which to merge
 	 */
 	public void mergeWith(final ErlDirtyRegion dr) {
-		final int start = Math.min(fOffset, dr.fOffset);
-		final int end = Math.max(fOffset + fLength, dr.fOffset + dr.fLength);
-		fOffset = start;
-		fLength = end - start;
+		fOffset = Math.min(fOffset, dr.fOffset);
+		fLength = fLength + dr.fLength;
 		fText = dr.fText == null ? fText : fText == null ? dr.fText : fText
 				+ dr.fText;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Ofs ").append(fOffset).append("  del ").append(fLength)
+				.append("  ins ").append(getTextLength());
+		return sb.toString();
 	}
 
 	/**
