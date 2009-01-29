@@ -1,6 +1,5 @@
 package org.erlide.ui.editors.internal.reconciling;
 
-
 public class ErlDirtyRegion {
 
 	/** The region's offset. */
@@ -34,6 +33,10 @@ public class ErlDirtyRegion {
 		return fLength;
 	}
 
+	public int getTextLength() {
+		return fText == null ? 0 : fText.length();
+	}
+
 	/**
 	 * Returns the text that changed as part of the region change.
 	 * 
@@ -50,12 +53,25 @@ public class ErlDirtyRegion {
 	 * @param dr
 	 *            the dirty region with which to merge
 	 */
-	void mergeWith(final ErlDirtyRegion dr) {
+	public void mergeWith(final ErlDirtyRegion dr) {
 		final int start = Math.min(fOffset, dr.fOffset);
 		final int end = Math.max(fOffset + fLength, dr.fOffset + dr.fLength);
 		fOffset = start;
 		fLength = end - start;
 		fText = dr.fText == null ? fText : fText == null ? dr.fText : fText
 				+ dr.fText;
+	}
+
+	/**
+	 * Check if the regions are adjacent and can be merged to one
+	 * 
+	 * @param nextMerge
+	 * @return
+	 */
+	public boolean isMergable(final ErlDirtyRegion nextMerge) {
+		return getOffset() - getLength() + getTextLength() == nextMerge
+				.getOffset()
+				|| getOffset() == nextMerge.getOffset() - nextMerge.getLength()
+						+ nextMerge.getTextLength();
 	}
 }

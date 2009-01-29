@@ -33,17 +33,9 @@ public class ErlDirtyRegionQueue {
 		// If the dirty region being added is directly after the last dirty
 		// region on the queue then merge the two dirty regions together.
 		final ErlDirtyRegion lastDR = getLastDirtyRegion();
-		boolean wasMerged = false;
-		if (lastDR != null) {
-			if (lastDR.getOffset() + lastDR.getText().length()
-					- lastDR.getLength() == dr.getOffset()) {
-				lastDR.mergeWith(dr);
-				wasMerged = true;
-			}
-		}
-
-		if (!wasMerged) {
-			// Don't merge- just add the new one onto the queue.
+		if (lastDR != null && lastDR.isMergable(dr)) {
+			lastDR.mergeWith(dr);
+		} else {
 			fDirtyRegions.add(dr);
 		}
 	}
