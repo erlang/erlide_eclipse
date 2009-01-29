@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -43,30 +42,13 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 
 	private final ErlangEditor fEditor;
 
-	public AutoIndentStrategy(ErlangEditor editor) {
+	public AutoIndentStrategy(final ErlangEditor editor) {
 		super();
 		fEditor = editor;
 	}
 
-	/**
-	 * The default indent depth
-	 */
-	// private static final int INDENT_DEPTH = 4;
-	/**
-	 * Get the actual indent itself
-	 * 
-	 * @param depth
-	 *            the depth of the indent;
-	 * @return the indent
-	 */
-	private String getIndent(int depth) {
-		final char[] x = new char[depth];
-		Arrays.fill(x, ' ');
-
-		return new String(x);
-	}
-
-	private void autoIndentAfterNewLine(IDocument d, DocumentCommand c) {
+	private void autoIndentAfterNewLine(final IDocument d,
+			final DocumentCommand c) {
 		try {
 			indentAfterNewLine(d, c);
 		} catch (final BadLocationException e) {
@@ -74,7 +56,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 		}
 	}
 
-	protected void indentAfterNewLine(IDocument d, DocumentCommand c)
+	protected void indentAfterNewLine(final IDocument d, final DocumentCommand c)
 			throws BadLocationException {
 		final int offset = c.offset;
 		String txt = null;
@@ -115,11 +97,11 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 			final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
 					c.text, tabw, prefs);
 
-			if (res.addNewLine) {
+			if (res.isAddNewLine()) {
 				c.text += "\n";
 			}
-			c.text += getIndent(res.indentWith);
-			c.length += res.removeNext;
+			c.text += res.getText();
+			c.length += res.getRemoveNext();
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
@@ -137,7 +119,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 
 	// FIXME flytta en del av denna logik till erlang!! (t.ex. så vill man inte
 	// vara "elektrisk" i kommentarer)
-	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
+	public void customizeDocumentCommand(final IDocument d,
+			final DocumentCommand c) {
 		if (c.length == 0 && c.text != null) {
 			if (TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
 				autoIndentAfterNewLine(d, c);

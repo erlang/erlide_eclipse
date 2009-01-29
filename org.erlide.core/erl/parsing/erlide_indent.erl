@@ -63,12 +63,17 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                     case indent(Tr, LineOffsets, LineN, Prefs, erlide_text:left_strip(OldLine)) of
                         {I, true} ->
                             ?D(I),
-                            {I, erlide_text:start_column(OldLine, Tablength), AddNL};
+                            IS0 = reindent_line("", I),
+                            IS = erlide_text:entab(IS0, Tablength, left),
+                            {IS, erlide_text:start_column(OldLine, Tablength), AddNL};
                         {I, false} ->
                             ?D(I),
                             case AddNL of
-                                false -> {I, 0, false};
-                                true -> {0, 0, false}
+                                false ->
+				    IS0 = reindent_line("", I),
+				    IS = erlide_text:entab(IS0, Tablength, left),
+                                    {IS, 0, false};
+                                true -> {"", 0, false}
                             end
                     end;
                 Error  ->
@@ -116,7 +121,7 @@ mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
 
 get_prefs([], OldP, Acc) ->
     Acc ++ OldP;
-get_prefs([{Key, Value} | Rest], OldP, Acc) ->
+get_prefs([{Key, Value} | Rest], OldP, Acc) ->
     P = lists:keydelete(Key, 1, OldP),
     get_prefs(Rest, P, [{Key, Value} | Acc]).
 
@@ -170,6 +175,7 @@ do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
     {NewI, _OldI, _AddNL} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
     NewLine0 = reindent_line(Line, NewI),
     NewLine = erlide_text:entab(NewLine0, Tablength, left),
+    ?D(NewLine),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
 
 %% TODO: Add description of asd/function_arity
