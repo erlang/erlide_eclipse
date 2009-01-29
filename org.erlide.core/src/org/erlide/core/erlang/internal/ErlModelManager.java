@@ -234,8 +234,8 @@ public class ErlModelManager implements IErlModelManager {
 		if (p != null) {
 			p.addChild(f);
 		} else {
-			ErlLogger.warn("creating folder %s in null parent?!", folder
-					.getName());
+			// ErlLogger.warn("creating folder %s in null parent?!", folder
+			// .getName());
 		}
 		return f;
 	}

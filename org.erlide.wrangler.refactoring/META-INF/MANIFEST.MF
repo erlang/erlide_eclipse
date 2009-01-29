@@ -39,3 +39,4 @@ Export-Package: org.erlide.wrangler.refactoring;uses:="org.osgi.framework,org.ec
  org.erlide.wrangler.refactoring.util;uses:="org.incava.util.diff"
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -49,7 +49,7 @@ public class ErlReconciler implements IReconciler {
 		/** Has the reconciler been reset. */
 		private boolean fReset = false;
 		/** Some changes need to be processed. */
-		private boolean fIsDirty = false;
+		boolean fIsDirty = false;
 		/** Is a reconciling strategy active. */
 		private boolean fIsActive = false;
 
@@ -284,7 +284,7 @@ public class ErlReconciler implements IReconciler {
 
 		/*
 		 * @see ITextInputListener#inputDocumentAboutToBeChanged(IDocument,
-		 *      IDocument)
+		 * IDocument)
 		 */
 		public void inputDocumentAboutToBeChanged(final IDocument oldInput,
 				final IDocument newInput) {
@@ -342,30 +342,30 @@ public class ErlReconciler implements IReconciler {
 	}
 
 	/** Queue to manage the changes applied to the text viewer. */
-	private ErlDirtyRegionQueue fDirtyRegionQueue;
+	ErlDirtyRegionQueue fDirtyRegionQueue;
 	/** The background thread. */
-	private BackgroundThread fThread;
+	BackgroundThread fThread;
 	/** Internal document and text input listener. */
 	private Listener fListener;
 	/** The background thread delay. */
-	private int fDelay = 500;
+	int fDelay = 500;
 	/** Are there incremental reconciling strategies? */
-	private boolean fIsIncrementalReconciler = true;
+	boolean fIsIncrementalReconciler = true;
 	/** The progress monitor used by this reconciler. */
-	private IProgressMonitor fProgressMonitor;
+	IProgressMonitor fProgressMonitor;
 	/**
 	 * Tells whether this reconciler is allowed to modify the document.
 	 * 
 	 * @since 3.2
 	 */
-	private boolean fIsAllowedToModifyDocument = true;
+	boolean fIsAllowedToModifyDocument = true;
 
 	/** The text viewer's document. */
-	private IDocument fDocument;
+	IDocument fDocument;
 	/** The text viewer */
 	private ITextViewer fViewer;
 	/** True if it should reconcile all regions without delay between them */
-	private final boolean fChunkReconciler;
+	final boolean fChunkReconciler;
 
 	/**
 	 * Tells the reconciler how long it should wait for further text changes
@@ -519,7 +519,7 @@ public class ErlReconciler implements IReconciler {
 	 * @param e
 	 *            the document event for which to create a dirty region
 	 */
-	private void createDirtyRegion(final DocumentEvent e) {
+	void createDirtyRegion(final DocumentEvent e) {
 		synchronized (fDirtyRegionQueue) {
 			fDirtyRegionQueue.addDirtyRegion(new ErlDirtyRegion(e.getOffset(),
 					e.getLength(), e.getText()));
