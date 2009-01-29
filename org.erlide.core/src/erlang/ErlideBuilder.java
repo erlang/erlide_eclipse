@@ -40,7 +40,7 @@ public class ErlideBuilder {
 			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
 					project);
 			// FIXME add an option for the compiler options
-			return b.rpcx("erlide_builder", "compile", 20000, "sslsla", fn,
+			return b.rpcx("erlide_builder", "compile", 30000, "sslsla", fn,
 					outputdir, includedirs, new String[] { "debug_info" });
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
@@ -65,8 +65,8 @@ public class ErlideBuilder {
 
 	public static void loadModule(final IProject project, final String module) {
 		try {
-			for (Backend b : ErlangCore.getBackendManager().getExecutionBackends(
-					project)) {
+			for (Backend b : ErlangCore.getBackendManager()
+					.getExecutionBackends(project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
 				b.rpcx("erlide_builder", "load", "a", module);
