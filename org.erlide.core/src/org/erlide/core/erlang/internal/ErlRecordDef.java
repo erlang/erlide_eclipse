@@ -14,9 +14,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
-	String record;
-	String extra;
-	public List<String> fields;
+	private final String record;
+	private final String extra;
+	private final List<String> fields;
 
 	/**
 	 * @param parent
