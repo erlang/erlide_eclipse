@@ -184,8 +184,10 @@ reindent_line(" " ++ S, I) ->
     reindent_line(S, I);
 reindent_line("\t" ++ S, I) ->
     reindent_line(S, I);
-reindent_line(S, I) ->
-    lists:duplicate(I, $ )++S.
+reindent_line(S, I) when is_integer(I) ->
+    lists:duplicate(I, $ )++S;
+reindent_line(S, I) when is_list(I) ->
+    I ++ S.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
