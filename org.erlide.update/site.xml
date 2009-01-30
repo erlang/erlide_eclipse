@@ -6,49 +6,13 @@
    <feature url="features/org.erlide_0.4.1.jar" id="org.erlide" version="0.4.1">
       <category name="stable"/>
    </feature>
-   <feature url="features/org.erlide_0.4.2.4.jar" id="org.erlide" version="0.4.2.4">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.2.5.jar" id="org.erlide" version="0.4.2.5">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.2.6.jar" id="org.erlide" version="0.4.2.6">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.2.7.jar" id="org.erlide" version="0.4.2.7">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.2.8.jar" id="org.erlide" version="0.4.2.8">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.2.9.jar" id="org.erlide" version="0.4.2.9">
-      <category name="unstable"/>
-   </feature>
    <feature url="features/org.erlide_0.4.3.jar" id="org.erlide" version="0.4.3">
       <category name="stable"/>
    </feature>
-   <feature url="features/org.erlide_0.4.3.1.jar" id="org.erlide" version="0.4.3.1">
+   <feature url="features/org.erlide_0.4.3.9.jar" id="org.erlide" version="0.4.3.9">
       <category name="unstable"/>
    </feature>
-   <feature url="features/org.erlide_0.4.3.2.jar" id="org.erlide" version="0.4.3.2">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.3.jar" id="org.erlide" version="0.4.3.3">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.4.jar" id="org.erlide" version="0.4.3.4">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.5.jar" id="org.erlide" version="0.4.3.5">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.6.jar" id="org.erlide" version="0.4.3.6">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.7.jar" id="org.erlide" version="0.4.3.7">
-      <category name="unstable"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.8.jar" id="org.erlide" version="0.4.3.8">
+   <feature url="features/org.erlide_0.4.3.10.jar" id="org.erlide" version="0.4.3.10">
       <category name="unstable"/>
    </feature>
    <category-def name="stable" label="Stable builds">

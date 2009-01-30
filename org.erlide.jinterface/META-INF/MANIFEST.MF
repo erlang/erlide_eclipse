@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.jinterface; singleton:=true
-Bundle-Version: 0.4.3.8
+Bundle-Version: 0.4.3.10
 Bundle-ClassPath: erlide-jinterface.jar
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
