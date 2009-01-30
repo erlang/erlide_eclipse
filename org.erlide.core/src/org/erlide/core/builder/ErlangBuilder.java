@@ -68,8 +68,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlangCode;
 import erlang.ErlideBuilder;
 
-public class ErlangBuilder extends IncrementalProjectBuilder implements
-		IMarkerGenerator {
+public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	protected static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".problemmarker";
@@ -77,9 +76,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".taskmarker";
 
-	static private IMarkerGenerator getMarkerGenerator() {
-		return new ErlangBuilderMarkerGenerator();
-	}
+	private IMarkerGenerator generator = new ErlangBuilderMarkerGenerator();
 
 	protected void createProblemFor(final IResource resource,
 			final IErlFunction erlElement, final String message,
@@ -195,9 +192,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				final IResource r2 = p.findMember(f2);
 				// XXX does the above work? or do we need to get the name only?
 				if (r1 != null || r2 != null) {
-					addMarker(getProject(), getProject(), "Code clash between "
-							+ f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING,
-							"");
+					generator.addMarker(getProject(), getProject(),
+							"Code clash between " + f1 + " and " + f2, 0,
+							IMarker.SEVERITY_WARNING, "");
 				}
 			}
 
@@ -220,7 +217,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				addMarker(getProject(), getProject(),
+				generator.addMarker(getProject(), getProject(),
 						"Duplicated module name in " + f1 + " and " + f2, 0,
 						IMarker.SEVERITY_ERROR, "");
 			}
@@ -357,11 +354,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		deleteMarkers(resource);
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
-			addMarker(
-					resource,
-					resource,
-					resource.getName()
-							+ " is not directly on source path (packages are not supported yet)",
+			final String msg = " is not directly on source path (packages are not supported yet)";
+			generator.addMarker(resource, resource, resource.getName() + msg,
 					0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
@@ -471,8 +465,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				// ErlLogger.debug("t = " + t);
 				// process compilation messages
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-				ErlangBuilderMarkerGenerator.addErrorMarkers(
-						getMarkerGenerator(), resource, l);
+				ErlangBuilderMarkerGenerator.addErrorMarkers(generator,
+						resource, l);
 			} else {
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("skipping %s", resource.getName());
@@ -583,12 +577,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 		// }
 		if (isInExtCodePath(resource, project)
 				&& !isInCodePath(resource, project)) {
-			addMarker(
-					resource,
-					resource,
-					resource.getName()
-							+ " is not directly on source path (packages are not supported yet)",
-					0, IMarker.SEVERITY_WARNING, "");
+			generator
+					.addMarker(
+							resource,
+							resource,
+							resource.getName()
+									+ " is not directly on source path (packages are not supported yet)",
+							0, IMarker.SEVERITY_WARNING, "");
 			return;
 		}
 
@@ -614,8 +609,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 				// process compilation messages
 				final OtpErlangTuple t = (OtpErlangTuple) r;
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-				ErlangBuilderMarkerGenerator.addErrorMarkers(
-						getMarkerGenerator(), resource, l);
+				ErlangBuilderMarkerGenerator.addErrorMarkers(generator,
+						resource, l);
 			}
 
 			resource.getParent().refreshLocal(IResource.DEPTH_ONE, null);
@@ -1136,12 +1131,5 @@ public class ErlangBuilder extends IncrementalProjectBuilder implements
 	// };
 	// job.schedule();
 	// }
-
-	public void addMarker(final IResource file, final IResource compiledFile,
-			final String errorDesc, final int lineNumber, final int severity,
-			final String errorVar) {
-		ErlangBuilderMarkerGenerator.addProblemMarker(file, compiledFile,
-				errorDesc, lineNumber, severity);
-	}
 
 }
