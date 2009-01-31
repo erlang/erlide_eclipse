@@ -772,7 +772,7 @@ normalise({tuple,_,Args}) ->
 %% Atom dot-notation, as in 'foo.bar.baz'
 normalise({record_field,_,_,_}=A) ->
     case package_segments(A) of
-    error -> erlang:fault({badarg, A});
+    error -> erlang:error({badarg, A});
     As -> list_to_atom(packages:concat(As))
     end;
 %% Special case for unary +/-.
@@ -782,7 +782,7 @@ normalise({op,_,'+',{float,_,F}}) -> F;
 normalise({op,_,'-',{char,_,I}}) -> -I;        %Weird, but compatible!
 normalise({op,_,'-',{integer,_,I}}) -> -I;
 normalise({op,_,'-',{float,_,F}}) -> -F;
-normalise(X) -> erlang:fault({badarg, X}).
+normalise(X) -> erlang:error({badarg, X}).
 
 normalise_list([H|T]) ->
     [normalise(H)|normalise_list(T)];
