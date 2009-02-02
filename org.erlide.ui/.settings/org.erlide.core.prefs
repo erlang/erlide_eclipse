@@ -1,14 +1,14 @@
-#Mon Feb 02 12:19:43 CET 2009
+#Mon Feb 02 13:54:27 CET 2009
 backend_cookie=
-backend_version=R11B
 backend_name=
 backend_node=erlide
+backend_version=R11B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
 include_dirs=include
 make_unique=true
 output_dir=ebin
-source_dirs=src
+source_dirs=erl
 type=NORMAL
 use_pathz=false
