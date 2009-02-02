@@ -1,6 +1,7 @@
-#Wed Jan 21 15:06:39 CET 2009
+#Mon Feb 02 12:20:19 CET 2009
 backend_cookie=
-backend_name=R12B
+backend_version=R12B
+backend_name=r12
 backend_node=erlide
 eclipse.preferences.version=1
 external_includes=
