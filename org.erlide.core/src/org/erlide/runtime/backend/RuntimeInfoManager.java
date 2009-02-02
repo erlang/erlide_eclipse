@@ -276,4 +276,19 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			listener.infoChanged();
 		}
 	}
+
+	/**
+	 * Locate runtimes with this version. A null or empty version returns all
+	 * runtimes.
+	 */
+	public List<RuntimeInfo> locateVersion(String version) {
+		List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
+		for (RuntimeInfo info : getRuntimes()) {
+			String v = info.getVersion();
+			if (version == null || "".equals(version) || v.equals(version)) {
+				result.add(info);
+			}
+		}
+		return result;
+	}
 }

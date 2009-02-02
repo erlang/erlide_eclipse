@@ -30,6 +30,9 @@ public class ProjectPreferencesConstants {
 	public static final String EXTERNAL_INCLUDES = "external_includes";
 	public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
+	public static final String RUNTIME_VERSION = "backend_version";
+	public static final String DEFAULT_RUNTIME_VERSION = "R11B";
+
 	public static final String RUNTIME_NAME = "backend_name";
 	public static final String DEFAULT_RUNTIME_NAME = "erlide";
 

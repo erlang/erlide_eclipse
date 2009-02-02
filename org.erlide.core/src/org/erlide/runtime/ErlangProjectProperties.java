@@ -10,12 +10,7 @@
 
 package org.erlide.runtime;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -36,16 +31,17 @@ public class ErlangProjectProperties {
 
 	private IProject project;
 
-	private String fSourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
-	private String fUsePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
-	private String fOutputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
-	private String fIncludeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
-	private String fExternalIncludes = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
-	private String fExternalModules = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
+	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
+	private String usePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
+	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
+	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
+	private String externalIncludes = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+	private String externalModules = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 
-	private String fRuntimeName;
-	private String fNodeName;
-	private String fCookie;
+	private String runtimeVersion;
+	private String runtimeName;
+	private String nodeName;
+	private String cookie;
 
 	private boolean fUnique = true;
 
@@ -55,17 +51,19 @@ public class ErlangProjectProperties {
 
 	private ProjectType type = ProjectType.NORMAL;
 
-	/**
-	 * Name of file containing project classpath
-	 */
+	private boolean saveRuntimeName;
+
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		fRuntimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
+		runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
 	}
 
 	public ErlangProjectProperties(final IProject prj) {
-		this(prj, ProjectType.NORMAL);
+		super();
+		project = prj;
+		// TODO load() should not be in constructor!
+		load();
 	}
 
 	public ErlangProjectProperties(final IProject prj, final ProjectType type) {
@@ -81,91 +79,70 @@ public class ErlangProjectProperties {
 			return this;
 		}
 
-		// if .codepath exists, read from it, otherwise from .settings
-
-		boolean loaded = false;
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
 		if (cp.exists()) {
-			final File codepath = cp.getRawLocation().toFile();
-			final Properties prefs = new Properties();
-			FileInputStream stream;
-			try {
-				stream = new FileInputStream(codepath);
-				prefs.load(stream);
-				stream.close();
-				loaded = true;
-			} catch (final FileNotFoundException e) {
-				ErlLogger.warn(e);
-			} catch (final IOException e) {
-				ErlLogger.warn(e);
+			String msg = "Found old configuration file .codepath for project %s, please remove it.";
+			ErlLogger.warn(msg, project.getName());
+		}
+
+		final ProjectScope s = new ProjectScope(project);
+		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
+
+		sourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
+				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+		includeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
+				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
+				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+		usePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
+				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
+		runtimeVersion = node.get(ProjectPreferencesConstants.RUNTIME_VERSION,
+				null);
+		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
+		if (runtimeName != null && runtimeName.length() != 0) {
+			saveRuntimeName = true;
+			ErlLogger.debug("Runtime name specified: %s", runtimeName);
+			RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager()
+					.getRuntime(runtimeName);
+			if (runtime != null) {
+				// fRuntimeVersion = runtime.getVersion();
 			}
-
-			fSourceDirs = prefs.getProperty(
-					ProjectPreferencesConstants.SOURCE_DIRS,
-					ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = prefs.getProperty(
-					ProjectPreferencesConstants.INCLUDE_DIRS,
-					ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = prefs.getProperty(
-					ProjectPreferencesConstants.OUTPUT_DIR,
-					ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = prefs.getProperty(
-					ProjectPreferencesConstants.USE_PATHZ,
-					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-			fRuntimeName = prefs.getProperty(
-					ProjectPreferencesConstants.RUNTIME_NAME,
-					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
-			fNodeName = prefs.getProperty(
-					ProjectPreferencesConstants.NODE_NAME,
-					ProjectPreferencesConstants.DEFAULT_NODENAME);
-			fUnique = Boolean.parseBoolean(prefs.getProperty(
-					ProjectPreferencesConstants.MK_UNIQUE, "true"));
-			fCookie = prefs.getProperty(ProjectPreferencesConstants.COOKIE,
-					ProjectPreferencesConstants.DEFAULT_COOKIE);
-			fExternalModules = prefs.getProperty(
-					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
-			fExternalIncludes = prefs.getProperty(
-					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
-			type = ProjectType.valueOf(prefs.getProperty(
-					ProjectPreferencesConstants.PROJECT_TYPE,
-					ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
+		} else if (runtimeVersion != null) {
+			saveRuntimeName = false;
+			List<RuntimeInfo> runtimes = ErlangCore.getRuntimeInfoManager()
+					.locateVersion(runtimeVersion);
+			if (runtimes.size() > 0) {
+				runtimeName = runtimes.get(0).getName();
+				ErlLogger.debug("Runtime name located for version %s: %s",
+						runtimeVersion, runtimeName);
+			} else {
+				runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
+				ErlLogger.debug(
+						"Missing runtime name and version, using default: %s",
+						runtimeName);
+			}
+		} else {
+			saveRuntimeName = false;
+			runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
+			ErlLogger.debug(
+					"Missing runtime name and version, using default: %s",
+					runtimeName);
 		}
-		if (!loaded) {
-			// ErlLogger.debug("project %s, loading from .settings", project
-			// .getName());
-
-			final ProjectScope s = new ProjectScope(project);
-			final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
-
-			// new settings
-			fSourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
-					ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-			fIncludeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
-					ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-			fOutputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
-					ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-			fUsePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
-					ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-			fRuntimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME,
-					ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME);
-			fNodeName = node.get(ProjectPreferencesConstants.NODE_NAME,
-					ProjectPreferencesConstants.DEFAULT_NODENAME);
-			fUnique = Boolean.parseBoolean(node.get(
-					ProjectPreferencesConstants.MK_UNIQUE, "true"));
-			fCookie = node.get(ProjectPreferencesConstants.COOKIE,
-					ProjectPreferencesConstants.DEFAULT_COOKIE);
-			fExternalModules = node.get(
-					ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
-			fExternalIncludes = node.get(
-					ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
-			type = ProjectType.valueOf(node.get(
-					ProjectPreferencesConstants.PROJECT_TYPE,
-					ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
-		}
+		nodeName = node.get(ProjectPreferencesConstants.NODE_NAME,
+				ProjectPreferencesConstants.DEFAULT_NODENAME);
+		fUnique = Boolean.parseBoolean(node.get(
+				ProjectPreferencesConstants.MK_UNIQUE, "true"));
+		cookie = node.get(ProjectPreferencesConstants.COOKIE,
+				ProjectPreferencesConstants.DEFAULT_COOKIE);
+		externalModules = node.get(
+				ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
+				ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
+		externalIncludes = node.get(
+				ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+				ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
+		type = ProjectType.valueOf(node.get(
+				ProjectPreferencesConstants.PROJECT_TYPE,
+				ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
 		return this;
 	}
 
@@ -174,26 +151,30 @@ public class ErlangProjectProperties {
 			return;
 		}
 
-		// save in .settings
-		// ErlLogger.debug("project %s, saving to .settings",
-		// project.getName());
-
 		final ProjectScope s = new ProjectScope(project);
 		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
-		node.put(ProjectPreferencesConstants.SOURCE_DIRS, fSourceDirs);
-		node.put(ProjectPreferencesConstants.INCLUDE_DIRS, fIncludeDirs);
-		node.put(ProjectPreferencesConstants.OUTPUT_DIR, fOutputDir);
-		node.put(ProjectPreferencesConstants.USE_PATHZ, fUsePathZ);
+		node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
+		node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
+		node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
+		node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
 		node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-				fExternalIncludes);
-		node.put(ProjectPreferencesConstants.RUNTIME_NAME, fRuntimeName);
-		node.put(ProjectPreferencesConstants.NODE_NAME, fNodeName);
+				externalIncludes);
+		if (runtimeVersion != null) {
+			node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
+					runtimeVersion);
+		}
+		if (runtimeName != null && saveRuntimeName) {
+			node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
+		} else {
+			node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
+		}
+		node.put(ProjectPreferencesConstants.NODE_NAME, nodeName);
 		node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
 				.toString(fUnique));
-		node.put(ProjectPreferencesConstants.COOKIE, fCookie);
+		node.put(ProjectPreferencesConstants.COOKIE, cookie);
 		node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-				fExternalModules);
+				externalModules);
 		node.put(ProjectPreferencesConstants.PROJECT_TYPE, type.toString());
 
 		try {
@@ -201,121 +182,85 @@ public class ErlangProjectProperties {
 		} catch (final BackingStoreException e1) {
 		}
 
-		final IFile cp = project.getFile(CODEPATH_FILENAME);
-		if (cp.exists()) {
-			// save in .codepath
-			// ErlLogger.debug("project %s, saving to .codepath", project
-			// .getName());
-
-			final File codepath = cp.getRawLocation().toFile();
-			final Properties prefs = new Properties();
-
-			prefs.put(ProjectPreferencesConstants.SOURCE_DIRS, fSourceDirs);
-			prefs.put(ProjectPreferencesConstants.INCLUDE_DIRS, fIncludeDirs);
-			prefs.put(ProjectPreferencesConstants.OUTPUT_DIR, fOutputDir);
-			prefs.put(ProjectPreferencesConstants.USE_PATHZ, fUsePathZ);
-			prefs.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					fExternalIncludes);
-			prefs.put(ProjectPreferencesConstants.RUNTIME_NAME, fRuntimeName);
-			prefs.put(ProjectPreferencesConstants.NODE_NAME, fNodeName);
-			prefs.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
-					.toString(fUnique));
-			prefs.put(ProjectPreferencesConstants.COOKIE, fCookie);
-			prefs.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-					fExternalModules);
-			prefs
-					.put(ProjectPreferencesConstants.PROJECT_TYPE, type
-							.toString());
-
-			try {
-				final FileOutputStream out = new FileOutputStream(codepath);
-				try {
-					prefs.store(out, null);
-				} finally {
-					out.close();
-				}
-			} catch (final IOException e) {
-			}
-		}
 	}
 
 	public String getIncludeDirsString() {
-		return fIncludeDirs;
+		return includeDirs;
 	}
 
-	public void setIncludeDirsString(final String includeDirs) {
-		fIncludeDirs = includeDirs;
+	public void setIncludeDirsString(final String dirs) {
+		includeDirs = dirs;
 	}
 
 	public String[] getIncludeDirs() {
-		return unpack(fIncludeDirs);
+		return unpack(includeDirs);
 	}
 
-	public void setIncludeDirs(final String[] includeDirs) {
-		fIncludeDirs = pack(includeDirs);
+	public void setIncludeDirs(final String[] dirs) {
+		includeDirs = pack(dirs);
 	}
 
 	public String getOutputDir() {
-		return fOutputDir;
+		return outputDir;
 	}
 
-	public void setOutputDir(final String outputDir) {
-		if (!fOutputDir.equals(outputDir)) {
+	public void setOutputDir(final String dir) {
+		if (!outputDir.equals(dir)) {
 			try {
 				final Backend b = ErlangCore.getBackendManager()
 						.getBuildBackend(project);
-				String p = project.getLocation().append(fOutputDir).toString();
+				String p = project.getLocation().append(outputDir).toString();
 				b.removePath(getUsePathZ(), p);
 
-				p = project.getLocation().append(outputDir).toString();
+				p = project.getLocation().append(dir).toString();
 				b.addPath(getUsePathZ(), p);
-			} catch (final BackendException e) {
-				ErlLogger.info(e);
-			}
 
+				outputDir = dir;
+			} catch (final BackendException e) {
+				ErlLogger.warn(e);
+			}
 		}
-		fOutputDir = outputDir;
 	}
 
 	public boolean getUsePathZ() {
-		return Boolean.parseBoolean(fUsePathZ);
+		return Boolean.parseBoolean(usePathZ);
 	}
 
 	public void setUsePathZ(final boolean pz) {
-		final boolean z = Boolean.parseBoolean(fUsePathZ);
+		final boolean z = Boolean.parseBoolean(usePathZ);
 		if (z != pz) {
-			for (final Backend b : ErlangCore.getBackendManager().getExecutionBackends(
-					project)) {
+			for (final Backend b : ErlangCore.getBackendManager()
+					.getExecutionBackends(project)) {
 
-				final String p = project.getLocation().append(fOutputDir)
+				final String p = project.getLocation().append(outputDir)
 						.toString();
 				b.removePath(z, p);
 				b.addPath(pz, p);
 			}
 		}
-		fUsePathZ = Boolean.toString(pz);
+		usePathZ = Boolean.toString(pz);
 	}
 
 	public String getSourceDirsString() {
-		return fSourceDirs;
+		return sourceDirs;
 	}
 
-	public void setSourceDirsString(final String sourceDirs) {
-		fSourceDirs = sourceDirs;
+	public void setSourceDirsString(final String dirs) {
+		sourceDirs = dirs;
 	}
 
 	public String[] getSourceDirs() {
-		return unpack(fSourceDirs);
+		return unpack(sourceDirs);
 	}
 
-	public void setSourceDirs(final String[] sourceDirs) {
-		fSourceDirs = pack(sourceDirs);
+	public void setSourceDirs(final String[] dirs) {
+		sourceDirs = pack(dirs);
 	}
 
 	public String buildCommandLine() {
 		if (project != null) {
 			final String incs = buildIncludeDirs(getIncludeDirs());
-			return " -pa " + project.getLocation().append(fOutputDir) + incs;
+			return " -pa " + project.getLocation().append(outputDir) + incs;
 		}
 		return "";
 	}
@@ -337,10 +282,10 @@ public class ErlangProjectProperties {
 	}
 
 	public void copyFrom(final ErlangProjectProperties bprefs) {
-		fIncludeDirs = bprefs.fIncludeDirs;
-		fSourceDirs = bprefs.fSourceDirs;
-		fOutputDir = bprefs.fOutputDir;
-		fRuntimeName = "";
+		includeDirs = bprefs.includeDirs;
+		sourceDirs = bprefs.sourceDirs;
+		outputDir = bprefs.outputDir;
+		runtimeName = "";
 	}
 
 	public static String pack(final String[] strs) {
@@ -358,7 +303,7 @@ public class ErlangProjectProperties {
 	}
 
 	public String[] getExternalIncludes() {
-		return unpack(fExternalIncludes);
+		return unpack(externalIncludes);
 	}
 
 	private String[] unpack(final String str) {
@@ -370,7 +315,7 @@ public class ErlangProjectProperties {
 	}
 
 	public String getExternalIncludesString() {
-		return fExternalIncludes;
+		return externalIncludes;
 	}
 
 	public void setExternalIncludes(final String[] externalIncludes) {
@@ -382,7 +327,7 @@ public class ErlangProjectProperties {
 	 * @param packed
 	 */
 	public void setExternalIncludes(final String packed) {
-		fExternalIncludes = packed;
+		externalIncludes = packed;
 	}
 
 	public IProject getProject() {
@@ -391,46 +336,46 @@ public class ErlangProjectProperties {
 
 	public void setRuntimeName(final String backendName) {
 		// TODO validate!
-		fRuntimeName = backendName;
+		runtimeName = backendName;
 	}
 
 	public void setExternalModules(final String fExternalModules) {
-		this.fExternalModules = fExternalModules;
+		this.externalModules = fExternalModules;
 	}
 
 	public String getExternalModules() {
-		return fExternalModules;
+		return externalModules;
 	}
 
 	public String getRuntimeName() {
-		return fRuntimeName;
+		return runtimeName;
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
 		final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
-				.getRuntimeInfoManager().getRuntime(fRuntimeName), false);
+				.getRuntimeInfoManager().getRuntime(runtimeName), false);
 		if (rt != null) {
-			rt.setNodeName(fNodeName);
+			rt.setNodeName(nodeName);
 			rt.setUniqueName(fUnique);
-			rt.setCookie(fCookie);
+			rt.setCookie(cookie);
 		}
 		return rt;
 	}
 
 	public void setCookie(final String text) {
-		fCookie = text.trim();
+		cookie = text.trim();
 	}
 
 	public String getCookie() {
-		return fCookie;
+		return cookie;
 	}
 
 	public String getNodeName() {
-		return fNodeName;
+		return nodeName;
 	}
 
 	public void setNodeName(final String text) {
-		fNodeName = text.trim();
+		nodeName = text.trim();
 	}
 
 	public void setUniqueName(final boolean unique) {
