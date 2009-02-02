@@ -278,7 +278,8 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	/**
-	 * Locate runtimes with this version. A null or empty version returns all
+	 * Locate runtimes with this version or newer. If exact matches exists, they
+	 * are first in the result list. A null or empty version returns all
 	 * runtimes.
 	 */
 	public List<RuntimeInfo> locateVersion(String version) {
@@ -286,6 +287,13 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		for (RuntimeInfo info : getRuntimes()) {
 			String v = info.getVersion();
 			if (version == null || "".equals(version) || v.equals(version)) {
+				result.add(info);
+			}
+		}
+		// add even newer versions, but at the end
+		for (RuntimeInfo info : getRuntimes()) {
+			String v = info.getVersion();
+			if (!result.contains(info) && v.compareTo(version) > 0) {
 				result.add(info);
 			}
 		}

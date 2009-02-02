@@ -81,8 +81,8 @@ public class ErlangProjectProperties {
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
 		if (cp.exists()) {
-			String msg = "Found old configuration file .codepath for project %s, please remove it.";
-			ErlLogger.warn(msg, project.getName());
+			String msg = "Found old configuration file %s for project %s, please remove it.";
+			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
 
 		final ProjectScope s = new ProjectScope(project);
