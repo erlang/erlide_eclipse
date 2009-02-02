@@ -412,4 +412,8 @@ public class ErlangProjectProperties {
 		this.type = type;
 	}
 
+	public String getRuntimeVersion() {
+		return runtimeVersion;
+	}
+
 }

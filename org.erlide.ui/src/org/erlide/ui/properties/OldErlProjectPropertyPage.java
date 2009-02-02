@@ -55,6 +55,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private Button externalIncludesBrowse;
 	Text externalModules;
 	private Button externalModulesBrowse;
+	private String runtimeVersion;
 
 	/**
 	 * Constructor for ErlProjectPropertyPage.
@@ -264,6 +265,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		source.setText(prefs.getSourceDirsString());
 		include.setText(prefs.getIncludeDirsString());
 		output.setText(prefs.getOutputDir());
+		runtimeVersion = prefs.getRuntimeVersion();
 
 		final String[] runtimes = ErlangCore.getRuntimeInfoManager()
 				.getRuntimeNames().toArray(new String[] {});
@@ -347,8 +349,10 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		}
 		if (runtimeName.getText() == null
 				|| runtimeName.getText().trim().length() == 0) {
-			setErrorMessage("The backend's runtime has to be specified");
-			return false;
+			if (runtimeVersion == null) {
+				setErrorMessage("The backend's runtime has to be specified");
+				return false;
+			}
 		}
 		if (nodeName.getText() == null
 				|| nodeName.getText().trim().length() == 0) {
