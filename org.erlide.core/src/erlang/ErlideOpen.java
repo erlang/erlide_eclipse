@@ -75,7 +75,7 @@ public class ErlideOpen {
 			final String name, final String source) {
 		OtpErlangObject res;
 		try {
-			res = b.rpcx("erlide_open", "find_first_var", "ss", name, source);
+			res = b.rpcx("erlide_open", "find_first_var", "as", name, source);
 			if (res instanceof OtpErlangTuple) {
 				return (OtpErlangTuple) res;
 			}

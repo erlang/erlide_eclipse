@@ -116,6 +116,8 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest], _, _, Bef
         false ->
             continue
     end;
+o_tokens([#token{kind=var, value=VarName} | _], _, _, _) ->
+    throw({open, {variable, VarName}});
 o_tokens(_, _, _, _) ->
     no.
 
@@ -306,8 +308,12 @@ get_source_ebin(Mod) ->
     SrcPath.
 
 get_var(Var, S) ->
+    ?D({Var, S}),
     {ok, T, _} = erlide_scan:string(S),
-    {var, {{_Line, Offset}, Length}, _Var} = find_var(T, Var),
+    ?D(T),
+    FV = find_var(T, Var),
+    ?D(FV),
+    {var, {{_Line, Offset}, Length}, _Var} = FV,
     {Offset, Length}.
 
 find_var([], _) ->

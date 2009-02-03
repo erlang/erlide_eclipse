@@ -56,9 +56,15 @@ public class OpenResult {
 				name = ((OtpErlangAtom) tres.elementAt(1)).atomValue();
 			} else if (kind.equals("variable")) {
 				isVariable = true;
-				final OtpErlangTuple t = (OtpErlangTuple) tres.elementAt(1);
-				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
-				name = a.atomValue();
+				final OtpErlangObject o = tres.elementAt(1);
+				if (o instanceof OtpErlangTuple) {
+					final OtpErlangTuple t = (OtpErlangTuple) o;
+					final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
+					name = a.atomValue();
+				} else if (o instanceof OtpErlangAtom) {
+					final OtpErlangAtom a = (OtpErlangAtom) o;
+					name = a.atomValue();
+				}
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
@@ -130,6 +136,8 @@ public class OpenResult {
 			b.append(name).append(":").append(fun).append("/").append(arity);
 		} else if (isLocalCall) {
 			b.append("local ").append(fun).append("/").append(arity);
+		} else if (isVariable) {
+			b.append("variable ").append(name);
 		}
 		b.append("}");
 		return b.toString();

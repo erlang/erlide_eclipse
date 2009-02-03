@@ -292,6 +292,7 @@ public class OpenAction extends SelectionDispatchAction {
 	public void run() {
 		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
 				.getActiveEditor();
+		editor.reconcileNow();
 		final IErlModule module = editor.getModule();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final ISelection sel = getSelection();
@@ -359,11 +360,11 @@ public class OpenAction extends SelectionDispatchAction {
 				if (res2 == null) {
 					return;
 				}
-				final OtpErlangTuple t = (OtpErlangTuple) res2.elementAt(1);
-				final int pos = ((OtpErlangLong) t.elementAt(0)).intValue();
-				final int len = ((OtpErlangLong) t.elementAt(1)).intValue();
-				editor.setHighlightRange(pos
-						+ sref.getSourceRange().getOffset(), len, true);
+				final int pos = ((OtpErlangLong) res2.elementAt(0)).intValue() - 1;
+				final int len = ((OtpErlangLong) res2.elementAt(1)).intValue();
+				final int start = pos + sref.getSourceRange().getOffset();
+				editor.selectAndReveal(start, len);
+				// editor.setHighlightRange(start, len, true);
 			} else if (res.isRecord() || res.isMacro()) {
 				final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 				if (page == null) {
