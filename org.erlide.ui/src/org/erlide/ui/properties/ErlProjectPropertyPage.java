@@ -10,23 +10,17 @@
 package org.erlide.ui.properties;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -35,15 +29,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.ui.IWorkbench;
-import org.erlide.runtime.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
+import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.ProjectPreferencesConstants;
+import org.erlide.runtime.backend.RuntimeInfo;
 
-import com.bdaum.overlayPages.FieldEditorOverlayPage;
-import com.bdaum.overlayPages.OverlayPage;
-
-public class ErlProjectPropertyPage extends OverlayPage implements
-		IPreferenceChangeListener, IPropertyChangeListener {
+public class ErlProjectPropertyPage extends PropertyPage {
 
 	public ErlProjectPropertyPage() {
 		super();
@@ -51,9 +44,8 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		final IPreferenceStore store = ErlideUIPlugin.getDefault()
-				.getPreferenceStore();
-		store.addPropertyChangeListener(this);
+		final IPreferenceStore store = new ScopedPreferenceStore(
+				new ProjectScope(getProject()), ErlangPlugin.PLUGIN_ID);
 		return store;
 	}
 
@@ -62,7 +54,13 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 
 	@Override
 	protected Control createContents(Composite aparent) {
-		Composite parent = (Composite) super.createContents(aparent);
+		Composite parent = new Composite(aparent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		parent.setLayout(layout);
+		parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
 		parent.setLayout(new FillLayout());
 
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -80,11 +78,14 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 		sourceComposite.setLayout(gridLayout);
 		sourceTab.setControl(sourceComposite);
 
-		editors.add(new PathEditor("sources",
-				"Source directories for this project:", "New",
+		String root = getProject().getLocation().toString();
+		editors.add(new ProjectPathEditor(
+				ProjectPreferencesConstants.SOURCE_DIRS,
+				"Source directories for this project:", "New", root,
 				createComposite(sourceComposite)));
 
-		editors.add(new DirectoryFieldEditor("output", "Output directory:",
+		editors.add(new DirectoryFieldEditor(
+				ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
 				createComposite(sourceComposite)));
 
 		// //////////////////////
@@ -98,11 +99,12 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 		includeComposite.setLayout(new GridLayout());
 		t2.setControl(includeComposite);
 
-		editors.add(new PathEditor("ext include",
+		editors.add(new PathEditor(ProjectPreferencesConstants.INCLUDE_DIRS,
 				"Project include directories:", "New",
 				createComposite(includeComposite)));
 
-		editors.add(new PathEditor("ext include",
+		editors.add(new PathEditor(
+				ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 				"External include directories:", "New",
 				createComposite(includeComposite)));
 
@@ -118,28 +120,32 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 
 		// //////////////////
 
-		final TabItem backendTab = new TabItem(this.tabFolder, SWT.NONE);
-		backendTab.setText("Backend");
+		final TabItem buildTab = new TabItem(this.tabFolder, SWT.NONE);
+		buildTab.setText("Building");
 
 		final Composite backendComposite = new Composite(this.tabFolder,
 				SWT.NONE);
 		backendComposite.setLayout(new GridLayout());
-		backendTab.setControl(backendComposite);
+		buildTab.setControl(backendComposite);
 
-		String[][] values = new String[][] { { "a", "a" }, { "b", "b" } };
+		Collection<RuntimeInfo> rs = ErlangCore.getRuntimeInfoManager()
+				.getRuntimes();
+		List<String[]> vv = new ArrayList<String[]>();
+		for (RuntimeInfo ri : rs) {
+			vv.add(new String[] { ri.getName(), ri.getName() });
+		}
+		String[][] values = vv.toArray(new String[][] {});
 
 		final Composite rtComposite = createComposite(backendComposite);
 		editors.add(new ComboFieldEditor("runtimes", "Installations", values,
 				rtComposite));
 
-		editors.add(new StringFieldEditor("backendName", "Node name",
+		editors.add(new StringFieldEditor(
+				ProjectPreferencesConstants.RUNTIME_NAME, "Node name",
 				rtComposite));
 
-		editors.add(new StringFieldEditor("backendCookie", "Cookie",
-				rtComposite));
-
-		editors.add(new StringFieldEditor("extraArgs", "Extra arguments",
-				rtComposite));
+		editors.add(new StringFieldEditor(ProjectPreferencesConstants.COOKIE,
+				"Cookie", rtComposite));
 
 		// //////////////////////////////////////////////
 
@@ -156,13 +162,13 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 
 		// ///////////////////////////////////////////
 
-		for (FieldEditor editor : editors) {
-			editor.setPage(this);
-			editor.setPreferenceStore(getPreferenceStore());
-			editor.load();
-		}
+		initFieldEditors();
 
 		return parent;
+	}
+
+	private IProject getProject() {
+		return (IProject) getElement().getAdapter(IProject.class);
 	}
 
 	private Composite createComposite(final Composite parent) {
@@ -172,42 +178,12 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 		return result;
 	}
 
-	@Override
-	protected String getPageId() {
-		return "org.erlide.ui.properties.myErlangProjectPropertyPage";
-	}
-
-	public void init(IWorkbench workbench) {
-		setDescription("These values will be used as defaults for newly created Erlang projects.");
-	}
-
-	public static String getOverlayedPreferenceValue(IPreferenceStore store,
-			IResource resource, String pageId, String key) {
-		IProject project = resource.getProject();
-		String value = null;
-		if (useProjectSettings(project, pageId)) {
-			value = getProperty(resource, pageId, key);
+	private void initFieldEditors() {
+		for (FieldEditor editor : editors) {
+			editor.setPage(this);
+			editor.setPreferenceStore(getPreferenceStore());
+			editor.load();
 		}
-		if (value != null) {
-			return value;
-		}
-		return store.getString(key);
-	}
-
-	private static boolean useProjectSettings(IResource resource, String pageId) {
-		String use = getProperty(resource, pageId,
-				FieldEditorOverlayPage.USEPROJECTSETTINGS);
-		return "true".equals(use);
-	}
-
-	private static String getProperty(IResource resource, String pageId,
-			String key) {
-		try {
-			return resource
-					.getPersistentProperty(new QualifiedName(pageId, key));
-		} catch (CoreException e) {
-		}
-		return null;
 	}
 
 	@Override
@@ -226,23 +202,4 @@ public class ErlProjectPropertyPage extends OverlayPage implements
 		return super.performOk();
 	}
 
-	@Override
-	public IAdaptable getElement() {
-		IAdaptable element = super.getElement();
-		if (element == null) {
-			return null;
-		}
-		final IProject prj = (IProject) element.getAdapter(IProject.class);
-		return prj;
-	}
-
-	public void preferenceChange(PreferenceChangeEvent event) {
-		ErlLogger.debug("## change %s %s: %s -> %s", event.getNode(), event
-				.getKey(), event.getOldValue(), event.getNewValue());
-	}
-
-	public void propertyChange(PropertyChangeEvent event) {
-		ErlLogger.debug("#@ change %s: %s -> %s", event.getProperty(), event
-				.getOldValue(), event.getNewValue());
-	}
 }
