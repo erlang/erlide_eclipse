@@ -34,11 +34,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * one of these handles can be created via
  * <code>ErlangCore.create(workspace.getRoot())</code>.
  * </p>
- * 
+ *
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
 /**
- * 
+ *
  * @author qvladum
  */
 /**
@@ -54,8 +54,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * and each element is copied to its associated container.
 	 * <p>
 	 * Optionally, each copy can positioned before a sibling element. If
-	 * <code>null</code> is specified for a given sibling, the copy is
-	 * inserted as the last child of its associated container.
+	 * <code>null</code> is specified for a given sibling, the copy is inserted
+	 * as the last child of its associated container.
 	 * </p>
 	 * <p>
 	 * Optionally, each copy can be renamed. If <code>null</code> is specified
@@ -63,9 +63,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * </p>
 	 * <p>
 	 * Optionally, any existing child in the destination container with the same
-	 * name can be replaced by specifying <code>true</code> for force.
-	 * Otherwise an exception is thrown in the event that a name collision
-	 * occurs.
+	 * name can be replaced by specifying <code>true</code> for force. Otherwise
+	 * an exception is thrown in the event that a name collision occurs.
 	 * </p>
 	 * 
 	 * @param elements
@@ -79,8 +78,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *            the list of new names any of which may be <code>null</code>;
 	 *            or <code>null</code>
 	 * @param replace
-	 *            <code>true</code> if any existing child in a target
-	 *            container with the target name should be replaced, and
+	 *            <code>true</code> if any existing child in a target container
+	 *            with the target name should be replaced, and
 	 *            <code>false</code> to throw an exception in the event of a
 	 *            name collision
 	 * @param monitor
@@ -90,20 +89,20 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *             <ul>
 	 *             <li>There is no element to process (NO_ELEMENTS_TO_PROCESS).
 	 *             The given elements is null or empty</li>
-	 *             <li>A specified element, container, or sibling does not
-	 *             exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *             <li>A <code>CoreException</code> occurred while updating
-	 *             an underlying resource</li>
+	 *             <li>A specified element, container, or sibling does not exist
+	 *             (ELEMENT_DOES_NOT_EXIST)</li>
+	 *             <li>A <code>CoreException</code> occurred while updating an
+	 *             underlying resource</li>
 	 *             <li>A container is of an incompatible type (
 	 *             <code>INVALID_DESTINATION</code>)</li>
 	 *             <li>A sibling is not a child of it associated container (
 	 *             <code>INVALID_SIBLING</code>)</li>
 	 *             <li>A new name is invalid (<code>INVALID_NAME</code>)</li>
 	 *             <li>A child in its associated container already exists with
-	 *             the same name and <code>replace</code> has been specified
-	 *             as <code>false</code>(<code>NAME_COLLISION</code>)</li>
-	 *             <li>A container or element is read-only (<code>READ_ONLY</code>)
-	 *             </li>
+	 *             the same name and <code>replace</code> has been specified as
+	 *             <code>false</code>(<code>NAME_COLLISION</code>)</li>
+	 *             <li>A container or element is read-only (
+	 *             <code>READ_ONLY</code>)</li>
 	 *             </ul>
 	 */
 	void copy(IErlElement[] elements, IErlElement[] containers,
@@ -128,8 +127,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *             The given elements is null or empty</li>
 	 *             <li>A specified element does not exist
 	 *             (ELEMENT_DOES_NOT_EXIST)</li>
-	 *             <li>A <code>CoreException</code> occurred while updating
-	 *             an underlying resource</li>
+	 *             <li>A <code>CoreException</code> occurred while updating an
+	 *             underlying resource</li>
 	 *             <li>An element is read-only (<code>READ_ONLY</code>)</li>
 	 *             </ul>
 	 */
@@ -197,9 +196,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * </p>
 	 * <p>
 	 * Optionally, any existing child in the destination container with the same
-	 * name can be replaced by specifying <code>true</code> for force.
-	 * Otherwise an exception is thrown in the event that a name collision
-	 * occurs.
+	 * name can be replaced by specifying <code>true</code> for force. Otherwise
+	 * an exception is thrown in the event that a name collision occurs.
 	 * </p>
 	 * 
 	 * @param elements
@@ -213,8 +211,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *            the list of new names any of which may be <code>null</code>;
 	 *            or <code>null</code>
 	 * @param replace
-	 *            <code>true</code> if any existing child in a target
-	 *            container with the target name should be replaced, and
+	 *            <code>true</code> if any existing child in a target container
+	 *            with the target name should be replaced, and
 	 *            <code>false</code> to throw an exception in the event of a
 	 *            name collision
 	 * @param monitor
@@ -224,20 +222,20 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *             <ul>
 	 *             <li>There is no element to process (NO_ELEMENTS_TO_PROCESS).
 	 *             The given elements is null or empty</li>
-	 *             <li>A specified element, container, or sibling does not
-	 *             exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *             <li>A <code>CoreException</code> occurred while updating
-	 *             an underlying resource</li>
+	 *             <li>A specified element, container, or sibling does not exist
+	 *             (ELEMENT_DOES_NOT_EXIST)</li>
+	 *             <li>A <code>CoreException</code> occurred while updating an
+	 *             underlying resource</li>
 	 *             <li>A container is of an incompatible type (
 	 *             <code>INVALID_DESTINATION</code>)</li>
 	 *             <li>A sibling is not a child of it associated container (
 	 *             <code>INVALID_SIBLING</code>)</li>
 	 *             <li>A new name is invalid (<code>INVALID_NAME</code>)</li>
 	 *             <li>A child in its associated container already exists with
-	 *             the same name and <code>replace</code> has been specified
-	 *             as <code>false</code>(<code>NAME_COLLISION</code>)</li>
-	 *             <li>A container or element is read-only (<code>READ_ONLY</code>)
-	 *             </li>
+	 *             the same name and <code>replace</code> has been specified as
+	 *             <code>false</code>(<code>NAME_COLLISION</code>)</li>
+	 *             <li>A container or element is read-only (
+	 *             <code>READ_ONLY</code>)</li>
 	 *             </ul>
 	 * 
 	 * @throws IllegalArgumentException
@@ -273,12 +271,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 *             The given elements is null or empty</li>
 	 *             <li>A specified element does not exist
 	 *             (ELEMENT_DOES_NOT_EXIST)</li>
-	 *             <li>A <code>CoreException</code> occurred while updating
-	 *             an underlying resource
+	 *             <li>A <code>CoreException</code> occurred while updating an
+	 *             underlying resource
 	 *             <li>A new name is invalid (<code>INVALID_NAME</code>)
 	 *             <li>A child already exists with the same name and
-	 *             <code>replace</code> has been specified as
-	 *             <code>false</code>( <code>NAME_COLLISION</code>)
+	 *             <code>replace</code> has been specified as <code>false</code>( <code>NAME_COLLISION</code>)
 	 *             <li>An element is read-only (<code>READ_ONLY</code>)
 	 *             </ul>
 	 */
@@ -291,8 +288,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	void addModelChangeListener(IErlModelChangeListener listener);
 
 	void removeModelChangeListener(IErlModelChangeListener listener);
-
-	String UNKNOWN_MODULE = null;
 
 	int UNKNOWN_ARITY = -1;
 
