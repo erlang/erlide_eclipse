@@ -150,6 +150,7 @@ public class ErlReconciler implements IReconciler {
 		 */
 		public void unreset() {
 			synchronized (this) {
+				fIsDirty = true;
 				fReset = false;
 			}
 		}
@@ -213,8 +214,10 @@ public class ErlReconciler implements IReconciler {
 				}
 
 				if (fChunkReconciler) {
-					for (final ErlDirtyRegion dirtyRegion : rs) {
-						process(dirtyRegion);
+					if (rs != null) {
+						for (final ErlDirtyRegion dirtyRegion : rs) {
+							process(dirtyRegion);
+						}
 					}
 				} else {
 					process(r);
@@ -284,7 +287,7 @@ public class ErlReconciler implements IReconciler {
 
 		/*
 		 * @see ITextInputListener#inputDocumentAboutToBeChanged(IDocument,
-		 * IDocument)
+		 *      IDocument)
 		 */
 		public void inputDocumentAboutToBeChanged(final IDocument oldInput,
 				final IDocument newInput) {
