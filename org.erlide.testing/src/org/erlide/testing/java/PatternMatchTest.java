@@ -13,6 +13,7 @@ import junit.framework.Assert;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
+import org.erlide.jinterface.TermParser;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -134,6 +135,25 @@ public class PatternMatchTest {
 	public void testMatch_sig_fail() throws Exception {
 		Bindings r = ErlUtils.match("W:i", "zzz");
 		Assert.assertNull(r);
+	}
+
+	@Test
+	public void testMatch_ellipsis_1() throws Exception {
+		OtpErlangObject r = TermParser.parse("[x,...]");
+		Assert.assertNotNull(r);
+	}
+
+	@Test
+	public void testMatch_ellipsis_2() throws Exception {
+		Bindings r = ErlUtils.match("[X,...]", "[x,y,z]");
+		Assert.assertNotNull(r);
+		Assert.assertEquals(r.get("X"), new OtpErlangAtom("x"));
+	}
+
+	@Test()
+	public void testMatch_ellipsis_3() throws Exception {
+		Bindings r = ErlUtils.match("[X,...,z]", "[x,y,z]");
+		Assert.assertEquals(r, null);
 	}
 
 }

@@ -11,12 +11,11 @@ package com.ericsson.otp.erlang;
 
 import org.erlide.jinterface.rpc.Signature;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpOutputStream;
-
 /**
- * Provides a Java representation of Erlang variables. !!! These are to NOT to
- * be sent to an Erlang node !!!! Their use is in pattern matching only.
+ * Provides a Java representation of Erlang variables.
+ * <p>
+ * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
+ * pattern matching only.
  */
 public class OtpVariable extends OtpErlangObject {
 

@@ -17,6 +17,7 @@ import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Signature;
 
+import com.ericsson.otp.erlang.OtpEllipsis;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -88,9 +89,14 @@ public class ErlUtils {
 	/**
 	 * Match two Erlang terms.
 	 * <p>
-	 * Variables can have a type signature attached, like for example
+	 * Patterns have an extended syntax:
+	 * <ul>
+	 * <li>Variables can have a type signature attached, like for example
 	 * <code>Var:i</code>. Its meaning is that the type of the value must match
-	 * too.
+	 * too.</li>
+	 * <li>A list's or tuple's last element can be an ellipsis (<code>...</code>
+	 * ) which means means that the rest of the elements are ignored.</li>
+	 * </ul>
 	 * <p>
 	 * The returned value is null if there was any mismatch, otherwise it is a
 	 * map of variable names to matched values. <br>
@@ -173,6 +179,13 @@ public class ErlUtils {
 			OtpErlangObject[] terms, Bindings bindings) {
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
+			if (patterns[i] instanceof OtpEllipsis) {
+				if (i < patterns.length - 1) {
+					return null;
+				} else {
+					return result;
+				}
+			}
 			result = match(patterns[i], terms[i], result);
 			if (result == null) {
 				return null;

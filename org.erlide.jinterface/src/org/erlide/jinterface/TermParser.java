@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2008 Vlad Dumitrescu and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vlad Dumitrescu
+ *******************************************************************************/
 package org.erlide.jinterface;
 
 import java.util.ArrayList;
@@ -6,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.ericsson.otp.erlang.OtpEllipsis;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -68,7 +78,10 @@ public class TermParser {
 			throw new ParserException("unexpected " + t.toString());
 		case COMMA:
 			throw new ParserException("unexpected " + t.toString());
-		case UNKNOWN:
+		case ELLIPSIS:
+			result = new OtpEllipsis();
+			break;
+		default:
 			throw new ParserException("unknown token" + t.toString());
 		}
 		return result;
@@ -99,7 +112,7 @@ public class TermParser {
 	}
 
 	private static enum TokenKind {
-		ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, UNKNOWN;
+		ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, ELLIPSIS, UNKNOWN;
 	}
 
 	private static class Token {
@@ -190,6 +203,17 @@ public class TermParser {
 			} else if (c == ',') {
 				result.kind = TokenKind.COMMA;
 				result.end = result.start + 1;
+			} else if (c == '.') {
+				c = s.charAt(++result.end);
+				while (result.end <= s.length() && (c == '.')) {
+					c = s.charAt(result.end++);
+				}
+				result.end--;
+				if (result.end - result.start == 3) {
+					result.kind = TokenKind.ELLIPSIS;
+				} else {
+					result.kind = TokenKind.UNKNOWN;
+				}
 			} else {
 				result.kind = TokenKind.UNKNOWN;
 				result.end = result.start + 1;

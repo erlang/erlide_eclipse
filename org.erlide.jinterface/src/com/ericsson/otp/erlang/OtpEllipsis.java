@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
+ * Copyright (c) 2009 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,45 +9,37 @@
  *******************************************************************************/
 package com.ericsson.otp.erlang;
 
-
 /**
- * Provides a Java representation of Erlang format placeholders.
+ * Provides a Java representation of ellipsis in list and tuple representation.
+ * A list's or tuple's last element can be an ellipsis, meaning that the rest of
+ * the elements are ignored in the pattern matching.
  * <p>
  * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
  * formatting only.
  */
-public class OtpPlaceholder extends OtpErlangObject {
+public class OtpEllipsis extends OtpErlangObject {
 
 	private static final long serialVersionUID = -1L;
 
-	private String name;
-
-	public OtpPlaceholder(String n) {
-		this.name = n;
-	}
-
-	public String getName() {
-		return this.name;
+	public OtpEllipsis() {
 	}
 
 	@Override
 	public String toString() {
-		return this.name;
+		return "...";
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpPlaceholder)) {
+		if (!(o instanceof OtpEllipsis)) {
 			return false;
 		}
-
-		final OtpPlaceholder l = (OtpPlaceholder) o;
-		return this.name.equals(l.name);
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.name.hashCode();
+		return "...".hashCode();
 	}
 
 	@Override
