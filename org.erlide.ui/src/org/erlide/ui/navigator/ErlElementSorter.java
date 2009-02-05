@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.ISourceReference;
 
 public class ErlElementSorter extends ViewerSorter {
@@ -18,12 +17,16 @@ public class ErlElementSorter extends ViewerSorter {
 	private int how;
 
 	@Override
-	public int compare(final Viewer viewer, final Object e1, final Object e2) {
-		if (e1 instanceof IErlFunctionClause
-				&& e2 instanceof IErlFunctionClause) {
-			return comparePositions(viewer, e1, e2);
+	public int compare(final Viewer viewer, final Object o1, final Object o2) {
+		if (o1 instanceof IErlElement && o2 instanceof IErlElement) {
+			final IErlElement e1 = (IErlElement) o1;
+			final IErlElement e2 = (IErlElement) o2;
+			if (e1.getKind() == IErlElement.Kind.CLAUSE
+					&& e2.getKind() == IErlElement.Kind.CLAUSE) {
+				return comparePositions(viewer, o1, o2);
+			}
 		}
-		return super.compare(viewer, e1, e2);
+		return super.compare(viewer, o1, o2);
 	}
 
 	public ErlElementSorter(final int how) {
