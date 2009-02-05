@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
+ * Copyright (c) 2004 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,37 +9,57 @@
  *******************************************************************************/
 package com.ericsson.otp.erlang;
 
+import org.erlide.jinterface.rpc.Signature;
+
 /**
- * Provides a Java representation of a cons cell (works for both lists and
- * tuples!). A list or tuple pattern can end with " | Variable", where the
- * variable is matched against the remaining elements.
+ * Provides a Java representation of Erlang variables.
  * <p>
  * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
- * formatting only.
+ * pattern matching only.
  */
-public class OtpCons extends OtpErlangObject {
+public class OtpPatternVariable extends OtpErlangObject {
 
 	private static final long serialVersionUID = -1L;
 
-	public OtpCons() {
+	private String name;
+	private Signature sign;
+
+	public OtpPatternVariable(String n) {
+		String[] v = n.split(":");
+		this.name = v[0];
+		if (v.length > 1) {
+			this.sign = new Signature(v[1].charAt(0));
+		} else {
+			this.sign = new Signature('x');
+		}
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public Signature getSignature() {
+		return this.sign;
 	}
 
 	@Override
 	public String toString() {
-		return "|";
+		return "'%" + this.name + ":" + this.sign.kind + "'";
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpCons)) {
+		if (!(o instanceof OtpPatternVariable)) {
 			return false;
 		}
-		return true;
+
+		final OtpPatternVariable l = (OtpPatternVariable) o;
+		return this.name.equals(l.name) && this.sign.equals(l.sign);
 	}
 
 	@Override
 	public int hashCode() {
-		return "|".hashCode();
+		return this.name.hashCode() + this.sign.hashCode() * 31;
 	}
 
 	@Override

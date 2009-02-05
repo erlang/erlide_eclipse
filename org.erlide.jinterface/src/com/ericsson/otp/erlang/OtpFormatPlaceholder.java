@@ -15,13 +15,13 @@ package com.ericsson.otp.erlang;
  * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
  * formatting only.
  */
-public class OtpPlaceholder extends OtpErlangObject {
+public class OtpFormatPlaceholder extends OtpErlangObject {
 
 	private static final long serialVersionUID = -1L;
 
 	private String name;
 
-	public OtpPlaceholder(String n) {
+	public OtpFormatPlaceholder(String n) {
 		this.name = n;
 	}
 
@@ -36,11 +36,11 @@ public class OtpPlaceholder extends OtpErlangObject {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpPlaceholder)) {
+		if (!(o instanceof OtpFormatPlaceholder)) {
 			return false;
 		}
 
-		final OtpPlaceholder l = (OtpPlaceholder) o;
+		final OtpFormatPlaceholder l = (OtpFormatPlaceholder) o;
 		return this.name.equals(l.name);
 	}
 

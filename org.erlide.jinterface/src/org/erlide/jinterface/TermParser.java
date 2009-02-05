@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.ericsson.otp.erlang.OtpCons;
+import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpPlaceholder;
-import com.ericsson.otp.erlang.OtpVariable;
+import com.ericsson.otp.erlang.OtpFormatPlaceholder;
+import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class TermParser {
 
@@ -53,7 +53,7 @@ public class TermParser {
 			result = new OtpErlangAtom(t.text);
 			break;
 		case VARIABLE:
-			result = new OtpVariable(t.text);
+			result = new OtpPatternVariable(t.text);
 			break;
 		case STRING:
 			result = new OtpErlangString(t.text);
@@ -62,7 +62,7 @@ public class TermParser {
 			result = new OtpErlangLong(Long.parseLong(t.text));
 			break;
 		case PLACEHOLDER:
-			result = new OtpPlaceholder(t.text);
+			result = new OtpFormatPlaceholder(t.text);
 			break;
 		case TUPLESTART:
 			result = parseSequence(tokens, TokenKind.TUPLEEND,
@@ -79,7 +79,7 @@ public class TermParser {
 		case COMMA:
 			throw new ParserException("unexpected " + t.toString());
 		case CONS:
-			result = new OtpCons();
+			result = new OtpPatternCons();
 			break;
 		default:
 			throw new ParserException("unknown token" + t.toString());
