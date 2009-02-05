@@ -41,7 +41,8 @@ init(JavaNode) ->
                       _ ->
                           ok
                   end,
-                  watch_eclipse(JavaNode)
+                  watch_eclipse(JavaNode),
+				  erlide_xref:start()
           end),
 
     ok.
