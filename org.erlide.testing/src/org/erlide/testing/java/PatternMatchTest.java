@@ -171,4 +171,11 @@ public class PatternMatchTest {
 		Assert.assertNull(r);
 	}
 
+	@Test
+	public void testMatch_t() throws Exception {
+		Bindings r = ErlUtils.match("[W:a, V:i]", "[a, 1]");
+		Assert.assertEquals(r.getAs("W", String.class), "a");
+		Assert.assertEquals(r.getAs("V", Integer.class), Integer.valueOf(1));
+	}
+
 }

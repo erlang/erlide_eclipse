@@ -17,11 +17,11 @@ import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Signature;
 
-import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
+import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class ErlUtils {
@@ -116,12 +116,13 @@ public class ErlUtils {
 			}
 			final Bindings result = new Bindings(bindings);
 			final OtpErlangObject old = bindings.get(var.getName());
-			// no previous binding
 			if (old == null) {
+				// no previous binding
 				result.put(var.getName(), term);
 				return result;
+			} else {
+				return old.equals(term) ? result : null;
 			}
-			return old.equals(term) ? result : null;
 		}
 		if (!pattern.getClass().equals(term.getClass())) {
 			return null;

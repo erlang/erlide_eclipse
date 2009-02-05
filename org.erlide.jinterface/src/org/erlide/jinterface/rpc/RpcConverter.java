@@ -221,19 +221,19 @@ public class RpcConverter {
 					|| cls == Long.class) {
 				if (obj instanceof OtpErlangLong) {
 					final long res = ((OtpErlangLong) obj).longValue();
-					if (cls == char.class) {
+					if (cls == char.class || cls == Character.class) {
 						return (char) res;
 					}
-					if (cls == int.class) {
+					if (cls == int.class || cls == Integer.class) {
 						return (int) res;
 					}
-					if (cls == byte.class) {
+					if (cls == byte.class || cls == Byte.class) {
 						return (byte) res;
 					}
-					if (cls == short.class) {
+					if (cls == short.class || cls == Short.class) {
 						return (short) res;
 					}
-					if (cls == long.class) {
+					if (cls == long.class || cls == Long.class) {
 						return res;
 					}
 				}

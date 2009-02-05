@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.erlide.jinterface.rpc.RpcConverter;
+import org.erlide.jinterface.rpc.RpcException;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class Bindings {
@@ -34,6 +37,12 @@ public class Bindings {
 
 	public OtpErlangObject get(String name) {
 		return this.bindings.get(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getAs(String name, Class<T> cls) throws RpcException {
+		OtpErlangObject v = get(name);
+		return (T) RpcConverter.erlang2java(v, cls);
 	}
 
 	public void put(String name, OtpErlangObject value) {
