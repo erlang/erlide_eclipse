@@ -44,4 +44,9 @@ public class Bindings {
 		return Collections.unmodifiableMap(this.bindings);
 	}
 
+	@Override
+	public String toString() {
+		return bindings.toString();
+	}
+
 }

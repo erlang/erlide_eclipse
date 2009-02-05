@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.ericsson.otp.erlang.OtpEllipsis;
+import com.ericsson.otp.erlang.OtpCons;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -78,8 +78,8 @@ public class TermParser {
 			throw new ParserException("unexpected " + t.toString());
 		case COMMA:
 			throw new ParserException("unexpected " + t.toString());
-		case ELLIPSIS:
-			result = new OtpEllipsis();
+		case CONS:
+			result = new OtpCons();
 			break;
 		default:
 			throw new ParserException("unknown token" + t.toString());
@@ -112,7 +112,7 @@ public class TermParser {
 	}
 
 	private static enum TokenKind {
-		ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, ELLIPSIS, UNKNOWN;
+		ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, UNKNOWN;
 	}
 
 	private static class Token {
@@ -203,17 +203,9 @@ public class TermParser {
 			} else if (c == ',') {
 				result.kind = TokenKind.COMMA;
 				result.end = result.start + 1;
-			} else if (c == '.') {
-				c = s.charAt(++result.end);
-				while (result.end <= s.length() && (c == '.')) {
-					c = s.charAt(result.end++);
-				}
-				result.end--;
-				if (result.end - result.start == 3) {
-					result.kind = TokenKind.ELLIPSIS;
-				} else {
-					result.kind = TokenKind.UNKNOWN;
-				}
+			} else if (c == '|') {
+				result.kind = TokenKind.CONS;
+				result.end = result.start + 1;
 			} else {
 				result.kind = TokenKind.UNKNOWN;
 				result.end = result.start + 1;

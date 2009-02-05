@@ -10,28 +10,28 @@
 package com.ericsson.otp.erlang;
 
 /**
- * Provides a Java representation of ellipsis in list and tuple representation.
- * A list's or tuple's last element can be an ellipsis, meaning that the rest of
- * the elements are ignored in the pattern matching.
+ * Provides a Java representation of a cons cell (works for both lists and
+ * tuples!). A list or tuple pattern can end with " | Variable", where the
+ * variable is matched against the remaining elements.
  * <p>
  * <b>!!! These are to NOT to be sent to an Erlang node !!!!</b> Their use is in
  * formatting only.
  */
-public class OtpEllipsis extends OtpErlangObject {
+public class OtpCons extends OtpErlangObject {
 
 	private static final long serialVersionUID = -1L;
 
-	public OtpEllipsis() {
+	public OtpCons() {
 	}
 
 	@Override
 	public String toString() {
-		return "...";
+		return "|";
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof OtpEllipsis)) {
+		if (!(o instanceof OtpCons)) {
 			return false;
 		}
 		return true;
@@ -39,7 +39,7 @@ public class OtpEllipsis extends OtpErlangObject {
 
 	@Override
 	public int hashCode() {
-		return "...".hashCode();
+		return "|".hashCode();
 	}
 
 	@Override

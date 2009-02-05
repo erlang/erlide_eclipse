@@ -17,7 +17,7 @@ import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.Signature;
 
-import com.ericsson.otp.erlang.OtpEllipsis;
+import com.ericsson.otp.erlang.OtpCons;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -131,10 +131,10 @@ public class ErlUtils {
 			return bindings;
 		} else if (pattern instanceof OtpErlangList) {
 			return matchList(((OtpErlangList) pattern).elements(),
-					((OtpErlangList) term).elements(), bindings);
+					((OtpErlangList) term).elements(), bindings, true);
 		} else if (pattern instanceof OtpErlangTuple) {
 			return matchList(((OtpErlangTuple) pattern).elements(),
-					((OtpErlangTuple) term).elements(), bindings);
+					((OtpErlangTuple) term).elements(), bindings, false);
 		}
 		return null;
 	}
@@ -176,13 +176,22 @@ public class ErlUtils {
 	}
 
 	private static Bindings matchList(OtpErlangObject[] patterns,
-			OtpErlangObject[] terms, Bindings bindings) {
+			OtpErlangObject[] terms, Bindings bindings, boolean list) {
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
-			if (patterns[i] instanceof OtpEllipsis) {
-				if (i < patterns.length - 1) {
+			if (patterns[i] instanceof OtpCons) {
+				if (i != patterns.length - 2
+						|| !(patterns[i + 1] instanceof OtpVariable)) {
 					return null;
 				} else {
+					int length = terms.length - i;
+					OtpErlangObject[] rest = new OtpErlangObject[length];
+					for (int j = 0; j < length; j++) {
+						rest[j] = terms[j + i];
+					}
+					OtpErlangObject term = list ? JInterfaceFactory
+							.mkList(rest) : JInterfaceFactory.mkTuple(rest);
+					result = match(patterns[i + 1], term, result);
 					return result;
 				}
 			}
@@ -193,5 +202,4 @@ public class ErlUtils {
 		}
 		return result;
 	}
-
 }

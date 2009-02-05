@@ -139,21 +139,36 @@ public class PatternMatchTest {
 
 	@Test
 	public void testMatch_ellipsis_1() throws Exception {
-		OtpErlangObject r = TermParser.parse("[x,...]");
+		OtpErlangObject r = TermParser.parse("[x|_]");
 		Assert.assertNotNull(r);
 	}
 
 	@Test
 	public void testMatch_ellipsis_2() throws Exception {
-		Bindings r = ErlUtils.match("[X,...]", "[x,y,z]");
+		Bindings r = ErlUtils.match("[X | T]", "[x,y,z]");
 		Assert.assertNotNull(r);
 		Assert.assertEquals(r.get("X"), new OtpErlangAtom("x"));
+		Assert.assertEquals(r.get("T"), TermParser.parse("[y,z]"));
 	}
 
 	@Test()
 	public void testMatch_ellipsis_3() throws Exception {
-		Bindings r = ErlUtils.match("[X,...,z]", "[x,y,z]");
-		Assert.assertEquals(r, null);
+		Bindings r = ErlUtils.match("{X | T}", "{x,y,z}");
+		Assert.assertNotNull(r);
+		Assert.assertEquals(r.get("X"), new OtpErlangAtom("x"));
+		Assert.assertEquals(r.get("T"), TermParser.parse("{y,z}"));
+	}
+
+	@Test()
+	public void testMatch_ellipsis_4() throws Exception {
+		Bindings r = ErlUtils.match("{X | y}", "{x,y,z}");
+		Assert.assertNull(r);
+	}
+
+	@Test()
+	public void testMatch_ellipsis_5() throws Exception {
+		Bindings r = ErlUtils.match("{X | Y, Z}", "{x,y,z}");
+		Assert.assertNull(r);
 	}
 
 }

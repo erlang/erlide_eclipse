@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ericsson.otp.erlang;
 
-
 /**
  * Provides a Java representation of Erlang format placeholders.
  * <p>
@@ -32,7 +31,7 @@ public class OtpPlaceholder extends OtpErlangObject {
 
 	@Override
 	public String toString() {
-		return this.name;
+		return "~" + this.name;
 	}
 
 	@Override
