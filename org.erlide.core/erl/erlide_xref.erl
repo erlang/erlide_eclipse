@@ -1,6 +1,7 @@
 -module(erlide_xref).
 
 -compile(export_all).
+-export([start/0, stop/0, function_call/1]).
 
 start() ->
 	xref:start(erlide).

@@ -51,7 +51,7 @@ public class Signature {
 	public static synchronized Signature[] parse(final String signature)
 			throws RpcException {
 		if (signature == null) {
-			return new Signature[0];
+			return null;
 		}
 		Signature[] result;
 		if (useCache) {

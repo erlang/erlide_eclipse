@@ -213,11 +213,11 @@
             </adapt>
          </enabledWhen>
       </page>
-      <!--page
+      <page
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang (work in progress)">
-      </page-->
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">

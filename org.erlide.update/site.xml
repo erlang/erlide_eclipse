@@ -9,10 +9,12 @@
    <feature url="features/org.erlide_0.4.3.jar" id="org.erlide" version="0.4.3">
       <category name="stable"/>
    </feature>
-   <feature url="features/org.erlide_0.4.3.9a.jar" id="org.erlide" version="0.4.3.9a">
+   <feature url="features/org.erlide_0.4.3.9b.jar" id="org.erlide" version="0.4.3.9b">
       <category name="unstable"/>
    </feature>
-   <feature url="features/org.erlide_0.4.3.9b.jar" id="org.erlide" version="0.4.3.9b"/>
+   <feature url="features/org.erlide_0.4.3.9d.jar" id="org.erlide" version="0.4.3.9d">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="Stable builds">
       <description>
          These builds have been around a little longer and are reasonably stable.
