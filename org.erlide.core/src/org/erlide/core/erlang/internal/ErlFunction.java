@@ -137,4 +137,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		b.append(')');
 		return b.toString();
 	}
+
+	public String getHead() {
+		return head;
+	}
 }

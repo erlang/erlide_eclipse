@@ -267,9 +267,7 @@ get_doc(DocFileName, PosLens) ->
     {ok, AppendedDocs} = file:pread(F, PL),
     file:close(F),
     Docs = unappend(AppendedDocs, PosLens),
-    ?D({'Docs', Docs}),
     R = [combine_docs(D) || D <- Docs],
-    ?D({'R', R}),
     R.
 
 get_doc_dir(Module) ->
@@ -491,19 +489,98 @@ fix_proposals([], _, _, Acc) ->
 fix_proposals([{FunctionName, Arity} | FALRest], [Doc | DLRest], PrefixLength, Acc) ->
     FunName = atom_to_list(FunctionName),
     FunWithArity = FunName++"/"++integer_to_list(Arity),
-    FunWithParameters = FunName++"("++make_parameters(Arity)++")",
-    Pars = make_par_offs_length(0, Arity, length(FunName)+1-PrefixLength),
+    Offset = length(FunName)+1-PrefixLength,
+    {TextPars, Pars} = extract_pars(FunctionName, Arity, Offset, Doc),
+    ?D(TextPars),
+    ?D(Pars),
+    FunWithParameters = FunName++"("++TextPars++")",
     fix_proposals(FALRest, DLRest, PrefixLength,
                   [{FunWithArity, FunWithParameters, Pars, Doc} | Acc]).
+
+extract_pars(FunctionName, Arity, Offset, Doc) ->
+    Start1 = "<a name =",
+    End1 = "</span>",
+    Sub1 = erlide_util:get_all_between_strs(Doc, Start1, End1),
+    Start2 = "<CODE>",
+    End2 = "</CODE>",
+    Sub2 = erlide_util:get_all_between_strs(Doc, Start2, End2),
+    try_make_pars(Sub1++Sub2, FunctionName, Arity, Offset).
+
+try_make_pars([], _, Arity, Offset) ->
+    {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
+try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
+    case erlide_scan:string(Sub) of
+	{ok, Tokens, _} ->
+	    ?D(Tokens),
+	    case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
+		bad_tokens ->
+		    try_make_pars(Rest, FunctionName, Arity, Offset);
+		T ->
+		    ?D(T),
+		    T
+	    end;
+	_N ->
+	    ?D(_N),
+	    try_make_pars(Rest, FunctionName, Arity, Offset)
+    end.
+
+skip_lpar([{'(', _} | Rest]) ->
+    Rest;
+skip_lpar([]) ->
+    [];
+skip_lpar([_ | Rest]) ->
+    skip_lpar(Rest).
+
+make_pars_from_tokens([{atom, _, FunctionName} | Rest], FunctionName, Arity, Offset) ->
+    ?D(FunctionName),
+    Pars = get_vars_upto_rpar(skip_lpar(Rest)),
+    ?D(Pars),
+    ?D(Arity),
+    case length(Pars) of
+	Arity ->
+	    {make_parameters(Pars), make_par_offs_length(0, Arity, Pars, Offset)};
+	_ ->
+	    bad_tokens
+    end;
+make_pars_from_tokens(_, _, _, _) ->
+    bad_tokens.
+
+get_vars_upto_rpar(Tokens) ->
+    get_vars_upto_rpar(Tokens, []).
+
+get_vars_upto_rpar([{')', _} | _], Acc) ->
+    lists:reverse(Acc);
+get_vars_upto_rpar([{var, _, Par} | Rest], Acc) ->
+    get_vars_upto_rpar(Rest, [atom_to_list(Par) | Acc]);
+get_vars_upto_rpar([_ | Rest], Acc) ->
+    get_vars_upto_rpar(Rest, Acc).
 
 make_parameters(0) ->
     "";
 make_parameters(1) ->
     "_";
-make_parameters(N) ->
-    "_, " ++ make_parameters(N-1).
+make_parameters(N) when is_integer(N) ->
+    "_, " ++ make_parameters(N-1);
+make_parameters([]) ->
+    "";
+make_parameters([Par]) ->
+    Par;
+make_parameters([Par | Rest]) ->
+    Par ++ ", " ++ make_parameters(Rest).
 
 make_par_offs_length(N, N, _) ->
     [];
 make_par_offs_length(I, N, Offset) ->
-    [{I*3+Offset, 1} | make_par_offs_length(I+1, N, Offset)].
+    [{Offset, 1} | make_par_offs_length(I+1, N, Offset + 3)].
+
+make_par_offs_length(N, N, _ParTokens, _Offset) ->
+    [];
+make_par_offs_length(I, N, [Par | Rest], Offset) ->
+    Len = length(Par),
+    [{Offset, Len} | make_par_offs_length(I+1, N, Rest, Offset + Len + 2)].
+
+
+
+
+
+

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IPathVariableChangeEvent;
+import org.eclipse.core.resources.IPathVariableChangeListener;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -32,6 +34,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
@@ -61,7 +64,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideContextAssist;
 import erlang.ErlideDoc;
 
-public class ErlContentAssistProcessor implements IContentAssistProcessor {
+public class ErlContentAssistProcessor implements IContentAssistProcessor,
+		IPathVariableChangeListener {
 	private final ISourceViewer sourceViewer;
 	private final IErlModule module;
 	private final String externalModules;
@@ -204,7 +208,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			// add imported functions in module
 			for (final IErlImport imp : module.getImports()) {
 				for (final ErlangFunction ef : imp.getFunctions()) {
-					addFunctionCompletion(offset, aprefix, result, ef);
+					addFunctionCompletion(offset, aprefix, result, ef,
+							getParameterNames(ef));
 				}
 			}
 			// add modules
@@ -346,8 +351,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 						cpl, offsetsAndLengths, offs);
 			}
 		}
-		// lastly, check external modules
-		// TODO
 		return result;
 	}
 
@@ -390,19 +393,97 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IErlFunction function, final boolean externalsOnly) {
 		if (!externalsOnly || function.isExported()) {
 			addFunctionCompletion(offset, aprefix, result, function
-					.getFunction());
+					.getFunction(), getParameterNames(function));
 		}
+	}
+
+	private List<String> getParameterNames(final IErlFunction function) {
+		final String head = function.getHead();
+		final int arity = function.getArity();
+		final List<String> result = new ArrayList<String>(arity);
+		addEmptyParameterNames(arity, result);
+		addParametersFromFunctionHead(head, result);
+		for (final IErlFunctionClause clause : function.getClauses()) {
+			addParametersFromFunctionHead(clause.getHead(), result);
+		}
+		return result;
+	}
+
+	/**
+	 * @param head
+	 * @param result
+	 */
+	private void addParametersFromFunctionHead(String head,
+			final List<String> result) {
+		if (head != null && head.length() > 1) {
+			head = removeParens(head);
+			final String[] vars = head.split(",");
+			for (int i = 0; i < vars.length; ++i) {
+				if (result.get(i).equals("_")) {
+					final String var = vars[i].trim();
+					if (looksLikeParameter(var)) {
+						result.set(i, var);
+					}
+				}
+			}
+		}
+	}
+
+	private String removeParens(final String head) {
+		final int length = head.length();
+		if (length < 1) {
+			return head;
+		}
+		final boolean startPar = head.charAt(0) == '(';
+		final boolean endPar = head.charAt(length - 1) == ')';
+		final int startIndex = startPar ? 1 : 0;
+		final int endIndex = endPar ? length - 1 : length;
+		return head.substring(startIndex, endIndex);
+	}
+
+	private List<String> getParameterNames(final ErlangFunction function) {
+		final int arity = function.arity;
+		final List<String> result = new ArrayList<String>(arity);
+		addEmptyParameterNames(arity, result);
+		return result;
+	}
+
+	/**
+	 * @param arity
+	 * @param result
+	 */
+	private void addEmptyParameterNames(final int arity,
+			final List<String> result) {
+		for (int i = result.size(); i < arity; ++i) {
+			result.add("_");
+		}
+	}
+
+	private String removeUnderscore(final String var) {
+		if (var.charAt(0) == '_') {
+			return var.substring(1);
+		}
+		return var;
+	}
+
+	private boolean looksLikeParameter(final String head) {
+		if (head == null || head.length() == 0) {
+			return false;
+		}
+		final char c = head.charAt(0);
+		return c >= 'A' && c <= 'Z' || c == '_';
 	}
 
 	private void addFunctionCompletion(final int offset, final String aprefix,
 			final List<ICompletionProposal> result,
-			final ErlangFunction function) {
+			final ErlangFunction function, final List<String> parameterNames) {
 		if (function.name.startsWith(aprefix)) {
 			final int offs = function.name.length() - aprefix.length();
 			final List<Point> offsetsAndLengths = getOffsetsAndLengths(
-					function.arity, offset + offs + 1);
+					parameterNames, offset + offs + 1);
 			final String funWithArity = function.getNameWithArity();
-			final String funWithParameters = function.getNameWithParameters();
+			final String funWithParameters = getNameWithParameters(
+					function.name, parameterNames);
 			final String cpl = funWithParameters.substring(aprefix.length());
 			int cursorPosition = cpl.length();
 			if (offsetsAndLengths.size() > 0) {
@@ -413,11 +494,27 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private List<Point> getOffsetsAndLengths(final int arity,
-			final int replacementOffset) {
-		final ArrayList<Point> result = new ArrayList<Point>(arity);
-		for (int i = 0; i < arity; i++) {
-			result.add(new Point(replacementOffset + i * 3, 1));
+	private String getNameWithParameters(final String name,
+			final List<String> parameterNames) {
+		final StringBuilder b = new StringBuilder();
+		b.append(name).append('(');
+		for (int i = 0, n = parameterNames.size(); i < n; i++) {
+			b.append(parameterNames.get(i));
+			if (i < n - 1) {
+				b.append(", ");
+			}
+		}
+		b.append(')');
+		return b.toString();
+	}
+
+	private List<Point> getOffsetsAndLengths(final List<String> parameterNames,
+			int replacementOffset) {
+		final ArrayList<Point> result = new ArrayList<Point>(parameterNames
+				.size());
+		for (final String par : parameterNames) {
+			result.add(new Point(replacementOffset, par.length()));
+			replacementOffset += par.length() + 2;
 		}
 		return result;
 	}
@@ -521,6 +618,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			pv.add(new Tuple().add(name).add(pvm.getValue(name).toOSString()));
 		}
 		return pv;
+	}
+
+	public void pathVariableChanged(final IPathVariableChangeEvent event) {
+		initPathVars();
 	}
 
 }

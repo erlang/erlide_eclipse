@@ -18,7 +18,7 @@ import org.erlide.core.util.ErlangFunction;
  * 
  * @author Vlad Dumitrescu
  */
-public interface IErlFunction extends IErlMember, IParent {
+public interface IErlFunction extends IErlFunctionClause, IParent {
 
 	int getArity();
 
