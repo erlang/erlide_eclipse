@@ -9,12 +9,16 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.erlang.ErlScanner;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
+import erlang.ErlangXref;
 import erlang.ErlideScanner;
+import erlang.FunctionRef;
 
 /**
  * @author jakob
@@ -29,6 +33,8 @@ public class TestAction extends TextEditorAction {
 		super(bundle, prefix, editor);
 		this.module = module;
 	}
+
+	boolean first = true;
 
 	/*
 	 * (non-Javadoc)
@@ -54,6 +60,17 @@ public class TestAction extends TextEditorAction {
 			final ErlangEditor ee = (ErlangEditor) textEditor;
 			ee.reconcileNow();
 		}
-	}
 
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		if (first) {
+			ErlangXref.start(b);
+			ErlangXref.addProject(b, module.getProject());
+			first = false;
+		} else {
+			FunctionRef[] x = ErlangXref.functionUse(b, "erlide_open", "open",
+					4);
+			System.out.println(x);
+		}
+
+	}
 }

@@ -4,7 +4,15 @@
 -export([start/0, stop/0, function_call/1]).
 
 start() ->
-	xref:start(erlide).
+	erlide_log:log("xref initialization started."),
+	xref:start(erlide),
+	spawn(fun() ->
+				  erlide_log:log("xref initialization started."),
+%% 				  xref:add_release(erlide, code:lib_dir(),
+%% 								   [{name, otp}, {verbose, false}]),
+				  erlide_log:log("xref initialization done.")
+		  end),
+	ok.
 
 stop() ->
 	xref:stop(erlide).
@@ -27,6 +35,9 @@ module_call(Module) when is_atom(Module) ->
 	xref:analyze(erlide, {module_call, Module}).
 
 function_use({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
+	xref:analyze(erlide, {use, {M, F, A}}).
+
+function_use(M, F, A) when is_atom(M), is_atom(F), is_integer(A) ->
 	xref:analyze(erlide, {use, {M, F, A}}).
 
 function_call({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
