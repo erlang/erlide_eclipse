@@ -69,11 +69,11 @@ has_name(Name, FileName) ->
     Name == filename:rootname(filename:basename(FileName)).
 
 get_external_modules(Prefix, ExternalModulesFiles, PathVars) ->
-    ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
+    ExternalModules = get_external_modules_files(ExternalModulesFiles, PathVars),
     {ok, [XM || XM <- ExternalModules, has_prefix(Prefix, XM)]}.
 
 get_external_module(Name, ExternalModulesFiles, PathVars) ->
-    ExternalModules = get_external_modules_file(ExternalModulesFiles, PathVars),
+    ExternalModules = get_external_modules_files(ExternalModulesFiles, PathVars),
     case [XM || XM <- ExternalModules, has_name(Name, XM)] of
         [Path | _] ->
             {ok, Path};
@@ -188,8 +188,8 @@ get_source_from_module(Mod, ExternalModules, PathVars) ->
             Other
     end.
 
-get_external_modules_file(PackedFileNames, PathVars) ->
-    get_external_modules_file(erlide_util:unpack(PackedFileNames), PathVars, []).
+get_external_modules_files(PackedFileNames, PathVars) ->
+    get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, []).
 
 replace_path_var(FileName, PathVars) ->
     case filename:split(FileName) of
@@ -207,14 +207,14 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_modules_file([], _PathVars, Acc) ->
+get_external_modules_files([], _PathVars, Acc) ->
     Acc;
-get_external_modules_file([FileNames0 | Rest], PathVars, Acc) ->
+get_external_modules_files([FileNames0 | Rest], PathVars, Acc) ->
     FileName = replace_path_var(FileNames0, PathVars),
     case file:read_file(FileName) of
         {ok, B} ->
             R = get_ext_aux(split_lines(B), PathVars, Acc),
-            get_external_modules_file(Rest, PathVars, R ++ Acc);
+            get_external_modules_files(Rest, PathVars, R ++ Acc);
         _ ->
             Acc
     end.
@@ -224,7 +224,7 @@ get_ext_aux([], _PathVars, Acc) ->
 get_ext_aux([L | Rest], PathVars, Acc0) ->
      case filename:extension(L) of
          ".erlidex" ->
-             Acc = get_external_modules_file(L, PathVars, Acc0),
+             Acc = get_external_modules_files([L], PathVars, Acc0),
              get_ext_aux(Rest, PathVars, Acc);
          _ ->
              get_ext_aux(Rest, PathVars, [L | Acc0])
@@ -232,7 +232,7 @@ get_ext_aux([L | Rest], PathVars, Acc0) ->
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D({ExternalModules, PathVars}),
-    L = get_external_modules_file(ExternalModules, PathVars),
+    L = get_external_modules_files(ExternalModules, PathVars),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
@@ -283,7 +283,7 @@ find_first_var(Var, S) ->
     end.
 
 get_external_include(FilePath, ExternalIncludes, PathVars) ->
-    ExtIncPaths = get_external_modules_file(ExternalIncludes, PathVars),
+    ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
     get_ext_inc(ExtIncPaths, FilePath).
 
 %% Local Functions
