@@ -77,24 +77,59 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			+ ".taskmarker";
 
 	private IMarkerGenerator generator = new ErlangBuilderMarkerGenerator();
+	IProject currentProject;
+	IWorkspaceRoot workspaceRoot;
+	BuildNotifier notifier;
 
-	protected void createProblemFor(final IResource resource,
-			final IErlFunction erlElement, final String message,
-			final int problemSeverity) throws CoreException {
+	@Override
+	protected void clean(final IProgressMonitor monitor) throws CoreException {
+		currentProject = getProject();
+		if (currentProject == null || !currentProject.isAccessible()) {
+			return;
+		}
+
+		if (BuilderUtils.isDebugging()) {
+			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
+		}
+		super.clean(monitor);
+
+		notifier = new BuildNotifier(monitor, currentProject);
+		notifier.begin();
 		try {
-			final IMarker marker = resource.createMarker(PROBLEM_MARKER);
-			final int severity = problemSeverity;
+			notifier.checkCancel();
 
-			final ISourceRange range = erlElement == null ? null : erlElement
-					.getNameRange();
-			final int start = range == null ? 0 : range.getOffset();
-			final int end = range == null ? 1 : start + range.getLength();
-			marker.setAttributes(new String[] { IMarker.MESSAGE,
-					IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
-					new Object[] { message, Integer.valueOf(severity),
-							Integer.valueOf(start), Integer.valueOf(end) });
+			initializeBuilder();
+			removeProblemsAndTasksFor(currentProject);
+
+			final ErlangProjectProperties prefs = new ErlangProjectProperties(
+					getProject());
+			final IFolder bf = getProject().getFolder(prefs.getOutputDir());
+			if (bf.exists()) {
+				final IResource[] beams = bf.members();
+				monitor.beginTask("Cleaning Erlang files", beams.length);
+				for (final IResource element : beams) {
+					if ("beam".equals(element.getFileExtension())) {
+						element.delete(true, monitor);
+						monitor.worked(1);
+					}
+				}
+			}
+
 		} catch (final CoreException e) {
-			throw e;
+			ErlLogger.error(e);
+			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+					BuilderMessages.build_inconsistentProject, e
+							.getLocalizedMessage()));
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		} finally {
+			notifier.done();
+			cleanup();
+		}
+		if (BuilderUtils.isDebugging()) {
+			ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
+					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 	}
 
@@ -287,58 +322,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		HashSet<IResource> result = new HashSet<IResource>();
 		delta.accept(new ErlangDeltaVisitor(result));
 		return result;
-	}
-
-	@Override
-	protected void clean(final IProgressMonitor monitor) throws CoreException {
-		currentProject = getProject();
-		if (currentProject == null || !currentProject.isAccessible()) {
-			return;
-		}
-
-		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis()));
-		}
-		super.clean(monitor);
-
-		notifier = new BuildNotifier(monitor, currentProject);
-		notifier.begin();
-		try {
-			notifier.checkCancel();
-
-			initializeBuilder();
-			removeProblemsAndTasksFor(currentProject);
-
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					getProject());
-			final IFolder bf = getProject().getFolder(prefs.getOutputDir());
-			if (bf.exists()) {
-				final IResource[] beams = bf.members();
-				monitor.beginTask("Cleaning Erlang files", beams.length);
-				for (final IResource element : beams) {
-					if ("beam".equals(element.getFileExtension())) {
-						element.delete(true, monitor);
-						monitor.worked(1);
-					}
-				}
-			}
-
-		} catch (final CoreException e) {
-			ErlLogger.error(e);
-			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
-					BuilderMessages.build_inconsistentProject, e
-							.getLocalizedMessage()));
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} finally {
-			notifier.done();
-			cleanup();
-		}
-		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis()));
-		}
 	}
 
 	protected void compileFile(final IProject project, final IResource resource) {
@@ -946,12 +929,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return ErlideBuilder.compileYrl(project, fn, output);
 	}
 
-	IProject currentProject;
-
-	IWorkspaceRoot workspaceRoot;
-
-	BuildNotifier notifier;
-
 	public static IMarker[] getProblemsFor(final IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
@@ -1132,4 +1109,23 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	// job.schedule();
 	// }
 
+	protected void createProblemFor(final IResource resource,
+			final IErlFunction erlElement, final String message,
+			final int problemSeverity) throws CoreException {
+		try {
+			final IMarker marker = resource.createMarker(PROBLEM_MARKER);
+			final int severity = problemSeverity;
+
+			final ISourceRange range = erlElement == null ? null : erlElement
+					.getNameRange();
+			final int start = range == null ? 0 : range.getOffset();
+			final int end = range == null ? 1 : start + range.getLength();
+			marker.setAttributes(new String[] { IMarker.MESSAGE,
+					IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
+					new Object[] { message, Integer.valueOf(severity),
+							Integer.valueOf(start), Integer.valueOf(end) });
+		} catch (final CoreException e) {
+			throw e;
+		}
+	}
 }
