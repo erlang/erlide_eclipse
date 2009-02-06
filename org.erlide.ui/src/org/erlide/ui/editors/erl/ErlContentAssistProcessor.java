@@ -418,11 +418,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		if (head != null && head.length() > 1) {
 			head = removeParens(head);
 			final String[] vars = head.split(",");
-			for (int i = 0; i < vars.length; ++i) {
+			final int n = Math.min(vars.length, result.size());
+			for (int i = 0; i < n; ++i) {
 				if (result.get(i).equals("_")) {
 					final String var = vars[i].trim();
 					if (looksLikeParameter(var)) {
-						result.set(i, var);
+						result.set(i, removeUnderscore(var));
 					}
 				}
 			}
