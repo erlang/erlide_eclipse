@@ -189,7 +189,8 @@ get_source_from_module(Mod, ExternalModules, PathVars) ->
     end.
 
 get_external_modules_files(PackedFileNames, PathVars) ->
-    get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, []).
+    {R, _} = get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, [], []),
+    R.
 
 replace_path_var(FileName, PathVars) ->
     case filename:split(FileName) of
@@ -207,27 +208,39 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_modules_files([], _PathVars, Acc) ->
-    Acc;
-get_external_modules_files([FileNames0 | Rest], PathVars, Acc) ->
-    FileName = replace_path_var(FileNames0, PathVars),
-    case file:read_file(FileName) of
-        {ok, B} ->
-            R = get_ext_aux(split_lines(B), PathVars, Acc),
-            get_external_modules_files(Rest, PathVars, R ++ Acc);
-        _ ->
-            Acc
+get_external_modules_files([], _PathVars, Done, Acc) ->
+    {Acc, Done};
+get_external_modules_files([FileNames0 | Rest], PathVars, Done0, Acc) ->
+    case lists:member(FileNames0, Done0) of
+	true ->
+	    get_external_modules_files(Rest, PathVars, Done0, Acc);
+	false ->
+	    FileName = replace_path_var(FileNames0, PathVars),
+	    case file:read_file(FileName) of
+		{ok, B} ->
+		    Done1 = [FileName | Done0],
+		    {R, Done2} = get_ext_aux(split_lines(B), PathVars, Done1, Acc),
+		    get_external_modules_files(Rest, PathVars, Done2, R ++ Acc);
+		_ ->
+		    {Acc, Done0}
+	    end
     end.
 
-get_ext_aux([], _PathVars, Acc) ->
-    Acc;
-get_ext_aux([L | Rest], PathVars, Acc0) ->
+get_ext_aux([], _PathVars, Done, Acc) ->
+    {Acc, Done};
+get_ext_aux([L | Rest], PathVars, Done0, Acc0) ->
      case filename:extension(L) of
          ".erlidex" ->
-             Acc = get_external_modules_files([L], PathVars, Acc0),
-             get_ext_aux(Rest, PathVars, Acc);
-         _ ->
-             get_ext_aux(Rest, PathVars, [L | Acc0])
+	     case lists:member(L, Done0) of
+		 true ->
+		     get_ext_aux(Rest, PathVars, Done0, Acc0);
+		 false ->
+		     Done1 = [L | Done0],
+		     {Acc, Done} = get_external_modules_files([L], PathVars, Done1, Acc0),
+		     get_ext_aux(Rest, PathVars, Done, Acc)
+	     end;
+	 _ ->
+	     get_ext_aux(Rest, PathVars, Done0, [L | Acc0])
      end.
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
