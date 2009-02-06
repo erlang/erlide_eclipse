@@ -151,7 +151,7 @@ get_include_lib(Path) ->
 
 find_lib_dir(Dir) ->
     [Lib | Rest] = filename:split(Dir),
-    {code:lib_dir(Lib), Rest}.
+    {code:lib_dir(list_to_atom(Lib)), Rest}.
 
 
 open_info(L, W, ExternalModules, PathVars) ->

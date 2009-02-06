@@ -14,7 +14,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%% -define(DEBUG, 1).  
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -43,7 +43,7 @@ get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
     lists:usort(L).
 
 find_tags(L, Fun) ->
-     lists:filter(Fun, L).        
+     lists:filter(Fun, L).
 
 %% return true for tags which is either <div> or <a name=...>
 %% (used for extracting those with recu_find_tags in extract_from_file)
@@ -66,7 +66,7 @@ extract_from_file(F) ->
     T = get_functions_with_offsets(E),
     T.
 
-%% from a list of a tags and div tags, collect list of list of 
+%% from a list of a tags and div tags, collect list of list of
 %% functions and offsets
 %% get_functions_with_offsets(Tags) -> [[{f, 1}, ...], 100, 200]
 get_functions_with_offsets(E) ->
@@ -84,7 +84,7 @@ get_functions_with_offsets([{_TagType, "a", Attrs, Offs} | Rest],
 get_functions_with_offsets([{_TagType, "a", Attrs, Offs} | Rest],
                            Functions, Offset, true, Acc) ->
     F = attrs_to_fn(Attrs), % first func in new group, keep offset, save old
-    get_functions_with_offsets(Rest, [F], Offs, false, 
+    get_functions_with_offsets(Rest, [F], Offs, false,
                                [{lists:reverse(Functions), Offset, Offs - Offset} | Acc]);
 get_functions_with_offsets([{_TagType, "a", Attrs, _} | Rest],
                            Functions, Offset, _, Acc) -> % func in group, add to functions
@@ -139,7 +139,7 @@ attrs_to_fn_x(Name0) ->
     {Name3, Arity}.
 
 %% scan(S) -> [{tag, Name, Attr, Offset}]
-%% scan a tagged text (such as HTML) and return a list of tags 
+%% scan a tagged text (such as HTML) and return a list of tags
 %% and offsets
 %%
 scan(S) when is_list(S) ->
@@ -201,7 +201,7 @@ split_tag(S, Tag, Acc) ->
 %% tags_to_tuples(X) ->
 %%     Scan = scan(X),
 %%     tags_to_tuples(Scan, [], [], 0, 0, []).
-%% 
+%%
 %% tags_to_tuples([], _CurTag, _CurAttrs, _Lvl, _BeginOffset, Acc) ->
 %%     lists:reverse(Acc);
 %% tags_to_tuples([{begin_tag, Tag, Attrs, Offset} | Rest0], CurTag, CurAttrs,
@@ -209,23 +209,23 @@ split_tag(S, Tag, Acc) ->
     %%io:format("begin_tag ~p Lvl ~p\n", [Tag, Lvl]),
 %%     {Rest1, Children} = tags_to_tuples(Rest0, Tag, Attrs, Lvl+1, Offset, []),
 %%     tags_to_tuples(Rest1, CurTag, CurAttrs, Lvl, BeginOffset, [Children | Acc]);
-%% tags_to_tuples([{end_tag, CurTag, [], _Offset} | Rest], CurTag, CurAttrs, _Lvl, 
+%% tags_to_tuples([{end_tag, CurTag, [], _Offset} | Rest], CurTag, CurAttrs, _Lvl,
 %%                BeginOffset, Acc) ->
     %%io:format("end_tag ~p Lvl ~p length(Rest) ~p\n", [CurTag, _Lvl, length(Rest)]),
 %%     {Rest, {tag, CurTag, CurAttrs, lists:reverse(Acc), BeginOffset}};
 %% tags_to_tuples([S | Rest], CurTag, CurAttrs, Lvl, BeginOffset, Acc) ->
 %%     tags_to_tuples(Rest, CurTag, CurAttrs, Lvl, BeginOffset, [S | Acc]).
-%% 
+%%
 %% add_attrs([]) ->
 %%     "";
 %% add_attrs(A) ->
 %%     add_attrs(A, []).
-%% 
+%%
 %% add_attrs([A], Acc) ->
 %%     [" ", Acc | A];
 %% add_attrs([A | Rest], Acc) ->
 %%     add_attrs(Rest, [Acc, A | ","]).
-%% 
+%%
 %% to_lower(N) ->
 %%     httpd_util:to_lower(N).
 
@@ -236,7 +236,7 @@ tag_type(tag, "br") -> tag;
 tag_type(tag, "hr") -> tag;
 tag_type(tag, "img") -> tag;
 tag_type(tag, "link") -> tag;
-tag_type(tag, Tag) -> 
+tag_type(tag, Tag) ->
     case lists:last(Tag) of
         $/ -> tag;
         _ -> begin_tag
@@ -346,7 +346,7 @@ get_all_docs_for_mod(Mod) ->
 
 check_all() ->
     DocDirs = get_all_doc_dirs(),
-    Mods = [list_to_atom(M) || {D, E} <- DocDirs, 
+    Mods = [list_to_atom(M) || {D, E} <- DocDirs,
                                M <- get_mod_doc_files(D, E)],
     NotFound = [get_all_docs_for_mod(Mod) || Mod <- Mods],
     lists:flatten(NotFound).
@@ -362,10 +362,10 @@ check_all() ->
 
 get_all_links_to_other() ->
     DocDirs = get_all_doc_dirs(),
-    _Mods = [list_to_atom(M) || {D, E} <- DocDirs, 
+    _Mods = [list_to_atom(M) || {D, E} <- DocDirs,
                                 M <- get_mod_doc_files(D, E)],
     ok.
-    
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
@@ -404,7 +404,7 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         OutDir = get_doc_dir(Module),
         ?D(OutDir),
         DocFileName = filename:join(OutDir, Module ++ ".html"),
-        IndexFileName = filename:join([StateDir, "erlide_doc", 
+        IndexFileName = filename:join([StateDir, "erlide_doc",
                                        Module ++ ".erlide_doc_x"]),
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
@@ -480,7 +480,7 @@ get_proposals(Mod, Prefix, StateDir) ->
             Error
     end.
 
-fix_proposals(FunArityList, DocList, PrefixLength) -> 
+fix_proposals(FunArityList, DocList, PrefixLength) ->
 %%     ?Debug({prefixLength, PrefixLength}),
     fix_proposals(FunArityList, DocList, PrefixLength, []).
 
@@ -509,20 +509,15 @@ extract_pars(FunctionName, Arity, Offset, Doc) ->
 try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
 try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
-    case erlide_scan:string(Sub) of
-	{ok, Tokens, _} ->
-	    ?D(Tokens),
-	    case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
+	{ok, Tokens, _} = erlide_scan:string(Sub),
+	?D(Tokens),
+	case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
 		bad_tokens ->
-		    try_make_pars(Rest, FunctionName, Arity, Offset);
+			try_make_pars(Rest, FunctionName, Arity, Offset);
 		T ->
-		    ?D(T),
-		    T
-	    end;
-	_N ->
-	    ?D(_N),
-	    try_make_pars(Rest, FunctionName, Arity, Offset)
-    end.
+			?D(T),
+			T
+	end.
 
 skip_lpar([{'(', _} | Rest]) ->
     Rest;

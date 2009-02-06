@@ -3,16 +3,16 @@
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
 %% retrieved via the world wide web at http://www.erlang.org/.
-%% 
+%%
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
-%% 
+%%
 %% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
 %% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
 %% AB. All Rights Reserved.''
-%% 
+%%
 %%     $Id$
 %%
 -module(erlide_int).
@@ -81,7 +81,7 @@
 %% ---------
 %% Code for interpreting a module.
 %%====================================================================
- 
+
 %%====================================================================
 %% External exports
 %%====================================================================
@@ -98,7 +98,7 @@ i(AbsMods) -> i2(AbsMods, local).
 i(AbsMods, _Options) -> i2(AbsMods, local).
 ni(AbsMods) -> i2(AbsMods, distributed).
 ni(AbsMods, _Options) -> i2(AbsMods, distributed).
-    
+
 i2([AbsMod|AbsMods], Dist) when is_atom(AbsMod); is_list(AbsMod) ->
     int_mod(AbsMod, Dist),
     i2(AbsMods, Dist);
@@ -274,7 +274,7 @@ no_break(Mod) when is_atom(Mod) ->
 
 disable_break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     erlide_dbg_iserver:safe_cast({break_option, {Mod, Line}, status, inactive}).
-    
+
 enable_break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     erlide_dbg_iserver:safe_cast({break_option, {Mod, Line}, status, active}).
 
@@ -318,7 +318,7 @@ snapshot() ->
 %%--------------------------------------------------------------------
 clear() ->
     erlide_dbg_iserver:safe_cast(clear).
-    
+
 %%--------------------------------------------------------------------
 %% continue(Pid) -> ok | {error, not_interpreted}
 %% continue(X, Y, Z) -> ok | {error, not_interpreted}
@@ -331,7 +331,7 @@ continue(Pid) when is_pid(Pid) ->
 	Error ->
 	    Error
     end.
-    
+
 continue(X, Y, Z) when is_integer(X), is_integer(Y), is_integer(Z) ->
     continue(c:pid(X, Y, Z)).
 
@@ -546,7 +546,7 @@ check_module(Mod) ->
 		    case check_beam(Beam) of
 			{ok, Exp, Abst} ->
 			    {ok, {Mod, Src, Beam, Exp, Abst}};
-			error -> {error, no_debug_info}
+			{error, Other} -> {error, Other}
 		    end;
 		error -> {error, no_src}
 	    end;
@@ -572,7 +572,7 @@ check_file(Name0) ->
 		    case check_beam(Beam) of
 			{ok, Exp, Abst} ->
 			    {ok, {Mod, Src, Beam, Exp, Abst}};
-			error -> {error, no_debug_info}
+			{error, Other} -> {error, Other}
 		    end;
 		error -> {error, no_beam}
 	    end;
