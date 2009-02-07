@@ -423,7 +423,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 				if (result.get(i).equals("_")) {
 					final String var = vars[i].trim();
 					if (looksLikeParameter(var)) {
-						result.set(i, removeUnderscore(var));
+						result.set(i, fixVarName(var));
 					}
 				}
 			}
@@ -460,19 +460,28 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		}
 	}
 
-	private String removeUnderscore(final String var) {
-		if (var.charAt(0) == '_') {
-			return var.substring(1);
-		}
-		return var;
+	private String fixVarName(final String var) {
+		final String v = var.charAt(0) == '_' ? var.substring(1) : var;
+		final char c = v.charAt(0);
+		return Character.isLowerCase(c) ? Character.toUpperCase(c)
+				+ v.substring(1) : v;
 	}
 
-	private boolean looksLikeParameter(final String head) {
-		if (head == null || head.length() == 0) {
+	/**
+	 * Check if the string looks like an erlang parameter
+	 * 
+	 * @param parameter
+	 *            String the parameter to check
+	 * @return true iff parameter is like Par, _Par or _par
+	 */
+	private boolean looksLikeParameter(final String parameter) {
+		if (parameter == null || parameter.length() == 0) {
 			return false;
 		}
-		final char c = head.charAt(0);
-		return c >= 'A' && c <= 'Z' || c == '_';
+		final char c = parameter.charAt(0);
+		final char c2 = parameter.length() > 1 ? parameter.charAt(1) : c;
+		return c >= 'A' && c <= 'Z' || c == '_'
+				&& (c2 >= 'A' && c <= 'Z' || c2 >= 'a' && c2 <= 'z');
 	}
 
 	private void addFunctionCompletion(final int offset, final String aprefix,
