@@ -93,7 +93,9 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -104,7 +106,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -670,10 +671,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input
-	 * element is reconciled in advance. If it is <code>false</code> this
-	 * method only returns a result if the editor's input element does not need
-	 * to be reconciled.
+	 * <code>reconcile</code> is <code>true</code> the editor's input element is
+	 * reconciled in advance. If it is <code>false</code> this method only
+	 * returns a result if the editor's input element does not need to be
+	 * reconciled.
 	 * 
 	 * @param offset
 	 *            the offset included by the retrieved element
@@ -758,8 +759,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			AbstractSelectionChangedListener {
 
 		/*
-		 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 *      (org.eclipse.jface.viewers.SelectionChangedEvent)
+		 * @see
+		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
 		 */
 		public void selectionChanged(final SelectionChangedEvent event) {
 			ErlangEditor.this.selectionChanged();
@@ -857,8 +859,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to
-	 *            be done
+	 *            <code>true</code> if check for active outline page needs to be
+	 *            done
 	 */
 	protected void synchronizeOutlinePage(final ISourceReference element,
 			final boolean checkIfOutlinePageActive) {
@@ -1187,8 +1189,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				}
 
 				/*
-				 * @see org.eclipse.jface.text.information.IInformationProviderExtension2
-				 *      #getInformationPresenterControlCreator()
+				 * @see
+				 * org.eclipse.jface.text.information.IInformationProviderExtension2
+				 * #getInformationPresenterControlCreator()
 				 * 
 				 * @since 3.0
 				 */
@@ -1563,8 +1566,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			final IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				final IFileEditorInput fileInput = (IFileEditorInput) input;
-				final ErlangProjectProperties prefs = new ErlangProjectProperties(
-						fileInput.getFile().getProject());
+				final ErlangProjectProperties prefs = ErlangCore
+						.getProjectProperties(fileInput.getFile().getProject());
 				fExternalModules = prefs.getExternalModules();
 			} else {
 				fExternalModules = "";
@@ -1581,8 +1584,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			final IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				final IFileEditorInput fileInput = (IFileEditorInput) input;
-				final ErlangProjectProperties prefs = new ErlangProjectProperties(
-						fileInput.getFile().getProject());
+				final ErlangProjectProperties prefs = ErlangCore
+						.getProjectProperties(fileInput.getFile().getProject());
 				fExternalIncludes = prefs.getExternalIncludesString();
 			} else {
 				fExternalIncludes = "";

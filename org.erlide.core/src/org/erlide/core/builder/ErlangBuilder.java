@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -53,7 +54,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
@@ -102,9 +102,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			initializeBuilder();
 			removeProblemsAndTasksFor(currentProject);
 
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					getProject());
-			final IFolder bf = getProject().getFolder(prefs.getOutputDir());
+			final ErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(currentProject);
+			final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
 			if (bf.exists()) {
 				final IResource[] beams = bf.members();
 				monitor.beginTask("Cleaning Erlang files", beams.length);
@@ -141,10 +141,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return new IProject[0];
 		}
-		ErlangProjectProperties pp = new ErlangProjectProperties(currentProject);
-		if (pp.isReference()) {
-			return null;
-		}
 
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("Starting build of " + currentProject.getName() //$NON-NLS-1$
@@ -160,7 +156,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (kind == FULL_BUILD) {
 				resourcesToBuild = fullBuild(args);
 			} else {
-				final IResourceDelta delta = getDelta(getProject());
+				final IResourceDelta delta = getDelta(currentProject);
 				resourcesToBuild = incrementalBuild(args, delta);
 			}
 			final int n = resourcesToBuild.size();
@@ -211,7 +207,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	private void checkForClashes() throws BackendException {
 		final Backend b = ErlangCore.getBackendManager().getBuildBackend(
-				getProject());
+				currentProject);
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
 			for (int i = 0; i < res.arity(); i++) {
@@ -222,12 +218,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 						.stringValue();
 
 				// add marker only for modules belonging to this project!
-				final IProject p = getProject();
-				final IResource r1 = p.findMember(f1);
-				final IResource r2 = p.findMember(f2);
+
+				final IResource r1 = currentProject.findMember(f1);
+				final IResource r2 = currentProject.findMember(f2);
 				// XXX does the above work? or do we need to get the name only?
 				if (r1 != null || r2 != null) {
-					generator.addMarker(getProject(), getProject(),
+					generator.addMarker(currentProject, currentProject,
 							"Code clash between " + f1 + " and " + f2, 0,
 							IMarker.SEVERITY_WARNING, "");
 				}
@@ -236,12 +232,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final Exception e) {
 		}
 		try {
-			final ErlangProjectProperties pp = new ErlangProjectProperties(
-					getProject());
+			final ErlangProjectProperties pp = ErlangCore
+					.getProjectProperties(currentProject);
 			final String[] sd = pp.getSourceDirs();
 			final String[] dirList = new String[sd.length];
 			for (int i = 0; i < sd.length; i++) {
-				dirList[i] = getProject().getLocation().toPortableString()
+				dirList[i] = currentProject.getLocation().toPortableString()
 						+ "/" + sd[i];
 			}
 			final OtpErlangList res = ErlideBuilder
@@ -252,7 +248,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				generator.addMarker(getProject(), getProject(),
+				generator.addMarker(currentProject, currentProject,
 						"Duplicated module name in " + f1 + " and " + f2, 0,
 						IMarker.SEVERITY_ERROR, "");
 			}
@@ -326,8 +322,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	protected void compileFile(final IProject project, final IResource resource) {
 		final IPath projectPath = project.getLocation();
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(currentProject);
 
 		final String s = resource.getFileExtension();
 		if (!s.equals("erl")) {
@@ -472,8 +468,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	 */
 	private List<String> getIncludeDirs(final IProject project,
 			final List<String> includeDirs) {
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final String[] incs = prefs.getIncludeDirs();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
@@ -612,8 +608,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	public static boolean isInCodePath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
 		final String[] srcs = prefs.getSourceDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
@@ -630,8 +626,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	static boolean isInExtCodePath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
 		final String[] srcs = prefs.getSourceDirs();
 		final IPath fullPath = resource.getFullPath();
@@ -661,8 +657,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	static boolean isInOutputPath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final IPath projectPath = project.getLocation();
 
 		final String out = prefs.getOutputDir();
@@ -697,8 +693,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					my_project);
+			final ErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(my_project);
 
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null

@@ -20,12 +20,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
@@ -535,8 +535,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public void registerProjects(final Collection<IProject> projects) {
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager().addExecution(project, this);
-			final ErlangProjectProperties prefs = new ErlangProjectProperties(
-					project);
+			final ErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(project);
 			final String outDir = project.getLocation().append(
 					prefs.getOutputDir()).toOSString();
 			if (outDir.length() > 0) {

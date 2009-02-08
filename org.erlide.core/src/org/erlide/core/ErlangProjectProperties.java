@@ -8,24 +8,28 @@
  *     Vlad Dumitrescu
  *******************************************************************************/
 
-package org.erlide.runtime;
+package org.erlide.core;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.ErlangPlugin;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class ErlangProjectProperties {
+public class ErlangProjectProperties implements IPreferenceChangeListener {
 
 	private static final String PATH_SEP = ";";
 
@@ -45,12 +49,6 @@ public class ErlangProjectProperties {
 
 	private boolean fUnique = true;
 
-	public enum ProjectType {
-		NORMAL, REFERENCE, OTP
-	};
-
-	private ProjectType type = ProjectType.NORMAL;
-
 	private boolean saveRuntimeName;
 
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
@@ -62,21 +60,27 @@ public class ErlangProjectProperties {
 	public ErlangProjectProperties(final IProject prj) {
 		super();
 		project = prj;
+		new ProjectScope(project).getNode(ErlangPlugin.PLUGIN_ID)
+				.addPreferenceChangeListener(this);
 		// TODO load() should not be in constructor!
 		load();
 	}
 
-	public ErlangProjectProperties(final IProject prj, final ProjectType type) {
-		super();
-		project = prj;
-		// TODO load() should not be in constructor!
-		load();
-		this.type = type;
+	public void dispose() {
+		new ProjectScope(project).getNode(ErlangPlugin.PLUGIN_ID)
+				.removePreferenceChangeListener(this);
 	}
 
 	public ErlangProjectProperties load() {
 		if (project == null) {
 			return this;
+		}
+
+		try {
+			if (!project.hasNature(ErlangPlugin.NATURE_ID)) {
+				return null;
+			}
+		} catch (CoreException e) {
 		}
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
@@ -140,9 +144,6 @@ public class ErlangProjectProperties {
 		externalIncludes = node.get(
 				ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 				ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
-		type = ProjectType.valueOf(node.get(
-				ProjectPreferencesConstants.PROJECT_TYPE,
-				ProjectPreferencesConstants.DEFAULT_PROJECT_TYPE));
 		return this;
 	}
 
@@ -151,37 +152,48 @@ public class ErlangProjectProperties {
 			return;
 		}
 
+		try {
+			if (!project.hasNature(ErlangPlugin.NATURE_ID)) {
+				return;
+			}
+		} catch (CoreException e) {
+		}
+
 		final ProjectScope s = new ProjectScope(project);
 		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
-		node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
-		node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
-		node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
-		node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
-		node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-				externalIncludes);
-		if (runtimeVersion != null) {
-			node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
-					runtimeVersion);
-		}
-		if (runtimeName != null && saveRuntimeName) {
-			node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
-		} else {
-			node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
-		}
-		node.put(ProjectPreferencesConstants.NODE_NAME, nodeName);
-		node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
-				.toString(fUnique));
-		node.put(ProjectPreferencesConstants.COOKIE, cookie);
-		node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-				externalModules);
-		node.put(ProjectPreferencesConstants.PROJECT_TYPE, type.toString());
+		node.removePreferenceChangeListener(this);
 
 		try {
-			node.flush();
-		} catch (final BackingStoreException e1) {
-		}
+			node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
+			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
+			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
+			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
+			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+					externalIncludes);
+			if (runtimeVersion != null) {
+				node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
+						runtimeVersion);
+			}
+			if (runtimeName != null && saveRuntimeName) {
+				node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
+			} else {
+				node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
+			}
+			node.put(ProjectPreferencesConstants.NODE_NAME, nodeName);
+			node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
+					.toString(fUnique));
+			node.put(ProjectPreferencesConstants.COOKIE, cookie);
+			node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
+					externalModules);
 
+			try {
+				node.flush();
+			} catch (final BackingStoreException e1) {
+			}
+		} finally {
+			node.addPreferenceChangeListener(this);
+		}
 	}
 
 	public String getIncludeDirsString() {
@@ -396,24 +408,15 @@ public class ErlangProjectProperties {
 		return false;
 	}
 
-	public boolean isOtp() {
-		return type == ProjectType.OTP;
-	}
-
-	public boolean isReference() {
-		return type != ProjectType.NORMAL;
-	}
-
-	public boolean isNormal() {
-		return type == ProjectType.NORMAL;
-	}
-
-	public void setType(final ProjectType type) {
-		this.type = type;
-	}
-
 	public String getRuntimeVersion() {
 		return runtimeVersion;
 	}
 
+	public void preferenceChange(PreferenceChangeEvent event) {
+		load();
+		// System.out.println("!!! project preferences " + event.getNode() +
+		// ": "
+		// + event.getKey() + " " + event.getOldValue() + " "
+		// + event.getNewValue() + " ... " + event.getSource());
+	}
 }

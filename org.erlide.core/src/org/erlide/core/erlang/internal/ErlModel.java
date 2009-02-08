@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -39,8 +40,6 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
-import org.erlide.runtime.ErlangProjectProperties.ProjectType;
 
 /**
  * Implementation of
@@ -471,9 +470,8 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlProject p = ErlangCore.getModel().getErlangProject(
 				project.getName());
 
-		final ErlangProjectProperties props = new ErlangProjectProperties(
-				project);
-		props.setType(ProjectType.OTP);
+		final ErlangProjectProperties props = ErlangCore
+				.getProjectProperties(project);
 
 		final IFile file = project.getFile(".");
 		if (!file.isLinked()) {
@@ -554,7 +552,7 @@ public class ErlModel extends Openable implements IErlModel {
 						}
 					}
 					if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
-						; // FIXME hur ska vi göra detta nu då...
+						; // FIXME hur ska vi gï¿½ra detta nu dï¿½...
 					}
 				}
 			}

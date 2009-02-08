@@ -30,10 +30,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoListener;
 import org.erlide.ui.ErlideUIPlugin;
@@ -258,8 +258,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	protected void performDefaults() {
 		// Populate the owner text field with the default value
 		final IAdaptable prj = getElement();
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				(IProject) prj.getAdapter(IProject.class));
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 
 		uz.setSelection(prefs.getUsePathZ());
 		source.setText(prefs.getSourceDirsString());
@@ -310,8 +310,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		ErlangCore.getRuntimeInfoManager().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				(IProject) prj.getAdapter(IProject.class));
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 
 		prefs.setOutputDir(output.getText());
 		prefs.setUsePathZ(uz.getSelection());

@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -42,7 +43,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 
 /**
  * Handle for an Erlang Project.
@@ -87,21 +87,13 @@ public class ErlProject extends Openable implements IErlProject {
 	 */
 	private IResource[] nonErlangResources;
 
-	/**
-	 * Constructor needed for <code>IProject.getNature()</code> and
-	 * <code>IProject.addNature()</code>.
-	 * 
-	 * @see #setProject(IProject)
-	 */
-	public ErlProject() {
-		super(null, null);
-		nonErlangResources = null;
-	}
+	private ErlangProjectProperties properties;
 
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
 		fProject = project;
 		nonErlangResources = null;
+		properties = new ErlangProjectProperties(fProject);
 	}
 
 	/**
@@ -440,8 +432,8 @@ public class ErlProject extends Openable implements IErlProject {
 	public IPath getOutputLocation(final boolean createMarkers,
 			final boolean logProblems) throws ErlModelException {
 
-		final ErlangProjectProperties props = new ErlangProjectProperties(
-				getProject());
+		final ErlangProjectProperties props = ErlangCore
+				.getProjectProperties(getProject());
 		return new Path(props.getOutputDir());
 	}
 
@@ -689,8 +681,8 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	public boolean isOnSourcePath() {
-		return true; // FIXME eller? ska man kolla nature? fast det är väl
-		// redan klart... kanske den inte ska ärva från
+		return true; // FIXME eller? ska man kolla nature? fast det ï¿½r vï¿½l
+		// redan klart... kanske den inte ska ï¿½rva frï¿½n
 		// IErlFolder? jaja....
 	}
 
@@ -700,5 +692,9 @@ public class ErlProject extends Openable implements IErlProject {
 
 	public boolean isSourcePathParent() {
 		return true;
+	}
+
+	public ErlangProjectProperties getProperties() {
+		return properties;
 	}
 }

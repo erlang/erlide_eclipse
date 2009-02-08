@@ -32,11 +32,11 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.IEpmdListener;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;
 
@@ -192,8 +192,8 @@ public final class BackendManager implements IEpmdListener {
 		if (project == null) {
 			return null;
 		}
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		return prefs.getRuntimeInfo();
 	}
 

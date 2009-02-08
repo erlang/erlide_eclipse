@@ -18,7 +18,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.runtime.ErlangProjectProperties;
+import org.erlide.core.ErlangProjectProperties;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.PreferencesUtils;
 
 /**
@@ -53,8 +54,8 @@ public class PluginUtils {
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
 				.getSourceDirsString());
 		final IPath path = con.getFullPath();
@@ -71,8 +72,8 @@ public class PluginUtils {
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
 				.getSourceDirsString());
 		final IPath path = con.getFullPath();

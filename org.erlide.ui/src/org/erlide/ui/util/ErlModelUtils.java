@@ -34,6 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -49,7 +50,6 @@ import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -356,8 +356,8 @@ public class ErlModelUtils {
 			final List<Tuple> pathVars) {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
-		final ErlangProjectProperties prefs = new ErlangProjectProperties(
-				project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		for (final String includeDir : prefs.getIncludeDirs()) {
 			IPath p = new Path(includeDir).append(filePath);
 			p = pvm.resolvePath(p);

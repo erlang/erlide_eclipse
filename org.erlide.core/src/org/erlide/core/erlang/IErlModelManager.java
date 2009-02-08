@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.erlang.internal.ErlElement;
-import org.erlide.core.erlang.internal.ErlModel;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 
@@ -56,15 +55,9 @@ public interface IErlModelManager extends ISaveParticipant {
 	public IErlModule createModuleFrom(String name, String text,
 			IErlElement parent);
 
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getInfo(org.erlide.core.erlang.IErlElement)
-	 */
 	Object getInfo(IErlElement element);
 
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#getErlangModel()
-	 */
-	ErlModel getErlangModel();
+	IErlModel getErlangModel();
 
 	/*
 	 * Removes all cached info for the given element (including all children)

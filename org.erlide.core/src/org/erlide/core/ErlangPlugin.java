@@ -42,7 +42,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.ErlangProjectProperties;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.BundleContext;
@@ -724,13 +723,13 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 		// String[] nameOfProjects = new String[projects.length];
 
-		for (final IProject element : projects) {
+		for (final IProject project : projects) {
 			try {
-				if (element.isOpen()
-						&& element.hasNature(ErlangPlugin.NATURE_ID)) {
-					final ErlangProjectProperties prefs = new ErlangProjectProperties(
-							element);
-					final String path = element.getLocation().append(
+				if (project.isOpen()
+						&& project.hasNature(ErlangPlugin.NATURE_ID)) {
+					final ErlangProjectProperties prefs = ErlangCore
+							.getProjectProperties(project);
+					final String path = project.getLocation().append(
 							prefs.getOutputDir()).toString();
 					final Backend b = ErlangCore.getBackendManager()
 							.getIdeBackend();

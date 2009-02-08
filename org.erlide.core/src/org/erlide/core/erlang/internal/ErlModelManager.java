@@ -1204,10 +1204,6 @@ public class ErlModelManager implements IErlModelManager {
 		}
 	}
 
-	public IErlProject createEmptyProject() {
-		return new ErlProject();
-	}
-
 	private static Map<Object, IErlModule> moduleMap = new HashMap<Object, IErlModule>();
 	private static Map<IErlModule, Object> mapModule = new HashMap<IErlModule, Object>();
 

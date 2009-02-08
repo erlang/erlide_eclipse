@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -515,4 +517,8 @@ public final class ErlangCore {
 		return BackendManager.getDefault();
 	}
 
+	public static ErlangProjectProperties getProjectProperties(IProject project) {
+		return getModelManager().getErlangModel().getErlangProject(
+				project.getName()).getProperties();
+	}
 }
