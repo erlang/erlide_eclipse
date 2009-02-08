@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.views;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
@@ -52,8 +52,6 @@ import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlTextHover;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.editors.util.HTMLPrinter;
-import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.osgi.framework.Bundle;
 
 /**
@@ -96,11 +94,10 @@ public class EdocView extends AbstractInfoView {
 	/** The select all action */
 	private SelectAllAction fSelectAllAction;
 
-	/** The URL of the style sheet (css) */
-	private URL fStyleSheetURL;
-
 	/** The Browser widget */
 	boolean fIsUsingBrowserWidget;
+
+	private static URL fgStyleSheet;
 
 	/**
 	 * The Javadoc view's select all action.
@@ -314,21 +311,19 @@ public class EdocView extends AbstractInfoView {
 			});
 		}
 
-		initStyleSheetURL();
+		initStyleSheet();
 		getViewSite().setSelectionProvider(new SelectionProvider(getControl()));
 	}
 
-	private void initStyleSheetURL() {
-		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		fStyleSheetURL = bundle.getEntry("/EdocViewStyleSheet.css"); //$NON-NLS-1$
-		if (fStyleSheetURL == null) {
-			return;
-		}
+	private void initStyleSheet() {
+		Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (fgStyleSheet != null) {
 
-		try {
-			fStyleSheetURL = FileLocator.toFileURL(fStyleSheetURL);
-		} catch (final IOException ex) {
-			ErlideUIPlugin.log(ex);
+			try {
+				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+			} catch (Exception e) {
+			}
 		}
 	}
 
@@ -408,186 +403,28 @@ public class EdocView extends AbstractInfoView {
 		getControl().setFocus();
 	}
 
-	// /*
-	// * @see AbstractInfoView#computeInput(Object)
-	// */
-	// protected Object computeInput(Object input) {
-	// if (getControl() == null || ! (input instanceof IJavaElement))
-	// return null;
-	//
-	// IJavaElement je= (IJavaElement)input;
-	// String javadocHtml;
-	//
-	// switch (je.getElementType()) {
-	// case IJavaElement.COMPILATION_UNIT:
-	// try {
-	// javadocHtml= getJavadocHtml(((ICompilationUnit)je).getTypes());
-	// } catch (JavaModelException ex) {
-	// javadocHtml= null;
-	// }
-	// break;
-	// case IJavaElement.CLASS_FILE:
-	// try {
-	// javadocHtml= getJavadocHtml(new IJavaElement[]
-	// {((IClassFile)je).getType()});
-	// } catch (JavaModelException ex) {
-	// javadocHtml= null;
-	// }
-	// break;
-	// default:
-	// javadocHtml= getJavadocHtml(new IJavaElement[] { je });
-	// }
-	//
-	// return javadocHtml;
-	// }
-	//
-	/*
-	 * @see AbstractInfoView#setInfo(String)
-	 */
 	@Override
 	protected void setInfo(final String info) {
-		String javadocHtml = info;
+		String edocHtml = info;
+		final StringBuffer buffer = new StringBuffer(edocHtml);
 
 		if (fIsUsingBrowserWidget) {
-			if (javadocHtml != null && javadocHtml.length() > 0) {
-				final boolean RTL = (getSite().getShell().getStyle() & SWT.RIGHT_TO_LEFT) != 0;
-				if (RTL) {
-					final StringBuilder buffer = new StringBuilder(javadocHtml);
-					HTMLPrinter.insertStyles(buffer,
-							new String[] { "direction:rtl" }); //$NON-NLS-1$
-					javadocHtml = buffer.toString();
-				}
-			}
-			fBrowser.setText(javadocHtml);
+			fBrowser.setText(edocHtml);
 		} else {
 			fPresentation.clear();
 			final Rectangle size = fText.getClientArea();
 
 			try {
-				javadocHtml = fPresenter.updatePresentation(getSite()
-						.getShell(), javadocHtml, fPresentation, size.width,
-						size.height);
+				edocHtml = fPresenter.updatePresentation(getSite().getShell(),
+						edocHtml, fPresentation, size.width, size.height);
 			} catch (final IllegalArgumentException ex) {
-				// the javadoc might no longer be valid
+				// the edoc might no longer be valid
 				return;
 			}
-			fText.setText(javadocHtml);
+			fText.setText(edocHtml);
 			TextPresentation.applyTextPresentation(fPresentation, fText);
 		}
 	}
-
-	// /**
-	// * Returns the Javadoc in HTML format.
-	// *
-	// * @param result the Java elements for which to get the Javadoc
-	// * @return a string with the Javadoc in HTML format.
-	// */
-	// private String getJavadocHtml(IJavaElement[] result) {
-	// StringBuilder buffer= new StringBuilder();
-	// int nResults= result.length;
-	//
-	// if (nResults == 0)
-	// return null;
-	//
-	// if (nResults > 1) {
-	//
-	// for (int i= 0; i < result.length; i++) {
-	// HTMLPrinter.startBulletList(buffer);
-	// IJavaElement curr= result[i];
-	// if (curr instanceof IMember)
-	// HTMLPrinter.addBullet(buffer, getInfoText((IMember) curr));
-	// HTMLPrinter.endBulletList(buffer);
-	// }
-	//
-	// } else {
-	//
-	// IJavaElement curr= result[0];
-	// if (curr instanceof IMember) {
-	// IMember member= (IMember) curr;
-	// // HTMLPrinter.addSmallHeader(buffer, getInfoText(member));
-	// Reader reader;
-	// try {
-	// reader= JavadocContentAccess.getHTMLContentReader(member, true, true);
-	// } catch (JavaModelException ex) {
-	// return null;
-	// }
-	// if (reader != null) {
-	// HTMLPrinter.addParagraph(buffer, reader);
-	// }
-	// }
-	// }
-	//
-	// if (buffer.length() > 0) {
-	// HTMLPrinter.insertPageProlog(buffer, 0, fStyleSheetURL);
-	// HTMLPrinter.addPageEpilog(buffer);
-	// return buffer.toString();
-	// }
-	//
-	// return null;
-	// }
-
-	// /**
-	// * Gets the label for the given member.
-	// *
-	// * @param member the Java member
-	// * @return a string containing the member's label
-	// */
-	// private String getInfoText(IMember member) {
-	// return JavaElementLabels.getElementLabel(member, LABEL_FLAGS);
-	// }
-
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#isIgnoringEqualInput
-	 * ()
-	 * 
-	 * @since 3.0
-	 */
-	@Override
-	protected boolean isIgnoringEqualInput() {
-		return false;
-	}
-
-	// /*
-	// * @see AbstractInfoView#findSelectedJavaElement(IWorkbenchPart)
-	// */
-	// protected IJavaElement findSelectedJavaElement(IWorkbenchPart part,
-	// ISelection
-	// selection) {
-	// IJavaElement element;
-	// try {
-	// element= super.findSelectedJavaElement(part, selection);
-	//
-	// if (element == null && part instanceof JavaEditor && selection instanceof
-	// ITextSelection) {
-	//
-	// JavaEditor editor= (JavaEditor)part;
-	// ITextSelection textSelection= (ITextSelection)selection;
-	//
-	// IDocumentProvider documentProvider= editor.getDocumentProvider();
-	// if (documentProvider == null)
-	// return null;
-	//
-	// IDocument document=
-	// documentProvider.getDocument(editor.getEditorInput());
-	// if (document == null)
-	// return null;
-	//
-	// ITypedRegion typedRegion= TextUtilities.getPartition(document,
-	// IJavaPartitions.JAVA_PARTITIONING, textSelection.getOffset(), false);
-	// if (IJavaPartitions.JAVA_DOC.equals(typedRegion.getType()))
-	// return TextSelectionConverter.getElementAtOffset((JavaEditor)part,
-	// textSelection);
-	// else
-	// return null;
-	// } else
-	// return element;
-	// } catch (JavaModelException e) {
-	// return null;
-	// } catch (BadLocationException e) {
-	// return null;
-	// }
-	// }
 
 	/*
 	 * @see AbstractInfoView#getControl()
@@ -622,8 +459,4 @@ public class EdocView extends AbstractInfoView {
 		return null;
 	}
 
-	// private void initializeToolBar() {
-	// IToolBarManager toolBarManager = getViewSite().getActionBars()
-	// .getToolBarManager();
-	// }
 }

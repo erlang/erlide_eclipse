@@ -12,6 +12,7 @@
 package org.erlide.ui.editors.erl;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -42,7 +43,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
 import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
-import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
 

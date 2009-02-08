@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -88,7 +89,6 @@ import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
 import org.erlide.ui.editors.erl.ErlJavaPairMatcher;
 import org.erlide.ui.editors.erl.ErlangAnnotationHover;
-import org.erlide.ui.editors.util.HTMLTextPresenter;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -96,8 +96,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 import erlang.ErlideBackend;
 
-public class ErlangConsoleView extends ViewPart implements
-		BackendEventListener {
+public class ErlangConsoleView extends ViewPart implements BackendEventListener {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -619,8 +618,8 @@ public class ErlangConsoleView extends ViewPart implements
 
 			final ContentAssistant asst = new ContentAssistant();
 
-			// TODO vi vill ha in en punkt här, men den får return till
-			// styledtext o skickar allt för tidigt...
+			// TODO vi vill ha in en punkt hï¿½r, men den fï¿½r return till
+			// styledtext o skickar allt fï¿½r tidigt...
 			asst
 					.setContentAssistProcessor(new ErlContentAssistProcessor(
 							sourceViewer, null, "", ""),
@@ -650,7 +649,8 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 
 		/*
-		 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+		 * @see
+		 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 		 * 
 		 * @since 2.0
 		 */

@@ -26,9 +26,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
@@ -63,12 +61,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.search.ui.IContextMenuConstants;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -117,7 +113,6 @@ import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
-import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
@@ -1039,21 +1034,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		fEditorSelectionChangedListener = new EditorSelectionChangedListener();
 		fEditorSelectionChangedListener.install(getSelectionProvider());
-
-		final IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
-
-			public IInformationControl createInformationControl(Shell shell) {
-				boolean cutDown = false;
-				int style = cutDown ? SWT.NONE : SWT.V_SCROLL | SWT.H_SCROLL;
-				return new DefaultInformationControl(shell, SWT.RESIZE
-						| SWT.TOOL, style, new HTMLTextPresenter(cutDown));
-			}
-		};
-
-		fInformationPresenter = new InformationPresenter(
-				informationControlCreator);
-		fInformationPresenter.setSizeConstraints(60, 10, true, true);
-		fInformationPresenter.install(getSourceViewer());
 
 		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.addPreferenceChangeListener(fPreferenceChangeListener);

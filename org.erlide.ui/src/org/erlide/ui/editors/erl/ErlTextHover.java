@@ -9,14 +9,20 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jface.internal.text.html.BrowserInformationControl;
+import org.eclipse.jface.internal.text.html.HTMLPrinter;
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -29,6 +35,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
@@ -38,8 +45,8 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.editors.util.HTMLTextPresenter;
 import org.erlide.ui.util.ErlModelUtils;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -55,11 +62,13 @@ public class ErlTextHover implements ITextHover,
 	private List<IErlImport> fImports;
 	private final IErlModule fModule;
 	private final String fExternalIncludes;
+	private static URL fgStyleSheet;
 
 	public ErlTextHover(final IErlModule module, final String externalIncludes) {
 		fImports = null;
 		fModule = module;
 		fExternalIncludes = externalIncludes;
+		initStyleSheet();
 	}
 
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
@@ -73,6 +82,7 @@ public class ErlTextHover implements ITextHover,
 
 	public String getHoverInfo(final ITextViewer textViewer,
 			final IRegion hoverRegion) {
+		StringBuffer result = new StringBuffer();
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
@@ -81,7 +91,7 @@ public class ErlTextHover implements ITextHover,
 		final String debuggerVar = makeDebuggerVariableHover(textViewer,
 				offset, hoverRegion.getLength());
 		if (debuggerVar.length() > 0) {
-			return debuggerVar;
+			result.append(debuggerVar);
 		}
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
@@ -91,7 +101,7 @@ public class ErlTextHover implements ITextHover,
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;
-			return s1.stringValue();
+			result.append(s1.stringValue());
 		} else if (r1 instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final OtpErlangObject o0 = t.elementAt(0);
@@ -113,11 +123,27 @@ public class ErlTextHover implements ITextHover,
 								kindToFind, fExternalIncludes,
 								ErlContentAssistProcessor.getPathVars());
 				if (pd != null) {
-					return pd.getExtra();
+					result.append(pd.getExtra());
 				}
 			}
 		}
-		return null;
+		if (result.length() > 0) {
+			HTMLPrinter.insertPageProlog(result, 0, fgStyleSheet);
+			HTMLPrinter.addPageEpilog(result);
+		}
+		return result.toString();
+	}
+
+	private void initStyleSheet() {
+		Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (fgStyleSheet != null) {
+
+			try {
+				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	/**
@@ -171,11 +197,14 @@ public class ErlTextHover implements ITextHover,
 					final Shell parent) {
 				final int shellStyle = SWT.RESIZE | SWT.TOOL;
 				final int style = SWT.V_SCROLL | SWT.H_SCROLL;
-
-				return new DefaultInformationControl(parent, shellStyle, style,
-						new HTMLTextPresenter(false));
+				if (BrowserInformationControl.isAvailable(parent)) {
+					return new BrowserInformationControl(parent, shellStyle,
+							style);
+				} else {
+					return new DefaultInformationControl(parent, shellStyle,
+							style, new HTMLTextPresenter(false));
+				}
 			}
-
 		};
 	}
 
@@ -184,8 +213,15 @@ public class ErlTextHover implements ITextHover,
 
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				return new DefaultInformationControl(parent, SWT.NONE,
-						new HTMLTextPresenter(true), "Press 'F2' for focus");
+				if (BrowserInformationControl.isAvailable(parent)) {
+					return new BrowserInformationControl(parent, SWT.TOOL
+							| SWT.NO_TRIM, SWT.NONE, EditorsUI
+							.getTooltipAffordanceString());
+				} else {
+					return new DefaultInformationControl(parent, SWT.NONE,
+							new HTMLTextPresenter(true), EditorsUI
+									.getTooltipAffordanceString());
+				}
 			}
 		};
 	}

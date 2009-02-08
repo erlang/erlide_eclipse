@@ -459,7 +459,7 @@
             carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
 
       <key
-            sequence="F2"
+            sequence="Shift + F2"
             contextId="org.erlide.ui.erlangEditorScope"
             commandId="org.erlide.ui.actions.showEDoc"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>

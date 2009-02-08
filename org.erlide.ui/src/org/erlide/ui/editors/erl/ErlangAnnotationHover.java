@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -23,7 +24,6 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
-import org.erlide.ui.editors.util.HTMLPrinter;
 
 public class ErlangAnnotationHover implements IAnnotationHover {
 
@@ -127,7 +127,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	 * Formats a message as HTML text.
 	 */
 	private String formatSingleMessage(String message) {
-		final StringBuilder buffer = new StringBuilder();
+		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter
 				.convertToHTMLContent(message));
@@ -139,7 +139,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	 * Formats several message as HTML text.
 	 */
 	private String formatMultipleMessages(List<String> messages) {
-		final StringBuilder buffer = new StringBuilder();
+		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter
 				.convertToHTMLContent("Multiple markers at this line"));

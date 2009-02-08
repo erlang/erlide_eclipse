@@ -1,0 +1,47 @@
+html { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; }
+SPAN.bold_code { font-family: courier; font-weight: bold; }
+SPAN.code { font-family: courier; font-weight: normal; }
+.note, .warning { border: 1px solid black; margin: 1em 3em; }
+.note .label {
+	background: #30D42A;
+	color: white;
+	font-weight: bold;
+	padding: 5px 10px;
+}
+.note .content {
+	background: #EAFEEA;
+	color: black;
+	line-height: 120%;
+	font-size: 90%;
+	padding: 5px 10px;
+}
+.warning .label {
+	background: #C00;
+	color: white;
+	font-weight: bold;
+	padding: 5px 10px;
+}
+.warning .content {
+	background: #FFF0F0;
+	color: black;
+	line-height: 120%;
+	font-size: 90%;
+	padding: 5px 10px;
+}
+.example
+{
+	background-color: #EEEEFF;
+}
+PRE
+{
+	font-family: courier;
+	font-weight: normal;
+}
+.REFBODY
+{
+	margin-left: 3em;
+}
+.REFTYPES
+{
+	margin-left: 2em;
+}
