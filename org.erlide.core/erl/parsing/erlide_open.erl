@@ -93,6 +93,9 @@ consider_local(_) ->
 strip_comments(Tokens) ->
     [T || T <- Tokens, T#token.kind =/= comment].
 
+%% TODO: rewrite this with some kind of table, and make it possible to
+%% add new items, e.g. gen_server calls
+
 o_tokens([#token{kind=atom, value=include} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_include(Rest);
 o_tokens([#token{kind=atom, value=include_lib} | Rest], _, _, [#token{kind='-'} | _]) ->
@@ -101,20 +104,27 @@ o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
     o_macro(Value);
 o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _, _) ->
     o_record(Value);
+o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function}, 
+	  #token{kind='/'}, #token{kind=integer, value=Arity} | _],
+         ExternalModules, PathVars, _) ->
+    o_external(Module, Function, Arity, ExternalModules, PathVars);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
          ExternalModules, PathVars, _) ->
     o_external(Module, Function, Rest, ExternalModules, PathVars);
+o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _], 
+	 ExternalModules, PathVars, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
+    o_external(Module, Function, Arity, ExternalModules, PathVars);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, _) ->
     throw({open, {local, Function, Arity}});
 o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, [#token{kind=atom, value=Function} | _]) ->
     throw({open, {local, Function, Arity}});
 o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest], _, _, BeforeReversed) ->
-	case consider_local(BeforeReversed) of
-        true ->
-            ?D(Rest),
-            throw({open, {local, Function, erlide_text:guess_arity(Rest)}});
-        false ->
-            continue
+    case consider_local(BeforeReversed) of
+	true ->
+	    ?D(Rest),
+	    throw({open, {local, Function, erlide_text:guess_arity(Rest)}});
+	false ->
+	    continue
     end;
 o_tokens([#token{kind=var, value=VarName} | _], _, _, _) ->
     throw({open, {variable, VarName}});
@@ -143,7 +153,11 @@ o_external(Module, Function, [_ | ParameterListTokens], ExternalModules, PathVar
     N = erlide_text:guess_arity(ParameterListTokens),
     ?D(N),
     P = get_source_from_module(Module, ExternalModules, PathVars),
-    throw({open, {external, Module, Function, N, P}}).
+    throw({open, {external, Module, Function, N, P}});
+o_external(Module, Function, Arity, ExternalModules, PathVars) when is_integer(Arity) ->
+    ?D({Module, Function, Arity}),
+    P = get_source_from_module(Module, ExternalModules, PathVars),
+    throw({open, {external, Module, Function, Arity, P}}).
 
 get_include_lib(Path) ->
     {Lib, Rest} = find_lib_dir(Path),
