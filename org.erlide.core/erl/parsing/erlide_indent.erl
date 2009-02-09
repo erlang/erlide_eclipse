@@ -178,7 +178,6 @@ do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
     ?D(NewLine),
     do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
 
-%% TODO: Add description of asd/function_arity
 %%
 reindent_line(" " ++ S, I) ->
     reindent_line(S, I);
@@ -317,6 +316,8 @@ i_expr_list(R0, I0, A0) ->
 
 i_binary_expr_list(R, I) ->
     i_binary_expr_list(R, I, none).
+
+% TODO
 
 i_binary_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
@@ -523,12 +524,21 @@ i_try(R0, I0) ->
              _ ->
                  R2
          end,
-    ?D(R3),
-    R4 = i_kind('catch', R3, I1),
-    ?D(R4),
-    I3 = i_with('catch', R3, I1),
-    ?D(R4),
-    R5 = i_catch_clause_list(R4, I3),
+    R4 = case i_sniff(R3) of
+	     'catch' ->
+		 R31 = i_kind('catch', R3, I1),
+		 I11 = i_with('catch', R3, I1),
+		 i_catch_clause_list(R31, I11);
+	     _ ->
+		 R3
+	 end,
+    R5 = case i_sniff(R4) of
+	     'after' ->
+		 R41 = i_kind('after', R4, I1),
+		 i_expr_list(R41, I1);
+	     _ ->
+		 R4
+	 end,		       
     case i_sniff(R5) of
         #token{kind='end'} ->
             i_kind('end', R5, I1);
