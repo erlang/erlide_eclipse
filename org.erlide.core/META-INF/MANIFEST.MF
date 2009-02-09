@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.4.3.9g
+Bundle-Version: 0.4.3.9h
 Bundle-ClassPath: erlide-core.jar,
  commons-net-1.4.1.jar
 Bundle-Activator: org.erlide.core.ErlangPlugin

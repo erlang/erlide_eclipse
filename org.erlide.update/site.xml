@@ -21,6 +21,9 @@
    <feature url="features/org.erlide_0.4.3.9g.jar" id="org.erlide" version="0.4.3.9g">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.4.3.9h.jar" id="org.erlide" version="0.4.3.9h">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="Stable builds">
       <description>
          These builds have been around a little longer and are reasonably stable.
