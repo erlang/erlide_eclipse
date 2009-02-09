@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -60,10 +59,11 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	public ErlangProjectProperties(final IProject prj) {
 		super();
 		project = prj;
-		new ProjectScope(project).getNode(ErlangPlugin.PLUGIN_ID)
-				.addPreferenceChangeListener(this);
+		final IEclipsePreferences root = new ProjectScope(project)
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		root.addPreferenceChangeListener(this);
 		// TODO load() should not be in constructor!
-		load();
+		load(root);
 	}
 
 	public void dispose() {
@@ -71,16 +71,9 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				.removePreferenceChangeListener(this);
 	}
 
-	public ErlangProjectProperties load() {
+	public ErlangProjectProperties load(IEclipsePreferences node) {
 		if (project == null) {
 			return this;
-		}
-
-		try {
-			if (!project.hasNature(ErlangPlugin.NATURE_ID)) {
-				return null;
-			}
-		} catch (CoreException e) {
 		}
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
@@ -88,9 +81,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			String msg = "Found old configuration file %s for project %s, please remove it.";
 			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
-
-		final ProjectScope s = new ProjectScope(project);
-		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 		sourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
@@ -147,20 +137,20 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return this;
 	}
 
-	public void store() {
+	public void store(IEclipsePreferences node) {
 		if (project == null) {
 			return;
 		}
 
-		try {
-			if (!project.hasNature(ErlangPlugin.NATURE_ID)) {
-				return;
+		if ("true".equals(System.getProperty("erlide.newprops"))) {
+			NewErlangProjectProperties npp = new NewErlangProjectProperties(
+					this);
+			try {
+				npp.store((IEclipsePreferences) node.node("test"));
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
 			}
-		} catch (CoreException e) {
 		}
-
-		final ProjectScope s = new ProjectScope(project);
-		final IEclipsePreferences node = s.getNode(ErlangPlugin.PLUGIN_ID);
 
 		node.removePreferenceChangeListener(this);
 
@@ -349,6 +339,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	public void setRuntimeName(final String backendName) {
 		// TODO validate!
 		runtimeName = backendName;
+		saveRuntimeName = true;
 	}
 
 	public void setExternalModules(final String fExternalModules) {
@@ -413,7 +404,9 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	}
 
 	public void preferenceChange(PreferenceChangeEvent event) {
-		load();
+		final IEclipsePreferences root = new ProjectScope(project)
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		load(root);
 		// System.out.println("!!! project preferences " + event.getNode() +
 		// ": "
 		// + event.getKey() + " " + event.getOldValue() + " "

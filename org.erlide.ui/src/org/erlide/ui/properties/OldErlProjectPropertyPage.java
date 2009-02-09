@@ -10,7 +10,9 @@
 package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
@@ -325,7 +328,9 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 			prefs.setExternalModules(externalModules.getText());
 			prefs.setExternalIncludes(externalIncludes.getText());
 		}
-		prefs.store();
+		final IEclipsePreferences root = new ProjectScope(prefs.getProject())
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		prefs.store(root);
 		return true;
 	}
 

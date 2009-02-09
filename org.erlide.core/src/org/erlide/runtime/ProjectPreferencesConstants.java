@@ -16,7 +16,7 @@ package org.erlide.runtime;
  * 
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
-public class ProjectPreferencesConstants {
+public final class ProjectPreferencesConstants {
 
 	public static final String SOURCE_DIRS = "source_dirs";
 	public static final String DEFAULT_SOURCE_DIRS = "src";

@@ -2,124 +2,23 @@ package org.erlide.core;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.runtime.PreferencesUtils;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class NewErlangProjectProperties {
 
-	public static class DependencyLocation {
-	}
-
-	public static final class SourceLocation extends DependencyLocation {
-		private String directory;
-		private List<String> includePatterns = new ArrayList<String>();
-		private List<String> excludePatterns = new ArrayList<String>();
-		private String output;
-		private Map<String, String> compilerOptions = new HashMap<String, String>();
-		private Map<String, Map<String, String>> fileCompilerOptions = new HashMap<String, Map<String, String>>();
-
-		public SourceLocation(String directory, List<String> includePatterns,
-				List<String> excludePatterns, String output,
-				Map<String, String> compilerOptions,
-				Map<String, Map<String, String>> fileCompilerOptions) {
-			Assert.isLegal(directory != null,
-					"SourceLocation requires a non-null directory");
-			this.directory = directory;
-			if (includePatterns != null) {
-				this.includePatterns = includePatterns;
-			}
-			if (excludePatterns != null) {
-				this.excludePatterns = excludePatterns;
-			}
-			this.output = output;
-			if (compilerOptions != null) {
-				this.compilerOptions = compilerOptions;
-			}
-			if (fileCompilerOptions != null) {
-				this.fileCompilerOptions = fileCompilerOptions;
-			}
-		}
-
-		public String getDirectory() {
-			return directory;
-		}
-
-		public List<String> getIncludePatterns() {
-			return includePatterns;
-		}
-
-		public List<String> getExcludePatterns() {
-			return excludePatterns;
-		}
-
-		public String getOutput() {
-			return output;
-		}
-
-		public Map<String, String> getCompilerOptions() {
-			return compilerOptions;
-		}
-
-		public Map<String, Map<String, String>> getFileCompilerOptions() {
-			return fileCompilerOptions;
-		}
-	}
-
-	public static final class LibraryLocation extends DependencyLocation {
-		private List<SourceLocation> sources = new ArrayList<SourceLocation>();
-		private List<String> includes = new ArrayList<String>();
-		private String output;
-		private List<LibraryLocation> libraries = new ArrayList<LibraryLocation>();
-
-		public LibraryLocation(List<SourceLocation> sources,
-				List<String> includes, String output,
-				List<LibraryLocation> libraries) {
-			if (sources != null) {
-				this.sources = sources;
-			}
-			if (includes != null) {
-				this.includes = includes;
-			}
-			this.output = output;
-			if (libraries != null) {
-				this.libraries = libraries;
-			}
-		}
-
-		public List<SourceLocation> getSources() {
-			return sources;
-		}
-
-		public List<String> getIncludes() {
-			return includes;
-		}
-
-		public String getOutput() {
-			return output;
-		}
-
-		public List<LibraryLocation> getLibraries() {
-			return libraries;
-		}
-	}
-
-	public static final class ProjectLocation extends DependencyLocation {
-		private IProject project;
-
-		public ProjectLocation(IProject project) {
-			Assert.isLegal(project != null,
-					"ProjectLocation requires a non-null project");
-			this.project = project;
-		}
-
-		public IProject getProject() {
-			return project;
-		}
-	}
+	private static final String BACKEND_COOKIE = "backendCookie";
+	private static final String BACKEND_NODE_NAME = "backendNodeName";
+	private static final String REQUIRED_BACKEND_VERSION = "requiredBackendVersion";
+	private static final String OUTPUT = "output";
+	private static final String INCLUDES = "includes";
 
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
@@ -128,21 +27,43 @@ public class NewErlangProjectProperties {
 	private List<ProjectLocation> projects = new ArrayList<ProjectLocation>();
 	private List<LibraryLocation> libraries = new ArrayList<LibraryLocation>();
 	private List<WeakReference<DependencyLocation>> codePathOrder = new ArrayList<WeakReference<DependencyLocation>>();
+	private String requiredRuntimeVersion;
+	private String backendNodeName;
+	private String backendCookie;
 
 	public NewErlangProjectProperties() {
 		output = "ebin";
 	}
 
-	public NewErlangProjectProperties(ErlangProjectProperties oldProperties) {
-		output = "ebin";
+	public NewErlangProjectProperties(ErlangProjectProperties old) {
+		output = old.getOutputDir();
+		includes = PreferencesUtils.unpackList(old.getIncludeDirsString());
+		requiredRuntimeVersion = old.getRuntimeVersion();
+		if (requiredRuntimeVersion == null) {
+			requiredRuntimeVersion = old.getRuntimeInfo().getVersion();
+		}
+		backendCookie = old.getCookie();
+		backendNodeName = old.getNodeName();
+		sources = mkSources(old.getSourceDirs());
+
+		// TODO handle externalModules
+		// TODO handle externalIncludes
 	}
 
-	public List<SourceLocation> getSources() {
-		return sources;
+	private List<SourceLocation> mkSources(String[] sourceDirs) {
+		List<SourceLocation> result = new ArrayList<SourceLocation>();
+		for (String src : sourceDirs) {
+			result.add(new SourceLocation(src, null, null, null, null, null));
+		}
+		return result;
 	}
 
-	public List<String> getIncludes() {
-		return includes;
+	public Collection<SourceLocation> getSources() {
+		return Collections.unmodifiableCollection(sources);
+	}
+
+	public Collection<String> getIncludes() {
+		return Collections.unmodifiableCollection(includes);
 	}
 
 	public String getOutput() {
@@ -150,18 +71,54 @@ public class NewErlangProjectProperties {
 	}
 
 	public Map<String, String> getCompilerOptions() {
-		return compilerOptions;
+		return Collections.unmodifiableMap(compilerOptions);
 	}
 
-	public List<ProjectLocation> getProjects() {
-		return projects;
+	public Collection<ProjectLocation> getProjects() {
+		return Collections.unmodifiableCollection(projects);
 	}
 
-	public List<LibraryLocation> getLibraries() {
-		return libraries;
+	public Collection<LibraryLocation> getLibraries() {
+		return Collections.unmodifiableCollection(libraries);
 	}
 
-	public List<WeakReference<DependencyLocation>> getCodePathOrder() {
-		return codePathOrder;
+	public Collection<WeakReference<DependencyLocation>> getCodePathOrder() {
+		return Collections.unmodifiableCollection(codePathOrder);
 	}
+
+	public String getRequiredRuntimeVersion() {
+		return requiredRuntimeVersion;
+	}
+
+	public String getBackendNodeName() {
+		return backendNodeName;
+	}
+
+	public String getBackendCookie() {
+		return backendCookie;
+	}
+
+	public void load(IEclipsePreferences root) {
+
+	}
+
+	public void store(IEclipsePreferences root) throws BackingStoreException {
+		PreferencesUtils.clearAll(root);
+		root.put(OUTPUT, output);
+		if (requiredRuntimeVersion != null) {
+			root.put(REQUIRED_BACKEND_VERSION, requiredRuntimeVersion);
+		}
+		if (backendNodeName != null) {
+			root.put(BACKEND_NODE_NAME, backendNodeName);
+		}
+		if (backendCookie != null) {
+			root.put(BACKEND_COOKIE, backendCookie);
+		}
+		root.put(INCLUDES, PreferencesUtils.packList(includes));
+		for (SourceLocation loc : sources) {
+			loc.store((IEclipsePreferences) root.node("baz"));
+		}
+		root.flush();
+	}
+
 }
