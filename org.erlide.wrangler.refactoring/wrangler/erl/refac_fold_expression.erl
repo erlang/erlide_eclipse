@@ -47,6 +47,7 @@
 	 fold_expr_by_name/6, fold_expr_by_name_eclipse/6,
 	 cursor_at_fun_clause/4]).
 
+-export([expr_unification/2]).
 -include("../hrl/wrangler.hrl").
 %% =============================================================================================
 %% @spec fold_expression(FileName::filename(), Line::integer(), Col::integer())-> term()
@@ -495,6 +496,8 @@ do_search_candidate_exprs_2(AnnAST, ExpList) ->
      refac_syntax_lib:fold(Fun,[], AnnAST).
     
 
+-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
+	     {true, [{atom(), syntaxTree()}]} | false).
 expr_unification(Exp1, Exp2) ->
     Res1 = case {is_list(Exp1), is_list(Exp2)} of 
 	{true, true} ->   %% both are list of expressions

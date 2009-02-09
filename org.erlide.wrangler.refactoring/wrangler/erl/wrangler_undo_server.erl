@@ -39,6 +39,7 @@
 %% Description: Starts the server
 %%--------------------------------------------------------------------
 start_undo_server() ->
+    process_flag(trap_exit, true),
     gen_server:start_link({local, refactor_undo}, ?MODULE, [], []).
 
 -spec(undo/0::() ->

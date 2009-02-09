@@ -64,43 +64,38 @@ rename_mod(FileName, NewName,SearchPaths, Editor) ->
 		    NewModName = list_to_atom(NewName),
 		    case (NewModName =/= OldModName) of
 			true -> 
-			    case code:which(NewModName) of  
-				non_existing -> 
-				    NewFileName = filename:dirname(FileName)++"/"++NewName++".erl",
-				    case filename_exists(NewFileName, SearchPaths) of 
-					false -> 
-					    ?wrangler_io("The current file under refactoring is:\n~p\n",[FileName]), 
-					    AnnAST1 = rename_mod_1(AnnAST, OldModName, NewModName),
-					    check_atoms(AnnAST1, OldModName),
-					    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n",[SearchPaths]),
-					    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
-					    Results = rename_mod_in_client_modules(ClientFiles, 
-										   OldModName, NewModName,SearchPaths),
-					    case Editor of 
-						emacs ->
-						    refac_util:write_refactored_files([{{FileName, NewFileName}, AnnAST1}|Results]),
-						    ChangedClientFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
-						    ChangedFiles = [FileName | ChangedClientFiles],
-						    ?wrangler_io
-						      ("The following files have been changed by this refactoring:\n~p\n",
-						       [ChangedFiles]),
-						    {ok, ChangedFiles};
-						eclipse ->
-						    Results1 =[{{FileName, NewFileName}, AnnAST1}|Results],
-						    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, refac_prettypr:print_ast(AST)} end, Results1),
-							  {ok, Res}
-					    end;
-					true -> {error, "The new module/file name has been used!"}
+			    NewFileName = filename:dirname(FileName)++"/"++NewName++".erl",
+			    case filename_exists(NewFileName, SearchPaths) of 
+				false -> 
+				    ?wrangler_io("The current file under refactoring is:\n~p\n",[FileName]), 
+				    AnnAST1 = rename_mod_1(AnnAST, OldModName, NewModName),
+				    check_atoms(AnnAST1, OldModName),
+				    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n",[SearchPaths]),
+				    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
+				    Results = rename_mod_in_client_modules(ClientFiles, 
+									   OldModName, NewModName,SearchPaths),
+				    case Editor of 
+					emacs ->
+					    refac_util:write_refactored_files([{{FileName, NewFileName}, AnnAST1}|Results]),
+					    ChangedClientFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
+					    ChangedFiles = [FileName | ChangedClientFiles],
+					    ?wrangler_io
+					       ("The following files have been changed by this refactoring:\n~p\n",
+						[ChangedFiles]),
+					    {ok, ChangedFiles};
+					eclipse ->
+					    Results1 =[{{FileName, NewFileName}, AnnAST1}|Results],
+					    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, refac_prettypr:print_ast(AST)} end, Results1),
+					    {ok, Res}
 				    end;
-				_ ->
-				    {error, "The new module name has been used!"} 
+				true -> {error, "The new module/file name has been used!"}
 			    end;
-			      _ ->
+			_ ->
 			    {error, "New module name is the same as the old name."}
 		    end;
 		{error, Reason} -> {error, Reason}
-	  end;
-      false -> {error, "Invalid new module name!"}
+	    end;
+	false -> {error, "Invalid new module name!"}
     end.
 
 filename_exists(NewFileName, SearchPaths) ->

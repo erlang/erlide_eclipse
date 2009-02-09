@@ -17,7 +17,7 @@
 
 -export([start_ast_server/0, get_ast/1, update_ast/2]).
 
--record(state, {asts=[]}).
+-record(state, {dets_tab=none, asts=[]}).
 
 %%====================================================================
 %% API
@@ -38,16 +38,36 @@ start_ast_server() ->
 %%--------------------------------------------------------------------
 %% Function: init(Args) -> {ok, State} |
 %%                         {ok, State, Timeout} |
-%%                         ignore               |
+%%                         ignore               |t
 %%                         {stop, Reason}
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
 -spec(init/1::([dir()]) ->
 	      {ok, #state{}}).
 init(_Args) ->
-    {ok, #state{asts=[]}}.
-
-
+    process_flag(trap_exit, true),
+    case file:get_cwd() of
+	{ok, Dir} ->
+	    TabDir = filename:join(Dir,"temp"),
+	    FileName=filename:join(TabDir, "wrangler_dets"),
+	    DetsTab = list_to_atom(FileName),
+	    file:delete(FileName),
+	    case file:make_dir(TabDir) of 
+		ok ->
+		    case dets:open_file(DetsTab,  [{type, set}, {access, read_write}, {repair, false}]) of 
+			{ok, _Name} ->  {ok, #state{dets_tab=DetsTab}};
+			_  ->  {ok, #state{dets_tab=none}}
+		    end;
+		{error, eexist} ->
+		    case dets:open_file(DetsTab,  [{type, set}, {access, read_write}, {repair, false}]) of 
+			{ok, _Name} ->  {ok, #state{dets_tab=DetsTab}};
+			_  ->  {ok, #state{dets_tab=none}}
+		    end;
+		_Others -> {ok, #state{dets_tab=none}}
+	    end;
+	{error, _} -> {ok, #state{dets_tab=none}}
+    end.
+  
 %%------------------------------------------------------------------
 -spec(get_ast/1::({filename(), boolean(), [dir()]}) ->
 	     {ok, {syntaxTree(), moduleInfo()}}).
@@ -85,8 +105,8 @@ handle_call({get, Key}, _From, State) ->
 -spec(handle_cast/2::({update, {{filename(), boolean(), [dir()]}, {syntaxTree(), moduleInfo(), modifyTime()}}}, #state{}) ->
     {noreply, #state{}}).
 handle_cast({update, {Key, {AnnAST, Info, Time}}}, State) ->
-    State1 = update_ast_1({Key, {AnnAST, Info, Time}}, State),
-    {noreply, State1}.
+    update_ast_1({Key, {AnnAST, Info, Time}}, State),
+    {noreply, State}.
 
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |
@@ -107,8 +127,9 @@ handle_info(_Info, State) ->
 %% The return value is ignored.
 %%--------------------------------------------------------------------
 -spec(terminate/2::(any(), #state{}) -> ok).
-terminate(_Reason, _State) ->
-    ok.
+terminate(_Reason, _State=#state{dets_tab=TabFile}) ->
+    dets:close(TabFile),
+    file:delete(TabFile).
 
 %%--------------------------------------------------------------------
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
@@ -123,31 +144,56 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%--------------------------------------------------------------------
 -spec(get_ast/2::({filename(),boolean(), [dir()]}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).	     
-get_ast(Key={ FileName,ByPassPreP, SearchPaths}, State=#state{asts=ASTs}) ->
-    case lists:keysearch(Key, 1, ASTs) of
-      {value, {Key, {AnnAST, Info, FileModifiedTime}}} ->
-	  case FileModifiedTime >= filelib:last_modified(FileName) of
-	    true -> 
-		  log_errors(FileName, Info), {{ok, {AnnAST, Info}}, State};
-	    false ->
-		  {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
-		  log_errors(FileName, Info),
-		  {{ok, {AnnAST1, Info1}}, #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST1, Info1, filelib:last_modified(FileName)}})}}
-	  end;
-      false ->
-	  {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
-	  log_errors(FileName, Info),
-	  {{ok, {AnnAST, Info}}, #state{asts=[{Key, {AnnAST, Info, filelib:last_modified(FileName)}} | ASTs]}}
+get_ast(Key={FileName,ByPassPreP, SearchPaths}, State=#state{dets_tab=TabFile, asts=ASTs}) ->
+    case TabFile of 
+	none -> 
+	    case lists:keysearch(Key, 1, ASTs) of
+		{value, {Key, {AnnAST, Info, FileModifiedTime}}} ->
+		    case FileModifiedTime >= filelib:last_modified(FileName) of
+			true -> 
+			    log_errors(FileName, Info), {{ok, {AnnAST, Info}}, State};
+			false ->
+			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+			    log_errors(FileName, Info1),
+			    {{ok, {AnnAST1, Info1}}, #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST1, Info1, filelib:last_modified(FileName)}})}}
+		    end;
+		false ->
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+		    log_errors(FileName, Info),
+		    {{ok, {AnnAST, Info}}, #state{asts=[{Key, {AnnAST, Info, filelib:last_modified(FileName)}} | ASTs]}}
+	    end;
+	_ -> 
+	    case dets:lookup(TabFile, Key) of
+		[{Key, {AnnAST, Info, FileModifiedTime}}]->
+		    case FileModifiedTime >= filelib:last_modified(FileName) of
+			true -> 
+			    log_errors(FileName, Info), {{ok, {AnnAST, Info}}, State};
+			false ->
+			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+			    dets:insert(TabFile, {Key, {AnnAST1, Info1, filelib:last_modified(FileName)}}),
+			    log_errors(FileName, Info1),
+			    {{ok, {AnnAST1, Info1}}, State}
+		    end;
+		_ ->
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+		    dets:insert(TabFile, {Key, {AnnAST, Info, filelib:last_modified(FileName)}}),
+		    log_errors(FileName, Info),
+		    {{ok, {AnnAST, Info}}, State}
+	    end
     end.
 
-update_ast_1({Key={_FileName, _ByPassPreP, _SearchPaths}, {AnnAST, Info, Time}}, _State=#state{asts=ASTs}) ->
-    case lists:keysearch(Key, 1, ASTs) of
-	{value, {Key,  {_AnnAST1, _Info1, _Time}}} ->  
-	    #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST, Info, Time}})};
-	false ->
-	    #state{asts=[{Key, {AnnAST, Info, Time}} | ASTs]}
+update_ast_1({Key={_FileName, _ByPassPreP, _SearchPaths}, {AnnAST, Info, Time}}, _State=#state{dets_tab=TabFile, asts=ASTs}) ->
+    case TabFile of
+	none ->  case lists:keysearch(Key, 1, ASTs) of
+		     {value, {Key,  {_AnnAST1, _Info1, _Time}}} ->  
+			 #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST, Info, Time}})};
+		     false ->
+			 #state{asts=[{Key, {AnnAST, Info, Time}} | ASTs]}
+		 end;
+	_ ->
+	    dets:insert(TabFile, [{Key, {AnnAST, Info, Time}}])    
     end.
-
+    
 log_errors(FileName, Info) ->
     case lists:keysearch(errors, 1, Info) of
       {value, {errors, Error}} ->

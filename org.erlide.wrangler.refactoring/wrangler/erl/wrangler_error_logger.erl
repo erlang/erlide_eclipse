@@ -48,6 +48,7 @@ add_error_to_logger(Error) ->
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
 init([]) ->
+    process_flag(trap_exit, true),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -59,6 +60,7 @@ init([]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
+%% this function also reset the state of the error logger.
 handle_call(get_errors, _From, _State=#state{errors=Errors}) ->
     {reply, Errors,  #state{}}.
 
@@ -68,8 +70,8 @@ handle_call(get_errors, _From, _State=#state{errors=Errors}) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast({add, Error}, _State=#state{errors=Errors}) ->
-    {noreply, #state{errors=lists:usort([Error|Errors])}}.
+handle_cast({add, {FileName, Error}}, _State=#state{errors=Errors}) ->
+    {noreply, #state{errors=([{FileName, Error}|lists:keydelete(FileName, 1, Errors)])}}.
 
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |

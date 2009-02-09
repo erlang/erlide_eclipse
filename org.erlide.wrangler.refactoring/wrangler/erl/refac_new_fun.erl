@@ -44,7 +44,7 @@ fun_extraction(FileName, Start, End, NewFunName,Editor) ->
     case refac_util:is_fun_name(NewFunName) of 
 	true ->
 	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, []),
-	    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
+	    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End) of 
 		[] -> {error, "You have not selected an expression!"};
 		ExpList ->
 		    {ok,Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
@@ -180,7 +180,7 @@ do_replace_expr_with_fun_call_1(Tree, {NewExpr, Expr}) ->
     end.
     
 	    
-do_replace_expr_with_fun_call_2(Tree, {NewExpr, ExpList}) ->
+do_replace_expr_with_fun_call_2(Tree, {MApp, ExpList}) ->
     Range1 = refac_util:get_range(hd(ExpList)),
     %%{StartPos1, _EndPos} = Range1,
     Range2 = refac_util:get_range(lists:last(ExpList)),
@@ -195,7 +195,7 @@ do_replace_expr_with_fun_call_2(Tree, {NewExpr, ExpList}) ->
 				      _ -> {_Exprs21, Exprs22} = lists:splitwith(fun(E) -> refac_util:get_range(E) =/= Range2 end, Exprs2),
 					   case Exprs22 of 
 					       [] -> {Exprs, false}; %% THIS SHOULD NOT HAPPEN.
-					       _ -> {Exprs1 ++ [NewExpr|tl(Exprs22)], true}
+					       _ -> {Exprs1 ++ [MApp|tl(Exprs22)], true}
 					   end
 				  end,
 	    Pats = refac_syntax:clause_patterns(Tree),
@@ -209,7 +209,7 @@ do_replace_expr_with_fun_call_2(Tree, {NewExpr, ExpList}) ->
 				      _ -> {_Exprs21, Exprs22} = lists:splitwith(fun(E) -> refac_util:get_range(E) =/= Range2 end, Exprs2),
 					   case Exprs22 of 
 					       [] -> {Exprs, false}; %% THIS SHOULD NOT HAPPEN.
-					       _ -> {Exprs1 ++ [NewExpr|tl(Exprs22)], true}
+					       _ -> {Exprs1 ++ [MApp|tl(Exprs22)], true}
 					   end
 				  end,
 	    {refac_syntax:copy_pos(Tree, refac_syntax:copy_attrs(Tree, refac_syntax:block_expr(NewBody))), Modified};	    

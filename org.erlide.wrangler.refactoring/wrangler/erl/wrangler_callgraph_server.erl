@@ -51,6 +51,7 @@ start_callgraph_server() ->
 %%--------------------------------------------------------------------
 -spec(init/1::(any()) ->{ok, #state{}}).
 init(_Args) ->
+    process_flag(trap_exit, true),
     {ok, #state{}}.
 
 %%--------------------------------------------------------------------
@@ -126,19 +127,14 @@ get_sccs_including_fun({M, F, A}, SearchPaths) ->
 %%% Internal functions
 %%--------------------------------------------------------------------
 
+%% Currently the State is not used because I feel it takes too much space;
+%% Todo: find out a way to improve this.
 get_callgraph(SearchPaths, State) ->
-    case lists:keysearch(SearchPaths, 1, State#state.callgraph) of 
-	{value, {SearchPaths, _CallGraph}} ->
-           %%{CallGraph, State};	  %% Here we should check the time stamp of individual files;
-	    %% Temporally rebuilt the callgraph! TODO: Change to use timestamp!!!
-	     CallGraph = refac_util:build_scc_callgraph(SearchPaths),
-	    {CallGraph, #state{callgraph=[{SearchPaths, CallGraph}]}};  %% |State#state.callgraph]}};
-	false ->
-	    CallGraph = refac_util:build_scc_callgraph(SearchPaths),
-	    {CallGraph, #state{callgraph=[{SearchPaths, CallGraph}|State#state.callgraph]}}
-    end.
+    CallGraph = refac_util:build_scc_callgraph(SearchPaths),
+    {CallGraph, State}.
 
 
+%% return the sccs of which {M, F, A} is a member.
 get_sccs_including_fun({M, F, A}, SearchPaths, State) ->
     {#callgraph{scc_order = Sccs}, State1} = get_callgraph(SearchPaths, State),
     ResSccs = lists:filter(fun (Sc) ->

@@ -66,21 +66,35 @@ tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, Editor)->
   ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, ~p, ~p, ~p,~p).\n", 
             [?MODULE,FileName, ParLine, ParCol, Number, SearchPaths]),
   {ok, {AnnAST, Info}} = parse_file(FileName, SearchPaths),
-  {FirstPar, Type} = check_first_pos({ParLine, ParCol}, AnnAST),
-  {{Mod, FunName, Arity, _, _}, FunPatterns, AppNode, AppPar, FunNode}=
-      get_fun_name_and_arity(AnnAST, {ParLine, ParCol}, Type, FirstPar),        
-  ModName = get_module_name(Info),
-  InscopeFuns = 
-    lists:map(fun ({_M, F, A}) -> {F, A} end, refac_util:inscope_funs(Info)),
-  {Parameters, C} = 
-     check_parameters(FirstPar, Number, Arity, FunPatterns, AppNode, AppPar),
-  NewArity = Arity - Number + 1,
-  check_def_mod(Mod, ModName),
-  check_name_clash(FunName, NewArity, InscopeFuns, Number),
-  check_is_callback_fun(Info, FunName, Arity),
-  ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
-  performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode,
-                       C, Mod, SearchPaths, FileName, Editor).
+    case check_first_pos({ParLine, ParCol}, AnnAST) of 
+	{error, Reason} -> {error, Reason};
+	{FirstPar, Type} ->
+	    case get_fun_name_and_arity(AnnAST, {ParLine, ParCol}, Type, FirstPar)  of
+		{{Mod, FunName, Arity, _, _}, FunPatterns, AppNode, AppPar, FunNode} ->
+		    ModName = get_module_name(Info),
+		    InscopeFuns = 
+			lists:map(fun ({_M, F, A}) -> {F, A} end, refac_util:inscope_funs(Info)),
+		    {Parameters, C} = 
+			check_parameters(FirstPar, Number, Arity, FunPatterns, AppNode, AppPar),
+		    NewArity = Arity - Number + 1,
+		    case check_def_mod(Mod, ModName) of 
+			ok ->
+			    case check_name_clash(FunName, NewArity, InscopeFuns, Number) of 
+				ok ->
+				    case check_is_callback_fun(Info, FunName, Arity) of 
+					ok ->  ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
+					       performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode,
+								    C, Mod, SearchPaths, FileName, Editor);
+					{error, Reason} -> {error, Reason}
+				    end;
+				{error, Reason} -> {error, Reason}
+			    end;
+			{error, Reason} ->
+			    {error, Reason}
+		    end;
+		{error, Reason} -> {error, Reason}
+	    end
+    end.
 
 %% =====================================================================
 %% @spec performe_refactoring(AnnAST::syntaxtree(),Info::ModInfo,
@@ -399,13 +413,17 @@ do_tuple_fun_parameters(Tree, {C, N, Name, Arity, Mod})->
 %% =====================================================================
 
 check_first_pos(Pos, AnnAST)->
-  case pos_to_app(AnnAST, Pos) of
-    {ok, AppNode}-> 
-      Node = pos_to_arg(AppNode, Pos),
-      {Node, application};
-    {error, none} -> 
-      Node = pos_to_pat(AnnAST,  Pos),
-      {Node, function}
+    case pos_to_app(AnnAST, Pos) of
+      {ok, AppNode}-> 
+	    case pos_to_arg(AppNode, Pos) of 
+		{error, _Reason} -> pos_to_pat(AnnAST, Pos);
+		Node ->{Node, application}
+	    end;
+	{error, none} -> 
+	    case pos_to_pat(AnnAST,  Pos) of 
+		{error, Reason} -> {error, Reason};
+		Node ->  {Node, function}
+	    end
   end.
 
 

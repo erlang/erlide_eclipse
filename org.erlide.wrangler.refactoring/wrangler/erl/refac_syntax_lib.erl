@@ -855,7 +855,7 @@ vann_define(D, Env) ->
     Name = refac_syntax:attribute_name(D),
     Args = refac_syntax:attribute_arguments(D),    
     MacroHead = hd(Args),
-    MacroBody = hd(tl(Args)),
+    MacroBody = tl(Args),
     {{MacroHead1, Bound, _Free}, _Bs}= 
 	case refac_syntax:type(MacroHead) of 
 	    application -> Operator = refac_syntax:application_operator(MacroHead),
@@ -868,23 +868,17 @@ vann_define(D, Env) ->
 			   {{ann_bindings(H, Env, Bs2, []), Bs2, []}, Bs1};
 	    _  -> {vann_pattern(MacroHead, Env),[]}
 	end,
-   Env1 = ordsets:union(Env, Bound),
-   %%?wrangler_io("Env1:\n~p\n", [Env1]),
-   %%?wrangler_io("MarcoBody:\n~p\n", [MacroBody]),
-   {MacroBody1, _Bound1, _Free1} = vann(MacroBody, Env1),
-   %%?wrangler_io("MacroBody1:\n~p\n", [MacroBody1]),
-   MacroBody2 = adjust_define_body(MacroBody1, Env1),
-   %%?wrangler_io("MacroBody2:\n~p\n", [MacroBody2]),
-   D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1, MacroBody2])),
-   %%or  {ann_bindings(D1, Env, Bs, Free2), Bs, Free2}.  ?
-   {ann_bindings(D1, Env, [], []), [], []}.   
+    Env1 = ordsets:union(Env, Bound),
+    {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1),
+    MacroBody2 = adjust_define_body(MacroBody1, Env1),
+    D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1| MacroBody2])),
+    {ann_bindings(D1, Env, [], []), [], []}.   
 
-adjust_define_body(Tree, Env) ->
+adjust_define_body(Body, Env) ->
     F = fun (Tree1) ->
 		case refac_syntax:type(Tree1) of
 		    variable ->
 			V = refac_syntax:variable_name(Tree1),
-			%% Pos = refac_syntax:get_pos(Tree1),
 			case lists:keysearch(V, 1, Env) of
 			    {value, {V, L}} ->
 				%% apply occurrence
@@ -902,7 +896,7 @@ adjust_define_body(Tree, Env) ->
 		   _  -> Tree1
 		end
 	end,
-   map(F, Tree).
+   lists:map(fun(T) ->map(F, T) end, Body).
 	    
 vann_clause(C, Env) ->
     {Ps, {Bound1, Free1}} =

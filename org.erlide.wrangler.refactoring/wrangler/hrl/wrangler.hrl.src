@@ -42,7 +42,7 @@
 -type(boolean()::true|false).
 -type(key():: attributes | errors | exports | functions | imports | module | records | rules | warnings).
 -type(moduleInfo()::[{key(), any()}]).  %% any() should be refined.
--type(term()::any()).
+-type(anyterm()::any()).
 -type(editor()::emacs|eclipse).
 -type(whitespace() :: '\t' | '\n' | ' ').
 -type(token() :: {'var', pos(), atom()} | {'integer', pos(), integer()} | {'string', pos(), string()}

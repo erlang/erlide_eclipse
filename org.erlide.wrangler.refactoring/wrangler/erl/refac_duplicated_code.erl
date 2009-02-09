@@ -37,8 +37,8 @@
 %% minimal number of tokens.
 -define(DEFAULT_MIN_CLONE_LEN, 20).
 
-%% Minimal number of duplication times.
--define(DEFAULT_MIN_CLONE_MEMBER, 1).
+%% Minimal number of class members.
+-define(DEFAULT_MIN_CLONE_MEMBER, 2).
 
 
 %% -define(DEBUG, true).
@@ -71,10 +71,13 @@ get_clones_by_suffix_tree(FileNames,MinLength, MinClones) ->
 		  {ok, _Res} ->
 		      ?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
 		      stop_suffix_tree_clone_detector(),
-		      {ok, [Cs]} = file:consult(OutFileName),
+		      {ok, Res} = file:consult(OutFileName), 
 		      file:delete(OutFileName),
-		      {Toks, Cs};
-		  _ -> 
+		      case Res of 
+			  [] -> {Toks, []}; 
+			  [Cs] -> {Toks, Cs}
+		      end;
+		  _E -> 
 		      stop_suffix_tree_clone_detector(),
 		      file:delete(OutFileName),
 		      get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones)
@@ -85,7 +88,7 @@ get_clones_by_suffix_tree(FileNames,MinLength, MinClones) ->
 
 get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones) ->
     ?wrangler_io("\nWrangler failed to use the C suffixtree implementation;"
-                 "Initial clones are calculated using Erlang suffixtree implementation.\n",[]),
+                 " Initial clones are calculated using Erlang suffixtree implementation.\n",[]),
     Tree = suffix_tree(alphabet() ++ "&", ProcessedToks ++ "&"),
     Cs = lists:flatten(lists:map(fun (B) ->
 					 collect_clones(MinLength, MinClones, B)
@@ -128,8 +131,7 @@ loop(Port) ->
 	    end,
 	    loop(Port);
     stop ->
-        erlang:port_close(Port),
-        exit(normal)
+        erlang:port_close(Port)
     end.
 
  
@@ -156,8 +158,8 @@ duplicated_code(DirFileList, MinLength1, MinClones1) ->
     Cs6 = remove_sub_clones(Cs5),
     ?debug("current time:~p\n", [time()]),
     case length(FileNames) of
-         1 -> display_clones(Cs6);
-         _ -> display_clones1(Cs6)
+         1 -> ?wrangler_io(display_clones(Cs6),[]);
+         _ -> ?wrangler_io(display_clones1(Cs6),[])
       end,
     ?debug("No of Clones found:\n~p\n", [length(Cs6)]),
     ?debug("Clones:\n~p\n", [Cs6]),
@@ -178,16 +180,18 @@ duplicated_code_detection(DirFileList, MinClones1, MinLength1) ->
     MinLength = case MinLength1 == [] orelse
 		    list_to_integer(MinLength1) =< 0
 		    of
-		    true -> ?DEFAULT_MIN_CLONE_LEN;
+		    true -> 
+			?DEFAULT_MIN_CLONE_LEN;
 		    _ -> list_to_integer(MinLength1)
 		end,
+   %%io:format("MinLength:\n~p\n", [MinLength]),
     %% By 'MinClones', I mean the minimal number of members in a clone class,
     %% therefore it should be one more than the number of times a piece of code is cloned.
     MinClones = case MinClones1 == [] orelse
-		    list_to_integer(MinClones1) < (?DEFAULT_MIN_CLONE_MEMBER)
+		    list_to_integer(MinClones1) < ?DEFAULT_MIN_CLONE_MEMBER
 		    of
-		    true -> (?DEFAULT_MIN_CLONE_MEMBER) + 1;
-		    _ -> list_to_integer(MinClones1) + 1
+		    true -> ?DEFAULT_MIN_CLONE_MEMBER;
+		    _ -> list_to_integer(MinClones1)
 		end,
     ?debug("Constructing suffix tree and collecting clones from the suffix tree.\n", []),
     {Toks,Cs}= get_clones_by_suffix_tree(FileNames, MinLength, MinClones),
@@ -537,12 +541,12 @@ trim_clones(FileNames, Cs, MinLength, MinClones) ->
 			    case lists:keysearch(File1, 1, AnnASTs) of
 				{value, {File1, AnnAST}} ->
 				    {value, {File1, Toks}} = lists:keysearch(File1, 1, ToksLists),
-				    Units = pos_to_syntax_units(AnnAST, {{L1, C1},{L2, C2}}), 
+				    Units = refac_util:pos_to_syntax_units(File1, AnnAST, {L1, C1},{L2, C2}, fun is_expr_or_fun/1), 
 				    case Units =/= [] of 
 					true -> 
 					    Fun2 = fun(U) ->
 							   {StartLoc, _} = refac_util:get_range(hd(U)),
- 							   {_, EndLoc} = refac_util:get_range(lists:last(U)),
+							   {_, EndLoc} = refac_util:get_range(lists:last(U)),
 							   Toks1 =lists:dropwhile(fun(T) ->token_loc(T)=< S end, Toks),
 							   Toks11 = lists:takewhile(fun(T) ->token_loc(T) =< StartLoc end, Toks1),
 							   Toks2 = lists:dropwhile(fun(T) ->token_loc(T) =< EndLoc end, Toks1),
@@ -587,19 +591,30 @@ group_by_1(N, TupleList=[E|_Es]) ->
     
     
 trim_range(Range, {Len1, Len2}) ->
-    lists:map(fun({S,E}) -> trim_range_1({S,E}, {Len1, Len2}) end, Range).
-trim_range_1(_Range={{File, StartLn, StartCol}, {File, EndLn, EndCol}}, {Len1, Len2}) ->
-    S = {StartLn, StartCol},
-    E = {EndLn, EndCol},
-    Toks =tokenize_file(File, false),
-    Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =/=S end, Toks),
-    Toks2 = lists:nthtail(Len1, Toks1),
-    {StartLn1, StartCol1} = token_loc(hd(Toks2)),
-    {Toks3, _Toks4} = lists:splitwith(fun(T) -> token_loc(T) =< E end, Toks1),
-    LastTok = hd(lists:nthtail(Len2, lists:reverse(Toks3))),
-    {L, C} = token_loc(LastTok),
-    {EndLn1, EndCol1} = {L, C+token_len(LastTok)-1},
-    {{File, StartLn1, StartCol1}, {File, EndLn1, EndCol1}}.
+    lists:flatmap(fun({S,E}) -> trim_range_1({S,E}, {Len1, Len2}) end, Range).
+trim_range_1(_Range={{File1, StartLn, StartCol}, {File2, EndLn, EndCol}}, {Len1, Len2}) -> 
+    case (File1==File2) andalso ({StartLn, StartCol}<{EndLn, EndCol}) of   %% The second condition is a temporary bugfix. 
+	true ->
+	    S = {StartLn, StartCol},
+	    E = {EndLn, EndCol},
+	    Toks =tokenize_file(File1, false),
+	    Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =/=S end, Toks),
+	    case Len1 <length(Toks1) of   
+		true -> Toks2 = lists:nthtail(Len1, Toks1),
+			{StartLn1, StartCol1} = token_loc(hd(Toks2)),
+			{Toks3, _Toks4} = lists:splitwith(fun(T) -> token_loc(T) =< E end, Toks1),
+			case Len2< length(Toks3) of 
+			    true ->
+				LastTok = hd(lists:nthtail(Len2, lists:reverse(Toks3))),
+				{L, C} = token_loc(LastTok),
+				{EndLn1, EndCol1} = {L, C+token_len(LastTok)-1},
+				[{{File1, StartLn1, StartCol1}, {File2, EndLn1, EndCol1}}];
+			    _ -> [] %% This should not happen, but it does very rarely; need to find out why.
+			end;			    
+		_ -> []  %% ditto.
+	    end;
+	_ -> []
+    end.
 
 token_len(T) ->
     V = token_val(T),
@@ -619,71 +634,70 @@ token_len_1(V) when is_binary(V) ->
 token_len_1(V) -> erlang:error(?wrangler_io("Unhandled data type:\n~p\n", [V])).
        
 
+
+
 %% display the found-out clones to the user.
 display_clones1(Cs) ->
-   ?wrangler_io("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
-   display_clones1_1(Cs).
-display_clones1_1([]) ->		      
-    ?wrangler_io("\n",[]);
-display_clones1_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs]) ->
-    case F-1 of 
-	1 ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated once at the following location:\n",
-			 [File, StartLine, StartCol-1, EndLine, EndCol-1]),
-	       display_clones1_2(Range);
-	2 ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated twice at the following location(s):\n",
-			 [File, StartLine, StartCol-1, EndLine, EndCol-1]),
-	       display_clones1_2(Range);
-	_ ->   ?wrangler_io("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated ~p times at the following location(s):\n",
-			 [File, StartLine, StartCol-1, EndLine, EndCol-1, F-1]),
-	       display_clones1_2(Range)
-    end,
-    display_clones1_1(Cs).
+    Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+    display_clones1_1(Cs, Str).
+display_clones1_1([], Str) -> Str ++ "\n";		      
 
-display_clones1_2([]) ->
-      ?wrangler_io("\n",[]);
-display_clones1_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs]) ->
-    case Rs == [] of 
-	true ->
-	    ?wrangler_io(" File: ~p,{~p,~p}-{~p,~p}.", [File, StartLine, StartCol-1, EndLine, EndCol-1]);
-	false ->
-	    ?wrangler_io(" File: ~p, {~p,~p}-{~p,~p},", [File, StartLine, StartCol-1, EndLine, EndCol-1])
-    end,
-    display_clones1_2(Rs).
+display_clones1_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
+    NewStr =case F-1 of 
+		1 ->   Str1= Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated once at the following location:\n",
+						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+		       display_clones1_2(Range, Str1);
+		2 ->   Str1 =Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated twice at the following location(s):\n",
+						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+		       display_clones1_2(Range, Str1);
+		_ ->   Str1 = Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated ~p times at the following location(s):\n",
+						   [File, StartLine, StartCol-1, EndLine, EndCol-1, F-1]),
+		       display_clones1_2(Range, Str1)
+	    end,
+    display_clones1_1(Cs, NewStr).
+
+display_clones1_2([], Str) -> Str ++ "\n";
+display_clones1_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
+    Str1 =case Rs == [] of 
+	      true ->
+		  Str ++ io_lib:format(" File: ~p,{~p,~p}-{~p,~p}.", [File, StartLine, StartCol-1, EndLine, EndCol-1]);
+	      false ->
+		  Str ++ io_lib:format(" File: ~p, {~p,~p}-{~p,~p},", [File, StartLine, StartCol-1, EndLine, EndCol-1])
+	  end,
+    display_clones1_2(Rs, Str1).
 
 %% ===========================================================================
 %% display the found-out clones to the user.
 display_clones(Cs) ->
-   ?wrangler_io("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
-   display_clones_1(Cs).
-display_clones_1([]) ->		      
-    ?wrangler_io("\n",[]);
-display_clones_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs]) ->
-    case F-1 of 
-	1 ->  ?wrangler_io("\nThe code between  ~p-~p has been duplicated once at the following"
-			" location:",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),		     
-	      display_clones_2(Range);
-	2 ->  ?wrangler_io("\nThe code between  ~p-~p has been duplicated twice at the following"
-			" location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),
-	      
-	      display_clones_2(Range);
-	_ ->   ?wrangler_io("\nThe code between  ~p-~p has been duplicated ~p times  at the following"
-			 " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}, F-1]),
-	       
-	       display_clones_2(Range)
-    end,	       
-    display_clones_1(Cs).
+   Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+   display_clones_1(Cs, Str).
+display_clones_1([], Str) -> Str ++ "\n";		      
 
-display_clones_2([]) ->
-      ?wrangler_io("\n",[]);
-display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs]) ->
-    case Rs == [] of 
-	true ->
-	    ?wrangler_io("  ~p-~p.", [{StartLine,StartCol-1},{EndLine, EndCol-1}]);
-		
-	_ ->
-	    ?wrangler_io(" ~p-~p,", [{StartLine, StartCol-1}, {EndLine, EndCol-1}])
-    end,
-    display_clones_2(Rs).
+display_clones_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
+    NewStr = case F-1 of 
+		 1 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated once at the following"
+						   " location:",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),		     
+		       display_clones_2(Range, Str1);
+		 2 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated twice at the following"
+						   " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),
+		       
+		       display_clones_2(Range, Str1);
+		 _ ->   Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated ~p times  at the following"
+						    " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}, F-1]),
+	       
+			display_clones_2(Range, Str1)
+    end,	       
+    display_clones_1(Cs, NewStr).
+
+display_clones_2([], Str) -> Str ++ "\n";
+display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
+    Str1 = case Rs == [] of 
+	       true ->
+		   Str ++ io_lib:format("  ~p-~p.", [{StartLine,StartCol-1},{EndLine, EndCol-1}]);
+	       _ ->
+		   Str ++ io_lib:format(" ~p-~p,", [{StartLine, StartCol-1}, {EndLine, EndCol-1}])
+	   end,
+    display_clones_2(Rs, Str1).
 
 
 %% ===========================================================
@@ -735,18 +749,6 @@ add_filename_to_token(FileName,T) ->
 	    {V, {FileName, Ln, Col}}
     end.
 	    				
-
-
-pos_to_syntax_units(Tree, {Start,{EndLine, EndCol}}) ->    
-    %% The next expression is only a quick fix;
-    %% EndCol currently refers to the start loc of a token, 
-    %% but to be correct, it should be the end loc of the token.
-    ExprOrFuns = refac_util:pos_to_syntax_units(Tree, Start, {EndLine, EndCol+5}, fun is_expr_or_fun/1),
-    case ExprOrFuns of 
-	[] -> [];
-	_ -> [ExprOrFuns]
-    end.
-
 
 is_expr_or_fun(Node) ->
     case refac_syntax:type(Node) of 

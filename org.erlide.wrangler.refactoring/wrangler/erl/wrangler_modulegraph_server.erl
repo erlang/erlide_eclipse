@@ -43,6 +43,7 @@ get_client_files(File, SearchPaths) ->
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
 init([]) ->
+    process_flag(trap_exit, true),
     _ModuleGraphTab = ets:new(wrangler_modulegraph_tab, [set, named_table, public]),
     {ok, #state{}}.
 

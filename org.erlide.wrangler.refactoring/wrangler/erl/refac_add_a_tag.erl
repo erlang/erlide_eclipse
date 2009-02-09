@@ -388,7 +388,7 @@ reached_receive_funs_1(CallerCallee, InitialAcc, SearchPaths) ->
     ReceiveFuns = lists:filter(fun(MFA) ->
 				      case get_fun_def(MFA, SearchPaths) of 
 					  {error, no_source_file} -> false;
-					  {error, Reason} ->erlang:exit(Reason);
+					  {error, Reason} ->throw({error, Reason});
 					  {ok, FunDef} -> has_receive_expr(FunDef)
 				      end
 			       end, Funs),

@@ -24,6 +24,6 @@ build_options([Term={OptionName,Value}|Rest], Options) ->
       ?wrangler_io("Bad Options:~p:\n", [Term])
   end;
 build_options([Term|_Rest], _Options) ->
-     io:format("Bad Options:~p:\n", [Term]);
+     ?wrangler_io("Bad Options:~p:\n", [Term]);
 build_options([], Options) ->
   Options.

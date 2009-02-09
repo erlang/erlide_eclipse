@@ -42,7 +42,6 @@
 %% @TODO can floats be moved in/out of sep:s without too much pain?
 
 -module(refac_prettypr_0).
-
 -export([above/2, beside/2, best/3, break/1, empty/0, floating/1,
 	 floating/3, follow/2, follow/3, format/1, format/2, format/3,
 	 nest/2, par/1, par/2, sep/1, text/1, null_text/1, text_par/1,

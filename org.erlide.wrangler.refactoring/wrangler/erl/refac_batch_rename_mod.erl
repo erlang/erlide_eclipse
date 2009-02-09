@@ -46,8 +46,7 @@
 %%                        SearchPaths::[string()])-> ok | {error, string()}
 %%   
 
--spec(batch_rename_mod/3::(string(), string(), [dir()])->
-	     ok | {error, string()}).
+-spec(batch_rename_mod/3::(string(), string(), [dir()])-> {ok, string()} | {error, string()}).
 batch_rename_mod(OldNamePattern, NewNamePattern,SearchPaths) ->
     ?wrangler_io("\n[CMD: batch_rename_mod, ~p, ~p, ~p]\n", [OldNamePattern, NewNamePattern, SearchPaths]),
     %% Get all the erlang file which will be affected by this refactoring.
@@ -65,7 +64,7 @@ batch_rename_mod(OldNamePattern, NewNamePattern,SearchPaths) ->
     refac_util:write_refactored_files(Results),
     ChangedFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
     ?wrangler_io("\n The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
-    ok.
+    {ok, "Refactoring finished."}.
     %%{ok, ChangedFiles}.
 
 
@@ -159,7 +158,7 @@ get_new_name(Sub, NewRegExp) ->
 	0 -> NewRegExp;
 	N -> Prefix = string:sub_string(NewRegExp, 1, N-1), 
 	     case Sub of 
-		 [] -> exit({error,"Can not infer new module names, please check the new module name pattern specified!"});
+		 [] -> throw({error,"Can not infer new module names, please check the new module name pattern specified!"});
 		 _  -> Sub1 = hd(Sub),
 		       get_new_name(tl(Sub), Prefix++Sub1++string:sub_string(NewRegExp,N+1))
 	     end

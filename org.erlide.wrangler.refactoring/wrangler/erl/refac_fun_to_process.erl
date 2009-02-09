@@ -29,7 +29,7 @@
 %% =====================================================================
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
 %%
--spec(fun_to_process/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [filename()]} | {error, string()}).	     
+-spec(fun_to_process/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [filename()]} |{undecidables, string()}| {error, string()}).	     
 fun_to_process(FName, Line, Col, ProcessName, SearchPaths) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, emacs).
 
@@ -38,7 +38,8 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths) ->
 fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths) ->
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, emacs).
 
--spec(fun_to_process_eclipse/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [{filename(), filename(), string()}]} | {error, string()}).
+-spec(fun_to_process_eclipse/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [{filename(), filename(), string()}]} | 
+											     {undecidables, string()} | {error, string()}).
 fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, eclipse).
 
@@ -79,13 +80,13 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, Editor) ->
 					     case Editor of 
 						 emacs ->
 						     refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]), {ok, [FName]};
-						 eclipse ->
+	 					 eclipse ->
 						     Res = [{FName, FName, refac_prettypr:print_ast(AnnAST2)}],
 						     {ok, Res}
 					     end
 				     end;
 				{error, Reason}-> {error, Reason};
-				undecidables -> {undecidables}
+				undecidables -> {undecidables, "There are undeciable cases."}
 				end;
 		       true ->
 			    {error, "This function is not defined in this module; please initiate this refactoring from the  module where it is defined."}

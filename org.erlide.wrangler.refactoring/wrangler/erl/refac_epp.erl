@@ -24,7 +24,7 @@
 -export([parse_file/3]).
 -export([interpret_file_attribute/1]).
 -export([scan_file/3]).
-
+-export([expand_macros/2]).
 %% Epp state record.
 -record(epp, {file,				%Current file
 	      line={1,1},			%Current line number  %% modified by Huiqing Li
@@ -80,8 +80,8 @@ parse_erl_form(Epp) ->
 macro_defs(Epp) ->
     epp_request(Epp, macro_defs).
 
-%% final_state(Epp) ->
-%%     epp_request(Epp, state).
+final_state(Epp) ->
+     epp_request(Epp, state).
 
 %% format_error(ErrorDescriptor) -> String
 %%  Return a string describing the error.
@@ -135,12 +135,11 @@ parse_file(Ifile, Path, Predefs) ->
     case open(Ifile, Path, Predefs) of
 	{ok,Epp} ->
 	    Forms = parse_file(Epp),
-	   %% Macros = macro_defs(Epp),
-	   %% io:format("Macros:\n~p\n", [Macros]),
-	   %% #epp{macs=Ms, uses=UMs}= final_state(Epp),
+	    #epp{macs=Ms, uses=UMs}= final_state(Epp),
 	    close(Epp),
-	    {ok, Forms};
-	   %% {ok,Forms, {dict:to_list(Ms), dict:to_list(UMs)}};
+	    %% Modified by Huiqing, this function returns both the AST 
+	    %% and macro infomation;
+	    {ok,Forms, {dict:to_list(Ms), dict:to_list(UMs)}};
 	{error,E} ->
 	    {error,E}
     end.
@@ -816,11 +815,11 @@ expand_macros([{'?',_Lq},{var,Lm,'LINE'}|Toks], Ms) ->
     [{integer,Lm,Lm}|expand_macros(Toks, Ms)];
 expand_macros([{'?',_Lq},{var,Lm,M}|Toks], Ms) ->
     expand_macros(atom, Lm, M, Toks, Ms);
-%% Illegal macros
+%%Illegal macros
 expand_macros([{'?',_Lq},{Type,Lt}|_Toks], _Ms) ->
-    throw({error,Lt,{call,[$?|atom_to_list(Type)]}});
+     throw({error,Lt,{call,[$?|atom_to_list(Type)]}});
 expand_macros([{'?',_Lq},{_Type,Lt,What}|_Toks], _Ms) ->
-    throw({error,Lt,{call,[$?|io_lib:write(What)]}});
+     throw({error,Lt,{call,[$?|io_lib:write(What)]}});
 
 expand_macros([T|Ts], Ms) ->
     [T|expand_macros(Ts, Ms)];

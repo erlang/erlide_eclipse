@@ -42,7 +42,7 @@
 expr_search(FileName, Start, End) ->
     ?wrangler_io("\nCMD: ~p:expr_search(~p, ~p,~p).\n", [?MODULE, FileName, Start, End]),
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, []),
-    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
+    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End) of 
 	[E|Es] -> 
 	    Res = case Es == [] of 
 		      true ->
@@ -75,7 +75,7 @@ search_one_expr(Tree, Exp) ->
 					case BdStructExp == BdStructT of 
 					    true ->
 						{{StartLn, StartCol}, {EndLn, EndCol}}= refac_util:get_range(T),
-						Acc ++ [{StartLn, StartCol, EndLn, EndCol}];
+						Acc ++ [{StartLn, StartCol, EndLn, EndCol+1}];
 					    _  -> Acc
 					end;
 				_ -> Acc
@@ -112,7 +112,7 @@ get_clone(List1, List2) ->
 				En = lists:last(List22),
 			        {{StartLn, StartCol}, _EndLoc} = refac_util:get_range(E1),
 				{_StartLoc1, {EndLn, EndCol}} = refac_util:get_range(En),
-				[{StartLn, StartCol, EndLn, EndCol}] ++ get_clone(List1, tl(List2));
+				[{StartLn, StartCol, EndLn, EndCol+1}] ++ get_clone(List1, tl(List2));
 			_ -> get_clone(List1, tl(List2))
 		    end;				       
 		    _ -> get_clone(List1, tl(List2))

@@ -80,17 +80,19 @@
 -export([generalise/5, generalise_eclipse/5]).
 
 %% temporally exported for testing purposed.
--export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/7, gen_fun_2/7, gen_fun_1_eclipse/7, gen_fun_2_eclipse/7]).
+-export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/7, gen_fun_1_eclipse/7, gen_fun_2_eclipse/7]).
 
 %% =====================================================================
 %% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[string()])-> term()
 %%         Pos = {integer(), integer()}
--spec(generalise/5::(filename(),pos(), pos(),string(), [dir()]) -> {ok, string()} | {error, string()}).	     
+-spec(generalise/5::(filename(),pos(), pos(),string(), [dir()]) -> {ok, string()} | {error, string()}
+								    |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).     
 
 generalise(FileName, Start, End, ParName, SearchPaths) ->
     generalise(FileName, Start, End, ParName, SearchPaths, emacs).
 
--spec(generalise_eclipse/5::(filename(),pos(), pos(),string(), dir()) -> {ok, [{filename(), filename(), string()}]}).
+-spec(generalise_eclipse/5::(filename(),pos(), pos(),string(), dir()) -> {ok, [{filename(), filename(), string()}]}
+                              |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).
 generalise_eclipse(FileName, Start, End, ParName, SearchPaths) ->
     generalise(FileName, Start, End, ParName, SearchPaths, eclipse).
     
@@ -112,25 +114,20 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 					ParName1 = list_to_atom(ParName),
 					case gen_cond_analysis(Fun, Exp1, ParName1) of 
 					    ok -> 
-						Exp_Free_Vars = refac_util:get_free_vars(Exp1),
-						case Exp_Free_Vars==[] of 
-						    true -> SideEffect = refac_util:has_side_effect(FileName, Exp1, SearchPaths),
-							    case SideEffect of  
-								unknown -> {unknown_side_effect, [ParName1, FunName, FunArity, FunDefPos,Exp1]};
-								_ ->AnnAST1=gen_fun(AnnAST, ParName1, 
-										    FunName, FunArity, FunDefPos,Info, Exp1, SideEffect),
-								    case Editor of 
-									emacs ->
-									    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-									    {ok, "Refactor succeeded"};
-									eclipse  ->
-									    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
-									    {ok, Res}
-								    end
-							    end;	     
-						    false ->
-							{free_vars, [ParName1, FunName, FunArity, FunDefPos, Exp1]}
-						end;
+						SideEffect = refac_util:has_side_effect(FileName, Exp1, SearchPaths),
+						case SideEffect of  
+						    unknown -> {unknown_side_effect, {ParName1, FunName, FunArity, FunDefPos,Exp1}};
+						    _ ->AnnAST1=gen_fun(AnnAST, ParName1, 
+									FunName, FunArity, FunDefPos,Info, Exp1, SideEffect),
+							case Editor of 
+							    emacs ->
+								refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
+								{ok, "Refactor succeeded"};
+							    eclipse  ->
+								Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+								{ok, Res}
+							end
+						end;	     
 					    {error, Reason} -> {error, Reason}
 					end 
 			     end;
@@ -146,14 +143,24 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 make_actual_parameter(Exp, SideEffect) ->
     FreeVars = lists:map(fun({V,_}) -> V end, refac_util:get_free_vars(Exp)),
     case FreeVars==[] of 
-	true -> case SideEffect of 
-		    true -> case refac_syntax:type(Exp) of
-				fun_expr -> Exp;
-				_ -> C = refac_syntax:clause([],[],[Exp]),
-				     refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
-			    end;
-		    _ -> Exp
-		end;
+	true -> case refac_syntax:type(Exp) of 
+		    atom -> case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp)) of 
+				{value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
+				    refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));				       
+				_ -> Exp
+			       end;
+		    module_qualifier ->
+			{value, {fun_def, {_M, _N, A, _P1, _P2}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp)),
+			refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));
+		    _ ->  case SideEffect of 
+			      true -> case refac_syntax:type(Exp) of
+					  fun_expr -> Exp;
+					  _ -> C = refac_syntax:clause([],[],[Exp]),
+					       refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
+					 end;
+			      _ -> Exp
+			  end
+		end;		
 	false -> Pars  = lists:map(fun(P) ->refac_syntax:variable(P) end, FreeVars),
 		 C = refac_syntax:clause(Pars,[],[Exp]),
 		 refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
@@ -223,11 +230,9 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, Editor) ->
 	    {ok, Res}
     end.
 
--spec(gen_fun_2/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) -> {ok, string()}).
-gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths) ->
-    gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, emacs).
 
--spec(gen_fun_2_eclipse/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) ->{ok, [{filename(), filename(),string()}]}).
+-spec(gen_fun_2_eclipse/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) ->{ok, [{filename(), filename(),string()}]}
+                                                                             |{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
 gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths) ->
     gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, eclipse).
 
@@ -257,7 +262,7 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Edi
 			{ok, Res}
 		end;
 	unknown ->
-	    {unknown_side_effect, [ParName1, FunName, FunArity, FunDefPos,Exp]}
+	    {unknown_side_effect, {ParName1, FunName, FunArity, FunDefPos,Exp}}
     end.	  
     
     

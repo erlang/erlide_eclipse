@@ -210,8 +210,8 @@ caller_funs(FName, Line, Col, SearchPaths) ->
       {ok, Def} ->
 	  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)) of
 	    {value, {fun_def, {M, F, A, _, _}}} ->
-		?wrangler_io("\nSearching caller function of ~p:~p/~p ...\n", [M, F, A]),
-		{Res1, Res2} = get_caller_funs(FName, AnnAST, {M, F, A}),
+		?wrangler_io("\nSearching for caller function of ~p:~p/~p ...\n", [M, F, A]),
+		{Res1, Res2} = get_caller_funs(FName, {M, F, A}, SearchPaths),
 		case refac_util:is_exported({F, A}, Info) of
 		  true ->
 		      ?wrangler_io("\nChecking client modules in the following paths: \n~p\n",
@@ -235,29 +235,27 @@ display_results(Callers, UnSures) ->
       {[], []} ->
 	  ?wrangler_io("The selected function is not called by any other functions.\n",[]);
       {_, []} ->
-	  ?wrangler_io("The selected function is called by the following function(s):\n~p\n",
-		    [Callers]);
+	  ?wrangler_io("The selected function is called by the following function(s):\n",[]),
+	    lists:map(fun({File, F, A}) -> ?wrangler_io("{File:~p, function: ~p/~p }\n", [File, F, A]) end, Callers);
       {[], [_H | _]} ->
 	  ?wrangler_io("The selected function is not explicitly called by any other functions, \n"
-		    "but please check the following expressions:\n~p\n",
-		    [UnSures]);
+		    "but please check the following expressions:\n", []),
+	   lists:map(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures);
       {[_H1 | _], [_H2 | _]} ->
-	  ?wrangler_io("The selected function is called by the following function(s):\n~p\n",
-		    [Callers]),
-	  ?wrangler_io("Please also check the following expressions:\n" 
-		    "~p\n",
-		    [UnSures])
+	    ?wrangler_io("The selected function is called by the following function(s):\n",[]),
+	    lists:map(fun({File, F, A}) -> ?wrangler_io("{File:~p, function name: ~p/~p }\n", [File, F, A]) end, Callers),
+	    ?wrangler_io("Please also check the following expressions:\n", []),
+	    lists:map(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures)		 
     end.
 
 get_caller_funs_in_client_modules(FileNames, {M, F, A}, SearchPaths) ->
-    Fun = fun(FName) ->
-		{ok, {AnnAST,_Info}}=refac_util:parse_annotate_file(FName, true, SearchPaths),
-		get_caller_funs(FName, AnnAST, {M, F, A})
-	end,
-    lists:map(Fun, FileNames).
+    lists:map(fun(FName) ->get_caller_funs(FName, {M,F,A}, SearchPaths) end, FileNames).
     
     
-get_caller_funs(FileName, AnnAST, {M, F, A}) ->		  
+get_caller_funs(FileName, {M, F, A}, SearchPaths) ->		  
+    %% 'true' is used in the following function call, so macros are not expanded.
+    %% erxpanding macros does not properly at the moment.
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
     Fun = fun(Node, {S1, S2}) ->
 		  case refac_syntax:type(Node) of 
 		      function -> 
@@ -399,7 +397,8 @@ handle_special_funs(FileName, T, {ModName, FunName, Args}, {M, F, A}, S1, S2) ->
 %%==========================================================================================
 -spec(caller_called_modules(FName::filename(), SearchPaths::[dir()]) -> ok).
 caller_called_modules(FName, SearchPaths) ->
-    {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, true, SearchPaths),
+    %% I use 'false' in the following function call, so that macro can get expanded;
+    {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths),
     AbsFileName = filename:absname(filename:join(filename:split(FName))),
     ClientFiles = wrangler_modulegraph_server:get_client_files(AbsFileName, SearchPaths),
     ClientMods = lists:map(fun({M, _Dir}) -> list_to_atom(M) end, 
@@ -449,6 +448,7 @@ long_functions_1(DirFileNames, Lines, SearchPaths) ->
     end.
 
 long_functions_2(FName, Lines, SearchPaths) ->
+    %% I don't want to expand macro definitions here, as macro is also a kind of abstraction.
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths),
     ModName = get_module_name(FName, Info),
     Fun = fun (Node, S) ->

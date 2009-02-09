@@ -52,7 +52,7 @@ start() ->
 
 init(_Args) ->
     ASTServer = {wrangler_ast_server, {wrangler_ast_server, start_ast_server, []},
-		 permanent,10000,worker,[wrangler_ast_server]},
+		 permanent,100000,worker,[wrangler_ast_server]},
     CallGraphServer={wrangler_callgraph_server, {wrangler_callgraph_server, start_callgraph_server, []},
 		     permanent, 10000, worker, [wrangler_callgraph_server]},
     ModuleGraphServer={wrangler_modulegraph_server, {wrangler_modulegraph_server, start_modulegraph_server, []},

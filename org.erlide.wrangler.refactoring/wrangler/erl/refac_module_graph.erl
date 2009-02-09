@@ -23,12 +23,10 @@
 -include("../hrl/wrangler.hrl").
 -spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
 module_graph(SearchPaths) ->
-    ?wrangler_io("\nStart calculating module graph ...\n",[]),
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     ModMap = refac_util:get_modules_by_file(Files),
-    Res =analyze_all_files(ModMap, SearchPaths),
-    ?wrangler_io("\nModule graph calculation finished.\n",[]),
-    Res.
+    analyze_all_files(ModMap, SearchPaths).
+   
     
     
 analyze_all_files([], _SearchPaths)->

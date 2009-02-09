@@ -63,10 +63,10 @@ rename_var(FName, Line, Col, NewName, SearchPaths, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_var(~p, ~p, ~p, ~p, ~p).\n", [?MODULE,FName, Line, Col, NewName, SearchPaths]),
     case refac_util:is_var_name(NewName) of
 	true ->
-	    {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths),
+	    {ok, {_AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths),
 	    NewName1 = list_to_atom(NewName), 
-	    {ok, {AnnAST1, _Info1}}= refac_util:parse_annotate_file(FName, true, SearchPaths),  %%refac_ast_server:get_ast(FName) 
-	    case refac_util:pos_to_var_name(AnnAST, {Line, Col}) of
+	    {ok, {AnnAST1, _Info1}}= refac_util:parse_annotate_file(FName, true, SearchPaths),  
+	    case refac_util:pos_to_var_name(AnnAST1, {Line, Col}) of
 		{ok, {VarName, DefinePos, C}} ->
 		    if DefinePos == [{0, 0}] -> {error, "Renaming of a free variable is not supported!"};
 		       true ->

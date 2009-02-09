@@ -624,8 +624,8 @@ scan_macros([], As, _Opt) ->
 %% Rewriting to a call which will be recognized by the post-parse pass
 %% (we insert parentheses to preserve the precedences when parsing).
 
-macro(L, {Type, _, A}, Rest, As, Opt) ->
-    scan_macros_1([], Rest, [{atom,L,macro_atom(Type,A)} | As], Opt).
+macro(L, {Type, LA, A}, Rest, As, Opt) ->
+    scan_macros_1([], Rest, [{atom,L,macro_atom(Type,LA,A)} | As], Opt).
 
 macro_call([{'(',_}, {')',_}], L, {_, Ln, _}=N, Rest, As, Opt) ->
     {Open, Close} = parentheses(As),
@@ -642,10 +642,10 @@ macro_call([{'(',_} | Args], L, {_, Ln, _}=N, Rest, As, Opt) ->
 					 {'(',L}, N, {',',Ln}],
 				As), Opt).
 
-macro_atom(atom, A) ->
-    list_to_atom(?atom_prefix ++ atom_to_list(A));
-macro_atom(var, A) ->
-    list_to_atom(?var_prefix ++ atom_to_list(A)).
+macro_atom(atom, {Ln, Col},A) ->
+    list_to_atom(?atom_prefix ++ integer_to_list(Ln) ++ "_"++integer_to_list(Col) ++ "_"++atom_to_list(A));
+macro_atom(var, {Ln, Col}, A) ->
+    list_to_atom(?var_prefix ++ integer_to_list(Ln) ++ "_"++integer_to_list(Col) ++ "_"++atom_to_list(A)).
 
 %% don't insert parentheses after a string token, to avoid turning
 %% `"string" ?macro' into a "function application" `"string"(...)'
@@ -689,13 +689,19 @@ rewrite(Node) ->
     case refac_syntax:type(Node) of
 	atom ->
 	    case atom_to_list(refac_syntax:atom_value(Node)) of
-		?atom_prefix ++ As ->
-		    A1 = list_to_atom(As),
-		    N = refac_syntax:copy_pos(Node, refac_syntax:atom(A1)),
+		?atom_prefix ++As ->
+		    {L,_} = refac_syntax:get_pos(Node),
+		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
+		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
+		    A = list_to_atom(tl(A2)),	
+		    N = refac_syntax:set_pos(refac_syntax:atom(A),{L,list_to_integer(Col)}),
 		    refac_syntax:copy_pos(Node, refac_syntax:macro(N));
-		?var_prefix ++ As ->
-		    A1 = list_to_atom(As),
-		    N = refac_syntax:copy_pos(Node, refac_syntax:variable(A1)),
+		?var_prefix ++As ->
+		    {L,_} = refac_syntax:get_pos(Node),
+		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
+		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
+		    A = list_to_atom(tl(A2)),		    
+		    N = refac_syntax:set_pos(refac_syntax:variable(A), {L,list_to_integer(Col)}),
 		    refac_syntax:copy_pos(Node, refac_syntax:macro(N));
 		_ ->
 		    Node
