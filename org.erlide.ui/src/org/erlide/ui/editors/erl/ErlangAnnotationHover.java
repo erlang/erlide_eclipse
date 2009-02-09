@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -25,6 +25,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
 
+@SuppressWarnings("restriction")
 public class ErlangAnnotationHover implements IAnnotationHover {
 
 	public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
@@ -126,6 +127,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	/*
 	 * Formats a message as HTML text.
 	 */
+	@SuppressWarnings("restriction")
 	private String formatSingleMessage(String message) {
 		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
@@ -138,6 +140,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	/*
 	 * Formats several message as HTML text.
 	 */
+	@SuppressWarnings("restriction")
 	private String formatMultipleMessages(List<String> messages) {
 		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);

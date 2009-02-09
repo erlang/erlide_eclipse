@@ -52,6 +52,7 @@ import org.erlide.ui.util.IColorManager;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
+@SuppressWarnings("restriction")
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	final ErlangEditor editor;
@@ -251,6 +252,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
 
+			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				return new DefaultInformationControl(parent, SWT.NONE,

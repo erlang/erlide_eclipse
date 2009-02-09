@@ -55,6 +55,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDoc;
 
+@SuppressWarnings("restriction")
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
 
@@ -193,6 +194,7 @@ public class ErlTextHover implements ITextHover,
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new IInformationControlCreator() {
 
+			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				final int shellStyle = SWT.RESIZE | SWT.TOOL;
@@ -211,6 +213,7 @@ public class ErlTextHover implements ITextHover,
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {
 
+			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				if (BrowserInformationControl.isAvailable(parent)) {

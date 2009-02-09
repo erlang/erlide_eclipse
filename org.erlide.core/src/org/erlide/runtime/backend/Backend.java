@@ -481,7 +481,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public void checkCodePath() {
 		try {
 			OtpErlangObject path = rpcx("code", "get_path", "");
-			ErlLogger.debug("code path for %s: %s", getName(), path);
+			// ErlLogger.debug("code path for %s: %s", getName(), path);
 		} catch (Throwable e) {
 			ErlLogger.warn("error getting path for %s: %s", getName(), e
 					.getMessage());

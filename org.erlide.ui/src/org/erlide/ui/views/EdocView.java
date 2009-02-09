@@ -58,6 +58,7 @@ import org.osgi.framework.Bundle;
  * View which shows Edoc for a given Erlang element.
  * 
  */
+@SuppressWarnings("restriction")
 public class EdocView extends AbstractInfoView {
 
 	/**
@@ -258,6 +259,7 @@ public class EdocView extends AbstractInfoView {
 	/*
 	 * @see AbstractInfoView#internalCreatePartControl(Composite)
 	 */
+	@SuppressWarnings("restriction")
 	@Override
 	protected void internalCreatePartControl(final Composite parent) {
 		try {
