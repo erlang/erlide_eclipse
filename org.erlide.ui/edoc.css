@@ -32,6 +32,10 @@ SPAN.code { font-family: courier; font-weight: normal; }
 {
 	background-color: #EEEEFF;
 }
+A:link {text-decoration: none; color: black; font-family: courier; }
+A:visited {text-decoration: none; color: black; font-family: courier; }
+A:active {text-decoration: none; color: black; font-family: courier;}
+A:hover {text-decoration: none; color: black; font-family: courier; }
 PRE
 {
 	font-family: courier;
