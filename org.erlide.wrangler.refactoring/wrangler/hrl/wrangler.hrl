@@ -10,12 +10,6 @@
 
 -record(attr, {pos = {0,0}, ann = [], com = none}).
 
-%% Will be edited by Makefile 
-%% -define(WRANGLER_DIR, "c:/distel/share/distel/wrangler").
-
-%% Edited by Gyorgy Orosz
--define(WRANGLER_DIR, filename:dirname(lists:filter(fun(X)-> lists:suffix("wrangler/ebin", X) end, code:get_path()))  ).
-
 -define(DEFAULT_LOC, 
         {0, 0}).  %% default defining location.
 -define(DEFAULT_MODULE,
@@ -23,13 +17,15 @@
 
 -define(ModuleGraphTab, wrangler_modulegraph_tab).
 
-
+%% Edited by Orosz Gyorgy
 %% -define(EMACS, true).
 
 -ifdef(EMACS).
+-define(WRANGLER_DIR, "c:/distel/share/distel/wrangler").
 -define(wrangler_io(__String, __Args), io:format(__String, __Args)).
 -else.
 -define(wrangler_io(__String, __Args), ok).
+-define(WRANGLER_DIR, filename:dirname(lists:filter(fun(X)-> lists:suffix("wrangler/ebin", X) end, code:get_path()))  ).
 -endif.
       
 
