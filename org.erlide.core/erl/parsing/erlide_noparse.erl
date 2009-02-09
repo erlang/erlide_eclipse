@@ -160,6 +160,15 @@ cac(attribute, Attribute) ->
     ?D(Attribute),
     case Attribute of
         [#token{kind='-', offset=Offset, line=Line},
+         #token{kind=Kind, line=_Line, offset=_Offset} | Args]
+	  when Kind=:='spec'; Kind=:='type' ->
+            #token{line=LastLine, offset=LastOffset, 
+                   length=LastLength} = last_not_eof(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            Extra = to_string(Args),
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
+                       name=Kind, args=get_attribute_args(Kind, Args, Args), extra=Extra};
+        [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
             #token{line=LastLine, offset=LastOffset, 
@@ -201,8 +210,12 @@ check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
     attribute;
-check_class(_) ->
-    ?D(x),
+check_class([#token{kind = '-'}, #token{kind = 'spec'} | _]) ->
+    attribute;
+check_class([#token{kind = '-'}, #token{kind = 'type'} | _]) ->
+    attribute;
+check_class(_X) ->
+    ?D(lists:sublist(_X, 5)),
     other.
 
 get_first_of_kind(Kind, Tokens) ->

@@ -290,7 +290,8 @@ public class ErlParser {
 	private IErlMember addAttribute(final IErlModule parent,
 			final OtpErlangObject pos, final OtpErlangAtom name,
 			final OtpErlangObject val, final OtpErlangObject extra) {
-		if ("import".equals(name.atomValue())) {
+		final String nameS = name.atomValue();
+		if ("import".equals(nameS)) {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) val;
 				if (t.elementAt(0) instanceof OtpErlangAtom
@@ -306,13 +307,13 @@ public class ErlParser {
 					return imp;
 				}
 			}
-		} else if ("export".equals(name.atomValue())) {
+		} else if ("export".equals(nameS)) {
 			final OtpErlangList functionList = (OtpErlangList) val;
 			final ErlExport ex = new ErlExport(parent, functionList);
 			setPos(ex, pos);
 			// ex.setParseTree(val);
 			return ex;
-		} else if ("record".equals(name.atomValue())) {
+		} else if ("record".equals(nameS)) {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
 				if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
@@ -341,12 +342,18 @@ public class ErlParser {
 				// r.setParseTree(val);
 				return r;
 			}
-		} else if ("define".equals(name.atomValue())) {
+		} else if (nameS.equals("type") || nameS.equals("spec")) {
+			final String s = Util.stringValue(extra);
+			final ErlAttribute a = new ErlAttribute((ErlElement) parent, nameS,
+					null, s);
+			setPos(a, pos);
+			// a.setParseTree(val);
+			return a;
+
+		} else if ("define".equals(nameS)) {
 			if (val instanceof OtpErlangAtom) {
 				final OtpErlangAtom o = (OtpErlangAtom) val;
-				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-						.stringValue()
-						: null;
+				final String s = Util.stringValue(extra);
 				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue(), s);
 				setPos(r, pos);
 				// r.setParseTree(val);
@@ -389,8 +396,8 @@ public class ErlParser {
 			}
 		}
 
-		final ErlAttribute a = new ErlAttribute((ErlElement) parent, name
-				.atomValue(), val1);
+		final ErlAttribute a = new ErlAttribute((ErlElement) parent, nameS,
+				val1, null);
 		setPos(a, pos);
 		// a.setParseTree(val);
 		return a;

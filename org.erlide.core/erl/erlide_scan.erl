@@ -211,7 +211,7 @@ scan([C|Cs], _Stack, Toks, Pos, State, Errors)
   when C >= $A, C =< $Z ->                              % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
-  when C >= $À, C =< $Þ, C =/= $× ->                     % Variables
+  when C >= $Ã€, C =< $Ãž, C =/= $Ã— ->                     % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([$_|Cs], _Stack, Toks, Pos, State, Errors) ->      % _Variables
     sub_scan_name(Cs, [$_,fun scan_variable/6], Toks, Pos, State, Errors);
@@ -679,6 +679,7 @@ reserved_word('bsr') -> true;
 reserved_word('or') -> true;
 reserved_word('xor') -> true;
 reserved_word('spec') -> true;
+reserved_word('type') -> true;
 reserved_word(_) -> false.
 
 %% comments are used only for highlighting

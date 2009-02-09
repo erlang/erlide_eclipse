@@ -21,14 +21,17 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class ErlAttribute extends ErlMember implements IErlAttribute {
 
 	private final OtpErlangObject fValue;
+	private final String fExtra;
 
 	/**
 	 * @param parent
 	 * @param name
 	 */
-	protected ErlAttribute(ErlElement parent, String name, OtpErlangObject value) {
+	protected ErlAttribute(final ErlElement parent, final String name,
+			final OtpErlangObject value, final String extra) {
 		super(parent, name);
 		fValue = value;
+		fExtra = extra;
 	}
 
 	/**
@@ -53,6 +56,8 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 		String sval;
 		if (fValue != null) {
 			sval = ": " + pp(fValue);
+		} else if (fExtra != null) {
+			sval = ": " + fExtra;
 		} else {
 			sval = "";
 		}
