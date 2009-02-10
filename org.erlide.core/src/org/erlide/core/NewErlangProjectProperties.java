@@ -116,7 +116,8 @@ public class NewErlangProjectProperties {
 		}
 		root.put(INCLUDES, PreferencesUtils.packList(includes));
 		for (SourceLocation loc : sources) {
-			loc.store((IEclipsePreferences) root.node("baz"));
+			loc.store((IEclipsePreferences) root.node("sources."
+					+ Integer.toString(loc.getId())));
 		}
 		root.flush();
 	}

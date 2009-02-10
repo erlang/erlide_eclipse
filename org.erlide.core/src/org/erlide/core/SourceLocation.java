@@ -34,6 +34,7 @@ public final class SourceLocation extends DependencyLocation {
 			List<String> excludePatterns, String output,
 			Map<String, String> compilerOptions,
 			Map<String, Map<String, String>> fileCompilerOptions) {
+		super();
 		Assert.isLegal(directory != null,
 				"SourceLocation requires a non-null directory");
 		this.directory = directory;

@@ -13,6 +13,22 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
 public abstract class DependencyLocation {
+	private static int gid = 1;
+
+	public static synchronized int newId() {
+		return gid++;
+	}
+
+	private int id;
+
+	public DependencyLocation() {
+		id = newId();
+	}
+
+	public int getId() {
+		return id;
+	}
+
 	public abstract void load(IEclipsePreferences root)
 			throws BackingStoreException;
 

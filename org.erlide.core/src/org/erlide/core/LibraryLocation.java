@@ -30,6 +30,7 @@ public final class LibraryLocation extends DependencyLocation {
 
 	public LibraryLocation(List<SourceLocation> sources, List<String> includes,
 			String output, List<LibraryLocation> libraries) {
+		super();
 		if (sources != null) {
 			this.sources = sources;
 		}

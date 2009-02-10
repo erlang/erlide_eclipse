@@ -22,7 +22,8 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+-define(DEBUG, 1). 
+%%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").

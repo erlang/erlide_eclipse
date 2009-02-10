@@ -22,6 +22,7 @@ public final class ProjectLocation extends DependencyLocation {
 	private IProject project;
 
 	public ProjectLocation(IProject project) {
+		super();
 		Assert.isLegal(project != null,
 				"ProjectLocation requires a non-null project");
 		this.project = project;
