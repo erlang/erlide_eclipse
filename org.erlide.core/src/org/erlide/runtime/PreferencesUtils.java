@@ -46,16 +46,14 @@ public final class PreferencesUtils {
 		}
 	}
 
-	public static String readFile(String file) {
-		String res = null;
+	public static List<String> readFile(String file) {
+		List<String> res = new ArrayList<String>();
 		try {
-			StringBuilder buf = new StringBuilder();
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				buf.append(line);
+				res.add(line);
 			}
-			res = buf.toString();
 		} catch (IOException e) {
 		}
 		return res;

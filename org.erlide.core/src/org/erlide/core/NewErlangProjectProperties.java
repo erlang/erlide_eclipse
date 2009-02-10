@@ -7,7 +7,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
@@ -51,14 +56,18 @@ public class NewErlangProjectProperties {
 		output = old.getOutputDir();
 		compilerOptions.put("debug_info", "true");
 
+		IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+
 		String exmodf = old.getExternalModulesFile();
-		String exmod = PreferencesUtils.readFile(exmodf);
-		List<String> externalModules = PreferencesUtils.unpackList(exmod, "\n");
+		IPath ff = pvman.resolvePath(new Path(exmodf));
+		List<String> externalModules = PreferencesUtils.readFile(ff.toString());
 		List<SourceLocation> sloc = makeSourceLocations(externalModules);
 
 		String exincf = old.getExternalModulesFile();
-		String exinc = PreferencesUtils.readFile(exincf);
-		List<String> externalIncludes = PreferencesUtils.unpackList(exinc);
+		ff = pvman.resolvePath(new Path(exincf));
+		List<String> exinc = PreferencesUtils.readFile(ff.toString());
+		List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
 		LibraryLocation loc = new LibraryLocation(sloc, externalIncludes, null,
 				null);
@@ -72,40 +81,34 @@ public class NewErlangProjectProperties {
 		List<String> modules = new ArrayList<String>();
 		for (String mod : externalModules) {
 			if (mod.endsWith(".erlidex")) {
-				String str = PreferencesUtils.readFile(mod);
-				List<String> mods = PreferencesUtils.unpackList(str, "\n");
+				List<String> mods = PreferencesUtils.readFile(mod);
 				modules.addAll(mods);
 			} else {
 				modules.add(mod);
 			}
 		}
 
-		Map<String, Map<String, List<String>>> grouped = new HashMap<String, Map<String, List<String>>>();
+		Map<String, List<String>> grouped = new HashMap<String, List<String>>();
 		for (String mod : modules) {
-			int i = mod.indexOf('/');
-			i = mod.indexOf('/', i + 1);
-			String loc = mod.substring(1, i);
-			mod = mod.substring(i + 1);
-			i = mod.lastIndexOf('/');
-			String path = mod.substring(1, i);
+			int i = mod.lastIndexOf('/');
+			String path = mod.substring(0, i);
 			String file = mod.substring(i + 1);
 
-			System.out.println("FOUND: '" + loc + "' '" + path + "' '" + file
-					+ "'");
-			Map<String, List<String>> val = grouped.get(loc);
-			if (val == null) {
-				val = new HashMap<String, List<String>>();
-			}
-			List<String> pval = val.get(path);
+			System.out.println("FOUND: '" + path + "' '" + file + "'");
+			List<String> pval = grouped.get(path);
 			if (pval == null) {
 				pval = new ArrayList<String>();
 			}
 			pval.add(file);
-			val.put(path, pval);
-			grouped.put(loc, val);
-
+			grouped.put(path.toString(), pval);
 		}
 		System.out.println(grouped);
+
+		for (Entry<String, List<String>> loc : grouped.entrySet()) {
+			SourceLocation location = new SourceLocation(loc.getKey(), loc
+					.getValue(), null, null, null, null);
+			result.add(location);
+		}
 
 		return result;
 	}
