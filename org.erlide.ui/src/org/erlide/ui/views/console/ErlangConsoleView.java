@@ -96,7 +96,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 import erlang.ErlideBackend;
 
-@SuppressWarnings("restriction")
 public class ErlangConsoleView extends ViewPart implements BackendEventListener {
 
 	public static final String ID = "org.erlide.ui.views.console";

@@ -52,7 +52,6 @@ import org.erlide.ui.util.IColorManager;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-@SuppressWarnings("restriction")
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	final ErlangEditor editor;

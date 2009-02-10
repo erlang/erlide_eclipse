@@ -55,7 +55,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDoc;
 
-@SuppressWarnings("restriction")
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
 
@@ -81,6 +80,7 @@ public class ErlTextHover implements ITextHover,
 		return new Region(token.getOffset(), token.getLength());
 	}
 
+	@SuppressWarnings("restriction")
 	public String getHoverInfo(final ITextViewer textViewer,
 			final IRegion hoverRegion) {
 		StringBuffer result = new StringBuffer();

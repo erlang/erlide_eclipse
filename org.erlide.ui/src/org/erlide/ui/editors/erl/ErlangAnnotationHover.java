@@ -25,7 +25,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
 
-@SuppressWarnings("restriction")
 public class ErlangAnnotationHover implements IAnnotationHover {
 
 	public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {

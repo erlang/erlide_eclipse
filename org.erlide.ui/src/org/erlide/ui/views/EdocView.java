@@ -259,7 +259,6 @@ public class EdocView extends AbstractInfoView {
 	/*
 	 * @see AbstractInfoView#internalCreatePartControl(Composite)
 	 */
-	@SuppressWarnings("restriction")
 	@Override
 	protected void internalCreatePartControl(final Composite parent) {
 		try {
