@@ -498,26 +498,28 @@ fix_proposals([{FunctionName, Arity} | FALRest], [Doc | DLRest], PrefixLength, A
                   [{FunWithArity, FunWithParameters, Pars, Doc} | Acc]).
 
 extract_pars(FunctionName, Arity, Offset, Doc) ->
-    Start1 = "<a name =",
-    End1 = "</span>",
-    Sub1 = erlide_util:get_all_between_strs(Doc, Start1, End1),
-    Start2 = "<CODE>",
-    End2 = "</CODE>",
-    Sub2 = erlide_util:get_all_between_strs(Doc, Start2, End2),
+    Sub1 = erlide_util:get_all_between_strs(Doc, "<CODE>", "</CODE>"),
+    Sub2 = erlide_util:get_all_between_strs(Doc, "<a name =", "</span>"),
     try_make_pars(Sub1++Sub2, FunctionName, Arity, Offset).
 
 try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
 try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
-	{ok, Tokens, _} = erlide_scan:string(Sub),
-	?D(Tokens),
-	case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
+    case erlide_scan:string_ws(Sub) of
+	{ok, TokensWs, _} ->
+	    Tokens = erlide_scan:filter_ws(TokensWs),
+	    ?D(Tokens),
+	    case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
 		bad_tokens ->
-			try_make_pars(Rest, FunctionName, Arity, Offset);
+		    try_make_pars(Rest, FunctionName, Arity, Offset);
 		T ->
-			?D(T),
-			T
-	end.
+		    ?D(T),
+		    T
+	    end;
+	_E ->
+	    ?D(_E),
+	    try_make_pars(Rest, FunctionName, Arity, Offset)
+    end.
 
 skip_lpar([{'(', _} | Rest]) ->
     Rest;

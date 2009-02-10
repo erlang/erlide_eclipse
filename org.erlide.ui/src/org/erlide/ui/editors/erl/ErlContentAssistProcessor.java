@@ -102,8 +102,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 				final IErlProject project = module == null ? null : module
 						.getProject();
 				final String moduleName = aPrefix.substring(0, colonPos);
-				result = externalCallCompletions(b, project, moduleName,
-						offset, aPrefix.substring(colonPos + 1), colonPos);
+				result = externalCallCompletions(b, project,
+						unquote(moduleName), offset, aPrefix
+								.substring(colonPos + 1), colonPos);
 			} else if (hashMarkPos >= 0) {
 				if (dotPos >= 0) {
 					final String recordName = aPrefix.substring(
@@ -467,6 +468,14 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 				+ v.substring(1) : v;
 	}
 
+	private String unquote(final String moduleName) {
+		if (moduleName.length() > 0 && moduleName.charAt(0) == '\'') {
+			return moduleName.substring(1, moduleName.length() - 1);
+		} else {
+			return moduleName;
+		}
+	}
+
 	/**
 	 * Check if the string looks like an erlang parameter
 	 * 
@@ -565,7 +574,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 			for (int n = offset - 1; n >= 0; n--) {
 				final char c = doc.getChar(n);
 				if (!isErlangIdentifierChar(c) && c != ':' && c != '.'
-						&& c != '#' && c != '?' && c != '{') {
+						&& c != '#' && c != '?' && c != '{' && c != '\'') {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}
