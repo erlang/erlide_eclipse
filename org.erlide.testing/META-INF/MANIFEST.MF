@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.ui,
  org.junit4
 Bundle-ClassPath: erlide-testing.jar
-Export-Package: org.erlide.testing,
+Export-Package: org.erlide.core.preferences,
+ org.erlide.runtime.backend,
+ org.erlide.testing,
  org.erlide.testing.erlang,
  org.erlide.testing.java
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -18,7 +18,8 @@ import java.util.Arrays;
 public class AssemblaHandler extends TicketHandlerImpl {
 
 	private static final String MYURL = "http://www.assembla.com/spaces/erlide/tickets/";
-	private static final String LOGINURL = "https://www.assembla.com/users/login";
+	// private static final String LOGINURL =
+	// "https://www.assembla.com/users/login";
 
 	private static byte[] userHash = { (byte) 248, (byte) 254, (byte) 185,
 			(byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147, (byte) 211,

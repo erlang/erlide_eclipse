@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangProjectProperties;
+import org.erlide.runtime.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
@@ -174,8 +175,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 					10));
 			final String[] incs = dirs(inc, loc);
 
-			source.setText(ErlangProjectProperties.pack(srcs));
-			include.setText(ErlangProjectProperties.pack(incs));
+			source.setText(PreferencesUtils.packArray(srcs));
+			include.setText(PreferencesUtils.packArray(incs));
 		}
 	}
 
@@ -243,7 +244,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
 			prefs.setRuntimeName(backendName.getText());
-			prefs.setExternalModules(externalModules.getText());
+			prefs.setExternalModulesFile(externalModules.getText());
 
 			setPageComplete(testPageComplete());
 		}
@@ -267,7 +268,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		externalModules.setToolTipText("enter a list of folders");
 		// gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		// externalModules.setLayoutData(gd);
-		externalModules.setText(prefs.getExternalModules());
+		externalModules.setText(prefs.getExternalModulesFile());
 		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gd.minimumWidth = 50;
 		gd.widthHint = 384;
@@ -290,7 +291,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		String last = externalModules.getText();
 		// if (last.length() == 0) {
 		// last =
-		//DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
+		// DebugUIPlugin.getDefault().getDialogSettings().get(LAST_PATH_SETTING);
 		// }
 		if (last == null) {
 			last = ""; //$NON-NLS-1$

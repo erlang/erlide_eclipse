@@ -299,8 +299,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 			runtimeName.select(db);
 		}
 		if (ErlideUtil.isTest()) {
-			externalModules.setText(prefs.getExternalModules());
-			externalIncludes.setText(prefs.getExternalIncludesString());
+			externalModules.setText(prefs.getExternalModulesFile());
+			externalIncludes.setText(prefs.getExternalIncludesFile());
 		}
 		nodeName.setText(prefs.getNodeName());
 		cookie.setText(prefs.getCookie());
@@ -325,8 +325,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		prefs.setCookie(cookie.getText());
 		prefs.setUniqueName(makeUniqueButton.getSelection());
 		if (ErlideUtil.isTest()) {
-			prefs.setExternalModules(externalModules.getText());
-			prefs.setExternalIncludes(externalIncludes.getText());
+			prefs.setExternalModulesFile(externalModules.getText());
+			prefs.setExternalIncludesFile(externalIncludes.getText());
 		}
 		final IEclipsePreferences root = new ProjectScope(prefs.getProject())
 				.getNode(ErlangPlugin.PLUGIN_ID);

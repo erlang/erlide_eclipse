@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -53,6 +53,11 @@ public final class SourceLocation extends DependencyLocation {
 		}
 	}
 
+	public SourceLocation(IEclipsePreferences sn) {
+		super();
+		load(sn);
+	}
+
 	public String getDirectory() {
 		return directory;
 	}
@@ -79,7 +84,9 @@ public final class SourceLocation extends DependencyLocation {
 
 	@Override
 	public void load(IEclipsePreferences root) {
-
+		directory = root.get(DIRECTORY, null);
+		Assert.isLegal(directory != null,
+				"SourceLocation requires a non-null directory");
 	}
 
 	@Override

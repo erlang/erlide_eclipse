@@ -102,6 +102,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -1548,12 +1549,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IFileEditorInput fileInput = (IFileEditorInput) input;
 				final ErlangProjectProperties prefs = ErlangCore
 						.getProjectProperties(fileInput.getFile().getProject());
-				fExternalModules = prefs.getExternalModules();
+				fExternalModules = prefs.getExternalModulesFile();
 			} else {
 				fExternalModules = "";
 			}
 			final String globalExternalModules = getGlobalExternalModulesFile();
-			fExternalModules = ErlangProjectProperties.pack(new String[] {
+			fExternalModules = PreferencesUtils.packArray(new String[] {
 					fExternalModules, globalExternalModules });
 		}
 		return fExternalModules;
@@ -1566,12 +1567,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IFileEditorInput fileInput = (IFileEditorInput) input;
 				final ErlangProjectProperties prefs = ErlangCore
 						.getProjectProperties(fileInput.getFile().getProject());
-				fExternalIncludes = prefs.getExternalIncludesString();
+				fExternalIncludes = prefs.getExternalIncludesFile();
 			} else {
 				fExternalIncludes = "";
 			}
 			final String globalExternalIncludes = getGlobalExternalIncludesFile();
-			fExternalIncludes = ErlangProjectProperties.pack(new String[] {
+			fExternalIncludes = PreferencesUtils.packArray(new String[] {
 					fExternalIncludes, globalExternalIncludes });
 		}
 		return fExternalIncludes;

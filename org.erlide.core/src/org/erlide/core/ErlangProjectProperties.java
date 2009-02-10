@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RuntimeInfo;
@@ -30,16 +31,14 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties implements IPreferenceChangeListener {
 
-	private static final String PATH_SEP = ";";
-
 	private IProject project;
 
 	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
 	private String usePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
 	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
-	private String externalIncludes = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
-	private String externalModules = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
+	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 
 	private String runtimeVersion;
 	private String runtimeName;
@@ -74,6 +73,16 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	public ErlangProjectProperties load(IEclipsePreferences node) {
 		if (project == null) {
 			return this;
+		}
+
+		if ("true".equals(System.getProperty("erlide.newprops"))) {
+			NewErlangProjectProperties npp = new NewErlangProjectProperties();
+			try {
+				npp.load((IEclipsePreferences) node.node("test"));
+				npp.store((IEclipsePreferences) node.node("new_test"));
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
 		}
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
@@ -128,10 +137,10 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				ProjectPreferencesConstants.MK_UNIQUE, "true"));
 		cookie = node.get(ProjectPreferencesConstants.COOKIE,
 				ProjectPreferencesConstants.DEFAULT_COOKIE);
-		externalModules = node.get(
+		externalModulesFile = node.get(
 				ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 				ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
-		externalIncludes = node.get(
+		externalIncludesFile = node.get(
 				ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 				ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
 		return this;
@@ -160,7 +169,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
 			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					externalIncludes);
+					externalIncludesFile);
 			if (runtimeVersion != null) {
 				node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
 						runtimeVersion);
@@ -175,7 +184,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 					.toString(fUnique));
 			node.put(ProjectPreferencesConstants.COOKIE, cookie);
 			node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-					externalModules);
+					externalModulesFile);
 
 			try {
 				node.flush();
@@ -195,11 +204,11 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	}
 
 	public String[] getIncludeDirs() {
-		return unpack(includeDirs);
+		return PreferencesUtils.unpackArray(includeDirs);
 	}
 
 	public void setIncludeDirs(final String[] dirs) {
-		includeDirs = pack(dirs);
+		includeDirs = PreferencesUtils.packArray(dirs);
 	}
 
 	public String getOutputDir() {
@@ -252,11 +261,11 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	}
 
 	public String[] getSourceDirs() {
-		return unpack(sourceDirs);
+		return PreferencesUtils.unpackArray(sourceDirs);
 	}
 
 	public void setSourceDirs(final String[] dirs) {
-		sourceDirs = pack(dirs);
+		sourceDirs = PreferencesUtils.packArray(dirs);
 	}
 
 	public String buildCommandLine() {
@@ -290,46 +299,12 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		runtimeName = "";
 	}
 
-	public static String pack(final String[] strs) {
-		final StringBuilder b = new StringBuilder();
-		for (int i = 0; i < strs.length; i++) {
-			if (strs[i] != null && strs[i].length() > 0) {
-				b.append(strs[i]);
-				b.append(PATH_SEP);
-			}
-		}
-		if (b.length() > 0) {
-			b.deleteCharAt(b.length() - 1);
-		}
-		return b.toString();
+	public String getExternalIncludesFile() {
+		return externalIncludesFile;
 	}
 
-	public String[] getExternalIncludes() {
-		return unpack(externalIncludes);
-	}
-
-	private String[] unpack(final String str) {
-		final String[] res = str.split(PATH_SEP);
-		for (int i = 0; i < res.length; i++) {
-			res[i] = res[i].trim();
-		}
-		return res;
-	}
-
-	public String getExternalIncludesString() {
-		return externalIncludes;
-	}
-
-	public void setExternalIncludes(final String[] externalIncludes) {
-		final String packed = pack(externalIncludes);
-		setExternalIncludes(packed);
-	}
-
-	/**
-	 * @param packed
-	 */
-	public void setExternalIncludes(final String packed) {
-		externalIncludes = packed;
+	public void setExternalIncludesFile(final String file) {
+		externalIncludesFile = file;
 	}
 
 	public IProject getProject() {
@@ -342,12 +317,12 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		saveRuntimeName = true;
 	}
 
-	public void setExternalModules(final String fExternalModules) {
-		this.externalModules = fExternalModules;
+	public void setExternalModulesFile(final String externalModules) {
+		this.externalModulesFile = externalModules;
 	}
 
-	public String getExternalModules() {
-		return externalModules;
+	public String getExternalModulesFile() {
+		return externalModulesFile;
 	}
 
 	public String getRuntimeName() {
