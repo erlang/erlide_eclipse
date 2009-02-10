@@ -93,7 +93,7 @@ check_variable_macro_or_record(_, _) ->
 get_text_and_lines([], _From, _Length, Acc) ->
     {"", 0, Acc};
 get_text_and_lines([{Pos, Line} | Rest], From, _Length, Acc) when Pos =< From ->
-    {text_from_r_lines(Rest), length(Rest)+1, [Line | Acc]};
+    {text_from_r_lines(Rest), length(Rest), [Line | Acc]};
 get_text_and_lines([{Pos, _Line} | Rest], From, Length, Acc) when Pos >= From + Length ->
     get_text_and_lines(Rest, From, Length, Acc);
 get_text_and_lines([{_Pos, Line} | Rest], From, Length, Acc) ->

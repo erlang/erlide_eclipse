@@ -1,7 +1,6 @@
 %% Author: jakob
 %% Created: 2006-jan-28
 %% Description: 
-%% TODO: Add description to erlide_indent
 -module(erlide_indent).
 
 %%
@@ -42,7 +41,7 @@ default_indent_prefs() ->
 %% API Functions
 %%
 indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
-    indent_line(St, OldLine, CommandText, -1, Tablength, Prefs).
+    indent_line(St, OldLine, CommandText, -1, Tablength, get_prefs(Prefs)).
 
 indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
     S = erlide_text:detab(St, Tablength, all),
@@ -129,8 +128,8 @@ get_prefs(Prefs) ->
     get_prefs(Prefs, default_indent_prefs(), []).
 
 indent(Tokens, LineOffsets, LineN, Prefs, OldLine) ->
-    P = get_prefs(Prefs),
-    I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=P, in_block=true, old_line=OldLine},
+    I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=Prefs,
+	   in_block=true, old_line=OldLine},
     ?D({I, LineOffsets}),
     try
         i_form_list(Tokens, I),
@@ -161,7 +160,8 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
 
 indent_lines(S, From, Length, Tablength, Prefs) ->
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From, Length),
-    do_indent_lines(Lines, Tablength, First, Prefs, FirstLineNum, "").
+    ?D({First, FirstLineNum, Lines}),
+    do_indent_lines(Lines, Tablength, First, get_prefs(Prefs), FirstLineNum, "").
 
 %%
 %% Local Functions
@@ -172,11 +172,11 @@ indent_lines(S, From, Length, Tablength, Prefs) ->
 do_indent_lines([], _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
-    {NewI, _OldI, _AddNL} = indent_line(Text ++ Acc, Line, "", N, Tablength, Prefs),
+    {NewI, _OldI, _AddNL} = indent_line(Text ++ Line, Line, "", N, Tablength, Prefs),
     NewLine0 = reindent_line(Line, NewI),
     NewLine = erlide_text:entab(NewLine0, Tablength, left),
     ?D(NewLine),
-    do_indent_lines(Rest, Tablength, Text, Prefs, N+1, Acc ++ NewLine).
+    do_indent_lines(Rest, Tablength, Text ++ NewLine, Prefs, N+1, Acc ++ NewLine).
 
 %%
 reindent_line(" " ++ S, I) ->
@@ -246,12 +246,14 @@ i_expr(R0, I0, A) ->
     R2 = i_1_expr(R1, I1),
     ?D(R1),
     case R1 of
-        [#token{kind=Kind} | _] when Kind=:=string; Kind=:=macro ->
-            case i_sniff(R2) of
-                #token{kind=Kind2} when Kind2=:=string; Kind2=:=macro; Kind2=:=eof ->
-                    ?D(R2),
+        [#token{kind=Kind} | Rest] when Kind=:=string; Kind=:=macro ->
+	    ?D(sniffed),
+            case i_sniff(Rest) of
+                #token{kind=Kind2} when Kind2=:=string; Kind2=:=macro ->
+                    ?D(Rest),
                     i_expr(R2, i_with(after_binary_op, I1), A);
                 _ ->
+		    ?D(Rest),
                     i_expr_rest(R2, I1, I1#i.anchor)
             end;
         _ ->
@@ -321,6 +323,7 @@ i_binary_expr_list(R, I) ->
 
 i_binary_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
+    ?D(R1),
     case i_sniff(R1) of
         #token{kind='>>'} ->
             R1;
@@ -330,6 +333,10 @@ i_binary_expr_list(R0, I0, A0) ->
             case i_sniff(R2) of
                 #token{kind=','} ->
                     R3 = i_kind(',', R2, I1),
+                    i_binary_expr_list(R3, I1, I1#i.anchor);
+		#token{kind=Kind} when Kind=:='||'; Kind=:='<='; Kind=:='<-' -> 
+		    % binary comprehension
+		    R3 = i_kind('||', R2, I1),
                     i_binary_expr_list(R3, I1, I1#i.anchor);
                 _ ->
                     R2
@@ -352,7 +359,9 @@ i_binary_expr(R0, I0) ->
 i_binary_sub_expr(R0, I0) ->
     case i_sniff(R0) of
 	#token{kind=Kind} when Kind=='(' ->
-	    i_expr(R0, I0, none); % funkar detta med t.ex. (1+4):8? testa!
+	    i_expr(R0, I0, none); % TODO: funkar detta med t.ex. (1+4):8? testa!
+	#token{kind='<<'} ->
+	    i_expr(R0, I0, none);
 	#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==char ->
 	    R1 = i_comments(R0, I0),
 	    R2 = i_kind(Kind, R1, I0),
@@ -374,7 +383,7 @@ i_binary_specifiers(R0, I) ->
 i_binary_specifier(R0, I) ->
     case i_sniff(R0) of
 	#token{kind='('} ->
-	    {R1, _A} = i_expr(R0, I, none), % funkar detta med t.ex. (1+4):8? testa!
+	    {R1, _A} = i_expr(R0, I, none),
 	    R1;
 	#token{kind=Kind} when Kind==var; Kind==string; Kind==integer; Kind==atom; Kind==char ->
 	    R1 = i_comments(R0, I),
@@ -790,31 +799,30 @@ i_catch_clause_list(R, I) ->
     R0 = i_catch_clause(R, I),
     ?D(R0),
     case i_sniff(R0) of
-        #token{kind=';'} ->
-            R1 = i_kind(';', R0, I),
-            ?D(R1),
-            i_catch_clause_list(R1, I);
-        _ ->
-            R0
+	#token{kind=';'} ->
+	    R1 = i_kind(';', R0, I),
+	    ?D(R1),
+	    i_catch_clause_list(R1, I);
+	_ ->
+	    R0
     end.
 
 i_sniff(L) ->
     case skip_comments(L) of
-        [] ->
-            eof;
-        [T | _] ->
-            T
+	[] ->
+	    eof;
+	[T | _] ->
+	    T
     end.
 
 scan(S) ->
     case erlide_scan:string(S, {0, 0}) of
-	    {ok, T, _} ->
-            ?D(T),
-            ?D(erlide_scan:filter_ws(T)),
-            {ok, erlide_scan:filter_ws(T)};
-        Error ->
-            Error
-     end.
+	{ok, T, _} ->
+	    ?D(erlide_scan:filter_ws(T)),
+	    {ok, erlide_scan:filter_ws(T)};
+	Error ->
+	    Error
+    end.
 
 
 
