@@ -1,5 +1,8 @@
 package org.erlide.runtime;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +23,7 @@ public final class PreferencesUtils {
 	}
 
 	public static List<String> unpackList(String string) {
-		String[] v = string.split(SEP);
-		List<String> result = new ArrayList<String>(Arrays.asList(v));
-		return result;
+		return unpackList(string, SEP);
 	}
 
 	public static String packArray(final String[] strs) {
@@ -45,7 +46,28 @@ public final class PreferencesUtils {
 		}
 	}
 
+	public static String readFile(String file) {
+		String res = null;
+		try {
+			StringBuilder buf = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				buf.append(line);
+			}
+			res = buf.toString();
+		} catch (IOException e) {
+		}
+		return res;
+	}
+
 	private PreferencesUtils() {
+	}
+
+	public static List<String> unpackList(String string, String sep) {
+		String[] v = string.split(sep);
+		List<String> result = new ArrayList<String>(Arrays.asList(v));
+		return result;
 	}
 
 }

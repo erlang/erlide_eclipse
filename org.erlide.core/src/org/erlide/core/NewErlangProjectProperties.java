@@ -51,8 +51,63 @@ public class NewErlangProjectProperties {
 		output = old.getOutputDir();
 		compilerOptions.put("debug_info", "true");
 
-		// TODO handle externalModules
-		// TODO handle externalIncludes
+		String exmodf = old.getExternalModulesFile();
+		String exmod = PreferencesUtils.readFile(exmodf);
+		List<String> externalModules = PreferencesUtils.unpackList(exmod, "\n");
+		List<SourceLocation> sloc = makeSourceLocations(externalModules);
+
+		String exincf = old.getExternalModulesFile();
+		String exinc = PreferencesUtils.readFile(exincf);
+		List<String> externalIncludes = PreferencesUtils.unpackList(exinc);
+
+		LibraryLocation loc = new LibraryLocation(sloc, externalIncludes, null,
+				null);
+		libraries.add(loc);
+	}
+
+	private List<SourceLocation> makeSourceLocations(
+			List<String> externalModules) {
+		List<SourceLocation> result = new ArrayList<SourceLocation>();
+
+		List<String> modules = new ArrayList<String>();
+		for (String mod : externalModules) {
+			if (mod.endsWith(".erlidex")) {
+				String str = PreferencesUtils.readFile(mod);
+				List<String> mods = PreferencesUtils.unpackList(str, "\n");
+				modules.addAll(mods);
+			} else {
+				modules.add(mod);
+			}
+		}
+
+		Map<String, Map<String, List<String>>> grouped = new HashMap<String, Map<String, List<String>>>();
+		for (String mod : modules) {
+			int i = mod.indexOf('/');
+			i = mod.indexOf('/', i + 1);
+			String loc = mod.substring(1, i);
+			mod = mod.substring(i + 1);
+			i = mod.lastIndexOf('/');
+			String path = mod.substring(1, i);
+			String file = mod.substring(i + 1);
+
+			System.out.println("FOUND: '" + loc + "' '" + path + "' '" + file
+					+ "'");
+			Map<String, List<String>> val = grouped.get(loc);
+			if (val == null) {
+				val = new HashMap<String, List<String>>();
+			}
+			List<String> pval = val.get(path);
+			if (pval == null) {
+				pval = new ArrayList<String>();
+			}
+			pval.add(file);
+			val.put(path, pval);
+			grouped.put(loc, val);
+
+		}
+		System.out.println(grouped);
+
+		return result;
 	}
 
 	private List<SourceLocation> mkSources(String[] sourceDirs) {
