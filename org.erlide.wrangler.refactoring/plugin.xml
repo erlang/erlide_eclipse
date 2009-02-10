@@ -77,6 +77,7 @@
                label="%tupleFunParamsName"
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.tupleGroup">
          </action>
+         <!-- Experimental
          <action
                class="org.erlide.wrangler.refactoring.core.tupletorecord.TupleToRecordAction"
                enablesFor="+"
@@ -84,6 +85,7 @@
                label="%tupleToRecordName"
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.tupleGroup">
          </action>
+         -->
       </editorContribution>
    </extension>
    <extension
