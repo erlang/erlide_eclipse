@@ -22,7 +22,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1). 
+%%-define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
@@ -105,14 +105,14 @@ o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
     o_macro(Value);
 o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _, _) ->
     o_record(Value);
-o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function}, 
+o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function},
 	  #token{kind='/'}, #token{kind=integer, value=Arity} | _],
          ExternalModules, PathVars, _) ->
     o_external(Module, Function, Arity, ExternalModules, PathVars);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
          ExternalModules, PathVars, _) ->
     o_external(Module, Function, Rest, ExternalModules, PathVars);
-o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _], 
+o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
 	 ExternalModules, PathVars, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
     o_external(Module, Function, Arity, ExternalModules, PathVars);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _], _, _, _) ->
