@@ -543,6 +543,8 @@ make_pars_from_tokens(_, _, _, _) ->
 get_vars_upto_rpar(Tokens) ->
     get_vars_upto_rpar(Tokens, []).
 
+get_vars_upto_rpar([], Acc) ->
+    lists:reverse(Acc);
 get_vars_upto_rpar([{')', _} | _], Acc) ->
     lists:reverse(Acc);
 get_vars_upto_rpar([{var, _, Par} | Rest], Acc) ->
