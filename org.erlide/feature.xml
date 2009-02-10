@@ -4,6 +4,7 @@
       label="Erlang IDE"
       version="0.4.3.9h"
       provider-name="Erlide project"
+      plugin="org.erlide.core"
       image="erlang120.gif">
    <install-handler/>
 
