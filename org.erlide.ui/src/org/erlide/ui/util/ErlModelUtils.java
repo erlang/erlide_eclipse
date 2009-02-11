@@ -26,6 +26,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -552,6 +553,18 @@ public class ErlModelUtils {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
 			return getModule(input.getFile());
 		}
+		if (editorInput instanceof IStorageEditorInput) {
+			final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
+			final IDocument doc = documentProvider.getDocument(editorInput);
+			try {
+				final IPath p = sei.getStorage().getFullPath();
+				final String path = p == null ? "" : p.toString();
+				return ErlangCore.getModelManager().getModuleFromFile(
+						editorInput.getName(), doc.get(), path, editorInput);
+			} catch (final CoreException e) {
+				ErlLogger.warn(e);
+			}
+		}
 		if (editorInput instanceof IURIEditorInput) {
 			final IURIEditorInput ue = (IURIEditorInput) editorInput;
 			final String path = ue.getURI().getPath();
@@ -572,8 +585,8 @@ public class ErlModelUtils {
 				if (part != null) {
 					if (part instanceof AbstractDecoratedTextEditor) {
 						final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) part;
-						final IErlModule module = getModule(part
-								.getEditorInput(), adte.getDocumentProvider());
+						final IErlModule module = getModule(input, adte
+								.getDocumentProvider());
 						if (module != null) {
 							return module;
 						}
