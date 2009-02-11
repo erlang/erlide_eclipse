@@ -34,23 +34,38 @@
                             but <emphasis>3.4</emphasis> works just as well.</para>
                     </listitem>
                     <listitem>
-                        <para>If your network uses a proxy, fill in the appropriate data in
-                                <menuchoice>
+                        <para>If your network uses a proxy to connect to the internet, fill in the
+                            appropriate data in <menuchoice>
                                 <guimenu>Window</guimenu>
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu> Install/Update</guisubmenu>
                                 <guimenuitem>Proxy settings</guimenuitem>
-                            </menuchoice>.</para>
+                            </menuchoice>, or for 3.4 <menuchoice>
+                                <guimenu>Window</guimenu>
+                                <guisubmenu>Preferences</guisubmenu>
+                                <guisubmenu>General</guisubmenu>
+                                <guimenuitem>Network connections</guimenuitem>
+                            </menuchoice>,</para>
                     </listitem>
                     <listitem>
-                        <para>Download Erlide by going to <menuchoice>
-                                <guimenu>Window</guimenu>
+                        <para>In Eclipse 3.3, install Erlide by going to <menuchoice>
+                                <guimenu>Help</guimenu>
                                 <guisubmenu>Software Updates</guisubmenu>
                                 <guisubmenu>Find and Install...</guisubmenu>
                                 <guimenuitem>Search for new features to install</guimenuitem>
                             </menuchoice>. In the dialog, choose <guibutton>New remote
                                 site</guibutton> and enter <userinput>Erlide</userinput> as name and
-                                <userinput> http://erlide.sourceforge.net/update</userinput> as URL.
+                                <userinput> http://erlide.org/update</userinput> as URL. Follow the
+                            dialogs with the obvious choices and in the end you will be asked to
+                            restart.</para>
+                    </listitem>
+                    <listitem>
+                        <para>In Eclipse 3.4 Install Erlide by going to <menuchoice>
+                                <guimenu>Help</guimenu>
+                                <guisubmenu>Software Updates</guisubmenu>
+                                <guimenuitem>Available software</guimenuitem>
+                            </menuchoice>. In the dialog, choose <guibutton>Add site...</guibutton>
+                            and enter <userinput> http://erlide.org/update</userinput> as URL.
                             Follow the dialogs with the obvious choices and in the end you will be
                             asked to restart.</para>
                     </listitem>
@@ -60,10 +75,10 @@
                                 <guisubmenu>Preferences</guisubmenu>
                                 <guisubmenu>Erlang</guisubmenu>
                                 <guimenuitem>Installed runtimes</guimenuitem>
-                            </menuchoice> and add an entry (or several) for your Erlang installation
-                            of choice. The required parameters are the name and the path to the top
-                            level directory (i.e. <varname>$ERL_TOP</varname>). Now restart
-                            again.</para>
+                            </menuchoice> and add an entry (or several) for your Erlang
+                            installation(s) of choice. The required parameters are the name and the
+                            path to the top level directory (i.e. <varname>$ERL_TOP</varname>). Now
+                            restart again.</para>
                         <mediaobject>
                             <imageobject>
                                 <imagedata fileref="../images/runtimeinstall.png" format="PNG"/>

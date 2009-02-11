@@ -52,7 +52,7 @@
                                 tab.</p></li><li><p>In the console pane, enter the following command
                                     "<strong class="userinput"><code>hello:hello().</code></strong>" and hit return. The
                                 output from the program will appear. </p></li><li><p>To exit, in the menu bar, choose File -&gt; Close, and then File -&gt;
-                                Exit</p></li></ol></div></p></div><div class="sect2" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="N101D1">Hello World</h3></div><div><div class="author"><h3 class="author"><span class="firstname">Alain</span> <span class="surname">O'Dea</span></h3></div></div></div></div><div class="epigraph"><p>Thanks to Alain O'Dea for writing this guide.</p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N101E1">Install Erlang/OTP (if you have not already)</h4></div></div></div><p>
+                                Exit</p></li></ol></div></p></div><div class="sect2" lang="en-US"><div class="titlepage"><div><div><h3 class="title" id="N101EC">Hello World</h3></div><div><div class="author"><h3 class="author"><span class="firstname">Alain</span> <span class="surname">O'Dea</span></h3></div></div></div></div><div class="epigraph"><p>Thanks to Alain O'Dea for writing this guide.</p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N101FC">Install Erlang/OTP (if you have not already)</h4></div></div></div><p>
                         <div class="itemizedlist"><ul><li><p><span class="emphasis"><em>Ubuntu Linux</em></span>: run the following in
                                     Terminal:
                                     <pre class="screen"><span class="command"><strong>sudo apt-get update</strong></span>
@@ -61,7 +61,7 @@
                                     the following in Terminal:
                                     <pre class="screen"><span class="command"><strong>sudo port selfupdate</strong></span>
 <span class="command"><strong>sudo port install erlang</strong></span></pre></p></li></ul></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10203">Install Eclipse and ErlIDE</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1021E">Install Eclipse and ErlIDE</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>Download Eclipse IDE for Java Developers</p></li><li><p>Extract it where you want to run it from (there is no
                                     installer, just an archive)</p></li><li><p>Launch Eclipse by double-clicking eclipse (Linux), eclipse.exe
                                     (Windows), or Eclipse (Mac) in the eclipse folder</p></li><li><p>Select <span class="guimenu">Help (menu) &rarr; Software Updates...</span> (a
@@ -70,14 +70,14 @@
                                     and click Install... (another dialog will appear)</p></li><li><p> Select Next</p></li><li><p>Select I accept ... radio button and click Finish (a progress
                                     dialog will appear)</p></li><li><p> (wait for confirmation dialog) Select Yes (Eclipse will
                                     restart)</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1022B">Add Primary Erlang Runtime</h4></div></div></div><p>Without these steps things like syntax highlighting, code completion and
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10246">Add Primary Erlang Runtime</h4></div></div></div><p>Without these steps things like syntax highlighting, code completion and
                         other significant aspects of the ErlIDE UI will not work properly. The IDE
                         will function basically, but it will not work as intended. <div class="orderedlist"><ol type="1"><li><p>Select Window (menu) &rarr; Preferences... (Windows/Linux) or
                                     Eclipse (menu) &rarr; Preferences... (Mac) (a dialog will
                                     appear)</p></li><li><p>Expand Erlang and select Installed runtimes</p></li><li><p>Click Add... (a dialog will appear) and Enter Erlang in the
                                     Runtime name field</p></li><li><p>Click Browse... and select the root of your Erlang/OTP install
                                     (mine is /opt/local/lib/erlang), then click OK (dialog will
-                                    close)</p></li><li><p>Click OK (preferences dialog will close)</p></li></ol></div></p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10240">Create Hello World Project</h4></div></div></div><p>
+                                    close)</p></li><li><p>Click OK (preferences dialog will close)</p></li></ol></div></p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1025B">Create Hello World Project</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>(wait for Eclipse to restart) Select Window (menu) &rarr; Close All
                                     Perspectives</p></li><li><p>Select Window (menu) &rarr; Open Perspective &rarr; Other... (a dialog
                                     will appear)</p></li><li><p>Select Erlang and click OK (dialog will close and Erlang
@@ -86,7 +86,7 @@
                                     dialog will appear)</p></li><li><p>Enter hello_world in the Project Name field and click Finish
                                     (dialog will close and hello_world project will appear in Erlang
                                     Navigator view)</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10256">Start Erlang Node To Run Code</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10271">Start Erlang Node To Run Code</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>Select hello_world project, bring up the context menu and
                                     select <span class="guimenu">Run As </span> &rarr; <span class="guimenuitem">Run Configurations...</span> (a dialog will appear)</p></li><li><p>Enter <strong class="userinput"><code>hello_world</code></strong> in the Name
                                     field</p></li><li><p>Double-click <span class="guilabel">Erlang application</span> (a new
@@ -98,7 +98,7 @@
                                     (because Java and Erlang don't find the same default
                                     cookie).</p></li><li><p>Click Run (dialog will close and Console will appear with
                                     hello_world Erlang node)</p></li><li><p>Leave the Console running for the next part</p></li></ol></div>
-                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N10284">Write Hello World Live!</h4></div></div></div><p>
+                    </p></div><div class="sect3" lang="en-US"><div class="titlepage"><div><div><h4 class="title" id="N1029F">Write Hello World Live!</h4></div></div></div><p>
                         <div class="orderedlist"><ol type="1"><li><p>On the hello_world project bring up the context menu
                                     (right-click/control-click) and select <span class="guilabel">New
                                         Module</span> (dialog will appear)</p></li><li><p>Enter <strong class="userinput"><code>hello_world</code></strong> in Module name
