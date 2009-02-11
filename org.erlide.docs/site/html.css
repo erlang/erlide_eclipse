@@ -25,3 +25,7 @@ pre.programlisting {
     font-size: 10pt;
     white-space: pre;
 }
+
+span.guimenu {
+    font-weight: bold;
+}

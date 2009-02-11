@@ -11,7 +11,7 @@
                         <scenarioAssociation-array>
                             <scenarioAssociation>
                                 <field name="name">
-                                    <String xml:space="preserve">Eclipse infocenter</String>
+                                    <String xml:space="preserve">Docbook HTML modified</String>
                                 </field>
                                 <field name="type">
                                     <String xml:space="preserve">XSL</String>
@@ -904,6 +904,5 @@
     </meta>
     <projectTree name="erlide.xpr">
         <file name="erlide.xml"/>
-        <file name="../../org.erlide.docs/site/test.html"/>
     </projectTree>
 </project>

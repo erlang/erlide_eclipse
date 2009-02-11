@@ -41,10 +41,10 @@ more.</p>
 <div class="clear"></div>
 
 <h3 class="headerstyle">Overview</h3>
-<p>We are proud to announce the latest version that is <strong>0.4.0</strong>
+<p>We are proud to announce the latest version that is <strong>0.4.3</strong>
 and offers the following features:</p>
 <ul>
-	<li>Works with <b>Eclipse 3.3, Java 1.5 and Erlang R11B</b>, or
+	<li>Works with Eclipse 3.3, Java 1.5 and Erlang R11B, or
 	later.</li>
 	<li><img src="img/new.gif" alt="" /> Debugger!</li>
 	<li><img src="img/new.gif" alt="" /> Improved stability and
@@ -62,43 +62,29 @@ features, like for example refactoring or a viewer for trace logs.</p>
 
 <h3 class="headerstyle" id="installation">Installation</h3>
 
-<p>To use ErlIDE you need Eclipse, version 3.3 or later. You can
-download Eclipse from <a href="http://www.eclipse.org/downloads/">eclipse.org/downloads</a>,
-the version called "Eclipse IDE for Java Developers" is the smallest
-download there, but any of the versions listed can be used.</p>
-<p>An Erlang runtime also has to be installed, go to <a
-	href="http://www.erlang.org/download.html">
-http://www.erlang.org/download.html</a>, we recommend the version R11B-5,
-but any later version can be used. If you are running on Windows, just
-install the version downloaded, in other cases you will have to build an
-Erlang OTP first, please refer to the Erlang README.</p>
-<p>The ErlIDE plug-in for Eclipse is available through an update
-site: start Eclipse and select "Help/Software Updates/Find and
-Install..." from the menu. Click "Search for new features to install"
-and "Next>" and then "New remote site". The name of the site should be
-"ErlIDE" and the URL is "http://erlide.sourceforge.net/update", if you
-proceed, Eclipse will download and install the ErlIDE plug-in.</p>
-<p>When Eclipse is restarted, you will be prompted to point out
-where ErlIDE can find the Erlang installation. On a Unix/Linux/Mac
-system this is typically /usr/local/lib/erlang, on windows it is
-C:\\Program Files\\erl5.5.5. (With other numbers for other releases.)</p>
-
+<div class="itemizedlist"><ul>
+<li><p>Install Erlang <span class="emphasis"><em>R11</em></span> or later, if it isn't already
+                            present on your system. On Windows systems, use a path with no spaces in
+                            it.</p></li>
+<li><p>Install Eclipse. We target primarily version <span class="emphasis"><em>3.3</em></span>,
+                            but <span class="emphasis"><em>3.4</em></span> works just as well.</p></li>
+<li><p>If your network uses a proxy to connect to the internet, fill in the
+                            appropriate data in <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu"> Install/Update</span> &rarr; <span class="guimenuitem">Proxy settings</span>, or for 3.4 <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu">General</span> &rarr; <span class="guimenuitem">Network connections</span>,</p></li><li><p>In Eclipse 3.3, install Erlide by going to <span class="guimenu">Help</span> &rarr; <span class="guisubmenu">Software Updates</span> &rarr; <span class="guisubmenu">Find and Install...</span> &rarr; <span class="guimenuitem">Search for new features to install</span>. In the dialog, choose <span class="guibutton">New remote
+                                site</span> and enter <strong class="userinput"><code>Erlide</code></strong> as name and
+                                <strong class="userinput"><code> http://erlide.org/update</code></strong> as URL. Follow the
+                            dialogs with the obvious choices and in the end you will be asked to
+                            restart.</p></li>
+<li><p>In Eclipse 3.4 Install Erlide by going to <span class="guimenu">Help</span> &rarr; <span class="guisubmenu">Software Updates</span> &rarr; <span class="guimenuitem">Available software</span>. In the dialog, choose <span class="guibutton">Add site...</span>
+                            and enter <strong class="userinput"><code> http://erlide.org/update</code></strong> as URL.
+                            Follow the dialogs with the obvious choices and in the end you will be
+                            asked to restart.</p></li>
+<li><p>Restart. Go to <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu">Erlang</span> &rarr; <span class="guimenuitem">Installed runtimes</span> and add an entry (or several) for your Erlang
+                            installation(s) of choice. The required parameters are the name and the
+                            path to the top level directory (i.e. <code class="varname">$ERL_TOP</code>). Now
+                            restart again.</p></li>
+<li><p>Done! You're ready to start exploring.</p></li></ul></div>
+            
 <h3 class="headerstyle" id="faq">FAQ</h3>
-
-<p class="block"><strong>How do I get started?</strong></p>
-
-<p>First, you have to install Erlang. Look for your platform at <a
-	href="http://www.erlang.org/download.html">the Erlang download site</a>
-and follow the instructions.</p>
-<p>Then in Eclipse, choose <code>Help->Software Updates->Find
-and install...->New features</code> and create a new remote update site,
-pointing it at <a href="http://erlide.sourceforge.net/update">http://erlide.sourceforge.net/update</a>
-. Follow then the normal installation procedures.</p>
-<p>When restarting Eclipse, you will have to configure the plugin by
-pointing to the place you installed Erlang, and that should be all: now
-you can explore and send bug reports!</p>
-<p>"Small" releases (x.x.N) will mostly be available only from the
-update site, not as an archive download.</p>
 
 <p class="block"><strong>What if I find a bug, or miss a
 feature?</strong></p>
@@ -113,7 +99,7 @@ problems, please follow these steps:
 	<li>Pres "Send" and a file will be created in your home directory,
 	attach it to a bug report at the <a
 		href="http://sourceforge.net/tracker/?group_id=58889&atid=489191">tracker</a>
-	or to a mail to <a href="erlide-bugs@lists.sourceforge.net">erlide-bugs@lists.sourceforge.net</a>.</li>
+	or to a mail to <a href="mailto:erlide-bugs@lists.sourceforge.net">erlide-bugs@lists.sourceforge.net</a>.</li>
 </ul>
 </p>
 <p>For feature requests, you can just post a ticket or send a mail,
@@ -136,13 +122,6 @@ oriented work, not for quickly hacking one file. Right now, I believe we
 are about on par with the functionality Emacs offers, and we're going
 forward (while I haven't seen any development for the Erlang mode or
 Distel since a long time).</p>
-
-<p class="block"><strong>When I press a key, it takes one
-second to see the result in the editor!?!?</strong></p>
-
-<p>Make sure you create a project and open an Erlang file inside it.
-The above happens when opening a file with <code>File->Open
-file...</code>.</p>
 
 <p class="internallink" style="margin-bottom: 0;">[ <a href="#top">Back
 to top</a> ]</p>
