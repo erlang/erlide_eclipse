@@ -212,6 +212,8 @@ public class ErlangElementImageProvider {
 			return ErlideUIPluginImages.DESC_RECORD_DEF;
 		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
 			return ErlideUIPluginImages.DESC_MACRO_DEF;
+		} else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+			return ErlideUIPluginImages.DESC_TYPESPEC_DEF;
 		} else if (element.getKind() == IErlElement.Kind.IMPORT) {
 			return ErlideUIPluginImages.DESC_IMPORT;
 		} else if (element.getKind() == IErlElement.Kind.ERROR) {
