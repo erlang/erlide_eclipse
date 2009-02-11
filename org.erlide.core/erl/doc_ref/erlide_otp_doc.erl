@@ -540,6 +540,8 @@ make_pars_from_tokens([{atom, _, FunctionName} | Rest], FunctionName, Arity, Off
 	_ ->
 	    bad_tokens
     end;
+make_pars_from_tokens([_ | Rest], FunctionName, Arity, Offset) ->
+    make_pars_from_tokens(Rest, FunctionName, Arity, Offset);
 make_pars_from_tokens(_, _, _, _) ->
     bad_tokens.
 
