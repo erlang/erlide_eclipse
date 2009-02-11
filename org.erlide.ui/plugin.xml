@@ -984,6 +984,9 @@
          <actionSet
                id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
          </actionSet>
+         <actionSet
+               id="com.rational.clearcase.ActionSet">
+         </actionSet>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.debug.ui.DebugPerspective">
@@ -1033,6 +1036,16 @@
             sourceLocatorId="org.erlide.core.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.resourceFilters">
+      <filter
+            pattern="*.beam"
+            selected="false">
+         <description>
+            BEAM files
+         </description>
+      </filter>
    </extension>
    <!--extension
          point="org.eclipse.ui.commands">
