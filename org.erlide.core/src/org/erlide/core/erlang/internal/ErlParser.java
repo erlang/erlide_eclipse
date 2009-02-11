@@ -144,7 +144,7 @@ public class ErlParser {
 		} catch (final OtpErlangRangeException e1) {
 		}
 		final ErlComment comment = new ErlComment(parent, Util.stringValue(s),
-				false, line == 1);
+				false, line == 0 || line == 1);
 		try {
 			final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
 			final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
@@ -344,10 +344,9 @@ public class ErlParser {
 			}
 		} else if (nameS.equals("type") || nameS.equals("spec")) {
 			final String s = Util.stringValue(extra);
-			final ErlAttribute a = new ErlAttribute((ErlElement) parent, nameS,
+			final ErlTypespec a = new ErlTypespec((ErlElement) parent, nameS,
 					null, s);
 			setPos(a, pos);
-			// a.setParseTree(val);
 			return a;
 
 		} else if ("define".equals(nameS)) {

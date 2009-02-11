@@ -88,7 +88,34 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public static final String EDITOR_FOLDING_HEADERS = "editor_folding_default_headers"; //$NON-NLS-1$
+	public static final String EDITOR_FOLDING_HEADER_COMMENTS = "editor_folding_default_headers"; //$NON-NLS-1$
+
+	/**
+	 * A named preference that stores the value for header comment folding for
+	 * the default folding provider.
+	 * <p>
+	 * Value is of type <code>Boolean</code>.
+	 * </p>
+	 */
+	public static final String EDITOR_FOLDING_MACRO_DECLARATIONS = "editor_folding_macro_declarations"; //$NON-NLS-1$
+
+	/**
+	 * A named preference that stores the value for header comment folding for
+	 * the default folding provider.
+	 * <p>
+	 * Value is of type <code>Boolean</code>.
+	 * </p>
+	 */
+	public static final String EDITOR_FOLDING_EXPORTS = "editor_folding_exports"; //$NON-NLS-1$
+
+	/**
+	 * A named preference that stores the value for header comment folding for
+	 * the default folding provider.
+	 * <p>
+	 * Value is of type <code>Boolean</code>.
+	 * </p>
+	 */
+	public static final String EDITOR_FOLDING_TYPESPECS = "editor_folding_typespecs"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that holds the color used to highlight matching
@@ -402,7 +429,7 @@ public class PreferenceConstants {
 
 		private final RGB color;
 
-		private Color(int r, int g, int b) {
+		private Color(final int r, final int g, final int b) {
 			color = new RGB(r, g, b);
 		}
 

@@ -69,7 +69,16 @@ public class DefaultErlangFoldingPreferenceBlock implements
 				PreferenceConstants.EDITOR_FOLDING_COMMENTS));
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				TypeDescriptor.BOOLEAN,
-				PreferenceConstants.EDITOR_FOLDING_HEADERS));
+				PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS));
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				TypeDescriptor.BOOLEAN,
+				PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS));
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				TypeDescriptor.BOOLEAN,
+				PreferenceConstants.EDITOR_FOLDING_EXPORTS));
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				TypeDescriptor.BOOLEAN,
+				PreferenceConstants.EDITOR_FOLDING_TYPESPECS));
 
 		return overlayKeys.toArray(new OverlayKey[overlayKeys.size()]);
 	}
@@ -77,7 +86,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	/*
 	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#createControl(org.eclipse.swt.widgets.Group)
 	 */
-	public Control createControl(Composite composite) {
+	public Control createControl(final Composite composite) {
 		fOverlayStore.load();
 		fOverlayStore.start();
 
@@ -94,21 +103,32 @@ public class DefaultErlangFoldingPreferenceBlock implements
 		addCheckBox(inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_edoc,
 				PreferenceConstants.EDITOR_FOLDING_EDOC, 0);
-		addCheckBox(inner,
-				FoldingMessages.DefaultErlangFoldingPreferenceBlock_headers,
-				PreferenceConstants.EDITOR_FOLDING_HEADERS, 0);
+		addCheckBox(
+				inner,
+				FoldingMessages.DefaultErlangFoldingPreferenceBlock_header_comments,
+				PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS, 0);
 		addCheckBox(inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_clauses,
 				PreferenceConstants.EDITOR_FOLDING_CLAUSES, 0);
 		addCheckBox(inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_comments,
 				PreferenceConstants.EDITOR_FOLDING_COMMENTS, 0);
+		addCheckBox(
+				inner,
+				FoldingMessages.DefaultErlangFoldingPreferenceBlock_macro_declarations,
+				PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS, 0);
+		addCheckBox(inner,
+				FoldingMessages.DefaultErlangFoldingPreferenceBlock_exports,
+				PreferenceConstants.EDITOR_FOLDING_EXPORTS, 0);
+		addCheckBox(inner,
+				FoldingMessages.DefaultErlangFoldingPreferenceBlock_typespecs,
+				PreferenceConstants.EDITOR_FOLDING_TYPESPECS, 0);
 
 		return inner;
 	}
 
-	private Button addCheckBox(Composite parent, String label, String key,
-			int indentation) {
+	private Button addCheckBox(final Composite parent, final String label,
+			final String key, final int indentation) {
 		final Button checkBox = new Button(parent, SWT.CHECK);
 		checkBox.setText(label);
 

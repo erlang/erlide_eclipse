@@ -152,9 +152,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	class ElementChangedListener implements IElementChangedListener {
 
 		/*
-		 * @see
-		 * org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse
-		 * .jdt.core.ElementChangedEvent)
+		 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse
+		 *      .jdt.core.ElementChangedEvent)
 		 */
 		public void elementChanged(final ElementChangedEvent e) {
 			IErlElementDelta delta = e.getDelta();
@@ -424,7 +423,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private IElementChangedListener fElementListener;
 
-	private final boolean fAllowCollapsing = false;
+	private boolean fAllowCollapsing = false;
 
 	private boolean fCollapseHeaderComments = true;
 
@@ -432,8 +431,13 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseComments = false;
 
-	// private boolean fCollapseFunctions = false;
 	private boolean fCollapseClauses = false;
+
+	private boolean fCollapseMacroDeclarations = false;
+
+	private boolean fCollapseExports = false;
+
+	private boolean fCollapseTypespecs = false;
 
 	/* caches for header comment extraction. */
 	// private IType fFirstType;
@@ -566,15 +570,22 @@ public class DefaultErlangFoldingStructureProvider implements
 	private void initializePreferences() {
 		final IPreferenceStore store = ErlideUIPlugin.getDefault()
 				.getPreferenceStore();
-
+		fAllowCollapsing = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 		fCollapseEdoc = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EDOC);
 		fCollapseClauses = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
 		fCollapseHeaderComments = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADERS);
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS);
 		fCollapseComments = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
+		fCollapseMacroDeclarations = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS);
+		fCollapseExports = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EXPORTS);
+		fCollapseTypespecs = store
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_TYPESPECS);
 	}
 
 	private void computeAdditions(final IErlModule erlModule,
@@ -641,8 +652,15 @@ public class DefaultErlangFoldingStructureProvider implements
 		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
+			collapse = fAllowCollapsing && fCollapseExports;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+			createProjection = true;
+		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
+			collapse = fAllowCollapsing && fCollapseMacroDeclarations;
+			createProjection = true;
+		} else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+			collapse = fAllowCollapsing && fCollapseTypespecs;
 			createProjection = true;
 		}
 		if (createProjection) {
@@ -663,14 +681,15 @@ public class DefaultErlangFoldingStructureProvider implements
 	// }
 
 	/**
-	 * Computes the projection ranges for a given <code>IErlElement</code>. More
-	 * than one range may be returned if the element has a leading comment which
-	 * gets folded separately. If there are no foldable regions,
+	 * Computes the projection ranges for a given <code>IErlElement</code>.
+	 * More than one range may be returned if the element has a leading comment
+	 * which gets folded separately. If there are no foldable regions,
 	 * <code>null</code> is returned.
 	 * 
 	 * @param element
 	 *            the erlang element that can be folded
-	 * @return the regions to be folded, or <code>null</code> if there are none
+	 * @return the regions to be folded, or <code>null</code> if there are
+	 *         none
 	 */
 	private IRegion computeProjectionRanges(final IErlElement element) {
 
@@ -899,9 +918,9 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/**
-	 * Finds a match for <code>tuple</code> in a collection of annotations. The
-	 * positions for the <code>ErlangProjectionAnnotation</code> instances in
-	 * <code>annotations</code> can be found in the passed
+	 * Finds a match for <code>tuple</code> in a collection of annotations.
+	 * The positions for the <code>ErlangProjectionAnnotation</code> instances
+	 * in <code>annotations</code> can be found in the passed
 	 * <code>positionMap</code> or <code>fCachedModel</code> if
 	 * <code>positionMap</code> is <code>null</code>.
 	 * <p>
@@ -996,9 +1015,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see
-	 * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-	 * #collapseElements(org.eclipse.jdt.core.IErlElement[])
+	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
+	 *      #collapseElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void collapseElements(final IErlElement[] elements) {
 		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
@@ -1007,9 +1025,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see
-	 * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-	 * #expandElements(org.eclipse.jdt.core.IErlElement[])
+	 * @see org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
+	 *      #expandElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void expandElements(final IErlElement[] elements) {
 		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
@@ -1064,9 +1081,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide
-	 * .core.erlang.IErlElement)
+	 * @see org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide
+	 *      .core.erlang.IErlElement)
 	 */
 	public void elementChanged(final IErlElement element) {
 		// TODO fixa elementchangelistener n?n g?ng

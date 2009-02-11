@@ -23,7 +23,13 @@ final class FoldingMessages extends NLS {
 
 	public static String DefaultErlangFoldingPreferenceBlock_edoc;
 
-	public static String DefaultErlangFoldingPreferenceBlock_headers;
+	public static String DefaultErlangFoldingPreferenceBlock_header_comments;
+
+	public static String DefaultErlangFoldingPreferenceBlock_macro_declarations;
+
+	public static String DefaultErlangFoldingPreferenceBlock_exports;
+
+	public static String DefaultErlangFoldingPreferenceBlock_typespecs;
 
 	public static String EmptyErlangFoldingPreferenceBlock_emptyCaption;
 

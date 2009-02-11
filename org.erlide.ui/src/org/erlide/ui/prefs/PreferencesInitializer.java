@@ -14,7 +14,7 @@ import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_CLAUSES;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_COMMENTS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_EDOC;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_ENABLED;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_HEADERS;
+import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_PROVIDER;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
@@ -37,10 +37,10 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER;
-		for (TokenHighlight ht : TokenHighlight.values()) {
-			IEclipsePreferences node = new DefaultScope().getNode(qualifier
-					+ ht.getName());
+		final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER;
+		for (final TokenHighlight ht : TokenHighlight.values()) {
+			final IEclipsePreferences node = new DefaultScope()
+					.getNode(qualifier + ht.getName());
 			ht.getDefaultData().store(node);
 		}
 
@@ -58,9 +58,8 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(EDITOR_FOLDING_PROVIDER,
 				"org.erlide.ui.editors.defaultFoldingProvider");
 		store.setDefault(EDITOR_FOLDING_EDOC, false);
-		store.setDefault(EDITOR_FOLDING_HEADERS, true);
+		store.setDefault(EDITOR_FOLDING_HEADER_COMMENTS, true);
 		store.setDefault(EDITOR_FOLDING_COMMENTS, false);
 		store.setDefault(EDITOR_FOLDING_CLAUSES, false);
-		store.setDefault(EDITOR_FOLDING_HEADERS, true);
 	}
 }
