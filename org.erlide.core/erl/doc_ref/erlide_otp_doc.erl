@@ -500,7 +500,8 @@ fix_proposals([{FunctionName, Arity} | FALRest], [Doc | DLRest], PrefixLength, A
 extract_pars(FunctionName, Arity, Offset, Doc) ->
     Sub1 = erlide_util:get_all_between_strs(Doc, "<CODE>", "</CODE>"),
     Sub2 = erlide_util:get_all_between_strs(Doc, "<a name =", "</span>"),
-    try_make_pars(Sub1++Sub2, FunctionName, Arity, Offset).
+    Sub3 = erlide_util:get_all_between_strs(Doc, "<a name=", "</span>"),
+    try_make_pars(Sub1++Sub2++Sub3, FunctionName, Arity, Offset).
 
 try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
