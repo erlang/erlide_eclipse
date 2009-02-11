@@ -17,7 +17,7 @@
 %%
 -export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4]).
 -export([pack/1, unpack/1]).
--export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2]).
+-export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
 
 -ifdef(DEBUG).
 -compile(export_all).
@@ -114,6 +114,26 @@ split_at(Text, End) ->
 	N ->
 	    {string:substr(Text, 1, N-1), string:substr(Text, N+length(End))}
     end.
+
+split_lines(<<B/binary>>) ->
+    split_lines(binary_to_list(B));
+split_lines(L) when is_list(L) ->
+    split_lines(L, [], []).
+
+split_lines([], [], Acc) ->
+    lists:reverse(Acc);
+split_lines([], LineAcc, Acc) ->
+    split_lines([], [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\n | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([$\r | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+split_lines([C | Rest], LineAcc, Acc) ->
+	split_lines(Rest, [C | LineAcc], Acc).
+
+
 
 %%
 %% Local Functions

@@ -234,7 +234,7 @@ get_external_modules_files([FileNames0 | Rest], PathVars, Done0, Acc) ->
 	    case file:read_file(FileName) of
 		{ok, B} ->
 		    Done1 = [FileName | Done0],
-		    {R, Done2} = get_ext_aux(split_lines(B), PathVars, Done1, Acc),
+		    {R, Done2} = get_ext_aux(erlide_util:split_lines(B), PathVars, Done1, Acc),
 		    get_external_modules_files(Rest, PathVars, Done2, R ++ Acc);
 		_ ->
 		    {Acc, Done0}
@@ -250,8 +250,7 @@ get_ext_aux([L | Rest], PathVars, Done0, Acc0) ->
 		 true ->
 		     get_ext_aux(Rest, PathVars, Done0, Acc0);
 		 false ->
-		     Done1 = [L | Done0],
-		     {Acc, Done} = get_external_modules_files([L], PathVars, Done1, Acc0),
+		     {Acc, Done} = get_external_modules_files([L], PathVars, Done0, Acc0),
 		     get_ext_aux(Rest, PathVars, Done, Acc)
 	     end;
 	 _ ->
@@ -272,22 +271,6 @@ select_external([P | Rest], Mod) ->
         _ ->
             select_external(Rest, Mod)
     end.
-
-split_lines(<<B/binary>>) ->
-    split_lines(binary_to_list(B), [], []).
-
-split_lines([], [], Acc) ->
-    lists:reverse(Acc);
-split_lines([], LineAcc, Acc) ->
-    split_lines([], [], [lists:reverse(LineAcc) | Acc]);
-split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
-split_lines([$\n | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
-split_lines([$\r | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
-split_lines([C | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [C | LineAcc], Acc).
 
 get_source(Mod) ->
     L = Mod:module_info(compile),
