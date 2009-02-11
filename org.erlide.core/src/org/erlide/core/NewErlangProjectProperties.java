@@ -15,17 +15,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
+import org.erlide.runtime.ProjectPreferencesConstants;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class NewErlangProjectProperties {
-
-	private static final String SOURCES = "sources";
-	private static final String BACKEND_COOKIE = "backendCookie";
-	private static final String BACKEND_NODE_NAME = "backendNodeName";
-	private static final String REQUIRED_BACKEND_VERSION = "requiredBackendVersion";
-	private static final String OUTPUT = "output";
-	private static final String INCLUDES = "includes";
 
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
@@ -162,12 +156,12 @@ public class NewErlangProjectProperties {
 	}
 
 	public void load(IEclipsePreferences root) throws BackingStoreException {
-		output = root.get(OUTPUT, "ebin");
-		requiredRuntimeVersion = root.get(REQUIRED_BACKEND_VERSION, null);
-		backendNodeName = root.get(BACKEND_NODE_NAME, null);
-		backendCookie = root.get(BACKEND_COOKIE, null);
-		includes = PreferencesUtils.unpackList(root.get(INCLUDES, ""));
-		Preferences srcNode = root.node(SOURCES);
+		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
+		requiredRuntimeVersion = root.get(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null);
+		backendNodeName = root.get(ProjectPreferencesConstants.BACKEND_NODE_NAME, null);
+		backendCookie = root.get(ProjectPreferencesConstants.BACKEND_COOKIE, null);
+		includes = PreferencesUtils.unpackList(root.get(ProjectPreferencesConstants.INCLUDES, ""));
+		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();
 		for (String src : srcNode.childrenNames()) {
 			IEclipsePreferences sn = (IEclipsePreferences) srcNode.node(src);
@@ -178,18 +172,18 @@ public class NewErlangProjectProperties {
 
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
-		root.put(OUTPUT, output);
+		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		if (requiredRuntimeVersion != null) {
-			root.put(REQUIRED_BACKEND_VERSION, requiredRuntimeVersion);
+			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, requiredRuntimeVersion);
 		}
 		if (backendNodeName != null) {
-			root.put(BACKEND_NODE_NAME, backendNodeName);
+			root.put(ProjectPreferencesConstants.BACKEND_NODE_NAME, backendNodeName);
 		}
 		if (backendCookie != null) {
-			root.put(BACKEND_COOKIE, backendCookie);
+			root.put(ProjectPreferencesConstants.BACKEND_COOKIE, backendCookie);
 		}
-		root.put(INCLUDES, PreferencesUtils.packList(includes));
-		Preferences srcNode = root.node(SOURCES);
+		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils.packList(includes));
+		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
 		for (SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
 					.getId())));

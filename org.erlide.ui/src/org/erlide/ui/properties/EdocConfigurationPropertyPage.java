@@ -42,6 +42,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 	// private boolean fIsValidElement;
 
 	// private IPath fContainerPath;
+	@SuppressWarnings("unused")
 	private URL fInitialLocation;
 
 	public EdocConfigurationPropertyPage() {

@@ -16,13 +16,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
+import org.erlide.runtime.ProjectPreferencesConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class LibraryLocation extends DependencyLocation {
-	private static final String SOURCES = "sources";
-	private static final String INCLUDES = "includes";
-	private static final String OUTPUT = "output";
-
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
 	private String output;
@@ -67,12 +64,12 @@ public final class LibraryLocation extends DependencyLocation {
 	@Override
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
-		root.put(OUTPUT, output);
-		IEclipsePreferences node = (IEclipsePreferences) root.node(SOURCES);
+		root.put(ProjectPreferencesConstants.OUTPUT, output);
+		IEclipsePreferences node = (IEclipsePreferences) root.node(ProjectPreferencesConstants.SOURCES);
 		for (SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) node.node(loc.getDirectory()));
 		}
-		root.put(INCLUDES, PreferencesUtils.packList(includes));
+		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils.packList(includes));
 		root.flush();
 	}
 

@@ -15,10 +15,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
+import org.erlide.runtime.ProjectPreferencesConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class ProjectLocation extends DependencyLocation {
-	private static final String PROJECT_KEY = "project";
 	private IProject project;
 
 	public ProjectLocation(IProject project) {
@@ -34,7 +34,7 @@ public final class ProjectLocation extends DependencyLocation {
 
 	@Override
 	public void load(IEclipsePreferences root) {
-		String projectName = root.get(PROJECT_KEY, null);
+		String projectName = root.get(ProjectPreferencesConstants.PROJECT, null);
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		project = workspace.getRoot().getProject(projectName);
 		Assert.isLegal(project != null,
@@ -44,7 +44,7 @@ public final class ProjectLocation extends DependencyLocation {
 	@Override
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
-		root.put(PROJECT_KEY, project.getName());
+		root.put(ProjectPreferencesConstants.PROJECT, project.getName());
 	}
 
 }

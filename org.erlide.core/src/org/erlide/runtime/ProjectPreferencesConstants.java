@@ -53,6 +53,15 @@ public final class ProjectPreferencesConstants {
 	public static final String PROJECT_TYPE = "type";
 	public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
 
+	public static final String SOURCES = "sources";
+	public static final String BACKEND_COOKIE = "backendCookie";
+	public static final String BACKEND_NODE_NAME = "backendNodeName";
+	public static final String REQUIRED_BACKEND_VERSION = "requiredBackendVersion";
+	public static final String OUTPUT = "output";
+	public static final String INCLUDES = "includes";
+	public static final String DIRECTORY = "directory";
+	public static final String PROJECT = "project";
+
 	private ProjectPreferencesConstants() {
 	}
 

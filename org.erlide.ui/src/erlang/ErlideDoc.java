@@ -57,7 +57,7 @@ public class ErlideDoc {
 	}
 
 	public static String getOtpDocLoation(final Backend b) {
-		OtpErlangObject res = null;
+		// OtpErlangObject res = null;
 		// try {
 		// // commented out since target doesn't exist
 		// // res = b.rpcx("erlide_otp_doc", "get_otp_doc_location", "");

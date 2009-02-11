@@ -26,14 +26,14 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 
+	@SuppressWarnings("unused")
 	private final IWorkingSet[] fWorkingSets;
 
 	/**
-	 * Creates a new <code>FindReferencesInWorkingSetAction</code>. The
-	 * action requires that the selection provided by the site's selection
-	 * provider is of type
-	 * <code>org.eclipse.jface.viewers.IStructuredSelection</code>. The user
-	 * will be prompted to select the working sets.
+	 * Creates a new <code>FindReferencesInWorkingSetAction</code>. The action
+	 * requires that the selection provided by the site's selection provider is
+	 * of type <code>org.eclipse.jface.viewers.IStructuredSelection</code>. The
+	 * user will be prompted to select the working sets.
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
@@ -43,10 +43,9 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 	}
 
 	/**
-	 * Creates a new <code>FindReferencesInWorkingSetAction</code>. The
-	 * action requires that the selection provided by the site's selection
-	 * provider is of type
-	 * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
+	 * Creates a new <code>FindReferencesInWorkingSetAction</code>. The action
+	 * requires that the selection provided by the site's selection provider is
+	 * of type <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
 	 * 
 	 * @param site
 	 *            the site providing context information for this action

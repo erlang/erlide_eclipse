@@ -19,10 +19,10 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
+import org.erlide.runtime.ProjectPreferencesConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class SourceLocation extends DependencyLocation {
-	private static final String DIRECTORY = "directory";
 	private String directory;
 	private List<String> includePatterns = new ArrayList<String>();
 	private List<String> excludePatterns = new ArrayList<String>();
@@ -84,7 +84,7 @@ public final class SourceLocation extends DependencyLocation {
 
 	@Override
 	public void load(IEclipsePreferences root) {
-		directory = root.get(DIRECTORY, null);
+		directory = root.get(ProjectPreferencesConstants.DIRECTORY, null);
 		Assert.isLegal(directory != null,
 				"SourceLocation requires a non-null directory");
 	}
@@ -92,7 +92,7 @@ public final class SourceLocation extends DependencyLocation {
 	@Override
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
-		root.put(DIRECTORY, directory);
+		root.put(ProjectPreferencesConstants.DIRECTORY, directory);
 
 	}
 

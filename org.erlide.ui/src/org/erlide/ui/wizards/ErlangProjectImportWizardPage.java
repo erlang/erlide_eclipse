@@ -12,8 +12,6 @@ package org.erlide.ui.wizards;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +69,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
-import org.erlide.ui.util.IElementFilter;
 import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public class ErlangProjectImportWizardPage extends
@@ -1051,50 +1048,52 @@ public class ErlangProjectImportWizardPage extends
 		// getContainer().getShell());
 		final Map<FileSystemElement, List<MinimizedFileSystemElement>> selectionMap = new Hashtable<FileSystemElement, List<MinimizedFileSystemElement>>();
 
-		final IElementFilter filter = new IElementFilter() {
-
-			@SuppressWarnings("unchecked")
-			public void filterElements(Collection files,
-					IProgressMonitor monitor) throws InterruptedException {
-				if (files == null) {
-					throw new InterruptedException();
-				}
-				Iterator<?> filesList = files.iterator();
-				while (filesList.hasNext()) {
-					if (monitor.isCanceled()) {
-						throw new InterruptedException();
-					}
-					checkFile(filesList.next());
-				}
-			}
-
-			public void filterElements(Object[] files, IProgressMonitor monitor)
-					throws InterruptedException {
-				if (files == null) {
-					throw new InterruptedException();
-				}
-				for (int i = 0; i < files.length; i++) {
-					if (monitor.isCanceled()) {
-						throw new InterruptedException();
-					}
-					checkFile(files[i]);
-				}
-			}
-
-			private void checkFile(Object fileElement) {
-				MinimizedFileSystemElement file = (MinimizedFileSystemElement) fileElement;
-				if (isExportableExtension(file.getFileNameExtension())) {
-					List<MinimizedFileSystemElement> elements = new ArrayList<MinimizedFileSystemElement>();
-					FileSystemElement parent = file.getParent();
-					if (selectionMap.containsKey(parent)) {
-						elements = selectionMap.get(parent);
-					}
-					elements.add(file);
-					selectionMap.put(parent, elements);
-				}
-			}
-
-		};
+		// final IElementFilter filter = new IElementFilter() {
+		//
+		// @SuppressWarnings("unchecked")
+		// public void filterElements(Collection files,
+		// IProgressMonitor monitor) throws InterruptedException {
+		// if (files == null) {
+		// throw new InterruptedException();
+		// }
+		// Iterator<?> filesList = files.iterator();
+		// while (filesList.hasNext()) {
+		// if (monitor.isCanceled()) {
+		// throw new InterruptedException();
+		// }
+		// checkFile(filesList.next());
+		// }
+		// }
+		//
+		// public void filterElements(Object[] files, IProgressMonitor monitor)
+		// throws InterruptedException {
+		// if (files == null) {
+		// throw new InterruptedException();
+		// }
+		// for (int i = 0; i < files.length; i++) {
+		// if (monitor.isCanceled()) {
+		// throw new InterruptedException();
+		// }
+		// checkFile(files[i]);
+		// }
+		// }
+		//
+		// private void checkFile(Object fileElement) {
+		// MinimizedFileSystemElement file = (MinimizedFileSystemElement)
+		// fileElement;
+		// if (isExportableExtension(file.getFileNameExtension())) {
+		// List<MinimizedFileSystemElement> elements = new
+		// ArrayList<MinimizedFileSystemElement>();
+		// FileSystemElement parent = file.getParent();
+		// if (selectionMap.containsKey(parent)) {
+		// elements = selectionMap.get(parent);
+		// }
+		// elements.add(file);
+		// selectionMap.put(parent, elements);
+		// }
+		// }
+		//
+		// };
 
 		// final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 		// public void run(final IProgressMonitor monitor)

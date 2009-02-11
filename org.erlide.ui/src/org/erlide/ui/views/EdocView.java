@@ -407,7 +407,6 @@ public class EdocView extends AbstractInfoView {
 	@Override
 	protected void setInfo(final String info) {
 		String edocHtml = info;
-		final StringBuffer buffer = new StringBuffer(edocHtml);
 
 		if (fIsUsingBrowserWidget) {
 			fBrowser.setText(edocHtml);

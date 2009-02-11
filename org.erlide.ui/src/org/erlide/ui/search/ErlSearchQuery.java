@@ -22,9 +22,12 @@ public class ErlSearchQuery implements ISearchQuery {
 	// String fun;
 	// int arity;
 	// IErlElement element;
+	@SuppressWarnings("unused")
 	private final String[] scope;
+	@SuppressWarnings("unused")
 	private final int searchFor; // REFERENCES, DECLARATIONS or
 	// ALL_OCCURRENCES
+	@SuppressWarnings("unused")
 	private final int limitTo;
 	private ErlangSearchResult fSearchResult;
 	private List<ErlangExternalFunctionCallRef> fResult;
