@@ -159,9 +159,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see
-	 * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
-	 * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
+	 *      (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
@@ -241,8 +240,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see
-	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 	 * 
 	 * @since 2.0
 	 */
@@ -274,8 +272,10 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (superDetectors == null) {
 			superDetectors = new IHyperlinkDetector[0];
 		}
-
 		final IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
+		for (int i = 0; i < superDetectors.length; ++i) {
+			ourDetectors[i] = superDetectors[i];
+		}
 		ourDetectors[ourDetectors.length - 1] = new ErlangHyperlinkDetector(
 				editor);
 
