@@ -52,8 +52,7 @@ open(Mod, Offset, ExternalModules, PathVars) ->
     end.
 
 try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars) ->
-    ?D(TokensWComments),
-    Tokens = strip_comments(TokensWComments),
+    Tokens = erlide_text:strip_comments(TokensWComments),
     ?D(Tokens),
     o_tokens(Tokens, ExternalModules, PathVars, BeforeReversed),
     case BeforeReversed of
@@ -90,9 +89,6 @@ consider_local([#token{kind=comment} | More]) ->
 	consider_local(More);
 consider_local(_) ->
     true.
-
-strip_comments(Tokens) ->
-    [T || T <- Tokens, T#token.kind =/= comment].
 
 %% TODO: rewrite this with some kind of table, and make it possible to
 %% add new items, e.g. gen_server calls
@@ -231,13 +227,13 @@ get_external_modules_files([FileNames0 | Rest], PathVars, Done0, Acc) ->
 	    get_external_modules_files(Rest, PathVars, Done0, Acc);
 	false ->
 	    FileName = replace_path_var(FileNames0, PathVars),
+	    Done1 = [FileName | Done0],
 	    case file:read_file(FileName) of
 		{ok, B} ->
-		    Done1 = [FileName | Done0],
 		    {R, Done2} = get_ext_aux(erlide_util:split_lines(B), PathVars, Done1, Acc),
 		    get_external_modules_files(Rest, PathVars, Done2, R ++ Acc);
 		_ ->
-		    {Acc, Done0}
+		    {Acc, Done1}
 	    end
     end.
 
@@ -265,7 +261,7 @@ get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
 select_external([], _) ->
     not_found;
 select_external([P | Rest], Mod) ->
-	case filename:rootname(filename:basename(P)) of
+    case filename:rootname(filename:basename(P)) of
         Mod ->
             P;
         _ ->
