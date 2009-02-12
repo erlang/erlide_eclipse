@@ -221,12 +221,12 @@ replace_path_var_aux(Var, PathVars) ->
 
 get_external_modules_files([], _PathVars, Done, Acc) ->
     {Acc, Done};
-get_external_modules_files([FileNames0 | Rest], PathVars, Done0, Acc) ->
-    case lists:member(FileNames0, Done0) of
+get_external_modules_files([FileName0 | Rest], PathVars, Done0, Acc) ->
+    FileName = replace_path_var(FileName0, PathVars),
+    case lists:member(FileName, Done0) of
 	true ->
 	    get_external_modules_files(Rest, PathVars, Done0, Acc);
 	false ->
-	    FileName = replace_path_var(FileNames0, PathVars),
 	    Done1 = [FileName | Done0],
 	    case file:read_file(FileName) of
 		{ok, B} ->
