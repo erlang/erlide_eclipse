@@ -417,7 +417,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 	private void addParametersFromFunctionHead(String head,
 			final List<String> result) {
 		if (head != null && head.length() > 1) {
-			head = removeParens(head);
+			head = betweenParens(head);
 			final String[] vars = head.split(",");
 			final int n = Math.min(vars.length, result.size());
 			for (int i = 0; i < n; ++i) {
@@ -431,15 +431,14 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		}
 	}
 
-	private String removeParens(final String head) {
+	private String betweenParens(final String head) {
 		final int length = head.length();
 		if (length < 1) {
 			return head;
 		}
-		final boolean startPar = head.charAt(0) == '(';
-		final boolean endPar = head.charAt(length - 1) == ')';
-		final int startIndex = startPar ? 1 : 0;
-		final int endIndex = endPar ? length - 1 : length;
+		final int startIndex = head.charAt(0) == '(' ? 1 : 0;
+		final int lastPar = head.indexOf(')');
+		final int endIndex = lastPar == -1 ? length : lastPar;
 		return head.substring(startIndex, endIndex);
 	}
 
