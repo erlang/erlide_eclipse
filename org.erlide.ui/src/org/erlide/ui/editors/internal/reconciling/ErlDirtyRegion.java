@@ -51,7 +51,7 @@ public class ErlDirtyRegion {
 	 * dirty region.
 	 * 
 	 * @param dr
-	 *            the dirty region with which to merge
+	 *            the dirty region to merge with
 	 */
 	public void mergeWith(final ErlDirtyRegion dr) {
 		fOffset = Math.min(fOffset, dr.fOffset);

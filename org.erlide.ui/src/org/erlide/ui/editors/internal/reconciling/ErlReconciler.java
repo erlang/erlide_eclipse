@@ -33,12 +33,6 @@ public class ErlReconciler implements IReconciler {
 		fChunkReconciler = chunkReconciler;
 	}
 
-	// @Override
-	// protected void initialProcess() {
-	// super.initialProcess();
-	// startReconciling();
-	// }
-
 	/**
 	 * Background thread for the reconciling activity.
 	 */
@@ -49,7 +43,7 @@ public class ErlReconciler implements IReconciler {
 		/** Has the reconciler been reset. */
 		private boolean fReset = false;
 		/** Some changes need to be processed. */
-		boolean fIsDirty = false;
+		// boolean fIsDirty = false;
 		/** Is a reconciling strategy active. */
 		private boolean fIsActive = false;
 
@@ -81,8 +75,10 @@ public class ErlReconciler implements IReconciler {
 		 * @return <code>true</code> if changes wait to be processed
 		 * @since 3.0
 		 */
-		public synchronized boolean isDirty() {
-			return fIsDirty;
+		public boolean isDirty() {
+			synchronized (fDirtyRegionQueue) {
+				return !fDirtyRegionQueue.isEmpty();
+			}
 		}
 
 		/**
@@ -104,43 +100,31 @@ public class ErlReconciler implements IReconciler {
 		 * emptied the dirty region queue.
 		 */
 		public void suspendCallerWhileDirty() {
-			boolean isDirty;
-			do {
+			boolean isDirty = true;
+			while (isDirty) {
 				synchronized (fDirtyRegionQueue) {
-					isDirty = fDirtyRegionQueue.getSize() > 0;
+					isDirty = !fDirtyRegionQueue.isEmpty();
 					if (isDirty) {
 						try {
-							fDirtyRegionQueue.wait();
+							fDirtyRegionQueue.wait(fDelay);
 						} catch (final InterruptedException x) {
 						}
 					}
 				}
-			} while (isDirty);
+			}
 		}
 
 		/**
 		 * Reset the background thread as the text viewer has been changed,
 		 */
 		public void reset() {
-
 			if (fDelay > 0) {
-
-				synchronized (this) {
-					fIsDirty = true;
-					fReset = true;
-				}
-
+				fReset = true;
 			} else {
-
-				synchronized (this) {
-					fIsDirty = true;
-				}
-
 				synchronized (fDirtyRegionQueue) {
 					fDirtyRegionQueue.notifyAll();
 				}
 			}
-
 			reconcilerReset();
 		}
 
@@ -149,10 +133,7 @@ public class ErlReconciler implements IReconciler {
 		 * by {@link ErlReconciler#reconcileNow()}
 		 */
 		public void unreset() {
-			synchronized (this) {
-				fIsDirty = true;
-				fReset = false;
-			}
+			fReset = false;
 		}
 
 		/**
@@ -224,12 +205,7 @@ public class ErlReconciler implements IReconciler {
 				}
 				postProcess();
 				synchronized (fDirtyRegionQueue) {
-					if (0 == fDirtyRegionQueue.getSize()) {
-						synchronized (this) {
-							fIsDirty = fProgressMonitor != null ? fProgressMonitor
-									.isCanceled()
-									: false;
-						}
+					if (fDirtyRegionQueue.isEmpty()) {
 						fDirtyRegionQueue.notifyAll();
 					}
 				}
@@ -275,10 +251,6 @@ public class ErlReconciler implements IReconciler {
 
 			if (fIsIncrementalReconciler) {
 				createDirtyRegion(e);
-			}
-
-			synchronized (fThread) {
-				fThread.fIsDirty = true;
 			}
 
 			fThread.reset();
@@ -345,30 +317,30 @@ public class ErlReconciler implements IReconciler {
 	}
 
 	/** Queue to manage the changes applied to the text viewer. */
-	ErlDirtyRegionQueue fDirtyRegionQueue;
+	private ErlDirtyRegionQueue fDirtyRegionQueue;
 	/** The background thread. */
-	BackgroundThread fThread;
+	private BackgroundThread fThread;
 	/** Internal document and text input listener. */
 	private Listener fListener;
 	/** The background thread delay. */
-	int fDelay = 500;
+	private int fDelay = 500;
 	/** Are there incremental reconciling strategies? */
-	boolean fIsIncrementalReconciler = true;
+	private boolean fIsIncrementalReconciler = true;
 	/** The progress monitor used by this reconciler. */
-	IProgressMonitor fProgressMonitor;
+	private IProgressMonitor fProgressMonitor;
 	/**
 	 * Tells whether this reconciler is allowed to modify the document.
 	 * 
 	 * @since 3.2
 	 */
-	boolean fIsAllowedToModifyDocument = true;
+	private boolean fIsAllowedToModifyDocument = true;
 
 	/** The text viewer's document. */
-	IDocument fDocument;
+	private IDocument fDocument;
 	/** The text viewer */
 	private ITextViewer fViewer;
 	/** True if it should reconcile all regions without delay between them */
-	final boolean fChunkReconciler;
+	private final boolean fChunkReconciler;
 
 	/**
 	 * Tells the reconciler how long it should wait for further text changes
@@ -522,7 +494,7 @@ public class ErlReconciler implements IReconciler {
 	 * @param e
 	 *            the document event for which to create a dirty region
 	 */
-	void createDirtyRegion(final DocumentEvent e) {
+	protected void createDirtyRegion(final DocumentEvent e) {
 		synchronized (fDirtyRegionQueue) {
 			fDirtyRegionQueue.addDirtyRegion(new ErlDirtyRegion(e.getOffset(),
 					e.getLength(), e.getText()));

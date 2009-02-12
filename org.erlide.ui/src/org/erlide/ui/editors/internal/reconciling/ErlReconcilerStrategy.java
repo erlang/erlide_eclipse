@@ -46,28 +46,6 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 		ErlLogger.error("reconcile called");
 	}
 
-	// @SuppressWarnings("boxing")
-	// private OtpErlangObject mkReconcileMsg(final String string,
-	// final DirtyRegion dirtyRegion, final IRegion subRegion) {
-	// OtpErlangObject msg = new OtpErlangString(
-	// "reconcile (message build failed)");
-	// try {
-	// String text = dirtyRegion.getText();
-	// if (text == null) {
-	// text = "";
-	// }
-	// msg = ErlUtils.format("{~a, {~i, ~i, ~a, ~b}, {~i, ~i}}", string,
-	// dirtyRegion.getOffset(), dirtyRegion.getLength(),
-	// dirtyRegion.getType(), text, subRegion.getOffset(),
-	// subRegion.getLength());
-	// } catch (final ParserException e) {
-	// e.printStackTrace();
-	// } catch (final RpcException e) {
-	// e.printStackTrace();
-	// }
-	// return msg;
-	// }
-
 	public void reconcile(final IRegion partition) {
 		ErlLogger.error("reconcile called");
 	}
@@ -82,14 +60,6 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 		}
 		// notify(new OtpErlangAtom("initialReconcile"));
 	}
-
-	// private void notify(final OtpErlangObject msg) {
-	// if (System.getProperty("erlide.reconcile.debug") != null) {
-	// ErlLogger.debug("RECONCILE %s", msg.toString());
-	// }
-	// ErlangCore.getBackendManager().getIdeBackend().send("erlide_code_db",
-	// msg);
-	// }
 
 	public void setProgressMonitor(final IProgressMonitor monitor) {
 		mon = monitor;

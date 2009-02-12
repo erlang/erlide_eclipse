@@ -149,7 +149,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	class ElementChangedListener implements IElementChangedListener {
+	private class ElementChangedListener implements IElementChangedListener {
 
 		/*
 		 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse
@@ -419,11 +419,13 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private ProjectionViewer fViewer;
 
-	IErlModule fModule;
+	private IErlModule fModule;
 
 	private IElementChangedListener fElementListener;
 
 	private boolean fAllowCollapsing = false;
+
+	private boolean fFirstTimeInitialCollapse = true;
 
 	private boolean fCollapseHeaderComments = true;
 
@@ -439,9 +441,6 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseTypespecs = false;
 
-	/* caches for header comment extraction. */
-	// private IType fFirstType;
-	// private boolean fHasHeaderComment;
 	/* filters */
 	/**
 	 * Member filter, matches nested members (but not top-level types).
@@ -455,12 +454,6 @@ public class DefaultErlangFoldingStructureProvider implements
 					&& !annotation.isMarkedDeleted()) {
 				IErlElement element = annotation.getElement();
 				return element instanceof IParent;
-				// if (element instanceof IErlMember) {
-				// if (element.getElementType() != IErlElement.TYPE
-				// || ((IErlMember)element).getDeclaringType() != null) {
-				// return true;
-				// }
-				// }
 			}
 			return false;
 		}
@@ -487,6 +480,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	public void install(final ITextEditor editor, final ProjectionViewer viewer) {
 		if (editor instanceof ErlangEditor) {
+			fFirstTimeInitialCollapse = true;
 			fEditor = editor;
 			fViewer = viewer;
 			fViewer.addProjectionListener(this);
@@ -527,10 +521,10 @@ public class DefaultErlangFoldingStructureProvider implements
 			fElementListener = new ElementChangedListener();
 			ErlangCore.getModelManager().addElementChangedListener(
 					fElementListener);
-			final IErlElementDelta d = new ErlElementDelta(
-					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-					fModule);
-			processDelta(d);
+			// final IErlElementDelta d = new ErlElementDelta(
+			// IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+			// fModule);
+			// processDelta(d);
 		}
 	}
 
@@ -556,15 +550,6 @@ public class DefaultErlangFoldingStructureProvider implements
 		final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput(),
 				fEditor.getDocumentProvider());
 		fModule = m;
-		// if (fModule == null) {
-		// return;
-		// }
-		// try {
-		// m.reset();
-		// m.open(null);
-		// } catch (final ErlModelException x) {
-		// x.printStackTrace();
-		// }
 	}
 
 	private void initializePreferences() {
@@ -613,19 +598,17 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private void computeAdditions(final List<?> elements,
+	private void computeAdditions(final List<? extends IErlElement> elements,
 			final Map<ErlangProjectionAnnotation, Position> map)
 			throws ErlModelException {
 		if (elements == null) {
 			return;
 		}
-		for (final Object element : elements) {
-			if (element instanceof IErlElement) {
-				computeAdditions((IErlElement) element, map);
-				if (element instanceof IParent) {
-					final IParent parent = (IParent) element;
-					computeAdditions(parent.getChildren(), map);
-				}
+		for (final IErlElement element : elements) {
+			computeAdditions(element, map);
+			if (element instanceof IParent) {
+				final IParent parent = (IParent) element;
+				computeAdditions(parent.getChildren(), map);
 			}
 		}
 	}
@@ -669,8 +652,8 @@ public class DefaultErlangFoldingStructureProvider implements
 				final Position position = createProjectionPosition(region,
 						element);
 				if (position != null) {
-					map.put(new ErlangProjectionAnnotation(element, collapse,
-							false), position);
+					map.put(new ErlangProjectionAnnotation(element, collapse
+							&& fFirstTimeInitialCollapse, false), position);
 				}
 			}
 		}
@@ -697,17 +680,10 @@ public class DefaultErlangFoldingStructureProvider implements
 			if (element instanceof ISourceReference) {
 				final ISourceReference reference = (ISourceReference) element;
 				final ISourceRange range = reference.getSourceRange();
-
-				// TODO is this meaningful att all?
-				// final String contents = reference.getSource();
-				// if (contents == null) {
-				// return null;
-				// }
-
 				return new Region(range.getOffset(), range.getLength());
 			}
 		} catch (final ErlModelException e) {
-			// TODO } catch (InvalidInputException e) {
+			ErlLogger.warn(e);
 		}
 
 		return null;
@@ -849,7 +825,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			final Annotation[] changes = new Annotation[updates.size()];
 			updates.toArray(changes);
 			model.modifyAnnotations(removals, additions, changes);
-
+			fFirstTimeInitialCollapse = false;
 		} finally {
 			fCachedDocument = null;
 			fCachedModel = null;
