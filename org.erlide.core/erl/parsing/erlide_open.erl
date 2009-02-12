@@ -22,11 +22,13 @@
 %% Include files
 %%
 
-%%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
+
+-compile(export_all).
 
 %%
 %% API Functions
@@ -200,7 +202,7 @@ get_source_from_module(Mod, ExternalModules, PathVars) ->
     end.
 
 get_external_modules_files(PackedFileNames, PathVars) ->
-    {R, _} = get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, [], []),
+    {_, R} = get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, true, [], []),
     R.
 
 replace_path_var(FileName, PathVars) ->
@@ -219,43 +221,35 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_modules_files([], _PathVars, Done, Acc) ->
-    {Acc, Done};
-get_external_modules_files([FileName0 | Rest], PathVars, Done0, Acc) ->
-    FileName = replace_path_var(FileName0, PathVars),
-    case lists:member(FileName, Done0) of
-	true ->
-	    get_external_modules_files(Rest, PathVars, Done0, Acc);
-	false ->
-	    Done1 = [FileName | Done0],
-	    case file:read_file(FileName) of
-		{ok, B} ->
-		    {R, Done2} = get_ext_aux(erlide_util:split_lines(B), PathVars, Done1, Acc),
-		    get_external_modules_files(Rest, PathVars, Done2, R ++ Acc);
-		_ ->
-		    {Acc, Done1}
-	    end
-    end.
-
-get_ext_aux([], _PathVars, Done, Acc) ->
-    {Acc, Done};
-get_ext_aux([L | Rest], PathVars, Done0, Acc0) ->
-     case filename:extension(L) of
-         ".erlidex" ->
-	     case lists:member(L, Done0) of
-		 true ->
-		     get_ext_aux(Rest, PathVars, Done0, Acc0);
-		 false ->
-		     {Acc, Done} = get_external_modules_files([L], PathVars, Done0, Acc0),
-		     get_ext_aux(Rest, PathVars, Done, Acc)
-	     end;
-	 _ ->
-	     get_ext_aux(Rest, PathVars, Done0, [L | Acc0])
-     end.
+get_external_modules_files(Filenames, PathVars, Top, Done, Acc) ->
+    Fun = fun(Filename0, {Done0, Acc0}) ->
+		  Filename = replace_path_var(Filename0, PathVars),
+		  case lists:member(Filename, Done0) of
+		      true ->
+			  {Done0, Acc0};
+		      false ->
+			  Done1 = [Filename | Done0],
+			  case Top orelse filename:extension(Filename) == ".erlidex" of
+			      true ->
+				  case file:read_file(Filename) of
+				      {ok, B} ->
+					  get_external_modules_files(
+					    erlide_util:split_lines(B), 
+					    PathVars, false, Done1, Acc0);
+				      _ ->
+					  {Done1, Acc0}
+				  end;
+			      false ->
+				  {Done1, [Filename | Acc0]}
+			  end
+		  end
+	  end,
+    lists:foldl(Fun, {Done, Acc}, Filenames).
 
 get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
     ?D({ExternalModules, PathVars}),
     L = get_external_modules_files(ExternalModules, PathVars),
+    ?D(L),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
