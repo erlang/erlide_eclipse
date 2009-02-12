@@ -81,7 +81,8 @@ public class ErlParser {
 				ErlLogger.error("parser for %s got: %s", module.getName(), res);
 			}
 		} else {
-			ErlLogger.error("rpc error in %s: %s", module.getName(), res);
+			ErlLogger.error("rpc error when parsing %s: %s", module.getName(),
+					res);
 		}
 		final ErlModule mm = (ErlModule) module;
 		mm.reset();

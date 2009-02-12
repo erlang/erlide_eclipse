@@ -55,16 +55,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	IErlElement getElementAt(int position) throws ErlModelException;
 
 	/**
-	 * Returns whether the resource of this working copy has changed since the
-	 * inception of this working copy. Returns <code>false</code> if this
-	 * compilation unit is not in working copy mode.
-	 * 
-	 * @return whether the resource has changed
-	 * 
-	 */
-	boolean hasResourceChanged();
-
-	/**
 	 * Is this module a real one, or a header file?
 	 * 
 	 * @return true if .erl, false if .hrl

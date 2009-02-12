@@ -57,6 +57,7 @@ public class ErlModule extends Openable implements IErlModule {
 	// These are needed to ignore the initial INSERT of all text and final
 	// DELETE of all text
 	private boolean fIgnoreNextReconcile = false;
+	private boolean fIgnoreNextPostReconcile = false;
 	private boolean scannerDisposed = false;
 	private final ModuleKind moduleKind;
 
@@ -68,7 +69,6 @@ public class ErlModule extends Openable implements IErlModule {
 		comments = new ArrayList<IErlComment>(0);
 		scanner = null;
 		this.initialText = initialText;
-		// setIsStructureKnown(false);
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getName() + "/" + getName()
 					+ " " + moduleKind);
@@ -79,12 +79,9 @@ public class ErlModule extends Openable implements IErlModule {
 	synchronized protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 		logBuildStructure(underlyingResource);
-		// if (ErlModelManager.verbose) {
-		// ErlLogger.debug("* build structure " + fName);
-		// }
 
 		final ErlParser parser = new ErlParser();
-		if (initialText != null) { // TODO? && !isStructureKnown) {
+		if (initialText != null) {
 			final String path = getFilePath();
 			final String erlidePath = getErlidePath();
 			isStructureKnown = parser.parse(this, initialText, !parsed, path,
@@ -151,11 +148,6 @@ public class ErlModule extends Openable implements IErlModule {
 			}
 		}
 		return null;
-	}
-
-	public boolean hasResourceChanged() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public ModuleKind getModuleKind() {
@@ -345,8 +337,6 @@ public class ErlModule extends Openable implements IErlModule {
 		if (scannerDisposed) {
 			return;
 		}
-		// ErlLogger.debug("reconcileText " + offset + ":" + removeLength + ":"
-		// + newText.length() + " ign " + fIgnoreNextReconcile);
 		if (!fIgnoreNextReconcile) {
 			getScanner();
 			scanner.replaceText(offset, removeLength, newText);
@@ -364,14 +354,17 @@ public class ErlModule extends Openable implements IErlModule {
 	 * @see org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void postReconcile(final IProgressMonitor mon) {
-		try {
-			open(mon);
-		} catch (final ErlModelException e) {
-			ErlLogger.warn(e);
+		if (!fIgnoreNextPostReconcile) {
+			try {
+				open(mon);
+			} catch (final ErlModelException e) {
+				ErlLogger.warn(e);
+			}
+			if (mon != null) {
+				mon.worked(1);
+			}
 		}
-		if (mon != null) {
-			mon.worked(1);
-		}
+		fIgnoreNextPostReconcile = false;
 	}
 
 	@Override
@@ -382,10 +375,12 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public void finalReconcile() {
 		fIgnoreNextReconcile = true;
+		fIgnoreNextPostReconcile = true;
 	}
 
 	public void initialReconcile() {
 		fIgnoreNextReconcile = true;
+		fIgnoreNextPostReconcile = true;
 	}
 
 	private String getModuleName() {
@@ -401,15 +396,19 @@ public class ErlModule extends Openable implements IErlModule {
 		scanner.dispose();
 		scanner = null;
 		scannerDisposed = true;
+		setIsStructureKnown(false);
 	}
 
 	public void disposeParser() {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
+		setIsStructureKnown(false);
+		parsed = false;
 	}
 
 	public void reenableScanner() {
 		scannerDisposed = false;
+		setIsStructureKnown(false);
 	}
 
 	public IErlProject getProject() {
