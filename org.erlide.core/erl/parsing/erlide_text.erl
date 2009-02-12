@@ -23,7 +23,8 @@
          clean_tokens/2,
          get_line_offsets/1,
          detab/3, entab/3, start_column/2,
-         left_strip/1, right_strip/1, strip/1]).
+         left_strip/1, right_strip/1, strip/1,
+	 strip_comments/1]).
 
 %-define(DEBUG, 1).
 
@@ -370,4 +371,7 @@ right_strip(S) ->
 
 strip(S) ->
     right_strip(left_strip(S)).
+
+strip_comments(Tokens) ->
+    [T || T <- Tokens, T#token.kind =/= comment].
 
