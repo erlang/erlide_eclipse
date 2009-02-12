@@ -157,10 +157,14 @@ public class NewErlangProjectProperties {
 
 	public void load(IEclipsePreferences root) throws BackingStoreException {
 		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
-		requiredRuntimeVersion = root.get(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null);
-		backendNodeName = root.get(ProjectPreferencesConstants.BACKEND_NODE_NAME, null);
-		backendCookie = root.get(ProjectPreferencesConstants.BACKEND_COOKIE, null);
-		includes = PreferencesUtils.unpackList(root.get(ProjectPreferencesConstants.INCLUDES, ""));
+		requiredRuntimeVersion = root.get(
+				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null);
+		backendNodeName = root.get(
+				ProjectPreferencesConstants.BACKEND_NODE_NAME, null);
+		backendCookie = root.get(ProjectPreferencesConstants.BACKEND_COOKIE,
+				null);
+		includes = PreferencesUtils.unpackList(root.get(
+				ProjectPreferencesConstants.INCLUDES, ""));
 		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();
 		for (String src : srcNode.childrenNames()) {
@@ -174,15 +178,18 @@ public class NewErlangProjectProperties {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		if (requiredRuntimeVersion != null) {
-			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, requiredRuntimeVersion);
+			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION,
+					requiredRuntimeVersion);
 		}
 		if (backendNodeName != null) {
-			root.put(ProjectPreferencesConstants.BACKEND_NODE_NAME, backendNodeName);
+			root.put(ProjectPreferencesConstants.BACKEND_NODE_NAME,
+					backendNodeName);
 		}
 		if (backendCookie != null) {
 			root.put(ProjectPreferencesConstants.BACKEND_COOKIE, backendCookie);
 		}
-		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils.packList(includes));
+		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
+				.packList(includes));
 		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
 		for (SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
