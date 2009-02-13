@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jinterface Plug-in
 Bundle-SymbolicName: com.ericsson.jinterface;singleton:=true
-Bundle-Version: 0.4.3.9k
+Bundle-Version: 0.4.3.9m
 Bundle-Vendor: ERICSSON
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: com.ericsson.otp.erlang
