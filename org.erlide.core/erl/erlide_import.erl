@@ -28,7 +28,7 @@ import(Prefix0, L) ->
     M0 = filter_out_dotnames(L),
     M = filter_out_tilde(M0),
     Prefix = case lists:last(Prefix0) of
-                 $/ ->
+                 $/ ->
                      Prefix0;
                  _ ->
                      Prefix0++"/"
@@ -74,20 +74,6 @@ import(Prefix, [File | Rest], Files, SourceDirs, IncludeDirs) ->
         _ ->
             import(Prefix, Rest, [File | Files], SourceDirs, IncludeDirs)
     end.
-
-%% add_elem(E, L) ->
-%%     case lists:member(E, L) of
-%%         true ->
-%%             L;
-%%         false ->
-%%             [E | L]
-%%     end.
-%% 
-%% new_empty() ->
-%%     [].
-%% 
-%% to_list(L) ->
-%%     lists:reverse(L).
 
 new_empty() ->
     ordsets:new().
