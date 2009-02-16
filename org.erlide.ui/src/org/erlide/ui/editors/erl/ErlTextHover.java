@@ -203,7 +203,7 @@ public class ErlTextHover implements ITextHover,
 					try {
 						return new BrowserInformationControl(parent,
 								shellStyle, style);
-					} catch (Exception e) {
+					} catch (NoSuchMethodError e) {
 						// API changed in 3.4
 						return new DefaultInformationControl(parent,
 								shellStyle, style, new HTMLTextPresenter(false));
@@ -227,7 +227,7 @@ public class ErlTextHover implements ITextHover,
 						return new BrowserInformationControl(parent, SWT.TOOL
 								| SWT.NO_TRIM, SWT.NONE, EditorsUI
 								.getTooltipAffordanceString());
-					} catch (Exception e) {
+					} catch (NoSuchMethodError e) {
 						// API changed in 3.4
 						return new DefaultInformationControl(parent, SWT.NONE,
 								new HTMLTextPresenter(true), EditorsUI
