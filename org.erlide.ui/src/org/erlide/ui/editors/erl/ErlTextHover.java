@@ -200,8 +200,14 @@ public class ErlTextHover implements ITextHover,
 				final int shellStyle = SWT.RESIZE | SWT.TOOL;
 				final int style = SWT.V_SCROLL | SWT.H_SCROLL;
 				if (BrowserInformationControl.isAvailable(parent)) {
-					return new BrowserInformationControl(parent, shellStyle,
-							style);
+					try {
+						return new BrowserInformationControl(parent,
+								shellStyle, style);
+					} catch (Exception e) {
+						// API changed in 3.4
+						return new DefaultInformationControl(parent,
+								shellStyle, style, new HTMLTextPresenter(false));
+					}
 				} else {
 					return new DefaultInformationControl(parent, shellStyle,
 							style, new HTMLTextPresenter(false));
@@ -217,9 +223,16 @@ public class ErlTextHover implements ITextHover,
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				if (BrowserInformationControl.isAvailable(parent)) {
-					return new BrowserInformationControl(parent, SWT.TOOL
-							| SWT.NO_TRIM, SWT.NONE, EditorsUI
-							.getTooltipAffordanceString());
+					try {
+						return new BrowserInformationControl(parent, SWT.TOOL
+								| SWT.NO_TRIM, SWT.NONE, EditorsUI
+								.getTooltipAffordanceString());
+					} catch (Exception e) {
+						// API changed in 3.4
+						return new DefaultInformationControl(parent, SWT.NONE,
+								new HTMLTextPresenter(true), EditorsUI
+										.getTooltipAffordanceString());
+					}
 				} else {
 					return new DefaultInformationControl(parent, SWT.NONE,
 							new HTMLTextPresenter(true), EditorsUI
