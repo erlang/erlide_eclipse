@@ -157,7 +157,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				resourcesToBuild = fullBuild(args);
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
-				resourcesToBuild = incrementalBuild(args, delta);
+				Path path = new Path(".settings/org.erlide.core.prefs");
+				if (delta.findMember(path) != null) {
+					ErlLogger
+							.info("project configuration changed: doing full rebuild");
+					resourcesToBuild = fullBuild(args);
+				} else {
+					resourcesToBuild = incrementalBuild(args, delta);
+				}
 			}
 			final int n = resourcesToBuild.size();
 			if (BuilderUtils.isDebugging()) {
