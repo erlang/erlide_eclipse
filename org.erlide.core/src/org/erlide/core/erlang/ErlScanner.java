@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 
@@ -111,7 +111,7 @@ public class ErlScanner implements IErlScanner {
 				erlidePath);
 	}
 
-	public List<IErlComment> getComments() {
+	public Collection<IErlComment> getComments() {
 		return module.getComments();
 	}
 }

@@ -121,7 +121,7 @@ public class ModelUtils {
 		if (pd != null) {
 			return pd;
 		}
-		final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+		final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = null;
 			IProject project = null;

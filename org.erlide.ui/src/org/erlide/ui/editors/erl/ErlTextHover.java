@@ -10,7 +10,7 @@
 package org.erlide.ui.editors.erl;
 
 import java.net.URL;
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
@@ -59,7 +59,7 @@ public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension {
 
 	// private ITextEditor fEditor;
-	private List<IErlImport> fImports;
+	private Collection<IErlImport> fImports;
 	private final IErlModule fModule;
 	private final String fExternalIncludes;
 	private static URL fgStyleSheet;

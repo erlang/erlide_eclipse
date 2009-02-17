@@ -599,7 +599,8 @@ public class DefaultErlangFoldingStructureProvider implements
 		}
 	}
 
-	private void computeAdditions(final List<? extends IErlElement> elements,
+	private void computeAdditions(
+			final Collection<? extends IErlElement> elements,
 			final Map<ErlangProjectionAnnotation, Position> map)
 			throws ErlModelException {
 		if (elements == null) {

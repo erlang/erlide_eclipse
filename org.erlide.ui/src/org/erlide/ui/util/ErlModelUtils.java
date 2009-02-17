@@ -12,6 +12,7 @@ package org.erlide.ui.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -141,7 +142,7 @@ public class ErlModelUtils {
 		return res;
 	}
 
-	public static List<IErlImport> getImportsAsList(final IErlModule mod) {
+	public static Collection<IErlImport> getImportsAsList(final IErlModule mod) {
 		if (mod == null) {
 			return new ArrayList<IErlImport>(0);
 		}
@@ -194,7 +195,7 @@ public class ErlModelUtils {
 		if (pd != null) {
 			return pd;
 		}
-		final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+		final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
@@ -245,7 +246,7 @@ public class ErlModelUtils {
 		}
 		modulesFound.add(m);
 		m.open(null);
-		final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+		final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
@@ -299,7 +300,7 @@ public class ErlModelUtils {
 		m.open(null);
 		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
 		if (pd == null) {
-			final List<ErlangIncludeFile> includes = m.getIncludedFiles();
+			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,

@@ -11,10 +11,12 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
@@ -220,7 +222,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return timestamp;
 	}
 
-	public List<IErlComment> getComments() {
+	public Collection<IErlComment> getComments() {
 		return comments;
 	}
 
@@ -262,7 +264,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
-	public List<IErlPreprocessorDef> getPreprocessorDefs(final Kind type) {
+	public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind type) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlPreprocessorDef) {
@@ -275,7 +277,8 @@ public class ErlModule extends Openable implements IErlModule {
 		return res;
 	}
 
-	public List<ErlangIncludeFile> getIncludedFiles() throws ErlModelException {
+	public Collection<ErlangIncludeFile> getIncludedFiles()
+			throws ErlModelException {
 		if (!isStructureKnown) {
 			open(null);
 		}
@@ -297,7 +300,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public List<IErlImport> getImports() {
+	public Collection<IErlImport> getImports() {
 		final List<IErlImport> r = new ArrayList<IErlImport>();
 		for (final IErlElement m : fChildren) {
 			if (m instanceof IErlImport) {
@@ -351,7 +354,9 @@ public class ErlModule extends Openable implements IErlModule {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime.IProgressMonitor)
+	 * @see
+	 * org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime
+	 * .IProgressMonitor)
 	 */
 	public void postReconcile(final IProgressMonitor mon) {
 		if (!fIgnoreNextPostReconcile) {
@@ -425,6 +430,24 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void dispose() {
+	}
+
+	public Collection<IErlModule> getDependencies() throws ErlModelException {
+		ArrayList<IErlModule> result = new ArrayList<IErlModule>();
+		Collection<ErlangIncludeFile> incs = getIncludedFiles();
+		for (ErlangIncludeFile inc : incs) {
+			if (!inc.isSystemInclude()) {
+				String name = inc.getFilename();
+				IResource res = ResourcesPlugin.getWorkspace().getRoot()
+						.findMember(name);
+				if (res instanceof IFile) {
+					IFile file = (IFile) res;
+					IErlModule m = ErlangCore.getModel().getModule(file);
+					result.add(m);
+				}
+			}
+		}
+		return result;
 	}
 
 }

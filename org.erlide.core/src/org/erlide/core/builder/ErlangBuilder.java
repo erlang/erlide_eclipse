@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -380,7 +381,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				if (eprj != null) {
 					final IErlModule m = eprj.getModule(resource.getName());
 					if (m != null) {
-						final List<ErlangIncludeFile> incs = m
+						final Collection<ErlangIncludeFile> incs = m
 								.getIncludedFiles();
 						for (final ErlangIncludeFile ifile : incs) {
 							final IResource rifile = ErlangBuilderMarkerGenerator
@@ -505,7 +506,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					return;
 				}
 				final IErlScanner s = m.getScanner();
-				final List<IErlComment> cl = s.getComments();
+				final Collection<IErlComment> cl = s.getComments();
 				for (final IErlComment c : cl) {
 					final String name = c.getName();
 					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
@@ -810,7 +811,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
-				final List<ErlangIncludeFile> incs = m.getIncludedFiles();
+				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (ErlangBuilderMarkerGenerator.comparePath(ifile
 							.getFilename(), resource.getName())) {

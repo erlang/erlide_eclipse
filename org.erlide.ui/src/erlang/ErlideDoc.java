@@ -1,5 +1,6 @@
 package erlang;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.IErlImport;
@@ -42,7 +43,7 @@ public class ErlideDoc {
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject getDocFromScan(final Backend b,
 			final int offset, final String stateDir, final String module,
-			final List<IErlImport> imports) {
+			final Collection<IErlImport> imports) {
 		OtpErlangObject res = null;
 		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
