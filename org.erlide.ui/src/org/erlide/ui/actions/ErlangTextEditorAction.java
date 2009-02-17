@@ -153,7 +153,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		if (newText == null) {
 			final String e = (r1 != null) ? r1.toString() : "<null>";
 			Status status = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
-					ErlangStatusConstants.INTERNAL_ERROR, "indent returned :"
+					ErlangStatusConstants.INTERNAL_ERROR, "indent returned "
 							+ e + " instead of a string", null);
 			ErlangPlugin.log(status);
 

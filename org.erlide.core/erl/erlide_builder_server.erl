@@ -111,7 +111,7 @@ handle_call(Request, _From, State) ->
 %% --------------------------------------------------------------------
 handle_cast(stop, State) ->
 	{stop, normal, State};
-handle_cast(Msg, State) ->
+handle_cast(_Msg, State) ->
     {noreply, State}.
 
 %% --------------------------------------------------------------------
@@ -121,7 +121,7 @@ handle_cast(Msg, State) ->
 %%          {noreply, State, Timeout} |
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_info({'DOWN', _Mref, _, Pid, Info}, #state{slaves=Slaves}=State) ->
+handle_info({'DOWN', _Mref, _, Pid, _Info}, #state{slaves=Slaves}=State) ->
 	NewSlaves = case lists:keytake(Pid, 2, Slaves) of
 					false ->
 						Slaves;
@@ -130,7 +130,7 @@ handle_info({'DOWN', _Mref, _, Pid, Info}, #state{slaves=Slaves}=State) ->
 						New
 				end,
 	{noreply, State#state{slaves=NewSlaves}};
-handle_info(Info, State) ->
+handle_info(_Info, State) ->
     {noreply, State}.
 
 %% --------------------------------------------------------------------
@@ -138,7 +138,7 @@ handle_info(Info, State) ->
 %% Description: Shutdown the server
 %% Returns: any (ignored by gen_server)
 %% --------------------------------------------------------------------
-terminate(Reason, State) ->
+terminate(_Reason, _State) ->
     ok.
 
 %% --------------------------------------------------------------------
@@ -146,7 +146,7 @@ terminate(Reason, State) ->
 %% Purpose: Convert process state when code is changed
 %% Returns: {ok, NewState}
 %% --------------------------------------------------------------------
-code_change(OldVsn, State, Extra) ->
+code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 %% --------------------------------------------------------------------

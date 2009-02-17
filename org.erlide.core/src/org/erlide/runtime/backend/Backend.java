@@ -374,7 +374,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			return;
 		}
 		ErlLogger.info("restarting runtime for %s", this.toString());
-		Thread.dumpStack();
 		initializeRuntime(null);
 		Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
 				.getPlugins();
