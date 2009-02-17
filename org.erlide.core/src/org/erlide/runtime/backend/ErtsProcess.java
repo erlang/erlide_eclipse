@@ -33,8 +33,8 @@ public class ErtsProcess extends RuntimeProcess {
 	private final Map fAttributes = new HashMap();
 
 	@SuppressWarnings("unchecked")
-	public ErtsProcess(ILaunch launch, Process process, String name,
-			Map attributes) {
+	public ErtsProcess(final ILaunch launch, final Process process,
+			final String name, final Map attributes) {
 		super(launch, process, name, attributes);
 		// ErlLogger.debug("# create ErtsNode: " + name + " " + attributes);
 	}
@@ -55,7 +55,8 @@ public class ErtsProcess extends RuntimeProcess {
 	 *            The system.
 	 * @throws IOException
 	 */
-	public synchronized void writeToErlang(String value) throws IOException {
+	public synchronized void writeToErlang(final String value)
+			throws IOException {
 		if (!isStarted()) {
 			return;
 		}
@@ -78,7 +79,7 @@ public class ErtsProcess extends RuntimeProcess {
 	}
 
 	@SuppressWarnings("unused")
-	private String[] mkEnv(Map<String, String> map) {
+	private String[] mkEnv(final Map<String, String> map) {
 		final Set<Map.Entry<String, String>> entries = map.entrySet();
 		final String[] result = new String[entries.size()];
 		final Iterator<Map.Entry<String, String>> i = entries.iterator();
@@ -90,21 +91,21 @@ public class ErtsProcess extends RuntimeProcess {
 		return result;
 	}
 
-	public void addStdListener(IStreamListener dspHandler) {
+	public void addStdListener(final IStreamListener dspHandler) {
 		final IStreamsProxy streamsProxy = getStreamsProxy();
 		if (streamsProxy != null) {
 			streamsProxy.getOutputStreamMonitor().addListener(dspHandler);
 		}
 	}
 
-	public void addErrListener(IStreamListener errHandler) {
+	public void addErrListener(final IStreamListener errHandler) {
 		final IStreamsProxy streamsProxy = getStreamsProxy();
 		if (streamsProxy != null) {
 			streamsProxy.getErrorStreamMonitor().addListener(errHandler);
 		}
 	}
 
-	public void sendToShell(String string) {
+	public void sendToShell(final String string) {
 		final IStreamsProxy streamsProxy = getStreamsProxy();
 		if (streamsProxy != null) {
 			try {
@@ -121,6 +122,11 @@ public class ErtsProcess extends RuntimeProcess {
 	protected void terminated() {
 		ErlLogger.debug("ErtsProcess terminated: %s", getLabel());
 		super.terminated();
+		try {
+			getLaunch().terminate();
+		} catch (final DebugException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
