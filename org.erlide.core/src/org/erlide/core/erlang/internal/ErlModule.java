@@ -12,11 +12,12 @@ package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
@@ -432,22 +433,31 @@ public class ErlModule extends Openable implements IErlModule {
 	public void dispose() {
 	}
 
-	public Collection<IErlModule> getDependencies() throws ErlModelException {
-		ArrayList<IErlModule> result = new ArrayList<IErlModule>();
-		Collection<ErlangIncludeFile> incs = getIncludedFiles();
-		for (ErlangIncludeFile inc : incs) {
-			if (!inc.isSystemInclude()) {
-				String name = inc.getFilename();
-				IResource res = ResourcesPlugin.getWorkspace().getRoot()
-						.findMember(name);
-				if (res instanceof IFile) {
-					IFile file = (IFile) res;
-					IErlModule m = ErlangCore.getModel().getModule(file);
-					result.add(m);
-				}
-			}
-		}
+	public Set<IErlModule> getDependents() throws ErlModelException {
+		Set<IErlModule> result = new HashSet<IErlModule>();
+		// TODO find the modules including this one
 		return result;
+	}
+
+	public Set<IErlModule> getAllDependents() throws ErlModelException {
+		Set<IErlModule> mod = getDependents();
+		return getAllDependents(mod, new HashSet<IErlModule>());
+	}
+
+	private Set<IErlModule> getAllDependents(Set<IErlModule> current,
+			Set<IErlModule> result) throws ErlModelException {
+		Set<IErlModule> next = new HashSet<IErlModule>();
+		for (IErlModule mod : current) {
+			Collection<IErlModule> dep = mod.getDependents();
+			result.add(mod);
+			next.addAll(dep);
+		}
+		if (next.size() == 0) {
+			return result;
+
+		} else {
+			return getAllDependents(next, result);
+		}
 	}
 
 }

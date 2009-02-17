@@ -13,6 +13,7 @@
 package org.erlide.core.erlang;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.util.ErlangFunction;
@@ -98,5 +99,13 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	void dispose();
 
-	Collection<IErlModule> getDependencies() throws ErlModelException;
+	/**
+	 * Returns a collection of modules that include this one.
+	 **/
+	Set<IErlModule> getDependents() throws ErlModelException;
+
+	/**
+	 * Returns the transitive closure of modules that include this one.
+	 **/
+	Set<IErlModule> getAllDependents() throws ErlModelException;
 }
