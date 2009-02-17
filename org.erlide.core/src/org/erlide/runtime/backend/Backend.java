@@ -72,6 +72,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private boolean trapexit;
 
+	private int exitStatus = -1;
+
 	public Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		if (info == null) {
@@ -356,10 +358,31 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			final int timeout, final String signature, Object... args0)
 			throws RpcException {
 		if (!fAvailable) {
-			return RpcResult.error("not connected");
+			if (exitStatus >= 0) {
+				restart();
+			} else {
+				return RpcResult.error("not connected");
+			}
 		}
 		return RpcUtil.sendRpc(fNode, fPeer, module, fun, timeout, signature,
 				args0);
+	}
+
+	private synchronized void restart() {
+		exitStatus = -1;
+		if (fAvailable) {
+			return;
+		}
+		ErlLogger.info("restarting runtime for %s", this.toString());
+		Thread.dumpStack();
+		initializeRuntime(null);
+		Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
+				.getPlugins();
+		for (ICodeBundle bundle : plugins) {
+			getCodeManager().unregister(bundle);
+		}
+		connectAndRegister(plugins);
+		initErlang();
 	}
 
 	private OtpMbox getEventBox() {
@@ -468,7 +491,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	public void connectAndRegister(final List<ICodeBundle> plugins) {
+	public void connectAndRegister(final Collection<ICodeBundle> plugins) {
 		connect();
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
@@ -555,6 +578,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public void stop() {
 		launcher.stop();
+	}
+
+	public void setExitStatus(int v) {
+		exitStatus = v;
 	}
 
 }

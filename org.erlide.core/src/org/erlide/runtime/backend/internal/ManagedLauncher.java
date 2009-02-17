@@ -63,6 +63,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 						int v = fRuntime.waitFor();
 						final String msg = "Backend runtime %s terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
+						backend.setExitStatus(v);
 					} catch (InterruptedException e) {
 						ErlLogger.warn("Backend watcher was interrupted");
 					}

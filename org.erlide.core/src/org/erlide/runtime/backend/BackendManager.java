@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -359,6 +360,10 @@ public final class BackendManager implements IEpmdListener {
 				b.getCodeManager().unregister(p);
 			}
 		});
+	}
+
+	public Collection<ICodeBundle> getPlugins() {
+		return Collections.unmodifiableCollection(fPlugins);
 	}
 
 	public void forEachProjectBackend(final BackendVisitor visitor) {
