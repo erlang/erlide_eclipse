@@ -152,12 +152,13 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		final String newText = Util.stringValue(r1);
 		if (newText == null) {
 			final String e = (r1 != null) ? r1.toString() : "<null>";
-			ErlangPlugin.log(new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
-					ErlangStatusConstants.INTERNAL_ERROR,
-					"IndentAction_error_message" + e, null));
+			Status status = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+					ErlangStatusConstants.INTERNAL_ERROR, "indent returned :"
+							+ e + " instead of a string", null);
+			ErlangPlugin.log(status);
 
 			ErrorDialog.openError(textEditor.getSite().getShell(),
-					ActionMessages.IndentAction_error_message, e, null);
+					ActionMessages.IndentAction_error_message, e, status);
 			return;
 		}
 		final int startLine = selection.getStartLine();
