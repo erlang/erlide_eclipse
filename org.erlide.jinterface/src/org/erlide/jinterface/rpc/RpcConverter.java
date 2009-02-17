@@ -13,7 +13,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -104,7 +104,7 @@ public class RpcConverter {
 		if (obj.isArray()) {
 			return OtpErlangTuple.class;
 		}
-		if (List.class.isAssignableFrom(obj)) {
+		if (Collection.class.isAssignableFrom(obj)) {
 			return OtpErlangList.class;
 		}
 		if (obj == Integer.TYPE) {
@@ -255,7 +255,7 @@ public class RpcConverter {
 						+ obj.getClass().getName() + ", can't convert to "
 						+ cls.getCanonicalName());
 			}
-			if (List.class.isAssignableFrom(cls)) {
+			if (Collection.class.isAssignableFrom(cls)) {
 				if (obj instanceof OtpErlangList) {
 					final OtpErlangObject[] list = ((OtpErlangList) obj)
 							.elements();
@@ -349,9 +349,10 @@ public class RpcConverter {
 			}
 			failConversion(obj, type);
 		}
-		if (obj instanceof List<?>) {
+		if (obj instanceof Collection<?>) {
 			if (type.kind == 'l') {
-				final Object[] v = ((List<?>) obj).toArray(new Object[] {});
+				final Object[] v = ((Collection<?>) obj)
+						.toArray(new Object[] {});
 				final OtpErlangObject[] vv = new OtpErlangObject[v.length];
 				for (int i = 0; i < v.length; i++) {
 					vv[i] = java2erlang(v[i], type.content[0]);
@@ -489,8 +490,8 @@ public class RpcConverter {
 		if (obj instanceof Boolean) {
 			return new OtpErlangAtom((Boolean) obj ? "true" : "false");
 		}
-		if (obj instanceof List<?>) {
-			final Object[] v = ((List<?>) obj).toArray(new Object[] {});
+		if (obj instanceof Collection<?>) {
+			final Object[] v = ((Collection<?>) obj).toArray(new Object[] {});
 			final OtpErlangObject[] vv = new OtpErlangObject[v.length];
 			for (int i = 0; i < v.length; i++) {
 				vv[i] = java2erlang(v[i]);
