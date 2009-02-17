@@ -142,7 +142,7 @@ indent(Tokens, LineOffsets, LineN, Prefs, OldLine) ->
         throw:{indent_eof, A, C, Inblock} ->
             ?D({indent_eof, A, C, Inblock}),
             {get_indent_of(A, C, LineOffsets), Inblock};
-        throw:{indent_checked, N, Inblock} ->
+        throw:{indent_to, N, Inblock} ->
             ?D(N),
             {N, Inblock};
         error:_E ->
@@ -615,7 +615,7 @@ i_comments([#token{kind=comment, value=V} = C | Rest], I) ->
                     not_yet;
                 _ ->
                     ?D(I),
-                    throw({indent, 0, I#i.in_block})
+                    throw({indent_to, 0, I#i.in_block})
             end;
         _ ->
             i_check([C], I)
