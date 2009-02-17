@@ -41,7 +41,7 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 	List<ErlRpcMessageListener> fErlRpcMessageListeners = new ArrayList<ErlRpcMessageListener>();
 
 	public void start() {
-		if (!fStopJob) {
+		if (fStopJob) {
 			return;
 		}
 		ErlangCore.getBackendManager().addBackendListener(this);
