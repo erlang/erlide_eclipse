@@ -36,6 +36,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	private OtpErlangObject[] elems = NO_ELEMENTS;
 	private OtpErlangObject tail = null;
 
+	// TODO should we provide an iterator?
+
 	/**
 	 * Create an empty list.
 	 */
@@ -113,30 +115,16 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	public OtpErlangList(final OtpInputStream buf)
 			throws OtpErlangDecodeException {
 		elems = null;
-
 		final int arity = buf.read_list_head();
-
 		if (arity > 0) {
 			elems = new OtpErlangObject[arity];
-
 			for (int i = 0; i < arity; i++) {
 				elems[i] = buf.read_any();
 			}
-
-			/* discard the terminating nil (empty list) */
-			tail = buf.read_any();
-			if (tail instanceof OtpErlangList) {
-				tail = null;
+			/* discard the terminating nil (empty list) or read tail */
+			if (buf.peek() != OtpExternal.nilTag) {
+				tail = buf.read_any();
 			}
-			// try {
-			// buf.read_nil();
-			// } catch (final OtpErlangDecodeException e) {
-			// if (e.getMessage().startsWith("Not valid nil tag:")) {
-			// throw new OtpErlangDecodeException("Non proper list");
-			// } else {
-			// throw e;
-			// }
-			// }
 		}
 	}
 
@@ -277,7 +265,9 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	public Object clone() {
 		final OtpErlangList newList = (OtpErlangList) super.clone();
 		newList.elems = (OtpErlangObject[]) elems.clone();
-		newList.tail = (OtpErlangObject) tail.clone();
+		if (tail != null) {
+			newList.tail = (OtpErlangObject) tail.clone();
+		}
 		return newList;
 	}
 
@@ -294,5 +284,12 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 */
 	public void setTail(final OtpErlangObject tail) {
 		this.tail = tail;
+	}
+
+	/**
+	 * @return true if the list is proper, i.e. the tail is nil
+	 */
+	public boolean isProper() {
+		return tail == null;
 	}
 }
