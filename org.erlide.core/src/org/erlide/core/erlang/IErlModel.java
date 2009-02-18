@@ -34,16 +34,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * one of these handles can be created via
  * <code>ErlangCore.create(workspace.getRoot())</code>.
  * </p>
- *
- * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
- */
-/**
- *
- * @author qvladum
- */
-/**
  * 
- * @author qvladum
+ * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
 public interface IErlModel extends IErlElement, IOpenable, IParent {
 

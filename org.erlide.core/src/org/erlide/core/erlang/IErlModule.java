@@ -102,7 +102,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	/**
 	 * Returns a collection of modules that include this one.
 	 **/
-	Set<IErlModule> getDependents() throws ErlModelException;
+	Set<IErlModule> getDirectDependents() throws ErlModelException;
 
 	/**
 	 * Returns the transitive closure of modules that include this one.

@@ -433,14 +433,15 @@ public class ErlModule extends Openable implements IErlModule {
 	public void dispose() {
 	}
 
-	public Set<IErlModule> getDependents() throws ErlModelException {
+	public Set<IErlModule> getDirectDependents() throws ErlModelException {
 		Set<IErlModule> result = new HashSet<IErlModule>();
-		// TODO find the modules including this one
+		IErlProject project = getProject();
+
 		return result;
 	}
 
 	public Set<IErlModule> getAllDependents() throws ErlModelException {
-		Set<IErlModule> mod = getDependents();
+		Set<IErlModule> mod = getDirectDependents();
 		return getAllDependents(mod, new HashSet<IErlModule>());
 	}
 
@@ -448,7 +449,7 @@ public class ErlModule extends Openable implements IErlModule {
 			Set<IErlModule> result) throws ErlModelException {
 		Set<IErlModule> next = new HashSet<IErlModule>();
 		for (IErlModule mod : current) {
-			Collection<IErlModule> dep = mod.getDependents();
+			Collection<IErlModule> dep = mod.getDirectDependents();
 			result.add(mod);
 			next.addAll(dep);
 		}
