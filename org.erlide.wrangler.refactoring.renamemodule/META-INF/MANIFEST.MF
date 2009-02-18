@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Rename Module Fragment
 Bundle-SymbolicName: org.erlide.wrangler.refactoring.renamemodule;singleton:=true
-Bundle-Version: 0.1.5.3
-Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.1.5"
+Bundle-Version: 0.1.6
+Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.1.6"
 Bundle-Vendor: UKC
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0"

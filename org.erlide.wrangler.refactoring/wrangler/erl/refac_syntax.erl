@@ -5819,7 +5819,7 @@ is_tree(_) -> false.
 
 data(#tree{data = D}) -> D;
 data(#wrapper{tree=D}) -> D;  %% Added by Huiqing Li. (Is this correct?)
-data(T) -> erlang:error({badarg, T}).  %% TODO: CHANGE THIS BACK.
+data(T) -> erlang:error({badarg, T}). %% TODO: CHANGE THIS BACK.
 
 % =====================================================================
 %% Primitives for backwards compatibility; for internal use only
@@ -5860,7 +5860,7 @@ wrap(Node) ->
 
 unwrap(#wrapper{tree = Node}) -> Node;
 unwrap(Node) ->
-    Node.    % This could also be a new-form node.
+    Node.   % This could also be a new-form node.
 
 %% =====================================================================
 %% @spec is_wrapper(Term::term()) -> bool()

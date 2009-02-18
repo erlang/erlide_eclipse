@@ -21,10 +21,12 @@
 
 -export([open/2,open/3,close/1,format_error/1]).
 -export([scan_erl_form/1,parse_erl_form/1,macro_defs/1]).
--export([parse_file/3]).
+-export([parse_file/3, parse_file/4]).
 -export([interpret_file_attribute/1]).
--export([scan_file/3]).
+-export([scan_file/4]).
 -export([expand_macros/2]).
+
+-define(DEFAULT_TABWIDTH, 8).
 %% Epp state record.
 -record(epp, {file,				%Current file
 	      line={1,1},			%Current line number  %% modified by Huiqing Li
@@ -33,7 +35,8 @@
 	      sstk=[],				%State stack
 	      path=[],				%Include-path
 	      macs=dict:new(),			%Macros
-	      uses=dict:new()			%Macro use structure
+	      uses=dict:new(),			%Macro use structure
+	      tabwidth = ?DEFAULT_TABWIDTH
 	     }).
 
 %%% Note on representation: as tokens, both {var, Line, Name} and
@@ -51,11 +54,14 @@
 %% macro_defs(Epp)
 
 open(File, Path) ->
-    open(File, Path, []).
+    open(File, Path, [],?DEFAULT_TABWIDTH).
 
 open(File, Path, Pdm) ->
+    open(File, Path, Pdm, ?DEFAULT_TABWIDTH).
+
+open(File, Path, Pdm, TabWidth) ->
     Self = self(),
-    Epp = spawn(fun() -> server(Self, File, Path, Pdm) end),
+    Epp = spawn(fun() -> server(Self, File, Path, Pdm, TabWidth) end),
     epp_request(Epp).
 
 close(Epp) ->
@@ -70,7 +76,8 @@ scan_erl_form(Epp) ->
     epp_request(Epp, scan_erl_form).
 
 parse_erl_form(Epp) ->
-    case epp_request(Epp, scan_erl_form) of
+    Res = epp_request(Epp, scan_erl_form), 
+    case Res of
 	{ok,Toks} ->
 	    refac_parse:parse_form(Toks);
 	Other ->
@@ -113,8 +120,8 @@ format_error({'NYI',What}) ->
 format_error(E) -> file:format_error(E).
 
 %% Begin; Added by Huiqing Li
-scan_file(Ifile, Path, Predefs) ->
-    case open(Ifile, Path, Predefs) of 
+scan_file(Ifile, Path, Predefs, TabWidth) ->
+    case open(Ifile, Path, Predefs, TabWidth) of 
 	{ok, Epp} ->
 	    Toks = scan_file(Epp), close(Epp), {ok, Toks};
 	{error, _E} -> []
@@ -131,8 +138,11 @@ scan_file(Epp) ->
 %% parse_file(FileName, IncludePath, [PreDefMacro]) ->
 %%	{ok,[Form]} | {error,OpenError}
 
-parse_file(Ifile, Path, Predefs) ->
-    case open(Ifile, Path, Predefs) of
+parse_file(Ifile, Path, PreDefs) ->
+    parse_file(Ifile, Path, PreDefs, ?DEFAULT_TABWIDTH).
+
+parse_file(Ifile, Path, Predefs, TabWidth) ->
+    case open(Ifile, Path, Predefs, TabWidth) of
 	{ok,Epp} ->
 	    Forms = parse_file(Epp),
 	    #epp{macs=Ms, uses=UMs}= final_state(Epp),
@@ -186,7 +196,7 @@ normalize_typed_record_fields([Field|Rest], NewFields, Typed) ->
 
 %% server(StarterPid, FileName, Path, PreDefMacros)
 
-server(Pid, Name, Path, Pdm) ->
+server(Pid, Name, Path, Pdm, TabWidth) ->
     process_flag(trap_exit, true),
     case file:open(Name, [read]) of
 	{ok,File} ->
@@ -194,7 +204,7 @@ server(Pid, Name, Path, Pdm) ->
 	    case user_predef(Pdm, Ms0) of
 		{ok,Ms1} ->
 		    epp_reply(Pid, {ok,self()}),
-		    St = #epp{file=File,name=Name,path=Path,macs=Ms1},
+		    St = #epp{file=File,name=Name,path=Path,macs=Ms1, tabwidth=TabWidth},
 		    From = wait_request(St),
 		    enter_file_reply(From, Name, 1, 1),
 		    wait_req_scan(St);
@@ -357,7 +367,7 @@ leave_file(From, St) ->
 %% scan_toks(Tokens, From, EppState)
 
 scan_toks(From, St) ->
-    case refac_io:scan_erl_form(St#epp.file, '', St#epp.line) of
+    case refac_io:scan_erl_form(St#epp.file, '', St#epp.line, St#epp.tabwidth) of
 	{ok,Toks,Cl} ->
 	    scan_toks(Toks, From, St#epp{line=Cl});
 	{error,E,Cl} ->
@@ -393,7 +403,7 @@ scan_toks([{'-',_Lh},{atom,Le,endif}|Toks], From, St) ->
 scan_toks([{'-',_Lh},{atom,Lf,file}|Toks0], From, St) ->
     case catch expand_macros(Toks0, {St#epp.macs, St#epp.uses}) of
 	Toks1 when is_list(Toks1) ->
-            scan_file(Toks1, Lf, From, St);
+            scan_file_1(Toks1, Lf, From, St);
 	{error,ErrL,What} ->
 	    epp_reply(From, {error,{ErrL,epp,What}}),
 	    wait_req_scan(St)
@@ -676,8 +686,8 @@ scan_if(_Toks, Le, From, St) ->
 %%  Report a badly formed if test and then treat as false macro.
 
 scan_elif(_Toks, Le, From, St) ->
-    epp_reply(From, {error,{Le,epp,{'NYI','elif'}}}),
-    wait_req_skip(St, ['elif']).
+    epp_reply(From, {error,{Le,epp,{'NYI',elif}}}),
+    wait_req_skip(St, [elif]).
 
 %% scan_endif(Tokens, EndifLine, From, EppState)
 %%  If we are in an if body then exit it, else report an error.
@@ -694,16 +704,16 @@ scan_endif(_Toks, Le, From, St) ->
     epp_reply(From, {error,{Le,epp,{bad,endif}}}),
     wait_req_scan(St).
 
-%% scan_file(Tokens, FileLine, From, EppState)
+%% scan_file_1(Tokens, FileLine, From, EppState)
 %%  Set the current file and line to the given file and line.
 %%  Note that the line of the attribute itself is kept.
 
-scan_file([{'(',_Llp},{string,_Ls,Name},{',',_Lc},{integer,_Li,Ln},{')',_Lrp},
+scan_file_1([{'(',_Llp},{string,_Ls,Name},{',',_Lc},{integer,_Li,Ln},{')',_Lrp},
            {dot,_Ld}], Lf, From, St) ->
     enter_file_reply(From, Name, Ln, {-abs(element(1, Lf)), element(2, Lf)}),
     Ms = dict:store({atom,'FILE'}, {none,[{string,1,Name}]}, St#epp.macs),
     scan_toks(From, St#epp{name=Name,line=Ln+(St#epp.line-element(1,Lf)),macs=Ms});
-scan_file(_Toks, Lf, From, St) ->
+scan_file_1(_Toks, Lf, From, St) ->
     epp_reply(From, {error,{Lf,epp,{bad,file}}}),
     wait_req_scan(St).
 
@@ -712,7 +722,7 @@ scan_file(_Toks, Lf, From, St) ->
 %%  nested conditionals and repeated 'else's.
 
 skip_toks(From, St, [I|Sis]) ->
-    case refac_io:scan_erl_form(St#epp.file, '', St#epp.line) of
+    case refac_io:scan_erl_form(St#epp.file, '', St#epp.line, St#epp.tabwidth) of
 	{ok,[{'-',_Lh},{atom,_Li,ifdef}|_Toks],Cl} ->
 	    skip_toks(From, St#epp{line=Cl}, [ifdef,I|Sis]);
 	{ok,[{'-',_Lh},{atom,_Li,ifndef}|_Toks],Cl} ->

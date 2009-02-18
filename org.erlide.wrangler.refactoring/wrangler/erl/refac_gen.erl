@@ -77,30 +77,31 @@
 
 -include("../hrl/wrangler.hrl").
 
--export([generalise/5, generalise_eclipse/5]).
+-export([generalise/6, generalise_eclipse/6]).
 
 %% temporally exported for testing purposed.
--export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/7, gen_fun_1_eclipse/7, gen_fun_2_eclipse/7]).
+-export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/8, gen_fun_1_eclipse/8, gen_fun_2_eclipse/8]).
 
 %% =====================================================================
 %% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[string()])-> term()
 %%         Pos = {integer(), integer()}
--spec(generalise/5::(filename(),pos(), pos(),string(), [dir()]) -> {ok, string()} | {error, string()}
-								    |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).     
+%%-spec(generalise/6::(filename(),pos(), pos(),string(), [dir()], integer()) -> {ok, string()} | {error, string()}
+%%								    |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).    
 
-generalise(FileName, Start, End, ParName, SearchPaths) ->
-    generalise(FileName, Start, End, ParName, SearchPaths, emacs).
+generalise(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
+    generalise(FileName, Start, End, ParName, SearchPaths, TabWidth, emacs).
 
--spec(generalise_eclipse/5::(filename(),pos(), pos(),string(), dir()) -> {ok, [{filename(), filename(), string()}]}
-                              |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).
-generalise_eclipse(FileName, Start, End, ParName, SearchPaths) ->
-    generalise(FileName, Start, End, ParName, SearchPaths, eclipse).
+%%-spec(generalise_eclipse/6::(filename(),pos(), pos(),string(), dir(), integer()) -> {ok, [{filename(), filename(), string()}]}
+%%                              |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).
+generalise_eclipse(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
+    generalise(FileName, Start, End, ParName, SearchPaths, TabWidth, eclipse).
     
-generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:generalise(~p, {~p,~p}, {~p,~p}, ~p,~p).\n", [?MODULE,FileName, Line, Col, Line1, Col1, ParName, SearchPaths]),
+generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:generalise(~p, {~p,~p}, {~p,~p}, ~p,~p,~p).\n", 
+				 [?MODULE,FileName, Line, Col, Line1, Col1, ParName, SearchPaths, TabWidth]),
     case refac_util:is_var_name(ParName) of 
 	true ->
-	    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths),
+	    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
 	    case refac_util:pos_to_expr(AnnAST, Start, End) of  
 		{ok, Exp1} ->{ok, Fun} = refac_util:expr_to_fun(AnnAST, Exp1),
 			     FunName = refac_syntax:data(refac_syntax:function_name(Fun)),
@@ -134,7 +135,7 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 		{error, Reason} -> {error, Reason}
 	    end;
 	false  -> {error, "Invalid parameter name!"}
-    end.  
+    end. 
 
 %% =====================================================================
 %% @spec_to_fun_expr(Exp::expression())->expression()
@@ -205,17 +206,19 @@ gen_fun(Tree, ParName, FunName, Arity, DefPos,Info, Exp, SideEffect) ->
        Tree2.
 
 
--spec(gen_fun_1/7::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree()) -> {ok, string()}).
-gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp) ->
-    gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, emacs).
+%%-spec(gen_fun_1/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
+%%	  -> {ok, string()}).
+gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth) ->
+    gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth,emacs).
 
--spec(gen_fun_1_eclipse/7::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree()) -> {ok, [{filename(), filename(),string()}]}).
-gen_fun_1_eclipse(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp) ->
-    gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, eclipse).
+%%-spec(gen_fun_1_eclipse/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
+%%	  -> {ok, [{filename(), filename(),string()}]}).
+gen_fun_1_eclipse(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth) ->
+    gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, eclipse).
 
-gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, Editor) ->
+gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, Editor) ->
     %% somehow I couldn't pass AST to elisp part, as some occurrences of 'nil' were turned into '[]'.
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName,true, []),  
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName,true, [],TabWidth),  
     R = refac_util:is_exported({FunName, Arity}, Info),
     AnnAST1 = if R  -> add_function(AnnAST, FunName,DefPos, Exp, SideEffect);
 	       true -> AnnAST
@@ -231,14 +234,14 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, Editor) ->
     end.
 
 
--spec(gen_fun_2_eclipse/7::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()]) ->{ok, [{filename(), filename(),string()}]}
-                                                                             |{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
-gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths) ->
-    gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, eclipse).
+%%-spec(gen_fun_2_eclipse/8::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()], integer()) 
+%%	  ->{ok, [{filename(), filename(),string()}]}|{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
+gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth) ->
+    gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth, eclipse).
 
-gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Editor) ->
+gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,TabWidth, Editor) ->
     %% somehow I couldn't pass AST to elisp part, as some occurrences of 'nil' were turned into '[]'.
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName,true, SearchPaths),
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     SideEffect = refac_util:has_side_effect(FileName, Exp, SearchPaths),
     case SideEffect of  
 	false ->AnnAST1=gen_fun(AnnAST, ParName1, 
@@ -263,7 +266,7 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Edi
 		end;
 	unknown ->
 	    {unknown_side_effect, {ParName1, FunName, FunArity, FunDefPos,Exp}}
-    end.	  
+    end.  
     
     
 
@@ -333,7 +336,7 @@ do_replace_exp_with_var(Tree, {ParName, Exp, SideEffect}) ->
 	    FreeVars = lists:map(fun({V,_}) -> V end, refac_util:get_free_vars(Exp)),
 	    Pars  = lists:map(fun(P) ->refac_syntax:variable(P) end, FreeVars),
 	    case SideEffect of 
-		false -> case FreeVars==[] of 
+			false -> case FreeVars==[] of 
 			     true ->{refac_syntax:variable(ParName), true};
 			     _ -> Op1 = refac_syntax:operator(ParName),
 				  {refac_syntax:application(Op1, Pars), true}
@@ -608,7 +611,7 @@ get_fun_def_loc(Node) ->
 %%------------------------------------------------------------------------------------
 %% The following functions have been used for testing purposed, and will be refactored.
 %%---------------------------------------------------------------------------------------
--spec(pre_cond_checking/2::({syntaxTree(), moduleInfo()}, {filename(), {pos(), pos()}, string(), [dir()]}) ->boolean()).
+%%-spec(pre_cond_checking/2::({syntaxTree(), moduleInfo()}, {filename(), {pos(), pos()}, string(), [dir()]}) ->boolean()).
 	     
 pre_cond_checking({AnnAST,Info}, {_FileName, {Start, End}, ParName, _SearthPaths}) ->
      ok == pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info).
@@ -630,11 +633,11 @@ pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info) ->
 		     {error, Reason}  -> {error, Reason}
 		 end;
     	false  -> {error, "Invalid parameter name!"}
-    end.  
+    end. 
 
 
 
--spec(do_generalisation/6::(filename(), syntaxTree(), {pos(), pos()}, string(), moduleInfo(), [dir()]) -> syntaxTree()).	     
+%%-spec(do_generalisation/6::(filename(), syntaxTree(), {pos(), pos()}, string(), moduleInfo(), [dir()]) -> syntaxTree()).     
 do_generalisation(FileName,AnnAST, {Start, End}, ParName,Info, SearchPaths)->
     {ok, Exp1} = refac_util:pos_to_expr(AnnAST, Start, End),
     {ok, Fun} =  refac_util:expr_to_fun(AnnAST, Exp1),

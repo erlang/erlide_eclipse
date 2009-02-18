@@ -22,22 +22,22 @@
 
 -module(refac_tuple).
 
--export([tuple_funpar/5]).
+-export([tuple_funpar/6]).
 
--export([tuple_funpar_eclipse/5]).
+-export([tuple_funpar_eclipse/6]).
 
 -include("../hrl/wrangler.hrl").
 
--spec(tuple_funpar/5::(filename(), integer(), integer(), integer(), [dir()]) ->
-	     {error, string()} | {ok, [filename()]}).
-tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths)->
-  tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, emacs).
+%%-spec(tuple_funpar/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
+tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth)->
+  tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, emacs).
 
 
--spec(tuple_funpar_eclipse/5::(filename(), integer(), integer(), integer(), [dir()]) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-tuple_funpar_eclipse(FileName, ParLine, ParCol, Number, SearchPaths)->
-  tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, eclipse).
+%%-spec(tuple_funpar_eclipse/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+tuple_funpar_eclipse(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth)->
+  tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, eclipse).
 
 %% =====================================================================
 %% @spec tuple_funpar(File::string(),ParLine::integer(),ParCol::integer(),
@@ -62,10 +62,10 @@ tuple_funpar_eclipse(FileName, ParLine, ParCol, Number, SearchPaths)->
 %% @end
 %% =====================================================================
 
-tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, Editor)->
-  ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, ~p, ~p, ~p,~p).\n", 
-            [?MODULE,FileName, ParLine, ParCol, Number, SearchPaths]),
-  {ok, {AnnAST, Info}} = parse_file(FileName, SearchPaths),
+tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, Editor)->
+  ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, ~p, ~p, ~p,~p, ~p).\n", 
+            [?MODULE,FileName, ParLine, ParCol, Number, SearchPaths, TabWidth]),
+	{ok, {AnnAST, Info}} = parse_file(FileName, SearchPaths, TabWidth),
     case check_first_pos({ParLine, ParCol}, AnnAST) of 
 	{error, Reason} -> {error, Reason};
 	{FirstPar, Type} ->
@@ -84,7 +84,7 @@ tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, Editor)->
 				    case check_is_callback_fun(Info, FunName, Arity) of 
 					ok ->  ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
 					       performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode,
-								    C, Mod, SearchPaths, FileName, Editor);
+								    C, Mod, SearchPaths, FileName, TabWidth, Editor);
 					{error, Reason} -> {error, Reason}
 				    end;
 				{error, Reason} -> {error, Reason}
@@ -109,7 +109,7 @@ tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, Editor)->
 %% @end
 %% =====================================================================
 performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
-		     SearchPaths, File, Editor) ->
+		     SearchPaths, File, TabWidth, Editor) ->
     {AnnAST1, _} = tuple_parameters(AnnAST, Parameters, FunName, Arity, C, Mod),
     AnnAST2 = check_implicit_funs(AnnAST1, FunName, Arity, FunNode),
     case refac_util:is_exported({FunName, Arity}, Info) of
@@ -119,7 +119,7 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
 		    [SearchPaths]),
 	  ClientFiles = refac_util:get_client_files(File, SearchPaths),
 	  Results = tuple_parameters_in_client_modules(ClientFiles, FunName, Arity, C,
-						       length(Parameters), Mod),
+						       length(Parameters), Mod, TabWidth),
 	  case Editor of
 	    emacs ->
 		refac_util:write_refactored_files([{{File, File}, AnnAST2} | Results]),
@@ -194,7 +194,7 @@ implicit(Node, {})->
 %% =====================================================================
 
 check_is_callback_fun(Info, FunName, Arity)->
-  case is_callback_fun(Info, FunName, Arity) of
+  case is_callback_fun(Info, FunName, Arity) of 
     true -> 
       {error, "Tupling parameters of a callback function is not supported."};
     false -> ok
@@ -239,8 +239,8 @@ check_def_mod(DefMod, ModName) ->
 %%
 %% @end
 %% =====================================================================
-parse_file(FileName, SearchPaths)->
-  refac_util:parse_annotate_file(FileName, true, SearchPaths).
+parse_file(FileName, SearchPaths, TabWidth)->
+  refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth).
  
 
 %% =====================================================================
@@ -250,16 +250,16 @@ parse_file(FileName, SearchPaths)->
 %% 
 %% @end
 %% =====================================================================
-tuple_parameters_in_client_modules(Files, Name, Arity, C, N, Mod)->
+tuple_parameters_in_client_modules(Files, Name, Arity, C, N, Mod, TabWidth)->
   case Files of
     [] -> [];
     [F | Fs] ->
 	  ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	  {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(F, true, []),
+	  {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(F, true, [], TabWidth),
 	  {AnnAST1, _} = tuple_parameters_in_client_modules_1({AnnAST, Info}, 
 							      Name, Arity, C, N, Mod),
           [{{F, F}, AnnAST1} | 
-	   tuple_parameters_in_client_modules(Fs,Name,Arity, C, N, Mod)]
+	   tuple_parameters_in_client_modules(Fs,Name,Arity, C, N, Mod,TabWidth)]
   end.
 
 %% =====================================================================
@@ -538,8 +538,8 @@ pos_to_app_1(Node, Pos) ->
 check_parameters(FirstPar, Number, Arity, FunPatterns, AppNode, AppPar) ->
     case (Number < 1) or (Number > Arity) of
       true ->
-	  {error,
-		"It is not possible to tuple " ++  integer_to_list(Number) ++ " parameters"};
+	  throw({error,
+		"It is not possible to tuple " ++  integer_to_list(Number) ++ " parameters for function selected."});
       false ->
 	  case AppNode of
 	    [] -> search_par(FunPatterns, Number, FirstPar);
@@ -558,8 +558,8 @@ search_par(List, Number, First) ->
     C = length(List -- ParList) + 1,
     case length(ParList) < Number of
       true ->
-	 {error,
-		"It is not possible to tuple  " ++ integer_to_list(Number) ++ " parameters"};
+	 throw({error,
+		"It is not possible to tuple  " ++ integer_to_list(Number) ++ " parameters for the function selected."});
       false ->
 	  {lists:reverse(lists:nthtail(length(ParList) - Number,
 				       lists:reverse(ParList))),

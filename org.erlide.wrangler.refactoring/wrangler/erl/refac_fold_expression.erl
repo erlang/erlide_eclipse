@@ -41,11 +41,11 @@
 %% =============================================================================================
 -module(refac_fold_expression).
 
--export([fold_expr_by_loc/4, fold_expression_1/8,
-	 fold_expr_by_loc_eclipse/4, fold_expression_1_eclipse/4,
-	 fold_expression_2_eclipse/6, fold_expression_1/4,
-	 fold_expr_by_name/6, fold_expr_by_name_eclipse/6,
-	 cursor_at_fun_clause/4]).
+-export([fold_expr_by_loc/5, fold_expression_1/9,
+	 fold_expr_by_loc_eclipse/5, fold_expression_1_eclipse/5,
+	 fold_expression_2_eclipse/7, fold_expression_1/5,
+	 fold_expr_by_name/7, fold_expr_by_name_eclipse/7,
+	 cursor_at_fun_clause/5]).
 
 -export([expr_unification/2]).
 -include("../hrl/wrangler.hrl").
@@ -53,23 +53,23 @@
 %% @spec fold_expression(FileName::filename(), Line::integer(), Col::integer())-> term()
 %% =============================================================================================        
 
--spec(fold_expr_by_loc/4::
-      (filename(), integer(), integer(), [dir()]) -> {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
-							 | {error, string()}).
+%%-spec(fold_expr_by_loc/5::(filename(), integer(), integer(), [dir()], integer())->
+%%			 {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
+%%							 | {error, string()}).
 
-fold_expr_by_loc(FileName, Line, Col, SearchPaths) ->
-    fold_expression(FileName, Line, Col, SearchPaths, emacs).
+fold_expr_by_loc(FileName, Line, Col, SearchPaths, TabWidth) ->
+    fold_expression(FileName, Line, Col, SearchPaths, TabWidth, emacs).
 
--spec(fold_expr_by_loc_eclipse/4::(filename(), integer(), integer(), [dir()]) -> {ok,  {syntaxTree(),
-										  [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}
-										     | {error, string()}).
+%%-spec(fold_expr_by_loc_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) -> {ok,  {syntaxTree(),
+%%										  [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}
+%%										     | {error, string()}).
 
-fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths) ->
-    fold_expression(FileName, Line, Col, SearchPaths, eclipse).
+fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
+    fold_expression(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 
-fold_expression(FileName, Line, Col, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fold_expression(~p, ~p,~p).\n", [?MODULE, FileName, Line, Col]),
-    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths),
+fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:fold_expression(~p, ~p,~p,~p).\n", [?MODULE, FileName, Line, Col, TabWidth]),
+    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {value, {module, CurrentModName}} = lists:keysearch(module, 1, Info),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of 
 	{ok, {Mod, FunName, _Arity, FunClauseDef, ClauseIndex}} ->
@@ -93,11 +93,11 @@ fold_expression(FileName, Line, Col, SearchPaths, Editor) ->
     end.
 
 
--spec(fold_expr_by_name/6::(filename(), string(), string(), string(), string(), [dir()]) ->
-	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
-		 | {error, string()}).
+%%-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
+%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
+%%		 | {error, string()}).
 
-fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths) ->
+fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
     case ModName of 
 	[] -> {error, "Invalid module name!"};
 	_  -> case FunName of 
@@ -108,37 +108,37 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths) -
 				    true -> {error, "Invalid function clause index!"};
 				    _ ->				
 					fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), 
-							  list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths, emacs)
+							  list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths,  TabWidth, emacs)
 				end
 		       end
 	      end
     end.
  
--spec(fold_expr_by_name_eclipse/6::(filename(), string(), string(), string(), string(), [dir()]) ->
-	     {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]} 
-		 | {error, string()}).
+%%-spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
+%%	     {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]} 
+%%		 | {error, string()}).
 
-fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths) ->
-     case ModName of 
-	[] -> {error, "Invalid module name!"};
-	_  -> case FunName of 
-		  [] -> {error, "Invalid function name!"};
-		  _ -> case (Arity==[]) orelse (list_to_integer(Arity) <0) of   
-			   true -> {error, "Invalid arity!"};
-			   _ -> case (ClauseIndex==[]) orelse (list_to_integer(ClauseIndex) <1) of 
-				    true -> {error, "Invalid function clause index!"};
-				    _ ->				
-					fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), 
-							  list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths, eclipse)
-				end
-		       end
-	      end
+fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
+	case ModName of 
+		[] -> {error, "Invalid module name!"};
+		_  -> case FunName of 
+				  [] -> {error, "Invalid function name!"};
+				  _ -> case (Arity==[]) orelse (list_to_integer(Arity) <0) of   
+						   true -> {error, "Invalid arity!"};
+						   _ -> case (ClauseIndex==[]) orelse (list_to_integer(ClauseIndex) <1) of 
+									true -> {error, "Invalid function clause index!"};
+									_ ->				
+										fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), 
+														  list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths, TabWidth,  eclipse)
+								end
+					   end
+			  end
     end.
    
 
-fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fold_expression(~p,~p,~p,~p,~p).\n", [?MODULE, FileName, ModName, FunName, Arity, ClauseIndex]),
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth,  Editor) ->
+    ?wrangler_io("\nCMD: ~p:fold_expression(~p,~p,~p,~p,~p,~p).\n", [?MODULE, FileName, ModName, FunName, Arity, ClauseIndex, TabWidth]),
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {value, {module, CurrentModName}} = lists:keysearch(module, 1, Info),
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     FileNames = lists:filter(fun (F) -> list_to_atom(filename:basename(F, ".erl")) == ModName end, Files),
@@ -147,7 +147,7 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, E
 	  {error, "Wrangler could not find the file " ++ atom_to_list(ModName) ++ ".erl" ++ " following Wrangler's SearchPaths!"};
       _ ->
 	  FileName1 = hd(FileNames),
-	  {ok, {AnnAST1, _Info1}} = refac_util:parse_annotate_file(FileName1, true, SearchPaths),
+	  {ok, {AnnAST1, _Info1}} = refac_util:parse_annotate_file(FileName1, true, SearchPaths, TabWidth),
 	  case get_fun_clause_def(AnnAST1, FunName, Arity, ClauseIndex) of
 	    {ok, {Mod, _FunName, _Arity, FunClauseDef}} ->
 		case side_condition_analysis(FunClauseDef) of
@@ -182,10 +182,10 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, E
 %%                        {FunClauseDef, ClauseIndex}::{term(), integer()) -> term()
 %% =============================================================================================  
 
--spec(fold_expression_1_eclipse/4::(filename(), syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree}], [dir()]) ->
-	     {ok, [{filename(), filename(), string()}]}).
-fold_expression_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths) ->   %% RangeNewExpList [{{{StartLine, EndCol}, {EndLine, EndCol}}, NewExp}]
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+%%-spec(fold_expression_1_eclipse/5::(filename(), syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree}], [dir()], integer()) ->
+%%	     {ok, [{filename(), filename(), string()}]}).
+fold_expression_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWidth) ->   %% RangeNewExpList [{{{StartLine, EndCol}, {EndLine, EndCol}}, NewExp}]
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
     AnnAST1= fold_expression_1_eclipse_1(AnnAST, Body, RangeNewExpList),
     Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
@@ -200,10 +200,10 @@ fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}|Tail]) ->
     
     
 
--spec(fold_expression_1/8::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), {filename(),atom(), syntaxTree(), integer()}, [dir()]) ->
-	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}).
-fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDefFileName, FunDefMod, FunClauseDef, ClauseIndex}, SearchPaths) -> 
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+%%-spec(fold_expression_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), {filename(),atom(), syntaxTree(), integer()}, [dir()], integer()) ->
+%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}).
+fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDefFileName, FunDefMod, FunClauseDef, ClauseIndex}, SearchPaths, TabWidth) -> 
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {value, {module, CurrentMod}} = lists:keysearch(module, 1, Info),
     FunCall = case refac_syntax:type(NewExp) of 
 		  application -> NewExp;
@@ -219,8 +219,8 @@ fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDe
     Body = refac_syntax:clause_body(FunClauseDef),
     {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, AnnAST, {Body, NewExp, {{StartLine, StartCol}, {EndLine, EndCol}}}),
     refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),  
-    {ok, {AnnAST2, _Info2}} = refac_util:parse_annotate_file(FileName,true, SearchPaths),
-    {ok, {AnnAST3, _Info3}} = refac_util:parse_annotate_file(FunDefFileName,true, SearchPaths),
+    {ok, {AnnAST2, _Info2}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
+    {ok, {AnnAST3, _Info3}} = refac_util:parse_annotate_file(FunDefFileName,true, SearchPaths, TabWidth),
     case get_fun_clause_def(AnnAST3, FunName, Arity, ClauseIndex) of 
 	{ok, {_Mod, _FunName, _Arity, FunClauseDef1}} ->
 	    Candidates = search_candidate_exprs(AnnAST2, {FunDefMod, CurrentMod}, FunName, FunClauseDef1),
@@ -234,11 +234,11 @@ fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDe
   
 
 
--spec(fold_expression_2_eclipse/6::(filename(), atom(),integer(), integer(), integer(), [dir()]) -> 
-	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
-             | {error, string()}).
-fold_expression_2_eclipse(FileName, FunName, Arity, ClauseIndex, StartLine, SearchPaths ) ->
-    {ok, {AnnAST2, _Info1}} = refac_util:parse_annotate_file(FileName,true, SearchPaths),
+%%-spec(fold_expression_2_eclipse/7::(filename(), atom(),integer(), integer(), integer(), [dir()], integer()) -> 
+%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
+%%             | {error, string()}).
+fold_expression_2_eclipse(FileName, FunName, Arity, ClauseIndex, StartLine, SearchPaths, TabWidth ) ->
+    {ok, {AnnAST2, _Info1}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     case get_fun_clause_def(AnnAST2, FunName, Arity, ClauseIndex) of 
 	{ok, {Mod, _FunName, _Arity, FunClauseDef1}} ->
 	    Candidates = search_candidate_exprs(AnnAST2, {Mod, Mod}, FunName, FunClauseDef1),
@@ -496,8 +496,8 @@ do_search_candidate_exprs_2(AnnAST, ExpList) ->
      refac_syntax_lib:fold(Fun,[], AnnAST).
     
 
--spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
-	     {true, [{atom(), syntaxTree()}]} | false).
+%%-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
+%%	     {true, [{atom(), syntaxTree()}]} | false).
 expr_unification(Exp1, Exp2) ->
     Res1 = case {is_list(Exp1), is_list(Exp2)} of 
 	{true, true} ->   %% both are list of expressions
@@ -735,10 +735,10 @@ get_fun_def_1(Node, {FunName, Arity, ClauseIndex}) ->
     end.
 
 
--spec(cursor_at_fun_clause/4::(filename(), integer(), integer(), [dir()]) ->
-	     true |false).
-cursor_at_fun_clause(FileName, Line, Col, SearchPaths) ->    
-    {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths),
+%%-spec(cursor_at_fun_clause/5::(filename(), integer(), integer(), [dir()], integer()) ->
+%%	     true |false).
+cursor_at_fun_clause(FileName, Line, Col, SearchPaths, TabWidth) ->    
+    {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of 
 	{ok, {_Mod, _FunName, _Arity, _FunClauseDef, _ClauseIndex}} -> true;
 	_  -> false
@@ -772,9 +772,9 @@ pos_to_fun_clause_1(Node, Pos) ->
     end.
 
 
--spec(fold_expression_1/4::(filename(), atom(), integer(), [dir()]) -> {syntaxTree(), moduleInfo()} | {error, string()}).
-fold_expression_1(FileName, FunName, Arity, SearchPaths) ->
-    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths),
+%%-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> {syntaxTree(), moduleInfo()} | {error, string()}).
+fold_expression_1(FileName, FunName, Arity, SearchPaths, TabWidth) ->
+    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
     FunClauseDef= name_to_fun_clause(AnnAST, FunName, Arity),
     Candidates = search_candidate_exprs(AnnAST, {ModName, ModName}, FunName, FunClauseDef),

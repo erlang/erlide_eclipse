@@ -27,9 +27,9 @@
 %%      not handle message passing, and is not fully tested yet.
 %% @end
 
--module(refac_slice). 
+-module(refac_slice).
 
--export([forward_slice/5, backward_slice/5]). 
+-export([forward_slice/5, backward_slice/5]).
 
 -include("../hrl/wrangler.hrl").
 
@@ -40,8 +40,8 @@
 %% @spec forward_slice(Files:[filename()], AnnAST:syntaxTree(), ModName::atom(), FunDef::syntaxTree(), Expr::syntaxTree()) -> [syntaxTree()].
 %% @doc Forward slice the program with expression Expr, which in contained in function FunDef, as the slicing criterion.                     
  
--spec(forward_slice/5::([filename()], syntaxTree(), atom(), syntaxTree(), syntaxTree())->
-	     [syntaxTree()]).
+%%-spec(forward_slice/5::([filename()], syntaxTree(), atom(), syntaxTree(), syntaxTree())->
+%%	     [syntaxTree()]).
 forward_slice(Files, AnnAST, ModName, FunDef, Expr)  ->
     start_slice_env_process(),
     Res = forward_slice_1(Files, AnnAST, ModName, {FunDef, Expr}),
@@ -243,7 +243,7 @@ process_a_clause_1(Files,AnnAST, ModName, FunName, Arity, C, PatIndex) ->
     Body = refac_syntax:clause_body(C),
     Vars =lists:flatmap(fun(I) -> refac_util:get_var_exports(lists:nth(I, Patterns)) end, PatIndex),
     Body1 = process_fun_body(Files, AnnAST, ModName, FunName, Arity, Body, Vars),
-    refac_syntax:clause(Patterns, none, Body1).    
+    refac_syntax:clause(Patterns, none, Body1).   
 
 process_fun_body(_Files,_AnnAST, _ModName, _FunName, _Arity,  [], _Vars) ->			    
     [];
@@ -336,7 +336,7 @@ do_process_fun_applications(Node, {Files,AnnAST, ModName, FunName, Arity,Vars}) 
 %% @spec backward_slice(Files:[filename()], AnnAST:syntaxTree(), ModName::atom(), FunDef::syntaxTree() Expr::syntaxTree()) -> term(). %% Need to think what term() really is.
 %% @doc Backward slice the program with expression Expr, which in contained in function FunDef, as the slicing criterion.      
 
--spec(backward_slice/5::([filename()], syntaxTree(), atom(), syntaxTree(), syntaxTree())->[any()]).  %% any needs to be refined here.
+%%-spec(backward_slice/5::([filename()], syntaxTree(), atom(), syntaxTree(), syntaxTree())->[any()]). %% any needs to be refined here.
 	     
 backward_slice(Files,AnnAST, ModName, FunDef, Expr) ->
     FunName = refac_syntax:data(refac_syntax:function_name(FunDef)),
@@ -379,7 +379,7 @@ backward_slice(Files,AnnAST, ModName, FunDef, Expr) ->
 		     Result = lists:map(fun(S) ->refac_syntax:application(FunExpr, S) end, Slices),
 		     Result       
 	    end
-    end. 
+    end.
 		 
 	    
 collect_app_sites(AnnAST, ModName, FunName, Arity) ->    

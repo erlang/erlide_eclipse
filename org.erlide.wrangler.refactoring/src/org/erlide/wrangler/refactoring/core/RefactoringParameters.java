@@ -53,6 +53,18 @@ public class RefactoringParameters {
 	}
 
 	/**
+	 * Returns the actual text editor's tabwidth.
+	 * 
+	 * @return tabwidth
+	 */
+	public int getEditorTabWidth() {
+		// TODO: get the Eclipse parameter
+		// int tabw =
+		// org.erlide.ui.editors.erl.AutoIndentStrategy.getTabWidthFromPreferences();
+		return 1;
+	}
+
+	/**
 	 * Calculates the column number from offset.
 	 * 
 	 * @param offset
@@ -211,6 +223,15 @@ public class RefactoringParameters {
 		}
 		Collections.sort(moduleNames);
 		return moduleNames;
+	}
+
+	/**
+	 * Returns the actual module name
+	 * 
+	 * @return actual module name
+	 */
+	public String getActualModuleName() {
+		return removeExtension(editor.getEditorInput().getName().toString());
 	}
 
 	private void findModulesRecursively(IResource res, ArrayList<IFile> files)

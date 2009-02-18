@@ -28,24 +28,24 @@
 %% =============================================================================================
 -module(refac_add_a_tag).
 
--export([add_a_tag/5]).
+-export([add_a_tag/6]).
 
 -include("../hrl/wrangler.hrl").
 
 %% =============================================================================================
--spec(add_a_tag/5::(filename(), integer(), integer(), string(), [dir()]) ->{ok, [filename()]} | {error, string()}).	     
-add_a_tag(FileName, Line, Col, Tag, SearchPaths) ->
-    ?wrangler_io("\n[CMD: add_a_tag, ~p, ~p, ~p, ~p,~p]\n", [FileName, Line, Col, Tag, SearchPaths]),
-    {ok, {AnnAST1, _Info1}}=refac_util:parse_annotate_file(FileName, true, SearchPaths),
+%%-spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).     
+add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:add_a_tag(~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, Tag, SearchPaths, TabWidth]),
+    {ok, {AnnAST1, _Info1}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case pos_to_receive_fun(AnnAST1, {Line, Col}) of 
 	{ok, _FunDef} ->
-	    _Res=refac_annotate_pid:ann_pid_info(SearchPaths),
-	    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+	    _Res=refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),
+	    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
 	    {ok, FunDef} = pos_to_receive_fun(AnnAST, {Line, Col}),
 	    ModName = get_module_name(FileName, Info),
-	    case pre_cond_check(AnnAST,  ModName, FunDef, SearchPaths) of 
+	    case pre_cond_check(AnnAST,  ModName, FunDef, SearchPaths, TabWidth) of 
 		{ok, AffectedInitialFuns} ->
-		    Results = do_add_a_tag(FileName, {AnnAST, Info}, list_to_atom(Tag), AffectedInitialFuns, SearchPaths),
+		    Results = do_add_a_tag(FileName, {AnnAST, Info}, list_to_atom(Tag), AffectedInitialFuns, SearchPaths, TabWidth),
 		    refac_util:write_refactored_files(Results),
 		    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 		    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
@@ -58,13 +58,13 @@ add_a_tag(FileName, Line, Col, Tag, SearchPaths) ->
 	
 
 
-pre_cond_check(_AnnAST, ModName, CurrentFunDef,  SearchPaths) ->
+pre_cond_check(_AnnAST, ModName, CurrentFunDef,  SearchPaths, TabWidth) ->
     FunName = refac_syntax:data(refac_syntax:function_name(CurrentFunDef)),
     Arity = refac_syntax:function_arity(CurrentFunDef),
-    InitialFuns = collect_process_initial_funs(SearchPaths),
-    AffectedInitialFuns = get_affected_initial_funs(InitialFuns, {ModName, FunName, Arity}, SearchPaths),
+    InitialFuns = collect_process_initial_funs(SearchPaths, TabWidth),
+    AffectedInitialFuns = get_affected_initial_funs(InitialFuns, {ModName, FunName, Arity}, SearchPaths, TabWidth),
     case AffectedInitialFuns of 
-	[] -> {error, "Sorry, but Wrangler could not figure out where the process is spawned."};
+	[] -> {error, "Wrangler could not figure out where the process is spawned."};
 	[_H|T]-> case T of 
 		    [] -> {ok, AffectedInitialFuns};
 		    _ ->  case length(lists:usort(lists:map(fun({_InitialFun, ReceiveFuns, _}) -> ReceiveFuns end, AffectedInitialFuns))) of
@@ -75,15 +75,16 @@ pre_cond_check(_AnnAST, ModName, CurrentFunDef,  SearchPaths) ->
     end.
    
 
-get_affected_initial_funs(InitialFuns, {ModName, FunName, Arity}, SearchPaths) ->
-    ReachedReceiveFuns = reached_receive_funs(InitialFuns, SearchPaths),
+get_affected_initial_funs(InitialFuns, {ModName, FunName, Arity}, SearchPaths, TabWidth) ->
+    ReachedReceiveFuns = reached_receive_funs(InitialFuns, SearchPaths, TabWidth),
     lists:filter(fun({_InitialFun, Fs}) ->
 					    lists:member({ModName, FunName, Arity}, Fs) end, ReachedReceiveFuns).
 
 
-collect_process_initial_funs(SearchPaths) ->
+collect_process_initial_funs(SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
-    lists:flatmap(fun(F)->{ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths),
+    lists:flatmap(fun(F)->{ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
+			  
 			  collect_process_initial_funs_1({F, AnnAST, Info}, SearchPaths)
 		  end, Files).
 
@@ -145,20 +146,20 @@ collect_process_initial_funs_1({FileName, AnnAST, Info}, _SearchPaths) ->
 	 end,
     refac_syntax_lib:fold(Fun, [], AnnAST).
 		 
-do_add_a_tag(FileName, {AnnAST, Info}, Tag, AffectedInitialFuns, SearchPaths) ->
+do_add_a_tag(FileName, {AnnAST, Info}, Tag, AffectedInitialFuns, SearchPaths, TabWidth) ->
     ModName = get_module_name(FileName, Info),
     {InitialFuns1, ReceiveFuns1} = lists:unzip(AffectedInitialFuns),
     InitialFuns = lists:usort(lists:flatmap(fun({Init, _, _}) -> Init end, InitialFuns1)),
     InitialSpawnExprs = lists:usort(lists:map(fun({_, _, SpawnExpr}) -> SpawnExpr end, InitialFuns1)),
-    AffectedModsFuns = get_affected_mods_and_funs(InitialSpawnExprs, SearchPaths),
+    AffectedModsFuns = get_affected_mods_and_funs(InitialSpawnExprs, SearchPaths, TabWidth),
     ReceiveFuns = lists:usort(lists:append(ReceiveFuns1)),
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {AnnAST1, _Changed} =refac_util:stop_tdTP(fun do_add_a_tag_1/2, AnnAST, {ModName, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns}),
     OtherFiles = refac_util:expand_files(SearchPaths, ".erl") -- [FileName],
-    Results = do_add_a_tag_in_other_modules(OtherFiles, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths),    
+    Results = do_add_a_tag_in_other_modules(OtherFiles, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths, TabWidth),    
     [{{FileName, FileName}, AnnAST1} | Results].
 
-do_add_a_tag_in_other_modules(Files, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns={Mods, _Funs}, SearchPaths) ->
+do_add_a_tag_in_other_modules(Files, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns={Mods, _Funs}, SearchPaths, TabWidth) ->
     case Files of
 	[] ->
 	    [];
@@ -167,14 +168,14 @@ do_add_a_tag_in_other_modules(Files, Tag, InitialFuns, ReceiveFuns, AffectedMods
 	    case lists:member(BaseName, Mods) of 
 		true ->
 		    ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths),
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
 		    ModName = get_module_name(F, Info),
 		    {AnnAST1, Changed} = refac_util:stop_tdTP(fun do_add_a_tag_1/2, AnnAST, {ModName, Tag, InitialFuns, ReceiveFuns,AffectedModsFuns}),
 		    if Changed ->
-			    [{{F, F}, AnnAST1} | do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths)];
-		       true -> do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths)
+			    [{{F, F}, AnnAST1} | do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths, TabWidth)];
+		       true -> do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths, TabWidth)
 		    end;
-		_ -> do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths)
+		_ -> do_add_a_tag_in_other_modules(Fs, Tag, InitialFuns, ReceiveFuns, AffectedModsFuns, SearchPaths, TabWidth)
 	    end
     end.
 do_add_a_tag_1(Node, {ModName,Tag, InitialFuns, ReceiveFuns,{_Mods,Funs}}) ->
@@ -336,10 +337,10 @@ collect_fun_apps(Expr, {ModName, Ln}) ->
 		     _ -> S
 		 end
 	  end,
-    lists:usort(refac_syntax_lib:fold(Fun, [], Expr)). 
+    lists:usort(refac_syntax_lib:fold(Fun, [], Expr)).
     
 
-get_fun_def({M, F, A}, SearchPaths) ->  
+get_fun_def({M, F, A}, SearchPaths, TabWidth) ->  
     Fun=fun(Node, {M1, F1, A1}) ->
 	      case refac_syntax:type(Node) of
 		  function ->
@@ -359,17 +360,17 @@ get_fun_def({M, F, A}, SearchPaths) ->
 	     {error, no_source_file};
 	_ ->
 	    FileName = hd(FileNames),
-	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
 	    case refac_util:once_tdTU(Fun, AnnAST, {M, F, A}) of 
 		{_, false} ->
 		    {error, "Wrangler could not find the definition of "++ atom_to_list(M)++":"++atom_to_list(F)++"/"++integer_to_list(A)};
 		{R, true} -> {ok, R}
 	    end
-    end.     
+    end.    
 
 
-reached_receive_funs([], _SearchPaths) -> [];
-reached_receive_funs(InitialFuns, SearchPaths) ->
+reached_receive_funs([], _SearchPaths, _TabWidth) -> [];
+reached_receive_funs(InitialFuns, SearchPaths, TabWidth) ->
     F  = fun(InitialFun) ->
  		 case InitialFun of 
  		     {Mod, Fun, Arity} -> [{Mod,Fun, Arity}];
@@ -378,15 +379,15 @@ reached_receive_funs(InitialFuns, SearchPaths) ->
 	 end,	
     CallGraph = wrangler_callgraph_server:get_callgraph(SearchPaths),  
     ReachedFuns = lists:zip(InitialFuns, lists:map(fun({_PidInfo, InitialF, _SpawnExpr}) -> 
-							   reached_receive_funs_1(CallGraph#callgraph.callercallee, F(InitialF), SearchPaths) end, 
+							   reached_receive_funs_1(CallGraph#callgraph.callercallee, F(InitialF), SearchPaths, TabWidth) end, 
 						   InitialFuns)),
     ReachedFuns.
    
 
-reached_receive_funs_1(CallerCallee, InitialAcc, SearchPaths) ->
+reached_receive_funs_1(CallerCallee, InitialAcc, SearchPaths, TabWidth) ->
     Funs =reached_funs_1(CallerCallee, InitialAcc),
     ReceiveFuns = lists:filter(fun(MFA) ->
-				      case get_fun_def(MFA, SearchPaths) of 
+				      case get_fun_def(MFA, SearchPaths, TabWidth) of 
 					  {error, no_source_file} -> false;
 					  {error, Reason} ->throw({error, Reason});
 					  {ok, FunDef} -> has_receive_expr(FunDef)
@@ -448,28 +449,28 @@ is_spawn_expr(Tree) ->
       _ -> false
     end.
 
-get_affected_mods_and_funs(SpawnExprs, SearchPaths) ->
-    SliceRes =forward_slice(SpawnExprs, SearchPaths, []),
+get_affected_mods_and_funs(SpawnExprs, SearchPaths, TabWidth) ->
+    SliceRes =forward_slice(SpawnExprs, SearchPaths, [], TabWidth),
     AffectedFuns = lists:usort(lists:map(fun({{Mod, Fun, Arity, _}, _Value}) -> 
 						 {Mod, Fun, Arity} end, SliceRes)),
     {Mods, _, _} = lists:unzip3(AffectedFuns),
     AffectedMods = lists:usort(Mods),
     {AffectedMods, AffectedFuns}.
     
-forward_slice([], _SearchPaths, Acc) -> Acc;
-forward_slice([{FileName, Expr}|T], SearchPaths, Acc) ->
-   case forward_slice_1(FileName, Expr, SearchPaths) of 
+forward_slice([], _SearchPaths, Acc, _TabWidth) -> Acc;
+forward_slice([{FileName, Expr}|T], SearchPaths, Acc, TabWidth) ->
+   case forward_slice_1(FileName, Expr, SearchPaths, TabWidth) of 
        {ok, Res} -> 
-	   forward_slice(T, SearchPaths, Res ++ Acc);
+	   forward_slice(T, SearchPaths, Res ++ Acc, TabWidth);
        {error, Msg} ->
 	   {error, Msg}
    end.
     
 
-forward_slice_1(FileName, Expr, SearchPaths) ->
+forward_slice_1(FileName, Expr, SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     {StartPos, EndPos} = refac_util:get_range(Expr),
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FileName, Info),
     case refac_util:pos_to_expr(AnnAST, StartPos, EndPos) of 
 	{ok, Expr} ->

@@ -45,14 +45,12 @@
 
 -module(refac_scan).
 
--export([format_error/1, reserved_word/1, string/1,
-	 string/2, tokens/3]).
+-export([format_error/1, reserved_word/1, string/1, string/2,
+	 string/3, tokens/3]).
 
 -import(lists, [member/2, reverse/1]).
 
--define(TabWidth,8).  %% Added by Huiqing Li (THIS SHOULD BE READ FORM EMACS!!).
-%% format_error(Error)
-%%  Return a string describing the error.
+-define(DEFAULT_TABWIDTH, 8).
 
 format_error({string, Quote, Head}) ->
     ["unterminated " ++
@@ -79,13 +77,17 @@ string_thing(_) -> "string".
 %%	{ok,[Tok]}
 %%	{error,{ErrorPos,?MODULE,What},EndPos}
 
-string(Cs) -> string(Cs, {1, 1}).
+string(Cs) ->
+    string(Cs, {1, 1}, ?DEFAULT_TABWIDTH).
 
-string(Cs, {Line, Col})
-    when is_list(Cs), is_integer(Line), is_integer(Col) ->
+
+string(Cs, {Line, Col}) -> string(Cs, {Line, Col}, ?DEFAULT_TABWIDTH).
+
+string(Cs, {Line, Col}, TabWidth)
+    when is_list(Cs), is_integer(Line), is_integer(Col), is_integer(TabWidth) ->
     %     %% Debug replacement line for chopping string into 1-char segments
     %     scan([], [], [], Pos, Cs, []).
-    scan(Cs, [], [], {Line, Col}, [], []).
+    scan(Cs, [], [], {Line, Col}, [], [],TabWidth).
 
 
 %% tokens(Continuation, CharList, StartPos) ->
@@ -98,93 +100,94 @@ string(Cs, {Line, Col})
 %%      {RestChars,ScanStateStack,ScannedTokens,
 %%       CurrentPos,ContState,ErrorStack,ContFunArity5}
 
-tokens([], Chars, {Line, Col}) ->
-    tokens({[], [], [], {Line, Col}, io, [], fun scan/6},
-	   Chars, {Line, Col});
-tokens({Cs, _Stack, _Toks, {Line, Col}, eof, _Fun}, eof,
-       _) ->
+%% definitely should sperate {Line, Col} and TabWidth;; HL.
+tokens([], Chars, {{Line, Col}, TabWidth}) ->
+    tokens({[], [], [], {Line, Col}, io, [], TabWidth, fun scan/7},
+	   Chars, {{Line, Col}, TabWidth});
+tokens({Cs, _Stack, _Toks, {Line, Col}, eof, TabWidth, _Fun}, eof,
+       {_, TabWidth}) ->
     {done, {eof, {Line, Col}}, Cs};
-tokens({Cs, Stack, Toks, {Line, Col}, _State, Errors,
+tokens({Cs, Stack, Toks, {Line, Col}, _State, Errors,TabWidth,
 	Fun},
-       eof, _) ->
-    Fun(Cs ++ eof, Stack, Toks, {Line, Col}, eof, Errors);
-tokens({Cs, Stack, Toks, {Line, Col}, State, Errors,
+       eof, {_, TabWidth}) ->
+    Fun(Cs ++ eof, Stack, Toks, {Line, Col}, eof, Errors, TabWidth);
+tokens({Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
 	Fun},
-       Chars, _) ->
+       Chars, {_, TabWidth}) ->
     Fun(Cs ++ Chars, Stack, Toks, {Line, Col}, State,
-	Errors).
+	Errors, TabWidth).
 
 %% Scan loop.
 %%
-%% The scan_*/6 and sub_scan_*/6 functions does tail recursive calls
+%% The scan_*/7 and sub_scan_*/7 functions does tail recursive calls
 %% between themselves to change state. State data is kept on the Stack.
 %% Results are passed on the Stack and on the stream (Cs). The variable
 %% State in this loop is not the scan loop state, but the state for
-%% instream handling by more/7 and done/5. The variable Stack is not
+%% instream handling by more/8 and done/6. The variable Stack is not
 %% always a stack, it is just stacked state data for the scan loop, and
 %% the variable Errors is a reversed list of scan error {Error,Pos} tuples.
 %%
-%% All the scan_*/6 functions have the same arguments (in the same order),
+%% All the scan_*/7 functions have the same arguments (in the same order),
 %% to keep the tail recursive calls (jumps) fast.
 %%
 %% When more data is needed from the stream, the tail recursion loop is
-%% broken by calling more/7 that either returns to the I/O-server to
-%% get more data or fetches it from a string, or by calling done/5 when
+%% broken by calling more/8 that either returns to the I/O-server to
+%% get more data or fetches it from a string, or by calling done/6 when
 %% scanning is done.
 %%
-%% The last argument to more/7 is a fun to jump back to with more data
+%% The last argument to more/8 is a fun to jump back to with more data
 %% to continue scanning where it was interrupted.
 %%
-%% more/7 and done/5 handles scanning from I/O-server (Stream) or from String.
+%% more/8 and done/6 handles scanning from I/O-server (Stream) or from String.
 %%
 
 %% String
-more(Cs, Stack, Toks, {Line, Col}, eos, Errors, Fun) ->
+more(Cs, Stack, Toks, {Line, Col}, eos, Errors, _TabWidth, Fun) ->
     erlang:error(badstate,
 		 [Cs, Stack, Toks, {Line, Col}, eos, Errors, Fun]);
 % %% Debug clause for chopping string into 1-char segments
 % more(Cs, Stack, Toks, Pos, [H|T], Errors, Fun) ->
 %     Fun(Cs++[H], Stack, Toks, Pos, T, Errors);
-more(Cs, Stack, Toks, {Line, Col}, [], Errors, Fun) ->
-    Fun(Cs ++ eof, Stack, Toks, {Line, Col}, eos, Errors);
+more(Cs, Stack, Toks, {Line, Col}, [], Errors, TabWidth, Fun) ->
+    Fun(Cs ++ eof, Stack, Toks, {Line, Col}, eos, Errors, TabWidth);
 %% Stream
-more(Cs, Stack, Toks, {Line, Col}, eof, Errors, Fun) ->
+more(Cs, Stack, Toks, {Line, Col}, eof, Errors, TabWidth, Fun) ->
     erlang:error(badstate,
-		 [Cs, Stack, Toks, {Line, Col}, eof, Errors, Fun]);
-more(Cs, Stack, Toks, {Line, Col}, io, Errors, Fun) ->
-    {more, {Cs, Stack, Toks, {Line, Col}, io, Errors, Fun}}.
+		 [Cs, Stack, Toks, {Line, Col}, eof, Errors, TabWidth, Fun]);
+more(Cs, Stack, Toks, {Line, Col}, io, Errors, TabWidth, Fun) ->
+    {more, {Cs, Stack, Toks, {Line, Col}, io, Errors,TabWidth, Fun}}.
 
 %% String
-done(eof, [], Toks, {Line, Col}, eos) ->
+done(eof, [], Toks, {Line, Col}, eos, _TabWidth) ->
     {ok, reverse(Toks), {Line, Col}};
-done(eof, Errors, _Toks, {Line, Col}, eos) ->
+done(eof, Errors, _Toks, {Line, Col}, eos, _TabWidth) ->
     {Error, ErrorPos} = lists:last(Errors),
     {error, {ErrorPos, ?MODULE, Error}, {Line, Col}};
-done(Cs, Errors, Toks, {Line, Col}, eos) ->
-    scan(Cs, [], Toks, {Line, Col}, eos, Errors);
+done(Cs, Errors, Toks, {Line, Col}, eos, TabWidth) ->
+    scan(Cs, [], Toks, {Line, Col}, eos, Errors, TabWidth);
 % %% Debug clause for chopping string into 1-char segments
 % done(Cs, Errors, Toks, Pos, [H|T]) ->
 %    scan(Cs++[H], [], Toks, Pos, T, Errors);
-done(Cs, Errors, Toks, {Line, Col}, []) ->
-    scan(Cs ++ eof, [], Toks, {Line, Col}, eos, Errors);
+done(Cs, Errors, Toks, {Line, Col}, [], TabWidth) ->
+    scan(Cs ++ eof, [], Toks, {Line, Col}, eos, Errors, TabWidth);
 %% Stream
-done(Cs, [], [{dot, _} | _] = Toks, {Line, Col}, io) ->
+done(Cs, [], [{dot, _} | _] = Toks, {Line, Col}, io, _TabWidth) ->
     {done, {ok, reverse(Toks), {Line, Col}}, Cs};
-done(Cs, [], [_ | _], {Line, Col}, io) ->
+done(Cs, [], [_ | _], {Line, Col}, io, _TabWidth) ->
     {done,
      {error, {{Line, Col}, ?MODULE, scan}, {Line, Col}}, Cs};
-done(Cs, [], [], {Line, Col}, eof) ->
+done(Cs, [], [], {Line, Col}, eof, _TabWidth) ->
     {done, {eof, {Line, Col}}, Cs};
-done(Cs, [], [{dot, _} | _] = Toks, {Line, Col}, eof) ->
+done(Cs, [], [{dot, _} | _] = Toks, {Line, Col}, eof, _TabWidth) ->
     {done, {ok, reverse(Toks), {Line, Col}}, Cs};
-done(Cs, [], _Toks, {Line, Col}, eof) ->
+done(Cs, [], _Toks, {Line, Col}, eof, _TabWidth) ->
     {done,
      {error, {{Line, Col}, ?MODULE, scan}, {Line, Col}}, Cs};
-done(Cs, Errors, _Toks, {Line, Col}, io) ->
+done(Cs, Errors, _Toks, {Line, Col}, io, _TabWidth) ->
     {Error, ErrorPos} = lists:last(Errors),
     {done, {error, {ErrorPos, ?MODULE, Error}, {Line, Col}},
      Cs};
-done(Cs, Errors, _Toks, {Line, Col}, eof) ->
+done(Cs, Errors, _Toks, {Line, Col}, eof, _TabWidth) ->
     {Error, ErrorPos} = lists:last(Errors),
     {done, {error, {ErrorPos, ?MODULE, Error}, {Line, Col}},
      Cs}.
@@ -193,227 +196,227 @@ done(Cs, Errors, _Toks, {Line, Col}, eof) ->
 %% Stack is assumed to be [].
 
 scan([$\n | Cs], Stack, Toks, {Line, _Col}, State,
-     Errors) ->      % Newline - skip
-    scan(Cs, Stack, Toks, {Line + 1, 1}, State, Errors);
+     Errors, TabWidth) ->      % Newline - skip
+    scan(Cs, Stack, Toks, {Line + 1, 1}, State, Errors, TabWidth);
 
 %%Begin of Adding by Huiqing
-scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors)
+scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C == $\t
 	  ->                          
-    scan(Cs, Stack, Toks, {Line, Col + ?TabWidth}, State, Errors);
+    scan(Cs, Stack, Toks, {Line, Col + TabWidth}, State, Errors, TabWidth);
 %% End of adding by Huiqing
 
-scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors)
+scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $\000,
 	 C =<
 	   $\s ->                          % Control chars - skip
-    scan(Cs, Stack, Toks, {Line, Col + 1}, State, Errors);
+    scan(Cs, Stack, Toks, {Line, Col + 1}, State, Errors, TabWidth);
 
-scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors)
+scan([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $\200,
-	 C =< $\240 ->                        % Control chars -skip
-    scan(Cs, Stack, Toks, {Line, Col + 1}, State, Errors);
-scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
+	 C =< $  ->                        % Control chars -skip
+    scan(Cs, Stack, Toks, {Line, Col + 1}, State, Errors, TabWidth);
+scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $a,
 	 C =< $z ->                              % Atoms
-    sub_scan_name(Cs, [C, fun scan_atom/6], Toks,
-		  {Line, Col}, State, Errors);
-scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
+    sub_scan_name(Cs, [C, fun scan_atom/7], Toks,
+		  {Line, Col}, State, Errors, TabWidth);
+scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $ß, C =< $ÿ,
 	 C /= $÷ ->                     % Atoms
-    sub_scan_name(Cs, [C, fun scan_atom/6], Toks,
-		  {Line, Col}, State, Errors);
-scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
+    sub_scan_name(Cs, [C, fun scan_atom/7], Toks,
+		  {Line, Col}, State, Errors, TabWidth);
+scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $A,
 	 C =< $Z ->                              % Variables
-    sub_scan_name(Cs, [C, fun scan_variable/6], Toks,
-		  {Line, Col}, State, Errors);
-scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
+    sub_scan_name(Cs, [C, fun scan_variable/7], Toks,
+		  {Line, Col}, State, Errors, TabWidth);
+scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $À, C =< $Þ,
 	 C /= $× ->                     % Variables
-    sub_scan_name(Cs, [C, fun scan_variable/6], Toks,
-		  {Line, Col}, State, Errors);
+    sub_scan_name(Cs, [C, fun scan_variable/7], Toks,
+		  {Line, Col}, State, Errors, TabWidth);
 scan([$_ | Cs], _Stack, Toks, {Line, Col}, State,
-     Errors) ->      % _Variables
-    sub_scan_name(Cs, [$_, fun scan_variable/6], Toks,
-		  {Line, Col}, State, Errors);
-scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors)
+     Errors, TabWidth) ->      % _Variables
+    sub_scan_name(Cs, [$_, fun scan_variable/7], Toks,
+		  {Line, Col}, State, Errors, TabWidth);
+scan([C | Cs], _Stack, Toks, {Line, Col}, State, Errors, TabWidth)
     when C >= $0,
 	 C =< $9 ->                            % Numbers
-    scan_number(Cs, [C], Toks, {Line, Col}, State, Errors);
+    scan_number(Cs, [C], Toks, {Line, Col}, State, Errors, TabWidth);
 scan([$$ | Cs], Stack, Toks, {Line, Col}, State,
-     Errors) ->        % Character constant
-    scan_char(Cs, Stack, Toks, {Line, Col+2}, State, Errors);
+     Errors, TabWidth) ->        % Character constant
+    scan_char(Cs, Stack, Toks, {Line, Col+2}, State, Errors, TabWidth);
 scan([$' | Cs], _Stack, Toks, {Line, Col}, State,
-     Errors) ->      % Quoted atom
+     Errors, TabWidth) ->      % Quoted atom
     scan_qatom(Cs, [$', {Line, Col}], Toks, {Line, Col+1},
-	       State, Errors);
+	       State, Errors, TabWidth);
 scan([$" | Cs], _Stack, Toks, {Line, Col}, State,
-     Errors) ->      % String
+     Errors, TabWidth) ->      % String
     scan_string(Cs, [$", {Line, Col}], Toks, {Line, Col+1},
-		State, Errors);
+		State, Errors, TabWidth);
 scan([$% | Cs], Stack, Toks, {Line, Col}, State,
-     Errors) ->       % Comment
+     Errors, TabWidth) ->       % Comment
     scan_comment(Cs, Stack, Toks, {Line, Col+2}, State,
-		 Errors);
+		 Errors, TabWidth);
 %% Punctuation characters and operators, first recognise multiples.
 %% Clauses are rouped by first character (a short with the same head has
 %% to come after a longer).
 %%
 %% << <- <=
 scan("<<" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'<<', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("<-" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'<-', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("<=" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'<=', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("<" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7 );
 %% >> >=
 scan(">>" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'>>', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan(">=" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'>=', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan(">" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7);
 %% -> --
 scan("->" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'->', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("--" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'--', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("-" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan/7);
 %% ++
 scan("++" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'++', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("+" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7);
 %% =:= =/= =< ==
 scan("=:=" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'=:=', {Line, Col}} | Toks],
-	 {Line, Col + 3}, State, Errors);
+	 {Line, Col + 3}, State, Errors, TabWidth);
 scan("=:" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan/7);
 scan("=/=" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'=/=', {Line, Col}} | Toks],
-	 {Line, Col + 3}, State, Errors);
+	 {Line, Col + 3}, State, Errors, TabWidth);
 scan("=/" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan/7);
 scan("=<" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'=<', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("==" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'==', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("=" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan/7);
 %% /=
 scan("/=" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'/=', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("/" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan/7);
 %% ||
 scan("||" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{'||', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 scan("|" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7);
 %% :-
 scan(":-" ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack, [{':-', {Line, Col}} | Toks],
-	 {Line, Col + 2}, State, Errors);
+	 {Line, Col + 2}, State, Errors, TabWidth);
 %% :: for typed records
-scan("::"++Cs, Stack, Toks, {Line, Col}, State, Errors) ->
-    scan(Cs, Stack, [{'::',{Line, Col}}|Toks], {Line, Col+2}, State, Errors);
+scan("::"++Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth) ->
+    scan(Cs, Stack, [{'::',{Line, Col}}|Toks], {Line, Col+2}, State, Errors, TabWidth);
 
 scan(":" = Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
+     Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7);
 %% Full stop and plain '.'
 scan("." ++ Cs, Stack, Toks, {Line, Col}, State,
-     Errors) ->
-    scan_dot(Cs, Stack, Toks, {Line, Col}, State, Errors);
+     Errors, TabWidth) ->
+    scan_dot(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth);
 %% All single-char punctuation characters and operators (except '.')
 scan([C | Cs], Stack, Toks, {Line, Col}, State,
-     Errors) ->
+     Errors, TabWidth) ->
     scan(Cs, Stack,
 	 [{list_to_atom([C]), {Line, Col}} | Toks],
-	 {Line, Col + 1}, State, Errors);
+	 {Line, Col + 1}, State, Errors, TabWidth);
 %%
-scan([], Stack, Toks, {Line, Col}, State, Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan/6);
-scan(Eof, _Stack, Toks, {Line, Col}, State, Errors) ->
-    done(Eof, Errors, Toks, {Line, Col}, State).
+scan([], Stack, Toks, {Line, Col}, State, Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan/7);
+scan(Eof, _Stack, Toks, {Line, Col}, State, Errors, TabWidth) ->
+    done(Eof, Errors, Toks, {Line, Col}, State, TabWidth).
 
-scan_atom(Cs, Name, Toks, {Line, Col}, State, Errors) ->
+scan_atom(Cs, Name, Toks, {Line, Col}, State, Errors, TabWidth) ->
     case catch list_to_atom(Name) of
       Atom when is_atom(Atom) ->
 	  case reserved_word(Atom) of
 	    true ->
 		  scan(Cs, [], [{Atom, {Line, Col}} | Toks],
-		     {Line, Col + length(Name)}, State, Errors);
+		     {Line, Col + length(Name)}, State, Errors, TabWidth);
 	    false ->
 		  scan(Cs, [], [{atom, {Line, Col}, Atom} | Toks],
-		     {Line, Col + length(Name)}, State, Errors)
+		     {Line, Col + length(Name)}, State, Errors, TabWidth)
 	  end;
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, atom}, {Line, Col}} | Errors])
+	       [{{illegal, atom}, {Line, Col}} | Errors],TabWidth)
     end.
 
 scan_variable(Cs, Name, Toks, {Line, Col}, State,
-	      Errors) ->
+	      Errors, TabWidth) ->
     case catch list_to_atom(Name) of
       A when is_atom(A) ->
 	  scan(Cs, [], [{var, {Line, Col}, A} | Toks],
-	       {Line, Col + length(Name)}, State, Errors);
+	       {Line, Col + length(Name)}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, var}, {Line, Col}} | Errors])
+	       [{{illegal, var}, {Line, Col}} | Errors], TabWidth)
     end.
 
 %% Scan for a name - unqouted atom or variable, after the first character.
@@ -422,23 +425,23 @@ scan_variable(Cs, Name, Toks, {Line, Col}, State,
 %% Returns the scanned name on the stack, unreversed.
 %%
 sub_scan_name([C | Cs] = Css, Stack, Toks, {Line, Col},
-	      State, Errors) ->
+	      State, Errors,TabWidth) ->
     case name_char(C) of
       true ->
 	  sub_scan_name(Cs, [C | Stack], Toks, {Line, Col}, State,
-			Errors);
+			Errors, TabWidth);
       false ->
 	  [Fun | Name] = reverse(Stack),
-	  Fun(Css, Name, Toks, {Line, Col}, State, Errors)
+	  Fun(Css, Name, Toks, {Line, Col}, State, Errors, TabWidth)
     end;
 sub_scan_name([], Stack, Toks, {Line, Col}, State,
-	      Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun sub_scan_name/6);
+	      Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun sub_scan_name/7);
 sub_scan_name(Eof, Stack, Toks, {Line, Col}, State,
-	      Errors) ->
+	      Errors, TabWidth) ->
     [Fun | Name] = reverse(Stack),
-    Fun(Eof, Name, Toks, {Line, Col}, State, Errors).
+    Fun(Eof, Name, Toks, {Line, Col}, State, Errors, TabWidth).
 
 name_char(C) when C >= $a, C =< $z -> true;
 name_char(C) when C >= $ß, C =< $ÿ, C /= $÷ -> true;
@@ -450,127 +453,127 @@ name_char($@) -> true;
 name_char(_) -> false.
 
 scan_char([$\\ | Cs], Stack, Toks, {Line, Col}, State,
-	  Errors) ->
-    sub_scan_escape(Cs, [fun scan_char_escape/6 | Stack],
-		    Toks, {Line, Col}, State, Errors);
+	  Errors, TabWidth) ->
+    sub_scan_escape(Cs, [fun scan_char_escape/7 | Stack],
+		    Toks, {Line, Col}, State, Errors, TabWidth);
 scan_char([$\n | Cs], Stack, Toks, {Line, Col}, State,
-	  Errors) ->
+	  Errors, TabWidth) ->
     scan(Cs, Stack, [{char, {Line, Col}, $\n} | Toks],
-	 {Line + 1, Col}, State, Errors);
+	 {Line + 1, Col}, State, Errors, TabWidth);
 scan_char([], Stack, Toks, {Line, Col}, State,
-	  Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_char/6);
+	  Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan_char/7);
 scan_char(Cs, Stack, Toks, {Line, Col}, State,
-	  Errors) ->
+	  Errors, TabWidth) ->
     scan_char_escape(Cs, Stack, Toks, {Line, Col}, State,
-		     Errors).
+		     Errors, TabWidth).
 
 scan_char_escape([nl | Cs], Stack, Toks, {Line, Col},
-		 State, Errors) ->
+		 State, Errors, TabWidth) ->
     scan(Cs, Stack, [{char, {Line, Col}, $\n} | Toks],
-	 {Line + 1, Col}, State, Errors);
+	 {Line + 1, Col}, State, Errors, TabWidth);
 scan_char_escape([C | Cs], Stack, Toks, {Line, Col},
-		 State, Errors) ->
+		 State, Errors, TabWidth) ->
     scan(Cs, Stack, [{char, {Line, Col}, C} | Toks],
-	 {Line, Col + 1}, State, Errors);
+	 {Line, Col + 1}, State, Errors, TabWidth);
 scan_char_escape(Eof, _Stack, _Toks, {Line, Col}, State,
-		 Errors) ->
+		 Errors, TabWidth) ->
     done(Eof, [{char, {Line, Col}} | Errors], [],
-	 {Line, Col + 1}, State).
+	 {Line, Col + 1}, State, TabWidth).
 
 scan_string([$" | Cs], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     [StartPos, $" | S] = reverse(Stack),
     scan(Cs, [], [{string, StartPos, S} | Toks],
-	 {Line, Col + length(io_lib:write_string(S))-1}, State, Errors);
+	 {Line, Col + length(io_lib:write_string(S))-1}, State, Errors, TabWidth);
 	    
 scan_string([$\n | Cs], Stack, Toks, {Line, _Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     scan_string(Cs, [$\n | Stack], Toks, {Line + 1, 1},
-		State, Errors);
+		State, Errors, TabWidth);
 scan_string([$\\ | Cs], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
-    sub_scan_escape(Cs, [fun scan_string_escape/6 | Stack],
-		    Toks, {Line, Col}, State, Errors);
+	    Errors, TabWidth) ->
+    sub_scan_escape(Cs, [fun scan_string_escape/7 | Stack],
+		    Toks, {Line, Col}, State, Errors, TabWidth);
 scan_string([C | Cs], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     scan_string(Cs, [C | Stack], Toks, {Line, Col}, State,
-		Errors);
+		Errors, TabWidth);
 scan_string([], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_string/6);
+	    Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan_string/7);
 scan_string(Eof, Stack, _Toks, {Line, Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     [StartPos, $" | S] = reverse(Stack),
     SS = string:substr(S, 1, 16),
     done(Eof, [{{string, $", SS}, StartPos} | Errors], [],
-	 {Line, Col + length(io_lib:write_string(S)) -1}, State).
+	 {Line, Col + length(io_lib:write_string(S)) -1}, State, TabWidth).
 
 scan_string_escape([nl | Cs], Stack, Toks, {Line, _Col},
-		   State, Errors) ->
+		   State, Errors, TabWidth) ->
     scan_string(Cs, [$\n | Stack], Toks, {Line + 1, 1},
-		State, Errors);
+		State, Errors, TabWidth);
 scan_string_escape([C | Cs], Stack, Toks, {Line, Col},
-		   State, Errors) ->
+		   State, Errors, TabWidth) ->
     scan_string(Cs, [C | Stack], Toks, {Line, Col}, State,
-		Errors);
+		Errors, TabWidth);
 scan_string_escape(Eof, Stack, _Toks, {Line, Col},
-		   State, Errors) ->
+		   State, Errors, TabWidth) ->
     [StartPos, $" | S] = reverse(Stack),
     SS = string:substr(S, 1, 16),
     done(Eof, [{{string, $", SS}, StartPos} | Errors], [],
-	 {Line, Col + length(S) + 2}, State).
+	 {Line, Col + length(S) + 2}, State, TabWidth).
 
 scan_qatom([$' | Cs], Stack, Toks, {Line, Col}, State,
-	   Errors) ->
+	   Errors, TabWidth) ->
     [StartPos, $' | S] = reverse(Stack),
     case catch list_to_atom(S) of
       A when is_atom(A) ->
 	  scan(Cs, [], [{atom, StartPos, A} | Toks],
-	       {Line, Col + length(S) + 1}, State, Errors);
+	       {Line, Col + length(S) + 1}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, atom}, StartPos} | Errors])
+	       [{{illegal, atom}, StartPos} | Errors], TabWidth)
     end;
 scan_qatom([$\n | Cs], Stack, Toks, {Line, _Col}, State,
-	   Errors) ->
+	   Errors, TabWidth) ->
     scan_qatom(Cs, [$\n | Stack], Toks, {Line + 1, 1},
-	       State, Errors);
+	       State, Errors, TabWidth);
 scan_qatom([$\\ | Cs], Stack, Toks, {Line, Col}, State,
-	   Errors) ->
-    sub_scan_escape(Cs, [fun scan_qatom_escape/6 | Stack],
-		    Toks, {Line, Col}, State, Errors);
+	   Errors, TabWidth) ->
+    sub_scan_escape(Cs, [fun scan_qatom_escape/7 | Stack],
+		    Toks, {Line, Col}, State, Errors, TabWidth);
 scan_qatom([C | Cs], Stack, Toks, {Line, Col}, State,
-	   Errors) ->
+	   Errors, TabWidth) ->
     scan_qatom(Cs, [C | Stack], Toks, {Line, Col}, State,
-	       Errors);
+	       Errors, TabWidth);
 scan_qatom([], Stack, Toks, {Line, Col}, State,
-	   Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_qatom/6);
+	   Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_qatom/7);
 scan_qatom(Eof, Stack, _Toks, {Line, Col}, State,
-	   Errors) ->
+	   Errors, TabWidth) ->
     [StartPos, $' | S] = reverse(Stack),
     SS = string:substr(S, 1, 16),
     done(Eof, [{{string, $', SS}, StartPos} | Errors], [],
-	 {Line, Col + length(S) + 1}, State).
+	 {Line, Col + length(S) + 1}, State, TabWidth).
 
 scan_qatom_escape([nl | Cs], Stack, Toks, {Line, _Col},
-		  State, Errors) ->
+		  State, Errors, TabWidth) ->
     scan_qatom(Cs, [$\n | Stack], Toks, {Line + 1, 1},
-	       State, Errors);
+	       State, Errors, TabWidth);
 scan_qatom_escape([C | Cs], Stack, Toks, {Line, Col},
-		  State, Errors) ->
+		  State, Errors, TabWidth) ->
     scan_qatom(Cs, [C | Stack], Toks, {Line, Col}, State,
-	       Errors);
+	       Errors, TabWidth);
 scan_qatom_escape(Eof, Stack, _Toks, {Line, Col}, State,
-		  Errors) ->
+		  Errors, TabWidth) ->
     [StartPos, $' | S] = reverse(Stack),
     SS = string:substr(S, 1, 16),
     done(Eof, [{{string, $', SS}, StartPos} | Errors], [],
-	 {Line, Col + length(S) + 1}, State).
+	 {Line, Col + length(S) + 1}, State, TabWidth).
 
 %% Scan for a character escape sequence, in character literal or string.
 %% A string is a syntactical sugar list (e.g "abc")
@@ -583,65 +586,65 @@ scan_qatom_escape(Eof, Stack, _Toks, {Line, Col}, State,
 %%
 %% \<1-3> octal digits
 sub_scan_escape([O1, O2, O3 | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors)
+		{Line, Col}, State, Errors, TabWidth)
     when O1 >= $0, O1 =< $7, O2 >= $0, O2 =< $7, O3 >= $0,
 	 O3 =< $7 ->
     Val = (O1 * 8 + O2) * 8 + O3 - 73 * $0,
     Fun([Val | Cs], Stack, Toks, {Line, Col}, State,
-	Errors);
+	Errors, TabWidth);
 sub_scan_escape([O1, O2] = Cs, Stack, Toks, {Line, Col},
-		State, Errors)
+		State, Errors, TabWidth)
     when O1 >= $0, O1 =< $7, O2 >= $0, O2 =< $7 ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun sub_scan_escape/6);
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun sub_scan_escape/7);
 sub_scan_escape([O1, O2 | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors)
+		{Line, Col}, State, Errors, TabWidth)
     when O1 >= $0, O1 =< $7, O2 >= $0, O2 =< $7 ->
     Val = O1 * 8 + O2 - 9 * $0,
     Fun([Val | Cs], Stack, Toks, {Line, Col}, State,
-	Errors);
+	Errors, TabWidth);
 sub_scan_escape([O1] = Cs, Stack, Toks, {Line, Col},
-		State, Errors)
+		State, Errors, TabWidth)
     when O1 >= $0, O1 =< $7 ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun sub_scan_escape/6);
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun sub_scan_escape/7);
 sub_scan_escape([O1 | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors)
+		{Line, Col}, State, Errors, TabWidth)
     when O1 >= $0, O1 =< $7 ->
     Val = O1 - $0,
     Fun([Val | Cs], Stack, Toks, {Line, Col}, State,
-	Errors);
+	Errors, TabWidth);
 %% \^X -> CTL-X
 sub_scan_escape([$^, C | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors) ->
+		{Line, Col}, State, Errors, TabWidth) ->
     Val = C band 31,
     Fun([Val | Cs], Stack, Toks, {Line, Col}, State,
-	Errors);
+	Errors, TabWidth);
 sub_scan_escape([$^] = Cs, Stack, Toks, {Line, Col},
-		State, Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun sub_scan_escape/6);
+		State, Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun sub_scan_escape/7);
 sub_scan_escape([$^ | Eof], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors) ->
-    Fun(Eof, Stack, Toks, {Line, Col}, State, Errors);
+		{Line, Col}, State, Errors, TabWidth) ->
+    Fun(Eof, Stack, Toks, {Line, Col}, State, Errors, TabWidth);
 %% \NL (backslash newline)
 sub_scan_escape([$\n | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors) ->
-    Fun([nl | Cs], Stack, Toks, {Line, Col}, State, Errors);
+		{Line, Col}, State, Errors, TabWidth) ->
+    Fun([nl | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth);
 %% \X - familiar escape sequences
 sub_scan_escape([C | Cs], [Fun | Stack], Toks,
-		{Line, Col}, State, Errors) ->
+		{Line, Col}, State, Errors, TabWidth) ->
     Val = escape_char(C),
     Fun([Val | Cs], Stack, Toks, {Line, Col}, State,
-	Errors);
+	Errors, TabWidth);
 %%
 sub_scan_escape([], Stack, Toks, {Line, Col}, State,
-		Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun sub_scan_escape/6);
+		Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun sub_scan_escape/7);
 sub_scan_escape(Eof, [Fun | Stack], Toks, {Line, Col},
-		State, Errors) ->
-    Fun(Eof, Stack, Toks, {Line, Col}, State, Errors).
+		State, Errors, TabWidth) ->
+    Fun(Eof, Stack, Toks, {Line, Col}, State, Errors, TabWidth).
 
 escape_char($n) -> $\n;                         %\n = LF
 escape_char($r) -> $\r;                         %\r = CR
@@ -659,183 +662,183 @@ escape_char($d) ->
 escape_char(C) -> C.
 
 scan_number([$., C | Cs], Stack, Toks, {Line, Col},
-	    State, Errors)
+	    State, Errors, TabWidth)
     when C >= $0, C =< $9 ->
     scan_fraction(Cs, [C, $. | Stack], Toks, {Line, Col},
-		  State, Errors);
+		  State, Errors, TabWidth);
 scan_number([$.] = Cs, Stack, Toks, {Line, Col}, State,
-	    Errors) ->
-    more(Cs, Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_number/6);
+	    Errors, TabWidth) ->
+    more(Cs, Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_number/7);
 scan_number([C | Cs], Stack, Toks, {Line, Col}, State,
-	    Errors)
+	    Errors, TabWidth)
     when C >= $0, C =< $9 ->
     scan_number(Cs, [C | Stack], Toks, {Line, Col}, State,
-		Errors);
+		Errors, TabWidth);
 scan_number([$# | Cs], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     case catch list_to_integer(reverse(Stack)) of
       B when is_integer(B), B >= 2, B =< 1 + $Z - $A + 10 ->
 	  scan_based_int(Cs, [B], Toks, {Line, Col}, State,
-			 Errors);
+			 Errors, TabWidth);
       B ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{base, B}, {Line, Col}} | Errors])
+	       [{{base, B}, {Line, Col}} | Errors], TabWidth)
     end;
 scan_number([], Stack, Toks, {Line, Col}, State,
-	    Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_number/6);
+	    Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_number/7);
 scan_number(Cs, Stack, Toks, {Line, Col}, State,
-	    Errors) ->
+	    Errors, TabWidth) ->
     case catch list_to_integer(reverse(Stack)) of
       N when is_integer(N) ->
 	  scan(Cs, [], [{integer, {Line, Col}, N} | Toks],
-	       {Line, Col + length(Stack)}, State, Errors);
+	       {Line, Col + length(Stack)}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, integer}, {Line, Col}} | Errors])
+	       [{{illegal, integer}, {Line, Col}} | Errors], TabWidth)
     end.
 
 scan_based_int([C | Cs], [B | Stack], Toks, {Line, Col},
-	       State, Errors)
+	       State, Errors, TabWidth)
     when C >= $0, C =< $9, C < $0 + B ->
     scan_based_int(Cs, [B, C | Stack], Toks, {Line, Col},
-		   State, Errors);
+		   State, Errors, TabWidth);
 scan_based_int([C | Cs], [B | Stack], Toks, {Line, Col},
-	       State, Errors)
+	       State, Errors, TabWidth)
     when C >= $A, B > 10, C < $A + B - 10 ->
     scan_based_int(Cs, [B, C | Stack], Toks, {Line, Col},
-		   State, Errors);
+		   State, Errors, TabWidth);
 scan_based_int([C | Cs], [B | Stack], Toks, {Line, Col},
-	       State, Errors)
+	       State, Errors,TabWidth)
     when C >= $a, B > 10, C < $a + B - 10 ->
     scan_based_int(Cs, [B, C | Stack], Toks, {Line, Col},
-		   State, Errors);
+		   State, Errors, TabWidth);
 scan_based_int([], Stack, Toks, {Line, Col}, State,
-	       Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_based_int/6);
+	       Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_based_int/7);
 scan_based_int(Cs, [B | Stack], Toks, {Line, Col},
-	       State, Errors) ->
+	       State, Errors, TabWidth) ->
      case catch erlang:list_to_integer(reverse(Stack), B) of
       N when is_integer(N) ->
 	  scan(Cs, [], [{integer, {Line, Col}, 
 			 integer_to_list(B)++[$#| reverse(Stack)]} | Toks],   %% "replaced 'N' with 'reverse(Stack)'";
-	       {Line, Col + length(Stack)}, State, Errors);
+	       {Line, Col + length(Stack)}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, integer}, {Line, Col}} | Errors])
+	       [{{illegal, integer}, {Line, Col}} | Errors], TabWidth)
     end.
 
 scan_fraction([C | Cs], Stack, Toks, {Line, Col}, State,
-	      Errors)
+	      Errors, TabWidth)
     when C >= $0, C =< $9 ->
     scan_fraction(Cs, [C | Stack], Toks, {Line, Col}, State,
-		  Errors);
+		  Errors, TabWidth);
 scan_fraction([$e | Cs], Stack, Toks, {Line, Col},
-	      State, Errors) ->
+	      State, Errors, TabWidth) ->
     scan_exponent_sign(Cs, [$E | Stack], Toks, {Line, Col},
-		       State, Errors);
+		       State, Errors, TabWidth);
 scan_fraction([$E | Cs], Stack, Toks, {Line, Col},
-	      State, Errors) ->
+	      State, Errors, TabWidth) ->
     scan_exponent_sign(Cs, [$E | Stack], Toks, {Line, Col},
-		       State, Errors);
+		       State, Errors, TabWidth);
 scan_fraction([], Stack, Toks, {Line, Col}, State,
-	      Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_fraction/6);
+	      Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_fraction/7);
 scan_fraction(Cs, Stack, Toks, {Line, Col}, State,
-	      Errors) ->
+	      Errors, TabWidth) ->
     case catch list_to_float(reverse(Stack)) of
       F when is_float(F) ->
 	  scan(Cs, [], [{float, {Line, Col}, F} | Toks],
-	       {Line, Col + length(Stack)}, State, Errors);
+	       {Line, Col + length(Stack)}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, float}, {Line, Col}} | Errors])
+	       [{{illegal, float}, {Line, Col}} | Errors], TabWidth)
     end.
 
 scan_exponent_sign([$+ | Cs], Stack, Toks, {Line, Col},
-		   State, Errors) ->
+		   State, Errors, TabWidth) ->
     scan_exponent(Cs, [$+ | Stack], Toks, {Line, Col},
-		  State, Errors);
+		  State, Errors, TabWidth);
 scan_exponent_sign([$- | Cs], Stack, Toks, {Line, Col},
-		   State, Errors) ->
+		   State, Errors, TabWidth) ->
     scan_exponent(Cs, [$- | Stack], Toks, {Line, Col},
-		  State, Errors);
+		  State, Errors, TabWidth);
 scan_exponent_sign([], Stack, Toks, {Line, Col}, State,
-		   Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_exponent_sign/6);
+		   Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors, TabWidth,
+	 fun scan_exponent_sign/7);
 scan_exponent_sign(Cs, Stack, Toks, {Line, Col}, State,
-		   Errors) ->
+		   Errors, TabWidth) ->
     scan_exponent(Cs, Stack, Toks, {Line, Col}, State,
-		  Errors).
+		  Errors, TabWidth).
 
 scan_exponent([C | Cs], Stack, Toks, {Line, Col}, State,
-	      Errors)
+	      Errors, TabWidth)
     when C >= $0, C =< $9 ->
     scan_exponent(Cs, [C | Stack], Toks, {Line, Col}, State,
-		  Errors);
+		  Errors, TabWidth);
 scan_exponent([], Stack, Toks, {Line, Col}, State,
-	      Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_exponent/6);
+	      Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_exponent/7);
 scan_exponent(Cs, Stack, Toks, {Line, Col}, State,
-	      Errors) ->
+	      Errors, TabWidth) ->
     case catch list_to_float(reverse(Stack)) of
       F when is_float(F) ->
 	  scan(Cs, [], [{float, {Line, Col}, F} | Toks],
-	       {Line, Col + length(Stack)}, State, Errors);
+	       {Line, Col + length(Stack)}, State, Errors, TabWidth);
       _ ->
 	  scan(Cs, [], Toks, {Line, Col}, State,
-	       [{{illegal, float}, {Line, Col}} | Errors])
+	       [{{illegal, float}, {Line, Col}} | Errors], TabWidth)
     end.
 
 scan_comment([$\n | Cs], Stack, Toks, {Line, _Col},
-	     State, Errors) ->
-    scan(Cs, Stack, Toks, {Line + 1, 1}, State, Errors);
+	     State, Errors, TabWidth) ->
+    scan(Cs, Stack, Toks, {Line + 1, 1}, State, Errors, TabWidth);
 scan_comment([_ | Cs], Stack, Toks, {Line, Col}, State,
-	     Errors) ->
+	     Errors, TabWidth) ->
     scan_comment(Cs, Stack, Toks, {Line, Col + 1}, State,
-		 Errors);
+		 Errors, TabWidth);
 scan_comment([], Stack, Toks, {Line, Col}, State,
-	     Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_comment/6);
+	     Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_comment/7);
 scan_comment(Eof, _Stack, Toks, {Line, Col}, State,
-	     Errors) ->
-    done(Eof, Errors, Toks, {Line, Col}, State).
+	     Errors, TabWidth) ->
+    done(Eof, Errors, Toks, {Line, Col}, State, TabWidth).
 
 scan_dot([$% | _] = Cs, _Stack, Toks, {Line, Col},
-	 State, Errors) ->
+	 State, Errors, TabWidth) ->
     done(Cs, Errors, [{dot, {Line, Col}} | Toks],
-	 {Line, Col + 1}, State);
+	 {Line, Col + 1}, State, TabWidth);
 scan_dot([$\n | Cs], _Stack, Toks, {Line, Col}, State,
-	 Errors) ->
+	 Errors, TabWidth) ->
     done(Cs, Errors, [{dot, {Line, Col}} | Toks],
-	 {Line + 1, 1}, State);
+	 {Line + 1, 1}, State, TabWidth);
 scan_dot([C | Cs], _Stack, Toks, {Line, Col}, State,
-	 Errors)
+	 Errors, TabWidth)
     when C >= $\000, C =< $\s ->
     done(Cs, Errors, [{dot, {Line, Col}} | Toks],
-	 {Line, Col + 1}, State);
+	 {Line, Col + 1}, State, TabWidth);
 scan_dot([C | Cs], _Stack, Toks, {Line, Col}, State,
-	 Errors)
-    when C >= $\200, C =< $\240 ->
+	 Errors,TabWidth)
+    when C >= $\200, C =< $  ->
     done(Cs, Errors, [{dot, {Line, Col}} | Toks],
-	 {Line, Col + 1}, State);
-scan_dot([], Stack, Toks, {Line, Col}, State, Errors) ->
-    more([], Stack, Toks, {Line, Col}, State, Errors,
-	 fun scan_dot/6);
+	 {Line, Col + 1}, State, TabWidth);
+scan_dot([], Stack, Toks, {Line, Col}, State, Errors, TabWidth) ->
+    more([], Stack, Toks, {Line, Col}, State, Errors,TabWidth,
+	 fun scan_dot/7);
 scan_dot(eof, _Stack, Toks, {Line, Col}, State,
-	 Errors) ->
+	 Errors, TabWidth) ->
     done(eof, Errors, [{dot, {Line, Col}} | Toks],
-	 {Line, Col}, State);
-scan_dot(Cs, Stack, Toks, {Line, Col}, State, Errors) ->
+	 {Line, Col}, State, TabWidth);
+scan_dot(Cs, Stack, Toks, {Line, Col}, State, Errors, TabWidth) ->
     scan(Cs, Stack, [{'.', {Line, Col}} | Toks],
-	 {Line, Col + 1}, State, Errors).
+	 {Line, Col + 1}, State, Errors, TabWidth).
 
 %% reserved_word(Atom) -> Bool
 %%   return 'true' if Atom is an Erlang reserved word, else 'false'.

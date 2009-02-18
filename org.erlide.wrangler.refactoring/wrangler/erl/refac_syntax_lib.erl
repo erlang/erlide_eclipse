@@ -261,16 +261,16 @@ variables(Tree) ->
 -define(START_RANGE_FACTOR, 100).
 
 -define(MAX_RETRIES,
-	3).    % retries before enlarging range
+	3).   % retries before enlarging range
 
 -define(ENLARGE_ENUM,
-	8).   % range enlargment enumerator
+	8).  % range enlargment enumerator
 
 -define(ENLARGE_DENOM,
-	1).  % range enlargment denominator
+	1). % range enlargment denominator
 
 -define(DEFAULT_LOC, 
-        {0, 0}).  %% default defining location.
+        {0, 0}). %% default defining location.
 
 default_variable_name(N) ->
     list_to_atom("V" ++ integer_to_list(N)).
@@ -351,7 +351,7 @@ max(_, Y) -> Y.
 %% order, but (pseudo-)randomly distributed over the range.
 
 generate(_Key, Range) ->
-    random:uniform(Range).    % works well
+    random:uniform(Range).   % works well
 
 %% =====================================================================
 %% @spec new_variable_names(N::integer(), Used::set(atom())) -> [atom()]
@@ -552,7 +552,7 @@ vann_if_expr(Tree, Env) ->
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
 vann_cond_expr(Tree, Env) ->
-    {ann_bindings(Tree, Env, [], []), [],[]}.   %% TODO: NEED TO CHANGE THIS BACK.
+    {ann_bindings(Tree, Env, [], []), [],[]}.  %% TODO: NEED TO CHANGE THIS BACK.
     %% erlang:error({not_implemented, cond_expr}).
 
 %% TODO: NEED TO CHECK THE SEMANTICS OF try-expression!!!.
@@ -577,7 +577,7 @@ vann_try_expr(Tree, Env) ->
     Tree1 = rewrite(Tree, refac_syntax:try_expr(Body1, Cs1, Handlers1, After1)),
     Bound = ordsets:union(ordsets:union(ordsets:union(Bound1, Bound2), Bound3),Bound4),
     Free  = ordsets:union(ordsets:union(ordsets:union(Free1, Free2), Free3),Free4),
-    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.    %% TODO: NEED TO CHANGE THIS BACK.
+    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.   %% TODO: NEED TO CHANGE THIS BACK.
     %% erlang:error({not_implemented, try_expr}).
 
 vann_receive_expr(Tree, Env) ->
@@ -872,7 +872,7 @@ vann_define(D, Env) ->
     {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1),
     MacroBody2 = adjust_define_body(MacroBody1, Env1),
     D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1| MacroBody2])),
-    {ann_bindings(D1, Env, [], []), [], []}.   
+    {ann_bindings(D1, Env, [], []), [], []}.  
 
 adjust_define_body(Body, Env) ->
     F = fun (Tree1) ->
@@ -1218,7 +1218,7 @@ collect_attribute(record, {R, L}, Info) ->
     finfo_add_record(R, L, Info);
 collect_attribute(_, {N, V}, Info) ->
     finfo_add_attribute(N, V, Info);
-collect_attribute(_, _, Info) -> Info.  %% Added by Huiqing
+collect_attribute(_, _, Info) -> Info. %% Added by Huiqing
 
     
 
@@ -1551,7 +1551,7 @@ append_arity(A, {Module, Name}) ->
 append_arity(A, Name) when is_atom(Name) -> {Name, A};
 append_arity(A, A) -> A;
 append_arity(_A, Name) ->
-    Name.    % quietly drop extra arity in case of conflict
+    Name.   % quietly drop extra arity in case of conflict
 
 %% =====================================================================
 %% @spec analyze_import_attribute(Node::syntaxTree()) ->

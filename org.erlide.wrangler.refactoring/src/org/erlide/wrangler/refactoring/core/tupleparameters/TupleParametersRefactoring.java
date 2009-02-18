@@ -23,9 +23,10 @@ public class TupleParametersRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {
-		return managedBackend.rpc("wrangler", "tuple_funpar_eclipse", "siisx",
+		return managedBackend.rpc("wrangler", "tuple_funpar_eclipse", "siisxi",
 				filePath, parameters.getStartLine(), parameters
-						.getStartColumn(), newName, searchPath);
+						.getStartColumn(), newName, searchPath, parameters
+						.getEditorTabWidth());
 	}
 
 }

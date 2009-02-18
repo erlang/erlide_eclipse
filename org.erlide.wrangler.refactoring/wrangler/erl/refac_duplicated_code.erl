@@ -20,10 +20,9 @@
 
 -module(refac_duplicated_code).
 
--export([duplicated_code/3]).
+-export([duplicated_code/4]).
 
-
--export([duplicated_code_1/3]).
+-export([duplicated_code_1/4]).
 
 -export([init/1]).
 %% TODO:  
@@ -35,10 +34,10 @@
 -include("../hrl/wrangler.hrl").
 
 %% minimal number of tokens.
--define(DEFAULT_MIN_CLONE_LEN, 20).
+-define(DEFAULT_CLONE_LEN, 20).
 
 %% Minimal number of class members.
--define(DEFAULT_MIN_CLONE_MEMBER, 2).
+-define(DEFAULT_CLONE_MEMBER, 2).
 
 
 %% -define(DEBUG, true).
@@ -62,9 +61,9 @@ stop_suffix_tree_clone_detector() -> case catch (?MODULE ! stop) of
 				     end.
 
 
-get_clones_by_suffix_tree(FileNames,MinLength, MinClones) ->
+get_clones_by_suffix_tree(FileNames,MinLength, MinClones, TabWidth) ->
     %% tokenize Erlang source files and concat the tokens into a single list.
-    {Toks, ProcessedToks} = tokenize(FileNames),
+    {Toks, ProcessedToks} = tokenize(FileNames, TabWidth),
     OutFileName = filename:join(filename:dirname(hd(FileNames)), "wrangler_suffix_tree"), 
     case file:write_file(OutFileName, ProcessedToks) of 
 	ok -> case  catch call_port({get, MinLength, MinClones, OutFileName}) of
@@ -147,13 +146,28 @@ loop(Port) ->
 %% ====================================================================================
 %% @spec duplicated_code(FileName::filename(),MinLines::integer(),MinClones::integer()) -> term().
 %%  
--spec(duplicated_code/3::([dir()], string(), string()) ->{ok, string()}).
+%%-spec(duplicated_code/4::([dir()], string(), string(), integer()) ->{ok, string()}).
 
-duplicated_code(DirFileList, MinLength1, MinClones1) ->
-    ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p).\n", [?MODULE, DirFileList, MinLength1, MinClones1]),
+duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
+    MinLength = case MinLength1 == [] orelse
+		    list_to_integer(MinLength1) =< 1
+		    of
+		    true -> 
+			?DEFAULT_CLONE_LEN;
+		    _ -> list_to_integer(MinLength1)
+		end,
+    %% By 'MinClones', I mean the minimal number of members in a clone class,
+    %% therefore it should be one more than the number of times a piece of code is cloned.
+    MinClones = case MinClones1 == [] orelse
+		    list_to_integer(MinClones1) < ?DEFAULT_CLONE_MEMBER
+		    of
+		    true -> ?DEFAULT_CLONE_MEMBER;
+		    _ -> list_to_integer(MinClones1)
+		end,
+    ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p).\n", [?MODULE, DirFileList, MinLength, MinClones, TabWidth]),
     ?debug("current time:~p\n", [time()]),
     start_suffix_tree_clone_detector(),
-    {Cs5, FileNames} = duplicated_code_detection(DirFileList, MinClones1, MinLength1),
+    {Cs5, FileNames} = duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth),
     ?debug("Filtering out sub-clones.\n", []),
     Cs6 = remove_sub_clones(Cs5),
     ?debug("current time:~p\n", [time()]),
@@ -165,36 +179,20 @@ duplicated_code(DirFileList, MinLength1, MinClones1) ->
     ?debug("Clones:\n~p\n", [Cs6]),
     {ok, "Duplicated code detection finished."}.
 
--spec(duplicated_code_1/3::(dir(), [integer()], [integer()]) ->
-	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+%%-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
+%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
-duplicated_code_1(DirFileList, MinLength1, MinClones1) ->
-    {Cs5, _} = duplicated_code_detection(DirFileList, MinClones1,
-					 MinLength1),
+duplicated_code_1(DirFileList, MinLength, MinClones, TabWidth) ->
+    {Cs5, _} = duplicated_code_detection(DirFileList, MinClones,
+					 MinLength, TabWidth),
     remove_sub_clones(Cs5).
  
 
-duplicated_code_detection(DirFileList, MinClones1, MinLength1) ->
+duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth) ->
     FileNames = refac_util:expand_files(DirFileList, ".erl"),
     ?debug("Files:\n~p\n", [FileNames]),
-    MinLength = case MinLength1 == [] orelse
-		    list_to_integer(MinLength1) =< 0
-		    of
-		    true -> 
-			?DEFAULT_MIN_CLONE_LEN;
-		    _ -> list_to_integer(MinLength1)
-		end,
-   %%io:format("MinLength:\n~p\n", [MinLength]),
-    %% By 'MinClones', I mean the minimal number of members in a clone class,
-    %% therefore it should be one more than the number of times a piece of code is cloned.
-    MinClones = case MinClones1 == [] orelse
-		    list_to_integer(MinClones1) < ?DEFAULT_MIN_CLONE_MEMBER
-		    of
-		    true -> ?DEFAULT_MIN_CLONE_MEMBER;
-		    _ -> list_to_integer(MinClones1)
-		end,
     ?debug("Constructing suffix tree and collecting clones from the suffix tree.\n", []),
-    {Toks,Cs}= get_clones_by_suffix_tree(FileNames, MinLength, MinClones),
+    {Toks,Cs}= get_clones_by_suffix_tree(FileNames, MinLength, MinClones, TabWidth),
     ?debug("Initial numberclones from suffix tree:~p\n", [length(Cs)]),
     %% This step is necessary to reduce large number of sub-clones.
     ?debug("Type 4 clones:\n~p\n", [length(Cs)]),
@@ -206,15 +204,15 @@ duplicated_code_detection(DirFileList, MinClones1, MinLength1) ->
     Cs3 = combine_neighbour_clones(Cs2, MinLength, MinClones),
     ?debug("Type3 without trimming:~p\n", [length(Cs3)]),
     ?debug("Trimming clones.\n", []),
-    Cs4 = trim_clones(FileNames, Cs3, MinLength, MinClones),
+    Cs4 = trim_clones(FileNames, Cs3, MinLength, MinClones, TabWidth),
     {Cs4, FileNames}.
 
 
 %% =====================================================================
-%% tokennization of an Erlang file.
+%% tokenize a collection of concatenated Erlang files.
 
-tokenize(FileList) ->
-    TokLists = lists:map(fun(F) -> Toks= refac_util:tokenize(F),
+tokenize(FileList, TabWidth) ->
+    TokLists = lists:map(fun(F) -> Toks= refac_util:tokenize(F, false, TabWidth),
 			    lists:map(fun(T)->add_filename_to_token(F,T) end, Toks)			    
 		  end, FileList),
     Toks = lists:append(TokLists),
@@ -323,18 +321,13 @@ combine_range(Prev_Range, {StartLoc, EndLoc}) ->
 
 %% Problem: here 'Len' refers to the no. of tokens instead of no. of lines.
 collect_clones(MinLength, MinFreq, {branch, {Range, {Len, F}}, Others}) ->
-    MinLength1 = case MinLength >= (?DEFAULT_MIN_CLONE_LEN) of
-		   true -> MinLength;
-		   _ ->
-		       ?DEFAULT_MIN_CLONE_LEN    %% in the case that the user-specified length is less t
-		 end,
-    C = case F >= MinFreq andalso Len >= MinLength1 of
-	  true -> [{Range, Len, F}];
-	  false -> []
+    C = case F >= MinFreq andalso Len >= MinLength of
+	    true -> [{Range, Len, F}];
+	    false -> []
 	end,
     case Others of
-      leaf -> C;
-      Bs -> lists:foldl(fun (B, C1) -> collect_clones(MinLength, MinFreq, B) ++ C1 end, C, Bs)
+	leaf -> C;
+	Bs -> lists:foldl(fun (B, C1) -> collect_clones(MinLength, MinFreq, B) ++ C1 end, C, Bs)
     end.
     
 
@@ -496,34 +489,26 @@ sub_clone({Range1, Len1, F1}, {Range2, Len2, F2}) ->
 %% ================================================================================== 
 %% trim both end of each clones to exclude those tokens that does not form a meaninhful syntax phrase.
 %% This phase needs to get access to the abstract syntax tree.
-compile_files(Files) ->
-    compile_files(Files, []).
-compile_files([], Acc) -> Acc; 
-compile_files([F|Fs], Acc) -> 
-    {ok, {AnnAST, _Info}} =  refac_util:parse_annotate_file(F,true, []),
-    compile_files(Fs, [{F, AnnAST}|Acc]).
+compile_files(Files, TabWidth) ->
+    compile_files(Files, TabWidth,[]).
+compile_files([], _, Acc) -> Acc; 
+compile_files([F|Fs], TabWidth, Acc) -> 
+    {ok, {AnnAST, _Info}} =  refac_util:parse_annotate_file(F,true,[], TabWidth),
+    compile_files(Fs, TabWidth, [{F, AnnAST}|Acc]).
 
      
-tokenize_files(Files, WithLayout) ->
-    tokenize_files(Files, WithLayout, []).
-tokenize_files([],_, Acc) ->
+tokenize_files(Files, WithLayout, TabWidth) ->
+    tokenize_files(Files, WithLayout, TabWidth, []).
+tokenize_files([],_, _, Acc) ->
      Acc;
-tokenize_files([F|Fs], WithLayout, Acc) ->
-     Toks= tokenize_file(F, WithLayout),
-     tokenize_files(Fs, WithLayout, [{F, Toks}|Acc]).
+tokenize_files([F|Fs], WithLayout, TabWidth, Acc) ->
+     Toks= refac_util:tokenize(F, WithLayout, TabWidth),
+     tokenize_files(Fs, WithLayout, TabWidth, [{F, Toks}|Acc]).
     
-tokenize_file(F, WithLayout) ->
-    case WithLayout of 
-	true -> {ok, Bin} = file:read_file(F),
-		{ok, Ts, _} = refac_scan_with_layout:string(erlang:binary_to_list(Bin)),
-		Ts;
-	_ -> Ts = refac_util:tokenize(F),
-	     Ts
-    end.
-    
-trim_clones(FileNames, Cs, MinLength, MinClones) -> 
-    AnnASTs = compile_files(FileNames),
-    ToksLists = tokenize_files(FileNames, false),
+   
+trim_clones(FileNames, Cs, MinLength, MinClones, TabWidth) -> 
+    AnnASTs = compile_files(FileNames, TabWidth),
+    ToksLists = tokenize_files(FileNames, false, TabWidth),
     Fun0 = fun(R={{File, StartLn, StartCol},{File, EndLn, EndCol}})->
 		  case lists:keysearch(File, 1, AnnASTs) of
 		      {value, {File, AnnAST}} -> Phrases =  refac_util:pos_to_syntax_units(AnnAST, {StartLn, StartCol}, {EndLn, EndCol}, fun is_expr_or_fun/1),
@@ -541,7 +526,7 @@ trim_clones(FileNames, Cs, MinLength, MinClones) ->
 			    case lists:keysearch(File1, 1, AnnASTs) of
 				{value, {File1, AnnAST}} ->
 				    {value, {File1, Toks}} = lists:keysearch(File1, 1, ToksLists),
-				    Units = refac_util:pos_to_syntax_units(File1, AnnAST, {L1, C1},{L2, C2}, fun is_expr_or_fun/1), 
+				    Units = refac_util:pos_to_syntax_units(File1, AnnAST, {L1, C1},{L2, C2}, fun is_expr_or_fun/1, TabWidth), 
 				    case Units =/= [] of 
 					true -> 
 					    Fun2 = fun(U) ->
@@ -557,7 +542,7 @@ trim_clones(FileNames, Cs, MinLength, MinClones) ->
 							   NewLen = length(Toks31),
 							   case NewLen >=MinLength of 
 							       true ->  
-								   NewRange = trim_range(tl(Range), {Len1, Len2}),
+								   NewRange = trim_range(tl(Range), {Len1, Len2}, TabWidth),
 								   {StartLn, StartCol} = StartLoc,
 								   {EndLn, EndCol} = EndLoc,
 								   [{[{{File1, StartLn, StartCol}, {File1, EndLn, EndCol}}|NewRange], NewLen, F}];
@@ -590,14 +575,14 @@ group_by_1(N, TupleList=[E|_Es]) ->
     [E1 | group_by_1(N, E2)].
     
     
-trim_range(Range, {Len1, Len2}) ->
-    lists:flatmap(fun({S,E}) -> trim_range_1({S,E}, {Len1, Len2}) end, Range).
-trim_range_1(_Range={{File1, StartLn, StartCol}, {File2, EndLn, EndCol}}, {Len1, Len2}) -> 
+trim_range(Range, {Len1, Len2}, TabWidth) ->
+    lists:flatmap(fun({S,E}) -> trim_range_1({S,E}, {Len1, Len2}, TabWidth) end, Range).
+trim_range_1(_Range={{File1, StartLn, StartCol}, {File2, EndLn, EndCol}}, {Len1, Len2}, TabWidth) -> 
     case (File1==File2) andalso ({StartLn, StartCol}<{EndLn, EndCol}) of   %% The second condition is a temporary bugfix. 
 	true ->
 	    S = {StartLn, StartCol},
 	    E = {EndLn, EndCol},
-	    Toks =tokenize_file(File1, false),
+	    Toks =refac_util:tokenize(File1, false, TabWidth),
 	    Toks1 = lists:dropwhile(fun(T) -> token_loc(T) =/=S end, Toks),
 	    case Len1 <length(Toks1) of   
 		true -> Toks2 = lists:nthtail(Len1, Toks1),
@@ -766,7 +751,7 @@ alphabet_1() ->
    [{'after',a},{'andalso',b}, {'and',c},
     {'begin',d},{'bnot',e},{'band',f},{'bor',g},{'bxor',h},{'bsl',i},{'bsr',j},
     {'case',k}, {'cond',l}, {'catch',m},
-    {'div',n},{'dot', o},
+    {'div',n},{dot, o},
     {'end',p},
     {'fun',q},
     {'if',r},

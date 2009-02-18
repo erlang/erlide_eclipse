@@ -75,8 +75,8 @@ parse_term(Tokens) ->
 	{error,E} -> {error,E}
     end.
 
--type(attributes() :: 'export' | 'file' | 'import' | 'module'
-		    | 'record' | 'spec' | 'type').
+%%-type(attributes() :: export | file | import | module
+%%		    | record | 'spec' | type).
 
 build_typed_attribute({atom,La,record}, 
 		      {typed_record, {atom,_Ln,RecordName}, RecTuple}) ->
@@ -223,7 +223,7 @@ var_list({nil,_Ln}) -> [];
 var_list(Other) ->
     return_error(?line(Other), "bad variable list").
 
--spec(error_bad_decl/2 :: (integer(), attributes()) -> no_return()).
+%%-spec(error_bad_decl/2 :: (integer(), attributes()) -> no_return()).
 
 error_bad_decl(L, S) ->
     return_error(L, io_lib:format("bad ~w declaration", [S])).
@@ -517,7 +517,7 @@ func_prec() -> {800,700}.
 max_prec() -> 1000.
 
 -file("/ldisk/daily_build/otp_prebuild_r12b.2008-06-10_20/otp_src_R12B-3/bootstrap/lib/parsetools/include/yeccpre.hrl", 0).
-%% ``The contents of this file are subject to the Erlang Public License,
+%%%%%%%%%%%% ``The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
@@ -538,7 +538,7 @@ max_prec() -> 1000.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The parser generator will insert appropriate declarations before this line.%
 
--type(yecc_ret() :: {'error', _} | {'ok', _}).
+-type(yecc_ret() :: {error, _} | {ok, _}).
 
 -spec(parse/1 :: (_) -> yecc_ret()).
 parse(Tokens) ->

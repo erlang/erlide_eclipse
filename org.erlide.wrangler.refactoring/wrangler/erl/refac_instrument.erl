@@ -21,25 +21,25 @@
 %% =============================================================================================
 -module(refac_instrument).
 
--export([instrument_prog/2, uninstrument_prog/2]).
+-export([instrument_prog/3, uninstrument_prog/3]).
 
 -include("../hrl/wrangler.hrl").
 %% =============================================================================================
 %% @spec intrument_prog(FileName::filename(), SearchPaths::[filename()])-> term()
 %%         
 
--spec(instrument_prog/2::(filename(), [dir()]) ->{ok, [filename()]} | {error, string()}).	     
-instrument_prog(FileName,SearchPaths)-> 
+%%-spec(instrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).     
+instrument_prog(FileName,SearchPaths, TabWidth)-> 
  
-   instrument_prog(FileName, SearchPaths, wrangler, trace_send, 4).
+   instrument_prog(FileName, SearchPaths, wrangler, trace_send, 4, TabWidth).
 
-instrument_prog(FileName, SearchPaths, ModName, FunName, Arity) ->
+instrument_prog(FileName, SearchPaths, ModName, FunName, Arity, TabWidth) ->
     ?wrangler_io("\n[CMD: instrument_prog, ~p, ~p]\n", [FileName, SearchPaths]),
     CurrentDir = filename:dirname(normalise_file_name(FileName)),
     TraceCacheFile = filename:join(CurrentDir, "wrangler_trace_cache"),
     Dirs = lists:usort([CurrentDir|SearchPaths]),
     Files = refac_util:expand_files(Dirs, ".erl"),
-    case  instrument_files(Files, {ModName, FunName, Arity}, TraceCacheFile, SearchPaths) of 
+    case  instrument_files(Files, {ModName, FunName, Arity}, TraceCacheFile, SearchPaths, TabWidth) of 
 	InstrumentedFiles ->
 	    refac_util:write_refactored_files(InstrumentedFiles),
 	    ChangedFiles = lists:map(fun({{F, _}, _AST}) -> F end, InstrumentedFiles),
@@ -52,16 +52,16 @@ instrument_prog(FileName, SearchPaths, ModName, FunName, Arity) ->
     end.
 	
 
-instrument_files([F|Fs], {ModName,FunName, Arity}, TraceCacheFile,SearchPaths) ->
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F,true, SearchPaths ),
+instrument_files([F|Fs], {ModName,FunName, Arity}, TraceCacheFile,SearchPaths, TabWidth) ->
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F,true, SearchPaths, TabWidth ),
     {ok, CurrentModName} = get_module_name(Info),
     {AnnAST1, Modified} = refac_util:stop_tdTP(fun do_instrument/2, AnnAST,{TraceCacheFile, CurrentModName, {ModName, FunName, Arity}}),
     if Modified ->
-	    [{{F, F}, AnnAST1} | instrument_files(Fs, {ModName, FunName, Arity},TraceCacheFile,  SearchPaths)];
+	    [{{F, F}, AnnAST1} | instrument_files(Fs, {ModName, FunName, Arity},TraceCacheFile,  SearchPaths, TabWidth)];
        true -> 
-	    instrument_files(Fs, {ModName, FunName, Arity}, TraceCacheFile, SearchPaths)
+	    instrument_files(Fs, {ModName, FunName, Arity}, TraceCacheFile, SearchPaths, TabWidth)
     end;	       
-instrument_files([], _, _, _) ->
+instrument_files([], _, _, _, _) ->
     [].
 
 do_instrument(Tree, {TraceCacheFile, CurrentModName,{ModName, FunName, Arity}}) ->
@@ -130,16 +130,16 @@ loop(N) ->
     end.
 	    
 
--spec(uninstrument_prog/2::(filename(), [dir()]) ->{ok, [filename()]} | {error, string()}).
-uninstrument_prog(FileName,SearchPaths)-> 
-    uninstrument_prog(FileName, SearchPaths, wrangler, trace_send, 4).
+%%-spec(uninstrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).
+uninstrument_prog(FileName,SearchPaths, TabWidth)-> 
+    uninstrument_prog(FileName, SearchPaths, wrangler, trace_send, 4, TabWidth).
 
-uninstrument_prog(FileName, SearchPaths, ModName, FunName, Arity) ->
+uninstrument_prog(FileName, SearchPaths, ModName, FunName, Arity, TabWidth) ->
     ?wrangler_io("\n[CMD: uninstrument_prog, ~p, ~p]\n", [FileName, SearchPaths]),
     CurrentDir = filename:dirname(normalise_file_name(FileName)),
     Dirs = lists:usort([CurrentDir|SearchPaths]),
     Files = refac_util:expand_files(Dirs, ".erl"),
-    case uninstrument_files(Files, {ModName, FunName, Arity}, SearchPaths) of
+    case uninstrument_files(Files, {ModName, FunName, Arity}, SearchPaths, TabWidth) of
 	UnInstrumentedFiles ->
 	    refac_util:write_refactored_files(UnInstrumentedFiles),
 	    ChangedFiles = lists:map(fun({{F, _}, _AST}) -> F end, UnInstrumentedFiles),
@@ -153,15 +153,15 @@ uninstrument_prog(FileName, SearchPaths, ModName, FunName, Arity) ->
     
 
 
-uninstrument_files([F|Fs], {ModName,FunName, Arity}, SearchPaths) ->
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(F,true, SearchPaths ),
+uninstrument_files([F|Fs], {ModName,FunName, Arity}, SearchPaths, TabWidth) ->
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(F,true, SearchPaths, TabWidth),
     {AnnAST1, Modified} = refac_util:stop_tdTP(fun do_uninstrument/2, AnnAST, {ModName, FunName, Arity}),
     if Modified ->
-	    [{{F, F}, AnnAST1} | uninstrument_files(Fs, {ModName, FunName, Arity}, SearchPaths)];
+	    [{{F, F}, AnnAST1} | uninstrument_files(Fs, {ModName, FunName, Arity}, SearchPaths, TabWidth)];
        true -> 
-	    uninstrument_files(Fs, {ModName, FunName, Arity}, SearchPaths)
+	    uninstrument_files(Fs, {ModName, FunName, Arity}, SearchPaths, TabWidth)
     end;	       
-uninstrument_files([], _, _) ->
+uninstrument_files([], _, _, _) ->
     [].
 
 

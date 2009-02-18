@@ -22,7 +22,7 @@
 
 -export([duplicated_code_in_files/3, test/0]).
 
--compile(export_all).              %% should be removed later.
+-compile(export_all).             %% should be removed later.
 
 %% TODO:  
 %% 1) does recusive function calls affect the result?
@@ -190,7 +190,7 @@ combine_range(Prev_Range, {StartLoc, EndLoc}) ->
 	{value, {StartLoc1, _EndLoc1}} ->
 	    {StartLoc1, EndLoc};
 	_  -> {StartLoc, EndLoc}
-    end.    
+    end.   
 
 %% =====================================================================
 %% Collect those clones that satisfy the selecting criteria from the suffix trees.
@@ -244,7 +244,7 @@ sub_range({Range1, Len1, F1}, {Range2, Len2, F2}) ->
 	true ->
             lists:all(fun({S, E}) -> lists:any(fun({S1,E1})-> (S1=<S) andalso (E=<E1) end, Range2) end, Range1);
 	    false -> false
-    end.   
+    end.  
 
 %% ==================================================================================
 %% This phase brings back those atoms back into the token stream, and get the resulted clones.
@@ -283,7 +283,7 @@ filter_2_2([ZippedToks|Others], Acc) ->
 group_by([]) -> [];
 group_by(SortedList=[{_Seq, Tok}|_T]) -> 
     {Es1, Es2} =lists:splitwith(fun({_S,T})-> rm_loc_in_tok(T) == rm_loc_in_tok(Tok) end, SortedList),
-    [Es1 | group_by(Es2)]. 
+    [Es1 | group_by(Es2)].
     
 
 get_sub_cs(_ZippedToks, [], Acc) -> Acc;
@@ -307,7 +307,7 @@ remove_var_literals_1(T) ->
 	{atom, L, V} -> {atom, L, V};
 	{A, L} ->{A, L};
 	Other  -> erlang:error(io:format("Unhandled token:\n~p\n", [Other]))
-    end.    
+    end.   
     
 %% use locations intead of tokens to represent the clones.
 simplify_filter_2_results([],Acc, _MinLength, _MinClones) ->
@@ -382,7 +382,7 @@ remove_sub_clones([C|Cs], Acc_Cs) ->
     case R of 
 	true ->remove_sub_clones(Cs, Acc_Cs);
 	_ -> remove_sub_clones(Cs, Acc_Cs++[C])
-    end.	     
+    end.     
 		  
 %% ================================================================================== 
 %% trim both end of each clones to exclude those tokens that does not form a meaninhful syntax phrase.
@@ -439,7 +439,7 @@ trim_range_1({S,E}, {Len1, Len2}, Toks) ->
     Toks3 = lists:takewhile(fun(T) -> token_loc(T) =/=E end, Toks1) ++
 	    [hd(lists:dropwhile(fun(T) ->token_loc(T) =/= E end,Toks1))],    
     Toks4 = lists:nthtail(Len2, lists:reverse(Toks3)),
-   {token_loc(hd(Toks2)), token_loc(hd(Toks4))}.			    
+   {token_loc(hd(Toks2)), token_loc(hd(Toks4))}.		    
 
 trim_ends({StartLoc={File, Ln1, _Col1},EndLoc={File, _Ln2, _Col2}}, Toks) ->
     Toks0 = lists:dropwhile(fun(T) -> {F, _L, _C} = token_loc(T),
@@ -576,7 +576,7 @@ is_atom_or_var(T) ->
 	{var, _L, _V} -> true;
 	{atom, _L1, _V1} ->true;    
 	_  -> false
-    end. 
+    end.
 
 concat_tokens(Toks) ->
     F = fun(T) -> case T of
@@ -643,7 +643,7 @@ alphabet_1() ->
    [{'after',a},{'andalso',b}, {'and',c},
     {'begin',d},{'bnot',e},{'band',f},{'bor',g},{'bxor',h},{'bsl',i},{'bsr',j},
     {'case',k}, {'cond',l}, {'catch',m},
-    {'div',n},{'dot', o},
+    {'div',n},{dot, o},
     {'end',p},
     {'fun',q},
     {'if',r},

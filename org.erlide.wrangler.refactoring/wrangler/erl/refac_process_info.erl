@@ -769,7 +769,7 @@ trim_scc([Scc|Sccs], CallerCallee, PFunAcc, Acc) ->
 	true ->
 	    trim_scc(Sccs, CallerCallee,SccFuns++PFunAcc,  [Scc|Acc]);
 	_ -> trim_scc(Sccs, CallerCallee, PFunAcc, Acc)
-    end. 
+    end.
 
 is_process_related_fun(FunDef) ->
     ProcessFuns = [{erlang, register, 2}, {erlang, self, 0}, {erlang, spawn, 1}, {erlang, spawn,2}, {erlang, spawn, 3},

@@ -39,7 +39,7 @@
 
 -module(refac_rename_fun).
 
--export([rename_fun/5, rename_fun_eclipse/5]).
+-export([rename_fun/6, rename_fun_eclipse/6]).
 
 -export([check_atoms/2]).
 
@@ -51,21 +51,21 @@
 %% -> term()
 %%
 
--spec(rename_fun/5::(string(), integer(), integer(), string(), [dir()]) ->
-	     {error, string()} | {ok, [filename()]}).
-rename_fun(FileName, Line, Col, NewName, SearchPaths) ->
-    rename_fun(FileName, Line, Col, NewName, SearchPaths, emacs).
+%%-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
+rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
+    rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_fun_eclipse/5::(string(), integer(), integer(), string(), [dir()]) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths) ->
-    rename_fun(FileName, Line, Col, NewName, SearchPaths, eclipse).
+%%-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
+    rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
-rename_fun(FileName, Line, Col, NewName, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:rename_fun( ~p, ~p, ~p, ~p,~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths]),
+rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:rename_fun( ~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths, TabWidth]),
     case refac_util:is_fun_name(NewName) of
       true ->
-	  {ok, {AnnAST, Info}}=refac_util:parse_annotate_file(FileName, true, SearchPaths),
+	  {ok, {AnnAST, Info}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
 	    NewName1 = list_to_atom(NewName),
 	    {ok, ModName} = get_module_name(Info),
 	    Inscope_Funs = lists:map(fun ({_M, F, A}) -> {F, A} end, refac_util:inscope_funs(Info)),
@@ -100,7 +100,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, Editor) ->
 								      "search paths: \n~p\n",
 								      [SearchPaths]),
 							    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
-							    try rename_fun_in_client_modules(ClientFiles, {Mod, Fun, Arity}, NewName, SearchPaths) of 
+							    try rename_fun_in_client_modules(ClientFiles, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth) of 
 								Results -> 
 								    case Editor of 
 									emacs ->
@@ -231,22 +231,18 @@ get_fun_def_mod(Node) ->
       _ -> false
     end.
 
-rename_fun_in_client_modules(Files, {Mod, Fun, Arity}, NewName, SearchPaths) ->
+rename_fun_in_client_modules(Files, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth) ->
     case Files of
       [] -> [];
       [F | Fs] ->
 	    ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(F, true, SearchPaths),
-	    {AnnAST1, Changed} = rename_fun_in_client_module_1({AnnAST, Info},
-							       {Mod, Fun, Arity},
-							       NewName),
+	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
+	    {AnnAST1, Changed} = rename_fun_in_client_module_1({AnnAST, Info},{Mod, Fun, Arity}, NewName),
 		%%check_atoms(AnnAST1, Fun),
 	    if Changed ->
-		    [{{F, F}, AnnAST1} | rename_fun_in_client_modules(Fs,
-								      {Mod, Fun, Arity},
-								      NewName, SearchPaths)];
+		    [{{F, F}, AnnAST1} | rename_fun_in_client_modules(Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth)];
 	       true ->
-		    rename_fun_in_client_modules(Fs, {Mod, Fun, Arity}, NewName, SearchPaths)
+		    rename_fun_in_client_modules(Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth)
 	    end
     end.
 
@@ -347,7 +343,7 @@ is_callback_fun(ModInfo, Funname, Arity) ->
       _ -> false
     end.
 
--spec(check_atoms/2::(syntaxTree(), atom()) ->ok).	     
+%%-spec(check_atoms/2::(syntaxTree(), atom()) ->ok).     
 check_atoms(Tree, AtomName) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of

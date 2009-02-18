@@ -21,30 +21,30 @@
 %% =============================================================================================
 -module(refac_new_fun).
 
--export([fun_extraction/4, fun_extraction_eclipse/4]).
--export([side_cond_analysis/4, vars_to_export/4]).
+-export([fun_extraction/5, fun_extraction_eclipse/5]).
+%% -export([side_cond_analysis/4, vars_to_export/4]).
 
 -include("../hrl/wrangler.hrl").
 %% =============================================================================================
 %% @spec new_fun(FileName::filename(), Start::Pos, End::Pos, NewFunName::string())-> term()
 %%         
--spec(fun_extraction/4::(filename(), pos(), pos(), string()) ->
-	      {'error', string()} | {'ok', string()}).
-fun_extraction(FileName, Start, End, NewFunName) ->
-    fun_extraction(FileName, Start, End, NewFunName, emacs).
+%%-spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
+%%	      {error, string()} | {ok, string()}).
+fun_extraction(FileName, Start, End, NewFunName, TabWidth) ->
+    fun_extraction(FileName, Start, End, NewFunName, TabWidth, emacs).
 
--spec(fun_extraction_eclipse/4::(filename(), pos(), pos(), string()) ->
-	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
-fun_extraction_eclipse(FileName, Start, End, NewFunName) ->
-    fun_extraction(FileName, Start, End, NewFunName, eclipse).
+%%-spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(), integer()) ->
+%%	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
+fun_extraction_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
+    fun_extraction(FileName, Start, End, NewFunName, TabWidth, eclipse).
 
 
-fun_extraction(FileName, Start, End, NewFunName,Editor) ->
-    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, ~p, ~p, ~p).\n", [?MODULE,FileName, Start, End, NewFunName]),
+fun_extraction(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName,TabWidth,Editor) ->
+    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n", [?MODULE,FileName, Line, Col, Line1, Col1, NewFunName, TabWidth]),
     case refac_util:is_fun_name(NewFunName) of 
 	true ->
-	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, []),
-	    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End) of 
+	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, [], TabWidth),
+	    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End, TabWidth) of 
 		[] -> {error, "You have not selected an expression!"};
 		ExpList ->
 		    {ok,Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
@@ -66,7 +66,7 @@ fun_extraction(FileName, Start, End, NewFunName,Editor) ->
 		    end
 	    end;
 	false  -> {error, "Invalid function name!"}
-    end.  
+    end. 
 
 side_cond_analysis(Info, Fun, ExpList, NewFunName) ->
     FrBdVars = lists:map(fun(E)-> envs_bounds_frees(E) end, ExpList),

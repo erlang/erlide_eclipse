@@ -22,27 +22,27 @@
 %% TOADD: functionalities to check OTP behaviours.
 -module(refac_rename_process).
 
--export([rename_process/5, rename_process_eclipse/5, rename_process_1/4, rename_process_1_eclipse/4]).
+-export([rename_process/6, rename_process_eclipse/6, rename_process_1/5, rename_process_1_eclipse/5]).
 
 -include("../hrl/wrangler.hrl").
 
--spec(rename_process/5::(string(), integer(), integer(), string(), [dir()]) ->
-	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
-rename_process(FileName, Line, Col, NewName, SearchPaths) ->
-    rename_process(FileName, Line, Col, NewName, SearchPaths, emacs).
+%%-spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
+rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
+    rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_process_eclipse/5::(string(), integer(), integer(), string(), [dir()]) ->
-	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
-rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths) ->
-    rename_process(FileName, Line, Col, NewName, SearchPaths, eclipse).
+%%-spec(rename_process_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
+rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
+    rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
 
-rename_process(FileName, Line, Col, NewName, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:rename_process( ~p, ~p, ~p, ~p,~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths]),
+rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:rename_process( ~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths, TabWidth]),
     case is_process_name(NewName) of
       true ->
-	    _Res = refac_annotate_pid:ann_pid_info(SearchPaths),  %%TODO: check whether asts are already annotated.
-	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths), %% TODO: rename to get_ast.
+	    _Res = refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),  %%TODO: check whether asts are already annotated.
+	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth), %% TODO: rename to get_ast.
 	    NewProcessName = list_to_atom(NewName),
 	    case pos_to_process_name(AnnAST, {Line, Col}) of
 		{ok, ProcessName} ->
@@ -50,8 +50,8 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, Editor) ->
 			       true ->
 				  case pre_cond_check(NewProcessName,SearchPaths) of 
 				      ok ->
-					  Results = do_rename_process(FileName, AnnAST,  ProcessName, NewProcessName, SearchPaths),
-					  check_atoms(FileName, ProcessName, SearchPaths),
+					  Results = do_rename_process(FileName, AnnAST,  ProcessName, NewProcessName, SearchPaths, TabWidth),
+					  check_atoms(FileName, ProcessName, SearchPaths, TabWidth),
 					  case Editor of 
 					      emacs ->
 						  refac_util:write_refactored_files(Results),
@@ -74,21 +74,21 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, Editor) ->
 	false -> {error, "Invalid new process name."}
     end.
 
--spec(rename_process_1/4::(string(), string(), string(), [dir()]) -> {ok, [filename()]}).
-rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths) ->
-    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, emacs).
+%%-spec(rename_process_1/5::(string(), string(), string(), [dir()], integer()) -> {ok, [filename()]}).
+rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
+    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, emacs).
 
--spec(rename_process_1_eclipse/4::(string(), string(), string(), [dir()]) -> {ok, [{filename(), filename(), string()}]}).
-rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths) ->
-    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, eclipse).
+%%-spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
+    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, eclipse).
 
--spec(rename_process_1/5::(string(), string(), string(), [dir()], editor()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
-rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, Editor) ->
+%%-spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), editor()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
+rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWidth, Editor) ->
     OldProcessName = list_to_atom(OldProcessName1),
     NewProcessName = list_to_atom(NewProcessName1),
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
-    Results = do_rename_process(FileName, AnnAST, OldProcessName, NewProcessName, SearchPaths),
-    check_atoms(FileName, OldProcessName, SearchPaths),
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    Results = do_rename_process(FileName, AnnAST, OldProcessName, NewProcessName, SearchPaths, TabWidth),
+    check_atoms(FileName, OldProcessName, SearchPaths, TabWidth),
     case Editor of 
 	emacs ->
 	    refac_util:write_refactored_files(Results),
@@ -106,7 +106,7 @@ pos_to_process_name(Node, Pos) ->
     case refac_util:once_tdTU(fun pos_to_process_name_1/2, Node, Pos) of
       {_, false} -> {error, "Wrangler could not infer that the atom selected represents a process name!"};
       {R, true} -> {ok, R}
-    end. 
+    end.
 
 pos_to_process_name_1(Node, Pos) ->
     As = refac_syntax:get_ann(Node),
@@ -210,23 +210,23 @@ evaluate_expr(Files, ModName, AnnAST, FunDef, Expr) ->
     Values = lists:map(F, Exprs),
     Values.
 
-do_rename_process(CurrentFileName, AnnAST, OldProcessName, NewProcessName, SearchPaths) ->
+do_rename_process(CurrentFileName, AnnAST, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     {AnnAST1, _Changed} = refac_util:stop_tdTP(fun do_rename_process/2, AnnAST, {OldProcessName, NewProcessName}),
     OtherFiles = refac_util:expand_files(SearchPaths, ".erl") -- [CurrentFileName],
-    Results = do_rename_process_in_other_modules(OtherFiles, OldProcessName, NewProcessName, SearchPaths),
+    Results = do_rename_process_in_other_modules(OtherFiles, OldProcessName, NewProcessName, SearchPaths, TabWidth),
     [{{CurrentFileName, CurrentFileName}, AnnAST1} | Results].
 
-do_rename_process_in_other_modules(Files, OldProcessName, NewProcessName, SearchPaths) ->
+do_rename_process_in_other_modules(Files, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     case Files of 
 	[] ->
 	    [];
 	[F |Fs] ->
 	     ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(F, true, SearchPaths),
+	    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
 	    {AnnAST1, Changed} = do_rename_process(AnnAST, {OldProcessName, NewProcessName}),
 	    if Changed ->
-		    [{{F, F}, AnnAST1} | do_rename_process_in_other_modules(Fs, OldProcessName, NewProcessName, SearchPaths)];
-		true -> do_rename_process_in_other_modules(Fs, OldProcessName, NewProcessName, SearchPaths)
+		    [{{F, F}, AnnAST1} | do_rename_process_in_other_modules(Fs, OldProcessName, NewProcessName, SearchPaths, TabWidth)];
+		true -> do_rename_process_in_other_modules(Fs, OldProcessName, NewProcessName, SearchPaths, TabWidth)
 	    end
     end.
     
@@ -268,8 +268,8 @@ stop_tdTU_1(Function, S, Node) ->
 	  end
     end.
 
-check_atoms(CurrentFile, AtomName, SearchPaths) ->
-    Atoms = collect_atoms(CurrentFile, AtomName, SearchPaths),
+check_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
+    Atoms = collect_atoms(CurrentFile, AtomName, SearchPaths, TabWidth),
     case Atoms of 
 	[] ->
 	    ok;
@@ -279,15 +279,15 @@ check_atoms(CurrentFile, AtomName, SearchPaths) ->
 				      ?wrangler_io("Location: module:~p, {line,col}:~p\n", [M,Pos]) end, Atoms)
     end.
     
-collect_atoms(CurrentFile, AtomName, SearchPaths) ->
+collect_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
     Files = [CurrentFile|(refac_util:expand_files(SearchPaths, ".erl")--[CurrentFile])],
     Res=lists:flatmap(fun(F) ->
-			  collect_atoms(F, SearchPaths) end, Files),
+			  collect_atoms(F, SearchPaths, TabWidth) end, Files),
     lists:filter(fun({_F, _Pos, Name}) ->
 			    Name == AtomName end, Res).
     
-collect_atoms(File, SearchPaths)->
-    {ok, {AnnAST,Info}} = refac_util:parse_annotate_file(File, true, SearchPaths),     
+collect_atoms(File, SearchPaths, TabWidth)->
+    {ok, {AnnAST,Info}} = refac_util:parse_annotate_file(File, true, SearchPaths, TabWidth),     
     {value, {module, ModName}}= lists:keysearch(module,1, Info),
     F= fun(Node, S) ->
 	       case refac_syntax:type(Node) of

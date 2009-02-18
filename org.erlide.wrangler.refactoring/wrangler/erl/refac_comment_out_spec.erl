@@ -32,8 +32,8 @@ comment_out_spec_type_1(FileName, SearchPaths) ->
     io:format("Current file being processed:\n~p\n", [FileName]),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName,  true, SearchPaths),
     Fs = refac_syntax:form_list_elements(AnnAST), 
-     Str = vertical_concat(Fs,  ""),
-     file:write_file(FileName, list_to_binary(Str)).
+	Str = vertical_concat(Fs,  ""),
+	file:write_file(FileName, list_to_binary(Str)).
 
 
 vertical_concat([], Acc) -> Acc;

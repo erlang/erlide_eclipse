@@ -216,11 +216,11 @@ get_ctxt_precedence(Ctxt) -> Ctxt#ctxt.prec.
 set_ctxt_precedence(Ctxt,Prec) -> set_prec(Ctxt,Prec).
 
 set_prec(Ctxt,Prec) ->
-    Ctxt#ctxt{prec = Prec}.    % used internally
+    Ctxt#ctxt{prec = Prec}.   % used internally
 
 
 reset_prec(Ctxt) ->
-    set_prec(Ctxt,0).    % used internally
+    set_prec(Ctxt,0).   % used internally
 
 
 %% @spec (context()) -> integer()

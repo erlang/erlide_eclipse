@@ -23,23 +23,21 @@
 %% =============================================================================
 -module(refac_tuple_to_record).
 
--export([tuple_to_record/8]).
+-export([tuple_to_record/9]).
 
--export([tuple_to_record_eclipse/8]).
+-export([tuple_to_record_eclipse/9]).
 
 -include("../hrl/wrangler.hrl").
 
--spec(tuple_to_record/8::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()]) ->
-	     {error, string()} | {ok, [filename()]}).
-tuple_to_record(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths)->
-  tuple_to_record(File, FLine, FCol, LLine, LCol, 
-                RecName, FieldString, SearchPaths, emacs).
+%%-spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
+tuple_to_record(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth )->
+  tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth,  emacs).
 
--spec(tuple_to_record_eclipse/8::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()]) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-tuple_to_record_eclipse(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths)->
-  tuple_to_record(File, FLine, FCol, LLine, LCol, 
-                RecName, FieldString, SearchPaths, eclipse).
+%%-spec(tuple_to_record_eclipse/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+tuple_to_record_eclipse(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth)->
+  tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth, eclipse).
 
 %% =====================================================================
 %% @spec tuple_to_record(File::string(),FLine::integer(),FCol::integer(),
@@ -49,14 +47,14 @@ tuple_to_record_eclipse(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPat
 %% @end
 %% =====================================================================
 tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString,
-		SearchPaths, Editor) ->
+		SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\n[CMD: ~p:tuple_to_record(~p,~p,~p,~p,~p,~p,"
 	      "~n ~p,~n ~p). \n \n",
 	      [?MODULE, File, FLine, FCol, LLine, LCol, RecName, FieldString,
 	       SearchPaths]),
     FieldList = convert_record_names(FieldString),
     check_if_correct_names(RecName, FieldList),
-    {ok, {AnnAST, Info}} = parse_file(File, SearchPaths),
+    {ok, {AnnAST, Info}} = parse_file(File, SearchPaths, TabWidth),
     {Node, Tuple, Type} = check_pos(AnnAST, {FLine, FCol}, {LLine, LCol}),
     N = tuple_pos(Node, Tuple, Type),
     check_record_field_number(Tuple, FieldList),
@@ -74,7 +72,7 @@ tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString,
 		    [SearchPaths]),
 	  ClientFiles = refac_util:get_client_files(File, SearchPaths),
 	  Results = tuple_to_record_in_client_modules(ClientFiles, FunName, Arity, DefMod,
-						      N, RecName, FieldList),
+						      N, RecName, FieldList, TabWidth),
 	  case Editor of
 	    emacs ->
 		refac_util:write_refactored_files([{{File, File}, AnnAST1} | Results]),
@@ -159,7 +157,7 @@ check_if_correct_names(RecName, FieldList)->
                     true -> ok;
                     _ -> throw({error, "Not a legal record field name!"})
                   end
-                end, FieldList). 
+                end, FieldList).
 
 %% =====================================================================
 %% @spec parse_file(FileName::string(), SearchPaths::[string()])  
@@ -170,8 +168,8 @@ check_if_correct_names(RecName, FieldList)->
 %%
 %% @end
 %% =====================================================================
-parse_file(FileName, SearchPaths)->
-  refac_util:parse_annotate_file(FileName, true, SearchPaths).
+parse_file(FileName, SearchPaths, TabWidth)->
+  refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth).
  
 
 
@@ -1028,20 +1026,19 @@ insert_record(AnnAST, RecName, FieldList)->
 %% 
 %% @end
 %% =====================================================================
-tuple_to_record_in_client_modules(Files, Name, Arity, Mod, N, 
-                                  RecName, FieldList)->
-  case Files of
-    [] -> [];
-    [F | Fs] ->
-	  ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	  {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(F, true, []),
-          ExistingRec = check_record_name_exists(Info, RecName),
-	  AnnAST1 = tuple_record(AnnAST, ExistingRec, RecName, FieldList, 
-                                 Name, Arity, Mod, N),
-          [{{F, F}, AnnAST1} | 
-	   tuple_to_record_in_client_modules(Fs,Name,Arity,Mod,N,
-					     RecName,FieldList)]
-  end.
+tuple_to_record_in_client_modules(Files, Name, Arity, Mod, N, RecName, FieldList, TabWidth)->
+	case Files of
+	  [] -> [];
+	  [F | Fs] ->
+			?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
+			{ok, {AnnAST, Info}} =refac_util:parse_annotate_file(F, true, [], TabWidth),
+			ExistingRec = check_record_name_exists(Info, RecName),
+			AnnAST1 = tuple_record(AnnAST, ExistingRec, RecName, FieldList, 
+								   Name, Arity, Mod, N),
+			[{{F, F}, AnnAST1} | 
+			 tuple_to_record_in_client_modules(Fs,Name,Arity,Mod,N,
+											   RecName,FieldList, TabWidth)]
+	end.
 
 
 %% =====================================================================

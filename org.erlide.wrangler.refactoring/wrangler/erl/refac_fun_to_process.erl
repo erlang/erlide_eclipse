@@ -21,7 +21,7 @@
 
 -module(refac_fun_to_process).
 
--export([fun_to_process/5, fun_to_process_eclipse/5, fun_to_process_1/5, fun_to_process_1_eclipse/5]).
+-export([fun_to_process/6, fun_to_process_eclipse/6, fun_to_process_1/6, fun_to_process_1_eclipse/6]).
 
 -include("../hrl/wrangler.hrl").
 
@@ -29,26 +29,26 @@
 %% =====================================================================
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
 %%
--spec(fun_to_process/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [filename()]} |{undecidables, string()}| {error, string()}).	     
-fun_to_process(FName, Line, Col, ProcessName, SearchPaths) ->
-    fun_to_process(FName, Line, Col, ProcessName, SearchPaths, emacs).
+%%-spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]} |{undecidables, string()}| {error, string()}).     
+fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
+    fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
 
--spec(fun_to_process_1/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [filename()]}).	     
-fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths) ->
-    fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, emacs).
+%%-spec(fun_to_process_1/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]}).     
+fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
+    fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
--spec(fun_to_process_eclipse/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [{filename(), filename(), string()}]} | 
-											     {undecidables, string()} | {error, string()}).
-fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths) ->
-    fun_to_process(FName, Line, Col, ProcessName, SearchPaths, eclipse).
+%%-spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]} | 
+%%											     {undecidables, string()} | {error, string()}).
+fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
+    fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 
-fun_to_process(FName, Line, Col, ProcessName, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fun_to_process(~p, ~p, ~p, ~p,~p)\n",  [?MODULE, FName,  Line, Col, ProcessName, SearchPaths]),
+fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:fun_to_process(~p, ~p, ~p, ~p,~p, ~p)\n",  [?MODULE, FName,  Line, Col, ProcessName, SearchPaths, TabWidth]),
     case is_process_name(ProcessName) of
 	true ->
-	    _Res =refac_annotate_pid:ann_pid_info(SearchPaths),
-	    {ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths), 
+	    _Res =refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),
+	    {ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
 	    {value, {module, ModName}} = lists:keysearch(module, 1, Info),
 	    ProcessName1 = list_to_atom(ProcessName), 
 	    case refac_util:pos_to_fun_name(AnnAST, {Line,Col}) of
@@ -96,12 +96,12 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, Editor) ->
 	false -> {error, "Invalid process name."}
     end.
 
--spec(fun_to_process_1_eclipse/5::(filename(), integer(), integer(), string(), [dir()]) -> {ok, [{filename(), filename(), string()}]}).
-fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths) ->
-    fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, eclipse).
+%%-spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
+    fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 
-fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, Editor) ->
-    {ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths), 
+fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
+    {ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
     ProcessName1 = list_to_atom(ProcessName), 
     {ok, {ModName, FunName, Arity, _, DefinePos}}=refac_util:pos_to_fun_name(AnnAST, {Line,Col}),
@@ -291,102 +291,105 @@ fun_call_to_rpc(Node, {ModName, FunName, Arity, ProcessName, RpcFunName}) ->
 		     {Node1, true};
 	application ->
 	    Op = refac_syntax:application_operator(Node),
-	    Ann = refac_syntax:get_ann(Op),
-	    Arguments = refac_syntax:application_arguments(Node),
-	    {value, {fun_def, {Mod, F, A, _, _}}} = lists:keysearch(fun_def,1, Ann), %% any failure cases?
-	    case {Mod, F, A} of 
-		{ModName, FunName, Arity} ->
-		    Op1 =  refac_syntax:atom(RpcFunName),
-		    Arg1 = refac_syntax:atom(ProcessName),
-		    Arg2 =  refac_syntax:tuple(Arguments),			   			       
-		    Node1 = refac_syntax:application(Op1, [Arg1, Arg2]),
-		    {Node1, true};
-		{erlang, apply, 2} ->
-		    Arg1 = lists:nth(1, Arguments),
-		    Arg2 = lists:nth(2, Arguments),
-		    case refac_syntax:type(Arg1) of 
-			implicit_fun ->
-			    Name = refac_syntax:implicit_fun_name(Arg1),
-			    B1 = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
-			    A1 = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
-			    case {B1, A1} of 
-				{FunName, Arity} ->
-				    F2 = refac_syntax:implicit_fun(refac_syntax:atom(RpcFunName), refac_syntax:integer(2)),
-				    P = refac_syntax:atom(ProcessName),
-				    T2 = case refac_syntax:type(Arg2) of 
-					     list -> refac_syntax:tuple(refac_syntax:list_elements(Arg2));
-					     _  -> refac_syntax:application(refac_syntax:atom(list_to_tuple), [Arg2])						   
-					 end,
-				    T3 = refac_syntax:list([P, T2]),
-				    {refac_syntax:copy_attrs(Node, refac_syntax:application
-											  (Op, [F2,T3])), true};
-				
+	    case refac_syntax:type(Op) of 
+		atom ->
+		    Ann = refac_syntax:get_ann(Op),
+		    Arguments = refac_syntax:application_arguments(Node),
+		    {value, {fun_def, {Mod, F, A, _, _}}} = lists:keysearch(fun_def,1, Ann), 
+		    case {Mod, F, A} of 
+			{ModName, FunName, Arity} ->
+			    Op1 =  refac_syntax:atom(RpcFunName),
+			    Arg1 = refac_syntax:atom(ProcessName),
+			    Arg2 =  refac_syntax:tuple(Arguments),			   			       
+			    Node1 = refac_syntax:application(Op1, [Arg1, Arg2]),
+			    {Node1, true};
+			{erlang, apply, 2} ->
+			    Arg1 = lists:nth(1, Arguments),
+			    Arg2 = lists:nth(2, Arguments),
+			    case refac_syntax:type(Arg1) of 
+				implicit_fun ->
+				    Name = refac_syntax:implicit_fun_name(Arg1),
+				    B1 = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
+				    A1 = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
+				    case {B1, A1} of 
+					{FunName, Arity} ->
+					    F2 = refac_syntax:implicit_fun(refac_syntax:atom(RpcFunName), refac_syntax:integer(2)),
+					    P = refac_syntax:atom(ProcessName),
+					    T2 = case refac_syntax:type(Arg2) of 
+						     list -> refac_syntax:tuple(refac_syntax:list_elements(Arg2));
+						     _  -> refac_syntax:application(refac_syntax:atom(list_to_tuple), [Arg2])						   
+						 end,
+					    T3 = refac_syntax:list([P, T2]),
+					    {refac_syntax:copy_attrs(Node, refac_syntax:application
+								     (Op, [F2,T3])), true};
+					
+				_ -> {Node, false}
+				    end;
 				_ -> {Node, false}
 			    end;
-			_ -> {Node, false}
-		       end;
-		  {erlang, apply, 3} ->
-		      [Mod1,Fun1,Args1] = Arguments,
-		      Mod2 = refac_util:try_evaluation([refac_syntax:revert(Mod1)]),  %% TODO: add backward slicing.
-		      Fun2 = refac_util:try_evaluation([refac_syntax:revert(Fun1)]),
-		      Pos = refac_syntax:get_pos(Node),
-		      case Fun2 of 
-			  {value, FunName} ->
-			      case Mod2 of 
-				  {value,ModName} ->
-				      case refac_syntax:type(Args1) of 
-					  list ->
-					      case refac_syntax:list_length(Args1) of 
-						  Arity ->
-						      Op1 =  refac_syntax:atom(RpcFunName),
-						      Arg1 = refac_syntax:atom(ProcessName),
-						      Arg2 =  refac_syntax:tuple(refac_syntax:list_elements(Args1)),			   			       
-						      Node1 = refac_syntax:application(Op1, [Arg1, Arg2]),
-						      {Node1, true};
-						  _ -> {Node, true}
-					      end;
-					  _ -> Message(Pos),
-					       {Node, true}
-				      end;
-				  {value, _}-> {Node, true};
-				  {error, _Reason} -> case refac_syntax:type(Args1) of 
-							  list -> case refac_syntax:list_length(Args1) of 
-								      Arity -> Message(Pos),
-									       {Node, true};
-								      _ -> {Node, true}
-								  end;
-							  _ -> Message(Pos),
-							       {Node, true}
-						      end
-			      end;
-			  {value, _} -> {Node, true};
-			  {error, _Reason} ->  
-			      case Mod2 of 
-				  {value, ModName} ->
-				      case refac_syntax:type(Args1) of 
-					  list -> case refac_syntax:list_length(Args1) of 
-						      Arity -> Message(Pos),
-							       {Node, true};
-						      _ -> {Node, true}
-						  end;
-					  _ -> Message(Pos),
-					       {Node, true}
-				      end;
-				  {value, _} -> {Node, true};
-				  {error, _Reason} -> case refac_syntax:type(Args1) of 
-							  list-> case refac_syntax:list_length(Args1) of 
-								     Arity -> Message(Pos),
-									      {Node, true};
-								     _ -> {Node, true}
-								 end;
-							  _  -> Message(Pos),
-								{Node, true}
-						      end
-			      end
-		      end;     
- 
-		_ ->
-		    {Node, false}
+			{erlang, apply, 3} ->
+			    [Mod1,Fun1,Args1] = Arguments,
+			    Mod2 = refac_util:try_evaluation([refac_syntax:revert(Mod1)]),  %% TODO: add backward slicing.
+			    Fun2 = refac_util:try_evaluation([refac_syntax:revert(Fun1)]),
+			    Pos = refac_syntax:get_pos(Node),
+			    case Fun2 of 
+				{value, FunName} ->
+				    case Mod2 of 
+					{value,ModName} ->
+					    case refac_syntax:type(Args1) of 
+						list ->
+						    case refac_syntax:list_length(Args1) of 
+							Arity ->
+							    Op1 =  refac_syntax:atom(RpcFunName),
+							    Arg1 = refac_syntax:atom(ProcessName),
+							    Arg2 =  refac_syntax:tuple(refac_syntax:list_elements(Args1)),			   			       
+							    Node1 = refac_syntax:application(Op1, [Arg1, Arg2]),
+							    {Node1, true};
+							_ -> {Node, true}
+						    end;
+						_ -> Message(Pos),
+						     {Node, true}
+					    end;
+					{value, _}-> {Node, true};
+					{error, _Reason} -> case refac_syntax:type(Args1) of 
+								list -> case refac_syntax:list_length(Args1) of 
+									    Arity -> Message(Pos),
+										     {Node, true};
+									    _ -> {Node, true}
+									end;
+								_ -> Message(Pos),
+								     {Node, true}
+							    end
+				    end;
+				{value, _} -> {Node, true};
+				{error, _Reason} ->  
+				    case Mod2 of 
+					{value, ModName} ->
+					    case refac_syntax:type(Args1) of 
+						list -> case refac_syntax:list_length(Args1) of 
+							    Arity -> Message(Pos),
+								     {Node, true};
+							    _ -> {Node, true}
+							end;
+						_ -> Message(Pos),
+						     {Node, true}
+					    end;
+					{value, _} -> {Node, true};
+					{error, _Reason} -> case refac_syntax:type(Args1) of 
+								list-> case refac_syntax:list_length(Args1) of 
+									   Arity -> Message(Pos),
+										    {Node, true};
+									   _ -> {Node, true}
+								       end;
+								_  -> Message(Pos),
+								      {Node, true}
+							    end
+				    end
+			    end;     
+			_ ->
+			    {Node, false}
+		    end;
+		_ -> {Node, false}
 	    end;
 	_ ->{Node, false}
     end.
@@ -404,20 +407,7 @@ new_fun_name(BaseName, Arity, Index, InScopeFuns) ->
 	    
     
 rpc_fun(NewFunName, RpcFunName) ->
-    RpcFun=atom_to_list(RpcFunName)++"(RegName, Request) ->
-                           Fun = fun() ->
-                                    try register(RegName, self())
-                                    catch 
-                                         true ->
-                                               "++atom_to_list(NewFunName)++"();
-                                         error:_-> already_running
-                                    end
-                                 end,
-                            spawn(Fun),
-                            RegName ! {self(), Request},
-		            receive
-				  {RegName, Response} -> Response
-			    end.",
+    RpcFun=atom_to_list(RpcFunName)++"(RegName, Request) ->\n                           Fun = fun() ->\n                                    try register(RegName, self())\n                                    catch \n                                         true ->\n                                               "++atom_to_list(NewFunName)++"();\n                                         error:_-> already_running\n                                    end\n                                 end,\n                            spawn(Fun),\n                            RegName ! {self(), Request},\n\t\t            receive\n\t\t\t\t  {RegName, Response} -> Response\n\t\t\t    end.",
     {ok, Toks, _} = refac_scan:string(RpcFun),
     {ok, Form} =erl_parse:parse_form(Toks),
     FunDef= hd(refac_syntax:form_list_elements(refac_recomment:recomment_forms([Form], []))),

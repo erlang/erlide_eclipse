@@ -7,8 +7,8 @@
 
 -include("../hrl/wrangler.hrl").
 
--spec(build/1::([{atom(), [dir()]|[atom()]}]) ->
-	     #options{}).
+%%-spec(build/1::([{atom(), [dir()]|[atom()]}]) ->
+%%	     #options{}).
 build(Opts) ->
   build_options(Opts, #options{}).
 

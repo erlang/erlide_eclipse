@@ -36,7 +36,7 @@
 
 -module(refac_rename_mod).
 
--export([rename_mod/3, rename_mod_eclipse/3]).
+-export([rename_mod/4, rename_mod_eclipse/4]).
 
 -import(refac_rename_fun, [check_atoms/2]).
 
@@ -45,20 +45,20 @@
 %% @spec rename_mod(FileName::filename(), NewName::string(), SearchPaths::[string()])-> term()
 %%   
 
--spec(rename_mod/3::(filename(), string(), [dir()]) -> {error, string()} | {ok, [filename()]}).	     
-rename_mod(FileName, NewName, SearchPaths) ->
-    rename_mod(FileName, NewName, SearchPaths, emacs).
+%%-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).     
+rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
+    rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_mod_eclipse/3::(filename(), string(), [dir()]) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-rename_mod_eclipse(FileName, NewName, SearchPaths) ->
-    rename_mod(FileName, NewName, SearchPaths, eclipse).
+%%-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
+    rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
-rename_mod(FileName, NewName,SearchPaths, Editor) ->
+rename_mod(FileName, NewName,SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p).\n", [?MODULE, FileName, NewName, SearchPaths]),
     case refac_util:is_fun_name(NewName) of   %% module name and function name follow the same rules.
       true ->
-          {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, SearchPaths),
+          {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
 	    case get_module_name(Info) of 
 		{ok, OldModName} ->
 		    NewModName = list_to_atom(NewName),
@@ -73,7 +73,7 @@ rename_mod(FileName, NewName,SearchPaths, Editor) ->
 				    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n",[SearchPaths]),
 				    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
 				    Results = rename_mod_in_client_modules(ClientFiles, 
-									   OldModName, NewModName,SearchPaths),
+									   OldModName, NewModName,SearchPaths, TabWidth),
 				    case Editor of 
 					emacs ->
 					    refac_util:write_refactored_files([{{FileName, NewFileName}, AnnAST1}|Results]),
@@ -170,18 +170,18 @@ do_rename_mod(Tree, {OldModName, NewModName}) ->
 	    end;
 	_ -> {Tree, false}
     end.
-rename_mod_in_client_modules(Files, OldModName, NewModName, SearchPaths) ->
+rename_mod_in_client_modules(Files, OldModName, NewModName, SearchPaths, TabWidth) ->
     case Files of 
         [] -> [];
         [F|Fs] ->  ?wrangler_io("The current file under refactoring is:\n~p\n",[F]), 
-                   {ok, {AnnAST, _Info}}= refac_util:parse_annotate_file(F,true, SearchPaths),
+                   {ok, {AnnAST, _Info}}= refac_util:parse_annotate_file(F,true, SearchPaths, TabWidth),
 		   {AnnAST1, Changed} = rename_mod_in_client_module_1(AnnAST, OldModName, NewModName),
 		   check_atoms(AnnAST1, OldModName),
 		   if Changed ->
-			   [{{F,F}, AnnAST1}|rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths)];
-		      true -> rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths)
+			   [{{F,F}, AnnAST1}|rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths, TabWidth)];
+		      true -> rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths, TabWidth)
 		   end
-	end.    
+	end.   
 
 rename_mod_in_client_module_1(Tree, OldModName, NewModName) ->
     refac_util:stop_tdTP(fun do_rename_mod/2, Tree, {OldModName, NewModName}).

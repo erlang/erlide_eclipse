@@ -34,7 +34,7 @@
 %% API
 %%====================================================================
 
--spec(start_callgraph_server/0::() -> {ok, pid()} | ignore | {error, string()}).
+%%-spec(start_callgraph_server/0::() -> {ok, pid()} | ignore | {error, string()}).
 start_callgraph_server() ->
     gen_server:start_link({local, wrangler_callgraph_server}, ?MODULE, [], []).
 
@@ -49,7 +49,7 @@ start_callgraph_server() ->
 %%                         {stop, Reason}
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
--spec(init/1::(any()) ->{ok, #state{}}).
+%%-spec(init/1::(any()) ->{ok, #state{}}).
 init(_Args) ->
     process_flag(trap_exit, true),
     {ok, #state{}}.
@@ -63,8 +63,8 @@ init(_Args) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
--spec(handle_call/3::({atom(), [dir()]}, any(), #state{}) ->
-	     {reply, #callgraph{}, #state{}}).
+%%-spec(handle_call/3::({atom(), [dir()]}, any(), #state{}) ->
+%%	     {reply, #callgraph{}, #state{}}).
 handle_call({get, SearchPaths}, _From, State) ->
     {Reply, State1} = get_callgraph(SearchPaths, State),
     {reply, Reply, State1};
@@ -78,8 +78,8 @@ handle_call({get_fun_sccs, MFA, SearchPaths}, _From, State) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
--spec(handle_cast/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+%%-spec(handle_cast/2::(any(), #state{}) ->
+%%	      {noreply, #state{}}).
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
@@ -89,8 +89,8 @@ handle_cast(_Msg, State) ->
 %%                                       {stop, Reason, State}
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
--spec(handle_info/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+%%-spec(handle_info/2::(any(), #state{}) ->
+%%	      {noreply, #state{}}).
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -101,7 +101,7 @@ handle_info(_Info, State) ->
 %% cleaning up. When it returns, the gen_server terminates with Reason.
 %% The return value is ignored.
 %%--------------------------------------------------------------------
--spec(terminate/2::(any(), #state{}) -> ok).
+%%-spec(terminate/2::(any(), #state{}) -> ok).
 terminate(_Reason, _State) ->
     ok.
 
@@ -109,17 +109,17 @@ terminate(_Reason, _State) ->
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
 %% Description: Convert process state when code is changed
 %%--------------------------------------------------------------------
--spec(code_change/3::(any(), #state{}, any()) ->
-	      {ok, #state{}}).
+%%-spec(code_change/3::(any(), #state{}, any()) ->
+%%	      {ok, #state{}}).
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
--spec(get_callgraph/1::([dir()])-> #callgraph{}).
+%%-spec(get_callgraph/1::([dir()])-> #callgraph{}).
 get_callgraph(SearchPaths) ->
     gen_server:call(wrangler_callgraph_server, {get, SearchPaths}, infinity).
 
--spec(get_sccs_including_fun/2::({modulename(),functionname(), arity()}, [dir()]) -> scc_order()).
+%%-spec(get_sccs_including_fun/2::({modulename(),functionname(), arity()}, [dir()]) -> scc_order()).
 get_sccs_including_fun({M, F, A}, SearchPaths) ->    
     gen_server:call(wrangler_callgraph_server, {get_fun_sccs, {M,F, A}, SearchPaths}).
 
@@ -127,7 +127,7 @@ get_sccs_including_fun({M, F, A}, SearchPaths) ->
 %%% Internal functions
 %%--------------------------------------------------------------------
 
-%% Currently the State is not used because I feel it takes too much space;
+%% Currently the State is not used because  it takes too much space;
 %% Todo: find out a way to improve this.
 get_callgraph(SearchPaths, State) ->
     CallGraph = refac_util:build_scc_callgraph(SearchPaths),

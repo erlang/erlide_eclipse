@@ -25,7 +25,7 @@
 
 -module(refac_new_macro).
 
--export([new_macro/5, new_macro_eclipse/5]).
+-export([new_macro/6, new_macro_eclipse/6]).
 
 -export([replace_expr_with_macro/3]).
 
@@ -33,43 +33,43 @@
 
 %% =============================================================================================
 
--spec(new_macro/5::(filename(), pos(), pos(), string(), [dir()]) ->
-	      {error, string()} | {ok, string()}).
-new_macro(FileName, Start, End, NewMacroName, SearchPaths) ->
-    new_macro(FileName, Start, End, NewMacroName, SearchPaths, emacs).
+%%-spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%	      {error, string()} | {ok, string()}).
+new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
+    new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, emacs).
 
--spec(new_macro_eclipse/5::(filename(), pos(), pos(), string(), [dir()]) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths) ->
-    new_macro(FileName, Start, End, NewMacroName, SearchPaths, eclipse).
-
-
-new_macro(FileName, Start={SLine, SCol}, End={ELine, ECol}, NewMacroName, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:new_macro(~p, {~p,~p}, {~p,~p}, ~p).\n", 
-		 [refac_new_macro, FileName, SLine, SCol, ELine, ECol, NewMacroName]),
-     case pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths) of
-	{ok, AnnAST, Sel} ->
-	    AnnAST1 = do_intro_new_macro(AnnAST, NewMacroName, Sel),
-	    case Editor of
-		emacs ->
-		    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),
-		    {ok, "Refactor succeeded"};
-		eclipse -> Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}], {ok, Res}
-	    end;
-	{error, Reason} -> {error, Reason}
-    end.
+%%-spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
+    new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, eclipse).
 
 
-pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths) ->    
+new_macro(FileName, Start={SLine, SCol}, End={ELine, ECol}, NewMacroName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:new_macro(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n", 
+				 [refac_new_macro, FileName, SLine, SCol, ELine, ECol, NewMacroName, SearchPaths, TabWidth]),
+     case pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths, TabWidth) of
+		 {ok, AnnAST, Sel} ->
+			 AnnAST1 = do_intro_new_macro(AnnAST, NewMacroName, Sel),
+			 case Editor of
+				 emacs ->
+					 refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),
+					 {ok, "Refactor succeeded"};
+				 eclipse -> Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}], {ok, Res}
+			 end;
+		 {error, Reason} -> {error, Reason}
+	 end.
+
+
+pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths, TabWidth) ->    
     case refac_util:is_fun_name(NewMacroName) orelse refac_util:is_var_name(NewMacroName) of 
 	true ->
-	    Ms = existing_macros(FileName, SearchPaths),
+	    Ms = existing_macros(FileName, SearchPaths, TabWidth),
 	    case lists:member(list_to_atom(NewMacroName), Ms) of 
 		true ->
 		     {error, "Macro name provided is already in use!"};
 		_ ->
-		    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths),
-		    Sel = refac_util:pos_to_syntax_units(FileName, AnnAST, Start, End, fun is_expr_or_pat/1),
+		    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+		    Sel = refac_util:pos_to_syntax_units(FileName, AnnAST, Start, End, fun is_expr_or_pat/1, TabWidth),
 		    case Sel of
 			 [] -> {error, "You have not selected a sequence of expressions/patterns!"};
 			 _ ->
@@ -118,8 +118,8 @@ do_intro_new_macro(AnnAST, MacroName, SelExpList) ->
 
 
 
--spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
-	     syntaxTree()).
+%%-spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
+%%	     syntaxTree()).
 replace_expr_with_macro(Form, {ExpList, SLoc, ELoc},  MApp) ->
     case (length(ExpList)==1) of 
 	true ->
@@ -203,12 +203,12 @@ is_expr_or_pat(Node) ->
     refac_util:is_expr(Node) orelse refac_util:is_pattern(Node).
 
 
-existing_macros(FileName, SearchPaths) -> 
+existing_macros(FileName, SearchPaths, TabWidth) -> 
     Dir = filename:dirname(FileName),
     DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
     DefaultIncl2 = [filename:join(Dir, X) || X <-DefaultIncl1],
     NewSearchPaths= SearchPaths++DefaultIncl2,
-    case refac_epp:parse_file(FileName, NewSearchPaths, [])  of 
+    case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth)  of 
 	{ok, _, {MDefs, MUses}} -> 
 	    lists:usort(lists:map(fun({{_,Name}, _Def}) -> Name end, MDefs++MUses));	 
 	_ -> {error, "The current file does not compile!"}

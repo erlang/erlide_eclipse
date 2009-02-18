@@ -43,7 +43,7 @@
 
 -module(refac_move_fun).
 
--export([move_fun/6, move_fun_eclipse/6]).
+-export([move_fun/7, move_fun_eclipse/7]).
 
 -define(COMMENT_PREFIX, "% ").
 
@@ -53,93 +53,91 @@
 %% libary modules. 2) the undo process should remove the newly created file.
 %%  
 %% =====================================================================
--spec(move_fun/6::(filename(),integer(),integer(), string(), atom(),[dir()])
-        -> {ok, [filename()]}
-           | {error, string()}).
+%%-spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
+%%        -> {ok, [filename()]} | {error, string()}).
 
-move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths) ->
-    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, emacs).
+move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
+    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, emacs).
 
 
--spec(move_fun_eclipse/6::(filename(),integer(),integer(), string(), atom(),[dir()])
-        ->  {ok, [{filename(), filename(), string()}]}
-           | {error, string()}).
+%%-spec(move_fun_eclipse/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
+%%        ->  {ok, [{filename(), filename(), string()}]} | {error, string()}).
 
-move_fun_eclipse(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths) ->
-    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, eclipse).
+move_fun_eclipse(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
+    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, eclipse).
 
-move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, Editor) ->
-    ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p).",
-		 [?MODULE, FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths]),
+move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p, ~p).",
+		 [?MODULE, FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth]),
     TargetFName = get_target_file_name(FName, TargetModorFileName),
     case TargetFName of 
-	FName -> {error, "The target module is the same as the current module."};
-	{error, Reason} -> {error, Reason};
-	_ -> case filelib:is_file(TargetFName) orelse CreateNewFile == t orelse CreateNewFile == true of
-		 true ->
-		     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths),
-		     case refac_util:pos_to_fun_def(AnnAST, {Line, Col}) of
-			 {ok, Def} ->
-			     {value, {fun_def, {ModName, FunName, Arity, _Pos1, _Pos2}}} =
-				 lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)),
-			     case not filelib:is_file(TargetFName) andalso (CreateNewFile == t orelse CreateNewFile == true) of
-				 true -> create_new_file(TargetFName, TargetModorFileName);
-				 _ -> ok
-			     end,
-			     R = side_cond_check({ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModorFileName), Def, SearchPaths),
-			     case R of
+		FName -> {error, "The target module is the same as the current module."};
+		{error, Reason} -> {error, Reason};
+		_ -> case filelib:is_file(TargetFName) orelse CreateNewFile == t orelse CreateNewFile == true of
 				 true ->
-				     {ok, {TargetAnnAST, Info1}} = refac_util:parse_annotate_file(TargetFName, true, SearchPaths),  %% level=
-				     {AnnAST1, TargetAnnAST1} =
-					 do_transformation({AnnAST, Info}, {TargetAnnAST, Info1},
-							   {ModName, FunName, Arity}, TargetModorFileName),
-				     case refac_util:is_exported({FunName, Arity}, Info) of
-					 true ->
-					     ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
-					     ClientFiles = lists:delete(TargetFName,
-									refac_util:get_client_files(FName, SearchPaths)),
-					     Results = refactor_in_client_modules(ClientFiles,
-										  {ModName, FunName, Arity}, TargetModorFileName, SearchPaths),
-					     case Editor of
-						 emacs ->
-						     refac_util:write_refactored_files([{{FName, FName}, AnnAST1},
+					 {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
+					 case refac_util:pos_to_fun_def(AnnAST, {Line, Col}) of
+						 {ok, Def} ->
+							 {value, {fun_def, {ModName, FunName, Arity, _Pos1, _Pos2}}} =
+								 lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)),
+							 case not filelib:is_file(TargetFName) andalso (CreateNewFile == t orelse CreateNewFile == true) of
+								 true -> create_new_file(TargetFName, TargetModorFileName);
+								 _ -> ok
+							 end,
+							 R = side_cond_check({ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModorFileName), Def, SearchPaths, TabWidth),
+							 case R of
+								 true ->
+									 {ok, {TargetAnnAST, Info1}} = refac_util:parse_annotate_file(TargetFName, true, SearchPaths, TabWidth),  %% level=
+									 {AnnAST1, TargetAnnAST1} =
+										 do_transformation({AnnAST, Info}, {TargetAnnAST, Info1},
+														   {ModName, FunName, Arity}, TargetModorFileName),
+									 case refac_util:is_exported({FunName, Arity}, Info) of
+										 true ->
+											 ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
+											 ClientFiles = lists:delete(TargetFName,
+																		refac_util:get_client_files(FName, SearchPaths)),
+											 Results = refactor_in_client_modules(ClientFiles,
+																				  {ModName, FunName, Arity}, TargetModorFileName, SearchPaths, TabWidth),
+											 case Editor of
+												 emacs ->
+													 refac_util:write_refactored_files([{{FName, FName}, AnnAST1},
 											{{TargetFName, TargetFName}, TargetAnnAST1}| Results]),
-						     ChangedClientFiles =
-							 lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-						     ChangedFiles = [FName, TargetFName| ChangedClientFiles],
-						     ?wrangler_io("The following files have been changed "
-						      "by this refactoring:\n~p\n", [ChangedFiles]),
-						     {ok, ChangedFiles};
-						 eclipse ->
-						     Results1 = [{{FName, FName}, AnnAST1},
-								 {{TargetFName, TargetFName}, TargetAnnAST1}| Results],
-						     Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
-									     {FName1, NewFName1, refac_prettypr:print_ast(AST)}
-								     end,
-								     Results1),
-						     {ok, Res}
-					     end;
-					 false ->
-					     case Editor of
-						 emacs ->
-						     refac_util:write_refactored_files([{{FName, FName}, AnnAST1},
-											{{TargetFName, TargetFName}, TargetAnnAST1}]),
-						     {ok, [FName, TargetFName]};
-						 eclipse ->
-						     Results1 = [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}],
-						     Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
-									     {FName1, NewFName1, refac_prettypr:print_ast(AST)}
-								     end,
-								     Results1),
-						     {ok, Res}
-					     end
-				     end;
-				 {error, Reason} -> {error, Reason}
-			     end;
-			 {error, Reason} -> {error, Reason}
-		     end;
-		 false -> {error, " Target module/file does not exist."}
-	     end
+													 ChangedClientFiles =
+														 lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
+													 ChangedFiles = [FName, TargetFName| ChangedClientFiles],
+													 ?wrangler_io("The following files have been changed "
+																  "by this refactoring:\n~p\n", [ChangedFiles]),
+													 {ok, ChangedFiles};
+												 eclipse ->
+													 Results1 = [{{FName, FName}, AnnAST1},
+																 {{TargetFName, TargetFName}, TargetAnnAST1}| Results],
+													 Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
+																			 {FName1, NewFName1, refac_prettypr:print_ast(AST)}
+																	 end,
+																	 Results1),
+													 {ok, Res}
+											 end;
+										 false ->
+											 case Editor of
+												 emacs ->
+													 refac_util:write_refactored_files([{{FName, FName}, AnnAST1},
+																						{{TargetFName, TargetFName}, TargetAnnAST1}]),
+													 {ok, [FName, TargetFName]};
+												 eclipse ->
+													 Results1 = [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}],
+													 Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
+																			 {FName1, NewFName1, refac_prettypr:print_ast(AST)}
+																	 end,
+																	 Results1),
+													 {ok, Res}
+											 end
+									 end;
+								 {error, Reason} -> {error, Reason}
+							 end;
+						 {error, Reason} -> {error, Reason}
+					 end;
+				 false -> {error, " Target module/file does not exist."}
+			 end
     end.
 
 get_target_file_name(CurrentFName, TargetModorFileName) ->
@@ -159,9 +157,9 @@ create_new_file(TargetFName, TargetModName) ->
      S = "-module("++TargetModName++").",
      file:write_file(TargetFName, list_to_binary(S)).
 
-side_cond_check({ModName, FunName, Arity, Node}, TargetFileName, TargetModName, FunDef, SearchPaths) ->
+side_cond_check({ModName, FunName, Arity, Node}, TargetFileName, TargetModName, FunDef, SearchPaths, TabWidth) ->
     case filelib:is_file(TargetFileName) of
-      true -> {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(TargetFileName, true, SearchPaths),
+      true -> {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(TargetFileName, true, SearchPaths, TabWidth),
 	      InscopeFuns = refac_util:inscope_funs(Info),
 	      Clash = lists:any(fun ({ModName1, FunName1, Arity1}) ->
 					(FunName == FunName1) and (Arity == Arity1) and (ModName =/= ModName1)
@@ -486,17 +484,17 @@ do_add_module_qualifier(Node, {{ModName, FunName, Arity}, TargetModName}) ->
 %%  Processing Client modules.
 %%====================================================================================
 
-refactor_in_client_modules(ClientFiles,{ModName, FunName, Arity}, TargetModName, SearchPaths) ->
+refactor_in_client_modules(ClientFiles,{ModName, FunName, Arity}, TargetModName, SearchPaths, TabWidth) ->
     case ClientFiles of 
 	[] -> [];
 	[F | Fs] ->
 	    ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(F,true, SearchPaths),      %% level=1
+	    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(F,true, SearchPaths, TabWidth),      %% level=1
 	    {AnnAST1, Changed} = 
-		refactor_in_client_module_1({AnnAST, Info}, {ModName, FunName, Arity}, TargetModName),
-	    if Changed ->
-		    [{{F,F}, AnnAST1} | refactor_in_client_modules(Fs, {ModName, FunName, Arity}, TargetModName, SearchPaths)];
-	       true -> refactor_in_client_modules(Fs, {ModName, FunName, Arity}, TargetModName, SearchPaths)
+				refactor_in_client_module_1({AnnAST, Info}, {ModName, FunName, Arity}, TargetModName),
+		if Changed ->
+		    [{{F,F}, AnnAST1} | refactor_in_client_modules(Fs, {ModName, FunName, Arity}, TargetModName, SearchPaths, TabWidth)];
+	       true -> refactor_in_client_modules(Fs, {ModName, FunName, Arity}, TargetModName, SearchPaths, TabWidth)
 	    end
 	end.
 refactor_in_client_module_1({AnnAST, _Info}, {ModName, FunName, Arity}, TargetModName) ->
@@ -574,7 +572,7 @@ make_export(Names) ->
 				       refac_syntax:integer(A))
 	  || {F, A} <- Names],
    %% comment(["** The following export is added by Wrangler. **"]),
-    [erl_syntax:attribute(erl_syntax:atom('export'), [erl_syntax:list(Es)])].
+    [erl_syntax:attribute(erl_syntax:atom(export), [erl_syntax:list(Es)])].
 
 is_not_the_fun(Form, {ModName, FunName, Arity}) ->
     case refac_syntax:type(Form) of 

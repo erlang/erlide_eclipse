@@ -82,7 +82,6 @@
 -define(var_prefix, "?,").
 -define(pp_form, '?preprocessor declaration?').
 
-
 %% @type errorinfo() = {ErrorLine::integer(),
 %%                      Module::atom(),
 %%                      Descriptor::term()}.
@@ -100,6 +99,7 @@
 
 parse_file(File) ->
     parse_file(File, []).
+
 
 %% @spec parse_file(File, Options) -> {ok, Forms} | {error, errorinfo()}
 %%       File = file:filename()
@@ -186,7 +186,7 @@ parse_file(File, Parser, Options) ->
 %% @equiv parse(IODevice, 1)
 
 parse(Dev) ->
-    parse(Dev, {1,1}). %% Modified by Huiqing Li
+    parse(Dev, {1,1}).%% Modified by Huiqing Li
 
 %% @spec parse(IODevice, StartLine) -> {ok, Forms} | {error, errorinfo()}
 %%       IODevice = pid()
@@ -223,7 +223,7 @@ parse(Dev, L0, Options) ->
 %% @equiv quick_parse(IODevice, 1)
 
 quick_parse(Dev) ->
-    quick_parse(Dev, {1,1}).  %% Modified by Huiqing Li
+    quick_parse(Dev, {1,1}). %% Modified by Huiqing Li
 
 %% @spec quick_parse(IODevice, StartLine) ->
 %%           {ok, Forms} | {error, errorinfo()}
@@ -355,7 +355,10 @@ quick_parse_form(Dev, L0, Options) ->
 parse_form(Dev, L0, Parser, Options) ->
     NoFail = proplists:get_bool(no_fail, Options),
     Opt = #opt{clever = proplists:get_bool(clever, Options)},
-    Res = refac_io:scan_erl_form(Dev, "", L0),
+    Res =case proplists:get_value(tab, Options) of 
+	     undefined -> refac_io:scan_erl_form(Dev, "", L0);
+	     V ->  refac_io:scan_erl_form(Dev, "", L0, V)
+	 end,     
      case Res of    %%Modified by Huiqing Li
         {ok, Ts, L1} ->
             case catch {ok, Parser(Ts, Opt)} of

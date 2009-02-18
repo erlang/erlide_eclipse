@@ -26,8 +26,8 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
--spec(start_ast_server() ->
-	     {ok, pid()} | ignore | {error, string()}).
+%%-spec(start_ast_server() ->
+%%	     {ok, pid()} | ignore | {error, string()}).
 start_ast_server() ->
     gen_server:start_link({local, wrangler_ast_server}, ?MODULE, [], []).
 
@@ -42,15 +42,15 @@ start_ast_server() ->
 %%                         {stop, Reason}
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
--spec(init/1::([dir()]) ->
-	      {ok, #state{}}).
+%%-spec(init/1::([dir()]) ->
+%%	      {ok, #state{}}).
 init(_Args) ->
     process_flag(trap_exit, true),
     case file:get_cwd() of
 	{ok, Dir} ->
 	    TabDir = filename:join(Dir,"temp"),
 	    FileName=filename:join(TabDir, "wrangler_dets"),
-	    DetsTab = list_to_atom(FileName),
+	    DetsTab = FileName,  %%  list_to_atom(FileName),
 	    file:delete(FileName),
 	    case file:make_dir(TabDir) of 
 		ok ->
@@ -69,17 +69,17 @@ init(_Args) ->
     end.
   
 %%------------------------------------------------------------------
--spec(get_ast/1::({filename(), boolean(), [dir()]}) ->
-	     {ok, {syntaxTree(), moduleInfo()}}).
-get_ast({FileName, ByPassPreP, SearchPaths}) ->
-    gen_server:call(wrangler_ast_server, {get,{FileName, ByPassPreP, SearchPaths}}, 500000).
+%%-spec(get_ast/1::({filename(), boolean(), [dir()], integer()}) ->
+%%	     {ok, {syntaxTree(), moduleInfo()}}).
+get_ast({FileName, ByPassPreP, SearchPaths, TabWidth}) ->
+    gen_server:call(wrangler_ast_server, {get,{FileName, ByPassPreP, SearchPaths, TabWidth}}, 500000).
 
  
--type(modifyTime()::{{integer(), integer(), integer()},{integer(), integer(), integer()}}).
--spec(update_ast/2::({filename(),boolean(), [dir()]}, {syntaxTree(), moduleInfo(), modifyTime()}) ->
-	     ok).
-update_ast({FileName, ByPassPreP, SearchPaths}, {AnnAST, Info, Time}) ->
-    gen_server:cast(wrangler_ast_server, {update, {{FileName, ByPassPreP, SearchPaths}, {AnnAST, Info, Time}}}).
+%%-type(modifyTime()::{{integer(), integer(), integer()},{integer(), integer(), integer()}}).
+%%-spec(update_ast/2::({filename(),boolean(), [dir()], integer()}, {syntaxTree(), moduleInfo(), modifyTime()}) ->
+%%	     ok).
+update_ast({FileName, ByPassPreP, SearchPaths, TabWidth}, {AnnAST, Info, Time}) ->
+    gen_server:cast(wrangler_ast_server, {update, {{FileName, ByPassPreP, SearchPaths, TabWidth}, {AnnAST, Info, Time}}}).
  
 %%--------------------------------------------------------------------
 %% Function: %% handle_call(Request, From, State) -> {reply, Reply, State} |
@@ -91,7 +91,7 @@ update_ast({FileName, ByPassPreP, SearchPaths}, {AnnAST, Info, Time}) ->
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
 
--spec(handle_call/3::({get,{filename(), boolean(), [dir()]}}, any(), #state{}) -> {reply, {ok, {syntaxTree(), moduleInfo()}}, #state{}}).
+%%-spec(handle_call/3::({get,{filename(), boolean(), [dir()], integer()}}, any(), #state{}) -> {reply, {ok, {syntaxTree(), moduleInfo()}}, #state{}}).
 handle_call({get, Key}, _From, State) ->
     {Reply, State1} = get_ast(Key, State),
     {reply, Reply, State1}.
@@ -102,8 +102,8 @@ handle_call({get, Key}, _From, State) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
--spec(handle_cast/2::({update, {{filename(), boolean(), [dir()]}, {syntaxTree(), moduleInfo(), modifyTime()}}}, #state{}) ->
-    {noreply, #state{}}).
+%%-spec(handle_cast/2::({update, {{filename(), boolean(), [dir()], integer()}, {syntaxTree(), moduleInfo(), modifyTime()}}}, #state{}) ->
+%%    {noreply, #state{}}).
 handle_cast({update, {Key, {AnnAST, Info, Time}}}, State) ->
     update_ast_1({Key, {AnnAST, Info, Time}}, State),
     {noreply, State}.
@@ -114,8 +114,8 @@ handle_cast({update, {Key, {AnnAST, Info, Time}}}, State) ->
 %%                                       {stop, Reason, State}
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
--spec(handle_info/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+%%-spec(handle_info/2::(any(), #state{}) ->
+%%	      {noreply, #state{}}).
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -126,7 +126,7 @@ handle_info(_Info, State) ->
 %% cleaning up. When it returns, the gen_server terminates with Reason.
 %% The return value is ignored.
 %%--------------------------------------------------------------------
--spec(terminate/2::(any(), #state{}) -> ok).
+%%-spec(terminate/2::(any(), #state{}) -> ok).
 terminate(_Reason, _State=#state{dets_tab=TabFile}) ->
     dets:close(TabFile),
     file:delete(TabFile).
@@ -135,16 +135,16 @@ terminate(_Reason, _State=#state{dets_tab=TabFile}) ->
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
 %% Description: Convert process state when code is changed
 %%--------------------------------------------------------------------
--spec(code_change/3::(any(), #state{}, any()) ->
-	      {ok, #state{}}).
+%%-spec(code_change/3::(any(), #state{}, any()) ->
+%%	      {ok, #state{}}).
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 %%--------------------------------------------------------------------
 %%% Internal functions
 %%--------------------------------------------------------------------
--spec(get_ast/2::({filename(),boolean(), [dir()]}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).	     
-get_ast(Key={FileName,ByPassPreP, SearchPaths}, State=#state{dets_tab=TabFile, asts=ASTs}) ->
+%%-spec(get_ast/2::({filename(),boolean(), [dir()], integer()}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).     
+get_ast(Key={FileName,ByPassPreP, SearchPaths, TabWidth}, State=#state{dets_tab=TabFile, asts=ASTs}) ->
     case TabFile of 
 	none -> 
 	    case lists:keysearch(Key, 1, ASTs) of
@@ -153,12 +153,12 @@ get_ast(Key={FileName,ByPassPreP, SearchPaths}, State=#state{dets_tab=TabFile, a
 			true -> 
 			    log_errors(FileName, Info), {{ok, {AnnAST, Info}}, State};
 			false ->
-			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth),
 			    log_errors(FileName, Info1),
 			    {{ok, {AnnAST1, Info1}}, #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST1, Info1, filelib:last_modified(FileName)}})}}
 		    end;
 		false ->
-		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth),
 		    log_errors(FileName, Info),
 		    {{ok, {AnnAST, Info}}, #state{asts=[{Key, {AnnAST, Info, filelib:last_modified(FileName)}} | ASTs]}}
 	    end;
@@ -167,22 +167,22 @@ get_ast(Key={FileName,ByPassPreP, SearchPaths}, State=#state{dets_tab=TabFile, a
 		[{Key, {AnnAST, Info, FileModifiedTime}}]->
 		    case FileModifiedTime >= filelib:last_modified(FileName) of
 			true -> 
-			    log_errors(FileName, Info), {{ok, {AnnAST, Info}}, State};
+			    {{ok, {AnnAST, Info}}, State};
 			false ->
-			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth),
 			    dets:insert(TabFile, {Key, {AnnAST1, Info1, filelib:last_modified(FileName)}}),
 			    log_errors(FileName, Info1),
 			    {{ok, {AnnAST1, Info1}}, State}
 		    end;
 		_ ->
-		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths),
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth),
 		    dets:insert(TabFile, {Key, {AnnAST, Info, filelib:last_modified(FileName)}}),
 		    log_errors(FileName, Info),
 		    {{ok, {AnnAST, Info}}, State}
 	    end
     end.
 
-update_ast_1({Key={_FileName, _ByPassPreP, _SearchPaths}, {AnnAST, Info, Time}}, _State=#state{dets_tab=TabFile, asts=ASTs}) ->
+update_ast_1({Key={_FileName, _ByPassPreP, _SearchPaths, _TabWidth}, {AnnAST, Info, Time}}, _State=#state{dets_tab=TabFile, asts=ASTs}) ->
     case TabFile of
 	none ->  case lists:keysearch(Key, 1, ASTs) of
 		     {value, {Key,  {_AnnAST1, _Info1, _Time}}} ->  
@@ -191,7 +191,8 @@ update_ast_1({Key={_FileName, _ByPassPreP, _SearchPaths}, {AnnAST, Info, Time}},
 			 #state{asts=[{Key, {AnnAST, Info, Time}} | ASTs]}
 		 end;
 	_ ->
-	    dets:insert(TabFile, [{Key, {AnnAST, Info, Time}}])    
+	    dets:delete(TabFile, Key),
+	    dets:insert(TabFile, [{Key, {AnnAST, Info, Time}}])
     end.
     
 log_errors(FileName, Info) ->

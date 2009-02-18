@@ -25,87 +25,87 @@
 %% -define(get_ann(X), element(2, X)).
 %% -define(set_ann(X, Y), setelement(2, X, Y)).
 
--record(c_int, {anno=[], val}).		% val :: integer()
+-record(c_int, {anno=[], val}).	% val :: integer()
 
--record(c_float, {anno=[], val}).	% val :: float()
+-record(c_float, {anno=[], val}).% val :: float()
 
--record(c_atom, {anno=[], val}).	% val :: atom()
+-record(c_atom, {anno=[], val}).% val :: atom()
 
--record(c_char, {anno=[], val}).	% val :: char()
+-record(c_char, {anno=[], val}).% val :: char()
 
--record(c_string, {anno=[], val}).	% val :: string()
+-record(c_string, {anno=[], val}).% val :: string()
 
 -record(c_nil, {anno=[]}).
 
--record(c_binary, {anno=[], segments}).	% segments :: [#c_bitstr{}]
+-record(c_binary, {anno=[], segments}).% segments :: [#c_bitstr{}]
 
 -record(c_bitstr, {anno=[],val,	        % val :: Tree,
 		   size,		% size :: Tree,
 		   unit,		% unit :: Tree,
 		   type,		% type :: Tree,
-		   flags}).		% flags :: Tree
+		   flags}).	% flags :: Tree
 
 -record(c_cons, {anno=[], hd,		% hd :: Tree,
-		 tl}).			% tl :: Tree
+		 tl}).		% tl :: Tree
 
--record(c_tuple, {anno=[], es}).	% es :: [Tree]
+-record(c_tuple, {anno=[], es}).% es :: [Tree]
 
--record(c_var, {anno=[], name}).	% name :: integer() | atom()
+-record(c_var, {anno=[], name}).% name :: integer() | atom()
 
 -record(c_fname, {anno=[], id,		% id :: atom(),
-		  arity}).		% arity :: integer()
+		  arity}).	% arity :: integer()
 
--record(c_values, {anno=[], es}).	% es :: [Tree]
+-record(c_values, {anno=[], es}).% es :: [Tree]
 
 -record(c_fun, {anno=[], vars,		% vars :: [Tree],
-		body}).			% body :: Tree
+		body}).		% body :: Tree
 
 -record(c_seq, {anno=[], arg,		% arg :: Tree,
-		body}).			% body :: Tree
+		body}).		% body :: Tree
 
 -record(c_let, {anno=[], vars,		% vars :: [Tree],
 		arg,			% arg :: Tree,
-		body}).			% body :: Tree
+		body}).		% body :: Tree
 
 -record(c_letrec, {anno=[], defs,	% defs :: [#c_def{}],
-		   body}).		% body :: Tree
+		   body}).	% body :: Tree
 
 -record(c_def, {anno=[], name,		% name :: Tree,
-		val}).			% val :: Tree,
+		val}).		% val :: Tree,
 
 -record(c_case, {anno=[], arg,		% arg :: Tree,
-		 clauses}).		% clauses :: [Tree]
+		 clauses}).	% clauses :: [Tree]
 
 -record(c_clause, {anno=[], pats,	% pats :: [Tree],
 		   guard,		% guard :: Tree,
-		   body}).		% body :: Tree
+		   body}).	% body :: Tree
 
 -record(c_alias, {anno=[], var,		% var :: Tree,
-		  pat}).		% pat :: Tree
+		  pat}).	% pat :: Tree
 
 -record(c_receive, {anno=[], clauses,	% clauses :: [Tree],
 		    timeout,		% timeout :: Tree,
-		    action}).		% action :: Tree
+		    action}).	% action :: Tree
 
 -record(c_apply, {anno=[], op,		% op :: Tree,
-		  args}).		% args :: [Tree]
+		  args}).	% args :: [Tree]
 
 -record(c_call, {anno=[], module,	% module :: Tree,
 		 name,			% name :: Tree,
-		 args}).		% args :: [Tree]
+		 args}).	% args :: [Tree]
 
 -record(c_primop, {anno=[], name,	% name :: Tree,
-		   args}).		% args :: [Tree]
+		   args}).	% args :: [Tree]
 
 -record(c_try, {anno=[], arg,		% arg :: Tree,
 		vars,			% vars :: [Tree],
 		body,			% body :: Tree
 		evars,			% evars :: [Tree],
-		handler}).		% handler :: Tree
+		handler}).	% handler :: Tree
 
--record(c_catch, {anno=[], body}).	% body :: Tree
+-record(c_catch, {anno=[], body}).% body :: Tree
 
 -record(c_module, {anno=[], name,	% name :: Tree,
 		   exports,		% exports :: [Tree],
 		   attrs,		% attrs :: [#c_def{}],
-		   defs}).		% defs :: [#c_def{}]
+		   defs}).	% defs :: [#c_def{}]

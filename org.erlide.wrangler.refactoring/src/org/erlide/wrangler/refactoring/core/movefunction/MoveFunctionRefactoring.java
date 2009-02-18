@@ -30,9 +30,9 @@ public class MoveFunctionRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {
-		return managedBackend.rpc("wrangler", "move_fun_eclipse", "siisxx",
+		return managedBackend.rpc("wrangler", "move_fun_eclipse", "siisxxi",
 				filePath, parameters.getStartLine(), parameters
 						.getStartColumn(), newName, new OtpErlangBoolean(
-						isNewModule), searchPath);
+						isNewModule), searchPath, parameters.getEditorTabWidth());
 	}
 }

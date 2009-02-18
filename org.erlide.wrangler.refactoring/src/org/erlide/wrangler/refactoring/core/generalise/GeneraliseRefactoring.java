@@ -71,8 +71,9 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
 				.getEndColumn());
-		return managedBackend.rpc("wrangler", "generalise_eclipse", "sxxsx",
-				filePath, startPos, endPos, newName, searchPath);
+		return managedBackend.rpc("wrangler", "generalise_eclipse", "sxxsxi",
+				filePath, startPos, endPos, newName, searchPath, parameters
+						.getEditorTabWidth());
 	}
 
 	@Override
@@ -94,8 +95,9 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 			WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
 		RpcResult r = managedBackend.rpc("wrangler", "gen_fun_1_eclipse",
-				"xsxxxxx", b, parameters.getFilePath(), this.parName,
-				this.funName, this.arity, this.defPos, this.expression);
+				"xsxxxxxi", b, parameters.getFilePath(), this.parName,
+				this.funName, this.arity, this.defPos, this.expression,
+				parameters.getEditorTabWidth());
 		return convertRpcResultToRPCMessage(r);
 
 	}
@@ -103,9 +105,9 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	public GeneraliseRPCMessage callGeneralise2() throws RpcException,
 			WranglerException, CoreException {
 		RpcResult r = managedBackend.rpc("wrangler", "gen_fun_2_eclipse",
-				"sxxxxxx", parameters.getFilePath(), this.parName,
+				"sxxxxxxi", parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
-				parameters.getSearchPath());
+				parameters.getSearchPath(), parameters.getEditorTabWidth());
 		return convertRpcResultToRPCMessage(r);
 	}
 

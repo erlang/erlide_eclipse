@@ -49,7 +49,8 @@ public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 		try {
 			final WranglerRefactoring refac = (WranglerRefactoring) getRefactoring();
 			List<String> l = refac.getParameters().getModuleNames();
-			l.toString();
+			String actModuleName = refac.getParameters().getActualModuleName();
+			l.remove(actModuleName);
 			moduleCombo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
 			for (String s : l) {
 				moduleCombo.add(s);
@@ -58,6 +59,9 @@ public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 			gridData.horizontalAlignment = GridData.FILL;
 			gridData.horizontalSpan = 2;
 			moduleCombo.setLayoutData(gridData);
+
+			if (moduleCombo.getItemCount() > 0)
+				moduleCombo.select(0);
 
 			moduleCombo.addSelectionListener(new SelectionListener() {
 

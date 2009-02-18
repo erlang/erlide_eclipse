@@ -27,19 +27,19 @@
 %% TODO: Summarise the limitations of this module.
 -module(refac_annotate_pid).
 
--export([ann_pid_info/1]).
+-export([ann_pid_info/2]).
 
 -include("../hrl/wrangler.hrl").
 
--spec(ann_pid_info/1::([dir()])->ok).
-ann_pid_info(DirList) ->
+%%-spec(ann_pid_info/2::([dir()], integer())->ok).
+ann_pid_info(DirList, TabWidth) ->
     Files = refac_util:expand_files(DirList, ".erl"),
     SortedFuns = sort_funs(DirList),
     start_counter_process(),
     Pid = start_fun_typesig_process([]),            %% Refactor this USING WRANGLER:  register a process, and remove the uses of Pid.
     SortedFuns1 = do_ann_pid_info(SortedFuns, Pid),
     stop_counter_process(),
-    lists:foreach(fun (File) -> {File, update_function(File, SortedFuns1, DirList)} end, Files),
+    lists:foreach(fun (File) -> {File, update_function(File, SortedFuns1, DirList, TabWidth)} end, Files),
     ok.
     
 
@@ -91,8 +91,8 @@ fixpoint(Funs, TypeSigPid) ->
      end.
 
 
-update_function(File, FunList, DirList) ->
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(File, true, DirList),
+update_function(File, FunList, DirList, TabWidth) ->
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(File, true, DirList, TabWidth),
     ModName = case lists:keysearch(module, 1, Info) of
 		  {value, {module, Mod}} -> Mod;
 		  _ -> list_to_atom(filename:basename(File, ".erl"))
@@ -111,7 +111,7 @@ update_function(File, FunList, DirList) ->
 		end
 	end,
     {AnnAST1, _} = refac_util:stop_tdTP(F, AnnAST, []),
-    wrangler_ast_server:update_ast({File, true, DirList},  {AnnAST1, Info, filelib:last_modified(File)}),
+    wrangler_ast_server:update_ast({File, true, DirList, TabWidth},  {AnnAST1, Info, filelib:last_modified(File)}),
     ok.
 
 annotate_within_fun(Node, {_ModName, FunName, Arity, EnvPid, TypeSigPid}) ->
@@ -332,7 +332,7 @@ annotate_within_fun_1({{ModName, FunName, Arity}, FunDef}, TypeSigPid) ->
     
 start_counter_process() ->               
     Pid = spawn_link(fun() -> counter_loop({1,1}) end),
-    register(counter1, Pid).            %% REFACTOR THIS USING WRANGLER: RENAME counter1 to counter.
+    register(counter1, Pid).           %% REFACTOR THIS USING WRANGLER: RENAME counter1 to counter.
 
 stop_counter_process() ->
     counter1!stop.

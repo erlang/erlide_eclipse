@@ -81,6 +81,7 @@ public class Activator extends AbstractUIPlugin {
 
 			ErlangCode.addPathA(mb, wranglerEbinPath);
 			ErlangCode.addPathA(mb, wranglerSrcPath);
+			ErlLogger.debug("Wrangler path has been added.");
 			// ErlangCode.addPathA(mb, wranglerRootPath.toOSString());
 
 			RpcResult res = mb.rpc("code", "load_file", "a", "wrangler");
@@ -88,7 +89,9 @@ public class Activator extends AbstractUIPlugin {
 					+ res.isOk() + "\t raw:" + res);
 
 			res = mb.rpc("application", "load", "a", "wrangler_app");
-			res = mb.rpc("application", "start", "a", "wrangler_app"); // application:start(wrangler_app)
+			// application:start(wrangler_app)
+			res = mb.rpc("application", "start", "a", "wrangler_app");
+
 			ErlLogger.debug("Wrangler app started:\n" + res);
 
 		} catch (IOException ioe) {

@@ -10,7 +10,7 @@
 %% under the License.
 %% 
 %% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
-%% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
+%% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklingsrefa
 %% AB. All Rights Reserved.''
 %% 
 %%     $Id$
@@ -25,11 +25,14 @@
 -export([columns/0,columns/1,rows/0,rows/1]).
 -export([fwrite/1,fwrite/2,fwrite/3,fread/2,fread/3,
 	 format/1,format/2,format/3]).
--export([scan_erl_exprs/1,scan_erl_exprs/2,scan_erl_exprs/3,
-	 scan_erl_form/1,scan_erl_form/2,scan_erl_form/3,
-	 parse_erl_exprs/1,parse_erl_exprs/2,parse_erl_exprs/3,
-	 parse_erl_form/1,parse_erl_form/2,parse_erl_form/3]).
+-export([scan_erl_exprs/1,scan_erl_exprs/2,scan_erl_exprs/4,
+	 scan_erl_form/1,scan_erl_form/2, scan_erl_form/3, scan_erl_form/4,
+	 parse_erl_exprs/1,parse_erl_exprs/2,parse_erl_exprs/4,
+	 parse_erl_form/1,parse_erl_form/2,parse_erl_form/4]).
 -export([request/1,request/2,requests/1,requests/2]).
+
+
+-define(DEFAULT_TABWIDTH, 8).
 
 %%
 %% User interface.
@@ -135,7 +138,7 @@ read(Prompt) ->
     read(default_input(), Prompt).
 
 read(Io, Prompt) ->
-    case request(Io, {get_until,Prompt,refac_scan,tokens,[{1,1}]}) of  %% modified by Huiqing Li
+    case request(Io, {get_until,Prompt,refac_scan,tokens,[{{1,1}, ?DEFAULT_TABWIDTH}]}) of  %% modified by Huiqing Li
 	{ok,Toks,_EndLine} ->
 	    refac_parse:parse_term(Toks);
 %	{error, Reason} when atom(Reason) ->
@@ -149,7 +152,7 @@ read(Io, Prompt) ->
     end.
 
 read(Io, Prompt, StartLine) when is_integer(StartLine) ->
-    case request(Io, {get_until,Prompt,refac_scan,tokens,[StartLine]}) of
+    case request(Io, {get_until,Prompt,refac_scan,tokens,[{StartLine, ?DEFAULT_TABWIDTH}]}) of
 	{ok,Toks,EndLine} ->
             case refac_parse:parse_term(Toks) of
                 {ok,Term} -> {ok,Term,EndLine};
@@ -201,33 +204,36 @@ format(Io, Format, Args) ->
 %% Scanning Erlang code.
 
 scan_erl_exprs(Prompt) ->
-    scan_erl_exprs(default_input(), Prompt, {1,1}).
+    scan_erl_exprs(default_input(), Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
 scan_erl_exprs(Io, Prompt) ->
-    scan_erl_exprs(Io, Prompt, {1,1}).
+    scan_erl_exprs(Io, Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
-scan_erl_exprs(Io, Prompt, Pos0) ->
-    request(Io, {get_until,Prompt,refac_scan,tokens,[Pos0]}).
+scan_erl_exprs(Io, Prompt, Pos0, TabWidth) ->
+    request(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0, TabWidth}]}).
 
 scan_erl_form(Prompt) ->
-    scan_erl_form(default_input(), Prompt, {1,1}).
+    scan_erl_form(default_input(), Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
 scan_erl_form(Io, Prompt) ->
-    scan_erl_form(Io, Prompt, {1,1}).
+    scan_erl_form(Io, Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
 scan_erl_form(Io, Prompt, Pos0) ->
-    request(Io, {get_until,Prompt,refac_scan,tokens,[Pos0]}).
+    scan_erl_form(Io, Prompt, Pos0, ?DEFAULT_TABWIDTH).
+    
+scan_erl_form(Io, Prompt, Pos0, TabWidth) ->
+    request(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0, TabWidth}]}).
 
 %% Parsing Erlang code.
 
 parse_erl_exprs(Prompt) ->
-    parse_erl_exprs(default_input(), Prompt, {1,1}).
+    parse_erl_exprs(default_input(), Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
 parse_erl_exprs(Io, Prompt) ->
-    parse_erl_exprs(Io, Prompt, {1,1}).
+    parse_erl_exprs(Io, Prompt, {1,1}, ?DEFAULT_TABWIDTH).
 
-parse_erl_exprs(Io, Prompt, Pos0) ->
-    case request(Io, {get_until,Prompt,refac_scan,tokens,[Pos0]}) of
+parse_erl_exprs(Io, Prompt, Pos0, TabWidth) ->
+    case request(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0, TabWidth}]}) of
 	{ok,Toks,EndPos} ->
 	    case refac_parse:parse_exprs(Toks) of
 		{ok,Exprs} -> {ok,Exprs,EndPos};
@@ -238,13 +244,13 @@ parse_erl_exprs(Io, Prompt, Pos0) ->
     end.
 
 parse_erl_form(Prompt) ->
-    parse_erl_form(default_input(), Prompt, {1,1}).
+    parse_erl_form(default_input(), Prompt, {1,1},?DEFAULT_TABWIDTH).
 
 parse_erl_form(Io, Prompt) ->
-    parse_erl_form(Io, Prompt, {1,1}).
+    parse_erl_form(Io, Prompt, {1,1},?DEFAULT_TABWIDTH).
 
-parse_erl_form(Io, Prompt, Pos0) ->
-    case request(Io, {get_until,Prompt,refac_scan,tokens,[Pos0]}) of
+parse_erl_form(Io, Prompt, Pos0, TabWidth) ->
+    case request(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0,TabWidth}]}) of
 	{ok,Toks,EndPos} ->
 	    case refac_parse:parse_form(Toks) of
 		{ok,Exprs} -> {ok,Exprs,EndPos};
@@ -288,7 +294,7 @@ requests(Name, Requests) when is_atom(Name) ->
 	    requests(Pid, Requests)
     end.
 
-
+
 default_input() ->
     group_leader().
 

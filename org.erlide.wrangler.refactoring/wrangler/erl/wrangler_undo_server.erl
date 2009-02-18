@@ -42,12 +42,12 @@ start_undo_server() ->
     process_flag(trap_exit, true),
     gen_server:start_link({local, refactor_undo}, ?MODULE, [], []).
 
--spec(undo/0::() ->
-	     {ok, [filename()]}).
+%%-spec(undo/0::() ->
+%%	     {ok, [filename()]}).
 undo() ->
     gen_server:call(refactor_undo, undo).
    
--spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
+%%-spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
 	     
 add_to_history(Files)->
     gen_server:cast(refactor_undo, {add, Files}).
