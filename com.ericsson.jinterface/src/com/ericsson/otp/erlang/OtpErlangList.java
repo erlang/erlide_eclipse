@@ -25,7 +25,7 @@ import java.io.Serializable;
  * 
  * <p>
  * The arity of the list is the number of elements it contains.
- **/
+ */
 public class OtpErlangList extends OtpErlangObject implements Serializable,
 		Cloneable {
 	// don't change this!
@@ -34,19 +34,13 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
 	private OtpErlangObject[] elems = NO_ELEMENTS;
-
-	// todo: use a linked structure to make a proper list with append,
-	// car, cdr etc methods. The current representation is essensially the
-	// same as for tuples except that empty lists are allowed.
-	// private OtpErlangObject car = null;
-	// private OtpErlangObject cdr = null;
-	// int arity;
+	private OtpErlangObject tail = null;
 
 	/**
 	 * Create an empty list.
-	 **/
+	 */
 	public OtpErlangList() {
-		this.elems = NO_ELEMENTS;
+		elems = NO_ELEMENTS;
 	}
 
 	/**
@@ -54,19 +48,15 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * 
 	 * @param str
 	 *            the characters from which to create the list.
-	 **/
-	public OtpErlangList(String str) {
-		int len = 0;
-
+	 */
+	public OtpErlangList(final String str) {
 		if (str != null) {
-			len = str.length();
-		}
-
-		if (len > 0) {
-			this.elems = new OtpErlangObject[len];
-
-			for (int i = 0; i < len; i++) {
-				this.elems[i] = new OtpErlangChar(str.charAt(i));
+			final int len = str.length();
+			if (len > 0) {
+				elems = new OtpErlangObject[len];
+				for (int i = 0; i < len; i++) {
+					elems[i] = new OtpErlangChar(str.charAt(i));
+				}
 			}
 		}
 	}
@@ -76,9 +66,9 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * 
 	 * @param elem
 	 *            the elememet to make the list from.
-	 **/
-	public OtpErlangList(OtpErlangObject elem) {
-		this.elems = new OtpErlangObject[] { elem };
+	 */
+	public OtpErlangList(final OtpErlangObject elem) {
+		elems = new OtpErlangObject[] { elem };
 	}
 
 	/**
@@ -86,8 +76,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * 
 	 * @param elems
 	 *            the array of terms from which to create the list.
-	 **/
-	public OtpErlangList(OtpErlangObject[] elems) {
+	 */
+	public OtpErlangList(final OtpErlangObject[] elems) {
 		this(elems, 0, elems.length);
 	}
 
@@ -100,9 +90,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 *            the offset of the first term to insert.
 	 * @param count
 	 *            the number of terms to insert.
-	 **/
-	public OtpErlangList(OtpErlangObject[] elems, int start, int count) {
-		if ((elems != null) && (count > 0)) {
+	 */
+	public OtpErlangList(final OtpErlangObject[] elems, final int start,
+			final int count) {
+		if (elems != null && count > 0) {
 			this.elems = new OtpErlangObject[count];
 			System.arraycopy(elems, start, this.elems, 0, count);
 		}
@@ -118,29 +109,34 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * @exception OtpErlangDecodeException
 	 *                if the buffer does not contain a valid external
 	 *                representation of an Erlang list.
-	 **/
-	public OtpErlangList(OtpInputStream buf) throws OtpErlangDecodeException {
-		this.elems = null;
+	 */
+	public OtpErlangList(final OtpInputStream buf)
+			throws OtpErlangDecodeException {
+		elems = null;
 
-		int arity = buf.read_list_head();
+		final int arity = buf.read_list_head();
 
 		if (arity > 0) {
-			this.elems = new OtpErlangObject[arity];
+			elems = new OtpErlangObject[arity];
 
 			for (int i = 0; i < arity; i++) {
 				elems[i] = buf.read_any();
 			}
 
 			/* discard the terminating nil (empty list) */
-			try {
-				buf.read_nil();
-			} catch (OtpErlangDecodeException e) {
-				if (e.getMessage().startsWith("Not valid nil tag:")) {
-					throw new OtpErlangDecodeException("Non proper list");
-				} else {
-					throw e;
-				}
+			tail = buf.read_any();
+			if (tail instanceof OtpErlangList) {
+				tail = null;
 			}
+			// try {
+			// buf.read_nil();
+			// } catch (final OtpErlangDecodeException e) {
+			// if (e.getMessage().startsWith("Not valid nil tag:")) {
+			// throw new OtpErlangDecodeException("Non proper list");
+			// } else {
+			// throw e;
+			// }
+			// }
 		}
 	}
 
@@ -148,7 +144,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Get the arity of the list.
 	 * 
 	 * @return the number of elements contained in the list.
-	 **/
+	 */
 	public int arity() {
 		if (elems == null) {
 			return 0;
@@ -165,9 +161,9 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 *            as array elements, starting at 0.
 	 * 
 	 * @return the requested element, of null if i is not a valid element index.
-	 **/
-	public OtpErlangObject elementAt(int i) {
-		if ((i >= arity()) || (i < 0)) {
+	 */
+	public OtpErlangObject elementAt(final int i) {
+		if (i >= arity() || i < 0) {
 			return null;
 		}
 		return elems[i];
@@ -177,13 +173,13 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Get all the elements from the list as an array.
 	 * 
 	 * @return an array containing all of the list's elements.
-	 **/
+	 */
 	public OtpErlangObject[] elements() {
 		if (arity() == 0) {
 			return NO_ELEMENTS;
 		} else {
-			OtpErlangObject[] res = new OtpErlangObject[arity()];
-			System.arraycopy(this.elems, 0, res, 0, res.length);
+			final OtpErlangObject[] res = new OtpErlangObject[arity()];
+			System.arraycopy(elems, 0, res, 0, res.length);
 			return res;
 		}
 	}
@@ -192,11 +188,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * Get the string representation of the list.
 	 * 
 	 * @return the string representation of the list.
-	 **/
+	 */
 
 	public String toString() {
-		StringBuffer s = new StringBuffer();
-		int arity = arity();
+		final StringBuffer s = new StringBuffer();
+		final int arity = arity();
 
 		s.append("[");
 
@@ -206,7 +202,9 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			}
 			s.append(elems[i].toString());
 		}
-
+		if (tail != null) {
+			s.append("|").append(tail.toString());
+		}
 		s.append("]");
 
 		return s.toString();
@@ -220,10 +218,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * @param buf
 	 *            An output stream to which the encoded list should be written.
 	 * 
-	 **/
+	 */
 
-	public void encode(OtpOutputStream buf) {
-		int arity = arity();
+	public void encode(final OtpOutputStream buf) {
+		final int arity = arity();
 
 		if (arity > 0) {
 			buf.write_list_head(arity);
@@ -232,8 +230,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 				buf.write_any(elems[i]);
 			}
 		}
-
-		buf.write_nil();
+		if (tail == null) {
+			buf.write_nil();
+		} else {
+			buf.write_any(tail);
+		}
 	}
 
 	/**
@@ -245,32 +246,53 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * 
 	 * @return true if the lists have the same arity and all the elements are
 	 *         equal.
-	 **/
+	 */
 
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof OtpErlangList)) {
 			return false;
 		}
 
-		OtpErlangList l = (OtpErlangList) o;
-		int a = this.arity();
+		final OtpErlangList l = (OtpErlangList) o;
+		final int a = arity();
 
 		if (a != l.arity()) {
 			return false;
 		}
 
 		for (int i = 0; i < a; i++) {
-			if (!this.elems[i].equals(l.elems[i])) {
+			if (!elems[i].equals(l.elems[i])) {
 				return false; // early exit
 			}
 		}
-
-		return true;
+		if (tail == l.getTail()) {
+			return true;
+		}
+		if (tail == null) {
+			return false;
+		}
+		return tail.equals(l.getTail());
 	}
 
 	public Object clone() {
-		OtpErlangList newList = (OtpErlangList) (super.clone());
+		final OtpErlangList newList = (OtpErlangList) super.clone();
 		newList.elems = (OtpErlangObject[]) elems.clone();
+		newList.tail = (OtpErlangObject) tail.clone();
 		return newList;
+	}
+
+	/**
+	 * @return the tail
+	 */
+	public OtpErlangObject getTail() {
+		return tail;
+	}
+
+	/**
+	 * @param tail
+	 *            the tail to set
+	 */
+	public void setTail(final OtpErlangObject tail) {
+		this.tail = tail;
 	}
 }
