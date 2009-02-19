@@ -1,19 +1,19 @@
 %%
 %% %CopyrightBegin%
-%% 
+%%
 %% Copyright Ericsson AB 1996-2009. All Rights Reserved.
-%% 
+%%
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
 %% retrieved online at http://www.erlang.org/.
-%% 
+%%
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
-%% 
+%%
 %% %CopyrightEnd%
 %%
 
@@ -48,7 +48,9 @@
 
 -module(erlide_scan_new).
 
-%%% External exports 
+%-compile({inline,[white_space_end/7]}).
+
+%%% External exports
 
 -export([string/1,string/2,string/3,tokens/3,tokens/4,
          format_error/1,reserved_word/1,
@@ -64,17 +66,17 @@
 %%% Exported functions
 %%%
 
--spec format_error(Error::term()) -> string().
+%-spec format_error(Error::term()) -> string().
 format_error({string,Quote,Head}) ->
     lists:flatten(["unterminated " ++ string_thing(Quote) ++
                    " starting with " ++ io_lib:write_string(Head,Quote)]);
-format_error({illegal,Type}) -> 
+format_error({illegal,Type}) ->
     lists:flatten(io_lib:fwrite("illegal ~w", [Type]));
 format_error(char) -> "unterminated character";
 format_error(scan) -> "premature end";
-format_error({base,Base}) -> 
+format_error({base,Base}) ->
     lists:flatten(io_lib:fwrite("illegal base '~w'", [Base]));
-format_error(Other) -> 
+format_error(Other) ->
     lists:flatten(io_lib:write(Other)).
 
 string(Cs) ->
@@ -86,7 +88,7 @@ string(Chars, StartLocation) ->
 %% Line numbers less than zero have always been allowed:
 string(Chars, Line, Options) when is_integer(Line), is_list(Chars) ->
     string1(Chars, options(Options), Line, no_col, []);
-string(Chars, {Line,Column}, Options) 
+string(Chars, {Line,Column}, Options)
     when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
     string1(Chars, options(Options), Line, Column, []).
 
@@ -95,10 +97,10 @@ tokens(Cont, Chars, StartLocation) ->
 
 tokens([], Chars, Line, Options) when is_integer(Line), is_list(Chars) ->
     tokens1(Chars, options(Options), Line, no_col, [], fun scan/6, []);
-tokens([], Chars, {Line,Column}, Options) 
+tokens([], Chars, {Line,Column}, Options)
     when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
     tokens1(Chars, options(Options), Line, Column, [], fun scan/6, []);
-tokens({Cs,St,Line,Col,Toks,Fun,Any}, Chars, _Loc, _Opts) 
+tokens({Cs,St,Line,Col,Toks,Fun,Any}, Chars, _Loc, _Opts)
     when is_list(Chars); Chars =:= eof ->
     tokens1(Cs++Chars, St, Line, Col, Toks, Fun, Any).
 
@@ -142,11 +144,11 @@ string_thing(_) -> "string".
 
 options(Opts0) when is_list(Opts0) ->
     Opts = lists:foldr(fun expand_opt/2, [], Opts0),
-    [RW_fun] = 
+    [RW_fun] =
         case opts(Opts, [reserved_word_fun], []) of
             badarg ->
                 erlang:error(badarg, [Opts0]);
-            R -> 
+            R ->
                 R
         end,
     Comment = proplists:get_bool(return_comments, Opts),
@@ -184,23 +186,23 @@ expand_opt(return, Os) ->
 expand_opt(O, Os) ->
     [O|Os].
 
-token_info1(Attrs, column=Tag) when tuple_size(Attrs) >= 2 ->
+token_info1(Attrs, column=Tag) when size(Attrs) >= 2 ->
     {Tag,element(2, Attrs)};
 token_info1(_Attrs, column) ->
     undefined;
-token_info1(Attrs, length=Tag) when tuple_size(Attrs) >= 3 ->
+token_info1(Attrs, length=Tag) when size(Attrs) >= 3 ->
     {Tag,element(3, Attrs)};
 token_info1(_Attrs, length) ->
     undefined;
 token_info1(Line, line=Tag) when is_integer(Line) ->
     {Tag,Line};
-token_info1(Attrs, line=Tag) when tuple_size(Attrs) >= 1 ->
+token_info1(Attrs, line=Tag) when size(Attrs) >= 1 ->
     {Tag,element(1, Attrs)};
-token_info1(Attrs, location=Tag) when tuple_size(Attrs) >= 2 ->
+token_info1(Attrs, location=Tag) when size(Attrs) >= 2 ->
     {Tag,{element(1, Attrs),element(2, Attrs)}};
 token_info1(Line, location=Tag) when is_integer(Line) ->
     {Tag,Line};
-token_info1(Attrs, text=Tag) when tuple_size(Attrs) >= 4 ->
+token_info1(Attrs, text=Tag) when size(Attrs) >= 4 ->
     {Tag,element(4, Attrs)};
 token_info1(_Attrs, text) ->
     undefined;
@@ -396,12 +398,12 @@ scan_atom(Cs0, St, Line, Col, Toks, Ncs0) ->
             case catch list_to_atom(Wcs) of
                 Name when is_atom(Name) ->
                     case (St#erl_scan.resword_fun)(Name) of
-                        true -> 
+                        true ->
                             tok2(Cs, St, Line, Col, Toks, Wcs, Name);
-                        false -> 
+                        false ->
                             tok3(Cs, St, Line, Col, Toks, atom, Wcs, Name)
                     end;
-                _Error -> 
+                _Error ->
                     Ncol = incr_column(Col, length(Wcs)),
                     scan_error({illegal,atom}, Line, Col, Line, Ncol)
             end
@@ -415,7 +417,7 @@ scan_variable(Cs0, St, Line, Col, Toks, Ncs0) ->
             case catch list_to_atom(Wcs) of
                 Name when is_atom(Name) ->
                     tok3(Cs, St, Line, Col, Toks, var, Wcs, Name);
-                _Error -> 
+                _Error ->
                     Ncol = incr_column(Col, length(Wcs)),
                     scan_error({illegal,var}, Line, Col, Line, Ncol)
             end
@@ -492,7 +494,7 @@ scan_nl_spcs([]=Cs, _St, Line, Col, Toks, N) ->
     {more, {Cs,Line,Col,Toks,fun scan_nl_spcs/6,N}};
 scan_nl_spcs(Cs, St, Line, Col, Toks, N) ->
     newline_end(Cs, St, Line, Col, Toks, N, nl_spcs(N)).
-    
+
 scan_nl_tabs([$\t|Cs], St, Line, Col, Toks, N) when N < 11 ->
     scan_nl_tabs(Cs, St, Line, Col, Toks, N+1);
 scan_nl_tabs([]=Cs, _St, Line, Col, Toks, N) ->
@@ -562,8 +564,6 @@ scan_white_space([]=Cs, _St, Line, Col, Toks, Ncs) ->
 scan_white_space(Cs, St, Line, Col, Toks, Ncs) ->
     white_space_end(Cs, St, Line, Col, Toks, length(Ncs), lists:reverse(Ncs)).
 
--compile({inline,[white_space_end/7]}).
-
 white_space_end(Cs, St, Line, Col, Toks, N, Ncs) ->
     tok3(Cs, St, Line, Col, Toks, white_space, Ncs, Ncs, N).
 
@@ -582,7 +582,7 @@ scan_char([$\\|Cs]=Cs0, St, Line, Col, Toks) ->
             Ntoks = [{char,Attrs,Val}|Toks],
             scan1(Ncs, St, Line, Ncol, Ntoks)
     end;
-scan_char([$\n=C|Cs], St, Line, Col, Toks) ->    
+scan_char([$\n=C|Cs], St, Line, Col, Toks) ->
     Attrs = attributes(Line, Col, ?STR(Col, [$$,C]), 2),
     scan1(Cs, St, Line+1, new_column(Col, 1), [{char,Attrs,C}|Toks]);
 scan_char([C|Cs], St, Line, Col, Toks) when C >= 0 ->
@@ -638,7 +638,7 @@ scan_string_no_col([$\n=C|Cs], Line, Col, Q, Wcs) ->
     scan_string_no_col(Cs, Line+1, Col, Q, [C|Wcs]);
 scan_string_no_col([C|Cs], Line, Col, Q, Wcs) when C =/= $\\, C >= 0 ->
     scan_string_no_col(Cs, Line, Col, Q, [C|Wcs]);
-scan_string_no_col(Cs, Line, Col, Q, Wcs) ->    
+scan_string_no_col(Cs, Line, Col, Q, Wcs) ->
     scan_string1(Cs, Line, Col, Q, Wcs, Wcs).
 
 %% Optimization. Col =/= no_col.
@@ -650,7 +650,7 @@ scan_string_col([$\n=C|Cs], Line, _xCol, Q, Wcs) ->
     scan_string_col(Cs, Line+1, 1, Q, [C|Wcs]);
 scan_string_col([C|Cs], Line, Col, Q, Wcs) when C =/= $\\, C >= 0 ->
     scan_string_col(Cs, Line, Col+1, Q, [C|Wcs]);
-scan_string_col(Cs, Line, Col, Q, Wcs) ->    
+scan_string_col(Cs, Line, Col, Q, Wcs) ->
     scan_string1(Cs, Line, Col, Q, Wcs, Wcs).
 
 scan_string1([Q|Cs], Line, Col, Q, Str0, Wcs0) ->
@@ -757,7 +757,7 @@ scan_number(Cs, St, Line, Col, Toks, Ncs0) ->
             Ncol = incr_column(Col, length(Ncs)),
             scan_error({illegal,integer}, Line, Col, Line, Ncol)
     end.
-    
+
 scan_based_int([C|Cs], St, Line, Col, Toks, {B,Ncs,Bcs})
     when ?DIGIT(C), C < $0+B ->
     scan_based_int(Cs, St, Line, Col, Toks, {B,[C|Ncs],Bcs});
@@ -862,7 +862,7 @@ scan_error(Error, Line, Col, EndLine, EndCol) ->
 scan_error(Error, ErrorLoc, EndLoc) ->
     {error,{ErrorLoc,?MODULE,Error},EndLoc}.
 
--compile({inline,[attributes/3,attributes/4]}).
+%-compile({inline,[attributes/3,attributes/4]}).
 
 attributes(Line, no_col, _String) ->
     Line;
@@ -879,7 +879,7 @@ location(Line, no_col) ->
 location(Line, Col) when is_integer(Col) ->
     {Line,Col}.
 
--compile({inline,[incr_column/2,new_column/2]}).
+%-compile({inline,[incr_column/2,new_column/2]}).
 
 incr_column(no_col=Col, _N) ->
     Col;
@@ -935,7 +935,7 @@ nl_tabs(8)  -> "\n\t\t\t\t\t\t\t";
 nl_tabs(9)  -> "\n\t\t\t\t\t\t\t\t";
 nl_tabs(10) -> "\n\t\t\t\t\t\t\t\t\t";
 nl_tabs(11) -> "\n\t\t\t\t\t\t\t\t\t\t".
-    
+
 tabs(1)  ->  "\t";
 tabs(2)  ->  "\t\t";
 tabs(3)  ->  "\t\t\t";
@@ -947,7 +947,7 @@ tabs(8)  ->  "\t\t\t\t\t\t\t\t";
 tabs(9)  ->  "\t\t\t\t\t\t\t\t\t";
 tabs(10) -> "\t\t\t\t\t\t\t\t\t\t".
 
--spec reserved_word(atom()) -> bool().
+%-spec reserved_word(atom()) -> bool().
 reserved_word('after') -> true;
 reserved_word('begin') -> true;
 reserved_word('case') -> true;
