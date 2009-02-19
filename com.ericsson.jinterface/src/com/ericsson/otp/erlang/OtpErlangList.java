@@ -122,7 +122,9 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 				elems[i] = buf.read_any();
 			}
 			/* discard the terminating nil (empty list) or read tail */
-			if (buf.peek() != OtpExternal.nilTag) {
+			if (buf.peek() == OtpExternal.nilTag) {
+				buf.read_nil();
+			} else {
 				tail = buf.read_any();
 			}
 		}
