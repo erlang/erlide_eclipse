@@ -36,7 +36,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	private OtpErlangObject[] elems = NO_ELEMENTS;
 	private OtpErlangObject tail = null;
 
-	// TODO should we provide an iterator?
+	// TODO should we provide an iterator() ?
 
 	/**
 	 * Create an empty list.
@@ -84,6 +84,25 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	}
 
 	/**
+	 * Create a list from an array of arbitrary Erlang terms. Tail can be
+	 * specified, if not null, the list will not be proper.
+	 * 
+	 * @param elems
+	 *            array of terms from which to create the list
+	 * @param tail
+	 * @throws OtpErlangDecodeException
+	 */
+	public OtpErlangList(final OtpErlangObject[] elems,
+			final OtpErlangObject tail) throws OtpErlangDecodeException {
+		this(elems, 0, elems.length);
+		if (elems.length == 0 && tail != null) {
+			throw new OtpErlangDecodeException(
+					"Bad list, empty head, non-empty tail");
+		}
+		this.tail = tail;
+	}
+
+	/**
 	 * Create a list from an array of arbitrary Erlang terms.
 	 * 
 	 * @param elems
@@ -126,6 +145,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 				buf.read_nil();
 			} else {
 				tail = buf.read_any();
+				// TODO Should we check whether tail is an empty list here?
 			}
 		}
 	}
@@ -278,14 +298,6 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 */
 	public OtpErlangObject getTail() {
 		return tail;
-	}
-
-	/**
-	 * @param tail
-	 *            the tail to set
-	 */
-	public void setTail(final OtpErlangObject tail) {
-		this.tail = tail;
 	}
 
 	/**
