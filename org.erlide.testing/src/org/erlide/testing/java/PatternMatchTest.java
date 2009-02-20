@@ -13,6 +13,7 @@ import junit.framework.Assert;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
+import org.erlide.jinterface.ParserException;
 import org.erlide.jinterface.TermParser;
 import org.junit.Test;
 
@@ -147,28 +148,19 @@ public class PatternMatchTest {
 	public void testMatch_ellipsis_2() throws Exception {
 		Bindings r = ErlUtils.match("[X | T]", "[x,y,z]");
 		Assert.assertNotNull(r);
-		Assert.assertEquals(r.get("X"), new OtpErlangAtom("x"));
-		Assert.assertEquals(r.get("T"), TermParser.parse("[y,z]"));
-	}
-
-	@Test()
-	public void testMatch_ellipsis_3() throws Exception {
-		Bindings r = ErlUtils.match("{X | T}", "{x,y,z}");
-		Assert.assertNotNull(r);
-		Assert.assertEquals(r.get("X"), new OtpErlangAtom("x"));
-		Assert.assertEquals(r.get("T"), TermParser.parse("{y,z}"));
+		Assert.assertEquals(new OtpErlangAtom("x"), r.get("X"));
+		Assert.assertEquals(TermParser.parse("[y,z]"), r.get("T"));
 	}
 
 	@Test()
 	public void testMatch_ellipsis_4() throws Exception {
-		Bindings r = ErlUtils.match("{X | y}", "{x,y,z}");
+		Bindings r = ErlUtils.match("[X | y]", "[x,y,z]");
 		Assert.assertNull(r);
 	}
 
-	@Test()
+	@Test(expected = ParserException.class)
 	public void testMatch_ellipsis_5() throws Exception {
-		Bindings r = ErlUtils.match("{X | Y, Z}", "{x,y,z}");
-		Assert.assertNull(r);
+		Bindings r = ErlUtils.match("[X | Y, Z]", "[x,y,z]");
 	}
 
 	@Test

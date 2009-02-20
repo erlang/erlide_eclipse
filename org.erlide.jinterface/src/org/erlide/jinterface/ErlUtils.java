@@ -21,7 +21,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
-import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class ErlUtils {
@@ -106,6 +105,12 @@ public class ErlUtils {
 	 */
 	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term,
 			Bindings bindings) {
+		if (pattern == null && term == null) {
+			return bindings;
+		}
+		if (pattern == null || term == null) {
+			return null;
+		}
 		if (pattern instanceof OtpPatternVariable) {
 			OtpPatternVariable var = (OtpPatternVariable) pattern;
 			if (!RpcConverter.matchSignature(term, var.getSignature())) {
@@ -131,13 +136,46 @@ public class ErlUtils {
 		if (pattern.equals(term)) {
 			return bindings;
 		} else if (pattern instanceof OtpErlangList) {
-			return matchList(((OtpErlangList) pattern).elements(),
-					((OtpErlangList) term).elements(), bindings, true);
+			return matchList(pattern, term, bindings);
 		} else if (pattern instanceof OtpErlangTuple) {
-			return matchList(((OtpErlangTuple) pattern).elements(),
+			return matchTuple(((OtpErlangTuple) pattern).elements(),
 					((OtpErlangTuple) term).elements(), bindings, false);
 		}
 		return null;
+	}
+
+	private static Bindings matchList(OtpErlangObject pattern,
+			OtpErlangObject term, Bindings bindings) {
+		OtpErlangList lpattern = (OtpErlangList) pattern;
+		OtpErlangList lterm = (OtpErlangList) term;
+		final int patternArity = lpattern.arity();
+		final int termArity = lterm.arity();
+		if (patternArity > termArity) {
+			return null;
+		}
+		if (patternArity < termArity && lpattern.isProper()) {
+			return null;
+		}
+		if (patternArity == termArity
+				&& lpattern.isProper() != lterm.isProper()) {
+			return null;
+		}
+		Bindings rez = bindings;
+		for (int i = 0; i < patternArity; i++) {
+			rez = match(lpattern.elementAt(i), lterm.elementAt(i), rez);
+			if (rez == null) {
+				return null;
+			}
+		}
+		if (patternArity == termArity) {
+			rez = match(lpattern.getLastTail(), lterm.getLastTail(), rez);
+			return rez;
+		}
+		if (lpattern.getLastTail() instanceof OtpPatternVariable) {
+			return match(lpattern.getLastTail(),
+					lterm.getNthTail(patternArity), rez);
+		}
+		return match(lpattern.getLastTail(), lterm.getLastTail(), rez);
 	}
 
 	private static OtpErlangObject fill(OtpErlangObject template,
@@ -176,26 +214,10 @@ public class ErlUtils {
 		}
 	}
 
-	private static Bindings matchList(OtpErlangObject[] patterns,
+	private static Bindings matchTuple(OtpErlangObject[] patterns,
 			OtpErlangObject[] terms, Bindings bindings, boolean list) {
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
-			if (patterns[i] instanceof OtpPatternCons) {
-				if (i != patterns.length - 2
-						|| !(patterns[i + 1] instanceof OtpPatternVariable)) {
-					return null;
-				} else {
-					int length = terms.length - i;
-					OtpErlangObject[] rest = new OtpErlangObject[length];
-					for (int j = 0; j < length; j++) {
-						rest[j] = terms[j + i];
-					}
-					OtpErlangObject term = list ? JInterfaceFactory
-							.mkList(rest) : JInterfaceFactory.mkTuple(rest);
-					result = match(patterns[i + 1], term, result);
-					return result;
-				}
-			}
 			result = match(patterns[i], terms[i], result);
 			if (result == null) {
 				return null;

@@ -34,6 +34,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
 	private OtpErlangObject[] elems = NO_ELEMENTS;
+
 	private OtpErlangObject lastTail = null;
 
 	// TODO should we provide an iterator() ?
@@ -305,7 +306,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		return lastTail.equals(l.getLastTail());
 	}
 
-	protected OtpErlangObject getLastTail() {
+	public OtpErlangObject getLastTail() {
 		return lastTail;
 	}
 
@@ -358,6 +359,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		private static final long serialVersionUID = OtpErlangList.serialVersionUID;
 
 		private int start;
+
 		private OtpErlangList parent;
 
 		public SubList(OtpErlangList parent, int start) {
@@ -406,7 +408,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			parent.encode(stream, start);
 		}
 
-		protected OtpErlangObject getLastTail() {
+		public OtpErlangObject getLastTail() {
 			return parent.getLastTail();
 		}
 
