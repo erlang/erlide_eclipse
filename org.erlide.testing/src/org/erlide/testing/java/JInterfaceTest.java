@@ -41,11 +41,6 @@ public class JInterfaceTest {
 		OtpErlangList r = (OtpErlangList) TermParser.parse("[1,2,3|4]");
 		OtpErlangList s = (OtpErlangList) TermParser.parse("[3|4]");
 		OtpErlangObject ss = r.getNthTail(2);
-		System.out.println(r.getNthTail(0));
-		System.out.println(r.getNthTail(1));
-		System.out.println(r.getNthTail(2));
-		System.out.println(r.getNthTail(3));
-		System.out.println(r.getNthTail(4));
 		Assert.assertEquals(s, ss);
 	}
 
