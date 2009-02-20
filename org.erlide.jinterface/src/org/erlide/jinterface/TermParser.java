@@ -23,7 +23,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
-import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class TermParser {
@@ -66,45 +65,39 @@ public class TermParser {
 			result = new OtpFormatPlaceholder(t.text);
 			break;
 		case TUPLESTART:
-			result = parseSequence(tokens, TokenKind.TUPLEEND,
-					new Stack<OtpErlangObject>(), null);
+			result = parseTuple(tokens, new Stack<OtpErlangObject>());
 			break;
 		case TUPLEEND:
 			throw new ParserException("unexpected " + t.toString());
 		case LISTSTART:
-			result = parseSequence(tokens, TokenKind.LISTEND,
-					new Stack<OtpErlangObject>(), null);
+			result = parseList(tokens, new Stack<OtpErlangObject>(), null);
 			break;
 		case LISTEND:
 			throw new ParserException("unexpected " + t.toString());
 		case COMMA:
 			throw new ParserException("unexpected " + t.toString());
-		case CONS:
-			result = new OtpPatternCons();
-			break;
 		default:
 			throw new ParserException("unknown token" + t.toString());
 		}
 		return result;
 	}
 
-	private static OtpErlangObject parseSequence(List<Token> tokens,
-			TokenKind stop, Stack<OtpErlangObject> stack, OtpErlangObject tail)
+	private static OtpErlangObject parseList(List<Token> tokens,
+			Stack<OtpErlangObject> stack, OtpErlangObject tail)
 			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
 		Token t = tokens.get(0);
-		if (t.kind == stop) {
+		if (t.kind == TokenKind.LISTEND) {
 			tokens.remove(0);
-			if (stop == TokenKind.LISTEND) {
-				try {
-					return new OtpErlangList(stack
-							.toArray(new OtpErlangObject[0]), tail);
-				} catch (OtpErlangException e) {
-				}
-			} else if (stop == TokenKind.TUPLEEND) {
-				return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
+			try {
+				return new OtpErlangList(stack.toArray(new OtpErlangObject[0]),
+						tail);
+			} catch (OtpErlangException e) {
+				e.printStackTrace();
+				// can't happen
+				return null;
 			}
 		} else {
 			if (t.kind == TokenKind.CONS) {
@@ -116,9 +109,30 @@ public class TermParser {
 					tokens.remove(0);
 				}
 			}
-			return parseSequence(tokens, stop, stack, tail);
+			return parseList(tokens, stack, tail);
 		}
-		return null;
+	}
+
+	private static OtpErlangObject parseTuple(List<Token> tokens,
+			Stack<OtpErlangObject> stack) throws ParserException {
+		if (tokens.size() == 0) {
+			return null;
+		}
+		Token t = tokens.get(0);
+		if (t.kind == TokenKind.TUPLEEND) {
+			tokens.remove(0);
+			return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
+		} else {
+			if (t.kind == TokenKind.CONS) {
+				throw new ParserException("cons is invalid in tuple");
+			} else {
+				stack.push(parse(tokens));
+				if (tokens.get(0).kind == TokenKind.COMMA) {
+					tokens.remove(0);
+				}
+			}
+			return parseTuple(tokens, stack);
+		}
 	}
 
 	private static enum TokenKind {
