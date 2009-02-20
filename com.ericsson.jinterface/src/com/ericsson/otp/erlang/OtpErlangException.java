@@ -20,7 +20,7 @@ package com.ericsson.otp.erlang;
 /**
  * Base class for the other OTP erlang exception classes.
  **/
-public abstract class OtpErlangException extends OtpException {
+public class OtpErlangException extends OtpException {
 	private static final long serialVersionUID = 1L;
 
 	/**

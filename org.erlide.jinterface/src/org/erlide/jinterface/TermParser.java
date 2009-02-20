@@ -15,14 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
+import com.ericsson.otp.erlang.OtpPatternCons;
 import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class TermParser {
@@ -66,13 +67,13 @@ public class TermParser {
 			break;
 		case TUPLESTART:
 			result = parseSequence(tokens, TokenKind.TUPLEEND,
-					new Stack<OtpErlangObject>());
+					new Stack<OtpErlangObject>(), null);
 			break;
 		case TUPLEEND:
 			throw new ParserException("unexpected " + t.toString());
 		case LISTSTART:
 			result = parseSequence(tokens, TokenKind.LISTEND,
-					new Stack<OtpErlangObject>());
+					new Stack<OtpErlangObject>(), null);
 			break;
 		case LISTEND:
 			throw new ParserException("unexpected " + t.toString());
@@ -88,7 +89,7 @@ public class TermParser {
 	}
 
 	private static OtpErlangObject parseSequence(List<Token> tokens,
-			TokenKind stop, Stack<OtpErlangObject> stack)
+			TokenKind stop, Stack<OtpErlangObject> stack, OtpErlangObject tail)
 			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
@@ -97,16 +98,25 @@ public class TermParser {
 		if (t.kind == stop) {
 			tokens.remove(0);
 			if (stop == TokenKind.LISTEND) {
-				return new OtpErlangList(stack.toArray(new OtpErlangObject[0]));
+				try {
+					return new OtpErlangList(stack
+							.toArray(new OtpErlangObject[0]), tail);
+				} catch (OtpErlangException e) {
+				}
 			} else if (stop == TokenKind.TUPLEEND) {
 				return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
 			}
 		} else {
-			stack.push(parse(tokens));
-			if (tokens.get(0).kind == TokenKind.COMMA) {
+			if (t.kind == TokenKind.CONS) {
 				tokens.remove(0);
+				tail = parse(tokens);
+			} else {
+				stack.push(parse(tokens));
+				if (tokens.get(0).kind == TokenKind.COMMA) {
+					tokens.remove(0);
+				}
 			}
-			return parseSequence(tokens, stop, stack);
+			return parseSequence(tokens, stop, stack, tail);
 		}
 		return null;
 	}

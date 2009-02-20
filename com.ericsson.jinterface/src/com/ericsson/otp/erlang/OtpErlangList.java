@@ -94,14 +94,13 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 * @param elems
 	 *            array of terms from which to create the list
 	 * @param tail
-	 * @throws OtpErlangDecodeException
+	 * @throws OtpErlangException
 	 */
 	public OtpErlangList(final OtpErlangObject[] elems,
-			final OtpErlangObject tail) throws OtpErlangDecodeException {
+			final OtpErlangObject tail) throws OtpErlangException {
 		this(elems, 0, elems.length);
 		if (elems.length == 0 && tail != null) {
-			throw new OtpErlangDecodeException(
-					"Bad list, empty head, non-empty tail");
+			throw new OtpErlangException("Bad list, empty head, non-empty tail");
 		}
 		this.lastTail = tail;
 	}
@@ -296,16 +295,17 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 				return false; // early exit
 			}
 		}
-		if (lastTail == l.getLastTail()) {
+		OtpErlangObject otherTail = l.getLastTail();
+		if (lastTail == null && otherTail == null) {
 			return true;
 		}
 		if (lastTail == null) {
 			return false;
 		}
-		return lastTail.equals(l.getTail());
+		return lastTail.equals(l.getLastTail());
 	}
 
-	private OtpErlangObject getLastTail() {
+	protected OtpErlangObject getLastTail() {
 		return lastTail;
 	}
 
@@ -344,8 +344,8 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	}
 
 	public OtpErlangObject getNthTail(int n) {
-		if (elems.length > n) {
-			if (elems.length == n + 1) {
+		if (elems.length >= n) {
+			if (elems.length == n) {
 				return lastTail;
 			} else {
 				return new SubList(this, n);
@@ -354,7 +354,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		return null;
 	}
 
-	private static class SubList extends OtpErlangList {
+	public static class SubList extends OtpErlangList {
 		private static final long serialVersionUID = OtpErlangList.serialVersionUID;
 
 		private int start;
@@ -390,6 +390,14 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			return new SubList(parent, start + 1);
 		}
 
+		public OtpErlangObject getNthTail(int n) {
+			System.out.println(n + " " + start + " " + parent.arity());
+			if (n + start == parent.arity()) {
+				return parent.getLastTail();
+			}
+			return parent.getNthTail(n + start);
+		}
+
 		public String toString() {
 			return parent.toString(start);
 		}
@@ -397,6 +405,11 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		public void encode(OtpOutputStream stream) {
 			parent.encode(stream, start);
 		}
+
+		protected OtpErlangObject getLastTail() {
+			return parent.getLastTail();
+		}
+
 	}
 
 }
