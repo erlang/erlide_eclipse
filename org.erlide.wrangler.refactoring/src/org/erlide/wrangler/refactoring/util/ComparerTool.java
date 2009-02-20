@@ -190,20 +190,19 @@ public class ComparerTool {
 	 */
 	@SuppressWarnings("boxing")
 	static private ArrayList<Character> readFile(File file) throws IOException {
+
 		ArrayList<Character> result = new ArrayList<Character>();
 		BufferedReader input = new BufferedReader(new FileReader(file));
 
-		String line;
-		while ((line = input.readLine()) != null) {
-			char[] chars = line.toCharArray();
-			for (int i = 0; i < chars.length; ++i) {
-				result.add(chars[i]);
-			}
-			result.add('\n');
-		}
-		input.close();
-		if (result.size() != 0) {
-			result.remove(result.size() - 1);
+		char c[] = new char[1];
+		while (input.read(c) > 0) {
+			/*
+			 * char[] chars = line.toCharArray(); for (int i = 0; i <
+			 * chars.length; ++i) { result.add(chars[i]); } result.add('\n'); }
+			 * input.close(); if (result.size() != 0) {
+			 * result.remove(result.size() - 1);
+			 */
+			result.add(c[0]);
 		}
 
 		return result;
