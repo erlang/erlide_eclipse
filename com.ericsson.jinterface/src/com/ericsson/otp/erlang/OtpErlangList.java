@@ -218,7 +218,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		return toString(0);
 	}
 
-	private String toString(int start) {
+	protected String toString(int start) {
 		final StringBuffer s = new StringBuffer();
 		s.append("[");
 
@@ -250,7 +250,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		encode(buf, 0);
 	}
 
-	private void encode(final OtpOutputStream buf, int start) {
+	protected void encode(final OtpOutputStream buf, int start) {
 		final int arity = arity() - start;
 
 		if (arity > 0) {
