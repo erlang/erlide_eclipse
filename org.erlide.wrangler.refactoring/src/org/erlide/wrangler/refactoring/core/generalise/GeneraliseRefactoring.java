@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -88,6 +89,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 			RpcException, WranglerException, CoreException {
 		RpcResult res = sendRPC(parameters.getFilePath(), parameters
 				.getSearchPath());
+		ErlLogger.debug("generalise_eclipse returned:\n" + res);
 		return convertRpcResultToRPCMessage(res);
 	}
 
@@ -98,6 +100,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				"xsxxxxxi", b, parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
 				parameters.getEditorTabWidth());
+		ErlLogger.debug("gen_fun_1_eclipse returned:\n" + r);
 		return convertRpcResultToRPCMessage(r);
 
 	}
@@ -108,7 +111,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				"sxxxxxxi", parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
 				parameters.getSearchPath(), parameters.getEditorTabWidth());
+		ErlLogger.debug("gen_fun_2 returned:\n" + r);
 		return convertRpcResultToRPCMessage(r);
 	}
-
 }
