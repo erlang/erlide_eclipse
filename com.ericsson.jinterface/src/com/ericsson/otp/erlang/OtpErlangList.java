@@ -83,6 +83,10 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		this(elems, 0, elems.length);
 	}
 
+	public OtpErlangList(final OtpErlangObject[] elems, boolean proper) {
+		this(elems, 0, elems.length, proper);
+	}
+
 	/**
 	 * Create a list from an array of arbitrary Erlang terms. Tail can be
 	 * specified, if not null, the list will not be proper.
@@ -113,11 +117,22 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 *            the number of terms to insert.
 	 */
 	public OtpErlangList(final OtpErlangObject[] elems, final int start,
-			final int count) {
+			final int count, boolean proper) {
 		if (elems != null && count > 0) {
-			this.elems = new OtpErlangObject[count];
-			System.arraycopy(elems, start, this.elems, 0, count);
+			if (proper) {
+				this.elems = new OtpErlangObject[count];
+				System.arraycopy(elems, start, this.elems, 0, count);
+			} else if (count > 1) {
+				this.elems = new OtpErlangObject[count - 1];
+				System.arraycopy(elems, start, this.elems, 0, count - 1);
+				tail = elems[start + count - 1];
+			}
 		}
+	}
+
+	public OtpErlangList(final OtpErlangObject[] elems, final int start,
+			final int count) {
+		this(elems, start, count, true);
 	}
 
 	/**
