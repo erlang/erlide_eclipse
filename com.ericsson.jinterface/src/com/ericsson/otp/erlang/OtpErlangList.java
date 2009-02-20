@@ -34,7 +34,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
 	private OtpErlangObject[] elems = NO_ELEMENTS;
-	private OtpErlangObject tail = null;
+	private OtpErlangObject lastTail = null;
 
 	// TODO should we provide an iterator() ?
 
@@ -103,7 +103,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			throw new OtpErlangDecodeException(
 					"Bad list, empty head, non-empty tail");
 		}
-		this.tail = tail;
+		this.lastTail = tail;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			} else if (count > 1) {
 				this.elems = new OtpErlangObject[count - 1];
 				System.arraycopy(elems, start, this.elems, 0, count - 1);
-				tail = elems[start + count - 1];
+				lastTail = elems[start + count - 1];
 			}
 		}
 	}
@@ -159,7 +159,7 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 			if (buf.peek() == OtpExternal.nilTag) {
 				buf.read_nil();
 			} else {
-				tail = buf.read_any();
+				lastTail = buf.read_any();
 				// TODO Should we check whether tail is an empty list here?
 			}
 		}
@@ -216,19 +216,21 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 */
 
 	public String toString() {
-		final StringBuffer s = new StringBuffer();
-		final int arity = arity();
+		return toString(0);
+	}
 
+	private String toString(int start) {
+		final StringBuffer s = new StringBuffer();
 		s.append("[");
 
-		for (int i = 0; i < arity; i++) {
-			if (i > 0) {
+		for (int i = start; i < arity(); i++) {
+			if (i > start) {
 				s.append(",");
 			}
 			s.append(elems[i].toString());
 		}
-		if (tail != null) {
-			s.append("|").append(tail.toString());
+		if (lastTail != null) {
+			s.append("|").append(lastTail.toString());
 		}
 		s.append("]");
 
@@ -246,19 +248,23 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 	 */
 
 	public void encode(final OtpOutputStream buf) {
-		final int arity = arity();
+		encode(buf, 0);
+	}
+
+	private void encode(final OtpOutputStream buf, int start) {
+		final int arity = arity() - start;
 
 		if (arity > 0) {
 			buf.write_list_head(arity);
 
-			for (int i = 0; i < arity; i++) {
+			for (int i = start; i < arity + start; i++) {
 				buf.write_any(elems[i]);
 			}
 		}
-		if (tail == null) {
+		if (lastTail == null) {
 			buf.write_nil();
 		} else {
-			buf.write_any(tail);
+			buf.write_any(lastTail);
 		}
 	}
 
@@ -286,39 +292,111 @@ public class OtpErlangList extends OtpErlangObject implements Serializable,
 		}
 
 		for (int i = 0; i < a; i++) {
-			if (!elems[i].equals(l.elems[i])) {
+			if (!elementAt(i).equals(l.elementAt(i))) {
 				return false; // early exit
 			}
 		}
-		if (tail == l.getTail()) {
+		if (lastTail == l.getLastTail()) {
 			return true;
 		}
-		if (tail == null) {
+		if (lastTail == null) {
 			return false;
 		}
-		return tail.equals(l.getTail());
+		return lastTail.equals(l.getTail());
+	}
+
+	private OtpErlangObject getLastTail() {
+		return lastTail;
 	}
 
 	public Object clone() {
 		final OtpErlangList newList = (OtpErlangList) super.clone();
-		newList.elems = (OtpErlangObject[]) elems.clone();
-		if (tail != null) {
-			newList.tail = (OtpErlangObject) tail.clone();
+		newList.elems = (OtpErlangObject[]) elements().clone();
+		if (lastTail != null) {
+			newList.lastTail = (OtpErlangObject) lastTail.clone();
 		}
 		return newList;
-	}
-
-	/**
-	 * @return the tail
-	 */
-	public OtpErlangObject getTail() {
-		return tail;
 	}
 
 	/**
 	 * @return true if the list is proper, i.e. the tail is nil
 	 */
 	public boolean isProper() {
-		return tail == null;
+		return lastTail == null;
 	}
+
+	public OtpErlangObject getHead() {
+		if (elems.length > 0) {
+			return elems[0];
+		}
+		return null;
+	}
+
+	public OtpErlangObject getTail() {
+		if (elems.length > 0) {
+			if (elems.length == 1) {
+				return lastTail;
+			} else {
+				return new SubList(this, 1);
+			}
+		}
+		return null;
+	}
+
+	public OtpErlangObject getNthTail(int n) {
+		if (elems.length > n) {
+			if (elems.length == n + 1) {
+				return lastTail;
+			} else {
+				return new SubList(this, n);
+			}
+		}
+		return null;
+	}
+
+	private static class SubList extends OtpErlangList {
+		private static final long serialVersionUID = OtpErlangList.serialVersionUID;
+
+		private int start;
+		private OtpErlangList parent;
+
+		public SubList(OtpErlangList parent, int start) {
+			this.parent = parent;
+			this.start = start;
+		}
+
+		public int arity() {
+			return parent.arity() - start;
+		}
+
+		public OtpErlangObject elementAt(int i) {
+			return parent.elementAt(i + start);
+		}
+
+		public OtpErlangObject[] elements() {
+			OtpErlangObject[] res = new OtpErlangObject[arity()];
+			return parent.elements();
+		}
+
+		public boolean isProper() {
+			return parent.isProper();
+		}
+
+		public OtpErlangObject getHead() {
+			return parent.elementAt(start);
+		}
+
+		public OtpErlangObject getTail() {
+			return new SubList(parent, start + 1);
+		}
+
+		public String toString() {
+			return parent.toString(start);
+		}
+
+		public void encode(OtpOutputStream stream) {
+			parent.encode(stream, start);
+		}
+	}
+
 }

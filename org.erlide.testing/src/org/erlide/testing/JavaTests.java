@@ -13,6 +13,7 @@ package org.erlide.testing;
 import org.erlide.core.preferences.CoreTests;
 import org.erlide.runtime.backend.RuntimeTests;
 import org.erlide.testing.java.ErlRpcTest;
+import org.erlide.testing.java.JInterfaceTest;
 import org.erlide.testing.java.PatternMatchTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -20,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses( { ErlRpcTest.class, PatternMatchTest.class, CoreTests.class,
-		RuntimeTests.class })
+		RuntimeTests.class, JInterfaceTest.class })
 public class JavaTests {
 
 }

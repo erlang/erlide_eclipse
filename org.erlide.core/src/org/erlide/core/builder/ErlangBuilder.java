@@ -218,8 +218,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				currentProject);
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
-			for (int i = 0; i < res.arity(); i++) {
-				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
+			for (OtpErlangObject elem : res.elements()) {
+				final OtpErlangTuple t = (OtpErlangTuple) elem;
 				final String f1 = ((OtpErlangString) t.elementAt(0))
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
