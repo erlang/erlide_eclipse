@@ -160,7 +160,7 @@ public class PatternMatchTest {
 
 	@Test(expected = ParserException.class)
 	public void testMatch_ellipsis_5() throws Exception {
-		Bindings r = ErlUtils.match("[X | Y, Z]", "[x,y,z]");
+		ErlUtils.match("[X | Y, Z]", "[x,y,z]");
 	}
 
 	@Test
