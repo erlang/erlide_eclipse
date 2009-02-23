@@ -436,7 +436,23 @@ public class ErlModule extends Openable implements IErlModule {
 	public Set<IErlModule> getDirectDependents() throws ErlModelException {
 		Set<IErlModule> result = new HashSet<IErlModule>();
 		IErlProject project = getProject();
-
+		for (IErlModule m : project.getModules()) {
+			System.out.println(m);
+			boolean wasOpen = m.isOpen();
+			if (!wasOpen) {
+				m.open(null);
+			}
+			Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+			for (ErlangIncludeFile inc : incs) {
+				if (inc.getFilename().equals(this.getName())) {
+					result.add(m);
+					break;
+				}
+			}
+			if (!wasOpen) {
+				m.close();
+			}
+		}
 		return result;
 	}
 
