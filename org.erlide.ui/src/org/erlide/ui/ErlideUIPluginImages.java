@@ -155,7 +155,7 @@ public class ErlideUIPluginImages {
 	public static final String IMG_MODULE = NAME_PREFIX + "erlang_srcFile.gif";
 
 	public static final String IMG_MODULE_RESOURCE = NAME_PREFIX
-			+ "erlang_srcFile.gif";
+			+ "erlang_srcFileExt.gif";
 
 	public static final ImageDescriptor DESC_MODULE = createManaged(T_OBJ,
 			IMG_MODULE);
@@ -205,7 +205,7 @@ public class ErlideUIPluginImages {
 	 */
 	public static void setToolImageDescriptors(final IAction action,
 			final String iconName) {
-		setImageDescriptors(action, "tool16", iconName); //$NON-NLS-1$
+		setImageDescriptors(action, "tool16", iconName);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class ErlideUIPluginImages {
 	 */
 	public static void setLocalImageDescriptors(final IAction action,
 			final String iconName) {
-		setImageDescriptors(action, "lcl16", iconName); //$NON-NLS-1$
+		setImageDescriptors(action, "lcl16", iconName);
 	}
 
 	/*
@@ -276,7 +276,7 @@ public class ErlideUIPluginImages {
 			fgAvoidSWTErrorMap.put(name, result);
 			if (fgImageRegistry != null) {
 				ErlideUIPlugin
-						.logErrorMessage("Image registry already defined"); //$NON-NLS-1$
+						.logErrorMessage("Image registry already defined");
 			}
 			return result;
 		} catch (final MalformedURLException e) {
@@ -301,7 +301,7 @@ public class ErlideUIPluginImages {
 	// if (fgImageRegistry != null)
 	// {
 	// ErlideUIPlugin.logErrorMessage("Image registry already defined");
-	// //$NON-NLS-1$
+	//
 	// }
 	// return result;
 	// } catch (MalformedURLException e)
