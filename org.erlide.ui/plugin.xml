@@ -113,14 +113,6 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.erlide.ui.views.modules.ModuleNavigator"
-            icon="icons/modulenavigator.gif"
-            id="org.erlide.ui.views.modulenavigator"
-            name="Module Navigator">
-      </view>
-      <view
-            allowMultiple="false"
-            category="org.erlide.views"
             class="org.erlide.ui.views.processlist.ProcessListView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.processlist.ProcessListView"
