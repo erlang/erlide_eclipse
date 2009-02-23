@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 
 public class ErlLogger {
@@ -168,6 +173,35 @@ public class ErlLogger {
 		if (null != globalTraceValue && globalTraceValue.equals("true")
 				&& null != value && value.equals("true")) {
 			debug(fmt, args);
+		}
+	}
+
+	public static void init() {
+		Handler fh;
+		try {
+			final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
+			final Logger logger = Logger.getLogger("org.erlide");
+
+			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+					.toPortableString();
+			dir = dir == null ? "c:/" : dir;
+			fh = new FileHandler(dir + "_erlide.log");
+			fh.setFormatter(erlSimpleFormatter);
+			fh.setLevel(java.util.logging.Level.FINEST);
+			logger.addHandler(fh);
+
+			final ConsoleHandler consoleHandler = new ConsoleHandler();
+			consoleHandler.setFormatter(erlSimpleFormatter);
+			final Level lvl = Platform.inDebugMode() ? java.util.logging.Level.FINEST
+					: java.util.logging.Level.SEVERE;
+			consoleHandler.setLevel(lvl);
+			logger.addHandler(consoleHandler);
+
+			logger.setLevel(java.util.logging.Level.FINEST);
+		} catch (final SecurityException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
 		}
 	}
 

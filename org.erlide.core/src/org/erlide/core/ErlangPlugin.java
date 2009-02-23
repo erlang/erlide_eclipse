@@ -10,18 +10,12 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
@@ -33,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
@@ -601,37 +594,9 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		ErlLogger.debug("Starting CORE");
-		super.start(context);
-
-		Handler fh;
-		try {
-			// TODO move this to ErlLogger?
-			final ErlLogger.ErlSimpleFormatter erlSimpleFormatter = new ErlLogger.ErlSimpleFormatter();
-			final Logger logger = Logger.getLogger("org.erlide");
-
-			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-					.toPortableString();
-			dir = dir == null ? "c:/" : dir;
-			fh = new FileHandler(dir + "_erlide.log");
-			fh.setFormatter(erlSimpleFormatter);
-			fh.setLevel(java.util.logging.Level.FINEST);
-			logger.addHandler(fh);
-
-			final ConsoleHandler consoleHandler = new ConsoleHandler();
-			consoleHandler.setFormatter(erlSimpleFormatter);
-			final Level lvl = Platform.inDebugMode() ? java.util.logging.Level.FINEST
-					: java.util.logging.Level.SEVERE;
-			consoleHandler.setLevel(lvl);
-			logger.addHandler(consoleHandler);
-
-			logger.setLevel(java.util.logging.Level.FINEST);
-		} catch (final SecurityException e) {
-			e.printStackTrace();
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+		ErlLogger.init();
 		ErlLogger.debug("Starting CORE " + Thread.currentThread());
+		super.start(context);
 
 		String dev = "";
 		if (ErlideUtil.isDeveloper()) {
@@ -649,71 +614,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 		registerOpenProjects();
 
-		// final IErlModelManager manager = ErlangCore.getModelManager();
-		// try {
-		// // request state folder creation (workaround 19885)
-		// getDefault().getStateLocation();
-		//
-		// // retrieve variable values
-		// getDefault().getPluginPreferences().addPropertyChangeListener(
-		// new ErlModelManager.PluginPreferencesListener());
-		//
-		// // final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		// // workspace.addResourceChangeListener(manager.deltaState,
-		// // IResourceChangeEvent.PRE_BUILD
-		// // | IResourceChangeEvent.POST_BUILD |
-		// // IResourceChangeEvent.POST_CHANGE
-		// // | IResourceChangeEvent.PRE_DELETE |
-		// // IResourceChangeEvent.PRE_CLOSE);
-		//
-		// // process deltas since last activated in indexer thread so that
-		// // indexes are up-to-date.
-		// // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=38658
-		// final Job processSavedState = new Job(Util
-		// .bind("savedState.jobName")) { //$NON-NLS-1$
-		//
-		// @Override
-		// protected IStatus run(IProgressMonitor monitor) {
-		// // try
-		// // {
-		// // // add save participant and process delta atomically
-		// // // see
-		// // // https://bugs.eclipse.org/bugs/show_bug.cgi?id=59937
-		// // workspace.run(new IWorkspaceRunnable() {
-		// //
-		// // public void run(IProgressMonitor progress) throws
-		// // CoreException
-		// // {
-		// // ISavedState savedState = workspace.addSaveParticipant(
-		// // getDefault(), manager);
-		// // if (savedState != null)
-		// // {
-		// // // the event type coming from the saved
-		// // // state is always POST_AUTO_BUILD
-		// // // force it to be POST_CHANGE so that the
-		// // // delta processor can handle it
-		// // //
-		// // manager.deltaState.getDeltaProcessor().overridenEventType
-		// // // = IResourceChangeEvent.POST_CHANGE;
-		// // // savedState
-		// // // .processResourceChangeEvents(manager.deltaState);
-		// // }
-		// // }
-		// // }, monitor);
-		// // } catch (CoreException e)
-		// // {
-		// // return e.getStatus();
-		// // }
-		// return Status.OK_STATUS;
-		// }
-		// };
-		// processSavedState.setSystem(true);
-		// processSavedState.setPriority(Job.SHORT); // process asap
-		// processSavedState.schedule();
-		// } catch (final RuntimeException e) {
-		// manager.shutdown();
-		// throw e;
-		// }
 		ErlLogger.debug("Started CORE");
 	}
 
