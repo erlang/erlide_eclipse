@@ -9,29 +9,15 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.osgi.service.prefs.BackingStoreException;
+import java.util.Collection;
 
-public abstract class DependencyLocation {
-	private static int gid = 1;
+public abstract class DependencyLocation extends CodePathLocation {
+	public abstract Collection<SourceLocation> getSources();
 
-	public static synchronized int newId() {
-		return gid++;
-	}
+	public abstract Collection<String> getIncludes();
 
-	private int id;
+	public abstract String getOutput();
 
-	public DependencyLocation() {
-		id = newId();
-	}
+	public abstract Collection<LibraryLocation> getLibraries();
 
-	public int getId() {
-		return id;
-	}
-
-	public abstract void load(IEclipsePreferences root)
-			throws BackingStoreException;
-
-	public abstract void store(IEclipsePreferences root)
-			throws BackingStoreException;
 }

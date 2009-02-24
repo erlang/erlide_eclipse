@@ -22,7 +22,7 @@ import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
-public final class SourceLocation extends DependencyLocation {
+public final class SourceLocation extends CodePathLocation {
 	private String directory;
 	private List<String> includePatterns = new ArrayList<String>();
 	private List<String> excludePatterns = new ArrayList<String>();

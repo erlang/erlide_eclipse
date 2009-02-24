@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -34,7 +36,8 @@ public final class ProjectLocation extends DependencyLocation {
 
 	@Override
 	public void load(IEclipsePreferences root) {
-		String projectName = root.get(ProjectPreferencesConstants.PROJECT, null);
+		String projectName = root
+				.get(ProjectPreferencesConstants.PROJECT, null);
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		project = workspace.getRoot().getProject(projectName);
 		Assert.isLegal(project != null,
@@ -45,6 +48,30 @@ public final class ProjectLocation extends DependencyLocation {
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.PROJECT, project.getName());
+	}
+
+	@Override
+	public Collection<String> getIncludes() {
+		// TODO Auto-generated method stub
+		return null; // ErlangCore.getModel().getErlangProject(project.getName()).getProperties();
+	}
+
+	@Override
+	public Collection<LibraryLocation> getLibraries() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getOutput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<SourceLocation> getSources() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

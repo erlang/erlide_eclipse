@@ -40,18 +40,22 @@ public final class LibraryLocation extends DependencyLocation {
 		}
 	}
 
+	@Override
 	public Collection<SourceLocation> getSources() {
 		return Collections.unmodifiableCollection(sources);
 	}
 
+	@Override
 	public Collection<String> getIncludes() {
 		return Collections.unmodifiableCollection(includes);
 	}
 
+	@Override
 	public String getOutput() {
 		return output;
 	}
 
+	@Override
 	public Collection<LibraryLocation> getLibraries() {
 		return Collections.unmodifiableCollection(libraries);
 	}
@@ -65,11 +69,13 @@ public final class LibraryLocation extends DependencyLocation {
 	public void store(IEclipsePreferences root) throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
-		IEclipsePreferences node = (IEclipsePreferences) root.node(ProjectPreferencesConstants.SOURCES);
+		IEclipsePreferences node = (IEclipsePreferences) root
+				.node(ProjectPreferencesConstants.SOURCES);
 		for (SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) node.node(loc.getDirectory()));
 		}
-		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils.packList(includes));
+		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
+				.packList(includes));
 		root.flush();
 	}
 

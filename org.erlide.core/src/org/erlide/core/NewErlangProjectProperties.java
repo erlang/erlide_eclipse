@@ -25,9 +25,8 @@ public class NewErlangProjectProperties {
 	private List<String> includes = new ArrayList<String>();
 	private String output;
 	private Map<String, String> compilerOptions = new HashMap<String, String>();
-	private List<ProjectLocation> projects = new ArrayList<ProjectLocation>();
-	private List<LibraryLocation> libraries = new ArrayList<LibraryLocation>();
-	private List<WeakReference<DependencyLocation>> codePathOrder = new ArrayList<WeakReference<DependencyLocation>>();
+	private List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
+	private List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
 	private String requiredRuntimeVersion;
 	private String backendNodeName;
 	private String backendCookie;
@@ -65,7 +64,7 @@ public class NewErlangProjectProperties {
 
 		LibraryLocation loc = new LibraryLocation(sloc, externalIncludes, null,
 				null);
-		libraries.add(loc);
+		dependencies.add(loc);
 	}
 
 	private List<SourceLocation> makeSourceLocations(
@@ -131,15 +130,33 @@ public class NewErlangProjectProperties {
 		return Collections.unmodifiableMap(compilerOptions);
 	}
 
+	public Collection<DependencyLocation> getDependencies() {
+		return Collections.unmodifiableCollection(dependencies);
+	}
+
 	public Collection<ProjectLocation> getProjects() {
-		return Collections.unmodifiableCollection(projects);
+		return Collections.unmodifiableCollection(filter(dependencies,
+				ProjectLocation.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <U, T extends U> Collection<T> filter(
+			Collection<U> dependencies2, Class<T> class1) {
+		List<T> result = new ArrayList<T>();
+		for (U oo : dependencies2) {
+			if (oo.getClass().equals(class1)) {
+				result.add((T) oo);
+			}
+		}
+		return result;
 	}
 
 	public Collection<LibraryLocation> getLibraries() {
-		return Collections.unmodifiableCollection(libraries);
+		return Collections.unmodifiableCollection(filter(dependencies,
+				LibraryLocation.class));
 	}
 
-	public Collection<WeakReference<DependencyLocation>> getCodePathOrder() {
+	public Collection<WeakReference<CodePathLocation>> getCodePathOrder() {
 		return Collections.unmodifiableCollection(codePathOrder);
 	}
 
