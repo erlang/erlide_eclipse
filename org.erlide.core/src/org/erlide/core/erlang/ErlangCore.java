@@ -571,9 +571,8 @@ public final class ErlangCore {
 				new DefaultScope().getNode("org.erlide.core").get(
 						"default_runtime", null), "c:/program files",
 				"c:/programs", "c:/", "c:/apps",
-				System.getProperty("user.home"), "/usr/lib/erlang",
-		// TODO Mac?!
-		};
+				System.getProperty("user.home"), "/usr", "/usr/local",
+				"/Applications" };
 		for (String loc : locations) {
 			Collection<File> roots = findRuntime(loc);
 			for (File root : roots) {
@@ -610,7 +609,8 @@ public final class ErlangCore {
 		File[] candidates = folder.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				return pathname.isDirectory()
-						&& pathname.getName().startsWith("erl");
+						&& (pathname.getName().startsWith("erl") || pathname
+								.getName().startsWith("Erl"));
 			}
 		});
 		for (File f : candidates) {
@@ -633,20 +633,20 @@ public final class ErlangCore {
 	 * Note: more options might be added in further releases.
 	 * 
 	 * <pre>
-	 *                           RECOGNIZED OPTIONS:
-	 *                           COMPILER / Generating Source Debug Attribute
-	 *                              When generated, this attribute will enable the debugger to present the
-	 *                              corresponding source code.
-	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.debug.sourceFile&quot;
-	 *                               - possible values:   { &quot;generate&quot;, &quot;do not generate&quot; }
-	 *                               - default:           &quot;generate&quot;
-	 *                           COMPILER / Edoc Comment Support
-	 *                              When this support is disabled, the compiler will ignore all Edoc problems options settings
-	 *                              and will not report any Edoc problem. It will also not find any reference in Edoc comment and
-	 *                              DOM AST Edoc node will be only a flat text instead of having structured tag elements.
-	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.doc.comment.support&quot;
-	 *                               - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
-	 *                               - default:           &quot;enabled&quot;
+	 * RECOGNIZED OPTIONS:
+	 * COMPILER / Generating Source Debug Attribute
+	 *    When generated, this attribute will enable the debugger to present the
+	 *    corresponding source code.
+	 *     - option id:         &quot;org.erlide.core.erlang.compiler.debug.sourceFile&quot;
+	 *     - possible values:   { &quot;generate&quot;, &quot;do not generate&quot; }
+	 *     - default:           &quot;generate&quot;
+	 * COMPILER / Edoc Comment Support
+	 *   When this support is disabled, the compiler will ignore all Edoc problems options settings
+	 *   and will not report any Edoc problem. It will also not find any reference in Edoc comment and
+	 *   DOM AST Edoc node will be only a flat text instead of having structured tag elements.
+	 *     - option id:         &quot;org.erlide.core.erlang.compiler.doc.comment.support&quot;
+	 *     - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
+	 *     - default:           &quot;enabled&quot;
 	 *                           COMPILER / Reporting Deprecation
 	 *                              When enabled, the compiler will signal use of deprecated API either as an
 	 *                              error or a warning.
@@ -704,16 +704,16 @@ public final class ErlangCore {
 	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocTags&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *                               - default:           &quot;ignore&quot;
-	 *                           COMPILER / Reporting Missing Edoc Comments
-	 *                              This is the generic control for the severity of missing Edoc comment problems.
-	 *                              When enabled, the compiler will issue an error or a warning when Edoc comments are missing.
+	 * COMPILER / Reporting Missing Edoc Comments
+	 *   This is the generic control for the severity of missing Edoc comment problems.
+	 *   When enabled, the compiler will issue an error or a warning when Edoc comments are missing.
 	 * &lt;br&gt;
-	 *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected Edoc;
-	 *                              also see the setting &quot;org.erlide.core.erlang.compiler.problem.missingEdocCommentsVisibility&quot;.
+	 *   Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected Edoc;
+	 *   also see the setting &quot;org.erlide.core.erlang.compiler.problem.missingEdocCommentsVisibility&quot;.
 	 * &lt;br&gt;
-	 *                               - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocComments&quot;
-	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-	 *                               - default:           &quot;ignore&quot;
+	 *     - option id:         &quot;org.erlide.core.erlang.compiler.problem.missingEdocComments&quot;
+	 *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
+	 *     - default:           &quot;ignore&quot;
 	 *                           COMPILER / Setting Compliance Level
 	 *                              Select the compliance level for the compiler. In &quot;R9&quot; mode, source and target settings
 	 *                              should not go beyond &quot;R9&quot; level.
@@ -784,15 +784,12 @@ public final class ErlangCore {
 	 *                               - option id:         &quot;org.erlide.core.erlang.circularClasspath&quot;
 	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot; }
 	 *                               - default:           &quot;error&quot;
-	 *                           ErlangCORE / Reporting Incompatible ERTS Level for Required Binaries
-	 *                              Indicate the severity of the problem reported when a project prerequisites another project
-	 *                              or library with an incompatible target ERTS level (e.g. project targeting R7 vm, but compiled against R10 libraries).
-	 *                               - option id:         &quot;org.erlide.core.erlang.incompatibleJDKLevel&quot;
-	 *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-	 *                               - default:           &quot;ignore&quot;
-	 * 
-	 * 
-	 * 
+	 * ErlangCORE / Reporting Incompatible ERTS Level for Required Binaries
+	 *   Indicate the severity of the problem reported when a project prerequisites another project
+	 *   or library with an incompatible target ERTS level (e.g. project targeting R7 vm, but compiled against R10 libraries).
+	 *     - option id:         &quot;org.erlide.core.erlang.incompatibleJDKLevel&quot;
+	 *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
+	 *     - default:           &quot;ignore&quot;
 	 * </pre>
 	 * 
 	 * @return a mutable table containing the default settings of all known
