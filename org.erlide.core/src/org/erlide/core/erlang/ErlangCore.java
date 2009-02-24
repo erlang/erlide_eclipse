@@ -539,9 +539,23 @@ public final class ErlangCore {
 				project.getName()).getProperties();
 	}
 
+	/**
+	 * If runtime is not set, try to locate one. The first one found as below is
+	 * set as default. All "obvious" runtimes found are stored.
+	 * <ul>
+	 * <li>A system property <code>erlide.runtime</code> can be set to point to
+	 * a location.</li>
+	 * <li>A preference in the default scope
+	 * <code>org.erlide.core/default_runtime</code> can be set to point to a
+	 * location.</li>
+	 * <li>Look for existing Erlang runtimes in a few obvious places and install
+	 * them, choosing a suitable one as default.</li>
+	 * </ul>
+	 * 
+	 */
 	public static void initializeRuntime() {
-		// TODO Auto-generated method stub
-
+		String[] defaultLocations = { "c:\\program files", "c:\\programs",
+				"c:\\", "/usr/lib/erlang", System.getenv("user.home") };
 	}
 
 	/**
