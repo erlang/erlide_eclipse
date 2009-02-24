@@ -4,10 +4,12 @@
 package org.erlide.ui.editors.erl.test;
 
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
@@ -70,6 +72,16 @@ public class TestAction extends TextEditorAction {
 			FunctionRef[] x = ErlangXref.functionUse(b, "erlide_open", "open",
 					4);
 			System.out.println(x);
+		}
+
+		Set<IErlModule> deps;
+		try {
+			deps = module.getDirectDependents();
+			System.out.println(deps.toString());
+			deps = module.getAllDependents();
+			System.out.println(deps.toString());
+		} catch (ErlModelException e) {
+			e.printStackTrace();
 		}
 
 	}
