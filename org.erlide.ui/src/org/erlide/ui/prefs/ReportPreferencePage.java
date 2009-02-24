@@ -9,23 +9,14 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.PreferencePage;
@@ -40,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.prefs.tickets.TicketInfo;
 
@@ -123,7 +115,7 @@ public class ReportPreferencePage extends PreferencePage implements
 	}
 
 	protected void postReport() {
-		final String location = getLocation();
+		final String location = ErlideUtil.getLocation();
 		final boolean attach = attachTechnicalDataButton.getSelection();
 		final String title = ftitle.getText();
 		final String contact = fcontact.getText();
@@ -135,8 +127,8 @@ public class ReportPreferencePage extends PreferencePage implements
 				String plog = "N/A";
 				String elog = "N/A";
 				if (attach) {
-					plog = fetchPlatformLog();
-					elog = fetchErlideLog();
+					plog = ErlideUtil.fetchPlatformLog();
+					elog = ErlideUtil.fetchErlideLog();
 				}
 				TicketInfo data = new TicketInfo(title, contact, body, plog,
 						elog);
@@ -154,23 +146,6 @@ public class ReportPreferencePage extends PreferencePage implements
 		locationLabel.setVisible(true);
 		responseLabel_1.setVisible(true);
 		sendButton.setEnabled(false);
-	}
-
-	String getLocation() {
-		String s;
-		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
-		} else {
-			s = "/proj/tecsas/SHADE/erlide/reports";
-		}
-		File dir = new File(s);
-		if (!dir.exists()) {
-			s = System.getProperty("user.home");
-		}
-		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-				.format(new Date());
-		return s + "/" + System.getProperty("user.name") + "_" + tstamp
-				+ ".txt";
 	}
 
 	void sendToDisk(String location, TicketInfo data) {
@@ -194,67 +169,9 @@ public class ReportPreferencePage extends PreferencePage implements
 		} catch (IOException e) {
 			ErlLogger.warn(e);
 		}
-
 	}
 
 	public void init(IWorkbench workbench) {
-	}
-
-	String fetchPlatformLog() {
-		List<String> result = new ArrayList<String>();
-		File log = Platform.getLogFileLocation().toFile();
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(log), "UTF-8"));
-			for (;;) {
-				String line = reader.readLine();
-				if (line == null) {
-					break;
-				}
-				line = line.trim();
-				if (line.length() == 0) {
-					continue;
-				}
-				if (line.startsWith("!SESSION ")) {
-					result.clear();
-				}
-				result.add(line);
-			}
-		} catch (Exception e) {
-			ErlLogger.warn(e);
-		}
-		StringBuffer buf = new StringBuffer();
-		for (String s : result) {
-			buf.append(s).append("\n");
-		}
-		return buf.toString();
-	}
-
-	String fetchErlideLog() {
-		StringBuffer result = new StringBuffer();
-		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toPortableString();
-		dir = (dir == null) ? "c:/" : dir;
-		File log = new File(dir + "_erlide.log");
-
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(log), "UTF-8"));
-			for (;;) {
-				String line = reader.readLine();
-				if (line == null) {
-					break;
-				}
-				line = line.trim();
-				if (line.length() == 0) {
-					continue;
-				}
-				result.append(line).append('\n');
-			}
-		} catch (Exception e) {
-			ErlLogger.warn(e);
-		}
-		return result.toString();
 	}
 
 }

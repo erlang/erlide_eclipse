@@ -1,10 +1,14 @@
 package org.erlide.runtime.backend.internal;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.Backend;
@@ -63,6 +67,33 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 						int v = fRuntime.waitFor();
 						final String msg = "Backend runtime %s terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
+
+						if ((v != 0) && ErlideUtil.isEricssonUser()) {
+							String plog = ErlideUtil.fetchPlatformLog();
+							String elog = ErlideUtil.fetchErlideLog();
+							String delim = "\n==================================\n";
+							File report = new File(ErlideUtil.getLocation());
+							try {
+								report.createNewFile();
+								OutputStream out = new FileOutputStream(report);
+								PrintWriter pw = new PrintWriter(out);
+								try {
+									pw.println(msg);
+									pw.println(System.getProperty("user.name"));
+									pw.println(delim);
+									pw.println(plog);
+									pw.println(delim);
+									pw.println(elog);
+								} finally {
+									pw.flush();
+									out.close();
+								}
+							} catch (IOException e) {
+								ErlLogger.warn(e);
+							}
+
+						}
+
 						backend.setExitStatus(v);
 					} catch (InterruptedException e) {
 						ErlLogger.warn("Backend watcher was interrupted");

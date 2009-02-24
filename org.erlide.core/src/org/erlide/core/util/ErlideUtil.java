@@ -10,25 +10,32 @@
  *******************************************************************************/
 package org.erlide.core.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
@@ -303,5 +310,79 @@ public class ErlideUtil {
 	public static String basenameWithoutExtension(final String m) {
 		final IPath p = new Path(m);
 		return withoutExtension(p.lastSegment());
+	}
+
+	public static String getLocation() {
+		String s;
+		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+		} else {
+			s = "/proj/tecsas/SHADE/erlide/reports";
+		}
+		File dir = new File(s);
+		if (!dir.exists()) {
+			s = System.getProperty("user.home");
+		}
+		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		return s + "/" + System.getProperty("user.name") + "_" + tstamp
+				+ ".txt";
+	}
+
+	public static String fetchErlideLog() {
+		StringBuffer result = new StringBuffer();
+		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+				.toPortableString();
+		dir = (dir == null) ? "c:/" : dir;
+		File log = new File(dir + "_erlide.log");
+	
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(log), "UTF-8"));
+			for (;;) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				line = line.trim();
+				if (line.length() == 0) {
+					continue;
+				}
+				result.append(line).append('\n');
+			}
+		} catch (Exception e) {
+			ErlLogger.warn(e);
+		}
+		return result.toString();
+	}
+
+	public static String fetchPlatformLog() {
+		List<String> result = new ArrayList<String>();
+		File log = Platform.getLogFileLocation().toFile();
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(log), "UTF-8"));
+			for (;;) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				line = line.trim();
+				if (line.length() == 0) {
+					continue;
+				}
+				if (line.startsWith("!SESSION ")) {
+					result.clear();
+				}
+				result.add(line);
+			}
+		} catch (Exception e) {
+			ErlLogger.warn(e);
+		}
+		StringBuffer buf = new StringBuffer();
+		for (String s : result) {
+			buf.append(s).append("\n");
+		}
+		return buf.toString();
 	}
 }
