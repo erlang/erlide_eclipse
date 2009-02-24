@@ -808,7 +808,7 @@ public class ErlModelManager implements IErlModelManager {
 
 		// optional behaviour
 		// possible value of index 0 is Compute
-		if (!ErlangCore.COMPUTE.equals(ErlangPlugin
+		if (!ErlangCore.COMPUTE.equals(ErlangCore
 				.getOption(ErlangCore.CORE_ERLANG_BUILD_ORDER))) {
 			return; // cannot be customized at project level
 		}
