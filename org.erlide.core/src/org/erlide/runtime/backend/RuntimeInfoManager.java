@@ -198,7 +198,9 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	public void addRuntime(RuntimeInfo rt) {
-		fRuntimes.put(rt.getName(), rt);
+		if (!fRuntimes.containsKey(rt.getName())) {
+			fRuntimes.put(rt.getName(), rt);
+		}
 		notifyListeners();
 	}
 

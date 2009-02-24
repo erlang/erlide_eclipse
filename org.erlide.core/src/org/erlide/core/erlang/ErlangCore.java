@@ -10,6 +10,12 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -26,12 +32,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
@@ -554,8 +562,63 @@ public final class ErlangCore {
 	 * 
 	 */
 	public static void initializeRuntime() {
-		String[] defaultLocations = { "c:\\program files", "c:\\programs",
-				"c:\\", "/usr/lib/erlang", System.getenv("user.home") };
+		if (getRuntimeInfoManager().getDefaultRuntime() != null) {
+			// TODO should we always run his check?
+			return;
+		}
+		String[] locations = {
+				System.getProperty("erlide.runtime"),
+				new DefaultScope().getNode("org.erlide.core").get(
+						"default_runtime", null), "c:/program files",
+				"c:/programs", "c:/", "c:/apps",
+				System.getProperty("user.home"), "/usr/lib/erlang",
+		// TODO Mac?!
+		};
+		for (String loc : locations) {
+			Collection<File> roots = findRuntime(loc);
+			for (File root : roots) {
+				RuntimeInfo rt = new RuntimeInfo();
+				rt.setOtpHome(root.getPath());
+				rt.setName(root.getName());
+				getRuntimeInfoManager().addRuntime(rt);
+			}
+		}
+		ArrayList<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
+				getRuntimeInfoManager().getRuntimes());
+		Collections.sort(list, new Comparator<RuntimeInfo>() {
+			public int compare(RuntimeInfo o1, RuntimeInfo o2) {
+				int x = -o1.getVersion().compareTo(o2.getVersion());
+				if (x != 0) {
+					return x;
+				}
+				return -o1.getName().compareTo(o2.getName());
+			}
+		});
+		getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
+
+	}
+
+	private static Collection<File> findRuntime(String loc) {
+		Collection<File> result = new ArrayList<File>();
+		if (loc == null) {
+			return result;
+		}
+		File folder = new File(loc);
+		if (folder == null || !folder.exists()) {
+			return result;
+		}
+		File[] candidates = folder.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return pathname.isDirectory()
+						&& pathname.getName().startsWith("erl");
+			}
+		});
+		for (File f : candidates) {
+			if (RuntimeInfo.validateLocation(f.getPath())) {
+				result.add(f);
+			}
+		}
+		return result;
 	}
 
 	/**
