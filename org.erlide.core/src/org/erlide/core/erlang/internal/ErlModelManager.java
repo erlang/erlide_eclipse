@@ -44,6 +44,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.ErlangCoreOptions;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlFolder;
@@ -808,8 +809,8 @@ public class ErlModelManager implements IErlModelManager {
 
 		// optional behaviour
 		// possible value of index 0 is Compute
-		if (!ErlangCore.COMPUTE.equals(ErlangCore
-				.getOption(ErlangCore.CORE_ERLANG_BUILD_ORDER))) {
+		if (!ErlangCoreOptions.COMPUTE.equals(ErlangCore
+				.getOption(ErlangCoreOptions.CORE_ERLANG_BUILD_ORDER))) {
 			return; // cannot be customized at project level
 		}
 
