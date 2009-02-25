@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"
+            fastViewWidthRatio="0.40"
+            id="org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"
+            name="BTErl">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate"
+            id="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate"
+            modes="run, debug"
+            name="BTErl">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationTabGroup"
+            id="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationTabGroup"
+            type="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate">
+      </launchConfigurationTabGroup>
+   </extension>
+</plugin>

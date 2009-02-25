@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: org.erlide.testing
+Bundle-SymbolicName: org.erlide.testing;singleton:=true
 Bundle-Version: 0.3.101
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
@@ -11,11 +11,18 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.jinterface,
  org.erlide.core,
  org.erlide.ui,
- org.junit4
+ org.junit4,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui;bundle-version="3.3.2",
+ org.eclipse.ui;bundle-version="3.3.1"
 Bundle-ClassPath: erlide-testing.jar
 Export-Package: org.erlide.core.preferences,
  org.erlide.runtime.backend,
  org.erlide.testing,
  org.erlide.testing.erlang,
+ org.erlide.testing.framework,
+ org.erlide.testing.framework.launcher,
+ org.erlide.testing.framework.model,
+ org.erlide.testing.framework.ui,
  org.erlide.testing.java
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
