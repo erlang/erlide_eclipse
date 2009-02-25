@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -13,7 +11,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.ui.NewModuleNameInputPage;
-import org.erlide.wrangler.refactoring.util.NameChecker;
 
 public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 
@@ -60,9 +57,6 @@ public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 			gridData.horizontalSpan = 2;
 			moduleCombo.setLayoutData(gridData);
 
-			if (moduleCombo.getItemCount() > 0)
-				moduleCombo.select(0);
-
 			moduleCombo.addSelectionListener(new SelectionListener() {
 
 				public void widgetDefaultSelected(SelectionEvent e) {
@@ -72,8 +66,12 @@ public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 					refac.setNewName(moduleCombo.getText());
 					setPageComplete(true);
 				}
-
 			});
+
+			/*
+			 * if (moduleCombo.getItemCount() > 0) moduleCombo.select(0);
+			 */
+
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,24 +91,20 @@ public class TargetModuleNameInputPage extends NewModuleNameInputPage {
 
 	@Override
 	protected void initListeners() {
-		newDataText.addModifyListener(new ModifyListener() {
-
-			public void modifyText(ModifyEvent e) {
-				String s = newDataText.getText();
-				if (s.length() == 0) {
-					setPageComplete(false);
-					setErrorMessage(null);
-				} else if (!NameChecker.checkIsAtom(s)) {
-					setPageComplete(false);
-					setErrorMessage("Module name must be an atom!");
-				} else {
-					setErrorMessage(null);
-					setPageComplete(true);
-				}
-
-			}
-
-		});
+		/*
+		 * newDataText.addModifyListener(new ModifyListener() {
+		 * 
+		 * public void modifyText(ModifyEvent e) { String s =
+		 * newDataText.getText(); if (s.length() == 0) { setPageComplete(false);
+		 * setErrorMessage(null); } else if (!NameChecker.checkIsAtom(s)) {
+		 * setPageComplete(false);
+		 * setErrorMessage("Module name must be an atom!"); } else {
+		 * setErrorMessage(null); setPageComplete(true); }
+		 * 
+		 * }
+		 * 
+		 * });
+		 */
 	}
 
 }
