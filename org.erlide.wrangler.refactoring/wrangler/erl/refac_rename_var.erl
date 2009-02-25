@@ -43,7 +43,7 @@
 
 -export([pre_cond_check/4, rename/3]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% =====================================================================
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
@@ -91,7 +91,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 							    refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]),
 							    {ok, "Refactor succeeded"};
 							eclipse ->
-							    {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST2)}]}
+							    {ok, [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST2)}]}
 						    end 
 					    end
 				    end;
@@ -101,7 +101,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					    refac_util:write_refactored_files([{{FName, FName}, AnnAST1}]),
 					    {ok, "Refactor succeeded"};
 					_ ->
-					    {ok, [{FName, FName, refac_prettypr:print_ast(AnnAST1)}]}  
+					    {ok, [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST1)}]}  
 				    end
 			    end
 		    end;

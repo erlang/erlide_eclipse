@@ -20,7 +20,7 @@
 
 -behaviour(gen_server).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% API
 -export([start_callgraph_server/0, get_callgraph/1, get_sccs_including_fun/2]).

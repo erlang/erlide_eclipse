@@ -24,7 +24,7 @@
 -export([fun_extraction/5, fun_extraction_eclipse/5]).
 %% -export([side_cond_analysis/4, vars_to_export/4]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% =============================================================================================
 %% @spec new_fun(FileName::filename(), Start::Pos, End::Pos, NewFunName::string())-> term()
 %%         
@@ -59,7 +59,7 @@ fun_extraction(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName,TabWid
 				    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
 				    {ok, "Refactor succeeded"};
 				eclipse ->
-				    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+				    Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 				    {ok, Res}
 			    end;
 			{error, Reason} -> {error, Reason}

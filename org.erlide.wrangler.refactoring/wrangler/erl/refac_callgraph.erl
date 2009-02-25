@@ -11,7 +11,7 @@
 
 -export([construct/1]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 
 %%-spec(construct/1::(dir())-> {scc_order(),external_calls()}).

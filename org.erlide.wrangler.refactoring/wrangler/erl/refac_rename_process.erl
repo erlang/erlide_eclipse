@@ -24,7 +24,7 @@
 
 -export([rename_process/6, rename_process_eclipse/6, rename_process_1/5, rename_process_1_eclipse/5]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %%-spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
 %%	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
@@ -60,7 +60,8 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 							    [ChangedFiles]),
 						  {ok, ChangedFiles};
 					      eclipse ->
-						  Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, refac_prettypr:print_ast(AST)} end, Results),
+						  Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName,
+												    refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results),
 						  {ok, Res}
 					  end;
 				      undecidables -> {undecidables, atom_to_list(ProcessName)};
@@ -97,7 +98,8 @@ rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWid
 		      [ChangedFiles]),
 	    {ok, ChangedFiles};
 	eclipse ->
-	    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, refac_prettypr:print_ast(AST)} end, Results),
+	    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, 
+							      refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results),
 	    {ok, Res}
     end.
 

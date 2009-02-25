@@ -45,7 +45,7 @@
 
 -export([register_pid/6, register_pid_eclipse/6, register_pid_1/9, register_pid_2/8]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% ==============================================================================================================
 %% @spec register_pid(FileName::filename(), Start::Pos, End::Pos, RegName::string(),SearchPaths::[dir()])-> term()
@@ -69,41 +69,42 @@ register_pid(FName, Start={Line1, Col1}, End={Line2, Col2}, RegName, SearchPaths
 		true ->	{ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
 				case pos_to_spawn_match_expr(AnnAST, Start, End) of
 					{ok, _MatchExpr1} ->
-						{value, {module, ModName}} = lists:keysearch(module, 1, Info),
-						RegName1 = list_to_atom(RegName), 
-						_Res=refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),
-						%% get the AST with pid information.
-						{ok, {AnnAST1,_Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
-						case pos_to_spawn_match_expr(AnnAST1, Start, End) of 
-							{ok, MatchExpr} ->
-								case pre_cond_check(ModName,AnnAST1, Start, MatchExpr, RegName1, Info, SearchPaths, TabWidth) of 
-									ok -> 
-										Pid = refac_syntax:match_expr_pattern(MatchExpr),
-										case do_register(FName, AnnAST1, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of 
-											{ok, Results} ->
-												case Editor of 
-													emacs ->
-														refac_util:write_refactored_files(Results),
-														ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-														?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
-																	 [ChangedFiles]),
-														{ok, ChangedFiles};
-													eclipse ->
-														Res = lists:map(fun({{OldFName, NewFName}, AST}) -> 
-																				{OldFName, NewFName, refac_prettypr:print_ast(AST)} end, Results),
-														{ok, Res}
-												end;
-											{error, Reason} -> {error, Reason}
-										end;	
-									{unknown_pnames, _UnKnownPNames, RegPids} -> {unknown_pnames, RegPids};
-									{unknown_pids, UnKnownPids} ->{unknown_pids, UnKnownPids};
-									{error, Reason} -> {error, Reason}
+					{value, {module, ModName}} = lists:keysearch(module, 1, Info),
+					RegName1 = list_to_atom(RegName), 
+					_Res=refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),
+					%% get the AST with pid information.
+					{ok, {AnnAST1,_Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
+					case pos_to_spawn_match_expr(AnnAST1, Start, End) of 
+					    {ok, MatchExpr} ->
+						case pre_cond_check(ModName,AnnAST1, Start, MatchExpr, RegName1, Info, SearchPaths, TabWidth) of 
+						    ok -> 
+							Pid = refac_syntax:match_expr_pattern(MatchExpr),
+							case do_register(FName, AnnAST1, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of 
+							    {ok, Results} ->
+								case Editor of 
+								    emacs ->
+									refac_util:write_refactored_files(Results),
+									ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
+									?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
+										     [ChangedFiles]),
+									{ok, ChangedFiles};
+								    eclipse ->
+									Res = lists:map(fun({{OldFName, NewFName}, AST}) -> 
+												{OldFName, NewFName, 
+												 refac_prettypr:print_ast(refac_util:file_format(OldFName),AST)} end, Results),
+									{ok, Res}
 								end;
-							{error, Reason} -> {error, Reason}
+							    {error, Reason} -> {error, Reason}
+							end;	
+						    {unknown_pnames, _UnKnownPNames, RegPids} -> {unknown_pnames, RegPids};
+						    {unknown_pids, UnKnownPids} ->{unknown_pids, UnKnownPids};
+						    {error, Reason} -> {error, Reason}
 						end;
-					{error, Reason} -> {error, Reason} 
+					    {error, Reason} -> {error, Reason}
+					end;
+				    {error, Reason} -> {error, Reason} 
 				end;
-		false -> {error, "Invalid process name."}
+	false -> {error, "Invalid process name."}
     end.
 
 

@@ -39,7 +39,7 @@
 
 -export([batch_rename_mod/3]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% =====================================================================
 %% @spec batch_rename_mod(OldNamePattern::string(), NewNamePattern::string(), 

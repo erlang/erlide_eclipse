@@ -30,7 +30,7 @@
 	 non_tail_recursive_servers_in_file/3, non_tail_recursive_servers_in_dirs/2,
 	 not_flush_unknown_messages_in_file/3, not_flush_unknown_messages_in_dirs/2]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 -define (not_sure_atom,'*wrangler-not-able-to-decide*').
 %%==========================================================================================

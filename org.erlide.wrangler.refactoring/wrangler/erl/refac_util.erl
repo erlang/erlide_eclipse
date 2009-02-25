@@ -36,25 +36,25 @@
 
 -export([ghead/2, glast/2, to_lower/1, to_upper/1, try_evaluation/1,
          is_var_name/1, is_fun_name/1, is_expr/1, is_pattern/1,
-		 is_exported/2, inscope_funs/1,
+	 is_exported/2, inscope_funs/1,
          once_tdTU/3, stop_tdTP/3, full_buTP/3,
          pos_to_fun_name/2, pos_to_fun_def/2,pos_to_var_name/2,
          pos_to_expr/3, pos_to_expr_list/5, pos_to_syntax_units/6, 
-		 pos_to_syntax_units/4, expr_to_fun/2,get_range/1,get_toks/1, concat_toks/1, tokenize/3,
+	 pos_to_syntax_units/4, expr_to_fun/2,get_range/1,get_toks/1, concat_toks/1, tokenize/3,
          get_var_exports/1, get_env_vars/1, get_bound_vars/1, get_free_vars/1, 
          get_client_files/2, expand_files/2, get_modules_by_file/1,
          reset_attrs/1, update_ann/2,parse_annotate_file_1/4, parse_annotate_file/3,
          parse_annotate_file/4,write_refactored_files/1,
          build_lib_side_effect_tab/1, build_local_side_effect_tab/2,
-		 build_scc_callgraph/1,build_callercallee_callgraph/1, has_side_effect/3,
-         callback_funs/1,auto_imported_bifs/0, called_funs/3]).
+	 build_scc_callgraph/1,build_callercallee_callgraph/1, has_side_effect/3,
+         callback_funs/1,auto_imported_bifs/0, called_funs/3, file_format/1]).
 
 -export([eunit_is_used/2]).
 -export([analyze_free_vars/1]).
 
 -export([update_var_define_locations/1]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% =====================================================================
 %% @spec(ghead(Info::string(),List::[any()]) -> any()).
@@ -275,10 +275,9 @@ pos_to_fun_def(Node, Pos) ->
 pos_to_fun_def_1(Node, Pos) ->
     case refac_syntax:type(Node) of
       function ->
-	  {S, E} = get_range(Node),
-	    io:format("Range:\n~p\n", [{S,E}]),
-	  if (S =< Pos) and (Pos =< E) ->
-		  {Node, true};
+	    {S, E} = get_range(Node),
+	    if (S =< Pos) and (Pos =< E) ->
+		    {Node, true};
 	     true -> {[], false}
 	  end;
 	_ -> {[], false}
@@ -801,18 +800,23 @@ get_modules_by_file([], Acc) -> lists:reverse(Acc).
 %%-spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> ok).
 write_refactored_files(Files) ->
     F = fun ({{File1, File2}, AST}) ->
+		FileFormat = file_format(File1),
 		if File1 /= File2 ->
 		       file:delete(File1);
 		   true -> ok
 		end,
-		file:write_file(File2, list_to_binary(refac_prettypr:print_ast(AST)))
+		file:write_file(File2, list_to_binary(refac_prettypr:print_ast(FileFormat, AST)))
 	end,
     Files1 = lists:map(fun ({{OldFileName, NewFileName}, _}) ->
 			       {ok, Bin} = file:read_file(OldFileName), {{OldFileName, NewFileName}, Bin}
 		       end,
 		       Files),
     wrangler_undo_server:add_to_history(Files1),
-    lists:foreach(F, Files).
+    Res =lists:map(F, Files),
+    case lists:all(fun(R) -> R == ok end, Res) of 
+	true -> ok;
+	_ -> throw({error, "Wrangler failed to rewrite the refactored files."})
+    end.
 
 %% =====================================================================
 %% @spec tokenize(File::filename()) -> [token()]
@@ -957,8 +961,8 @@ parse_annotate_file_1(FName, false, SearchPaths, TabWidth) ->
 
 %%-spec(add_tokens(FName::filename(), SyntaxTree::syntaxTree(), integer()) -> syntaxTree()).
 add_tokens(FName, SyntaxTree, TabWidth) ->
-	Toks = tokenize(FName, true, TabWidth),
-	Fs = refac_syntax:form_list_elements(SyntaxTree),
+    Toks = tokenize(FName, true, TabWidth),
+    Fs = refac_syntax:form_list_elements(SyntaxTree),
     NewFs = do_add_tokens(Toks, Fs),
     refac_syntax:copy_attrs(SyntaxTree, refac_syntax:form_list(NewFs)).
 
@@ -1055,7 +1059,7 @@ annotate_bindings(FName, AST, Info, AnnotateLevel, TabWidth) ->
 
 %% Add  start and end location to each AST node.
 add_range(FName, AST, TabWidth) ->
-    Toks = tokenize(FName, false,  TabWidth),
+    Toks = tokenize(FName, true,  TabWidth),    
     full_buTP(fun do_add_range/2, AST, Toks).
 
 do_add_range(Node, Toks) ->
@@ -1068,8 +1072,18 @@ do_add_range(Node, Toks) ->
 	  Len = length(refac_syntax:variable_literal(Node)),
 	  refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
       atom ->
-	  Len = length(atom_to_list(refac_syntax:atom_value(Node))),
-	  refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
+	  Lit = refac_syntax:atom_literal(Node),
+	  case hd(Lit) of
+	      39 -> Toks1 = lists:dropwhile(fun (T) ->token_loc(T) =< {L,C} end, Toks),
+		    case Toks1 of   %% this should not happen;
+			[] -> Len = length(atom_to_list(refac_syntax:atom_value(Node))),  %% This is problematic!!
+			      refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
+			_ -> {L2, C2} = token_loc(hd(Toks1)),
+			     refac_syntax:add_ann({range, {{L, C}, {L2, C2 - 1}}}, Node)
+		    end;			
+              _ -> Len = length(atom_to_list(refac_syntax:atom_value(Node))),  %% This is problematic!!
+	           refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node)
+          end;
       operator ->
 	  Len = length(atom_to_list(refac_syntax:atom_value(Node))),
 	  refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
@@ -1079,26 +1093,23 @@ do_add_range(Node, Toks) ->
 	  Len = length(refac_syntax:integer_literal(Node)),
 	  refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
       string ->
-	    Toks1 = lists:dropwhile(fun (T) -> (token_loc(T) < {L,C})
-				    or (case T of {string, _, _} -> false;
-					    _  -> true
-					end)
-				    end, Toks),
-	    Toks2 = lists:takewhile(fun(T) -> case T of 
-						 {string, _, _Str} -> true;
-						 _ -> false
-					     end
-				   end, Toks1),
-	   case Toks2 of 
-	       [] ->  %% This should not happen.
-		   Len = length(refac_syntax:string_literal(Node)),
-		   refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
-	       _ -> {string, {L3, C3}, LastStr} = lists:last(Toks2),
-		    R = {token_loc(hd(Toks2)), {L3, C3+length(io_lib:write_string(LastStr))-1}},
-		    Node1 = refac_syntax:add_ann({range, R}, Node),
-		    refac_syntax:add_ann({toks, Toks2}, Node1)
-	       end;
-	float ->
+	    Toks1 = lists:dropwhile(fun (T) ->token_loc(T) < {L,C} end, Toks),
+	    {Toks21, Toks22} = lists:splitwith(fun(T) -> is_string(T) orelse is_whitespace_or_comment(T) end, Toks1),
+	    Toks3 = lists:filter(fun(T) -> is_string(T) end, Toks21),
+	    case Toks3 of 
+		[] ->  %% This should not happen.
+		    Len = length(refac_syntax:string_literal(Node)),
+		    refac_syntax:add_ann({range, {{L, C}, {L, C + Len - 1}}}, Node);
+		_ ->Toks4 = lists:takewhile(fun(T) -> is_whitespace_or_comment(T) end, lists:reverse(Toks21)),
+		    {L3, C3} =case Toks4 of
+				  [] -> token_loc(hd(Toks22));
+				  _ -> token_loc(lists:last(Toks4))
+			      end,
+		     R = {token_loc(hd(Toks21)), {L3, C3-1}},
+		     Node1 = refac_syntax:add_ann({range, R}, Node),
+		     refac_syntax:add_ann({toks, Toks3}, Node1)
+	    end;
+      float ->
 	    refac_syntax:add_ann({range, {{L, C}, {L, C}}}, Node); %% This is problematic.
       underscore -> refac_syntax:add_ann({range, {{L, C}, {L, C}}}, Node);
       eof_marker -> refac_syntax:add_ann({range, {{L, C}, {L, C}}}, Node);
@@ -2212,6 +2223,30 @@ eunit_is_used(FileName, SearchPaths) ->
 	     true    %% rather conservative here.
     end.
 	
-  
+is_whitespace_or_comment({whitespace, _, _}) ->
+    true;
+is_whitespace_or_comment({comment, _, _}) ->
+    true;
+is_whitespace_or_comment(_) -> false.
 	
     
+is_string({string, _, _}) ->
+    true;
+is_string(_) -> false.
+
+
+file_format(File) ->  
+    {ok, Bin} = file:read_file(File),
+    S = erlang:binary_to_list(Bin),
+    case string:str(S, "\r\n") of 
+	0 ->
+	    case string:str(S, "\r") of 
+		0 ->
+		    case string:str(S, "\n") of
+			0 -> unknown;
+			_ -> unix
+		    end;
+		_ -> mac
+	    end;
+	_ -> dos
+    end.

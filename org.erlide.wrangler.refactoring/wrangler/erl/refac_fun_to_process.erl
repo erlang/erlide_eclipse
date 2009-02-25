@@ -23,7 +23,7 @@
 
 -export([fun_to_process/6, fun_to_process_eclipse/6, fun_to_process_1/6, fun_to_process_1_eclipse/6]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 
 %% =====================================================================
@@ -73,7 +73,7 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 						 eclipse ->
 						     Results1 = [{{FName, FName}, AnnAST2} | Results],
 						     Res = lists:map(fun({{FName1, NewFName1}, AST}) ->
-									     {FName1, NewFName1, refac_prettypr:print_ast(AST)} end, Results1),
+									     {FName1, NewFName1, refac_prettypr:print_ast(refac_util:file_format(FName1),AST)} end, Results1),
 						     {ok, Res}
 					     end;
 					 false ->
@@ -81,7 +81,7 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 						 emacs ->
 						     refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]), {ok, [FName]};
 	 					 eclipse ->
-						     Res = [{FName, FName, refac_prettypr:print_ast(AnnAST2)}],
+						     Res = [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST2)}],
 						     {ok, Res}
 					     end
 				     end;
@@ -123,7 +123,7 @@ fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) -
 		eclipse ->
 		    Results1 = [{{FName, FName}, AnnAST2} | Results],
 		    Res = lists:map(fun({{FName1, NewFName1}, AST}) ->
-					    {FName1, NewFName1, refac_prettypr:print_ast(AST)} end, Results1),
+					    {FName1, NewFName1, refac_prettypr:print_ast(refac_util:file_format(FName1),AST)} end, Results1),
 		    {ok, Res}
 	    end;
 	false ->
@@ -132,7 +132,7 @@ fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) -
 		    refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]), 
 		    {ok, [FName]};		     
 		eclipse ->
-		    Res = [{FName, FName, refac_prettypr:print_ast(AnnAST2)}],
+		    Res = [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST2)}],
 		    {ok, Res}
 	    end
     end.

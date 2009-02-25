@@ -45,7 +45,7 @@
 
 %%-export([rename_fun_1/5, do_rename_fun/5]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% =====================================================================
 %% @spec rename_fun(FileName::filename(), Line::integer(), Col::integer(), NewName::string(), SearchPaths::[string()])
 %% -> term()
@@ -65,7 +65,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_fun( ~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths, TabWidth]),
     case refac_util:is_fun_name(NewName) of
       true ->
-	  {ok, {AnnAST, Info}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+	    {ok, {AnnAST, Info}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
 	    NewName1 = list_to_atom(NewName),
 	    {ok, ModName} = get_module_name(Info),
 	    Inscope_Funs = lists:map(fun ({_M, F, A}) -> {F, A} end, refac_util:inscope_funs(Info)),
@@ -114,7 +114,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 									eclipse ->
 									    Results1 = [{{FileName, FileName}, AnnAST1} | Results],
 									    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, 
-															      refac_prettypr:print_ast(AST)} end, Results1),
+										       refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results1),
 									    {ok, Res}
 								    end
 								catch 
@@ -125,7 +125,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 								emacs ->
 								    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]), {ok, [FileName]};
 								eclipse ->
-								    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+								    Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 								    {ok, Res}
 							    end
 						    end
@@ -134,7 +134,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 				_ -> case Editor of 
 					 emacs -> refac_util:write_refactored_files([{{FileName, FileName}, AnnAST}]), {ok, []};
 					 eclipse ->
-					     Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST)}],
+					     Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST)}],
 					     {ok, Res}
 				     end
 			    end;

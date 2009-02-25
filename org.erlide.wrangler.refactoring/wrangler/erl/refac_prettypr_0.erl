@@ -47,7 +47,7 @@
 	 nest/2, par/1, par/2, sep/1, text/1, null_text/1, text_par/1,
 	 text_par/2]).
 
--export([layout/1]).%% added by Huiqing Li
+-export([layout/2]).%% added by Huiqing Li
 
 -record(text, {s}).
 -record(nest, {n, d}).
@@ -477,7 +477,7 @@ format(D, W, R) ->
     case best(D, W, R) of
 	empty ->
 	    throw(no_layout);
-	L -> layout(L)
+	L -> layout(L, unix)
     end.
 
 
@@ -513,16 +513,23 @@ format(D, W, R) ->
 %% The function `layout/1' performs the final transformation to a single
 %% flat string from the restricted document form.
 
-layout(L) ->
-    lists:reverse(layout(0, L, [])).
+layout(L, FileFormat) ->
+    lists:reverse(layout(0, L, FileFormat,  [])).
 
-layout(N, #above{d1 = #text{s = S}, d2 = L}, Cs) ->
-    layout(N, L, [$\n | flatrev(string_chars(S), indent(N, Cs))]);
-layout(N, #nest{n = N1, d = L}, Cs) ->
-    layout(N + N1, L, Cs);
-layout(N, #text{s = S}, Cs) ->
+layout(N, #above{d1 = #text{s = S}, d2 = L}, D,  Cs) ->
+    case D of 
+	dos ->
+	    layout(N, L, D, [$\n, $\r | flatrev(string_chars(S), indent(N, Cs))]);
+	mac ->
+	    layout(N, L, D, [$\r | flatrev(string_chars(S), indent(N, Cs))]);
+	_->
+	    layout(N, L, D, [$\n | flatrev(string_chars(S), indent(N, Cs))])
+    end;
+layout(N, #nest{n = N1, d = L}, D, Cs) ->
+    layout(N + N1, L, D, Cs);
+layout(N, #text{s = S}, _D, Cs) ->
     flatrev(string_chars(S), indent(N, Cs));
-layout(_N, null, Cs) ->
+layout(_N, null, _D, Cs) ->
     Cs.
 
 indent(N, Cs) when N >= 8 ->

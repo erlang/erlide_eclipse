@@ -23,7 +23,7 @@
 
 -export([instrument_prog/3, uninstrument_prog/3]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% =============================================================================================
 %% @spec intrument_prog(FileName::filename(), SearchPaths::[filename()])-> term()
 %%         

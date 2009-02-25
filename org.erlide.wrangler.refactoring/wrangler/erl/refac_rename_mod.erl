@@ -40,7 +40,7 @@
 
 -import(refac_rename_fun, [check_atoms/2]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% =====================================================================
 %% @spec rename_mod(FileName::filename(), NewName::string(), SearchPaths::[string()])-> term()
 %%   
@@ -55,7 +55,7 @@ rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
 rename_mod(FileName, NewName,SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p).\n", [?MODULE, FileName, NewName, SearchPaths]),
+    ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p, ~p).\n", [?MODULE, FileName, NewName, SearchPaths, TabWidth]),
     case refac_util:is_fun_name(NewName) of   %% module name and function name follow the same rules.
       true ->
           {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
@@ -85,7 +85,8 @@ rename_mod(FileName, NewName,SearchPaths, TabWidth, Editor) ->
 					    {ok, ChangedFiles};
 					eclipse ->
 					    Results1 =[{{FileName, NewFileName}, AnnAST1}|Results],
-					    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, refac_prettypr:print_ast(AST)} end, Results1),
+					    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, 
+											      refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results1),
 					    {ok, Res}
 				    end;
 				true -> {error, "The new module/file name has been used!"}

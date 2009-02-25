@@ -27,7 +27,7 @@
 
 -export([tuple_to_record_eclipse/9]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %%-spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
 %%	     {error, string()} | {ok, [filename()]}).
@@ -86,7 +86,7 @@ tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString,
 	    eclipse ->
 		Results1 = [{{File, File}, AnnAST1} | Results],
 		Res = lists:map(fun ({{FName, NewFName}, AST}) ->
-					{FName, NewFName, refac_prettypr:print_ast(AST)}
+					{FName, NewFName, refac_prettypr:print_ast(refac_util:file_format(FName),AST)}
 				end,
 				Results1),
 		{ok, Res}
@@ -97,7 +97,7 @@ tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString,
 		refac_util:write_refactored_files([{{File, File}, AnnAST1}]),
 		?wrangler_io("WARNING: Please check the implicit function calls!",[]),
 		{ok, [File]};
-	    eclipse -> Res = [{File, File, refac_prettypr:print_ast(AnnAST1)}], {ok, Res}
+	    eclipse -> Res = [{File, File, refac_prettypr:print_ast(refac_util:file_format(File),AnnAST1)}], {ok, Res}
 	  end
     end.
 

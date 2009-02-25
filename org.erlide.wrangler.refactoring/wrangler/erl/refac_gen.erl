@@ -75,7 +75,7 @@
 
 -module(refac_gen).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 -export([generalise/6, generalise_eclipse/6]).
 
@@ -125,7 +125,7 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 								refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
 								{ok, "Refactor succeeded"};
 							    eclipse  ->
-								Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+								Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 								{ok, Res}
 							end
 						end;	     
@@ -229,7 +229,7 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, E
 	    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST2}]),
 	    {ok, "Refactor succeeded"};
 	eclipse ->
-	    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST2)}],
+	    Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST2)}],
 	    {ok, Res}
     end.
 
@@ -251,7 +251,7 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Tab
 			refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
 			{ok, "Refactor succeeded"};
 		    eclipse ->
-			Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+			Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 			{ok, Res}
 		end;
 	true -> AnnAST1=gen_fun(AnnAST, ParName1, 
@@ -261,7 +261,7 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Tab
 			refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
 			{ok, "Refactor succeeded"};
 		    eclipse ->
-			Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+			Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 			{ok, Res}
 		end;
 	unknown ->

@@ -48,7 +48,7 @@
 	 fold_expression_1_eclipse/5,fold_expression_2_eclipse/7,
 	 new_macro_eclipse/6]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% ====================================================================================================
 %% @doc Rename a variable with a new name supplied by the user.

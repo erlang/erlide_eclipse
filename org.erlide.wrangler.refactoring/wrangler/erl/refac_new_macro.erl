@@ -29,7 +29,7 @@
 
 -export([replace_expr_with_macro/3]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% =============================================================================================
 
@@ -54,7 +54,7 @@ new_macro(FileName, Start={SLine, SCol}, End={ELine, ECol}, NewMacroName, Search
 				 emacs ->
 					 refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),
 					 {ok, "Refactor succeeded"};
-				 eclipse -> Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}], {ok, Res}
+				 eclipse -> Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}], {ok, Res}
 			 end;
 		 {error, Reason} -> {error, Reason}
 	 end.

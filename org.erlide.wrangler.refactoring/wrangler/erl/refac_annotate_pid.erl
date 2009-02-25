@@ -29,7 +29,7 @@
 
 -export([ann_pid_info/2]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %%-spec(ann_pid_info/2::([dir()], integer())->ok).
 ann_pid_info(DirList, TabWidth) ->

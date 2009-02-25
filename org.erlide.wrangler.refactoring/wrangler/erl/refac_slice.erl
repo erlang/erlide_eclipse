@@ -31,7 +31,7 @@
 
 -export([forward_slice/5, backward_slice/5]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %%% TOdo: rename process name to 'wrangler_forward_slicer'.
 %% TODO: extend the slicer to go into the inner of case/receive/if exprs.

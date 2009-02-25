@@ -31,7 +31,7 @@
 %% 3) ****when an erlang file does not compile, the detector should still return the result before trim_clones.
 
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %% minimal number of tokens.
 -define(DEFAULT_CLONE_LEN, 20).

@@ -20,7 +20,7 @@
 -module(refac_module_graph).
 -export([module_graph/1, collect_called_modules/1]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %%-spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
 module_graph(SearchPaths) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),

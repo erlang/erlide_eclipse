@@ -26,7 +26,7 @@
 
 -export([tuple_funpar_eclipse/6]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 
 %%-spec(tuple_funpar/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
 %%	     {error, string()} | {ok, [filename()]}).
@@ -133,7 +133,7 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
 	    eclipse ->
 		Results1 = [{{File, File}, AnnAST2} | Results],
 		Res = lists:map(fun ({{FName, NewFName}, AST}) ->
-					{FName, NewFName, refac_prettypr:print_ast(AST)}
+					{FName, NewFName, refac_prettypr:print_ast(refac_util:file_format(FName),AST)}
 				end,
 				Results1),
 		{ok, Res}
@@ -142,7 +142,7 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
 	  case Editor of
 	    emacs ->
 		refac_util:write_refactored_files([{{File, File}, AnnAST2}]), {ok, [File]};
-	    eclipse -> Res = [{File, File, refac_prettypr:print_ast(AnnAST2)}], {ok, Res}
+	    eclipse -> Res = [{File, File, refac_prettypr:print_ast(refac_util:file_format(File),AnnAST2)}], {ok, Res}
 	  end
     end.
 

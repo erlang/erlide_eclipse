@@ -48,7 +48,7 @@
 	 cursor_at_fun_clause/5]).
 
 -export([expr_unification/2]).
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% =============================================================================================
 %% @spec fold_expression(FileName::filename(), Line::integer(), Col::integer())-> term()
 %% =============================================================================================        
@@ -188,7 +188,7 @@ fold_expression_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, 
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
     AnnAST1= fold_expression_1_eclipse_1(AnnAST, Body, RangeNewExpList),
-    Res = [{FileName, FileName, refac_prettypr:print_ast(AnnAST1)}],
+    Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
     {ok, Res}.
 
 

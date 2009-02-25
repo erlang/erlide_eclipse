@@ -20,7 +20,7 @@
 
 -export([expr_search/4, var_binding_structure/1]).
 
--include("../hrl/wrangler.hrl").
+-include("../include/wrangler.hrl").
 %% ================================================================================================
 %% @doc Search a user-selected expression or a sequence of expressions from an Erlang source file.
 %%

@@ -39,7 +39,7 @@
 	 get_ctxt_paperwidth/1,set_ctxt_paperwidth/2,
 	 get_ctxt_linewidth/1,set_ctxt_linewidth/2,
 	 get_ctxt_hook/1,set_ctxt_hook/2,get_ctxt_user/1,
-	 set_ctxt_user/2,print_ast/1]).
+	 set_ctxt_user/2,print_ast/2]).
 
 -import(prettypr,
 	[text/1,nest/2,above/2,beside/2,sep/1,par/1,par/2,
@@ -62,26 +62,30 @@
 -record(ctxt,
 	{prec = 0,sub_indent = 2,break_indent = 4,
 	 clause = undefined,hook = ?NOHOOK,paper = ?PAPER,
-	 ribbon = ?RIBBON,user = ?NOUSER}).
+	 ribbon = ?RIBBON,user = ?NOUSER,
+	 format = unknown}).
 
 %% Start of added by HL
 %% ====================================================================
 %% user-program guided pretty-printing of an abstract syntax tree which
 %% must be a form list.
-print_ast(AST) -> print_ast(AST,[]).
+print_ast(FileFmt, AST) -> 
+    print_ast(FileFmt, AST,[]).
 
-print_ast(AST,Options) ->
+print_ast(FileFmt, AST,Options) ->
     Ctxt = #ctxt{hook =
 		     proplists:get_value(hook,Options,?NOHOOK),
 		 paper = proplists:get_value(paper,Options,?PAPER),
 		 ribbon = proplists:get_value(ribbon,Options,?RIBBON),
-		 user = proplists:get_value(user,Options)},
+		 user = proplists:get_value(user,Options),
+		 format = FileFmt},
     Fs = refac_syntax:form_list_elements(AST),
     Es = seq_pr(Fs,none,reset_prec(Ctxt),fun lay/2),
     LayoutedEs = lists:map(fun (E) ->
-				   refac_prettypr_0:layout(E)
+				   refac_prettypr_0:layout(E, FileFmt)
 			   end,Es),
-    vertical_concat(lists:zip(LayoutedEs,Fs)).
+    Res=vertical_concat(lists:zip(LayoutedEs,Fs), FileFmt),
+    Res.
 
 seq_pr([H| T],Separator,Ctxt,Fun) ->
     {Paper,Ribbon} = get_paper_ribbon_width(H),
@@ -93,10 +97,10 @@ seq_pr([H| T],Separator,Ctxt,Fun) ->
     end;
 seq_pr([],_,_,_) -> [].
 
-vertical_concat(Es) -> vertical_concat(Es,"").
+vertical_concat(Es, FileFormat) -> vertical_concat(Es,FileFormat,"").
 
-vertical_concat([],Acc) -> Acc;
-vertical_concat([{E,Form}| T],Acc) ->
+vertical_concat([], _FileFormat, Acc) -> Acc;
+vertical_concat([{E,Form}| T], FileFormat, Acc) ->
     SpecialForm = fun (F) ->
 			  case refac_syntax:type(F) of
 			    error_marker -> true;
@@ -111,6 +115,11 @@ vertical_concat([{E,Form}| T],Acc) ->
 			    _ -> false
 			  end
 		  end,
+    Delimitor = case FileFormat of 
+		    dos -> "\r\n";
+		    mac -> "\r";
+		    _ -> "\n"
+		end,
     F = refac_util:concat_toks(refac_util:get_toks(Form)),
     {ok,EToks,_} = refac_scan:string(E),
     {ok,FToks,_} = refac_scan:string(F),
@@ -121,7 +130,7 @@ vertical_concat([{E,Form}| T],Acc) ->
 	     _ ->
 		 case (EStr == FStr) or SpecialForm(Form) of
 		   true -> Acc;
-		   false -> Acc ++ "\n"
+		   false -> Acc ++ Delimitor
 		 end
 	   end,
     Str = case (EStr == FStr) or SpecialForm(Form) of
@@ -129,12 +138,12 @@ vertical_concat([{E,Form}| T],Acc) ->
 	    false ->
 		case T of
 		  [] -> E;
-		  [{_E1,_Form1}| _] -> E ++ "\n"
+		  [{_E1,_Form1}| _] -> E ++ Delimitor
 		end
 	  end,
     case T of
       [] -> Acc1 ++ Str;
-      _ -> vertical_concat(T,Acc1 ++ Str)
+      _ -> vertical_concat(T, FileFormat, Acc1 ++ Str)
     end.
 
 %% Do this still need this function?
@@ -521,31 +530,32 @@ lay_2(Node,Ctxt) ->
     case refac_syntax:type(Node) of
       %% We list literals and other common cases first.
       variable -> text(refac_syntax:variable_literal(Node));
-      atom -> text(refac_syntax:atom_literal(Node));
+      atom -> 
+	    Lit= refac_syntax:atom_literal(Node),
+	    case hd(Lit) of
+		39 -> text("'"++atom_to_list(refac_syntax:atom_value(Node))++"'");
+                _ -> text(Lit)
+            end;
       integer -> text(refac_syntax:integer_literal(Node));
       float ->
 	  text(tidy_float(refac_syntax:float_literal(Node)));
       char -> text(refac_syntax:char_literal(Node));
       string ->  %% done;
-	  Str = refac_syntax:string_literal(Node),
-	  case lists:keysearch(toks,1,refac_syntax:get_ann(Node))
-	      of
+	    Str = refac_syntax:string_literal(Node),
+	    case lists:keysearch(toks,1,refac_syntax:get_ann(Node)) of
 	    {value,{toks,StrToks}} ->
-		Str1 = io_lib:write_string(lists:concat(lists:map(fun
-								    ({string,_,S}) ->
-									S
-								  end,StrToks))),
-		case Str1 == Str of
-		  true -> lay_string(StrToks);
-		  _ -> lay_string(Str,Ctxt)
-		end;
-	    _ -> lay_string(Str,Ctxt)
-	  end;
-      nil -> text("[]");
-      tuple -> %% done;
-	  Es = seq(refac_syntax:tuple_elements(Node),floating(text(",")),reset_prec(Ctxt),fun lay/2),
-	  beside(floating(text("{")),
-		 beside(lay_elems(fun refac_prettypr_0:par/1, Es,refac_syntax:tuple_elements(Node)),floating(text("}"))));
+		    Str1 = io_lib:write_string(lists:concat(lists:map(fun ({string,_,S}) -> S end,StrToks))),
+		    case Str1 == Str of
+			true -> lay_string(StrToks);
+			_ -> lay_string(Str,Ctxt)
+		    end;
+		_ -> lay_string(Str,Ctxt)
+	    end;
+	nil -> text("[]");
+	tuple -> %% done;
+	    Es = seq(refac_syntax:tuple_elements(Node),floating(text(",")),reset_prec(Ctxt),fun lay/2),
+	    beside(floating(text("{")),
+		   beside(lay_elems(fun refac_prettypr_0:par/1, Es,refac_syntax:tuple_elements(Node)),floating(text("}"))));
       list ->   %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  Node1 = refac_syntax:compact_list(Node),
@@ -991,12 +1001,12 @@ lay_qualified_name_1([S| Ss],Ctxt) ->
 %% lay_string/1 defined by Huiqing Li;
 lay_string([]) -> empty();
 lay_string([{string,_,Str}]) ->
-    text(io_lib:write_string(Str));
+    text("\""++Str++"\"");
 lay_string([{string,_,Str}| Ts]) ->
     case Ts of
-      [] -> text(io_lib:write_string(Str));
+      [] -> text("\""++Str++"\"");
       _ ->
-	  above(text(io_lib:write_string(Str)),lay_string(Ts))
+	  above(text("\""++Str++"\""),lay_string(Ts))
     end.
 
 lay_string(S,Ctxt) ->
@@ -1228,3 +1238,5 @@ lay_elems_1(Fun, [{D,{SLn,ELn}}| Ts],[H| T],LastLn) ->
     end.
 
 nil() -> text(" ").
+
+
