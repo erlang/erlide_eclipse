@@ -223,13 +223,16 @@ public final class BackendManager implements IEpmdListener {
 										+ "_erlide");
 							}
 							erlideRuntime.setCookie("erlide");
+							ErlLogger.debug("creating IDE backend %s",
+									erlideRuntime.getName());
 							fLocalBackend = create(erlideRuntime, EnumSet
 									.of(BackendOptions.AUTOSTART), null);
 						} catch (BackendException e) {
 							// erlideRuntime can't be null here
 						}
 					} else {
-
+						ErlLogger
+								.error("There is no erlideRuntime defined! Could not start IDE backend.");
 					}
 				}
 			}

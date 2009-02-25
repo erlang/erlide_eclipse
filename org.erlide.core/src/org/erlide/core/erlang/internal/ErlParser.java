@@ -50,6 +50,9 @@ public class ErlParser {
 			final boolean initialParse, final String moduleFilePath,
 			final String erlidePath) {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		if (b == null) {
+			return false;
+		}
 		OtpErlangList forms = null, comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);

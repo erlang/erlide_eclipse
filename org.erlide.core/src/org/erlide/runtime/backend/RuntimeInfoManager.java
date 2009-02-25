@@ -250,6 +250,14 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	}
 
 	public RuntimeInfo getErlideRuntime() {
+		if (erlideRuntime == null) {
+			RuntimeInfo ri = getRuntimes().iterator().next();
+			if (ri != null) {
+				setErlideRuntime(ri);
+			} else {
+				ErlLogger.error("There is no erlideRuntime defined!");
+			}
+		}
 		return erlideRuntime;
 	}
 

@@ -51,6 +51,8 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	private void startRuntime(ILaunch launch) {
 		final RuntimeInfo info = backend.getInfo();
 		if (info == null) {
+			ErlLogger.error("Trying to start backend '%s' with null info",
+					backend.getName());
 			return;
 		}
 
@@ -65,7 +67,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 				public void run() {
 					try {
 						int v = fRuntime.waitFor();
-						final String msg = "Backend runtime %s terminated with exit code %d.";
+						final String msg = "Backend '%s' terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
 
 						if ((v != 0) && ErlideUtil.isEricssonUser()) {
