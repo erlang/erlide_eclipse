@@ -1,4 +1,4 @@
-#Wed Feb 25 22:16:55 CET 2009
+#Wed Feb 25 22:24:19 CET 2009
 backend_cookie=
 backend_name=r11
 backend_node=erlide
@@ -8,5 +8,5 @@ external_modules=
 include_dirs=include
 make_unique=true
 output_dir=ebin
-source_dirs=src
+source_dirs=erl
 use_pathz=false

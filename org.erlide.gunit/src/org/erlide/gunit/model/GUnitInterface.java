@@ -27,11 +27,8 @@ public class GUnitInterface {
 
 	public GUnitInterface(ILaunch launch) {
 		try {
-			String projectName = launch
-					.getLaunchConfiguration()
-					.getAttribute(
-							LaunchConfigurationConstants.ATTR_PROJECT_NAME,
-							"");
+			String projectName = launch.getLaunchConfiguration().getAttribute(
+					LaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
 			String workingDirString = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(projectName).getLocation()
 					+ "/ebin";
@@ -72,12 +69,11 @@ public class GUnitInterface {
 		}
 	}
 
-	public List<TestElement> getTestCases(
-			TestElement testElement) {
+	public List<TestElement> getTestCases(TestElement testElement) {
 		List<TestElement> testCases = new ArrayList<TestElement>();
 
 		try {
-			OtpErlangList result = (OtpErlangList) fBackend.rpcx("shade",
+			OtpErlangList result = (OtpErlangList) fBackend.rpcx("gunit",
 					"get_test_cases", "a", testElement.getName());
 			OtpErlangObject[] testCaseAtomList = result.elements();
 			if (testCaseAtomList != null) { // UGLY, should by able to trust
@@ -102,7 +98,7 @@ public class GUnitInterface {
 
 	public int runTest(TestElement testCase) {
 		try {
-			OtpErlangObject result = fBackend.rpcx("shade", "run_test_case",
+			OtpErlangObject result = fBackend.rpcx("gunit", "run_test_case",
 					"aa", testCase.getParent().getName(), testCase.getName());
 
 			System.out.println(result);
