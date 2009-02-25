@@ -171,6 +171,7 @@ public class LaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 		fProjText = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		fProjText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fProjText.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(ModifyEvent evt) {
 				validatePage();
 				updateLaunchConfigurationDialog();
@@ -193,6 +194,7 @@ public class LaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 		fSuiteText = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		fSuiteText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fSuiteText.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(ModifyEvent evt) {
 				validatePage();
 				updateLaunchConfigurationDialog();
@@ -216,6 +218,7 @@ public class LaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 		fTestText = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		fTestText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fTestText.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
 			public void modifyText(ModifyEvent evt) {
 				validatePage();
 				updateLaunchConfigurationDialog();
