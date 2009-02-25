@@ -1,14 +1,14 @@
-package org.erlide.testing.framework.launcher;
+package org.erlide.gunit.launcher;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.erlide.testing.framework.TestFrameworkPlugin;
+import org.erlide.gunit.GUnitPlugin;
 
 
-public class TestFrameworkLaunchConfigurationDelegate implements
+public class LaunchConfigurationDelegate implements
 		ILaunchConfigurationDelegate {
 
 	public void launch(ILaunchConfiguration configuration, String mode,
@@ -18,9 +18,9 @@ public class TestFrameworkLaunchConfigurationDelegate implements
 
 		System.out.println("Project: "
 				+ configuration.getAttribute(
-						TestFrameworkLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+						LaunchConfigurationConstants.ATTR_PROJECT_NAME,
 						""));
-		TestFrameworkPlugin.getModel().runTests(launch);
+		GUnitPlugin.getModel().runTests(launch);
 	}
 
 }

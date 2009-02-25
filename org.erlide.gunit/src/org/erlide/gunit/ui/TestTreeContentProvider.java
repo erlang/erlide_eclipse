@@ -1,19 +1,19 @@
-package org.erlide.testing.framework.ui;
+package org.erlide.gunit.ui;
 
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.testing.framework.model.TestFrameworkTestElement;
+import org.erlide.gunit.model.TestElement;
 
 
-public class TestFrameworkTestTreeContentProvider implements ITreeContentProvider {
+public class TestTreeContentProvider implements ITreeContentProvider {
 
 	public void dispose() {
 	}
 
 	public Object[] getChildren(Object parentElement) {
-		TestFrameworkTestElement testElement = (TestFrameworkTestElement) parentElement;
+		TestElement testElement = (TestElement) parentElement;
 		return testElement.getChildren().toArray();
 	}
 
@@ -22,12 +22,12 @@ public class TestFrameworkTestTreeContentProvider implements ITreeContentProvide
 	}
 
 	public Object getParent(Object element) {
-		TestFrameworkTestElement testElement = (TestFrameworkTestElement) element;
+		TestElement testElement = (TestElement) element;
 		return testElement.getParent();
 	}
 
 	public boolean hasChildren(Object element) {
-		TestFrameworkTestElement testElement = (TestFrameworkTestElement) element;
+		TestElement testElement = (TestElement) element;
 		return testElement.hasChildren();
 	}
 

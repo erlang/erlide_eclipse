@@ -20,9 +20,5 @@ Export-Package: org.erlide.core.preferences,
  org.erlide.runtime.backend,
  org.erlide.testing,
  org.erlide.testing.erlang,
- org.erlide.testing.framework,
- org.erlide.testing.framework.launcher,
- org.erlide.testing.framework.model,
- org.erlide.testing.framework.ui,
  org.erlide.testing.java
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

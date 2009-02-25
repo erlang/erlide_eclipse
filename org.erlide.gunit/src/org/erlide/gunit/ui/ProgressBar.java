@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.ui;
+package org.erlide.gunit.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -18,20 +18,28 @@ import org.eclipse.swt.widgets.Display;
 /**
  * A progress bar with a red/green indication for success or failure.
  */
-public class TestFrameworkProgressBar extends Canvas {
+public class ProgressBar extends Canvas {
 	private static final int DEFAULT_WIDTH = 160;
+
 	private static final int DEFAULT_HEIGHT = 18;
 
-	private int fCurrentTickCount = 0;
+	int fCurrentTickCount = 0;
+
 	private int fMaxTickCount = 0;
-	private int fColorBarWidth = 0;
-	private Color fOKColor;
-	private Color fFailureColor;
-	private Color fStoppedColor;
+
+	int fColorBarWidth = 0;
+
+	Color fOKColor;
+
+	Color fFailureColor;
+
+	Color fStoppedColor;
+
 	private boolean fError;
+
 	private boolean fStopped = false;
 
-	public TestFrameworkProgressBar(Composite parent) {
+	public ProgressBar(Composite parent) {
 		super(parent, SWT.NONE);
 
 		addControlListener(new ControlAdapter() {
@@ -110,7 +118,7 @@ public class TestFrameworkProgressBar extends Canvas {
 		redraw();
 	}
 
-	private int scale(int value) {
+	int scale(int value) {
 		if (fMaxTickCount > 0) {
 			Rectangle r = getClientArea();
 			if (r.width != 0) {
@@ -131,7 +139,7 @@ public class TestFrameworkProgressBar extends Canvas {
 		gc.drawLine(x, y + h, x + w, y + h);
 	}
 
-	private void paint(PaintEvent event) {
+	void paint(PaintEvent event) {
 		GC gc = event.gc;
 		Display disp = getDisplay();
 

@@ -10,7 +10,7 @@
  *     Sebastian Davids: sdavids@gmx.de bug: 26293, 27889
  *     David Saff (saff@mit.edu) - bug 102632: [JUnit] Support for JUnit 4.
  *******************************************************************************/
-package org.erlide.testing.framework.launcher;
+package org.erlide.gunit.launcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,22 +50,32 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  * @since 3.3
  */
 @SuppressWarnings("unused")
-public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
+public class LaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 
 	// Project UI widgets
 	private Label fProjLabel;
+
 	private Text fProjText;
+
 	private Button fProjButton;
+
 	private Label fSuiteLabel;
+
 	private Text fSuiteText;
-	private Button fSuiteButton;
+
+	Button fSuiteButton;
+
 	// private Button fKeepRunning;
 
 	// Test class UI widgets
 	private Label fTestLabel;
+
 	private Text fTestText;
+
 	private Button fTestButton;
+
 	private IFile fSelectedSuite;
+
 	private String fSelectedProjectName;
 
 	// private String fOriginalTestMethodName;
@@ -84,7 +94,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 	/**
 	 * Creates a JUnit launch configuration tab.
 	 */
-	public TestFrameworkLaunchConfigurationTab() {
+	public LaunchConfigurationTab() {
 	}
 
 	/*
@@ -341,11 +351,9 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 	 * .debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(
-				TestFrameworkLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+		config.setAttribute(LaunchConfigurationConstants.ATTR_PROJECT_NAME,
 				fSelectedProjectName);
-		config.setAttribute(
-				TestFrameworkLaunchConfigurationConstants.ATTR_TEST_SUITE_NAME,
+		config.setAttribute(LaunchConfigurationConstants.ATTR_TEST_SUITE_NAME,
 				fSuiteText.getText());
 
 		// if (fTestContainerRadioButton.getSelection() && fContainerElement !=
@@ -401,7 +409,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 	/*
 	 * Show a dialog that lists all main types
 	 */
-	private void handleTestButtonSelected() {
+	void handleTestButtonSelected() {
 		// Shell shell = getShell();
 		//
 		// IJavaProject javaProject = getJavaProject();
@@ -452,7 +460,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 	 * context for the main type, allowing the user to key a main type name, or
 	 * constraining the search for main types to the specified project.
 	 */
-	private void handleProjectButtonSelected() {
+	void handleProjectButtonSelected() {
 		IProject project = chooseProject();
 		if (project == null) {
 			return;
@@ -516,7 +524,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 	 * Return the IProject corresponding to the project name in the project name
 	 * text field, or null if the text does not match a project name.
 	 */
-	private IProject getProject() {
+	IProject getProject() {
 		String projectName = fProjText.getText().trim();
 		if (projectName.length() < 1) {
 			return null;
@@ -529,7 +537,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 		}
 	}
 
-	private void handleSuiteButtonSelected() {
+	void handleSuiteButtonSelected() {
 		IFile suite = chooseSuite();
 		if (suite == null) {
 			return;
@@ -654,7 +662,7 @@ public class TestFrameworkLaunchConfigurationTab extends AbstractLaunchConfigura
 		return getErrorMessage() == null;
 	}
 
-	private void validatePage() {
+	void validatePage() {
 		setErrorMessage(null);
 		setMessage(null);
 

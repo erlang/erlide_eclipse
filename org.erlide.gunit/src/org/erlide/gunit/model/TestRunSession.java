@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,25 +7,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationConstants;
+import org.erlide.gunit.launcher.LaunchConfigurationConstants;
 
 
-public class TestFrameworkTestRunSession extends Thread {
+public class TestRunSession extends Thread {
 
 	private ILaunch fLaunch;
 	// private BTErlRemoteTestRunnerClient fTestRunnerClient;
-	private TestFrameworkInterface fBTErlInterface;
+	private GUnitInterface fBTErlInterface;
 	private int fStartedCount;
 	private int fEndedCount;
 	private int fFailureCount;
 	private int fTotalCount;
 	// private long fStartTime;
 	private ListenerList fSessionListeners;
-	private List<TestFrameworkTestElement> fTestElements;
+	private List<TestElement> fTestElements;
 
-	public TestFrameworkTestRunSession(ILaunch launch) {
+	public TestRunSession(ILaunch launch) {
 		fLaunch = launch;
-		fBTErlInterface = new TestFrameworkInterface(fLaunch);
+		fBTErlInterface = new GUnitInterface(fLaunch);
 
 		init();
 
@@ -37,18 +37,18 @@ public class TestFrameworkTestRunSession extends Thread {
 
 		for (int i = 0; i < fTestElements.size(); i++) {
 			boolean hasFailingTestCases = false;
-			TestFrameworkTestElement currentTestSuite = fTestElements.get(i);
-			currentTestSuite.setStatus(TestFrameworkTestElement.STATUS_RUNNING);
+			TestElement currentTestSuite = fTestElements.get(i);
+			currentTestSuite.setStatus(TestElement.STATUS_RUNNING);
 
-			List<TestFrameworkTestElement> testCases = currentTestSuite.getChildren();
+			List<TestElement> testCases = currentTestSuite.getChildren();
 			for (int j = 0; j < testCases.size(); j++) {
-				TestFrameworkTestElement currentTestCase = testCases.get(j);
+				TestElement currentTestCase = testCases.get(j);
 				++fStartedCount;
 				testStarted(currentTestCase);
-				currentTestCase.setStatus(TestFrameworkTestElement.STATUS_RUNNING);
+				currentTestCase.setStatus(TestElement.STATUS_RUNNING);
 				int result = fBTErlInterface.runTest(currentTestCase);
 				currentTestCase.setStatus(result);
-				if (result == TestFrameworkTestElement.STATUS_FAILED) {
+				if (result == TestElement.STATUS_FAILED) {
 					++fFailureCount;
 					testFailed(currentTestCase, "", "", "");
 					hasFailingTestCases = true;
@@ -58,9 +58,9 @@ public class TestFrameworkTestRunSession extends Thread {
 			}
 
 			if (hasFailingTestCases) {
-				currentTestSuite.setStatus(TestFrameworkTestElement.STATUS_FAILED);
+				currentTestSuite.setStatus(TestElement.STATUS_FAILED);
 			} else {
-				currentTestSuite.setStatus(TestFrameworkTestElement.STATUS_OK);
+				currentTestSuite.setStatus(TestElement.STATUS_OK);
 			}
 		}
 
@@ -74,18 +74,18 @@ public class TestFrameworkTestRunSession extends Thread {
 		fFailureCount = 0;
 		fTotalCount = 0;
 
-		fTestElements = new ArrayList<TestFrameworkTestElement>();
+		fTestElements = new ArrayList<TestElement>();
 
 		ILaunchConfiguration configuration = fLaunch.getLaunchConfiguration();
 
 		try {
 			String testSuiteName = configuration
 					.getAttribute(
-							TestFrameworkLaunchConfigurationConstants.ATTR_TEST_SUITE_NAME,
+							LaunchConfigurationConstants.ATTR_TEST_SUITE_NAME,
 							"");
 
 			if (testSuiteName.length() > 0) {
-				TestFrameworkTestElement testElement = new TestFrameworkTestElement(
+				TestElement testElement = new TestElement(
 						testSuiteName, null);
 				testElement.addChildren(fBTErlInterface
 						.getTestCases(testElement));
@@ -98,7 +98,7 @@ public class TestFrameworkTestRunSession extends Thread {
 		}
 	}
 
-	public void addTestSessionListener(ITestFrameworkTestSessionListener listener) {
+	public void addTestSessionListener(ITestSessionListener listener) {
 		fSessionListeners.add(listener);
 	}
 
@@ -117,7 +117,7 @@ public class TestFrameworkTestRunSession extends Thread {
 
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).sessionStarted();
+			((ITestSessionListener) listeners[i]).sessionStarted();
 		}
 	}
 
@@ -125,7 +125,7 @@ public class TestFrameworkTestRunSession extends Thread {
 
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i])
+			((ITestSessionListener) listeners[i])
 					.sessionEnded(elapsedTime);
 		}
 
@@ -134,12 +134,12 @@ public class TestFrameworkTestRunSession extends Thread {
 	public void testRunStopped(long elapsedTime) {
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i])
+			((ITestSessionListener) listeners[i])
 					.sessionStopped(elapsedTime);
 		}
 	}
 
-	public void testStarted(TestFrameworkTestElement testElement) {
+	public void testStarted(TestElement testElement) {
 
 		// if (fStartedCount == 0) {
 		// Object[] listeners= fSessionListeners.getListeners();
@@ -157,11 +157,11 @@ public class TestFrameworkTestRunSession extends Thread {
 		//
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).testStarted(testElement);
+			((ITestSessionListener) listeners[i]).testStarted(testElement);
 		}
 	}
 
-	public void testEnded(TestFrameworkTestElement testElement) {
+	public void testEnded(TestElement testElement) {
 		// BTErlTestElement testElement = ((BTErlTestElement)
 		// fTestElements.get(testId));
 		//
@@ -175,27 +175,27 @@ public class TestFrameworkTestRunSession extends Thread {
 		//
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).testEnded(testElement);
+			((ITestSessionListener) listeners[i]).testEnded(testElement);
 		}
 	}
 
 	public void testRunTerminated() {
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).sessionTerminated();
+			((ITestSessionListener) listeners[i]).sessionTerminated();
 		}
 	}
 
 	public void testTreeEntry(String description) {
-		TestFrameworkTestElement testElement = addTreeEntry(description);
+		TestElement testElement = addTreeEntry(description);
 
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).testAdded(testElement);
+			((ITestSessionListener) listeners[i]).testAdded(testElement);
 		}
 	}
 
-	private TestFrameworkTestElement addTreeEntry(String description) {
+	private TestElement addTreeEntry(String description) {
 		// String[] elementInfo = description.split(",");
 		// String testId = elementInfo[0];
 		// String testName = elementInfo[1];
@@ -216,7 +216,7 @@ public class TestFrameworkTestRunSession extends Thread {
 		return null;
 	}
 
-	public void testFailed(TestFrameworkTestElement testElement, String trace,
+	public void testFailed(TestElement testElement, String trace,
 			String expected, String actual) {
 		// BTErlTestElement testElement = ((BTErlTestElement)
 		// fTestElements.get(testId));
@@ -227,12 +227,12 @@ public class TestFrameworkTestRunSession extends Thread {
 		//
 		Object[] listeners = fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestSessionListener) listeners[i]).testFailed(testElement,
+			((ITestSessionListener) listeners[i]).testFailed(testElement,
 					trace, expected, actual);
 		}
 	}
 
-	public List<TestFrameworkTestElement> getTestElements() {
+	public List<TestElement> getTestElements() {
 		return fTestElements;
 	}
 

@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.ui;
+package org.erlide.gunit.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -13,19 +13,24 @@ import org.eclipse.swt.widgets.Text;
 /**
  * A panel with counters for the number of Runs, Errors and Failures.
  */
-public class TestFrameworkCounterPanel extends Composite {
+public class CounterPanel extends Composite {
 	// protected Text fNumberOfErrors;
 	protected Text fNumberOfFailures;
+
 	protected Text fNumberOfRuns;
+
 	protected int fTotal;
+
 	protected int fIgnoredCount;
 
 	private final Image fErrorIcon = null; // =
-											// TestRunnerViewPart.createImage("ovr16/error_ovr.gif");
-	private final Image fFailureIcon = null; // =
-												// TestRunnerViewPart.createImage("ovr16/failed_ovr.gif");
 
-	public TestFrameworkCounterPanel(Composite parent) {
+	// TestRunnerViewPart.createImage("ovr16/error_ovr.gif");
+	private final Image fFailureIcon = null; // =
+
+	// TestRunnerViewPart.createImage("ovr16/failed_ovr.gif");
+
+	public CounterPanel(Composite parent) {
 		super(parent, SWT.WRAP);
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 9;
@@ -44,7 +49,7 @@ public class TestFrameworkCounterPanel extends Composite {
 		});
 	}
 
-	private void disposeIcons() {
+	void disposeIcons() {
 		if (fErrorIcon != null) {
 			fErrorIcon.dispose();
 		}

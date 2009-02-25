@@ -1,9 +1,9 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestFrameworkTestElement {
+public class TestElement {
 
 	public static final int STATUS_NOT_RUN = 0;
 	public static final int STATUS_RUNNING = 1;
@@ -12,24 +12,24 @@ public class TestFrameworkTestElement {
 
 	private String fName;
 	private int fStatus = STATUS_NOT_RUN;
-	private List<TestFrameworkTestElement> fChildren;
-	private TestFrameworkTestElement fParent;
+	private List<TestElement> fChildren;
+	private TestElement fParent;
 
-	public TestFrameworkTestElement(String name, TestFrameworkTestElement parent) {
+	public TestElement(String name, TestElement parent) {
 		fName = name;
 		fParent = parent;
-		fChildren = new ArrayList<TestFrameworkTestElement>();
+		fChildren = new ArrayList<TestElement>();
 	}
 
-	public void addChild(TestFrameworkTestElement testElement) {
+	public void addChild(TestElement testElement) {
 		fChildren.add(testElement);
 	}
 
-	public List<TestFrameworkTestElement> getChildren() {
+	public List<TestElement> getChildren() {
 		return fChildren;
 	}
 
-	public TestFrameworkTestElement getParent() {
+	public TestElement getParent() {
 		return fParent;
 	}
 
@@ -50,7 +50,7 @@ public class TestFrameworkTestElement {
 		return fName;
 	}
 
-	public void addChildren(List<TestFrameworkTestElement> testCases) {
+	public void addChildren(List<TestElement> testCases) {
 		fChildren = testCases;
 	}
 

@@ -18,7 +18,7 @@ import org.erlide.runtime.backend.RuntimeInfo;
 public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
 	Process fRuntime;
-	private Backend backend;
+	Backend backend;
 
 	public ManagedLauncher() {
 	}

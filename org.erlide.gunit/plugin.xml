@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"
+            class="org.erlide.gunit.ui.TestRunnerViewPart"
             fastViewWidthRatio="0.40"
             id="org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"
             name="BTErl">
@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate"
+            delegate="org.erlide.gunit.launcher.LaunchConfigurationDelegate"
             id="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate"
             modes="run, debug"
             name="BTErl">
@@ -22,7 +22,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationTabGroup"
+            class="org.erlide.gunit.launcher.LaunchConfigurationTabGroup"
             id="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationTabGroup"
             type="org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationDelegate">
       </launchConfigurationTabGroup>

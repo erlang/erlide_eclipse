@@ -1,9 +1,9 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
 /**
  * A listener interface for observing the execution of a test session (initial run and reruns).
  */
-public interface ITestFrameworkTestSessionListener {
+public interface ITestSessionListener {
 	/**
  	 * A test run has started.
  	 */
@@ -30,7 +30,7 @@ public interface ITestFrameworkTestSessionListener {
 	 * 
 	 * @param testElement the test
 	 */
-	public void testAdded(TestFrameworkTestElement testElement);
+	public void testAdded(TestElement testElement);
 	
 	/**
 	 * All test have been added and running begins
@@ -42,13 +42,13 @@ public interface ITestFrameworkTestSessionListener {
 	 * 
 	 * @param testCaseElement the test
 	 */
-	public void testStarted(TestFrameworkTestElement testCaseElement);
+	public void testStarted(TestElement testCaseElement);
 	/**
 	 * An individual test has ended.
 	 * 
 	 * @param testCaseElement the test
 	 */
-	public void testEnded(TestFrameworkTestElement testCaseElement);
+	public void testEnded(TestElement testCaseElement);
 	/**
 	 * An individual test has failed with a stack trace.
 	 * 
@@ -61,7 +61,7 @@ public interface ITestFrameworkTestSessionListener {
 	 * @param actual actual value
 	 */
 //	public void testFailed(BTErlTestElement testElement, Status status, String trace, String expected, String actual);
-	public void testFailed(TestFrameworkTestElement testElement, String trace, String expected, String actual);
+	public void testFailed(TestElement testElement, String trace, String expected, String actual);
 	
 //	/**
 // 	 * An individual test has been rerun.

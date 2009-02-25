@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
 import java.util.LinkedList;
 
@@ -9,11 +9,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.erlide.testing.framework.TestFrameworkPlugin;
-import org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart;
+import org.erlide.gunit.GUnitPlugin;
+import org.erlide.gunit.ui.TestRunnerViewPart;
 
-
-public class TestFrameworkModel {
+public class GUnitModel {
 
 	// private final class BTErlLaunchListener implements ILaunchListener {
 	//
@@ -146,10 +145,11 @@ public class TestFrameworkModel {
 	// }
 
 	private final ListenerList fTestRunSessionListeners = new ListenerList();
+
 	/**
 	 * Active test run sessions, youngest first.
 	 */
-	private final LinkedList<TestFrameworkTestRunSession> fTestRunSessions = new LinkedList<TestFrameworkTestRunSession>();
+	private final LinkedList<TestRunSession> fTestRunSessions = new LinkedList<TestRunSession>();
 
 	// private final ILaunchListener fLaunchListener= new BTErlLaunchListener();
 
@@ -160,7 +160,7 @@ public class TestFrameworkModel {
 			}
 		});
 
-		TestFrameworkTestRunSession testRunSession = new TestFrameworkTestRunSession(launch);
+		TestRunSession testRunSession = new TestRunSession(launch);
 		addTestRunSession(testRunSession);
 		testRunSession.start();
 	}
@@ -177,18 +177,17 @@ public class TestFrameworkModel {
 	// launchManager.removeLaunchListener(fLaunchListener);
 	// }
 
-	public void addBTErlTestRunSessionListener(
-			ITestFrameworkTestRunSessionListener listener) {
+	public void addBTErlTestRunSessionListener(ITestRunSessionListener listener) {
 		fTestRunSessionListeners.add(listener);
 	}
 
 	public void removeBTErlTestRunSessionListener(
-			ITestFrameworkTestRunSessionListener listener) {
+			ITestRunSessionListener listener) {
 		fTestRunSessionListeners.remove(listener);
 	}
 
 	/**
-	 * Adds the given {@link TestFrameworkTestRunSession} and notifies all registered
+	 * Adds the given {@link TestRunSession} and notifies all registered
 	 * {@link ITestRunSessionListener}s.
 	 * <p>
 	 * <b>To be called in the UI thread only!</b>
@@ -197,23 +196,23 @@ public class TestFrameworkModel {
 	 * @param testRunSession
 	 *            the session to add
 	 */
-	public void addTestRunSession(TestFrameworkTestRunSession testRunSession) {
+	public void addTestRunSession(TestRunSession testRunSession) {
 		Assert.isNotNull(testRunSession);
 		Assert.isLegal(!fTestRunSessions.contains(testRunSession));
 		fTestRunSessions.addFirst(testRunSession);
 		notifyTestRunSessionAdded(testRunSession);
 	}
 
-	private void notifyTestRunSessionAdded(TestFrameworkTestRunSession testRunSession) {
+	private void notifyTestRunSessionAdded(TestRunSession testRunSession) {
 		Object[] listeners = fTestRunSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
-			((ITestFrameworkTestRunSessionListener) listeners[i])
+			((ITestRunSessionListener) listeners[i])
 					.sessionAdded(testRunSession);
 		}
 	}
 
-	private TestFrameworkTestRunnerViewPart showTestRunnerViewPartInActivePage(
-			TestFrameworkTestRunnerViewPart testRunner) {
+	TestRunnerViewPart showTestRunnerViewPartInActivePage(
+			TestRunnerViewPart testRunner) {
 		IWorkbenchPart activePart = null;
 		IWorkbenchPage page = null;
 		try {
@@ -222,14 +221,14 @@ public class TestFrameworkModel {
 			if (testRunner != null && testRunner.isCreated()) {
 				return testRunner;
 			}
-			page = TestFrameworkPlugin.getActivePage();
+			page = GUnitPlugin.getActivePage();
 			if (page == null) {
 				return null;
 			}
 			activePart = page.getActivePart();
 			// show the result view if it isn't shown yet
-			return (TestFrameworkTestRunnerViewPart) page
-					.showView(TestFrameworkTestRunnerViewPart.VIEW_ID);
+			return (TestRunnerViewPart) page
+					.showView(TestRunnerViewPart.VIEW_ID);
 		} catch (PartInitException pie) {
 			pie.printStackTrace();
 			return null;
@@ -241,13 +240,12 @@ public class TestFrameworkModel {
 		}
 	}
 
-	private TestFrameworkTestRunnerViewPart findTestRunnerViewPartInActivePage() {
-		IWorkbenchPage page = TestFrameworkPlugin.getActivePage();
+	TestRunnerViewPart findTestRunnerViewPartInActivePage() {
+		IWorkbenchPage page = GUnitPlugin.getActivePage();
 		if (page == null) {
 			return null;
 		}
-		return (TestFrameworkTestRunnerViewPart) page
-				.findView(TestFrameworkTestRunnerViewPart.VIEW_ID);
+		return (TestRunnerViewPart) page.findView(TestRunnerViewPart.VIEW_ID);
 	}
 
 	private Display getDisplay() {

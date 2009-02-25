@@ -1,21 +1,21 @@
-package org.erlide.testing.framework.ui;
+package org.erlide.gunit.ui;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public class TestFrameworkTestViewer {
+public class TestViewer {
 
 	private TreeViewer fTreeViewer;
-	private TestFrameworkTestTreeContentProvider fTreeContentProvider;
-	private TestFrameworkTestLabelProvider fTreeLabelProvider;
+	private TestTreeContentProvider fTreeContentProvider;
+	private TestLabelProvider fTreeLabelProvider;
 
-	public TestFrameworkTestViewer(Composite parent) {
+	public TestViewer(Composite parent) {
 		fTreeViewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.SINGLE);
-		fTreeContentProvider = new TestFrameworkTestTreeContentProvider();
+		fTreeContentProvider = new TestTreeContentProvider();
 		fTreeViewer.setContentProvider(fTreeContentProvider);
-		fTreeLabelProvider = new TestFrameworkTestLabelProvider();
+		fTreeLabelProvider = new TestLabelProvider();
 		fTreeViewer.setLabelProvider(fTreeLabelProvider);
 	}
 

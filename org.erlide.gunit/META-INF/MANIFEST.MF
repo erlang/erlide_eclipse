@@ -1,11 +1,22 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GUnit Plug-in
-Bundle-SymbolicName: org.erlide.gunit
+Bundle-SymbolicName: org.erlide.gunit;singleton:=true
 Bundle-Version: 0.5.0.qualifier
-Bundle-Activator: org.erlide.gunit.Activator
+Bundle-Activator: org.erlide.gunit.GUnitPlugin
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.erlide.jinterface,
+ org.erlide.core,
+ org.erlide.ui,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-LazyStart: true
+Export-Package: org.erlide.gunit.launcher,
+ org.erlide.gunit.model,
+ org.erlide.gunit.ui,
+ org.erlide.gunit

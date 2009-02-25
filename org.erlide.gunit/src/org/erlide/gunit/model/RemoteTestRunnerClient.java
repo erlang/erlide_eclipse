@@ -1,11 +1,10 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
+public class RemoteTestRunnerClient {
 
-public class TestFrameworkRemoteTestRunnerClient {
+	TestRunSession fTestRunSession;
 
-	private TestFrameworkTestRunSession fTestRunSession;
-
-	public TestFrameworkRemoteTestRunnerClient(TestFrameworkTestRunSession testRunSession) {
+	public RemoteTestRunnerClient(TestRunSession testRunSession) {
 		fTestRunSession = testRunSession;
 		new Thread() {
 			@Override

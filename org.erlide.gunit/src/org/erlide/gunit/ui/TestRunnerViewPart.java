@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.ui;
+package org.erlide.gunit.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -14,52 +14,60 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.testing.framework.TestFrameworkPlugin;
-import org.erlide.testing.framework.model.ITestFrameworkTestRunSessionListener;
-import org.erlide.testing.framework.model.ITestFrameworkTestSessionListener;
-import org.erlide.testing.framework.model.TestFrameworkTestElement;
-import org.erlide.testing.framework.model.TestFrameworkTestRunSession;
+import org.erlide.gunit.GUnitPlugin;
+import org.erlide.gunit.model.ITestRunSessionListener;
+import org.erlide.gunit.model.ITestSessionListener;
+import org.erlide.gunit.model.TestElement;
+import org.erlide.gunit.model.TestRunSession;
 
-public class TestFrameworkTestRunnerViewPart extends ViewPart {
+public class TestRunnerViewPart extends ViewPart {
 
 	public static String VIEW_ID = "org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"; //$NON-NLS-1$
 
-	public static final Image fTestIcon = TestFrameworkTestRunnerViewPart
+	public static final Image fTestIcon = TestRunnerViewPart
 			.createImage("test.gif"); //$NON-NLS-1$
-	public static final Image fTestOkIcon = TestFrameworkTestRunnerViewPart
+
+	public static final Image fTestOkIcon = TestRunnerViewPart
 			.createImage("testok.gif"); //$NON-NLS-1$
-	public static final Image fTestFailIcon = TestFrameworkTestRunnerViewPart
+
+	public static final Image fTestFailIcon = TestRunnerViewPart
 			.createImage("testfail.gif"); //$NON-NLS-1$
-	public static final Image fTestRunningIcon = TestFrameworkTestRunnerViewPart
+
+	public static final Image fTestRunningIcon = TestRunnerViewPart
 			.createImage("testrun.gif"); //$NON-NLS-1$
 
 	private SashForm fSashForm;
+
 	private Composite fCounterComposite;
-	protected TestFrameworkProgressBar fProgressBar;
-	protected TestFrameworkCounterPanel fCounterPanel;
-	protected TestFrameworkTestViewer fTestViewer;
+
+	protected ProgressBar fProgressBar;
+
+	protected CounterPanel fCounterPanel;
+
+	protected TestViewer fTestViewer;
+
 	protected StyledText fFailureTrace;
 
-	private TestFrameworkTestRunSession fTestRunSession;
-	private BTErlTestSessionListener fTestSessionListener;
+	TestRunSession fTestRunSession;
 
-	private BTErlTestRunSessionListener fTestRunSessionListener;
+	private TestSessionListener fTestSessionListener;
 
-	private class BTErlTestRunSessionListener implements
-			ITestFrameworkTestRunSessionListener {
+	private TestRunSessionListener fTestRunSessionListener;
 
-		public void sessionAdded(TestFrameworkTestRunSession testRunSession) {
+	class TestRunSessionListener implements ITestRunSessionListener {
+
+		public void sessionAdded(TestRunSession testRunSession) {
 			setActiveTestRunSession(testRunSession);
 		}
 
-		public void sessionRemoved(TestFrameworkTestRunSession testRunSession) {
+		public void sessionRemoved(TestRunSession testRunSession) {
 			// TODO Auto-generated method stub
 
 		}
 
 	}
 
-	private void update() {
+	void update() {
 		getDisplay().asyncExec(new Runnable() {
 
 			public void run() {
@@ -76,8 +84,7 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 		});
 	}
 
-	private class BTErlTestSessionListener implements
-			ITestFrameworkTestSessionListener {
+	class TestSessionListener implements ITestSessionListener {
 
 		public void runningBegins() {
 			// getDisplay().asyncExec(new Runnable() {
@@ -109,33 +116,32 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 
 		}
 
-		public void testAdded(TestFrameworkTestElement testElement) {
+		public void testAdded(TestElement testElement) {
 			// TODO Auto-generated method stub
 
 		}
 
-		public void testEnded(TestFrameworkTestElement testCaseElement) {
+		public void testEnded(TestElement testCaseElement) {
 			update();
 		}
 
-		public void testFailed(TestFrameworkTestElement testElement,
-				String trace, String expected, String actual) {
+		public void testFailed(TestElement testElement, String trace,
+				String expected, String actual) {
 			update();
 
 		}
 
-		public void testStarted(TestFrameworkTestElement testCaseElement) {
+		public void testStarted(TestElement testCaseElement) {
 			update();
 		}
 
 	}
 
-	public TestFrameworkTestRunnerViewPart() {
+	public TestRunnerViewPart() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void setActiveTestRunSession(
-			TestFrameworkTestRunSession testRunSession) {
+	public void setActiveTestRunSession(TestRunSession testRunSession) {
 		fTestRunSession = testRunSession;
 
 		getDisplay().asyncExec(new Runnable() {
@@ -146,7 +152,7 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 
 		});
 
-		fTestSessionListener = new BTErlTestSessionListener();
+		fTestSessionListener = new TestSessionListener();
 		fTestRunSession.addTestSessionListener(fTestSessionListener);
 	}
 
@@ -164,8 +170,8 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 		SashForm sashForm = createSashForm(parent);
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		fTestRunSessionListener = new BTErlTestRunSessionListener();
-		TestFrameworkPlugin.getModel().addBTErlTestRunSessionListener(
+		fTestRunSessionListener = new TestRunSessionListener();
+		GUnitPlugin.getModel().addBTErlTestRunSessionListener(
 				fTestRunSessionListener);
 	}
 
@@ -175,10 +181,10 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 		composite.setLayout(layout);
 		layout.numColumns = 1;
 
-		fCounterPanel = new TestFrameworkCounterPanel(composite);
+		fCounterPanel = new CounterPanel(composite);
 		fCounterPanel.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
-		fProgressBar = new TestFrameworkProgressBar(composite);
+		fProgressBar = new ProgressBar(composite);
 		fProgressBar.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		return composite;
@@ -206,7 +212,7 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 		// line ...
 		// fTestViewer= new TestViewer(top, fClipboard, this);
 		// fTestViewer= new StyledText(top, SWT.MULTI);
-		fTestViewer = new TestFrameworkTestViewer(top);
+		fTestViewer = new TestViewer(top);
 		// fTestViewer.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 		top.setContent(fTestViewer.getControl());
 
@@ -237,11 +243,11 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 
 	}
 
-	public TestFrameworkCounterPanel getCounterPanel() {
+	public CounterPanel getCounterPanel() {
 		return fCounterPanel;
 	}
 
-	public TestFrameworkProgressBar getProgressBar() {
+	public ProgressBar getProgressBar() {
 		return fProgressBar;
 	}
 
@@ -270,6 +276,6 @@ public class TestFrameworkTestRunnerViewPart extends ViewPart {
 	}
 
 	public static Image createImage(String path) {
-		return TestFrameworkPlugin.getImageDescriptor(path).createImage();
+		return GUnitPlugin.getImageDescriptor(path).createImage();
 	}
 }

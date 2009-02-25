@@ -1,4 +1,4 @@
-package org.erlide.testing.framework.model;
+package org.erlide.gunit.model;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -8,6 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.gunit.launcher.LaunchConfigurationConstants;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
@@ -15,22 +16,21 @@ import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.testing.framework.launcher.TestFrameworkLaunchConfigurationConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class TestFrameworkInterface {
+public class GUnitInterface {
 
 	private Backend fBackend;
 
-	public TestFrameworkInterface(ILaunch launch) {
+	public GUnitInterface(ILaunch launch) {
 		try {
 			String projectName = launch
 					.getLaunchConfiguration()
 					.getAttribute(
-							TestFrameworkLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+							LaunchConfigurationConstants.ATTR_PROJECT_NAME,
 							"");
 			String workingDirString = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(projectName).getLocation()
@@ -72,9 +72,9 @@ public class TestFrameworkInterface {
 		}
 	}
 
-	public List<TestFrameworkTestElement> getTestCases(
-			TestFrameworkTestElement testElement) {
-		List<TestFrameworkTestElement> testCases = new ArrayList<TestFrameworkTestElement>();
+	public List<TestElement> getTestCases(
+			TestElement testElement) {
+		List<TestElement> testCases = new ArrayList<TestElement>();
 
 		try {
 			OtpErlangList result = (OtpErlangList) fBackend.rpcx("shade",
@@ -84,7 +84,7 @@ public class TestFrameworkInterface {
 				// that an empty list is returned
 				// instead of null
 				for (int i = 0; i < testCaseAtomList.length; ++i) {
-					testCases.add(new TestFrameworkTestElement(
+					testCases.add(new TestElement(
 							((OtpErlangAtom) testCaseAtomList[i]).toString(),
 							testElement));
 				}
@@ -100,7 +100,7 @@ public class TestFrameworkInterface {
 		return testCases;
 	}
 
-	public int runTest(TestFrameworkTestElement testCase) {
+	public int runTest(TestElement testCase) {
 		try {
 			OtpErlangObject result = fBackend.rpcx("shade", "run_test_case",
 					"aa", testCase.getParent().getName(), testCase.getName());
@@ -122,9 +122,9 @@ public class TestFrameworkInterface {
 			e.printStackTrace();
 		}
 		if (Math.random() < 0.5) {
-			return TestFrameworkTestElement.STATUS_OK;
+			return TestElement.STATUS_OK;
 		} else {
-			return TestFrameworkTestElement.STATUS_FAILED;
+			return TestElement.STATUS_FAILED;
 		}
 	}
 

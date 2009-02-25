@@ -1,4 +1,4 @@
-package org.erlide.testing.framework;
+package org.erlide.gunit;
 
 import java.net.URL;
 
@@ -10,14 +10,14 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.testing.framework.model.TestFrameworkModel;
+import org.erlide.gunit.model.GUnitModel;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class TestFrameworkPlugin extends AbstractUIPlugin {
+public class GUnitPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.erlide.testing.framework";
@@ -25,14 +25,14 @@ public class TestFrameworkPlugin extends AbstractUIPlugin {
 	private static final IPath ICONS_PATH = new Path("$nl$/icons");
 
 	// The shared instance
-	private static TestFrameworkPlugin plugin;
+	private static GUnitPlugin plugin;
 
-	private final TestFrameworkModel fBTErlModel = new TestFrameworkModel();
+	private final GUnitModel fBTErlModel = new GUnitModel();
 
 	/**
 	 * The constructor
 	 */
-	public TestFrameworkPlugin() {
+	public GUnitPlugin() {
 	}
 
 	/*
@@ -85,7 +85,7 @@ public class TestFrameworkPlugin extends AbstractUIPlugin {
 		return activeWorkbenchWindow.getActivePage();
 	}
 
-	public static TestFrameworkModel getModel() {
+	public static GUnitModel getModel() {
 		return getDefault().fBTErlModel;
 	}
 
@@ -94,7 +94,7 @@ public class TestFrameworkPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static TestFrameworkPlugin getDefault() {
+	public static GUnitPlugin getDefault() {
 		return plugin;
 	}
 
