@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
@@ -133,15 +134,15 @@ public final class ErlangCore {
 				getRuntimeInfoManager().addRuntime(rt);
 			}
 		}
-		ArrayList<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
+		List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
 				getRuntimeInfoManager().getRuntimes());
 		Collections.sort(list, new Comparator<RuntimeInfo>() {
 			public int compare(RuntimeInfo o1, RuntimeInfo o2) {
-				int x = -o1.getVersion().compareTo(o2.getVersion());
+				int x = o2.getVersion().compareTo(o1.getVersion());
 				if (x != 0) {
 					return x;
 				}
-				return -o1.getName().compareTo(o2.getName());
+				return o2.getName().compareTo(o1.getName());
 			}
 		});
 		getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
