@@ -124,7 +124,7 @@ public final class ErlangCore {
 						"default_runtime", null), "c:/program files",
 				"c:/programs", "c:/", "c:/apps",
 				System.getProperty("user.home"), "/usr", "/usr/local",
-				"/Applications" };
+				"/usr/local/lib", };
 		for (String loc : locations) {
 			Collection<File> roots = findRuntime(loc);
 			for (File root : roots) {
