@@ -3,7 +3,7 @@
 <plugin>
 
    <extension-point id="testRunListeners" name="%testRunListeners.name" schema="schema/testRunListeners.exsd"/>
-   <extension-point id="junitLaunchConfigs" name="%junitLaunchConfigs.name" schema="schema/junitLaunchConfigs.exsd"/>
+   <extension-point id="gunitLaunchConfigs" name="%junitLaunchConfigs.name" schema="schema/gunitLaunchConfigs.exsd"/>
    <extension-point id="internal_testKinds" name="%testKinds.name" schema="schema/internal_testKinds.exsd"/>
 
    <extension
@@ -11,7 +11,7 @@
       <view
             name="%View.label"
             icon="$nl$/icons/full/eview16/junit.gif"
-            category="org.eclipse.jdt.ui.java"
+            category="org.erlide.views"
             fastViewWidthRatio="0.40"
             class="org.erlide.gunit.internal.ui.TestRunnerViewPart"
             id="org.eclipse.jdt.junit.ResultView">
@@ -20,31 +20,19 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
+            targetID="org.erlide.ui.perspectives.ErlangPerspective">
          <view
                relative="org.eclipse.jdt.ui.PackageExplorer"
                visible="false"
                id="org.eclipse.jdt.junit.ResultView"
-               relationship="stack">
+               relationship="stack"> 
          </view>
-         <newWizardShortcut
-               id="org.eclipse.jdt.junit.wizards.NewTestCaseCreationWizard">
-         </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
+            targetID="org.erlide.ui.perspectives.ErlangPerspective">
          <actionSet
                id="org.eclipse.jdt.junit.JUnitActionSet">
          </actionSet>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-         <actionSet
-               id="org.eclipse.jdt.junit.JUnitActionSet">
-         </actionSet>
-         <newWizardShortcut
-               id="org.eclipse.jdt.junit.wizards.NewTestCaseCreationWizard">
-         </newWizardShortcut>
       </perspectiveExtension>
    </extension>
    <extension
@@ -207,7 +195,7 @@
             </enablement>
          </contextualLaunch>
          <perspective
-               id="org.erlide.ui.ErlangPerspective">
+               id="org.erlide.ui.perspectives.ErlangPerspective">
          </perspective>
          <perspective
                id="org.eclipse.debug.ui.DebugPerspective">
