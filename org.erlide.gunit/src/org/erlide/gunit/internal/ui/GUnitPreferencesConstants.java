@@ -95,7 +95,7 @@ public class GUnitPreferencesConstants {
 	 * 
 	 * @return list
 	 */
-	public static List createDefaultStackFiltersList() {
+	public static List<String> createDefaultStackFiltersList() {
 		return Arrays.asList(fgDefaultFilterPatterns);
 	}
 

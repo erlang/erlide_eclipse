@@ -593,11 +593,11 @@ public class TestRunnerViewPart extends ViewPart {
 
 		public void sessionRemoved(TestRunSession testRunSession) {
 			if (testRunSession.equals(TestRunnerViewPart.this.fTestRunSession)) {
-				List testRunSessions = GUnitPlugin.getModel()
+				List<TestRunSession> testRunSessions = GUnitPlugin.getModel()
 						.getTestRunSessions();
 				TestRunSession deactivatedSession;
 				if (!testRunSessions.isEmpty()) {
-					deactivatedSession = setActiveTestRunSession((TestRunSession) testRunSessions
+					deactivatedSession = setActiveTestRunSession(testRunSessions
 							.get(0));
 				} else {
 					deactivatedSession = setActiveTestRunSession(null);
@@ -786,9 +786,11 @@ public class TestRunnerViewPart extends ViewPart {
 			setText(GUnitMessages.TestRunnerViewPart_clear_history_label);
 
 			boolean enabled = false;
-			List testRunSessions = GUnitPlugin.getModel().getTestRunSessions();
-			for (Iterator iter = testRunSessions.iterator(); iter.hasNext();) {
-				TestRunSession testRunSession = (TestRunSession) iter.next();
+			List<TestRunSession> testRunSessions = GUnitPlugin.getModel()
+					.getTestRunSessions();
+			for (Iterator<TestRunSession> iter = testRunSessions.iterator(); iter
+					.hasNext();) {
+				TestRunSession testRunSession = iter.next();
 				if (!testRunSession.isRunning()) {
 					enabled = true;
 					break;
@@ -799,17 +801,19 @@ public class TestRunnerViewPart extends ViewPart {
 
 		@Override
 		public void run() {
-			List testRunSessions = getRunningSessions();
+			List<TestRunSession> testRunSessions = getRunningSessions();
 			Object first = testRunSessions.isEmpty() ? null : testRunSessions
 					.get(0);
 			TestRunnerViewPart.this.fViewHistory.setHistoryEntries(
 					testRunSessions, first);
 		}
 
-		private List getRunningSessions() {
-			List testRunSessions = GUnitPlugin.getModel().getTestRunSessions();
-			for (Iterator iter = testRunSessions.iterator(); iter.hasNext();) {
-				TestRunSession testRunSession = (TestRunSession) iter.next();
+		private List<TestRunSession> getRunningSessions() {
+			List<TestRunSession> testRunSessions = GUnitPlugin.getModel()
+					.getTestRunSessions();
+			for (Iterator<TestRunSession> iter = testRunSessions.iterator(); iter
+					.hasNext();) {
+				TestRunSession testRunSession = iter.next();
 				if (!testRunSession.isRunning()) {
 					iter.remove();
 				}
@@ -1482,8 +1486,7 @@ public class TestRunnerViewPart extends ViewPart {
 		if (testKindDisplayStr != null) {
 			setTitleToolTip(MessageFormat.format(
 					GUnitMessages.TestRunnerViewPart_titleToolTip,
-					new String[] { this.fTestRunSession.getTestRunName(),
-							testKindDisplayStr }));
+					this.fTestRunSession.getTestRunName(), testKindDisplayStr));
 		} else {
 			setTitleToolTip(this.fTestRunSession.getTestRunName());
 		}

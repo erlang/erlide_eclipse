@@ -207,6 +207,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	/*
 	 * @see Window#create()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void create() {
 		super.create();

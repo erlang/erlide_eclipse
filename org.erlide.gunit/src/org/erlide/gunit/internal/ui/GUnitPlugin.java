@@ -87,12 +87,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 
 	private static final String HISTORY_DIR_NAME = "history"; //$NON-NLS-1$
 
-	private final GUnitModel fJUnitModel = new GUnitModel();
-
-	/**
-	 * List storing the registered test run listeners
-	 */
-	private List/* <ITestRunListener> */fLegacyTestRunListeners;
+	private final GUnitModel fGUnitModel = new GUnitModel();
 
 	/**
 	 * List storing the registered test run listeners
@@ -238,7 +233,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		this.fBundleContext = context;
-		this.fJUnitModel.start();
+		this.fGUnitModel.start();
 	}
 
 	/**
@@ -248,7 +243,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		fIsStopped = true;
 		try {
-			this.fJUnitModel.stop();
+			this.fGUnitModel.stop();
 		} finally {
 			super.stop(context);
 		}
@@ -256,7 +251,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	public static GUnitModel getModel() {
-		return getDefault().fJUnitModel;
+		return getDefault().fGUnitModel;
 	}
 
 	/**

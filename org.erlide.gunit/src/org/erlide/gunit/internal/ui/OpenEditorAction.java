@@ -164,7 +164,7 @@ public abstract class OpenEditorAction extends Action {
 	}
 
 	private IErlModule internalFindType(IErlProject project, String className,
-			Set/* <IErlProject> */visitedProjects, IProgressMonitor monitor)
+			Set<IErlProject> visitedProjects, IProgressMonitor monitor)
 			throws ErlModelException {
 		try {
 			if (visitedProjects.contains(project)) {

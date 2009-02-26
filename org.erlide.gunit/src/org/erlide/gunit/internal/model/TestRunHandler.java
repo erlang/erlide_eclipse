@@ -37,7 +37,7 @@ public class TestRunHandler extends DefaultHandler {
 
 	private TestCaseElement fTestCase;
 
-	private Stack/* <Boolean> */fNotRun = new Stack();
+	private Stack<Boolean> fNotRun = new Stack<Boolean>();
 
 	private StringBuffer fFailureBuffer;
 

@@ -165,7 +165,7 @@ public class TestViewer {
 
 	private LinkedList<ITestSuiteElement> fAutoClose;
 
-	private HashSet/* <Test> */fAutoExpand;
+	private HashSet/* <Test> */<Object>fAutoExpand;
 
 	public TestViewer(Composite parent, Clipboard clipboard,
 			TestRunnerViewPart runner) {
@@ -513,7 +513,7 @@ public class TestViewer {
 						updateElementInTree((TestElement) toUpdate[i]);
 					}
 				} else {
-					HashSet toUpdateWithParents = new HashSet();
+					HashSet<Object> toUpdateWithParents = new HashSet<Object>();
 					toUpdateWithParents.addAll(Arrays.asList(toUpdate));
 					for (int i = 0; i < toUpdate.length; i++) {
 						TestElement parent = ((TestElement) toUpdate[i])
@@ -619,7 +619,7 @@ public class TestViewer {
 		}
 
 		synchronized (this) {
-			for (Iterator iter = this.fAutoExpand.iterator(); iter.hasNext();) {
+			for (Iterator<Object> iter = this.fAutoExpand.iterator(); iter.hasNext();) {
 				TestSuiteElement suite = (TestSuiteElement) iter.next();
 				this.fTreeViewer.setExpandedState(suite, true);
 			}
@@ -635,7 +635,7 @@ public class TestViewer {
 		if (this.fAutoClose.isEmpty()
 				|| !this.fAutoClose.getLast().equals(parent)) {
 			// we're in a new branch, so let's close old OK branches:
-			for (ListIterator iter = this.fAutoClose
+			for (ListIterator<ITestSuiteElement> iter = this.fAutoClose
 					.listIterator(this.fAutoClose.size()); iter.hasPrevious();) {
 				TestSuiteElement previousAutoOpened = (TestSuiteElement) iter
 						.previous();
@@ -712,9 +712,9 @@ public class TestViewer {
 			return null;
 		}
 
-		List siblings = Arrays.asList(parent.getChildren());
+		List<ITestElement> siblings = Arrays.asList(parent.getChildren());
 		if (!showNext) {
-			siblings = new ReverseList(siblings);
+			siblings = new ReverseList<ITestElement>(siblings);
 		}
 
 		int nextIndex = siblings.indexOf(current) + 1;
@@ -734,9 +734,9 @@ public class TestViewer {
 
 	private TestCaseElement getNextChildFailure(TestSuiteElement root,
 			boolean showNext) {
-		List children = Arrays.asList(root.getChildren());
+		List<ITestElement> children = Arrays.asList(root.getChildren());
 		if (!showNext) {
-			children = new ReverseList(children);
+			children = new ReverseList<ITestElement>(children);
 		}
 		for (int i = 0; i < children.size(); i++) {
 			TestElement child = (TestElement) children.get(i);
@@ -759,9 +759,9 @@ public class TestViewer {
 	}
 
 	private void clearUpdateAndExpansion() {
-		this.fNeedUpdate = new LinkedHashSet();
-		this.fAutoClose = new LinkedList();
-		this.fAutoExpand = new HashSet();
+		this.fNeedUpdate = new LinkedHashSet<ITestElement>();
+		this.fAutoClose = new LinkedList<ITestSuiteElement>();
+		this.fAutoExpand = new HashSet<Object>();
 	}
 
 	public synchronized void registerTestAdded(TestElement testElement) {

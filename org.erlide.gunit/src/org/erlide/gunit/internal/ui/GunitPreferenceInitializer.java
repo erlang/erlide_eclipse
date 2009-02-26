@@ -29,10 +29,9 @@ public class GunitPreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.setDefault(GUnitPreferencesConstants.SHOW_ON_ERROR_ONLY, false);
 		prefs.setDefault(GUnitPreferencesConstants.ENABLE_ASSERTIONS, false);
 
-		List defaults = GUnitPreferencesConstants
+		List<String> defaults = GUnitPreferencesConstants
 				.createDefaultStackFiltersList();
-		String[] filters = (String[]) defaults.toArray(new String[defaults
-				.size()]);
+		String[] filters = defaults.toArray(new String[defaults.size()]);
 		String active = GUnitPreferencesConstants.serializeList(filters);
 		prefs.setDefault(GUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST,
 				active);

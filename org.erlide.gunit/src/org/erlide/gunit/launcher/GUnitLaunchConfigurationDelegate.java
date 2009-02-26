@@ -74,7 +74,7 @@ public class GUnitLaunchConfigurationDelegate extends
 		}
 
 		monitor.beginTask(MessageFormat.format(
-				"{0}...", new String[] { configuration.getName() }), 5); //$NON-NLS-1$
+				"{0}...", configuration.getName()), 5); //$NON-NLS-1$
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
@@ -339,8 +339,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 *                if unable to collect the execution arguments
 	 */
 	protected void collectExecutionArguments(
-			ILaunchConfiguration configuration, List/* String */vmArguments,
-			List/* String */programArguments) throws CoreException {
+			ILaunchConfiguration configuration, List<String> vmArguments,
+			List<String> programArguments) throws CoreException {
 
 		// add program & VM arguments provided by getProgramArguments and
 		// getVMArguments

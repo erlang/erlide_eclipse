@@ -59,9 +59,9 @@ public class TestKindRegistry {
 		}
 
 		ArrayList<TestKind> items = new ArrayList<TestKind>();
-		for (Iterator iter = getConfigurationElements().iterator(); iter
-				.hasNext();) {
-			IConfigurationElement element = (IConfigurationElement) iter.next();
+		for (Iterator<IConfigurationElement> iter = getConfigurationElements()
+				.iterator(); iter.hasNext();) {
+			IConfigurationElement element = iter.next();
 			items.add(new TestKind(element));
 		}
 
@@ -97,8 +97,9 @@ public class TestKindRegistry {
 	 */
 	public ITestKind getKind(String testKindId) {
 		if (testKindId != null) {
-			for (Iterator iter = getAllKinds().iterator(); iter.hasNext();) {
-				TestKind kind = (TestKind) iter.next();
+			for (Iterator<TestKind> iter = getAllKinds().iterator(); iter
+					.hasNext();) {
+				TestKind kind = iter.next();
 				if (testKindId.equals(kind.getId())) {
 					return kind;
 				}

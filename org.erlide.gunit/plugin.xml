@@ -13,7 +13,7 @@
             icon="$nl$/icons/full/eview16/junit.gif"
             category="org.eclipse.jdt.ui.java"
             fastViewWidthRatio="0.40"
-            class="org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart"
+            class="org.erlide.gunit.internal.ui.TestRunnerViewPart"
             id="org.eclipse.jdt.junit.ResultView">
       </view>
    </extension>
@@ -52,7 +52,7 @@
       <page
             name="%PreferencePage.label"
             category="org.eclipse.jdt.ui.preferences.JavaBasePreferencePage"
-            class="org.eclipse.jdt.internal.junit.ui.JUnitPreferencePage"
+            class="org.erlide.gunit.internal.ui.GUnitPreferencePage"
             id="org.eclipse.jdt.junit.preferences">
          <keywordReference id="org.eclipse.jdt.junit.JUnit"/>
       </page>
@@ -69,19 +69,19 @@
             name="%Launch.label"
             delegateDescription="%JUnitLaunchDelegate.description"
             delegateName="%JUnitLaunchDelegate.name"
-            delegate="org.eclipse.jdt.junit.launcher.JUnitLaunchConfigurationDelegate"
+            delegate="org.erlide.gunit.launcher.GUnitLaunchConfigurationDelegate"
             modes="run, debug"
             id="org.eclipse.jdt.junit.launchconfig"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"
-            migrationDelegate="org.eclipse.jdt.internal.junit.launcher.JUnitMigrationDelegate">
+            >
       </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationComparators">
       <launchConfigurationComparator
             attribute="org.eclipse.jdt.junit.CONTAINER"
-            class="org.eclipse.jdt.internal.junit.launcher.ContainerComparator"
+            class="org.erlide.gunit.internal.launcher.ContainerComparator"
             id="org.eclipse.jdt.junit.containerComparator">
       </launchConfigurationComparator>
    </extension>
@@ -98,7 +98,7 @@
       <launchConfigurationTabGroup
             type="org.eclipse.jdt.junit.launchconfig"
             helpContextId="org.eclipse.jdt.junit.junit_tab_group"
-            class="org.eclipse.jdt.internal.junit.launcher.JUnitTabGroup"
+            class="org.erlide.gunit.internal.launcher.GUnitTabGroup"
             id="org.eclipse.jdt.junit.launchConfigurationTabGroup.junit">
          <launchMode
                perspective="org.eclipse.debug.ui.DebugPerspective"
@@ -110,56 +110,6 @@
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
-   </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            name="%WizardCategory.name"
-            parentCategory="org.eclipse.jdt.ui.java"
-            id="org.eclipse.jdt.junit">
-      </category>
-      <wizard
-            name="%TestCaseWizard.name"
-            icon="$nl$/icons/full/etool16/new_testcase.gif"
-            category="org.eclipse.jdt.ui.java/org.eclipse.jdt.junit"
-            id="org.eclipse.jdt.junit.wizards.NewTestCaseCreationWizard">
-         <class
-               class="org.eclipse.jdt.internal.junit.wizards.NewTestCaseCreationWizard">
-            <parameter
-                  name="javatype"
-                  value="true">
-            </parameter>
-         </class>
-<!-- see bug 48164 for wrong pde compiler warnings -->
-         <description>
-            %TestWizard.description
-         </description>
-      </wizard>
-      <wizard
-            name="%TestSuiteWizard.name"
-            icon="$nl$/icons/full/etool16/new_testsuite.gif"
-            category="org.eclipse.jdt.ui.java/org.eclipse.jdt.junit"
-            class="org.eclipse.jdt.internal.junit.wizards.NewTestSuiteCreationWizard"
-            id="org.eclipse.jdt.junit.wizards.NewTestSuiteCreationWizard">
-         <description>
-            %SuiteWizard.description
-         </description>
-      </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.jdt.core.ICompilationUnit"
-            nameFilter="*Tests.java"
-            id="org.eclipse.jdt.junit.wizards.UpdateTestSuite">
-         <action
-               label="%UpdateSuiteAction.label"
-               class="org.eclipse.jdt.internal.junit.wizards.UpdateTestSuite"
-               tooltip="%UpdateSuiteAction.tooltip"
-               enablesFor="1"
-               id="updateTestSuite">
-         </action>
-      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -182,7 +132,7 @@
                definitionId="org.eclipse.jdt.junit.gotoTest"
                label="%GotoTestAction.label"
                helpContextId="org.eclipse.jdt.junit.goto_referenced_test_action_context"
-               class="org.eclipse.jdt.internal.junit.ui.GotoReferencedTestAction"
+               class="org.erlide.gunit.internal.ui.GotoReferencedTestAction"
                tooltip="%GotoTestAction.tooltip"
                menubarPath="org.eclipse.search.menu/extraSearchGroup"
                id="junit.actions.GotoTestAction">
@@ -239,7 +189,7 @@
             label="%JUnitShortcut.label"
             icon="$nl$/icons/full/obj16/julaunch.gif"
             helpContextId="org.eclipse.jdt.junit.launch_shortcut"
-            class="org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut"
+            class="org.erlide.gunit.launcher.GUnitLaunchShortcut"
             modes="run, debug"
             id="org.eclipse.jdt.junit.junitShortcut">
          <contextualLaunch>
@@ -247,7 +197,7 @@
                <with variable="selection">
                   <count value="1"/>
                	  <iterate>
-                     <adapt type="org.eclipse.jdt.core.IErlElement">
+                     <adapt type="org.erlide.core.erlang.IErlElement">
 		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
 		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
 		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
@@ -257,13 +207,7 @@
             </enablement>
          </contextualLaunch>
          <perspective
-               id="org.eclipse.jdt.ui.JavaPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+               id="org.erlide.ui.ErlangPerspective">
          </perspective>
          <perspective
                id="org.eclipse.debug.ui.DebugPerspective">
@@ -282,92 +226,6 @@
       </shortcut>
    </extension>
    
-   <extension
-         point="org.eclipse.jdt.core.classpathVariableInitializer">
-      <classpathVariableInitializer
-            variable="JUNIT_HOME"
-            class="org.eclipse.jdt.internal.junit.buildpath.JUnitHomeInitializer"
-            deprecated="%classpathVariableInitializer.deprecated.JUNIT_HOME"
-            readOnly="true">
-      </classpathVariableInitializer>
-      <classpathVariableInitializer
-            variable="JUNIT_SRC_HOME"
-            class="org.eclipse.jdt.internal.junit.buildpath.JUnitHomeInitializer"
-            deprecated="%classpathVariableInitializer.deprecated.JUNIT_SRC_HOME"
-            readOnly="true">
-      </classpathVariableInitializer>
-   </extension>
-   
-   <extension
-         point="org.eclipse.jdt.ui.quickFixProcessors">
-      <quickFixProcessor
-            name="%junitQuickFixProcessor"
-            class="org.eclipse.jdt.internal.junit.ui.JUnitQuickFixProcessor"
-            id="org.eclipse.jdt.junit.JUnitQuickFixProcessor">
-      </quickFixProcessor>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.ide.markerResolution">
-      <markerResolutionGenerator 
-            markerType="org.eclipse.jdt.core.buildpath_problem"
-            class="org.eclipse.jdt.internal.junit.buildpath.ClasspathVariableMarkerResolutionGenerator"
-            >
-            <attribute
-                  name="id"
-                  value="1010">
-                  <!-- org.eclipse.jdt.core.IJavaModelMarker.ID,
-                       org.eclipse.jdt.core.IJavaModelStatusConstants.DEPRECATED_VARIABLE -->
-            </attribute>
-      </markerResolutionGenerator>
-   </extension>
-   
-   <extension
-         point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester
-            properties="isTest,canLaunchAsJUnit"
-            namespace="org.eclipse.jdt.junit"
-            type="org.eclipse.core.runtime.IAdaptable"
-            class="org.eclipse.jdt.internal.junit.JUnitPropertyTester"
-            id="org.eclipse.jdt.junit.JUnitPropertyTester">
-      </propertyTester>
-   </extension>
-   <extension
-         point="org.eclipse.ltk.core.refactoring.renameParticipants">
-      <renameParticipant
-            name="%RenameTypeParticipant.name"
-            class="org.eclipse.jdt.internal.junit.refactoring.TypeRenameParticipant"
-            id="org.eclipse.jdt.junit.renameTypeParticipant">
-         <enablement>
-           <with variable="affectedNatures">
-             <iterate operator="or">
-               <equals value="org.eclipse.jdt.core.javanature"/>
-             </iterate>
-           </with>
-           <with variable="element">
-             <instanceof value="org.eclipse.jdt.core.IErlModule"/>
- 	         <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
-            </with>
-         </enablement>
-      </renameParticipant>
-      <renameParticipant
-            class="org.eclipse.jdt.internal.junit.refactoring.ProjectRenameParticipant"
-            name="%junitRenameParticipant"
-            id="org.eclipse.jdt.junit.renameTypeParticipant">
-         <enablement>
-           <with variable="affectedNatures">
-             <iterate operator="or">
-               <equals value="org.eclipse.jdt.core.javanature"/>
-             </iterate>
-           </with>
-           <with variable="element">
-   	         <instanceof value="org.eclipse.jdt.core.IErlProject"/>
-	         <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
-           </with>
-         </enablement>
-      </renameParticipant>
-      
-   </extension>
    <extension
          point="org.eclipse.jdt.junit.junitLaunchConfigs">
       <launchConfigType
@@ -430,53 +288,20 @@
    
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.eclipse.jdt.internal.junit.ui.JunitPreferenceInitializer"/>
+      <initializer class="org.erlide.gunit.internal.ui.GunitPreferenceInitializer"/>
    </extension>
    
     <!-- JUnit Container -->
    
-   <extension
-      point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer"
-            id="org.eclipse.jdt.junit.JUNIT_CONTAINER">
-      </classpathContainerInitializer>
-   </extension>
-   
-   <extension
-         point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            name="%JUnitContainerName"
-            class="org.eclipse.jdt.internal.junit.buildpath.JUnitContainerWizardPage"
-            id="org.eclipse.jdt.junit.JUNIT_CONTAINER">
-      </classpathContainerPage>
-   </extension>
-   
-   <extension
-         point="org.eclipse.jdt.junit.internal_testKinds">
-      <kind
-            id="org.eclipse.jdt.junit.loader.junit3"
-            displayName="%testKind.junit3"
-            finderClass="org.eclipse.jdt.internal.junit.launcher.JUnit3TestFinder"
-            loaderPluginId="org.eclipse.jdt.junit.runtime"
-            loaderClass="org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestLoader">
-         <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit"/>     	
-         <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.runtime"/>     	
-      </kind>
-   </extension>
-   <extension
+    <extension
          point="org.eclipse.jdt.junit.internal_testKinds">
       <kind
             id="org.eclipse.jdt.junit.loader.junit4"
             displayName="%testKind.junit4" 
-            finderClass="org.eclipse.jdt.internal.junit.launcher.JUnit4TestFinder"
-            loaderPluginId="org.eclipse.jdt.junit4.runtime"
-            loaderClass="org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader">
+            finderClass="org.erlide.gunit.internal.junit.launcher.JUnit4TestFinder"
+            loaderPluginId="..."
+            loaderClass="org.erlide.gunit.internal.junit4.runner.JUnit4TestLoader">
          <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit4.runtime" />
-         <!-- TODO: do we need these? -->
-         <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit" />     	
-         <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit.runtime"/>     	
-         <!-- END : do we need these? -->
       </kind>
    </extension>
    

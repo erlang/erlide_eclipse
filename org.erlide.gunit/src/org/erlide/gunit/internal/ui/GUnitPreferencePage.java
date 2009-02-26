@@ -161,6 +161,7 @@ public class GUnitPreferencePage extends PreferencePage implements
 	 * Sorter for the filter table; sorts alphabetically ascending.
 	 */
 	private static class FilterViewerSorter extends ViewerComparator {
+		@SuppressWarnings("unchecked")
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			ILabelProvider lprov = (ILabelProvider) ((ContentViewer) viewer)
