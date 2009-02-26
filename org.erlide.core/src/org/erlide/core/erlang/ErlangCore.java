@@ -124,7 +124,7 @@ public final class ErlangCore {
 						"default_runtime", null), "c:/program files",
 				"c:/programs", "c:/", "c:/apps",
 				System.getProperty("user.home"), "/usr", "/usr/local",
-				"/usr/local/lib", };
+				"/usr/local/lib", "/Library/Frameworks/erlang/Versions" };
 		for (String loc : locations) {
 			Collection<File> roots = findRuntime(loc);
 			for (File root : roots) {
@@ -161,8 +161,9 @@ public final class ErlangCore {
 		File[] candidates = folder.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				return pathname.isDirectory()
-						&& (pathname.getName().startsWith("erl") || pathname
-								.getName().startsWith("Erl"));
+						&& (pathname.getName().startsWith("erl")
+								|| pathname.getName().startsWith("Erl") || pathname
+								.getName().startsWith("R"));
 			}
 		});
 		for (File f : candidates) {
