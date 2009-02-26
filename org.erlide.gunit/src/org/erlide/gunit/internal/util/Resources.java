@@ -17,17 +17,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Status;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.erlide.gunit.internal.Messages;
-import org.erlide.gunit.internal.ui.JUnitMessages;
+import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 
 public class Resources {
@@ -64,8 +62,9 @@ public class Resources {
 				result = addOutOfSync(result, resource);
 			}
 		}
-		if (result != null)
+		if (result != null) {
 			return result;
+		}
 		return new Status(IStatus.OK, GUnitPlugin.getPluginId(), IStatus.OK,
 				"", null); //$NON-NLS-1$		
 	}
@@ -107,40 +106,48 @@ public class Resources {
 	 *      java.lang.Object)
 	 */
 	public static IStatus makeCommittable(IResource[] resources, Object context) {
-		List readOnlyFiles = new ArrayList();
+		List<IResource> readOnlyFiles = new ArrayList<IResource>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (resource.getType() == IResource.FILE
-					&& resource.getResourceAttributes().isReadOnly())
+					&& resource.getResourceAttributes().isReadOnly()) {
 				readOnlyFiles.add(resource);
+			}
 		}
-		if (readOnlyFiles.size() == 0)
+		if (readOnlyFiles.size() == 0) {
 			return new Status(IStatus.OK, GUnitPlugin.getPluginId(),
 					IStatus.OK, "", null); //$NON-NLS-1$
+		}
 
-		Map oldTimeStamps = createModificationStampMap(readOnlyFiles);
-		IStatus status = ResourcesPlugin.getWorkspace().validateEdit(
-				(IFile[]) readOnlyFiles
-						.toArray(new IFile[readOnlyFiles.size()]), context);
-		if (!status.isOK())
+		Map<IFile, Long> oldTimeStamps = createModificationStampMap(readOnlyFiles);
+		IStatus status = ResourcesPlugin.getWorkspace()
+				.validateEdit(
+						readOnlyFiles.toArray(new IFile[readOnlyFiles.size()]),
+						context);
+		if (!status.isOK()) {
 			return status;
+		}
 
 		IStatus modified = null;
-		Map newTimeStamps = createModificationStampMap(readOnlyFiles);
-		for (Iterator iter = oldTimeStamps.keySet().iterator(); iter.hasNext();) {
-			IFile file = (IFile) iter.next();
-			if (!oldTimeStamps.get(file).equals(newTimeStamps.get(file)))
+		Map<IFile, Long> newTimeStamps = createModificationStampMap(readOnlyFiles);
+		for (Iterator<IFile> iter = oldTimeStamps.keySet().iterator(); iter
+				.hasNext();) {
+			IFile file = iter.next();
+			if (!oldTimeStamps.get(file).equals(newTimeStamps.get(file))) {
 				modified = addModified(modified, file);
+			}
 		}
-		if (modified != null)
+		if (modified != null) {
 			return modified;
+		}
 		return new Status(IStatus.OK, GUnitPlugin.getPluginId(), IStatus.OK,
 				"", null); //$NON-NLS-1$
 	}
 
-	private static Map createModificationStampMap(List files) {
-		Map map = new HashMap();
-		for (Iterator iter = files.iterator(); iter.hasNext();) {
+	private static Map<IFile, Long> createModificationStampMap(
+			List<IResource> files) {
+		Map<IFile, Long> map = new HashMap<IFile, Long>();
+		for (Iterator<IResource> iter = files.iterator(); iter.hasNext();) {
 			IFile file = (IFile) iter.next();
 			map.put(file, new Long(file.getModificationStamp()));
 		}
@@ -148,8 +155,8 @@ public class Resources {
 	}
 
 	private static IStatus addModified(IStatus status, IFile file) {
-		IStatus entry = JUnitStatus.createError(Messages.format(
-				JUnitMessages.Resources_fileModified, file.getFullPath()
+		IStatus entry = GUnitStatus.createError(Messages.format(
+				GUnitMessages.Resources_fileModified, file.getFullPath()
 						.toString()));
 		if (status == null) {
 			return entry;
@@ -159,7 +166,7 @@ public class Resources {
 		} else {
 			MultiStatus result = new MultiStatus(GUnitPlugin.getPluginId(),
 					IJUnitStatusConstants.VALIDATE_EDIT_CHANGED_CONTENT,
-					JUnitMessages.Resources_modifiedResources, null);
+					GUnitMessages.Resources_modifiedResources, null);
 			result.add(status);
 			result.add(entry);
 			return result;
@@ -169,7 +176,7 @@ public class Resources {
 	private static IStatus addOutOfSync(IStatus status, IResource resource) {
 		IStatus entry = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
 				IResourceStatus.OUT_OF_SYNC_LOCAL, Messages.format(
-						JUnitMessages.Resources_outOfSync, resource
+						GUnitMessages.Resources_outOfSync, resource
 								.getFullPath().toString()), null);
 		if (status == null) {
 			return entry;
@@ -179,7 +186,7 @@ public class Resources {
 		} else {
 			MultiStatus result = new MultiStatus(ResourcesPlugin.PI_RESOURCES,
 					IResourceStatus.OUT_OF_SYNC_LOCAL,
-					JUnitMessages.Resources_outOfSyncResources, null);
+					GUnitMessages.Resources_outOfSyncResources, null);
 			result.add(status);
 			result.add(entry);
 			return result;

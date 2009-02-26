@@ -48,9 +48,8 @@ import org.eclipse.ui.PartInitException;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
-import org.erlide.gunit.internal.model.TestElement.Status;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
-import org.erlide.gunit.internal.ui.JUnitPreferencesConstants;
+import org.erlide.gunit.internal.ui.GUnitPreferencesConstants;
 import org.erlide.gunit.internal.ui.TestRunnerViewPart;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -67,20 +66,20 @@ public final class GUnitModel {
 		 * a TestRunner once to a launch. Once a test runner is connected, it is
 		 * removed from the set.
 		 */
-		private HashSet fTrackedLaunches = new HashSet(20);
+		private HashSet<ILaunch> fTrackedLaunches = new HashSet<ILaunch>(20);
 
 		/*
 		 * @see ILaunchListener#launchAdded(ILaunch)
 		 */
 		public void launchAdded(ILaunch launch) {
-			fTrackedLaunches.add(launch);
+			this.fTrackedLaunches.add(launch);
 		}
 
 		/*
 		 * @see ILaunchListener#launchRemoved(ILaunch)
 		 */
 		public void launchRemoved(final ILaunch launch) {
-			fTrackedLaunches.remove(launch);
+			this.fTrackedLaunches.remove(launch);
 			// TODO: story for removing old test runs?
 			// getDisplay().asyncExec(new Runnable() {
 			// public void run() {
@@ -97,7 +96,7 @@ public final class GUnitModel {
 		 * @see ILaunchListener#launchChanged(ILaunch)
 		 */
 		public void launchChanged(final ILaunch launch) {
-			if (!fTrackedLaunches.contains(launch)) {
+			if (!this.fTrackedLaunches.contains(launch)) {
 				return;
 			}
 
@@ -120,7 +119,7 @@ public final class GUnitModel {
 			}
 			try {
 				final int port = Integer.parseInt(portStr);
-				fTrackedLaunches.remove(launch);
+				this.fTrackedLaunches.remove(launch);
 				getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						connectTestRunner(launch, javaProject, port);
@@ -139,11 +138,11 @@ public final class GUnitModel {
 			// Check concurrent access to fTestRunSessions (no problem inside
 			// asyncExec())
 			int maxCount = GUnitPlugin.getDefault().getPreferenceStore()
-					.getInt(JUnitPreferencesConstants.MAX_TEST_RUNS);
-			int toDelete = fTestRunSessions.size() - maxCount;
+					.getInt(GUnitPreferencesConstants.MAX_TEST_RUNS);
+			int toDelete = GUnitModel.this.fTestRunSessions.size() - maxCount;
 			while (toDelete > 0) {
 				toDelete--;
-				TestRunSession session = (TestRunSession) fTestRunSessions
+				TestRunSession session = GUnitModel.this.fTestRunSessions
 						.removeLast();
 				notifyTestRunSessionRemoved(session);
 			}
@@ -203,132 +202,13 @@ public final class GUnitModel {
 		}
 	}
 
-	/** @deprecated */
-	@Deprecated
-	private static final class LegacyTestRunSessionListener implements
-			ITestRunSessionListener {
-		private TestRunSession fActiveTestRunSession;
-		private ITestSessionListener fTestSessionListener;
-
-		public void sessionAdded(TestRunSession testRunSession) {
-			// Only serve one legacy ITestRunListener at a time, since they
-			// cannot distinguish between different concurrent test sessions:
-			if (fActiveTestRunSession != null) {
-				return;
-			}
-
-			fActiveTestRunSession = testRunSession;
-
-			fTestSessionListener = new ITestSessionListener() {
-				public void testAdded(TestElement testElement) {
-				}
-
-				public void sessionStarted() {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i]
-								.testRunStarted(fActiveTestRunSession
-										.getTotalCount());
-					}
-				}
-
-				public void sessionTerminated() {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testRunTerminated();
-					}
-					sessionRemoved(fActiveTestRunSession);
-				}
-
-				public void sessionStopped(long elapsedTime) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testRunStopped(elapsedTime);
-					}
-					sessionRemoved(fActiveTestRunSession);
-				}
-
-				public void sessionEnded(long elapsedTime) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testRunEnded(elapsedTime);
-					}
-					sessionRemoved(fActiveTestRunSession);
-				}
-
-				public void runningBegins() {
-					// ignore
-				}
-
-				public void testStarted(TestCaseElement testCaseElement) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testStarted(
-								testCaseElement.getId(), testCaseElement
-										.getTestName());
-					}
-				}
-
-				public void testFailed(TestElement testElement, Status status,
-						String trace, String expected, String actual) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testFailed(status.getOldCode(),
-								testElement.getId(), testElement.getTestName(),
-								trace);
-					}
-				}
-
-				public void testEnded(TestCaseElement testCaseElement) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testEnded(testCaseElement.getId(),
-								testCaseElement.getTestName());
-					}
-				}
-
-				public void testReran(TestCaseElement testCaseElement,
-						Status status, String trace, String expectedResult,
-						String actualResult) {
-					org.erlide.gunit.ITestRunListener[] testRunListeners = GUnitPlugin
-							.getDefault().getTestRunListeners();
-					for (int i = 0; i < testRunListeners.length; i++) {
-						testRunListeners[i].testReran(testCaseElement.getId(),
-								testCaseElement.getClassName(), testCaseElement
-										.getTestMethodName(), status
-										.getOldCode(), trace);
-					}
-				}
-
-				public boolean acceptsSwapToDisk() {
-					return true;
-				}
-			};
-			fActiveTestRunSession.addTestSessionListener(fTestSessionListener);
-		}
-
-		public void sessionRemoved(TestRunSession testRunSession) {
-			if (fActiveTestRunSession == testRunSession) {
-				fActiveTestRunSession
-						.removeTestSessionListener(fTestSessionListener);
-				fTestSessionListener = null;
-				fActiveTestRunSession = null;
-			}
-		}
-	}
-
 	private final ListenerList fTestRunSessionListeners = new ListenerList();
+
 	/**
 	 * Active test run sessions, youngest first.
 	 */
-	private final LinkedList/* <TestRunSession> */fTestRunSessions = new LinkedList();
+	private final LinkedList/* <TestRunSession> */<TestRunSession> fTestRunSessions = new LinkedList<TestRunSession>();
+
 	private final ILaunchListener fLaunchListener = new JUnitLaunchListener();
 
 	/**
@@ -337,7 +217,7 @@ public final class GUnitModel {
 	public void start() {
 		ILaunchManager launchManager = DebugPlugin.getDefault()
 				.getLaunchManager();
-		launchManager.addLaunchListener(fLaunchListener);
+		launchManager.addLaunchListener(this.fLaunchListener);
 
 		/*
 		 * TODO: restore on restart: - only import headers! - only import last n
@@ -365,7 +245,6 @@ public final class GUnitModel {
 		// });
 		// }
 		// }
-		addTestRunSessionListener(new LegacyTestRunSessionListener());
 	}
 
 	/**
@@ -374,7 +253,7 @@ public final class GUnitModel {
 	public void stop() {
 		ILaunchManager launchManager = DebugPlugin.getDefault()
 				.getLaunchManager();
-		launchManager.removeLaunchListener(fLaunchListener);
+		launchManager.removeLaunchListener(this.fLaunchListener);
 
 		File historyDirectory = GUnitPlugin.getHistoryDirectory();
 		File[] swapFiles = historyDirectory.listFiles();
@@ -398,11 +277,11 @@ public final class GUnitModel {
 	}
 
 	public void addTestRunSessionListener(ITestRunSessionListener listener) {
-		fTestRunSessionListeners.add(listener);
+		this.fTestRunSessionListeners.add(listener);
 	}
 
 	public void removeTestRunSessionListener(ITestRunSessionListener listener) {
-		fTestRunSessionListeners.remove(listener);
+		this.fTestRunSessionListeners.remove(listener);
 	}
 
 	/**
@@ -411,8 +290,8 @@ public final class GUnitModel {
 	 *         global list of active sessions. The list is sorted by age,
 	 *         youngest first.
 	 */
-	public List getTestRunSessions() {
-		return new ArrayList(fTestRunSessions);
+	public List<TestRunSession> getTestRunSessions() {
+		return new ArrayList<TestRunSession>(this.fTestRunSessions);
 	}
 
 	/**
@@ -427,8 +306,8 @@ public final class GUnitModel {
 	 */
 	public void addTestRunSession(TestRunSession testRunSession) {
 		Assert.isNotNull(testRunSession);
-		Assert.isLegal(!fTestRunSessions.contains(testRunSession));
-		fTestRunSessions.addFirst(testRunSession);
+		Assert.isLegal(!this.fTestRunSessions.contains(testRunSession));
+		this.fTestRunSessions.addFirst(testRunSession);
 		notifyTestRunSessionAdded(testRunSession);
 	}
 
@@ -570,7 +449,7 @@ public final class GUnitModel {
 	 *            the session to remove
 	 */
 	public void removeTestRunSession(TestRunSession testRunSession) {
-		boolean existed = fTestRunSessions.remove(testRunSession);
+		boolean existed = this.fTestRunSessions.remove(testRunSession);
 		if (existed) {
 			notifyTestRunSessionRemoved(testRunSession);
 		}
@@ -586,7 +465,7 @@ public final class GUnitModel {
 			launchManager.removeLaunch(launch);
 		}
 
-		Object[] listeners = fTestRunSessionListeners.getListeners();
+		Object[] listeners = this.fTestRunSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
 			((ITestRunSessionListener) listeners[i])
 					.sessionRemoved(testRunSession);
@@ -594,7 +473,7 @@ public final class GUnitModel {
 	}
 
 	private void notifyTestRunSessionAdded(TestRunSession testRunSession) {
-		Object[] listeners = fTestRunSessionListeners.getListeners();
+		Object[] listeners = this.fTestRunSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
 			((ITestRunSessionListener) listeners[i])
 					.sessionAdded(testRunSession);

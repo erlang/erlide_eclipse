@@ -33,8 +33,8 @@ import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
 import org.erlide.gunit.internal.launcher.ITestKind;
 import org.erlide.gunit.internal.model.TestElement.Status;
+import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
-import org.erlide.gunit.internal.ui.JUnitMessages;
 import org.erlide.gunit.model.ITestElement;
 import org.erlide.gunit.model.ITestElementContainer;
 import org.erlide.gunit.model.ITestRunSession;
@@ -49,7 +49,9 @@ public class TestRunSession implements ITestRunSession {
 	 * The launch, or <code>null</code> iff this session was run externally.
 	 */
 	private final ILaunch fLaunch;
+
 	private final String fTestRunName;
+
 	/**
 	 * Java project, or <code>null</code>.
 	 */
@@ -94,26 +96,32 @@ public class TestRunSession implements ITestRunSession {
 	 * Number of tests started during this test run.
 	 */
 	volatile int fStartedCount;
+
 	/**
 	 * Number of tests ignored during this test run.
 	 */
 	volatile int fIgnoredCount;
+
 	/**
 	 * Number of errors during this test run.
 	 */
 	volatile int fErrorCount;
+
 	/**
 	 * Number of failures during this test run.
 	 */
 	volatile int fFailureCount;
+
 	/**
 	 * Total number of tests to run.
 	 */
 	volatile int fTotalCount;
+
 	/**
 	 * Start time in millis.
 	 */
 	volatile long fStartTime;
+
 	volatile boolean fIsRunning;
 
 	volatile boolean fIsStopped;
@@ -126,61 +134,63 @@ public class TestRunSession implements ITestRunSession {
 	public TestRunSession(String testRunName, IErlProject project) {
 		// TODO: check assumptions about non-null fields
 
-		fLaunch = null;
-		fProject = null; // TODO
+		this.fLaunch = null;
+		this.fProject = null; // TODO
 
 		Assert.isNotNull(testRunName);
-		fTestRunName = testRunName;
-		fTestRunnerKind = ITestKind.NULL; // TODO
+		this.fTestRunName = testRunName;
+		this.fTestRunnerKind = ITestKind.NULL; // TODO
 
-		fTestRoot = new TestRoot(this);
-		fIdToTest = new HashMap();
+		this.fTestRoot = new TestRoot(this);
+		this.fIdToTest = new HashMap<String, ITestElement>();
 
-		fTestRunnerClient = null;
+		this.fTestRunnerClient = null;
 
-		fSessionListeners = new ListenerList();
+		this.fSessionListeners = new ListenerList();
 	}
 
 	public TestRunSession(ILaunch launch, IErlProject project, int port) {
 		Assert.isNotNull(launch);
 
-		fLaunch = launch;
-		fProject = project;
+		this.fLaunch = launch;
+		this.fProject = project;
 
 		ILaunchConfiguration launchConfiguration = launch
 				.getLaunchConfiguration();
 		if (launchConfiguration != null) {
-			fTestRunName = launchConfiguration.getName();
-			fTestRunnerKind = GUnitLaunchConfigurationConstants
+			this.fTestRunName = launchConfiguration.getName();
+			this.fTestRunnerKind = GUnitLaunchConfigurationConstants
 					.getTestRunnerKind(launchConfiguration);
 		} else {
-			fTestRunName = project.getName();
-			fTestRunnerKind = ITestKind.NULL;
+			this.fTestRunName = project.getName();
+			this.fTestRunnerKind = ITestKind.NULL;
 		}
 
-		fTestRoot = new TestRoot(this);
-		fIdToTest = new HashMap();
+		this.fTestRoot = new TestRoot(this);
+		this.fIdToTest = new HashMap<String, ITestElement>();
 
-		fTestRunnerClient = new RemoteTestRunnerClient();
-		fTestRunnerClient.startListening(
+		this.fTestRunnerClient = new RemoteTestRunnerClient();
+		this.fTestRunnerClient.startListening(
 				new ITestRunListener2[] { new TestSessionNotifier() }, port);
 
 		final ILaunchManager launchManager = DebugPlugin.getDefault()
 				.getLaunchManager();
 		launchManager.addLaunchListener(new ILaunchesListener2() {
 			public void launchesTerminated(ILaunch[] launches) {
-				if (Arrays.asList(launches).contains(fLaunch)) {
-					if (fTestRunnerClient != null) {
-						fTestRunnerClient.stopWaiting();
+				if (Arrays.asList(launches).contains(
+						TestRunSession.this.fLaunch)) {
+					if (TestRunSession.this.fTestRunnerClient != null) {
+						TestRunSession.this.fTestRunnerClient.stopWaiting();
 					}
 					launchManager.removeLaunchListener(this);
 				}
 			}
 
 			public void launchesRemoved(ILaunch[] launches) {
-				if (Arrays.asList(launches).contains(fLaunch)) {
-					if (fTestRunnerClient != null) {
-						fTestRunnerClient.stopWaiting();
+				if (Arrays.asList(launches).contains(
+						TestRunSession.this.fLaunch)) {
+					if (TestRunSession.this.fTestRunnerClient != null) {
+						TestRunSession.this.fTestRunnerClient.stopWaiting();
 					}
 					launchManager.removeLaunchListener(this);
 				}
@@ -193,20 +203,20 @@ public class TestRunSession implements ITestRunSession {
 			}
 		});
 
-		fSessionListeners = new ListenerList();
+		this.fSessionListeners = new ListenerList();
 		addTestSessionListener(new TestRunListenerAdapter(this));
 	}
 
 	void reset() {
-		fStartedCount = 0;
-		fFailureCount = 0;
-		fErrorCount = 0;
-		fIgnoredCount = 0;
-		fTotalCount = 0;
+		this.fStartedCount = 0;
+		this.fFailureCount = 0;
+		this.fErrorCount = 0;
+		this.fIgnoredCount = 0;
+		this.fTotalCount = 0;
 
-		fTestRoot = new TestRoot(this);
-		fTestResult = null;
-		fIdToTest = new HashMap();
+		this.fTestRoot = new TestRoot(this);
+		this.fTestResult = null;
+		this.fIdToTest = new HashMap<String, ITestElement>();
 	}
 
 	/*
@@ -230,10 +240,10 @@ public class TestRunSession implements ITestRunSession {
 	 * @see org.erlide.gunit.model.ITestElement#getTestResult(boolean)
 	 */
 	public Result getTestResult(boolean includeChildren) {
-		if (fTestRoot != null) {
-			return fTestRoot.getTestResult(true);
+		if (this.fTestRoot != null) {
+			return this.fTestRoot.getTestResult(true);
 		} else {
-			return fTestResult;
+			return this.fTestResult;
 		}
 	}
 
@@ -276,18 +286,18 @@ public class TestRunSession implements ITestRunSession {
 	public TestRoot getTestRoot() {
 		swapIn(); // TODO: TestRoot should stay (e.g. for
 		// getTestRoot().getStatus())
-		return fTestRoot;
+		return this.fTestRoot;
 	}
 
 	/**
 	 * @return the Java project, or <code>null</code>
 	 */
 	public IErlProject getLaunchedProject() {
-		return fProject;
+		return this.fProject;
 	}
 
 	public ITestKind getTestRunnerKind() {
-		return fTestRunnerKind;
+		return this.fTestRunnerKind;
 	}
 
 	/**
@@ -295,62 +305,62 @@ public class TestRunSession implements ITestRunSession {
 	 *         externally
 	 */
 	public ILaunch getLaunch() {
-		return fLaunch;
+		return this.fLaunch;
 	}
 
 	public String getTestRunName() {
-		return fTestRunName;
+		return this.fTestRunName;
 	}
 
 	public int getErrorCount() {
-		return fErrorCount;
+		return this.fErrorCount;
 	}
 
 	public int getFailureCount() {
-		return fFailureCount;
+		return this.fFailureCount;
 	}
 
 	public int getStartedCount() {
-		return fStartedCount;
+		return this.fStartedCount;
 	}
 
 	public int getIgnoredCount() {
-		return fIgnoredCount;
+		return this.fIgnoredCount;
 	}
 
 	public int getTotalCount() {
-		return fTotalCount;
+		return this.fTotalCount;
 	}
 
 	public long getStartTime() {
-		return fStartTime;
+		return this.fStartTime;
 	}
 
 	/**
 	 * @return <code>true</code> iff the session has been stopped or terminated
 	 */
 	public boolean isStopped() {
-		return fIsStopped;
+		return this.fIsStopped;
 	}
 
 	public void addTestSessionListener(ITestSessionListener listener) {
 		swapIn();
-		fSessionListeners.add(listener);
+		this.fSessionListeners.add(listener);
 	}
 
 	public void removeTestSessionListener(ITestSessionListener listener) {
-		fSessionListeners.remove(listener);
+		this.fSessionListeners.remove(listener);
 	}
 
 	public void swapOut() {
-		if (fTestRoot == null) {
+		if (this.fTestRoot == null) {
 			return;
 		}
 		if (isRunning() || isStarting() || isKeptAlive()) {
 			return;
 		}
 
-		Object[] listeners = fSessionListeners.getListeners();
+		Object[] listeners = this.fSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
 			ITestSessionListener registered = (ITestSessionListener) listeners[i];
 			if (!registered.acceptsSwapToDisk()) {
@@ -362,12 +372,12 @@ public class TestRunSession implements ITestRunSession {
 			File swapFile = getSwapFile();
 
 			GUnitModel.exportTestRunSession(this, swapFile);
-			fTestResult = fTestRoot.getTestResult(true);
-			fTestRoot = null;
-			fTestRunnerClient = null;
-			fIdToTest = new HashMap();
-			fIncompleteTestSuites = null;
-			fUnrootedSuite = null;
+			this.fTestResult = this.fTestRoot.getTestResult(true);
+			this.fTestRoot = null;
+			this.fTestRunnerClient = null;
+			this.fIdToTest = new HashMap<String, ITestElement>();
+			this.fIncompleteTestSuites = null;
+			this.fUnrootedSuite = null;
 
 		} catch (IllegalStateException e) {
 			GUnitPlugin.log(e);
@@ -377,8 +387,8 @@ public class TestRunSession implements ITestRunSession {
 	}
 
 	private boolean isStarting() {
-		return getStartTime() == 0 && fLaunch != null
-				&& !fLaunch.isTerminated();
+		return getStartTime() == 0 && this.fLaunch != null
+				&& !this.fLaunch.isTerminated();
 	}
 
 	public void removeSwapFile() {
@@ -396,7 +406,7 @@ public class TestRunSession implements ITestRunSession {
 	}
 
 	public void swapIn() {
-		if (fTestRoot != null) {
+		if (this.fTestRoot != null) {
 			return;
 		}
 
@@ -404,21 +414,21 @@ public class TestRunSession implements ITestRunSession {
 			GUnitModel.importIntoTestRunSession(getSwapFile(), this);
 		} catch (IllegalStateException e) {
 			GUnitPlugin.log(e);
-			fTestRoot = new TestRoot(this);
-			fTestResult = null;
+			this.fTestRoot = new TestRoot(this);
+			this.fTestResult = null;
 		} catch (CoreException e) {
 			GUnitPlugin.log(e);
-			fTestRoot = new TestRoot(this);
-			fTestResult = null;
+			this.fTestRoot = new TestRoot(this);
+			this.fTestResult = null;
 		}
 	}
 
 	public void stopTestRun() {
 		if (isRunning() || !isKeptAlive()) {
-			fIsStopped = true;
+			this.fIsStopped = true;
 		}
-		if (fTestRunnerClient != null) {
-			fTestRunnerClient.stopTest();
+		if (this.fTestRunnerClient != null) {
+			this.fTestRunnerClient.stopTest();
 		}
 	}
 
@@ -427,10 +437,12 @@ public class TestRunSession implements ITestRunSession {
 	 *         still alive
 	 */
 	public boolean isKeptAlive() {
-		if (fTestRunnerClient != null && fLaunch != null
-				&& fTestRunnerClient.isRunning()
-				&& ILaunchManager.DEBUG_MODE.equals(fLaunch.getLaunchMode())) {
-			ILaunchConfiguration config = fLaunch.getLaunchConfiguration();
+		if (this.fTestRunnerClient != null
+				&& this.fLaunch != null
+				&& this.fTestRunnerClient.isRunning()
+				&& ILaunchManager.DEBUG_MODE.equals(this.fLaunch
+						.getLaunchMode())) {
+			ILaunchConfiguration config = this.fLaunch.getLaunchConfiguration();
 			try {
 				return config != null
 						&& config
@@ -451,7 +463,7 @@ public class TestRunSession implements ITestRunSession {
 	 *         ended nor stopped nor terminated
 	 */
 	public boolean isRunning() {
-		return fIsRunning;
+		return this.fIsRunning;
 	}
 
 	/**
@@ -468,16 +480,16 @@ public class TestRunSession implements ITestRunSession {
 			Status status = ((TestCaseElement) getTestElement(testId))
 					.getStatus();
 			if (status == Status.ERROR) {
-				fErrorCount--;
+				this.fErrorCount--;
 			} else if (status == Status.FAILURE) {
-				fFailureCount--;
+				this.fFailureCount--;
 			}
-			fTestRunnerClient.rerunTest(testId, className, testName);
+			this.fTestRunnerClient.rerunTest(testId, className, testName);
 			return true;
 
-		} else if (fLaunch != null) {
+		} else if (this.fLaunch != null) {
 			// run the selected test using the previous launch configuration
-			ILaunchConfiguration launchConfiguration = fLaunch
+			ILaunchConfiguration launchConfiguration = this.fLaunch
 					.getLaunchConfiguration();
 			if (launchConfiguration != null) {
 
@@ -486,7 +498,7 @@ public class TestRunSession implements ITestRunSession {
 					name += "." + testName; //$NON-NLS-1$
 				}
 				String configName = Messages.format(
-						JUnitMessages.TestRunnerViewPart_configName, name);
+						GUnitMessages.TestRunnerViewPart_configName, name);
 				ILaunchConfigurationWorkingCopy tmp = launchConfiguration
 						.copy(configName);
 				// fix for bug: 64838 junit view run single test does not use
@@ -517,7 +529,7 @@ public class TestRunSession implements ITestRunSession {
 	}
 
 	public TestElement getTestElement(String id) {
-		return (TestElement) fIdToTest.get(id);
+		return (TestElement) this.fIdToTest.get(id);
 	}
 
 	private TestElement addTreeEntry(String treeEntry) {
@@ -535,16 +547,16 @@ public class TestRunSession implements ITestRunSession {
 
 		int testCount = Integer.parseInt(treeEntry.substring(index2 + 1));
 
-		if (fIncompleteTestSuites.isEmpty()) {
-			return createTestElement(fTestRoot, id, testName, isSuite,
+		if (this.fIncompleteTestSuites.isEmpty()) {
+			return createTestElement(this.fTestRoot, id, testName, isSuite,
 					testCount);
 		} else {
-			int suiteIndex = fIncompleteTestSuites.size() - 1;
-			IncompleteTestSuite openSuite = fIncompleteTestSuites
+			int suiteIndex = this.fIncompleteTestSuites.size() - 1;
+			IncompleteTestSuite openSuite = this.fIncompleteTestSuites
 					.get(suiteIndex);
 			openSuite.fOutstandingChildren--;
 			if (openSuite.fOutstandingChildren <= 0) {
-				fIncompleteTestSuites.remove(suiteIndex);
+				this.fIncompleteTestSuites.remove(suiteIndex);
 			}
 			return createTestElement(openSuite.fTestSuiteElement, id, testName,
 					isSuite, testCount);
@@ -559,13 +571,13 @@ public class TestRunSession implements ITestRunSession {
 					id, testName, testCount);
 			testElement = testSuiteElement;
 			if (testCount > 0) {
-				fIncompleteTestSuites.add(new IncompleteTestSuite(
+				this.fIncompleteTestSuites.add(new IncompleteTestSuite(
 						testSuiteElement, testCount));
 			}
 		} else {
 			testElement = new TestCaseElement(parent, id, testName);
 		}
-		fIdToTest.put(id, testElement);
+		this.fIdToTest.put(id, testElement);
 		return testElement;
 	}
 
@@ -609,37 +621,40 @@ public class TestRunSession implements ITestRunSession {
 	private class TestSessionNotifier implements ITestRunListener2 {
 
 		public void testRunStarted(int testCount) {
-			fIncompleteTestSuites = new ArrayList();
+			TestRunSession.this.fIncompleteTestSuites = new ArrayList<IncompleteTestSuite>();
 
-			fStartedCount = 0;
-			fIgnoredCount = 0;
-			fFailureCount = 0;
-			fErrorCount = 0;
-			fTotalCount = testCount;
+			TestRunSession.this.fStartedCount = 0;
+			TestRunSession.this.fIgnoredCount = 0;
+			TestRunSession.this.fFailureCount = 0;
+			TestRunSession.this.fErrorCount = 0;
+			TestRunSession.this.fTotalCount = testCount;
 
-			fStartTime = System.currentTimeMillis();
-			fIsRunning = true;
+			TestRunSession.this.fStartTime = System.currentTimeMillis();
+			TestRunSession.this.fIsRunning = true;
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).sessionStarted();
 			}
 		}
 
 		public void testRunEnded(long elapsedTime) {
-			fIsRunning = false;
+			TestRunSession.this.fIsRunning = false;
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).sessionEnded(elapsedTime);
 			}
 		}
 
 		public void testRunStopped(long elapsedTime) {
-			fIsRunning = false;
-			fIsStopped = true;
+			TestRunSession.this.fIsRunning = false;
+			TestRunSession.this.fIsStopped = true;
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i])
 						.sessionStopped(elapsedTime);
@@ -647,10 +662,11 @@ public class TestRunSession implements ITestRunSession {
 		}
 
 		public void testRunTerminated() {
-			fIsRunning = false;
-			fIsStopped = true;
+			TestRunSession.this.fIsRunning = false;
+			TestRunSession.this.fIsStopped = true;
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).sessionTerminated();
 			}
@@ -666,7 +682,8 @@ public class TestRunSession implements ITestRunSession {
 		public void testTreeEntry(String description) {
 			TestElement testElement = addTreeEntry(description);
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).testAdded(testElement);
 			}
@@ -678,7 +695,8 @@ public class TestRunSession implements ITestRunSession {
 			TestElement testElement = createTestElement(unrootedSuite, testId,
 					testName, false, 1);
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).testAdded(testElement);
 			}
@@ -687,17 +705,18 @@ public class TestRunSession implements ITestRunSession {
 		}
 
 		private TestSuiteElement getUnrootedSuite() {
-			if (fUnrootedSuite == null) {
-				fUnrootedSuite = (TestSuiteElement) createTestElement(
-						fTestRoot,
-						"-2", JUnitMessages.TestRunSession_unrootedTests, true, 0); //$NON-NLS-1$
+			if (TestRunSession.this.fUnrootedSuite == null) {
+				TestRunSession.this.fUnrootedSuite = (TestSuiteElement) createTestElement(
+						TestRunSession.this.fTestRoot,
+						"-2", GUnitMessages.TestRunSession_unrootedTests, true, 0); //$NON-NLS-1$
 			}
-			return fUnrootedSuite;
+			return TestRunSession.this.fUnrootedSuite;
 		}
 
 		public void testStarted(String testId, String testName) {
-			if (fStartedCount == 0) {
-				Object[] listeners = fSessionListeners.getListeners();
+			if (TestRunSession.this.fStartedCount == 0) {
+				Object[] listeners = TestRunSession.this.fSessionListeners
+						.getListeners();
 				for (int i = 0; i < listeners.length; ++i) {
 					((ITestSessionListener) listeners[i]).runningBegins();
 				}
@@ -712,9 +731,10 @@ public class TestRunSession implements ITestRunSession {
 			TestCaseElement testCaseElement = (TestCaseElement) testElement;
 			setStatus(testCaseElement, Status.RUNNING);
 
-			fStartedCount++;
+			TestRunSession.this.fStartedCount++;
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i])
 						.testStarted(testCaseElement);
@@ -732,14 +752,15 @@ public class TestRunSession implements ITestRunSession {
 			TestCaseElement testCaseElement = (TestCaseElement) testElement;
 			if (testName.startsWith(MessageIds.IGNORED_TEST_PREFIX)) {
 				testCaseElement.setIgnored(true);
-				fIgnoredCount++;
+				TestRunSession.this.fIgnoredCount++;
 			}
 
 			if (testCaseElement.getStatus() == Status.RUNNING) {
 				setStatus(testCaseElement, Status.OK);
 			}
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i])
 						.testEnded(testCaseElement);
@@ -771,7 +792,8 @@ public class TestRunSession implements ITestRunSession {
 			registerTestFailed(testElement, status, trace,
 					nullifyEmpty(expected), nullifyEmpty(actual));
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				((ITestSessionListener) listeners[i]).testFailed(testElement,
 						status, trace, expected, actual);
@@ -818,7 +840,8 @@ public class TestRunSession implements ITestRunSession {
 			registerTestFailed(testElement, status, trace,
 					nullifyEmpty(expectedResult), nullifyEmpty(actualResult));
 
-			Object[] listeners = fSessionListeners.getListeners();
+			Object[] listeners = TestRunSession.this.fSessionListeners
+					.getListeners();
 			for (int i = 0; i < listeners.length; ++i) {
 				// TODO: post old & new status?
 				((ITestSessionListener) listeners[i]).testReran(
@@ -836,12 +859,13 @@ public class TestRunSession implements ITestRunSession {
 
 	private static class IncompleteTestSuite {
 		public TestSuiteElement fTestSuiteElement;
+
 		public int fOutstandingChildren;
 
 		public IncompleteTestSuite(TestSuiteElement testSuiteElement,
 				int outstandingChildren) {
-			fTestSuiteElement = testSuiteElement;
-			fOutstandingChildren = outstandingChildren;
+			this.fTestSuiteElement = testSuiteElement;
+			this.fOutstandingChildren = outstandingChildren;
 		}
 	}
 
@@ -849,21 +873,21 @@ public class TestRunSession implements ITestRunSession {
 			String trace, String expected, String actual) {
 		testElement.setStatus(status, trace, expected, actual);
 		if (status.isError()) {
-			fErrorCount++;
+			this.fErrorCount++;
 		} else {
-			fFailureCount++;
+			this.fFailureCount++;
 		}
 	}
 
 	public void registerTestEnded(TestElement testElement, boolean completed) {
 		if (testElement instanceof TestCaseElement) {
-			fTotalCount++;
+			this.fTotalCount++;
 			if (!completed) {
 				return;
 			}
-			fStartedCount++;
+			this.fStartedCount++;
 			if (((TestCaseElement) testElement).isIgnored()) {
-				fIgnoredCount++;
+				this.fIgnoredCount++;
 			}
 			if (!testElement.getStatus().isErrorOrFailure()) {
 				setStatus(testElement, Status.OK);
@@ -876,13 +900,13 @@ public class TestRunSession implements ITestRunSession {
 	}
 
 	public TestElement[] getAllFailedTestElements() {
-		ArrayList failures = new ArrayList();
+		List<ITestElement> failures = new ArrayList<ITestElement>();
 		addFailures(failures, getTestRoot());
-		return (TestElement[]) failures
-				.toArray(new TestElement[failures.size()]);
+		return failures.toArray(new TestElement[failures.size()]);
 	}
 
-	private void addFailures(ArrayList failures, ITestElement testElement) {
+	private void addFailures(List<ITestElement> failures,
+			ITestElement testElement) {
 		Result testResult = testElement.getTestResult(true);
 		if (testResult == Result.ERROR || testResult == Result.FAILURE) {
 			failures.add(testElement);

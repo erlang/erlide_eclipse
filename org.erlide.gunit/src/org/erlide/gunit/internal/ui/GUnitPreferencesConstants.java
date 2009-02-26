@@ -18,7 +18,7 @@ import java.util.List;
  * Defines constants which are used to refer to values in the plugin's
  * preference store.
  */
-public class JUnitPreferencesConstants {
+public class GUnitPreferencesConstants {
 	/**
 	 * Boolean preference controlling whether the failure stack should be
 	 * filtered.
@@ -86,7 +86,7 @@ public class JUnitPreferencesConstants {
 			"sun.reflect.*", //$NON-NLS-1$
 	};
 
-	private JUnitPreferencesConstants() {
+	private GUnitPreferencesConstants() {
 		// no instance
 	}
 
@@ -107,13 +107,15 @@ public class JUnitPreferencesConstants {
 	 * @return a single string composed of the given list
 	 */
 	public static String serializeList(String[] list) {
-		if (list == null)
+		if (list == null) {
 			return ""; //$NON-NLS-1$
+		}
 
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < list.length; i++) {
-			if (i > 0)
+			if (i > 0) {
 				buffer.append(',');
+			}
 
 			buffer.append(list[i]);
 		}

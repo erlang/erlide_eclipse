@@ -13,7 +13,6 @@ package org.erlide.gunit.internal.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.erlide.gunit.internal.model.TestElement;
 import org.erlide.gunit.internal.model.TestRoot;
 import org.erlide.gunit.internal.model.TestSuiteElement;
@@ -26,10 +25,11 @@ public class TestSessionTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof TestSuiteElement)
+		if (parentElement instanceof TestSuiteElement) {
 			return ((TestSuiteElement) parentElement).getChildren();
-		else
-			return NO_CHILDREN;
+		} else {
+			return this.NO_CHILDREN;
+		}
 	}
 
 	public Object[] getElements(Object inputElement) {
@@ -41,10 +41,11 @@ public class TestSessionTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object element) {
-		if (element instanceof TestSuiteElement)
+		if (element instanceof TestSuiteElement) {
 			return ((TestSuiteElement) element).getChildren().length != 0;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

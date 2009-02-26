@@ -15,7 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,15 +35,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 
@@ -49,17 +46,23 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	private CheckboxTableViewer fViewer;
 
 	private ILabelProvider fLabelProvider;
+
 	private IStructuredContentProvider fContentProvider;
 
 	private ISelectionStatusValidator fValidator = null;
-	private String fEmptyListMessage = WizardMessages.CheckedTableSelectionDialog_emptyListMessage;
 
-	private IStatus fCurrStatus = new JUnitStatus();
-	private List fFilters;
+	private String fEmptyListMessage = "empty list";
+
+	private IStatus fCurrStatus = new GUnitStatus();
+
+	private List<ViewerFilter> fFilters;
+
 	private Object fInput;
+
 	private boolean fIsEmpty;
 
 	private int fWidth = 40;
+
 	private int fHeight = 18;
 
 	/**
@@ -75,10 +78,10 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 			IStructuredContentProvider contentProvider) {
 		super(parent);
 
-		fLabelProvider = labelProvider;
-		fContentProvider = contentProvider;
+		this.fLabelProvider = labelProvider;
+		this.fContentProvider = contentProvider;
 
-		setResult(new ArrayList(0));
+		setResult(new ArrayList<Object>(0));
 		setStatusLineAboveButtons(true);
 	}
 
@@ -99,7 +102,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 *            the message to be displayed.
 	 */
 	public void setEmptyListMessage(String message) {
-		fEmptyListMessage = message;
+		this.fEmptyListMessage = message;
 	}
 
 	/**
@@ -109,10 +112,11 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 *            a filter.
 	 */
 	public void addFilter(ViewerFilter filter) {
-		if (fFilters == null)
-			fFilters = new ArrayList(4);
+		if (this.fFilters == null) {
+			this.fFilters = new ArrayList<ViewerFilter>(4);
+		}
 
-		fFilters.add(filter);
+		this.fFilters.add(filter);
 	}
 
 	/**
@@ -123,7 +127,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 *            the validator to validate the selection.
 	 */
 	public void setValidator(ISelectionStatusValidator validator) {
-		fValidator = validator;
+		this.fValidator = validator;
 	}
 
 	/**
@@ -133,7 +137,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 *            the tree input.
 	 */
 	public void setInput(Object input) {
-		fInput = input;
+		this.fInput = input;
 	}
 
 	/**
@@ -145,22 +149,24 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 *            the height of the tree.
 	 */
 	public void setSize(int width, int height) {
-		fWidth = width;
-		fHeight = height;
+		this.fWidth = width;
+		this.fHeight = height;
 	}
 
 	protected void updateOKStatus() {
-		if (!fIsEmpty) {
-			if (fValidator != null) {
-				fCurrStatus = fValidator.validate(fViewer.getCheckedElements());
-				updateStatus(fCurrStatus);
-			} else if (!fCurrStatus.isOK()) {
-				fCurrStatus = new JUnitStatus();
+		if (!this.fIsEmpty) {
+			if (this.fValidator != null) {
+				this.fCurrStatus = this.fValidator.validate(this.fViewer
+						.getCheckedElements());
+				updateStatus(this.fCurrStatus);
+			} else if (!this.fCurrStatus.isOK()) {
+				this.fCurrStatus = new GUnitStatus();
 			}
 		} else {
-			fCurrStatus = new JUnitStatus(IStatus.ERROR, fEmptyListMessage);
+			this.fCurrStatus = new GUnitStatus(IStatus.ERROR,
+					this.fEmptyListMessage);
 		}
-		updateStatus(fCurrStatus);
+		updateStatus(this.fCurrStatus);
 	}
 
 	/*
@@ -168,7 +174,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 */
 	@Override
 	public int open() {
-		fIsEmpty = evaluateIfTableEmpty(fInput);
+		this.fIsEmpty = evaluateIfTableEmpty(this.fInput);
 		BusyIndicator.showWhile(null, new Runnable() {
 			public void run() {
 				access$superOpen();
@@ -195,7 +201,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 */
 	@Override
 	protected void computeResult() {
-		setResult(Arrays.asList(fViewer.getCheckedElements()));
+		setResult(Arrays.asList(this.fViewer.getCheckedElements()));
 	}
 
 	/*
@@ -207,7 +213,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 
 		List initialSelections = getInitialElementSelections();
 		if (initialSelections.size() > 0) {
-			fViewer.setCheckedElements(initialSelections.toArray());
+			this.fViewer.setCheckedElements(initialSelections.toArray());
 		}
 
 		updateOKStatus();
@@ -225,11 +231,11 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 		Control buttonComposite = createSelectionButtons(composite);
 
 		GridData data = new GridData(GridData.FILL_BOTH);
-		data.widthHint = convertWidthInCharsToPixels(fWidth);
-		data.heightHint = convertHeightInCharsToPixels(fHeight);
+		data.widthHint = convertWidthInCharsToPixels(this.fWidth);
+		data.heightHint = convertHeightInCharsToPixels(this.fHeight);
 		treeWidget.setLayoutData(data);
 
-		if (fIsEmpty) {
+		if (this.fIsEmpty) {
 			messageLabel.setEnabled(false);
 			treeWidget.setEnabled(false);
 			buttonComposite.setEnabled(false);
@@ -239,23 +245,24 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	}
 
 	private Table createTableViewer(Composite parent) {
-		fViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
+		this.fViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
 
-		fViewer.setContentProvider(fContentProvider);
-		fViewer.setLabelProvider(fLabelProvider);
-		fViewer.addCheckStateListener(new ICheckStateListener() {
+		this.fViewer.setContentProvider(this.fContentProvider);
+		this.fViewer.setLabelProvider(this.fLabelProvider);
+		this.fViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				updateOKStatus();
 			}
 		});
 
-		if (fFilters != null) {
-			for (int i = 0; i != fFilters.size(); i++)
-				fViewer.addFilter((ViewerFilter) fFilters.get(i));
+		if (this.fFilters != null) {
+			for (int i = 0; i != this.fFilters.size(); i++) {
+				this.fViewer.addFilter(this.fFilters.get(i));
+			}
 		}
 
-		fViewer.setInput(fInput);
-		return fViewer.getTable();
+		this.fViewer.setInput(this.fInput);
+		return this.fViewer.getTable();
 	}
 
 	/**
@@ -275,28 +282,27 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 		composite.setData(data);
 
 		Button selectButton = createButton(buttonComposite,
-				IDialogConstants.SELECT_ALL_ID,
-				WizardMessages.CheckedTableSelectionDialog_selectAll, false);
+				IDialogConstants.SELECT_ALL_ID, "select all", false);
 
 		SelectionListener listener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				fViewer
-						.setCheckedElements(fContentProvider
-								.getElements(fInput));
+				CheckedTableSelectionDialog.this.fViewer
+						.setCheckedElements(CheckedTableSelectionDialog.this.fContentProvider
+								.getElements(CheckedTableSelectionDialog.this.fInput));
 				updateOKStatus();
 			}
 		};
 		selectButton.addSelectionListener(listener);
 
 		Button deselectButton = createButton(buttonComposite,
-				IDialogConstants.DESELECT_ALL_ID,
-				WizardMessages.CheckedTableSelectionDialog_deselectAll, false);
+				IDialogConstants.DESELECT_ALL_ID, "deselect all", false);
 
 		listener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				fViewer.setCheckedElements(new Object[0]);
+				CheckedTableSelectionDialog.this.fViewer
+						.setCheckedElements(new Object[0]);
 				updateOKStatus();
 			}
 		};
@@ -305,12 +311,12 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	}
 
 	private boolean evaluateIfTableEmpty(Object input) {
-		Object[] elements = fContentProvider.getElements(input);
+		Object[] elements = this.fContentProvider.getElements(input);
 		if (elements.length > 0) {
-			if (fFilters != null) {
-				for (int i = 0; i < fFilters.size(); i++) {
-					ViewerFilter curr = (ViewerFilter) fFilters.get(i);
-					elements = curr.filter(fViewer, input, elements);
+			if (this.fFilters != null) {
+				for (int i = 0; i < this.fFilters.size(); i++) {
+					ViewerFilter curr = this.fFilters.get(i);
+					elements = curr.filter(this.fViewer, input, elements);
 				}
 			}
 		}

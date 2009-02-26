@@ -40,7 +40,7 @@ public interface ITestFinder {
 	 * @param element
 	 *            element to search for tests
 	 * @param result
-	 *            a Set to add ITypes
+	 *            a Set to add IErlModules
 	 * @param pm
 	 */
 	public abstract void findTestsInContainer(IErlElement element,

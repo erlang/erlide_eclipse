@@ -107,7 +107,7 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Opens a Java editor for an element such as <code>IJavaElement</code>,
+	 * Opens a Java editor for an element such as <code>IErlElement</code>,
 	 * <code>IFile</code>, or <code>IStorage</code>. The editor is
 	 * activated by default.
 	 * 
@@ -119,7 +119,7 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Opens a Java editor for an element (IJavaElement, IFile, IStorage...)
+	 * Opens a Java editor for an element (IErlElement, IFile, IStorage...)
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */

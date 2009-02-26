@@ -23,7 +23,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	private final TestRunSession fSession;
 
 	public TestRunListenerAdapter(TestRunSession session) {
-		fSession = session;
+		this.fSession = session;
 	}
 
 	private Object[] getListeners() {
@@ -33,14 +33,14 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	private void fireSessionStarted() {
 		Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
-			((TestRunListener) listeners[i]).sessionStarted(fSession);
+			((TestRunListener) listeners[i]).sessionStarted(this.fSession);
 		}
 	}
 
 	private void fireSessionFinished() {
 		Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
-			((TestRunListener) listeners[i]).sessionFinished(fSession);
+			((TestRunListener) listeners[i]).sessionFinished(this.fSession);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 */
 	public void sessionEnded(long elapsedTime) {
 		fireSessionFinished();
-		fSession.swapOut();
+		this.fSession.swapOut();
 	}
 
 	/*
@@ -87,7 +87,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 */
 	public void sessionStopped(long elapsedTime) {
 		fireSessionFinished();
-		fSession.swapOut();
+		this.fSession.swapOut();
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.ITestSessionListener#sessionTerminated()
 	 */
 	public void sessionTerminated() {
-		fSession.swapOut();
+		this.fSession.swapOut();
 	}
 
 	/*

@@ -30,8 +30,8 @@ public class FailureTableDisplay implements ITraceDisplay {
 			.createImage("obj16/stkfrm_obj.gif"); //$NON-NLS-1$
 
 	public FailureTableDisplay(Table table) {
-		fTable = table;
-		fTable.getParent().addDisposeListener(new DisposeListener() {
+		this.fTable = table;
+		this.fTable.getParent().addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				disposeIcons();
 			}
@@ -42,10 +42,10 @@ public class FailureTableDisplay implements ITraceDisplay {
 		TableItem tableItem = newTableItem();
 		switch (lineType) {
 		case TextualTrace.LINE_TYPE_EXCEPTION:
-			tableItem.setImage(fExceptionIcon);
+			tableItem.setImage(this.fExceptionIcon);
 			break;
 		case TextualTrace.LINE_TYPE_STACKFRAME:
-			tableItem.setImage(fStackIcon);
+			tableItem.setImage(this.fStackIcon);
 			break;
 		case TextualTrace.LINE_TYPE_NORMAL:
 		default:
@@ -55,25 +55,27 @@ public class FailureTableDisplay implements ITraceDisplay {
 	}
 
 	public Image getExceptionIcon() {
-		return fExceptionIcon;
+		return this.fExceptionIcon;
 	}
 
 	public Image getStackIcon() {
-		return fStackIcon;
+		return this.fStackIcon;
 	}
 
 	public Table getTable() {
-		return fTable;
+		return this.fTable;
 	}
 
 	private void disposeIcons() {
-		if (fExceptionIcon != null && !fExceptionIcon.isDisposed())
-			fExceptionIcon.dispose();
-		if (fStackIcon != null && !fStackIcon.isDisposed())
-			fStackIcon.dispose();
+		if (this.fExceptionIcon != null && !this.fExceptionIcon.isDisposed()) {
+			this.fExceptionIcon.dispose();
+		}
+		if (this.fStackIcon != null && !this.fStackIcon.isDisposed()) {
+			this.fStackIcon.dispose();
+		}
 	}
 
 	TableItem newTableItem() {
-		return new TableItem(fTable, SWT.NONE);
+		return new TableItem(this.fTable, SWT.NONE);
 	}
 }

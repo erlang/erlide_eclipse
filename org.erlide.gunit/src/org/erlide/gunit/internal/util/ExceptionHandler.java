@@ -105,10 +105,11 @@ public class ExceptionHandler {
 			msg.write(message);
 			msg.write("\n\n"); //$NON-NLS-1$
 		}
-		if (exceptionMessage == null || exceptionMessage.length() == 0)
-			msg.write(WizardMessages.ExceptionDialog_seeErrorLogMessage);
-		else
+		if (exceptionMessage == null || exceptionMessage.length() == 0) {
+			msg.write("see error log message");
+		} else {
 			msg.write(exceptionMessage);
+		}
 		MessageDialog.openError(shell, title, msg.toString());
 	}
 }

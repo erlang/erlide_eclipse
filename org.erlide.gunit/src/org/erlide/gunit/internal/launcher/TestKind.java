@@ -15,33 +15,33 @@ package org.erlide.gunit.internal.launcher;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 
 public class TestKind implements ITestKind {
 
 	private final IConfigurationElement fElement;
+
 	private ITestFinder fFinder;
 
 	public TestKind(IConfigurationElement element) {
-		fElement = element;
-		fFinder = null;
+		this.fElement = element;
+		this.fFinder = null;
 	}
 
 	/*
 	 * @see org.erlide.gunit.internal.launcher.ITestKind#createFinder()
 	 */
 	public ITestFinder getFinder() {
-		if (fFinder == null) {
+		if (this.fFinder == null) {
 			try {
-				fFinder = (ITestFinder) fElement
+				this.fFinder = (ITestFinder) this.fElement
 						.createExecutableExtension(FINDER_CLASS_NAME);
 			} catch (CoreException e1) {
 				GUnitPlugin.log(e1);
-				fFinder = ITestFinder.NULL;
+				this.fFinder = ITestFinder.NULL;
 			}
 		}
-		return fFinder;
+		return this.fFinder;
 	}
 
 	/*
@@ -92,35 +92,18 @@ public class TestKind implements ITestKind {
 	}
 
 	protected String getAttribute(String attributeName) {
-		return fElement.getAttribute(attributeName);
+		return this.fElement.getAttribute(attributeName);
 	}
 
 	boolean precedes(ITestKind otherKind) {
 		final String precededKindId = getPrecededKindId();
 		String[] ids = precededKindId.split(","); //$NON-NLS-1$
 		for (int i = 0; i < ids.length; i++) {
-			if (ids[i].equals(otherKind.getId()))
+			if (ids[i].equals(otherKind.getId())) {
 				return true;
+			}
 		}
 		return false;
-	}
-
-	/*
-	 * @see org.erlide.gunit.internal.launcher.ITestKind#getClasspathEntries()
-	 */
-	public GUnitRuntimeClasspathEntry[] getClasspathEntries() {
-		IConfigurationElement[] children = fElement
-				.getChildren(ITestKind.RUNTIME_CLASSPATH_ENTRY);
-		GUnitRuntimeClasspathEntry[] returnThis = new GUnitRuntimeClasspathEntry[children.length];
-		for (int i = 0; i < children.length; i++) {
-			IConfigurationElement element = children[i];
-			String pluginID = element
-					.getAttribute(ITestKind.CLASSPATH_PLUGIN_ID);
-			String pathToJar = element
-					.getAttribute(ITestKind.CLASSPATH_PATH_TO_JAR);
-			returnThis[i] = new GUnitRuntimeClasspathEntry(pluginID, pathToJar);
-		}
-		return returnThis;
 	}
 
 	/*

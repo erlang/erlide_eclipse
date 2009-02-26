@@ -10,17 +10,13 @@
  *******************************************************************************/
 package org.erlide.gunit.internal.ui;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.erlide.gunit.internal.model.TestElement;
 
 /**
@@ -30,12 +26,13 @@ import org.erlide.gunit.internal.model.TestElement;
 public class CopyFailureListAction extends Action {
 
 	private final Clipboard fClipboard;
+
 	private final TestRunnerViewPart fRunner;
 
 	public CopyFailureListAction(TestRunnerViewPart runner, Clipboard clipboard) {
-		super(JUnitMessages.CopyFailureList_action_label);
-		fRunner = runner;
-		fClipboard = clipboard;
+		super(GUnitMessages.CopyFailureList_action_label);
+		this.fRunner = runner;
+		this.fClipboard = clipboard;
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.COPYFAILURELIST_ACTION);
 	}
@@ -48,22 +45,24 @@ public class CopyFailureListAction extends Action {
 		TextTransfer plainTextTransfer = TextTransfer.getInstance();
 
 		try {
-			fClipboard.setContents(new String[] { getAllFailureTraces() },
+			this.fClipboard.setContents(new String[] { getAllFailureTraces() },
 					new Transfer[] { plainTextTransfer });
 		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
-			if (MessageDialog.openQuestion(
-					JavaPlugin.getActiveWorkbenchShell(),
-					JUnitMessages.CopyFailureList_problem,
-					JUnitMessages.CopyFailureList_clipboard_busy))
-				run();
+			}
+			// if (MessageDialog.openQuestion(ErlangUIPlugin
+			// .getActiveWorkbenchShell(),
+			// JUnitMessages.CopyFailureList_problem,
+			// JUnitMessages.CopyFailureList_clipboard_busy)) {
+			// run();
+			// }
 		}
 	}
 
 	public String getAllFailureTraces() {
 		StringBuffer buf = new StringBuffer();
-		TestElement[] failures = fRunner.getAllFailures();
+		TestElement[] failures = this.fRunner.getAllFailures();
 
 		String lineDelim = System.getProperty("line.separator", "\n"); //$NON-NLS-1$//$NON-NLS-2$
 		for (int i = 0; i < failures.length; i++) {

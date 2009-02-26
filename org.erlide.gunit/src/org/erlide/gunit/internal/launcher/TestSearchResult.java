@@ -13,22 +13,25 @@
 
 package org.erlide.gunit.internal.launcher;
 
+import org.erlide.core.erlang.IErlModule;
+
 public class TestSearchResult {
 
-	private final IType[] fTypes;
+	private final IErlModule[] fTypes;
+
 	private final ITestKind fTestKind;
 
-	public TestSearchResult(IType[] types, ITestKind testKind) {
-		fTypes = types;
-		fTestKind = testKind;
+	public TestSearchResult(IErlModule[] types, ITestKind testKind) {
+		this.fTypes = types;
+		this.fTestKind = testKind;
 	}
 
-	public IType[] getTypes() {
-		return fTypes;
+	public IErlModule[] getTypes() {
+		return this.fTypes;
 	}
 
 	public ITestKind getTestKind() {
-		return fTestKind;
+		return this.fTestKind;
 	}
 
 	boolean isEmpty() {

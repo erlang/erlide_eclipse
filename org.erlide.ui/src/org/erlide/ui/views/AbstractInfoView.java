@@ -362,7 +362,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	// try {
 	// if (part instanceof ErlangEditor && selection instanceof ITextSelection)
 	// {
-	// IJavaElement[] elements=
+	// IErlElement[] elements=
 	// TextSelectionConverter.codeResolve((JavaEditor)part,
 	// (ITextSelection)selection);
 	// if (elements != null && elements.length > 0)
@@ -388,14 +388,14 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	// * @return the Java element represented by the given element or
 	// <code>null</code>
 	// */
-	// private IJavaElement findJavaElement(Object element) {
+	// private IErlElement findJavaElement(Object element) {
 	//
 	// if (element == null)
 	// return null;
 	//
-	// IJavaElement je= null;
+	// IErlElement je= null;
 	// if (element instanceof IAdaptable)
-	// je= (IJavaElement)((IAdaptable)element).getAdapter(IJavaElement.class);
+	// je= (IErlElement)((IAdaptable)element).getAdapter(IErlElement.class);
 	//
 	// return je;
 	// }
@@ -484,7 +484,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 					return;
 				}
 
-				// final IJavaElement je= findSelectedJavaElement(part,
+				// final IErlElement je= findSelectedJavaElement(part,
 				// selection);
 				final String info = getInfoForSelection(part, selection);
 				if (info == null || info.length() == 0) {

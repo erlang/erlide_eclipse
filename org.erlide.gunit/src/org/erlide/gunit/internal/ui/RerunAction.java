@@ -10,18 +10,21 @@
  *******************************************************************************/
 package org.erlide.gunit.internal.ui;
 
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Requests to rerun a test.
  */
 public class RerunAction extends Action {
 	private String fTestId;
+
 	private String fClassName;
+
 	private String fTestName;
+
 	private TestRunnerViewPart fTestRunner;
+
 	private String fLaunchMode;
 
 	/**
@@ -32,11 +35,11 @@ public class RerunAction extends Action {
 		super(actionName);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.RERUN_ACTION);
-		fTestRunner = runner;
-		fTestId = testId;
-		fClassName = className;
-		fTestName = testName;
-		fLaunchMode = launchMode;
+		this.fTestRunner = runner;
+		this.fTestId = testId;
+		this.fClassName = className;
+		this.fTestName = testName;
+		this.fLaunchMode = launchMode;
 	}
 
 	/*
@@ -44,6 +47,7 @@ public class RerunAction extends Action {
 	 */
 	@Override
 	public void run() {
-		fTestRunner.rerunTest(fTestId, fClassName, fTestName, fLaunchMode);
+		this.fTestRunner.rerunTest(this.fTestId, this.fClassName,
+				this.fTestName, this.fLaunchMode);
 	}
 }

@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.erlide.gunit.internal.util;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.Dialog;
 
 /*
  * class copied from jdt ui
@@ -26,7 +25,7 @@ public class PixelConverter {
 	public PixelConverter(Control control) {
 		GC gc = new GC(control);
 		gc.setFont(control.getFont());
-		fFontMetrics = gc.getFontMetrics();
+		this.fFontMetrics = gc.getFontMetrics();
 		gc.dispose();
 	}
 
@@ -34,28 +33,28 @@ public class PixelConverter {
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertHeightInCharsToPixels(int)
 	 */
 	public int convertHeightInCharsToPixels(int chars) {
-		return Dialog.convertHeightInCharsToPixels(fFontMetrics, chars);
+		return Dialog.convertHeightInCharsToPixels(this.fFontMetrics, chars);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertHorizontalDLUsToPixels(int)
 	 */
 	public int convertHorizontalDLUsToPixels(int dlus) {
-		return Dialog.convertHorizontalDLUsToPixels(fFontMetrics, dlus);
+		return Dialog.convertHorizontalDLUsToPixels(this.fFontMetrics, dlus);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertVerticalDLUsToPixels(int)
 	 */
 	public int convertVerticalDLUsToPixels(int dlus) {
-		return Dialog.convertVerticalDLUsToPixels(fFontMetrics, dlus);
+		return Dialog.convertVerticalDLUsToPixels(this.fFontMetrics, dlus);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertWidthInCharsToPixels(int)
 	 */
 	public int convertWidthInCharsToPixels(int chars) {
-		return Dialog.convertWidthInCharsToPixels(fFontMetrics, chars);
+		return Dialog.convertWidthInCharsToPixels(this.fFontMetrics, chars);
 	}
 
 }

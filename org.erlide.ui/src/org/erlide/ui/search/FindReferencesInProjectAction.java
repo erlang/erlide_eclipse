@@ -80,7 +80,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 		return null;
 	}
 
-	// QuerySpecification createQuery(IJavaElement element)
+	// QuerySpecification createQuery(IErlElement element)
 	// throws JavaModelException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
 	// JavaEditor editor = getEditor();

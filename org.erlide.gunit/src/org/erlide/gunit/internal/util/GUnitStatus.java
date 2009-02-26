@@ -19,14 +19,15 @@ import org.erlide.gunit.internal.ui.GUnitPlugin;
  * An implemention of IStatus. TO DO: Why is it duplicated, it should leverage
  * the Status base class???
  */
-public class JUnitStatus implements IStatus {
+public class GUnitStatus implements IStatus {
 	private String fStatusMessage;
+
 	private int fSeverity;
 
 	/**
 	 * Creates a status set to OK (no message)
 	 */
-	public JUnitStatus() {
+	public GUnitStatus() {
 		this(OK, null);
 	}
 
@@ -39,56 +40,56 @@ public class JUnitStatus implements IStatus {
 	 *            The message of the status. Applies only for ERROR, WARNING and
 	 *            INFO.
 	 */
-	public JUnitStatus(int severity, String message) {
-		fStatusMessage = message;
-		fSeverity = severity;
+	public GUnitStatus(int severity, String message) {
+		this.fStatusMessage = message;
+		this.fSeverity = severity;
 	}
 
 	public static IStatus createError(String message) {
-		return new JUnitStatus(IStatus.ERROR, message);
+		return new GUnitStatus(IStatus.ERROR, message);
 	}
 
 	public static IStatus createWarning(String message) {
-		return new JUnitStatus(IStatus.WARNING, message);
+		return new GUnitStatus(IStatus.WARNING, message);
 	}
 
 	public static IStatus createInfo(String message) {
-		return new JUnitStatus(IStatus.INFO, message);
+		return new GUnitStatus(IStatus.INFO, message);
 	}
 
 	/**
 	 * Returns if the status' severity is OK.
 	 */
 	public boolean isOK() {
-		return fSeverity == IStatus.OK;
+		return this.fSeverity == IStatus.OK;
 	}
 
 	/**
 	 * Returns if the status' severity is WARNING.
 	 */
 	public boolean isWarning() {
-		return fSeverity == IStatus.WARNING;
+		return this.fSeverity == IStatus.WARNING;
 	}
 
 	/**
 	 * Returns if the status' severity is INFO.
 	 */
 	public boolean isInfo() {
-		return fSeverity == IStatus.INFO;
+		return this.fSeverity == IStatus.INFO;
 	}
 
 	/**
 	 * Returns if the status' severity is ERROR.
 	 */
 	public boolean isError() {
-		return fSeverity == IStatus.ERROR;
+		return this.fSeverity == IStatus.ERROR;
 	}
 
 	/**
 	 * @see IStatus#getMessage()
 	 */
 	public String getMessage() {
-		return fStatusMessage;
+		return this.fStatusMessage;
 	}
 
 	/**
@@ -99,8 +100,8 @@ public class JUnitStatus implements IStatus {
 	 */
 	public void setError(String errorMessage) {
 		Assert.isNotNull(errorMessage);
-		fStatusMessage = errorMessage;
-		fSeverity = IStatus.ERROR;
+		this.fStatusMessage = errorMessage;
+		this.fSeverity = IStatus.ERROR;
 	}
 
 	/**
@@ -111,8 +112,8 @@ public class JUnitStatus implements IStatus {
 	 */
 	public void setWarning(String warningMessage) {
 		Assert.isNotNull(warningMessage);
-		fStatusMessage = warningMessage;
-		fSeverity = IStatus.WARNING;
+		this.fStatusMessage = warningMessage;
+		this.fSeverity = IStatus.WARNING;
 	}
 
 	/**
@@ -123,23 +124,23 @@ public class JUnitStatus implements IStatus {
 	 */
 	public void setInfo(String infoMessage) {
 		Assert.isNotNull(infoMessage);
-		fStatusMessage = infoMessage;
-		fSeverity = IStatus.INFO;
+		this.fStatusMessage = infoMessage;
+		this.fSeverity = IStatus.INFO;
 	}
 
 	/**
 	 * Sets the status to OK.
 	 */
 	public void setOK() {
-		fStatusMessage = null;
-		fSeverity = IStatus.OK;
+		this.fStatusMessage = null;
+		this.fSeverity = IStatus.OK;
 	}
 
 	/*
 	 * @see IStatus#matches(int)
 	 */
 	public boolean matches(int severityMask) {
-		return (fSeverity & severityMask) != 0;
+		return (this.fSeverity & severityMask) != 0;
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class JUnitStatus implements IStatus {
 	 * @see IStatus#getSeverity()
 	 */
 	public int getSeverity() {
-		return fSeverity;
+		return this.fSeverity;
 	}
 
 	/*
@@ -180,7 +181,7 @@ public class JUnitStatus implements IStatus {
 	 * @see IStatus#getCode()
 	 */
 	public int getCode() {
-		return fSeverity;
+		return this.fSeverity;
 	}
 
 	/**

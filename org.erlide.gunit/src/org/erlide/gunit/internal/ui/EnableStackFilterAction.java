@@ -21,9 +21,9 @@ public class EnableStackFilterAction extends Action {
 	private FailureTrace fView;
 
 	public EnableStackFilterAction(FailureTrace view) {
-		super(JUnitMessages.EnableStackFilterAction_action_label);
-		setDescription(JUnitMessages.EnableStackFilterAction_action_description);
-		setToolTipText(JUnitMessages.EnableStackFilterAction_action_tooltip);
+		super(GUnitMessages.EnableStackFilterAction_action_label);
+		setDescription(GUnitMessages.EnableStackFilterAction_action_description);
+		setToolTipText(GUnitMessages.EnableStackFilterAction_action_tooltip);
 
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
@@ -33,8 +33,8 @@ public class EnableStackFilterAction extends Action {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.ENABLEFILTER_ACTION);
 
-		fView = view;
-		setChecked(JUnitPreferencePage.getFilterStack());
+		this.fView = view;
+		setChecked(GUnitPreferencePage.getFilterStack());
 	}
 
 	/*
@@ -42,7 +42,7 @@ public class EnableStackFilterAction extends Action {
 	 */
 	@Override
 	public void run() {
-		JUnitPreferencePage.setFilterStack(isChecked());
-		fView.refresh();
+		GUnitPreferencePage.setFilterStack(isChecked());
+		this.fView.refresh();
 	}
 }

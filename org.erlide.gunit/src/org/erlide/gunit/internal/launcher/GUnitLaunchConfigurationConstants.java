@@ -23,6 +23,7 @@ import org.erlide.gunit.internal.ui.GUnitPlugin;
 public class GUnitLaunchConfigurationConstants {
 
 	public static final String MODE_RUN_QUIETLY_MODE = "runQuietly"; //$NON-NLS-1$
+
 	public static final String ID_JUNIT_APPLICATION = "org.erlide.gunit.launchconfig"; //$NON-NLS-1$
 
 	public static final String ATTR_NO_DISPLAY = GUnitPlugin.PLUGIN_ID
@@ -38,6 +39,7 @@ public class GUnitLaunchConfigurationConstants {
 
 	public static final String ATTR_KEEPRUNNING = GUnitPlugin.PLUGIN_ID
 			+ ".KEEPRUNNING_ATTR"; //$NON-NLS-1$
+
 	/**
 	 * The launch container, or "" iff running a single test type.
 	 */

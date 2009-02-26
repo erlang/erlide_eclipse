@@ -31,13 +31,16 @@ public interface ITestElement {
 		/** state that describes that the test element has not started */
 		public static final ProgressState NOT_STARTED = new ProgressState(
 				"Not Started"); //$NON-NLS-1$
+
 		/** state that describes that the test element has is running */
 		public static final ProgressState RUNNING = new ProgressState("Running"); //$NON-NLS-1$
+
 		/**
 		 * state that describes that the test element has been stopped before
 		 * being completed
 		 */
 		public static final ProgressState STOPPED = new ProgressState("Stopped"); //$NON-NLS-1$
+
 		/** state that describes that the test element has completed */
 		public static final ProgressState COMPLETED = new ProgressState(
 				"Completed"); //$NON-NLS-1$
@@ -60,12 +63,16 @@ public interface ITestElement {
 	public static final class Result {
 		/** state that describes that the test result is undefined */
 		public static final Result UNDEFINED = new Result("Undefined"); //$NON-NLS-1$
+
 		/** state that describes that the test result is 'OK' */
 		public static final Result OK = new Result("OK"); //$NON-NLS-1$
+
 		/** state that describes that the test result is 'Error' */
 		public static final Result ERROR = new Result("Error"); //$NON-NLS-1$
+
 		/** state that describes that the test result is 'Failure' */
 		public static final Result FAILURE = new Result("Failure"); //$NON-NLS-1$
+
 		/** state that describes that the test result is 'Ignored' */
 		public static final Result IGNORED = new Result("Ignored"); //$NON-NLS-1$
 
@@ -88,7 +95,9 @@ public interface ITestElement {
 	 */
 	public static final class FailureTrace {
 		private final String fActual;
+
 		private final String fExpected;
+
 		private final String fTrace;
 
 		public FailureTrace(String trace, String expected, String actual) {

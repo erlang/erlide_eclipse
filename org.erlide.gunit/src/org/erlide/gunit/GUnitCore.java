@@ -32,23 +32,6 @@ public class GUnitCore {
 	 * @deprecated As of 3.3, replaced by
 	 *             {@link #addTestRunListener(TestRunListener)}
 	 */
-	@Deprecated
-	public static void addTestRunListener(ITestRunListener listener) {
-		GUnitPlugin.getDefault().addTestRunListener(listener);
-	}
-
-	/**
-	 * Removes a listener for test runs.
-	 * 
-	 * @param listener
-	 *            listener to be removed
-	 * @deprecated As of 3.3, replaced by
-	 *             {@link #removeTestRunListener(TestRunListener)}
-	 */
-	@Deprecated
-	public static void removeTestRunListener(ITestRunListener listener) {
-		GUnitPlugin.getDefault().removeTestRunListener(listener);
-	}
 
 	/**
 	 * Adds a listener for test runs.

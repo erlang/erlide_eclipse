@@ -32,6 +32,7 @@ public interface ITestRunListener {
 	 * @see #testFailed(int, String, String, String)
 	 */
 	public static final int STATUS_OK = ITestRunListener2.STATUS_OK;
+
 	/**
 	 * Status constant indicating that a test had an error an unanticipated
 	 * exception (constant value 1).
@@ -39,6 +40,7 @@ public interface ITestRunListener {
 	 * @see #testFailed(int, String, String, String)
 	 */
 	public static final int STATUS_ERROR = ITestRunListener2.STATUS_ERROR;
+
 	/**
 	 * Status constant indicating that a test failed an assertion (constant
 	 * value 2).

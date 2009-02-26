@@ -17,17 +17,14 @@ package org.erlide.gunit.internal.ui;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -56,17 +53,22 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	private static GUnitPlugin fgPlugin = null;
 
 	public static final String PLUGIN_ID = "org.erlide.gunit"; //$NON-NLS-1$
+
 	public static final String ID_EXTENSION_POINT_TESTRUN_LISTENERS = PLUGIN_ID
 			+ "." + "testRunListeners"; //$NON-NLS-1$ //$NON-NLS-2$
+
 	public static final String ID_EXTENSION_POINT_JUNIT_LAUNCHCONFIGS = PLUGIN_ID
 			+ "." + "junitLaunchConfigs"; //$NON-NLS-1$ //$NON-NLS-2$
+
 	public static final String ID_EXTENSION_POINT_TEST_KINDS = PLUGIN_ID
 			+ "." + "internal_testKinds"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public final static String TEST_SUPERCLASS_NAME = "junit.framework.TestCase"; //$NON-NLS-1$
+
 	public final static String TEST_INTERFACE_NAME = "junit.framework.Test"; //$NON-NLS-1$
 
 	public final static String JUNIT4_ANNOTATION_NAME = "org.junit.Test"; //$NON-NLS-1$
+
 	public static final String SIMPLE_TEST_INTERFACE_NAME = "Test"; //$NON-NLS-1$
 
 	/**
@@ -82,6 +84,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	public static final String JUNIT_SRC_HOME = "JUNIT_SRC_HOME"; //$NON-NLS-1$
 
 	private static final IPath ICONS_PATH = new Path("$nl$/icons/full"); //$NON-NLS-1$
+
 	private static final String HISTORY_DIR_NAME = "history"; //$NON-NLS-1$
 
 	private final GUnitModel fJUnitModel = new GUnitModel();
@@ -99,7 +102,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	/**
 	 * List storing the registered JUnit launch configuration types
 	 */
-	private List fJUnitLaunchConfigTypeIDs;
+	private List<String> fJUnitLaunchConfigTypeIDs;
 
 	private BundleContext fBundleContext;
 
@@ -107,7 +110,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 
 	public GUnitPlugin() {
 		fgPlugin = this;
-		fNewTestRunListeners = new ListenerList();
+		this.fNewTestRunListeners = new ListenerList();
 	}
 
 	public static GUnitPlugin getDefault() {
@@ -234,8 +237,8 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		fBundleContext = context;
-		fJUnitModel.start();
+		this.fBundleContext = context;
+		this.fJUnitModel.start();
 	}
 
 	/**
@@ -245,11 +248,11 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		fIsStopped = true;
 		try {
-			fJUnitModel.stop();
+			this.fJUnitModel.stop();
 		} finally {
 			super.stop(context);
 		}
-		fBundleContext = null;
+		this.fBundleContext = null;
 	}
 
 	public static GUnitModel getModel() {
@@ -257,44 +260,10 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Initializes TestRun Listener extensions
-	 * 
-	 * @deprecated
-	 */
-	@Deprecated
-	private void loadTestRunListeners() {
-		fLegacyTestRunListeners = new ArrayList();
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(ID_EXTENSION_POINT_TESTRUN_LISTENERS);
-		if (extensionPoint == null) {
-			return;
-		}
-		IConfigurationElement[] configs = extensionPoint
-				.getConfigurationElements();
-		MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.OK,
-				"Could not load some testRunner extension points", null); //$NON-NLS-1$ 	
-
-		for (int i = 0; i < configs.length; i++) {
-			try {
-				Object testRunListener = configs[i]
-						.createExecutableExtension("class"); //$NON-NLS-1$
-				if (testRunListener instanceof org.erlide.gunit.ITestRunListener) {
-					fLegacyTestRunListeners.add(testRunListener);
-				}
-			} catch (CoreException e) {
-				status.add(e.getStatus());
-			}
-		}
-		if (!status.isOK()) {
-			GUnitPlugin.log(status);
-		}
-	}
-
-	/**
 	 * Loads the registered JUnit launch configurations
 	 */
 	private void loadLaunchConfigTypeIDs() {
-		fJUnitLaunchConfigTypeIDs = new ArrayList();
+		this.fJUnitLaunchConfigTypeIDs = new ArrayList<String>();
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint(ID_EXTENSION_POINT_JUNIT_LAUNCHCONFIGS);
 		if (extensionPoint == null) {
@@ -305,32 +274,18 @@ public class GUnitPlugin extends AbstractUIPlugin {
 
 		for (int i = 0; i < configs.length; i++) {
 			String configTypeID = configs[i].getAttribute("configTypeID"); //$NON-NLS-1$
-			fJUnitLaunchConfigTypeIDs.add(configTypeID);
+			this.fJUnitLaunchConfigTypeIDs.add(configTypeID);
 		}
-	}
-
-	/**
-	 * @return an array of all TestRun listeners
-	 * @deprecated
-	 */
-	@Deprecated
-	public org.erlide.gunit.ITestRunListener[] getTestRunListeners() {
-		if (fLegacyTestRunListeners == null) {
-			loadTestRunListeners();
-		}
-		return (org.erlide.gunit.ITestRunListener[]) fLegacyTestRunListeners
-				.toArray(new org.erlide.gunit.ITestRunListener[fLegacyTestRunListeners
-						.size()]);
 	}
 
 	/**
 	 * @return a list of all JUnit launch configuration types
 	 */
-	public List/* <String> */getJUnitLaunchConfigTypeIDs() {
-		if (fJUnitLaunchConfigTypeIDs == null) {
+	public List/* <String> */<String> getJUnitLaunchConfigTypeIDs() {
+		if (this.fJUnitLaunchConfigTypeIDs == null) {
 			loadLaunchConfigTypeIDs();
 		}
-		return fJUnitLaunchConfigTypeIDs;
+		return this.fJUnitLaunchConfigTypeIDs;
 	}
 
 	/**
@@ -364,9 +319,9 @@ public class GUnitPlugin extends AbstractUIPlugin {
 		}
 
 		// Accessing unresolved bundle
-		ServiceReference serviceRef = fBundleContext
+		ServiceReference serviceRef = this.fBundleContext
 				.getServiceReference(PackageAdmin.class.getName());
-		PackageAdmin admin = (PackageAdmin) fBundleContext
+		PackageAdmin admin = (PackageAdmin) this.fBundleContext
 				.getService(serviceRef);
 		bundles = admin.getBundles(bundleName, version);
 		if (bundles != null && bundles.length > 0) {
@@ -376,47 +331,10 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Adds a TestRun listener to the collection of listeners
-	 * 
-	 * @param newListener
-	 *            the listener to add
-	 * @deprecated
-	 */
-	@Deprecated
-	public void addTestRunListener(org.erlide.gunit.ITestRunListener newListener) {
-		if (fLegacyTestRunListeners == null) {
-			loadTestRunListeners();
-		}
-
-		for (Iterator iter = fLegacyTestRunListeners.iterator(); iter.hasNext();) {
-			Object o = iter.next();
-			if (o == newListener) {
-				return;
-			}
-		}
-		fLegacyTestRunListeners.add(newListener);
-	}
-
-	/**
-	 * Removes a TestRun listener to the collection of listeners
-	 * 
-	 * @param newListener
-	 *            the listener to remove
-	 * @deprecated
-	 */
-	@Deprecated
-	public void removeTestRunListener(
-			org.erlide.gunit.ITestRunListener newListener) {
-		if (fLegacyTestRunListeners != null) {
-			fLegacyTestRunListeners.remove(newListener);
-		}
-	}
-
-	/**
 	 * @return a <code>ListenerList</code> of all <code>TestRunListener</code>s
 	 */
 	public ListenerList/* <TestRunListener> */getNewTestRunListeners() {
-		return fNewTestRunListeners;
+		return this.fNewTestRunListeners;
 	}
 
 	public static boolean isStopped() {

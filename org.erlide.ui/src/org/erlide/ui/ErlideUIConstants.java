@@ -60,7 +60,7 @@ public class ErlideUIConstants {
 	/**
 	 * the folder tree label
 	 */
-	public static final String IMG_FOLDER_LABLE = "folder.gif";
+	public static final String IMG_FOLDER_LABEL = "folder.gif";
 
 	/**
 	 * disabled refresh

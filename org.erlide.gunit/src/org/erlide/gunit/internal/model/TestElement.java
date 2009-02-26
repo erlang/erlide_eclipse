@@ -12,7 +12,6 @@
 package org.erlide.gunit.internal.model;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.erlide.gunit.model.ITestElement;
 import org.erlide.gunit.model.ITestElementContainer;
 import org.erlide.gunit.model.ITestRunSession;
@@ -21,35 +20,41 @@ public abstract class TestElement implements ITestElement {
 	public final static class Status {
 		public static final Status RUNNING_ERROR = new Status(
 				"RUNNING_ERROR", 5); //$NON-NLS-1$
+
 		public static final Status RUNNING_FAILURE = new Status(
 				"RUNNING_FAILURE", 6); //$NON-NLS-1$
+
 		public static final Status RUNNING = new Status("RUNNING", 3); //$NON-NLS-1$
 
 		public static final Status ERROR = new Status(
 				"ERROR", /* 1 */ITestRunListener2.STATUS_ERROR); //$NON-NLS-1$
+
 		public static final Status FAILURE = new Status(
 				"FAILURE", /* 2 */ITestRunListener2.STATUS_FAILURE); //$NON-NLS-1$
+
 		public static final Status OK = new Status(
 				"OK", /* 0 */ITestRunListener2.STATUS_OK); //$NON-NLS-1$
+
 		public static final Status NOT_RUN = new Status("NOT_RUN", 4); //$NON-NLS-1$
 
 		private static final Status[] OLD_CODE = { OK, ERROR, FAILURE };
 
 		private final String fName;
+
 		private final int fOldCode;
 
 		private Status(String name, int oldCode) {
-			fName = name;
-			fOldCode = oldCode;
+			this.fName = name;
+			this.fOldCode = oldCode;
 		}
 
 		public int getOldCode() {
-			return fOldCode;
+			return this.fOldCode;
 		}
 
 		@Override
 		public String toString() {
-			return fName;
+			return this.fName;
 		}
 
 		/* error state predicates */
@@ -92,33 +97,37 @@ public abstract class TestElement implements ITestElement {
 		}
 
 		private static Status combineProgress(Status one, Status two) {
-			if (one.isNotRun() && two.isNotRun())
+			if (one.isNotRun() && two.isNotRun()) {
 				return NOT_RUN;
-			else if (one.isDone() && two.isDone())
+			} else if (one.isDone() && two.isDone()) {
 				return OK;
-			else if (!one.isRunning() && !two.isRunning())
+			} else if (!one.isRunning() && !two.isRunning()) {
 				return OK; // one done, one not-run -> a parent failed and its
-							// children are not run
-			else
+				// children are not run
+			} else {
 				return RUNNING;
+			}
 		}
 
 		private static Status combineError(Status one, Status two) {
-			if (one.isError() || two.isError())
+			if (one.isError() || two.isError()) {
 				return ERROR;
-			else if (one.isFailure() || two.isFailure())
+			} else if (one.isFailure() || two.isFailure()) {
 				return FAILURE;
-			else
+			} else {
 				return OK;
+			}
 		}
 
 		private static Status combineProgressAndErrorStatus(Status progress,
 				Status error) {
 			if (progress.isDone()) {
-				if (error.isError())
+				if (error.isError()) {
 					return ERROR;
-				if (error.isFailure())
+				}
+				if (error.isFailure()) {
 					return FAILURE;
+				}
 				return OK;
 			}
 
@@ -128,10 +137,12 @@ public abstract class TestElement implements ITestElement {
 			}
 
 			// Assert.isTrue(progress.isRunning());
-			if (error.isError())
+			if (error.isError()) {
 				return RUNNING_ERROR;
-			if (error.isFailure())
+			}
+			if (error.isFailure()) {
 				return RUNNING_FAILURE;
+			}
 			// Assert.isTrue(error.isOK());
 			return RUNNING;
 		}
@@ -146,12 +157,15 @@ public abstract class TestElement implements ITestElement {
 		}
 
 		public Result convertToResult() {
-			if (isNotRun())
+			if (isNotRun()) {
 				return Result.UNDEFINED;
-			if (isError())
+			}
+			if (isError()) {
 				return Result.ERROR;
-			if (isFailure())
+			}
+			if (isFailure()) {
 				return Result.FAILURE;
+			}
 			if (isRunning()) {
 				return Result.UNDEFINED;
 			}
@@ -171,12 +185,17 @@ public abstract class TestElement implements ITestElement {
 	}
 
 	private final TestSuiteElement fParent;
+
 	private final String fId;
+
 	private String fTestName;
 
 	private Status fStatus;
+
 	private String fTrace;
+
 	private String fExpected;
+
 	private String fActual;
 
 	/**
@@ -190,12 +209,13 @@ public abstract class TestElement implements ITestElement {
 	public TestElement(TestSuiteElement parent, String id, String testName) {
 		Assert.isNotNull(id);
 		Assert.isNotNull(testName);
-		fParent = parent;
-		fId = id;
-		fTestName = testName;
-		fStatus = Status.NOT_RUN;
-		if (parent != null)
+		this.fParent = parent;
+		this.fId = id;
+		this.fTestName = testName;
+		this.fStatus = Status.NOT_RUN;
+		if (parent != null) {
 			parent.addChild(this);
+		}
 	}
 
 	/*
@@ -231,10 +251,10 @@ public abstract class TestElement implements ITestElement {
 	 * @see org.erlide.gunit.ITestElement#getParentContainer()
 	 */
 	public ITestElementContainer getParentContainer() {
-		if (fParent instanceof TestRoot) {
+		if (this.fParent instanceof TestRoot) {
 			return getTestRunSession();
 		}
-		return fParent;
+		return this.fParent;
 	}
 
 	/*
@@ -245,7 +265,7 @@ public abstract class TestElement implements ITestElement {
 	public FailureTrace getFailureTrace() {
 		Result testResult = getTestResult(false);
 		if (testResult == Result.ERROR || testResult == Result.FAILURE) {
-			return new FailureTrace(fTrace, fExpected, fActual);
+			return new FailureTrace(this.fTrace, this.fExpected, this.fActual);
 		}
 		return null;
 	}
@@ -254,19 +274,19 @@ public abstract class TestElement implements ITestElement {
 	 * @return the parent suite, or <code>null</code> for the root
 	 */
 	public TestSuiteElement getParent() {
-		return fParent;
+		return this.fParent;
 	}
 
 	public String getId() {
-		return fId;
+		return this.fId;
 	}
 
 	public String getTestName() {
-		return fTestName;
+		return this.fTestName;
 	}
 
 	public void setName(String name) {
-		fTestName = name;
+		this.fTestName = name;
 	}
 
 	public void setStatus(Status status) {
@@ -274,10 +294,11 @@ public abstract class TestElement implements ITestElement {
 		// TODO: multiple errors/failures per test
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=125296
 
-		fStatus = status;
+		this.fStatus = status;
 		TestSuiteElement parent = getParent();
-		if (parent != null)
+		if (parent != null) {
 			parent.childChangedStatus(this, status);
+		}
 	}
 
 	public void setStatus(Status status, String trace, String expected,
@@ -285,30 +306,30 @@ public abstract class TestElement implements ITestElement {
 		// TODO: notify about change?
 		// TODO: multiple errors/failures per test
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=125296
-		fTrace = trace;
-		fExpected = expected;
-		fActual = actual;
+		this.fTrace = trace;
+		this.fExpected = expected;
+		this.fActual = actual;
 		setStatus(status);
 	}
 
 	public Status getStatus() {
-		return fStatus;
+		return this.fStatus;
 	}
 
 	public String getTrace() {
-		return fTrace;
+		return this.fTrace;
 	}
 
 	public String getExpected() {
-		return fExpected;
+		return this.fExpected;
 	}
 
 	public String getActual() {
-		return fActual;
+		return this.fActual;
 	}
 
 	public boolean isComparisonFailure() {
-		return fExpected != null && fActual != null;
+		return this.fExpected != null && this.fActual != null;
 	}
 
 	/**
@@ -321,8 +342,9 @@ public abstract class TestElement implements ITestElement {
 
 	private String extractClassName(String testNameString) {
 		int index = testNameString.indexOf('(');
-		if (index < 0)
+		if (index < 0) {
 			return testNameString;
+		}
 		testNameString = testNameString.substring(index + 1);
 		testNameString = testNameString.replace('$', '.'); // see bug 178503
 		return testNameString.substring(0, testNameString.indexOf(')'));

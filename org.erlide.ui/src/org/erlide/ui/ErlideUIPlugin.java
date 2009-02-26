@@ -295,7 +295,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 				baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_FILE_LABEL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABLE, baseURL);
+		createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABEL, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_REFRESH, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_REFRESH, baseURL);
 		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_IMPORT, baseURL);

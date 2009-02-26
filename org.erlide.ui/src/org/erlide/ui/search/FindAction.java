@@ -47,7 +47,7 @@ import erlang.OpenResult;
 public abstract class FindAction extends SelectionDispatchAction {
 
 	// A dummy which can't be selected in the UI
-	// private static final IJavaElement RETURN_WITHOUT_BEEP = JavaCore
+	// private static final IErlElement RETURN_WITHOUT_BEEP = JavaCore
 	// .create(JavaPlugin.getWorkspace().getRoot());
 
 	private final Class<?>[] fValidTypes;
@@ -62,7 +62,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	FindAction(final ErlangEditor editor) {
 		this(editor.getEditorSite());
 		fEditor = editor;
-		setEnabled(true); // FIXME kolla selection, sno grejer från open
+		setEnabled(true); // FIXME kolla selection, sno grejer frï¿½n open
 		// kanske...
 	}
 
@@ -103,13 +103,13 @@ public abstract class FindAction extends SelectionDispatchAction {
 	// private IErlElement getTypeIfPossible(IErlElement o, final boolean
 	// silent) {
 	// switch (o.getElementType()) {
-	// case IJavaElement.COMPILATION_UNIT:
+	// case IErlElement.COMPILATION_UNIT:
 	// if (silent) {
 	// return o;
 	// } else {
 	// return findType((ICompilationUnit) o, silent);
 	// }
-	// case IJavaElement.CLASS_FILE:
+	// case IErlElement.CLASS_FILE:
 	// return ((IClassFile) o).getType();
 	// default:
 	// return o;
@@ -144,7 +144,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return "Operation unavailable";
 	}
 
-	// private IJavaElement findType(ICompilationUnit cu, final boolean silent)
+	// private IErlElement findType(ICompilationUnit cu, final boolean silent)
 	// {
 	// IType[] types = null;
 	// try {

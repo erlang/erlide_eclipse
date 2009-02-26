@@ -18,7 +18,7 @@ import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
-import org.erlide.gunit.launcher.JUnitLaunchConfigurationTab;
+import org.erlide.gunit.launcher.GUnitLaunchConfigurationTab;
 
 public class GUnitTabGroup extends AbstractLaunchConfigurationTabGroup {
 
@@ -31,7 +31,7 @@ public class GUnitTabGroup extends AbstractLaunchConfigurationTabGroup {
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new JUnitLaunchConfigurationTab(), new SourceLookupTab(),
+				new GUnitLaunchConfigurationTab(), new SourceLookupTab(),
 				new EnvironmentTab(), new CommonTab() };
 		setTabs(tabs);
 	}

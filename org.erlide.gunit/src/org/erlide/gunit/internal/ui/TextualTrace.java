@@ -30,19 +30,20 @@ public class TextualTrace {
 
 	public TextualTrace(String trace, String[] filterPatterns) {
 		super();
-		fTrace = filterStack(trace, filterPatterns);
+		this.fTrace = filterStack(trace, filterPatterns);
 	}
 
 	public void display(ITraceDisplay display, int maxLabelLength) {
-		StringReader stringReader = new StringReader(fTrace);
+		StringReader stringReader = new StringReader(this.fTrace);
 		BufferedReader bufferedReader = new BufferedReader(stringReader);
 		String line;
 
 		try {
 			// first line contains the thrown exception
 			line = readLine(bufferedReader);
-			if (line == null)
+			if (line == null) {
 				return;
+			}
 
 			displayWrappedLine(display, maxLabelLength, line,
 					LINE_TYPE_EXCEPTION);
@@ -54,7 +55,7 @@ public class TextualTrace {
 				displayWrappedLine(display, maxLabelLength, line, type);
 			}
 		} catch (IOException e) {
-			display.addTraceLine(LINE_TYPE_NORMAL, fTrace);
+			display.addTraceLine(LINE_TYPE_NORMAL, this.fTrace);
 		}
 	}
 
@@ -95,19 +96,22 @@ public class TextualTrace {
 				if ((lastDotIndex != -1)
 						&& (lastDotIndex != len)
 						&& Character.isUpperCase(pattern
-								.charAt(lastDotIndex + 1)))
+								.charAt(lastDotIndex + 1))) {
 					pattern += '.'; // append . to a class filter
+				}
 			}
 
-			if (line.indexOf(pattern) > 0)
+			if (line.indexOf(pattern) > 0) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private String filterStack(String stackTrace, String[] filterPatterns) {
-		if (filterPatterns.length == 0 || stackTrace == null)
+		if (filterPatterns.length == 0 || stackTrace == null) {
 			return stackTrace;
+		}
 
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -118,8 +122,9 @@ public class TextualTrace {
 		String[] patterns = filterPatterns;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
-				if (!filterLine(patterns, line))
+				if (!filterLine(patterns, line)) {
 					printWriter.println(line);
+				}
 			}
 		} catch (IOException e) {
 			return stackTrace; // return the stack unfiltered

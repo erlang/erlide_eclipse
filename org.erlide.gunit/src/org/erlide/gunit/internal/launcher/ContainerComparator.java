@@ -12,15 +12,15 @@ package org.erlide.gunit.internal.launcher;
 
 import java.util.Comparator;
 
-public class ContainerComparator implements Comparator {
+public class ContainerComparator implements Comparator<String> {
 
-	public int compare(Object o1, Object o2) {
-		String container1 = (String) o1;
-		String container2 = (String) o2;
-		if (container1 == null)
+	public int compare(String container1, String container2) {
+		if (container1 == null) {
 			container1 = ""; //$NON-NLS-1$
-		if (container2 == null)
+		}
+		if (container2 == null) {
 			container2 = ""; //$NON-NLS-1$
+		}
 		return container1.compareTo(container2);
 	}
 }

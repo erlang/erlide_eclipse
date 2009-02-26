@@ -17,20 +17,20 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.erlide.gunit.internal.model.TestElement;
 
 /**
  * Copies a test failure stack trace to the clipboard.
  */
-public class JUnitCopyAction extends SelectionListenerAction {
+public class GUnitCopyAction extends Action {
 	private FailureTrace fView;
 
 	private final Clipboard fClipboard;
@@ -43,46 +43,51 @@ public class JUnitCopyAction extends SelectionListenerAction {
 	 * @param view
 	 * @param clipboard
 	 */
-	public JUnitCopyAction(FailureTrace view, Clipboard clipboard) {
-		super(JUnitMessages.CopyTrace_action_label);
+	public GUnitCopyAction(FailureTrace view, Clipboard clipboard) {
+		super(GUnitMessages.CopyTrace_action_label);
 		Assert.isNotNull(clipboard);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.COPYTRACE_ACTION);
-		fView = view;
-		fClipboard = clipboard;
+		this.fView = view;
+		this.fClipboard = clipboard;
 	}
 
 	/*
 	 * @see IAction#run()
 	 */
+	@Override
 	public void run() {
-		String trace = fView.getTrace();
+		String trace = this.fView.getTrace();
 		String source = null;
 		if (trace != null) {
 			source = convertLineTerminators(trace);
-		} else if (fTestElement != null) {
-			source = fTestElement.getTestName();
+		} else if (this.fTestElement != null) {
+			source = this.fTestElement.getTestName();
 		}
-		if (source == null || source.length() == 0)
+		if (source == null || source.length() == 0) {
 			return;
+		}
 
 		TextTransfer plainTextTransfer = TextTransfer.getInstance();
 		try {
-			fClipboard.setContents(
+			this.fClipboard.setContents(
 					new String[] { convertLineTerminators(source) },
 					new Transfer[] { plainTextTransfer });
 		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
-			if (MessageDialog.openQuestion(fView.getComposite().getShell(),
-					JUnitMessages.CopyTraceAction_problem,
-					JUnitMessages.CopyTraceAction_clipboard_busy))
+			}
+			if (MessageDialog.openQuestion(
+					this.fView.getComposite().getShell(),
+					GUnitMessages.CopyTraceAction_problem,
+					GUnitMessages.CopyTraceAction_clipboard_busy)) {
 				run();
+			}
 		}
 	}
 
 	public void handleTestSelected(TestElement test) {
-		fTestElement = test;
+		this.fTestElement = test;
 	}
 
 	private String convertLineTerminators(String in) {

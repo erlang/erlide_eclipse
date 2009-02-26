@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.erlide.gunit.internal.ui;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-
-import org.eclipse.jface.action.Action;
-
 import org.erlide.gunit.internal.model.TestElement;
 
 /**
@@ -23,12 +21,13 @@ import org.erlide.gunit.internal.model.TestElement;
 public class CompareResultsAction extends Action {
 
 	private FailureTrace fView;
+
 	private CompareResultDialog fOpenDialog;
 
 	public CompareResultsAction(FailureTrace view) {
-		super(JUnitMessages.CompareResultsAction_label);
-		setDescription(JUnitMessages.CompareResultsAction_description);
-		setToolTipText(JUnitMessages.CompareResultsAction_tooltip);
+		super(GUnitMessages.CompareResultsAction_label);
+		setDescription(GUnitMessages.CompareResultsAction_description);
+		setToolTipText(GUnitMessages.CompareResultsAction_tooltip);
 
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/compare.gif")); //$NON-NLS-1$
@@ -37,7 +36,7 @@ public class CompareResultsAction extends Action {
 		setImageDescriptor(GUnitPlugin.getImageDescriptor("elcl16/compare.gif")); //$NON-NLS-1$
 		// PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IGUnitHelpContextIds.ENABLEFILTER_ACTION);
-		fView = view;
+		this.fView = view;
 	}
 
 	/*
@@ -45,27 +44,29 @@ public class CompareResultsAction extends Action {
 	 */
 	@Override
 	public void run() {
-		TestElement failedTest = fView.getFailedTest();
-		if (fOpenDialog != null) {
-			fOpenDialog.setInput(failedTest);
-			fOpenDialog.getShell().setActive();
+		TestElement failedTest = this.fView.getFailedTest();
+		if (this.fOpenDialog != null) {
+			this.fOpenDialog.setInput(failedTest);
+			this.fOpenDialog.getShell().setActive();
 
 		} else {
-			fOpenDialog = new CompareResultDialog(fView.getShell(), failedTest);
-			fOpenDialog.create();
-			fOpenDialog.getShell().addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent e) {
-					fOpenDialog = null;
-				}
-			});
-			fOpenDialog.setBlockOnOpen(false);
-			fOpenDialog.open();
+			this.fOpenDialog = new CompareResultDialog(this.fView.getShell(),
+					failedTest);
+			this.fOpenDialog.create();
+			this.fOpenDialog.getShell().addDisposeListener(
+					new DisposeListener() {
+						public void widgetDisposed(DisposeEvent e) {
+							CompareResultsAction.this.fOpenDialog = null;
+						}
+					});
+			this.fOpenDialog.setBlockOnOpen(false);
+			this.fOpenDialog.open();
 		}
 	}
 
 	public void updateOpenDialog(TestElement failedTest) {
-		if (fOpenDialog != null) {
-			fOpenDialog.setInput(failedTest);
+		if (this.fOpenDialog != null) {
+			this.fOpenDialog.setInput(failedTest);
 		}
 	}
 }

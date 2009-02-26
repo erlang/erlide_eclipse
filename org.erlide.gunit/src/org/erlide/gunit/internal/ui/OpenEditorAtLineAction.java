@@ -13,8 +13,12 @@
 package org.erlide.gunit.internal.ui;
 
 import org.eclipse.core.runtime.CoreException;
-
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlProject;
 
 /**
  * Open a test in the Java editor and reveal a given line
@@ -28,24 +32,26 @@ public class OpenEditorAtLineAction extends OpenEditorAction {
 		super(testRunner, className);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.OPENEDITORATLINE_ACTION);
-		fLineNumber = line;
+		this.fLineNumber = line;
 	}
 
+	@Override
 	protected void reveal(ITextEditor textEditor) {
-		if (fLineNumber >= 0) {
+		if (this.fLineNumber >= 0) {
 			try {
 				IDocument document = textEditor.getDocumentProvider()
 						.getDocument(textEditor.getEditorInput());
 				textEditor.selectAndReveal(document
-						.getLineOffset(fLineNumber - 1), document
-						.getLineLength(fLineNumber - 1));
+						.getLineOffset(this.fLineNumber - 1), document
+						.getLineLength(this.fLineNumber - 1));
 			} catch (BadLocationException x) {
 				// marker refers to invalid text position -> do nothing
 			}
 		}
 	}
 
-	protected IJavaElement findElement(IJavaProject project, String className)
+	@Override
+	protected IErlElement findElement(IErlProject project, String className)
 			throws CoreException {
 		return findType(project, className);
 	}

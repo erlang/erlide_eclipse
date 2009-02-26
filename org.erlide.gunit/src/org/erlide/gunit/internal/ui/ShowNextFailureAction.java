@@ -17,19 +17,19 @@ class ShowNextFailureAction extends Action {
 	private TestRunnerViewPart fPart;
 
 	public ShowNextFailureAction(TestRunnerViewPart part) {
-		super(JUnitMessages.ShowNextFailureAction_label);
+		super(GUnitMessages.ShowNextFailureAction_label);
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
 		setHoverImageDescriptor(GUnitPlugin
 				.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
 		setImageDescriptor(GUnitPlugin
 				.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-		setToolTipText(JUnitMessages.ShowNextFailureAction_tooltip);
-		fPart = part;
+		setToolTipText(GUnitMessages.ShowNextFailureAction_tooltip);
+		this.fPart = part;
 	}
 
 	@Override
 	public void run() {
-		fPart.selectNextFailure();
+		this.fPart.selectNextFailure();
 	}
 }

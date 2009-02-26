@@ -21,9 +21,9 @@ public class ScrollLockAction extends Action {
 	private TestRunnerViewPart fRunnerViewPart;
 
 	public ScrollLockAction(TestRunnerViewPart viewer) {
-		super(JUnitMessages.ScrollLockAction_action_label);
-		fRunnerViewPart = viewer;
-		setToolTipText(JUnitMessages.ScrollLockAction_action_tooltip);
+		super(GUnitMessages.ScrollLockAction_action_label);
+		this.fRunnerViewPart = viewer;
+		setToolTipText(GUnitMessages.ScrollLockAction_action_tooltip);
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
 		setHoverImageDescriptor(GUnitPlugin
@@ -39,6 +39,6 @@ public class ScrollLockAction extends Action {
 	 */
 	@Override
 	public void run() {
-		fRunnerViewPart.setAutoScroll(!isChecked());
+		this.fRunnerViewPart.setAutoScroll(!isChecked());
 	}
 }

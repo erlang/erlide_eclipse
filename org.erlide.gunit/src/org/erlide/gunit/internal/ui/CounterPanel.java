@@ -19,7 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
 import org.erlide.gunit.internal.Messages;
 
 /**
@@ -27,13 +26,18 @@ import org.erlide.gunit.internal.Messages;
  */
 public class CounterPanel extends Composite {
 	protected Text fNumberOfErrors;
+
 	protected Text fNumberOfFailures;
+
 	protected Text fNumberOfRuns;
+
 	protected int fTotal;
+
 	protected int fIgnoredCount;
 
 	private final Image fErrorIcon = TestRunnerViewPart
 			.createImage("ovr16/error_ovr.gif"); //$NON-NLS-1$
+
 	private final Image fFailureIcon = TestRunnerViewPart
 			.createImage("ovr16/failed_ovr.gif"); //$NON-NLS-1$
 
@@ -45,12 +49,13 @@ public class CounterPanel extends Composite {
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 
-		fNumberOfRuns = createLabel(JUnitMessages.CounterPanel_label_runs,
+		this.fNumberOfRuns = createLabel(GUnitMessages.CounterPanel_label_runs,
 				null, " 0/0  "); //$NON-NLS-1$
-		fNumberOfErrors = createLabel(JUnitMessages.CounterPanel_label_errors,
-				fErrorIcon, " 0 "); //$NON-NLS-1$
-		fNumberOfFailures = createLabel(
-				JUnitMessages.CounterPanel_label_failures, fFailureIcon, " 0 "); //$NON-NLS-1$
+		this.fNumberOfErrors = createLabel(
+				GUnitMessages.CounterPanel_label_errors, this.fErrorIcon, " 0 "); //$NON-NLS-1$
+		this.fNumberOfFailures = createLabel(
+				GUnitMessages.CounterPanel_label_failures, this.fFailureIcon,
+				" 0 "); //$NON-NLS-1$
 
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
@@ -60,8 +65,8 @@ public class CounterPanel extends Composite {
 	}
 
 	private void disposeIcons() {
-		fErrorIcon.dispose();
-		fFailureIcon.dispose();
+		this.fErrorIcon.dispose();
+		this.fFailureIcon.dispose();
 	}
 
 	private Text createLabel(String name, Image image, String init) {
@@ -91,47 +96,49 @@ public class CounterPanel extends Composite {
 		setErrorValue(0);
 		setFailureValue(0);
 		setRunValue(0, 0);
-		fTotal = 0;
+		this.fTotal = 0;
 	}
 
 	public void setTotal(int value) {
-		fTotal = value;
+		this.fTotal = value;
 	}
 
 	public int getTotal() {
-		return fTotal;
+		return this.fTotal;
 	}
 
 	public void setRunValue(int value, int ignoredCount) {
 		String runString;
-		if (ignoredCount == 0)
-			runString = Messages.format(JUnitMessages.CounterPanel_runcount,
+		if (ignoredCount == 0) {
+			runString = Messages.format(GUnitMessages.CounterPanel_runcount,
 					new String[] { Integer.toString(value),
-							Integer.toString(fTotal) });
-		else
+							Integer.toString(this.fTotal) });
+		} else {
 			runString = Messages.format(
-					JUnitMessages.CounterPanel_runcount_ignored, new String[] {
-							Integer.toString(value), Integer.toString(fTotal),
+					GUnitMessages.CounterPanel_runcount_ignored, new String[] {
+							Integer.toString(value),
+							Integer.toString(this.fTotal),
 							Integer.toString(ignoredCount) });
-		fNumberOfRuns.setText(runString);
+		}
+		this.fNumberOfRuns.setText(runString);
 
-		if (fIgnoredCount == 0 && ignoredCount > 0 || fIgnoredCount != 0
-				&& ignoredCount == 0) {
+		if (this.fIgnoredCount == 0 && ignoredCount > 0
+				|| this.fIgnoredCount != 0 && ignoredCount == 0) {
 			layout();
 		} else {
-			fNumberOfRuns.redraw();
+			this.fNumberOfRuns.redraw();
 			redraw();
 		}
-		fIgnoredCount = ignoredCount;
+		this.fIgnoredCount = ignoredCount;
 	}
 
 	public void setErrorValue(int value) {
-		fNumberOfErrors.setText(Integer.toString(value));
+		this.fNumberOfErrors.setText(Integer.toString(value));
 		redraw();
 	}
 
 	public void setFailureValue(int value) {
-		fNumberOfFailures.setText(Integer.toString(value));
+		this.fNumberOfFailures.setText(Integer.toString(value));
 		redraw();
 	}
 }

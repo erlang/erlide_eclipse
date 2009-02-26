@@ -10,40 +10,39 @@
  *******************************************************************************/
 package org.erlide.gunit.internal.launcher;
 
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
+import org.erlide.core.erlang.IErlModule;
 
 /**
  * A dialog to select a test class or a test suite from a list of types.
  */
 public class TestSelectionDialog extends TwoPaneElementSelector {
 
-	private final IType[] fTypes;
+	private final IErlModule[] fTypes;
 
-	private static class PackageRenderer extends JavaElementLabelProvider {
-		public PackageRenderer() {
-			super(JavaElementLabelProvider.SHOW_PARAMETERS
-					| JavaElementLabelProvider.SHOW_POST_QUALIFIED
-					| JavaElementLabelProvider.SHOW_ROOT);
-		}
+	// private static class PackageRenderer extends JavaElementLabelProvider {
+	// public PackageRenderer() {
+	// super(JavaElementLabelProvider.SHOW_PARAMETERS
+	// | JavaElementLabelProvider.SHOW_POST_QUALIFIED
+	// | JavaElementLabelProvider.SHOW_ROOT);
+	// }
+	//
+	// public Image getImage(Object element) {
+	// return super.getImage(((IErlModule) element).getPackageFragment());
+	// }
+	//
+	// public String getText(Object element) {
+	// return super.getText(((IErlModule) element).getPackageFragment());
+	// }
+	// }
 
-		public Image getImage(Object element) {
-			return super.getImage(((IType) element).getPackageFragment());
-		}
-
-		public String getText(Object element) {
-			return super.getText(((IType) element).getPackageFragment());
-		}
-	}
-
-	public TestSelectionDialog(Shell shell, IType[] types) {
-		super(shell, new JavaElementLabelProvider(
-				JavaElementLabelProvider.SHOW_BASICS
-						| JavaElementLabelProvider.SHOW_OVERLAY_ICONS),
-				new PackageRenderer());
-		fTypes = types;
+	public TestSelectionDialog(Shell shell, IErlModule[] types) {
+		super(shell, null, null); // new JavaElementLabelProvider(
+		// JavaElementLabelProvider.SHOW_BASICS
+		// | JavaElementLabelProvider.SHOW_OVERLAY_ICONS),
+		// new PackageRenderer());
+		this.fTypes = types;
 	}
 
 	/**
@@ -61,7 +60,7 @@ public class TestSelectionDialog extends TwoPaneElementSelector {
 	 */
 	@Override
 	public int open() {
-		setElements(fTypes);
+		setElements(this.fTypes);
 		return super.open();
 	}
 

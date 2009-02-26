@@ -11,84 +11,83 @@
 package org.erlide.gunit.internal.util;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.JFaceResources;
-
 public class LayoutUtil {
 
-	/*
-	 * Calculates the number of columns needed by field editors
-	 */
-	public static int getNumberOfColumns(
-			MethodStubsSelectionButtonGroup[] editors) {
-		int columnCount = 0;
-		for (int i = 0; i < editors.length; i++) {
-			columnCount = Math.max(editors[i].getNumberOfControls(),
-					columnCount);
-		}
-		return columnCount;
-	}
-
-	/*
-	 * Creates a composite and fills in the given editors.
-	 * 
-	 * @param labelOnTop Defines if the label of all fields should be on top of
-	 * the fields
-	 */
-	public static void doDefaultLayout(Composite parent,
-			MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop) {
-		doDefaultLayout(parent, editors, labelOnTop, 0, 0, 0, 0);
-	}
-
-	/*
-	 * Creates a composite and fills in the given editors.
-	 * 
-	 * @param labelOnTop Defines if the label of all fields should be on top of
-	 * the fields
-	 * 
-	 * @param minWidth The minimal width of the composite
-	 * 
-	 * @param minHeight The minimal height of the composite
-	 */
-	public static void doDefaultLayout(Composite parent,
-			MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop,
-			int minWidth, int minHeight) {
-		doDefaultLayout(parent, editors, labelOnTop, minWidth, minHeight, 0, 0);
-	}
-
-	public static void doDefaultLayout(Composite parent,
-			MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop,
-			int minWidth, int minHeight, int marginWidth, int marginHeight) {
-		int nCulumns = getNumberOfColumns(editors);
-		Control[][] controls = new Control[editors.length][];
-		for (int i = 0; i < editors.length; i++) {
-			controls[i] = editors[i].doFillIntoGrid(parent, nCulumns);
-		}
-		if (labelOnTop) {
-			nCulumns--;
-			modifyLabelSpans(controls, nCulumns);
-		}
-		GridLayout layout = new GridLayout();
-		if (marginWidth != SWT.DEFAULT) {
-			layout.marginWidth = marginWidth;
-		}
-		if (marginHeight != SWT.DEFAULT) {
-			layout.marginHeight = marginHeight;
-		}
-		// layout.minimumWidth= minWidth;
-		// layout.minimumHeight= minHeight;
-		layout.numColumns = nCulumns;
-		parent.setLayout(layout);
-	}
+	// /*
+	// * Calculates the number of columns needed by field editors
+	// */
+	// public static int getNumberOfColumns(
+	// MethodStubsSelectionButtonGroup[] editors) {
+	// int columnCount = 0;
+	// for (int i = 0; i < editors.length; i++) {
+	// columnCount = Math.max(editors[i].getNumberOfControls(),
+	// columnCount);
+	// }
+	// return columnCount;
+	// }
+	//
+	// /*
+	// * Creates a composite and fills in the given editors.
+	// *
+	// * @param labelOnTop Defines if the label of all fields should be on top
+	// of
+	// * the fields
+	// */
+	// public static void doDefaultLayout(Composite parent,
+	// MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop) {
+	// doDefaultLayout(parent, editors, labelOnTop, 0, 0, 0, 0);
+	// }
+	//
+	// /*
+	// * Creates a composite and fills in the given editors.
+	// *
+	// * @param labelOnTop Defines if the label of all fields should be on top
+	// of
+	// * the fields
+	// *
+	// * @param minWidth The minimal width of the composite
+	// *
+	// * @param minHeight The minimal height of the composite
+	// */
+	// public static void doDefaultLayout(Composite parent,
+	// MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop,
+	// int minWidth, int minHeight) {
+	// doDefaultLayout(parent, editors, labelOnTop, minWidth, minHeight, 0, 0);
+	// }
+	//
+	// public static void doDefaultLayout(Composite parent,
+	// MethodStubsSelectionButtonGroup[] editors, boolean labelOnTop,
+	// int minWidth, int minHeight, int marginWidth, int marginHeight) {
+	// int nCulumns = getNumberOfColumns(editors);
+	// Control[][] controls = new Control[editors.length][];
+	// for (int i = 0; i < editors.length; i++) {
+	// controls[i] = editors[i].doFillIntoGrid(parent, nCulumns);
+	// }
+	// if (labelOnTop) {
+	// nCulumns--;
+	// modifyLabelSpans(controls, nCulumns);
+	// }
+	// GridLayout layout = new GridLayout();
+	// if (marginWidth != SWT.DEFAULT) {
+	// layout.marginWidth = marginWidth;
+	// }
+	// if (marginHeight != SWT.DEFAULT) {
+	// layout.marginHeight = marginHeight;
+	// }
+	// // layout.minimumWidth= minWidth;
+	// // layout.minimumHeight= minHeight;
+	// layout.numColumns = nCulumns;
+	// parent.setLayout(layout);
+	// }
 
 	private static void modifyLabelSpans(Control[][] controls, int nCulumns) {
 		for (int i = 0; i < controls.length; i++) {

@@ -29,26 +29,34 @@ import org.eclipse.swt.widgets.Display;
 /**
  * A progress bar with a red/green indication for success or failure.
  */
-public class JUnitProgressBar extends Canvas {
+public class GUnitProgressBar extends Canvas {
 	private static final int DEFAULT_WIDTH = 160;
+
 	private static final int DEFAULT_HEIGHT = 18;
 
 	private int fCurrentTickCount = 0;
+
 	private int fMaxTickCount = 0;
+
 	private int fColorBarWidth = 0;
+
 	private Color fOKColor;
+
 	private Color fFailureColor;
+
 	private Color fStoppedColor;
+
 	private boolean fError;
+
 	private boolean fStopped = false;
 
-	public JUnitProgressBar(Composite parent) {
+	public GUnitProgressBar(Composite parent) {
 		super(parent, SWT.NONE);
 
 		addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
-				fColorBarWidth = scale(fCurrentTickCount);
+				GUnitProgressBar.this.fColorBarWidth = scale(GUnitProgressBar.this.fCurrentTickCount);
 				redraw();
 			}
 		});
@@ -59,41 +67,43 @@ public class JUnitProgressBar extends Canvas {
 		});
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
-				fFailureColor.dispose();
-				fOKColor.dispose();
-				fStoppedColor.dispose();
+				GUnitProgressBar.this.fFailureColor.dispose();
+				GUnitProgressBar.this.fOKColor.dispose();
+				GUnitProgressBar.this.fStoppedColor.dispose();
 			}
 		});
 		Display display = parent.getDisplay();
-		fFailureColor = new Color(display, 159, 63, 63);
-		fOKColor = new Color(display, 95, 191, 95);
-		fStoppedColor = new Color(display, 120, 120, 120);
+		this.fFailureColor = new Color(display, 159, 63, 63);
+		this.fOKColor = new Color(display, 95, 191, 95);
+		this.fStoppedColor = new Color(display, 120, 120, 120);
 	}
 
 	public void setMaximum(int max) {
-		fMaxTickCount = max;
+		this.fMaxTickCount = max;
 	}
 
 	public void reset() {
-		fError = false;
-		fStopped = false;
-		fCurrentTickCount = 0;
-		fMaxTickCount = 0;
-		fColorBarWidth = 0;
+		this.fError = false;
+		this.fStopped = false;
+		this.fCurrentTickCount = 0;
+		this.fMaxTickCount = 0;
+		this.fColorBarWidth = 0;
 		redraw();
 	}
 
 	public void reset(boolean hasErrors, boolean stopped, int ticksDone,
 			int maximum) {
-		boolean noChange = fError == hasErrors && fStopped == stopped
-				&& fCurrentTickCount == ticksDone && fMaxTickCount == maximum;
-		fError = hasErrors;
-		fStopped = stopped;
-		fCurrentTickCount = ticksDone;
-		fMaxTickCount = maximum;
-		fColorBarWidth = scale(ticksDone);
-		if (!noChange)
+		boolean noChange = this.fError == hasErrors && this.fStopped == stopped
+				&& this.fCurrentTickCount == ticksDone
+				&& this.fMaxTickCount == maximum;
+		this.fError = hasErrors;
+		this.fStopped = stopped;
+		this.fCurrentTickCount = ticksDone;
+		this.fMaxTickCount = maximum;
+		this.fColorBarWidth = scale(ticksDone);
+		if (!noChange) {
 			redraw();
+		}
 	}
 
 	private void paintStep(int startX, int endX) {
@@ -106,24 +116,26 @@ public class JUnitProgressBar extends Canvas {
 	}
 
 	private void setStatusColor(GC gc) {
-		if (fStopped)
-			gc.setBackground(fStoppedColor);
-		else if (fError)
-			gc.setBackground(fFailureColor);
-		else
-			gc.setBackground(fOKColor);
+		if (this.fStopped) {
+			gc.setBackground(this.fStoppedColor);
+		} else if (this.fError) {
+			gc.setBackground(this.fFailureColor);
+		} else {
+			gc.setBackground(this.fOKColor);
+		}
 	}
 
 	public void stopped() {
-		fStopped = true;
+		this.fStopped = true;
 		redraw();
 	}
 
 	private int scale(int value) {
-		if (fMaxTickCount > 0) {
+		if (this.fMaxTickCount > 0) {
 			Rectangle r = getClientArea();
-			if (r.width != 0)
-				return Math.max(0, value * (r.width - 2) / fMaxTickCount);
+			if (r.width != 0) {
+				return Math.max(0, value * (r.width - 2) / this.fMaxTickCount);
+			}
 		}
 		return value;
 	}
@@ -150,38 +162,41 @@ public class JUnitProgressBar extends Canvas {
 				.getSystemColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
 
 		setStatusColor(gc);
-		fColorBarWidth = Math.min(rect.width - 2, fColorBarWidth);
-		gc.fillRectangle(1, 1, fColorBarWidth, rect.height - 2);
+		this.fColorBarWidth = Math.min(rect.width - 2, this.fColorBarWidth);
+		gc.fillRectangle(1, 1, this.fColorBarWidth, rect.height - 2);
 	}
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		checkWidget();
 		Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		if (wHint != SWT.DEFAULT)
+		if (wHint != SWT.DEFAULT) {
 			size.x = wHint;
-		if (hHint != SWT.DEFAULT)
+		}
+		if (hHint != SWT.DEFAULT) {
 			size.y = hHint;
+		}
 		return size;
 	}
 
 	public void step(int failures) {
-		fCurrentTickCount++;
-		int x = fColorBarWidth;
+		this.fCurrentTickCount++;
+		int x = this.fColorBarWidth;
 
-		fColorBarWidth = scale(fCurrentTickCount);
+		this.fColorBarWidth = scale(this.fCurrentTickCount);
 
-		if (!fError && failures > 0) {
-			fError = true;
+		if (!this.fError && failures > 0) {
+			this.fError = true;
 			x = 1;
 		}
-		if (fCurrentTickCount == fMaxTickCount)
-			fColorBarWidth = getClientArea().width - 1;
-		paintStep(x, fColorBarWidth);
+		if (this.fCurrentTickCount == this.fMaxTickCount) {
+			this.fColorBarWidth = getClientArea().width - 1;
+		}
+		paintStep(x, this.fColorBarWidth);
 	}
 
 	public void refresh(boolean hasErrors) {
-		fError = hasErrors;
+		this.fError = hasErrors;
 		redraw();
 	}
 

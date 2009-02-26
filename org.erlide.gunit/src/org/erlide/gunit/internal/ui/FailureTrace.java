@@ -13,7 +13,13 @@
 package org.erlide.gunit.internal.ui;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.util.IOpenEventListener;
+import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,15 +29,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.util.IOpenEventListener;
-import org.eclipse.jface.util.OpenStrategy;
-
 import org.erlide.gunit.internal.model.TestElement;
 
 /**
@@ -41,12 +38,19 @@ public class FailureTrace implements IMenuListener {
 	private static final int MAX_LABEL_LENGTH = 256;
 
 	static final String FRAME_PREFIX = "at "; //$NON-NLS-1$
+
 	private Table fTable;
+
 	private TestRunnerViewPart fTestRunner;
+
 	private String fInputTrace;
+
 	private final Clipboard fClipboard;
+
 	private TestElement fFailure;
+
 	private CompareResultsAction fCompareAction;
+
 	private final FailureTableDisplay fFailureTableDisplay;
 
 	public FailureTrace(Composite parent, Clipboard clipboard,
@@ -56,61 +60,66 @@ public class FailureTrace implements IMenuListener {
 		// fill the failure trace viewer toolbar
 		ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
 		failureToolBarmanager.add(new EnableStackFilterAction(this));
-		fCompareAction = new CompareResultsAction(this);
-		fCompareAction.setEnabled(false);
-		failureToolBarmanager.add(fCompareAction);
+		this.fCompareAction = new CompareResultsAction(this);
+		this.fCompareAction.setEnabled(false);
+		failureToolBarmanager.add(this.fCompareAction);
 		failureToolBarmanager.update(true);
 
-		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-		fTestRunner = testRunner;
-		fClipboard = clipboard;
+		this.fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
+				| SWT.H_SCROLL);
+		this.fTestRunner = testRunner;
+		this.fClipboard = clipboard;
 
-		OpenStrategy handler = new OpenStrategy(fTable);
+		OpenStrategy handler = new OpenStrategy(this.fTable);
 		handler.addOpenListener(new IOpenEventListener() {
 			public void handleOpen(SelectionEvent e) {
-				if (fTable.getSelectionIndex() == 0
-						&& fFailure.isComparisonFailure()) {
-					fCompareAction.run();
+				if (FailureTrace.this.fTable.getSelectionIndex() == 0
+						&& FailureTrace.this.fFailure.isComparisonFailure()) {
+					FailureTrace.this.fCompareAction.run();
 				}
-				if (fTable.getSelection().length != 0) {
+				if (FailureTrace.this.fTable.getSelection().length != 0) {
 					Action a = createOpenEditorAction(getSelectedText());
-					if (a != null)
+					if (a != null) {
 						a.run();
+					}
 				}
 			}
 		});
 
 		initMenu();
 
-		fFailureTableDisplay = new FailureTableDisplay(fTable);
+		this.fFailureTableDisplay = new FailureTableDisplay(this.fTable);
 	}
 
 	private void initMenu() {
 		MenuManager menuMgr = new MenuManager();
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(this);
-		Menu menu = menuMgr.createContextMenu(fTable);
-		fTable.setMenu(menu);
+		Menu menu = menuMgr.createContextMenu(this.fTable);
+		this.fTable.setMenu(menu);
 	}
 
 	public void menuAboutToShow(IMenuManager manager) {
-		if (fTable.getSelectionCount() > 0) {
+		if (this.fTable.getSelectionCount() > 0) {
 			Action a = createOpenEditorAction(getSelectedText());
-			if (a != null)
+			if (a != null) {
 				manager.add(a);
-			manager.add(new JUnitCopyAction(FailureTrace.this, fClipboard));
+			}
+			manager
+					.add(new GUnitCopyAction(FailureTrace.this, this.fClipboard));
 		}
 		// fix for bug 68058
-		if (fFailure != null && fFailure.isComparisonFailure())
-			manager.add(fCompareAction);
+		if (this.fFailure != null && this.fFailure.isComparisonFailure()) {
+			manager.add(this.fCompareAction);
+		}
 	}
 
 	public String getTrace() {
-		return fInputTrace;
+		return this.fInputTrace;
 	}
 
 	private String getSelectedText() {
-		return fTable.getSelection()[0].getText();
+		return this.fTable.getSelection()[0].getText();
 	}
 
 	private Action createOpenEditorAction(String traceLine) {
@@ -121,8 +130,9 @@ public class FailureTrace implements IMenuListener {
 					testName.lastIndexOf('(')).trim();
 			testName = testName.substring(0, testName.lastIndexOf('.'));
 			int innerSeparatorIndex = testName.indexOf('$');
-			if (innerSeparatorIndex != -1)
+			if (innerSeparatorIndex != -1) {
 				testName = testName.substring(0, innerSeparatorIndex);
+			}
 
 			String lineNumber = traceLine;
 			lineNumber = lineNumber.substring(lineNumber.indexOf(':') + 1,
@@ -131,8 +141,8 @@ public class FailureTrace implements IMenuListener {
 			// fix for bug 37333
 			String cuName = traceLine.substring(traceLine.lastIndexOf('(') + 1,
 					traceLine.lastIndexOf(':'));
-			return new OpenEditorAtLineAction(fTestRunner, cuName, testName,
-					line);
+			return new OpenEditorAtLineAction(this.fTestRunner, cuName,
+					testName, line);
 		} catch (NumberFormatException e) {
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -145,14 +155,14 @@ public class FailureTrace implements IMenuListener {
 	 * @return The composite
 	 */
 	Composite getComposite() {
-		return fTable;
+		return this.fTable;
 	}
 
 	/**
 	 * Refresh the table from the trace.
 	 */
 	public void refresh() {
-		updateTable(fInputTrace);
+		updateTable(this.fInputTrace);
 	}
 
 	/**
@@ -162,22 +172,24 @@ public class FailureTrace implements IMenuListener {
 	 *            the failed test
 	 */
 	public void showFailure(TestElement test) {
-		fFailure = test;
+		this.fFailure = test;
 		String trace = ""; //$NON-NLS-1$
 		updateEnablement(test);
-		if (test != null)
+		if (test != null) {
 			trace = test.getTrace();
-		if (fInputTrace == trace)
+		}
+		if (this.fInputTrace == trace) {
 			return;
-		fInputTrace = trace;
+		}
+		this.fInputTrace = trace;
 		updateTable(trace);
 	}
 
 	public void updateEnablement(TestElement test) {
 		boolean enableCompare = test != null && test.isComparisonFailure();
-		fCompareAction.setEnabled(enableCompare);
+		this.fCompareAction.setEnabled(enableCompare);
 		if (enableCompare) {
-			fCompareAction.updateOpenDialog(test);
+			this.fCompareAction.updateOpenDialog(test);
 		}
 	}
 
@@ -187,16 +199,17 @@ public class FailureTrace implements IMenuListener {
 			return;
 		}
 		trace = trace.trim();
-		fTable.setRedraw(false);
-		fTable.removeAll();
+		this.fTable.setRedraw(false);
+		this.fTable.removeAll();
 		new TextualTrace(trace, getFilterPatterns()).display(
-				fFailureTableDisplay, MAX_LABEL_LENGTH);
-		fTable.setRedraw(true);
+				this.fFailureTableDisplay, MAX_LABEL_LENGTH);
+		this.fTable.setRedraw(true);
 	}
 
 	private String[] getFilterPatterns() {
-		if (JUnitPreferencePage.getFilterStack())
-			return JUnitPreferencePage.getFilterPatterns();
+		if (GUnitPreferencePage.getFilterStack()) {
+			return GUnitPreferencePage.getFilterPatterns();
+		}
 		return new String[0];
 	}
 
@@ -208,7 +221,7 @@ public class FailureTrace implements IMenuListener {
 	 */
 	public void setInformation(String text) {
 		clear();
-		TableItem tableItem = fFailureTableDisplay.newTableItem();
+		TableItem tableItem = this.fFailureTableDisplay.newTableItem();
 		tableItem.setText(text);
 	}
 
@@ -216,19 +229,19 @@ public class FailureTrace implements IMenuListener {
 	 * Clears the non-stack trace info
 	 */
 	public void clear() {
-		fTable.removeAll();
-		fInputTrace = null;
+		this.fTable.removeAll();
+		this.fInputTrace = null;
 	}
 
 	public TestElement getFailedTest() {
-		return fFailure;
+		return this.fFailure;
 	}
 
 	public Shell getShell() {
-		return fTable.getShell();
+		return this.fTable.getShell();
 	}
 
 	public FailureTableDisplay getFailureTableDisplay() {
-		return fFailureTableDisplay;
+		return this.fFailureTableDisplay;
 	}
 }

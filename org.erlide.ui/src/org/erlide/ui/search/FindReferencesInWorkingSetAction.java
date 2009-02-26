@@ -99,7 +99,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 		return null;
 	}
 
-	// QuerySpecification createQuery(IJavaElement element)
+	// QuerySpecification createQuery(IErlElement element)
 	// throws JavaModelException, InterruptedException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
 	//

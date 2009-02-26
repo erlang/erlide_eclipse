@@ -52,7 +52,7 @@ public class FindReferencesAction extends FindAction {
 	@Override
 	Class<?>[] getValidTypes() {
 		return new Class[] { IErlFunction.class };
-		// FIXME fler här
+		// FIXME fler hï¿½r
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class FindReferencesAction extends FindAction {
 		return SearchUtil.getWorkspaceScope();
 	}
 
-	// QuerySpecification createQuery(IJavaElement element)
+	// QuerySpecification createQuery(IErlElement element)
 	// throws JavaModelException, InterruptedException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
 	// final boolean isInsideJRE = factory.isInsideJRE(element);
@@ -85,7 +85,7 @@ public class FindReferencesAction extends FindAction {
 	// description);
 	// }
 	//
-	// public void run(IJavaElement element) {
+	// public void run(IErlElement element) {
 	// SearchUtil.warnIfBinaryConstant(element, getShell());
 	// super.run(element);
 	// }

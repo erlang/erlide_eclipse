@@ -15,7 +15,9 @@ import org.eclipse.osgi.util.NLS;
 
 public class ModelMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.erlide.gunit.internal.model.ModelMessages"; //$NON-NLS-1$
+
 	public static String JUnitModel_could_not_read;
+
 	public static String JUnitModel_could_not_write;
 	static {
 		// initialize resource bundle

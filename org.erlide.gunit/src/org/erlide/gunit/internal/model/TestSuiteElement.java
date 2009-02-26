@@ -19,13 +19,14 @@ import org.erlide.gunit.model.ITestSuiteElement;
 
 public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 
-	private List/* <TestElement> */fChildren;
+	private List<ITestElement> fChildren;
+
 	private Status fChildrenStatus;
 
 	public TestSuiteElement(TestSuiteElement parent, String id,
 			String testName, int childrenCount) {
 		super(parent, id, testName);
-		fChildren = new ArrayList(childrenCount);
+		this.fChildren = new ArrayList<ITestElement>(childrenCount);
 	}
 
 	/*
@@ -57,34 +58,35 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	 * @see org.erlide.gunit.model.ITestSuiteElement#getChildren()
 	 */
 	public ITestElement[] getChildren() {
-		return (ITestElement[]) fChildren.toArray(new ITestElement[fChildren
-				.size()]);
+		return this.fChildren.toArray(new ITestElement[this.fChildren.size()]);
 	}
 
 	public void addChild(TestElement child) {
-		fChildren.add(child);
+		this.fChildren.add(child);
 	}
 
 	@Override
 	public Status getStatus() {
 		Status suiteStatus = getSuiteStatus();
-		if (fChildrenStatus != null) {
+		if (this.fChildrenStatus != null) {
 			// must combine children and suite status here, since failures can
 			// occur e.g. in @AfterClass
-			return Status.combineStatus(fChildrenStatus, suiteStatus);
+			return Status.combineStatus(this.fChildrenStatus, suiteStatus);
 		} else {
 			return suiteStatus;
 		}
 	}
 
 	private Status getCumulatedStatus() {
-		TestElement[] children = (TestElement[]) fChildren
-				.toArray(new TestElement[fChildren.size()]); // copy list to
-																// avoid
-																// concurreny
-																// problems
-		if (children.length == 0)
+		TestElement[] children = this.fChildren
+				.toArray(new TestElement[this.fChildren.size()]); // copy list
+																	// to
+		// avoid
+		// concurreny
+		// problems
+		if (children.length == 0) {
 			return getSuiteStatus();
+		}
 
 		Status cumulated = children[0].getStatus();
 
@@ -104,13 +106,14 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	}
 
 	public void childChangedStatus(TestElement child, Status childStatus) {
-		int childCount = fChildren.size();
-		if (child == fChildren.get(0) && childStatus.isRunning()) {
+		int childCount = this.fChildren.size();
+		if (child == this.fChildren.get(0) && childStatus.isRunning()) {
 			// is first child, and is running -> copy status
 			internalSetChildrenStatus(childStatus);
 			return;
 		}
-		TestElement lastChild = (TestElement) fChildren.get(childCount - 1);
+		TestElement lastChild = (TestElement) this.fChildren
+				.get(childCount - 1);
 		if (child == lastChild) {
 			if (childStatus.isDone()) {
 				// all children done, collect cumulative status
@@ -130,12 +133,13 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 		// finally, set RUNNING_FAILURE/ERROR if child has failed but suite has
 		// not failed:
 		if (childStatus.isFailure()) {
-			if (fChildrenStatus == null || !fChildrenStatus.isErrorOrFailure()) {
+			if (this.fChildrenStatus == null
+					|| !this.fChildrenStatus.isErrorOrFailure()) {
 				internalSetChildrenStatus(Status.RUNNING_FAILURE);
 				return;
 			}
 		} else if (childStatus.isError()) {
-			if (fChildrenStatus == null || !fChildrenStatus.isError()) {
+			if (this.fChildrenStatus == null || !this.fChildrenStatus.isError()) {
 				internalSetChildrenStatus(Status.RUNNING_ERROR);
 				return;
 			}
@@ -143,17 +147,19 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	}
 
 	private void internalSetChildrenStatus(Status status) {
-		if (fChildrenStatus == status)
+		if (this.fChildrenStatus == status) {
 			return;
-		fChildrenStatus = status;
+		}
+		this.fChildrenStatus = status;
 		TestSuiteElement parent = getParent();
-		if (parent != null)
+		if (parent != null) {
 			parent.childChangedStatus(this, getStatus());
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "TestSuite: " + getSuiteTypeName() + " : " + super.toString() + " (" + fChildren.size() + ")"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return "TestSuite: " + getSuiteTypeName() + " : " + super.toString() + " (" + this.fChildren.size() + ")"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 }

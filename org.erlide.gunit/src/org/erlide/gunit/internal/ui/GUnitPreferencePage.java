@@ -17,27 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -57,50 +36,77 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.ui.progress.IProgressService;
-
-import org.erlide.gunit.internal.util.ExceptionHandler;
 import org.erlide.gunit.internal.util.LayoutUtil;
+import org.erlide.ui.ErlideUIConstants;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.util.TableLayoutComposite;
+import org.erlide.ui.util.SWTUtil;
 
 /**
  * Preference page for JUnit settings. Supports to define the failure stack
  * filter patterns.
  */
-public class JUnitPreferencePage extends PreferencePage implements
+public class GUnitPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
 	private static final String DEFAULT_NEW_FILTER_TEXT = ""; //$NON-NLS-1$
-	private static final Image IMG_CUNIT = JavaUI.getSharedImages().getImage(
-			ISharedImages.IMG_OBJS_CLASS);
-	private static final Image IMG_PKG = JavaUI.getSharedImages().getImage(
-			ISharedImages.IMG_OBJS_PACKAGE);
 
-	// enable assertions widget
-	private Button fEnableAssertionsCheckBox;
+	private static final Image IMG_CUNIT = ErlideUIPlugin.getDefault()
+			.getImage(ErlideUIConstants.IMG_FOLDER_LABEL);
+
+	private static final Image IMG_PKG = ErlideUIPlugin.getDefault().getImage(
+			ISharedImages.IMG_OBJ_FOLDER);
 
 	// Step filter widgets
 	private Label fFilterViewerLabel;
+
 	private CheckboxTableViewer fFilterViewer;
+
 	private Table fFilterTable;
 
 	private Button fAddPackageButton;
+
 	private Button fAddTypeButton;
+
 	private Button fRemoveFilterButton;
+
 	private Button fAddFilterButton;
 
 	private Button fEnableAllButton;
+
 	private Button fDisableAllButton;
 
 	private Text fEditorText;
+
 	private String fInvalidEditorText = null;
+
 	private TableEditor fTableEditor;
+
 	private TableItem fNewTableItem;
+
 	private Filter fNewStackFilter;
 
 	private StackFilterContentProvider fStackFilterContentProvider;
@@ -111,6 +117,7 @@ public class JUnitPreferencePage extends PreferencePage implements
 	private static class Filter {
 
 		private String fName;
+
 		private boolean fChecked;
 
 		public Filter(String name, boolean checked) {
@@ -119,25 +126,26 @@ public class JUnitPreferencePage extends PreferencePage implements
 		}
 
 		public String getName() {
-			return fName;
+			return this.fName;
 		}
 
 		public void setName(String name) {
-			fName = name;
+			this.fName = name;
 		}
 
 		public boolean isChecked() {
-			return fChecked;
+			return this.fChecked;
 		}
 
 		public void setChecked(boolean checked) {
-			fChecked = checked;
+			this.fChecked = checked;
 		}
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof Filter))
+			if (!(o instanceof Filter)) {
 				return false;
+			}
 
 			Filter other = (Filter) o;
 			return (getName().equals(other.getName()));
@@ -145,7 +153,7 @@ public class JUnitPreferencePage extends PreferencePage implements
 
 		@Override
 		public int hashCode() {
-			return fName.hashCode();
+			return this.fName.hashCode();
 		}
 	}
 
@@ -159,20 +167,24 @@ public class JUnitPreferencePage extends PreferencePage implements
 					.getLabelProvider();
 			String name1 = lprov.getText(e1);
 			String name2 = lprov.getText(e2);
-			if (name1 == null)
-				name1 = ""; //$NON-NLS-1$
+			if (name1 == null) {
+				name1 = "";
+			}
 
-			if (name2 == null)
-				name2 = ""; //$NON-NLS-1$
+			if (name2 == null) {
+				name2 = "";
+			}
 
 			if (name1.length() > 0 && name2.length() > 0) {
 				char char1 = name1.charAt(name1.length() - 1);
 				char char2 = name2.charAt(name2.length() - 1);
-				if (char1 == '*' && char1 != char2)
+				if (char1 == '*' && char1 != char2) {
 					return -1;
+				}
 
-				if (char2 == '*' && char2 != char1)
+				if (char2 == '*' && char2 != char1) {
 					return 1;
+				}
 			}
 			return getComparator().compare(name1, name2);
 		}
@@ -185,7 +197,7 @@ public class JUnitPreferencePage extends PreferencePage implements
 			ITableLabelProvider {
 
 		public String getColumnText(Object object, int column) {
-			return (column == 0) ? ((Filter) object).getName() : ""; //$NON-NLS-1$
+			return (column == 0) ? ((Filter) object).getName() : "";
 		}
 
 		@Override
@@ -195,10 +207,12 @@ public class JUnitPreferencePage extends PreferencePage implements
 
 		public Image getColumnImage(Object object, int column) {
 			String name = ((Filter) object).getName();
-			if (name.endsWith(".*") || name.equals(JUnitMessages.JUnitMainTab_label_defaultpackage)) { //$NON-NLS-1$
+			if (name.endsWith(".*")
+					|| name
+							.equals(GUnitMessages.JUnitMainTab_label_defaultpackage)) {
 				// package
 				return IMG_PKG;
-			} else if ("".equals(name)) { //$NON-NLS-1$
+			} else if ("".equals(name)) {
 				// needed for the in-place editor
 				return null;
 			} else if ((Character.isUpperCase(name.charAt(0)))
@@ -210,8 +224,9 @@ public class JUnitPreferencePage extends PreferencePage implements
 				final int lastDotIndex = name.lastIndexOf('.');
 				if ((-1 != lastDotIndex)
 						&& ((name.length() - 1) != lastDotIndex)
-						&& Character.isUpperCase(name.charAt(lastDotIndex + 1)))
+						&& Character.isUpperCase(name.charAt(lastDotIndex + 1))) {
 					return IMG_CUNIT;
+				}
 			}
 			// other filter
 			return null;
@@ -225,89 +240,94 @@ public class JUnitPreferencePage extends PreferencePage implements
 	private class StackFilterContentProvider implements
 			IStructuredContentProvider {
 
-		private List fFilters;
+		private List<Filter> fFilters;
 
 		public StackFilterContentProvider() {
-			List active = createActiveStackFiltersList();
-			List inactive = createInactiveStackFiltersList();
+			List<String> active = createActiveStackFiltersList();
+			List<String> inactive = createInactiveStackFiltersList();
 			populateFilters(active, inactive);
 		}
 
 		public void setDefaults() {
-			fFilterViewer.remove(fFilters.toArray());
-			List active = JUnitPreferencesConstants
+			GUnitPreferencePage.this.fFilterViewer.remove(this.fFilters
+					.toArray());
+			List<String> active = GUnitPreferencesConstants
 					.createDefaultStackFiltersList();
-			List inactive = new ArrayList();
+			List<String> inactive = new ArrayList<String>();
 			populateFilters(active, inactive);
 		}
 
-		protected void populateFilters(List activeList, List inactiveList) {
-			fFilters = new ArrayList(activeList.size() + inactiveList.size());
+		protected void populateFilters(List<String> activeList,
+				List<String> inactiveList) {
+			this.fFilters = new ArrayList<Filter>(activeList.size()
+					+ inactiveList.size());
 			populateList(activeList, true);
-			if (inactiveList.size() != 0)
+			if (inactiveList.size() != 0) {
 				populateList(inactiveList, false);
+			}
 		}
 
-		protected void populateList(List list, boolean checked) {
-			Iterator iterator = list.iterator();
+		protected void populateList(List<String> list, boolean checked) {
+			Iterator<String> iterator = list.iterator();
 
 			while (iterator.hasNext()) {
-				String name = (String) iterator.next();
+				String name = iterator.next();
 				addFilter(name, checked);
 			}
 		}
 
 		public Filter addFilter(String name, boolean checked) {
 			Filter filter = new Filter(name, checked);
-			if (!fFilters.contains(filter)) {
-				fFilters.add(filter);
-				fFilterViewer.add(filter);
-				fFilterViewer.setChecked(filter, checked);
+			if (!this.fFilters.contains(filter)) {
+				this.fFilters.add(filter);
+				GUnitPreferencePage.this.fFilterViewer.add(filter);
+				GUnitPreferencePage.this.fFilterViewer.setChecked(filter,
+						checked);
 			}
 			updateActions();
 			return filter;
 		}
 
 		public void saveFilters() {
-			List active = new ArrayList(fFilters.size());
-			List inactive = new ArrayList(fFilters.size());
-			Iterator iterator = fFilters.iterator();
+			List<String> active = new ArrayList<String>(this.fFilters.size());
+			List<String> inactive = new ArrayList<String>(this.fFilters.size());
+			Iterator<Filter> iterator = this.fFilters.iterator();
 			while (iterator.hasNext()) {
-				Filter filter = (Filter) iterator.next();
+				Filter filter = iterator.next();
 				String name = filter.getName();
-				if (filter.isChecked())
+				if (filter.isChecked()) {
 					active.add(name);
-				else
+				} else {
 					inactive.add(name);
+				}
 			}
-			String pref = JUnitPreferencesConstants
-					.serializeList((String[]) active.toArray(new String[active
-							.size()]));
+			String pref = GUnitPreferencesConstants.serializeList(active
+					.toArray(new String[active.size()]));
 			getPreferenceStore().setValue(
-					JUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST, pref);
-			pref = JUnitPreferencesConstants.serializeList((String[]) inactive
+					GUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST, pref);
+			pref = GUnitPreferencesConstants.serializeList(inactive
 					.toArray(new String[inactive.size()]));
 			getPreferenceStore().setValue(
-					JUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST, pref);
+					GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST, pref);
 		}
 
 		public void removeFilters(Object[] filters) {
 			for (int i = (filters.length - 1); i >= 0; --i) {
 				Filter filter = (Filter) filters[i];
-				fFilters.remove(filter);
+				this.fFilters.remove(filter);
 			}
-			fFilterViewer.remove(filters);
+			GUnitPreferencePage.this.fFilterViewer.remove(filters);
 			updateActions();
 		}
 
 		public void toggleFilter(Filter filter) {
 			boolean newState = !filter.isChecked();
 			filter.setChecked(newState);
-			fFilterViewer.setChecked(filter, newState);
+			GUnitPreferencePage.this.fFilterViewer.setChecked(filter, newState);
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return fFilters.toArray();
+			return this.fFilters.toArray();
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -318,9 +338,9 @@ public class JUnitPreferencePage extends PreferencePage implements
 
 	}
 
-	public JUnitPreferencePage() {
+	public GUnitPreferencePage() {
 		super();
-		setDescription(JUnitMessages.JUnitPreferencePage_description);
+		setDescription(GUnitMessages.JUnitPreferencePage_description);
 		setPreferenceStore(GUnitPlugin.getDefault().getPreferenceStore());
 	}
 
@@ -340,45 +360,18 @@ public class JUnitPreferencePage extends PreferencePage implements
 		data.horizontalAlignment = GridData.FILL;
 		composite.setLayoutData(data);
 
-		createEnableAssertionsCheckbox(composite);
 		createStackFilterPreferences(composite);
 		Dialog.applyDialogFont(composite);
 		return composite;
-	}
-
-	private void createEnableAssertionsCheckbox(Composite container) {
-		fEnableAssertionsCheckBox = new Button(container, SWT.CHECK | SWT.WRAP);
-		fEnableAssertionsCheckBox
-				.setText(JUnitMessages.JUnitPreferencePage_enableassertionscheckbox_label);
-		fEnableAssertionsCheckBox
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_enableassertionscheckbox_tooltip);
-		GridData gd = getButtonGridData(fEnableAssertionsCheckBox);
-		fEnableAssertionsCheckBox.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(fEnableAssertionsCheckBox);
-		setAssertionCheckBoxSelection(AssertionVMArg
-				.getEnableAssertionsPreference());
-	}
-
-	/**
-	 * Programatic access to enable assertions checkbox
-	 * 
-	 * @return boolean indicating check box selected or not
-	 */
-	public boolean getAssertionCheckBoxSelection() {
-		return fEnableAssertionsCheckBox.getSelection();
-	}
-
-	public void setAssertionCheckBoxSelection(boolean selected) {
-		fEnableAssertionsCheckBox.setSelection(selected);
 	}
 
 	/*
 	 * Create a group to contain the step filter related widgets
 	 */
 	private void createStackFilterPreferences(Composite composite) {
-		fFilterViewerLabel = new Label(composite, SWT.SINGLE | SWT.LEFT);
-		fFilterViewerLabel
-				.setText(JUnitMessages.JUnitPreferencePage_filter_label);
+		this.fFilterViewerLabel = new Label(composite, SWT.SINGLE | SWT.LEFT);
+		this.fFilterViewerLabel
+				.setText(GUnitMessages.JUnitPreferencePage_filter_label);
 
 		Composite container = new Composite(composite, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -399,29 +392,31 @@ public class JUnitPreferencePage extends PreferencePage implements
 		layouter.addColumnData(new ColumnWeightData(100));
 		layouter.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		fFilterTable = new Table(layouter, SWT.CHECK | SWT.BORDER | SWT.MULTI
-				| SWT.FULL_SELECTION);
+		this.fFilterTable = new Table(layouter, SWT.CHECK | SWT.BORDER
+				| SWT.MULTI | SWT.FULL_SELECTION);
 
-		new TableColumn(fFilterTable, SWT.NONE);
-		fFilterViewer = new CheckboxTableViewer(fFilterTable);
-		fTableEditor = new TableEditor(fFilterTable);
-		fFilterViewer.setLabelProvider(new FilterLabelProvider());
-		fFilterViewer.setComparator(new FilterViewerSorter());
-		fStackFilterContentProvider = new StackFilterContentProvider();
-		fFilterViewer.setContentProvider(fStackFilterContentProvider);
+		new TableColumn(this.fFilterTable, SWT.NONE);
+		this.fFilterViewer = new CheckboxTableViewer(this.fFilterTable);
+		this.fTableEditor = new TableEditor(this.fFilterTable);
+		this.fFilterViewer.setLabelProvider(new FilterLabelProvider());
+		this.fFilterViewer.setComparator(new FilterViewerSorter());
+		this.fStackFilterContentProvider = new StackFilterContentProvider();
+		this.fFilterViewer.setContentProvider(this.fStackFilterContentProvider);
 		// input just needs to be non-null
-		fFilterViewer.setInput(this);
-		fFilterViewer.addCheckStateListener(new ICheckStateListener() {
+		this.fFilterViewer.setInput(this);
+		this.fFilterViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				Filter filter = (Filter) event.getElement();
-				fStackFilterContentProvider.toggleFilter(filter);
+				GUnitPreferencePage.this.fStackFilterContentProvider
+						.toggleFilter(filter);
 			}
 		});
-		fFilterViewer
+		this.fFilterViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						ISelection selection = event.getSelection();
-						fRemoveFilterButton.setEnabled(!selection.isEmpty());
+						GUnitPreferencePage.this.fRemoveFilterButton
+								.setEnabled(!selection.isEmpty());
 					}
 				});
 	}
@@ -436,87 +431,87 @@ public class JUnitPreferencePage extends PreferencePage implements
 		buttonLayout.marginWidth = 0;
 		buttonContainer.setLayout(buttonLayout);
 
-		fAddFilterButton = new Button(buttonContainer, SWT.PUSH);
-		fAddFilterButton
-				.setText(JUnitMessages.JUnitPreferencePage_addfilterbutton_label);
-		fAddFilterButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_addfilterbutton_tooltip);
+		this.fAddFilterButton = new Button(buttonContainer, SWT.PUSH);
+		this.fAddFilterButton
+				.setText(GUnitMessages.JUnitPreferencePage_addfilterbutton_label);
+		this.fAddFilterButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_addfilterbutton_tooltip);
 		gd = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.VERTICAL_ALIGN_BEGINNING);
-		fAddFilterButton.setLayoutData(gd);
-		LayoutUtil.setButtonDimensionHint(fAddFilterButton);
-		fAddFilterButton.addListener(SWT.Selection, new Listener() {
+		this.fAddFilterButton.setLayoutData(gd);
+		LayoutUtil.setButtonDimensionHint(this.fAddFilterButton);
+		this.fAddFilterButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				editFilter();
 			}
 		});
 
-		fAddTypeButton = new Button(buttonContainer, SWT.PUSH);
-		fAddTypeButton
-				.setText(JUnitMessages.JUnitPreferencePage_addtypebutton_label);
-		fAddTypeButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_addtypebutton_tooltip);
-		gd = getButtonGridData(fAddTypeButton);
-		fAddTypeButton.setLayoutData(gd);
-		LayoutUtil.setButtonDimensionHint(fAddTypeButton);
-		fAddTypeButton.addListener(SWT.Selection, new Listener() {
+		this.fAddTypeButton = new Button(buttonContainer, SWT.PUSH);
+		this.fAddTypeButton
+				.setText(GUnitMessages.JUnitPreferencePage_addtypebutton_label);
+		this.fAddTypeButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_addtypebutton_tooltip);
+		gd = getButtonGridData(this.fAddTypeButton);
+		this.fAddTypeButton.setLayoutData(gd);
+		LayoutUtil.setButtonDimensionHint(this.fAddTypeButton);
+		this.fAddTypeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				addType();
 			}
 		});
 
-		fAddPackageButton = new Button(buttonContainer, SWT.PUSH);
-		fAddPackageButton
-				.setText(JUnitMessages.JUnitPreferencePage_addpackagebutton_label);
-		fAddPackageButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_addpackagebutton_tooltip);
-		gd = getButtonGridData(fAddPackageButton);
-		fAddPackageButton.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(fAddPackageButton);
-		fAddPackageButton.addListener(SWT.Selection, new Listener() {
+		this.fAddPackageButton = new Button(buttonContainer, SWT.PUSH);
+		this.fAddPackageButton
+				.setText(GUnitMessages.JUnitPreferencePage_addpackagebutton_label);
+		this.fAddPackageButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_addpackagebutton_tooltip);
+		gd = getButtonGridData(this.fAddPackageButton);
+		this.fAddPackageButton.setLayoutData(gd);
+		SWTUtil.setButtonDimensionHint(this.fAddPackageButton);
+		this.fAddPackageButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				addPackage();
 			}
 		});
 
-		fRemoveFilterButton = new Button(buttonContainer, SWT.PUSH);
-		fRemoveFilterButton
-				.setText(JUnitMessages.JUnitPreferencePage_removefilterbutton_label);
-		fRemoveFilterButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_removefilterbutton_tooltip);
-		gd = getButtonGridData(fRemoveFilterButton);
-		fRemoveFilterButton.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(fRemoveFilterButton);
-		fRemoveFilterButton.addListener(SWT.Selection, new Listener() {
+		this.fRemoveFilterButton = new Button(buttonContainer, SWT.PUSH);
+		this.fRemoveFilterButton
+				.setText(GUnitMessages.JUnitPreferencePage_removefilterbutton_label);
+		this.fRemoveFilterButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_removefilterbutton_tooltip);
+		gd = getButtonGridData(this.fRemoveFilterButton);
+		this.fRemoveFilterButton.setLayoutData(gd);
+		SWTUtil.setButtonDimensionHint(this.fRemoveFilterButton);
+		this.fRemoveFilterButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				removeFilters();
 			}
 		});
-		fRemoveFilterButton.setEnabled(false);
+		this.fRemoveFilterButton.setEnabled(false);
 
-		fEnableAllButton = new Button(buttonContainer, SWT.PUSH);
-		fEnableAllButton
-				.setText(JUnitMessages.JUnitPreferencePage_enableallbutton_label);
-		fEnableAllButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_enableallbutton_tooltip);
-		gd = getButtonGridData(fEnableAllButton);
-		fEnableAllButton.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(fEnableAllButton);
-		fEnableAllButton.addListener(SWT.Selection, new Listener() {
+		this.fEnableAllButton = new Button(buttonContainer, SWT.PUSH);
+		this.fEnableAllButton
+				.setText(GUnitMessages.JUnitPreferencePage_enableallbutton_label);
+		this.fEnableAllButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_enableallbutton_tooltip);
+		gd = getButtonGridData(this.fEnableAllButton);
+		this.fEnableAllButton.setLayoutData(gd);
+		SWTUtil.setButtonDimensionHint(this.fEnableAllButton);
+		this.fEnableAllButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				checkAllFilters(true);
 			}
 		});
 
-		fDisableAllButton = new Button(buttonContainer, SWT.PUSH);
-		fDisableAllButton
-				.setText(JUnitMessages.JUnitPreferencePage_disableallbutton_label);
-		fDisableAllButton
-				.setToolTipText(JUnitMessages.JUnitPreferencePage_disableallbutton_tooltip);
-		gd = getButtonGridData(fDisableAllButton);
-		fDisableAllButton.setLayoutData(gd);
-		SWTUtil.setButtonDimensionHint(fDisableAllButton);
-		fDisableAllButton.addListener(SWT.Selection, new Listener() {
+		this.fDisableAllButton = new Button(buttonContainer, SWT.PUSH);
+		this.fDisableAllButton
+				.setText(GUnitMessages.JUnitPreferencePage_disableallbutton_label);
+		this.fDisableAllButton
+				.setToolTipText(GUnitMessages.JUnitPreferencePage_disableallbutton_tooltip);
+		gd = getButtonGridData(this.fDisableAllButton);
+		this.fDisableAllButton.setLayoutData(gd);
+		SWTUtil.setButtonDimensionHint(this.fDisableAllButton);
+		this.fDisableAllButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				checkAllFilters(false);
 			}
@@ -542,12 +537,13 @@ public class JUnitPreferencePage extends PreferencePage implements
 	 */
 	private void editFilter() {
 		// if a previous edit is still in progress, finish it
-		if (fEditorText != null)
+		if (this.fEditorText != null) {
 			validateChangeAndCleanup();
+		}
 
-		fNewStackFilter = fStackFilterContentProvider.addFilter(
+		this.fNewStackFilter = this.fStackFilterContentProvider.addFilter(
 				DEFAULT_NEW_FILTER_TEXT, true);
-		fNewTableItem = fFilterTable.getItem(0);
+		this.fNewTableItem = this.fFilterTable.getItem(0);
 
 		// create & configure Text widget for editor
 		// Fix for bug 1766. Border behavior on for text fields varies per
@@ -558,23 +554,24 @@ public class JUnitPreferencePage extends PreferencePage implements
 		// we have to specify different style constants for the different
 		// platforms.
 		int textStyles = SWT.SINGLE | SWT.LEFT;
-		if (!SWT.getPlatform().equals("motif")) //$NON-NLS-1$
+		if (!SWT.getPlatform().equals("motif")) {
 			textStyles |= SWT.BORDER;
+		}
 
-		fEditorText = new Text(fFilterTable, textStyles);
+		this.fEditorText = new Text(this.fFilterTable, textStyles);
 		GridData gd = new GridData(GridData.FILL_BOTH);
-		fEditorText.setLayoutData(gd);
+		this.fEditorText.setLayoutData(gd);
 
 		// set the editor
-		fTableEditor.horizontalAlignment = SWT.LEFT;
-		fTableEditor.grabHorizontal = true;
-		fTableEditor.setEditor(fEditorText, fNewTableItem, 0);
+		this.fTableEditor.horizontalAlignment = SWT.LEFT;
+		this.fTableEditor.grabHorizontal = true;
+		this.fTableEditor.setEditor(this.fEditorText, this.fNewTableItem, 0);
 
 		// get the editor ready to use
-		fEditorText.setText(fNewStackFilter.getName());
-		fEditorText.selectAll();
-		setEditorListeners(fEditorText);
-		fEditorText.setFocus();
+		this.fEditorText.setText(this.fNewStackFilter.getName());
+		this.fEditorText.selectAll();
+		setEditorListeners(this.fEditorText);
+		this.fEditorText.setFocus();
 	}
 
 	private void setEditorListeners(Text text) {
@@ -583,11 +580,13 @@ public class JUnitPreferencePage extends PreferencePage implements
 			@Override
 			public void keyReleased(KeyEvent event) {
 				if (event.character == SWT.CR) {
-					if (fInvalidEditorText != null) {
-						fEditorText.setText(fInvalidEditorText);
-						fInvalidEditorText = null;
-					} else
+					if (GUnitPreferencePage.this.fInvalidEditorText != null) {
+						GUnitPreferencePage.this.fEditorText
+								.setText(GUnitPreferencePage.this.fInvalidEditorText);
+						GUnitPreferencePage.this.fInvalidEditorText = null;
+					} else {
 						validateChangeAndCleanup();
+					}
 				} else if (event.character == SWT.ESC) {
 					removeNewFilter();
 					cleanupEditor();
@@ -598,11 +597,13 @@ public class JUnitPreferencePage extends PreferencePage implements
 		text.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent event) {
-				if (fInvalidEditorText != null) {
-					fEditorText.setText(fInvalidEditorText);
-					fInvalidEditorText = null;
-				} else
+				if (GUnitPreferencePage.this.fInvalidEditorText != null) {
+					GUnitPreferencePage.this.fEditorText
+							.setText(GUnitPreferencePage.this.fInvalidEditorText);
+					GUnitPreferencePage.this.fInvalidEditorText = null;
+				} else {
 					validateChangeAndCleanup();
+				}
 			}
 		});
 		// Consume traversal events from the text widget so that CR doesn't
@@ -616,21 +617,20 @@ public class JUnitPreferencePage extends PreferencePage implements
 	}
 
 	private void validateChangeAndCleanup() {
-		String trimmedValue = fEditorText.getText().trim();
+		String trimmedValue = this.fEditorText.getText().trim();
 		// if the new value is blank, remove the filter
-		if (trimmedValue.length() < 1)
+		if (trimmedValue.length() < 1) {
 			removeNewFilter();
-
-		// if it's invalid, beep and leave sitting in the editor
-		else if (!validateEditorInput(trimmedValue)) {
-			fInvalidEditorText = trimmedValue;
-			fEditorText
-					.setText(JUnitMessages.JUnitPreferencePage_invalidstepfilterreturnescape);
+		} else if (!validateEditorInput(trimmedValue)) {
+			this.fInvalidEditorText = trimmedValue;
+			this.fEditorText
+					.setText(GUnitMessages.JUnitPreferencePage_invalidstepfilterreturnescape);
 			getShell().getDisplay().beep();
 			return;
 			// otherwise, commit the new value if not a duplicate
 		} else {
-			Object[] filters = fStackFilterContentProvider.getElements(null);
+			Object[] filters = this.fStackFilterContentProvider
+					.getElements(null);
 			for (int i = 0; i < filters.length; i++) {
 				Filter filter = (Filter) filters[i];
 				if (filter.getName().equals(trimmedValue)) {
@@ -639,9 +639,9 @@ public class JUnitPreferencePage extends PreferencePage implements
 					return;
 				}
 			}
-			fNewTableItem.setText(trimmedValue);
-			fNewStackFilter.setName(trimmedValue);
-			fFilterViewer.refresh();
+			this.fNewTableItem.setText(trimmedValue);
+			this.fNewStackFilter.setName(trimmedValue);
+			this.fFilterViewer.refresh();
 		}
 		cleanupEditor();
 	}
@@ -650,19 +650,20 @@ public class JUnitPreferencePage extends PreferencePage implements
 	 * Cleanup all widgets & resources used by the in-place editing
 	 */
 	private void cleanupEditor() {
-		if (fEditorText == null)
+		if (this.fEditorText == null) {
 			return;
+		}
 
-		fNewStackFilter = null;
-		fNewTableItem = null;
-		fTableEditor.setEditor(null, null, 0);
-		fEditorText.dispose();
-		fEditorText = null;
+		this.fNewStackFilter = null;
+		this.fNewTableItem = null;
+		this.fTableEditor.setEditor(null, null, 0);
+		this.fEditorText.dispose();
+		this.fEditorText = null;
 	}
 
 	private void removeNewFilter() {
-		fStackFilterContentProvider
-				.removeFilters(new Object[] { fNewStackFilter });
+		this.fStackFilterContentProvider
+				.removeFilters(new Object[] { this.fNewStackFilter });
 	}
 
 	/*
@@ -675,17 +676,20 @@ public class JUnitPreferencePage extends PreferencePage implements
 	 */
 	private boolean validateEditorInput(String trimmedValue) {
 		char firstChar = trimmedValue.charAt(0);
-		if ((!(Character.isJavaIdentifierStart(firstChar)) || (firstChar == '*')))
+		if ((!(Character.isJavaIdentifierStart(firstChar)) || (firstChar == '*'))) {
 			return false;
+		}
 
 		int length = trimmedValue.length();
 		for (int i = 1; i < length; i++) {
 			char c = trimmedValue.charAt(i);
 			if (!Character.isJavaIdentifierPart(c)) {
-				if (c == '.' && i != (length - 1))
+				if (c == '.' && i != (length - 1)) {
 					continue;
-				if (c == '*' && i == (length - 1))
+				}
+				if (c == '*' && i == (length - 1)) {
 					continue;
+				}
 
 				return false;
 			}
@@ -694,84 +698,88 @@ public class JUnitPreferencePage extends PreferencePage implements
 	}
 
 	private void addType() {
-		Shell shell = getShell();
-		SelectionDialog dialog = null;
-		try {
-			dialog = JavaUI.createTypeDialog(shell, PlatformUI.getWorkbench()
-					.getProgressService(), SearchEngine.createWorkspaceScope(),
-					IJavaElementSearchConstants.CONSIDER_CLASSES, false);
-		} catch (JavaModelException jme) {
-			String title = JUnitMessages.JUnitPreferencePage_addtypedialog_title;
-			String message = JUnitMessages.JUnitPreferencePage_addtypedialog_error_message;
-			ExceptionHandler.handle(jme, shell, title, message);
-			return;
-		}
-
-		dialog.setTitle(JUnitMessages.JUnitPreferencePage_addtypedialog_title);
-		dialog
-				.setMessage(JUnitMessages.JUnitPreferencePage_addtypedialog_message);
-		if (dialog.open() == IDialogConstants.CANCEL_ID)
-			return;
-
-		Object[] types = dialog.getResult();
-		if (types != null && types.length > 0) {
-			IType type = (IType) types[0];
-			fStackFilterContentProvider.addFilter(type
-					.getFullyQualifiedName('.'), true);
-		}
+		// Shell shell = getShell();
+		// SelectionDialog dialog = null;
+		// try {
+		// dialog = JavaUI.createTypeDialog(shell, PlatformUI.getWorkbench()
+		// .getProgressService(), SearchEngine.createWorkspaceScope(),
+		// IErlElementSearchConstants.CONSIDER_CLASSES, false);
+		// } catch (JavaModelException jme) {
+		// String title = JUnitMessages.JUnitPreferencePage_addtypedialog_title;
+		// String message =
+		// JUnitMessages.JUnitPreferencePage_addtypedialog_error_message;
+		// ExceptionHandler.handle(jme, shell, title, message);
+		// return;
+		// }
+		//
+		// dialog.setTitle(JUnitMessages.JUnitPreferencePage_addtypedialog_title);
+		// dialog
+		// .setMessage(JUnitMessages.JUnitPreferencePage_addtypedialog_message);
+		// if (dialog.open() == IDialogConstants.CANCEL_ID) {
+		// return;
+		// }
+		//
+		// Object[] types = dialog.getResult();
+		// if (types != null && types.length > 0) {
+		// IErlModule type = (IErlModule) types[0];
+		// fStackFilterContentProvider.addFilter(type
+		// .getFullyQualifiedName('.'), true);
+		// }
 	}
 
 	private void addPackage() {
-		Shell shell = getShell();
-		IProgressService context = PlatformUI.getWorkbench()
-				.getProgressService();
-		IJavaSearchScope createWorkspaceScope = SearchEngine
-				.createWorkspaceScope();
-		SelectionDialog dialog = JavaUI.createPackageDialog(shell, context,
-				createWorkspaceScope, true, true, ""); //$NON-NLS-1$
-		dialog
-				.setTitle(JUnitMessages.JUnitPreferencePage_addpackagedialog_title);
-		dialog
-				.setMessage(JUnitMessages.JUnitPreferencePage_addpackagedialog_message);
-		if (dialog.open() != Window.OK)
-			return;
-
-		Object[] packages = dialog.getResult();
-		if (packages == null)
-			return;
-
-		for (int i = 0; i < packages.length; i++) {
-			IJavaElement pkg = (IJavaElement) packages[i];
-
-			String filter = pkg.getElementName();
-			if (filter.length() < 1)
-				filter = JUnitMessages.JUnitMainTab_label_defaultpackage;
-			else
-				filter += ".*"; //$NON-NLS-1$
-
-			fStackFilterContentProvider.addFilter(filter, true);
-		}
+		// Shell shell = getShell();
+		// IProgressService context = PlatformUI.getWorkbench()
+		// .getProgressService();
+		// IJavaSearchScope createWorkspaceScope = SearchEngine
+		// .createWorkspaceScope();
+		// SelectionDialog dialog = JavaUI.createPackageDialog(shell, context,
+		// createWorkspaceScope, true, true, "");
+		// dialog
+		// .setTitle(JUnitMessages.JUnitPreferencePage_addpackagedialog_title);
+		// dialog
+		// .setMessage(JUnitMessages.JUnitPreferencePage_addpackagedialog_message);
+		// if (dialog.open() != Window.OK) {
+		// return;
+		// }
+		//
+		// Object[] packages = dialog.getResult();
+		// if (packages == null) {
+		// return;
+		// }
+		//
+		// for (int i = 0; i < packages.length; i++) {
+		// IErlElement pkg = (IErlElement) packages[i];
+		//
+		// String filter = pkg.getElementName();
+		// if (filter.length() < 1) {
+		// filter = JUnitMessages.JUnitMainTab_label_defaultpackage;
+		// } else {
+		// filter += ".*";
+		// }
+		//
+		// fStackFilterContentProvider.addFilter(filter, true);
+		// }
 	}
 
 	private void removeFilters() {
-		IStructuredSelection selection = (IStructuredSelection) fFilterViewer
+		IStructuredSelection selection = (IStructuredSelection) this.fFilterViewer
 				.getSelection();
-		fStackFilterContentProvider.removeFilters(selection.toArray());
+		this.fStackFilterContentProvider.removeFilters(selection.toArray());
 	}
 
 	private void checkAllFilters(boolean check) {
-		Object[] filters = fStackFilterContentProvider.getElements(null);
-		for (int i = (filters.length - 1); i >= 0; --i)
+		Object[] filters = this.fStackFilterContentProvider.getElements(null);
+		for (int i = (filters.length - 1); i >= 0; --i) {
 			((Filter) filters[i]).setChecked(check);
+		}
 
-		fFilterViewer.setAllChecked(check);
+		this.fFilterViewer.setAllChecked(check);
 	}
 
 	@Override
 	public boolean performOk() {
-		AssertionVMArg
-				.setEnableAssertionsPreference(getAssertionCheckBoxSelection());
-		fStackFilterContentProvider.saveFilters();
+		this.fStackFilterContentProvider.saveFilters();
 		return true;
 	}
 
@@ -782,8 +790,7 @@ public class JUnitPreferencePage extends PreferencePage implements
 	}
 
 	private void setDefaultValues() {
-		fEnableAssertionsCheckBox.setSelection(false);
-		fStackFilterContentProvider.setDefaults();
+		this.fStackFilterContentProvider.setDefaults();
 	}
 
 	/**
@@ -791,7 +798,7 @@ public class JUnitPreferencePage extends PreferencePage implements
 	 * 
 	 * @return list
 	 */
-	protected List createActiveStackFiltersList() {
+	protected List<String> createActiveStackFiltersList() {
 		return Arrays.asList(getFilterPatterns());
 	}
 
@@ -800,46 +807,48 @@ public class JUnitPreferencePage extends PreferencePage implements
 	 * 
 	 * @return list
 	 */
-	protected List createInactiveStackFiltersList() {
-		String[] strings = JUnitPreferencePage
+	protected List<String> createInactiveStackFiltersList() {
+		String[] strings = GUnitPreferencePage
 				.parseList(getPreferenceStore().getString(
-						JUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST));
+						GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST));
 		return Arrays.asList(strings);
 	}
 
 	protected void updateActions() {
-		if (fEnableAllButton == null)
+		if (this.fEnableAllButton == null) {
 			return;
+		}
 
-		boolean enabled = fFilterViewer.getTable().getItemCount() > 0;
-		fEnableAllButton.setEnabled(enabled);
-		fDisableAllButton.setEnabled(enabled);
+		boolean enabled = this.fFilterViewer.getTable().getItemCount() > 0;
+		this.fEnableAllButton.setEnabled(enabled);
+		this.fDisableAllButton.setEnabled(enabled);
 	}
 
 	public static String[] getFilterPatterns() {
 		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
-		return JUnitPreferencePage.parseList(store
-				.getString(JUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST));
+		return GUnitPreferencePage.parseList(store
+				.getString(GUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST));
 	}
 
 	public static boolean getFilterStack() {
 		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
-		return store.getBoolean(JUnitPreferencesConstants.DO_FILTER_STACK);
+		return store.getBoolean(GUnitPreferencesConstants.DO_FILTER_STACK);
 	}
 
 	public static void setFilterStack(boolean filter) {
 		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
-		store.setValue(JUnitPreferencesConstants.DO_FILTER_STACK, filter);
+		store.setValue(GUnitPreferencesConstants.DO_FILTER_STACK, filter);
 	}
 
 	/*
 	 * Parses the comma separated string into an array of strings
 	 */
 	private static String[] parseList(String listString) {
-		List list = new ArrayList(10);
+		List<String> list = new ArrayList<String>(10);
 		StringTokenizer tokenizer = new StringTokenizer(listString, ","); //$NON-NLS-1$
-		while (tokenizer.hasMoreTokens())
+		while (tokenizer.hasMoreTokens()) {
 			list.add(tokenizer.nextToken());
-		return (String[]) list.toArray(new String[list.size()]);
+		}
+		return list.toArray(new String[list.size()]);
 	}
 }

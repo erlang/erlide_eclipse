@@ -12,7 +12,6 @@
 package org.erlide.gunit.internal.model;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.erlide.gunit.model.ITestCaseElement;
 
 public class TestCaseElement extends TestElement implements ITestCaseElement {
@@ -34,11 +33,13 @@ public class TestCaseElement extends TestElement implements ITestCaseElement {
 	public String getTestMethodName() {
 		String testName = getTestName();
 		int index = testName.indexOf('(');
-		if (index > 0)
+		if (index > 0) {
 			return testName.substring(0, index);
+		}
 		index = testName.indexOf('@');
-		if (index > 0)
+		if (index > 0) {
 			return testName.substring(0, index);
+		}
 		return testName;
 	}
 
@@ -52,11 +53,11 @@ public class TestCaseElement extends TestElement implements ITestCaseElement {
 	}
 
 	public void setIgnored(boolean ignored) {
-		fIgnored = ignored;
+		this.fIgnored = ignored;
 	}
 
 	public boolean isIgnored() {
-		return fIgnored;
+		return this.fIgnored;
 	}
 
 	@Override

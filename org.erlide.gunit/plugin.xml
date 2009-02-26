@@ -247,7 +247,7 @@
                <with variable="selection">
                   <count value="1"/>
                	  <iterate>
-                     <adapt type="org.eclipse.jdt.core.IJavaElement">
+                     <adapt type="org.eclipse.jdt.core.IErlElement">
 		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
 		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
 		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
@@ -345,7 +345,7 @@
              </iterate>
            </with>
            <with variable="element">
-             <instanceof value="org.eclipse.jdt.core.IType"/>
+             <instanceof value="org.eclipse.jdt.core.IErlModule"/>
  	         <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
             </with>
          </enablement>
@@ -361,7 +361,7 @@
              </iterate>
            </with>
            <with variable="element">
-   	         <instanceof value="org.eclipse.jdt.core.IJavaProject"/>
+   	         <instanceof value="org.eclipse.jdt.core.IErlProject"/>
 	         <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
            </with>
          </enablement>

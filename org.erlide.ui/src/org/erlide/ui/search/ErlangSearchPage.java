@@ -804,7 +804,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	// setIncludeMask(getIncludeMask(), getLimitTo());
 	// }
 
-	// private static boolean forceIncludeAll(final int limitTo, IJavaElement
+	// private static boolean forceIncludeAll(final int limitTo, IErlElement
 	// elem) {
 	// return elem != null
 	// && (limitTo == DECLARATIONS || limitTo == IMPLEMENTORS);
@@ -826,8 +826,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// return new SearchPatternData(PACKAGE, REFERENCES, fIsCaseSensitive,
 		// lp.getElementName(), null, getLastIncludeMask());
 		// } else if (o instanceof IAdaptable) {
-		// IJavaElement element = (IJavaElement) ((IAdaptable) o)
-		// .getAdapter(IJavaElement.class);
+		// IErlElement element = (IErlElement) ((IAdaptable) o)
+		// .getAdapter(IErlElement.class);
 		// if (element != null) {
 		// res = determineInitValuesFrom(element);
 		// }
@@ -854,14 +854,14 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		return new SearchPatternData(FUNCTION, REFERENCES, true, "", ref);
 	}
 
-	// final static boolean isSearchableType(IJavaElement element) {
+	// final static boolean isSearchableType(IErlElement element) {
 	// switch (element.getElementType()) {
-	// case IJavaElement.PACKAGE_FRAGMENT:
-	// case IJavaElement.PACKAGE_DECLARATION:
-	// case IJavaElement.IMPORT_DECLARATION:
-	// case IJavaElement.TYPE:
-	// case IJavaElement.FIELD:
-	// case IJavaElement.METHOD:
+	// case IErlElement.PACKAGE_FRAGMENT:
+	// case IErlElement.PACKAGE_DECLARATION:
+	// case IErlElement.IMPORT_DECLARATION:
+	// case IErlElement.TYPE:
+	// case IErlElement.FIELD:
+	// case IErlElement.METHOD:
 	// return true;
 	// }
 	// return false;
@@ -882,11 +882,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 					SearchUtil.getRefFromOpenRes(res));
 		}
 		// switch (element.getElementType()) {
-		// case IJavaElement.PACKAGE_FRAGMENT:
-		// case IJavaElement.PACKAGE_DECLARATION:
+		// case IErlElement.PACKAGE_FRAGMENT:
+		// case IErlElement.PACKAGE_DECLARATION:
 		// return new SearchPatternData(PACKAGE, REFERENCES, true, element
 		// .getElementName(), element, includeMask);
-		// case IJavaElement.IMPORT_DECLARATION: {
+		// case IErlElement.IMPORT_DECLARATION: {
 		// IImportDeclaration declaration = (IImportDeclaration) element;
 		// if (declaration.isOnDemand()) {
 		// final String name = Signature.getQualifier(declaration
@@ -897,11 +897,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// return new SearchPatternData(TYPE, DECLARATIONS, true, element
 		// .getElementName(), element, JavaSearchScopeFactory.ALL);
 		// }
-		// case IJavaElement.TYPE:
+		// case IErlElement.TYPE:
 		// return new SearchPatternData(TYPE, REFERENCES, true,
 		// PatternStrings.getTypeSignature((IType) element),
 		// element, includeMask);
-		// case IJavaElement.COMPILATION_UNIT: {
+		// case IErlElement.COMPILATION_UNIT: {
 		// IType mainType = ((ICompilationUnit) element).findPrimaryType();
 		// if (mainType != null) {
 		// return new SearchPatternData(TYPE, REFERENCES, true,
@@ -910,7 +910,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// }
 		// break;
 		// }
-		// case IJavaElement.CLASS_FILE: {
+		// case IErlElement.CLASS_FILE: {
 		// IType mainType = ((IClassFile) element).getType();
 		// if (mainType.exists()) {
 		// return new SearchPatternData(TYPE, REFERENCES, true,
@@ -919,11 +919,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// }
 		// break;
 		// }
-		// case IJavaElement.FIELD:
+		// case IErlElement.FIELD:
 		// return new SearchPatternData(FIELD, REFERENCES, true,
 		// PatternStrings.getFieldSignature((IField) element),
 		// element, includeMask);
-		// case IJavaElement.METHOD:
+		// case IErlElement.METHOD:
 		// IMethod method = (IMethod) element;
 		// final int searchFor = method.isConstructor() ? CONSTRUCTOR
 		// : METHOD;

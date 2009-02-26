@@ -18,7 +18,7 @@ public class TestRoot extends TestSuiteElement {
 
 	public TestRoot(ITestRunSession session) {
 		super(null, "-1", session.getTestRunName(), 1); //$NON-NLS-1$
-		fSession = session;
+		this.fSession = session;
 	}
 
 	@Override
@@ -28,6 +28,6 @@ public class TestRoot extends TestSuiteElement {
 
 	@Override
 	public ITestRunSession getTestRunSession() {
-		return fSession;
+		return this.fSession;
 	}
 }

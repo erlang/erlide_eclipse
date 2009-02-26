@@ -74,18 +74,18 @@ class ErlangCompareUtilities {
 
 	// static ImageDescriptor getImageDescriptor(final int type) {
 	// switch (type) {
-	// case IJavaElement.INITIALIZER:
-	// case IJavaElement.METHOD:
+	// case IErlElement.INITIALIZER:
+	// case IErlElement.METHOD:
 	// return getImageDescriptor("obj16/compare_method.gif"); //$NON-NLS-1$
-	// case IJavaElement.FIELD:
+	// case IErlElement.FIELD:
 	// return getImageDescriptor("obj16/compare_field.gif"); //$NON-NLS-1$
-	// case IJavaElement.PACKAGE_DECLARATION:
+	// case IErlElement.PACKAGE_DECLARATION:
 	// return JavaPluginImages.DESC_OBJS_PACKDECL;
-	// case IJavaElement.IMPORT_DECLARATION:
+	// case IErlElement.IMPORT_DECLARATION:
 	// return JavaPluginImages.DESC_OBJS_IMPDECL;
-	// case IJavaElement.IMPORT_CONTAINER:
+	// case IErlElement.IMPORT_CONTAINER:
 	// return JavaPluginImages.DESC_OBJS_IMPCONT;
-	// case IJavaElement.COMPILATION_UNIT:
+	// case IErlElement.COMPILATION_UNIT:
 	// return JavaPluginImages.DESC_OBJS_CUNIT;
 	// }
 	// return ImageDescriptor.getMissingImageDescriptor();
@@ -108,7 +108,7 @@ class ErlangCompareUtilities {
 
 	// static ImageDescriptor getImageDescriptor(IMember element) {
 	// final int t = element.getElementType();
-	// if (t == IJavaElement.TYPE) {
+	// if (t == IErlElement.TYPE) {
 	// IType type = (IType) element;
 	// try {
 	// return getTypeImageDescriptor(type.isClass());
@@ -135,33 +135,33 @@ class ErlangCompareUtilities {
 		// case MODULE:
 		// sb.append(e.getName());
 		// break;
-		// case IJavaElement.TYPE:
+		// case IErlElement.TYPE:
 		// sb.append(TYPE);
 		// sb.append(e.getElementName());
 		// break;
-		// case IJavaElement.FIELD:
+		// case IErlElement.FIELD:
 		// sb.append(FIELD);
 		// sb.append(e.getElementName());
 		// break;
-		// case IJavaElement.METHOD:
+		// case IErlElement.METHOD:
 		// sb.append(METHOD);
 		// sb.append(JavaElementLabels.getElementLabel(e,
 		// JavaElementLabels.M_PARAMETER_TYPES));
 		// break;
-		// case IJavaElement.INITIALIZER:
+		// case IErlElement.INITIALIZER:
 		// final String id = e.getHandleIdentifier();
 		// final int pos = id.lastIndexOf(INITIALIZER);
 		// if (pos >= 0) {
 		// sb.append(id.substring(pos));
 		// }
 		// break;
-		// case IJavaElement.PACKAGE_DECLARATION:
+		// case IErlElement.PACKAGE_DECLARATION:
 		// sb.append(PACKAGEDECLARATION);
 		// break;
-		// case IJavaElement.IMPORT_CONTAINER:
+		// case IErlElement.IMPORT_CONTAINER:
 		// sb.append(IMPORT_CONTAINER);
 		// break;
-		// case IJavaElement.IMPORT_DECLARATION:
+		// case IErlElement.IMPORT_DECLARATION:
 		// sb.append(IMPORTDECLARATION);
 		// sb.append(e.getElementName());
 		// break;

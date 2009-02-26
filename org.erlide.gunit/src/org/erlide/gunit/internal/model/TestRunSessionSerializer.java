@@ -14,12 +14,11 @@ package org.erlide.gunit.internal.model;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.model.ITestElement;
 import org.erlide.gunit.model.ITestElement.FailureTrace;
 import org.erlide.gunit.model.ITestElement.ProgressState;
 import org.erlide.gunit.model.ITestElement.Result;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -33,11 +32,15 @@ import org.xml.sax.helpers.AttributesImpl;
 public class TestRunSessionSerializer implements XMLReader {
 
 	private static final String EMPTY = ""; //$NON-NLS-1$
+
 	private static final String CDATA = "CDATA"; //$NON-NLS-1$
+
 	private static final Attributes NO_ATTS = new AttributesImpl();
 
 	private final TestRunSession fTestRunSession;
+
 	private ContentHandler fHandler;
+
 	private ErrorHandler fErrorHandler;
 
 	/**
@@ -46,34 +49,41 @@ public class TestRunSessionSerializer implements XMLReader {
 	 */
 	public TestRunSessionSerializer(TestRunSession testRunSession) {
 		Assert.isNotNull(testRunSession);
-		fTestRunSession = testRunSession;
+		this.fTestRunSession = testRunSession;
 	}
 
 	public void parse(InputSource input) throws IOException, SAXException {
-		if (fHandler == null)
+		if (this.fHandler == null) {
 			throw new SAXException("ContentHandler missing"); //$NON-NLS-1$
+		}
 
-		fHandler.startDocument();
-		handleTestRun(fTestRunSession);
-		fHandler.endDocument();
+		this.fHandler.startDocument();
+		handleTestRun(this.fTestRunSession);
+		this.fHandler.endDocument();
 	}
 
 	private void handleTestRun(TestRunSession testRunSession)
 			throws SAXException {
 		AttributesImpl atts = new AttributesImpl();
-		addCDATA(atts, IXMLTags.ATTR_NAME, fTestRunSession.getTestRunName());
-		IJavaProject project = fTestRunSession.getLaunchedProject();
-		if (project != null)
-			addCDATA(atts, IXMLTags.ATTR_PROJECT, project.getElementName());
-		addCDATA(atts, IXMLTags.ATTR_TESTS, fTestRunSession.getTotalCount());
-		addCDATA(atts, IXMLTags.ATTR_STARTED, fTestRunSession.getStartedCount());
-		addCDATA(atts, IXMLTags.ATTR_FAILURES, fTestRunSession
+		addCDATA(atts, IXMLTags.ATTR_NAME, this.fTestRunSession
+				.getTestRunName());
+		IErlProject project = this.fTestRunSession.getLaunchedProject();
+		if (project != null) {
+			addCDATA(atts, IXMLTags.ATTR_PROJECT, project.getName());
+		}
+		addCDATA(atts, IXMLTags.ATTR_TESTS, this.fTestRunSession
+				.getTotalCount());
+		addCDATA(atts, IXMLTags.ATTR_STARTED, this.fTestRunSession
+				.getStartedCount());
+		addCDATA(atts, IXMLTags.ATTR_FAILURES, this.fTestRunSession
 				.getFailureCount());
-		addCDATA(atts, IXMLTags.ATTR_ERRORS, fTestRunSession.getErrorCount());
-		addCDATA(atts, IXMLTags.ATTR_IGNORED, fTestRunSession.getIgnoredCount());
+		addCDATA(atts, IXMLTags.ATTR_ERRORS, this.fTestRunSession
+				.getErrorCount());
+		addCDATA(atts, IXMLTags.ATTR_IGNORED, this.fTestRunSession
+				.getIgnoredCount());
 		startElement(IXMLTags.NODE_TESTRUN, atts);
 
-		TestRoot testRoot = fTestRunSession.getTestRoot();
+		TestRoot testRoot = this.fTestRunSession.getTestRoot();
 		ITestElement[] topSuites = testRoot.getChildren();
 		for (int i = 0; i < topSuites.length; i++) {
 			handleTestElement(topSuites[i]);
@@ -93,9 +103,10 @@ public class TestRunSessionSerializer implements XMLReader {
 			// addCDATA(atts, IXMLTags.ATTR_TIME,
 			// Integer.toString(testCaseElement.getTime()));
 			if (testElement.getProgressState() != ProgressState.COMPLETED
-					|| testElement.getTestResult(false) != Result.UNDEFINED)
+					|| testElement.getTestResult(false) != Result.UNDEFINED) {
 				addCDATA(atts, IXMLTags.ATTR_INCOMPLETE, Boolean.TRUE
 						.toString());
+			}
 
 			startElement(IXMLTags.NODE_TESTSUITE, atts);
 			addFailure(testElement);
@@ -116,11 +127,13 @@ public class TestRunSessionSerializer implements XMLReader {
 					.getClassName());
 			// addCDATA(atts, IXMLTags.ATTR_TIME,
 			// Integer.toString(testCaseElement.getTime()));
-			if (testElement.getProgressState() != ProgressState.COMPLETED)
+			if (testElement.getProgressState() != ProgressState.COMPLETED) {
 				addCDATA(atts, IXMLTags.ATTR_INCOMPLETE, Boolean.TRUE
 						.toString());
-			if (testCaseElement.isIgnored())
+			}
+			if (testCaseElement.isIgnored()) {
 				addCDATA(atts, IXMLTags.ATTR_IGNORED, Boolean.TRUE.toString());
+			}
 
 			startElement(IXMLTags.NODE_TESTCASE, atts);
 			addFailure(testElement);
@@ -146,27 +159,28 @@ public class TestRunSessionSerializer implements XMLReader {
 			String actual = failureTrace.getActual();
 			if (expected != null) {
 				startElement(IXMLTags.NODE_EXPECTED, NO_ATTS);
-				fHandler.characters(expected.toCharArray(), 0, expected
+				this.fHandler.characters(expected.toCharArray(), 0, expected
 						.length());
 				endElement(IXMLTags.NODE_EXPECTED);
 			}
 			if (actual != null) {
 				startElement(IXMLTags.NODE_ACTUAL, NO_ATTS);
-				fHandler.characters(actual.toCharArray(), 0, actual.length());
+				this.fHandler.characters(actual.toCharArray(), 0, actual
+						.length());
 				endElement(IXMLTags.NODE_ACTUAL);
 			}
 			String trace = failureTrace.getTrace();
-			fHandler.characters(trace.toCharArray(), 0, trace.length());
+			this.fHandler.characters(trace.toCharArray(), 0, trace.length());
 			endElement(failureKind);
 		}
 	}
 
 	private void startElement(String name, Attributes atts) throws SAXException {
-		fHandler.startElement(EMPTY, name, name, atts);
+		this.fHandler.startElement(EMPTY, name, name, atts);
 	}
 
 	private void endElement(String name) throws SAXException {
-		fHandler.endElement(EMPTY, name, name);
+		this.fHandler.endElement(EMPTY, name, name);
 	}
 
 	private static void addCDATA(AttributesImpl atts, String name, int value) {
@@ -182,15 +196,15 @@ public class TestRunSessionSerializer implements XMLReader {
 	}
 
 	public ContentHandler getContentHandler() {
-		return fHandler;
+		return this.fHandler;
 	}
 
 	public void setErrorHandler(ErrorHandler handler) {
-		fErrorHandler = handler;
+		this.fErrorHandler = handler;
 	}
 
 	public ErrorHandler getErrorHandler() {
-		return fErrorHandler;
+		return this.fErrorHandler;
 	}
 
 	// ignored:
