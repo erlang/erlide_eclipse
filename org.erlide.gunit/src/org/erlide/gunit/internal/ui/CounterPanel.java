@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
 import org.erlide.gunit.internal.Messages;
 
 /**
@@ -44,9 +45,12 @@ public class CounterPanel extends Composite {
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 
-		fNumberOfRuns = createLabel("Runs:", null, " 0/0  "); //$NON-NLS-1$
-		fNumberOfErrors = createLabel("Errors:", fErrorIcon, " 0 "); //$NON-NLS-1$
-		fNumberOfFailures = createLabel("Failures:", fFailureIcon, " 0 "); //$NON-NLS-1$
+		fNumberOfRuns = createLabel(JUnitMessages.CounterPanel_label_runs,
+				null, " 0/0  "); //$NON-NLS-1$
+		fNumberOfErrors = createLabel(JUnitMessages.CounterPanel_label_errors,
+				fErrorIcon, " 0 "); //$NON-NLS-1$
+		fNumberOfFailures = createLabel(
+				JUnitMessages.CounterPanel_label_failures, fFailureIcon, " 0 "); //$NON-NLS-1$
 
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
@@ -100,14 +104,15 @@ public class CounterPanel extends Composite {
 
 	public void setRunValue(int value, int ignoredCount) {
 		String runString;
-		if (ignoredCount == 0) {
-			runString = Messages.format("{0}/{1}", new String[] {
-					Integer.toString(value), Integer.toString(fTotal) });
-		} else {
-			runString = Messages.format("{0}/{1} ({2} ignored)", new String[] {
-					Integer.toString(value), Integer.toString(fTotal),
-					Integer.toString(ignoredCount) });
-		}
+		if (ignoredCount == 0)
+			runString = Messages.format(JUnitMessages.CounterPanel_runcount,
+					new String[] { Integer.toString(value),
+							Integer.toString(fTotal) });
+		else
+			runString = Messages.format(
+					JUnitMessages.CounterPanel_runcount_ignored, new String[] {
+							Integer.toString(value), Integer.toString(fTotal),
+							Integer.toString(ignoredCount) });
 		fNumberOfRuns.setText(runString);
 
 		if (fIgnoredCount == 0 && ignoredCount > 0 || fIgnoredCount != 0
