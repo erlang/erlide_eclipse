@@ -10,7 +10,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.erlide.gunit.GUnitPlugin;
-import org.erlide.gunit.ui.TestRunnerViewPart;
+import org.erlide.gunit.internal.ui.TestRunnerViewPart;
 
 public class GUnitModel {
 

@@ -1,4 +1,4 @@
-package org.erlide.gunit.ui;
+package org.erlide.gunit.internal.ui;
 
 import java.util.List;
 

@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 public class GUnitPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.erlide.testing.framework";
+	public static final String PLUGIN_ID = "org.erlide.gunit";
 
 	private static final IPath ICONS_PATH = new Path("$nl$/icons");
 

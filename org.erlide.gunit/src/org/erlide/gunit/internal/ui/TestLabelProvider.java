@@ -1,4 +1,4 @@
-package org.erlide.gunit.ui;
+package org.erlide.gunit.internal.ui;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

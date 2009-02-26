@@ -16,7 +16,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-LazyStart: true
-Export-Package: org.erlide.gunit.launcher,
- org.erlide.gunit.model,
- org.erlide.gunit.ui,
- org.erlide.gunit
+Export-Package: org.erlide.gunit,
+ org.erlide.gunit.internal;x-internal:=true,
+ org.erlide.gunit.internal.ui;x-internal:=true,
+ org.erlide.gunit.launcher,
+ org.erlide.gunit.model
+Bundle-ClassPath: .

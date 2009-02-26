@@ -1,5 +1,6 @@
-package org.erlide.gunit.ui;
+package org.erlide.gunit.internal.ui;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
@@ -22,7 +23,7 @@ import org.erlide.gunit.model.TestRunSession;
 
 public class TestRunnerViewPart extends ViewPart {
 
-	public static String VIEW_ID = "org.erlide.testing.framework.ui.TestFrameworkTestRunnerViewPart"; //$NON-NLS-1$
+	public static String VIEW_ID = "org.erlide.gunit.ui.TestRunnerViewPart"; //$NON-NLS-1$
 
 	public static final Image fTestIcon = TestRunnerViewPart
 			.createImage("test.gif"); //$NON-NLS-1$
@@ -173,6 +174,7 @@ public class TestRunnerViewPart extends ViewPart {
 		fTestRunSessionListener = new TestRunSessionListener();
 		GUnitPlugin.getModel().addBTErlTestRunSessionListener(
 				fTestRunSessionListener);
+		initializeToolBar();
 	}
 
 	protected Composite createProgressCountPanel(Composite parent) {
@@ -277,5 +279,10 @@ public class TestRunnerViewPart extends ViewPart {
 
 	public static Image createImage(String path) {
 		return GUnitPlugin.getImageDescriptor(path).createImage();
+	}
+
+	private void initializeToolBar() {
+		IToolBarManager toolBarManager = getViewSite().getActionBars()
+				.getToolBarManager();
 	}
 }
