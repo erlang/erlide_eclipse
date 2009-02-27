@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Test Fragment
+Bundle-SymbolicName: org.erlide.gunit.commontest;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: erlide.org
+Fragment-Host: org.erlide.gunit
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
