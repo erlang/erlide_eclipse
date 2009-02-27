@@ -4,6 +4,6 @@ Bundle-Name: Jinterface Plug-in
 Bundle-SymbolicName: com.ericsson.jinterface;singleton:=true
 Bundle-Version: 0.4.3.9p
 Bundle-Vendor: ERICSSON
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.ericsson.otp.erlang
 Bundle-ActivationPolicy: lazy
