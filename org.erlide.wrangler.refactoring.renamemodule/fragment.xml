@@ -4,7 +4,6 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            category="org.erlide.wrangler.refactoring"
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.renameModule"
             name="Rename module">
