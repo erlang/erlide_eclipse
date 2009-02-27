@@ -15,6 +15,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
+import org.erlide.gunit.servers.launcher.ITestKind;
+import org.erlide.gunit.servers.launcher.TestKindRegistry;
 
 /**
  * Attribute keys used by the IJUnitLaunchConfiguration. Note that these

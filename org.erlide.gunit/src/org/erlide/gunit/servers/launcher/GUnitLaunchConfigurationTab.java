@@ -10,7 +10,7 @@
  *     Sebastian Davids: sdavids@gmx.de bug: 26293, 27889 
  *     David Saff (saff@mit.edu) - bug 102632: [JUnit] Support for JUnit 4.
  *******************************************************************************/
-package org.erlide.gunit.launcher;
+package org.erlide.gunit.servers.launcher;
 
 import java.util.List;
 
@@ -58,8 +58,6 @@ import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 import org.erlide.gunit.internal.ui.IGUnitHelpContextIds;
 import org.erlide.gunit.internal.util.LayoutUtil;
-import org.erlide.gunit.servers.launcher.TestKind;
-import org.erlide.gunit.servers.launcher.TestKindRegistry;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
 
 /**

@@ -34,9 +34,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
-import org.erlide.gunit.internal.launcher.ITestKind;
 import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
+import org.erlide.gunit.servers.launcher.ITestKind;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 
 /**

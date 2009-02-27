@@ -415,7 +415,7 @@ public final class GUnitModel {
 		 */
 		try {
 			transformer.setOutputProperty(
-					"{http://xml.apache.org/xalan}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
+					"{http://xml.apache.org/xalan/indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IllegalArgumentException e) {
 			// no indentation today...
 		}
