@@ -20,6 +20,7 @@ public class FunExtractionRefactoring extends WranglerRefactoring {
 		return "Fun extraction";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {

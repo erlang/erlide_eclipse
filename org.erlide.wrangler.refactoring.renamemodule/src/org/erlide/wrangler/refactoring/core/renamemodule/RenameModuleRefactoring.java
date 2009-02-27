@@ -26,6 +26,7 @@ public class RenameModuleRefactoring extends WranglerRefactoring {
 		return "Rename module";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {

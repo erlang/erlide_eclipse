@@ -65,6 +65,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 		return "Generalise function";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException {
@@ -93,6 +94,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 		return convertRpcResultToRPCMessage(res);
 	}
 
+	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise1() throws RpcException,
 			WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
@@ -105,6 +107,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 
 	}
 
+	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise2() throws RpcException,
 			WranglerException, CoreException {
 		RpcResult r = managedBackend.rpc("wrangler", "gen_fun_2_eclipse",
