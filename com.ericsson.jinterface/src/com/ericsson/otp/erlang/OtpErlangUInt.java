@@ -21,46 +21,46 @@ import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang integral types.
- **/
+ */
 public class OtpErlangUInt extends OtpErlangLong implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = -1450956122937471885L;
+	Cloneable {
+    // don't change this!
+    static final long serialVersionUID = -1450956122937471885L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param i
-	 *            the non-negative int value to use.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is negative.
-	 **/
-	public OtpErlangUInt(int i) throws OtpErlangRangeException {
-		super(i);
+    /**
+     * Create an Erlang integer from the given value.
+     * 
+     * @param i
+     *                the non-negative int value to use.
+     * 
+     * @exception OtpErlangRangeException
+     *                    if the value is negative.
+     */
+    public OtpErlangUInt(final int i) throws OtpErlangRangeException {
+	super(i);
 
-		int j = uIntValue();
-	}
+	final int j = uIntValue();
+    }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is too large to be represented as an int, or
-	 *                the value is negative.
-	 **/
-	public OtpErlangUInt(OtpInputStream buf) throws OtpErlangRangeException,
-			OtpErlangDecodeException {
-		super(buf);
+    /**
+     * Create an Erlang integer from a stream containing an integer encoded in
+     * Erlang external format.
+     * 
+     * @param buf
+     *                the stream containing the encoded value.
+     * 
+     * @exception OtpErlangDecodeException
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang integer.
+     * 
+     * @exception OtpErlangRangeException
+     *                    if the value is too large to be represented as an int,
+     *                    or the value is negative.
+     */
+    public OtpErlangUInt(final OtpInputStream buf)
+	    throws OtpErlangRangeException, OtpErlangDecodeException {
+	super(buf);
 
-		int j = uIntValue();
-	}
+	final int j = uIntValue();
+    }
 }

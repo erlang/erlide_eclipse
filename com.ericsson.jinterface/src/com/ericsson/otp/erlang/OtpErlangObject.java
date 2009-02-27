@@ -22,67 +22,72 @@ import java.io.Serializable;
 /**
  * Base class of the Erlang data type classes. This class is used to represent
  * an arbitrary Erlang term.
- **/
+ */
 public abstract class OtpErlangObject implements Serializable, Cloneable {
-	// don't change this!
-	static final long serialVersionUID = -8435938572339430044L;
+    // don't change this!
+    static final long serialVersionUID = -8435938572339430044L;
 
-	/**
-	 * @return the printable representation of the object. This is usually
-	 *         similar to the representation used by Erlang for the same type of
-	 *         object.
-	 **/
+    /**
+     * @return the printable representation of the object. This is usually
+     *         similar to the representation used by Erlang for the same type of
+     *         object.
+     */
 
-	public abstract String toString();
+    @Override
+    public abstract String toString();
 
-	/**
-	 * Convert the object according to the rules of the Erlang external format.
-	 * This is mainly used for sending Erlang terms in messages, however it can
-	 * also be used for storing terms to disk.
-	 * 
-	 * @param buf
-	 *            an output stream to which the encoded term should be written.
-	 **/
-	public abstract void encode(OtpOutputStream buf);
+    /**
+     * Convert the object according to the rules of the Erlang external format.
+     * This is mainly used for sending Erlang terms in messages, however it can
+     * also be used for storing terms to disk.
+     * 
+     * @param buf
+     *                an output stream to which the encoded term should be
+     *                written.
+     */
+    public abstract void encode(OtpOutputStream buf);
 
-	/**
-	 * Read binary data in the Erlang external format, and produce a
-	 * corresponding Erlang data type object. This method is normally used when
-	 * Erlang terms are received in messages, however it can also be used for
-	 * reading terms from disk.
-	 * 
-	 * @param buf
-	 *            an input stream containing one or more encoded Erlang terms.
-	 * 
-	 * @return an object representing one of the Erlang data types.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the stream does not contain a valid representation of
-	 *                an Erlang term.
-	 **/
-	public static OtpErlangObject decode(OtpInputStream buf)
-			throws OtpErlangDecodeException {
-		return buf.read_any();
+    /**
+     * Read binary data in the Erlang external format, and produce a
+     * corresponding Erlang data type object. This method is normally used when
+     * Erlang terms are received in messages, however it can also be used for
+     * reading terms from disk.
+     * 
+     * @param buf
+     *                an input stream containing one or more encoded Erlang
+     *                terms.
+     * 
+     * @return an object representing one of the Erlang data types.
+     * 
+     * @exception OtpErlangDecodeException
+     *                    if the stream does not contain a valid representation
+     *                    of an Erlang term.
+     */
+    public static OtpErlangObject decode(final OtpInputStream buf)
+	    throws OtpErlangDecodeException {
+	return buf.read_any();
+    }
+
+    /**
+     * Determine if two Erlang objects are equal. In general, Erlang objects are
+     * equal if the components they consist of are equal.
+     * 
+     * @param o
+     *                the object to compare to.
+     * 
+     * @return true if the objects are identical.
+     */
+
+    @Override
+    public abstract boolean equals(Object o);
+
+    @Override
+    public Object clone() {
+	try {
+	    return super.clone();
+	} catch (final CloneNotSupportedException e) {
+	    /* cannot happen */
+	    throw new InternalError(e.toString());
 	}
-
-	/**
-	 * Determine if two Erlang objects are equal. In general, Erlang objects are
-	 * equal if the components they consist of are equal.
-	 * 
-	 * @param o
-	 *            the object to compare to.
-	 * 
-	 * @return true if the objects are identical.
-	 **/
-
-	public abstract boolean equals(Object o);
-
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			/* cannot happen */
-			throw new InternalError(e.toString());
-		}
-	}
+    }
 }

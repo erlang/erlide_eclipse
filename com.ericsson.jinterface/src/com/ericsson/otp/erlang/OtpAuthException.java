@@ -23,14 +23,14 @@ package com.ericsson.otp.erlang;
  * an invalid cookie on an established channel.
  * 
  * @see OtpConnection
- **/
+ */
 public class OtpAuthException extends OtpException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Provides a detailed message.
-	 **/
-	public OtpAuthException(String s) {
-		super(s);
-	}
+    /**
+     * Provides a detailed message.
+     */
+    public OtpAuthException(final String s) {
+	super(s);
+    }
 }

@@ -22,92 +22,96 @@ import java.io.Serializable;
 /**
  * Provides a Java representation of Erlang binaries. Anything that can be
  * represented as a sequence of bytes can be made into an Erlang binary.
- **/
+ */
 public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = -3781009633593609217L;
+	Cloneable {
+    // don't change this!
+    static final long serialVersionUID = -3781009633593609217L;
 
-	/**
-	 * Create a binary from a byte array
-	 * 
-	 * @param bin
-	 *            the array of bytes from which to create the binary.
-	 **/
-	public OtpErlangBinary(byte[] bin) {
-		super(bin);
+    /**
+     * Create a binary from a byte array
+     * 
+     * @param bin
+     *                the array of bytes from which to create the binary.
+     */
+    public OtpErlangBinary(final byte[] bin) {
+	super(bin);
+    }
+
+    /**
+     * Create a binary from a stream containing a binary encoded in Erlang
+     * external format.
+     * 
+     * @param buf
+     *                the stream containing the encoded binary.
+     * 
+     * @exception OtpErlangDecodeException
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang binary.
+     */
+    public OtpErlangBinary(final OtpInputStream buf)
+	    throws OtpErlangDecodeException {
+	super(new byte[0]);
+	bin = buf.read_binary();
+	pad_bits = 0;
+    }
+
+    /**
+     * Create a binary from an arbitrary Java Object. The object must implement
+     * java.io.Serializable or java.io.Externalizable.
+     * 
+     * @param o
+     *                the object to serialize and create this binary from.
+     */
+    public OtpErlangBinary(final Object o) {
+	super(o);
+    }
+
+    /**
+     * Convert this binary to the equivalent Erlang external representation.
+     * 
+     * @param buf
+     *                an output stream to which the encoded binary should be
+     *                written.
+     */
+    @Override
+    public void encode(final OtpOutputStream buf) {
+	buf.write_binary(bin);
+    }
+
+    /**
+     * Determine if two binaries are equal. Binaries are equal if they have the
+     * same length and the array of bytes is identical.
+     * 
+     * @param o
+     *                the binary to compare to.
+     * 
+     * @return true if the byte arrays contain the same bytes, false otherwise.
+     */
+    @Override
+    public boolean equals(final Object o) {
+	if (!(o instanceof OtpErlangBinary)) {
+	    return false;
 	}
 
-	/**
-	 * Create a binary from a stream containing a binary encoded in Erlang
-	 * external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded binary.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang binary.
-	 **/
-	public OtpErlangBinary(OtpInputStream buf) throws OtpErlangDecodeException {
-		super(new byte[0]);
-		this.bin = buf.read_binary();
-		this.pad_bits = 0;
+	final OtpErlangBinary that = (OtpErlangBinary) o;
+	final int len = bin.length;
+	if (len != that.bin.length) {
+	    return false;
 	}
 
-	/**
-	 * Create a binary from an arbitrary Java Object. The object must implement
-	 * java.io.Serializable or java.io.Externalizable.
-	 * 
-	 * @param o
-	 *            the object to serialize and create this binary from.
-	 **/
-	public OtpErlangBinary(Object o) {
-		super(o);
+	for (int i = 0; i < len; i++) {
+	    if (bin[i] != that.bin[i]) {
+		return false; // early exit
+	    }
 	}
 
-	/**
-	 * Convert this binary to the equivalent Erlang external representation.
-	 * 
-	 * @param buf
-	 *            an output stream to which the encoded binary should be
-	 *            written.
-	 **/
-	public void encode(OtpOutputStream buf) {
-		buf.write_binary(this.bin);
-	}
+	return true;
+    }
 
-	/**
-	 * Determine if two binaries are equal. Binaries are equal if they have the
-	 * same length and the array of bytes is identical.
-	 * 
-	 * @param o
-	 *            the binary to compare to.
-	 * 
-	 * @return true if the byte arrays contain the same bytes, false otherwise.
-	 **/
-	public boolean equals(Object o) {
-		if (!(o instanceof OtpErlangBinary)) {
-			return false;
-		}
-
-		OtpErlangBinary that = (OtpErlangBinary) o;
-		int len = this.bin.length;
-		if (len != that.bin.length) {
-			return false;
-		}
-
-		for (int i = 0; i < len; i++) {
-			if (this.bin[i] != that.bin[i]) {
-				return false; // early exit
-			}
-		}
-
-		return true;
-	}
-
-	public Object clone() {
-		OtpErlangBinary that = (OtpErlangBinary) (super.clone());
-		return that;
-	}
+    @Override
+    public Object clone() {
+	final OtpErlangBinary that = (OtpErlangBinary) super.clone();
+	return that;
+    }
 }

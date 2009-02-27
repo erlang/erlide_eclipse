@@ -21,91 +21,95 @@ import java.io.Serializable;
 
 /**
  * Provides a Java representation of Erlang strings.
- **/
+ */
 public class OtpErlangString extends OtpErlangObject implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = -7053595217604929233L;
+	Cloneable {
+    // don't change this!
+    static final long serialVersionUID = -7053595217604929233L;
 
-	private String str;
+    private final String str;
 
-	/**
-	 * Create an Erlang string from the given string.
-	 **/
-	public OtpErlangString(String str) {
-		this.str = str;
+    /**
+     * Create an Erlang string from the given string.
+     */
+    public OtpErlangString(final String str) {
+	this.str = str;
+    }
+
+    /**
+     * Create an Erlang string from a stream containing a string encoded in
+     * Erlang external format.
+     * 
+     * @param buf
+     *                the stream containing the encoded string.
+     * 
+     * @exception OtpErlangDecodeException
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang string.
+     */
+    public OtpErlangString(final OtpInputStream buf)
+	    throws OtpErlangDecodeException {
+	str = buf.read_string();
+    }
+
+    /**
+     * Get the actual string contained in this object.
+     * 
+     * @return the raw string contained in this object, without regard to Erlang
+     *         quoting rules.
+     * 
+     * @see #toString
+     */
+    public String stringValue() {
+	return str;
+    }
+
+    /**
+     * Get the printable version of the string contained in this object.
+     * 
+     * @return the string contained in this object, quoted.
+     * 
+     * @see #stringValue
+     */
+
+    @Override
+    public String toString() {
+	return "\"" + str + "\"";
+    }
+
+    /**
+     * Convert this string to the equivalent Erlang external representation.
+     * 
+     * @param buf
+     *                an output stream to which the encoded string should be
+     *                written.
+     */
+
+    @Override
+    public void encode(final OtpOutputStream buf) {
+	buf.write_string(str);
+    }
+
+    /**
+     * Determine if two strings are equal. They are equal if they represent the
+     * same sequence of characters. This method can be used to compare
+     * OtpErlangStrings with each other and with Strings.
+     * 
+     * @param o
+     *                the OtpErlangString or String to compare to.
+     * 
+     * @return true if the strings consist of the same sequence of characters,
+     *         false otherwise.
+     */
+
+    @Override
+    public boolean equals(final Object o) {
+	if (o instanceof String) {
+	    return str.compareTo((String) o) == 0;
+	} else if (o instanceof OtpErlangString) {
+	    return str.compareTo(((OtpErlangString) o).str) == 0;
 	}
 
-	/**
-	 * Create an Erlang string from a stream containing a string encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded string.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang string.
-	 **/
-	public OtpErlangString(OtpInputStream buf) throws OtpErlangDecodeException {
-		str = buf.read_string();
-	}
-
-	/**
-	 * Get the actual string contained in this object.
-	 * 
-	 * @return the raw string contained in this object, without regard to Erlang
-	 *         quoting rules.
-	 * 
-	 * @see #toString
-	 **/
-	public String stringValue() {
-		return str;
-	}
-
-	/**
-	 * Get the printable version of the string contained in this object.
-	 * 
-	 * @return the string contained in this object, quoted.
-	 * 
-	 * @see #stringValue
-	 **/
-
-	public String toString() {
-		return "\"" + str + "\"";
-	}
-
-	/**
-	 * Convert this string to the equivalent Erlang external representation.
-	 * 
-	 * @param buf
-	 *            an output stream to which the encoded string should be
-	 *            written.
-	 **/
-
-	public void encode(OtpOutputStream buf) {
-		buf.write_string(str);
-	}
-
-	/**
-	 * Determine if two strings are equal. They are equal if they represent the
-	 * same sequence of characters. This method can be used to compare
-	 * OtpErlangStrings with each other and with Strings.
-	 * 
-	 * @param o
-	 *            the OtpErlangString or String to compare to.
-	 * 
-	 * @return true if the strings consist of the same sequence of characters,
-	 *         false otherwise.
-	 **/
-
-	public boolean equals(Object o) {
-		if (o instanceof String) {
-			return this.str.compareTo((String) o) == 0;
-		} else if (o instanceof OtpErlangString) {
-			return this.str.compareTo(((OtpErlangString) o).str) == 0;
-		}
-
-		return false;
-	}
+	return false;
+    }
 }
