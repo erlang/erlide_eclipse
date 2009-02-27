@@ -159,8 +159,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
-	 *      (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
+	 * @see
+	 * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
+	 * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
 	 */
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
@@ -240,7 +241,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	}
 
 	/*
-	 * @see SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+	 * @see
+	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
 	 * 
 	 * @since 2.0
 	 */
@@ -252,7 +254,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				return new DefaultInformationControl(parent, SWT.NONE,
+				return new DefaultInformationControl(parent,
 						new HTMLTextPresenter(true));
 			}
 		};

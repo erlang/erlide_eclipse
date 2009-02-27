@@ -59,7 +59,7 @@ public class NewErlangProjectProperties {
 
 		String exincf = old.getExternalModulesFile();
 		ff = pvman.resolvePath(new Path(exincf));
-		List<String> exinc = PreferencesUtils.readFile(ff.toString());
+		// List<String> exinc = PreferencesUtils.readFile(ff.toString());
 		List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
 		LibraryLocation loc = new LibraryLocation(sloc, externalIncludes, null,

@@ -23,6 +23,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -33,7 +34,6 @@ import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlScanner;
@@ -197,20 +197,21 @@ public class ErlTextHover implements ITextHover,
 			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				final int shellStyle = SWT.RESIZE | SWT.TOOL;
-				final int style = SWT.V_SCROLL | SWT.H_SCROLL;
 				if (BrowserInformationControl.isAvailable(parent)) {
 					try {
 						return new BrowserInformationControl(parent,
-								shellStyle, style);
+								JFaceResources.DIALOG_FONT, EditorsUI
+										.getTooltipAffordanceString());
 					} catch (NoSuchMethodError e) {
 						// API changed in 3.4
-						return new DefaultInformationControl(parent,
-								shellStyle, style, new HTMLTextPresenter(false));
+						return new DefaultInformationControl(parent, EditorsUI
+								.getTooltipAffordanceString(),
+								new HTMLTextPresenter(true));
 					}
 				} else {
-					return new DefaultInformationControl(parent, shellStyle,
-							style, new HTMLTextPresenter(false));
+					return new DefaultInformationControl(parent, EditorsUI
+							.getTooltipAffordanceString(),
+							new HTMLTextPresenter(true));
 				}
 			}
 		};
@@ -224,19 +225,19 @@ public class ErlTextHover implements ITextHover,
 					final Shell parent) {
 				if (BrowserInformationControl.isAvailable(parent)) {
 					try {
-						return new BrowserInformationControl(parent, SWT.TOOL
-								| SWT.NO_TRIM, SWT.NONE, EditorsUI
-								.getTooltipAffordanceString());
+						return new BrowserInformationControl(parent,
+								JFaceResources.DIALOG_FONT, EditorsUI
+										.getTooltipAffordanceString());
 					} catch (NoSuchMethodError e) {
 						// API changed in 3.4
-						return new DefaultInformationControl(parent, SWT.NONE,
-								new HTMLTextPresenter(true), EditorsUI
-										.getTooltipAffordanceString());
+						return new DefaultInformationControl(parent, EditorsUI
+								.getTooltipAffordanceString(),
+								new HTMLTextPresenter(true));
 					}
 				} else {
-					return new DefaultInformationControl(parent, SWT.NONE,
-							new HTMLTextPresenter(true), EditorsUI
-									.getTooltipAffordanceString());
+					return new DefaultInformationControl(parent, EditorsUI
+							.getTooltipAffordanceString(),
+							new HTMLTextPresenter(true));
 				}
 			}
 		};

@@ -14,7 +14,7 @@ public class ErlElementSorter extends ViewerSorter {
 	public static final int SORT_ON_NAME = 0;
 	public static final int SORT_ON_EXPORT = 1;
 
-	private int how;
+	private int how = SORT_ON_NAME;
 
 	@Override
 	public int compare(final Viewer viewer, final Object o1, final Object o2) {
@@ -29,7 +29,12 @@ public class ErlElementSorter extends ViewerSorter {
 		return super.compare(viewer, o1, o2);
 	}
 
+	public ErlElementSorter() {
+		super();
+	}
+
 	public ErlElementSorter(final int how) {
+		super();
 		this.how = how;
 	}
 

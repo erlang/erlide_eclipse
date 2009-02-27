@@ -1005,8 +1005,17 @@
           id="org.erlide.ui.launch.erlangNodeShortcut"
           label="Erlang application"
           modes="run,debug">
-       <perspective id="org.erlide.ui.perspectives.ErlangPerspective"/>
-       <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+        <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+               	  <iterate>
+                     <adapt type="org.erlide.core.erlang.IErlProject">
+		             </adapt>
+		          </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
     </shortcut>
  </extension>
     <extension

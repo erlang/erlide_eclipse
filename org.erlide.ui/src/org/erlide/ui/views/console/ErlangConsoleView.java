@@ -662,7 +662,7 @@ public class ErlangConsoleView extends ViewPart implements BackendEventListener 
 				@SuppressWarnings("restriction")
 				public IInformationControl createInformationControl(
 						final Shell parent) {
-					return new DefaultInformationControl(parent, SWT.NONE,
+					return new DefaultInformationControl(parent,
 							new HTMLTextPresenter(true));
 				}
 			};

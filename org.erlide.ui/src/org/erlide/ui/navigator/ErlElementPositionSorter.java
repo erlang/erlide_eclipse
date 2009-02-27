@@ -11,6 +11,10 @@ public class ErlElementPositionSorter extends ErlElementSorter {
 		return comparePositions(viewer, e1, e2);
 	}
 
+	public ErlElementPositionSorter() {
+		super();
+	}
+
 	public ErlElementPositionSorter(final Collator collator) {
 		super(collator);
 	}

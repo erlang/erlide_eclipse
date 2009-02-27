@@ -25,7 +25,7 @@
                relative="org.eclipse.jdt.ui.PackageExplorer"
                visible="false"
                id="org.eclipse.jdt.junit.ResultView"
-               relationship="stack"> 
+               relationship="stack">
          </view>
       </perspectiveExtension>
       <perspectiveExtension
@@ -194,12 +194,6 @@
                </with>
             </enablement>
          </contextualLaunch>
-         <perspective
-               id="org.erlide.ui.perspectives.ErlangPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspective>
          <configurationType
                id="org.eclipse.jdt.junit.launchconfig">
          </configurationType>
@@ -213,7 +207,7 @@
          </description>
       </shortcut>
    </extension>
-   
+
    <extension
          point="org.eclipse.jdt.junit.junitLaunchConfigs">
       <launchConfigType
@@ -235,7 +229,7 @@
             categoryId="org.eclipse.ui.category.views"
             id="org.eclipse.jdt.junit.ResultView">
       </command>
-      
+
       <command
             name="%JUnitShortcut.description.run"
             description="%JUnitShortcut.description.run"
@@ -259,9 +253,9 @@
             description="%JUnitShortcut.description.rerunFailedFirst"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.eclipse.jdt.junit.junitShortcut.rerunFailedFirst">
-      </command>       
+      </command>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.bindings">
       <key
@@ -273,24 +267,24 @@
             commandId="org.eclipse.jdt.junit.junitShortcut.run"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
    </extension>
-   
+
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.erlide.gunit.internal.ui.GunitPreferenceInitializer"/>
    </extension>
-   
+
     <!-- JUnit Container -->
-   
+
     <extension
          point="org.eclipse.jdt.junit.internal_testKinds">
       <kind
             id="org.eclipse.jdt.junit.loader.junit4"
-            displayName="%testKind.junit4" 
+            displayName="%testKind.junit4"
             finderClass="org.erlide.gunit.internal.junit.launcher.JUnit4TestFinder"
             loaderPluginId="..."
             loaderClass="org.erlide.gunit.internal.junit4.runner.JUnit4TestLoader">
          <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit4.runtime" />
       </kind>
    </extension>
-   
+
 </plugin>

@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Julien Ruaux: jruaux@octo.com see bug 25324 Ability to know when tests are finished [junit] 
+ *     Julien Ruaux: jruaux@octo.com see bug 25324 Ability to know when tests are finished [junit]
  *     Vincent Massol: vmassol@octo.com 25324 Ability to know when tests are finished [junit]
  *     Sebastian Davids: sdavids@gmx.de 35762 JUnit View wasting a lot of screen space [JUnit]
  *******************************************************************************/
@@ -270,7 +270,7 @@ public class TestRunnerViewPart extends ViewPart {
 
 	static final String TAG_RATIO = "ratio"; //$NON-NLS-1$
 
-	static final String TAG_TRACEFILTER = "tracefilter"; //$NON-NLS-1$ 
+	static final String TAG_TRACEFILTER = "tracefilter"; //$NON-NLS-1$
 
 	static final String TAG_ORIENTATION = "orientation"; //$NON-NLS-1$
 
@@ -874,15 +874,15 @@ public class TestRunnerViewPart extends ViewPart {
 			if (orientation == TestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
 				setText(GUnitMessages.TestRunnerViewPart_toggle_horizontal_label);
 				setImageDescriptor(GUnitPlugin
-						.getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$				
+						.getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
 			} else if (orientation == TestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
 				setText(GUnitMessages.TestRunnerViewPart_toggle_vertical_label);
 				setImageDescriptor(GUnitPlugin
-						.getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$				
+						.getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
 			} else if (orientation == TestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
 				setText(GUnitMessages.TestRunnerViewPart_toggle_automatic_label);
 				setImageDescriptor(GUnitPlugin
-						.getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$				
+						.getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
 			}
 			this.fActionOrientation = orientation;
 			PlatformUI
@@ -1788,7 +1788,6 @@ public class TestRunnerViewPart extends ViewPart {
 		IHandlerService handlerService = (IHandlerService) getSite()
 				.getWorkbenchWindow().getService(IHandlerService.class);
 		IHandler handler = new AbstractHandler() {
-			@Override
 			public Object execute(ExecutionEvent event)
 					throws ExecutionException {
 				TestRunnerViewPart.this.fRerunLastTestAction.run();
@@ -1805,7 +1804,6 @@ public class TestRunnerViewPart extends ViewPart {
 
 		this.fRerunFailedFirstAction = new RerunLastFailedFirstAction();
 		handler = new AbstractHandler() {
-			@Override
 			public Object execute(ExecutionEvent event)
 					throws ExecutionException {
 				TestRunnerViewPart.this.fRerunFailedFirstAction.run();
@@ -1991,7 +1989,6 @@ public class TestRunnerViewPart extends ViewPart {
 
 	public void rerunTest(String testId, String className, String testName,
 			String launchMode) {
-		DebugUITools.saveAndBuildBeforeLaunch();
 		try {
 			boolean couldLaunch = this.fTestRunSession.rerunTest(testId,
 					className, testName, launchMode);

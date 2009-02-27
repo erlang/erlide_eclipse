@@ -92,7 +92,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
 			final IOutlineContentCreator creator,
 			final IOutlineSelectionHandler handler) {
-		super(parent, shellStyle, true, true, true, true, null, null);
+		super(parent, shellStyle, true, true, true, true, true, null, null);
 		// Set outline creator
 		fOutlineContentCreator = creator;
 		// Set outline handler
@@ -105,7 +105,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void initialize() {
 		setInfoText(ErlideUIMessages.QuickOutlinePopupDialog_infoTextPressEscToExit);
@@ -148,7 +148,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void createUIActions() {
 		// Add sort action to dialog menu
@@ -222,7 +222,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void createUIListenersTreeViewer() {
 		// Get the underlying tree widget
@@ -445,7 +445,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		 * constrainShellSize in PopupDialog.open will still ensure that the
 		 * shell is entirely visible.
 		 */
-		if (getPersistBounds() == false || getDialogSettings() == null) {
+		if (getPersistLocation() == false || getPersistSize() == false
+				|| getDialogSettings() == null) {
 			getShell().setLocation(location);
 		}
 	}
@@ -563,7 +564,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	void gotoSelectedElement() {
 		final Object selectedElement = getSelectedElement();
@@ -587,7 +588,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void createUIListenersFilterText() {
 		// Handle key events
