@@ -14,7 +14,6 @@
 package org.erlide.gunit.internal.launcher;
 
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.gunit.servers.launcher.ITestKind;
 
 public class TestSearchResult {
 

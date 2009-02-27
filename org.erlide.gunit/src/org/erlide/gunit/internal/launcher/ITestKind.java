@@ -11,9 +11,8 @@
  *             (bug 102632: [JUnit] Support for JUnit 4.)
  *******************************************************************************/
 
-package org.erlide.gunit.servers.launcher;
+package org.erlide.gunit.internal.launcher;
 
-import org.erlide.gunit.internal.launcher.ITestFinder;
 
 public interface ITestKind {
 	static class NullTestKind extends TestKind {

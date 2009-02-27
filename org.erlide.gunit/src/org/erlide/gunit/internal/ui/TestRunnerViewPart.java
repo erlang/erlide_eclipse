@@ -94,6 +94,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
+import org.erlide.gunit.internal.launcher.ITestKind;
 import org.erlide.gunit.internal.model.GUnitModel;
 import org.erlide.gunit.internal.model.ITestRunSessionListener;
 import org.erlide.gunit.internal.model.ITestSessionListener;
@@ -101,7 +102,6 @@ import org.erlide.gunit.internal.model.TestCaseElement;
 import org.erlide.gunit.internal.model.TestElement;
 import org.erlide.gunit.internal.model.TestRunSession;
 import org.erlide.gunit.model.ITestElement.Result;
-import org.erlide.gunit.servers.launcher.ITestKind;
 
 /**
  * A ViewPart that shows the results of a test run.

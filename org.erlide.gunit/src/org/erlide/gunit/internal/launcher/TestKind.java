@@ -11,11 +11,10 @@
  *             (bug 102632: [JUnit] Support for JUnit 4.)
  *******************************************************************************/
 
-package org.erlide.gunit.servers.launcher;
+package org.erlide.gunit.internal.launcher;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.erlide.gunit.internal.launcher.ITestFinder;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 
 public class TestKind implements ITestKind {

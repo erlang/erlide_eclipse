@@ -77,8 +77,8 @@ public abstract class OpenEditorAction extends Action {
 			return;
 		}
 		if (textEditor == null) {
-			this.fTestRunner
-					.registerInfoMessage(GUnitMessages.OpenEditorAction_message_cannotopen);
+			// this.fTestRunner
+			// .registerInfoMessage(GUnitMessages.OpenEditorAction_message_cannotopen);
 			return;
 		}
 		reveal(textEditor);

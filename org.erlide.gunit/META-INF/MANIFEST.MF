@@ -28,7 +28,5 @@ Export-Package: org.erlide.gunit,
  org.erlide.gunit.internal.util;x-internal:=true,
  org.erlide.gunit.launcher,
  org.erlide.gunit.model,
- org.erlide.gunit.servers,
- org.erlide.gunit.servers.launcher,
- org.erlide.gunit.servers.ui
+ org.erlide.gunit.runners
 Bundle-ClassPath: .

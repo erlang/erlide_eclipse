@@ -31,13 +31,13 @@ import org.eclipse.debug.core.ILaunchesListener2;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
+import org.erlide.gunit.internal.launcher.ITestKind;
 import org.erlide.gunit.internal.model.TestElement.Status;
 import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 import org.erlide.gunit.model.ITestElement;
 import org.erlide.gunit.model.ITestElementContainer;
 import org.erlide.gunit.model.ITestRunSession;
-import org.erlide.gunit.servers.launcher.ITestKind;
 
 /**
  * A test run session holds all information about a test run, i.e. launch

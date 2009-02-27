@@ -54,12 +54,12 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.launcher.GUnitLaunchConfigurationConstants;
+import org.erlide.gunit.internal.launcher.TestKind;
+import org.erlide.gunit.internal.launcher.TestKindRegistry;
 import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 import org.erlide.gunit.internal.ui.IGUnitHelpContextIds;
 import org.erlide.gunit.internal.util.LayoutUtil;
-import org.erlide.gunit.servers.launcher.TestKind;
-import org.erlide.gunit.servers.launcher.TestKindRegistry;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
 
 /**

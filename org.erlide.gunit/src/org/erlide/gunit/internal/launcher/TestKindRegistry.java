@@ -11,7 +11,7 @@
  *             (bug 102632: [JUnit] Support for JUnit 4.)
  *******************************************************************************/
 
-package org.erlide.gunit.servers.launcher;
+package org.erlide.gunit.internal.launcher;
 
 import java.util.ArrayList;
 import java.util.Collections;

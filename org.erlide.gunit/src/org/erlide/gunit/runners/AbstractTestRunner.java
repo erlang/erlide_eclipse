@@ -1,4 +1,4 @@
-package org.erlide.gunit.servers;
+package org.erlide.gunit.runners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import org.eclipse.debug.core.ILaunch;
 import org.erlide.gunit.internal.model.TestElement;
 import org.erlide.runtime.backend.Backend;
 
-public class AbstractTestServer {
+public class AbstractTestRunner {
 
 	private Backend fBackend;
 
-	public AbstractTestServer(ILaunch launch) {
+	public AbstractTestRunner(ILaunch launch) {
 		// try {
 		// String projectName = launch.getLaunchConfiguration().getAttribute(
 		// LaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
