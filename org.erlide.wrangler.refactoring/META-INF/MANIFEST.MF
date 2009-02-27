@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler Refactor plug-in
 Bundle-SymbolicName: org.erlide.wrangler.refactoring;singleton:=true
-Bundle-Version: 0.1.6.9
+Bundle-Version: 0.1.6.10
 Bundle-ClassPath: wrangler.jar
 Bundle-Activator: org.erlide.wrangler.refactoring.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
@@ -35,6 +35,7 @@ Export-Package: org.erlide.wrangler.refactoring;uses:="org.osgi.framework,org.ec
  org.erlide.wrangler.refactoring.core.movefunction,
  org.erlide.wrangler.refactoring.core.rename,
  org.erlide.wrangler.refactoring.core.renamefunction,
+ org.erlide.wrangler.refactoring.core.renamemodule,
  org.erlide.wrangler.refactoring.core.renamevariable,
  org.erlide.wrangler.refactoring.core.tupleparameters,
  org.erlide.wrangler.refactoring.core.tupletorecord,

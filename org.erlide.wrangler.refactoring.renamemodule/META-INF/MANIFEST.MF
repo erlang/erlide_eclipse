@@ -6,4 +6,3 @@ Bundle-Version: 0.1.6
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.1.6"
 Bundle-Vendor: UKC
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0"
-Export-Package: org.erlide.wrangler.refactoring.core.renamemodule

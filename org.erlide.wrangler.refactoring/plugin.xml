@@ -43,6 +43,13 @@
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
          </action>
          <action
+               class="org.erlide.wrangler.refactoring.core.renamemodule.RenameModuleAction"
+               definitionId="org.erlide.wrangler.refactoring.renameModule"
+               id="org.erlide.wranglerrefactoring.renamemodule"
+               label="%renameModuleName"
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+         </action>
+         <action
                class="org.erlide.wrangler.refactoring.core.generalise.GeneraliseAction"
                enablesFor="+"
                id="org.erlide.wranglerrefactoring.generalise"
@@ -103,6 +110,12 @@
             sequence="M2+M3+R F">
       </key>
       <key
+            commandId="org.erlide.wrangler.refactoring.renameModule"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+R M">
+      </key>
+      <key
             commandId="org.erlide.wrangler.refactoring.moveFunction"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -124,6 +137,11 @@
             categoryId="org.erlide.wrangler.refactoring"
             id="org.erlide.wrangler.refactoring.renameFunction"
             name="Rename function">
+      </command>
+      <command
+            categoryId="org.erlide.wrangler.refactoring"
+            id="org.erlide.wrangler.refactoring.renameModule"
+            name="Rename module">
       </command>
       <command
             categoryId="org.erlide.wrangler.refactoring"
