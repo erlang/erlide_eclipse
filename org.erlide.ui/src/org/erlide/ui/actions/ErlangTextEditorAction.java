@@ -60,7 +60,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 *            text {@link IDocument}
 	 * @param selection
 	 *            original selection
-	 * @return new {@link ITextSelection} extended to the whole lines
+	 * @return new {@link ITextSelection}ï¿½extended to the whole lines
 	 *         intersected by selection
 	 */
 	protected ITextSelection extendSelection(final IDocument document,
@@ -155,7 +155,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			Status status = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					ErlangStatusConstants.INTERNAL_ERROR, "indent returned "
 							+ e + " instead of a string", null);
-			ErlangPlugin.log(status);
+			ErlLogger.error("INTERNAL ERROR: indent returned " + e
+					+ " instead of a string");
 
 			ErrorDialog.openError(textEditor.getSite().getShell(),
 					ActionMessages.IndentAction_error_message, e, status);
