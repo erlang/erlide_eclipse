@@ -93,8 +93,7 @@ public class ErlUtils {
 	 * <li>Variables can have a type signature attached, like for example
 	 * <code>Var:i</code>. Its meaning is that the type of the value must match
 	 * too.</li>
-	 * <li>A list's or tuple's last element can be an ellipsis (<code>...</code>
-	 * ) which means means that the rest of the elements are ignored.</li>
+	 * <li>The tail of a list can only be a variable.</li>
 	 * </ul>
 	 * <p>
 	 * The returned value is null if there was any mismatch, otherwise it is a

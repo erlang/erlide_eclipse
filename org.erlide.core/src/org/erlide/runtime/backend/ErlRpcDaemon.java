@@ -9,7 +9,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlUtils;
 import org.erlide.jinterface.JInterfaceFactory;
+import org.erlide.jinterface.ParserException;
 import org.erlide.jinterface.rpc.IRpcHandler;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
@@ -108,7 +111,15 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 	public void rpcEvent(final String id, final OtpErlangObject event) {
 		if ("log".equals(id)) {
 			final OtpErlangTuple t = (OtpErlangTuple) event;
-			ErlLogger.debug("%s", t.elementAt(1).toString());
+			try {
+				Bindings b = ErlUtils.match("{K:a,M,P:p}", t);
+				String kind = ((OtpErlangAtom) b.get("K")).atomValue();
+				OtpErlangObject msg = b.get("M");
+				OtpErlangPid pid = ((OtpErlangPid) b.get("P"));
+				ErlLogger.debug("%s: %s", kind, msg);
+			} catch (ParserException e) {
+				ErlLogger.error(e);
+			}
 		} else if ("erlang_log".equals(id)) {
 			final OtpErlangTuple t = (OtpErlangTuple) event;
 			final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);

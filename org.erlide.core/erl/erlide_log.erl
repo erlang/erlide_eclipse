@@ -28,11 +28,11 @@ logp(Fmt, Msgs) ->
     log(?DEFAULT_LEVEL, lists:flatten(io_lib:format(Fmt, Msgs))).
 
 log(Level, Msg) ->
-    jrpc:event(log, {Level, Msg}).
+    jrpc:event(log, {Level, Msg, self()}).
 
 erlangLog(Module, Line, Level, Msg) ->
-    jrpc:event(erlang_log, {Module, Line, Level, Msg}).
+    jrpc:event(erlang_log, {Module, Line, Level, Msg, self()}).
 
 erlangLogStack(Module, Line, Level, Msg) ->
-    jrpc:event(erlang_log, {Module, Line, Level, Msg, erlang:process_info(self(), backtrace)}).
+    jrpc:event(erlang_log, {Module, Line, Level, Msg, erlang:process_info(self(), backtrace), self()}).
 

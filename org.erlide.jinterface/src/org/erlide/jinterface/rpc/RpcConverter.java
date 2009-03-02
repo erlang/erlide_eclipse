@@ -600,6 +600,9 @@ public class RpcConverter {
 		if (term instanceof OtpErlangLong) {
 			return signature.kind == 'i';
 		}
+		if (term instanceof OtpErlangPid) {
+			return signature.kind == 'p';
+		}
 		return false;
 	}
 
