@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: 2006-jan-28
-%% Description: 
+%% Description:
 -module(erlide_indent).
 
 %%
@@ -15,7 +15,7 @@
          indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -330,7 +330,7 @@ i_binary_expr_list(R0, I0, A0) ->
                 ',' ->
                     R3 = i_kind(',', R2, I1),
                     i_binary_expr_list(R3, I1, I1#i.anchor);
-		Kind when Kind=:='||'; Kind=:='<='; Kind=:='<-' -> 
+		Kind when Kind=:='||'; Kind=:='<='; Kind=:='<-' ->
 		    % binary comprehension
 		    R3 = i_kind('||', R2, I1),
                     i_binary_expr_list(R3, I1, I1#i.anchor);
@@ -363,7 +363,7 @@ i_binary_sub_expr(R0, I0) ->
 	    R2 = i_kind(Kind, R1, I0),
 	    {i_1_expr(R2, I0), hd(R1)}
     end.
-            
+
 i_binary_specifiers(R0, I) ->
 	R1 = i_binary_specifier(R0, I),
 	?D(R1),
@@ -733,7 +733,7 @@ i_clause_list(R, I) ->
         _ ->
             R0
     end.
-     
+
 i_if_clause(R0, I0) ->
     {R1, A} = i_predicate_list(R0, I0),
     I1 = i_with(before_arrow, A, I0),
@@ -758,7 +758,7 @@ i_if_clause_list(R0, I0, A0) ->
             ?D(b),
             R1
     end.
-     
+
 i_catch_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
     ?D(R1),
@@ -785,7 +785,7 @@ i_catch_clause(R0, I0) ->
     ?D(R6),
     I2 = i_with(clause, R1, I0),
     R = i_expr_list(R6, I2),
-    R. 
+    R.
 
 i_catch_clause_list(R, I) ->
     R0 = i_catch_clause(R, I),
