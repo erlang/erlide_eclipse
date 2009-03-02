@@ -137,7 +137,13 @@ public final class BackendManager implements IEpmdListener {
 
 	public Backend getBuildBackend(final IProject project)
 			throws BackendException {
-		final RuntimeInfo info = getRuntimeInfo(project);
+		final ErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final RuntimeInfo info = prefs.getRuntimeInfo();
+		info.setNodeName(System.getProperty("user.name") + "_"
+				+ Long.toHexString(System.currentTimeMillis()));
+		info.setUniqueName(true);// will add workspace unique id
+
 		if (info == null) {
 			ErlLogger.info("Project %s has no runtime info, using ide", project
 					.getName());
@@ -173,15 +179,6 @@ public final class BackendManager implements IEpmdListener {
 			return Collections.emptySet();
 		}
 		return Collections.unmodifiableSet(bs);
-	}
-
-	public static RuntimeInfo getRuntimeInfo(final IProject project) {
-		if (project == null) {
-			return null;
-		}
-		final ErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		return prefs.getRuntimeInfo();
 	}
 
 	public void remove(final IProject project) {
