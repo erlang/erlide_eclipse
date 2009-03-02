@@ -16,13 +16,11 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideBuilder {
 
-	public static OtpErlangObject compileYrl(final IProject project,
+	public static OtpErlangObject compileYrl(final Backend backend,
 			final String fn, final String output) {
 		try {
-			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
-					project);
-			final OtpErlangObject r = b.rpcx("erlide_builder", "compile_yrl",
-					30000, "ss", fn, output);
+			final OtpErlangObject r = backend.rpcx("erlide_builder",
+					"compile_yrl", 30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
@@ -33,26 +31,24 @@ public class ErlideBuilder {
 		}
 	}
 
-	public static OtpErlangObject compileErl(final IProject project,
+	public static OtpErlangObject compileErl(final Backend backend,
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		try {
-			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
-					project);
 			// FIXME add an option for the compiler options
-			return b.rpcx("erlide_builder", "compile", 30000, "sslsla", fn,
-					outputdir, includedirs, new String[] { "debug_info" });
+			return backend.rpcx("erlide_builder", "compile", 30000, "sslsla",
+					fn, outputdir, includedirs, new String[] { "debug_info" });
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;
 		}
 	}
 
-	public static OtpErlangList getSourceClashes(final Backend b,
+	public static OtpErlangList getSourceClashes(final Backend backend,
 			final String[] dirList) throws ErlangRpcException,
 			BackendException, RpcException {
-		final OtpErlangList res = (OtpErlangList) b.rpcx("erlide_builder",
-				"source_clash", "ls", (Object) dirList);
+		final OtpErlangList res = (OtpErlangList) backend.rpcx(
+				"erlide_builder", "source_clash", "ls", (Object) dirList);
 		return res;
 	}
 

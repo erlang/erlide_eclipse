@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.erlide.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -27,7 +28,12 @@ public final class LibraryLocation extends DependencyLocation {
 
 	public LibraryLocation(List<SourceLocation> sources, List<String> includes,
 			String output, List<LibraryLocation> libraries) {
-		super();
+		this(sources, includes, output, libraries, null);
+	}
+
+	public LibraryLocation(List<SourceLocation> sources, List<String> includes,
+			String output, List<LibraryLocation> libraries, EnumSet<Kind> kind) {
+		super(kind);
 		if (sources != null) {
 			this.sources = sources;
 		}

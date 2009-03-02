@@ -213,7 +213,7 @@ public class ErlideUtil {
 
 	public static boolean isEricssonUser() {
 		final String dev = System.getProperty("erlide.ericsson.user");
-		if (dev == null || !"true".equals(dev)) {
+		if (dev != null && !"true".equals(dev)) {
 			return false;
 		}
 		String s;
@@ -335,7 +335,7 @@ public class ErlideUtil {
 				.toPortableString();
 		dir = (dir == null) ? "c:/" : dir;
 		File log = new File(dir + "_erlide.log");
-	
+
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(log), "UTF-8"));

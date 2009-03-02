@@ -70,7 +70,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 						final String msg = "Backend '%s' terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
 
-						if ((v != 0) && ErlideUtil.isEricssonUser()) {
+						if ((v > 1) && ErlideUtil.isEricssonUser()) {
 							String plog = ErlideUtil.fetchPlatformLog();
 							String elog = ErlideUtil.fetchErlideLog();
 							String delim = "\n==================================\n";
@@ -80,7 +80,8 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 								OutputStream out = new FileOutputStream(report);
 								PrintWriter pw = new PrintWriter(out);
 								try {
-									pw.println(msg);
+									pw.println(String.format(msg, info
+											.getNodeName(), v));
 									pw.println(System.getProperty("user.name"));
 									pw.println(delim);
 									pw.println(plog);

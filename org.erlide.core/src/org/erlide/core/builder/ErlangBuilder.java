@@ -81,6 +81,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	IProject currentProject;
 	IWorkspaceRoot workspaceRoot;
 	BuildNotifier notifier;
+	Backend backend;
 
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
@@ -118,6 +119,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 
 		} catch (final CoreException e) {
+			ErlLogger.error(e);
+			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+					BuilderMessages.build_inconsistentProject, e
+							.getLocalizedMessage()));
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		} catch (BackendException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
@@ -191,11 +199,18 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			notifier.done();
 
 			try {
-				checkForClashes();
+				checkForClashes(backend);
 			} catch (final Exception e) {
 			}
 
 		} catch (final CoreException e) {
+			ErlLogger.error(e);
+			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+					BuilderMessages.build_inconsistentProject, e
+							.getLocalizedMessage()));
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		} catch (BackendException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
@@ -213,11 +228,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkForClashes() throws BackendException {
-		final Backend b = ErlangCore.getBackendManager().getBuildBackend(
-				currentProject);
+	private void checkForClashes(Backend backend) throws BackendException {
 		try {
-			final OtpErlangList res = ErlideBuilder.getCodeClashes(b);
+			final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
 			for (OtpErlangObject elem : res.elements()) {
 				final OtpErlangTuple t = (OtpErlangTuple) elem;
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -248,8 +261,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				dirList[i] = currentProject.getLocation().toPortableString()
 						+ "/" + sd[i];
 			}
-			final OtpErlangList res = ErlideBuilder
-					.getSourceClashes(b, dirList);
+			final OtpErlangList res = ErlideBuilder.getSourceClashes(backend,
+					dirList);
 			for (int i = 0; i < res.arity(); i++) {
 				final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
 				final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -414,7 +427,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					ErlLogger.debug("compiling %s", resource.getName());
 				}
 				OtpErlangObject r;
-				r = compileFile(project, resource.getLocation().toString(),
+				r = compileFile(backend, resource.getLocation().toString(),
 						outputDir, includeDirs);
 				if (r == null) {
 					ErlangBuilderMarkerGenerator.addProblemMarker(resource,
@@ -590,7 +603,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			final String input = resource.getLocation().toString();
 			final String output = resource.getLocation().removeFileExtension()
 					.toString();
-			r = compileYrlFile(project, input, output);
+			r = compileYrlFile(backend, input, output);
 
 			if (r instanceof OtpErlangTuple) {
 				// process compilation messages
@@ -916,21 +929,21 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	 * @param includedirs
 	 * @return OtpErlangObject
 	 */
-	protected static OtpErlangObject compileFile(final IProject project,
+	protected static OtpErlangObject compileFile(final Backend backend,
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
-		return ErlideBuilder.compileErl(project, fn, outputdir, includedirs);
+		return ErlideBuilder.compileErl(backend, fn, outputdir, includedirs);
 	}
 
-	protected static OtpErlangObject compileYrlFile(final IProject project,
+	protected static OtpErlangObject compileYrlFile(final Backend backend,
 			final String fn, final String output) {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
-		return ErlideBuilder.compileYrl(project, fn, output);
+		return ErlideBuilder.compileYrl(backend, fn, output);
 	}
 
 	public static IMarker[] getProblemsFor(final IResource resource) {
@@ -994,10 +1007,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	private void cleanup() {
 		notifier = null;
+		ErlangCore.getBackendManager().dispose(backend);
+		backend = null;
 	}
 
-	private void initializeBuilder() throws CoreException {
+	private void initializeBuilder() throws CoreException, BackendException {
 		workspaceRoot = currentProject.getWorkspace().getRoot();
+		backend = ErlangCore.getBackendManager()
+				.getBuildBackend(currentProject);
 	}
 
 	@SuppressWarnings("unchecked")

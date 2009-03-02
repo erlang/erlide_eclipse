@@ -11,10 +11,12 @@
 package org.erlide.runtime.backend;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -249,15 +251,46 @@ public class RuntimeInfo implements Cloneable {
 		if (path == null) {
 			return null;
 		}
+		String result = null;
 		final File boot = new File(path + "/bin/start.boot");
 		try {
 			final FileInputStream is = new FileInputStream(boot);
 			is.skip(14);
 			readstring(is);
-			return readstring(is);
+			result = readstring(is);
+
+			// now get minor version from kernel's minor version
+			final File lib = new File(path + "/lib");
+			final File[] kernels = lib.listFiles(new FileFilter() {
+				public boolean accept(File pathname) {
+					try {
+						boolean r = pathname.isDirectory();
+						r &= pathname.getName().startsWith("kernel-");
+						String canonicalPath = pathname.getCanonicalPath()
+								.toLowerCase();
+						String absolutePath = pathname.getAbsolutePath()
+								.toLowerCase();
+						r &= canonicalPath.equals(absolutePath);
+						return r;
+					} catch (IOException e) {
+						return false;
+					}
+				}
+			});
+			if (kernels.length > 0) {
+				final int[] krnls = new int[kernels.length];
+				for (int i = 0; i < kernels.length; i++) {
+					String k = kernels[i].getName();
+					krnls[i] = Integer.parseInt(k
+							.substring(k.lastIndexOf('.') + 1));
+				}
+				Arrays.sort(krnls);
+				String ver = Integer.toString(krnls[krnls.length - 1]);
+				result += "-" + ver;
+			}
 		} catch (final IOException e) {
 		}
-		return null;
+		return result;
 	}
 
 	private static String readstring(InputStream is) {

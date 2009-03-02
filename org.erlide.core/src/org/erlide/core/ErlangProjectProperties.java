@@ -26,7 +26,6 @@ import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties implements IPreferenceChangeListener {
@@ -217,19 +216,20 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 
 	public void setOutputDir(final String dir) {
 		if (!outputDir.equals(dir)) {
-			try {
-				final Backend b = ErlangCore.getBackendManager()
-						.getBuildBackend(project);
-				String p = project.getLocation().append(outputDir).toString();
-				b.removePath(getUsePathZ(), p);
+			// try {
+			// final Backend b = ErlangCore.getBackendManager()
+			// .getBuildBackend(project);
+			// String p =
+			// project.getLocation().append(outputDir).toString();
+			// b.removePath(getUsePathZ(), p);
+			//
+			// p = project.getLocation().append(dir).toString();
+			// b.addPath(getUsePathZ(), p);
 
-				p = project.getLocation().append(dir).toString();
-				b.addPath(getUsePathZ(), p);
-
-				outputDir = dir;
-			} catch (final BackendException e) {
-				ErlLogger.warn(e);
-			}
+			outputDir = dir;
+			// } catch (final BackendException e) {
+			// ErlLogger.warn(e);
+			// }
 		}
 	}
 

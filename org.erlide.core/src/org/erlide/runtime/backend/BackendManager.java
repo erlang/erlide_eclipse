@@ -48,8 +48,6 @@ public final class BackendManager implements IEpmdListener {
 
 	private volatile Backend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
-	private final Map<IProject, Backend> fBuildBackends;
-	private final Object fBuildBackendsLock = new Object();
 	private final Map<IProject, Set<Backend>> fBackends;
 	protected List<BackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
@@ -75,7 +73,6 @@ public final class BackendManager implements IEpmdListener {
 
 	private BackendManager() {
 		fLocalBackend = null;
-		fBuildBackends = new HashMap<IProject, Backend>();
 		fBackends = new HashMap<IProject, Set<Backend>>();
 		fListeners = new ArrayList<BackendListener>();
 		fPlugins = new ArrayList<ICodeBundle>();
@@ -140,45 +137,34 @@ public final class BackendManager implements IEpmdListener {
 
 	public Backend getBuildBackend(final IProject project)
 			throws BackendException {
-		synchronized (fBuildBackendsLock) {
-			final RuntimeInfo info = getRuntimeInfo(project);
-			if (info == null) {
-				// ErlLogger.info("Project %s has no runtime info, using ide",
-				// project.getName());
-				if (fLocalBackend == null) {
-					throw new BackendException(
-							"IDE backend is not created - check configuration!");
-				}
-				return fLocalBackend;
+		final RuntimeInfo info = getRuntimeInfo(project);
+		if (info == null) {
+			ErlLogger.info("Project %s has no runtime info, using ide", project
+					.getName());
+			if (fLocalBackend == null) {
+				throw new BackendException(
+						"IDE backend is not created - check configuration!");
 			}
-			if (info.getNodeName() == null || info.getNodeName().equals("")) {
-				if (fLocalBackend == null) {
-					throw new BackendException(
-							"IDE backend is not created - check configuration!");
-				}
-				return fLocalBackend;
-			}
-
-			Backend b = fBuildBackends.get(project);
-			if (b != null && !b.ping()) {
-				fBuildBackends.remove(info.getName());
-				fireUpdate(b, BackendEvent.REMOVED);
-				b = null;
-			}
-			if (b == null) {
-				if (info.getNodeName() == null) {
-					info.setNodeName(project.getName());
-				}
-				try {
-					b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
-				} catch (BackendException e) {
-					// info can't be null here
-				}
-				fBuildBackends.put(project, b);
-				fireUpdate(b, BackendEvent.ADDED);
-			}
-			return b;
+			return fLocalBackend;
 		}
+		if (info.getNodeName() == null || info.getNodeName().equals("")) {
+			if (fLocalBackend == null) {
+				throw new BackendException(
+						"IDE backend is not created - check configuration!");
+			}
+			return fLocalBackend;
+		}
+
+		Backend b = null;
+		if (info.getNodeName() == null) {
+			info.setNodeName(project.getName());
+		}
+		try {
+			b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
+		} catch (BackendException e) {
+			// info can't be null here
+		}
+		return b;
 	}
 
 	synchronized public Set<Backend> getExecutionBackends(final IProject project) {
@@ -318,23 +304,19 @@ public final class BackendManager implements IEpmdListener {
 	}
 
 	public Backend[] getAllBackends() {
-		synchronized (fBuildBackendsLock) {
-			final Object[] ob = fBuildBackends.values().toArray();
-			Set<Backend> ebs = new HashSet<Backend>();
-			for (Set<Backend> b : fBackends.values()) {
-				ebs.addAll(b);
-			}
-			final Object[] eb = ebs.toArray();
-			Backend b = getIdeBackend();
-			int x = (b == null) ? 0 : 1;
-			final Backend[] res = new Backend[ob.length + eb.length + x];
-			System.arraycopy(ob, 0, res, 0, ob.length);
-			System.arraycopy(eb, 0, res, ob.length, eb.length);
-			if (b != null) {
-				res[ob.length + eb.length] = b;
-			}
-			return res;
+		Set<Backend> ebs = new HashSet<Backend>();
+		for (Set<Backend> b : fBackends.values()) {
+			ebs.addAll(b);
 		}
+		final Object[] eb = ebs.toArray();
+		Backend b = getIdeBackend();
+		int x = (b == null) ? 0 : 1;
+		final Backend[] res = new Backend[eb.length + x];
+		System.arraycopy(eb, 0, res, 0, eb.length);
+		if (b != null) {
+			res[eb.length] = b;
+		}
+		return res;
 	}
 
 	public void register(final ICodeBundle p) {
@@ -370,14 +352,7 @@ public final class BackendManager implements IEpmdListener {
 	}
 
 	public void forEachProjectBackend(final BackendVisitor visitor) {
-		synchronized (fBuildBackendsLock) {
-			for (final Backend b : fBuildBackends.values()) {
-				try {
-					visitor.run(b);
-				} catch (final Exception e) {
-				}
-			}
-		}
+		// TODO which backends?
 	}
 
 	public static String buildNodeName(final String label) {
@@ -477,6 +452,13 @@ public final class BackendManager implements IEpmdListener {
 				}
 			}
 		}
+	}
+
+	public void dispose(Backend backend) {
+		if (backend != null && backend != fLocalBackend) {
+			backend.dispose();
+		}
+
 	}
 
 }
