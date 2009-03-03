@@ -101,6 +101,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		try {
 			notifier.checkCancel();
 
+			deleteMarkers(currentProject);
 			initializeBuilder();
 			removeProblemsAndTasksFor(currentProject);
 
@@ -159,6 +160,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
 		try {
+			deleteMarkers(currentProject);
 			initializeBuilder();
 
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
@@ -212,11 +214,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (BackendException e) {
 			ErlLogger.error(e);
-			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
-					BuilderMessages.build_inconsistentProject, e
-							.getLocalizedMessage()));
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} finally {
 			notifier.done();
 			cleanup();
@@ -228,7 +225,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkForClashes(Backend backend) throws BackendException {
+	private void checkForClashes(Backend backend) {
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
 			for (OtpErlangObject elem : res.elements()) {
@@ -1015,6 +1012,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		workspaceRoot = currentProject.getWorkspace().getRoot();
 		backend = ErlangCore.getBackendManager()
 				.getBuildBackend(currentProject);
+		if (backend == null) {
+			String message = "No backend with the required "
+					+ "version could be found. Can't build.";
+			ErlangBuilderMarkerGenerator.addProblemMarker(currentProject, null,
+					message, 0, IMarker.SEVERITY_ERROR);
+			throw new BackendException(message);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

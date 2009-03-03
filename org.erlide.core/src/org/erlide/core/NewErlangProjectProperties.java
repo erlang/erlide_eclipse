@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
+import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -27,9 +29,7 @@ public class NewErlangProjectProperties {
 	private Map<String, String> compilerOptions = new HashMap<String, String>();
 	private List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
 	private List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
-	private String requiredRuntimeVersion;
-	private String backendNodeName;
-	private String backendCookie;
+	private RuntimeVersion requiredRuntimeVersion;
 
 	public NewErlangProjectProperties() {
 		output = "ebin";
@@ -38,11 +38,12 @@ public class NewErlangProjectProperties {
 
 	public NewErlangProjectProperties(ErlangProjectProperties old) {
 		requiredRuntimeVersion = old.getRuntimeVersion();
-		if (requiredRuntimeVersion == null) {
-			requiredRuntimeVersion = old.getRuntimeInfo().getVersion();
+		if (!requiredRuntimeVersion.isDefined()) {
+			RuntimeInfo runtimeInfo = old.getRuntimeInfo();
+			if (runtimeInfo != null) {
+				requiredRuntimeVersion = runtimeInfo.getVersion();
+			}
 		}
-		backendCookie = old.getCookie();
-		backendNodeName = old.getNodeName();
 
 		sources = mkSources(old.getSourceDirs());
 		includes = PreferencesUtils.unpackList(old.getIncludeDirsString());
@@ -160,26 +161,14 @@ public class NewErlangProjectProperties {
 		return Collections.unmodifiableCollection(codePathOrder);
 	}
 
-	public String getRequiredRuntimeVersion() {
+	public RuntimeVersion getRequiredRuntimeVersion() {
 		return requiredRuntimeVersion;
-	}
-
-	public String getBackendNodeName() {
-		return backendNodeName;
-	}
-
-	public String getBackendCookie() {
-		return backendCookie;
 	}
 
 	public void load(IEclipsePreferences root) throws BackingStoreException {
 		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
-		requiredRuntimeVersion = root.get(
-				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null);
-		backendNodeName = root.get(
-				ProjectPreferencesConstants.BACKEND_NODE_NAME, null);
-		backendCookie = root.get(ProjectPreferencesConstants.BACKEND_COOKIE,
-				null);
+		requiredRuntimeVersion = new RuntimeVersion(root.get(
+				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
 		includes = PreferencesUtils.unpackList(root.get(
 				ProjectPreferencesConstants.INCLUDES, ""));
 		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
@@ -196,14 +185,7 @@ public class NewErlangProjectProperties {
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		if (requiredRuntimeVersion != null) {
 			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION,
-					requiredRuntimeVersion);
-		}
-		if (backendNodeName != null) {
-			root.put(ProjectPreferencesConstants.BACKEND_NODE_NAME,
-					backendNodeName);
-		}
-		if (backendCookie != null) {
-			root.put(ProjectPreferencesConstants.BACKEND_COOKIE, backendCookie);
+					requiredRuntimeVersion.toString());
 		}
 		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
 				.packList(includes));

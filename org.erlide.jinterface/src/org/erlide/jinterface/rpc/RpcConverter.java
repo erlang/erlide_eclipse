@@ -388,7 +388,7 @@ public class RpcConverter {
 									|| ste.getMethodName().equals("rpct")
 									|| ste.getMethodName().equals("rpcx") || ste
 									.getMethodName().equals("rpcxt")) && ste
-									.getClassName().endsWith("AbstractBackend"))) {
+									.getClassName().endsWith("Backend"))) {
 								el = ste;
 								break;
 							}
@@ -399,8 +399,7 @@ public class RpcConverter {
 								|| ste.getMethodName().equals("rpct")
 								|| ste.getMethodName().equals("rpcx") || ste
 								.getMethodName().equals("rpcxt"))
-								&& ste.getClassName().endsWith(
-										"AbstractBackend")) {
+								&& ste.getClassName().endsWith("Backend")) {
 							found = true;
 
 						}
@@ -533,7 +532,7 @@ public class RpcConverter {
 									|| ste.getMethodName().equals("rpct")
 									|| ste.getMethodName().equals("rpcx") || ste
 									.getMethodName().equals("rpcxt")) && ste
-									.getClassName().endsWith("AbstractBackend"))) {
+									.getClassName().endsWith("Backend"))) {
 								el = ste;
 								break;
 							}
@@ -543,8 +542,7 @@ public class RpcConverter {
 								|| ste.getMethodName().equals("rpct")
 								|| ste.getMethodName().equals("rpcx") || ste
 								.getMethodName().equals("rpcxt"))
-								&& ste.getClassName().endsWith(
-										"AbstractBackend")) {
+								&& ste.getClassName().endsWith(".Backend")) {
 							found = true;
 
 						}

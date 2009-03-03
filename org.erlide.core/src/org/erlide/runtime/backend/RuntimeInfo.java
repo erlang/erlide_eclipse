@@ -42,10 +42,10 @@ public class RuntimeInfo implements Cloneable {
 	private String workingDir = "";
 	private boolean managed; // will it be started/stopped by us?
 
-	private String fVersion;
+	private RuntimeVersion version;
 	private String name;
 	private List<String> codePath;
-	private boolean fUnique = false;
+	private boolean unique = false;
 
 	public RuntimeInfo() {
 		super();
@@ -118,7 +118,7 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public String getNodeName() {
-		String suffix = fUnique ? "_" + BackendManager.getErlideNameSuffix()
+		String suffix = unique ? "_" + BackendManager.getErlideNameSuffix()
 				: "";
 		return this.nodeName + suffix;
 	}
@@ -181,11 +181,11 @@ public class RuntimeInfo implements Cloneable {
 		return key + str;
 	}
 
-	public String getVersion() {
-		if (fVersion == null) {
-			fVersion = getRuntimeVersion(homeDir);
+	public RuntimeVersion getVersion() {
+		if (version == null) {
+			version = new RuntimeVersion(getRuntimeVersion(homeDir));
 		}
-		return fVersion;
+		return version;
 	}
 
 	public String getOtpHome() {
@@ -365,7 +365,7 @@ public class RuntimeInfo implements Cloneable {
 	}
 
 	public void setUniqueName(boolean unique) {
-		fUnique = unique;
+		this.unique = unique;
 	}
 
 }

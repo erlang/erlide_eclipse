@@ -115,6 +115,7 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 				Bindings b = ErlUtils.match("{K:a,M,P:p}", t);
 				String kind = ((OtpErlangAtom) b.get("K")).atomValue();
 				OtpErlangObject msg = b.get("M");
+				@SuppressWarnings("unused")
 				OtpErlangPid pid = ((OtpErlangPid) b.get("P"));
 				ErlLogger.debug("%s: %s", kind, msg);
 			} catch (ParserException e) {

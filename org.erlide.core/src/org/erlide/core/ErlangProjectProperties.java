@@ -10,8 +10,6 @@
 
 package org.erlide.core;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -26,6 +24,7 @@ import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties implements IPreferenceChangeListener {
@@ -39,10 +38,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 
-	private String runtimeVersion;
-	private String runtimeName;
-	private String nodeName;
-	private String cookie;
+	private RuntimeVersion runtimeVersion;
 
 	private boolean fUnique = true;
 
@@ -51,7 +47,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
-		runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
 	}
 
 	public ErlangProjectProperties(final IProject prj) {
@@ -98,44 +93,10 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
 		usePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
 				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-		runtimeVersion = node.get(ProjectPreferencesConstants.RUNTIME_VERSION,
-				null);
-		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
-		if (runtimeName != null && runtimeName.length() != 0) {
-			saveRuntimeName = true;
-			ErlLogger.debug("Runtime name specified: %s", runtimeName);
-			RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager()
-					.getRuntime(runtimeName);
-			if (runtime != null) {
-				// fRuntimeVersion = runtime.getVersion();
-			}
-		} else if (runtimeVersion != null) {
-			saveRuntimeName = false;
-			List<RuntimeInfo> runtimes = ErlangCore.getRuntimeInfoManager()
-					.locateVersion(runtimeVersion);
-			if (runtimes.size() > 0) {
-				runtimeName = runtimes.get(0).getName();
-				ErlLogger.debug("Runtime name located for version %s: %s",
-						runtimeVersion, runtimeName);
-			} else {
-				runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
-				ErlLogger.debug(
-						"Missing runtime name and version, using default: %s",
-						runtimeName);
-			}
-		} else {
-			saveRuntimeName = false;
-			runtimeName = ProjectPreferencesConstants.DEFAULT_RUNTIME_NAME;
-			ErlLogger.debug(
-					"Missing runtime name and version, using default: %s",
-					runtimeName);
-		}
-		nodeName = node.get(ProjectPreferencesConstants.NODE_NAME,
-				ProjectPreferencesConstants.DEFAULT_NODENAME);
+		runtimeVersion = new RuntimeVersion(node.get(
+				ProjectPreferencesConstants.RUNTIME_VERSION, null));
 		fUnique = Boolean.parseBoolean(node.get(
 				ProjectPreferencesConstants.MK_UNIQUE, "true"));
-		cookie = node.get(ProjectPreferencesConstants.COOKIE,
-				ProjectPreferencesConstants.DEFAULT_COOKIE);
 		externalModulesFile = node.get(
 				ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 				ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
@@ -169,19 +130,17 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
-			if (runtimeVersion != null) {
+			if (runtimeVersion.isDefined()) {
 				node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
-						runtimeVersion);
+						runtimeVersion.asMinor().toString());
 			}
-			if (runtimeName != null && saveRuntimeName) {
-				node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
-			} else {
-				node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
-			}
-			node.put(ProjectPreferencesConstants.NODE_NAME, nodeName);
 			node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
 					.toString(fUnique));
-			node.put(ProjectPreferencesConstants.COOKIE, cookie);
+			node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
+			// TODO remove these later
+			node.remove("backend_cookie");
+			node.remove("backend_node");
+			// end todo
 			node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 					externalModulesFile);
 
@@ -296,7 +255,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		includeDirs = bprefs.includeDirs;
 		sourceDirs = bprefs.sourceDirs;
 		outputDir = bprefs.outputDir;
-		runtimeName = "";
 	}
 
 	public String getExternalIncludesFile() {
@@ -311,12 +269,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return project;
 	}
 
-	public void setRuntimeName(final String backendName) {
-		// TODO validate!
-		runtimeName = backendName;
-		saveRuntimeName = true;
-	}
-
 	public void setExternalModulesFile(final String externalModules) {
 		this.externalModulesFile = externalModules;
 	}
@@ -325,43 +277,15 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return externalModulesFile;
 	}
 
-	public String getRuntimeName() {
-		return runtimeName;
-	}
-
 	public RuntimeInfo getRuntimeInfo() {
-		final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
-				.getRuntimeInfoManager().getRuntime(runtimeName), false);
-		if (rt != null) {
-			rt.setNodeName(nodeName);
+		RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager().getRuntime(
+				runtimeVersion);
+		RuntimeInfo rt = null;
+		if (runtime != null) {
+			rt = RuntimeInfo.copy(runtime, false);
 			rt.setUniqueName(fUnique);
-			rt.setCookie(cookie);
 		}
 		return rt;
-	}
-
-	public void setCookie(final String text) {
-		cookie = text.trim();
-	}
-
-	public String getCookie() {
-		return cookie;
-	}
-
-	public String getNodeName() {
-		return nodeName;
-	}
-
-	public void setNodeName(final String text) {
-		nodeName = text.trim();
-	}
-
-	public void setUniqueName(final boolean unique) {
-		fUnique = unique;
-	}
-
-	public boolean isUniqueName() {
-		return fUnique;
 	}
 
 	public boolean hasSourceDir(final IPath fullPath) {
@@ -374,7 +298,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return false;
 	}
 
-	public String getRuntimeVersion() {
+	public RuntimeVersion getRuntimeVersion() {
 		return runtimeVersion;
 	}
 
@@ -386,5 +310,9 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		// ": "
 		// + event.getKey() + " " + event.getOldValue() + " "
 		// + event.getNewValue() + " ... " + event.getSource());
+	}
+
+	public void setRuntimeVersion(RuntimeVersion runtimeVersion) {
+		this.runtimeVersion = runtimeVersion;
 	}
 }

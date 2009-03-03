@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.runtime.PreferencesUtils;
+import org.erlide.runtime.backend.RuntimeVersion;
 import org.erlide.ui.ErlideUIPlugin;
 
 /**
@@ -46,7 +47,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	Text source;
 	Text include;
 	Text backendCookie;
-	Text backendName;
+	Text runtimeVersion;
 	private Button uz;
 	Text externalModules;
 	private Button externalModulesBrowse;
@@ -139,13 +140,13 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		createExternalModuleEditor(composite);
 
 		final Label nodeNameLabel = new Label(composite, SWT.NONE);
-		nodeNameLabel.setText("Node name");
+		nodeNameLabel.setText("Runtime version");
 
-		backendName = new Text(composite, SWT.BORDER);
+		runtimeVersion = new Text(composite, SWT.BORDER);
 		final GridData gd_backendName = new GridData(SWT.FILL, SWT.CENTER,
 				true, false);
-		backendName.setLayoutData(gd_backendName);
-		backendName.setText(prefs.getRuntimeName());
+		runtimeVersion.setLayoutData(gd_backendName);
+		runtimeVersion.setText(prefs.getRuntimeVersion().toString());
 		new Label(composite, SWT.NONE);
 
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
@@ -243,7 +244,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			prefs.setOutputDir(output.getText());
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
-			prefs.setRuntimeName(backendName.getText());
+			RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
+			prefs.setRuntimeVersion(rv);
 			prefs.setExternalModulesFile(externalModules.getText());
 
 			setPageComplete(testPageComplete());

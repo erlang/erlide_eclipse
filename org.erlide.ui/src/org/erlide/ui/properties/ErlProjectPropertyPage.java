@@ -144,9 +144,6 @@ public class ErlProjectPropertyPage extends PropertyPage {
 				ProjectPreferencesConstants.RUNTIME_NAME, "Node name",
 				rtComposite));
 
-		editors.add(new StringFieldEditor(ProjectPreferencesConstants.COOKIE,
-				"Cookie", rtComposite));
-
 		// //////////////////////////////////////////////
 
 		final TabItem codepathTabItem = new TabItem(tabFolder, SWT.NONE);

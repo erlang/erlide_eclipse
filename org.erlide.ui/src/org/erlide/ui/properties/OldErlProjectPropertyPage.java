@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.Arrays;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IAdaptable;
@@ -21,13 +23,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -37,28 +40,26 @@ import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoListener;
+import org.erlide.runtime.backend.RuntimeVersion;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class OldErlProjectPropertyPage extends PropertyPage implements
 		IPropertyChangeListener, RuntimeInfoListener {
 
-	private Button makeUniqueButton;
-	private Text cookie;
-	private Text nodeName;
-	Combo runtimeName;
+	private Combo runtimeVersion;
 	private Text output;
 	private Text source;
 	private Text include;
 	private MockupPreferenceStore mockPrefs;
 	private Button uz;
-	Text externalIncludes;
+	private Text externalIncludes;
 	private Button externalIncludesBrowse;
-	Text externalModules;
+	private Text externalModules;
 	private Button externalModulesBrowse;
-	private String runtimeVersion;
 
 	/**
 	 * Constructor for ErlProjectPropertyPage.
@@ -141,43 +142,25 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
-		nodeNameLabel_1.setText("Build backend:");
+		nodeNameLabel_1.setText("Build backend version:");
 
-		final Group group = new Group(composite, SWT.NONE);
-		final GridData gd_group = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd_group.widthHint = 331;
-		gd_group.heightHint = 84;
-		group.setLayoutData(gd_group);
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 3;
-		group.setLayout(gridLayout);
-
-		final Label runtimeLabel = new Label(group, SWT.NONE);
-		runtimeLabel.setText("Runtime");
-
-		runtimeName = new Combo(group, SWT.READ_ONLY);
-		runtimeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+		final Composite composite_1 = new Composite(composite, SWT.NONE);
+		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
+		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false));
-		runtimeName.addListener(SWT.Modify, modifyListener);
-		new Label(group, SWT.NONE);
 
-		final Label nodeNameLabel = new Label(group, SWT.NONE);
-		nodeNameLabel.setText("Node name");
+		runtimeVersion = new Combo(composite_1, SWT.READ_ONLY);
+		final RowData rd_runtimeVersion = new RowData();
+		rd_runtimeVersion.width = 28;
+		runtimeVersion.setLayoutData(rd_runtimeVersion);
+		String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
+		runtimeVersion.setItems(versions);
+		runtimeVersion.select(Arrays.binarySearch(versions,
+				BackendManager.DEFAULT_VERSION));
+		final Label minVersionLabel = new Label(composite_1, SWT.NONE);
+		minVersionLabel
+				.setText("    minimum version required, empty means any");
 
-		nodeName = new Text(group, SWT.BORDER);
-		nodeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		nodeName.addListener(SWT.Modify, modifyListener);
-
-		makeUniqueButton = new Button(group, SWT.CHECK);
-		makeUniqueButton.setText("make unique");
-
-		final Label cookieLabel = new Label(group, SWT.NONE);
-		cookieLabel.setText("Cookie");
-
-		cookie = new Text(group, SWT.BORDER);
-		final GridData gd_cookie = new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 2, 1);
-		cookie.setLayoutData(gd_cookie);
 		if (ErlideUtil.isTest()) {
 			new Label(composite, SWT.NONE);
 			Label l = new Label(composite, SWT.NONE);
@@ -268,43 +251,21 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		source.setText(prefs.getSourceDirsString());
 		include.setText(prefs.getIncludeDirsString());
 		output.setText(prefs.getOutputDir());
-		runtimeVersion = prefs.getRuntimeVersion();
+		RuntimeVersion rv = prefs.getRuntimeVersion();
+		if (!rv.isDefined()) {
+			RuntimeInfo runtimeInfo = prefs.getRuntimeInfo();
+			if (runtimeInfo != null) {
+				rv = runtimeInfo.getVersion();
+			}
+		}
+		String[] items = runtimeVersion.getItems();
+		RuntimeVersion asMinor = rv.asMinor();
+		runtimeVersion.select(Arrays.binarySearch(items, asMinor.toString()));
 
-		final String[] runtimes = ErlangCore.getRuntimeInfoManager()
-				.getRuntimeNames().toArray(new String[] {});
-		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
-				.getDefaultRuntime();
-		runtimeName.setItems(runtimes);
-		String rt = prefs.getRuntimeName();
-		int db = -1;
-		if (rt != null) {
-			db = 0;
-			for (String info : runtimes) {
-				if (info.equals(rt)) {
-					break;
-				}
-				db++;
-			}
-		} else if (defaultRuntime != null) {
-			rt = defaultRuntime.getName();
-			db = 0;
-			for (String info : runtimes) {
-				if (info.equals(rt)) {
-					break;
-				}
-				db++;
-			}
-		}
-		if (db >= 0 && db < runtimes.length) {
-			runtimeName.select(db);
-		}
 		if (ErlideUtil.isTest()) {
 			externalModules.setText(prefs.getExternalModulesFile());
 			externalIncludes.setText(prefs.getExternalIncludesFile());
 		}
-		nodeName.setText(prefs.getNodeName());
-		cookie.setText(prefs.getCookie());
-		makeUniqueButton.setSelection(prefs.isUniqueName());
 
 	}
 
@@ -313,17 +274,16 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		ErlangCore.getRuntimeInfoManager().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
+		IProject project = (IProject) prj.getAdapter(IProject.class);
 		final ErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
+				.getProjectProperties(project);
 
 		prefs.setOutputDir(output.getText());
 		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
-		prefs.setRuntimeName(runtimeName.getText());
-		prefs.setNodeName(nodeName.getText());
-		prefs.setCookie(cookie.getText());
-		prefs.setUniqueName(makeUniqueButton.getSelection());
+		prefs.setRuntimeVersion(new RuntimeVersion(runtimeVersion.getText()));
+
 		if (ErlideUtil.isTest()) {
 			prefs.setExternalModulesFile(externalModules.getText());
 			prefs.setExternalIncludesFile(externalIncludes.getText());
@@ -331,6 +291,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final IEclipsePreferences root = new ProjectScope(prefs.getProject())
 				.getNode(ErlangPlugin.PLUGIN_ID);
 		prefs.store(root);
+
 		return true;
 	}
 
@@ -352,19 +313,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 					.getResourceString("wizards.errors.sourcerequired"));
 			return false;
 		}
-		if (runtimeName.getText() == null
-				|| runtimeName.getText().trim().length() == 0) {
-			if (runtimeVersion == null) {
-				setErrorMessage("The backend's runtime has to be specified");
-				return false;
-			}
-		}
-		if (nodeName.getText() == null
-				|| nodeName.getText().trim().length() == 0) {
-			setErrorMessage("The backend's node name has to be specified");
-			return false;
-		}
-
 		setErrorMessage(null);
 		setMessage(null);
 		return true;
@@ -375,14 +323,13 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	}
 
 	public void infoChanged() {
-		if (runtimeName.isDisposed()) {
+		if (runtimeVersion.isDisposed()) {
 			return;
 		}
 		final String[] runtimes = ErlangCore.getRuntimeInfoManager()
 				.getRuntimeNames().toArray(new String[] {});
 		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
-		runtimeName.setItems(runtimes);
 		if (defaultRuntime != null) {
 			int db = 0;
 			for (String info : runtimes) {
@@ -392,7 +339,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				db++;
 			}
 			if (db >= 0 && db < runtimes.length) {
-				runtimeName.select(db);
 			}
 		}
 	}

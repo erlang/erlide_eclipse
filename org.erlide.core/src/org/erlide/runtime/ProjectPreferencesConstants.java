@@ -34,13 +34,7 @@ public final class ProjectPreferencesConstants {
 	public static final String DEFAULT_RUNTIME_VERSION = "R11B";
 
 	public static final String RUNTIME_NAME = "backend_name";
-	public static final String DEFAULT_RUNTIME_NAME = "erlide";
-
-	public static final String COOKIE = "backend_cookie";
-	public static final String DEFAULT_COOKIE = "";
-
-	public static final String NODE_NAME = "backend_node";
-	public static final String DEFAULT_NODENAME = "erlide";
+	public static final String DEFAULT_RUNTIME_NAME = "R11B";
 
 	public static final String USE_PATHZ = "use_pathz";
 	public static final String DEFAULT_USE_PATHZ = "false";

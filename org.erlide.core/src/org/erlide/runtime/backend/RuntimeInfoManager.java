@@ -293,20 +293,34 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 	 * runtimes.
 	 */
 	public List<RuntimeInfo> locateVersion(String version) {
+		RuntimeVersion vsn = new RuntimeVersion(version);
+		return locateVersion(vsn);
+	}
+
+	private List<RuntimeInfo> locateVersion(RuntimeVersion vsn) {
 		List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
 		for (RuntimeInfo info : getRuntimes()) {
-			String v = info.getVersion();
-			if (version == null || "".equals(version) || v.equals(version)) {
+			RuntimeVersion v = info.getVersion();
+			if (v.equals(vsn)) {
 				result.add(info);
 			}
 		}
 		// add even newer versions, but at the end
 		for (RuntimeInfo info : getRuntimes()) {
-			String v = info.getVersion();
-			if (!result.contains(info) && v.compareTo(version) > 0) {
+			RuntimeVersion v = info.getVersion();
+			if (!result.contains(info) && v.compareTo(vsn) > 0) {
 				result.add(info);
 			}
 		}
 		return result;
+	}
+
+	public RuntimeInfo getRuntime(RuntimeVersion runtimeVersion) {
+		List<RuntimeInfo> vsns = locateVersion(runtimeVersion);
+		if (vsns.size() == 0) {
+			return null;
+		} else {
+			return vsns.get(0);
+		}
 	}
 }

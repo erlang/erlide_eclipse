@@ -897,7 +897,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 				case 1:
 					return vm.getOtpHome();
 				case 2:
-					return vm.getVersion();
+					return vm.getVersion().toString();
 				}
 			}
 			return element.toString();

@@ -46,6 +46,13 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager implements IEpmdListener {
 
+	public static final String DEFAULT_VERSION = "R12B";
+	public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
+			"R11B", "R12B", "R13" };
+	public static final String[] SUPPORTED_VERSIONS = new String[] { "",
+			"R11B-3", "R11B-4", "R11B-5", "R12B-1", "R12B-2", "R12B-3",
+			"R12B-4", "R12B-5", "R13" };
+
 	private volatile Backend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
 	private final Map<IProject, Set<Backend>> fBackends;
@@ -140,6 +147,9 @@ public final class BackendManager implements IEpmdListener {
 		final ErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
+		if (info == null) {
+			return null;
+		}
 		info.setNodeName(System.getProperty("user.name") + "_"
 				+ Long.toHexString(System.currentTimeMillis()));
 		info.setUniqueName(true);// will add workspace unique id
@@ -233,10 +243,6 @@ public final class BackendManager implements IEpmdListener {
 
 	public void removeBackendListener(final BackendListener listener) {
 		fListeners.remove(listener);
-	}
-
-	private void fireUpdate(final Backend b, final BackendEvent type) {
-		new BackendChangeNotifier().notify(b, type);
 	}
 
 	/**
