@@ -31,10 +31,10 @@ public final class ProjectPreferencesConstants {
 	public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
 	public static final String RUNTIME_VERSION = "backend_version";
-	public static final String DEFAULT_RUNTIME_VERSION = "R11B";
+	public static final String DEFAULT_RUNTIME_VERSION = "R12B";
 
 	public static final String RUNTIME_NAME = "backend_name";
-	public static final String DEFAULT_RUNTIME_NAME = "R11B";
+	public static final String DEFAULT_RUNTIME_NAME = "erl5.6.5";
 
 	public static final String USE_PATHZ = "use_pathz";
 	public static final String DEFAULT_USE_PATHZ = "false";

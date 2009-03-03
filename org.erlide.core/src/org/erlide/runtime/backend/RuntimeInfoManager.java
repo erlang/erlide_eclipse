@@ -297,7 +297,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		return locateVersion(vsn);
 	}
 
-	private List<RuntimeInfo> locateVersion(RuntimeVersion vsn) {
+	public List<RuntimeInfo> locateVersion(RuntimeVersion vsn) {
 		List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
 		for (RuntimeInfo info : getRuntimes()) {
 			RuntimeVersion v = info.getVersion();
@@ -315,11 +315,19 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		return result;
 	}
 
-	public RuntimeInfo getRuntime(RuntimeVersion runtimeVersion) {
+	public RuntimeInfo getRuntime(RuntimeVersion runtimeVersion,
+			String runtimeName) {
 		List<RuntimeInfo> vsns = locateVersion(runtimeVersion);
 		if (vsns.size() == 0) {
 			return null;
+		} else if (vsns.size() == 1) {
+			return vsns.get(0);
 		} else {
+			for (RuntimeInfo ri : vsns) {
+				if (ri.getName().equals(runtimeName)) {
+					return ri;
+				}
+			}
 			return vsns.get(0);
 		}
 	}

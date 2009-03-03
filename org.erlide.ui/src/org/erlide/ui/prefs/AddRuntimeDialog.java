@@ -70,8 +70,6 @@ extends StatusDialog implements IListAdapter<String> {
 
 	private StringDialogField fName;
 	private StringButtonDialogField fOtpHome;
-	// private StringDialogField fNodeName;
-	// private StringDialogField fCookie;
 	private ListDialogField<String> fCodePath;
 	private StringDialogField fArgs;
 	private boolean returnNew;
@@ -102,22 +100,6 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	protected void createFieldListeners() {
-		fName.setDialogFieldListener(new IDialogFieldListener() {
-
-			public void dialogFieldChanged(DialogField field) {
-				setNameStatus(validateName());
-				updateStatusLine();
-			}
-		});
-		// fNodeName.setDialogFieldListener(new IDialogFieldListener() {
-		//
-		// public void dialogFieldChanged(DialogField field) {
-		// setNodeNameStatus(validateNodeName());
-		// updateStatusLine();
-		// }
-		//
-		// });
-
 		fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
 
 			public void dialogFieldChanged(DialogField field) {
@@ -125,7 +107,13 @@ extends StatusDialog implements IListAdapter<String> {
 				updateStatusLine();
 			}
 		});
+		fName.setDialogFieldListener(new IDialogFieldListener() {
 
+			public void dialogFieldChanged(DialogField field) {
+				setNameStatus(validateName());
+				updateStatusLine();
+			}
+		});
 	}
 
 	protected String getBackendName() {
@@ -134,15 +122,6 @@ extends StatusDialog implements IListAdapter<String> {
 
 	@Override
 	protected Control createDialogArea(Composite ancestor) {
-		fName = new StringDialogField();
-		fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
-
-		// fNodeName = new StringDialogField();
-		// fNodeName.setLabelText("node name");
-
-		// fCookie = new StringDialogField();
-		// fCookie.setLabelText("cookie");
-
 		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
 			public void changeControlPressed(DialogField field) {
@@ -151,6 +130,9 @@ extends StatusDialog implements IListAdapter<String> {
 		});
 		fOtpHome.setLabelText("Location"); //$NON-NLS-1$
 		fOtpHome.setButtonLabel("&Browse..."); //$NON-NLS-1$
+
+		fName = new StringDialogField();
+		fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
 		final String[] buttons = new String[] {
 				RuntimePreferenceMessages.addDialog_add,
@@ -168,10 +150,8 @@ extends StatusDialog implements IListAdapter<String> {
 		final Composite parent = (Composite) super.createDialogArea(ancestor);
 		((GridLayout) parent.getLayout()).numColumns = 3;
 
-		fName.doFillIntoGrid(parent, 3);
 		fOtpHome.doFillIntoGrid(parent, 3);
-		// fNodeName.doFillIntoGrid(parent, 3);
-		// fCookie.doFillIntoGrid(parent, 3);
+		fName.doFillIntoGrid(parent, 3);
 		fCodePath.doFillIntoGrid(parent, 3);
 		fArgs.doFillIntoGrid(parent, 3);
 
@@ -195,16 +175,11 @@ extends StatusDialog implements IListAdapter<String> {
 	private void initializeFields() {
 		if (fEditedRuntime == null) {
 			fName.setText(""); //$NON-NLS-1$
-			// fNodeName.setText("");
-			// fCookie.setText("");
 			fOtpHome.setText(""); //$NON-NLS-1$
 			fCodePath.setElements(new ArrayList<String>(5));
 			fArgs.setText(""); //$NON-NLS-1$
 		} else {
 			fName.setText(fEditedRuntime.getName());
-			// fNodeName.setText(fEditedRuntime.getNodeName());
-			// final String cookie = fEditedRuntime.getCookie();
-			// fCookie.setText(cookie == null ? "" : cookie);
 			fOtpHome.setText(fEditedRuntime.getOtpHome());
 			fCodePath.setElements(fEditedRuntime.getCodePath());
 			fArgs.setText(fEditedRuntime.getArgs());
@@ -236,21 +211,6 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 		return status;
 	}
-
-	// protected IStatus validateNodeName() {
-	// final StatusInfo status = new StatusInfo();
-	// final String name = fNodeName.getText();
-	// if (name == null || name.trim().length() == 0) {
-	//			status.setError("Enter the runtime's node name"); //$NON-NLS-1$
-	// } else {
-	// boolean ok = RuntimeInfo.validateNodeName(name);
-	// if (!ok) {
-	// status.setError("The node name is invalid, "
-	// + "it should match [a-zA-Z0-9_-]+");
-	// }
-	// }
-	// return status;
-	// }
 
 	protected IStatus validateLocation() {
 		final StatusInfo status = new StatusInfo();
@@ -303,8 +263,6 @@ extends StatusDialog implements IListAdapter<String> {
 	protected void storeValues(RuntimeInfo runtime) {
 		runtime.setOtpHome(fOtpHome.getText());
 		runtime.setName(fName.getText());
-		// runtime.setNodeName(fNodeName.getText());
-		// runtime.setCookie(fCookie.getText());
 		runtime.setCodePath(fCodePath.getElements());
 		final String argString = fArgs.getText().trim();
 		runtime.setArgs(argString);
@@ -478,6 +436,10 @@ extends StatusDialog implements IListAdapter<String> {
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fOtpHome.setText(newPath);
+			File f = new File(newPath);
+			if (fName.getText().equals("")) {
+				fName.setText(f.getName());
+			}
 		}
 	}
 

@@ -37,12 +37,11 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-
-	private RuntimeVersion runtimeVersion;
+	private RuntimeVersion runtimeVersion = new RuntimeVersion(
+			ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+	private String runtimeName = null;
 
 	private boolean fUnique = true;
-
-	private boolean saveRuntimeName;
 
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
@@ -95,6 +94,22 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
 		runtimeVersion = new RuntimeVersion(node.get(
 				ProjectPreferencesConstants.RUNTIME_VERSION, null));
+		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
+		if (!runtimeVersion.isDefined()) {
+			if (runtimeName == null) {
+				runtimeVersion = new RuntimeVersion(
+						ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+			} else {
+				RuntimeInfo ri = ErlangCore.getRuntimeInfoManager().getRuntime(
+						runtimeName);
+				if (ri != null) {
+					runtimeVersion = new RuntimeVersion(ri.getVersion());
+				} else {
+					runtimeVersion = new RuntimeVersion(
+							ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+				}
+			}
+		}
 		fUnique = Boolean.parseBoolean(node.get(
 				ProjectPreferencesConstants.MK_UNIQUE, "true"));
 		externalModulesFile = node.get(
@@ -133,10 +148,16 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			if (runtimeVersion.isDefined()) {
 				node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
 						runtimeVersion.asMinor().toString());
+			} else {
+				node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
+			}
+			if (runtimeName != null) {
+				node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
+			} else {
+				node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
 			}
 			node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
 					.toString(fUnique));
-			node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
 			// TODO remove these later
 			node.remove("backend_cookie");
 			node.remove("backend_node");
@@ -279,7 +300,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 
 	public RuntimeInfo getRuntimeInfo() {
 		RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager().getRuntime(
-				runtimeVersion);
+				runtimeVersion, runtimeName);
 		RuntimeInfo rt = null;
 		if (runtime != null) {
 			rt = RuntimeInfo.copy(runtime, false);
