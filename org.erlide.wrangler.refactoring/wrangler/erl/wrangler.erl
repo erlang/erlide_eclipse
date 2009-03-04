@@ -691,7 +691,8 @@ try_refactoring(Mod, Fun, Args) ->
      catch
  	throw:Error -> 
   	    Error;
- 	_E1:_E2->
-	     {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
+ 	_E1:E2->
+	     %%{error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
+		{error, E2}
      end.
 

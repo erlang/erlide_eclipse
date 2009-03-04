@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerRPCException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerRefactoringException;
@@ -71,9 +72,16 @@ public class RPCMessage {
 	protected void checkOkResultCases(OtpErlangTuple tuple)
 			throws WranglerRefactoringException {
 		if (!tuple.elementAt(0).toString().equals("ok")) {
-			String message = ((OtpErlangString) tuple.elementAt(1))
-					.stringValue();
-			throw new WranglerRefactoringException(message);
+			if (tuple.elementAt(1) instanceof OtpErlangString) {
+				String message = ((OtpErlangString) tuple.elementAt(1))
+						.stringValue();
+				throw new WranglerRefactoringException(message);
+			} else {
+				ErlLogger.debug("Wrangler error: " + tuple);
+				throw new WranglerRefactoringException(
+						"Wrangler failed to perform this refactoring,"
+								+ " please report error to erlang-refactor@kent.ac.uk.");
+			}
 		}
 	}
 
