@@ -118,7 +118,7 @@ mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
 mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
 
--record(i, {anchor, indent_line, current, in_block, prefs, old_line, indent_now}).
+-record(i, {anchor, indent_line, current, in_block, prefs, old_line}).
 
 get_prefs([], OldP, Acc) ->
     Acc ++ OldP;
@@ -202,7 +202,7 @@ i_check_aux([], I) ->
 i_check_aux(_, _) ->
     not_yet.
 
-i_check(T, #i{indent_now=undefined} = I) ->
+i_check(T, I) ->
     case i_check_aux(T, I) of
         not_yet ->
             not_yet;
