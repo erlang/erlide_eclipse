@@ -142,7 +142,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
-		nodeNameLabel_1.setText("Build backend version:");
+		nodeNameLabel_1.setText("Build runtime version:");
 
 		final Composite composite_1 = new Composite(composite, SWT.NONE);
 		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -150,21 +150,20 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				false));
 
 		runtimeVersion = new Combo(composite_1, SWT.READ_ONLY);
+		runtimeVersion
+				.setToolTipText("Which runtime version to build with? \nEmpty means any.");
 		final RowData rd_runtimeVersion = new RowData();
-		rd_runtimeVersion.width = 28;
+		rd_runtimeVersion.width = 64;
 		runtimeVersion.setLayoutData(rd_runtimeVersion);
 		String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
 		runtimeVersion.setItems(versions);
 		runtimeVersion.select(Arrays.binarySearch(versions,
 				BackendManager.DEFAULT_VERSION));
-		final Label minVersionLabel = new Label(composite_1, SWT.NONE);
-		minVersionLabel
-				.setText("    minimum version required, empty means any");
 
 		if (ErlideUtil.isTest()) {
 			new Label(composite, SWT.NONE);
 			Label l = new Label(composite, SWT.NONE);
-			l.setText("External Modules:");
+			l.setText("External modules:");
 
 			externalModules = new Text(composite, SWT.BORDER);
 			final GridData gd1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -188,7 +187,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 			});
 			l = new Label(composite, SWT.NONE);
-			l.setText("External Include:");
+			l.setText("External includes:");
 
 			externalIncludes = new Text(composite, SWT.BORDER);
 			final GridData gd2 = new GridData(SWT.FILL, SWT.CENTER, true, false);
