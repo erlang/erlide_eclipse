@@ -21,7 +21,7 @@ public class ShowOutlineAction extends TextEditorAction {
 			final ErlangEditor editor = (ErlangEditor) getTextEditor();
 			final QuickOutlinePopupDialog quickOutlinePopupDialog = new QuickOutlinePopupDialog(
 					getTextEditor().getSite().getShell(), SWT.NONE, editor,
-					editor);
+					editor, editor);
 			quickOutlinePopupDialog.setVisible(true);
 		}
 	}

@@ -311,7 +311,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 					final Shell parent) {
 				final int shellStyle = SWT.RESIZE;
 				final QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
-						parent, shellStyle, editor, editor);
+						parent, shellStyle, editor, editor, editor);
 				return dialog;
 			}
 		};

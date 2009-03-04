@@ -54,6 +54,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
@@ -84,12 +85,14 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	private ITreeContentProvider fTreeContentProvider;
 
 	private ILabelProvider fTreeLabelProvider;
+	
+	private ErlangEditor fEditor;
 
 	// private ViewerComparator fTreeViewerComparator;
 	//
 	// private ViewerComparator fTreeViewerDefaultComparator;
 
-	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
+	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle, ErlangEditor editor,
 			final IOutlineContentCreator creator,
 			final IOutlineSelectionHandler handler) {
 		super(parent, shellStyle, true, true, true, true, true, null, null);
@@ -98,6 +101,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		// Set outline handler
 		fOutlineSelectionHandler = handler;
 		// Initialize the other fields
+		fEditor = editor;
 		initialize();
 		// Create all controls early to preserve the life cycle of the original
 		// implementation.
@@ -566,24 +570,16 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	/**
 	 *
 	 */
-	void gotoSelectedElement() {
+	protected void gotoSelectedElement() {
 		final Object selectedElement = getSelectedElement();
 		ErlLogger.debug("&&>> " + selectedElement);
 		if (selectedElement == null) {
 			return;
 		}
 		dispose();
-		IEditorPart part;
-		try {
-			part = EditorUtility.openInEditor(selectedElement, true);
-			if (part != null && selectedElement instanceof IErlElement) {
-				EditorUtility.revealInEditor(part,
-						(IErlElement) selectedElement);
-			}
-		} catch (final PartInitException e) {
-			ErlLogger.info(e);
-		} catch (final ErlModelException e) {
-			ErlLogger.info(e);
+		if (fEditor!= null && selectedElement instanceof IErlElement) {
+			EditorUtility.revealInEditor(fEditor,
+					(IErlElement) selectedElement);
 		}
 	}
 

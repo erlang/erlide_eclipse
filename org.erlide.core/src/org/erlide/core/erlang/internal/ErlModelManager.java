@@ -462,18 +462,18 @@ public class ErlModelManager implements IErlModelManager {
 			final ArrayList<IResource> changed = new ArrayList<IResource>();
 			final ArrayList<IResource> removed = new ArrayList<IResource>();
 			final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-				public boolean visit(IResourceDelta delta) {
+				public boolean visit(final IResourceDelta delta) {
 					if (verbose) {
 						ErlLogger.debug("delta " + delta.getKind() + " for "
 								+ delta.getResource().getLocation());
 					}
-					IResource resource = delta.getResource();
-					boolean erlangFile = resource.getType() == IResource.FILE
+					final IResource resource = delta.getResource();
+					final boolean erlangFile = resource.getType() == IResource.FILE
 							&& ErlideUtil
 									.hasModuleExtension(resource.getName());
-					boolean erlangProject = resource.getType() == IResource.PROJECT
+					final boolean erlangProject = resource.getType() == IResource.PROJECT
 							&& ErlideUtil.hasErlangNature((IProject) resource);
-					boolean erlangFolder = resource.getType() == IResource.FOLDER;
+					final boolean erlangFolder = resource.getType() == IResource.FOLDER;
 					// &&
 					// ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
 					// IFolder)
@@ -1212,7 +1212,8 @@ public class ErlModelManager implements IErlModelManager {
 			final String initialText, final String path, final Object key) {
 		IErlModule m = moduleMap.get(key);
 		if (m == null) {
-			m = new ErlModuleWithoutResource(null, name, initialText, path);
+			final IErlModel model = getErlangModel();
+			m = new ErlModuleWithoutResource(model, name, initialText, path);
 			if (key != null) {
 				moduleMap.put(key, m);
 				mapModule.put(m, key);
