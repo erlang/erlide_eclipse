@@ -9,13 +9,13 @@ a {color:#4088b8; text-decoration:none;}
 a:hover {text-decoration:underline;}
 a img {border:0;}
 p {margin:0 0 18px 10px;}
-ul,ol {font-size:0.9em; margin:2px 0 16px 35px; list-style-type:disc;}
-ul ul,ol ol {margin:4px 0 4px 35px; list-style-type:circle;}
-li {list-style-type:inherit;}
+ul,ol {font-size:0.9em; margin:2px 0 16px 35px;}
+ul ul,ol ol {margin:4px 0 4px 35px;}
 blockquote {border:1px solid #dadada; font-size:0.9em; margin:20px 10px; padding:8px;}
 blockquote p {margin:0;}
-strong {font-weight:bold;}
-code {font-family:Courier,monospace; font-size:inherit;}
+table {border-style:none;}
+
+code {font-family:Courier,monospace; }
 dl {font-size:0.9em; margin:2px 0 16px 35px;}
 dt {font-weight:bold;}
 dd {margin-left:2em;}
@@ -34,7 +34,6 @@ h3 {border-bottom:1px solid #dadada; color:#4088b8; font-size:1.2em; font-weight
 #slogan {color:gray; font-size:0.9em; font-weight:700; letter-spacing:-1px; line-height:1.2em; margin:15px 0 20px 35px;}
 
 /* Sidebar and menu */
-/* background:#FFFFFF url(images/left-nav-background.gif) repeat-y scroll 0 0; */
 #sidebar {float:left; line-height:1.4em; margin:0 0 5px; padding:1px 0 0; width:195px;}
 #sidebar ul {font-size:0.9em; list-style:none; margin:0; padding:0 0 15px 10px;}
 #sidebar li {list-style:none; margin:0 0 4px; padding:0;}
@@ -85,7 +84,8 @@ padding-right: 50px;
 text-align:right;
 }
 #resources {width: 234px;padding: 5px 0;float: right;border-bottom: 1px solid #abc4e2;background: #e4eaf7 url(images/resources-background.gif) repeat-y;overflow: auto;}
-#resources ul {margin: 0;padding: 0 25px;list-style: none;}
+#resources ul {margin: 0;padding: 0 25px;}
+#resources li {list-style: none;}
 #ResourcesB {float: right;}
 #resources a {text-decoration: none;}
 #resources a:link, #Resources a:visited, #Resources a:hover, #Resources a:active {color: #4c5770;}
