@@ -15,6 +15,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -281,9 +282,10 @@ public class RefactoringParameters {
 	}
 
 	/**
-	 * Initializes the active selection.
+	 * Initializes the active selection and editor.
 	 */
-	public void initSelection() {
+	public void init() {
+		refreshEditorPart();
 		selection = (ITextSelection) (editor.getSelectionProvider()
 				.getSelection());
 	}
@@ -305,6 +307,21 @@ public class RefactoringParameters {
 		selection = (ITextSelection) (editor.getSelectionProvider()
 				.getSelection());
 
+	}
+
+	/**
+	 * Refreshes the stored editor.
+	 */
+	public void refreshEditorPart() {
+		try {
+			IEditorPart editor = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage()
+					.getActiveEditor();
+
+			setEditorPart(editor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

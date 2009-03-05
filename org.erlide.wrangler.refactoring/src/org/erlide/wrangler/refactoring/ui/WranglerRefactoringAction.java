@@ -34,6 +34,8 @@ public abstract class WranglerRefactoringAction implements
 	}
 
 	public void init(IWorkbenchWindow window) {
+		window.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor().setFocus();
 	}
 
 	/**
@@ -65,7 +67,7 @@ public abstract class WranglerRefactoringAction implements
 	 */
 	public void run(IAction action) {
 
-		parameters.initSelection();
+		parameters.init();
 
 		refactoringName = initRefactoringName();
 		refactoring = initWranglerRefactoring();

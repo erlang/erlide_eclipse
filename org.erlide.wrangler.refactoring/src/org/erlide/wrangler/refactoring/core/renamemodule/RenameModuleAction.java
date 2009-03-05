@@ -22,5 +22,4 @@ public class RenameModuleAction extends WranglerRefactoringAction {
 		return new RenameModuleWizard(refactoring,
 				RefactoringWizard.DIALOG_BASED_USER_INTERFACE);
 	}
-
 }
