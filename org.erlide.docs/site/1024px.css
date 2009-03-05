@@ -1,111 +1,423 @@
-/*
-Original design: 1024px (v3.0 - Apr 24, 2008) - A free xhtml/css website template by Andreas Viklund.
-For more information, see http://andreasviklund.com/templates/1024px/
+/*!
+Original design: http://andreasviklund.com/templates/1024px/
+Modified by Vlad Dumitrescu, 2009
 */
-
-/* General tags */
-body {background:url(images/background.gif) repeat-y top center #fff; color:#404040; font:76% Verdana,Tahoma,Arial,sans-serif; line-height:1.3em; margin:0 auto; padding:0; text-align:left;}
-a {color:#4088b8; text-decoration:none;}
-a:hover {text-decoration:underline;}
-a img {border:0;}
-p {margin:0 0 18px 10px;}
-ul,ol {font-size:0.9em; margin:2px 0 16px 35px;}
-ul ul,ol ol {margin:4px 0 4px 35px;}
-blockquote {border:1px solid #dadada; font-size:0.9em; margin:20px 10px; padding:8px;}
-blockquote p {margin:0;}
-table {border-style:none;}
-
-code {font-family:Courier,monospace; }
-dl {font-size:0.9em; margin:2px 0 16px 35px;}
-dt {font-weight:bold;}
-dd {margin-left:2em;}
-
-/* Headers */
-h1 {color:#4088b8; font-size:3.6em; letter-spacing:-3px; margin:0 0 20px 25px; font-weight:bold;}
-h1 a {color:#4088b8; text-transform:none; font-weight:bold;}
-h2 {border-bottom:4px solid #dadada; color:#4088b8; font-size:1.4em; letter-spacing:-1px; margin:0 0 10px; padding:0 2px 2px 5px; font-weight:bold;}
-h3 {border-bottom:1px solid #dadada; color:#4088b8; font-size:1.2em; font-weight:700; margin:10px 0 8px; padding:1px 2px 2px 3px; font-weight:bold;}
-
-/* Main wrap */
-#wrap {color:#404040; margin:10px auto; padding:0; width:970px;}
-#header {margin:0; margin-bottom:20px;}
-#toplinks {font-size:0.9em; padding:5px 2px 2px 3px; text-align:right;}
-#toplinks a {color:gray;}
-#slogan {color:gray; font-size:0.9em; font-weight:700; letter-spacing:-1px; line-height:1.2em; margin:15px 0 20px 35px;}
-
-/* Sidebar and menu */
-#sidebar {float:left; line-height:1.4em; margin:0 0 5px; padding:1px 0 0; width:195px;}
-#sidebar ul {font-size:0.9em; list-style:none; margin:0; padding:0 0 15px 10px;}
-#sidebar li {list-style:none; margin:0 0 4px; padding:0;}
-#sidebar li a {font-size:1.2em; font-weight:700; padding:2px;}
-#sidebar ul ul {line-height:1.2em; margin:4px 0 3px 15px; padding:0;}
-#sidebar ul ul li a {font-weight:400;}
-#sidebar h2 {margin:3px 0 8px;}
-#sidebar dl {font-size:0.9em; margin:0; padding:0 0 15px 10px;}
-
-/* Main content */
-#content {float:right; line-height:1.5em; margin:0; padding:0; text-align:left; width:750px;}
-#contentalt {float:left; line-height:1.5em; margin-right:20px; padding:0; text-align:left; width:750px;}
-#content h3,#contentalt h3 {margin:10px 0 8px;}
-#content a {font-weight:bold;}
-
-/* Footer */
-#footer {border-top:4px solid #dadada; clear:both; color:gray; font-size:0.9em; line-height:1.6em; margin:0 auto; padding:8px 0; text-align:right;}
-#footer p {margin:0; padding:0;}
-#footer a {color:#808080;}
-
-/* Additional classes */
-.box {background:#4088b8; border:1px solid #c8c8c8; color:#fff; font-size:0.9em; line-height:1.4em; padding:10px 10px 10px 13px;}
-.box a {color:#f0f0f0;}
-.left {float:left; margin:0 15px 4px 0;}
-.right {float:right; margin:0 0 4px 15px;}
-.readmore {margin:-10px 10px 12px 0; text-align:right;}
-.timestamp {font-size:1.2em; margin:-5px 0 15px 10px;}
-.timestamp a {font-weight:normal;}
-.blue {color:#4088b8;}
-.clear {clear:both;}
-.fade {color:#c8c8c8;}
-.gray {color:gray;}
-.photo {background:#fff; border:1px solid #bababa; margin:6px 18px 2px 5px; padding:2px;}
-
-
-#logo {
-padding-top:30px;
-padding-right:60px;
-border:0 none;
-float:left;
+BODY, DIV, DL, DT, DD, UL, OL, LI, H1, H2, H3, H4, H5, H6, PRE, FORM, FIELDSET, INPUT, TEXTAREA, P, BLOCKQUOTE, TH, TD
+{
+	margin: 0;
+	padding: 0;
 }
-#logo h1 {font-family:Georgia,"Times New Roman",Times,serif;}
-#intro {
-border-left:1px solid #ABC4E2;
-overflow:auto;
-padding-top:3em;
-padding-right: 50px;
-text-align:right;
+.important
+{
+	border-color: red;
 }
-#resources {width: 234px;padding: 5px 0;float: right;border-bottom: 1px solid #abc4e2;background: #e4eaf7 url(images/resources-background.gif) repeat-y;overflow: auto;}
-#resources ul {margin: 0;padding: 0 25px;}
-#resources li {list-style: none;}
-#ResourcesB {float: right;}
-#resources a {text-decoration: none;}
-#resources a:link, #Resources a:visited, #Resources a:hover, #Resources a:active {color: #4c5770;}
-#resources a:hover {text-decoration: underline;}
-
-.WikiSearchInput {
-border:1px solid #AAAAAA;
-font-size:11px;
-height:1.3em;
-margin:0;
-padding:0;
-width:136px;
+TABLE
+{
+	border-collapse: collapse;
+	border-spacing: 0;
 }
-.WikiSearch {
-text-align:center;
+FIELDSET, IMG
+{
+	border: 0;
 }
-#search {
-background-color:#D6D6D6;
-border:1px solid #AAAAAA;
-font-size:11px;
-margin:0;
-vertical-align:top;
+ADDRESS, CAPTION, CITE, CODE, DFN, EM, STRONG, TH, VAR
+{
+	font-style: normal;
+	font-weight: normal;
+}
+STRONG
+{
+	font-weight: bold;
+}
+OL, UL
+{
+	list-style: none;
+}
+CAPTION, TH
+{
+	text-align: left;
+}
+H1, H2, H3, H4, H5, H6
+{
+	font-size: 100%;
+	font-weight: normal;
+}
+Q:before, Q:after
+{
+	content: '';
+}
+ABBR, ACRONYM
+{
+	border: 0;
+}
+/*General tags*/
+BODY
+{
+	background: #FFF url(images/background.gif) repeat-y top center;
+	color: #404040;
+	font: 76% Verdana, Tahoma, Arial, sans-serif;
+	line-height: 1.3em;
+	margin: 0 auto;
+	padding: 0;
+	text-align: left;
+}
+A
+{
+	color: #4088B8;
+	text-decoration: none;
+}
+A:hover
+{
+	text-decoration: underline;
+}
+A IMG
+{
+	border: 0;
+}
+P
+{
+	margin: 0 0 18px 10px;
+}
+UL, OL
+{
+	font-size: 0.9em;
+	margin: 2px 0 16px 35px;
+	list-style: disc outside;
+}
+UL UL, OL OL
+{
+	margin: 4px 0 4px 35px;
+	list-style: circle outside;
+}
+BLOCKQUOTE
+{
+	border: 1px solid #DADADA;
+	font-size: 0.9em;
+	margin: 20px 10px;
+	padding: 8px;
+}
+BLOCKQUOTE P
+{
+	margin: 0;
+}
+TABLE
+{
+	border-style: none;
+}
+CODE
+{
+	font-family: Courier, monospace;
+}
+DL
+{
+	font-size: 0.9em;
+	margin: 2px 0 16px 35px;
+}
+DT
+{
+	font-weight: bold;
+}
+DD
+{
+	margin-left: 2em;
+}
+/*Headers*/
+H1
+{
+	color: #4088B8;
+	font-size: 3.6em;
+	letter-spacing: -3px;
+	margin: 0 0 20px 25px;
+	font-weight: bold;
+}
+H1 A
+{
+	color: #4088B8;
+	text-transform: none;
+	font-weight: bold;
+}
+H2
+{
+	border-bottom: 4px solid #DADADA;
+	color: #4088B8;
+	font-size: 1.4em;
+	letter-spacing: -1px;
+	margin: 0 0 10px;
+	padding: 0 2px 2px 5px;
+	font-weight: bold;
+}
+H3
+{
+	border-bottom: 1px solid #DADADA;
+	color: #4088B8;
+	font-size: 1.2em;
+	font-weight: 700;
+	margin: 10px 0 8px;
+	padding: 1px 2px 2px 3px;
+	font-weight: bold;
+}
+/*Main wrap*/
+#wrapper
+{
+	color: #404040;
+	margin: 10px auto;
+	padding: 0;
+	width: 970px;
+}
+#header
+{
+	margin: 0;
+	margin-bottom: 20px;
+}
+#toplinks
+{
+	font-size: 0.9em;
+	padding: 5px 2px 2px 3px;
+	text-align: right;
+}
+#toplinks A
+{
+	color: gray;
+}
+#slogan
+{
+	color: gray;
+	font-size: 0.9em;
+	font-weight: 700;
+	letter-spacing: -1px;
+	line-height: 1.2em;
+	margin: 15px 0 20px 35px;
+}
+/*Sidebar and menu*/
+#sidebar
+{
+	float: left;
+	line-height: 1.3em;
+	margin: 0 0 5px;
+	padding: 0;
+	width: 195px;
+}
+#sidebar UL
+{
+	font-size: 0.9em;
+	list-style: none;
+	margin: 0;
+	padding: 0 0 15px 10px;
+}
+#sidebar LI
+{
+	list-style: none;
+	margin: 0 0 4px;
+	padding: 0;
+}
+#sidebar LI A
+{
+	font-size: 1.2em;
+	font-weight: 700;
+	padding: 2px;
+}
+#sidebar UL UL
+{
+	line-height: 1.2em;
+	margin: 4px 0 3px 15px;
+	padding: 0;
+}
+#sidebar UL UL LI A
+{
+	font-weight: 400;
+}
+#sidebar H2
+{
+	margin: 3px 0 8px;
+}
+#sidebar DL
+{
+	font-size: 0.9em;
+	margin: 0;
+	padding: 0 0 15px 10px;
+}
+/*Main content*/
+#content
+{
+	float: right;
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	width: 750px;
+}
+#contentalt
+{
+	float: left;
+	line-height: 1.5em;
+	margin-right: 20px;
+	padding: 0;
+	text-align: left;
+	width: 750px;
+}
+#content H3, #contentalt H3
+{
+	margin: 10px 0 8px;
+}
+#content A
+{
+	font-weight: bold;
+}
+/*Footer*/
+#footer
+{
+	border-top: 4px solid #DADADA;
+	clear: both;
+	color: gray;
+	font-size: 0.9em;
+	line-height: 1.6em;
+	margin: 0 auto;
+	padding: 8px 0;
+	text-align: right;
+}
+#footer P
+{
+	margin: 0;
+	padding: 0;
+}
+#footer A
+{
+	color: #808080;
+}
+/*Additional classes*/
+.box
+{
+	background: #4088B8;
+	border: 1px solid #C8C8C8;
+	color: #FFF;
+	font-size: 0.9em;
+	line-height: 1.4em;
+	padding: 10px 10px 10px 13px;
+}
+.box A
+{
+	color: #F0F0F0;
+}
+.left
+{
+	float: left;
+	margin: 0 15px 4px 0;
+}
+.right
+{
+	float: right;
+	margin: 0 0 4px 15px;
+}
+.readmore
+{
+	margin: -10px 10px 12px 0;
+	text-align: right;
+}
+.timestamp
+{
+	font-size: 1em;
+	margin: -5px 0 15px 10px;
+}
+.timestamp A
+{
+	font-weight: normal;
+}
+.blue
+{
+	color: #4088B8;
+}
+.clear
+{
+	clear: both;
+}
+.fade
+{
+	color: #C8C8C8;
+}
+.gray
+{
+	color: gray;
+}
+.photo
+{
+	background: #FFF;
+	border: 1px solid #BABABA;
+	margin: 6px 18px 2px 5px;
+	padding: 2px;
+}
+#logo
+{
+	padding-top: 30px;
+	padding-right: 60px;
+	border: 0 none;
+	float: left;
+}
+#logo H1
+{
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #A80103;
+}
+#intro
+{
+	border-left: 1px solid #ABC4E2;
+	overflow: auto;
+	padding-top: 3em;
+	padding-right: 50px;
+	text-align: right;
+	color: #999;
+}
+#resources
+{
+	width: 234px;
+	padding: 5px 0;
+	float: right;
+	border-bottom: 1px solid #ABC4E2;
+	background: #E4EAF7 url(images/resources-background.gif) repeat-y;
+	overflow: auto;
+}
+#resources UL
+{
+	margin: 0;
+	padding: 0 25px;
+}
+#resources LI
+{
+	list-style: none;
+}
+#resourcesB
+{
+	float: right;
+}
+#resources A
+{
+	text-decoration: none;
+}
+#resources A:link, #resources A:visited, #resources A:hover, #resources A:active
+{
+	color: #4C5770;
+}
+#resources A:hover
+{
+	text-decoration: underline;
+}
+.WikiSearchInput
+{
+	border: 1px solid #AAAAAA;
+	font-size: 11px;
+	height: 1.3em;
+	margin: 0;
+	padding: 0;
+	width: 136px;
+}
+.WikiSearch
+{
+	text-align: center;
+}
+#search
+{
+	background-color: #D6D6D6;
+	border: 1px solid #AAAAAA;
+	font-size: 11px;
+	margin: 0;
+	vertical-align: top;
 }
