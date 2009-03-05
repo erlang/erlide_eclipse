@@ -117,6 +117,15 @@ CODE
 {
 	font-size: 0.9em;
 }
+ul.sidemenu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+ul.sidelinks {
+    margin-left: 20px;
+    padding: 0;
+}
 .sidelink
 {
 	display: block;
@@ -219,6 +228,11 @@ SPAN.guimenuitem
 {
 	font-style: italic;
 }
-
+span._A80103 {
+    color: #A80103;
+}
+span._5C4A95 {
+    color: #5C4A95;
+}
 /*Original open source design by Andreas Viklund - http://andreasviklund.com
 Released through OSWD.org*/

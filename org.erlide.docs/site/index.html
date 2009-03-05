@@ -1,217 +1,324 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-<meta name="description"
-	content="Erlide, the Erlang IDE. Powered by Eclipse." />
-<meta name="keywords" content="erlang,ide,eclipse,java,plugin" />
-<meta name="author"
-	content="Vlad Dumitrescu  / Original design: Andreas Viklund - http://andreasviklund.com/" />
-<link rel="stylesheet" type="text/css" href="andreas03.css" />
-<link rel="alternate" type="application/rss+xml"
-	title="Erlide Project News"
-	href="http://sourceforge.net/export/rss2_projnews.php?group_id=58889&rss_fulltext=1" />
-<title>Erlide - the Erlang IDE. Powered by Eclipse.</title>
-</head>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
+        <meta name="description" content="Erlide, the Erlang IDE. Powered by Eclipse."/>
+        <meta name="keywords" content="erlang,ide,eclipse,java,plugin"/>
+        <meta name="author"
+            content="Vlad Dumitrescu  / Original design: Andreas Viklund - http://andreasviklund.com/"/>
+        <link rel="stylesheet" type="text/css" href="andreas03.css"/>
+        <link rel="alternate" type="application/rss+xml" title="Erlide Project News"
+            href="http://sourceforge.net/export/rss2_projnews.php?group_id=58889&amp;rss_fulltext=1"/>
+        <title>Erlide - the Erlang IDE. Powered by Eclipse.</title>
+    </head>
 
-<body>
-<div id="thetop"><a id="top"></a>
-<p class="hide" style="margin-bottom: 0">Skip to: <a
-	href="#sitemenu" accesskey="2">Site menu</a> | <a href="#maincontent"
-	accesskey="3">Main content</a></p>
-</div>
+    <body>
+        <div id="thetop">
+            <a id="top"/>
+            <p class="hide" style="margin-bottom: 0">Skip to: <a href="#sitemenu" accesskey="2">Site
+                    menu</a> | <a href="#maincontent" accesskey="3">Main content</a></p>
+        </div>
 
-<div id="container">
-<div id="main">
+        <div id="container">
+            <div id="main">
 
-<div id="logo">
-<h1><a href="index.html" accesskey="4"><font color="#A80103">erl</font><font color="#5C4A95">IDE</font></a></h1>
-<span id="tagline">Turbo charged Erlang development.<br/>Powered by Eclipse.</span></div>
+                <div id="logo">
+                    <h1>
+                        <a href="index.html" accesskey="4">
+                            <span class="_A80103">erl</span>
+                            <span class="_5C4A95">IDE</span>
+                        </a>
+                    </h1>
+                    <span id="tagline">Turbo charged Erlang development.<br/>Powered by
+                        Eclipse.</span>
+                </div>
 
-<div id="intro">
-<br/><br/><br/>
-<p style="margin-bottom: 0;"><a href="http://www.erlang.org">Erlang</a>
-is a open-sourced concurrency-oriented programming language, developed
-by <a href="http://www.ericsson.com">Ericsson</a>. It has proven itself
-in many industrial applications as a powerful tool. Now we are building
-a development environment that will boost programmer efficiency even
-more.</p>
-</div>
-<div class="clear"></div>
+                <div id="intro">
+                    <p style="margin-top: 3em;"><a href="http://www.erlang.org">Erlang</a> is a
+                        open-sourced concurrency-oriented programming language, developed by <a
+                            href="http://www.ericsson.com">Ericsson</a>. It has proven itself in
+                        many industrial applications as a powerful tool. Now we are building a
+                        development environment that will boost programmer efficiency even more.</p>
+                </div>
 
-<h3 class="headerstyle">Overview</h3>
-<p>We are proud to announce the latest version that is <strong>0.4.3</strong>
-and offers the following features:</p>
-<ul>
-	<li>Works with Eclipse 3.3, Java 1.5 and Erlang R11B, or
-	later.</li>
-	<li><img src="img/new.gif" alt="" /> Debugger!</li>
-	<li><img src="img/new.gif" alt="" /> Improved stability and
-	performance</li>
-	<li>Improved Import, can now create links to projects</li>
-	<li>Improved Erlang navigator, Tree model even for .hrl files</li>
-	<li>Support for starting Erlang projects</li>
-	<li>The documentation has been updated and revamped, so be sure to
-	check it out.</li>
-</ul>
-<p>With this issue, the project's status is also raised to <strong>beta</strong>,
-because the important pieces are now in place. In the nearest future we
-will focus on the remaining details/bugs and also start integrating new
-features, like for example refactoring or a viewer for trace logs.</p>
+                <h3 class="headerstyle">Overview</h3>
+                <p>We are proud to announce the latest version that is <strong>0.5.0</strong> and
+                    offers the following features:</p>
+                <ul>
+                    <li>Works with Eclipse 3.3, Java 1.5 and Erlang R11B, or later.</li>
+                    <li>Debugger was improved</li>
+                    <li>Improved Import, can now create links to projects</li>
+                    <li>Improved Erlang navigator, tree model even for .hrl files</li>
+                    <li>Support for starting Erlang projects</li>
+                    <li>Lots of bugs have been fixed.</li>
+                    <li>The documentation has been updated and revamped, so be sure to check it
+                        out.</li>
+                </ul>
+                <p>For those that have been using out unstable releases, there are only few new
+                    things. For the others, a list of some of the new things can be found in the <a
+                        href="http://erlide.svn.sourceforge.net/viewvc/erlide/tags/REL-0.5.0.200903041114/ChangeLog?revision=2267&amp;view=markup"
+                        >ChangeLog </a>. </p>
 
-<h3 class="headerstyle" id="installation">Installation</h3>
+                <p>In the nearest future we will focus on the remaining details/bugs and also start
+                    integrating new features, like for example refactoring or a viewer for trace
+                    logs.</p>
 
-<div class="itemizedlist"><ul>
-<li><p>Install Erlang <span class="emphasis"><em>R11</em></span> or later, if it isn't already
-                            present on your system. On Windows systems, use a path with no spaces in
-                            it.</p></li>
-<li><p>Install Eclipse. We target primarily version <span class="emphasis"><em>3.3</em></span>,
-                            but <span class="emphasis"><em>3.4</em></span> works just as well.</p></li>
-<li><p>If your network uses a proxy to connect to the internet, fill in the
-                            appropriate data in <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu"> Install/Update</span> &rarr; <span class="guimenuitem">Proxy settings</span>, or for 3.4 <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu">General</span> &rarr; <span class="guimenuitem">Network connections</span>,</p></li><li><p>In Eclipse 3.3, install Erlide by going to <span class="guimenu">Help</span> &rarr; <span class="guisubmenu">Software Updates</span> &rarr; <span class="guisubmenu">Find and Install...</span> &rarr; <span class="guimenuitem">Search for new features to install</span>. In the dialog, choose <span class="guibutton">New remote
-                                site</span> and enter <strong class="userinput"><code>Erlide</code></strong> as name and
-                                <strong class="userinput"><code> http://erlide.org/update</code></strong> as URL. Follow the
-                            dialogs with the obvious choices and in the end you will be asked to
-                            restart.</p></li>
-<li><p>In Eclipse 3.4 Install Erlide by going to <span class="guimenu">Help</span> &rarr; <span class="guisubmenu">Software Updates</span> &rarr; <span class="guimenuitem">Available software</span>. In the dialog, choose <span class="guibutton">Add site...</span>
-                            and enter <strong class="userinput"><code> http://erlide.org/update</code></strong> as URL.
-                            Follow the dialogs with the obvious choices and in the end you will be
-                            asked to restart.</p></li>
-<li><p>Restart. Go to <span class="guimenu">Window</span> &rarr; <span class="guisubmenu">Preferences</span> &rarr; <span class="guisubmenu">Erlang</span> &rarr; <span class="guimenuitem">Installed runtimes</span> and add an entry (or several) for your Erlang
-                            installation(s) of choice. The required parameters are the name and the
-                            path to the top level directory (i.e. <code class="varname">$ERL_TOP</code>). Now
-                            restart again.</p></li>
-<li><p>Done! You're ready to start exploring.</p></li></ul></div>
-            
-<h3 class="headerstyle" id="faq">FAQ</h3>
+                <p class="block"><strong>IMPORTANT</strong>: Please note that this is the last
+                    release that targets Eclipse 3.3. The answers (or more exactly, lack of) to our
+                    previous questions about which versions we should target tell us that everybody
+                    is running 3.4 or newer. If you're still stuck with 3.3 and will need continued
+                    support, please contact us.</p>
 
-<p class="block"><strong>What if I find a bug, or miss a
-feature?</strong></p>
+                <h3 class="headerstyle" id="installation">Installation</h3>
 
-<p>We know that there is still a lot of work to do. If you encounter
-problems, please follow these steps:
-<ul>
-	<li>Go to <code>Window->Preferences->Erlang->Report
-	problems</code></li>
-	<li>Fill in a summary and a description of what you did when the
-	problem occurred</li>
-	<li>Pres "Send" and a file will be created in your home directory,
-	attach it to a bug report at the <a
-		href="http://sourceforge.net/tracker/?group_id=58889&atid=489191">tracker</a>
-	or to a mail to <a href="mailto:erlide-bugs@lists.sourceforge.net">erlide-bugs@lists.sourceforge.net</a>.</li>
-</ul>
-</p>
-<p>For feature requests, you can just post a ticket or send a mail,
-without any attachment.</p>
+                <div class="itemizedlist">
+                    <ul>
+                        <li>
+                            <p>Install Erlang <span class="emphasis">
+                                    <em>R11</em>
+                                </span> or later, if it isn't already present on your system. On
+                                Windows systems, use a path with no spaces in it.</p>
+                        </li>
+                        <li>
+                            <p>Install Eclipse. We target primarily version <span class="emphasis">
+                                    <em>3.3</em>
+                                </span>, but <span class="emphasis">
+                                    <em>3.4</em>
+                                </span> works just as well.</p>
+                        </li>
+                        <li>
+                            <p>If your network uses a proxy to connect to the internet, fill in the
+                                appropriate data in <span class="guimenu">Window</span> &rarr;
+                                    <span class="guisubmenu">Preferences</span> &rarr; <span
+                                    class="guisubmenu"> Install/Update</span> &rarr; <span
+                                    class="guimenuitem">Proxy settings</span>, or for 3.4 <span
+                                    class="guimenu">Window</span> &rarr; <span
+                                    class="guisubmenu">Preferences</span> &rarr; <span
+                                    class="guisubmenu">General</span> &rarr; <span
+                                    class="guimenuitem">Network connections</span>,</p>
+                        </li>
+                        <li>
+                            <p>In Eclipse 3.3, install Erlide by going to <span class="guimenu"
+                                    >Help</span> &rarr; <span class="guisubmenu">Software
+                                    Updates</span> &rarr; <span class="guisubmenu">Find and
+                                    Install...</span> &rarr; <span class="guimenuitem">Search
+                                    for new features to install</span>. In the dialog, choose <span
+                                    class="guibutton">New remote site</span> and enter <strong
+                                    class="userinput">
+                                    <code>Erlide</code>
+                                </strong> as name and <strong class="userinput">
+                                    <code> http://erlide.org/update</code>
+                                </strong> as URL. Follow the dialogs with the obvious choices and in
+                                the end you will be asked to restart.</p>
+                        </li>
+                        <li>
+                            <p>In Eclipse 3.4 Install Erlide by going to <span class="guimenu"
+                                    >Help</span> &rarr; <span class="guisubmenu">Software
+                                    Updates</span> &rarr; <span class="guimenuitem">Available
+                                    software</span>. In the dialog, choose <span class="guibutton"
+                                    >Add site...</span> and enter <strong class="userinput">
+                                    <code> http://erlide.org/update</code>
+                                </strong> as URL. Follow the dialogs with the obvious choices and in
+                                the end you will be asked to restart.</p>
+                        </li>
+                        <li>
+                            <p>Restart. Go to <span class="guimenu">Window</span> &rarr; <span
+                                    class="guisubmenu">Preferences</span> &rarr; <span
+                                    class="guisubmenu">Erlang</span> &rarr; <span
+                                    class="guimenuitem">Installed runtimes</span> and add an entry
+                                (or several) for your Erlang installation(s) of choice. The required
+                                parameters are the name and the path to the top level directory
+                                (i.e. <code class="varname">$ERL_TOP</code>). Now restart again.</p>
+                        </li>
+                        <li>
+                            <p>Done! You're ready to start exploring.</p>
+                        </li>
+                    </ul>
+                </div>
 
-<p class="block"><strong>Can I help?</strong></p>
+                <h3 class="headerstyle" id="faq">FAQ</h3>
 
-<p>Sure! All help is welcome, because there's <strong>plenty</strong>
-to do.</p>
-<p>Register as a developer by contacting <a
-	href="mailto:vladdu@users.sourceforge.net">me (Vlad)</a>, or develop by
-yourself some cool feature and submit it later. Please check first with
-us if it isn't already under development.</p>
+                <p class="block">
+                    <strong>What if I find a bug, or miss a feature?</strong>
+                </p>
 
-<p class="block"><strong>Why isn't Emacs (or vim) good
-enough?</strong></p>
+                <p>We know that there is still a lot of work to do. If you encounter problems,
+                    please follow these steps: </p>
+                <ul>
+                    <li>Go to <code>Window->Preferences->Erlang->Report problems</code></li>
+                    <li>Fill in a summary and a description of what you did when the problem
+                        occurred</li>
+                    <li>Pres "Send" and a file will be created in your home directory, attach it to
+                        a bug report at the <a
+                            href="http://sourceforge.net/tracker/?group_id=58889&amp;atid=489191"
+                            >tracker</a> or to a mail to <a
+                            href="mailto:erlide-bugs@lists.sourceforge.net"
+                            >erlide-bugs@lists.sourceforge.net</a>.</li>
+                </ul>
+                <p>For feature requests, you can just post a ticket or send a mail, without any
+                    attachment.</p>
 
-<p>They are okay, if they work for you. Eclipse is best for project
-oriented work, not for quickly hacking one file. Right now, I believe we
-are about on par with the functionality Emacs offers, and we're going
-forward (while I haven't seen any development for the Erlang mode or
-Distel since a long time).</p>
+                <p class="block">
+                    <strong>Can I help?</strong>
+                </p>
 
-<p class="internallink" style="margin-bottom: 0;">[ <a href="#top">Back
-to top</a> ]</p>
+                <p>Sure! All help is welcome, because there's <strong>plenty</strong> to do.</p>
+                <p>Register as a developer by contacting <a
+                        href="mailto:vladdu@users.sourceforge.net">me (Vlad)</a>, or develop by
+                    yourself some cool feature and submit it later. Please check first with us if it
+                    isn't already under development.</p>
 
-</div>
+                <p class="block">
+                    <strong>Why isn't Emacs (or vim) good enough?</strong>
+                </p>
 
-<div id="sidebar">
+                <p>They are okay, if they work for you. Eclipse is best for project oriented work,
+                    not for quickly hacking one file. Right now, I believe we are about on par with
+                    the functionality Emacs offers, and we're going forward (while I haven't seen
+                    any development for the Erlang mode or Distel since a long time).</p>
 
-<h2 class="sidelink menuheader"><a id="sitemenu"></a>Site menu:</h2>
-<a class="sidelink" href="index.html">Overview</a> <span class="hide">
-|</span> <a class="sidelink" href="#installation">Installation</a> <a
-	class="sidelink" href="#faq">FAQ</a> <span class="hide"> | </span> <a
-	class="sidelink" href="http://sourceforge.net/projects/erlide">Project
-site</a> <span class="hide"> | </span> <a class="sidelink"
-	href="http://sourceforge.net/project/showfiles.php?group_id=58889">Downloads</a>
-<span class="hide"> | </span> <a class="sidelink" href="erlide.html">Documentation</a>
-<span class="hide"> | </span> <a class="sidelink"
-	href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS
-feeds</a> <span class="hide"> | </span>
-<p>
-<form action="http://www.eclipseplugincentral.com/Web_Links.html"
-	method="post">
-<table border="0" width="120" cellspacing="0" cellpadding="0">
-	<tr>
-		<td align="center"><b>Rate the plugin!</b></a></td>
-	</tr>
-	<tr>
-		<td>
-		<table border="0" cellspacing="0" cellpadding="0" align="center">
-			<tr>
-				<td valign="top"><select name="rating">
-					<option selected>--</option>
-					<option>10</option>
-					<option>9</option>
-					<option>8</option>
-					<option>7</option>
-					<option>6</option>
-					<option>5</option>
-					<option>4</option>
-					<option>3</option>
-					<option>2</option>
-					<option>1</option>
-				</select></td>
-				<td valign="top"><input type="hidden" name="ratinglid"
-					value="468" /> <input type="hidden" name="ratinguser"
-					value="outside" /> <input type="hidden" name="req"
-					value="addrating" /> <input type="submit" value="Vote!" /></td>
-			</tr>
-		</table>
-		</td>
-	</tr>
-</table>
-</form>
-</p>
-<p>Kindly hosted by <a href="http://sourceforge.net"><img
-	src="http://sflogo.sourceforge.net/sflogo.php?group_id=58889&amp;type=2"
-	width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></p>
-<p><a href="http://www.erlang.org"><img src="img/erlang110.gif"
-	width="110" height="96" alt="Erlang logo" /></a></p>
-<p><a href="http://www.eclipse.org"><img
-	src="img/rea_eclipse_pos_logo_fc_sm.jpg" width="128" height="75"
-	alt="Eclipse logo" /></a></p>
-<p><a href="http://www.instantiations.com"><img
-	src="img/builtwith-instantiations1.png" width="133" height="43"
-	alt="Built with Instantiations" /></a></p>
-<a class="hide" href="#top" accesskey="1">Top of page</a>
+                <p class="internallink" style="margin-bottom: 0;">[ <a href="#top">Back to top</a>
+                    ]</p>
 
-<h3>Links</h3>
-<p style="margin-bottom: 0;">- <a href="http://www.erlang.org">Open
-source Erlang</a><br />
-- <a href="http://www.erlang.se">Commercial Erlang</a><br />
-- <a href="http://www.eclipse.org">Eclipse</a><br />
-- <a href="http://www.trapexit.org">Trapexit</a>, an Erlang community<br />
+            </div>
 
-</p>
-</div>
-<div class="clear">&nbsp;</div>
-</div>
+            <div id="sidebar">
 
-<div id="footer">Last updated: 2007-12-27<br />
-&copy; 2005 Vlad Dumitrescu. Design by <a
-	href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
+                <ul class="sidemenu">
+                    <li>
+                        <a class="sidelink" href="index.html">Overview</a>
+                    </li>
+                    <li>
+                        <a class="sidelink" href="#installation">Installation</a>
+                    </li>
+                    <li>
+                        <a class="sidelink" href="#faq">FAQ</a>
+                    </li>
+                    <li>
+                        <a class="sidelink" href="http://apps.sourceforge.net/wordpress/erlide/">Blog</a>
+                    </li>
+                    <li>
+                        <a class="sidelink" href="http://sourceforge.net/projects/erlide">Project
+                            site</a>
+                    </li>
+                    <li>
+                        <a class="sidelink"
+                            href="http://sourceforge.net/project/showfiles.php?group_id=58889"
+                            >Downloads</a>
+                    </li>
+                    <li>
+                        <a class="sidelink" href="erlide.html">Documentation</a>
+                    </li>
+                    <li>
+                        <a class="sidelink"
+                            href="http://sourceforge.net/export/rss2_project.php?group_id=58889">RSS
+                            feeds</a>
+                    </li>
+                </ul>
+                <form action="http://www.eclipseplugincentral.com/Web_Links.html" method="post">
+                    <table border="0" width="120" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="center">
+                                <b>Rate the plugin!</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <table border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td valign="top">
+                                            <select name="rating">
+                                                <option selected="selected">--</option>
+                                                <option>10</option>
+                                                <option>9</option>
+                                                <option>8</option>
+                                                <option>7</option>
+                                                <option>6</option>
+                                                <option>5</option>
+                                                <option>4</option>
+                                                <option>3</option>
+                                                <option>2</option>
+                                                <option>1</option>
+                                            </select>
+                                        </td>
+                                        <td valign="top">
+                                            <input type="hidden" name="ratinglid" value="468"/>
+                                            <input type="hidden" name="ratinguser" value="outside"/>
+                                            <input type="hidden" name="req" value="addrating"/>
+                                            <input type="submit" value="Vote!"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <p>Kindly hosted by <a href="http://sourceforge.net">
+                        <img
+                            src="http://sflogo.sourceforge.net/sflogo.php?group_id=58889&amp;type=2"
+                            width="125" height="37" alt="SourceForge.net Logo"/>
+                    </a></p>
+                <p>
+                    <a href="http://www.erlang.org">
+                        <img src="img/erlang110.gif" width="110" height="96" alt="Erlang logo"/>
+                    </a>
+                </p>
+                <p>
+                    <a href="http://www.eclipse.org">
+                        <img src="img/rea_eclipse_pos_logo_fc_sm.jpg" width="128" height="75"
+                            alt="Eclipse logo"/>
+                    </a>
+                </p>
+                <p>
+                    <a href="http://www.instantiations.com">
+                        <img src="img/builtwith-instantiations1.png" width="133" height="43"
+                            alt="Built with Instantiations"/>
+                    </a>
+                </p>
+                <a class="hide" href="#top" accesskey="1">Top of page</a>
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-2373857-1");
-pageTracker._trackPageview();
-</script>
-</body>
+                <h3>Links</h3>
+                <ul class="sidelinks">
+                    <li>
+                        <a href="http://www.erlang.org">Open source Erlang</a>
+                    </li>
+                    <li>
+                        <a href="http://www.erlang.se">Commercial Erlang</a>
+                    </li>
+                    <li>
+                        <a href="http://www.eclipse.org">Eclipse</a>
+                    </li>
+                    <li>
+                        <a href="http://www.trapexit.org">Trapexit</a>, an Erlang community</li>
+                </ul>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </div>
+
+        <div id="footer">Last updated: 2007-12-27<br/> &copy; 2005 Vlad Dumitrescu. Design by <a
+                href="http://andreasviklund.com" class="credit">Andreas Viklund</a></div>
+
+        <script type="text/javascript">
+            var uservoiceJsHost = ("https:" == document.location.protocol)? "https://uservoice.com": "http://cdn.uservoice.com"
+            document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))</script>
+        <script type="text/javascript">
+            UserVoice.Tab.show({
+                key: 'erlide',
+                host: 'erlide.uservoice.com',
+                forum: 'general',
+                alignment: 'left', // 'left', 'right'
+                background_color: '#f00',
+                text_color: 'white', // 'white', 'black'
+                hover_color: '#06C',
+                lang: 'en' // 'en', 'de', 'nl', 'es', 'fr'
+            })</script>
+
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol)? "https://ssl.": "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script>
+        <script type="text/javascript">
+            var pageTracker = _gat._getTracker("UA-2373857-1");
+            pageTracker._trackPageview();</script>
+    </body>
 </html>
