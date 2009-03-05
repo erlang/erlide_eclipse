@@ -143,4 +143,9 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	public RuntimeVersion asMajor() {
 		return new RuntimeVersion(major);
 	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

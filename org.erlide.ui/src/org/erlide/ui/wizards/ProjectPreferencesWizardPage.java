@@ -187,12 +187,10 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		final File dir = loc.toFile();
 
 		if (dir.exists()) {
-			final List<String> src = search("erl", dir, new ArrayList<String>(
-					10));
+			final List<String> src = search("erl", dir);
 			final String[] srcs = dirs(src, loc);
 
-			final List<String> inc = search("hrl", dir, new ArrayList<String>(
-					10));
+			final List<String> inc = search("hrl", dir);
 			final String[] incs = dirs(inc, loc);
 
 			source.setText(PreferencesUtils.packArray(srcs));
@@ -218,8 +216,11 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		return res.toArray(new String[res.size()]);
 	}
 
-	private List<String> search(String ext, File file, List<String> list) {
+	private List<String> search(String ext, File file) {
+		return search(ext, file, new ArrayList<String>());
+	}
 
+	private List<String> search(String ext, File file, List<String> list) {
 		if (file.isFile()) {
 			final IPath path = new Path(file.getPath());
 			if (path.getFileExtension() != null

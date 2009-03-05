@@ -364,7 +364,7 @@ public class RpcUtil {
 
 	private static OtpErlangObject callMethod(Object rcvr,
 			MethodDescription method, Object[] args) {
-		Class<?> cls = (rcvr instanceof Class) ? (Class<?>) rcvr : rcvr
+		Class<?> cls = (rcvr instanceof Class<?>) ? (Class<?>) rcvr : rcvr
 				.getClass();
 
 		Class<?>[] params = null;

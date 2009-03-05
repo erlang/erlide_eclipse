@@ -47,9 +47,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
@@ -85,15 +82,15 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	private ITreeContentProvider fTreeContentProvider;
 
 	private ILabelProvider fTreeLabelProvider;
-	
+
 	private ErlangEditor fEditor;
 
 	// private ViewerComparator fTreeViewerComparator;
 	//
 	// private ViewerComparator fTreeViewerDefaultComparator;
 
-	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle, ErlangEditor editor,
-			final IOutlineContentCreator creator,
+	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
+			ErlangEditor editor, final IOutlineContentCreator creator,
 			final IOutlineSelectionHandler handler) {
 		super(parent, shellStyle, true, true, true, true, true, null, null);
 		// Set outline creator
@@ -577,9 +574,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 			return;
 		}
 		dispose();
-		if (fEditor!= null && selectedElement instanceof IErlElement) {
-			EditorUtility.revealInEditor(fEditor,
-					(IErlElement) selectedElement);
+		if (fEditor != null && selectedElement instanceof IErlElement) {
+			EditorUtility
+					.revealInEditor(fEditor, (IErlElement) selectedElement);
 		}
 	}
 
