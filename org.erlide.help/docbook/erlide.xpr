@@ -17,6 +17,17 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
+                                    <String xml:space="preserve">../../org.erlide.docs/site/page.xml</String>
+                                </field>
+                            </scenarioAssociation>
+                            <scenarioAssociation>
+                                <field name="name">
+                                    <String xml:space="preserve">Docbook HTML modified</String>
+                                </field>
+                                <field name="type">
+                                    <String xml:space="preserve">XSL</String>
+                                </field>
+                                <field name="url">
                                     <String xml:space="preserve">erlide.xml</String>
                                 </field>
                             </scenarioAssociation>
@@ -26,6 +37,9 @@
                         <String xml:space="preserve">scenarios</String>
                         <scenario-array>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Execute SQL</String>
                                 </field>
@@ -103,6 +117,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Execute SQL (import)</String>
                                 </field>
@@ -180,6 +197,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Execute XQuery</String>
                                 </field>
@@ -257,6 +277,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Execute XQuery (import)</String>
                                 </field>
@@ -334,6 +357,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Docbook HTML modified</String>
                                 </field>
@@ -500,6 +526,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Docbook PDF modified</String>
                                 </field>
@@ -634,6 +663,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">Eclipse infocenter</String>
                                 </field>
@@ -816,6 +848,9 @@
                                 </field>
                             </scenario>
                             <scenario>
+                                <field name="advancedOptionsMap">
+                                    <null/>
+                                </field>
                                 <field name="name">
                                     <String xml:space="preserve">html2db</String>
                                 </field>
