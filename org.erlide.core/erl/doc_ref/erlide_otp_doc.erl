@@ -37,6 +37,18 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
             error
     end.
 
+get_auto_imported(Prefix) when is_list(Prefix) ->
+    case catch erlang:module_info(exports) of
+	Val when is_list(Val) ->
+	    lists:filter(fun({N, A}) ->
+				 lists:prefix(Prefix, atom_to_list(N)) andalso
+				     erl_internal:bif(N, A)
+			 end, Val);
+	_Error ->
+	    ?D(_Error),
+	    error
+    end.
+
 get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
     M = Modules++[atom_to_list(I) || {I, _} <- code:all_loaded()],
 	L = [I || I <- M, lists:prefix(Prefix, I)],
@@ -466,18 +478,24 @@ get_sublist([_ | Rest], [F | FRest], Acc) ->
 %% Get exported functions with documentation
 %% [{FunWithArity, FunWithParameters, [{Offset, Length}, Doc]}]
 
-get_proposals(Mod, Prefix, StateDir) ->
-	case get_exported(Mod, Prefix) of
-        L when is_list(L) ->
-            DocList = case get_doc_from_fun_arity_list(Mod, L, StateDir) of
-                          S when is_list(S) ->
-                              S;
-                          _ ->
-                              lists:duplicate(length(L), "")
-                      end,
-            fix_proposals(L, DocList, length(Prefix));
-        Error ->
-            Error
+get_proposals(Mod0, Prefix, StateDir) ->
+    {Mod, Functions} = case Mod0 of
+		    '<auto_imported>' ->
+			{erlang, get_auto_imported(Prefix)};
+		    _ ->
+			{Mod0, get_exported(Mod0, Prefix)}
+		end,
+    case Functions of
+	L when is_list(L) ->
+	    DocList = case get_doc_from_fun_arity_list(Mod, L, StateDir) of
+			  S when is_list(S) ->
+			      S;
+			  _ ->
+			      lists:duplicate(length(L), "")
+		      end,
+	    fix_proposals(L, DocList, length(Prefix));
+	Error ->
+	    Error
     end.
 
 fix_proposals(FunArityList, DocList, PrefixLength) ->

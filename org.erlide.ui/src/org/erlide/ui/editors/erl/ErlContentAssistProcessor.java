@@ -213,6 +213,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 							getParameterNames(ef));
 				}
 			}
+			// add erlang:functions
+			final String stateDir = ErlideUIPlugin.getDefault()
+					.getStateLocation().toString();
+			final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+					"<auto_imported>", aprefix, stateDir);
+			addProposalsWithDoc(offset, aprefix, result, res);
 			// add modules
 			final List<IErlModule> modules = ErlModelUtils
 					.getModulesWithReferencedProjects(module.getProject());
@@ -285,9 +291,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 			throws ErlangRpcException, BackendException, RpcException,
 			OtpErlangRangeException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-		// we have an external call
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
+		// we have an external call
 		// first check in project, refs and external modules
 		final List<IErlModule> modules = ErlModelUtils
 				.getModulesWithReferencedProjects(project);
@@ -320,6 +326,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		// then check built stuff and otp
 		final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
 				moduleName, aprefix, stateDir);
+		addProposalsWithDoc(offset, aprefix, result, res);
+		return result;
+	}
+
+	private void addProposalsWithDoc(final int offset, final String aprefix,
+			final List<ICompletionProposal> result, final OtpErlangObject res) {
 		if (res instanceof OtpErlangList) {
 			final OtpErlangList resl = (OtpErlangList) res;
 			for (int i = 0; i < resl.arity(); i++) {
@@ -352,7 +364,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 						cpl, offsetsAndLengths, offs);
 			}
 		}
-		return result;
 	}
 
 	/**
