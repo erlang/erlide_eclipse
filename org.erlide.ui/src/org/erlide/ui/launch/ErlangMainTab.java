@@ -317,7 +317,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public String getName() {
-		return "Main";
+		return "Erlang";
 	}
 
 	@Override
