@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlide SelfHost Plug-in
+Bundle-SymbolicName: org.erlide.selfhost.plugin;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.pde.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ org.erlide.ui,
+ org.erlide.core
+Export-Package: org.erlide.selfhost
+Bundle-Vendor: erlide.org
+Bundle-ClassPath: selfhost.jar
+ 

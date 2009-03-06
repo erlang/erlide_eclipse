@@ -65,10 +65,15 @@ import erlang.ErlideDebug;
 public class ErlangLaunchConfigurationDelegate extends
 		LaunchConfigurationDelegate {
 
-	@SuppressWarnings("unchecked")
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
+		doLaunch(config, mode, launch, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void doLaunch(final ILaunchConfiguration config, final String mode,
+			final ILaunch launch, boolean internal) {
 		try {
 			final String prjs = config.getAttribute(
 					ErlLaunchAttributes.PROJECTS, "").trim();
@@ -84,33 +89,16 @@ public class ErlangLaunchConfigurationDelegate extends
 					ErlLaunchAttributes.RUNTIME_NAME, "").trim();
 			final String nodeName = config.getAttribute(
 					ErlLaunchAttributes.NODE_NAME, "").trim();
-			final String cookie = config.getAttribute(
-					ErlLaunchAttributes.COOKIE, "").trim();
+			String cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, "")
+					.trim();
 			final boolean startMe = config.getAttribute(
-					ErlLaunchAttributes.START_ME, false);
+					ErlLaunchAttributes.START_ME, internal);
 			final int debugFlags = config.getAttribute(
 					ErlLaunchAttributes.DEBUG_FLAGS,
 					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 			List<String> interpretedModules = config.getAttribute(
 					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
-
-			System.out.println("Debug:: about to start a backend in " + mode
-					+ " mode, with attributes::");
-			System.out.println("  projects: " + Arrays.toString(projectNames));
-			System.out.println("  module: " + module);
-			System.out.println("  function: " + function);
-			System.out.println("  args: " + args);
-
-			System.out.println("  runtime: " + runtime);
-			System.out.println("  node name: " + nodeName);
-			System.out.println("  cookie: " + cookie);
-			System.out.println("  debugFlags: " + debugFlags);
-			System.out.println("  interpretedModules: " + interpretedModules);
-			if (startMe) {
-				System.out.println("  * start it if not running");
-			}
-			System.out.println("---------------");
 
 			final Set<IProject> projects = new HashSet<IProject>();
 			for (final String s : projectNames) {
@@ -128,6 +116,9 @@ public class ErlangLaunchConfigurationDelegate extends
 			final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
 					.getRuntimeInfoManager().getRuntime(runtime), false);
 			rt.setNodeName(nodeName);
+			if (internal) {
+				cookie = "erlide";
+			}
 			rt.setCookie(cookie);
 
 			final EnumSet<BackendOptions> options = EnumSet
@@ -138,6 +129,23 @@ public class ErlangLaunchConfigurationDelegate extends
 			if (startMe) {
 				options.add(BackendOptions.AUTOSTART);
 			}
+
+			System.out.println("Debug:: about to start a backend in " + mode
+					+ " mode, with attributes::");
+			System.out.println("  projects: " + Arrays.toString(projectNames));
+			System.out.println("  module: " + module);
+			System.out.println("  function: " + function);
+			System.out.println("  args: " + args);
+
+			System.out.println("  runtime: " + runtime);
+			System.out.println("  node name: " + nodeName);
+			System.out.println("  cookie: " + cookie);
+			System.out.println("  debugFlags: " + debugFlags);
+			System.out.println("  interpretedModules: " + interpretedModules);
+			if (startMe) {
+				System.out.println("  * start it if not running");
+			}
+			System.out.println("---------------");
 
 			final Backend b = ErlangCore.getBackendManager().create(rt,
 					options, launch);
@@ -349,6 +357,11 @@ public class ErlangLaunchConfigurationDelegate extends
 
 	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {
 		return "";
+	}
+
+	public void launchInternal(ILaunchConfiguration configuration, String mode,
+			ILaunch launch, IProgressMonitor monitor) {
+		doLaunch(configuration, mode, launch, true);
 	}
 
 }

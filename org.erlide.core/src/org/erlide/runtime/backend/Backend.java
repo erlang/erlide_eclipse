@@ -565,6 +565,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			final String outDir = project.getLocation().append(
 					prefs.getOutputDir()).toOSString();
 			if (outDir.length() > 0) {
+				ErlLogger.debug("backend %s: add path %s", this.getName(),
+						outDir);
 				addPath(false/* prefs.getUsePathZ() */, outDir);
 			}
 		}
