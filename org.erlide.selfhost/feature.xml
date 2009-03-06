@@ -21,6 +21,15 @@
       <update url="http://erlide.org/update"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.pde.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.erlide.ui" version="0.5.1" match="greaterOrEqual"/>
+      <import plugin="org.erlide.core" version="0.5.1" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.erlide.selfhost.plugin"
          download-size="0"
