@@ -109,7 +109,7 @@ public class PreferencesHelper {
 
 	public void putByteArray(String key, byte[] value) {
 		byte[] def = service.getByteArray(qualifier, key, null, nextContexts);
-		if (def == null || !def.equals(value)) {
+		if (def == null || def != value) {
 			storeContext.getNode(qualifier).putByteArray(key, value);
 		}
 	}
@@ -117,14 +117,14 @@ public class PreferencesHelper {
 	public void putDouble(String key, double value) {
 		double def = service
 				.getDouble(qualifier, key, Double.NaN, nextContexts);
-		if (def == Double.NaN || def != value) {
+		if (Double.isNaN(def) || def != value) {
 			storeContext.getNode(qualifier).putDouble(key, value);
 		}
 	}
 
 	public void putFloat(String key, float value) {
 		float def = service.getFloat(qualifier, key, Float.NaN, nextContexts);
-		if (def == Float.NaN || def != value) {
+		if (Double.isNaN(def) || def != value) {
 			storeContext.getNode(qualifier).putFloat(key, value);
 		}
 	}
