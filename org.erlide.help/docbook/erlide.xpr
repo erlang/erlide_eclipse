@@ -939,5 +939,8 @@
     </meta>
     <projectTree name="erlide.xpr">
         <file name="erlide.xml"/>
+        <file name="../../org.erlide.docs/site/index_1.html"/>
+        <file name="../../org.erlide.docs/site/index.html"/>
+        <file name="../../org.erlide.docs/site/template.html"/>
     </projectTree>
 </project>

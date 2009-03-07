@@ -192,7 +192,7 @@ H3
 #sidebar
 {
 	float: left;
-	line-height: 1.3em;
+	line-height: 1.1em;
 	margin: 0 0 5px;
 	padding: 0;
 	width: 195px;
@@ -355,7 +355,14 @@ H3
 #logo H1
 {
 	font-family: Georgia, "Times New Roman", Times, serif;
+}
+#logo H1 A
+{
 	color: #A80103;
+}
+#logo .fade
+{
+	color: #5C4A95;
 }
 #intro
 {
