@@ -36,6 +36,8 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.RuntimeInfo;
 
+/*TODO ...this should implement IworkspacePreferencePage if it's going to be 
+ * used as "default erlang project" page...*/
 public class ErlProjectPropertyPage extends PropertyPage {
 
 	public ErlProjectPropertyPage() {

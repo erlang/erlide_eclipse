@@ -1,14 +1,12 @@
-#Sun Mar 01 13:20:25 CET 2009
-backend_cookie=
+#Sat Mar 07 20:28:36 CET 2009
 backend_name=R11B
-backend_node=r11
 backend_version=R11B
 eclipse.preferences.version=1
-external_includes=
 external_modules=
-include_dirs=include
+include_dirs=include;
 make_unique=true
 output_dir=ebin
-source_dirs=erl
+runtimes=R11B
+source_dirs=erl;
 type=NORMAL
 use_pathz=false
