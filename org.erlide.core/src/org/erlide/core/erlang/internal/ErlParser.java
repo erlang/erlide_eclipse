@@ -168,7 +168,8 @@ public class ErlParser {
 	 */
 	private IErlMember create(final IErlModule parent, final OtpErlangTuple el) {
 		final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
-		if ("error".equals(type.atomValue())) {
+		final String typeS = type.atomValue();
+		if ("error".equals(typeS)) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
 			final String msg = ErlideBackend.format_error(ErlangCore
@@ -178,7 +179,7 @@ public class ErlParser {
 					ErlMessage.MessageKind.ERROR, msg);
 			setPos(e, er.elementAt(0));
 			return e;
-		} else if ("tree".equals(type.atomValue())) {
+		} else if ("tree".equals(typeS)) {
 			final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
 			final OtpErlangObject pos = ((OtpErlangTuple) el.elementAt(2))
 					.elementAt(1);
@@ -188,14 +189,14 @@ public class ErlParser {
 			final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
 					: null;
 			return addAttribute(parent, pos, n, val, extra);
-		} else if ("attribute".equals(type.atomValue())) {
+		} else if ("attribute".equals(typeS)) {
 			final OtpErlangObject pos = el.elementAt(1);
 			final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
 			final OtpErlangObject val = el.elementAt(3);
 			final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
 					: null;
 			return addAttribute(parent, pos, name, val, extra);
-		} else if ("function".equals(type.atomValue())) {
+		} else if ("function".equals(typeS)) {
 			final ErlFunction f = makeErlFunction(parent, el);
 			final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
 			final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
@@ -322,7 +323,7 @@ public class ErlParser {
 				final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
 				if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
 					final String recordName = ((OtpErlangAtom) recordTuple
-							.elementAt(0)).atomValue();
+							.elementAt(0)).toString();
 					final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
 							.stringValue()
 							: null;
@@ -357,7 +358,7 @@ public class ErlParser {
 			if (val instanceof OtpErlangAtom) {
 				final OtpErlangAtom o = (OtpErlangAtom) val;
 				final String s = Util.stringValue(extra);
-				final ErlMacroDef r = new ErlMacroDef(parent, o.atomValue(), s);
+				final ErlMacroDef r = new ErlMacroDef(parent, o.toString(), s);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;

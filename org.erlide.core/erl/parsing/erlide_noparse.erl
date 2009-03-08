@@ -457,7 +457,7 @@ get_refs([#token{kind='?', offset=Offset},
     MR = #macro_ref{macro=M, position=Position},
     [MR | get_refs(Rest)];
 get_refs([#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
+          #token{kind=atom, value=_R, offset=Offset2, length=Length2, text=R} | Rest]) ->
     Position = #position{offset=Offset, length=Length2+Offset2-Offset},
     RR = #record_ref{record=R, position=Position},
     [RR | get_refs(Rest)];
