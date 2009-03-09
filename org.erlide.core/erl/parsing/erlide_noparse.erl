@@ -279,15 +279,15 @@ get_head(T) ->
     end.
 
 get_args(T) ->
-    case get_between_pars(T) of
+    case get_between_outer_pars(T) of
         "" ->
             "";
         P ->
             "("++to_string(P)++")"
     end.
 
-get_between_outer_pars(Attribute) ->
-    case skip_to(Attribute, '(') of
+get_between_outer_pars(T) ->
+    case skip_to(T, '(') of
         [] ->
             [];
         [_ | S] ->
