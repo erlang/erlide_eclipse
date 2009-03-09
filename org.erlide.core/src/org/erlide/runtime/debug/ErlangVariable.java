@@ -17,7 +17,11 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.core.ErlangPlugin;
 
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDebug;
 
@@ -30,13 +34,28 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 
 	public ErlangVariable(final IDebugTarget target, final String name,
 			final boolean subVariable, final OtpErlangObject value,
-			final ErlangProcess process, String moduleName, final int stackFrameNo) {
+			final ErlangProcess process, final String moduleName,
+			final int stackFrameNo) {
 		super(target);
 		this.name = name;
 		this.subVariable = subVariable;
-		this.value = new ErlangValue(getDebugTarget(), name, value, process, moduleName);
+		this.value = createErlangValue(name, value, process, moduleName);
 		this.process = process;
 		this.stackFrameNo = stackFrameNo;
+	}
+
+	private ErlangValue createErlangValue(final String name,
+			final OtpErlangObject value, final ErlangProcess process,
+			final String moduleName) {
+		if (value instanceof OtpErlangList || value instanceof OtpErlangTuple
+				|| value instanceof OtpErlangBinary
+				|| value instanceof OtpErlangString) {
+			return new IndexedErlangValue(getDebugTarget(), name, value,
+					process, moduleName);
+		} else {
+			return new ErlangValue(getDebugTarget(), name, value, process,
+					moduleName);
+		}
 	}
 
 	public IValue getValue() throws DebugException {
