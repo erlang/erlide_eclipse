@@ -22,7 +22,7 @@
          guess_arity/1,
          clean_tokens/2,
          get_line_offsets/1,
-         detab/3, entab/3, start_column/2,
+         detab/3, entab/3, start_column/2, initial_whitespace/1,
          left_strip/1, right_strip/1, strip/1,
 	 strip_comments/1]).
 
@@ -311,6 +311,14 @@ get_tab_n_spaces(I, Tablength) ->
 get_tab_spaces(I, Tablength) ->
 	Rest = get_tab_n_spaces(I, Tablength),
 	string:chars($ , Rest).
+
+initial_whitespace(S) ->
+    initial_whitespace(S, 0).
+
+initial_whitespace([C | S], N) when C=:=$  ; C=:=$\t ->
+    initial_whitespace(S, N + 1);
+initial_whitespace(_, N) ->
+    N.
 
 start_column(S, Tablength) ->
     {N, _} = initial_whitespace(S, Tablength, 0),
