@@ -3,7 +3,7 @@
       id="org.erlide"
       label="Erlang IDE"
       version="0.5.1.qualifier"
-      provider-name="Erlide project"
+      provider-name="erlide.org"
       plugin="org.erlide.core"
       image="erlang120.gif">
    <install-handler/>

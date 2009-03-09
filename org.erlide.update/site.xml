@@ -15,17 +15,17 @@
    <feature url="features/org.erlide.selfhost_0.1.0.200903091205.jar" id="org.erlide.selfhost" version="0.1.0.200903091205">
       <category name="unstable"/>
    </feature>
-   <category-def name="stable" label="Stable builds (Eclipse 3.4+)">
+   <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.
       </description>
    </category-def>
-   <category-def name="unstable" label="Unstable builds">
+   <category-def name="unstable" label="erlIDE unstable">
       <description>
          These builds may be broken, so use at your own risk.
       </description>
    </category-def>
-   <category-def name="stable_eclipse33" label="Stable builds (Eclipse 3.3+)">
+   <category-def name="stable_eclipse33" label="erlIDE Stable (Eclipse 3.3+)">
       <description>
          These are the Eclipse 3.3 releases. Not maintained after 0.5.0!
       </description>
