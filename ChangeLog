@@ -2,6 +2,8 @@
 
 List of user visible changes between 0.5.0 and 0.5.1 (r2293)
 
+	Experimental refactoring support: Wrangler
+
 	added automated problem report if backend dies with exit code != 0
 
 	at startup, if no runtime is defined, search "obvious" locations and add all found runtimes. The newest will be set as default. 
