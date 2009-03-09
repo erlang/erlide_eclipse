@@ -1,4 +1,4 @@
-package org.erlide.selfhost;
+package org.erlide.selfhost.ui;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

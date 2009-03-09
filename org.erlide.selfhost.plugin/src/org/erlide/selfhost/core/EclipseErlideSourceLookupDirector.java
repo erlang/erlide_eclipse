@@ -1,4 +1,4 @@
-package org.erlide.selfhost;
+package org.erlide.selfhost.core;
 
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;

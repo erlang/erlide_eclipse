@@ -4,20 +4,20 @@
   <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.selfhost.EclipseErlideSourcePathComputerDelegate"
+            class="org.erlide.selfhost.core.EclipseErlideSourcePathComputerDelegate"
             id="org.erlide.selfhost.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.erlide.selfhost.EclipseErlideSourceLookupDirector"
+            class="org.erlide.selfhost.core.EclipseErlideSourceLookupDirector"
             id="org.erlide.selfhost.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.selfhost.EclipseErlideLaunchConfiguration"
+            delegate="org.erlide.selfhost.ui.EclipseErlideLaunchConfiguration"
             id="org.erlide.selfhost.launcher"
             modes="run, debug"
             name="Eclipse + Erlang application"
@@ -29,7 +29,7 @@
   <extension
         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
      <launchConfigurationTabGroup
-           class="org.erlide.selfhost.ErlideLaunchConfigurationTabGroup"
+           class="org.erlide.selfhost.ui.ErlideLaunchConfigurationTabGroup"
            id="org.erlide.selfhost.launchGroup"
            type="org.erlide.selfhost.launcher">
      </launchConfigurationTabGroup>

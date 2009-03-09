@@ -1,4 +1,4 @@
-package org.erlide.selfhost;
+package org.erlide.selfhost.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
