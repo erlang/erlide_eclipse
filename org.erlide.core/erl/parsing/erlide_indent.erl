@@ -66,7 +66,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                             ?D(I),
                             IS0 = reindent_line("", I),
                             IS = erlide_text:entab(IS0, Tablength, left),
-                            {IS, erlide_text:start_column(OldLine, Tablength), AddNL};
+                            {IS, erlide_text:initial_whitespace(OldLine), AddNL};
                         {I, false} ->
                             ?D(I),
                             case AddNL of
