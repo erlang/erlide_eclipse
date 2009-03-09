@@ -18,6 +18,13 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.internal.ErlModelManager;
+import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -31,6 +38,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 	private final int fLineNumber;
 	List<ErlangVariable> bindings;
 	int stackFrameNo;
+	private String clauseHead;
 
 	public ErlangStackFrame(final String module, final ErlangProcess parent,
 			final IDebugTarget target, final int lineNumber,
@@ -48,7 +56,8 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 				final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
 				final OtpErlangObject value = t.elementAt(1);
 				framesReversed.add(new ErlangVariable(target,
-						nameA.atomValue(), false, value, parent, module, stackFrameNo));
+						nameA.atomValue(), false, value, parent, module,
+						stackFrameNo));
 			}
 		}
 		final List<ErlangVariable> frames = new ArrayList<ErlangVariable>(
@@ -57,6 +66,21 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 			frames.add(framesReversed.get(i));
 		}
 		this.bindings = frames;
+		final IErlModel model = ErlModelManager.getDefault().getErlangModel();
+		final IErlModule m = model.getModule(module);
+		clauseHead = null;
+		if (m != null) {
+			try {
+				m.open(null);
+				final IErlElement e = m.getElementAtLine(lineNumber);
+				if (e instanceof IErlFunctionClause) {
+					final IErlFunctionClause clause = (IErlFunctionClause) e;
+					clauseHead = clause.getName() + clause.getHead();
+				}
+			} catch (final ErlModelException e1) {
+				ErlLogger.warn(e1);
+			}
+		}
 	}
 
 	public String getModule() {
@@ -157,6 +181,10 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 
 	public void terminate() throws DebugException {
 		fParent.terminate();
+	}
+
+	public String getClauseHead() {
+		return clauseHead;
 	}
 
 }

@@ -153,6 +153,19 @@ public class ErlModule extends Openable implements IErlModule {
 		return null;
 	}
 
+	public IErlElement getElementAtLine(final int lineNumber) {
+		for (final IErlElement child : fChildren) {
+			if (child instanceof ISourceReference) {
+				final ISourceReference sr = (ISourceReference) child;
+				if (sr.getLineStart() <= lineNumber
+						&& sr.getLineEnd() >= lineNumber) {
+					return child;
+				}
+			}
+		}
+		return null;
+	}
+
 	public ModuleKind getModuleKind() {
 		return moduleKind;
 	}
@@ -434,17 +447,17 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public Set<IErlModule> getDirectDependents() throws ErlModelException {
-		Set<IErlModule> result = new HashSet<IErlModule>();
-		IErlProject project = getProject();
-		for (IErlModule m : project.getModules()) {
+		final Set<IErlModule> result = new HashSet<IErlModule>();
+		final IErlProject project = getProject();
+		for (final IErlModule m : project.getModules()) {
 			System.out.println(m);
-			boolean wasOpen = m.isOpen();
+			final boolean wasOpen = m.isOpen();
 			if (!wasOpen) {
 				m.open(null);
 			}
-			Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
-			for (ErlangIncludeFile inc : incs) {
-				if (inc.getFilename().equals(this.getName())) {
+			final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+			for (final ErlangIncludeFile inc : incs) {
+				if (inc.getFilename().equals(getName())) {
 					result.add(m);
 					break;
 				}
@@ -457,15 +470,15 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public Set<IErlModule> getAllDependents() throws ErlModelException {
-		Set<IErlModule> mod = getDirectDependents();
+		final Set<IErlModule> mod = getDirectDependents();
 		return getAllDependents(mod, new HashSet<IErlModule>());
 	}
 
-	private Set<IErlModule> getAllDependents(Set<IErlModule> current,
-			Set<IErlModule> result) throws ErlModelException {
-		Set<IErlModule> next = new HashSet<IErlModule>();
-		for (IErlModule mod : current) {
-			Collection<IErlModule> dep = mod.getDirectDependents();
+	private Set<IErlModule> getAllDependents(final Set<IErlModule> current,
+			final Set<IErlModule> result) throws ErlModelException {
+		final Set<IErlModule> next = new HashSet<IErlModule>();
+		for (final IErlModule mod : current) {
+			final Collection<IErlModule> dep = mod.getDirectDependents();
 			result.add(mod);
 			next.addAll(dep);
 		}

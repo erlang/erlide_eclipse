@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -17,13 +18,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideDebug;
 
 public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint {
-	ErlangDebugTarget target = null;
+	private ErlangDebugTarget target;
+	private String clauseHead;
 
 	public ErlangLineBreakpoint() {
 		super();
@@ -36,8 +44,9 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	public void createMarker(final IResource resource, final int lineNumber)
 			throws CoreException {
 		final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				IMarker marker = resource
+			public void run(final IProgressMonitor monitor)
+					throws CoreException {
+				final IMarker marker = resource
 						.createMarker("org.erlide.core.erlang.lineBreakpoint.marker");
 				setMarker(marker);
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
@@ -45,9 +54,32 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
 				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: "
 						+ resource.getName() + " [line: " + lineNumber + "]");
+				resetClauseHead(lineNumber - 1, resource);
 			}
 		};
 		run(getMarkerRule(resource), runnable);
+	}
+
+	protected void resetClauseHead(final int lineNumber,
+			final IResource resource) {
+		clauseHead = null;
+		final IErlModel model = ErlModelManager.getDefault().getErlangModel();
+		if (resource instanceof IFile) {
+			final IFile file = (IFile) resource;
+			final IErlModule m = model.getModule(file);
+			if (m != null) {
+				try {
+					m.open(null);
+					final IErlElement e = m.getElementAtLine(lineNumber);
+					if (e instanceof IErlFunctionClause) {
+						final IErlFunctionClause clause = (IErlFunctionClause) e;
+						clauseHead = clause.getName() + clause.getHead();
+					}
+				} catch (final ErlModelException e1) {
+					ErlLogger.warn(e1);
+				}
+			}
+		}
 	}
 
 	/**
@@ -120,6 +152,16 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	public void remove(final ErlangDebugTarget atarget) {
 		target = atarget;
 		createRequest(ErlDebugConstants.REQUEST_REMOVE);
+	}
+
+	public String getClauseHead() {
+		return clauseHead;
+	}
+
+	@Override
+	public void setMarker(final IMarker marker) throws CoreException {
+		super.setMarker(marker);
+		resetClauseHead(getLineNumber() - 1, marker.getResource());
 	}
 
 }

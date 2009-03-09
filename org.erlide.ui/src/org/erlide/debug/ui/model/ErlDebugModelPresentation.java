@@ -97,7 +97,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	private String getErlangLineBreakpointText(
 			final ErlangLineBreakpoint breakpoint) {
 		try {
-			return breakpoint.getModule() + ":" + breakpoint.getLineNumber();
+			return getErlangPositionText(breakpoint.getModule(), breakpoint
+					.getLineNumber(), breakpoint.getClauseHead());
 		} catch (final CoreException e) {
 		}
 		return breakpoint.getModule();
@@ -105,12 +106,24 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
 	private String getErlangStackFrameText(final ErlangStackFrame stackFrame) {
 		try {
-			return stackFrame.getModule() + ".erl : "
-					+ stackFrame.getLineNumber();
+			return getErlangPositionText(stackFrame.getModule(), stackFrame
+					.getLineNumber(), stackFrame.getClauseHead());
 		} catch (final DebugException e) {
 			ErlLogger.warn(e);
 		}
 		return null;
+	}
+
+	private static String getErlangPositionText(final String module,
+			final int lineNumber, final String clauseHead)
+			throws DebugException {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(module).append(":");
+		sb.append(lineNumber);
+		if (clauseHead != null && clauseHead.length() > 0) {
+			sb.append(" - ").append(clauseHead);
+		}
+		return sb.toString();
 	}
 
 	/**
