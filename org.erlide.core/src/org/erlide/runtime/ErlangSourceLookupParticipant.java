@@ -9,7 +9,6 @@ public class ErlangSourceLookupParticipant extends
 
 	public ErlangSourceLookupParticipant() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getSourceName(final Object object) throws CoreException {

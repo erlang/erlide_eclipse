@@ -6,10 +6,10 @@ Bundle-Version: 0.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.pde.ui,
  org.eclipse.core.runtime,
- org.eclipse.debug.core,
  org.eclipse.debug.ui,
  org.erlide.ui,
- org.erlide.core
+ org.erlide.core,
+ org.eclipse.jdt.launching;bundle-version="3.4.1"
 Export-Package: org.erlide.selfhost
 Bundle-Vendor: erlide.org
 Bundle-ClassPath: selfhost.jar
