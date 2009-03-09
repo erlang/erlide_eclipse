@@ -74,7 +74,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		attachTechnicalDataButton.setSelection(true);
 		attachTechnicalDataButton
 				.setText("Attach technical data (eclipse and erlide logs)");
-		attachTechnicalDataButton.setBounds(46, 256, 260, 20);
+		attachTechnicalDataButton.setBounds(46, 256, 416, 20);
 
 		sendButton = new Button(panel, SWT.NONE);
 		sendButton.addSelectionListener(new SelectionAdapter() {
@@ -84,7 +84,7 @@ public class ReportPreferencePage extends PreferencePage implements
 			}
 		});
 		sendButton.setText("Send!");
-		sendButton.setBounds(217, 284, 45, 25);
+		sendButton.setBounds(205, 284, 62, 25);
 
 		final Label contactoptionalLabel = new Label(panel, SWT.NONE);
 		contactoptionalLabel.setText("Contact email (optional)");

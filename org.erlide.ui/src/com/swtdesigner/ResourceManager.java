@@ -114,8 +114,7 @@ public class ResourceManager extends SWTResourceManager {
 			final Rectangle did = decorator.getBounds();
             final Point baseImageSize = new Point(bid.width, bid.height); 
             CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() { 
-                @Override
-				protected void drawCompositeImage(int width, int height) { 
+                protected void drawCompositeImage(int width, int height) { 
                     drawImage(baseImage.getImageData(), 0, 0); 
                     if (corner == TOP_LEFT) { 
                         drawImage(decorator.getImageData(), 0, 0); 
@@ -127,8 +126,7 @@ public class ResourceManager extends SWTResourceManager {
                         drawImage(decorator.getImageData(), bid.width - did.width - 1, bid.height - did.height - 1); 
                     } 
                 } 
-                @Override
-				protected Point getSize() { 
+                protected Point getSize() { 
                     return baseImageSize; 
                 } 
             }; 
