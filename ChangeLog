@@ -1,0 +1,133 @@
+
+
+List of user visible changes between 0.5.0 and 0.5.1 (r2293)
+
+	added automated problem report if backend dies with exit code != 0
+
+	at startup, if no runtime is defined, search "obvious" locations and add all found runtimes. The newest will be set as default. 
+
+	ensuring that the ide backend exists (else print error messages as soon as possible)
+
+	OTP R13-version of JInterface
+
+	http://www.assembla.com/spaces/erlide/tickets/275-Indent----end--and-indent-after-newline
+
+	made build backends transitory, in multi-user environment they take a lot of space
+
+	changed project properties to use a minimum required runtime version instead of a hardcoded runtime name
+
+	http://www.assembla.com/spaces/erlide/tickets/286-quick-outline---doesn-t-work-with-external-modules
+
+	added Eclipse+Erlang launch configuration, to be used when debugging erlide itself
+
+	http://www.assembla.com/spaces/erlide/tickets/273-completion---doesn-t-find-some-builtins
+
+	http://www.assembla.com/spaces/erlide/tickets/289-code-completion---records-with---doesn-t-work
+
+	http://www.assembla.com/spaces/erlide/tickets/292-pressing-enter-at-the-end-of-a-line-sometimes-deletes-first-three-chars-on-next-line-
+
+	http://www.assembla.com/spaces/erlide/tickets/279-Text-Actions---shouldn-t-change-text-if-nothing-is-changed
+
+
+
+List of user visible changes between 0.4.3 and 0.5.0
+
+	Added external include path settings file for erlang projects
+	(just like external modules file)
+
+	fixed bug when build backend was called "erlide"
+
+	Indentation uses tabs, indents only affected functions, and is
+	cleaned up a bit
+
+	fixes around backend startup and ide backend
+
+    Fixed autocompletion so that external modules can be completed
+      
+    Fixed a slight oversight when accessing external files (it should be
+	created and have the erlang nature)
+
+	Added error marker if a file could not be compiled at all
+	(compiler crashed or no backend)
+
+    Auto-completion didn't work when both default_external_modules and
+	external_modules were specified (open did the right thing).
+
+	http://www.assembla.com/spaces/erlide/tickets/230-Sorting-in-outline-should-not-affect-clauses
+
+	http://www.assembla.com/spaces/erlide/tickets/167-Add-completion-of-variable-names
+
+	http://www.assembla.com/spaces/erlide/tickets/233-Indent-breaks-when-constructing-binary-and-using-$-notation-to-get-ascii-code-for-character-
+
+	http://www.assembla.com/spaces/erlide/tickets/236-Debugger---show-records-as-records-in-Variables-view
+
+	http://www.assembla.com/spaces/erlide/tickets/214: updated jinterface to R12
+
+	optimized RPC performance by caching call signatures
+
+	New, fancier, better, smarter reconciler!
+	  - Scans all changes after one delay
+	  - Parses after all changes, not for each one of them (no more
+	  shuffling after undo or find/replace)
+	  - Method to reconcile without delay and wait for it, so model is
+	  up-to-date, e.g. for model commands like Completion or Open
+
+	Small improvement of dirty region handling, works better with
+	  backspace
+
+	Autoindent now also uses tabs
+
+	Honour the Preferences -> General / Editors / Text Editors /
+	  Insert spaces for tabs checkbox, when indenting, if it's checked,
+	  use only spaces.
+
+	Restored reset handling in reconciler, so it doesn't reconcile
+	  during lengthy typing, but afterwards
+
+	added runtimeVersion project preference, to allow not specifying
+	  a runtime name (that are user specific)
+
+	http://www.assembla.com/spaces/erlide/tickets/127-Goto-variable-definition
+
+	http://www.assembla.com/spaces/erlide/tickets/184-Show-parameter-names-for-code-completed-functions
+
+	http://www.assembla.com/spaces/erlide/tickets/184-Show-parameter-names-for-code-completed-functions
+
+	beautified edoc display and removed classes that were copied from jface 
+
+	http://www.assembla.com/spaces/erlide/tickets/197--go-to-definition--should-detect-even-M-F-N-constructs
+
+	http://www.assembla.com/spaces/erlide/tickets/196-New-project-wizard---exception-if-include-field-is-empty
+
+	http://www.assembla.com/spaces/erlide/tickets/122-Add-support-for-R12--type-and--spec-annotations
+      
+    Handles 'after' in 'try'. (Part of http://erlide.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
+
+	http://www.assembla.com/spaces/erlide/tickets/259-completion-problem
+
+	http://www.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
+
+	http://www.assembla.com/spaces/erlide/tickets/246-completion-proposals-don-t-work-for-quoted-module-name-
+
+	http://www.assembla.com/spaces/erlide/tickets/254-folding---preferences-don-t-work
+
+	updated docs with installation instructions for eclipse 3.4
+
+	http://erlide.assembla.com/spaces/erlide/tickets/105-Allow-outline-for-external-erlang-files
+
+	Type specs was ugly in outline
+
+	http://www.assembla.com/spaces/erlide/tickets/167-Add-completion-of-variable-names
+	  
+	http://www.assembla.com/spaces/erlide/tickets/260-navigation-problems
+
+	http://www.assembla.com/spaces/erlide/tickets/262-folding---initial-folding-done-while-typing--annoying
+
+	http://www.assembla.com/spaces/erlide/tickets/258-outline-disappearing-again
+
+	http://www.assembla.com/spaces/erlide/tickets/86-Stopping-Erlang-launches
+
+	http://www.assembla.com/spaces/erlide/tickets/266: make backend restart after crash
+
+	http://www.assembla.com/spaces/erlide/tickets/267-indentation-error
+

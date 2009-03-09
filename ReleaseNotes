@@ -1,0 +1,11 @@
+This is the first release targeting Eclipse 3.4. 
+
+The big news is that we are now including Wrangler refactoring support! 
+György Orosz has put together the required Eclipse scaffolding and we 
+will appreciate all the feedback we can get.
+
+Otherwise, there are some bugs that have been fixed, see the ChangeLog 
+for details.
+
+Enjoy!
+/Vlad, Jakob and György
