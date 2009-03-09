@@ -151,8 +151,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		}
 		final String newText = Util.stringValue(r1);
 		if (newText == null) {
-			final String e = (r1 != null) ? r1.toString() : "<null>";
-			Status status = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+			final String e = r1 != null ? r1.toString() : "<null>";
+			final Status status = new Status(IStatus.ERROR,
+					ErlangPlugin.PLUGIN_ID,
 					ErlangStatusConstants.INTERNAL_ERROR, "indent returned "
 							+ e + " instead of a string", null);
 			ErlLogger.error("INTERNAL ERROR: indent returned " + e
@@ -167,7 +168,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		final int nLines = endLine - startLine + 1;
 		final Runnable runnable = new Runnable() {
 			public void run() {
-				IRewriteTarget target = (IRewriteTarget) textEditor
+				final IRewriteTarget target = (IRewriteTarget) textEditor
 						.getAdapter(IRewriteTarget.class);
 				if (target != null) {
 					target.beginCompoundChange();
@@ -177,10 +178,13 @@ public class ErlangTextEditorAction extends TextEditorAction {
 				}
 				try {
 					// ErlLogger.debug("'"+newText+"'");
-					document.replace(selection.getOffset(), selection
-							.getLength(), newText);
+					if (!document.get(selection.getOffset(),
+							selection.getLength()).equals(newText)) {
+						document.replace(selection.getOffset(), selection
+								.getLength(), newText);
+					}
 					selectAndReveal(selection.getOffset(), newText.length());
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 					ErlLogger.warn(e);
 				}
 				if (target != null) {
