@@ -9,6 +9,12 @@
  *******************************************************************************/
 package org.erlide.runtime.debug;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,12 +128,63 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 			b.setLength(b.length() - 2);
 			b.append("}");
 			return b.toString();
+		} else if (value instanceof OtpErlangBinary) {
+			final OtpErlangBinary b = (OtpErlangBinary) value;
+			return getBinaryValueString(b);
 		}
 		return value.toString();
 	}
 
+	private static String getBinaryValueString(final OtpErlangBinary b) {
+		final StringBuilder sb = new StringBuilder("<<");
+		final byte[] bytes = b.binaryValue();
+		// FIXME: why are the character decoders so forgiving? I'd like to test
+		// for UTF-16 too, but the decoders never throws on anything, and
+		// looksLikeISOLatin shouldn't be needed...
+		final String[] css1 = { "UTF-8", "ISO-8859-1" };
+		final String[] css2 = { "UTF-8" };
+		final String[] tryCharsets = looksLikeISOLatin(bytes) ? css1 : css2;
+		CharBuffer cb = null;
+		for (final String csName : tryCharsets) {
+			final CharsetDecoder cd = Charset.forName(csName).newDecoder();
+			cd.onMalformedInput(CodingErrorAction.REPORT);
+			cd.onUnmappableCharacter(CodingErrorAction.REPORT);
+			try {
+				cb = cd.decode(ByteBuffer.wrap(bytes));
+				break;
+			} catch (final CharacterCodingException e) {
+				cb = null;
+			}
+		}
+		if (cb != null && cb.length() > 0) {
+			sb.append('"').append(cb).append('"');
+		} else {
+			for (int i = 0, n = bytes.length; i < n; ++i) {
+				int j = bytes[i];
+				if (j < 0) {
+					j += 256;
+				}
+				sb.append(j);
+				if (i < n - 1) {
+					sb.append(",");
+				}
+			}
+		}
+		sb.append(">>");
+		return sb.toString();
+	}
+
+	private static boolean looksLikeISOLatin(final byte[] bytes) {
+		for (final byte b : bytes) {
+			if (b < 32) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public boolean isAllocated() throws DebugException {
-		return false;
+		return true;
 	}
 
 	public IVariable[] getVariables() throws DebugException {
@@ -160,6 +217,13 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 		} else if (value instanceof OtpErlangList) {
 			final OtpErlangList l = (OtpErlangList) value;
 			return l.elementAt(index);
+		} else if (value instanceof OtpErlangBinary) {
+			final OtpErlangBinary bs = (OtpErlangBinary) value;
+			int j = bs.binaryValue()[index];
+			if (j < 0) {
+				j += 256;
+			}
+			return new OtpErlangLong(j);
 		}
 		return null;
 	}
@@ -171,6 +235,9 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
 		} else if (value instanceof OtpErlangList) {
 			final OtpErlangList l = (OtpErlangList) value;
 			return l.arity();
+		} else if (value instanceof OtpErlangBinary) {
+			final OtpErlangBinary bs = (OtpErlangBinary) value;
+			return bs.size();
 		} else {
 			return -1;
 		}
