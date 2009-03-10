@@ -201,7 +201,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			notifier.done();
 
 			try {
-				checkForClashes(backend);
+				checkForClashes();
 			} catch (final Exception e) {
 			}
 
@@ -225,7 +225,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkForClashes(Backend backend) {
+	private void checkForClashes() {
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
 			for (OtpErlangObject elem : res.elements()) {

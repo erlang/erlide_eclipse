@@ -14,4 +14,6 @@ public interface EventListener {
 	void handleMsgs(List<OtpErlangObject> msgs);
 
 	boolean handleMsg(OtpErlangObject msg);
+
+	boolean match_id(OtpErlangObject id);
 }

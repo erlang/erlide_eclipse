@@ -77,7 +77,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fProcesses = new ArrayList<ErlangProcess>();
 		interpretedModules = new HashSet<String>();
 
-		b.getRpcDaemon().addListener(this, ""); // all messages
+		b.getRpcDaemon().addListener(this);
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
@@ -485,6 +485,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	public Collection<IProject> getProjects() {
 		return projects;
+	}
+
+	public boolean match_id(OtpErlangObject id) {
+		return true;
 	}
 
 }

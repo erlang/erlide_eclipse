@@ -1,10 +1,8 @@
 package org.erlide.runtime.backend.events;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -50,7 +48,7 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 		fBackend = b;
 	}
 
-	Map<String, List<EventListener>> fListeners = new HashMap<String, List<EventListener>>();
+	List<EventListener> fListeners = new ArrayList<EventListener>();
 
 	public void start() {
 		if (fStopJob) {
@@ -103,11 +101,13 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 						// }
 						// }
 						// }
-						for (EventListener lll : getListeners("")) {
+						for (EventListener lll : getListeners()) {
 							lll.handleMsgs(msgs);
 						}
 
 						handleRequests(msgs);
+					} else {
+
 					}
 					return Status.OK_STATUS;
 				} finally {
@@ -126,9 +126,6 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 	}
 
 	public void handleRequests(List<OtpErlangObject> msgs) {
-		if (msgs.size() == 0) {
-			return;
-		}
 		for (OtpErlangObject msg : msgs) {
 			try {
 				OtpErlangTuple t = (OtpErlangTuple) msg;
@@ -278,37 +275,31 @@ public class ErlRpcDaemon implements BackendListener, IRpcHandler {
 		job.schedule();
 	}
 
-	public void addListener(final EventListener l, String id) {
-		List<EventListener> list = getListeners(id);
-		if (!list.contains(list)) {
-			list.add(l);
+	public void addListener(final EventListener l) {
+		if (!fListeners.contains(l)) {
+			fListeners.add(l);
 		}
-		if (id.length() > 0) {
-			addListener(l, "");
-		}
+	}
+
+	public List<EventListener> getListeners() {
+		return Collections.unmodifiableList(fListeners);
 	}
 
 	public List<EventListener> getListeners(String id) {
-		List<EventListener> list = fListeners.get(id);
-		if (list == null) {
-			list = new ArrayList<EventListener>();
-			fListeners.put(id, list);
-		}
-		return list;
+		return getListeners(new OtpErlangAtom(id));
 	}
 
-	public void removeListener(final EventListener l, String id) {
-		List<EventListener> list = getListeners(id);
-		list.remove(l);
-		if (id.length() > 0 && list.size() == 0) {
-			removeListener(l, "");
+	public List<EventListener> getListeners(OtpErlangObject id) {
+		List<EventListener> result = new ArrayList<EventListener>();
+		for (EventListener l : fListeners) {
+			if (l.match_id(id)) {
+				result.add(l);
+			}
 		}
+		return result;
 	}
 
 	public void removeListener(final EventListener l) {
-		Collection<List<EventListener>> list = fListeners.values();
-		for (List<EventListener> onelist : list) {
-			onelist.remove(l);
-		}
+		fListeners.remove(l);
 	}
 }
