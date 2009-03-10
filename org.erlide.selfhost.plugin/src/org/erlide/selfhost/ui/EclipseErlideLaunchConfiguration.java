@@ -12,20 +12,19 @@ import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 public class EclipseErlideLaunchConfiguration extends
 		EclipseApplicationLaunchConfiguration {
 
-	ErlangLaunchConfigurationDelegate erlDelegate = new ErlangLaunchConfigurationDelegate();
-
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		ILaunchConfigurationWorkingCopy conf = configuration.getWorkingCopy();
 		String args = conf.getAttribute(
 				"org.eclipse.jdt.launching.VM_ARGUMENTS", "");
-		conf.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", args
-				+ "\n-Derlide.label="
-				+ configuration.getAttribute(ErlLaunchAttributes.NODE_NAME, "")
-						.trim());
+		String nodeName = configuration.getAttribute(
+				ErlLaunchAttributes.NODE_NAME, "").trim();
+		args += "\n-Derlide.label=" + nodeName;
+		conf.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", args);
 		super.launch(conf, mode, launch, monitor);
 
+		ErlangLaunchConfigurationDelegate erlDelegate = new ErlangLaunchConfigurationDelegate();
 		erlDelegate.launchInternal(configuration, mode, launch, monitor);
 	}
 }

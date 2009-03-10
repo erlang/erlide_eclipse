@@ -27,16 +27,23 @@ public class BackendShellManager implements IShellManager, IDisposable {
 		fShells = new HashMap<String, BackendShell>(5);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.erlide.runtime.backend.console.IShellManager#get(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.erlide.runtime.backend.console.IShellManager#get(java.lang.String)
 	 */
 	public BackendShell get(String id) {
 		final BackendShell shell = fShells.get(id);
 		return shell;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.erlide.runtime.backend.console.IShellManager#openShell(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.erlide.runtime.backend.console.IShellManager#openShell(java.lang.
+	 * String)
 	 */
 	public BackendShell openShell(String id) {
 		BackendShell shell = get(id);
@@ -44,11 +51,16 @@ public class BackendShellManager implements IShellManager, IDisposable {
 			shell = new BackendShell(fBackend, id);
 			fShells.put(id, shell);
 		}
+		System.out.println("open shell >>> " + id + " " + shell);
 		return shell;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.erlide.runtime.backend.console.IShellManager#closeShell(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.erlide.runtime.backend.console.IShellManager#closeShell(java.lang
+	 * .String)
 	 */
 	public void closeShell(String id) {
 		final BackendShell shell = get(id);
@@ -58,7 +70,9 @@ public class BackendShellManager implements IShellManager, IDisposable {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.erlide.runtime.backend.console.IDisposable#dispose()
 	 */
 	public void dispose() {

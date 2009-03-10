@@ -44,8 +44,13 @@ init(JavaNode) ->
                   watch_eclipse(JavaNode),
 				  erlide_xref:start()
           end),
-
     ok.
+
+init_execute(JavaNode) ->
+	ok.
+
+init_ide(JavaNode) ->
+	ok.
 
 watch_eclipse(JavaNode) ->
     spawn(fun() ->

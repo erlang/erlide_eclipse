@@ -29,6 +29,7 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
+import org.erlide.runtime.backend.events.ErlRpcDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
@@ -69,9 +70,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private boolean fDebug;
 	private ErlRpcDaemon rpcDaemon;
 	private RuntimeLauncher launcher;
-
 	private boolean trapexit;
-
 	private int exitStatus = -1;
 
 	public Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
@@ -122,7 +121,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 50;
 			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, RETRY_DELAY);
+				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (50 - tries)
+						* RETRY_DELAY / 20);
 				tries--;
 			}
 			fAvailable &= ErlangCode.waitForCodeServer(this);
@@ -160,19 +160,11 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		getRpcDaemon().stop();
 	}
 
-	private ErlRpcDaemon getRpcDaemon() {
+	public ErlRpcDaemon getRpcDaemon() {
 		if (rpcDaemon == null) {
 			rpcDaemon = new ErlRpcDaemon(this);
 		}
 		return rpcDaemon;
-	}
-
-	public void addErlRpcMessageListener(final ErlRpcMessageListener l) {
-		rpcDaemon.addErlRpcMessageListener(l);
-	}
-
-	public void removeErlRpcMessageListener(final ErlRpcMessageListener l) {
-		rpcDaemon.removeErlRpcMessageListener(l);
 	}
 
 	/**
@@ -459,6 +451,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (!inited) {
 			setAvailable(false);
 		}
+		initEventListeners();
+	}
+
+	private void initEventListeners() {
 		getRpcDaemon().start();
 	}
 

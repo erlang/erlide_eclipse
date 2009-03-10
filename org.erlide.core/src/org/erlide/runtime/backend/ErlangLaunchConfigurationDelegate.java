@@ -91,8 +91,8 @@ public class ErlangLaunchConfigurationDelegate extends
 					ErlLaunchAttributes.NODE_NAME, "").trim();
 			String cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, "")
 					.trim();
-			final boolean startMe = config.getAttribute(
-					ErlLaunchAttributes.START_ME, internal);
+			final boolean startMe = internal
+					|| config.getAttribute(ErlLaunchAttributes.START_ME, false);
 			final int debugFlags = config.getAttribute(
 					ErlLaunchAttributes.DEBUG_FLAGS,
 					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
@@ -147,13 +147,12 @@ public class ErlangLaunchConfigurationDelegate extends
 			}
 			System.out.println("---------------");
 
-			final Backend b = ErlangCore.getBackendManager().create(rt,
+			final Backend backend = ErlangCore.getBackendManager().create(rt,
 					options, launch);
-			if (b == null) {
+			if (backend == null) {
 				ErlLogger.error("Launch: got null backend!");
 				return;
 			}
-			final Backend backend = b;
 
 			// launch.addProcess(null);
 			backend.registerProjects(projects);
@@ -186,8 +185,7 @@ public class ErlangLaunchConfigurationDelegate extends
 											&& function.length() > 0) {
 										if (args.length() > 0) {
 											// TODO issue #84
-											backend.rpc(module, function, "s",
-													args);
+											backend.rpc(module, function, "s", args);
 										} else {
 											backend.rpc(module, function, "");
 										}

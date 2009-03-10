@@ -32,7 +32,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.ErlRpcMessageListener;
+import org.erlide.runtime.backend.events.EventListener;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -44,7 +44,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDebug;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements
-		IDebugTarget, ErlRpcMessageListener {
+		IDebugTarget, EventListener {
 
 	private static final IThread[] NO_PROCS = new IThread[] {};
 
@@ -77,7 +77,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fProcesses = new ArrayList<ErlangProcess>();
 		interpretedModules = new HashSet<String>();
 
-		b.addErlRpcMessageListener(this);
+		b.getRpcDaemon().addListener(this, ""); // all messages
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
@@ -427,11 +427,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	}
 
 	public boolean handleMsg(final OtpErlangObject msg) {
-		ErlLogger.debug("### got msg: " + msg);
+		ErlLogger.debug("DEBUGGER### got msg: " + msg);
 		if (msg == null) {
 			return false;
 		}
-		// TODO Fler events från erlide_dbg_mon...
+		// TODO More events from erlide_dbg_mon...
 		final OtpErlangTuple t = (OtpErlangTuple) msg;
 		final OtpErlangObject el0 = t.elementAt(0);
 		if (el0 instanceof OtpErlangAtom) {
@@ -471,7 +471,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.runtime.backend.ErlRpcMessageListener#handleMsgs(java.util.List)
+	 * @see org.erlide.runtime.backend.events.EventListener#handleMsgs(java.util.List)
 	 */
 	public void handleMsgs(final List<OtpErlangObject> msgs) {
 		for (int i = 0; i < msgs.size(); ++i) {
@@ -486,4 +486,5 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public Collection<IProject> getProjects() {
 		return projects;
 	}
+
 }
