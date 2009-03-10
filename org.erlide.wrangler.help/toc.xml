@@ -1,0 +1,22 @@
+<toc label="Wrangler refactor tool" topic="html/general.html">
+   <topic href="html/general.html" label="General information">
+   </topic>
+   <topic href="html/refactorings.html" label="Refactorings">
+      <topic href="html/refactorings.html#Rename variable" label="Rename variable">
+      </topic>
+      <topic href="html/refactorings.html#Rename function" label="Rename function">
+      </topic>
+      <topic href="html/refactorings.html#Rename module" label="Rename module">
+      </topic>
+      <topic href="html/refactorings.html#Move function" label="Move function">
+      </topic>
+      <topic href="html/refactorings.html#Fold expression" label="Fold expression">
+      </topic>
+      <topic href="html/refactorings.html#Function extraction" label="Function extraction">
+      </topic>
+      <topic href="html/refactorings.html#Generalise function" label="Generalise function">
+      </topic>
+      <topic href="html/refactorings.html#Tuple function parameters" label="Tuple function parameters">
+      </topic>
+   </topic>
+</toc>

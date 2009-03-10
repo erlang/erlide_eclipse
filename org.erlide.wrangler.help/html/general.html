@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Wrangler Refactor Tool</title>
+	</head><head>
+	<body>
+	<h1>Wrangler Refactor Tool</h1>
+	<h2>Introduction</h2>
+		<h3>What is refactoring?</h3>
+		<p><em>"Refactoring is a disciplined technique for restructuring an existing body of code, 
+		altering its internal structure without changing its external behavior. 
+		Its heart is a series of small behavior preserving transformations. Each transformation 
+		(called a 'refactoring') does little, but a sequence of transformations can produce a significant restructuring. 
+		Since each refactoring is small, it's less likely to go wrong. The system is also kept fully working after each small refactoring, 
+		reducing the chances that a system can get seriously broken during the restructuring."</em>
+		<br><a href="http://www.refactoring.com/">http://www.refactoring.com/</a></p>
+		<h3>What is Wrangler?</h3>
+		<p><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler</a> is an Erlang refactoring tool. 
+		It is built upon the official Erlang syntax tools. It has a GUI for both EMACS editor and Eclipse. It supports
+		preserving the layout for the unmodified part of the code.
+		</p>
+		<p><b>Features:</b></p>
+		<ul>
+			<li>layout preserving</li>
+			<li>supports Eclipse <code>undo</code>/<code>redo</code> operations</li>
+			<li>integrated with<a href="http://erlide.sourceforge.net/">Erlide</a></li>
+			<li>supports cross-module refactorings</li>
+			<li>preview of the changings</li>
+		</ul>
+		<p><b><a href="refactorings.html">Implemented refactorings</a></b></p>
+		<ul>
+			<li>Rename variable name</li>
+			<li>Rename function name</li>
+			<li>Rename module name</li>
+			<li>Move function to another module</li>
+			<li>Fold expression against function</li>
+			<li>Function extraction</li>
+			<li>Generalise function</li>
+			<li>Tuple function parameters</li>
+		</ul>
+	<h2>How Wrangler refactorings works?</h2>
+	<p>Each refactoring can be invoked from the <em>Refactor</em> menu selecting its name.</p> 
+	<img alt="Refactor menu" src="../images/refactor-menu.png"> 
+	<p>Then a wizard window appears, in which the necessary parameters is asked and the user can select to apply the refactoring, or to preview it.</p>
+	<img alt="Wizard" src="../images/rename-variable-dialog.png">
+	<p>If the selected refactoring's result is undesirable, it can be cancelled after previewing it.</p>
+	<img alt="Preview window" src="../images/preview.png">
+	<h2>Planned features</h2>
+	<ul>
+		<li>Duplicate code detection</li>
+		<li>Deeper integration in Eclipse</li>
+	</ul>
+	<h2>Links</h2>
+	<ul>
+		<li><a href="http://www.erlang.org">Open source Erlang</a></li>
+		<li><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler's home</a></li>
+		<li><a href="http://erlide.sourceforge.net/">Erlide project site</a></li>
+		<li><a href="http://erlide.sourceforge.net/update">Update site</a></li>
+		<li><a href="https://www.assembla.com/spaces/dashboard/index/erlide">Bug tracker</a></li>
+	</ul>
+	</body>
+</html>

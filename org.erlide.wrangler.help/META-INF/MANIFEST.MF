@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wrangler Help plug-in
+Bundle-SymbolicName: org.erlide.wrangler.help;singleton:=true
+Bundle-Version: 0.1
+Bundle-Vendor: UKC
+Require-Bundle: org.eclipse.help
