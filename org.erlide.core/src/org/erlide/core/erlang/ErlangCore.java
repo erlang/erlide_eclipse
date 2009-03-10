@@ -146,7 +146,8 @@ public final class ErlangCore {
 			}
 		});
 		getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
-
+		getRuntimeInfoManager().setErlideRuntime(
+				getRuntimeInfoManager().getDefaultRuntime());
 	}
 
 	private static Collection<File> findRuntime(String loc) {

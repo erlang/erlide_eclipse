@@ -18,6 +18,9 @@ public class BuilderUtils {
 	}
 
 	public static boolean isDebugging() {
+		if (ErlangPlugin.getDefault() == null) {
+			return false;
+		}
 		return ErlangPlugin.getDefault().isDebugging()
 				&& Platform.getDebugOption("org.erlide.core/debug/builder")
 						.equals("true");
