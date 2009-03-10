@@ -20,15 +20,15 @@ public class EclipseErlideSourcePathComputerDelegate implements
 			final IProgressMonitor monitor) throws CoreException {
 		final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
 
-		ErlangSourcePathComputerDelegate erlDelegate = new ErlangSourcePathComputerDelegate();
-		ISourceContainer[] erls = erlDelegate.computeSourceContainers(
-				configuration, monitor);
-		containers.addAll(Arrays.asList(erls));
-
 		JavaSourcePathComputer javaDelegate = new JavaSourcePathComputer();
 		ISourceContainer[] javas = javaDelegate.computeSourceContainers(
 				configuration, monitor);
 		containers.addAll(Arrays.asList(javas));
+
+		ErlangSourcePathComputerDelegate erlDelegate = new ErlangSourcePathComputerDelegate();
+		ISourceContainer[] erls = erlDelegate.computeSourceContainers(
+				configuration, monitor);
+		containers.addAll(Arrays.asList(erls));
 
 		return containers.toArray(new ISourceContainer[containers.size()]);
 	}

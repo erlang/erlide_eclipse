@@ -29,7 +29,7 @@
   <extension
         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
      <launchConfigurationTabGroup
-           class="org.erlide.selfhost.ui.ErlideLaunchConfigurationTabGroup"
+           class="org.erlide.selfhost.ui.EclipseErlideLaunchConfigurationTabGroup"
            id="org.erlide.selfhost.launchGroup"
            type="org.erlide.selfhost.launcher">
      </launchConfigurationTabGroup>

@@ -10,9 +10,10 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.pde.ui.launcher.EclipseLauncherTabGroup;
 import org.erlide.ui.launch.ErlangNodeTabGroup;
 
-public class ErlideLaunchConfigurationTabGroup extends EclipseLauncherTabGroup {
+public class EclipseErlideLaunchConfigurationTabGroup extends
+		EclipseLauncherTabGroup {
 
-	public ErlideLaunchConfigurationTabGroup() {
+	public EclipseErlideLaunchConfigurationTabGroup() {
 	}
 
 	@Override
@@ -21,10 +22,12 @@ public class ErlideLaunchConfigurationTabGroup extends EclipseLauncherTabGroup {
 		ILaunchConfigurationTab[] tabs = getTabs();
 		List<ILaunchConfigurationTab> both = new ArrayList<ILaunchConfigurationTab>(
 				Arrays.asList(tabs));
+		int size = both.size();
+
 		ErlangNodeTabGroup et = new ErlangNodeTabGroup();
 		Collection<ILaunchConfigurationTab> newtabs = et.createMyTabs(dialog,
 				mode);
-		both.addAll(newtabs);
+		both.addAll(size - 2, newtabs);
 		setTabs(both.toArray(new ILaunchConfigurationTab[0]));
 	}
 }
