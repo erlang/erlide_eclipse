@@ -12,10 +12,6 @@
 package org.erlide.ui.editors.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -27,7 +23,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -37,18 +32,13 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -58,7 +48,6 @@ import org.erlide.core.util.ResourceUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.prefs.PreferenceConstants;
 
 /**
  * A number of routines for working with JavaElements in editors.
@@ -108,8 +97,8 @@ public class EditorUtility {
 
 	/**
 	 * Opens a Java editor for an element such as <code>IErlElement</code>,
-	 * <code>IFile</code>, or <code>IStorage</code>. The editor is
-	 * activated by default.
+	 * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
+	 * default.
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */
@@ -182,7 +171,7 @@ public class EditorUtility {
 				final WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
 					@Override
-					protected void execute(IProgressMonitor monitor)
+					protected void execute(final IProgressMonitor monitor)
 							throws CoreException {
 						IMarker marker = null;
 						try {
@@ -241,7 +230,6 @@ public class EditorUtility {
 			if (p != null) {
 				final IEditorPart editorPart = IDE
 						.openEditor(p, file, activate);
-				initializeHighlightRange(editorPart);
 				return editorPart;
 			}
 		}
@@ -256,46 +244,10 @@ public class EditorUtility {
 			if (p != null) {
 				final IEditorPart editorPart = p.openEditor(input, editorID,
 						activate);
-				initializeHighlightRange(editorPart);
 				return editorPart;
 			}
 		}
 		return null;
-	}
-
-	private static void initializeHighlightRange(final IEditorPart editorPart) {
-		if (editorPart instanceof ITextEditor) {
-			final IAction toggleAction = editorPart
-					.getEditorSite()
-					.getActionBars()
-					.getGlobalActionHandler(
-							ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY);
-			if (toggleAction != null) {
-				boolean enable;
-				if (editorPart instanceof ErlangEditor) {
-					enable = ErlideUIPlugin.getDefault().getPreferenceStore()
-							.getBoolean(
-									PreferenceConstants.EDITOR_SHOW_SEGMENTS);
-				} else {
-					enable = toggleAction.isEnabled()
-							&& toggleAction.isChecked();
-				}
-				if (enable) {
-					if (toggleAction instanceof TextEditorAction) {
-						// Reset the action
-						((TextEditorAction) toggleAction).setEditor(null);
-						// Restore the action
-						((TextEditorAction) toggleAction)
-								.setEditor((ITextEditor) editorPart);
-					} else {
-						// Un-check
-						toggleAction.run();
-						// Check
-						toggleAction.run();
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -405,102 +357,6 @@ public class EditorUtility {
 		}
 
 		return 0;
-	}
-
-	/**
-	 * Returns the modifier string for the given SWT modifier modifier bits.
-	 * 
-	 * @param stateMask
-	 *            the SWT modifier bits
-	 * @return the modifier string
-	 * @since 2.1.1
-	 */
-	// public static String getModifierString(int stateMask) {
-	// String modifierString= ""; //$NON-NLS-1$
-	// if ((stateMask & SWT.CTRL) == SWT.CTRL)
-	// modifierString= appendModifierString(modifierString, SWT.CTRL);
-	// if ((stateMask & SWT.ALT) == SWT.ALT)
-	// modifierString= appendModifierString(modifierString, SWT.ALT);
-	// if ((stateMask & SWT.SHIFT) == SWT.SHIFT)
-	// modifierString= appendModifierString(modifierString, SWT.SHIFT);
-	// if ((stateMask & SWT.COMMAND) == SWT.COMMAND)
-	// modifierString= appendModifierString(modifierString, SWT.COMMAND);
-	//
-	// return modifierString;
-	// }
-	/**
-	 * Appends to modifier string of the given SWT modifier bit to the given
-	 * modifierString.
-	 * 
-	 * @param modifierString
-	 *            the modifier string
-	 * @param modifier
-	 *            an int with SWT modifier bit
-	 * @return the concatenated modifier string
-	 * @since 2.1.1
-	 */
-	// private static String appendModifierString(String modifierString, int
-	// modifier) {
-	// if (modifierString == null)
-	// modifierString= ""; //$NON-NLS-1$
-	// String newModifierString= Action.findModifierString(modifier);
-	// if (modifierString.length() == 0)
-	// return newModifierString;
-	// return
-	// Messages.format(JavaEditorMessages.EditorUtility_concatModifierStrings,
-	// new
-	// String[] {modifierString, newModifierString});
-	// }
-	/**
-	 * Returns the Java project for a given editor input or <code>null</code>
-	 * if no corresponding Java project exists.
-	 * 
-	 * @param input
-	 *            the editor input
-	 * @return the corresponding Java project
-	 * 
-	 * @since 3.0
-	 */
-	// public static IJavaProject getJavaProject(IEditorInput input) {
-	// IJavaProject jProject= null;
-	// if (input instanceof IFileEditorInput) {
-	// IProject project= ((IFileEditorInput)input).getFile().getProject();
-	// if (project != null) {
-	// jProject= JavaCore.create(project);
-	// if (!jProject.exists())
-	// jProject= null;
-	// }
-	// } else if (input instanceof IClassFileEditorInput) {
-	// jProject= ((IClassFileEditorInput)input).getClassFile().getJavaProject();
-	// }
-	// return jProject;
-	// }
-	/**
-	 * Returns an array of all editors that have an unsaved content. If the
-	 * identical content is presented in more than one editor, only one of those
-	 * editor parts is part of the result.
-	 * 
-	 * @return an array of all dirty editor parts.
-	 */
-	public static IEditorPart[] getDirtyEditors() {
-		final Set<IEditorInput> inputs = new HashSet<IEditorInput>();
-		final List<IEditorPart> result = new ArrayList<IEditorPart>(0);
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-		for (final IWorkbenchWindow element : windows) {
-			final IWorkbenchPage[] pages = element.getPages();
-			for (final IWorkbenchPage element0 : pages) {
-				final IEditorPart[] editors = element0.getDirtyEditors();
-				for (final IEditorPart ep : editors) {
-					final IEditorInput input = ep.getEditorInput();
-					if (!inputs.contains(input)) {
-						inputs.add(input);
-						result.add(ep);
-					}
-				}
-			}
-		}
-		return result.toArray(new IEditorPart[result.size()]);
 	}
 
 	static public IFile openExternal(final String path) throws CoreException {
