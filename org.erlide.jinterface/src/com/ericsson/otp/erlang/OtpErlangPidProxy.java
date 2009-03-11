@@ -4,14 +4,21 @@ public class OtpErlangPidProxy extends OtpErlangPid {
 
 	private static final long serialVersionUID = 1L;
 
-	public OtpErlangPidProxy(OtpInputStream buf)
+	private String node;
+
+	public OtpErlangPidProxy(String node, OtpInputStream buf)
 			throws OtpErlangDecodeException {
 		super(buf);
+		this.node = node;
 	}
 
 	@Override
 	public String toString() {
-		return "#Pid<0." + id() + "." + serial() + ">";
+		if (node.equals(node())) {
+			return "#Pid<0." + id() + "." + serial() + ">";
+		} else {
+			return super.toString();
+		}
 	}
 
 }

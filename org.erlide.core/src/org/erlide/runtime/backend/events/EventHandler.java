@@ -28,6 +28,7 @@ public abstract class EventHandler {
 	protected abstract void doHandleMsg(OtpErlangObject msg) throws Exception;
 
 	public OtpErlangObject getStandardEvent(OtpErlangObject msg, String id) {
+		// System.out.println("***********************************");
 		try {
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			OtpErlangObject el0 = t.elementAt(0);

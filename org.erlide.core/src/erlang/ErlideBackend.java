@@ -1,5 +1,8 @@
 package erlang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
@@ -13,6 +16,7 @@ import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -20,8 +24,33 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideBackend {
 
+	public static void reload(final Backend backend) {
+		try {
+			OtpErlangList loaded = (OtpErlangList) backend.rpcx("code",
+					"all_loaded", "");
+			List<OtpErlangAtom> mine = new ArrayList<OtpErlangAtom>();
+			for (OtpErlangObject elem : loaded) {
+				OtpErlangTuple t = (OtpErlangTuple) elem;
+				OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
+				if (mod.atomValue().startsWith("erlide")
+						|| mod.atomValue().equals("jrpc")) {
+					System.out.println(">>> HAD " + mod + "   "
+							+ t.elementAt(1));
+					mine.add(mod);
+				}
+			}
+			for (OtpErlangAtom mod : mine) {
+				System.out.println(">>> reload " + mod);
+				backend.rpcx("c", "l", "x", mod);
+			}
+		} catch (final Exception e) {
+			ErlLogger.error(e);
+		}
+	}
+
 	public static boolean init(final Backend backend, final String javaNode) {
 		try {
+			reload(backend);
 			backend.rpcx("erlide_backend", "init", "a", javaNode);
 			return true;
 		} catch (final Exception e) {

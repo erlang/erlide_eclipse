@@ -4,9 +4,9 @@
 -export([start/0, stop/0, function_call/1]).
 
 start() ->
-	xref:start(erlide),
+	xref:start(erlide), 
 	spawn(fun() ->
-				  erlide_log:log("xref initialization started."),
+				  erlide_log:log("-- xref initialization started."),
 %% 				  xref:add_release(erlide, code:lib_dir(),
 %% 								   [{name, otp}, {verbose, false}]),
 				  erlide_log:log("xref initialization done.")

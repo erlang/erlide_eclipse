@@ -172,10 +172,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
-		ErlLogger
-				.info("*** starting Erlide v"
-						+ getBundle().getHeaders().get("Bundle-Version")
-						+ " ***" + dev);
+		Object version = getBundle().getHeaders().get("Bundle-Version");
+		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntime();
 		ErlangCore.getBackendManager().register(this);
