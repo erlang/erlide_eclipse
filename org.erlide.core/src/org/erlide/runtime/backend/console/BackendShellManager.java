@@ -24,7 +24,7 @@ public class BackendShellManager implements IShellManager, IDisposable {
 
 	public BackendShellManager(Backend backend) {
 		fBackend = backend;
-		fShells = new HashMap<String, BackendShell>(5);
+		fShells = new HashMap<String, BackendShell>();
 	}
 
 	/*
@@ -51,7 +51,6 @@ public class BackendShellManager implements IShellManager, IDisposable {
 			shell = new BackendShell(fBackend, id);
 			fShells.put(id, shell);
 		}
-		System.out.println("open shell >>> " + id + " " + shell);
 		return shell;
 	}
 

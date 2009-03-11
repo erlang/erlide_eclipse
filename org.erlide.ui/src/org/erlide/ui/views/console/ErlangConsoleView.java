@@ -78,8 +78,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendEventListener;
 import org.erlide.runtime.backend.console.BackendShell;
+import org.erlide.runtime.backend.events.EventHandler;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.editors.erl.ColorManager;
@@ -96,7 +96,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 import erlang.ErlideBackend;
 
-public class ErlangConsoleView extends ViewPart implements BackendEventListener {
+public class ErlangConsoleView extends ViewPart {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -132,10 +132,12 @@ public class ErlangConsoleView extends ViewPart implements BackendEventListener 
 	final List<String> history = new ArrayList<String>(10);
 	StyledText consoleInput;
 	SourceViewer consoleInputViewer;
+	private ConsoleEventHandler handler;
 
 	public ErlangConsoleView() {
 		super();
 		fDoc = new ErlConsoleDocument();
+		handler = new ConsoleEventHandler();
 		try {
 			final Job j = new Job("shell opener") {
 				@Override
@@ -144,8 +146,7 @@ public class ErlangConsoleView extends ViewPart implements BackendEventListener 
 					if (fBackend == null) {
 						schedule(400);
 					} else {
-						fBackend.addEventListener("io_server",
-								ErlangConsoleView.this);
+						fBackend.getEventDaemon().addListener(handler);
 						fShell = fBackend.getShellManager().openShell("main");
 					}
 					return Status.OK_STATUS;
@@ -157,6 +158,32 @@ public class ErlangConsoleView extends ViewPart implements BackendEventListener 
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
+	}
+
+	@Override
+	public void dispose() {
+		fBackend.getEventDaemon().removeListener(handler);
+		super.dispose();
+	}
+
+	private class ConsoleEventHandler extends EventHandler {
+
+		@Override
+		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
+			final OtpErlangObject event = getStandardEvent(msg, "io_server");
+			if (event == null) {
+				return;
+			}
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					if (!consoleText.isDisposed()) {
+						fDoc.add(event, consoleText.getCharCount());
+						refreshView();
+					}
+				}
+			});
+		}
+
 	}
 
 	@Override
@@ -581,17 +608,6 @@ public class ErlangConsoleView extends ViewPart implements BackendEventListener 
 
 	@Override
 	public void setFocus() {
-	}
-
-	public void eventReceived(final OtpErlangObject event) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (!consoleText.isDisposed()) {
-					fDoc.add(event, consoleText.getCharCount());
-					refreshView();
-				}
-			}
-		});
 	}
 
 	private void initializeToolBar() {

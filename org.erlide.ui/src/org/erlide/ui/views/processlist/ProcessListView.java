@@ -45,9 +45,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendEventListener;
 import org.erlide.runtime.backend.BackendVisitor;
 import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.runtime.backend.events.EventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -106,13 +106,9 @@ public class ProcessListView extends ViewPart {
 	public static final String ID = "org.erlide.ui.views.processlist.ProcessListView";
 
 	private Label label;
-
 	private ComboViewer backends;
-
 	TableViewer viewer;
-
 	private Action refreshAction;
-
 	Action doubleClickAction;
 
 	/*
@@ -122,8 +118,9 @@ public class ProcessListView extends ViewPart {
 	 * or ignore it and always show the same content (like Task List, for
 	 * example).
 	 */
-	class ViewContentProvider implements IStructuredContentProvider,
-			BackendEventListener {
+	class ViewContentProvider implements IStructuredContentProvider {
+
+		private ProcessEventHandler handler = new ProcessEventHandler();
 
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
@@ -132,7 +129,7 @@ public class ProcessListView extends ViewPart {
 		public void dispose() {
 			final Backend backend = getBackend();
 			if (backend != null) {
-				backend.removeEventListener("processlist", this);
+				backend.getEventDaemon().removeListener(handler);
 			}
 		}
 
@@ -141,7 +138,7 @@ public class ProcessListView extends ViewPart {
 			if (bk == null) {
 				return new OtpErlangObject[] {};
 			}
-			bk.addEventListener("processlist", this);
+			bk.getEventDaemon().addListener(handler);
 
 			final OtpErlangList r = ErlideProclist.getProcessList(bk);
 			if (r.arity() == 0) {
@@ -157,18 +154,24 @@ public class ProcessListView extends ViewPart {
 			return ss;
 		}
 
-		/**
-		 * @see org.erlide.runtime.backend.BackendEventListener#eventReceived(com.ericsson.otp.erlang.OtpErlangObject)
-		 */
-		public void eventReceived(final OtpErlangObject event) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					if (!viewer.getControl().isDisposed()) {
-						viewer.refresh();
-					}
+		private class ProcessEventHandler extends EventHandler {
+
+			@Override
+			protected void doHandleMsg(final OtpErlangObject msg)
+					throws Exception {
+				if (getStandardEvent(msg, "processlist") == null) {
+					return;
 				}
-			});
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						if (!viewer.getControl().isDisposed()) {
+							viewer.refresh();
+						}
+					}
+				});
+			}
 		}
+
 	}
 
 	static class ViewLabelProvider extends LabelProvider implements

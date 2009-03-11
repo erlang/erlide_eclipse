@@ -12,11 +12,8 @@ package org.erlide.runtime.backend;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
@@ -29,18 +26,16 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
-import org.erlide.runtime.backend.events.ErlRpcDaemon;
+import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
@@ -56,7 +51,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "250"));
 
-	final private HashMap<String, ArrayList<BackendEventListener>> fEventListeners;
 	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
@@ -68,7 +62,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private String fCurrentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
-	private ErlRpcDaemon rpcDaemon;
+	private EventDaemon eventDaemon;
 	private RuntimeLauncher launcher;
 	private boolean trapexit;
 	private int exitStatus = -1;
@@ -79,7 +73,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			throw new BackendException(
 					"Can't create backend without runtime information");
 		}
-		fEventListeners = new HashMap<String, ArrayList<BackendEventListener>>();
 		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
 		fInfo = info;
@@ -142,10 +135,11 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	/**
-	 * Method dispose
-	 */
 	public void dispose() {
+		dispose(false);
+	}
+
+	public void dispose(boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
 
 		if (fNode != null) {
@@ -154,17 +148,20 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (fShellManager instanceof IDisposable) {
 			((IDisposable) fShellManager).dispose();
 		}
+		if (eventDaemon != null) {
+			eventDaemon.stop();
+		}
+
+		if (restart) {
+			return;
+		}
 		if (launcher instanceof IDisposable) {
 			((IDisposable) launcher).dispose();
 		}
-		getRpcDaemon().stop();
 	}
 
-	public ErlRpcDaemon getRpcDaemon() {
-		if (rpcDaemon == null) {
-			rpcDaemon = new ErlRpcDaemon(this);
-		}
-		return rpcDaemon;
+	public EventDaemon getEventDaemon() {
+		return eventDaemon;
 	}
 
 	/**
@@ -239,6 +236,9 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * @throws ConversionException
 	 */
 	public void send(final OtpErlangPid pid, final Object msg) {
+		if (!fAvailable) {
+			return;
+		}
 		try {
 			RpcUtil.send(fNode, pid, msg);
 		} catch (RpcException e) {
@@ -248,96 +248,13 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public void send(final String name, final Object msg) {
+		if (!fAvailable) {
+			return;
+		}
 		try {
 			RpcUtil.send(fNode, fPeer, name, msg);
 		} catch (final RpcException e) {
 			// shouldn't happen
-			ErlLogger.warn(e);
-		}
-	}
-
-	/**
-	 * Method addEventListener
-	 * 
-	 * @param event
-	 *            String
-	 * @param l
-	 *            BackendEventListener
-	 */
-	public void addEventListener(final String event,
-			final BackendEventListener l) {
-		ArrayList<BackendEventListener> ls = fEventListeners.get(event);
-		if (ls == null) {
-			ls = new ArrayList<BackendEventListener>(20);
-			fEventListeners.put(event, ls);
-		}
-		if (ls.indexOf(l) < 0) {
-			ls.add(l);
-		}
-	}
-
-	/**
-	 * Method removeEventListener
-	 * 
-	 * @param event
-	 *            String
-	 * @param l
-	 *            BackendEventListener
-	 */
-	public void removeEventListener(final String event,
-			final BackendEventListener l) {
-		final ArrayList<BackendEventListener> ls = fEventListeners.get(event);
-		if (ls != null) {
-			ls.remove(l);
-		}
-	}
-
-	/**
-	 * This executes in the event thread
-	 */
-	protected void handleReceiveEvent() {
-		try {
-			while (!Thread.currentThread().isInterrupted()) {
-				OtpErlangObject msg = ftRpcBox.receive(1000);
-				if (msg == null) {
-					continue;
-				}
-				ErlLogger.debug("handleReceiveEvent() - Event! "
-						+ msg.toString());
-				// ErlUtils.match("stopped", msg)
-				if (msg instanceof OtpErlangAtom) {
-					final String sys = ((OtpErlangAtom) msg).atomValue();
-					if (sys.compareTo("stopped") == 0) {
-						break;
-					}
-					System.out
-							.println("handleReceiveEvent() - Unrecognized system event: "
-									+ sys);
-				} else {
-					final OtpErlangTuple t = (OtpErlangTuple) msg;
-					msg = t.elementAt(1);
-					String event = null;
-					if (msg instanceof OtpErlangAtom) {
-						event = ((OtpErlangAtom) msg).atomValue();
-					} else if (msg instanceof OtpErlangTuple) {
-						event = ((OtpErlangTuple) msg).elementAt(0).toString();
-					}
-					if (event != null) {
-						final ArrayList<BackendEventListener> ls = fEventListeners
-								.get(event);
-						if (ls != null) {
-							for (final BackendEventListener l : ls) {
-								l.eventReceived(msg);
-							}
-						}
-					}
-				}
-			}
-			// ErlLogger.debug("exited event thread");
-		} catch (final OtpErlangExit e) {
-			ErlLogger.warn("Erlide backend: event source crashed.\n"
-					+ e.getMessage());
-		} catch (final OtpErlangDecodeException e) {
 			ErlLogger.warn(e);
 		}
 	}
@@ -451,15 +368,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (!inited) {
 			setAvailable(false);
 		}
-		initEventListeners();
-	}
+		eventDaemon = new EventDaemon(this);
+		eventDaemon.start();
 
-	private void initEventListeners() {
-		getRpcDaemon().start();
-	}
-
-	public List<BackendEventListener> getEventListeners(final String event) {
-		return fEventListeners.get(event);
+		eventDaemon.addListener(new LogEventHandler());
 	}
 
 	/*
@@ -479,6 +391,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public void initializeRuntime(ILaunch launch) {
+		dispose(true);
 		launcher.initializeRuntime(launch);
 		fShellManager = new BackendShellManager(this);
 	}
