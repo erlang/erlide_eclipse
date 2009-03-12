@@ -34,7 +34,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
 	protected int lineStart, lineEnd;
 
-	protected SourceRefElement(IErlElement parent, String name) {
+	protected SourceRefElement(final IErlElement parent, final String name) {
 		super(parent, name);
 	}
 
@@ -42,7 +42,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * This element is being closed. Do any necessary cleanup.
 	 */
 	@Override
-	protected void closing(Object info) throws ErlModelException {
+	protected void closing(final Object info) throws ErlModelException {
 		// Do any necessary cleanup
 	}
 
@@ -56,8 +56,9 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	/**
 	 * @see ISourceManipulation
 	 */
-	public void copy(IErlElement container, IErlElement sibling, String rename,
-			boolean force, IProgressMonitor monitor) throws ErlModelException {
+	public void copy(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		if (container == null) {
 			throw new IllegalArgumentException(Util
 					.bind("operation.nullContainer")); //$NON-NLS-1$
@@ -79,7 +80,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	/**
 	 * @see ISourceManipulation
 	 */
-	public void delete(boolean force, IProgressMonitor monitor)
+	public void delete(final boolean force, final IProgressMonitor monitor)
 			throws ErlModelException {
 		final IErlElement[] elements = new IErlElement[] { this };
 		getModel().delete(elements, force, monitor);
@@ -88,7 +89,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	/*
 	 * @see ErlElement#generateInfos
 	 */
-	protected void open(IProgressMonitor pm) throws ErlModelException {
+	protected void open(final IProgressMonitor pm) throws ErlModelException {
 		final Openable openableParent = (Openable) getOpenableParent();
 		if (openableParent == null) {
 			return;
@@ -196,8 +197,9 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	/**
 	 * @see ISourceManipulation
 	 */
-	public void move(IErlElement container, IErlElement sibling, String rename,
-			boolean force, IProgressMonitor monitor) throws ErlModelException {
+	public void move(final IErlElement container, final IErlElement sibling,
+			final String rename, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		if (container == null) {
 			throw new IllegalArgumentException(Util
 					.bind("operation.nullContainer")); //$NON-NLS-1$
@@ -219,8 +221,8 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	/**
 	 * @see ISourceManipulation
 	 */
-	public void rename(String newName, boolean force, IProgressMonitor monitor)
-			throws ErlModelException {
+	public void rename(final String newName, final boolean force,
+			final IProgressMonitor monitor) throws ErlModelException {
 		if (newName == null) {
 			throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
 		}
@@ -242,15 +244,15 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		return fSourceRangeStart;
 	}
 
-	protected void setSourceRangeEnd(int end) {
+	protected void setSourceRangeEnd(final int end) {
 		fSourceRangeEnd = end;
 	}
 
-	protected void setSourceRangeStart(int start) {
+	protected void setSourceRangeStart(final int start) {
 		fSourceRangeStart = start;
 	}
 
-	protected void setLineStart(int lineStart) {
+	protected void setLineStart(final int lineStart) {
 		this.lineStart = lineStart;
 	}
 
@@ -262,8 +264,18 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		return lineEnd;
 	}
 
-	protected void setLineEnd(int lineEnd) {
+	protected void setLineEnd(final int lineEnd) {
 		this.lineEnd = lineEnd;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (!super.equals(o) || !(o instanceof SourceRefElement)) {
+			return false;
+		}
+		final SourceRefElement r = (SourceRefElement) o;
+		return fSourceRangeStart == r.fSourceRangeStart
+				&& fSourceRangeEnd == r.fSourceRangeEnd;
 	}
 
 }
