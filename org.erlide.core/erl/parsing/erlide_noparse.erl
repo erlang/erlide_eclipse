@@ -162,13 +162,12 @@ cac(attribute, Attribute) ->
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
 	  when (Kind=:=atom) and ((Value=:='spec') or (Value=:='type')) ->
-	    Name = case Kind of 'spec' -> Kind; _ -> Value end,
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
             Extra = to_string(Args),
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra};
+                       name=Value, args=get_attribute_args(Kind, Args, Args), extra=Extra};
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
