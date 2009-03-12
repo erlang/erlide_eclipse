@@ -161,7 +161,7 @@ cac(attribute, Attribute) ->
     case Attribute of
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
-	  when (Kind=:='spec') or ((Kind=:=atom) and (Value=:='type')) ->
+	  when (Kind=:=atom) and ((Value=:='spec') or (Value=:='type')) ->
 	    Name = case Kind of 'spec' -> Kind; _ -> Value end,
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
