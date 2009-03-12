@@ -356,6 +356,9 @@ public class ErlModelUtils {
 	public static String findIncludeFile(final IProject project,
 			final String filePath, final String externalIncludes,
 			final List<Tuple> pathVars) {
+		if (project == null) {
+			return filePath;
+		}
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final ErlangProjectProperties prefs = ErlangCore
