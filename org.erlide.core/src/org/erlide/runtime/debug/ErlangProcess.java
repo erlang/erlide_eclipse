@@ -189,7 +189,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		// final OtpErlangList bindings = ErlideDebug.getBindings(fBackend,
 		// getMeta());
 		// ErlLogger.debug("bindings " + bindings);
-		ErlLogger.debug("breakAt getMeta() " + getMeta());
+		// ErlLogger.debug("breakAt getMeta() " + getMeta());
 		final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
 				fBackend, getMeta());
 		if (stackAndBindings == null) {
@@ -197,7 +197,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 					+ "- are there more than one debug sessions started?");
 			return;
 		}
-		ErlLogger.debug("breakAt getMeta() " + stackAndBindings);
+		ErlLogger.debug("breakAt getMeta() " + line);
 		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings
 				.elementAt(0);
 		OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);

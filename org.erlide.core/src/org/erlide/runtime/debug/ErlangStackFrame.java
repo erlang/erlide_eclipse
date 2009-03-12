@@ -72,7 +72,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		if (m != null) {
 			try {
 				m.open(null);
-				final IErlElement e = m.getElementAtLine(lineNumber);
+				final IErlElement e = m.getElementAtLine(lineNumber - 1);
 				if (e instanceof IErlFunctionClause) {
 					final IErlFunctionClause clause = (IErlFunctionClause) e;
 					clauseHead = clause.getName() + clause.getHead();
