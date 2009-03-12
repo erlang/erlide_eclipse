@@ -879,7 +879,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void setSelection(final ISourceReference reference,
-			boolean moveCursor) {
+			final boolean moveCursor) {
 		if (getSelectionProvider() == null) {
 			return;
 		}
@@ -1307,9 +1307,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the position of the found annotation
 	 * @return the found annotation
 	 */
-	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
-			boolean forward, final Position annotationPosition) {
+			final boolean forward, final Position annotationPosition) {
 
 		Annotation nextAnnotation = null;
 		Position nextAnnotationPosition = null;
