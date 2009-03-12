@@ -43,6 +43,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
@@ -83,7 +84,7 @@ public class ErlTextHover implements ITextHover,
 	@SuppressWarnings("restriction")
 	public String getHoverInfo(final ITextViewer textViewer,
 			final IRegion hoverRegion) {
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
@@ -110,6 +111,9 @@ public class ErlTextHover implements ITextHover,
 			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
 				final OtpErlangAtom a0 = (OtpErlangAtom) o0;
 				final OtpErlangAtom a1 = (OtpErlangAtom) o1;
+				if (a0.atomValue().equals("error")) {
+					return null;
+				}
 				String definedName = a1.atomValue();
 				if (definedName.charAt(0) == '?') {
 					definedName = definedName.substring(1);
@@ -117,8 +121,9 @@ public class ErlTextHover implements ITextHover,
 				final IErlElement.Kind kindToFind = a0.atomValue().equals(
 						"record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
-				final IProject proj = (IProject) fModule.getProject()
-						.getResource();
+				final IErlProject project = fModule.getProject();
+				final IProject proj = project == null ? null
+						: (IProject) project.getResource();
 				final IErlPreprocessorDef pd = ErlModelUtils
 						.findPreprocessorDef(b, proj, fModule, definedName,
 								kindToFind, fExternalIncludes,
@@ -136,13 +141,13 @@ public class ErlTextHover implements ITextHover,
 	}
 
 	private void initStyleSheet() {
-		Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
 		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
 		if (fgStyleSheet != null) {
 
 			try {
 				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			}
 		}
 	}
@@ -202,7 +207,7 @@ public class ErlTextHover implements ITextHover,
 						return new BrowserInformationControl(parent,
 								JFaceResources.DIALOG_FONT, EditorsUI
 										.getTooltipAffordanceString());
-					} catch (NoSuchMethodError e) {
+					} catch (final NoSuchMethodError e) {
 						// API changed in 3.4
 						return new DefaultInformationControl(parent, EditorsUI
 								.getTooltipAffordanceString(),
@@ -228,7 +233,7 @@ public class ErlTextHover implements ITextHover,
 						return new BrowserInformationControl(parent,
 								JFaceResources.DIALOG_FONT, EditorsUI
 										.getTooltipAffordanceString());
-					} catch (NoSuchMethodError e) {
+					} catch (final NoSuchMethodError e) {
 						// API changed in 3.4
 						return new DefaultInformationControl(parent, EditorsUI
 								.getTooltipAffordanceString(),
