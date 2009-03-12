@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension;
 import org.eclipse.jface.text.IInformationControlExtension2;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -217,7 +216,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		// fTreeViewerDefaultComparator = fOutlineContentCreator
 		// .createDefaultOutlineComparator();
 		// fTreeViewer.setComparator(fTreeViewerDefaultComparator);
-		fTreeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
+		fTreeViewer.setAutoExpandLevel(1);
 		fTreeViewer.setUseHashlookup(true);
 		fTreeViewer.setInput(fOutlineContentCreator.getOutlineInput());
 	}
