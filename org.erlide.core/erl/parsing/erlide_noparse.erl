@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 14).
+-define(CACHE_VERSION, 15).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -104,7 +104,7 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, code, external_refs}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, code, external_refs, comment}).
 -record(clause, {pos, name, args, head, code, name_pos, external_refs}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
@@ -123,7 +123,8 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
     ?D(length(Functions)),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
     ?D(length(Collected)),
-    Model = #model{forms=Collected, comments=Comments},
+    CommentedCollected = get_function_comments(Collected, Comments),
+    Model = #model{forms=CommentedCollected, comments=Comments},
     create(ScannerName, Model, ErlidePath),
     Model.
 
@@ -711,7 +712,20 @@ ffoc([_ | R], Head) ->
     ffoc(R, Head).
 
        
+get_function_comments(Forms, Comments) ->
+    lists:map(fun(#function{} = F) ->
+		      get_function_comment(F, Comments);
+		 (Other) ->
+		      Other
+	      end, Forms).
 
+get_function_comment(F, []) ->
+    F;
+get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{last_line=LastLine, value=Value} | _])
+  when LastLine+1=:=Line; LastLine+2=:=Line->
+    F#function{comment=Value};
+get_function_comment(F, [_ | Rest]) ->
+    get_function_comment(F, Rest).
 
 
 

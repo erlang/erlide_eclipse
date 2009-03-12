@@ -176,7 +176,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final String contentType) {
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module != null) {
-			return new ErlTextHover(module, editor.getExternalIncludes());
+			return new ErlTextHover(module, editor.getExternalModules(), editor
+					.getExternalIncludes());
 		}
 		return null;
 	}

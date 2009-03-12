@@ -30,15 +30,21 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	private final String head;
 
+	private final String fComment;
+
 	/**
 	 * @param parent
 	 * @param name
+	 * @param arity
+	 * @param head
+	 * @param comment
 	 */
 	protected ErlFunction(final ErlElement parent, final String name,
-			final int arity, final String head) {
+			final int arity, final String head, final String comment) {
 		super(parent, name);
 		this.arity = arity;
 		this.head = head;
+		fComment = comment;
 	}
 
 	public List<IErlFunctionClause> getClauses() {
@@ -141,4 +147,9 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	public String getHead() {
 		return head;
 	}
+
+	public String getComment() {
+		return fComment;
+	}
+
 }

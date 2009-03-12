@@ -11,8 +11,12 @@ package org.erlide.ui.editors.erl;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -36,21 +40,29 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.ErlangFunction;
+import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -64,11 +76,16 @@ public class ErlTextHover implements ITextHover,
 	private final IErlModule fModule;
 	private final String fExternalIncludes;
 	private static URL fgStyleSheet;
+	private final List<Tuple> pathVars;
+	private final String fExternalModules;
 
-	public ErlTextHover(final IErlModule module, final String externalIncludes) {
+	public ErlTextHover(final IErlModule module, final String externalModules,
+			final String externalIncludes) {
 		fImports = null;
 		fModule = module;
+		fExternalModules = externalModules;
 		fExternalIncludes = externalIncludes;
+		pathVars = OpenAction.getPathVars();
 		initStyleSheet();
 	}
 
@@ -90,8 +107,9 @@ public class ErlTextHover implements ITextHover,
 		}
 		final int offset = hoverRegion.getOffset();
 		OtpErlangObject r1 = null;
+		final int length = hoverRegion.getLength();
 		final String debuggerVar = makeDebuggerVariableHover(textViewer,
-				offset, hoverRegion.getLength());
+				offset, length);
 		if (debuggerVar.length() > 0) {
 			result.append(debuggerVar);
 		}
@@ -99,12 +117,14 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
-				.createScannerModuleName(fModule), fImports);
+				.createScannerModuleName(fModule), fImports, fExternalModules,
+				pathVars);
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 		if (r1 instanceof OtpErlangString) {
 			final OtpErlangString s1 = (OtpErlangString) r1;
 			result.append(s1.stringValue());
 		} else if (r1 instanceof OtpErlangTuple) {
+			// hrä ska vi kolla som open, måste faktorisera lite...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final OtpErlangObject o0 = t.elementAt(0);
 			final OtpErlangObject o1 = t.elementAt(1);
@@ -117,6 +137,65 @@ public class ErlTextHover implements ITextHover,
 				String definedName = a1.atomValue();
 				if (definedName.charAt(0) == '?') {
 					definedName = definedName.substring(1);
+				}
+				// TODO code below should be cleaned up, we should factorize and
+				// use same code for content assist, open and hover
+				if (a0.atomValue().equals("local")) {
+					final OtpErlangLong a2 = (OtpErlangLong) t.elementAt(2);
+					int arity = -1;
+					try {
+						arity = a2.intValue();
+					} catch (final OtpErlangRangeException e) {
+					}
+					final ErlangFunction erlangFunction = new ErlangFunction(
+							definedName, arity);
+					IErlFunction f = null;
+					try {
+						f = ErlModelUtils.findFunction(fModule, erlangFunction);
+					} catch (final ErlModelException e) {
+					}
+					if (f != null) {
+						return f.getComment();
+					}
+					return null;
+				} else if (a0.atomValue().equals("external")) {
+					final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
+					final String mod = definedName;
+					definedName = a2.atomValue();
+					final OtpErlangLong a3 = (OtpErlangLong) t.elementAt(3);
+					final OtpErlangString s4 = (OtpErlangString) t.elementAt(4);
+					final String path = Util.stringValue(s4);
+					int arity = -1;
+					try {
+						arity = a3.intValue();
+					} catch (final OtpErlangRangeException e) {
+					}
+					final ErlangFunction erlangFunction = new ErlangFunction(
+							definedName, arity);
+					IResource r = null;
+					try {
+						r = ErlModelUtils.openExternalModule(mod, path, fModule
+								.getResource().getProject());
+					} catch (final CoreException e2) {
+					}
+					if (!(r instanceof IFile)) {
+						return null;
+					}
+					final IFile file = (IFile) r;
+					final IErlModule m = ErlModelUtils.getModule(file);
+					if (m == null) {
+						return null;
+					}
+					IErlFunction f = null;
+					try {
+						m.open(null);
+						f = ErlModelUtils.findFunction(m, erlangFunction);
+					} catch (final ErlModelException e) {
+					}
+					if (f != null) {
+						return f.getComment();
+					}
+					return null;
 				}
 				final IErlElement.Kind kindToFind = a0.atomValue().equals(
 						"record") ? IErlElement.Kind.RECORD_DEF
@@ -251,7 +330,8 @@ public class ErlTextHover implements ITextHover,
 	public static String getHoverTextForOffset(final int offset,
 			final ErlangEditor editor) {
 		final ErlTextHover h = new ErlTextHover(
-				ErlModelUtils.getModule(editor), editor.getExternalIncludes());
+				ErlModelUtils.getModule(editor), editor.getExternalModules(),
+				editor.getExternalIncludes());
 		final ITextViewer tv = editor.getViewer();
 		final IRegion r = h.getHoverRegion(tv, offset);
 		if (r == null) {

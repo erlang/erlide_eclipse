@@ -66,7 +66,6 @@ public class ErlParser {
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
 					moduleFilePath, initialText, stateDir, erlidePath);
 		} else {
-			// FIXME this doesn't work...
 			ErlLogger.info("reparse " + module.getName());
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
@@ -220,7 +219,7 @@ public class ErlParser {
 	 *            module
 	 * @param el
 	 *            -record(function, {pos, name, arity, args, head, clauses,
-	 *            name_pos}).
+	 *            name_pos, code, external_refs, comment}).
 	 * @return ErlFunction
 	 */
 	private ErlFunction makeErlFunction(final IErlModule parent,
@@ -232,8 +231,12 @@ public class ErlParser {
 		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(7);
 		ErlFunction f = null;
 		try {
+			String comment = Util.stringValue(el.elementAt(10));
+			if (comment != null) {
+				comment = comment.replaceAll("\n", "<br/>");
+			}
 			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), Util.stringValue(head));
+					.intValue(), Util.stringValue(head), comment);
 		} catch (final OtpErlangRangeException e) {
 			return f;
 		}

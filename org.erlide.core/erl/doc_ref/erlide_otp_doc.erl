@@ -4,7 +4,7 @@
 -module(erlide_otp_doc).
 
 -export([check_all/0,
-         get_doc_from_scan_tuples/4,
+         get_doc_from_scan_tuples/6,
          get_doc_from_fun_arity_list/3,
          get_all_links_to_other/0,
          get_exported/2,
@@ -380,23 +380,23 @@ get_all_links_to_other() ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
+get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, PathVars) ->
     try
-        case erlide_open:open(Module, Offset, "", []) of
-            {external, M, Function, N, _P} ->
+        case erlide_open:open(Module, Offset, ExternalModules, PathVars) of
+            {external, M, Function, N, P} ->
                 ?D({open, {external, M, Function, N, _P}}),
                 case get_doc_for_external(StateDir, M, [{Function, N}]) of
                     D when is_list(D) ->
                         lists:flatten(D);
-                    Error ->
-                        Error
+		    _Error ->
+			{external, M, Function, N, P}
                 end;
             {local, Function, N} ->
-                case get_doc_for_local(StateDir, Function, N, Imports) of
+                case get_doc_for_imported(StateDir, Function, N, Imports) of
                     D when is_list(D) ->
                         lists:flatten(D);
-                    Error ->
-                        Error
+		    _Error ->
+			{local, Function, N}
                 end;
             Error ->
                 ?D(Error),
@@ -408,6 +408,9 @@ get_doc_from_scan_tuples(Module, Offset, Imports, StateDir) ->
         exit:E ->
             E
     end.
+
+e(E) ->
+    E.
 
 get_doc_for_external(StateDir, Mod, FuncList) ->
     try
@@ -426,15 +429,17 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
     catch
-        exit:E ->
-            ?D(E),
-            E;
-		error:E ->
-			?D(E),
-            E
+	exit:E ->
+	    ?D(E),
+	    e(E),
+	    E;
+	error:E ->
+	    ?D(E),
+	    e(E),
+	    E
     end.
 
-get_doc_for_local(StateDir, F, A, Imports) ->
+get_doc_for_imported(StateDir, F, A, Imports) ->
     ?D({F, A, Imports}),
     Mod = case erl_internal:bif(F, A) of
               true ->
@@ -442,10 +447,15 @@ get_doc_for_local(StateDir, F, A, Imports) ->
               false ->
                   get_imported(Imports, {F, A})
           end,
-    get_doc_for_external(StateDir, Mod, [{F, A}]).
+    case Mod of
+	{error, E} ->
+	    {error, E};
+	_ ->
+	    get_doc_for_external(StateDir, Mod, [{F, A}])
+    end.
 
 get_imported([], _) ->
-    exit({error, doc_not_found});
+    {error, doc_not_found};
 get_imported([{Mod, Funcs} | Rest], Func) ->
     case lists:member(Func, Funcs) of
         true ->

@@ -50,7 +50,7 @@ public class ErlideOpen {
 		return res;
 	}
 
-	private static List<OtpErlangTuple> fixPathVars(final List<Tuple> pathVars) {
+	public static List<OtpErlangTuple> fixPathVars(final List<Tuple> pathVars) {
 		final List<OtpErlangTuple> pathVars2 = new ArrayList<OtpErlangTuple>();
 		for (final Tuple t : pathVars) {
 			pathVars2

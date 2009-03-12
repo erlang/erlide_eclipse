@@ -63,8 +63,7 @@ import erlang.OpenResult;
  * This action opens a Erlang editor on a Erlang element or file.
  * <p>
  * The action is applicable to selections containing elements of type
- * <code>ICompilationUnit</code>, <code>IMember</code> or
- * <code>IFile</code>.
+ * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -82,7 +81,8 @@ public class OpenAction extends SelectionDispatchAction {
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
 	 * selection provided by the site's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code> .
+	 * org.eclipse.jface.viewers.IStructuredSelection</code>
+	 * .
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
@@ -99,16 +99,21 @@ public class OpenAction extends SelectionDispatchAction {
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
 		// initPathVars();
+		pathVars = getPathVars();
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
+
+	}
+
+	public static List<Tuple> getPathVars() {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final String[] names = pvm.getPathVariableNames();
-		pathVars = new ArrayList<Tuple>(names.length);
+		final ArrayList<Tuple> result = new ArrayList<Tuple>(names.length);
 		for (final String name : names) {
-			pathVars.add(new Tuple().add(name).add(
+			result.add(new Tuple().add(name).add(
 					pvm.getValue(name).toOSString()));
 		}
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
-
+		return result;
 	}
 
 	// public OpenAction(final ErlangEditor editor, final String
@@ -117,17 +122,6 @@ public class OpenAction extends SelectionDispatchAction {
 	// this(editor.getEditorSite(), externalModules, externalIncludes);
 	// fEditor = editor;
 	// setText(ActionMessages.OpenAction_declaration_label);
-	// }
-
-	// private void initPathVars() {
-	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-	// .getPathVariableManager();
-	// final String[] names = pvm.getPathVariableNames();
-	// pathVars = new ArrayList<Tuple>(names.length);
-	// for (final String name : names) {
-	// pathVars.add(new Tuple().add(name).add(
-	// pvm.getValue(name).toOSString()));
-	// }
 	// }
 
 	/*

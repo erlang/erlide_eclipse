@@ -17,10 +17,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.IRegion;
@@ -366,6 +368,12 @@ public class EditorUtility {
 		}
 		final IPath location = new Path(path);
 		final IFile file = project.getFile(location.lastSegment());
+		final IStatus status = ResourcesPlugin.getWorkspace()
+				.validateLinkLocation(file, location);
+		if (status.getSeverity() != IStatus.OK
+				&& status.getSeverity() != IStatus.INFO) {
+			return null;
+		}
 		if (!file.isLinked()) {
 			file.createLink(location, IResource.NONE, null);
 		}

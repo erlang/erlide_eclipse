@@ -402,6 +402,22 @@ public class ErlModelUtils {
 	public static void openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
 			final IProject project) throws CoreException {
+		final IResource r = openExternalModule(mod, path, project);
+		if (r != null && r instanceof IFile) {
+			final IFile f = (IFile) r;
+			try {
+				final IEditorPart editor = EditorUtility.openInEditor(f);
+				openFunctionInEditor(function, editor);
+			} catch (final PartInitException e) {
+				ErlLogger.warn(e);
+			} catch (final ErlModelException e) {
+				ErlLogger.warn(e);
+			}
+		}
+	}
+
+	public static IResource openExternalModule(final String mod,
+			final String path, final IProject project) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
@@ -415,17 +431,7 @@ public class ErlModelUtils {
 				ErlLogger.warn(e);
 			}
 		}
-		if (r != null && r instanceof IFile) {
-			final IFile f = (IFile) r;
-			try {
-				final IEditorPart editor = EditorUtility.openInEditor(f);
-				openFunctionInEditor(function, editor);
-			} catch (final PartInitException e) {
-				ErlLogger.warn(e);
-			} catch (final ErlModelException e) {
-				ErlLogger.warn(e);
-			}
-		}
+		return r;
 	}
 
 	public static IErlModule getExternalModule(final String mod,

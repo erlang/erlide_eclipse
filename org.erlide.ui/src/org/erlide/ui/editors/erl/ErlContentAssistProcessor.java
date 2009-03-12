@@ -498,9 +498,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 	private void addFunctionCompletion(final int offset, final String aprefix,
 			final List<ICompletionProposal> result,
 			final IErlFunction function, final boolean arityOnly) {
-		addFunctionCompletion(offset, aprefix, function.getFunction(),
-				arityOnly, arityOnly ? null : getParameterNames(function),
-				result);
+		addFunctionCompletion(offset, aprefix, function.getFunction(), function
+				.getComment(), arityOnly, arityOnly ? null
+				: getParameterNames(function), result);
 	}
 
 	private List<String> getParameterNames(final IErlFunction function) {
@@ -587,8 +587,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 	}
 
 	private void addFunctionCompletion(final int offset, final String prefix,
-			final ErlangFunction function, final boolean arityOnly,
-			final List<String> parameterNames,
+			final ErlangFunction function, final String comment,
+			final boolean arityOnly, final List<String> parameterNames,
 			final List<ICompletionProposal> result) {
 		if (function.name.startsWith(prefix)) {
 			final int offs = function.name.length() - prefix.length();
@@ -602,7 +602,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 			String funWithParameters = arityOnly ? funWithArity
 					: getNameWithParameters(function.name, parameterNames);
 			funWithParameters = funWithParameters.substring(prefix.length());
-			addFunctionCompletion(offset, result, funWithArity, null,
+			addFunctionCompletion(offset, result, funWithArity, comment,
 					funWithParameters, offsetsAndLengths);
 		}
 	}

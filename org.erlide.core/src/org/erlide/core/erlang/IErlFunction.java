@@ -34,4 +34,6 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
 	 * @return the function name with _ for each parameter, used for completion
 	 */
 	String getNameWithParameters();
+
+	String getComment();
 }
