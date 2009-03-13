@@ -144,7 +144,7 @@ public class ErlLogger {
 			sb.append(text);
 			sb.append(" ");
 			String message = formatMessage(record);
-			sb.append(record.getLevel());
+			sb.append(record.getLevel().toString().charAt(0));
 			sb.append(": ");
 			sb.append(message);
 			sb.append(lineSeparator);
