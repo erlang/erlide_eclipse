@@ -81,7 +81,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	IProject currentProject;
 	IWorkspaceRoot workspaceRoot;
 	BuildNotifier notifier;
-	Backend backend;
 
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
@@ -184,26 +183,38 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			if (n > 0) {
 				notifier.setProgressPerCompilationUnit(1.0f / n);
+				Backend backend = ErlangCore.getBackendManager()
+						.getBuildBackend(currentProject);
+				if (backend == null) {
+					String message = "No backend with the required "
+							+ "version could be found. Can't build.";
+					ErlangBuilderMarkerGenerator.addProblemMarker(
+							currentProject, null, message, 0,
+							IMarker.SEVERITY_ERROR);
+					throw new BackendException(message);
+				}
+
 				for (IResource resource : resourcesToBuild) {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
-						compileFile(currentProject, resource);
+						compileFile(currentProject, resource, backend);
 					} else if ("yrl".equals(resource.getFileExtension())) {
-						compileYrlFile(currentProject, resource);
+						compileYrlFile(currentProject, resource, backend);
 					} else {
 						ErlLogger.warn("Don't know how to compile: %s",
 								resource.getName());
 					}
 					notifier.compiled(resource);
 				}
+				try {
+					checkForClashes(backend);
+				} catch (final Exception e) {
+				}
+				ErlangCore.getBackendManager().dispose(backend);
+
 			}
 			notifier.done();
-
-			try {
-				checkForClashes();
-			} catch (final Exception e) {
-			}
 
 		} catch (final CoreException e) {
 			ErlLogger.error(e);
@@ -225,7 +236,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkForClashes() {
+	private void checkForClashes(Backend backend) {
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
 			for (OtpErlangObject elem : res.elements()) {
@@ -338,7 +349,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return result;
 	}
 
-	protected void compileFile(final IProject project, final IResource resource) {
+	protected void compileFile(final IProject project,
+			final IResource resource, Backend backend) {
 		final IPath projectPath = project.getLocation();
 		final ErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(currentProject);
@@ -561,7 +573,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	protected void compileYrlFile(final IProject project,
-			final IResource resource) {
+			final IResource resource, Backend backend) {
 		// final IPath projectPath = project.getLocation();
 		// final ErlangProjectProperties prefs = new
 		// ErlangProjectProperties(project);
@@ -615,7 +627,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (br != null) {
 				br.setDerived(true);
 				// br.touch() doesn't work...
-				compileFile(project, br);
+				compileFile(project, br, backend);
 			}
 
 		} catch (final Exception e) {
@@ -1004,21 +1016,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	private void cleanup() {
 		notifier = null;
-		ErlangCore.getBackendManager().dispose(backend);
-		backend = null;
 	}
 
 	private void initializeBuilder() throws CoreException, BackendException {
 		workspaceRoot = currentProject.getWorkspace().getRoot();
-		backend = ErlangCore.getBackendManager()
-				.getBuildBackend(currentProject);
-		if (backend == null) {
-			String message = "No backend with the required "
-					+ "version could be found. Can't build.";
-			ErlangBuilderMarkerGenerator.addProblemMarker(currentProject, null,
-					message, 0, IMarker.SEVERITY_ERROR);
-			throw new BackendException(message);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
