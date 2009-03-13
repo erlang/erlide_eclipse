@@ -1253,13 +1253,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IInformationProvider informationProvider = new InformationProvider(
 						hoverRegion, hoverInfo, controlCreator);
 
-				fInformationPresenter.setOffset(offset);
-				fInformationPresenter
-						.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-				fInformationPresenter.setInformationProvider(
-						informationProvider, contentType);
-				fInformationPresenter.showInformation();
+				if (fInformationPresenter == null) {
+					ErlLogger
+							.warn("internal error: fInformationPresenter is null in editor!");
 
+				} else {
+					fInformationPresenter.setOffset(offset);
+					fInformationPresenter
+							.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+					fInformationPresenter.setInformationProvider(
+							informationProvider, contentType);
+					fInformationPresenter.showInformation();
+				}
 			} catch (final BadLocationException e) {
 			}
 		}
