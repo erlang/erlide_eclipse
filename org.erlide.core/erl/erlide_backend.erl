@@ -51,7 +51,7 @@ init(JavaNode) ->
 						  exit(Pid, kill)
 				  end,
 				  RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
-				  io:format("RPC: ~p\n", [RpcPid]),
+				  %% io:format("RPC: ~p\n", [RpcPid]),
 				  register(erlide_rex, RpcPid),
 				  ets:insert(erlide, {erlide_rex, whereis(erlide_rex)}),
 				  
