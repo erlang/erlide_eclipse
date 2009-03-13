@@ -55,7 +55,7 @@ public class ErlLogger {
 		final StackTraceElement el = getCaller();
 		final String str = o.length == 0 ? fmt : String.format(fmt, o);
 		Logger.getLogger("org.erlide").logp(
-				java.util.logging.Level.FINER,
+				kind,
 				el.getClassName(),
 				el.getMethodName(),
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
@@ -70,7 +70,7 @@ public class ErlLogger {
 		final String str = e.getMessage();
 
 		Logger.getLogger("org.erlide").logp(
-				java.util.logging.Level.FINER,
+				kind,
 				el.getClassName(),
 				el.getMethodName(),
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
@@ -197,6 +197,7 @@ public class ErlLogger {
 			consoleHandler.setLevel(lvl);
 			logger.addHandler(consoleHandler);
 
+			logger.setUseParentHandlers(false);
 			logger.setLevel(java.util.logging.Level.FINEST);
 		} catch (final SecurityException e) {
 			e.printStackTrace();
