@@ -134,7 +134,8 @@ public class ErlTextHover implements ITextHover,
 			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
 				final OtpErlangAtom a0 = (OtpErlangAtom) o0;
 				final OtpErlangAtom a1 = (OtpErlangAtom) o1;
-				if (a0.atomValue().equals("error")) {
+				final String openKind = a0.atomValue();
+				if (openKind.equals("error")) {
 					return null;
 				}
 				String definedName = a1.atomValue();
@@ -143,65 +144,54 @@ public class ErlTextHover implements ITextHover,
 				}
 				// TODO code below should be cleaned up, we should factorize and
 				// use same code for content assist, open and hover
-				if (a0.atomValue().equals("local")) {
-					final OtpErlangLong a2 = (OtpErlangLong) t.elementAt(2);
-					int arity = -1;
-					try {
-						arity = a2.intValue();
-					} catch (final OtpErlangRangeException e) {
-					}
-					final ErlangFunction erlangFunction = new ErlangFunction(
-							definedName, arity);
+				if (openKind.equals("local") || openKind.equals("external")) {
+					IErlModule m = null;
 					IErlFunction f = null;
-					try {
-						f = ErlModelUtils.findFunction(fModule, erlangFunction);
-					} catch (final ErlModelException e) {
+					OtpErlangLong arityLong = null;
+					if (openKind.equals("local")) {
+						arityLong = (OtpErlangLong) t.elementAt(2);
+						m = fModule;
+					} else if (openKind.equals("external")) {
+						final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
+						final String mod = definedName;
+						definedName = a2.atomValue();
+						arityLong = (OtpErlangLong) t.elementAt(3);
+						final OtpErlangString s4 = (OtpErlangString) t
+								.elementAt(4);
+						final String path = Util.stringValue(s4);
+						IResource r = null;
+						try {
+							r = ErlModelUtils.openExternalModule(mod, path,
+									fModule.getResource().getProject());
+						} catch (final CoreException e2) {
+						}
+						if (!(r instanceof IFile)) {
+							return null;
+						}
+						final IFile file = (IFile) r;
+						m = ErlModelUtils.getModule(file);
 					}
-					if (f != null) {
-						return f.getComment();
-					}
-					return null;
-				} else if (a0.atomValue().equals("external")) {
-					final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
-					final String mod = definedName;
-					definedName = a2.atomValue();
-					final OtpErlangLong a3 = (OtpErlangLong) t.elementAt(3);
-					final OtpErlangString s4 = (OtpErlangString) t.elementAt(4);
-					final String path = Util.stringValue(s4);
 					int arity = -1;
 					try {
-						arity = a3.intValue();
+						arity = arityLong.intValue();
 					} catch (final OtpErlangRangeException e) {
 					}
 					final ErlangFunction erlangFunction = new ErlangFunction(
 							definedName, arity);
-					IResource r = null;
-					try {
-						r = ErlModelUtils.openExternalModule(mod, path, fModule
-								.getResource().getProject());
-					} catch (final CoreException e2) {
-					}
-					if (!(r instanceof IFile)) {
-						return null;
-					}
-					final IFile file = (IFile) r;
-					final IErlModule m = ErlModelUtils.getModule(file);
 					if (m == null) {
 						return null;
 					}
-					IErlFunction f = null;
 					try {
 						m.open(null);
 						f = ErlModelUtils.findFunction(m, erlangFunction);
 					} catch (final ErlModelException e) {
 					}
-					if (f != null) {
-						return f.getComment();
+					if (f == null) {
+						return null;
 					}
-					return null;
+					result.append(f.getComment());
 				}
-				final IErlElement.Kind kindToFind = a0.atomValue().equals(
-						"record") ? IErlElement.Kind.RECORD_DEF
+				final IErlElement.Kind kindToFind = openKind.equals("record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
 				final IErlProject project = fModule.getProject();
 				final IProject proj = project == null ? null
@@ -284,12 +274,12 @@ public class ErlTextHover implements ITextHover,
 			@SuppressWarnings("restriction")
 			@Override
 			protected IInformationControl doCreateInformationControl(
-					Shell parent) {
+					final Shell parent) {
 				if (BrowserInformationControl.isAvailable(parent)) {
 					try {
-						ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
-						String font = JFaceResources.DIALOG_FONT;
-						BrowserInformationControl iControl = new BrowserInformationControl(
+						final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
+						final String font = JFaceResources.DIALOG_FONT;
+						final BrowserInformationControl iControl = new BrowserInformationControl(
 								parent, font, tbm);
 						return iControl;
 					} catch (final NoSuchMethodError e) {
@@ -313,7 +303,7 @@ public class ErlTextHover implements ITextHover,
 			@SuppressWarnings("restriction")
 			@Override
 			protected IInformationControl doCreateInformationControl(
-					Shell parent) {
+					final Shell parent) {
 				if (BrowserInformationControl.isAvailable(parent)) {
 					try {
 						return new BrowserInformationControl(parent,
