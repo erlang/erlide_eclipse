@@ -450,10 +450,10 @@ public class DefaultErlangFoldingStructureProvider implements
 	 */
 	private final Filter fMemberFilter = new Filter() {
 
-		public boolean match(ErlangProjectionAnnotation annotation) {
+		public boolean match(final ErlangProjectionAnnotation annotation) {
 			if (!annotation.isCollapsed() && !annotation.isComment()
 					&& !annotation.isMarkedDeleted()) {
-				IErlElement element = annotation.getElement();
+				final IErlElement element = annotation.getElement();
 				return element instanceof IParent;
 			}
 			return false;
@@ -467,7 +467,7 @@ public class DefaultErlangFoldingStructureProvider implements
 	 */
 	private final Filter fCommentFilter = new Filter() {
 
-		public boolean match(ErlangProjectionAnnotation annotation) {
+		public boolean match(final ErlangProjectionAnnotation annotation) {
 			if (!annotation.isCollapsed() && annotation.isComment()
 					&& !annotation.isMarkedDeleted()) {
 				return true;
@@ -522,10 +522,10 @@ public class DefaultErlangFoldingStructureProvider implements
 			fElementListener = new ElementChangedListener();
 			ErlangCore.getModelManager().addElementChangedListener(
 					fElementListener);
-			// final IErlElementDelta d = new ErlElementDelta(
-			// IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-			// fModule);
-			// processDelta(d);
+			final IErlElementDelta d = new ErlElementDelta(
+					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+					fModule);
+			processDelta(d);
 		}
 	}
 
@@ -962,7 +962,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		final Comparator<Tuple> comparator = new Comparator<Tuple>() {
 
-			public int compare(Tuple o1, Tuple o2) {
+			public int compare(final Tuple o1, final Tuple o2) {
 				return o1.position.getOffset() - o2.position.getOffset();
 			}
 		};

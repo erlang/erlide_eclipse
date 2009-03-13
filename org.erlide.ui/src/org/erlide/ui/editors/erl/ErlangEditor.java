@@ -52,6 +52,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -69,9 +70,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
@@ -183,6 +187,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private String fExternalModules = null;
 
 	private String fExternalIncludes;
+
+	private ToggleFoldingRunner fFoldingRunner;
 
 	/**
 	 * Simple constructor
@@ -441,29 +447,32 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// ||
 		// !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
 		// javaSourceViewer.prepareDelayedProjection();
-		final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
-		fProjectionSupport = new ProjectionSupport(projectionViewer,
-				getAnnotationAccess(), getSharedColors());
-		fProjectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
-		fProjectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
-		// TODO fProjectionSupport.setHoverControlCreator(new
-		// IInformationControlCreator()
-		// {
-		// public IInformationControl createInformationControl(Shell shell) {
-		// return new CustomSourceInformationControl(shell,
-		// IDocument.DEFAULT_CONTENT_TYPE);
-		// }
-		// });
+		if (isFoldingEnabled()) {
+			final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
+			fProjectionSupport = new ProjectionSupport(projectionViewer,
+					getAnnotationAccess(), getSharedColors());
+			fProjectionSupport
+					.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
+			fProjectionSupport
+					.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
+			// TODO fProjectionSupport.setHoverControlCreator(new
+			// IInformationControlCreator()
+			// {
+			// public IInformationControl createInformationControl(Shell shell)
+			// {
+			// return new CustomSourceInformationControl(shell,
+			// IDocument.DEFAULT_CONTENT_TYPE);
+			// }
+			// });
 
-		fProjectionSupport.install();
+			fProjectionSupport.install();
 
-		fProjectionModelUpdater = ErlideUIPlugin.getDefault()
-				.getFoldingStructureProviderRegistry()
-				.getCurrentFoldingProvider();
-		if (fProjectionModelUpdater != null) {
-			fProjectionModelUpdater.install(this, projectionViewer);
+			fProjectionModelUpdater = ErlideUIPlugin.getDefault()
+					.getFoldingStructureProviderRegistry()
+					.getCurrentFoldingProvider();
+			if (fProjectionModelUpdater != null) {
+				fProjectionModelUpdater.install(this, projectionViewer);
+			}
 		}
 
 		return viewer;
@@ -1584,6 +1593,144 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					fExternalIncludes, globalExternalIncludes });
 		}
 		return fExternalIncludes;
+	}
+
+	private boolean isFoldingEnabled() {
+		return ErlideUIPlugin.getDefault().getPreferenceStore().getBoolean(
+				PreferenceConstants.EDITOR_FOLDING_ENABLED);
+	}
+
+	/**
+	 * Runner that will toggle folding either instantly (if the editor is
+	 * visible) or the next time it becomes visible. If a runner is started when
+	 * there is already one registered, the registered one is canceled as
+	 * toggling folding twice is a no-op.
+	 * <p>
+	 * The access to the fFoldingRunner field is not thread-safe, it is assumed
+	 * that <code>runWhenNextVisible</code> is only called from the UI thread.
+	 * </p>
+	 * 
+	 * @since 3.1
+	 */
+	private final class ToggleFoldingRunner implements IPartListener2 {
+		/**
+		 * The workbench page we registered the part listener with, or
+		 * <code>null</code>.
+		 */
+		private IWorkbenchPage fPage;
+
+		/**
+		 * Does the actual toggling of projection.
+		 */
+		private void toggleFolding() {
+			final ISourceViewer sourceViewer = getSourceViewer();
+			if (sourceViewer instanceof ProjectionViewer) {
+				final ProjectionViewer pv = (ProjectionViewer) sourceViewer;
+				if (pv.isProjectionMode() != isFoldingEnabled()) {
+					if (pv.canDoOperation(ProjectionViewer.TOGGLE)) {
+						pv.doOperation(ProjectionViewer.TOGGLE);
+					}
+				}
+			}
+		}
+
+		/**
+		 * Makes sure that the editor's folding state is correct the next time
+		 * it becomes visible. If it already is visible, it toggles the folding
+		 * state. If not, it either registers a part listener to toggle folding
+		 * when the editor becomes visible, or cancels an already registered
+		 * runner.
+		 */
+		public void runWhenNextVisible() {
+			// if there is one already: toggling twice is the identity
+			if (fFoldingRunner != null) {
+				fFoldingRunner.cancel();
+				return;
+			}
+			final IWorkbenchPartSite site = getSite();
+			if (site != null) {
+				final IWorkbenchPage page = site.getPage();
+				if (!page.isPartVisible(ErlangEditor.this)) {
+					// if we're not visible - defer until visible
+					fPage = page;
+					fFoldingRunner = this;
+					page.addPartListener(this);
+					return;
+				}
+			}
+			// we're visible - run now
+			toggleFolding();
+			fFoldingRunner = null;
+		}
+
+		/**
+		 * Remove the listener and clear the field.
+		 */
+		private void cancel() {
+			if (fPage != null) {
+				fPage.removePartListener(this);
+				fPage = null;
+			}
+			if (fFoldingRunner == this) {
+				fFoldingRunner = null;
+			}
+		}
+
+		/*
+		 * @seeorg.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
+		 * IWorkbenchPartReference)
+		 */
+		public void partVisible(final IWorkbenchPartReference partRef) {
+			if (ErlangEditor.this.equals(partRef.getPart(false))) {
+				cancel();
+				toggleFolding();
+				fFoldingRunner = null;
+			}
+		}
+
+		/*
+		 * @seeorg.eclipse.ui.IPartListener2#partClosed(org.eclipse.ui.
+		 * IWorkbenchPartReference)
+		 */
+		public void partClosed(final IWorkbenchPartReference partRef) {
+			if (ErlangEditor.this.equals(partRef.getPart(false))) {
+				cancel();
+			}
+		}
+
+		public void partActivated(final IWorkbenchPartReference partRef) {
+		}
+
+		public void partBroughtToTop(final IWorkbenchPartReference partRef) {
+		}
+
+		public void partDeactivated(final IWorkbenchPartReference partRef) {
+		}
+
+		public void partOpened(final IWorkbenchPartReference partRef) {
+		}
+
+		public void partHidden(final IWorkbenchPartReference partRef) {
+		}
+
+		public void partInputChanged(final IWorkbenchPartReference partRef) {
+		}
+	}
+
+	@Override
+	protected void handlePreferenceStoreChanged(final PropertyChangeEvent event) {
+		final String property = event.getProperty();
+		final ISourceViewer sourceViewer = getSourceViewer();
+		try {
+			if (PreferenceConstants.EDITOR_FOLDING_ENABLED.equals(property)) {
+				if (sourceViewer instanceof ProjectionViewer) {
+					new ToggleFoldingRunner().runWhenNextVisible();
+				}
+				return;
+			}
+		} finally {
+			super.handlePreferenceStoreChanged(event);
+		}
 	}
 
 }
