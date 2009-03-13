@@ -189,7 +189,11 @@ public class ErlTextHover implements ITextHover,
 					if (f == null) {
 						return null;
 					}
-					result.append(f.getComment());
+					final String comment = f.getComment();
+					if (comment == null) {
+						return null;
+					}
+					result.append(comment);
 				}
 				final IErlElement.Kind kindToFind = openKind.equals("record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
