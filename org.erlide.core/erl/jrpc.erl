@@ -27,27 +27,28 @@ uicall(Rcvr, Msg, Args, Timeout) ->
 
 
 call0(Kind, Rcvr, Msg, Args, Timeout) ->
-        erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
-    receive
-              {reply, Resp} ->
-                  {ok, Resp};
-                       Err ->
-                           {error, Err}
-             after Timeout ->
-                 timeout
-                   end.
+	erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
+	receive
+		{reply, Resp} ->
+			{ok, Resp};
+		Err ->
+			{error, Err}
+		after Timeout ->
+			timeout
+	end.
 
 cast(Rcvr, Msg, Args) ->
-    erlide_rex ! {cast, Rcvr, Msg, Args},
+    erlide_rex ! {cast, Rcvr, Msg, Args, self()},
     ok.
 
 event(Id, Msg) ->
-    erlide_rex ! {event, Id, Msg},
+    erlide_rex ! {event, Id, Msg, self()},
     ok.
 
 rpc_loop(JavaNode) ->
     receive
         Msg ->
+			%%io:format("... msg=~p~n", [Msg]),
             {rex, JavaNode} ! Msg,
             rpc_loop(JavaNode)
     end.
@@ -70,7 +71,6 @@ test() ->
         ?P(N),
         
         ?P(RT:test_int_arr([422])),
-                
                
                  
         P = 'org_eclipse_core_runtime_Platform',

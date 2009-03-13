@@ -172,8 +172,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	@Override
 	public void stop(final BundleContext context) throws Exception {
 		ErlangCore.getBackendManager().removePlugin(this);
-
 		super.stop(context);
+		plugin = null;
 	}
 
 	/**

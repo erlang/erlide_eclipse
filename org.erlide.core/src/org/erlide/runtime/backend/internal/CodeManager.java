@@ -267,6 +267,12 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
 	 */
 	public void unregister(final ICodeBundle p) {
+		String ebinDir = p.getEbinDir();
+		if (ebinDir != null) {
+			final String localDir = ebinDir.replaceAll("\\\\", "/");
+			ErlLogger.debug("removing %s from code path for %s", localDir,
+					fBackend.getInfo());
+		}
 		codeBundles.remove(p);
 		unloadPluginCode(p);
 	}

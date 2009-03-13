@@ -34,13 +34,13 @@ public class ErlideBackend {
 				OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
 				if (mod.atomValue().startsWith("erlide")
 						|| mod.atomValue().equals("jrpc")) {
-					System.out.println(">>> HAD " + mod + "   "
-							+ t.elementAt(1));
+					// ErlLogger.debug(">>> HAD " + mod + "   " +
+					// t.elementAt(1));
 					mine.add(mod);
 				}
 			}
 			for (OtpErlangAtom mod : mine) {
-				System.out.println(">>> reload " + mod);
+				// ErlLogger.debug(">>> reload " + mod);
 				backend.rpcx("c", "l", "x", mod);
 			}
 		} catch (final Exception e) {
@@ -50,7 +50,7 @@ public class ErlideBackend {
 
 	public static boolean init(final Backend backend, final String javaNode) {
 		try {
-			reload(backend);
+			// reload(backend);
 			backend.rpcx("erlide_backend", "init", "a", javaNode);
 			return true;
 		} catch (final Exception e) {

@@ -150,17 +150,17 @@ public class ErlangTextEditorAction extends TextEditorAction {
 			e.printStackTrace();
 		}
 		final String newText = Util.stringValue(r1);
-		if (newText == null) {
-			final String e = r1 != null ? r1.toString() : "<null>";
+		if (newText == null && r1 != null) {
 			final Status status = new Status(IStatus.ERROR,
 					ErlangPlugin.PLUGIN_ID,
 					ErlangStatusConstants.INTERNAL_ERROR, "indent returned "
-							+ e + " instead of a string", null);
-			ErlLogger.error("INTERNAL ERROR: indent returned " + e
+							+ r1 + " instead of a string", null);
+			ErlLogger.error("INTERNAL ERROR: indent returned " + r1
 					+ " instead of a string");
 
 			ErrorDialog.openError(textEditor.getSite().getShell(),
-					ActionMessages.IndentAction_error_message, e, status);
+					ActionMessages.IndentAction_error_message, r1.toString(),
+					status);
 			return;
 		}
 		final int startLine = selection.getStartLine();

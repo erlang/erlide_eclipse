@@ -8,14 +8,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendListener;
-import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -24,10 +21,9 @@ public class EventDaemon implements BackendListener {
 	Backend fBackend = null;
 	volatile boolean fStopJob = false;
 	List<EventHandler> fListeners = new ArrayList<EventHandler>();
+	private final Object listenersLock = new Object();
 
 	private final class HandlerJob extends Job {
-		final private int MSG_BATCH_SIZE = 10;
-
 		private HandlerJob(String name) {
 			super(name);
 		}
@@ -36,30 +32,27 @@ public class EventDaemon implements BackendListener {
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
 				OtpErlangObject msg = null;
-				int received = 0;
 				do {
 					try {
 						msg = fBackend.receiveRpc(5);
+						if (msg != null) {
+							// ErlLogger.debug("MSG: %s", msg);
+							synchronized (listenersLock) {
+								for (EventHandler handler : fListeners) {
+									handler.handleMsg(msg);
+								}
+							}
+						}
 					} catch (final OtpErlangExit e) {
 						// backend crashed -- restart?
 						ErlLogger.warn(e);
-					} catch (final OtpErlangException e) {
+					} catch (final Exception e) {
 						ErlLogger.warn(e);
 					}
-					if (msg != null) {
-						for (EventHandler handler : fListeners) {
-							handler.handleMsg(msg);
-						}
-					}
-				} while (msg != null && !fStopJob && received < MSG_BATCH_SIZE);
+				} while (!fStopJob);
 				return Status.OK_STATUS;
 			} finally {
-				ErlangPlugin plugin = ErlangPlugin.getDefault();
-				if (plugin != null
-						&& plugin.getBundle().getState() != Bundle.STOPPING
-						&& !fStopJob) {
-					schedule(50);
-				} else {
+				synchronized (listenersLock) {
 					fListeners.clear();
 				}
 			}
@@ -70,10 +63,9 @@ public class EventDaemon implements BackendListener {
 		fBackend = b;
 	}
 
-	public void start() {
-		if (fStopJob) {
-			return;
-		}
+	public synchronized void start() {
+		fStopJob = false;
+
 		ErlangCore.getBackendManager().addBackendListener(this);
 		addListener(new RpcHandler(fBackend));
 
@@ -83,7 +75,7 @@ public class EventDaemon implements BackendListener {
 		handlerJob.schedule();
 	}
 
-	public void stop() {
+	public synchronized void stop() {
 		fStopJob = true;
 	}
 
@@ -93,6 +85,7 @@ public class EventDaemon implements BackendListener {
 	public void backendRemoved(final Backend b) {
 		if (b == fBackend) {
 			stop();
+			fBackend = null;
 		}
 	}
 
@@ -101,12 +94,16 @@ public class EventDaemon implements BackendListener {
 	}
 
 	public void addListener(final EventHandler l) {
-		if (!fListeners.contains(l)) {
-			fListeners.add(l);
+		synchronized (listenersLock) {
+			if (!fListeners.contains(l)) {
+				fListeners.add(l);
+			}
 		}
 	}
 
 	public void removeListener(final EventHandler l) {
-		fListeners.remove(l);
+		synchronized (listenersLock) {
+			fListeners.remove(l);
+		}
 	}
 }

@@ -414,6 +414,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
+			//ErlLogger.debug("@@@ " + msg);
 			// TODO More events from erlide_dbg_mon...
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			final OtpErlangObject el0 = t.elementAt(0);

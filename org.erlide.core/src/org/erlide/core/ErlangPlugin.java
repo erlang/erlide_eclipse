@@ -127,7 +127,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	@Override
 	public void stop(final BundleContext context) throws Exception {
 		ErlangCore.getBackendManager().removePlugin(this);
-
 		try {
 			try {
 				// savePluginPreferences();
@@ -138,17 +137,13 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 				ErlangCore.getModelManager().shutdown();
 			} finally {
-				ErlangCore.getBackendManager().removePlugin(this);
-
 				// ensure we call super.stop as the last thing
 				super.stop(context);
+				plugin = null;
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-
-		super.stop(context);
-		plugin = null;
 	}
 
 	/*

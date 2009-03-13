@@ -33,7 +33,8 @@
 		 execute/2,
 		 
 		 compile_string/1,
-		 start_tracer/1
+		 start_tracer/1,
+		 watch_eclipse/1
 		]).
 
 init(JavaNode) ->
@@ -62,7 +63,8 @@ init(JavaNode) ->
 init_execute(_JavaNode) ->
 	ok.
 
-init_ide(_JavaNode) ->
+init_ide(JavaNode) ->
+	erlide_backend:watch_eclipse(JavaNode),
 	ok.
 
 get_info() ->
