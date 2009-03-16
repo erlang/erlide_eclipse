@@ -53,8 +53,8 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.backend.ErlLaunchAttributes;
+import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 
@@ -82,7 +82,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		@Override
 		public String getText(final Object element) {
 			if (element instanceof DebugTreeItem) {
-				IErlElement item = ((DebugTreeItem) element).item;
+				final IErlElement item = ((DebugTreeItem) element).item;
 				if (item == null) {
 					ErlLogger.warn("Null item in DebugTreeItem %s", element
 							.toString());
@@ -317,24 +317,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
-			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
-				final DebugTreeItem item = (DebugTreeItem) event.getElement();
+				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
+						.getElement();
+				checkboxTreeViewer.setGrayed(dti, false);
 				final boolean checked = event.getChecked();
-				updateOnCheck(item, checked);
-
-				checkboxTreeViewer.setSubtreeChecked(item, checked);
-				// set gray state of the element's category subtree, all items
-				// should not be grayed
-				for (final DebugTreeItem i : item.children) {
-					checkboxTreeViewer.setGrayed(i, false);
-				}
-				checkboxTreeViewer.setGrayed(item, false);
-				if (item.getParent() != null) {
-					item.getParent().updateMenuCategoryCheckedState(
-							checkboxTreeViewer);
-				}
-
+				setSubtreeChecked(dti, checked);
+				checkUpwards(checkboxTreeViewer, dti, checked, false);
 				updateLaunchConfigurationDialog();
 			}
 
@@ -350,28 +339,51 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		tree.setLayoutData(gd_tree);
 	}
 
-	/**
-	 * Recursively update checkboxes
-	 * 
-	 * @param item
-	 *            item to check or uncheck
-	 * @param checked
-	 *            true if checked
-	 */
-	protected void updateOnCheck(final DebugTreeItem item, final boolean checked) {
-		if (item.item instanceof IErlModule) {
-			final IErlModule m = (IErlModule) item.item;
-			if (checked) {
-				if (!interpretedModules.contains(m)) {
-					interpretedModules.add(m);
-				}
-			} else {
-				interpretedModules.remove(m);
-			}
+	protected void setSubtreeChecked(final DebugTreeItem dti,
+			final boolean checked) {
+		final List<DebugTreeItem> children = dti.getChildren();
+		if (children == null || children.size() == 0) {
+			interpretOrDeinterpret(dti, checked);
+		}
+		for (final DebugTreeItem i : children) {
+			checkboxTreeViewer.setChecked(i, checked);
+			setSubtreeChecked(i, checked);
+		}
+	}
+
+	private void interpretOrDeinterpret(final DebugTreeItem dti,
+			final boolean checked) {
+		final IErlModule m = (IErlModule) dti.getItem();
+		if (checked) {
+			interpretedModules.add(m);
 		} else {
-			for (final DebugTreeItem i : item.children) {
-				updateOnCheck(i, checked);
+			interpretedModules.remove(m);
+		}
+	}
+
+	public static void checkUpwards(final CheckboxTreeViewer ctv,
+			final DebugTreeItem dti, final boolean checked, final boolean grayed) {
+		for (DebugTreeItem parent = dti.getParent(); parent != null; parent = parent
+				.getParent()) {
+			checkParent(parent, ctv);
+		}
+	}
+
+	private static void checkParent(final DebugTreeItem parent,
+			final CheckboxTreeViewer ctv) {
+		int nChecked = 0, nUnchecked = 0;
+		for (final DebugTreeItem i : parent.getChildren()) {
+			if (ctv.getChecked(i)) {
+				++nChecked;
+			} else {
+				++nUnchecked;
 			}
+		}
+		final boolean gray = nChecked > 0 && nUnchecked > 0;
+		final boolean check = !gray && nUnchecked == 0;
+		ctv.setGrayChecked(parent, gray);
+		if (check) {
+			ctv.setChecked(parent, true);
 		}
 	}
 
@@ -390,8 +402,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			interpret = config.getAttribute(
 					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
 					new ArrayList<String>());
-			prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "")
-					.trim();
+			prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "").trim();
 		} catch (final CoreException e1) {
 			interpret = new ArrayList<String>();
 			prjs = "";
@@ -492,11 +503,10 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 */
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-				getFlagChechboxes());
+				getFlagCheckboxes());
 		final List<String> r = new ArrayList<String>();
 		for (final IErlModule m : interpretedModules) {
-			r.add(m.getProject().getName() + ":"
-					+ ErlideUtil.withoutExtension(m.getName()));
+			r.add(m.getProject().getName() + ":" + m.getName());
 		}
 		config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
 	}
@@ -536,7 +546,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * 
 	 * @return flags as int
 	 */
-	private int getFlagChechboxes() {
+	private int getFlagCheckboxes() {
 		int result = 0;
 		if (attachOnFirstCallCheck.getSelection()) {
 			result |= ErlDebugConstants.ATTACH_ON_FIRST_CALL;
@@ -554,13 +564,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private final SelectionListener fBasicSelectionListener = new SelectionListener() {
-		@SuppressWarnings("synthetic-access")
-		public void widgetDefaultSelected(SelectionEvent e) {
+		public void widgetDefaultSelected(final SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 
-		@SuppressWarnings("synthetic-access")
-		public void widgetSelected(SelectionEvent e) {
+		public void widgetSelected(final SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 	};
