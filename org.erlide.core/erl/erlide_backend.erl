@@ -15,10 +15,6 @@
 -module(erlide_backend).
 
 -export([init/1,
-		 init_execute/1,
-		 init_ide/1,
-		 
-		 get_info/0,
 		 
 		 parse_term/1,
 		 eval/1,
@@ -33,55 +29,43 @@
 		 execute/2,
 		 
 		 compile_string/1,
-		 start_tracer/1,
-		 watch_eclipse/1
+		 start_tracer/1
 		]).
 
-init(JavaNode) ->
+init(JRex) ->
 	spawn(fun()->
-				  catch ets:delete(erlide),
-				  ets:new(erlide, [set, named_table, {keypos, 1}]),
-				  ets:insert(erlide, {javaNode, JavaNode}),
-				  ets:insert(erlide, {erlide_rex_old, whereis(erlide_rex)}),
-		  
-				  case whereis(erlide_rex) of
-					  undefined ->
-						  ok;
-					  Pid ->
-						  exit(Pid, kill)
-				  end,
-				  RpcPid = spawn(fun() -> jrpc:rpc_loop(JavaNode) end),
-				  %% io:format("RPC: ~p\n", [RpcPid]),
-				  register(erlide_rex, RpcPid),
-				  ets:insert(erlide, {erlide_rex, whereis(erlide_rex)}),
-				  
-				  erlide_backend:watch_eclipse(JavaNode),
-				  erlide_xref:start()
+				  RpcPid = jrpc:init(JRex),
+				  watch_eclipse(node(JRex))
 		  end),
 	ok.
 
-init_execute(_JavaNode) ->
-	ok.
+init1(L) when is_list(L) ->
+	[init1(X) || X<-L];
+init1(execute) ->
+	ok;
+init1(ide) ->
+	ok;
+init1(build) ->
+	erlide_xref:start(),
+	ok;
+init1(monitor) ->
+	%watch_eclipse(node(JRex)),
+	ok.	
 
-init_ide(JavaNode) ->
-	erlide_backend:watch_eclipse(JavaNode),
-	ok.
-
-get_info() ->
-	ets:tab2list(erlide).
-
+%% it's uncertain that this is needed anymore, but it doesn't hurt
 watch_eclipse(JavaNode) ->
 	spawn(fun() ->
 				  monitor_node(JavaNode, true),
-				  file:delete("safe_erlide.log"),
+				  File = "safe_erlide.log",
+				  file:delete(File),
 				  receive
-					  {nodedown, JavaNode} ->
+					  {nodedown, _JavaNode} ->
 						  Fmt = "This file can safely be removed! ~n~n"
-									++ "~p: eclipse node ~p went down",
-						  file:write_file("safe_erlide.log",
-										  io_lib:format(Fmt,
-														[calendar:local_time(),
-														 JavaNode])),
+									++ "~p: eclipse node ~p went down  /~p~n",
+						  Msg = io_lib:format(Fmt,
+											  [calendar:local_time(),
+											   JavaNode, _JavaNode]),
+						  file:write_file(File,	Msg),
 						  init:stop(),
 						  ok
 				  end

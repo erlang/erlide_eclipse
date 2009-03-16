@@ -48,10 +48,10 @@ public class ErlideBackend {
 		}
 	}
 
-	public static boolean init(final Backend backend, final String javaNode) {
+	public static boolean init(final Backend backend, final OtpErlangPid jRex) {
 		try {
 			// reload(backend);
-			backend.rpcx("erlide_backend", "init", "a", javaNode);
+			backend.rpcx("erlide_backend", "init", "p", jRex);
 			return true;
 		} catch (final Exception e) {
 			ErlLogger.error(e);

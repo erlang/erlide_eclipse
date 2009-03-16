@@ -148,13 +148,6 @@ public final class BackendManager implements IEpmdListener {
 				.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
 		if (info == null) {
-			return null;
-		}
-		info.setNodeName(System.getProperty("user.name") + "_"
-				+ Long.toHexString(System.currentTimeMillis()));
-		info.setUniqueName(true);// will add workspace unique id
-
-		if (info == null) {
 			ErlLogger.info("Project %s has no runtime info, using ide", project
 					.getName());
 			if (fLocalBackend == null) {
@@ -163,23 +156,12 @@ public final class BackendManager implements IEpmdListener {
 			}
 			return fLocalBackend;
 		}
-		if (info.getNodeName() == null || info.getNodeName().equals("")) {
-			if (fLocalBackend == null) {
-				throw new BackendException(
-						"IDE backend is not created - check configuration!");
-			}
-			return fLocalBackend;
-		}
+		info.setNodeName(System.getProperty("user.name") + "_"
+				+ Long.toHexString(System.currentTimeMillis()));
+		info.setUniqueName(true);// will add workspace unique id
 
 		Backend b = null;
-		if (info.getNodeName() == null) {
-			info.setNodeName(project.getName());
-		}
-		try {
-			b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
-		} catch (BackendException e) {
-			// info can't be null here
-		}
+		b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
 		return b;
 	}
 

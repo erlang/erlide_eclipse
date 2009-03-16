@@ -1,29 +1,47 @@
 -module(jrpc).
 
--export([
-		 call/3,
-         call/4,
-         uicall/3,
-         uicall/4,
-         cast/3,
-         event/2,
-          
-         rpc_loop/1 
-]).
+%% The processes spawned from this module are not meant to support code reload,
+%% because they are crucial to the functioning of the backends and 
+%% careless update of code could meake nothing work anymore.
 
--export([test/0]).
+-export([
+		 init/1,
+		 add_service/2,
+		 get_listeners/1,
+		 
+		 call/3,
+		 call/4,
+		 uicall/3,
+		 uicall/4,
+		 cast/3,
+		 event/2 
+		]).
+
+init(JPid) ->
+	spawn(fun() -> manager([]) end),
+	
+	case whereis(erlide_rex) of
+		undefined ->
+			ok;
+		Pid ->
+			exit(Pid, kill)
+	end,
+	RpcPid = spawn(fun() -> rpc_loop(JPid) end),
+	register(erlide_rex, RpcPid),
+	RpcPid.
+
 
 call(Rcvr, Msg, Args) ->
-    call0(call, Rcvr, Msg, Args, 5000).
+	call0(call, Rcvr, Msg, Args, 5000).
 
 call(Rcvr, Msg, Args, Timeout) ->
-    call0(call, Rcvr, Msg, Args, Timeout).
+	call0(call, Rcvr, Msg, Args, Timeout).
 
 uicall(Rcvr, Msg, Args) ->
-    call0(uicall, Rcvr, Msg, Args, 5000).
+	call0(uicall, Rcvr, Msg, Args, 5000).
 
 uicall(Rcvr, Msg, Args, Timeout) ->
-    call0(uicall, Rcvr, Msg, Args, Timeout).
+	call0(uicall, Rcvr, Msg, Args, Timeout).
 
 
 call0(Kind, Rcvr, Msg, Args, Timeout) ->
@@ -38,46 +56,59 @@ call0(Kind, Rcvr, Msg, Args, Timeout) ->
 	end.
 
 cast(Rcvr, Msg, Args) ->
-    erlide_rex ! {cast, Rcvr, Msg, Args, self()},
-    ok.
+	erlide_rex ! {cast, Rcvr, Msg, Args, self()},
+	ok.
 
 event(Id, Msg) ->
-    erlide_rex ! {event, Id, Msg, self()},
-    ok.
+	erlide_rex ! {event, Id, Msg, self()},
+	ok.
 
-rpc_loop(JavaNode) ->
-    receive
-        Msg ->
+rpc_loop(JRex) when is_pid(JRex) ->
+	receive
+		Msg ->
 			%%io:format("... msg=~p~n", [Msg]),
-            {rex, JavaNode} ! Msg,
-            rpc_loop(JavaNode)
-    end.
+			JRex ! Msg,
+			rpc_loop(JRex)
+	end.
 
--define(P(X), io:format(">>> ~p~n", [X])).
+manager(State) ->
+	receive
+		{add, Service, Pid} ->
+			Old = lists:keytake(Service, 1, State),
+			State2 = case Old of 
+						 false ->
+							 [{Service, [Pid]}];
+						 {value, {Service, Values}, State1} ->
+							 case lists:member(Pid, Values) of
+								 true ->
+									 State;
+								 false ->
+									 [{Service, [Pid|Values]} | State1]
+							 end
+					 end,
+			manager(State2);
+		{get, Service, From} ->
+			Value = case lists:keysearch(Service, 1, State) of
+						false ->
+							[];
+						{value, Service, Pids} ->
+							Pids
+					end,
+			From ! Value,
+			manager(State);
+		stop ->
+			ok;
+		_ ->
+			manager(State)
+	end.
 
-test() ->
-    	RT=org_erlide_jinterface_RpcTest,
-        ?P(RT:test_str_arr(["1zx3", "ee"])),
-        
-        ?P(RT:test_int(422)),
-        
-        ?P(RT:test_str("qwer")),
-        ?P(RT:test_str('atomic')),
-        ?P(RT:test_str([16#013d, 65])),
-        ?P(RT:test_str(io_lib:format("hej ~w ~s", [45.5, "scoo"]))),
-                         
-        {ok, E} = RT:new(),
-        N = RT:square(E, 7),
-        ?P(N),
-        
-        ?P(RT:test_int_arr([422])),
-               
-                 
-        P = 'org_eclipse_core_runtime_Platform',
-        io:format("---- ~p~n", [P:getApplicationArgs()]),
-        io:format("---- ~p~n", [P:knownOSValues()]),
-                
-        U = 'org_eclipse_ui_PlatformUI',
-        io:format("++++ ~p~n", [U:getWorkbench()]),
-                        
-    ok.
+add_service(Service, Pid) ->
+	erlide_rex_manager ! {add, Service, Pid}.
+
+get_listeners(Service) ->
+	erlide_rex_manager ! {get, Service},
+	receive X -> X end.
+
+notify(Service, Message) ->
+	L = get_listeners(Service),
+	[Pid ! Message || Pid <-L].

@@ -363,8 +363,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public void initErlang() {
-		boolean inited = ErlideBackend.init(this, BackendManager
-				.buildNodeName(getJavaNodeName()));
+		boolean inited = ErlideBackend.init(this, getEventPid());
 		if (!inited) {
 			setAvailable(false);
 		}
