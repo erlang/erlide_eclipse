@@ -1,7 +1,8 @@
-#Sat Mar 07 20:28:36 CET 2009
+#Mon Mar 16 09:51:13 CET 2009
 backend_name=R11B
-backend_version=R11B
+backend_version=R12B
 eclipse.preferences.version=1
+external_includes=
 external_modules=
 include_dirs=include;
 make_unique=true

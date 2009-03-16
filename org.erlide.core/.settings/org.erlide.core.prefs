@@ -1,8 +1,6 @@
-#Sun Mar 01 13:20:18 CET 2009
-backend_cookie=
+#Mon Mar 16 09:51:05 CET 2009
 backend_name=R11B
-backend_node=r11
-backend_version=R11B
+backend_version=R12B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
