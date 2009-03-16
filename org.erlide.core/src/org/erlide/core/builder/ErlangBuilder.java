@@ -211,8 +211,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					checkForClashes(backend);
 				} catch (final Exception e) {
 				}
-				ErlangCore.getBackendManager().dispose(backend);
-
 			}
 			notifier.done();
 
