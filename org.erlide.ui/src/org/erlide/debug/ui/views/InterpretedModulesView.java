@@ -48,7 +48,7 @@ import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 public class InterpretedModulesView extends AbstractDebugView implements
 		IDebugEventSetListener, IDebugContextListener {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
+	CheckboxTreeViewer checkboxTreeViewer;
 	private ErlangDebugTarget erlangDebugTarget;
 	private boolean distributed;
 

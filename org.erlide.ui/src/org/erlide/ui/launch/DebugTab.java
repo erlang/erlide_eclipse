@@ -317,6 +317,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
 						.getElement();
@@ -564,10 +565,12 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	}
 
 	private final SelectionListener fBasicSelectionListener = new SelectionListener() {
+		@SuppressWarnings("synthetic-access")
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 
+		@SuppressWarnings("synthetic-access")
 		public void widgetSelected(final SelectionEvent e) {
 			updateLaunchConfigurationDialog();
 		}

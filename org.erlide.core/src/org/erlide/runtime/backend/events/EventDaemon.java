@@ -21,10 +21,10 @@ public class EventDaemon implements BackendListener {
 	Backend fBackend = null;
 	volatile boolean fStopJob = false;
 	List<EventHandler> fListeners = new ArrayList<EventHandler>();
-	private final Object listenersLock = new Object();
+	final Object listenersLock = new Object();
 
 	private final class HandlerJob extends Job {
-		private HandlerJob(String name) {
+		HandlerJob(String name) {
 			super(name);
 		}
 

@@ -9,7 +9,7 @@
    <feature url="features/org.erlide_0.4.3.jar" id="org.erlide" version="0.4.3">
       <category name="stable_eclipse33"/>
    </feature>
-   <feature url="features/org.erlide_0.5.1.200903102257.jar" id="org.erlide" version="0.5.1.200903102257">
+   <feature url="features/org.erlide_0.5.1.200903162200.jar" id="org.erlide" version="0.5.1.200903162200">
       <category name="unstable"/>
    </feature>
    <feature url="features/org.erlide.selfhost_0.1.1.200903102257.jar" id="org.erlide.selfhost" version="0.1.1.200903102257">

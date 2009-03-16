@@ -34,7 +34,7 @@
 
 init(JRex) ->
 	spawn(fun()->
-				  RpcPid = jrpc:init(JRex),
+				  jrpc:init(JRex),
 				  watch_eclipse(node(JRex))
 		  end),
 	ok.

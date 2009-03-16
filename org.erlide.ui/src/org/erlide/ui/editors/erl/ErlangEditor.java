@@ -188,7 +188,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private String fExternalIncludes;
 
-	private ToggleFoldingRunner fFoldingRunner;
+	ToggleFoldingRunner fFoldingRunner;
 
 	/**
 	 * Simple constructor
@@ -1612,7 +1612,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * 
 	 * @since 3.1
 	 */
-	private final class ToggleFoldingRunner implements IPartListener2 {
+	final class ToggleFoldingRunner implements IPartListener2 {
 		/**
 		 * The workbench page we registered the part listener with, or
 		 * <code>null</code>.
@@ -1622,6 +1622,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/**
 		 * Does the actual toggling of projection.
 		 */
+		@SuppressWarnings("synthetic-access")
 		private void toggleFolding() {
 			final ISourceViewer sourceViewer = getSourceViewer();
 			if (sourceViewer instanceof ProjectionViewer) {

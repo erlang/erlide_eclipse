@@ -132,7 +132,7 @@ public class ErlangConsoleView extends ViewPart {
 	final List<String> history = new ArrayList<String>(10);
 	StyledText consoleInput;
 	SourceViewer consoleInputViewer;
-	private ConsoleEventHandler handler;
+	ConsoleEventHandler handler;
 
 	public ErlangConsoleView() {
 		super();
@@ -166,7 +166,7 @@ public class ErlangConsoleView extends ViewPart {
 		super.dispose();
 	}
 
-	private class ConsoleEventHandler extends EventHandler {
+	class ConsoleEventHandler extends EventHandler {
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {

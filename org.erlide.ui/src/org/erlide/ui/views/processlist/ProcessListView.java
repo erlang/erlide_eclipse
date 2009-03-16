@@ -154,7 +154,7 @@ public class ProcessListView extends ViewPart {
 			return ss;
 		}
 
-		private class ProcessEventHandler extends EventHandler {
+		class ProcessEventHandler extends EventHandler {
 
 			@Override
 			protected void doHandleMsg(final OtpErlangObject msg)

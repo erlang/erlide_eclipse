@@ -2,12 +2,12 @@
 
 %% The processes spawned from this module are not meant to support code reload,
 %% because they are crucial to the functioning of the backends and 
-%% careless update of code could meake nothing work anymore.
+%% careless update of code could make nothing work anymore.
 
 -export([
 		 init/1,
 		 add_service/2,
-		 get_listeners/1,
+		 get_service_listeners/1,
 		 
 		 call/3,
 		 call/4,
@@ -105,10 +105,10 @@ manager(State) ->
 add_service(Service, Pid) ->
 	erlide_rex_manager ! {add, Service, Pid}.
 
-get_listeners(Service) ->
+get_service_listeners(Service) ->
 	erlide_rex_manager ! {get, Service},
 	receive X -> X end.
 
 notify(Service, Message) ->
-	L = get_listeners(Service),
+	L = get_service_listeners(Service),
 	[Pid ! Message || Pid <-L].

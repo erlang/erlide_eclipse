@@ -282,7 +282,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fShowSystemProcesses = showSystemProcesses;
 	}
 
-	private void handleMetaEvent(final OtpErlangPid metaPid,
+	void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
 		ErlLogger.debug("handleMetaEvent " + metaEvent);
 		final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
@@ -311,7 +311,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 	}
 
-	private void handleIntEvent(final OtpErlangTuple intEvent) {
+	void handleIntEvent(final OtpErlangTuple intEvent) {
 		final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
 		final String event = a.atomValue();
 		if (event.equals("new_break")) {
@@ -410,11 +410,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		pidsFromMeta.put(metaPid, pid);
 	}
 
-	private class DebugEventHandler extends EventHandler {
+	class DebugEventHandler extends EventHandler {
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-			//ErlLogger.debug("@@@ " + msg);
+			// ErlLogger.debug("@@@ " + msg);
 			// TODO More events from erlide_dbg_mon...
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			final OtpErlangObject el0 = t.elementAt(0);

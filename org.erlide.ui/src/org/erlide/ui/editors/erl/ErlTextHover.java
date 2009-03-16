@@ -206,7 +206,7 @@ public class ErlTextHover implements ITextHover,
 
 	public static final class HoverControlCreator extends
 			AbstractReusableInformationControlCreator {
-		private IInformationControlCreator fInformationPresenterControlCreator;
+		IInformationControlCreator fInformationPresenterControlCreator;
 
 		public HoverControlCreator(
 				IInformationControlCreator informationPresenterControlCreator) {
@@ -290,7 +290,7 @@ public class ErlTextHover implements ITextHover,
 			final OtpErlangString s1 = (OtpErlangString) r1;
 			result.append(s1.stringValue());
 		} else if (r1 instanceof OtpErlangTuple) {
-			// hrŠ ska vi kolla som open, mŒste faktorisera lite...
+			// hrï¿½ ska vi kolla som open, mï¿½ste faktorisera lite...
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final OtpErlangObject o0 = t.elementAt(0);
 			final OtpErlangObject o1 = t.elementAt(1);
