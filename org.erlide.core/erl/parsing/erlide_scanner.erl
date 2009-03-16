@@ -19,6 +19,9 @@
 -export([create/2, destroy/1, initialScan/5, getTokenAt/2, getTokenWindow/4, 
          getTokens/1, replaceText/4, stop/0, tokens_to_string/1]).
 
+%% called from erlide_indent
+-export([fix_tokens/2]).
+ 
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
          dump_module/1, logging/1, dump_log/0, scan_uncached/3]).
@@ -389,6 +392,9 @@ get_token_window(Module, Offset, Before, After) ->
 token_pos({_, Pos}) -> Pos;
 token_pos({_, Pos, _}) -> Pos;
 token_pos({_, Pos, _, _}) ->Pos.
+
+ fix_tokens(Tokens, NL) ->
+    [mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
 
 mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
     #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};

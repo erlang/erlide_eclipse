@@ -54,7 +54,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
             case scan(S ++ StrippedCommandText) of
                 {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
-                    Tr = fix_tokens(T, size(LineOffsets)),
+                    Tr = erlide_scanner:fix_tokens(T, size(LineOffsets)),
                     LineN = case N of
                                 -1 ->
                                     size(LineOffsets)+1;
@@ -103,20 +103,6 @@ check_add_newline(S, Prefs) ->
         _ ->
             {false, false}
     end.
-
-fix_tokens(Tokens, NL) ->
-    [mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
-
-mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
-    #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
-mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
-    #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
-mktoken({K, {{L, O}, G}}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
-mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
-mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
 
 -record(i, {anchor, indent_line, current, in_block, prefs, old_line}).
 
@@ -230,7 +216,7 @@ i_with(W1, W2, A, I) ->
 i_with_old_or_new_anchor(none, ANew, I) ->
     i_with(none, ANew, I);
 i_with_old_or_new_anchor(AOld, _ANew, I) ->
-	i_with(none, AOld, I).
+    i_with(none, AOld, I).
 
 i_par_list(R0, I0) ->
     I1 = I0#i{in_block=false},
@@ -432,7 +418,7 @@ i_1_expr([#token{kind=integer} | _] = R, I) ->
 i_1_expr([#token{kind=string} | _] = R, I) ->
     i_one(R, I);
 i_1_expr([#token{kind=macro} | _] = R, I) ->
-    i_one(R, I);
+    i_macro(R, I);
 i_1_expr([#token{kind=float} | _] = R, I) ->
     i_one(R, I);
 i_1_expr([#token{kind=var} | _] = R, I) ->
@@ -513,6 +499,24 @@ i_1_expr(R0, I) ->
             i_1_expr(R2, i_with(after_unary_op, R2, I));
         false ->
             R1
+    end.
+
+i_macro(R0, I) ->
+    R = i_one(R0, I),
+    i_macro_rest(R, I).
+
+i_macro_rest(R0, I) ->
+    case i_sniff(R0) of
+	'(' ->
+	    R1 = i_kind('(', R0, I),
+	    R2 = i_parameters(R1, I),
+	    R3 = i_end_paren(R2, I),
+	    i_macro_rest(R3, I);
+	',' ->
+	    R0;
+	_ ->
+	    R2 = i_comments(R0, I),
+	    i_one(R2, I)
     end.
 
 i_try(R0, I0) ->

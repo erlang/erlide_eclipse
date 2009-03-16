@@ -278,7 +278,7 @@ clean_tokens([#token{kind='#'} = Q, #token{kind=Kind, value=Value} | Rest], W, I
 clean_tokens([T | Rest], W, I, Acc) ->
     clean_tokens(Rest, W, I+1, [T | Acc]).
 
-%% detab(string(), integer(), left |�all) -> string()
+%% detab(string(), integer(), left | all) -> string()
 %% replace tabs (\t) with spaces
 detab(S, Tablength, all) ->
     detab(S, Tablength, 0, "");
