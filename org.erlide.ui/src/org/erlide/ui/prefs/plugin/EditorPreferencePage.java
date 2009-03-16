@@ -66,7 +66,7 @@ public class EditorPreferencePage extends PreferencePage implements
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 		setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
 	}
 
@@ -98,11 +98,11 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
-		public void widgetDefaultSelected(SelectionEvent e) {
+		public void widgetDefaultSelected(final SelectionEvent e) {
 		}
 
-		public void widgetSelected(SelectionEvent e) {
-			Button button = (Button) e.widget;
+		public void widgetSelected(final SelectionEvent e) {
+			final Button button = (Button) e.widget;
 			fOverlayStore.setValue(fCheckBoxes.get(button), button
 					.getSelection());
 		}
@@ -112,8 +112,8 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	private final ModifyListener fTextFieldListener = new ModifyListener() {
 
-		public void modifyText(ModifyEvent e) {
-			Text text = (Text) e.widget;
+		public void modifyText(final ModifyEvent e) {
+			final Text text = (Text) e.widget;
 			fOverlayStore.setValue(fTextFields.get(text), text.getText());
 		}
 	};
@@ -122,7 +122,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	private final ModifyListener fNumberFieldListener = new ModifyListener() {
 
-		public void modifyText(ModifyEvent e) {
+		public void modifyText(final ModifyEvent e) {
 			numberFieldChanged((Text) e.widget);
 		}
 	};
@@ -224,7 +224,7 @@ public class EditorPreferencePage extends PreferencePage implements
 	 * @see PreferencePage#createControl(Composite)
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		// WorkbenchHelp.setHelp(getControl(),
 		// ITextEditorHelpContextIds.TEXT_EDITOR_PREFERENCE_PAGE);
@@ -238,20 +238,21 @@ public class EditorPreferencePage extends PreferencePage implements
 		updateAppearanceColorWidgets(fAppearanceColorListModel[i][2]);
 	}
 
-	private void updateAppearanceColorWidgets(String systemDefaultKey) {
+	private void updateAppearanceColorWidgets(final String systemDefaultKey) {
 		if (systemDefaultKey == null) {
 			fAppearanceColorDefault.setSelection(false);
 			fAppearanceColorDefault.setVisible(false);
 			fAppearanceColorEditor.getButton().setEnabled(true);
 		} else {
-			boolean systemDefault = fOverlayStore.getBoolean(systemDefaultKey);
+			final boolean systemDefault = fOverlayStore
+					.getBoolean(systemDefaultKey);
 			fAppearanceColorDefault.setSelection(systemDefault);
 			fAppearanceColorDefault.setVisible(true);
 			fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
 		}
 	}
 
-	private Control createAppearancePage(Composite parent) {
+	private Control createAppearancePage(final Composite parent) {
 
 		final Composite appearanceComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -265,12 +266,12 @@ public class EditorPreferencePage extends PreferencePage implements
 				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH,
 				3, 0, true);
 
-		label = ErlEditorMessages.ErlEditorPreferencePage_printMarginColumn;
-		addTextField(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN,
-				3, 0, true);
+		// label = ErlEditorMessages.ErlEditorPreferencePage_printMarginColumn;
+		// addTextField(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN,
+		// 3, 0, true);
 
 		label = ErlEditorMessages.ErlEditorPreferencePage_showOverviewRuler;
 		addCheckBox(
@@ -279,26 +280,27 @@ public class EditorPreferencePage extends PreferencePage implements
 				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_OVERVIEW_RULER,
 				0);
 
-		label = ErlEditorMessages.ErlEditorPreferencePage_showLineNumbers;
-		addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER,
-				0);
-
-		label = ErlEditorMessages.ErlEditorPreferencePage_highlightCurrentLine;
-		addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_CURRENT_LINE,
-				0);
-
-		label = ErlEditorMessages.ErlEditorPreferencePage_showPrintMargin;
-		addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN,
-				0);
+		// label = ErlEditorMessages.ErlEditorPreferencePage_showLineNumbers;
+		// addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER,
+		// 0);
+		//
+		// label =
+		// ErlEditorMessages.ErlEditorPreferencePage_highlightCurrentLine;
+		// addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_CURRENT_LINE,
+		// 0);
+		//
+		// label = ErlEditorMessages.ErlEditorPreferencePage_showPrintMargin;
+		// addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN,
+		// 0);
 
 		label = ErlEditorMessages.ErlEditorPreferencePage_accessibility_disableCustomCarets;
 		final Button master = addCheckBox(
@@ -372,18 +374,19 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		final SelectionListener colorDefaultSelectionListener = new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
-				boolean systemDefault = fAppearanceColorDefault.getSelection();
+			public void widgetSelected(final SelectionEvent e) {
+				final boolean systemDefault = fAppearanceColorDefault
+						.getSelection();
 				fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
 
-				int i = fAppearanceColorList.getSelectionIndex();
-				String key = fAppearanceColorListModel[i][2];
+				final int i = fAppearanceColorList.getSelectionIndex();
+				final String key = fAppearanceColorListModel[i][2];
 				if (key != null) {
 					fOverlayStore.setValue(key, systemDefault);
 				}
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 		};
 
@@ -400,21 +403,21 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		fAppearanceColorList.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 				// do nothing
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				handleAppearanceColorListSelection();
 			}
 		});
 		foregroundColorButton.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 				// do nothing
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				final int i = fAppearanceColorList.getSelectionIndex();
 				final String key = fAppearanceColorListModel[i][1];
 
@@ -430,7 +433,7 @@ public class EditorPreferencePage extends PreferencePage implements
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 
 		initializeDefaultColors();
 
@@ -448,7 +451,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		initializeFields();
 
-		for (String[] element : fAppearanceColorListModel) {
+		for (final String[] element : fAppearanceColorListModel) {
 			fAppearanceColorList.add(element[0]);
 		}
 		fAppearanceColorList.getDisplay().asyncExec(new Runnable() {
@@ -566,8 +569,8 @@ public class EditorPreferencePage extends PreferencePage implements
 		super.dispose();
 	}
 
-	private Button addCheckBox(Composite parent, String label, String key,
-			int indentation) {
+	private Button addCheckBox(final Composite parent, final String label,
+			final String key, final int indentation) {
 		final Button checkBox = new Button(parent, SWT.CHECK);
 		checkBox.setText(label);
 
@@ -582,8 +585,9 @@ public class EditorPreferencePage extends PreferencePage implements
 		return checkBox;
 	}
 
-	private Control addTextField(Composite composite, String label, String key,
-			int textLimit, int indentation, boolean isNumber) {
+	private Control addTextField(final Composite composite, final String label,
+			final String key, final int textLimit, final int indentation,
+			final boolean isNumber) {
 
 		final Label labelControl = new Label(composite, SWT.NONE);
 		labelControl.setText(label);
@@ -607,7 +611,7 @@ public class EditorPreferencePage extends PreferencePage implements
 		return textControl;
 	}
 
-	private void createDependency(final Button master, String masterKey,
+	private void createDependency(final Button master, final String masterKey,
 			final Control slave) {
 		indent(slave);
 
@@ -616,24 +620,24 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		final SelectionListener listener = new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				slave.setEnabled(master.getSelection());
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 		};
 		master.addSelectionListener(listener);
 		fMasterSlaveListeners.add(listener);
 	}
 
-	private static void indent(Control control) {
+	private static void indent(final Control control) {
 		final GridData gridData = new GridData();
 		gridData.horizontalIndent = 20;
 		control.setLayoutData(gridData);
 	}
 
-	void numberFieldChanged(Text textControl) {
+	void numberFieldChanged(final Text textControl) {
 		final String number = textControl.getText();
 		final IStatus status = validatePositiveNumber(number);
 		if (!status.matches(IStatus.ERROR)) {
@@ -642,7 +646,7 @@ public class EditorPreferencePage extends PreferencePage implements
 		updateStatus(status);
 	}
 
-	private IStatus validatePositiveNumber(String number) {
+	private IStatus validatePositiveNumber(final String number) {
 		final StatusInfo status = new StatusInfo();
 		if (number.length() == 0) {
 			status
@@ -677,7 +681,7 @@ public class EditorPreferencePage extends PreferencePage implements
 			for (int i = 0; i < fNumberFields.size(); i++) {
 				final Text text = (Text) fNumberFields.get(i);
 				final IStatus s = validatePositiveNumber(text.getText());
-				status = (s.getSeverity() > status.getSeverity()) ? s : status;
+				status = s.getSeverity() > status.getSeverity() ? s : status;
 			}
 		}
 		setValid(!status.matches(IStatus.ERROR));
@@ -692,7 +696,7 @@ public class EditorPreferencePage extends PreferencePage implements
 	 * @param status
 	 *            the status
 	 */
-	public void applyToStatusLine(DialogPage page, IStatus status) {
+	public void applyToStatusLine(final DialogPage page, final IStatus status) {
 		String message = status.getMessage();
 		switch (status.getSeverity()) {
 		case IStatus.OK:

@@ -225,18 +225,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 				line = -1;
 			}
 		}
-		// topFrame = new ErlangStackFrame(module, this, getDebugTarget(), line,
-		// bindings);
-		// fakeFrame = new ErlangStackFrame(module, this, getDebugTarget(), 12,
-		// new OtpErlangList());
 	}
-
-	// public OtpErlangObject getBacktrace() {
-	// final OtpErlangBinary res = (OtpErlangBinary) ErlideDebug
-	// .getProcessInfo(fBackend, fPid, "backtrace");
-	// // byte[] r = res.binaryValue();
-	// return res;
-	// }
 
 	public OtpErlangObject getLastCalls() {
 		final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend, fPid,
