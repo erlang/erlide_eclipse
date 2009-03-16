@@ -37,6 +37,7 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension;
+import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
@@ -72,7 +73,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDoc;
 
 public class ErlTextHover implements ITextHover,
-		IInformationProviderExtension2, ITextHoverExtension {
+		IInformationProviderExtension2, ITextHoverExtension,
+		ITextHoverExtension2 {
 
 	// private ITextEditor fEditor;
 	private Collection<IErlImport> fImports;
@@ -81,6 +83,8 @@ public class ErlTextHover implements ITextHover,
 	private static URL fgStyleSheet;
 	private final List<Tuple> pathVars;
 	private final String fExternalModules;
+	private IInformationControlCreator fHoverControlCreator;
+	private PresenterControlCreator fPresenterControlCreator;
 
 	public ErlTextHover(final IErlModule module, final String externalModules,
 			final String externalIncludes) {
@@ -101,10 +105,169 @@ public class ErlTextHover implements ITextHover,
 		return new Region(token.getOffset(), token.getLength());
 	}
 
+	private void initStyleSheet() {
+		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (fgStyleSheet != null) {
+
+			try {
+				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+			} catch (final Exception e) {
+			}
+		}
+	}
+
+	/**
+	 * @param textViewer
+	 * @param offset
+	 * @param length
+	 */
+	private String makeDebuggerVariableHover(final ITextViewer textViewer,
+			final int offset, final int length) {
+		final IAdaptable adaptable = DebugUITools.getDebugContext();
+		if (adaptable != null) {
+			final IStackFrame frame = (IStackFrame) adaptable
+					.getAdapter(IStackFrame.class);
+			try {
+				if (frame != null && frame.hasVariables()) {
+					String varName = "";
+					try {
+						varName = textViewer.getDocument().get(offset, length);
+					} catch (final BadLocationException e) {
+					}
+					if (varName.length() > 0) {
+						final String firstLetter = varName.substring(0, 1);
+						if (firstLetter.toUpperCase().equals(firstLetter)) {
+							final IVariable[] vars = frame.getVariables();
+							for (final IVariable variable : vars) {
+								if (variable.getName().equals(varName)) {
+									final String value = variable.getValue()
+											.getValueString();
+									return makeVariablePresentation(varName,
+											value);
+								}
+							}
+						}
+					}
+				}
+			} catch (final DebugException e) {
+			}
+		}
+		return "";
+	}
+
+	private String makeVariablePresentation(final String varName,
+			final String value) {
+		return varName + " = " + value;
+	}
+
+	public IInformationControlCreator getInformationPresenterControlCreator() {
+		if (fPresenterControlCreator == null) {
+			fPresenterControlCreator = new PresenterControlCreator();
+		}
+		return fPresenterControlCreator;
+	}
+
+	public static final class PresenterControlCreator extends
+			AbstractReusableInformationControlCreator {
+
+		@SuppressWarnings("restriction")
+		@Override
+		protected IInformationControl doCreateInformationControl(
+				final Shell parent) {
+			if (BrowserInformationControl.isAvailable(parent)) {
+				try {
+					final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
+					final String font = JFaceResources.DIALOG_FONT;
+					final BrowserInformationControl iControl = new BrowserInformationControl(
+							parent, font, tbm);
+					return iControl;
+				} catch (final NoSuchMethodError e) {
+					// API changed in 3.4
+					return new DefaultInformationControl(parent, EditorsUI
+							.getTooltipAffordanceString(),
+							new HTMLTextPresenter(true));
+				}
+			} else {
+				return new DefaultInformationControl(parent, EditorsUI
+						.getTooltipAffordanceString(), new HTMLTextPresenter(
+						true));
+			}
+		}
+	}
+
+	public IInformationControlCreator getHoverControlCreator() {
+		if (fHoverControlCreator == null) {
+			fHoverControlCreator = new HoverControlCreator(
+					getInformationPresenterControlCreator());
+		}
+		return fHoverControlCreator;
+	}
+
+	public static final class HoverControlCreator extends
+			AbstractReusableInformationControlCreator {
+		private IInformationControlCreator fInformationPresenterControlCreator;
+
+		public HoverControlCreator(
+				IInformationControlCreator informationPresenterControlCreator) {
+			fInformationPresenterControlCreator = informationPresenterControlCreator;
+		}
+
+		@SuppressWarnings("restriction")
+		@Override
+		protected IInformationControl doCreateInformationControl(
+				final Shell parent) {
+			if (BrowserInformationControl.isAvailable(parent)) {
+				try {
+					return new BrowserInformationControl(parent,
+							JFaceResources.DIALOG_FONT, EditorsUI
+									.getTooltipAffordanceString()) {
+						@Override
+						public IInformationControlCreator getInformationPresenterControlCreator() {
+							return fInformationPresenterControlCreator;
+						}
+					};
+				} catch (final NoSuchMethodError e) {
+					// API changed in 3.4
+					return new DefaultInformationControl(parent, EditorsUI
+							.getTooltipAffordanceString(),
+							new HTMLTextPresenter(true));
+				}
+			} else {
+				return new DefaultInformationControl(parent, EditorsUI
+						.getTooltipAffordanceString(), new HTMLTextPresenter(
+						true));
+			}
+		}
+	}
+
+	public static String getHoverTextForOffset(final int offset,
+			final ErlangEditor editor) {
+		final ErlTextHover h = new ErlTextHover(
+				ErlModelUtils.getModule(editor), editor.getExternalModules(),
+				editor.getExternalIncludes());
+		final ITextViewer tv = editor.getViewer();
+		final IRegion r = h.getHoverRegion(tv, offset);
+		if (r == null) {
+			return null;
+		}
+		return h.getHoverInfo(tv, r);
+	}
+
+	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+		return ((ErlBrowserInformationControlInput) getHoverInfo2(textViewer,
+				hoverRegion)).getHtml();
+	}
+
+	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
+		return internalGetHoverInfo(textViewer, hoverRegion);
+	}
+
 	@SuppressWarnings("restriction")
-	public String getHoverInfo(final ITextViewer textViewer,
-			final IRegion hoverRegion) {
+	public ErlBrowserInformationControlInput internalGetHoverInfo(
+			final ITextViewer textViewer, final IRegion hoverRegion) {
 		final StringBuffer result = new StringBuffer();
+		IErlElement element = null;
 		if (fImports == null) {
 			fImports = ErlModelUtils.getImportsAsList(fModule);
 		}
@@ -173,7 +336,9 @@ public class ErlTextHover implements ITextHover,
 					}
 					int arity = -1;
 					try {
-						arity = arityLong.intValue();
+						if (arityLong != null) {
+							arity = arityLong.intValue();
+						}
 					} catch (final OtpErlangRangeException e) {
 					}
 					final ErlangFunction erlangFunction = new ErlangFunction(
@@ -213,132 +378,8 @@ public class ErlTextHover implements ITextHover,
 			HTMLPrinter.insertPageProlog(result, 0, fgStyleSheet);
 			HTMLPrinter.addPageEpilog(result);
 		}
-		return result.toString();
+		// TODO set element
+		return new ErlBrowserInformationControlInput(null, element, result
+				.toString(), 20);
 	}
-
-	private void initStyleSheet() {
-		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
-		if (fgStyleSheet != null) {
-
-			try {
-				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
-			} catch (final Exception e) {
-			}
-		}
-	}
-
-	/**
-	 * @param textViewer
-	 * @param offset
-	 * @param length
-	 */
-	private String makeDebuggerVariableHover(final ITextViewer textViewer,
-			final int offset, final int length) {
-		final IAdaptable adaptable = DebugUITools.getDebugContext();
-		if (adaptable != null) {
-			final IStackFrame frame = (IStackFrame) adaptable
-					.getAdapter(IStackFrame.class);
-			try {
-				if (frame != null && frame.hasVariables()) {
-					String varName = "";
-					try {
-						varName = textViewer.getDocument().get(offset, length);
-					} catch (final BadLocationException e) {
-					}
-					if (varName.length() > 0) {
-						final String firstLetter = varName.substring(0, 1);
-						if (firstLetter.toUpperCase().equals(firstLetter)) {
-							final IVariable[] vars = frame.getVariables();
-							for (final IVariable variable : vars) {
-								if (variable.getName().equals(varName)) {
-									final String value = variable.getValue()
-											.getValueString();
-									return makeVariablePresentation(varName,
-											value);
-								}
-							}
-						}
-					}
-				}
-			} catch (final DebugException e) {
-			}
-		}
-		return "";
-	}
-
-	private String makeVariablePresentation(final String varName,
-			final String value) {
-		return varName + " = " + value;
-	}
-
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		return new AbstractReusableInformationControlCreator() {
-
-			@SuppressWarnings("restriction")
-			@Override
-			protected IInformationControl doCreateInformationControl(
-					final Shell parent) {
-				if (BrowserInformationControl.isAvailable(parent)) {
-					try {
-						final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
-						final String font = JFaceResources.DIALOG_FONT;
-						final BrowserInformationControl iControl = new BrowserInformationControl(
-								parent, font, tbm);
-						return iControl;
-					} catch (final NoSuchMethodError e) {
-						// API changed in 3.4
-						return new DefaultInformationControl(parent, EditorsUI
-								.getTooltipAffordanceString(),
-								new HTMLTextPresenter(true));
-					}
-				} else {
-					return new DefaultInformationControl(parent, EditorsUI
-							.getTooltipAffordanceString(),
-							new HTMLTextPresenter(true));
-				}
-			}
-		};
-	}
-
-	public IInformationControlCreator getHoverControlCreator() {
-		return new AbstractReusableInformationControlCreator() {
-
-			@SuppressWarnings("restriction")
-			@Override
-			protected IInformationControl doCreateInformationControl(
-					final Shell parent) {
-				if (BrowserInformationControl.isAvailable(parent)) {
-					try {
-						return new BrowserInformationControl(parent,
-								JFaceResources.DIALOG_FONT, EditorsUI
-										.getTooltipAffordanceString());
-					} catch (final NoSuchMethodError e) {
-						// API changed in 3.4
-						return new DefaultInformationControl(parent, EditorsUI
-								.getTooltipAffordanceString(),
-								new HTMLTextPresenter(true));
-					}
-				} else {
-					return new DefaultInformationControl(parent, EditorsUI
-							.getTooltipAffordanceString(),
-							new HTMLTextPresenter(true));
-				}
-			}
-		};
-	}
-
-	public static String getHoverTextForOffset(final int offset,
-			final ErlangEditor editor) {
-		final ErlTextHover h = new ErlTextHover(
-				ErlModelUtils.getModule(editor), editor.getExternalModules(),
-				editor.getExternalIncludes());
-		final ITextViewer tv = editor.getViewer();
-		final IRegion r = h.getHoverRegion(tv, offset);
-		if (r == null) {
-			return null;
-		}
-		return h.getHoverInfo(tv, r);
-	}
-
 }
