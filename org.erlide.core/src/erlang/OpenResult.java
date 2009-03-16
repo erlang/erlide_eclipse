@@ -29,8 +29,8 @@ public class OpenResult {
 		final OtpErlangTuple tres = (OtpErlangTuple) res;
 		final String kind = ((OtpErlangAtom) tres.elementAt(0)).atomValue();
 		try {
-			final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
 			if (kind.equals("external")) {
+				final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
 				isExternalCall = true;
 				name = element.atomValue();
 				fun = ((OtpErlangAtom) tres.elementAt(2)).atomValue();
@@ -46,6 +46,7 @@ public class OpenResult {
 				name = s.stringValue();
 			} else if (kind.equals("local")) { // local call
 				isLocalCall = true;
+				final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
 				fun = element.atomValue();
 				arity = ((OtpErlangLong) tres.elementAt(2)).intValue();
 				// } else if (external.equals("variable")) {
@@ -54,7 +55,8 @@ public class OpenResult {
 			} else if (kind.equals("record") || kind.equals("macro")) {
 				isMacro = kind.equals("macro");
 				isRecord = kind.equals("record");
-				name = element.toString();
+				final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
+				name = isMacro ? element.atomValue() : element.toString();
 			} else if (kind.equals("variable")) {
 				isVariable = true;
 				final OtpErlangObject o = tres.elementAt(1);
