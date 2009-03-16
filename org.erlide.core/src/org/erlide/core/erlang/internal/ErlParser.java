@@ -352,8 +352,10 @@ public class ErlParser {
 			}
 		} else if (nameS.equals("type") || nameS.equals("spec")) {
 			final String s = Util.stringValue(extra);
-			final ErlTypespec a = new ErlTypespec((ErlElement) parent, nameS,
-					null, s);
+			final int p = s.indexOf('(');
+			final String typeName = p < 0 ? s : s.substring(0, p);
+			final ErlTypespec a = new ErlTypespec((ErlElement) parent,
+					typeName, null, s);
 			setPos(a, pos);
 			return a;
 

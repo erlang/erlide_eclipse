@@ -47,6 +47,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
+import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
@@ -62,7 +63,7 @@ import erlang.OpenResult;
 
 public class ErlModelUtils {
 
-	public static IErlModule getModule(final ITextEditor editor) {
+	public static IErlModule getModule(final IEditorPart editor) {
 		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
 			return null;
 		}
@@ -117,6 +118,20 @@ public class ErlModelUtils {
 				final IErlFunction f = (IErlFunction) element;
 				if (f.getFunction().equals(erlangFunction)) {
 					return f;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static IErlTypespec findTypespec(final IErlModule module,
+			final String name) throws ErlModelException {
+		final List<? extends IErlElement> children = module.getChildren();
+		for (final IErlElement element : children) {
+			if (element instanceof IErlTypespec) {
+				final IErlTypespec t = (IErlTypespec) element;
+				if (t.getName().equals(name)) {
+					return t;
 				}
 			}
 		}
@@ -461,12 +476,7 @@ public class ErlModelUtils {
 	public static boolean openFunctionInEditor(
 			final ErlangFunction erlangFunction, final IEditorPart editor)
 			throws ErlModelException {
-		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
-			return false;
-		}
-		final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) editor;
-		final IErlModule module = getModule(editor.getEditorInput(), adte
-				.getDocumentProvider());
+		final IErlModule module = getModule(editor);
 		if (module == null) {
 			return false;
 		}
@@ -476,6 +486,21 @@ public class ErlModelUtils {
 			return false;
 		}
 		EditorUtility.revealInEditor(editor, function);
+		return true;
+	}
+
+	public static boolean openTypeInEditor(final String typeName,
+			final IEditorPart editor) throws ErlModelException {
+		final IErlModule module = getModule(editor);
+		if (module == null) {
+			return false;
+		}
+		module.open(null);
+		final IErlTypespec typespec = findTypespec(module, typeName);
+		if (typespec == null) {
+			return false;
+		}
+		EditorUtility.revealInEditor(editor, typespec);
 		return true;
 	}
 

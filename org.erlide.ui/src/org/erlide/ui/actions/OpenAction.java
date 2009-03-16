@@ -323,6 +323,12 @@ public class OpenAction extends SelectionDispatchAction {
 					EditorUtility.openInEditor(f);
 				}
 			} else if (res.isLocalCall()) {
+				final IErlElement e = editor.getElementAt(offset, true);
+				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+					if (ErlModelUtils.openTypeInEditor(res.getFun(), editor)) {
+						return;
+					}
+				}
 				if (!ErlModelUtils.openFunctionInEditor(res.getFunction(),
 						editor)) { // not local imports
 					if (module == null) {
@@ -345,6 +351,9 @@ public class OpenAction extends SelectionDispatchAction {
 				}
 			} else if (res.isVariable()) {
 				final IErlElement e = editor.getElementAt(offset, false);
+				if (!(e instanceof ISourceReference)) {
+					return;
+				}
 				final ISourceReference sref = (ISourceReference) e;
 				final ISourceRange range = sref.getSourceRange();
 				final String s = editor.getDocument().get(range.getOffset(),
