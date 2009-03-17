@@ -33,6 +33,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImportExport;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
@@ -57,18 +58,18 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 	public static final int ALL_FILTERS = MemberFilter.FILTER_LOCAL_FUNCTIONS
 			| MemberFilter.FILTER_ATTRIBUTES
-			| MemberFilter.FILTER_MACRO_RECORD_DEFS;
+			| MemberFilter.FILTER_MACRO_RECORD_DEFS_TYPESPECS;
 
 	private static final String TAG_HIDEATTRIBUTES = "hideattributes"; //$NON-NLS-1$
 	private static final String TAG_HIDELOCALFUNCTIONS = "hidelocalfunctions"; //$NON-NLS-1$
-	private static final String TAG_HIDEMACRORECORDDEF = "hidemacrorecorddef"; //$NON-NLS-1$
+	private static final String TAG_HIDEMACRORECORDDEFSTYPESPECS = "hidemacrorecorddefstypespecs"; //$NON-NLS-1$
 
 	private final List<MemberFilterAction> fFilterActions;
 	private final MemberFilter fFilter;
 
 	final StructuredViewer fViewer;
 	private final String fViewerId;
-	private boolean fInViewMenu;
+	private final boolean fInViewMenu;
 
 	/**
 	 * Creates a new <code>MemberFilterActionGroup</code>.
@@ -180,21 +181,21 @@ public class MemberFilterActionGroup extends ActionGroup {
 		}
 
 		// macros and record definitions
-		filterProperty = MemberFilter.FILTER_MACRO_RECORD_DEFS;
+		filterProperty = MemberFilter.FILTER_MACRO_RECORD_DEFS_TYPESPECS;
 		if (isSet(filterProperty, availableFilters)) {
 			final boolean filterEnabled = getPrefsNode().getBoolean(
 					getPreferenceKey(filterProperty), false);
 			if (filterEnabled) {
 				fFilter.addFilter(filterProperty);
 			}
-			title = ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_label;
+			title = ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_typespecs_label;
 			helpContext = IErlangHelpContextIds.FILTER_MACRO_RECORD_DEFS_ACTION;
 			final MemberFilterAction hideMacroRecordDefs = new MemberFilterAction(
 					this, title, filterProperty, helpContext, filterEnabled);
 			hideMacroRecordDefs
-					.setDescription(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_description);
+					.setDescription(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_typespecs_description);
 			hideMacroRecordDefs
-					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_tooltip);
+					.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_typespecs_tooltip);
 			hideMacroRecordDefs
 					.setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_MACRO_RECORD_DEFS);
 			fFilterActions.add(hideMacroRecordDefs);
@@ -303,9 +304,9 @@ public class MemberFilterActionGroup extends ActionGroup {
 				.valueOf(hasMemberFilter(MemberFilter.FILTER_LOCAL_FUNCTIONS)));
 		memento
 				.putString(
-						TAG_HIDEMACRORECORDDEF,
+						TAG_HIDEMACRORECORDDEFSTYPESPECS,
 						String
-								.valueOf(hasMemberFilter(MemberFilter.FILTER_MACRO_RECORD_DEFS)));
+								.valueOf(hasMemberFilter(MemberFilter.FILTER_MACRO_RECORD_DEFS_TYPESPECS)));
 	}
 
 	/**
@@ -318,15 +319,21 @@ public class MemberFilterActionGroup extends ActionGroup {
 	 *            the memento from which the state is restored
 	 */
 	public void restoreState(final IMemento memento) {
-		setMemberFilters(new int[] { MemberFilter.FILTER_ATTRIBUTES,
-				MemberFilter.FILTER_LOCAL_FUNCTIONS,
-				MemberFilter.FILTER_MACRO_RECORD_DEFS }, new boolean[] {
-				Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
-						.booleanValue(),
-				Boolean.valueOf(memento.getString(TAG_HIDELOCALFUNCTIONS))
-						.booleanValue(),
-				Boolean.valueOf(memento.getString(TAG_HIDEMACRORECORDDEF))
-						.booleanValue() }, false);
+		setMemberFilters(
+				new int[] { MemberFilter.FILTER_ATTRIBUTES,
+						MemberFilter.FILTER_LOCAL_FUNCTIONS,
+						MemberFilter.FILTER_MACRO_RECORD_DEFS_TYPESPECS },
+				new boolean[] {
+						Boolean.valueOf(memento.getString(TAG_HIDEATTRIBUTES))
+								.booleanValue(),
+						Boolean.valueOf(
+								memento.getString(TAG_HIDELOCALFUNCTIONS))
+								.booleanValue(),
+						Boolean
+								.valueOf(
+										memento
+												.getString(TAG_HIDEMACRORECORDDEFSTYPESPECS))
+								.booleanValue() }, false);
 	}
 
 	/*
@@ -433,7 +440,7 @@ public class MemberFilterActionGroup extends ActionGroup {
 
 		public static final int FILTER_LOCAL_FUNCTIONS = 1;
 		public static final int FILTER_ATTRIBUTES = 2;
-		public static final int FILTER_MACRO_RECORD_DEFS = 4;
+		public static final int FILTER_MACRO_RECORD_DEFS_TYPESPECS = 4;
 		// public static final int FILTER_LOCALTYPES = 8;
 
 		private int fFilterProperties = 0;
@@ -491,8 +498,11 @@ public class MemberFilterActionGroup extends ActionGroup {
 						return false;
 					}
 				}
-				if (hasFilter(FILTER_MACRO_RECORD_DEFS)) {
+				if (hasFilter(FILTER_MACRO_RECORD_DEFS_TYPESPECS)) {
 					if (e instanceof IErlPreprocessorDef) {
+						return false;
+					}
+					if (e instanceof IErlTypespec) {
 						return false;
 					}
 				}
