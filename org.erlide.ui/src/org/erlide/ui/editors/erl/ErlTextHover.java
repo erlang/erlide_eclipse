@@ -316,8 +316,9 @@ public class ErlTextHover implements ITextHover,
 	}
 
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		return ((ErlBrowserInformationControlInput) getHoverInfo2(textViewer,
-				hoverRegion)).getHtml();
+		ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) getHoverInfo2(
+				textViewer, hoverRegion);
+		return input == null ? "" : input.getHtml();
 	}
 
 	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
@@ -332,6 +333,11 @@ public class ErlTextHover implements ITextHover,
 			final IRegion hoverRegion) {
 		final StringBuffer result = new StringBuffer();
 		IErlElement element = null;
+		// TODO our model is too coarse, here we need access to expressions
+		// try {
+		// element = module.getElementAt(hoverRegion.getOffset());
+		// } catch (Exception e) {
+		// }
 		Collection<IErlImport> fImports = ErlModelUtils
 				.getImportsAsList(module);
 
@@ -551,10 +557,9 @@ public class ErlTextHover implements ITextHover,
 		@Override
 		public void run() {
 			ErlBrowserInformationControlInput infoInput = (ErlBrowserInformationControlInput) fInfoControl
-					.getInput(); // TODO: check cast
+					.getInput();
 			fInfoControl.notifyDelayedInputChange(null);
-			fInfoControl.dispose(); // FIXME: should have protocol to hide,
-			// rather than dispose
+			fInfoControl.dispose();
 			try {
 				EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
 						.showView(EdocView.ID);
