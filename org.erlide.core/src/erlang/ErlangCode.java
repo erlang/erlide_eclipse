@@ -111,7 +111,7 @@ public class ErlangCode {
 			name = name.substring(0, name.length() - 5);
 		}
 		try {
-			backend.rpc("code", "load_file", "a", name);
+			backend.rpc("c", "l", "a", name);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}

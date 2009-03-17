@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
@@ -476,6 +477,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 				ErlLogger.debug("backend %s: add path %s", this.getName(),
 						outDir);
 				addPath(false/* prefs.getUsePathZ() */, outDir);
+				File f = new File(outDir);
+				for (File b : f.listFiles()) {
+					ErlangCode.load(this, b.getName());
+				}
 			}
 		}
 
