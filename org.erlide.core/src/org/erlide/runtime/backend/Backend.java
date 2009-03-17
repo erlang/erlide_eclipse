@@ -56,7 +56,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	{
 		String t = System.getProperty("erlide.rpc.timeout", "5000");
 		if ("infinity".equals(t)) {
-			DEFAULT_TIMEOUT = Integer.MAX_VALUE;
+			DEFAULT_TIMEOUT = -1;
 		} else {
 			DEFAULT_TIMEOUT = Integer.parseInt(t);
 		}
