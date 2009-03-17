@@ -52,6 +52,16 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "250"));
 
+	private static int DEFAULT_TIMEOUT;
+	{
+		String t = System.getProperty("erlide.rpc.timeout", "5000");
+		if ("infinity".equals(t)) {
+			DEFAULT_TIMEOUT = Integer.MAX_VALUE;
+		} else {
+			DEFAULT_TIMEOUT = Integer.parseInt(t);
+		}
+	}
+
 	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
@@ -174,7 +184,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	public RpcResult rpc(final String m, final String f,
 			final String signature, final Object... a) throws RpcException {
-		return rpc(m, f, 5000, signature, a);
+		return rpc(m, f, DEFAULT_TIMEOUT, signature, a);
 	}
 
 	/**
@@ -197,7 +207,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public OtpErlangObject rpcx(final String m, final String f,
 			final String signature, final Object... a) throws RpcException,
 			BackendException {
-		return rpcx(m, f, 5000, signature, a);
+		return rpcx(m, f, DEFAULT_TIMEOUT, signature, a);
 	}
 
 	/**
