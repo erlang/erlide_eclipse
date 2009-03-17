@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.internal;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -249,6 +250,10 @@ public class CodeManager implements IRegistryChangeListener {
 					ErlLogger.debug("adding %s to code path for %s", localDir,
 							fBackend.getInfo());
 					ErlangCode.addPathA(fBackend, localDir);
+					File f = new File(localDir);
+					for (File b : f.listFiles()) {
+						ErlangCode.load(fBackend, b.getName());
+					}
 				} else {
 					ErlLogger.debug("loading %s for %s", p.getBundle()
 							.getSymbolicName(), fBackend.getInfo());

@@ -106,4 +106,15 @@ public class ErlangCode {
 		}
 	}
 
+	public static void load(Backend backend, String name) {
+		if (name.endsWith(".beam")) {
+			name = name.substring(0, name.length() - 5);
+		}
+		try {
+			backend.rpc("code", "load_file", "a", name);
+		} catch (final Exception e) {
+			ErlLogger.debug(e);
+		}
+	}
+
 }
