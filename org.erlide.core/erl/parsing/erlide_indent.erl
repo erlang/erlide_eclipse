@@ -514,6 +514,14 @@ i_macro_rest(R0, I) ->
 	    i_macro_rest(R3, I);
 	',' ->
 	    R0;
+	')' ->
+	    R0;
+	'}' ->
+	    R0;
+	']' ->
+	    R0;
+	'>>' ->
+	    R0;
 	_ ->
 	    R2 = i_comments(R0, I),
 	    i_one(R2, I)
