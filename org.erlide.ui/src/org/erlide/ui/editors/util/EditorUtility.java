@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -372,7 +373,10 @@ public class EditorUtility {
 				.validateLinkLocation(file, location);
 		if (status.getSeverity() != IStatus.OK
 				&& status.getSeverity() != IStatus.INFO) {
-			return null;
+			if (status.getSeverity() != IStatus.WARNING
+					&& status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
+				return null;
+			}
 		}
 		if (!file.isLinked()) {
 			file.createLink(location, IResource.NONE, null);
