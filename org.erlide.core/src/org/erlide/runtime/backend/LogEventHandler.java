@@ -2,7 +2,6 @@ package org.erlide.runtime.backend;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
-import org.erlide.jinterface.ParserException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.events.EventHandler;
 
@@ -10,8 +9,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class LogEventHandler extends EventHandler {
@@ -21,13 +18,11 @@ public class LogEventHandler extends EventHandler {
 		OtpErlangObject log = getStandardEvent(msg, "log");
 		if (log != null) {
 			try {
-				Bindings b = ErlUtils.match("{K:a,M,P:p}", log);
+				Bindings b = ErlUtils.match("{K:a,M}", log);
 				String kind = ((OtpErlangAtom) b.get("K")).atomValue();
 				OtpErlangObject amsg = b.get("M");
-				@SuppressWarnings("unused")
-				OtpErlangPid pid = ((OtpErlangPid) b.get("P"));
 				ErlLogger.debug("%s: %s", kind, amsg);
-			} catch (ParserException e) {
+			} catch (Exception e) {
 				ErlLogger.error(e);
 			}
 		}
@@ -51,7 +46,7 @@ public class LogEventHandler extends EventHandler {
 				ErlLogger.erlangLog(module.atomValue() + ".erl", line
 						.uIntValue(), level.atomValue().toUpperCase(), "%s %s",
 						logEvent.toString(), ss);
-			} catch (final OtpErlangRangeException e) {
+			} catch (final Exception e) {
 				ErlLogger.warn(e);
 			}
 		}

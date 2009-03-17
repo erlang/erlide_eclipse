@@ -84,7 +84,7 @@ public class ErlLogger {
 			return;
 		}
 		final String str = o.length == 0 ? fmt : String.format(fmt, o);
-		Logger.getLogger("org.erlide").finer(
+		Logger.getLogger("org.erlide").log(kind,
 				"(" + module + ":" + line + ") : " + str);
 	}
 

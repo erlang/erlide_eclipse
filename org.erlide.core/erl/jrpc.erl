@@ -8,68 +8,34 @@
 		 init/1,
 		 add_service/2,
 		 get_service_listeners/1,
+		 notify/2,
 		 
-		 call/3,
-		 call/4,
-		 uicall/3,
-		 uicall/4,
-		 cast/3,
 		 event/2 
 		]).
 
+-define(MANAGER, erlide_rex_manager).
+
 init(JPid) ->
-	spawn(fun() -> manager([]) end),
-	
-	case whereis(erlide_rex) of
+	case whereis(?MANAGER) of
 		undefined ->
-			ok;
-		Pid ->
-			exit(Pid, kill)
+			Pid = spawn(fun() -> manager([]) end),
+			register(?MANAGER, Pid);
+		_ ->
+			ok
 	end,
-	RpcPid = spawn(fun() -> rpc_loop(JPid) end),
-	register(erlide_rex, RpcPid),
-	RpcPid.
+	
+	add_service(log, JPid),
+	add_service(erlang_log, JPid),
+	add_service(io_server, JPid),
+	
+    %% catch_all handler
+	add_service(generic_catchall, JPid),
+	
+	ok.	
 
-
-call(Rcvr, Msg, Args) ->
-	call0(call, Rcvr, Msg, Args, 5000).
-
-call(Rcvr, Msg, Args, Timeout) ->
-	call0(call, Rcvr, Msg, Args, Timeout).
-
-uicall(Rcvr, Msg, Args) ->
-	call0(uicall, Rcvr, Msg, Args, 5000).
-
-uicall(Rcvr, Msg, Args, Timeout) ->
-	call0(uicall, Rcvr, Msg, Args, Timeout).
-
-
-call0(Kind, Rcvr, Msg, Args, Timeout) ->
-	erlide_rex ! {Kind, Rcvr, Msg, Args, self()},
-	receive
-		{reply, Resp} ->
-			{ok, Resp};
-		Err ->
-			{error, Err}
-		after Timeout ->
-			timeout
-	end.
-
-cast(Rcvr, Msg, Args) ->
-	erlide_rex ! {cast, Rcvr, Msg, Args, self()},
-	ok.
 
 event(Id, Msg) ->
-	erlide_rex ! {event, Id, Msg, self()},
-	ok.
-
-rpc_loop(JRex) when is_pid(JRex) ->
-	receive
-		Msg ->
-			%%io:format("... msg=~p~n", [Msg]),
-			JRex ! Msg,
-			rpc_loop(JRex)
-	end.
+	notify(Id, {event, Id, Msg, self()}).
 
 manager(State) ->
 	receive
@@ -91,24 +57,30 @@ manager(State) ->
 			Value = case lists:keysearch(Service, 1, State) of
 						false ->
 							[];
-						{value, Service, Pids} ->
+						{value, {Service, Pids}} ->
 							Pids
 					end,
 			From ! Value,
 			manager(State);
 		stop ->
 			ok;
-		_ ->
+		_Msg -> 
 			manager(State)
 	end.
 
-add_service(Service, Pid) ->
-	erlide_rex_manager ! {add, Service, Pid}.
+add_service(Service, Pid) when is_atom(Service), is_pid(Pid) ->
+	?MANAGER ! {add, Service, Pid}.
 
-get_service_listeners(Service) ->
-	erlide_rex_manager ! {get, Service},
+get_service_listeners(Service) when is_atom(Service) ->
+	?MANAGER ! {get, Service, self()},
 	receive X -> X end.
 
-notify(Service, Message) ->
-	L = get_service_listeners(Service),
-	[Pid ! Message || Pid <-L].
+notify(Service, Message) when is_atom(Service) ->
+	L = case get_service_listeners(Service) of 
+			[] -> 
+				get_service_listeners(generic_catchall);
+			L0 -> 
+				L0
+		end,
+	[Pid ! Message || Pid <-L],
+	ok.
