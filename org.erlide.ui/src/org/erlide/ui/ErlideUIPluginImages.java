@@ -168,6 +168,12 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_UNKNOWN = createManaged(T_OBJ,
 			IMG_UNKNOWN);
 
+	public static final String IMG_OBJS_EDOCTAG = NAME_PREFIX
+			+ "jdoc_tag_obj.gif"; //$NON-NLS-1$
+
+	public static final ImageDescriptor DESC_OBJS_EDOCTAG = createManaged(
+			T_OBJ, IMG_OBJS_EDOCTAG);
+
 	/**
 	 * Returns the image managed under the given key in this registry.
 	 * 

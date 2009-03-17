@@ -24,8 +24,11 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
+import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
+import org.eclipse.jface.internal.text.html.BrowserInput;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
@@ -34,6 +37,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInputChangedListener;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension;
@@ -41,8 +45,12 @@ import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
@@ -57,10 +65,13 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.jinterface.rpc.Tuple;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.views.EdocView;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -77,10 +88,9 @@ public class ErlTextHover implements ITextHover,
 		ITextHoverExtension2 {
 
 	// private ITextEditor fEditor;
-	private Collection<IErlImport> fImports;
 	private final IErlModule fModule;
-	private final String fExternalIncludes;
 	private static URL fgStyleSheet;
+	private final String fExternalIncludes;
 	private final List<Tuple> pathVars;
 	private final String fExternalModules;
 	private IInformationControlCreator fHoverControlCreator;
@@ -88,7 +98,6 @@ public class ErlTextHover implements ITextHover,
 
 	public ErlTextHover(final IErlModule module, final String externalModules,
 			final String externalIncludes) {
-		fImports = null;
 		fModule = module;
 		fExternalModules = externalModules;
 		fExternalIncludes = externalIncludes;
@@ -122,8 +131,8 @@ public class ErlTextHover implements ITextHover,
 	 * @param offset
 	 * @param length
 	 */
-	private String makeDebuggerVariableHover(final ITextViewer textViewer,
-			final int offset, final int length) {
+	private static String makeDebuggerVariableHover(
+			final ITextViewer textViewer, final int offset, final int length) {
 		final IAdaptable adaptable = DebugUITools.getDebugContext();
 		if (adaptable != null) {
 			final IStackFrame frame = (IStackFrame) adaptable
@@ -156,7 +165,7 @@ public class ErlTextHover implements ITextHover,
 		return "";
 	}
 
-	private String makeVariablePresentation(final String varName,
+	private static String makeVariablePresentation(final String varName,
 			final String value) {
 		return varName + " = " + value;
 	}
@@ -178,9 +187,61 @@ public class ErlTextHover implements ITextHover,
 			if (BrowserInformationControl.isAvailable(parent)) {
 				try {
 					final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
+
 					final String font = JFaceResources.DIALOG_FONT;
-					final BrowserInformationControl iControl = new BrowserInformationControl(
+					BrowserInformationControl iControl = new BrowserInformationControl(
 							parent, font, tbm);
+
+					final BackAction backAction = new BackAction(iControl);
+					backAction.setEnabled(false);
+					tbm.add(backAction);
+					final ForwardAction forwardAction = new ForwardAction(
+							iControl);
+					tbm.add(forwardAction);
+					forwardAction.setEnabled(false);
+
+					final ShowInJavadocViewAction showInJavadocViewAction = new ShowInJavadocViewAction(
+							iControl);
+					tbm.add(showInJavadocViewAction);
+					final OpenDeclarationAction openDeclarationAction = new OpenDeclarationAction(
+							iControl);
+					tbm.add(openDeclarationAction);
+
+					final SimpleSelectionProvider selectionProvider = new SimpleSelectionProvider();
+					// OpenExternalBrowserAction openExternalJavadocAction = new
+					// OpenExternalBrowserAction(
+					// parent.getDisplay(), selectionProvider);
+					// selectionProvider
+					// .addSelectionChangedListener(openExternalJavadocAction);
+					// selectionProvider.setSelection(new
+					// StructuredSelection());
+					// tbm.add(openExternalJavadocAction);
+
+					IInputChangedListener inputChangeListener = new IInputChangedListener() {
+						public void inputChanged(Object newInput) {
+							backAction.update();
+							forwardAction.update();
+							if (newInput == null) {
+								selectionProvider
+										.setSelection(new StructuredSelection());
+							} else if (newInput instanceof BrowserInformationControlInput) {
+								BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
+								Object inputElement = input.getInputElement();
+								selectionProvider
+										.setSelection(new StructuredSelection(
+												inputElement));
+								boolean isErlElementInput = inputElement instanceof IErlElement;
+								showInJavadocViewAction
+										.setEnabled(isErlElementInput);
+								openDeclarationAction
+										.setEnabled(isErlElementInput);
+							}
+						}
+					};
+					iControl.addInputChangeListener(inputChangeListener);
+
+					tbm.update(true);
+
 					return iControl;
 				} catch (final NoSuchMethodError e) {
 					// API changed in 3.4
@@ -260,17 +321,20 @@ public class ErlTextHover implements ITextHover,
 	}
 
 	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return internalGetHoverInfo(textViewer, hoverRegion);
+		return internalGetHoverInfo(fModule, fExternalModules,
+				fExternalIncludes, pathVars, textViewer, hoverRegion);
 	}
 
 	@SuppressWarnings("restriction")
-	public ErlBrowserInformationControlInput internalGetHoverInfo(
-			final ITextViewer textViewer, final IRegion hoverRegion) {
+	private static ErlBrowserInformationControlInput internalGetHoverInfo(
+			IErlModule module, String externalModules, String externalIncludes,
+			List<Tuple> pathVars, final ITextViewer textViewer,
+			final IRegion hoverRegion) {
 		final StringBuffer result = new StringBuffer();
 		IErlElement element = null;
-		if (fImports == null) {
-			fImports = ErlModelUtils.getImportsAsList(fModule);
-		}
+		Collection<IErlImport> fImports = ErlModelUtils
+				.getImportsAsList(module);
+
 		final int offset = hoverRegion.getOffset();
 		OtpErlangObject r1 = null;
 		final int length = hoverRegion.getLength();
@@ -283,7 +347,7 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
-				.createScannerModuleName(fModule), fImports, fExternalModules,
+				.createScannerModuleName(module), fImports, externalModules,
 				pathVars);
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 		if (r1 instanceof OtpErlangString) {
@@ -313,7 +377,7 @@ public class ErlTextHover implements ITextHover,
 					OtpErlangLong arityLong = null;
 					if (openKind.equals("local")) {
 						arityLong = (OtpErlangLong) t.elementAt(2);
-						m = fModule;
+						m = module;
 					} else if (openKind.equals("external")) {
 						final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
 						final String mod = definedName;
@@ -325,7 +389,7 @@ public class ErlTextHover implements ITextHover,
 						IResource r = null;
 						try {
 							r = ErlModelUtils.openExternalModule(mod, path,
-									fModule.getResource().getProject());
+									module.getResource().getProject());
 						} catch (final CoreException e2) {
 						}
 						if (!(r instanceof IFile)) {
@@ -362,12 +426,12 @@ public class ErlTextHover implements ITextHover,
 				}
 				final IErlElement.Kind kindToFind = openKind.equals("record") ? IErlElement.Kind.RECORD_DEF
 						: IErlElement.Kind.MACRO_DEF;
-				final IErlProject project = fModule.getProject();
+				final IErlProject project = module.getProject();
 				final IProject proj = project == null ? null
 						: (IProject) project.getResource();
 				final IErlPreprocessorDef pd = ErlModelUtils
-						.findPreprocessorDef(b, proj, fModule, definedName,
-								kindToFind, fExternalIncludes,
+						.findPreprocessorDef(b, proj, module, definedName,
+								kindToFind, externalIncludes,
 								ErlContentAssistProcessor.getPathVars());
 				if (pd != null) {
 					result.append(pd.getExtra());
@@ -382,4 +446,159 @@ public class ErlTextHover implements ITextHover,
 		return new ErlBrowserInformationControlInput(null, element, result
 				.toString(), 20);
 	}
+
+	/**
+	 * Action to go back to the previous input in the hover control.
+	 */
+	@SuppressWarnings("restriction")
+	private static final class BackAction extends Action {
+		private final BrowserInformationControl fInfoControl;
+
+		public BackAction(BrowserInformationControl infoControl) {
+			fInfoControl = infoControl;
+			setText("Previous");
+			ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
+			setImageDescriptor(images
+					.getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+			setDisabledImageDescriptor(images
+					.getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
+
+			update();
+		}
+
+		@Override
+		public void run() {
+			BrowserInformationControlInput previous = (BrowserInformationControlInput) fInfoControl
+					.getInput().getPrevious();
+			if (previous != null) {
+				fInfoControl.setInput(previous);
+			}
+		}
+
+		public void update() {
+			BrowserInformationControlInput current = fInfoControl.getInput();
+
+			if (current != null && current.getPrevious() != null) {
+				BrowserInput previous = current.getPrevious();
+				setToolTipText(String.format("Go back to {0}", previous
+						.getInputName()));
+				setEnabled(true);
+			} else {
+				setToolTipText("");
+				setEnabled(false);
+			}
+		}
+	}
+
+	/**
+	 * Action to go forward to the next input in the hover control.
+	 */
+	@SuppressWarnings("restriction")
+	private static final class ForwardAction extends Action {
+		private final BrowserInformationControl fInfoControl;
+
+		public ForwardAction(BrowserInformationControl infoControl) {
+			fInfoControl = infoControl;
+			setText("Next");
+			ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
+			setImageDescriptor(images
+					.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
+			setDisabledImageDescriptor(images
+					.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
+
+			update();
+		}
+
+		@Override
+		public void run() {
+			BrowserInformationControlInput next = (BrowserInformationControlInput) fInfoControl
+					.getInput().getNext();
+			if (next != null) {
+				fInfoControl.setInput(next);
+			}
+		}
+
+		public void update() {
+			BrowserInformationControlInput current = fInfoControl.getInput();
+
+			if (current != null && current.getNext() != null) {
+				setToolTipText(String.format("Go to next {0}", current
+						.getNext().getInputName()));
+				setEnabled(true);
+			} else {
+				setToolTipText("");
+				setEnabled(false);
+			}
+		}
+	}
+
+	/**
+	 * Action that shows the current hover contents in the Javadoc view.
+	 */
+	@SuppressWarnings("restriction")
+	private static final class ShowInJavadocViewAction extends Action {
+		private final BrowserInformationControl fInfoControl;
+
+		public ShowInJavadocViewAction(BrowserInformationControl infoControl) {
+			fInfoControl = infoControl;
+			setText("Show in eDoc view");
+			setImageDescriptor(ErlideUIPluginImages.DESC_OBJS_EDOCTAG);
+		}
+
+		/*
+		 * @see org.eclipse.jface.action.Action#run()
+		 */
+		@Override
+		public void run() {
+			ErlBrowserInformationControlInput infoInput = (ErlBrowserInformationControlInput) fInfoControl
+					.getInput(); // TODO: check cast
+			fInfoControl.notifyDelayedInputChange(null);
+			fInfoControl.dispose(); // FIXME: should have protocol to hide,
+			// rather than dispose
+			try {
+				EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
+						.showView(EdocView.ID);
+				// TODO view.setInput(infoInput);
+			} catch (PartInitException e) {
+				ErlLogger.error(e);
+			}
+		}
+	}
+
+	/**
+	 * Action that opens the current hover input element.
+	 * 
+	 * @since 3.4
+	 */
+	@SuppressWarnings("restriction")
+	private static final class OpenDeclarationAction extends Action {
+		private final BrowserInformationControl fInfoControl;
+
+		public OpenDeclarationAction(BrowserInformationControl infoControl) {
+			fInfoControl = infoControl;
+			setText("Open declaration");
+			ErlideUIPluginImages.setLocalImageDescriptors(this,
+					"goto_input.gif");
+		}
+
+		/*
+		 * @see org.eclipse.jface.action.Action#run()
+		 */
+		@Override
+		public void run() {
+			ErlBrowserInformationControlInput infoInput = (ErlBrowserInformationControlInput) fInfoControl
+					.getInput();
+			fInfoControl.notifyDelayedInputChange(null);
+			fInfoControl.dispose();
+			// try {
+			// // FIXME: add hover location to editor navigation history?
+			// // TODO ErlideUIPlugin.openInEditor(infoInput.getElement());
+			// } catch (PartInitException e) {
+			// ErlLogger.error(e);
+			// } catch (ErlModelException e) {
+			// ErlLogger.error(e);
+			// }
+		}
+	}
+
 }

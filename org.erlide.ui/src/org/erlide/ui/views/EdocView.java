@@ -61,6 +61,7 @@ import org.osgi.framework.Bundle;
 @SuppressWarnings("restriction")
 public class EdocView extends AbstractInfoView {
 
+	public static final String ID = "org.erlide.ui.views.EdocView";
 	/**
 	 * Preference key for the preference whether to show a dialog when the SWT
 	 * Browser widget is not available.
