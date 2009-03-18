@@ -61,7 +61,6 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			root.removePreferenceChangeListener(this);
 			root.removeNode();
 			root = getRootPreferenceNode();
-			root.addPreferenceChangeListener(this);
 
 			for (RuntimeInfo rt : fRuntimes.values()) {
 				rt.store(root);
@@ -75,8 +74,9 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 			try {
 				root.flush();
 			} catch (BackingStoreException e) {
+				ErlLogger.warn(e);
 			}
-			root.flush();
+			root.addPreferenceChangeListener(this);
 		} catch (BackingStoreException e) {
 			ErlLogger.warn(e);
 		}
