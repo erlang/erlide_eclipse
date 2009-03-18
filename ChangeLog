@@ -1,6 +1,6 @@
 
 
-List of user visible changes between 0.5.0 and 0.5.1 (r2293)
+List of user visible changes between 0.5.0 and 0.5.1 (r2365)
 
 	Experimental refactoring support: Wrangler
 
@@ -13,8 +13,6 @@ List of user visible changes between 0.5.0 and 0.5.1 (r2293)
 	OTP R13-version of JInterface
 
 	http://www.assembla.com/spaces/erlide/tickets/275-Indent----end--and-indent-after-newline
-
-	made build backends transitory, in multi-user environment they take a lot of space
 
 	changed project properties to use a minimum required runtime version instead of a hardcoded runtime name
 
@@ -30,6 +28,44 @@ List of user visible changes between 0.5.0 and 0.5.1 (r2293)
 
 	http://www.assembla.com/spaces/erlide/tickets/279-Text-Actions---shouldn-t-change-text-if-nothing-is-changed
 
+	http://www.assembla.com/spaces/erlide/tickets/287-debugger---better-display-of-binaries-and-lists
+	http://www.assembla.com/spaces/erlide/tickets/236-Debugger---show-records-as-records-in-Variables-view
+
+	https://www.assembla.com/spaces/erlide/tickets/269-debugger---better-display-of-stack-frames-and-breakpoints
+
+	http://www.assembla.com/spaces/erlide/tickets/290-code-completion---parameters-confused-by-binaries-in-clause-heads
+
+	fixed serious bug (leaking threads in RpcDaemon)
+
+	http://www.assembla.com/spaces/erlide/tickets/299-indentation---the-atom-type-confuses-indentation
+
+	http://www.assembla.com/spaces/erlide/tickets/284-completion---context-sensitive
+
+	http://www.assembla.com/spaces/erlide/tickets/301-documentation-hover---doesn-t-work-in-extarnally-opened-files
+
+	http://www.assembla.com/spaces/erlide/tickets/300-quick-outline---still-doesn-t-work-with-external-modules
+
+	http://www.assembla.com/spaces/erlide/tickets/293-quick-outline--function-clauses-should-not-be-expanded-by-default
+
+	http://www.assembla.com/spaces/erlide/tickets/263-Show-non-edoc-comments-directly-from-code-on-hover-and-code-complete-
+
+	http://www.assembla.com/spaces/erlide/tickets/269-debugger---better-display-of-stack-frames-and-breakpoints
+
+	http://www.assembla.com/spaces/erlide/tickets/306-hover-documentation-with-non-edoc-comments-is-ugly
+
+	http://www.assembla.com/spaces/erlide/tickets/297-builder--backend-is-created-even-when-there-is-nothing-to-build
+
+	https://www.assembla.com/spaces/erlide/tickets/302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
+
+	http://www.assembla.com/spaces/erlide/tickets/272-debugger---still-problems-with--debugged--tab-in-launch-config--dialog
+
+	http://www.assembla.com/spaces/erlide/tickets/304--line-macro-from-test_server-ruins-indentation
+
+	http://www.assembla.com/spaces/erlide/tickets/257--type---navigate-from-spec-to-declared-type
+
+	http://www.assembla.com/spaces/erlide/tickets/311-indent--error-with-macro-in--case-
+
+	http://www.assembla.com/spaces/erlide/tickets/312-outline---hide-type-and-spec-along-with-record-and-macro-defs
 
 
 List of user visible changes between 0.4.3 and 0.5.0
