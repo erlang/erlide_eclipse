@@ -53,15 +53,15 @@
 %% libary modules. 2) the undo process should remove the newly created file.
 %%  
 %% =====================================================================
-%%-spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
-%%        -> {ok, [filename()]} | {error, string()}).
+-spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
+        -> {ok, [filename()]} | {error, string()}).
 
 move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
     move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, emacs).
 
 
-%%-spec(move_fun_eclipse/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
-%%        ->  {ok, [{filename(), filename(), string()}]} | {error, string()}).
+-spec(move_fun_eclipse/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
+        ->  {ok, [{filename(), filename(), string()}]} | {error, string()}).
 
 move_fun_eclipse(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
     move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, eclipse).
@@ -69,7 +69,7 @@ move_fun_eclipse(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPat
 move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p, ~p).",
 		 [?MODULE, FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth]),
-    TargetFName = get_target_file_name(FName, TargetModorFileName),
+    {TargetFName, TargetModName} = get_target_file_mod_name(FName, TargetModorFileName),
     case TargetFName of 
 	FName -> {error, "The target module is the same as the current module."};
 	{error, Reason} -> {error, Reason};
@@ -81,23 +81,23 @@ move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabW
 			     {value, {fun_def, {ModName, FunName, Arity, _Pos1, _Pos2}}} =
 				 lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)),
 			     case not filelib:is_file(TargetFName) andalso (CreateNewFile == t orelse CreateNewFile == true) of
-				 true -> create_new_file(TargetFName, TargetModorFileName);
+				 true -> create_new_file(TargetFName, TargetModName);
 				 _ -> ok
 			     end,
-			     R = side_cond_check({ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModorFileName), Def, SearchPaths, TabWidth),
+			     R = side_cond_check({ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModName), Def, SearchPaths, TabWidth),
 			     case R of
 				 true ->
-				     {ok, {TargetAnnAST, Info1}} = refac_util:parse_annotate_file(TargetFName, true, SearchPaths, TabWidth),  %% level=
+				     {ok, {TargetAnnAST, Info1}} = refac_util:parse_annotate_file(TargetFName, true, SearchPaths, TabWidth),  
 				     {AnnAST1, TargetAnnAST1} =
 					 do_transformation({AnnAST, Info}, {TargetAnnAST, Info1},
-							   {ModName, FunName, Arity}, TargetModorFileName),
+							   {ModName, FunName, Arity}, TargetModName),
 				     case refac_util:is_exported({FunName, Arity}, Info) of
 					 true ->
 					     ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
 					     ClientFiles = lists:delete(TargetFName,
 									refac_util:get_client_files(FName, SearchPaths)),
 					     Results = refactor_in_client_modules(ClientFiles,
-										  {ModName, FunName, Arity}, TargetModorFileName, SearchPaths, TabWidth),
+										  {ModName, FunName, Arity}, TargetModName, SearchPaths, TabWidth),
 					     case Editor of
 						 emacs ->
 						     refac_util:write_refactored_files([{{FName, FName}, AnnAST1},
@@ -140,7 +140,7 @@ move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabW
 	     end
     end.
 
-get_target_file_name(CurrentFName, TargetModorFileName) ->
+get_target_file_mod_name(CurrentFName, TargetModorFileName) ->
     ErrMsg = {error, "Illegal target module/file name."},
     TargetModName = case filename:extension(TargetModorFileName) of 
 			".erl" -> filename:basename(TargetModorFileName, ".erl");
@@ -148,7 +148,7 @@ get_target_file_name(CurrentFName, TargetModorFileName) ->
 			_ -> "IllegalModName"			
 		    end,
     case is_mod_name(TargetModName) of 
-	true -> filename:join([filename:dirname(CurrentFName), TargetModName++".erl"]);	    
+	true -> {filename:join([filename:dirname(CurrentFName), TargetModName++".erl"]), TargetModName};
 	_  -> ErrMsg
     end.
     
@@ -572,7 +572,7 @@ make_export(Names) ->
 				       refac_syntax:integer(A))
 	  || {F, A} <- Names],
    %% comment(["** The following export is added by Wrangler. **"]),
-    [erl_syntax:attribute(erl_syntax:atom(export), [erl_syntax:list(Es)])].
+    [erl_syntax:attribute(erl_syntax:atom('export'), [erl_syntax:list(Es)])].
 
 is_not_the_fun(Form, {ModName, FunName, Arity}) ->
     case refac_syntax:type(Form) of 

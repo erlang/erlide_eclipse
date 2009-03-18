@@ -59,10 +59,10 @@ init(_Args) ->
 		      permanent, 10000, worker, [wrangler_modulegraph_server]},
     ErrorLogger={wrangler_error_logger, {wrangler_error_logger, start_wrangler_error_logger, []},
 		  permanent, 10000, worker, [wrangler_error_logger]},
-    UndoServer={wrangler_undo_server, {wrangler_undo_server, start_undo_server, []}, 
-	       permanent, 10000, worker, [wrangler_undo_server]},
+  %%   UndoServer={wrangler_undo_server, {wrangler_undo_server, start_undo_server, []}, 
+%% 	       permanent, 10000, worker, [wrangler_undo_server]},
           
-    {ok,{{one_for_one,3,60}, [ASTServer, CallGraphServer, ModuleGraphServer, ErrorLogger, UndoServer]}}.
+    {ok,{{one_for_one,3,60}, [ASTServer, CallGraphServer, ModuleGraphServer, ErrorLogger]}}. %%  UndoServer]}}.
 
 %%====================================================================
 %% Internal functions

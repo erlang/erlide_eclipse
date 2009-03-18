@@ -49,13 +49,13 @@
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
 %%
 
-%%-spec(rename_var/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, string()}).
+-spec(rename_var/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, string()}).
 rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_var_eclipse(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -63,7 +63,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_var(~p, ~p, ~p, ~p, ~p, ~p).\n", [?MODULE,FName, Line, Col, NewName, SearchPaths, TabWidth]),
     case refac_util:is_var_name(NewName) of
 	true ->
-	    {ok, {_AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths, TabWidth),
+	    %% {ok, {_AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths, TabWidth),
 	    NewName1 = list_to_atom(NewName), 
 	    {ok, {AnnAST1, _Info1}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),  
 	    case refac_util:pos_to_var_name(AnnAST1, {Line, Col}) of
@@ -155,15 +155,15 @@ cond_check(Tree, Pos, NewName) ->
     %% 				       lists:any(F_Member, Pos) and lists:member(NewName, Names)
     %% 			       end, Env_Bd_Fr_Vars),
     %%     ?wrangler_io("BindingChange1,2:\n~p\n",[{BindingChange1,BindingChange2}]),
-    {Clash, Shadow1 or Shadow2}. %%, (BindingChange1 or BindingChange2)}.
+    {Clash, Shadow1 or Shadow2}.  %%, (BindingChange1 or BindingChange2)}.
 
 
 %% =====================================================================
 %% @spec rename(Tree::syntaxTree(), DefinePos::{integer(),integer()}, NewName::string())-> term()
 %%
 
-%%-spec(rename/3::(syntaxTree(), [{integer(), integer()}], atom()) ->
-%%	     {syntaxTree(), boolean()}).
+-spec(rename/3::(syntaxTree(), [{integer(), integer()}], atom()) ->
+	     {syntaxTree(), boolean()}).
 rename(Tree, DefinePos, NewName) ->
     refac_util:stop_tdTP(fun do_rename/2, Tree, {DefinePos, NewName}).
 
@@ -184,8 +184,8 @@ do_rename(Tree, {DefinePos, NewName}) ->
 %% The following functions are temporally for testing purpose only, and will be removed.
 %%=============================================================================
 
-%%-spec(pre_cond_check/4::(syntaxTree(), integer(), integer(), atom())->
-%%	     boolean()).
+-spec(pre_cond_check/4::(syntaxTree(), integer(), integer(), atom())->
+	     boolean()).
 pre_cond_check(AST, Line, Col, NewName) ->
     {ok, {VarName, DefinePos, _C}} = refac_util:pos_to_var_name(AST, {Line, Col}),
     case VarName == NewName of 

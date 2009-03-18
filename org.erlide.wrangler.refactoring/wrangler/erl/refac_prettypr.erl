@@ -46,7 +46,7 @@
 	 floating/3,floating/1,break/1,follow/2,follow/3,
 	 empty/0]).
 
--import(erl_parse,
+-import(refac_parse,
 	[preop_prec/1,inop_prec/1,func_prec/0,max_prec/0]).
 
 -define(PADDING, 2).
@@ -105,12 +105,18 @@ vertical_concat([{E,Form}| T], FileFormat, Acc) ->
 			  case refac_syntax:type(F) of
 			    error_marker -> true;
 			    attribute ->
-				case
-				  refac_syntax:atom_value(refac_syntax:attribute_name(F))
-				    of
+				case refac_syntax:atom_value(refac_syntax:attribute_name(F)) of
 				  type -> true;
 				  'spec' -> true;
-				  _ -> false
+				  record -> [_R, FieldTuple] = refac_syntax:attribute_arguments(F),
+					    Fields = refac_syntax:tuple_elements(FieldTuple),
+					    lists:any(fun(Field) -> case refac_syntax:type(Field) of 
+									typed_record_field ->
+									    true;
+									_ -> false
+								    end
+						      end, Fields);
+				    _ -> false
 				end;
 			    _ -> false
 			  end
@@ -123,28 +129,35 @@ vertical_concat([{E,Form}| T], FileFormat, Acc) ->
     F = refac_util:concat_toks(refac_util:get_toks(Form)),
     {ok,EToks,_} = refac_scan:string(E),
     {ok,FToks,_} = refac_scan:string(F),
-    EStr = refac_util:concat_toks(EToks),
-    FStr = refac_util:concat_toks(FToks),
+    EStr = [S||S<-refac_util:concat_toks(EToks),S=/=$(, S=/=$), S=/=$\s, S=/=$'],
+    FStr = [S||S<-refac_util:concat_toks(FToks),S=/=$(, S=/=$), S=/=$\s, S=/=$'],
     Acc1 = case Acc of
 	     "" -> Acc;
 	     _ ->
 		 case (EStr == FStr) or SpecialForm(Form) of
-		   true -> Acc;
-		   false -> Acc ++ Delimitor
+		   true -> 
+			 Acc;
+		   false when F=/="" ->
+			 LeadEmptyLines =lists:takewhile(fun(C) -> (C==$\s) or (C==$\n) or (C==$\r) end, F),
+			 LeadEmptyLines1 = lists:reverse(lists:dropwhile(fun(C) -> C==$\s end, lists:reverse(LeadEmptyLines))),
+			 Acc ++ LeadEmptyLines1;
+		     _ -> Acc++Delimitor
 		 end
 	   end,
     Str = case (EStr == FStr) or SpecialForm(Form) of
-	    true -> F;
+	    true -> 
+		  refac_util:concat_toks(refac_util:get_toks(Form));
 	    false ->
-		case T of
-		  [] -> E;
-		  [{_E1,_Form1}| _] -> E ++ Delimitor
-		end
+		  case T of
+		      [] -> E;
+		      [{_E1,_Form1}| _] -> E ++ Delimitor
+		  end
 	  end,
     case T of
       [] -> Acc1 ++ Str;
       _ -> vertical_concat(T, FileFormat, Acc1 ++ Str)
     end.
+
 
 %% Do this still need this function?
 get_paper_ribbon_width(Form) ->
@@ -225,11 +238,11 @@ get_ctxt_precedence(Ctxt) -> Ctxt#ctxt.prec.
 set_ctxt_precedence(Ctxt,Prec) -> set_prec(Ctxt,Prec).
 
 set_prec(Ctxt,Prec) ->
-    Ctxt#ctxt{prec = Prec}.   % used internally
+    Ctxt#ctxt{prec = Prec}.    % used internally
 
 
 reset_prec(Ctxt) ->
-    set_prec(Ctxt,0).   % used internally
+    set_prec(Ctxt,0).    % used internally
 
 
 %% @spec (context()) -> integer()
@@ -859,7 +872,7 @@ lay_2(Node,Ctxt) ->
 		       beside(lay(N,Ctxt1),beside(text("("),beside(lay_elems(fun refac_prettypr_0:par/1, As, Args),floating(text(")")))))
 	       end,
 	    D1 = beside(floating(text("?")),D),
-	    maybe_parentheses(D1,0,Ctxt);    % must be conservative!
+	    D1; %%  maybe_parentheses(D1,0,Ctxt);    % must be conservative!
       parentheses ->  %% done;
 	  D = lay(refac_syntax:parentheses_body(Node),reset_prec(Ctxt)),
 	  lay_parentheses(D,Ctxt);
@@ -960,7 +973,8 @@ lay_2(Node,Ctxt) ->
       warning_marker ->
 	  E = refac_syntax:warning_marker_info(Node),
 	  beside(text("%% WARNING: "),lay_error_info(E,reset_prec(Ctxt)));
-      type -> empty()  %% tempory fix!!
+      type -> empty();  %% tempory fix!!
+      typed_record_field -> empty() %% tempory fix!!!
     end.
 
 lay_two_docs(Ctxt,D1,D2,D1EndLn,OpStartLn) ->

@@ -33,7 +33,7 @@
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
-%%-spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).     
+-spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).	     
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:add_a_tag(~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, Tag, SearchPaths, TabWidth]),
     {ok, {AnnAST1, _Info1}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
@@ -325,9 +325,8 @@ collect_fun_apps(Expr, {ModName, Ln}) ->
 		     application ->
 			 Operator = refac_syntax:application_operator(T),
 			 case lists:keysearch(fun_def,1,refac_syntax:get_ann(Operator)) of
-			     {value, {fun_def, {M, F, A, _, _}}}-> lists:keysearch(fun_def,1, refac_syntax:get_ann(Operator)),
-								   ordsets:add_element({M,F, A},S);
-			     
+			     {value, {fun_def, {M, F, A, _, _}}}-> 
+				 ordsets:add_element({M,F, A},S);			     
 			     _ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
 				  ?wrangler_io("Wrangler could not handle the spawn expression used in module ~p at line ~p\n", [ModName,Ln])
 			 end;
@@ -337,7 +336,7 @@ collect_fun_apps(Expr, {ModName, Ln}) ->
 		     _ -> S
 		 end
 	  end,
-    lists:usort(refac_syntax_lib:fold(Fun, [], Expr)).
+    lists:usort(refac_syntax_lib:fold(Fun, [], Expr)). 
     
 
 get_fun_def({M, F, A}, SearchPaths, TabWidth) ->  
@@ -366,7 +365,7 @@ get_fun_def({M, F, A}, SearchPaths, TabWidth) ->
 		    {error, "Wrangler could not find the definition of "++ atom_to_list(M)++":"++atom_to_list(F)++"/"++integer_to_list(A)};
 		{R, true} -> {ok, R}
 	    end
-    end.    
+    end.     
 
 
 reached_receive_funs([], _SearchPaths, _TabWidth) -> [];

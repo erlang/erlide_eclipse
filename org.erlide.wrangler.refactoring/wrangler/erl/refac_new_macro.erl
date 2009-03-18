@@ -33,13 +33,13 @@
 
 %% =============================================================================================
 
-%%-spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-%%	      {error, string()} | {ok, string()}).
+-spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+	      {error, string()} | {ok, string()}).
 new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, emacs).
 
-%%-spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, eclipse).
 
@@ -118,8 +118,8 @@ do_intro_new_macro(AnnAST, MacroName, SelExpList) ->
 
 
 
-%%-spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
-%%	     syntaxTree()).
+-spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
+	     syntaxTree()).
 replace_expr_with_macro(Form, {ExpList, SLoc, ELoc},  MApp) ->
     case (length(ExpList)==1) of 
 	true ->
@@ -208,7 +208,7 @@ existing_macros(FileName, SearchPaths, TabWidth) ->
     DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
     DefaultIncl2 = [filename:join(Dir, X) || X <-DefaultIncl1],
     NewSearchPaths= SearchPaths++DefaultIncl2,
-    case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth)  of 
+    case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth, refac_util:file_format(FileName))  of 
 	{ok, _, {MDefs, MUses}} -> 
 	    lists:usort(lists:map(fun({{_,Name}, _Def}) -> Name end, MDefs++MUses));	 
 	_ -> {error, "The current file does not compile!"}

@@ -26,13 +26,13 @@
 
 -include("../include/wrangler.hrl").
 
-%%-spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
+-spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
 rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_process_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(rename_process_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -75,15 +75,15 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 	false -> {error, "Invalid new process name."}
     end.
 
-%%-spec(rename_process_1/5::(string(), string(), string(), [dir()], integer()) -> {ok, [filename()]}).
+-spec(rename_process_1/5::(string(), string(), string(), [dir()], integer()) -> {ok, [filename()]}).
 rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+-spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, eclipse).
 
-%%-spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), editor()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
+-spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), editor()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
 rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWidth, Editor) ->
     OldProcessName = list_to_atom(OldProcessName1),
     NewProcessName = list_to_atom(NewProcessName1),
@@ -108,7 +108,7 @@ pos_to_process_name(Node, Pos) ->
     case refac_util:once_tdTU(fun pos_to_process_name_1/2, Node, Pos) of
       {_, false} -> {error, "Wrangler could not infer that the atom selected represents a process name!"};
       {R, true} -> {ok, R}
-    end.
+    end. 
 
 pos_to_process_name_1(Node, Pos) ->
     As = refac_syntax:get_ann(Node),

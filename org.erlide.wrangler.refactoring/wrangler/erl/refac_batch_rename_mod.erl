@@ -46,7 +46,7 @@
 %%                        SearchPaths::[string()])-> ok | {error, string()}
 %%   
 
-%%-spec(batch_rename_mod/3::(string(), string(), [dir()])-> {ok, string()} | {error, string()}).
+-spec(batch_rename_mod/3::(string(), string(), [dir()])-> {ok, string()} | {error, string()}).
 batch_rename_mod(OldNamePattern, NewNamePattern,SearchPaths) ->
     ?wrangler_io("\n[CMD: batch_rename_mod, ~p, ~p, ~p]\n", [OldNamePattern, NewNamePattern, SearchPaths]),
     %% Get all the erlang file which will be affected by this refactoring.

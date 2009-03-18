@@ -31,7 +31,7 @@
 
 -include("../include/wrangler.hrl").
 
-%%-spec(ann_pid_info/2::([dir()], integer())->ok).
+-spec(ann_pid_info/2::([dir()], integer())->ok).
 ann_pid_info(DirList, TabWidth) ->
     Files = refac_util:expand_files(DirList, ".erl"),
     SortedFuns = sort_funs(DirList),
@@ -111,7 +111,7 @@ update_function(File, FunList, DirList, TabWidth) ->
 		end
 	end,
     {AnnAST1, _} = refac_util:stop_tdTP(F, AnnAST, []),
-    wrangler_ast_server:update_ast({File, true, DirList, TabWidth},  {AnnAST1, Info, filelib:last_modified(File)}),
+    wrangler_ast_server:update_ast({File, true, DirList, TabWidth, refac_util:file_format(File)},  {AnnAST1, Info, filelib:last_modified(File)}),
     ok.
 
 annotate_within_fun(Node, {_ModName, FunName, Arity, EnvPid, TypeSigPid}) ->
@@ -332,7 +332,7 @@ annotate_within_fun_1({{ModName, FunName, Arity}, FunDef}, TypeSigPid) ->
     
 start_counter_process() ->               
     Pid = spawn_link(fun() -> counter_loop({1,1}) end),
-    register(counter1, Pid).           %% REFACTOR THIS USING WRANGLER: RENAME counter1 to counter.
+    register(counter1, Pid).            %% REFACTOR THIS USING WRANGLER: RENAME counter1 to counter.
 
 stop_counter_process() ->
     counter1!stop.

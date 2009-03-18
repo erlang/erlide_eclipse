@@ -28,7 +28,7 @@
 %% @spec intrument_prog(FileName::filename(), SearchPaths::[filename()])-> term()
 %%         
 
-%%-spec(instrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).     
+-spec(instrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).	     
 instrument_prog(FileName,SearchPaths, TabWidth)-> 
  
    instrument_prog(FileName, SearchPaths, wrangler, trace_send, 4, TabWidth).
@@ -130,7 +130,7 @@ loop(N) ->
     end.
 	    
 
-%%-spec(uninstrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).
+-spec(uninstrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).
 uninstrument_prog(FileName,SearchPaths, TabWidth)-> 
     uninstrument_prog(FileName, SearchPaths, wrangler, trace_send, 4, TabWidth).
 

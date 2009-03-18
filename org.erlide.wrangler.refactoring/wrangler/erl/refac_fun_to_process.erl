@@ -29,17 +29,17 @@
 %% =====================================================================
 %% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(),SearchPaths::[string()])-> term()
 %%
-%%-spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]} |{undecidables, string()}| {error, string()}).     
+-spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]} |{undecidables, string()}| {error, string()}).	     
 fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
 
-%%-spec(fun_to_process_1/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]}).     
+-spec(fun_to_process_1/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [filename()]}).	     
 fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
-%%-spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]} | 
-%%											     {undecidables, string()} | {error, string()}).
+-spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]} | 
+											     {undecidables, string()} | {error, string()}).
 fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 
@@ -96,7 +96,7 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 	false -> {error, "Invalid process name."}
     end.
 
-%%-spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+-spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 
@@ -407,7 +407,20 @@ new_fun_name(BaseName, Arity, Index, InScopeFuns) ->
 	    
     
 rpc_fun(NewFunName, RpcFunName) ->
-    RpcFun=atom_to_list(RpcFunName)++"(RegName, Request) ->\n                           Fun = fun() ->\n                                    try register(RegName, self())\n                                    catch \n                                         true ->\n                                               "++atom_to_list(NewFunName)++"();\n                                         error:_-> already_running\n                                    end\n                                 end,\n                            spawn(Fun),\n                            RegName ! {self(), Request},\n\t\t            receive\n\t\t\t\t  {RegName, Response} -> Response\n\t\t\t    end.",
+    RpcFun=atom_to_list(RpcFunName)++"(RegName, Request) ->
+                           Fun = fun() ->
+                                    try register(RegName, self())
+                                    catch 
+                                         true ->
+                                               "++atom_to_list(NewFunName)++"();
+                                         error:_-> already_running
+                                    end
+                                 end,
+                            spawn(Fun),
+                            RegName ! {self(), Request},
+		            receive
+				  {RegName, Response} -> Response
+			    end.",
     {ok, Toks, _} = refac_scan:string(RpcFun),
     {ok, Form} =erl_parse:parse_form(Toks),
     FunDef= hd(refac_syntax:form_list_elements(refac_recomment:recomment_forms([Form], []))),

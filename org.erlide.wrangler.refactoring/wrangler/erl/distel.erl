@@ -22,7 +22,7 @@ to_list(X) when is_binary(X) -> binary_to_list(X);
 to_list(X) when is_integer(X)-> integer_to_list(X);
 to_list(X) when is_float(X)  -> float_to_list(X);
 to_list(X) when is_atom(X)   -> atom_to_list(X);
-to_list(X) when is_list(X)   -> X.	%Assumed to be a string
+to_list(X) when is_list(X)   -> X.		%Assumed to be a string
 
 %% ----------------------------------------------------------------------
 %% RPC entry point, adapting the group_leader protocol.

@@ -40,7 +40,7 @@
 -define(DEFAULT_CLONE_MEMBER, 2).
 
 
-%% -define(DEBUG, true).
+%%-define(DEBUG, true).
 
 -ifdef(DEBUG).
 -define(debug(__String, __Args), ?wrangler_io(__String, __Args)).
@@ -76,7 +76,7 @@ get_clones_by_suffix_tree(FileNames,MinLength, MinClones, TabWidth) ->
 			  [] -> {Toks, []}; 
 			  [Cs] -> {Toks, Cs}
 		      end;
-		  _E -> 
+		  _E ->  
 		      stop_suffix_tree_clone_detector(),
 		      file:delete(OutFileName),
 		      get_clones_by_erlang_suffix_tree(Toks, ProcessedToks, MinLength, MinClones)
@@ -146,7 +146,7 @@ loop(Port) ->
 %% ====================================================================================
 %% @spec duplicated_code(FileName::filename(),MinLines::integer(),MinClones::integer()) -> term().
 %%  
-%%-spec(duplicated_code/4::([dir()], string(), string(), integer()) ->{ok, string()}).
+-spec(duplicated_code/4::([dir()], string(), string(), integer()) ->{ok, string()}).
 
 duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     MinLength = case MinLength1 == [] orelse
@@ -179,8 +179,8 @@ duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     ?debug("Clones:\n~p\n", [Cs6]),
     {ok, "Duplicated code detection finished."}.
 
-%%-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
-%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
+	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
 duplicated_code_1(DirFileList, MinLength, MinClones, TabWidth) ->
     {Cs5, _} = duplicated_code_detection(DirFileList, MinClones,
@@ -197,9 +197,13 @@ duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth) ->
     %% This step is necessary to reduce large number of sub-clones.
     ?debug("Type 4 clones:\n~p\n", [length(Cs)]),
     ?debug("Putting atoms back.\n",[]),
+   %% io:format("Cs:\n~p\n", [Cs]),
+   %% io:format("Cs1:\n~p\n", [Cs]),
     Cs1 = clones_with_atoms(Cs, Toks, MinLength, MinClones),
+   %% io:format("Cs1:\n~p\n", [Cs1]),
     ?debug("Filtering out sub-clones.\n", []),
     Cs2 = remove_sub_clones(Cs1),
+    %%io:format("Cs2:\n~p\n", [Cs2]),
     ?debug("Combine with neighbours\n",[]),
     Cs3 = combine_neighbour_clones(Cs2, MinLength, MinClones),
     ?debug("Type3 without trimming:~p\n", [length(Cs3)]),
@@ -346,6 +350,7 @@ clones_with_atoms_1(Range, Toks, _MinLength, MinClones) ->
 				       remove_var_literals(Toks1)
 			       end,
 			       Range),
+   %% io:format("ListsOfSubToks:\n~p\n", [ListsOfSubToks]),
     ZippedToks = zip_list(ListsOfSubToks),
     Cs = clones_with_atoms_2([ZippedToks], []),
     [C || C <- Cs, length(hd(C)) >= MinClones].
@@ -527,6 +532,7 @@ trim_clones(FileNames, Cs, MinLength, MinClones, TabWidth) ->
 				{value, {File1, AnnAST}} ->
 				    {value, {File1, Toks}} = lists:keysearch(File1, 1, ToksLists),
 				    Units = refac_util:pos_to_syntax_units(File1, AnnAST, {L1, C1},{L2, C2}, fun is_expr_or_fun/1, TabWidth), 
+				   %% io:format("Units:\n~p\n", [Units]),
 				    case Units =/= [] of 
 					true -> 
 					    Fun2 = fun(U) ->
@@ -558,6 +564,7 @@ trim_clones(FileNames, Cs, MinLength, MinClones, TabWidth) ->
 		  end
 	  end,
     Cs2= lists:append(lists:map(Fun, Cs)),
+   %% io:format("Cssssssssss2:\n~p\n",[Cs2]),
     Cs3 =[lists:map(fun(C) -> {C, Len, length(C)} end, group_by(2, lists:map(Fun0, Range)))
 		    || {Range, Len, _F}<- Cs2],
     Cs4 = lists:append(Cs3),
@@ -751,7 +758,7 @@ alphabet_1() ->
    [{'after',a},{'andalso',b}, {'and',c},
     {'begin',d},{'bnot',e},{'band',f},{'bor',g},{'bxor',h},{'bsl',i},{'bsr',j},
     {'case',k}, {'cond',l}, {'catch',m},
-    {'div',n},{dot, o},
+    {'div',n},{'dot', o},
     {'end',p},
     {'fun',q},
     {'if',r},

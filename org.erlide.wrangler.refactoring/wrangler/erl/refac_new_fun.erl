@@ -28,13 +28,13 @@
 %% =============================================================================================
 %% @spec new_fun(FileName::filename(), Start::Pos, End::Pos, NewFunName::string())-> term()
 %%         
-%%-spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
-%%	      {error, string()} | {ok, string()}).
+-spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
+	      {'error', string()} | {'ok', string()}).
 fun_extraction(FileName, Start, End, NewFunName, TabWidth) ->
     fun_extraction(FileName, Start, End, NewFunName, TabWidth, emacs).
 
-%%-spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(), integer()) ->
-%%	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(), integer()) ->
+	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
 fun_extraction_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
     fun_extraction(FileName, Start, End, NewFunName, TabWidth, eclipse).
 
@@ -66,7 +66,7 @@ fun_extraction(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName,TabWid
 		    end
 	    end;
 	false  -> {error, "Invalid function name!"}
-    end. 
+    end.  
 
 side_cond_analysis(Info, Fun, ExpList, NewFunName) ->
     FrBdVars = lists:map(fun(E)-> envs_bounds_frees(E) end, ExpList),
@@ -235,11 +235,15 @@ vars_to_export(Fun,ExprEndPos, ExprBdVars, _ExpList) ->
    %% LastExpr = lists:last(ExpList),
     AllVars = collect_vars(Fun),
     ExprBdVarsPos = lists:map(fun({_Var, Pos}) -> Pos end, ExprBdVars),
-    VarsToExport = lists:usort([V || {V, SourcePos, DefPos} <- AllVars,
-			      SourcePos > ExprEndPos,
-			      lists:subtract(DefPos, ExprBdVarsPos) == []]),
-   %% ?wrangler_io("VarsToExport:\n~p\n",[VarsToExport]),
-    VarsToExport.
+    VarsToExport = lists:keysort(2, [{V, SourcePos} || {V, SourcePos, DefPos} <- AllVars,
+				      SourcePos > ExprEndPos,
+				      lists:subtract(DefPos, ExprBdVarsPos) == []]),
+    VarsToExport1=lists:foldl(fun({V,_Pos}, Acc) -> case lists:member(V, Acc) of 
+						       false -> [V|Acc];
+						       _ -> Acc
+						   end
+			      end,[], VarsToExport),
+    lists:reverse(VarsToExport1).
 
 collect_vars(Tree) ->
      F= fun(T, S) ->

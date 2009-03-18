@@ -79,20 +79,19 @@
 
 -export([generalise/6, generalise_eclipse/6]).
 
-%% temporally exported for testing purposed.
--export([pre_cond_checking/2, do_generalisation/6, gen_fun_1/8, gen_fun_1_eclipse/8, gen_fun_2_eclipse/8]).
+-export([gen_fun_1/8, gen_fun_1_eclipse/8, gen_fun_2_eclipse/8]).
 
 %% =====================================================================
 %% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[string()])-> term()
 %%         Pos = {integer(), integer()}
-%%-spec(generalise/6::(filename(),pos(), pos(),string(), [dir()], integer()) -> {ok, string()} | {error, string()}
-%%								    |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).    
+-spec(generalise/6::(filename(),pos(), pos(),string(), [dir()], integer()) -> {ok, string()} | {error, string()}
+								    |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).     
 
 generalise(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
     generalise(FileName, Start, End, ParName, SearchPaths, TabWidth, emacs).
 
-%%-spec(generalise_eclipse/6::(filename(),pos(), pos(),string(), dir(), integer()) -> {ok, [{filename(), filename(), string()}]}
-%%                              |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).
+-spec(generalise_eclipse/6::(filename(),pos(), pos(),string(), dir(), integer()) -> {ok, [{filename(), filename(), string()}]}
+                              |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree()}}).
 generalise_eclipse(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
     generalise(FileName, Start, End, ParName, SearchPaths, TabWidth, eclipse).
     
@@ -135,7 +134,7 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 		{error, Reason} -> {error, Reason}
 	    end;
 	false  -> {error, "Invalid parameter name!"}
-    end. 
+    end.  
 
 %% =====================================================================
 %% @spec_to_fun_expr(Exp::expression())->expression()
@@ -144,28 +143,31 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 make_actual_parameter(Exp, SideEffect) ->
     FreeVars = lists:map(fun({V,_}) -> V end, refac_util:get_free_vars(Exp)),
     case FreeVars==[] of 
-	true -> case refac_syntax:type(Exp) of 
-		    atom -> case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp)) of 
-				{value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
-				    refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));				       
-				_ -> Exp
-			       end;
-		    module_qualifier ->
-			{value, {fun_def, {_M, _N, A, _P1, _P2}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp)),
-			refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));
-		    _ ->  case SideEffect of 
-			      true -> case refac_syntax:type(Exp) of
-					  fun_expr -> Exp;
-					  _ -> C = refac_syntax:clause([],[],[Exp]),
-					       refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
-					 end;
-			      _ -> Exp
-			  end
-		end;		
+	true -> 
+	    case refac_syntax:type(Exp) of 
+		fun_expr -> Exp;
+		implicit_fun -> Exp;
+		_ ->  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp)) of 
+			  {value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
+			      case refac_syntax:type(Exp) of 
+				  atom -> refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));				       
+				  module_qualifier -> refac_syntax:implicit_fun(Exp, refac_syntax:integer(A));
+				  _ -> throw({error, 
+					      "Wrangler failed to perform this refactoring, because it could not get enough information about the expression selected."})
+			      end;					     
+			  _ -> case SideEffect of 
+				   true -> case refac_syntax:type(Exp) of
+					       fun_expr -> Exp;
+					       _ -> C = refac_syntax:clause([],[],[Exp]),
+						    refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
+					   end;
+				   _ -> Exp
+			       end
+		      end
+	    end;
 	false -> Pars  = lists:map(fun(P) ->refac_syntax:variable(P) end, FreeVars),
 		 C = refac_syntax:clause(Pars,[],[Exp]),
-		 refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))
-
+		 refac_syntax:copy_attrs(Exp, refac_syntax:fun_expr([C]))    
     end.
 	    
 %% =====================================================================
@@ -206,13 +208,13 @@ gen_fun(Tree, ParName, FunName, Arity, DefPos,Info, Exp, SideEffect) ->
        Tree2.
 
 
-%%-spec(gen_fun_1/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
-%%	  -> {ok, string()}).
+-spec(gen_fun_1/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
+	  -> {ok, string()}).
 gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth) ->
     gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth,emacs).
 
-%%-spec(gen_fun_1_eclipse/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
-%%	  -> {ok, [{filename(), filename(),string()}]}).
+-spec(gen_fun_1_eclipse/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) 
+	  -> {ok, [{filename(), filename(),string()}]}).
 gen_fun_1_eclipse(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth) ->
     gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, eclipse).
 
@@ -234,8 +236,8 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, E
     end.
 
 
-%%-spec(gen_fun_2_eclipse/8::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()], integer()) 
-%%	  ->{ok, [{filename(), filename(),string()}]}|{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
+-spec(gen_fun_2_eclipse/8::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()], integer()) 
+	  ->{ok, [{filename(), filename(),string()}]}|{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
 gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth) ->
     gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth, eclipse).
 
@@ -266,7 +268,7 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Tab
 		end;
 	unknown ->
 	    {unknown_side_effect, {ParName1, FunName, FunArity, FunDefPos,Exp}}
-    end.  
+    end.	  
     
     
 
@@ -274,23 +276,24 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Tab
 %% @spec add_function(Tree::syntaxTree(),FunName::atom(),DefPos::Pos, Exp::expression()) ->syntaxTree()
 %%
 add_function(Tree, FunName, DefPos, Exp, SideEffect) -> 				
-    Exp1 =  make_actual_parameter(Exp, SideEffect),
     Forms = refac_syntax:form_list_elements(Tree),
     MakeClause = fun(C, Expr, Name) ->
 			  Pats = refac_syntax:clause_patterns(C),
 			  G =  refac_syntax:clause_guard(C),
 			  Op = refac_syntax:operator(Name),    
-			  Args = [Expr | Pats],
+			  Args = Pats ++ [Expr],
 			  Body = [refac_syntax:application(Op, Args)],
 			  refac_syntax:clause(Pats, G, Body)
 		  end,
     F = fun(Form) ->
 		case refac_syntax:type(Form) of 
 		    function -> case get_fun_def_loc(Form) of 
-				    DefPos -> NewForm = refac_syntax:function(refac_syntax:atom(FunName), 
-						 [MakeClause(C, Exp1,FunName) 
-						  || C <- refac_syntax:function_clauses(Form)]),
-					      [refac_util:reset_attrs(NewForm), Form];
+				    DefPos -> 
+					Exp1 = make_actual_parameter(Exp, SideEffect),
+					NewForm = refac_syntax:function(refac_syntax:atom(FunName), 
+									[MakeClause(C, Exp1,FunName) 
+									 || C <- refac_syntax:function_clauses(Form)]),
+					[refac_util:reset_attrs(NewForm), Form];
 				    _ -> [Form]
 				end;
 		    _ -> [Form] 
@@ -366,16 +369,16 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 	      case application_info(Tree) of 
 		  {{none, FunName}, Arity} ->
 		      Exp1 = refac_util:update_ann(Exp, {range, {0, 0}}),
-		      Arguments1 = [Exp1 | Arguments],
+		      Arguments1 = Arguments ++ [Exp1],
 		      {refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator, Arguments1)), true}; 
 		  {{ModName, FunName}, Arity} ->
 		      Exp1 = refac_util:update_ann(Exp, {range, {0,0}}),
-		      Arguments1 = [Exp1 | Arguments],
+		      Arguments1 = Arguments ++ [Exp1],
 		      {refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator, Arguments1)), true};
 		  {{_, apply},2} ->
-		       F = lists:nth(1, Arguments),
-		       T = lists:nth(2, Arguments),
-		       case refac_syntax:type(F) of 
+		      F = lists:nth(1, Arguments),
+		      T = lists:nth(2, Arguments),
+		      case refac_syntax:type(F) of 
 			   implicit_fun ->
 			      Name = refac_syntax:implicit_fun_name(F),
 			      B = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
@@ -384,12 +387,12 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 				  {FunName, Arity} ->
 				      Exp1 = refac_util:update_ann(Exp, {range, {0,0}}),
 				      case refac_syntax:type(T) of 
-					  list -> Args1 = refac_syntax:copy_attrs(T, refac_syntax:list([Exp1], T));
+					  list -> Args1 = refac_syntax:copy_attrs(T, refac_syntax:list( refac_syntax:list_elements(T) ++[Exp1]));
 					  _ -> Op = refac_syntax:operator('++'),
 					       L = refac_syntax:list([Exp1]),
-					       Args1 = refac_syntax:copy_attrs(T, refac_syntax:infix_expr(L,Op, T))
+					       Args1 = refac_syntax:copy_attrs(T, refac_syntax:infix_expr(T,Op, L))
 				      end,
-				      F1 = refac_syntax:arity_qualifier(refac_syntax:atom(FunName),
+				      F1 = refac_syntax:implicit_fun(refac_syntax:atom(FunName),
 								       refac_syntax:integer(Arity+1)),
 				      {refac_syntax:copy_pos(Tree, (refac_syntax:copy_attrs(Tree, refac_syntax:application
 									    (Operator, [F1, Args1])))), false};
@@ -414,7 +417,7 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 						  Arity ->
 						      Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
 						      Args1 =refac_syntax:copy_attrs(Args, 
-										     refac_syntax:list([Exp1], Args)),
+										     refac_syntax:list(refac_syntax:list_elements(Args) ++[Exp1])),
 						      {refac_syntax:copy_pos(Tree, (refac_syntax:copy_attrs(Tree, 
 							refac_syntax:application(Operator, [Mod, Fun, Args1])))), true};
 						 _ -> {Tree, true}
@@ -491,7 +494,7 @@ transform_spawn_call(Node,{FunName, Arity, Exp, Info}) ->
 				Arity ->
 				    Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
 				    Args1 =refac_syntax:copy_attrs(Args, 
-								   refac_syntax:list([Exp1], Args)), 
+								   refac_syntax:list(refac_syntax:list_elements(Args)++[Exp1])), 
 				    App = if length(Arguments) == 4 ->
 						  refac_syntax:application(Operator, [N, Mod, Fun, Args1]);
 					     true -> refac_syntax:application(Operator, [Mod, Fun, Args1])
@@ -502,7 +505,7 @@ transform_spawn_call(Node,{FunName, Arity, Exp, Info}) ->
 			nil -> if Arity==0 ->
 				    Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
 				    Args1 =refac_syntax:copy_attrs(Args, 
-								   refac_syntax:list([Exp1], Args)), 
+								   refac_syntax:list(refac_syntax:list_elements(Args) ++[Exp1])), 
 
 				   App = if length(Arguments) == 4 ->
 					  refac_syntax:application(Operator, [N, Mod, Fun, Args1]);
@@ -597,7 +600,7 @@ add_parameter(C, NewPar) ->
     Pats = refac_syntax:clause_patterns(C),
     G    = refac_syntax:clause_guard(C),
     Body = refac_syntax:clause_body(C),
-    Pats1 = [NewPar|Pats],
+    Pats1 = Pats ++ [NewPar],
     refac_syntax:copy_pos(C, refac_syntax:copy_attrs(C, refac_syntax:clause(Pats1, G, Body))).
 
 
@@ -608,51 +611,7 @@ get_fun_def_loc(Node) ->
 	 _ -> false
      end.
 
-%%------------------------------------------------------------------------------------
-%% The following functions have been used for testing purposed, and will be refactored.
-%%---------------------------------------------------------------------------------------
-%%-spec(pre_cond_checking/2::({syntaxTree(), moduleInfo()}, {filename(), {pos(), pos()}, string(), [dir()]}) ->boolean()).
-	     
-pre_cond_checking({AnnAST,Info}, {_FileName, {Start, End}, ParName, _SearthPaths}) ->
-     ok == pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info).
-     
-pre_cond_checking_1(AnnAST, {Start, End}, ParName, Info) ->
-    case refac_util:is_var_name(ParName) of 
-	true ->  case refac_util:pos_to_expr(AnnAST, Start, End) of 
-		     {ok, Exp} ->{ok, Fun} = refac_util:expr_to_fun(AnnAST, Exp),
-			      FunName = refac_syntax:data(refac_syntax:function_name(Fun)),
-			      FunArity = refac_syntax:function_arity(Fun),
-			      Inscope_Funs = lists:map(fun({_M1,F, A})->{F, A} end, 
-						       refac_util:inscope_funs(Info)),
-			      case lists:member({FunName, FunArity+1}, Inscope_Funs) of 
-				  true ->{error, "Function "++ atom_to_list(FunName)++"/"++
-					  integer_to_list(FunArity+1)++" is already in scope!"};
-				  _   ->  ParName1 = list_to_atom(ParName),
-					  gen_cond_analysis(Fun, Exp, ParName1)
-			      end;
-		     {error, Reason}  -> {error, Reason}
-		 end;
-    	false  -> {error, "Invalid parameter name!"}
-    end. 
 
-
-
-%%-spec(do_generalisation/6::(filename(), syntaxTree(), {pos(), pos()}, string(), moduleInfo(), [dir()]) -> syntaxTree()).     
-do_generalisation(FileName,AnnAST, {Start, End}, ParName,Info, SearchPaths)->
-    {ok, Exp1} = refac_util:pos_to_expr(AnnAST, Start, End),
-    {ok, Fun} =  refac_util:expr_to_fun(AnnAST, Exp1),
-    FunName = refac_syntax:data(refac_syntax:function_name(Fun)),
-    FunArity = refac_syntax:function_arity(Fun),
-    SideEffect = refac_util:has_side_effect(FileName, Exp1, SearchPaths),
-    Exp = case SideEffect of  
-	      false -> Exp1;
-	      _ -> make_actual_parameter(Exp1, SideEffect)
-	  end,
-    FunDefPos =get_fun_def_loc(Fun), 
-    ParName1 = list_to_atom(ParName),
-    gen_fun(AnnAST, ParName1, FunName, FunArity, FunDefPos,Info, Exp, SideEffect).
-
-    
 get_module_name(ModInfo) ->				      
     case lists:keysearch(module, 1, ModInfo) of
 	{value, {module, ModName}} -> {ok, ModName};

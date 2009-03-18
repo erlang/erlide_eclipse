@@ -47,7 +47,7 @@
 	 nest/2, par/1, par/2, sep/1, text/1, null_text/1, text_par/1,
 	 text_par/2]).
 
--export([layout/2]).%% added by Huiqing Li
+-export([layout/2]). %% added by Huiqing Li
 
 -record(text, {s}).
 -record(nest, {n, d}).
@@ -108,7 +108,7 @@
 %% @see text_par/2
 
 text(S) ->
-    mktext(string(S)).  % convert to internal representation
+    mktext(string(S)).	  % convert to internal representation
 
 %% This function is used internally only, and expects a string on
 %% the internal representation:
@@ -136,7 +136,7 @@ mktext(S) ->
 %% @see empty/0
 
 null_text(S) ->
-    mktext(null_string(S)).   % convert to internal representation
+    mktext(null_string(S)).    % convert to internal representation
 
 
 %% =====================================================================
@@ -598,31 +598,31 @@ flatrev([], As, []) ->
 %%			d = doc()}
 %%	#c_fit{c = ctxt()}
 
--record(c_best_nest, {w, r, i}).%% best(w, r, nest(i, *))
+-record(c_best_nest, {w, r, i}).	%% best(w, r, nest(i, *))
 
--record(c_above_nest, {d, i = 0, c}).%% above(*, nest(i, d))
+-record(c_above_nest, {d, i = 0, c}).	%% above(*, nest(i, d))
 
--record(c_beside, {d, c}).	%% beside(*, d)
+-record(c_beside, {d, c}).		%% beside(*, d)
 
--record(c_text_beside, {s, c}).	%% beside(text(s), *)
+-record(c_text_beside, {s, c}).		%% beside(text(s), *)
 
 %% p = false	=>	sep([* | map(nest i, ds)])
 %% p = true	=>	par([* | map(nest i, ds)])
 
 -record(c_sep_nest, {ds, i, p, c}).
 
--record(c_best_nest_or, {w, r, i, d}).%% nicest(
+-record(c_best_nest_or, {w, r, i, d}).	%% nicest(
 					%%   best(w, r,
 					%%	  nest(i, *)),
 					%%   best(w, r, d))
 
--record(c_fit, {c}).		%% fit(*)
+-record(c_fit, {c}).			%% fit(*)
 
--record(c_float_beside, {d, h, v, c}).	%% beside(
+-record(c_float_beside, {d, h, v, c}).		%% beside(
 						%%   float(d, h,
 						%%         v),
 						%%   *)
--record(c_float_above_nest, {d, h, v, i, c}).%% above(
+-record(c_float_above_nest, {d, h, v, i, c}).	%% above(
 						%%   float(d, h,
 						%%         v),
 						%%   nest(i, *))

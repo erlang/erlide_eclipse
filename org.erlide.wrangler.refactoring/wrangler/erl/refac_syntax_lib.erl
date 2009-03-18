@@ -261,16 +261,16 @@ variables(Tree) ->
 -define(START_RANGE_FACTOR, 100).
 
 -define(MAX_RETRIES,
-	3).   % retries before enlarging range
+	3).    % retries before enlarging range
 
 -define(ENLARGE_ENUM,
-	8).  % range enlargment enumerator
+	8).   % range enlargment enumerator
 
 -define(ENLARGE_DENOM,
-	1). % range enlargment denominator
+	1).  % range enlargment denominator
 
 -define(DEFAULT_LOC, 
-        {0, 0}). %% default defining location.
+        {0, 0}).  %% default defining location.
 
 default_variable_name(N) ->
     list_to_atom("V" ++ integer_to_list(N)).
@@ -351,7 +351,7 @@ max(_, Y) -> Y.
 %% order, but (pseudo-)randomly distributed over the range.
 
 generate(_Key, Range) ->
-    random:uniform(Range).   % works well
+    random:uniform(Range).    % works well
 
 %% =====================================================================
 %% @spec new_variable_names(N::integer(), Used::set(atom())) -> [atom()]
@@ -552,7 +552,7 @@ vann_if_expr(Tree, Env) ->
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
 vann_cond_expr(Tree, Env) ->
-    {ann_bindings(Tree, Env, [], []), [],[]}.  %% TODO: NEED TO CHANGE THIS BACK.
+    {ann_bindings(Tree, Env, [], []), [],[]}.   %% TODO: NEED TO CHANGE THIS BACK.
     %% erlang:error({not_implemented, cond_expr}).
 
 %% TODO: NEED TO CHECK THE SEMANTICS OF try-expression!!!.
@@ -577,7 +577,7 @@ vann_try_expr(Tree, Env) ->
     Tree1 = rewrite(Tree, refac_syntax:try_expr(Body1, Cs1, Handlers1, After1)),
     Bound = ordsets:union(ordsets:union(ordsets:union(Bound1, Bound2), Bound3),Bound4),
     Free  = ordsets:union(ordsets:union(ordsets:union(Free1, Free2), Free3),Free4),
-    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.   %% TODO: NEED TO CHANGE THIS BACK.
+    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.    %% TODO: NEED TO CHANGE THIS BACK.
     %% erlang:error({not_implemented, try_expr}).
 
 vann_receive_expr(Tree, Env) ->
@@ -872,7 +872,7 @@ vann_define(D, Env) ->
     {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1),
     MacroBody2 = adjust_define_body(MacroBody1, Env1),
     D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1| MacroBody2])),
-    {ann_bindings(D1, Env, [], []), [], []}.  
+    {ann_bindings(D1, Env, [], []), [], []}.   
 
 adjust_define_body(Body, Env) ->
     F = fun (Tree1) ->
@@ -1035,18 +1035,17 @@ is_fail_expr(E) ->
 	  N = length(refac_syntax:application_arguments(E)),
 	  F = refac_syntax:application_operator(E),
 	  case catch {ok, analyze_function_name(F)} of
-	    syntax_error -> false;
-	    {ok, exit} when N == 1 -> true;
-	    {ok, throw} when N == 1 -> true;
-	    {ok, {erlang, exit}} when N == 1 -> true;
-	    {ok, {erlang, throw}} when N == 1 -> true;
-	    {ok, {erlang, error}} when N == 1 -> true;
-	    {ok, {erlang, error}} when N == 2 -> true;
-	    {ok, {erlang, fault}} when N == 1 -> true;
-	    {ok, {erlang, fault}} when N == 2 -> true;
-	    _ -> false
+	      {ok, exit} when N == 1 -> true;
+	      {ok, throw} when N == 1 -> true;
+	      {ok, {erlang, exit}} when N == 1 -> true;
+	      {ok, {erlang, throw}} when N == 1 -> true;
+	      {ok, {erlang, error}} when N == 1 -> true;
+	      {ok, {erlang, error}} when N == 2 -> true;
+	      {ok, {erlang, fault}} when N == 1 -> true;
+	      {ok, {erlang, fault}} when N == 2 -> true;
+	      _ -> false
 	  end;
-      _ -> false
+	_ -> false
     end.
 
 
@@ -1218,7 +1217,7 @@ collect_attribute(record, {R, L}, Info) ->
     finfo_add_record(R, L, Info);
 collect_attribute(_, {N, V}, Info) ->
     finfo_add_attribute(N, V, Info);
-collect_attribute(_, _, Info) -> Info. %% Added by Huiqing
+collect_attribute(_, _, Info) -> Info.  %% Added by Huiqing
 
     
 
@@ -1336,19 +1335,35 @@ list_value(List) -> {value, List}.
 
 analyze_form(Node) ->
     case refac_syntax:type(Node) of
-      attribute -> {attribute, analyze_attribute(Node)};
-      function -> {function, analyze_function(Node)};
-      rule -> {rule, analyze_rule(Node)};
-      error_marker ->
-	  {error_marker, refac_syntax:error_marker_info(Node)};
-      warning_marker ->
-	  {warning_marker, refac_syntax:warning_marker_info(Node)};
-      _ ->
-	  case refac_syntax:is_form(Node) of
-	    true -> refac_syntax:type(Node);
-	    false -> 
-		  throw(syntax_error)
-	  end
+	attribute -> 
+	    try analyze_attribute(Node) of 
+		Res -> {attribute, Res}
+	    catch _E1:E2 ->
+		    {error_marker, E2}
+	    end;
+	function -> 
+	    try analyze_function(Node) of 
+		Res -> {function, Res}
+	    catch 
+		_E1:E2 -> {error_marker, E2}
+	    end;
+	rule ->
+	    try analyze_rule(Node) of 
+		Res -> {rule, Res}
+	    catch
+		_E1:E2 -> {error_marker, E2}
+	    end;
+	error_marker ->
+	    {error_marker, refac_syntax:error_marker_info(Node)};
+	warning_marker ->
+	    {warning_marker, refac_syntax:warning_marker_info(Node)};
+	_ ->
+	    case refac_syntax:is_form(Node) of
+		true -> refac_syntax:type(Node);
+		false -> 
+		    {Ln, _} = refac_syntax:get_pos(Node),
+		    {error_marker, "Syntax error in line " ++ integer_to_list(Ln)}
+	    end
     end.
 
 %% =====================================================================
@@ -1417,7 +1432,8 @@ analyze_attribute(Node) ->
 	    endif -> preprocessor;
 	    A -> {A, analyze_attribute(A, Node)}
 	  end;
-      _ -> throw(syntax_error)
+      _ ->  {Ln, _} = refac_syntax:get_pos(Node),
+	    throw("Unrecognised attribute name in line " ++ integer_to_list(Ln))
     end.
 
 analyze_attribute(module, Node) ->
@@ -1457,9 +1473,12 @@ analyze_module_attribute(Node) ->
 		M1 = module_name_to_atom(M),
 		L1 = analyze_variable_list(L),
 		{M1, L1};
-	    _ -> throw(syntax_error)
+	    _ -> 
+		  {Ln, _} = refac_syntax:get_pos(Node),
+		  throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ ->  {Ln, _} = refac_syntax:get_pos(Node),
+	      throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
     end.
 
 analyze_variable_list(Node) ->
@@ -1467,7 +1486,9 @@ analyze_variable_list(Node) ->
       true ->
 	  [refac_syntax:variable_name(V)
 	   || V <- refac_syntax:list_elements(Node)];
-      false -> throw(syntax_error)
+      false -> 
+	    {Ln, _} = refac_syntax:get_pos(Node),
+	    throw("Unrecognised variable list in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1492,9 +1513,11 @@ analyze_export_attribute(Node) ->
       attribute ->
 	  case refac_syntax:attribute_arguments(Node) of
 	    [L] -> analyze_function_name_list(L);
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised export attribute in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ ->{Ln, _} = refac_syntax:get_pos(Node),
+	    throw("Unrecognised export attribute in line " ++ integer_to_list(Ln)) 
     end.
 
 analyze_function_name_list(Node) ->
@@ -1502,7 +1525,9 @@ analyze_function_name_list(Node) ->
       true ->
 	  [analyze_function_name(F)
 	   || F <- refac_syntax:list_elements(Node)];
-      false -> throw(syntax_error)
+      false -> 
+	    {Ln, _} = refac_syntax:get_pos(Node),
+	    throw("Unrecognised function name list in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1532,7 +1557,8 @@ analyze_function_name(Node) ->
 		F = refac_syntax:arity_qualifier_body(Node),
 		F1 = analyze_function_name(F),
 		append_arity(refac_syntax:integer_value(A), F1);
-	    _ -> throw(syntax_error)
+	      _ ->{Ln, _} = refac_syntax:get_pos(Node),
+		  throw("Unrecognised arity_qualifier in line " ++ integer_to_list(Ln))
 	  end;
       module_qualifier ->
 	  M = refac_syntax:module_qualifier_argument(Node),
@@ -1541,9 +1567,11 @@ analyze_function_name(Node) ->
 		F = refac_syntax:module_qualifier_body(Node),
 		F1 = analyze_function_name(F),
 		{refac_syntax:atom_value(M), F1};
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised module_qualifier in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised function name in line " ++ integer_to_list(Ln))
     end.
 
 append_arity(A, {Module, Name}) ->
@@ -1551,7 +1579,7 @@ append_arity(A, {Module, Name}) ->
 append_arity(A, Name) when is_atom(Name) -> {Name, A};
 append_arity(A, A) -> A;
 append_arity(_A, Name) ->
-    Name.   % quietly drop extra arity in case of conflict
+    Name.    % quietly drop extra arity in case of conflict
 
 %% =====================================================================
 %% @spec analyze_import_attribute(Node::syntaxTree()) ->
@@ -1584,9 +1612,11 @@ analyze_import_attribute(Node) ->
 		M1 = module_name_to_atom(M),
 		L1 = analyze_function_name_list(L),
 		{M1, L1};
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised import attribute " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+	   throw("Unrecognised import attribute in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1615,11 +1645,14 @@ analyze_wild_attribute(Node) ->
 		case refac_syntax:attribute_arguments(Node) of
 		  [V] ->
 		      {refac_syntax:atom_value(N), refac_syntax:concrete(V)};
-		  _ -> throw(syntax_error)
+		  _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		       throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
 		end;
-	    _ -> throw(syntax_error)
+	    _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		 throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+	   throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1650,15 +1683,18 @@ analyze_record_attribute(Node) ->
       attribute ->
 	  case refac_syntax:attribute_arguments(Node) of
 	    [R, T] ->
-		case refac_syntax:type(R) of
+		  case refac_syntax:type(R) of
 		  atom ->
 		      Es = analyze_record_attribute_tuple(T),
 		      {refac_syntax:atom_value(R), Es};
-		  _ -> throw(syntax_error)
+		    _ -> {Ln, _} = refac_syntax:get_pos(Node),
+			 throw("Unrecognised record name in line " ++ integer_to_list(Ln))
 		end;
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised record attribute in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised record attribute in line " ++ integer_to_list(Ln))
     end.
 
 analyze_record_attribute_tuple(Node) ->
@@ -1666,7 +1702,8 @@ analyze_record_attribute_tuple(Node) ->
       tuple ->
 	  [analyze_record_field(F)
 	   || F <- refac_syntax:tuple_elements(Node)];
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised attribute in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1719,7 +1756,8 @@ analyze_record_expr(Node) ->
 		Fs = [analyze_record_field(F)
 		      || F <- refac_syntax:record_expr_fields(Node)],
 		{record_expr, {refac_syntax:atom_value(A), Fs}};
-	    _ -> throw(syntax_error)
+	    _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		 throw("Unrecognised record expression in line " ++ integer_to_list(Ln))
 	  end;
       record_access ->
 	  F = refac_syntax:record_access_field(Node),
@@ -1733,10 +1771,12 @@ analyze_record_expr(Node) ->
 			    {record_access,
 			     {refac_syntax:atom_value(A),
 			      refac_syntax:atom_value(F)}};
-			_ -> throw(syntax_error)
+			_ -> {Ln, _} = refac_syntax:get_pos(Node),
+			     throw("Unrecognised record access expresssion in line " ++ integer_to_list(Ln))
 		      end
 		end;
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised record access expresssion in line " ++ integer_to_list(Ln))
 	  end;
       record_index_expr ->
 	  F = refac_syntax:record_index_expr_field(Node),
@@ -1747,9 +1787,11 @@ analyze_record_expr(Node) ->
 		  atom ->
 		      {record_index_expr,
 		       {refac_syntax:atom_value(A), refac_syntax:atom_value(F)}};
-		  _ -> throw(syntax_error)
+		    _ -> {Ln, _} = refac_syntax:get_pos(Node),
+			 throw("Unrecognised record index expression in line " ++ integer_to_list(Ln))
 		end;
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised record expression in line " ++ integer_to_list(Ln))
 	  end;
       Type -> Type
     end.
@@ -1781,9 +1823,20 @@ analyze_record_field(Node) ->
 	    atom ->
 		T = refac_syntax:record_field_value(Node),
 		{refac_syntax:atom_value(A), T};
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised record field in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+       typed_record_field ->
+	    A = refac_syntax:typed_record_field_name(Node),
+	    case refac_syntax:type(A) of 
+		atom ->
+		    T = refac_syntax:typed_record_field_value(Node),
+		    {refac_syntax:atom_value(A), T};
+		_ -> {Ln, _} = refac_syntax:get_pos(Node),
+		     throw("Unrecognised record field in line " ++ integer_to_list(Ln))
+	    end;
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised record field in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1811,11 +1864,14 @@ analyze_file_attribute(Node) ->
 		  true ->
 		      {refac_syntax:string_value(F),
 		       refac_syntax:integer_value(N)};
-		  false -> throw(syntax_error)
+		    false -> {Ln, _} = refac_syntax:get_pos(Node),
+			     throw("Unrecognised file attribute in line " ++ integer_to_list(Ln))
 		end;
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised file attribute in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised file attribute in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1838,11 +1894,13 @@ analyze_function(Node) ->
 	  N = refac_syntax:function_name(Node),
 	  case refac_syntax:type(N) of
 	    atom ->
-		{refac_syntax:atom_value(N),
-		 refac_syntax:function_arity(Node)};
-	    _ -> throw(syntax_error)
+		  {refac_syntax:atom_value(N),
+		   refac_syntax:function_arity(Node)};
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised function name in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised function in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1865,9 +1923,11 @@ analyze_rule(Node) ->
 	  case refac_syntax:type(N) of
 	    atom ->
 		{refac_syntax:atom_value(N), refac_syntax:rule_arity(Node)};
-	    _ -> throw(syntax_error)
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised rule in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised rule in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1890,7 +1950,8 @@ analyze_implicit_fun(Node) ->
     case refac_syntax:type(Node) of
       implicit_fun ->
 	  analyze_function_name(refac_syntax:implicit_fun_name(Node));
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised implicit fun in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -1920,11 +1981,13 @@ analyze_application(Node) ->
 	  A = length(refac_syntax:application_arguments(Node)),
 	  F = refac_syntax:application_operator(Node),
 	  case catch {ok, analyze_function_name(F)} of
-	    syntax_error -> A;
-	    {ok, N} -> append_arity(A, N);
-	    _ -> throw(syntax_error)
+	      syntax_error -> A;
+	      {ok, N} -> append_arity(A, N);
+	      _ -> {Ln, _} = refac_syntax:get_pos(Node),
+		   throw("Unrecognised function application in line " ++ integer_to_list(Ln))
 	  end;
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(Node),
+	     throw("Unrecognised function application in line " ++ integer_to_list(Ln))
     end.
 
 %% =====================================================================
@@ -2142,7 +2205,8 @@ module_name_to_atom(M) ->
 	  list_to_atom(packages:concat([refac_syntax:atom_value(A)
 					|| A
 					       <- refac_syntax:qualified_name_segments(M)]));
-      _ -> throw(syntax_error)
+	_ -> {Ln, _} = refac_syntax:get_pos(M),
+	     throw("Unrecognised module name in line " ++ integer_to_list(Ln))
     end.
 
 %% This splits lines at line terminators and expands tab characters to

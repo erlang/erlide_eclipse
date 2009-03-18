@@ -51,13 +51,13 @@
 %% -> term()
 %%
 
-%%-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
+-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [filename()]}).
 rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -79,11 +79,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					of
 					true ->
 					    {error,
-					     NewName ++
-					    "/" ++
-					     integer_to_list(Arity) ++
-					     " is already in scope, or is an auto-imported "
-					     "builtin function."};
+					     NewName ++ "/" ++ integer_to_list(Arity) ++ " is already in scope."};
 					_ ->
 					    case is_callback_fun(Info, Fun, Arity) of
 						true ->
@@ -221,14 +217,14 @@ get_fun_def_loc(Node) ->
     case lists:keysearch(fun_def, 1, As) of
       {value, {fun_def, {_M, _N, _A, _P, DefinePos}}} ->
 	  DefinePos;
-      _ -> false
+      _ -> ?DEFAULT_LOC
     end.
 
 get_fun_def_mod(Node) ->
     As = refac_syntax:get_ann(Node),
-    case lists:keysearch(fun_def, 1, As) of
-      {value, {fun_def, {M, _N, _A, _P, _DefinePos}}} -> M;
-      _ -> false
+    case lists:keysearch(fun_def, 1, As) of 
+	{value, {fun_def, {M, _N, _A, _P, _DefinePos}}} -> M;
+      _ -> '_'
     end.
 
 rename_fun_in_client_modules(Files, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth) ->
@@ -249,10 +245,9 @@ rename_fun_in_client_modules(Files, {Mod, Fun, Arity}, NewName, SearchPaths, Tab
 get_fun_def_info(Node) ->
     As = refac_syntax:get_ann(Node),
     case lists:keysearch(fun_def, 1, As) of
-      {value,
-       {fun_def, {Mod, FunName, Arity, _UsePos, DefinePos}}} ->
-	  {Mod, FunName, Arity, DefinePos};
-      _ -> false
+      {value, {fun_def, {Mod, FunName, Arity, _UsePos, DefinePos}}} ->
+	    {Mod, FunName, Arity, DefinePos};
+	_ -> false
     end.
 
 rename_fun_in_client_module_1({Tree, Info}, {M, OldName, Arity}, NewName) ->
@@ -343,7 +338,7 @@ is_callback_fun(ModInfo, Funname, Arity) ->
       _ -> false
     end.
 
-%%-spec(check_atoms/2::(syntaxTree(), atom()) ->ok).     
+-spec(check_atoms/2::(syntaxTree(), atom()) ->ok).	     
 check_atoms(Tree, AtomName) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of
@@ -445,6 +440,26 @@ collect_atoms(Tree, AtomName) ->
 			    end;
 			_ -> S
 		      end;
+		  record_expr -> Type = refac_syntax:record_expr_type(T),
+				 case refac_syntax:type(Type) of 
+				     atom -> S ++ [{record, refac_syntax:get_pos(Type)}];
+				     _ -> S
+				 end;
+		  record_field -> Name = refac_syntax:record_field_name(T),
+				   case refac_syntax:type(Name) of 
+				       atom -> S ++ [{record, refac_syntax:get_pos(Name)}];
+				       _ -> S
+				   end;				   
+		  record_access -> Type = refac_syntax:record_access_type(T),
+				   Field = refac_syntax:record_access_field(T),
+				   S1 =case refac_syntax:type(Type) of 
+					   atom -> S ++ [{record, refac_syntax:get_pos(Type)}];
+					   _ -> S
+				       end,
+				   case refac_syntax:type(Field) of 
+				       atom -> S1 ++ [{record, refac_syntax:get_pos(Field)}];
+				       _ -> S1
+				   end;
 		  atom ->
 		      case refac_syntax:atom_value(T) of
 			AtomName ->

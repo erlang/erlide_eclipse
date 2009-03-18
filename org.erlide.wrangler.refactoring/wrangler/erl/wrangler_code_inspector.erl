@@ -34,8 +34,8 @@
 
 -define (not_sure_atom,'*wrangler-not-able-to-decide*').
 %%==========================================================================================
-%%-spec(find_var_instances(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth:: integer()) ->
-%%	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
+-spec(find_var_instances(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth:: integer()) ->
+	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
 find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case refac_util:pos_to_var_name(AnnAST, {Line, Col}) of
@@ -62,43 +62,43 @@ find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     end.
 
 %%==========================================================================================
-%%-spec(nested_if_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(nested_if_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 	     
 nested_if_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'if' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel,if_expr, SearchPaths, TabWidth).
 
 
-%%-spec(nested_if_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(nested_if_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 nested_if_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'if' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, if_expr, SearchPaths, TabWidth).
     
 %%==========================================================================================
-%%-spec(nested_case_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(nested_case_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 nested_case_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) -> 
     ?wrangler_io("\nCheck nested 'case' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel, case_expr, SearchPaths, TabWidth).
 
 
-%%-spec(nested_case_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(nested_case_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 nested_case_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'case' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, case_expr, SearchPaths, TabWidth).
 
 %%==========================================================================================
-%%-spec(nested_receive_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TadWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(nested_receive_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TadWidth::integer()) ->
+	     {error, string()} | ok).
 nested_receive_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'receive' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel, receive_expr, SearchPaths, TabWidth).
 
-%%-spec(nested_receive_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} |ok).
+-spec(nested_receive_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} |ok).
 nested_receive_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'receive' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, case_expr, SearchPaths, TabWidth).
@@ -201,9 +201,9 @@ get_enclosed(Cur, Rs) ->
     end.
 
 %%=========================================================================================
-%%-spec(caller_funs(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | {ok, {[{modulename(), functionname(), arity()}],
-%%				       [{modulename(), functionname(), arity()}]}}).
+-spec(caller_funs(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | {ok, {[{modulename(), functionname(), arity()}],
+				       [{modulename(), functionname(), arity()}]}}).
 caller_funs(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case refac_util:pos_to_fun_def(AnnAST, {Line, Col}) of
@@ -395,7 +395,7 @@ handle_special_funs(FileName, T, {ModName, FunName, Args}, {M, F, A}, S1, S2) ->
 
 	    			       
 %%==========================================================================================
-%%-spec(caller_called_modules(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
+-spec(caller_called_modules(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
 caller_called_modules(FName, SearchPaths, TabWidth) ->
     %% I use 'false' in the following function call, so that macro can get expanded;
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths, TabWidth),
@@ -417,15 +417,15 @@ caller_called_modules(FName, SearchPaths, TabWidth) ->
 
 
 %%==========================================================================================
-%%-spec(long_functions_in_file(FName::filename(), Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(long_functions_in_file(FName::filename(), Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 long_functions_in_file(FName, Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\n Search for long functions in the current buffer... \n",[]),
     long_functions_1([FName], Lines, SearchPaths, TabWidth).
 
 %%==========================================================================================
-%%-spec(long_functions_in_dirs(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {error, string()} | ok).
+-spec(long_functions_in_dirs(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | ok).
 long_functions_in_dirs(Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\n Search for long functions in the following directories:\n~p\n", [SearchPaths]),
     long_functions_1(SearchPaths, Lines, SearchPaths, TabWidth).
@@ -503,8 +503,8 @@ group_by_1(TupleList=[E|_Es]) ->
 
 
 %%==========================================================================================
-%%-spec(large_modules(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->				  
-%%	     {error, string()} | ok).
+-spec(large_modules(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->				  
+	     {error, string()} | ok).
 large_modules(Lines, SearchPaths, TabWidth) ->
     try list_to_integer(Lines) of 
 	Val -> 
@@ -573,12 +573,12 @@ is_large_module(FName, Lines, TabWidth) ->
 %% Non tail-recursive servers or non tail-recursive functions? It is certainly easier to 
 %% detect non tail-recursive function;  how do you decide whether a function functions as 
 %% a server or not?
-%%-spec(non_tail_recursive_servers_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
+-spec(non_tail_recursive_servers_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_file(FName, SearchPaths, TabWidth) ->
     Funs = non_tail_recursive_servers(FName, SearchPaths, TabWidth),
     non_tail_format_results(Funs).
  
-%%-spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+-spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_dirs(SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     Funs = lists:flatmap(fun(F) ->
@@ -702,12 +702,12 @@ check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
 
 
 %%==========================================================================================
-%%-spec(not_flush_unknown_messages_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).   
+-spec(not_flush_unknown_messages_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).    
 not_flush_unknown_messages_in_file(FName, SearchPaths, TabWidth) ->
     Funs = not_flush_unknown_messages(FName, SearchPaths, TabWidth),
     non_flush_format_result(lists:usort(Funs)).
     
-%%-spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+-spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 not_flush_unknown_messages_in_dirs(SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     Funs = lists:flatmap(fun(F) ->

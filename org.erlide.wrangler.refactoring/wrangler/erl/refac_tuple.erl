@@ -28,14 +28,14 @@
 
 -include("../include/wrangler.hrl").
 
-%%-spec(tuple_funpar/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
+-spec(tuple_funpar/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
+	     {error, string()} | {ok, [filename()]}).
 tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth)->
   tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, emacs).
 
 
-%%-spec(tuple_funpar_eclipse/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(tuple_funpar_eclipse/6::(filename(), integer(), integer(), integer(), [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 tuple_funpar_eclipse(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth)->
   tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, eclipse).
 
@@ -114,36 +114,37 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
     AnnAST2 = check_implicit_funs(AnnAST1, FunName, Arity, FunNode),
     case refac_util:is_exported({FunName, Arity}, Info) of
       true ->
-	  ?wrangler_io("\nChecking client modules in the following "
-		    "search paths: \n~p\n",
-		    [SearchPaths]),
-	  ClientFiles = refac_util:get_client_files(File, SearchPaths),
-	  Results = tuple_parameters_in_client_modules(ClientFiles, FunName, Arity, C,
-						       length(Parameters), Mod, TabWidth),
-	  case Editor of
-	    emacs ->
-		refac_util:write_refactored_files([{{File, File}, AnnAST2} | Results]),
-		ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-		ChangedFiles = [File | ChangedClientFiles],
-		?wrangler_io("The following files have been changed "
-			  "by this refactoring:\n~p\n",
-			  [ChangedFiles]),
-		?wrangler_io("WARNING: Please check the implicit function calls!",[]),
-		{ok, ChangedFiles};
-	    eclipse ->
-		Results1 = [{{File, File}, AnnAST2} | Results],
-		Res = lists:map(fun ({{FName, NewFName}, AST}) ->
-					{FName, NewFName, refac_prettypr:print_ast(refac_util:file_format(FName),AST)}
-				end,
-				Results1),
-		{ok, Res}
-	  end;
-      false ->
-	  case Editor of
-	    emacs ->
-		refac_util:write_refactored_files([{{File, File}, AnnAST2}]), {ok, [File]};
-	    eclipse -> Res = [{File, File, refac_prettypr:print_ast(refac_util:file_format(File),AnnAST2)}], {ok, Res}
-	  end
+	    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n",
+			 [SearchPaths]),
+	    ClientFiles = refac_util:get_client_files(File, SearchPaths),
+	    Results = tuple_parameters_in_client_modules(ClientFiles, FunName, Arity, C,
+							 length(Parameters), Mod, TabWidth),
+	    case Editor of
+		emacs ->
+		    refac_util:write_refactored_files([{{File, File}, AnnAST2} | Results]),
+		    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
+		    ChangedFiles = [File | ChangedClientFiles],
+		    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+		    ?wrangler_io("WARNING: Please check the implicit function calls!",[]),
+		    {ok, ChangedFiles};
+		eclipse ->
+		    Results1 = [{{File, File}, AnnAST2} | Results],
+		    Res = lists:map(fun ({{FName, NewFName}, AST}) ->
+					    {FName, NewFName, refac_prettypr:print_ast(refac_util:file_format(FName),AST)}
+				    end,
+				    Results1),
+		  {ok, Res}
+	    end;
+	false ->
+	    case Editor of
+		emacs ->
+		    refac_util:write_refactored_files([{{File, File}, AnnAST2}]),
+		    ChangedFiles = [File],
+		    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+		    ?wrangler_io("WARNING: Please check the implicit function calls!",[]),
+		    {ok, ChangedFiles};
+		eclipse -> Res = [{File, File, refac_prettypr:print_ast(refac_util:file_format(File),AnnAST2)}], {ok, Res}
+	    end
     end.
 
 
@@ -159,16 +160,16 @@ check_implicit_funs(AnnAST1, FunName, FunArity, FunNode)->
       Fun = fun(Form) ->
 	      case refac_syntax:type(Form) of 
 		function -> 
-                 Name=refac_syntax:atom_value(refac_syntax:function_name(Form)),
-		  Arity = refac_syntax:function_arity(Form),
-		  case {Name, Arity} == {FunName, FunArity} of
-		    true -> [Form, FunNode];
-		    _ -> [Form]
-		  end;
-		_ -> [Form]
+		      Name=refac_syntax:atom_value(refac_syntax:function_name(Form)),
+		      Arity = refac_syntax:function_arity(Form),
+		      case {Name, Arity} == {FunName, FunArity} of
+			  true -> [Form, FunNode];
+			  _ -> [Form]
+		      end;
+		  _ -> [Form]
 	      end
 	    end,
-      refac_syntax:form_list([F||Form<-Forms, F <-Fun(Form)]);
+	  refac_syntax:form_list([F||Form<-Forms, F <-Fun(Form)]);
     {_, false} -> AnnAST1
   end.
 
@@ -436,8 +437,8 @@ check_first_pos(Pos, AnnAST)->
 pos_to_arg(AppNode, Pos)->
     Args = refac_syntax:application_arguments(AppNode),
     List = lists:dropwhile(fun(Pat)->
-				   {Pos11, _Pos22} = refac_util:get_range(Pat),
-				   Pos11 < Pos
+				   {_Pos11, Pos22} = refac_util:get_range(Pat),
+				   Pos22 < Pos
 			   end, Args),
     case List of
 	[] -> {error, "You have not selected a parameter!"};
@@ -456,8 +457,8 @@ pos_to_pat(AnnAST, Pos)->
     {ok, Clause} ->
 	  FunPatterns = refac_syntax:clause_patterns(Clause),
 	  List = lists:dropwhile(fun(Pat)->
-					 {Pos11, _Pos22} = refac_util:get_range(Pat),
-					 Pos11 < Pos
+					 {_Pos11, Pos22} = refac_util:get_range(Pat),
+					 Pos22 < Pos
 				 end, FunPatterns),
 	  case List of
 	      [] -> {error, "You have not selected a parameter!"};
@@ -773,49 +774,61 @@ transform_apply_call(Node, {C, N, Name, Arity, ModName}) ->
   Arguments = refac_syntax:application_arguments(Node),
   case Arguments of
     [Fun, Args] ->
-      case refac_syntax:type(Fun) of
-	implicit_fun ->
-	  FName = refac_syntax:implicit_fun_name(Fun),
-	  B = refac_syntax:atom_value(refac_syntax:
-                                      arity_qualifier_body(FName)),
-	  A = refac_syntax:atom_value(refac_syntax:
-                                      arity_qualifier_argument(FName)),
-	  case {B, A} of
-	    {Name, Arity} ->
-              Args1 = refac_syntax:list_elements(Args),
-              Args2 = get_arg(Args1, C, N),
-              Args3 = refac_syntax:list(Args2),
-      	      {refac_syntax:copy_attrs(Node, 
-               refac_syntax:application(Operator, [Fun, Args3])), false};
-            _ -> {Node, false}
+	  case refac_syntax:type(Fun) of
+	      implicit_fun ->
+		  FName = refac_syntax:implicit_fun_name(Fun),
+		  B = refac_syntax:atom_value(refac_syntax:
+					      arity_qualifier_body(FName)),
+		  A = refac_syntax:atom_value(refac_syntax:
+					      arity_qualifier_argument(FName)),
+		  case {B, A} of
+		      {Name, Arity} ->
+			  case refac_syntax:type(Args) of 
+			      list ->
+				  Args1 = refac_syntax:list_elements(Args),
+				  Args2 = get_arg(Args1, C, N),
+				  Args3 = refac_syntax:list(Args2),
+				  {refac_syntax:copy_attrs(Node, 
+						   refac_syntax:application(Operator, [Fun, Args3])), false};
+			      _ -> {Node, false}
+			  end;
+		      _ -> {Node, false}
+		  end;
+	      atom -> 
+		  case refac_syntax:type(Args) of 
+		      list -> Args1 = refac_syntax:list_elements(Args),
+			      Len = length(Args1),
+			      case {refac_syntax:atom_value(Fun), Len} of
+				  {Name, Arity} ->
+				      Args1 = refac_syntax:list_elements(Args),
+				      Len = length(Args1),
+				      Args2 = get_arg(Args1, C, N),
+				      Args3 = refac_syntax:list(Args2),
+				      {refac_syntax:copy_attrs(Node, 
+							       refac_syntax:application(Operator, [Fun, Args3])), false};
+				  _ -> {Node, false}
+			      end;
+		      _ -> {Node, false}
+		  end;
+	      _ -> {Node, false}
 	  end;
-	atom -> 
-          Args1 = refac_syntax:list_elements(Args),
-          Len = length(Args1),
-          case {refac_syntax:atom_value(Fun), Len} of
-	    {Name, Arity} ->
-               Args2 = get_arg(Args1, C, N),
-               Args3 = refac_syntax:list(Args2),
-      	       {refac_syntax:copy_attrs(Node, 
-                 refac_syntax:application(Operator, [Fun, Args3])), false};
-             _ -> {Node, false}
-          end;
-        _ -> {Node, false}
-      end;
-    [Mod, Fun, Args] ->
-      Args1 = refac_syntax:list_elements(Args),
-      Len = length(Args1),
-      case {refac_syntax:atom_value(Fun), Len, refac_syntax:atom_value(Mod)} of
-        {Name, Arity, ModName} ->
-          Args2 = get_arg(Args1, C, N),
-          Args3 = refac_syntax:list(Args2),
-	  {refac_syntax:copy_pos(Node, refac_syntax:
-                 copy_attrs(Node, refac_syntax:application(Operator, 
-                                       [Mod, Fun, Args3]))),false};
-        _ -> {Node, false}
-      end;
-    _ -> 
-      {Node, false}
+      [Mod, Fun, Args] ->
+	  case refac_syntax:type(Args) of
+	      list ->Args1 = refac_syntax:list_elements(Args),
+		     Len = length(Args1),	  
+		     case {refac_syntax:atom_value(Fun), Len, refac_syntax:atom_value(Mod)} of
+			 {Name, Arity, ModName} ->
+			     Args2 = get_arg(Args1, C, N),
+			     Args3 = refac_syntax:list(Args2),
+			     {refac_syntax:copy_pos(Node, refac_syntax:
+						    copy_attrs(Node, refac_syntax:application(Operator, 
+											      [Mod, Fun, Args3]))),false};
+			 _ -> {Node, false}
+		     end;
+	      _ -> {Node, false}
+	  end;
+      _ -> 
+	  {Node, false}
   end.
 
 

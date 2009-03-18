@@ -29,13 +29,13 @@
 
 -include("../include/wrangler.hrl").
 
-%%-spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
+-spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
+	     {error, string()} | {ok, [filename()]}).
 tuple_to_record(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth )->
   tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth,  emacs).
 
-%%-spec(tuple_to_record_eclipse/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(tuple_to_record_eclipse/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 tuple_to_record_eclipse(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth)->
   tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth, eclipse).
 
@@ -157,7 +157,7 @@ check_if_correct_names(RecName, FieldList)->
                     true -> ok;
                     _ -> throw({error, "Not a legal record field name!"})
                   end
-                end, FieldList).
+                end, FieldList). 
 
 %% =====================================================================
 %% @spec parse_file(FileName::string(), SearchPaths::[string()])  

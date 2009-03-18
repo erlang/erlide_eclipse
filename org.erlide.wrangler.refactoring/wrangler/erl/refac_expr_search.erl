@@ -38,7 +38,7 @@
 %% @spec expr_search(FileName::filename(), Start::Pos, End::Pos)-> term().
 %% =================================================================================================         
 
-%%-spec(expr_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).   
+-spec(expr_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
 expr_search(FileName, Start={Line, Col}, End={Line1, Col1}, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search(~p, {~p,~p},{~p,~p},~p).\n", [?MODULE, FileName, Line, Col, Line1, Col1, TabWidth]),
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, [], TabWidth),
@@ -60,7 +60,7 @@ expr_search(FileName, Start={Line, Col}, End={Line1, Col1}, TabWidth) ->
 		     {ok, Res}
 	    end;
 	_   -> {error, "You have not selected an expression!"}
-    end.    
+    end.	    
 	  
 
 %% Search the clones of an expression from Tree.
@@ -128,6 +128,8 @@ simplify_expr(Exp) ->
 
 do_simplify_expr(Node) ->
     Node1 = case refac_syntax:type(Node) of 
+		macro -> 
+		    refac_syntax:default_literals_vars(Node, '*');
 		variable ->
 		    refac_syntax:default_literals_vars(Node, '&');
 		integer ->
@@ -178,7 +180,7 @@ contained_exprs(Tree, MinLen) ->
       
 
 %% get the binding structure of variables.
-%%-spec(var_binding_structure/1::([syntaxTree()]) -> [{integer(), integer()}]).     
+-spec(var_binding_structure/1::([syntaxTree()]) -> [{integer(), integer()}]).	     
 var_binding_structure(ASTList) ->
     Fun1 = fun (T, S) ->
 		   case refac_syntax:type(T) of

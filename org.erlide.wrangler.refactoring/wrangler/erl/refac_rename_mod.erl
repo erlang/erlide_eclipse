@@ -45,12 +45,12 @@
 %% @spec rename_mod(FileName::filename(), NewName::string(), SearchPaths::[string()])-> term()
 %%   
 
-%%-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).     
+-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).	     
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -182,7 +182,7 @@ rename_mod_in_client_modules(Files, OldModName, NewModName, SearchPaths, TabWidt
 			   [{{F,F}, AnnAST1}|rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths, TabWidth)];
 		      true -> rename_mod_in_client_modules(Fs, OldModName, NewModName, SearchPaths, TabWidth)
 		   end
-	end.   
+	end.    
 
 rename_mod_in_client_module_1(Tree, OldModName, NewModName) ->
     refac_util:stop_tdTP(fun do_rename_mod/2, Tree, {OldModName, NewModName}).

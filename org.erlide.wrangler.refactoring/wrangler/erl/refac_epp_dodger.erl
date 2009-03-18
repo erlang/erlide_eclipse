@@ -67,12 +67,7 @@
 
 -module(refac_epp_dodger).
 
--export([parse_file/1, quick_parse_file/1, parse_file/2,
-	 quick_parse_file/2, parse/1, quick_parse/1, parse/2,
-	 quick_parse/2, parse/3, quick_parse/3, parse_form/2,
-	 parse_form/3, quick_parse_form/2, quick_parse_form/3,
-	 format_error/1, tokens_to_string/1]).
-
+-export([parse_file/2]).
 
 %% The following should be: 1) pseudo-uniquely identifiable, and 2)
 %% cause nice looking error messages when the parser has to give up.
@@ -82,25 +77,10 @@
 -define(var_prefix, "?,").
 -define(pp_form, '?preprocessor declaration?').
 
-%% @type errorinfo() = {ErrorLine::integer(),
-%%                      Module::atom(),
-%%                      Descriptor::term()}.
-%% 
-%% This is a so-called Erlang I/O ErrorInfo structure; see the {@link
-%% //stdlib/io} module for details.
+-define(DEFAULT_TABWIDTH, 8).
+-define(DEFAULT_FILEFORMAT, unix).
 
-
-%% =====================================================================
-%% @spec parse_file(File) -> {ok, Forms} | {error, errorinfo()}
-%%       File = file:filename()
-%%       Forms = [erl_syntax:syntaxTree()]
-%% 
-%% @equiv parse_file(File, [])
-
-parse_file(File) ->
-    parse_file(File, []).
-
-
+%%==================================================================
 %% @spec parse_file(File, Options) -> {ok, Forms} | {error, errorinfo()}
 %%       File = file:filename()
 %%       Options = [term()]
@@ -138,37 +118,6 @@ parse_file(File) ->
 parse_file(File, Options) ->
     parse_file(File, fun parse/3, Options).
 
-%% @spec quick_parse_file(File) -> {ok, Forms} | {error, errorinfo()}
-%%       File = file:filename()
-%%       Forms = [refac_syntax:syntaxTree()]
-%%
-%% @equiv quick_parse_file(File, [])
-
-quick_parse_file(File) ->
-    quick_parse_file(File, []).
-
-%% @spec quick_parse_file(File, Options) ->
-%%           {ok, Forms} | {error, errorinfo()}
-%%       File = file:filename()
-%%       Options = [term()]
-%%       Forms = [refac_syntax:syntaxTree()]
-%%
-%% @doc Similar to {@link parse_file/2}, but does a more quick-and-dirty
-%% processing of the code. Macro definitions and other preprocessor
-%% directives are discarded, and all macro calls are replaced with
-%% atoms. This is useful when only the main structure of the code is of
-%% interest, and not the details. Furthermore, the quick-parse method
-%% can usually handle more strange cases than the normal, more exact
-%% parsing.
-%%
-%% Options: see {@link parse_file/2}. Note however that for
-%% `quick_parse_file/2', the option `no_fail' is `true' by default.
-%%
-%% @see quick_parse/2
-%% @see parse_file/2
-
-quick_parse_file(File, Options) ->
-    parse_file(File, fun quick_parse/3, Options ++ [no_fail]).
 
 parse_file(File, Parser, Options) ->
     case file:open(File, [read]) of
@@ -180,25 +129,7 @@ parse_file(File, Parser, Options) ->
             {error, IoErr}
     end.
 
-
-%% =====================================================================
-%% @spec parse(IODevice) -> {ok, Forms} | {error, errorinfo()}
-%% @equiv parse(IODevice, 1)
-
-parse(Dev) ->
-    parse(Dev, {1,1}).%% Modified by Huiqing Li
-
-%% @spec parse(IODevice, StartLine) -> {ok, Forms} | {error, errorinfo()}
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Forms = [refac_syntax:syntaxTree()]
-%%
-%% @equiv parse(IODevice, StartLine, [])
-%% @see parse/1
-
-parse(Dev, L) ->
-    parse(Dev, L, []).
-
+%%=========================================================
 %% @spec parse(IODevice, StartLine, Options) ->
 %%           {ok, Forms} | {error, errorinfo()}
 %%       IODevice = pid()
@@ -219,42 +150,6 @@ parse(Dev, L) ->
 parse(Dev, L0, Options) ->
     parse(Dev, L0, fun parse_form/3, Options).
 
-%% @spec quick_parse(IODevice) -> {ok, Forms} | {error, errorinfo()}
-%% @equiv quick_parse(IODevice, 1)
-
-quick_parse(Dev) ->
-    quick_parse(Dev, {1,1}). %% Modified by Huiqing Li
-
-%% @spec quick_parse(IODevice, StartLine) ->
-%%           {ok, Forms} | {error, errorinfo()}
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Forms = [refac_syntax:syntaxTree()]
-%%
-%% @equiv quick_parse(IODevice, StartLine, [])
-%% @see quick_parse/1
-
-quick_parse(Dev, L) ->
-    quick_parse(Dev, L, []).
-
-%% @spec (IODevice, StartLine, Options) ->
-%%           {ok, Forms} | {error, errorinfo()}
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Options = [term()]
-%%       Forms = [refac_syntax:syntaxTree()]
-%% 
-%% @doc Similar to {@link parse/3}, but does a more quick-and-dirty
-%% processing of the code. See {@link quick_parse_file/2} for details.
-%%
-%% @see quick_parse/2
-%% @see quick_parse_file/2
-%% @see quick_parse_form/2
-%% @see parse/3
-
-quick_parse(Dev, L0, Options) ->
-    parse(Dev, L0, fun quick_parse_form/3, Options).
-
 parse(Dev, L0, Parser, Options) ->
     parse(Dev, L0, [], Parser, Options).
 
@@ -270,45 +165,6 @@ parse(Dev, L0, Fs, Parser, Options) ->
             {ok, lists:reverse(Fs)}
     end.
 
-
-%% =====================================================================
-%% @spec parse_form(IODevice, StartLine) -> {ok, Form, LineNo}
-%%                                        | {eof, LineNo}
-%%                                        | {error, errorinfo(), LineNo}
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Form = refac_syntax:syntaxTree()
-%%       LineNo = integer()
-%%
-%% @equiv parse_form(IODevice, StartLine, [])
-%%
-%% @see quick_parse_form/2
-
-parse_form(Dev, L0) ->
-    parse_form(Dev, L0, []).
-
-%% @spec parse_form(IODevice, StartLine, Options) ->
-%%           {ok, Form, LineNo}
-%%         | {eof, LineNo}
-%%         | {error, errorinfo(), LineNo}
-%% 
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Options = [term()]
-%%       Form = refac_syntax:syntaxTree()
-%%       LineNo = integer()
-%%
-%% @doc Reads and parses a single program form from an I/O stream.
-%% Characters are read from `IODevice' until an end-of-form
-%% marker is found (a period character followed by whitespace), or until
-%% end-of-file; apart from this, the behaviour is similar to that of
-%% `parse/3', except that the return values also contain the
-%% final line number given that `StartLine' is the initial
-%% line number, and that `{eof, LineNo}' may be returned.
-%%
-%% @see parse/3
-%% @see parse_form/2
-%% @see quick_parse_form/3
 
 parse_form(Dev, L0, Options) ->
     parse_form(Dev, L0, fun normal_parser/2, Options).
@@ -326,40 +182,23 @@ parse_form(Dev, L0, Options) ->
 %%
 %% @see parse_form/2
 
-quick_parse_form(Dev, L0) ->
-    quick_parse_form(Dev, L0, []).
-
-%% @spec quick_parse_form(IODevice, StartLine, Options) ->
-%%           {ok, Form, LineNo}
-%%         | {eof, LineNo}
-%%         | {error, errorinfo(), LineNo}
-%%
-%%       IODevice = pid()
-%%       StartLine = integer()
-%%       Options = [term()]
-%%       Form = refac_syntax:syntaxTree()
-%%       LineNo = integer()
-%%
-%% @doc Similar to {@link parse_form/3}, but does a more quick-and-dirty
-%% processing of the code. See {@link quick_parse_file/2} for details.
-%%
-%% @see parse/3
-%% @see quick_parse_form/2
-%% @see parse_form/3
-
-quick_parse_form(Dev, L0, Options) ->
-    parse_form(Dev, L0, fun quick_parser/2, Options).
 
 -record(opt, {clever = false}).
+
 
 parse_form(Dev, L0, Parser, Options) ->
     NoFail = proplists:get_bool(no_fail, Options),
     Opt = #opt{clever = proplists:get_bool(clever, Options)},
-    Res =case proplists:get_value(tab, Options) of 
-	     undefined -> refac_io:scan_erl_form(Dev, "", L0);
-	     V ->  refac_io:scan_erl_form(Dev, "", L0, V)
-	 end,     
-     case Res of    %%Modified by Huiqing Li
+    TabWidth= case proplists:get_value(tab, Options) of 
+		  undefined -> ?DEFAULT_TABWIDTH;
+		  Val -> Val
+	      end,
+    FileFormat = case proplists:get_value(format, Options) of 
+		     undefined ->?DEFAULT_FILEFORMAT;
+		     V   -> V
+		 end,  
+    Res = refac_io:scan_erl_form(Dev, "", L0, TabWidth, FileFormat),
+    case Res of    
         {ok, Ts, L1} ->
             case catch {ok, Parser(Ts, Opt)} of
                 {'EXIT', Term} ->
@@ -375,7 +214,7 @@ parse_form(Dev, L0, Parser, Options) ->
                 {parse_error, IoErr} ->
 		    {error, IoErr, L1};
                 {ok, F} ->
-                    {ok, F, L1}
+		    {ok, F, L1}
             end;
         {error, IoErr, L1} ->
             {error, IoErr, L1};
@@ -399,7 +238,7 @@ parse_tokens(Ts) ->
 parse_tokens(Ts, Fix) ->
     case refac_parse:parse_form(Ts) of
         {ok, Form} ->
-            Form;
+	    Form;
         {error, IoErr} ->
 	    case Fix(Ts) of
 		{form, Form} ->
@@ -410,92 +249,6 @@ parse_tokens(Ts, Fix) ->
 		    throw({parse_error, IoErr})
 	    end
     end.
-
-%% ---------------------------------------------------------------------
-%% Quick scanning/parsing - deletes macro definitions and other
-%% preprocessor directives, and replaces all macro calls with atoms.
-
-quick_parser(Ts, _Opt) ->
-    filter_form(parse_tokens(quickscan_form(Ts))).
-
-quickscan_form([{'-', _L}, {atom, La, define} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, undef} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, include} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, include_lib} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, ifdef} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, ifndef} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, else} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', _L}, {atom, La, endif} | _Ts]) ->
-    kill_form(La);
-quickscan_form([{'-', L}, {'?', _}, {Type, _, _}=N | [{'(', _} | _]=Ts])
-  when Type == atom; Type == var ->
-    %% minus, macro and open parenthesis at start of form - assume that
-    %% the macro takes no arguments; e.g. `-?foo(...).'
-    quickscan_macros_1(N, Ts, [{'-', L}]);
-quickscan_form([{'?', _L}, {Type, _, _}=N | [{'(', _} | _]=Ts])
-  when Type == atom; Type == var ->
-    %% macro and open parenthesis at start of form - assume that the
-    %% macro takes no arguments (see scan_macros for details)
-    quickscan_macros_1(N, Ts, []);
-quickscan_form(Ts) ->
-    quickscan_macros(Ts).
-
-kill_form(L) ->
-    [{atom, L, ?pp_form}, {'(', L}, {')', L}, {'->', L}, {atom, L, kill},
-     {dot, L}].
-
-quickscan_macros(Ts) ->
-    quickscan_macros(Ts, []).
-
-quickscan_macros([{'?',_}, {Type, _, A} | Ts], [{string, L, S} | As])
-  when Type == atom; Type == var ->
-    %% macro after a string literal: change to a single string
-    {_, Ts1} = skip_macro_args(Ts),
-    S1 = S ++ quick_macro_string(A),
-    quickscan_macros(Ts1, [{string, L, S1} | As]);
-quickscan_macros([{'?',_}, {Type, _, _}=N | [{'(',_}|_]=Ts],
-		 [{':',_}|_]=As)
-  when Type == atom; Type == var ->
-    %% macro and open parenthesis after colon - check the token
-    %% following the arguments (see scan_macros for details)
-    Ts1 = case skip_macro_args(Ts) of
-	      {_, [{'->',_} | _] = Ts2} -> Ts2;
-	      {_, [{'when',_} | _] = Ts2} -> Ts2;
-	      _ -> Ts    %% assume macro without arguments
-	  end,
-    quickscan_macros_1(N, Ts1, As);
-quickscan_macros([{'?',_}, {Type, _, _}=N | Ts], As)
-  when Type == atom; Type == var ->
-    %% macro with or without arguments
-    {_, Ts1} = skip_macro_args(Ts),
-    quickscan_macros_1(N, Ts1, As);
-quickscan_macros([T | Ts], As) ->
-    quickscan_macros(Ts, [T | As]);
-quickscan_macros([], As) ->
-    lists:reverse(As).
-
-%% (after a macro has been found and the arglist skipped, if any)
-quickscan_macros_1({_Type, _, A}, [{string, L, S} | Ts], As) ->
-    %% string literal following macro: change to single string
-    S1 = quick_macro_string(A) ++ S,
-    quickscan_macros(Ts, [{string, L, S1} | As]);
-quickscan_macros_1({_Type, L, A}, Ts, As) ->
-    %% normal case - just replace the macro with an atom
-    quickscan_macros(Ts, [{atom, L, quick_macro_atom(A)} | As]).
-
-quick_macro_atom(A) ->
-    list_to_atom("?" ++ atom_to_list(A)).
-
-quick_macro_string(A) ->
-    "(?" ++ atom_to_list(A) ++ ")".
-
 %% Skipping to the end of a macro call, tracking open/close constructs.
 %% @spec (Tokens) -> {Skipped, Rest}
 
@@ -532,13 +285,6 @@ skip_macro_args([T | Ts], Es, As) ->
     skip_macro_args(Ts, Es, [T | As]);
 skip_macro_args([], _Es, _As) ->
     throw({error, macro_args}).
-
-filter_form({function, _, ?pp_form, _,
-	     [{clause, _, [], [], [{atom, _, kill}]}]}) ->
-    none;
-filter_form(T) ->
-    T.
-
 
 %% ---------------------------------------------------------------------
 %% Normal parsing - try to preserve all information
@@ -787,20 +533,5 @@ tokens_to_string([{A,_} | Ts]) ->
     atom_to_list(A) ++ " " ++ tokens_to_string(Ts);
 tokens_to_string([]) ->
     "".
-
-
-%% @spec (Descriptor::term()) -> string()
-%% @hidden
-%% @doc Callback function for formatting error descriptors. Not for
-%% normal use.
-
-format_error(macro_args) ->
-    errormsg("macro call missing end parenthesis");
-format_error({unknown, Reason}) ->
-    errormsg(io_lib:format("unknown error: ~P", [Reason, 15])).
-
-errormsg(String) ->
-    io_lib:format("~s: ~s", [?MODULE, String]).
-
 
 %% =====================================================================

@@ -47,28 +47,28 @@
 	 fold_expr_by_name/7, fold_expr_by_name_eclipse/7,
 	 cursor_at_fun_clause/5]).
 
--export([expr_unification/2]).
+-export([expr_unification/2, fold_expression/6]).
 -include("../include/wrangler.hrl").
 %% =============================================================================================
 %% @spec fold_expression(FileName::filename(), Line::integer(), Col::integer())-> term()
 %% =============================================================================================        
 
-%%-spec(fold_expr_by_loc/5::(filename(), integer(), integer(), [dir()], integer())->
-%%			 {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
-%%							 | {error, string()}).
+-spec(fold_expr_by_loc/5::(filename(), integer(), integer(), [dir()], integer())->
+			 {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
+							 | {error, string()}).
 
 fold_expr_by_loc(FileName, Line, Col, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:fold_expression(~p, ~p,~p,~p).\n", [?MODULE, FileName, Line, Col, TabWidth]),
     fold_expression(FileName, Line, Col, SearchPaths, TabWidth, emacs).
 
-%%-spec(fold_expr_by_loc_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) -> {ok,  {syntaxTree(),
-%%										  [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}
-%%										     | {error, string()}).
+-spec(fold_expr_by_loc_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) -> {ok,  {syntaxTree(),
+										  [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}
+										     | {error, string()}).
 
 fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
     fold_expression(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 
 fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fold_expression(~p, ~p,~p,~p).\n", [?MODULE, FileName, Line, Col, TabWidth]),
     {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {value, {module, CurrentModName}} = lists:keysearch(module, 1, Info),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of 
@@ -79,10 +79,13 @@ fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 		    case Candidates of 
 			[] -> {error, "No expressions that are suitable for folding against the selected function have been found!"};	
 			_ -> case Editor of 
-				 emacs ->Regions = lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}},NewExp}) ->
-								     {StartLine, StartCol, EndLine,EndCol, NewExp, {FileName, CurrentModName, FunClauseDef, ClauseIndex}} end, 
-							     Candidates),
-					 {ok, Regions};
+				 emacs ->
+				     FunClauseDef1 = binary_to_list(term_to_binary(FunClauseDef)),
+				     Regions = lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}},NewExp}) ->
+								 NewExp1 = binary_to_list(term_to_binary(NewExp)),
+								 {StartLine, StartCol, EndLine,EndCol, NewExp1, {FileName, CurrentModName, FunClauseDef1, ClauseIndex}} end, 
+							 Candidates),
+				     {ok, Regions};
 				 eclipse ->  {ok, {FunClauseDef, Candidates}}
 			     end			      
 		    end;				 
@@ -93,9 +96,9 @@ fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
     end.
 
 
-%%-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
-%%		 | {error, string()}).
+-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}
+		 | {error, string()}).
 
 fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
     case ModName of 
@@ -114,26 +117,26 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, T
 	      end
     end.
  
-%%-spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
-%%	     {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]} 
-%%		 | {error, string()}).
+-spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
+	     {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]} 
+		 | {error, string()}).
 
 fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
 	case ModName of 
-		[] -> {error, "Invalid module name!"};
-		_  -> case FunName of 
-				  [] -> {error, "Invalid function name!"};
-				  _ -> case (Arity==[]) orelse (list_to_integer(Arity) <0) of   
-						   true -> {error, "Invalid arity!"};
-						   _ -> case (ClauseIndex==[]) orelse (list_to_integer(ClauseIndex) <1) of 
-									true -> {error, "Invalid function clause index!"};
-									_ ->				
-										fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), 
-														  list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths, TabWidth,  eclipse)
-								end
-					   end
-			  end
-    end.
+	    [] -> {error, "Invalid module name!"};
+	    _  -> case FunName of 
+		      [] -> {error, "Invalid function name!"};
+		      _ -> case (Arity==[]) orelse (list_to_integer(Arity) <0) of   
+			       true -> {error, "Invalid arity!"};
+			       _ -> case (ClauseIndex==[]) orelse (list_to_integer(ClauseIndex) <1) of 
+					true -> {error, "Invalid function clause index!"};
+					_ ->				
+					    fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), 
+							      list_to_integer(Arity), list_to_integer(ClauseIndex), SearchPaths, TabWidth,  eclipse)
+				    end
+			   end
+		  end
+	end.
    
 
 fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth,  Editor) ->
@@ -160,8 +163,10 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, T
 			_ ->
 			    Regions = case Editor of
 					emacs ->
+					    FunClauseDef1 = binary_to_list(term_to_binary(FunClauseDef)),
 					    lists:map(fun ({{{StartLine, StartCol}, {EndLine, EndCol}}, NewExp}) ->
-							      {StartLine, StartCol, EndLine, EndCol, NewExp, {FileName1, Mod, FunClauseDef, ClauseIndex}}
+							      NewExp1 = binary_to_list(term_to_binary(NewExp)),
+							      {StartLine, StartCol, EndLine, EndCol, NewExp1, {FileName1, Mod, FunClauseDef1, ClauseIndex}}
 						      end,
 						      Candidates);
 					eclipse -> Candidates
@@ -182,8 +187,8 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, T
 %%                        {FunClauseDef, ClauseIndex}::{term(), integer()) -> term()
 %% =============================================================================================  
 
-%%-spec(fold_expression_1_eclipse/5::(filename(), syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree}], [dir()], integer()) ->
-%%	     {ok, [{filename(), filename(), string()}]}).
+-spec(fold_expression_1_eclipse/5::(filename(), syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree}], [dir()], integer()) ->
+	     {ok, [{filename(), filename(), string()}]}).
 fold_expression_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWidth) ->   %% RangeNewExpList [{{{StartLine, EndCol}, {EndLine, EndCol}}, NewExp}]
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
@@ -200,9 +205,11 @@ fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}|Tail]) ->
     
     
 
-%%-spec(fold_expression_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), {filename(),atom(), syntaxTree(), integer()}, [dir()], integer()) ->
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}).
-fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDefFileName, FunDefMod, FunClauseDef, ClauseIndex}, SearchPaths, TabWidth) -> 
+-spec(fold_expression_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), {filename(),atom(), syntaxTree(), integer()}, [dir()], integer()) ->
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}).
+fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp0, {FunDefFileName, FunDefMod, FunClauseDef0, ClauseIndex}, SearchPaths, TabWidth) -> 
+    NewExp= binary_to_term(list_to_binary(NewExp0)),
+    FunClauseDef = binary_to_term(list_to_binary(FunClauseDef0)),
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {value, {module, CurrentMod}} = lists:keysearch(module, 1, Info),
     FunCall = case refac_syntax:type(NewExp) of 
@@ -224,7 +231,9 @@ fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDe
     case get_fun_clause_def(AnnAST3, FunName, Arity, ClauseIndex) of 
 	{ok, {_Mod, _FunName, _Arity, FunClauseDef1}} ->
 	    Candidates = search_candidate_exprs(AnnAST2, {FunDefMod, CurrentMod}, FunName, FunClauseDef1),
-	    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, FunCall1, {FunDefFileName, FunDefMod, FunClauseDef1, ClauseIndex}} 
+	    FunClauseDef2 = binary_to_list(term_to_binary(FunClauseDef1)),
+	    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, binary_to_list(term_to_binary(FunCall1)), 
+			{FunDefFileName, FunDefMod, FunClauseDef2, ClauseIndex}} 
 		       || {{{StartLine1, StartCol1}, {EndLine1, EndCol1}}, FunCall1}<-Candidates,
 			  StartLine1 >= StartLine],
 	    {ok,  Regions};
@@ -234,9 +243,9 @@ fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp, {FunDe
   
 
 
-%%-spec(fold_expression_2_eclipse/7::(filename(), atom(),integer(), integer(), integer(), [dir()], integer()) -> 
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
-%%             | {error, string()}).
+-spec(fold_expression_2_eclipse/7::(filename(), atom(),integer(), integer(), integer(), [dir()], integer()) -> 
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
+             | {error, string()}).
 fold_expression_2_eclipse(FileName, FunName, Arity, ClauseIndex, StartLine, SearchPaths, TabWidth ) ->
     {ok, {AnnAST2, _Info1}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     case get_fun_clause_def(AnnAST2, FunName, Arity, ClauseIndex) of 
@@ -430,18 +439,18 @@ do_search_candidate_exprs_2(AnnAST, ExpList) ->
     LastExp = lists:last(ExpList),
     HasExportExp = case refac_syntax:type(LastExp) of 
 		      variable -> true;
-		      tuple -> lists:all(fun(E) -> refac_syntax:type(E) == variable end, 
-					 refac_syntax:tuple_elements(LastExp));
-		      _  -> false
-		  end,
+		       tuple -> lists:all(fun(E) -> refac_syntax:type(E) == variable end, 
+					  refac_syntax:tuple_elements(LastExp));
+		       _  -> false
+		   end,
     
-      Fun = fun(T, S) ->
+    Fun = fun(T, S) ->
 		  case refac_syntax:type(T) of 
 		      clause ->
 			  Exprs = refac_syntax:clause_body(T),
 			  SubExprs = sublists(Exprs, Len),
 			  CandidateExprs1 = 
-			         lists:map(fun(E) -> case ExpList =/= E of 
+			      lists:map(fun(E) -> case ExpList =/= E of 
    						      true ->case expr_unification(ExpList, E) of 
    								 {true,Subst} -> {StartLoc1, _EndLoc1} = refac_util:get_range(hd(E)),
    										 {_StartLoc2, EndLoc2} = refac_util:get_range(lists:last(E)),
@@ -496,88 +505,112 @@ do_search_candidate_exprs_2(AnnAST, ExpList) ->
      refac_syntax_lib:fold(Fun,[], AnnAST).
     
 
-%%-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
-%%	     {true, [{atom(), syntaxTree()}]} | false).
+-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
+	     {true, [{atom(), syntaxTree()}]} | false).
 expr_unification(Exp1, Exp2) ->
     Res1 = case {is_list(Exp1), is_list(Exp2)} of 
-	{true, true} ->   %% both are list of expressions
-	    case length(Exp1) == length(Exp2) of
-		true -> Res = lists:map(fun({E1,E2}) ->			      
-						expr_unification(E1,E2)						
-					end, lists:zip(Exp1, Exp2)),
-			Unifiable = lists:all(fun(E) -> case E of 
-							    {true, _} -> true;
-							    _ -> false
-							end
-					      end, Res),
-		        Substs = lists:usort(lists:flatmap(fun(E) -> case E of 
-								      {true,S} -> S;
-								      _ -> []
-								  end
-							end,Res)),
-			case Unifiable of 
-			    true -> {true, Substs};
-			    _ -> false
-			end;
-		_ -> false
-	    end;
-	{false, false} ->  %% both are single expressions.
-	    T1 = refac_syntax:type(Exp1),
-	    T2 = refac_syntax:type(Exp2),
-	    case T1 == T2 of 
-		true -> 
-		   case T1 of 
-			variable -> {true, [{refac_syntax:variable_name(Exp1), set_default_ann(Exp2)}]} ;
-			atom -> case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of 
-				    true -> {true, []};
-				    _ -> false
-				end;
-			operator -> case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
-					true -> {true, []};
-					_ -> false
-				    end;
-			char -> case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of 
-				    true -> {true, []};
-				    _ -> false
-				end;
-		       integer -> case refac_syntax:integer_value(Exp1) ==refac_syntax:integer_value(Exp2) of 
-				      true -> {true, []};
-				      _ -> false
-				  end;
-		       string -> case refac_syntax:string_value(Exp1) == refac_syntax:string_value(Exp2) of 
-				      true -> {true, []};
-				     _ -> false
-				 end;
-		       float -> case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of 
-				    true -> {true, []}
-				end;
-		       underscore -> {true, []};
-		       nil -> {true, []};
-			_ -> 
-			    SubTrees1 = erl_syntax:subtrees(Exp1),
-			    SubTrees2 = erl_syntax:subtrees(Exp2),
-			    case length(SubTrees1) == length(SubTrees2) of 
-				true -> 
-				    expr_unification(SubTrees1, SubTrees2);				    
+	       {true, true} ->   %% both are list of expressions
+		   case length(Exp1) == length(Exp2) of
+		       true -> Res = lists:map(fun({E1,E2}) ->			      
+						       expr_unification(E1,E2)						
+					       end, lists:zip(Exp1, Exp2)),
+			       Unifiable = lists:all(fun(E) -> case E of 
+								   {true, _} -> true;
+								   _ -> false
+							       end
+						     end, Res),
+			       Substs = lists:usort(lists:flatmap(fun(E) -> case E of 
+										{true,S} -> S;
+										_ -> []
+									    end
+								  end,Res)),
+			       case Unifiable of 
+				   true -> {true, Substs};
+				   _ -> false
+			       end;
+		       _ -> false
+		   end;
+	       {false, false} ->  %% both are single expressions.
+		   T1 = refac_syntax:type(Exp1),
+		   T2 = refac_syntax:type(Exp2),
+		   case T1 == T2 of 
+		       true -> 
+			   case T1 of 
+			       variable -> 
+				   case lists:keysearch(category, 1, refac_syntax:get_ann(Exp1)) of 
+				       {value, {category, macro_name}} ->
+					   case lists:keysearch(category, 1, refac_syntax:get_ann(Exp2)) of 
+					       {value, {category, macro_name}} ->
+						   case refac_syntax:variable_name(Exp1) == refac_syntax:variable_name(Exp2) of 
+						       true ->
+							   {true, []};
+					       _ ->false
+						   end;
+					       _ -> false
+					   end;
+				       _ -> {true, [{refac_syntax:variable_name(Exp1), set_default_ann(Exp2)}]} 
+				   end;
+			       atom -> case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of 
+					   true -> {true, []};
+					   _ -> false
+				       end;
+			       operator -> case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
+					       true -> {true, []};
+					       _ -> false
+					   end;
+			       char -> case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of 
+					   true -> {true, []};
+					   _ -> false
+				       end;
+			       integer -> case refac_syntax:integer_value(Exp1) ==refac_syntax:integer_value(Exp2) of 
+					      true -> {true, []};
+					      _ -> false
+					  end;
+			       string -> case refac_syntax:string_value(Exp1) == refac_syntax:string_value(Exp2) of 
+					     true -> {true, []};
+					     _ -> false
+					 end;
+			       float -> case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of 
+					    true -> {true, []}
+					end;
+			       underscore -> {true, []};
+			       nil -> {true, []};
+			       _ -> 
+				   SubTrees1 = erl_syntax:subtrees(Exp1),
+				   SubTrees2 = erl_syntax:subtrees(Exp2),
+				   case length(SubTrees1) == length(SubTrees2) of 
+				       true -> 
+					   expr_unification(SubTrees1, SubTrees2);				    
+				       _ -> false
+				   end 
+			   end;
+		       _ -> case T1 of 
+				variable -> case T2 of 
+						match_expr -> false;  %% ANY OTHER CASES?
+						_ -> 
+						    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp2)) of 
+							{value, {category, application_op}} ->
+							    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Exp2)) of 
+								{value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
+								    {true, [{refac_syntax:variable_name(Exp1), 
+									     set_default_ann(refac_syntax:implicit_fun(Exp2, refac_syntax:integer(A)))}]};
+								_ -> false
+							    end;
+							_ -> {true, [{refac_syntax:variable_name(Exp1), set_default_ann(Exp2)}]}
+						    end
+					    end;
 				_ -> false
-			    end 
-		    end;
-		_ -> case T1 of 
-			 variable -> case T2 of 
-					 match_expr -> false;  %% ANY OTHER CASES?
-					 _  -> {true, [{refac_syntax:variable_name(Exp1), set_default_ann(Exp2)}]}
-				     end;
-			 _ -> false
-		     end
-	    end;
-	{true, false} -> %% Exp1 is a list, but Exp2 is not.
-	    false;
-	{false, true} ->  %% Exp1 is a single expression, but Exp2 is not.
-	   false      %% an actual parameter cannot be a list of expressions.
-    end,
+			    end
+		   end;
+	       {true, false} -> %% Exp1 is a list, but Exp2 is not.
+		   false;
+	       {false, true} ->  %% Exp1 is a single expression, but Exp2 is not.
+		   false      %% an actual parameter cannot be a list of expressions.
+	   end,
     case Res1 of 
 	{true, Subst} ->
-	    Subst1 = lists:usort(lists:map(fun({E1,E2}) -> {E1, refac_prettypr:format(E2)} end, Subst)),
+	    Subst1 = lists:usort(lists:map(fun({E1,E2}) -> 
+						   {E1, refac_prettypr:format(E2)} end, Subst)),
 	    Len1 = length(lists:usort(lists:map(fun({E1,_E2}) -> E1 end, Subst1))),
 	    case Len1 == length(Subst1) of 
 		true -> {true, Subst};
@@ -735,8 +768,8 @@ get_fun_def_1(Node, {FunName, Arity, ClauseIndex}) ->
     end.
 
 
-%%-spec(cursor_at_fun_clause/5::(filename(), integer(), integer(), [dir()], integer()) ->
-%%	     true |false).
+-spec(cursor_at_fun_clause/5::(filename(), integer(), integer(), [dir()], integer()) ->
+	     true |false).
 cursor_at_fun_clause(FileName, Line, Col, SearchPaths, TabWidth) ->    
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of 
@@ -772,7 +805,7 @@ pos_to_fun_clause_1(Node, Pos) ->
     end.
 
 
-%%-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> {syntaxTree(), moduleInfo()} | {error, string()}).
+-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> {syntaxTree(), moduleInfo()} | {error, string()}).
 fold_expression_1(FileName, FunName, Arity, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),

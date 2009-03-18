@@ -20,6 +20,9 @@
 
 -export([fold_against_macro/5, fold_against_macro_1/9, fold_against_macro_eclipse/5]).
 
+
+-export([fold_against_macro/6]).
+
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
@@ -42,17 +45,17 @@
 
 %%=============================================================================================
 
-%%-spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
-%%	      {error, string()} | {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
+-spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
+	      {error, string()} | {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
 
 fold_against_macro(FileName, Line, Col,  SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:fold_aginst_macro(~p, ~p,~p, ~p,~p).\n", [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
     fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, emacs).
 
 fold_against_macro_eclipse(FileName, Line, Col,  SearchPaths, TabWidth) ->
     fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 
 fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fold_aginst_macro(~p, ~p,~p, ~p,~p).\n", [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case pos_to_macro_define(AnnAST, {Line, Col}) of 
 	{ok, MacroDef} ->
@@ -61,8 +64,10 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 		[] -> {error, "No syntax phrase that is suitable for folding against the selected macro definition has been found!"};
 		_  -> case Editor of 
 			  emacs ->
+			      MacroDef1 = binary_to_list(term_to_binary(MacroDef)),
 			      Regions  = lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}}, MacroApp}) ->
-							   {StartLine, StartCol, EndLine, EndCol, MacroApp, MacroDef} end,
+							   MacroApp1 = binary_to_list(term_to_binary(MacroApp)),
+							   {StartLine, StartCol, EndLine, EndCol, MacroApp1, MacroDef1} end,
 						   Candidates),
 			      {ok, Regions};
 			  eclipse ->
@@ -73,9 +78,11 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 	    {error, "You have not selected a macro definition, or the selected macro definition does not have a syntactially well-formed body!"}
     end.
 
-%%-spec(fold_against_macro_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree(), [dir()], integer()) ->
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
-fold_against_macro_1(FileName, StartLine, StartCol, EndLine, EndCol, MacroApp, MacroDef, SearchPaths, TabWidth) ->
+-spec(fold_against_macro_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree(), [dir()], integer()) ->
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
+fold_against_macro_1(FileName, StartLine, StartCol, EndLine, EndCol, MacroApp1, MacroDef1, SearchPaths, TabWidth) ->
+    MacroApp = binary_to_term(list_to_binary(MacroApp1)),
+    MacroDef = binary_to_term(list_to_binary(MacroDef1)),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Args = refac_syntax:attribute_arguments(MacroDef),
     MacroBody = tl(Args),
@@ -84,8 +91,8 @@ fold_against_macro_1(FileName, StartLine, StartCol, EndLine, EndCol, MacroApp, M
     refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),
     {ok, {AnnAST2, _Info2}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),    
     Candidates = search_candidate_exprs(AnnAST2, MacroDef),
-    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, MacroApp1, MacroDef}
-	       || {{{StartLine1, StartCol1}, {EndLine1, EndCol1}}, MacroApp1} <- Candidates,
+    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, MacroApp2, MacroDef}
+	       || {{{StartLine1, StartCol1}, {EndLine1, EndCol1}}, MacroApp2} <- Candidates,
 		  StartLine1 >= StartLine],
     {ok, Regions}.
 
@@ -128,8 +135,9 @@ do_search_candidate_exprs_1(AnnAST, MacroBody, MacroParNames) ->
 				  case expr_unification(MacroBody, T, MacroParNames) of 
 				      {true, Subst} ->
 					  S ++ [{refac_util:get_range(T), Subst}];
+				      _ -> S
+				  end;
 			      _ -> S
-				  end
 			  end;
 		      false ->
 			  S

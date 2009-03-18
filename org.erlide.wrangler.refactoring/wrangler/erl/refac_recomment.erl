@@ -189,7 +189,7 @@ recomment_forms_2(C, [], _Top) ->
 
 standalone_comment({L, Col, _Ind, Text}) ->
     leaf_node(L, L + comment_delta(Text),
-	      refac_syntax:set_pos(refac_syntax:comment(Col - 1, Text), {L,Col-1})). %% Modified by Huiqing
+	      refac_syntax:set_pos(refac_syntax:comment(Col - 1, Text), {L,Col-1})).  %% Modified by Huiqing
 
 %% Compute delta between first and last line of a comment, given
 %% the lines of text.
@@ -561,7 +561,7 @@ expand_comments([]) ->
 
 expand_comment(C) ->
     {L, _Col, Ind, Text} = C,
-    refac_syntax:set_pos(refac_syntax:comment(Ind, Text), {L,Ind}). %% Modified by Huiqing
+    refac_syntax:set_pos(refac_syntax:comment(Ind, Text), {L,Ind}).  %% Modified by Huiqing
 
 
 %% =====================================================================
