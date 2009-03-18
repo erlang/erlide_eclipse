@@ -59,7 +59,6 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import erlang.ErlideOpen;
-import erlang.OpenResult;
 
 public class ErlModelUtils {
 
@@ -408,12 +407,6 @@ public class ErlModelUtils {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
-	public static void openExternalFunction(final OpenResult res,
-			final IProject project) throws CoreException {
-		openExternalFunction(res.getName(), res.getFunction(), res.getPath(),
-				project);
-	}
-
 	public static void openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
 			final IProject project) throws CoreException {

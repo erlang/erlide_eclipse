@@ -301,7 +301,8 @@ public class OpenAction extends SelectionDispatchAction {
 					|| module.getErlProject() == null ? null : module
 					.getErlProject().getProject();
 			if (res.isExternalCall()) {
-				ErlModelUtils.openExternalFunction(res, project);
+				ErlModelUtils.openExternalFunction(res.getName(), res.getFunction(), res.getPath(),
+				project);
 			} else if (res.isInclude()) {
 				IResource r = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project, res
