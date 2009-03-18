@@ -168,6 +168,8 @@ is_op1(Op) ->
 
 %% is_block_start_token(atom()) -> boolean()
 %%
+is_block_start_token(#token{kind=Kind}) ->
+    is_block_start_token(Kind);
 is_block_start_token(T) ->
     lists:member(T, ['fun', 'case', 'begin', 'if', 'try']).
 
