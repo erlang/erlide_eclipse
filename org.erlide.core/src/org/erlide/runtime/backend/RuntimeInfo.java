@@ -281,12 +281,20 @@ public class RuntimeInfo implements Cloneable {
 				final int[] krnls = new int[kernels.length];
 				for (int i = 0; i < kernels.length; i++) {
 					String k = kernels[i].getName();
-					int p = k.indexOf('.');
-					p = k.indexOf('.', p + 1);
-					if (p < 0) {
+					try {
+						int p = k.indexOf('.');
+						if (p < 0) {
+							krnls[i] = 0;
+						} else {
+							p = k.indexOf('.', p + 1);
+							if (p < 0) {
+								krnls[i] = 0;
+							} else {
+								krnls[i] = Integer.parseInt(k.substring(p + 1));
+							}
+						}
+					} catch (Exception e) {
 						krnls[i] = 0;
-					} else {
-						krnls[i] = Integer.parseInt(k.substring(p + 1));
 					}
 				}
 				Arrays.sort(krnls);
