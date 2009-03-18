@@ -16,18 +16,18 @@
 		<br><a href="http://www.refactoring.com/">http://www.refactoring.com/</a></p>
 		<h3>What is Wrangler?</h3>
 		<p><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler</a> is an Erlang refactoring tool. 
-		It is built upon the official Erlang syntax tools. It has a GUI for both EMACS editor and Eclipse. It supports
-		preserving the layout for the unmodified part of the code.
+		It is built using the Erlang Syntax Tools library. Wrangler has a GUI for both the EMACS editor and the Eclipse IDE, using erlIDE. It supports
+		preservation of the code layout for that part of the code that is unmodified.
 		</p>
 		<p><b>Features:</b></p>
 		<ul>
-			<li>layout preserving</li>
+			<li>layout-preserving</li>
 			<li>supports Eclipse <code>undo</code>/<code>redo</code> operations</li>
 			<li>integrated with<a href="http://erlide.sourceforge.net/">Erlide</a></li>
 			<li>supports cross-module refactorings</li>
-			<li>preview of the changings</li>
+			<li>supports preview of the changes</li>
 		</ul>
-		<p><b><a href="refactorings.html">Implemented refactorings</a></b></p>
+		<p><b><a href="refactorings.html">Refactorings Implemented</a></b></p>
 		<ul>
 			<li>Rename variable name</li>
 			<li>Rename function name</li>
@@ -38,22 +38,22 @@
 			<li>Generalise function</li>
 			<li>Tuple function parameters</li>
 		</ul>
-	<h2>How Wrangler refactorings works?</h2>
+	<h2>How Wrangler refactoring works</h2>
 	<p>Each refactoring can be invoked from the <em>Refactor</em> menu selecting its name.</p> 
 	<img alt="Refactor menu" src="../images/refactor-menu.png"> 
-	<p>Then a wizard window appears, in which the necessary parameters is asked and the user can select to apply the refactoring, or to preview it.</p>
+	<p>Then a wizard window appears, in which the necessary parameters are requested and the user can select either to apply the refactoring, or to preview the results of doing it.</p>
 	<img alt="Wizard" src="../images/rename-variable-dialog.png">
-	<p>If the selected refactoring's result is undesirable, it can be cancelled after previewing it.</p>
+	<p>If the result of the selected refactoring is undesirable, it can be cancelled after previewing it.</p>
 	<img alt="Preview window" src="../images/preview.png">
 	<h2>Planned features</h2>
 	<ul>
 		<li>Duplicate code detection</li>
-		<li>Deeper integration in Eclipse</li>
+		<li>Tighter integration with Eclipse</li>
 	</ul>
 	<h2>Links</h2>
 	<ul>
 		<li><a href="http://www.erlang.org">Open source Erlang</a></li>
-		<li><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler's home</a></li>
+		<li><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler home page</a></li>
 		<li><a href="http://erlide.sourceforge.net/">Erlide project site</a></li>
 		<li><a href="http://erlide.sourceforge.net/update">Update site</a></li>
 		<li><a href="https://www.assembla.com/spaces/dashboard/index/erlide">Bug tracker</a></li>
