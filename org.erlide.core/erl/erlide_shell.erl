@@ -142,51 +142,68 @@ handle_input(Client, State, Input) ->
     end.
 
 
+put_chars(From, ReplyAs, State, _Encoding, Mod, Fun, Args) ->
+	Text = case catch apply(Mod, Fun, Args) of
+			   {'EXIT', _Reason} -> "";
+			   Txt -> Txt
+		   end,
+	FlatText = string_flatten(Text),
+	send_event(FlatText, From),
+	io_reply(From, ReplyAs, ok),
+	{ok, State}.
+
+
+get_until(From, ReplyAs, Client, State, _Encoding, Prompt, Mod, Fun, Args) ->
+	NewReq = #io_request{prompt = Prompt,
+						 mod = Mod,
+						 fn = Fun,
+						 args = Args,
+						 from = From,
+						 reply_as = ReplyAs},
+	case State of
+		{pending_request, Cont, PendingReqs} ->
+			NewState = {pending_request, Cont, PendingReqs++[NewReq]},
+			{ok, NewState};
+		
+		idle ->
+			print_prompt(Client, Prompt, From),
+			InitContinuation = init_cont(),
+			NewState = {pending_request, InitContinuation, [NewReq]},
+			{ok, NewState};
+		
+		{pending_input, Input} ->
+			InitContinuation = init_cont(),
+			TmpState = {pending_request, InitContinuation, [NewReq]},
+			handle_input(Client, TmpState, Input)
+	end.
+
+put_chars(From, ReplyAs, State, _Encoding, Text) ->
+	FlatText = string_flatten(Text),
+	send_event(FlatText, From),
+	io_reply(From, ReplyAs, ok),
+	{ok, State}.
+
+
 %% Returns:
 %%   {ok, NewState} |
 %%   close
 handle_io_request(Client, State, From, ReplyAs, IoRequest) ->
         case IoRequest of
 	{put_chars, Mod, Fun, Args} ->
-	    Text = case catch apply(Mod, Fun, Args) of
-		      {'EXIT', _Reason} -> "";
-		      Txt -> Txt
-		   end,
-            FlatText = string_flatten(Text),
-            send_event(FlatText, From),
-            io_reply(From, ReplyAs, ok),
-	    {ok, State};
+		put_chars(From, ReplyAs, State, latin1, Mod, Fun, Args);
+	{put_chars, Encoding, Mod, Fun, Args} ->
+		put_chars(From, ReplyAs, State, Encoding, Mod, Fun, Args);
 
 	{put_chars, Text} ->
-            FlatText = string_flatten(Text),
-            send_event(FlatText, From),
-            io_reply(From, ReplyAs, ok),
-	    {ok, State};
+		put_chars(From, ReplyAs, State, latin1, Text);
+	{put_chars, Encoding, Text} ->
+		put_chars(From, ReplyAs, State, Encoding, Text);
 
 	{get_until, Prompt, Mod, Fun, Args} ->
-	    NewReq = #io_request{prompt = Prompt,
-				 mod = Mod,
-				 fn = Fun,
-				 args = Args,
-				 from = From,
-				 reply_as = ReplyAs},
-	    case State of
-		{pending_request, Cont, PendingReqs} ->
-		    NewState = {pending_request, Cont, PendingReqs++[NewReq]},
-		    {ok, NewState};
-
-		idle ->
-		    print_prompt(Client, Prompt, From),
-		    InitContinuation = init_cont(),
-		    NewState = {pending_request, InitContinuation, [NewReq]},
-		    {ok, NewState};
-
-		{pending_input, Input} ->
-		    InitContinuation = init_cont(),
-		    TmpState = {pending_request, InitContinuation, [NewReq]},
-		    handle_input(Client, TmpState, Input)
-	    end;
-
+		get_until(From, ReplyAs, Client, State, latin1, Prompt, Mod, Fun, Args);
+	{get_until, Encoding, Prompt, Mod, Fun, Args} ->
+		get_until(From, ReplyAs, Client, State, Encoding, Prompt, Mod, Fun, Args);
+			
 	{get_geometry, _} ->
 	    io_reply(From, ReplyAs, {error,enotsup}),
 	    {ok, State};
@@ -258,11 +275,13 @@ loginfo(FmtStr, Args) ->
     %% is called from within code that handles the client.
     Txt = fmt(FmtStr, Args),
     error_logger:info_msg("~s", [Txt]),
+	erlide_log:log(Txt),
     fixme.
 logerror(FmtStr, Args) ->
     %% See loginfo/2.
     Txt = fmt(FmtStr, Args),
     error_logger:error_msg("~s", [Txt]),
+	erlide_log:log(Txt),
     fixme.
 
 fmt(FmtStr, Args) ->
