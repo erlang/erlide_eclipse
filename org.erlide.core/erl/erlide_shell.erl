@@ -246,7 +246,7 @@ io_reply(From, ReplyAs, Result) ->
 
 print_prompt(_Client, Prompt, From) ->
     PromptText = case Prompt of
-                  TxtAtom when atom(TxtAtom) ->
+                  TxtAtom when is_atom(TxtAtom) ->
                          io_lib:format('~s', [TxtAtom]);
                    {IoFun, PromptFmtStr, PromptArgs} ->
                          case catch io_lib:IoFun(PromptFmtStr, PromptArgs) of

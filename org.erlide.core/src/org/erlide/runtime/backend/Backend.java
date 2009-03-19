@@ -66,10 +66,9 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	boolean fAvailable = false;
 
 	private OtpMbox ftRpcBox; // incoming rpc and events
-	protected static String fHost;
-	protected OtpNode fNode;
-	protected String fPeer;
-	protected IShellManager fShellManager;
+	private OtpNode fNode;
+	private String fPeer;
+	private IShellManager fShellManager;
 	private String fCurrentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
