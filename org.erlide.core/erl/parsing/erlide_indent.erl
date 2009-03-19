@@ -507,24 +507,13 @@ i_macro(R0, I) ->
 
 i_macro_rest(R0, I) ->
     case i_sniff(R0) of
-	'(' ->
-	    R1 = i_kind('(', R0, I),
+	Paren when Paren=:='('; Paren=:='{'; Paren=:='[' ->
+ 	    R1 = i_kind('(', R0, I),
 	    R2 = i_parameters(R1, I),
 	    R3 = i_end_paren(R2, I),
 	    i_macro_rest(R3, I);
-	',' ->
-	    R0;
-	')' ->
-	    R0;
-	'}' ->
-	    R0;
-	']' ->
-	    R0;
-	'>>' ->
-	    R0;
-	'of' ->
-	    R0;
-	'end' ->
+	K when K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
+	       K=:='end' ->
 	    R0;
 	_ ->
 	    R2 = i_comments(R0, I),
