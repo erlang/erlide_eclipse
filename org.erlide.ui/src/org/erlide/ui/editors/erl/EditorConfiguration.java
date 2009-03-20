@@ -121,7 +121,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
-			fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(", ")",
+			fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
 					"{", "}", "[", "]", "<<", ">>" });
 		}
 		return fBracketMatcher;

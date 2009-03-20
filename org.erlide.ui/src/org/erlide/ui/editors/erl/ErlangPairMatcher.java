@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Christian Plesner Hansen (plesner@quenta.org) - initial API and implementation
+ *     Vlad Dumitrescu - adapted to Erlang delimiters
+ *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
 import java.util.HashSet;
@@ -17,7 +28,7 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
  * taken from eclipse 3.3 DefaultCharacterPairMatcher (which isn't in 3.2, unfortunately)
  */
 
-public class ErlJavaPairMatcher implements ICharacterPairMatcher {
+public class ErlangPairMatcher implements ICharacterPairMatcher {
 
 	private int fAnchor = -1;
 	private final StringPairs fPairs;
@@ -40,7 +51,7 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 	 * @param partitioning
 	 *            the partitioning to match within
 	 */
-	public ErlJavaPairMatcher(String[] strings, String partitioning) {
+	public ErlangPairMatcher(String[] strings, String partitioning) {
 		Assert.isLegal(strings.length % 2 == 0);
 		Assert.isNotNull(partitioning);
 		fPairs = new StringPairs(strings);
@@ -61,7 +72,7 @@ public class ErlJavaPairMatcher implements ICharacterPairMatcher {
 	 * @param chars
 	 *            a list of characters
 	 */
-	public ErlJavaPairMatcher(String[] strings) {
+	public ErlangPairMatcher(String[] strings) {
 		this(strings, IDocumentExtension3.DEFAULT_PARTITIONING);
 	}
 

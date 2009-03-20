@@ -87,7 +87,7 @@ import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
-import org.erlide.ui.editors.erl.ErlJavaPairMatcher;
+import org.erlide.ui.editors.erl.ErlangPairMatcher;
 import org.erlide.ui.editors.erl.ErlangAnnotationHover;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -718,7 +718,7 @@ public class ErlangConsoleView extends ViewPart {
 
 		public ICharacterPairMatcher getBracketMatcher() {
 			if (fBracketMatcher == null) {
-				fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(",
+				fBracketMatcher = new ErlangPairMatcher(new String[] { "(",
 						")", "{", "}", "[", "]", "<<", ">>" });
 			}
 			return fBracketMatcher;
@@ -745,8 +745,4 @@ public class ErlangConsoleView extends ViewPart {
 
 	}
 
-	// private void initializeToolBar() {
-	// IToolBarManager toolBarManager = getViewSite().getActionBars()
-	// .getToolBarManager();
-	// }
 }
