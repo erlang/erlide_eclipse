@@ -386,7 +386,7 @@ new_variable_names(N, S) ->
 %% 
 %% @see new_variable_name/2
 
-new_variable_names(N, F, S) when integer(N) ->
+new_variable_names(N, F, S) when is_integer(N) ->
     R = start_range(S),
     new_variable_names(N, [], R, F, S).
 
@@ -949,7 +949,7 @@ is_fail_expr(E) ->
 %% @see erl_syntax:error_marker_info/1
 %% @see erl_syntax:warning_marker_info/1
 
-analyze_forms(Forms) when list(Forms) ->
+analyze_forms(Forms) when is_list(Forms) ->
     finfo_to_list(lists:foldl(fun collect_form/2, new_finfo(), Forms));
 analyze_forms(Forms) ->
     analyze_forms(
@@ -1347,7 +1347,7 @@ analyze_function_name(Node) ->
 
 append_arity(A, {Module, Name}) ->
     {Module, append_arity(A, Name)};
-append_arity(A, Name) when atom(Name) ->
+append_arity(A, Name) when is_atom(Name) ->
     {Name, A};
 append_arity(A, A) ->
     A;
@@ -1803,7 +1803,7 @@ function_name_expansions([F | Fs], Ack) ->
 function_name_expansions([], Ack) ->
     Ack.
 
-function_name_expansions({A, N}, Name, Ack) when integer(N) ->
+function_name_expansions({A, N}, Name, Ack) when is_integer(N) ->
     [{{A, N}, Name} | Ack];
 function_name_expansions({_, N}, Name, Ack) ->
     function_name_expansions(N, Name,  Ack);

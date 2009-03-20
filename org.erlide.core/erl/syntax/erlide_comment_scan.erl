@@ -275,13 +275,13 @@ join_lines([], Txt, L, Col, Ind) ->
 %% =====================================================================
 %% Utility functions for internal use
 
-filename([C | T]) when integer(C), C > 0, C =< 255 ->
+filename([C | T]) when is_integer(C), C > 0, C =< 255 ->
     [C | filename(T)];
 filename([H|T]) ->
     filename(H) ++ filename(T);
 filename([]) ->
     [];
-filename(N) when atom(N) ->
+filename(N) when is_atom(N) ->
     atom_to_list(N);
 filename(N) ->
     report_error("bad filename: `~P'.", [N, 25]),

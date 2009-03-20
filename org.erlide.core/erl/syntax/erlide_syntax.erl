@@ -1430,7 +1430,7 @@ text_string(Node) ->
 %%
 %%	Name = atom() \ '_'
 
-variable(Name) when atom(Name) ->
+variable(Name) when is_atom(Name) ->
     tree(variable, Name);
 variable(Name) ->
     tree(variable, list_to_atom(Name)).
@@ -1824,7 +1824,7 @@ string_literal(Node) ->
 %%
 %%	Value = atom()
 
-atom(Name) when atom(Name) ->
+atom(Name) when is_atom(Name) ->
     tree(atom, Name);
 atom(Name) ->
     tree(atom, list_to_atom(Name)).
@@ -3081,7 +3081,7 @@ attribute_arguments(Node) ->
 			    M0 ->
 				{M0, none}
 			end,
-		    M2 = if list(M1) ->
+		    M2 = if is_list(M1) ->
 				 qualified_name([atom(A) || A <- M1]);
 			    true ->
 				 atom(M1)
@@ -3097,7 +3097,7 @@ attribute_arguments(Node) ->
 		import ->
 		    case Data of
 			{Module, Imports} ->
-			    [if list(Module) ->
+			    [if is_list(Module) ->
 				     qualified_name([atom(A)
 						     || A <- Module]);
 				true ->
@@ -3491,7 +3491,7 @@ clause(Patterns, Guard, Body) ->
     Guard1 = case Guard of
 		 [] ->
 		     none;
-		 [X | _] when list(X) ->
+		 [X | _] when is_list(X) ->
 		     disjunction(conjunction_list(Guard));
 		 [_ | _] ->
 		     %% Handle older forms also.
@@ -3597,7 +3597,7 @@ clause_guard(Node) ->
 	{clause, _, _, Guard, _} ->
 	    case Guard of
 		[] -> none;
-		[L | _] when list(L) ->
+		[L | _] when is_list(L) ->
 		    disjunction(conjunction_list(Guard));
 		[_ | _] ->
 		    conjunction(Guard)
@@ -3807,7 +3807,7 @@ match_expr_body(Node) ->
 %% type(Node) = operator
 %% data(Node) = atom()
 
-operator(Name) when atom(Name) ->
+operator(Name) when is_atom(Name) ->
     tree(operator, Name);
 operator(Name) ->
     tree(operator, list_to_atom(Name)).
@@ -5704,7 +5704,7 @@ macro_arguments(Node) ->
 %% @see concrete/1
 %% @see is_literal/1
 
-abstract([H | T]) when integer(H) ->
+abstract([H | T]) when is_integer(H) ->
     case is_printable([H | T]) of
 	true ->
 	    string([H | T]);
@@ -5713,17 +5713,17 @@ abstract([H | T]) when integer(H) ->
     end;
 abstract([H | T]) ->
     abstract_tail(H, T);
-abstract(T) when atom(T) ->
+abstract(T) when is_atom(T) ->
     atom(T);
-abstract(T) when integer(T) ->
+abstract(T) when is_integer(T) ->
     integer(T);
-abstract(T) when float(T) ->
+abstract(T) when is_float(T) ->
     make_float(T);    % (not `float', which would call the BIF)
 abstract([]) ->
     nil();
-abstract(T) when tuple(T) ->
+abstract(T) when is_tuple(T) ->
     tuple(abstract_list(tuple_to_list(T)));
-abstract(T) when binary(T) ->
+abstract(T) when is_binary(T) ->
     binary([binary_field(integer(B)) || B <- binary_to_list(T)]);
 abstract(T) ->
     erlang:error({badarg, T}).
@@ -6006,7 +6006,7 @@ revert_root(Node) ->
 %% @see form_list/1
 %% @see is_form/1
 
-revert_forms(L) when list(L) ->
+revert_forms(L) when is_list(L) ->
     revert_forms(form_list(L));
 revert_forms(T) ->
     case type(T) of

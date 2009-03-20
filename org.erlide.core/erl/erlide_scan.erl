@@ -310,7 +310,7 @@ scan(Eof, _Stack, Toks, Pos, State, Errors) ->
 
 scan_atom(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
-    Atom when atom(Atom) ->
+    Atom when is_atom(Atom) ->
         Val = case reserved_word(Atom) of
               true ->
               {Atom,{Pos, length(Name)}};
@@ -486,7 +486,7 @@ scan_qatom([$'|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$'|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     case catch list_to_atom(VS) of
-    A when atom(A) ->
+    A when is_atom(A) ->
         StrVal = [$'|SS]++[$'],
         scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
     _ ->
@@ -497,7 +497,7 @@ scan_qatom([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$'|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     case catch list_to_atom(VS) of
-    A when atom(A) ->
+    A when is_atom(A) ->
         StrVal = [$'|SS],
         scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
     _ ->
@@ -538,7 +538,7 @@ scan_number([C|Cs], Stack, Toks, Pos, State, Errors) when C >= $0, C =< $9 ->
     scan_number(Cs, [C|Stack], Toks, Pos, State, Errors);
 scan_number([$#|Cs], Stack, Toks, Pos, State, Errors) ->
     case catch list_to_integer(reverse(Stack)) of
-    B when integer(B), B >= 2, B =< 1+$Z-$A+10 ->
+    B when is_integer(B), B >= 2, B =< 1+$Z-$A+10 ->
         scan_based_int(Cs, [B], Toks, Pos, State, Errors);
     B ->
         scan(Cs, [], Toks, Pos, State, [{{base,B},Pos}|Errors])
@@ -547,7 +547,7 @@ scan_number([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_number/6);
 scan_number(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_integer(reverse(Stack)) of
-    N when integer(N) ->
+    N when is_integer(N) ->
         scan(Cs, [], [{integer,{Pos, length(Stack)},N,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,integer},Pos}|Errors])
@@ -566,7 +566,7 @@ scan_based_int([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_based_int/6);
 scan_based_int(Cs, [B|Stack], Toks, Pos, State, Errors) ->
     case catch erlang:list_to_integer(reverse(Stack), B) of
-    N when integer(N) ->
+    N when is_integer(N) ->
         Len = length(Stack)+1+length(integer_to_list(B)),
         scan(Cs, [], [{integer,{Pos, Len},N,integer_to_list(B)++[$#]++reverse(Stack)}|Toks],
          inc(Pos,Len), State, Errors);
@@ -584,7 +584,7 @@ scan_fraction([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_fraction/6);
 scan_fraction(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_float(reverse(Stack)) of
-    F when float(F) ->
+    F when is_float(F) ->
         scan(Cs, [], [{float,{Pos, length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])
@@ -605,7 +605,7 @@ scan_exponent([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_exponent/6);
 scan_exponent(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_float(reverse(Stack)) of
-    F when float(F) ->
+    F when is_float(F) ->
         scan(Cs, [], [{float,{Pos,length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
     _ ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])

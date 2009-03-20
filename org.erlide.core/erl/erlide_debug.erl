@@ -87,7 +87,7 @@ processes(ShowSys, ShowErlide) ->
             L
     end.
 
-is_erlide_process(Pid) when pid(Pid)->
+is_erlide_process(Pid) when is_pid(Pid)->
     Started = case erlang:process_info(Pid, initial_call) of
                   undefined -> 
                       false;
