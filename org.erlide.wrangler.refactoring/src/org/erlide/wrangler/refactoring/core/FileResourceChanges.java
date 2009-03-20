@@ -87,16 +87,16 @@ public class FileResourceChanges {
 	/**
 	 * Finds the Eclipse representation of the given path.
 	 * 
-	 * @param oldPath
+	 * @param anOldPath
 	 *            OS dependent path of the refactored file
 	 * @return an <code>IFile</code> object of the given path
 	 * @throws IOException
 	 *             if the given path could not be found on the workspace
 	 */
-	private IFile findEclipseRepresentation(String oldPath) throws IOException {
+	private IFile findEclipseRepresentation(String anOldPath) throws IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
-		Path p = new Path(oldPath);
+		Path p = new Path(anOldPath);
 		IFile[] files = root.findFilesForLocation(p);
 		if (files == null || files.length != 1) {
 			throw new IOException("File not found");

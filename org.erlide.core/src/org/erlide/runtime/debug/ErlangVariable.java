@@ -44,16 +44,16 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 		this.stackFrameNo = stackFrameNo;
 	}
 
-	private ErlangValue createErlangValue(final String name,
-			final OtpErlangObject value, final ErlangProcess process,
+	private ErlangValue createErlangValue(final String aname,
+			final OtpErlangObject avalue, final ErlangProcess aprocess,
 			final String moduleName) {
-		if (value instanceof OtpErlangList || value instanceof OtpErlangTuple
-				|| value instanceof OtpErlangBinary
-				|| value instanceof OtpErlangString) {
-			return new IndexedErlangValue(getDebugTarget(), name, value,
-					process, moduleName);
+		if (avalue instanceof OtpErlangList || avalue instanceof OtpErlangTuple
+				|| avalue instanceof OtpErlangBinary
+				|| avalue instanceof OtpErlangString) {
+			return new IndexedErlangValue(getDebugTarget(), aname, avalue,
+					aprocess, moduleName);
 		} else {
-			return new ErlangValue(getDebugTarget(), name, value, process,
+			return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
 					moduleName);
 		}
 	}

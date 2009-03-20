@@ -838,7 +838,7 @@ abstract([C|T], Line) when is_integer(C), 0 =< C, C < 256 ->
     abstract_string(T, [C], Line);
 abstract([H|T], Line) ->
     {cons,Line,abstract(H, Line),abstract(T, Line)};
-abstract(Tuple, Line) when tuple(Tuple) ->
+abstract(Tuple, Line) when is_tuple(Tuple) ->
     {tuple,Line,abstract_list(tuple_to_list(Tuple), Line)}.
 
 abstract_string([C|T], String, Line) when is_integer(C), 0 =< C, C < 256 ->
