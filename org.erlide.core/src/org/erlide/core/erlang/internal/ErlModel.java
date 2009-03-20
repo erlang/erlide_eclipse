@@ -38,6 +38,7 @@ import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
@@ -298,7 +299,7 @@ public class ErlModel extends Openable implements IErlModel {
 	 * referred to using container relative paths.
 	 */
 	public static Object getTarget(final IContainer container,
-			final IPath path, boolean checkResourceExistence) {
+			final IPath path, final boolean checkResourceExistence) {
 
 		if (path == null) {
 			return null;
@@ -430,6 +431,26 @@ public class ErlModel extends Openable implements IErlModel {
 				return c;
 			}
 			p = (IParent) c;
+		}
+		return null;
+	}
+
+	public  IErlElement innermostThat(final IErlElement el,
+			final IErlangFirstThat firstThat) {
+		if (el instanceof IParent) {
+			final IParent p = (IParent) el;
+			try {
+				for (final IErlElement child : p.getChildren()) {
+					final IErlElement e2 = innermostThat(child, firstThat);
+					if (e2 != null) {
+						return e2;
+					}
+				}
+			} catch (final ErlModelException e) {
+			}
+		}
+		if (firstThat.firstThat(el)) {
+			return el;
 		}
 		return null;
 	}

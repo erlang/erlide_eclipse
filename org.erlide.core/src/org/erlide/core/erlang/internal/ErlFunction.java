@@ -152,4 +152,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 		return fComment;
 	}
 
+	public String getFunctionName() {
+		return getName();
+	}
+
 }

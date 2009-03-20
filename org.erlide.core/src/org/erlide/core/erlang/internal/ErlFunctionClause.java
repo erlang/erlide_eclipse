@@ -49,4 +49,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 	public String toString() {
 		return head;
 	}
+
+	public String getFunctionName() {
+		return getParent().getName();
+	}
 }

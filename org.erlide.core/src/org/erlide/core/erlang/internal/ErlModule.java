@@ -26,8 +26,6 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModel;
@@ -35,6 +33,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
+import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlangFunction;
@@ -127,44 +126,96 @@ public class ErlModule extends Openable implements IErlModule {
 		return fFile.getLocation().toString();
 	}
 
+	// public IErlElement getElementAt(final int position)
+	// throws ErlModelException {
+	// for (final IErlElement child : fChildren) {
+	// if (child instanceof IErlFunction) {
+	// final IErlFunction f = (IErlFunction) child;
+	// final List<IErlFunctionClause> clauses = f.getClauses();
+	// if (clauses.size() <= 1
+	// && f.getSourceRange().hasPosition(position)) {
+	// return f;
+	// }
+	// for (final IErlFunctionClause c : clauses) {
+	// if (c.getSourceRange().hasPosition(position)) {
+	// return c;
+	// }
+	// }
+	// } else {
+	// final ISourceReference ch = (ISourceReference) child;
+	// final ISourceRange r = ch.getSourceRange();
+	// if (r != null && r.hasPosition(position)) {
+	// return child;
+	// }
+	// }
+	// }
+	// return null;
+	// }
+
 	public IErlElement getElementAt(final int position)
 			throws ErlModelException {
-		for (final IErlElement child : fChildren) {
-			if (child instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) child;
-				final List<IErlFunctionClause> clauses = f.getClauses();
-				if (clauses.size() <= 1
-						&& f.getSourceRange().hasPosition(position)) {
-					return f;
-				}
-				for (final IErlFunctionClause c : clauses) {
-					if (c.getSourceRange().hasPosition(position)) {
-						return c;
+		return getModel().innermostThat(this, new IErlangFirstThat() {
+			public boolean firstThat(final IErlElement e) {
+				if (e instanceof ISourceReference) {
+					final ISourceReference ch = (ISourceReference) e;
+					ISourceRange r;
+					try {
+						r = ch.getSourceRange();
+						if (r != null && r.hasPosition(position)) {
+							return true;
+						}
+					} catch (final ErlModelException e1) {
 					}
 				}
-			} else {
-				final ISourceReference ch = (ISourceReference) child;
-				final ISourceRange r = ch.getSourceRange();
-				if (r != null && r.hasPosition(position)) {
-					return child;
-				}
+				return false;
 			}
-		}
-		return null;
+		});
 	}
 
 	public IErlElement getElementAtLine(final int lineNumber) {
-		for (final IErlElement child : fChildren) {
-			if (child instanceof ISourceReference) {
-				final ISourceReference sr = (ISourceReference) child;
-				if (sr.getLineStart() <= lineNumber
-						&& sr.getLineEnd() >= lineNumber) {
-					return child;
+		return getModel().innermostThat(this, new IErlangFirstThat() {
+			public boolean firstThat(final IErlElement e) {
+				if (e instanceof ISourceReference) {
+					if (e instanceof ISourceReference) {
+						final ISourceReference sr = (ISourceReference) e;
+						if (sr.getLineStart() <= lineNumber
+								&& sr.getLineEnd() >= lineNumber) {
+							return true;
+						}
+					}
 				}
+				return false;
 			}
-		}
-		return null;
+		});
 	}
+
+	// public IErlElement getElementAtLine(final int lineNumber) {
+	// for (final IErlElement child : fChildren) {
+	// if (child instanceof ISourceReference) {
+	// final ISourceReference sr = (ISourceReference) child;
+	// if (sr.getLineStart() <= lineNumber
+	// && sr.getLineEnd() >= lineNumber) {
+	// return child;
+	// }
+	// }
+	// if (child instanceof IParent) {
+	// final IParent p = (IParent) child;
+	// try {
+	// for (final IErlElement e : p.getChildren()) {
+	// if (e instanceof ISourceReference) {
+	// final ISourceReference sr = (ISourceReference) e;
+	// if (sr.getLineStart() <= lineNumber
+	// && sr.getLineEnd() >= lineNumber) {
+	// return e;
+	// }
+	// }
+	// }
+	// } catch (final ErlModelException e) {
+	// }
+	// }
+	// }
+	// return null;
+	// }
 
 	public ModuleKind getModuleKind() {
 		return moduleKind;

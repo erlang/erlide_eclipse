@@ -299,4 +299,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	IErlModule getModule(IFile file);
 
 	IErlModule getModule(String name);
+
+	public IErlElement innermostThat(final IErlElement el, final IErlangFirstThat firstThat);
 }
