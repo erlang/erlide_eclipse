@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.pde.ui,
  org.eclipse.debug.ui,
  org.erlide.ui,
  org.erlide.core,
- org.eclipse.jdt.launching;bundle-version="3.4.1"
+ org.eclipse.jdt.launching
 Export-Package: org.erlide.selfhost.core,
  org.erlide.selfhost.ui
 Bundle-Vendor: erlide.org

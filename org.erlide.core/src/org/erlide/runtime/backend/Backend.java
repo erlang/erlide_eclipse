@@ -77,7 +77,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private boolean trapexit;
 	private int exitStatus = -1;
 
-	public Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
+	Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		if (info == null) {
 			throw new BackendException(
@@ -269,7 +269,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	public CodeManager getCodeManager() {
+	CodeManager getCodeManager() {
 		return fCodeManager;
 	}
 
