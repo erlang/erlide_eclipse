@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -23,8 +22,7 @@ import org.erlide.core.erlang.util.Util;
  * @see IErlModelStatus
  */
 
-public class ErlModelStatus extends Status implements IErlModelStatus,
-		IResourceStatus {
+public class ErlModelStatus extends Status implements IErlModelStatus {
 
 	/**
 	 * The elements related to the failure, or <code>null</code> if no elements

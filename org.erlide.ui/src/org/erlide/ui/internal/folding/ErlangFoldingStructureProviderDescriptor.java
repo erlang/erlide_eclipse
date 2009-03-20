@@ -31,7 +31,10 @@ public final class ErlangFoldingStructureProviderDescriptor {
 	/** The name of the extension. */
 	private String fName;
 
-	/** The class name of the provided <code>IJavaFoldingStructureProvider</code>. */
+	/**
+	 * The class name of the provided <code>IJavaFoldingStructureProvider</code>
+	 * .
+	 */
 	private final String fClass;
 
 	/**
@@ -49,7 +52,8 @@ public final class ErlangFoldingStructureProviderDescriptor {
 	 * @param element
 	 *            the configuration element to read
 	 */
-	ErlangFoldingStructureProviderDescriptor(IConfigurationElement element) {
+	public ErlangFoldingStructureProviderDescriptor(
+			IConfigurationElement element) {
 		fElement = element;
 		fId = element.getAttribute(ID);
 		Assert.isLegal(fId != null);

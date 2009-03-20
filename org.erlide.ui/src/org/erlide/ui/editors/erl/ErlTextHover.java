@@ -70,6 +70,7 @@ import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.views.EdocView;
 import org.osgi.framework.Bundle;

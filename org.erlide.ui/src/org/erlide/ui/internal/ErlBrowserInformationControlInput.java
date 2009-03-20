@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;

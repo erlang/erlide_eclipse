@@ -630,7 +630,7 @@ public class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
 	 */
-	public synchronized Object removeInfoAndChildren(final ErlElement element)
+	public synchronized Object removeInfoAndChildren(final IErlElement element)
 			throws ErlModelException {
 		// Object info = this.cache.peekAtInfo(element);
 		// if (info != null)

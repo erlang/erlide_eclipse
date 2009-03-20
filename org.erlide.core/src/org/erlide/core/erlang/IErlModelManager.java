@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.erlang.internal.ErlElement;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 
@@ -67,7 +66,7 @@ public interface IErlModelManager extends ISaveParticipant {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
 	 */
-	Object removeInfoAndChildren(ErlElement element) throws ErlModelException;
+	Object removeInfoAndChildren(IErlElement element) throws ErlModelException;
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#shutdown()
