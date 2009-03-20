@@ -73,7 +73,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
 	private EventDaemon eventDaemon;
-	private RuntimeLauncher launcher;
+	private final RuntimeLauncher launcher;
 	private boolean trapexit;
 	private int exitStatus = -1;
 
@@ -149,7 +149,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		dispose(false);
 	}
 
-	public void dispose(boolean restart) {
+	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
 
 		if (fNode != null) {
@@ -251,7 +251,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 		try {
 			RpcUtil.send(fNode, pid, msg);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			// shouldn't happen
 			ErlLogger.warn(e);
 		}
@@ -274,7 +274,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	private RpcResult sendRpc(final String module, final String fun,
-			final int timeout, final String signature, Object... args0)
+			final int timeout, final String signature, final Object... args0)
 			throws RpcException {
 		if (!fAvailable) {
 			if (exitStatus >= 0) {
@@ -292,15 +292,15 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (fAvailable) {
 			return;
 		}
-		ErlLogger.info("restarting runtime for %s", this.toString());
+		ErlLogger.info("restarting runtime for %s", toString());
 		if (fNode != null) {
 			fNode.close();
 			fNode = null;
 		}
 		initializeRuntime(null);
-		Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
+		final Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
 				.getPlugins();
-		for (ICodeBundle bundle : plugins) {
+		for (final ICodeBundle bundle : plugins) {
 			getCodeManager().unregister(bundle);
 		}
 		connectAndRegister(plugins);
@@ -373,7 +373,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public void initErlang() {
-		boolean inited = ErlideBackend.init(this, getEventPid());
+		final boolean inited = ErlideBackend.init(this, getEventPid());
 		if (!inited) {
 			setAvailable(false);
 		}
@@ -399,7 +399,11 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return fInfo.getNodeName();
 	}
 
-	public void initializeRuntime(ILaunch launch) {
+	public String getPeer() {
+		return fPeer;
+	}
+
+	public void initializeRuntime(final ILaunch launch) {
 		dispose(true);
 		launcher.initializeRuntime(launch);
 		fShellManager = new BackendShellManager(this);
@@ -425,7 +429,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public void checkCodePath() {
 		try {
 			rpcx("code", "get_path", "");
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			ErlLogger.warn("error getting path for %s: %s", getName(), e
 					.getMessage());
 		}
@@ -483,8 +487,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			final String outDir = project.getLocation().append(
 					prefs.getOutputDir()).toOSString();
 			if (outDir.length() > 0) {
-				ErlLogger.debug("backend %s: add path %s", this.getName(),
-						outDir);
+				ErlLogger.debug("backend %s: add path %s", getName(), outDir);
 				addPath(false/* prefs.getUsePathZ() */, outDir);
 				File f = new File(outDir);
 				for (File b : f.listFiles()) {
@@ -507,7 +510,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		launcher.stop();
 	}
 
-	public void setExitStatus(int v) {
+	public void setExitStatus(final int v) {
 		exitStatus = v;
 	}
 
