@@ -37,6 +37,8 @@
          eval/2, 
          set_variable_value/4,
          distribute_debugger_code/1,
+	 nodes/0,
+	 process_info/2,
          processes/2]).
 
 -export([log/1]).
@@ -146,6 +148,10 @@ set_variable_value(Variable, Value, SP, MetaPid) ->
 distribute_debugger_code(Modules) ->
     [rpc:multicall(code, load_binary, [Module, Filename, Binary]) ||
      {Module, Filename, Binary} <- Modules].
+
+nodes() ->
+    [node() | erlang:nodes()].
+
 %%     DebuggerModules = [erlide_dbg_debugged, erlide_dbg_icmd, erlide_dbg_idb,
 %%                        erlide_dbg_ieval, erlide_dbg_iload, erlide_dbg_iserver,
 %%                        erlide_int, int],
@@ -168,7 +174,14 @@ distribute_debugger_code(Modules) ->
 log(_) ->
     ok.
 
-    
+process_info(Pid, Info) ->
+    Node = node(Pid),
+    case node() of
+	Node ->
+	    erlang:process_info(Pid, Info);
+	_ ->
+	    rpc:call(Node, erlang, process_info, [Pid, Info], 5000)
+    end.
 
 %%
 %% Local Functions
