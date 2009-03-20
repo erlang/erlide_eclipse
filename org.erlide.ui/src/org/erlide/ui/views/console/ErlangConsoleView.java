@@ -718,9 +718,6 @@ public class ErlangConsoleView extends ViewPart {
 
 		public ICharacterPairMatcher getBracketMatcher() {
 			if (fBracketMatcher == null) {
-				// TODO: get the ErlPairMatcher to work in some way
-				// final IErlScanner scanner = ErlModelUtils.getScanner(editor);
-				// fBracketMatcher = new ErlPairMatcher(scanner);
 				fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(",
 						")", "{", "}", "[", "]", "<<", ">>" });
 			}

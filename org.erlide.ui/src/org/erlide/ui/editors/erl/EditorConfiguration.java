@@ -49,25 +49,16 @@ import org.erlide.ui.util.IColorManager;
 /**
  * The editor configurator
  * 
- * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	final ErlangEditor editor;
-
 	private ITextDoubleClickStrategy doubleClickStrategy;
-
-	// private IErlScanner fScanner;
-
 	private ErlHighlightScanner fHighlightScanner;
-
 	private final IColorManager colorManager;
-
 	private ICharacterPairMatcher fBracketMatcher;
-
 	private InformationPresenter fOutlinePresenter;
-
 	private ErlReconciler reconciler;
 
 	/**
@@ -119,7 +110,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * 
 	 * @return the highlighting fHighlightScanner
 	 */
-	protected ErlHighlightScanner getHighlightScanner(
+	private ErlHighlightScanner getHighlightScanner(
 			final ISourceViewer sourceViewer) {
 		if (fHighlightScanner == null) {
 			fHighlightScanner = new ErlHighlightScanner(colorManager,
@@ -130,9 +121,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
-			// TODO: get the ErlPairMatcher to work in some way
-			// final IErlScanner scanner = ErlModelUtils.getScanner(editor);
-			// fBracketMatcher = new ErlPairMatcher(scanner);
 			fBracketMatcher = new ErlJavaPairMatcher(new String[] { "(", ")",
 					"{", "}", "[", "]", "<<", ">>" });
 		}
