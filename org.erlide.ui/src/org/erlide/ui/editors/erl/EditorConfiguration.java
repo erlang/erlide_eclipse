@@ -14,7 +14,6 @@ package org.erlide.ui.editors.erl;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -25,8 +24,6 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.information.IInformationPresenter;
-import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -35,14 +32,12 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
-import org.erlide.ui.editors.outline.QuickOutlinePopupDialog;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
 
@@ -271,71 +266,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 				editor);
 
 		return ourDetectors;
-	}
-
-	/**
-	 * Returns the information presenter control creator. The creator is a
-	 * factory creating the presenter controls for the given source viewer. This
-	 * implementation always returns a creator for
-	 * <code>DefaultInformationControl</code> instances.
-	 * 
-	 * @param sourceViewer
-	 *            the source viewer to be configured by this configuration
-	 * @return an information control creator
-	 */
-	/* NOT USED */
-	/*
-	 * private IInformationControlCreator getInformationPresenterControlCreator(
-	 * ISourceViewer sourceViewer) { return new IInformationControlCreator() {
-	 * 
-	 * public IInformationControl createInformationControl(Shell parent) { final
-	 * int shellStyle = SWT.RESIZE | SWT.TOOL; final int style = SWT.V_SCROLL |
-	 * SWT.H_SCROLL; return new DefaultInformationControl(parent, shellStyle,
-	 * style, new HTMLTextPresenter(false)); } }; }
-	 */
-	private IInformationControlCreator getOutlinePresenterControlCreator(
-			final ISourceViewer sourceViewer, final String commandId) {
-		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(
-					final Shell parent) {
-				final int shellStyle = SWT.RESIZE;
-				final QuickOutlinePopupDialog dialog = new QuickOutlinePopupDialog(
-						parent, shellStyle, editor, editor, editor);
-				return dialog;
-			}
-		};
-	}
-
-	public IInformationPresenter getOutlinePresenter(
-			final ISourceViewer sourceViewer) {
-		// Ensure the source page is defined
-		if (editor == null) {
-			return null;
-		}
-		// Reuse the old outline presenter
-		if (fOutlinePresenter != null) {
-			return fOutlinePresenter;
-		}
-		// Define a new outline presenter
-		fOutlinePresenter = new InformationPresenter(
-				getOutlinePresenterControlCreator(sourceViewer,
-						IErlangEditorActionDefinitionIds.SHOW_OUTLINE));
-		fOutlinePresenter
-				.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		fOutlinePresenter
-				.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
-		// Define a new outline provider
-		final IInformationProvider provider = new ErlangSourceInfoProvider(
-				editor);
-		// Set the provider on all defined content types
-		final String[] contentTypes = getConfiguredContentTypes(sourceViewer);
-		for (int i = 0; i < contentTypes.length; i++) {
-			fOutlinePresenter.setInformationProvider(provider, contentTypes[i]);
-		}
-		// Set the presenter size constraints
-		fOutlinePresenter.setSizeConstraints(50, 20, true, false);
-
-		return fOutlinePresenter;
 	}
 
 	public void resetReconciler() {

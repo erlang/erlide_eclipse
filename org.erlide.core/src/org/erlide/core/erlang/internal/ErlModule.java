@@ -109,11 +109,6 @@ public class ErlModule extends Openable implements IErlModule {
 		return isStructureKnown();
 	}
 
-	/**
-	 * @param underlyingResource
-	 * @param path
-	 * @return
-	 */
 	protected String getErlidePath() {
 		return fFile.getFullPath().toString();
 	}
