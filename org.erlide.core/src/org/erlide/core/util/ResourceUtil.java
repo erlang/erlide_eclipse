@@ -175,6 +175,7 @@ public class ResourceUtil {
 		return null;
 	}
 
+	// FIXME can't we use erlang model instead?
 	public static IResource recursiveFindNamedResourceWithReferences(
 			final IContainer container, final String name) throws CoreException {
 		final IResource r = recursiveFindNamedResource(container, name);
@@ -191,64 +192,6 @@ public class ResourceUtil {
 		return null;
 	}
 
-	// private static void recursiveGetAllErlangModules(final List<IFile>
-	// result,
-	// final IContainer container) {
-	// try {
-	// for (final IResource r : container.members()) {
-	// if (r instanceof IContainer) {
-	// final IContainer c = (IContainer) r;
-	// if (c.isAccessible()) {
-	// recursiveGetAllErlangModules(result, c);
-	// }
-	// } else if (r instanceof IFile) {
-	// final IFile f = (IFile) r;
-	// if (f.getName().endsWith(".erl")) {
-	// result.add(f);
-	// }
-	// }
-	// }
-	// } catch (final CoreException e) {
-	// }
-	// }
-	//
-	// public static List<String> getAllErlangFiles() {
-	// final List<IFile> erlangModules = getAllErlangModules();
-	// final List<String> result = new ArrayList<String>(erlangModules.size());
-	// for (final IFile f : erlangModules) {
-	// final String n = f.getName();
-	// result.add(n.substring(0, n.length() - 4));
-	// }
-	// return result;
-	// }
-	//
-	// public static List<IFile> getAllErlangModules() {
-	// return getAllErlangModules(ResourcesPlugin.getWorkspace().getRoot());
-	// }
-	//
-	// public static List<IFile> getAllErlangModules(final IContainer container)
-	// {
-	// final List<IFile> result = new ArrayList<IFile>(100);
-	// recursiveGetAllErlangModules(result, container);
-	// return result;
-	// }
-
-	/**
-	 * <p>
-	 * returns whether the specified folder is the source folder of its (OCaml)
-	 * project.
-	 * </p>
-	 */
-	// public static boolean isSourceFolder(final IFolder folder)
-	// {
-	// IProject project = folder.getProject();
-	// IErlProject erlProject = getErlProject(project);
-	// IPath sourcePath = erlProject.getSourcePath();
-	// IPath folderPath = folder.getProjectRelativePath();
-	// return sourcePath.equals(folderPath);
-	// }
-	// --- implementation methods
-	// -----------------------------------------------
 	private static boolean has(final IResource resource, final String extension) {
 		final String resExt = resource.getFileExtension();
 		return resExt != null && resExt.equalsIgnoreCase(extension);
