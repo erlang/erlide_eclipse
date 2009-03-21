@@ -16,11 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.eclipse.core.resources.IPathVariableChangeEvent;
-import org.eclipse.core.resources.IPathVariableChangeListener;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -38,6 +34,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
@@ -48,7 +45,6 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -66,8 +62,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideContextAssist;
 import erlang.ErlideDoc;
 
-public class ErlContentAssistProcessor implements IContentAssistProcessor,
-		IPathVariableChangeListener {
+public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public class CompletionNameComparer implements
 			Comparator<ICompletionProposal> {
@@ -83,9 +78,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 
 	private final ISourceViewer sourceViewer;
 	private final IErlModule module;
-	private final String externalModules;
-	private final String externalIncludes;
-	private ArrayList<Tuple> pathVars;
+	// private final String externalModules;
+	// private final String externalIncludes;
 
 	private static final int DECLARED_FUNCTIONS = 1;
 	private static final int EXTERNAL_FUNCTIONS = 2;
@@ -106,13 +100,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 	private final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
 
 	public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-			final IErlModule module, final String externalModules,
-			final String externalIncludes) {
+			final IErlModule module) {
 		this.sourceViewer = sourceViewer;
 		this.module = module;
-		this.externalModules = externalModules;
-		this.externalIncludes = externalIncludes;
-		initPathVars();
+		// this.externalModules = externalModules;
+		// this.externalIncludes = externalIncludes;
 	}
 
 	public ICompletionProposal[] computeCompletionProposals(
@@ -248,10 +240,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		if (module == null) {
 			return EMPTY_COMPLETIONS;
 		}
-		final IProject project = (IProject) module.getProject().getResource();
+		final IErlProject erlProject = module.getProject();
+		final IProject project = erlProject == null ? null
+				: (IProject) erlProject.getResource();
+		final IErlModel model = ErlangCore.getModel();
 		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b,
-				project, module, recordName, IErlElement.Kind.RECORD_DEF,
-				externalIncludes, pathVars);
+				project, module, recordName, IErlElement.Kind.RECORD_DEF, model
+						.getExternal(erlProject, ErlangCore.EXTERNAL_INCLUDES));
 		if (p == null || !(p instanceof IErlRecordDef)) {
 			return EMPTY_COMPLETIONS;
 		}
@@ -272,8 +267,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 			final int offset, final String prefix) {
 		final List<String> allErlangFiles = new ArrayList<String>();
 		if (module != null) {
+			final IErlProject erlProject = module.getProject();
 			final List<IErlModule> modules = ErlModelUtils
-					.getModulesWithReferencedProjects(module.getProject());
+					.getModulesWithReferencedProjects(erlProject);
 			for (final IErlModule m : modules) {
 				if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
 					final String name = ErlideUtil
@@ -283,9 +279,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 					}
 				}
 			}
+			final IErlModel model = ErlangCore.getModel();
 			// add external modules
 			final List<String> mods = ErlModelUtils.getExternalModules(b,
-					prefix, externalModules, pathVars);
+					prefix, model.getExternal(erlProject,
+							ErlangCore.EXTERNAL_MODULES));
 			for (final String m : mods) {
 				final String name = ErlideUtil.basenameWithoutExtension(m);
 				if (!allErlangFiles.contains(name)) {
@@ -389,9 +387,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 			return EMPTY_COMPLETIONS;
 		}
 		final IProject project = (IProject) module.getProject().getResource();
+		final IErlModel model = ErlangCore.getModel();
+		final IErlProject erlProject = module.getProject();
 		final List<IErlPreprocessorDef> defs = ErlModelUtils
-				.getPreprocessorDefs(b, project, module, kind,
-						externalIncludes, pathVars);
+				.getPreprocessorDefs(b, project, module, kind, model
+						.getExternal(erlProject, ErlangCore.EXTERNAL_INCLUDES));
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
@@ -415,8 +415,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		// first check in project, refs and external modules
 		final List<IErlModule> modules = ErlModelUtils
 				.getModulesWithReferencedProjects(project);
+		final IErlModel model = ErlangCore.getModel();
+		final IErlProject erlProject = module.getProject();
 		final IErlModule external = ErlModelUtils.getExternalModule(moduleName,
-				externalModules, pathVars);
+				model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES));
 		if (external != null) {
 			modules.add(external);
 		}
@@ -743,26 +745,25 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 		return null;
 	}
 
-	private void initPathVars() {
-		pathVars = getPathVars();
-	}
+	// private void initPathVars() {
+	// pathVars = getPathVars();
+	// }
 
 	/**
 	 * @return
 	 */
-	public static ArrayList<Tuple> getPathVars() {
-		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
-		final String[] names = pvm.getPathVariableNames();
-		final ArrayList<Tuple> pv = new ArrayList<Tuple>(names.length);
-		for (final String name : names) {
-			pv.add(new Tuple().add(name).add(pvm.getValue(name).toOSString()));
-		}
-		return pv;
-	}
-
-	public void pathVariableChanged(final IPathVariableChangeEvent event) {
-		initPathVars();
-	}
-
+	// public static ArrayList<Tuple> getPathVars() {
+	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+	// .getPathVariableManager();
+	// final String[] names = pvm.getPathVariableNames();
+	// final ArrayList<Tuple> pv = new ArrayList<Tuple>(names.length);
+	// for (final String name : names) {
+	// pv.add(new Tuple().add(name).add(pvm.getValue(name).toOSString()));
+	// }
+	// return pv;
+	// }
+	//
+	// public void pathVariableChanged(final IPathVariableChangeEvent event) {
+	// initPathVars();
+	// }
 }

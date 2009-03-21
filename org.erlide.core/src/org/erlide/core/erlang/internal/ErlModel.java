@@ -16,6 +16,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IPathVariableChangeEvent;
+import org.eclipse.core.resources.IPathVariableChangeListener;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -26,7 +29,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
@@ -43,6 +48,12 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.PreferencesUtils;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Implementation of
@@ -63,6 +74,8 @@ public class ErlModel extends Openable implements IErlModel {
 	private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
 			5);
 
+	private final IPathVariableChangeListener fPathVariableChangeListener;
+
 	/**
 	 * Constructs a new Erlang Model on the given workspace. Note that only one
 	 * instance of ErlModel handle should ever be created. One should only
@@ -73,6 +86,14 @@ public class ErlModel extends Openable implements IErlModel {
 	 */
 	ErlModel() {
 		super(null, ""); //$NON-NLS-1$
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		fPathVariableChangeListener = new IPathVariableChangeListener() {
+			public void pathVariableChanged(final IPathVariableChangeEvent event) {
+				fCachedPathVars = null;
+			}
+		};
+		pvm.addChangeListener(fPathVariableChangeListener);
 	}
 
 	@Override
@@ -399,7 +420,9 @@ public class ErlModel extends Openable implements IErlModel {
 
 	@Override
 	protected void closing(final Object info) throws ErlModelException {
-		// TODO Auto-generated method stub
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		pvm.removeChangeListener(fPathVariableChangeListener);
 	}
 
 	public IErlElement findElement(final IResource rsrc) {
@@ -435,7 +458,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return null;
 	}
 
-	public  IErlElement innermostThat(final IErlElement el,
+	public IErlElement innermostThat(final IErlElement el,
 			final IErlangFirstThat firstThat) {
 		if (el instanceof IParent) {
 			final IParent p = (IParent) el;
@@ -493,8 +516,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlProject p = ErlangCore.getModel().getErlangProject(
 				project.getName());
 
-		final ErlangProjectProperties props = ErlangCore
-				.getProjectProperties(project);
+		final ErlangProjectProperties props = p.getProperties();
 
 		final IFile file = project.getFile(".");
 		if (!file.isLinked()) {
@@ -582,5 +604,47 @@ public class ErlModel extends Openable implements IErlModel {
 				}
 			}
 		}
+	}
+
+	public String getExternal(final IErlProject project, final int externalFlag) {
+		final IPreferencesService service = Platform.getPreferencesService();
+		final String key = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? "default_external_includes"
+				: "default_external_modules";
+		// String pluginId = ErlangPlugin.PLUGIN_ID; FIXME check w. SGSN if we
+		// can change to this id instead!
+		final String pluginId = "org.erlide.ui";
+		final String s = service.getString(pluginId, key, "", null);
+		if (s.length() > 0) {
+			ErlLogger.debug("%s: '%s'", key, s);
+		}
+		final String global = s;
+		if (project != null) {
+			final ErlangProjectProperties prefs = project.getProperties();
+			final String projprefs = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? prefs
+					.getExternalIncludesFile()
+					: prefs.getExternalModulesFile();
+			return PreferencesUtils
+					.packArray(new String[] { projprefs, global });
+		}
+		return global;
+	}
+
+	private OtpErlangList fCachedPathVars = null;
+
+	public OtpErlangList getPathVars() {
+		if (fCachedPathVars == null) {
+			final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+					.getPathVariableManager();
+			final String[] names = pvm.getPathVariableNames();
+			final OtpErlangObject[] objects = new OtpErlangObject[names.length];
+			for (int i = 0; i < names.length; i++) {
+				final String name = names[i];
+				final String value = pvm.getValue(name).toOSString();
+				objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
+						new OtpErlangString(name), new OtpErlangString(value) });
+			}
+			fCachedPathVars = new OtpErlangList(objects);
+		}
+		return fCachedPathVars;
 	}
 }

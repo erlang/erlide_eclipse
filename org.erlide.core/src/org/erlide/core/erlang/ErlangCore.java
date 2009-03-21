@@ -78,6 +78,9 @@ public final class ErlangCore {
 	 */
 	public static final String CLEAN = "clean"; //$NON-NLS-1$
 
+	public static final int EXTERNAL_MODULES = 1;
+	public static final int EXTERNAL_INCLUDES = 2;
+
 	public static final IErlModelManager getModelManager() {
 		return ErlModelManager.getDefault();
 	}
@@ -94,7 +97,8 @@ public final class ErlangCore {
 		return BackendManager.getDefault();
 	}
 
-	public static ErlangProjectProperties getProjectProperties(IProject project) {
+	public static ErlangProjectProperties getProjectProperties(
+			final IProject project) {
 		return getModelManager().getErlangModel().getErlangProject(
 				project.getName()).getProperties();
 	}
@@ -118,27 +122,27 @@ public final class ErlangCore {
 			// TODO should we always run his check?
 			return;
 		}
-		String[] locations = {
+		final String[] locations = {
 				System.getProperty("erlide.runtime"),
 				new DefaultScope().getNode("org.erlide.core").get(
 						"default_runtime", null), "c:/program files",
 				"c:/programs", "c:/", "c:/apps",
 				System.getProperty("user.home"), "/usr", "/usr/local",
 				"/usr/local/lib", "/Library/Frameworks/erlang/Versions" };
-		for (String loc : locations) {
-			Collection<File> roots = findRuntime(loc);
-			for (File root : roots) {
-				RuntimeInfo rt = new RuntimeInfo();
+		for (final String loc : locations) {
+			final Collection<File> roots = findRuntime(loc);
+			for (final File root : roots) {
+				final RuntimeInfo rt = new RuntimeInfo();
 				rt.setOtpHome(root.getPath());
 				rt.setName(root.getName());
 				getRuntimeInfoManager().addRuntime(rt);
 			}
 		}
-		List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
+		final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
 				getRuntimeInfoManager().getRuntimes());
 		Collections.sort(list, new Comparator<RuntimeInfo>() {
-			public int compare(RuntimeInfo o1, RuntimeInfo o2) {
-				int x = o2.getVersion().compareTo(o1.getVersion());
+			public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
+				final int x = o2.getVersion().compareTo(o1.getVersion());
 				if (x != 0) {
 					return x;
 				}
@@ -150,24 +154,24 @@ public final class ErlangCore {
 				getRuntimeInfoManager().getDefaultRuntime());
 	}
 
-	private static Collection<File> findRuntime(String loc) {
-		Collection<File> result = new ArrayList<File>();
+	private static Collection<File> findRuntime(final String loc) {
+		final Collection<File> result = new ArrayList<File>();
 		if (loc == null) {
 			return result;
 		}
-		File folder = new File(loc);
+		final File folder = new File(loc);
 		if (folder == null || !folder.exists()) {
 			return result;
 		}
-		File[] candidates = folder.listFiles(new FileFilter() {
-			public boolean accept(File pathname) {
+		final File[] candidates = folder.listFiles(new FileFilter() {
+			public boolean accept(final File pathname) {
 				return pathname.isDirectory()
 						&& (pathname.getName().startsWith("erl")
 								|| pathname.getName().startsWith("Erl") || pathname
 								.getName().startsWith("R"));
 			}
 		});
-		for (File f : candidates) {
+		for (final File f : candidates) {
 			if (RuntimeInfo.validateLocation(f.getPath())) {
 				result.add(f);
 			}

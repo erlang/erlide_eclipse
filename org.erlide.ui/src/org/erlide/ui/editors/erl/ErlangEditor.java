@@ -16,10 +16,8 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
@@ -69,7 +67,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
@@ -94,9 +91,7 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -107,7 +102,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
-import org.erlide.runtime.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -184,9 +178,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
 
-	private String fExternalModules = null;
-
-	private String fExternalIncludes;
+	// private String fExternalModules = null;
+	// private String fExternalIncludes;
 
 	ToggleFoldingRunner fFoldingRunner;
 
@@ -308,8 +301,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				esg = new ErlangSearchActionGroup(this) });
 		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-		openAction = new OpenAction(getSite(), getExternalModules(),
-				getExternalIncludes());
+		// openAction = new OpenAction(getSite(), getExternalModules(),
+		// getExternalIncludes());
+		openAction = new OpenAction(getSite());
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -1079,25 +1073,25 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
 	}
 
-	private String getGlobalExternalModulesFile() {
-		final IPreferencesService service = Platform.getPreferencesService();
-		final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-				"default_external_modules", "", null);
-		if (s.length() > 0) {
-			ErlLogger.debug("external modules file: '%s'", s);
-		}
-		return s;
-	}
-
-	private String getGlobalExternalIncludesFile() {
-		final IPreferencesService service = Platform.getPreferencesService();
-		final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-				"default_external_includes", "", null);
-		if (s.length() > 0) {
-			ErlLogger.debug("external includes file: '%s'", s);
-		}
-		return s;
-	}
+	// private String getGlobalExternalModulesFile() {
+	// final IPreferencesService service = Platform.getPreferencesService();
+	// final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
+	// "default_external_modules", "", null);
+	// if (s.length() > 0) {
+	// ErlLogger.debug("external modules file: '%s'", s);
+	// }
+	// return s;
+	// }
+	//
+	// private String getGlobalExternalIncludesFile() {
+	// final IPreferencesService service = Platform.getPreferencesService();
+	// final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
+	// "default_external_includes", "", null);
+	// if (s.length() > 0) {
+	// ErlLogger.debug("external includes file: '%s'", s);
+	// }
+	// return s;
+	// }
 
 	protected boolean isActivePart() {
 		final IWorkbenchPart part = getActivePart();
@@ -1557,42 +1551,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	public ActionGroup getActionGroup() {
 		return fActionGroups;
-	}
-
-	public String getExternalModules() {
-		if (fExternalModules == null) {
-			final IEditorInput input = getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				final IFileEditorInput fileInput = (IFileEditorInput) input;
-				final ErlangProjectProperties prefs = ErlangCore
-						.getProjectProperties(fileInput.getFile().getProject());
-				fExternalModules = prefs.getExternalModulesFile();
-			} else {
-				fExternalModules = "";
-			}
-			final String globalExternalModules = getGlobalExternalModulesFile();
-			fExternalModules = PreferencesUtils.packArray(new String[] {
-					fExternalModules, globalExternalModules });
-		}
-		return fExternalModules;
-	}
-
-	public String getExternalIncludes() {
-		if (fExternalIncludes == null) {
-			final IEditorInput input = getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				final IFileEditorInput fileInput = (IFileEditorInput) input;
-				final ErlangProjectProperties prefs = ErlangCore
-						.getProjectProperties(fileInput.getFile().getProject());
-				fExternalIncludes = prefs.getExternalIncludesFile();
-			} else {
-				fExternalIncludes = "";
-			}
-			final String globalExternalIncludes = getGlobalExternalIncludesFile();
-			fExternalIncludes = PreferencesUtils.packArray(new String[] {
-					fExternalIncludes, globalExternalIncludes });
-		}
-		return fExternalIncludes;
 	}
 
 	private boolean isFoldingEnabled() {

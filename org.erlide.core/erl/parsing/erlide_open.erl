@@ -39,7 +39,7 @@ open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner:getTokenWindow(Mod, Offset, 5, 50),
+            erlide_scanner:getTokenWindow(Mod, Offset, 5, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Mod, Offset, TokensWComments, BeforeReversed,
                  ExternalModules, PathVars),
@@ -84,11 +84,11 @@ get_external_module(Name, ExternalModulesFiles, PathVars) ->
     end.
 
 consider_local([]) ->
-	true;
+    true;
 consider_local([#token{kind=':'} | _]) ->
-	false;
+    false;
 consider_local([#token{kind=comment} | More]) ->
-	consider_local(More);
+    consider_local(More);
 consider_local(_) ->
     true.
 
@@ -167,9 +167,11 @@ find_lib_dir(Dir) ->
     {code:lib_dir(list_to_atom(Lib)), Rest}.
 
 
-open_info(L, W, ExternalModules, PathVars) ->
-    ?D({open_info, W, L}),
-    {CL, CW} = erlide_text:clean_tokens(L, W),
+open_info(Mod, Offset, ExternalModules, PathVars) ->
+    CW = 5,
+    {TokensWComments, BeforeReversed} =
+	erlide_scanner:getTokenWindow(Mod, Offset, CW, 50),
+    CL = lists:reverse(BeforeReversed, TokensWComments),
     ?D({open_info, CW, CL}),
     case erlide_text:check_variable_macro_or_record(CL, CW) of
         {ok, M, R} ->

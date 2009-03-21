@@ -23,7 +23,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
@@ -42,12 +41,10 @@ public class ModelUtils {
 	 *            the path to the include file
 	 * @param externalIncludes
 	 *            TODO
-	 * @param pathVars
 	 * @return the path to the include file
 	 */
 	public static String findIncludeFile(final IProject project,
-			final String filePath, final String externalIncludes,
-			final List<Tuple> pathVars) {
+			final String filePath, final String externalIncludes) {
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final ErlangProjectProperties prefs = ErlangCore
@@ -62,7 +59,8 @@ public class ModelUtils {
 		}
 		final String s = ErlideOpen.getExternalInclude(ErlangCore
 				.getBackendManager().getIdeBackend(), filePath,
-				externalIncludes, pathVars);
+				externalIncludes, ErlangCore.getModel()
+						.getPathVars());
 		if (s != null) {
 			return s;
 		}
@@ -72,7 +70,7 @@ public class ModelUtils {
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final Collection<IProject> projects, final String moduleName,
 			final String definedName, final IErlElement.Kind type,
-			final String externalIncludes, final List<Tuple> pathVars) {
+			final String externalIncludes) {
 		try {
 			final List<IErlModule> modulesDone = new ArrayList<IErlModule>();
 			final IErlModel model = ErlModelManager.getDefault()
@@ -84,7 +82,7 @@ public class ModelUtils {
 					if (m != null) {
 						final IErlPreprocessorDef def = findPreprocessorDef(b,
 								projects, m, definedName, type,
-								externalIncludes, pathVars, modulesDone);
+								externalIncludes, modulesDone);
 						if (def != null) {
 							return def;
 						}
@@ -110,8 +108,8 @@ public class ModelUtils {
 	private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final Collection<IProject> projects, IErlModule m,
 			final String definedName, final IErlElement.Kind type,
-			final String externalIncludes, final List<Tuple> pathVars,
-			final List<IErlModule> modulesDone) throws CoreException {
+			final String externalIncludes, final List<IErlModule> modulesDone)
+			throws CoreException {
 		if (m == null) {
 			return null;
 		}
@@ -139,8 +137,7 @@ public class ModelUtils {
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s, externalIncludes,
-								pathVars);
+						s = findIncludeFile(project, s, externalIncludes);
 					}
 					re = ResourceUtil.recursiveFindNamedResourceWithReferences(
 							project, s);
@@ -154,7 +151,7 @@ public class ModelUtils {
 				if (m != null && !modulesDone.contains(m)) {
 					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
 							projects, m, definedName, type, externalIncludes,
-							pathVars, modulesDone);
+							modulesDone);
 					if (pd2 != null) {
 						return pd2;
 					}

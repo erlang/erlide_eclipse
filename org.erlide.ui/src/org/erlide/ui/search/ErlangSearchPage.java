@@ -45,7 +45,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -494,7 +493,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		final SelectionAdapter javaElementInitializer = new SelectionAdapter() {
 			@SuppressWarnings("synthetic-access")
 			@Override
-			public void widgetSelected(SelectionEvent event) {
+			public void widgetSelected(final SelectionEvent event) {
 				if (getSearchFor() == fInitialData.getSearchFor()) {
 					fRef = fInitialData.getRef();
 				} else {
@@ -765,7 +764,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				try {
 					res = ErlideOpen.open(b, ErlScanner
 							.createScannerModuleName(erlangEditor.getModule()),
-							offset, "", new ArrayList<Tuple>(0));
+							offset, "", ErlangCore.getModel()
+									.getPathVars());
 				} catch (final RpcException e) {
 					res = null;
 				} catch (final BackendException e) {

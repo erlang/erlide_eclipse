@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.search;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -27,7 +25,6 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -220,7 +217,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		try {
 			final OpenResult res = ErlideOpen.open(b, ErlScanner
 					.createScannerModuleName(fEditor.getModule()), offset, "",
-					new ArrayList<Tuple>(0));
+					ErlangCore.getModel().getPathVars());
 			ErlLogger.debug("open " + res);
 
 			// final String title =

@@ -12,14 +12,11 @@ package org.erlide.ui.actions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -39,11 +36,12 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -74,9 +72,9 @@ import erlang.OpenResult;
 public class OpenAction extends SelectionDispatchAction {
 
 	// private ErlangEditor fEditor;
-	private final String fExternalModules;
-	private final String fExternalIncludes;
-	private final List<Tuple> pathVars;
+	// private final String fExternalModules;
+	// private final String fExternalIncludes;
+	// private final List<Tuple> pathVars;
 
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
@@ -90,32 +88,31 @@ public class OpenAction extends SelectionDispatchAction {
 	 *            the externalModules file that can be searched for references
 	 *            to external modules
 	 */
-	public OpenAction(final IWorkbenchSite site, final String externalModules,
-			final String externalIncludes) {
+	public OpenAction(final IWorkbenchSite site) {
 		super(site);
-		fExternalModules = externalModules;
-		fExternalIncludes = externalIncludes;
+		// fExternalModules = externalModules;
+		// fExternalIncludes = externalIncludes;
 		setText(ActionMessages.OpenAction_label);
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
 		// initPathVars();
-		pathVars = getPathVars();
+		// pathVars = getPathVars();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
 
 	}
 
-	public static List<Tuple> getPathVars() {
-		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
-		final String[] names = pvm.getPathVariableNames();
-		final ArrayList<Tuple> result = new ArrayList<Tuple>(names.length);
-		for (final String name : names) {
-			result.add(new Tuple().add(name).add(
-					pvm.getValue(name).toOSString()));
-		}
-		return result;
-	}
-
+	// public static List<Tuple> getPathVars() {
+	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+	// .getPathVariableManager();
+	// final String[] names = pvm.getPathVariableNames();
+	// final ArrayList<Tuple> result = new ArrayList<Tuple>(names.length);
+	// for (final String name : names) {
+	// result.add(new Tuple().add(name).add(
+	// pvm.getValue(name).toOSString()));
+	// }
+	// return result;
+	// }
+	//
 	// public OpenAction(final ErlangEditor editor, final String
 	// externalModules,
 	// final String externalIncludes) {
@@ -293,16 +290,19 @@ public class OpenAction extends SelectionDispatchAction {
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
 		try {
+			final IErlProject erlProject = module == null ? null : module
+					.getErlProject();
+			final IProject project = erlProject == null ? null : erlProject
+					.getProject();
+			final IErlModel model = ErlangCore.getModel();
 			final OpenResult res = ErlideOpen.open(b, ErlScanner
-					.createScannerModuleName(editor.getModule()), offset,
-					fExternalModules, pathVars);
+					.createScannerModuleName(editor.getModule()), offset, model
+					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
+					model.getPathVars());
 			ErlLogger.debug("open " + res);
-			final IProject project = module == null
-					|| module.getErlProject() == null ? null : module
-					.getErlProject().getProject();
 			if (res.isExternalCall()) {
-				ErlModelUtils.openExternalFunction(res.getName(), res.getFunction(), res.getPath(),
-				project);
+				ErlModelUtils.openExternalFunction(res.getName(), res
+						.getFunction(), res.getPath(), project);
 			} else if (res.isInclude()) {
 				IResource r = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project, res
@@ -310,8 +310,9 @@ public class OpenAction extends SelectionDispatchAction {
 				if (r == null) {
 					try {
 						final String includeFile = ErlModelUtils
-								.findIncludeFile(project, res.getName(),
-										fExternalIncludes, pathVars);
+								.findIncludeFile(project, res.getName(), model
+										.getExternal(erlProject,
+												ErlangCore.EXTERNAL_INCLUDES));
 						if (includeFile != null) {
 							r = EditorUtility.openExternal(includeFile);
 						}
@@ -341,8 +342,10 @@ public class OpenAction extends SelectionDispatchAction {
 					}
 					final String mod = ei.getImportModule();
 					final OtpErlangObject res2 = ErlideOpen
-							.getSourceFromModule(b, pathVars, mod,
-									fExternalModules);
+							.getSourceFromModule(b, model
+									.getPathVars(), mod, model
+									.getExternal(erlProject,
+											ErlangCore.EXTERNAL_MODULES));
 					if (res2 instanceof OtpErlangString) {
 						final String path = ((OtpErlangString) res2)
 								.stringValue();
@@ -385,8 +388,8 @@ public class OpenAction extends SelectionDispatchAction {
 				final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 						: IErlElement.Kind.RECORD_DEF;
 				ErlModelUtils.openPreprocessorDef(b, project, page, module,
-						definedName, type, fExternalIncludes, pathVars,
-						new ArrayList<IErlModule>());
+						definedName, type, model.getExternal(erlProject,
+								ErlangCore.EXTERNAL_INCLUDES), new ArrayList<IErlModule>());
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);

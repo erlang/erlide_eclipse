@@ -141,7 +141,7 @@ public class ErlangConsoleView extends ViewPart {
 		try {
 			final Job j = new Job("shell opener") {
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
+				protected IStatus run(final IProgressMonitor monitor) {
 					fBackend = ErlangCore.getBackendManager().getIdeBackend();
 					if (fBackend == null) {
 						schedule(400);
@@ -636,10 +636,8 @@ public class ErlangConsoleView extends ViewPart {
 
 			// TODO vi vill ha in en punkt h�r, men den f�r return till
 			// styledtext o skickar allt f�r tidigt...
-			asst
-					.setContentAssistProcessor(new ErlContentAssistProcessor(
-							sourceViewer, null, "", ""),
-							IDocument.DEFAULT_CONTENT_TYPE);
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
+					sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);
 			asst.setAutoActivationDelay(500);

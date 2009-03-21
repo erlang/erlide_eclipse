@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.ericsson.otp.erlang.OtpErlangList;
+
 /**
  * Represent the root Erlang element corresponding to the workspace. Since there
  * is only one such root element, it is commonly referred to as <em>the</em>
@@ -300,5 +302,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	IErlModule getModule(String name);
 
-	public IErlElement innermostThat(final IErlElement el, final IErlangFirstThat firstThat);
+	public IErlElement innermostThat(final IErlElement el,
+			final IErlangFirstThat firstThat);
+
+	String getExternal(IErlProject erlProject, int externalFlag);
+
+	OtpErlangList getPathVars();
 }

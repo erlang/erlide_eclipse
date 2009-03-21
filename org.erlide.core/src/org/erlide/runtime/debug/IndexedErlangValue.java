@@ -6,7 +6,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.debug.core.DebugException;
@@ -17,7 +16,6 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -74,11 +72,9 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 				final OtpErlangAtom a = (OtpErlangAtom) h;
 				final ErlangDebugTarget target = (ErlangDebugTarget) getDebugTarget();
 				final Backend b = target.getBackend();
-				final IErlPreprocessorDef pd = ModelUtils
-						.findPreprocessorDef(b, target.getProjects(),
-								moduleName, a.atomValue(),
-								IErlElement.Kind.RECORD_DEF, "",
-								new ArrayList<Tuple>());
+				final IErlPreprocessorDef pd = ModelUtils.findPreprocessorDef(
+						b, target.getProjects(), moduleName, a.atomValue(),
+						IErlElement.Kind.RECORD_DEF, "");
 				if (pd != null) {
 					final IErlRecordDef r = (IErlRecordDef) pd;
 					final List<String> fields = r.getFields();
@@ -137,7 +133,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		final List<String> fields = r.getFields();
 		final OtpErlangTuple t = (OtpErlangTuple) o;
 		b.append(t.elementAt(0)).append("#{");
-		int n = fields.size();
+		final int n = fields.size();
 		if (n > 0) {
 			for (int i = 0; i < n; i++) {
 				b.append(fields.get(i)).append("=").append(

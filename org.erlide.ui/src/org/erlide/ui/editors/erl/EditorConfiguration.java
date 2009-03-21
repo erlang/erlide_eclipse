@@ -14,6 +14,7 @@ package org.erlide.ui.editors.erl;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -159,8 +160,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final String contentType) {
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module != null) {
-			return new ErlTextHover(module, editor.getExternalModules(), editor
-					.getExternalIncludes());
+			return new ErlTextHover(module);
 		}
 		return null;
 	}
@@ -195,10 +195,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (getEditor() != null) {
 			final ContentAssistant asst = new ContentAssistant();
 
-			asst.setContentAssistProcessor(
-					new ErlContentAssistProcessor(sourceViewer, editor
-							.getModule(), editor.getExternalModules(), editor
-							.getExternalIncludes()),
+			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
+					sourceViewer, editor.getModule()),
 					IDocument.DEFAULT_CONTENT_TYPE);
 
 			asst.enableAutoActivation(true);

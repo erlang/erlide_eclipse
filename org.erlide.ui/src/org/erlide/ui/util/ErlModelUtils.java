@@ -51,7 +51,6 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.jinterface.rpc.Tuple;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -139,14 +138,13 @@ public class ErlModelUtils {
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
 			final Backend b, final IProject project, final IErlModule module,
-			final IErlElement.Kind kind, final String externalIncludes,
-			final List<Tuple> pathVars) {
+			final IErlElement.Kind kind, final String externalIncludes) {
 		final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
 		final List<IErlModule> modulesFound = new ArrayList<IErlModule>(1);
 		List<IErlModule> modulesWithIncludes = modulesFound;
 		try {
 			modulesWithIncludes = getModulesWithIncludes(b, project, module,
-					externalIncludes, pathVars, modulesFound);
+					externalIncludes, modulesFound);
 		} catch (final CoreException e) {
 			ErlLogger.warn(e);
 		}
@@ -175,10 +173,10 @@ public class ErlModelUtils {
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind type,
-			final String externalIncludes, final List<Tuple> pathVars) {
+			final String externalIncludes) {
 		try {
 			return findPreprocessorDef(b, project, module, definedName, type,
-					externalIncludes, pathVars, new ArrayList<IErlModule>());
+					externalIncludes, new ArrayList<IErlModule>());
 		} catch (final CoreException e) {
 			return null;
 		}
@@ -198,8 +196,7 @@ public class ErlModelUtils {
 	private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, IErlModule m, final String definedName,
 			final IErlElement.Kind type, final String externalIncludes,
-			final List<Tuple> pathVars, final List<IErlModule> modulesDone)
-			throws CoreException {
+			final List<IErlModule> modulesDone) throws CoreException {
 		if (m == null) {
 			return null;
 		}
@@ -220,8 +217,7 @@ public class ErlModelUtils {
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s, externalIncludes,
-								pathVars);
+						s = findIncludeFile(project, s, externalIncludes);
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
@@ -233,7 +229,7 @@ public class ErlModelUtils {
 				if (m != null && !modulesDone.contains(m)) {
 					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
 							project, m, definedName, type, externalIncludes,
-							pathVars, modulesDone);
+							modulesDone);
 					if (pd2 != null) {
 						return pd2;
 					}
@@ -253,8 +249,8 @@ public class ErlModelUtils {
 	 */
 	private static List<IErlModule> getModulesWithIncludes(final Backend b,
 			final IProject project, final IErlModule m,
-			final String externalIncludes, final List<Tuple> pathVars,
-			final List<IErlModule> modulesFound) throws CoreException {
+			final String externalIncludes, final List<IErlModule> modulesFound)
+			throws CoreException {
 		if (m == null) {
 			return null;
 		}
@@ -271,8 +267,7 @@ public class ErlModelUtils {
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s, externalIncludes,
-								pathVars);
+						s = findIncludeFile(project, s, externalIncludes);
 					}
 					re = EditorUtility.openExternal(s);
 				} catch (final Exception e) {
@@ -283,7 +278,7 @@ public class ErlModelUtils {
 				final IErlModule included = getModule((IFile) re);
 				if (included != null && !modulesFound.contains(included)) {
 					getModulesWithIncludes(b, project, included,
-							externalIncludes, pathVars, modulesFound);
+							externalIncludes, modulesFound);
 				}
 			}
 		}
@@ -304,9 +299,8 @@ public class ErlModelUtils {
 	public static boolean openPreprocessorDef(final Backend b,
 			final IProject project, final IWorkbenchPage page, IErlModule m,
 			final String definedName, final IErlElement.Kind type,
-			final String externalIncludes, final List<Tuple> pathVars,
-			final List<IErlModule> modulesDone) throws CoreException,
-			ErlModelException, PartInitException {
+			final String externalIncludes, final List<IErlModule> modulesDone)
+			throws CoreException, ErlModelException, PartInitException {
 		if (m == null) {
 			return false;
 		}
@@ -325,8 +319,7 @@ public class ErlModelUtils {
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(b, s);
 						} else {
-							s = findIncludeFile(project, s, externalIncludes,
-									pathVars);
+							s = findIncludeFile(project, s, externalIncludes);
 						}
 						re = EditorUtility.openExternal(s);
 					} catch (final Exception e) {
@@ -337,7 +330,7 @@ public class ErlModelUtils {
 					m = getModule((IFile) re);
 					if (m != null && !modulesDone.contains(m)) {
 						if (openPreprocessorDef(b, project, page, m,
-								definedName, type, externalIncludes, pathVars,
+								definedName, type, externalIncludes,
 								modulesDone)) {
 							return true;
 						}
@@ -364,12 +357,10 @@ public class ErlModelUtils {
 	 *            the path to the include file
 	 * @param externalIncludes
 	 *            TODO
-	 * @param pathVars
 	 * @return the path to the include file
 	 */
 	public static String findIncludeFile(final IProject project,
-			final String filePath, final String externalIncludes,
-			final List<Tuple> pathVars) {
+			final String filePath, final String externalIncludes) {
 		if (project == null) {
 			return filePath;
 		}
@@ -387,7 +378,8 @@ public class ErlModelUtils {
 		}
 		final String s = ErlideOpen.getExternalInclude(ErlangCore
 				.getBackendManager().getIdeBackend(), filePath,
-				externalIncludes, pathVars);
+				externalIncludes, ErlangCore.getModel()
+						.getPathVars());
 		if (s != null) {
 			return s;
 		}
@@ -443,11 +435,10 @@ public class ErlModelUtils {
 	}
 
 	public static IErlModule getExternalModule(final String mod,
-			final String externalModules, final List<Tuple> pathVars)
-			throws CoreException {
+			final String externalModules) throws CoreException {
 		final String path = ErlideOpen.getExternalModule(ErlangCore
 				.getBackendManager().getIdeBackend(), mod, externalModules,
-				pathVars);
+				ErlangCore.getModel().getPathVars());
 		if (path != null) {
 			final IProject p = ResourceUtil.getExternalFilesProject();
 			if (p != null) {
@@ -563,10 +554,9 @@ public class ErlModelUtils {
 	}
 
 	public static List<String> getExternalModules(final Backend b,
-			final String prefix, final String externalModules,
-			final List<Tuple> pathVars) {
+			final String prefix, final String externalModules) {
 		return ErlideOpen.getExternalModules(b, prefix, externalModules,
-				pathVars);
+				ErlangCore.getModel().getPathVars());
 	}
 
 	// FIXME: move this to a separate class, that somehow listens to something

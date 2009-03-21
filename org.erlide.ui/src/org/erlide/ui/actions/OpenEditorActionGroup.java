@@ -46,16 +46,17 @@ public class OpenEditorActionGroup extends ActionGroup {
 	private final OpenAction fOpen;
 
 	/**
-	 * Creates a new <code>OpenActionGroup</code>. The group requires that
-	 * the selection provided by the part's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
+	 * Creates a new <code>OpenActionGroup</code>. The group requires that the
+	 * selection provided by the part's selection provider is of type <code>
+	 * org.eclipse.jface.viewers.IStructuredSelection</code>
+	 * .
 	 * 
 	 * @param part
 	 *            the view part that owns this action group
 	 */
 	public OpenEditorActionGroup(final IViewPart part) {
 		fSite = part.getSite();
-		fOpen = new OpenAction(fSite, "", "");
+		fOpen = new OpenAction(fSite);
 		fOpen
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		initialize(fSite.getSelectionProvider());
