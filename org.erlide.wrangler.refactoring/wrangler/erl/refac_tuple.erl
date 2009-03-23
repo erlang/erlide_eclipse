@@ -66,6 +66,10 @@ tuple_funpar(FileName, ParLine, ParCol, Number, SearchPaths, TabWidth, Editor)->
   ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, ~p, ~p, ~p,~p, ~p).\n", 
             [?MODULE,FileName, ParLine, ParCol, Number, SearchPaths, TabWidth]),
 	{ok, {AnnAST, Info}} = parse_file(FileName, SearchPaths, TabWidth),
+    case Number of 
+	1 -> throw({error, "Tupling one argument is not supported."});
+	_ ->ok
+    end,    
     case check_first_pos({ParLine, ParCol}, AnnAST) of 
 	{error, Reason} -> {error, Reason};
 	{FirstPar, Type} ->
@@ -393,7 +397,7 @@ do_tuple_fun_parameters(Tree, {C, N, Name, Arity, Mod})->
       Fun = refac_syntax:arity_qualifier_body(Tree),
       Fun_Name = refac_syntax:atom_value(Fun),
       Arg = refac_syntax:arity_qualifier_argument(Tree),
-      Arg1 = refac_syntax:atom_value(Arg),
+      Arg1 = refac_syntax:integer_value(Arg),
       DefMod = get_fun_def_mod(Fun),
       if (Fun_Name == Name) and (Arg1 == Arity) and (DefMod == Mod) ->
         {refac_syntax:copy_attrs(Tree, refac_syntax:arity_qualifier(Fun, 
@@ -779,7 +783,7 @@ transform_apply_call(Node, {C, N, Name, Arity, ModName}) ->
 		  FName = refac_syntax:implicit_fun_name(Fun),
 		  B = refac_syntax:atom_value(refac_syntax:
 					      arity_qualifier_body(FName)),
-		  A = refac_syntax:atom_value(refac_syntax:
+		  A = refac_syntax:integer_value(refac_syntax:
 					      arity_qualifier_argument(FName)),
 		  case {B, A} of
 		      {Name, Arity} ->

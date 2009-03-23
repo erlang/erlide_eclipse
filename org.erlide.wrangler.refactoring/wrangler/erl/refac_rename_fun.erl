@@ -130,7 +130,7 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 				_ -> case Editor of 
 					 emacs -> refac_util:write_refactored_files([{{FileName, FileName}, AnnAST}]), {ok, []};
 					 eclipse ->
-					     Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST)}],
+ 					     Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST)}],
 					     {ok, Res}
 				     end
 			    end;
@@ -181,7 +181,7 @@ do_rename_fun_1(Tree, {{M, OldName, Arity}, {DefinePos, NewName}}) ->
 			{M, OldName, Arity, _} ->
 			    Operator1 = refac_syntax:copy_attrs(Operator, refac_syntax:atom(NewName)),
 			    Tree1 = refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator1, Arguments)),
-			    {Tree1, true};
+			    {Tree1, false};
 			_ -> {Tree, false}
 		      end;
 		  module_qualifier ->
@@ -193,7 +193,7 @@ do_rename_fun_1(Tree, {{M, OldName, Arity}, {DefinePos, NewName}}) ->
 			    %% Need to change the fun_def annotation as well?
 			    Operator1 = refac_syntax:copy_attrs(Tree, refac_syntax:module_qualifier(Mod, Fun1)),
 			    Tree1 = refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator1, Arguments)),
-			    {Tree1, true};
+			    {Tree1, false};
 			_ -> {Tree, false}
 		      end;
 		  _ -> {Tree, false}
@@ -203,10 +203,10 @@ do_rename_fun_1(Tree, {{M, OldName, Arity}, {DefinePos, NewName}}) ->
 	  Fun = refac_syntax:arity_qualifier_body(Tree),
 	  Fun_Name = refac_syntax:atom_value(Fun),
 	  Arg = refac_syntax:arity_qualifier_argument(Tree),
-	  Arg1 = refac_syntax:atom_value(Arg),
+	  Arg1 = refac_syntax:integer_value(Arg),
 	  DefMod = get_fun_def_mod(Fun),
 	  if (Fun_Name == OldName) and (Arg1 == Arity) and (DefMod == M) ->
-		 {refac_syntax:copy_attrs(Tree, refac_syntax:arity_qualifier(refac_syntax:atom(NewName), Arg)), true};
+		 {refac_syntax:copy_attrs(Tree, refac_syntax:arity_qualifier(refac_syntax:atom(NewName), Arg)),false};
 	     true -> {Tree, false}
 	  end;
       _ -> {Tree, false}
@@ -310,7 +310,7 @@ do_rename_fun_in_client_module_1(Tree, {{M, OldName, Arity}, NewName}) ->
 	  Fun = refac_syntax:arity_qualifier_body(Tree),
 	  Fun_Name = refac_syntax:atom_value(Fun),
 	  Arg = refac_syntax:arity_qualifier_argument(Tree),
-	  Arg1 = refac_syntax:atom_value(Arg),
+	  Arg1 = refac_syntax:integer_value(Arg),
 	  DefMod = get_fun_def_mod(Fun),
 	  if (Fun_Name == OldName) and (Arg1 == Arity) and (DefMod == M) ->
 		 {refac_syntax:copy_attrs(Tree, refac_syntax:arity_qualifier(refac_syntax:atom(NewName), Arg)),
@@ -484,7 +484,7 @@ transform_apply_call(Node, {ModName, FunName, Arity}, NewFunName) ->
 	    implicit_fun ->
 		Name = refac_syntax:implicit_fun_name(Fun),
 		B = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
-		A = refac_syntax:atom_value(refac_syntax:arity_qualifier_argument(Name)),
+		A = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
 		case {B, A} of
 		  {FunName, Arity} ->
 		      FunName1 = refac_syntax:atom(NewFunName),

@@ -1341,7 +1341,11 @@ integer_value(Node) ->
     case is_integer(Res) of 
 	true ->
 	     Res;
-	_ -> list_to_integer(Res)
+	_ -> try list_to_integer(Res) of   %% list_to_integer does not work with based integers; this is only a temp fix.
+		 V -> V
+	     catch 
+		 _E1:_E2_ -> Res
+	     end
     end.
 
 %% =====================================================================

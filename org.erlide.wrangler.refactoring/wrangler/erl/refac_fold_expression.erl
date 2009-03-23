@@ -304,7 +304,7 @@ do_replace_expr_with_fun_call_eclipse(Tree, {Expr, {Range, NewExp}})->
 
 
 do_replace_expr_with_fun_call_eclipse_1(Tree, {Range, NewExp}) ->
-     case refac_util:get_range(Tree) of 
+    case refac_util:get_range(Tree) of 
  	Range ->
 	     {NewExp, true};
  	_  -> {Tree, false}
@@ -631,6 +631,8 @@ make_fun_call({FunDefMod, CurrentMod}, FunName, Pats, Subst) ->
 						   {value, {PName, Par}} -> Par;
 						   _ -> refac_syntax:atom(undefined)
 					       end;
+				   underscore -> 
+				       refac_syntax:atom(undefined);
 				   _  -> P
 			       end
 		     end, Pats),

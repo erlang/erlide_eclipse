@@ -69,6 +69,27 @@ fun_extraction(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName,TabWid
     end.  
 
 side_cond_analysis(Info, Fun, ExpList, NewFunName) ->
+    lists:foreach(fun(Exp) ->
+			 case lists:keysearch(category,1, refac_syntax:get_ann(Exp)) of 
+			     {value, {category, record_field}} -> throw({error, "Record field cannot be replaced by a function application."});
+			     {value, {category, record_type}} -> throw({error, "Record type cannot be replaced by a function application."});	 
+			     {value, {category, guard_expression}} -> throw({error, "Function abstraction whithin a guard expression is not supported."});
+			     {value, {category, generator}} -> throw({error, "Function abstraction over a generator is not supported."});
+			     {value, {category, application_op}} -> 
+				 GuardRanges= refac_syntax_lib:fold(fun(N,S) ->
+									    case lists:keysearch(category,1,refac_syntax:get_ann(N)) of
+										{value, {category,guard_expression}} -> [refac_util:get_range(N)|S];
+										_ -> S
+									    end
+								    end,[],Fun),
+				 {Start, End} = refac_util:get_range(Exp),
+				 case lists:any(fun({S1,E1}) -> (S1 =< Start) andalso ( End =< E1) end, GuardRanges) of 
+				     true ->throw({error, "Function abastraction within a guard expression is not supported."});
+				     _ -> ok
+				 end;
+			     _ -> ok  
+			 end
+		  end, ExpList),
     FrBdVars = lists:map(fun(E)-> envs_bounds_frees(E) end, ExpList),
     BdVars = lists:usort(lists:flatmap(fun({{bound, Vars}, _}) -> Vars end, FrBdVars)),
     FrVars1 = lists:usort(lists:flatmap(fun({_, {free, Vars}}) -> Vars end, FrBdVars)),

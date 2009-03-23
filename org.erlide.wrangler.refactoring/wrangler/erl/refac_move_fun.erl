@@ -84,7 +84,7 @@ move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabW
 				 true -> create_new_file(TargetFName, TargetModName);
 				 _ -> ok
 			     end,
-			     R = side_cond_check({ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModName), Def, SearchPaths, TabWidth),
+			     R = side_cond_check({FName, ModName, FunName, Arity, Def}, TargetFName, list_to_atom(TargetModName), Def, SearchPaths, TabWidth),
 			     case R of
 				 true ->
 				     {ok, {TargetAnnAST, Info1}} = refac_util:parse_annotate_file(TargetFName, true, SearchPaths, TabWidth),  
@@ -157,10 +157,12 @@ create_new_file(TargetFName, TargetModName) ->
      S = "-module("++TargetModName++").",
      file:write_file(TargetFName, list_to_binary(S)).
 
-side_cond_check({ModName, FunName, Arity, Node}, TargetFileName, TargetModName, FunDef, SearchPaths, TabWidth) ->
+side_cond_check({FileName, ModName, FunName, Arity, Node}, TargetFileName, TargetModName, FunDef, SearchPaths, TabWidth) ->
     case filelib:is_file(TargetFileName) of
       true -> {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(TargetFileName, true, SearchPaths, TabWidth),
 	      InscopeFuns = refac_util:inscope_funs(Info),
+	      check_macros(FileName, TargetFileName, FunDef, SearchPaths, TabWidth),
+	      check_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth),
 	      Clash = lists:any(fun ({ModName1, FunName1, Arity1}) ->
 					(FunName == FunName1) and (Arity == Arity1) and (ModName =/= ModName1)
 				end, InscopeFuns),
@@ -196,6 +198,126 @@ is_the_same_fun(FunDef1, FunDef2) ->
     FunDef11= reset_attrs(FunDef1, {M1, F1, A1}),
     FunDef21=reset_attrs(FunDef2, {M2, F2, A2}),
     FunDef11 == FunDef21.
+
+check_macros(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
+    UsedMacros = collect_used_macros(FunDef),
+    case UsedMacros of 
+	[] ->
+	    true;
+	_ -> 
+	    Dir = filename:dirname(FileName),
+	    DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
+	    DefaultIncl2 = [filename:join(Dir, X) || X <-DefaultIncl1],
+	    NewSearchPaths= SearchPaths++DefaultIncl2,
+	    case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth, refac_util:file_format(FileName))  of 
+		{ok, _, {MDefs, _MUses}} -> 
+		    UsedMacroDefs = [{Name, {Args, refac_util:concat_toks(Toks)}} || {{_, Name}, {Args, Toks}} <-MDefs, lists:member(Name, UsedMacros)],
+		    case length(UsedMacros) > length(UsedMacroDefs) of 
+			true ->  UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefs],
+				 ?wrangler_io("\nThe following macros are used by the function to be moved, but not defined:~p\n", [UnDefinedUsedMacros]),
+				 throw({error, "There are undefined macros used by the function to be moved."});
+			_ ->  case refac_epp:parse_file(TargetFileName, NewSearchPaths, [], TabWidth, refac_util:file_format(TargetFileName)) of 
+				  {ok, _, {MDefs1, _MUses1}} ->
+				      UsedMacroDefsInTargetFile = [{Name, {Args, refac_util:concat_toks(Toks)}} 
+								   || {{_, Name}, {Args, Toks}} <-MDefs1, lists:member(Name, UsedMacros)],
+				      case  length(UsedMacros) > length(UsedMacroDefsInTargetFile) of 
+					  true ->
+					      UnDefinedUsedMacrosInTargetFile = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefsInTargetFile], 
+					      ?wrangler_io("\nThe following macros are used by the function to be moved, but not defined in the target module:~p\n", 
+							   [UnDefinedUsedMacrosInTargetFile]),
+					      throw({error, "Some macros used by the function to be moved are not defined in the target module."});
+					  _ ->
+					      case lists:keysort(1,UsedMacroDefs) == lists:keysort(1,UsedMacroDefsInTargetFile) of 
+						  true -> true;
+						  _ -> throw({error, "Moving this function could change program semantics because of different macro definitions."})
+					      end
+				      end;
+				  _ -> throw({error, "Refactoring failed because the target file does not compile."})
+			      end
+		    end;
+		_ -> throw({error, "Refactoring failed because the current file does not compile."})
+	    end
+    end.
+	    
+collect_used_macros(FunDef) ->
+    F = fun(T, S) ->
+		case refac_syntax:type(T) of
+		    macro ->
+			Name = refac_syntax:macro_name(T),
+			case refac_syntax:type(Name) of 
+			    variable -> [refac_syntax:variable_name(Name)|S];
+			    atom -> [refac_syntax:atom_value(Name) |S]
+			end;
+		    _  -> S
+		end
+	end,
+    lists:usort(refac_syntax_lib:fold(F, [], FunDef)).
+
+
+check_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
+    UsedRecords = collect_used_records(FunDef),
+    case UsedRecords of 
+	[] -> true;
+	_ ->
+	    case refac_util:parse_annotate_file(FileName,false, SearchPaths, TabWidth) of 
+		{ok,{_, Info}} ->
+		    case lists:keysearch(records, 1, Info) of
+		      {value, {records, RecordDefs}} -> 
+			    UsedRecordDefs = [{Name, lists:keysort(1,[{F, format(FDef)} || {F, FDef} <-Fields])}
+					    || {Name, Fields} <-RecordDefs, lists:member(Name, UsedRecords)],
+			    case length(UsedRecords) > length(UsedRecordDefs) of 
+				true ->
+				    UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
+				    ?wrangler_io("\nThe following records are used by the function to be moved, but not defined:~p\n", [UnDefinedUsedRecords]),
+				    throw({error, "There are undefined records used by the function to be moved."});
+				_ -> case refac_util:parse_annotate_file(TargetFileName, false, SearchPaths, TabWidth) of 
+					 {ok, {_, Info1}} ->
+					     case lists:keysearch(records,1, Info1) of 
+						 {value, {records, RecordDefsInTargetFile}} ->
+						     UsedRecordDefsInTargetFile = [{Name, lists:keysort(1,[{F, format(FDef)} || {F, FDef} <-Fields])}
+										   || {Name, Fields} <-RecordDefsInTargetFile,
+										      lists:member(Name, UsedRecords)],
+						     case length(UsedRecords) > length(UsedRecordDefsInTargetFile) of 
+							 true -> throw({error, "Some records used by the function are not defined in the taret file."});
+							 _ -> case lists:keysort(1, UsedRecordDefs) == lists:keysort(1, UsedRecordDefsInTargetFile) of 
+								  true ->true;
+								  _  -> throw({error,  "Moving this function could change program semantics because of different record definitions."})
+							      end
+							 end;
+						 _ ->throw({error, "Some record(s) used by the function to be moved are not defined in the target file."})
+					     end;
+					 _ ->throw({error, "Refactoring failed because the target file does not compile."})
+				     end
+			    end;
+			_ ->
+			    throw({error, "Refactoring failed because of incomplete information about the record(s) used by this function."})
+		    end;
+		_ -> throw({error, "Refactring failed because the current file does not compile."})
+	    end
+    end.
+					
+	    
+format(none) ->
+    none;
+format(Node) -> refac_prettypr:format(Node).
+	    
+collect_used_records(FunDef) ->
+    F = fun(T, S) ->
+		case refac_syntax:type(T) of 
+		    record_expr ->
+			Type = refac_syntax:record_expr_type(T),
+			[refac_syntax:atom_value(Type) |S];
+		    record_access ->
+			Type = refac_syntax:record_access_type(T),
+			[refac_syntax:atom_value(Type)|S];
+		    _ -> S
+		end
+	end,
+    lists:usort(refac_syntax_lib:fold(F,[], FunDef)).
+		
+			
+		
+
 
 
 reset_attrs(Node, {M, F, A}) ->
@@ -299,20 +421,20 @@ do_transform_fun(Node, {{ModName, FunName, Arity}, TargetModName, InScopeFunsInT
  									   refac_syntax:atom(FunName1))),
  		     Node2= refac_syntax:copy_attrs(Node1,
  						     refac_syntax:application(Operator2,Arguments1)),
- 		     {Node2, true}
+ 		     {Node2, false}
  	     end,
     case refac_syntax:type(Node) of 
  	  application ->
- 	      Operator = refac_syntax:application_operator(Node),
- 	      Arguments = refac_syntax:application_arguments(Node),
- 	      case application_info(Node) of 
+	    Operator = refac_syntax:application_operator(Node),
+	    Arguments = refac_syntax:application_arguments(Node),
+	    case application_info(Node) of 
 		  {{none, F}, A} ->
   		      case {F, A} == {FunName, Arity} of 
-  			  true -> {Node, true};
+  			  true -> {Node, false};
   			  false ->  case refac_syntax:type(Operator) of 
 				       atom ->{M, F, A, _P} = get_fun_def_info(Operator),
 					       case lists:member({M, F, A}, InScopeFunsInTargetMod) of 
-						  true -> {Node, true};
+						  true -> {Node, false};
 						  _  ->MakeApp(Node, Operator, Arguments, M, F)
 					      end;
 				       _ -> {Node, false}
@@ -461,7 +583,7 @@ do_add_module_qualifier(Node, {{ModName, FunName, Arity}, TargetModName}) ->
 									   refac_syntax:atom(FunName1))),
 		     Node2= refac_syntax:copy_attrs(Node1,
 						     refac_syntax:application(Operator2,Arguments1)),
-		     {Node2, true}
+		     {Node2, false}
 	     end,
    case refac_syntax:type(Node) of 
 	  application ->
@@ -478,6 +600,18 @@ do_add_module_qualifier(Node, {{ModName, FunName, Arity}, TargetModName}) ->
 		  {{_, spawn_link}, 4} ->transform_spawn_call(Node, {ModName, FunName, Arity}, TargetModName);
 		   _ -> {Node, false}
 	      end;
+       implicit_fun ->
+	   Name = refac_syntax:implicit_fun_name(Node),
+	   B = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
+	   A = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
+	   case {B, A} of
+	       {FunName, Arity} ->
+		   FunName1 = refac_syntax:module_qualifier(refac_syntax:atom(TargetModName),
+							    refac_syntax:atom(FunName)),
+		   Node1 = refac_syntax:implicit_fun(FunName1, refac_syntax:arity_qualifier_argument(Name)),
+		   {refac_syntax:copy_attrs(Node, Node1), true};
+	       _ -> {Node, false}
+	   end;
        _  -> {Node, false}
    end.
 %% ====================================================================================
@@ -600,7 +734,7 @@ transform_apply_call(Node, {ModName, FunName, Arity}, TargetModName) ->
 	    implicit_fun ->
 		Name = refac_syntax:implicit_fun_name(Fun),
 		B = refac_syntax:atom_value(refac_syntax:arity_qualifier_body(Name)),
-		A = refac_syntax:atom_value(refac_syntax:arity_qualifier_argument(Name)),
+		A = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
 		case {B, A} of
 		  {FunName, Arity} ->
 		      FunName1 = refac_syntax:module_qualifier(refac_syntax:atom(TargetModName),

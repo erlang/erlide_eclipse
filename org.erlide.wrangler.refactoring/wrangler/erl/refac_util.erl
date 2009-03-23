@@ -551,6 +551,9 @@ is_expr(Node) ->
 	      %% since macros are not expanded;
 	      %% Not really what I want.
 	      macro -> true; 
+	      record_field ->true;
+	      record_type -> true;
+	      generator -> true;
 	    _ -> false
 	  end;
       _ -> false
@@ -1557,7 +1560,7 @@ do_add_category(Node, C) ->
 		 P = refac_syntax:match_expr_pattern(Node),
 		 B = refac_syntax:match_expr_body(Node),
 		 P1 = add_category(P, pattern),
-		 B1 = add_category(B, expression),
+		 B1 = add_category(B, C),
 		 Node1 = refac_syntax:copy_attrs(Node, refac_syntax:match_expr(P1, B1)),
 		 {refac_syntax:add_ann({category, C}, Node1), true};
 	     operator -> {refac_syntax:add_ann({category, operator}, Node), true}; %% added to fix bug 13/09/2008.
@@ -1565,7 +1568,7 @@ do_add_category(Node, C) ->
 		   Op = refac_syntax:application_operator(Node),
 		   Args = refac_syntax:application_arguments(Node),
 		   Op1 = add_category(Op, application_op),
-		   Args1 = add_category(Args, expression),
+		   Args1 = add_category(Args, C),
 		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:application(Op1, Args1)),
 		   {refac_syntax:add_ann({category, C}, Node1), true};						   
 	     arity_qualifier ->
@@ -1583,6 +1586,54 @@ do_add_category(Node, C) ->
 			 end,
 		 Node1 = refac_syntax:copy_attrs(Node, refac_syntax:macro(Name1, Args1)),
 		 {refac_syntax:add_ann({category, macro}, Node1), true};
+	     record_access ->
+		   Argument = refac_syntax:record_access_argument(Node),
+		   Type = refac_syntax:record_access_type(Node),
+		   Field = refac_syntax:record_access_field(Node),
+		   Argument1 = add_category(Argument, C),
+		   Type1 = case Type of 
+			       none -> none;
+			       _ -> add_category(Type, record_type)
+			   end,
+		   Field1 = add_category(Field, record_field),
+		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:record_access(Argument1, Type1, Field1)),
+		   {refac_syntax:add_ann({category, record_field}, Node1), true};
+	     record_expr ->
+		   Argument = refac_syntax:record_expr_argument(Node),
+		   Type = refac_syntax:record_expr_type(Node),
+		   Fields = refac_syntax:record_expr_fields(Node),
+		   Argument1 =case Argument of 
+				  none -> none;
+				  _ ->add_category(Argument, C)
+			      end,
+		   Type1 = add_category(Type, record_type),
+		   Fields1 = add_category(Fields, C),
+		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:record_expr(Argument1, Type1, Fields1)),
+		   {refac_syntax:add_ann({category, record_field}, Node1), true};
+	       record_index_expr ->
+		   Type = refac_syntax:record_index_expr_type(Node),
+		   Field = refac_syntax:record_index_expr_field(Node),
+		   Type1 = add_category(Type, record_type),
+                   Field1 = add_category(Field, C),
+		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:record_index_expr(Type1, Field1)),
+		   {refac_syntax:add_ann({category, record_index_expr}, Node1), true};
+	     record_field ->
+		   Name = refac_syntax:record_field_name(Node),
+		   Name1 = add_category(Name, record_field),
+		   Value = refac_syntax:record_field_value(Node),
+		   Value1 = case Value of 
+				none -> none;
+				_ -> add_category(Value, C)
+			    end,
+		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:record_field(Name1, Value1)),
+		   {refac_syntax:add_ann({category, record_field}, Node1), true};
+	       generator ->
+		   P = refac_syntax:generator_pattern(Node),
+		   B = refac_syntax:generator_body(Node),
+		   P1 = add_category(P, pattern),
+		   B1 = add_category(B, expression),
+		   Node1 = refac_syntax:copy_attrs(Node, refac_syntax:generator(P1, B1)),
+		   {refac_syntax:add_ann({category, generator}, Node1), true};
 	     attribute ->
 		 case refac_syntax:atom_value(refac_syntax:attribute_name(Node)) of
 		   define ->

@@ -197,13 +197,9 @@ duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth) ->
     %% This step is necessary to reduce large number of sub-clones.
     ?debug("Type 4 clones:\n~p\n", [length(Cs)]),
     ?debug("Putting atoms back.\n",[]),
-   %% io:format("Cs:\n~p\n", [Cs]),
-   %% io:format("Cs1:\n~p\n", [Cs]),
     Cs1 = clones_with_atoms(Cs, Toks, MinLength, MinClones),
-   %% io:format("Cs1:\n~p\n", [Cs1]),
     ?debug("Filtering out sub-clones.\n", []),
     Cs2 = remove_sub_clones(Cs1),
-    %%io:format("Cs2:\n~p\n", [Cs2]),
     ?debug("Combine with neighbours\n",[]),
     Cs3 = combine_neighbour_clones(Cs2, MinLength, MinClones),
     ?debug("Type3 without trimming:~p\n", [length(Cs3)]),
@@ -350,14 +346,11 @@ clones_with_atoms_1(Range, Toks, _MinLength, MinClones) ->
 				       remove_var_literals(Toks1)
 			       end,
 			       Range),
-   %% io:format("ListsOfSubToks:\n~p\n", [ListsOfSubToks]),
     ZippedToks = zip_list(ListsOfSubToks),
     Cs = clones_with_atoms_2([ZippedToks], []),
     [C || C <- Cs, length(hd(C)) >= MinClones].
 	    
-	    
-   %%  [ C || C <- Cs, length(C) >=MinLength, length(hd(C))>=MinClones].
-    
+ 
 
 clones_with_atoms_2([], Acc) -> Acc;
 clones_with_atoms_2([ZippedToks|Others], Acc) ->
@@ -532,7 +525,6 @@ trim_clones(FileNames, Cs, MinLength, MinClones, TabWidth) ->
 				{value, {File1, AnnAST}} ->
 				    {value, {File1, Toks}} = lists:keysearch(File1, 1, ToksLists),
 				    Units = refac_util:pos_to_syntax_units(File1, AnnAST, {L1, C1},{L2, C2}, fun is_expr_or_fun/1, TabWidth), 
-				   %% io:format("Units:\n~p\n", [Units]),
 				    case Units =/= [] of 
 					true -> 
 					    Fun2 = fun(U) ->
@@ -564,7 +556,6 @@ trim_clones(FileNames, Cs, MinLength, MinClones, TabWidth) ->
 		  end
 	  end,
     Cs2= lists:append(lists:map(Fun, Cs)),
-   %% io:format("Cssssssssss2:\n~p\n",[Cs2]),
     Cs3 =[lists:map(fun(C) -> {C, Len, length(C)} end, group_by(2, lists:map(Fun0, Range)))
 		    || {Range, Len, _F}<- Cs2],
     Cs4 = lists:append(Cs3),
