@@ -1892,4 +1892,22 @@ public class Util {
 		return false;
 	}
 
+	/**
+	 * return true if it's the atom error or a tuple {error, ...}
+	 * 
+	 * @param o
+	 *            atom or tuple
+	 * @return true if error
+	 */
+	public static boolean isError(final OtpErlangObject o) {
+		if (o instanceof OtpErlangAtom) {
+			final OtpErlangAtom a = (OtpErlangAtom) o;
+			return a.atomValue().compareTo("error") == 0;
+		} else if (o instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) o;
+			return isError(t.elementAt(0));
+		}
+		return false;
+	}
+
 }

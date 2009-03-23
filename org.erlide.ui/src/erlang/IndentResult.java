@@ -22,7 +22,7 @@ public class IndentResult {
 	}
 
 	public IndentResult(final OtpErlangObject o) {
-		if (o instanceof OtpErlangTuple) {
+		if (o instanceof OtpErlangTuple && !Util.isError(o)) {
 			final OtpErlangTuple t = (OtpErlangTuple) o;
 			final OtpErlangLong l1 = (OtpErlangLong) t.elementAt(1);
 			final OtpErlangAtom b = (OtpErlangAtom) t.elementAt(2);
