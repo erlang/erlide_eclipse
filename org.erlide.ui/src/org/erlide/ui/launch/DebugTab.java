@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -90,7 +89,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 				}
 				return item.getName();
 			}
-			return super.getText(element);
+			return "!" + super.getText(element);
 		}
 
 		@Override
@@ -101,16 +100,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
 	public static class DebugTreeItem {
 		final IErlElement item;
-		final WeakReference<DebugTreeItem> parent;
+		final DebugTreeItem parent;
 		final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
 
 		public DebugTreeItem(final IErlElement item, final DebugTreeItem parent) {
 			this.item = item;
-			this.parent = new WeakReference<DebugTreeItem>(parent);
+			this.parent = parent;
 		}
 
 		public DebugTreeItem getParent() {
-			return parent.get();
+			return parent;
 		}
 
 		public IErlElement getItem() {
@@ -231,10 +230,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					for (final String projName : projNames) {
 						final IErlElement prj = model
 								.getErlangProject(projName);
-						final DebugTreeItem dti = new DebugTreeItem(prj,
-								getRoot());
-						dti.addAllErlangModules(prj);
-						getRoot().children.add(dti);
+						getRoot().addAllErlangModules(prj);
 					}
 				}
 			} catch (final CoreException e1) {
@@ -317,7 +313,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
-			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
 						.getElement();
@@ -345,6 +340,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		final List<DebugTreeItem> children = dti.getChildren();
 		if (children == null || children.size() == 0) {
 			interpretOrDeinterpret(dti, checked);
+			return;
 		}
 		for (final DebugTreeItem i : children) {
 			checkboxTreeViewer.setChecked(i, checked);
@@ -395,53 +391,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
 	 * debug.core.ILaunchConfigurationWorkingCopy)
 	 */
-	@SuppressWarnings("unchecked")
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-		List<String> interpret;
-		String prjs;
-		try {
-			interpret = config.getAttribute(
-					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
-					new ArrayList<String>());
-			prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "").trim();
-		} catch (final CoreException e1) {
-			interpret = new ArrayList<String>();
-			prjs = "";
-		}
-		final String[] projectNames = prjs.length() == 0 ? new String[] {}
-				: prjs.split(";");
-		final Set<IProject> projects = new HashSet<IProject>();
-		for (final String s : projectNames) {
-			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-					.getProject(s);
-			if (project == null) {
-				continue;
-			}
-			projects.add(project);
-		}
-
-		interpret = ErlangLaunchConfigurationDelegate
-				.addBreakpointProjectsAndModules(projects, interpret);
-		interpretedModules = new ArrayList<IErlModule>();
-
-		addModules(interpret, interpretedModules);
-
-		int debugFlags;
-		try {
-			debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-		} catch (final CoreException e) {
-			debugFlags = ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
-		}
-		setFlagCheckboxes(debugFlags);
-
-		if (checkboxTreeViewer != null) {
-			checkboxTreeViewer.setInput(config);
-			checkboxTreeViewer.expandAll();
-			final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
-					.getContentProvider()).getRoot();
-			root.setChecked(checkboxTreeViewer, interpretedModules);
-		}
+		config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+				new ArrayList<String>());
+		config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
+				ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 	}
 
 	/**
@@ -487,11 +441,52 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
 	 * .debug.core.ILaunchConfiguration)
 	 */
+	@SuppressWarnings("unchecked")
 	public void initializeFrom(final ILaunchConfiguration config) {
+		List<String> interpret;
+		String prjs;
 		try {
-			setDefaults(config.getWorkingCopy());
+			interpret = config.getAttribute(
+					ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+					new ArrayList<String>());
+			prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "").trim();
+		} catch (final CoreException e1) {
+			interpret = new ArrayList<String>();
+			prjs = "";
+		}
+		final String[] projectNames = prjs.length() == 0 ? new String[] {}
+				: prjs.split(";");
+		final Set<IProject> projects = new HashSet<IProject>();
+		for (final String s : projectNames) {
+			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject(s);
+			if (project == null) {
+				continue;
+			}
+			projects.add(project);
+		}
+
+		interpret = ErlangLaunchConfigurationDelegate
+				.addBreakpointProjectsAndModules(projects, interpret);
+		interpretedModules = new ArrayList<IErlModule>();
+
+		addModules(interpret, interpretedModules);
+
+		int debugFlags;
+		try {
+			debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
+					ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
 		} catch (final CoreException e) {
-			ErlLogger.warn(e);
+			debugFlags = ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+		}
+		setFlagCheckboxes(debugFlags);
+
+		if (checkboxTreeViewer != null) {
+			checkboxTreeViewer.setInput(config);
+			final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+					.getContentProvider()).getRoot();
+			root.setChecked(checkboxTreeViewer, interpretedModules);
+			checkboxTreeViewer.expandAll();
 		}
 	}
 

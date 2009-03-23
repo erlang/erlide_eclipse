@@ -176,14 +176,10 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 					IProjectNature n = null;
 					try {
 						n = p.getNature(ErlangPlugin.NATURE_ID);
+						if (n != null) {
+							ps.add(p.getName());
+						}
 					} catch (final CoreException e) {
-					}
-					if (n == null) {
-						ErlLogger.debug(
-								"project %s doesn't have an erlang nature", p
-										.getName());
-					} else {
-						ps.add(p.getName());
 					}
 				}
 			}
