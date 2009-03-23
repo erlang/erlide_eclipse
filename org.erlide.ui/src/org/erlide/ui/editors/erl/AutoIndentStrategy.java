@@ -11,6 +11,7 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
@@ -27,6 +28,7 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
+import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 
 import erlang.ErlideIndent;
 import erlang.IndentResult;
@@ -82,8 +84,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 			final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 			final int tabw = getTabWidthFromPreferences();
 
-			final Map<String, String> prefs = IndentationPreferencePage
-					.getKeysAndPrefs();
+			final Map<String, String> prefs = new TreeMap<String, String>();
+			IndentationPreferencePage.addKeysAndPrefs(prefs);
+			SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
 			final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
 					c.text, tabw, prefs);
 

@@ -2,6 +2,7 @@ package org.erlide.ui.actions;
 
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -9,6 +10,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.editors.erl.AutoIndentStrategy;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
+import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -33,15 +35,17 @@ public class IndentAction extends ErlangTextEditorAction {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.actions.ErlangTextEditorAction#callErlang(org.eclipse.jface
-	 *      .text.ITextSelection, java.lang.String)
+	 * @see
+	 * org.erlide.ui.actions.ErlangTextEditorAction#callErlang(org.eclipse.jface
+	 * .text.ITextSelection, java.lang.String)
 	 */
 	@Override
 	protected OtpErlangObject callErlang(final int offset, final int length,
 			final String text) throws Exception {
 		final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
-		final Map<String, String> prefs = IndentationPreferencePage
-				.getKeysAndPrefs();
+		final Map<String, String> prefs = new TreeMap<String, String>();
+		IndentationPreferencePage.addKeysAndPrefs(prefs);
+		SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final OtpErlangObject r1 = ErlideIndent.indentLines(b, offset, length,
 				text, tabw, prefs);

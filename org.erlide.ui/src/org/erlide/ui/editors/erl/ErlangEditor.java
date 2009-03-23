@@ -271,7 +271,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			if (key.indexOf('/') != -1
 					&& key.split("/")[0]
 							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
-				getSmartTypingPrefs();
+				getBracketInserterPrefs();
 			}
 		}
 	}
@@ -1026,7 +1026,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void createPartControl(final Composite parent) {
 		super.createPartControl(parent);
 
-		getSmartTypingPrefs();
+		getBracketInserterPrefs();
 
 		final ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension) {
@@ -1054,44 +1054,23 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return fBracketInserter;
 	}
 
-	@SuppressWarnings("boxing")
-	void getSmartTypingPrefs() {
-		final List<Boolean> autoClosePrefs = SmartTypingPreferencePage
-				.getPreferences();
+	private void getBracketInserterPrefs() {
+		final List<Boolean> prefs = SmartTypingPreferencePage
+				.getBracketInserterPreferences();
 		final ErlangEditorBracketInserter bracketInserter = getBracketInserter();
-		bracketInserter.setCloseAtomsEnabled(autoClosePrefs
+		bracketInserter.setCloseAtomsEnabled(prefs
 				.get(SmartTypingPreferencePage.ATOMS));
-		bracketInserter.setCloseBracketsEnabled(autoClosePrefs
+		bracketInserter.setCloseBracketsEnabled(prefs
 				.get(SmartTypingPreferencePage.BRACKETS));
-		bracketInserter.setCloseStringsEnabled(autoClosePrefs
+		bracketInserter.setCloseStringsEnabled(prefs
 				.get(SmartTypingPreferencePage.STRINGS));
-		bracketInserter.setCloseBracesEnabled(autoClosePrefs
+		bracketInserter.setCloseBracesEnabled(prefs
 				.get(SmartTypingPreferencePage.BRACES));
-		bracketInserter.setCloseParensEnabled(autoClosePrefs
+		bracketInserter.setCloseParensEnabled(prefs
 				.get(SmartTypingPreferencePage.PARENS));
-		bracketInserter.setEmbraceSelectionEnabled(autoClosePrefs
+		bracketInserter.setEmbraceSelectionEnabled(prefs
 				.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
 	}
-
-	// private String getGlobalExternalModulesFile() {
-	// final IPreferencesService service = Platform.getPreferencesService();
-	// final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-	// "default_external_modules", "", null);
-	// if (s.length() > 0) {
-	// ErlLogger.debug("external modules file: '%s'", s);
-	// }
-	// return s;
-	// }
-	//
-	// private String getGlobalExternalIncludesFile() {
-	// final IPreferencesService service = Platform.getPreferencesService();
-	// final String s = service.getString(ErlideUIPlugin.PLUGIN_ID,
-	// "default_external_includes", "", null);
-	// if (s.length() > 0) {
-	// ErlLogger.debug("external includes file: '%s'", s);
-	// }
-	// return s;
-	// }
 
 	protected boolean isActivePart() {
 		final IWorkbenchPart part = getActivePart();

@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.runtime.ErlLogger;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.StatusInfo;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -57,22 +57,19 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 			ErlEditorMessages.Prefs_Fun, ErlEditorMessages.Prefs_Fun_body,
 			ErlEditorMessages.Prefs_Paren,
 			ErlEditorMessages.Prefs_Binary_begin,
-			ErlEditorMessages.Prefs_End_paren,
-			ErlEditorMessages.Prefs_Semicolon_nl,
-			ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
-			ErlEditorMessages.Prefs_Comma_nl };
+			ErlEditorMessages.Prefs_End_paren };
 
 	private static final String INDENT_KEYS[] = new String[] {
 			"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 			"function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-			"end_paren", "semicolon_nl", "dot_nl", "arrow_nl", "comma_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"end_paren" }; //$NON-NLS-1$ 
 
 	private static final String INDENT_DEFAULTS[] = new String[] { "4", "4", //$NON-NLS-1$ //$NON-NLS-2$
-			"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
-			"0", "0", "0", "0" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+	};
 
-	private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
+	// private static final int N_NUMERIC_KEYS = INDENT_KEYS.length - 4;
 
 	public IndentationPreferencePage() {
 		super();
@@ -100,7 +97,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 	protected Control createContents(final Composite parent) {
 		final Composite c = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 4;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		c.setLayout(layout);
@@ -110,26 +107,21 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 	}
 
 	private void createMyControls(final Composite parent) {
-		for (int i = 0; i < INDENT_FIELDS.length; ++i) {
+		for (int i = 0; i < INDENT_DEFAULTS.length; ++i) {
 			final String desc = INDENT_FIELDS[i];
 			final Composite c = parent;
-			if (i < N_NUMERIC_KEYS) {
-				final Label label = new Label(c, SWT.NONE);
-				label.setText(desc);
-				GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-				gd.horizontalIndent = 3;
-				label.setLayoutData(gd);
-				final Text text = new Text(c, SWT.BORDER | SWT.SINGLE);
-				gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-				gd.widthHint = convertWidthInCharsToPixels(3);
-				text.setLayoutData(gd);
-				textFields.add(text);
-				text.addModifyListener(fNumberFieldListener);
-			} else {
-				final Button button = new Button(c, SWT.CHECK);
-				button.setText(desc);
-				buttons.add(button);
-			}
+			final Label label = new Label(c, SWT.NONE);
+			label.setText(desc);
+			GridData gd = new GridData(SWT.BEGINNING, SWT.CENTER, true, false); // new
+			// GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+			gd.horizontalIndent = 3;
+			label.setLayoutData(gd);
+			final Text text = new Text(c, SWT.BORDER | SWT.SINGLE);
+			gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+			gd.widthHint = convertWidthInCharsToPixels(3);
+			text.setLayoutData(gd);
+			textFields.add(text);
+			text.addModifyListener(fNumberFieldListener);
 		}
 	}
 
@@ -140,12 +132,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 				INDENT_DEFAULTS);
 		for (int i = 0; i < l.size(); ++i) {
 			final String s = l.get(i);
-			if (i < N_NUMERIC_KEYS) {
-				textFields.get(i).setText(s);
-			} else {
-				buttons.get(i - N_NUMERIC_KEYS).setSelection(
-						s != null && !s.equals("0")); //$NON-NLS-1$
-			}
+			textFields.get(i).setText(s);
 		}
 		fieldsInitialized = true;
 	}
@@ -155,11 +142,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		final Preferences node = ErlideUIPlugin.getPrefsNode();
 		for (int i = 0; i < INDENT_KEYS.length; ++i) {
 			int n;
-			if (i < N_NUMERIC_KEYS) {
-				n = Integer.parseInt(textFields.get(i).getText());
-			} else {
-				n = buttons.get(i - N_NUMERIC_KEYS).getSelection() ? 1 : 0;
-			}
+			n = Integer.parseInt(textFields.get(i).getText());
 			node.putInt(INDENT_KEY + "/" + INDENT_KEYS[i], n); //$NON-NLS-1$
 		}
 		try {
@@ -175,19 +158,14 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 	@Override
 	protected void performDefaults() {
 		for (int i = 0; i < INDENT_KEYS.length; ++i) {
-			if (i < N_NUMERIC_KEYS) {
-				final String s = INDENT_DEFAULTS[i];
-				textFields.get(i).setText(s);
-			} else {
-				buttons.get(i - N_NUMERIC_KEYS).setSelection(
-						!INDENT_DEFAULTS[i].equals("0")); //$NON-NLS-1$
-			}
+			final String s = INDENT_DEFAULTS[i];
+			textFields.get(i).setText(s);
 		}
 		super.performDefaults();
 	}
 
 	private final ModifyListener fNumberFieldListener = new ModifyListener() {
-		public void modifyText(ModifyEvent e) {
+		public void modifyText(final ModifyEvent e) {
 			numberFieldChanged((Text) e.widget);
 		}
 	};
@@ -265,9 +243,9 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
-	public static Map<String, String> getKeysAndPrefs() {
+	public static void addKeysAndPrefs(final Map<String, String> map) {
 		Assert.isTrue(INDENT_KEYS.length == INDENT_FIELDS.length);
 		Assert.isTrue(INDENT_FIELDS.length == INDENT_DEFAULTS.length);
-		return getKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS);
+		addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
 	}
 }

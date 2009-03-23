@@ -218,12 +218,12 @@ i_with_old_or_new_anchor(none, ANew, I) ->
 i_with_old_or_new_anchor(AOld, _ANew, I) ->
     i_with(none, AOld, I).
 
-i_par_list(R0, I0) ->
-    I1 = I0#i{in_block=false},
+i_par_list(R0, #i{in_block=OldIB}=I0) ->
+    I1 = I0#i{in_block=true},
     R1 = i_kind('(', R0, I1),
     I2 = i_with(end_paren, R0, I1),
     R2 = i_parameters(R1, I1),
-    i_end_paren(R2, I2).
+    i_end_paren(R2, I2#i{in_block=OldIB}).
 
 i_expr([], _I, _A) ->
     {[], eof};
@@ -441,43 +441,17 @@ i_1_expr([#token{kind='#'} | _] = L, I) ->
     ?D('#'),
     {R, _A} = i_record(L, I#i{in_block=false}),
     R;
-i_1_expr([#token{kind='case'}=T | _] = R0, I0) ->
-    R1 = i_kind('case', R0, I0),
-    I1 = i_with('case', R0, I0),
-    {R2, _A} = i_expr(R1, I1, none),
-    R3 = i_kind('of', R2, I1),
-    R4 = i_clause_list(R3, I1#i{in_block=true}),
-    i_block_end(T#token.kind, R4, I0);
-i_1_expr([#token{kind='if'}=T | _] = R0, I0) ->
-    R1 = i_kind('if', R0, I0),
-    I1 = i_with('case', R0, I0),
-    ?D(I1),
-    R2 = i_if_clause_list(R1, I1#i{in_block=true}, none),
-    i_block_end(T#token.kind, R2, I0);
+i_1_expr([#token{kind='case'} | _] = R, I) ->
+    i_case(R, I);
+i_1_expr([#token{kind='if'} | _] = R, I) ->
+    i_if(R, I);
 i_1_expr([#token{kind='begin'}=T | _] = R0, I0) ->
     R1 = i_kind('begin', R0, I0),
     I1 = i_with('case', R0, I0),
     R2 = i_end_or_expr_list(R1, I1#i{in_block=true}),
     i_block_end(T#token.kind, R2, I0);
-i_1_expr([#token{kind='receive'}=T | _] = R0, I0) ->
-    R1 = i_kind('receive', R0, I0),
-    I1 = i_with('case', R0, I0#i{in_block=true}),
-    R2 = case i_sniff(R1) of
-	     'after' ->
-		 R1;
-	     _ ->
-		 i_clause_list(R1, I1)
-	 end,
-    R4 = case i_sniff(R2) of
-	     'after' ->
-		 ?D('after'),
-		 R3 = i_kind('after', R2, I1),
-		 I2 = i_with('case', clause, R0, I0#i{in_block=true}),
-		 i_after_clause(R3, I2);
-	     _ ->
-		 R2
-	 end,
-    i_block_end(T#token.kind, R4, I0);
+i_1_expr([#token{kind='receive'} | _] = R, I) ->
+    i_receive(R, I);
 i_1_expr([#token{kind='fun'}=T | R0], I) ->
     I1 = i_with('fun', T, I),
     case i_sniff(R0) of
@@ -520,8 +494,47 @@ i_macro_rest(R0, I) ->
 	    i_one(R2, I)
     end.
 
+i_if(R0, I0) ->
+    I1 = I0#i{in_block=true},
+    R1 = i_kind('if', R0, I1),
+    I2 = i_with('case', R0, I1),
+    R2 = i_if_clause_list(R1, I2, none),
+    i_block_end('if', R2, I1).
+
+i_case(R0, I0) ->
+    I1 = I0#i{in_block=true},
+    R1 = i_kind('case', R0, I1),
+    I2 = i_with('case', R0, I1),
+    {R2, _A} = i_expr(R1, I2, none),
+    R3 = i_kind('of', R2, I2),
+    R4 = i_clause_list(R3, I2),
+    i_block_end('case', R4, I1).
+
+i_receive(R0, I0) ->
+    I1 = I0#i{in_block=true},
+    R1 = i_kind('receive', R0, I1),
+    I2 = i_with('case', R0, I1),
+    R2 = case i_sniff(R1) of
+	     'after' ->
+		 R1;
+	     _ ->
+		 i_clause_list(R1, I2)
+	 end,
+    R4 = case i_sniff(R2) of
+	     'after' ->
+		 ?D('after'),
+		 R3 = i_kind('after', R2, I2),
+		 I2 = i_with('case', clause, R0, I1),
+		 i_after_clause(R3, I2);
+	     _ ->
+		 R2
+	 end,
+    i_block_end('receive', R4, I1).
+
+
+
 i_try(R0, I0) ->
-    I1 = I0#i{in_block = true},
+    I1 = I0#i{in_block=true},
     R1 = i_kind('try', R0, I1),
     I2 = i_with('try', R0, I1),
     R2 = i_expr_list(R1, I2),
@@ -579,7 +592,8 @@ i_parameters(R, I) ->
             i_expr_list(R, I)
     end.
 
-i_record([#token{kind='#'} | R0], I) ->
+i_record([#token{kind='#'} | R0], I0) ->
+    I = I0#i{in_block=true},
     R1 = i_comments(R0, I),
     R2 = i_atom_or_macro(R1, I),
     ?D(R2),

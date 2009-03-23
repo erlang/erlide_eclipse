@@ -28,7 +28,15 @@ public class ErlideIndent {
 		while (im.hasNext()) {
 			final Map.Entry<String, String> e = im.next();
 			final OtpErlangAtom a = new OtpErlangAtom(e.getKey());
-			final int n = Integer.parseInt(e.getValue());
+			final String s = e.getValue();
+			int n;
+			if (s.equals("false")) {
+				n = 0;
+			} else if (s.equals("true")) {
+				n = 1;
+			} else {
+				n = Integer.parseInt(s);
+			}
 			final OtpErlangLong l = new OtpErlangLong(n);
 			final OtpErlangTuple t = new OtpErlangTuple(new OtpErlangObject[] {
 					a, l });
