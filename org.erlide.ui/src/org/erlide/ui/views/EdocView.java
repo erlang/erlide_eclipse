@@ -85,7 +85,7 @@ public class EdocView extends AbstractInfoView {
 	private Browser fBrowser;
 
 	/** The text widget. */
-	StyledText fText;
+	private StyledText fText;
 
 	/** The information presenter. */
 	private DefaultInformationControl.IInformationPresenterExtension fPresenter;
@@ -97,7 +97,7 @@ public class EdocView extends AbstractInfoView {
 	private SelectAllAction fSelectAllAction;
 
 	/** The Browser widget */
-	boolean fIsUsingBrowserWidget;
+	private boolean fIsUsingBrowserWidget;
 
 	private static URL fgStyleSheet;
 
@@ -122,7 +122,7 @@ public class EdocView extends AbstractInfoView {
 		 */
 		public SelectAllAction(final Control control,
 				final SelectionProvider selectionProvider) {
-			super("selectAll"); //$NON-NLS-1$
+			super("selectAll");
 
 			Assert.isNotNull(control);
 			Assert.isNotNull(selectionProvider);
@@ -277,7 +277,8 @@ public class EdocView extends AbstractInfoView {
 
 			final IPreferenceStore store = ErlideUIPlugin.getDefault()
 					.getPreferenceStore();
-			boolean doNotWarn = store.getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
+			final boolean doNotWarn = store
+					.getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
 			if (WARNING_DIALOG_ENABLED && !doNotWarn) {
 				final String title = "Error";
 				final String message = "Error no browser found";
@@ -318,13 +319,13 @@ public class EdocView extends AbstractInfoView {
 	}
 
 	private void initStyleSheet() {
-		Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css");
 		if (fgStyleSheet != null) {
 
 			try {
 				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			}
 		}
 	}
@@ -425,6 +426,10 @@ public class EdocView extends AbstractInfoView {
 			fText.setText(edocHtml);
 			TextPresentation.applyTextPresentation(fPresentation, fText);
 		}
+	}
+
+	public void setText(final String s) {
+		setInfo(s);
 	}
 
 	/*

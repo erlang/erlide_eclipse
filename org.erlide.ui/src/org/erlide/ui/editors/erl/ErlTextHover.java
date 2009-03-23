@@ -69,6 +69,7 @@ import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.views.EdocView;
@@ -82,25 +83,19 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDoc;
+import erlang.OpenResult;
 
 public class ErlTextHover implements ITextHover,
 		IInformationProviderExtension2, ITextHoverExtension,
 		ITextHoverExtension2 {
 
-	// private ITextEditor fEditor;
 	private final IErlModule fModule;
 	private static URL fgStyleSheet;
-	// private final String fExternalIncludes;
-	// private final List<Tuple> pathVars;
-	// private final String fExternalModules;
 	private IInformationControlCreator fHoverControlCreator;
 	private PresenterControlCreator fPresenterControlCreator;
 
 	public ErlTextHover(final IErlModule module) {
 		fModule = module;
-		// fExternalModules = externalModules;
-		// fExternalIncludes = externalIncludes;
-		// pathVars = OpenAction.getPathVars();
 		initStyleSheet();
 	}
 
@@ -109,7 +104,6 @@ public class ErlTextHover implements ITextHover,
 		if (token == null) {
 			return null;
 		}
-		// ErlLogger.debug("getHoverRegion " + token.toString());
 		return new Region(token.getOffset(), token.getLength());
 	}
 
@@ -230,11 +224,11 @@ public class ErlTextHover implements ITextHover,
 								selectionProvider
 										.setSelection(new StructuredSelection(
 												inputElement));
-								final boolean isErlElementInput = inputElement instanceof IErlElement;
+								final boolean hasInputElement = inputElement != null;
 								showInJavadocViewAction
-										.setEnabled(isErlElementInput);
+										.setEnabled(hasInputElement);
 								openDeclarationAction
-										.setEnabled(isErlElementInput);
+										.setEnabled(hasInputElement);
 							}
 						}
 					};
@@ -330,7 +324,7 @@ public class ErlTextHover implements ITextHover,
 			final IErlModule module, final ITextViewer textViewer,
 			final IRegion hoverRegion) {
 		final StringBuffer result = new StringBuffer();
-		final IErlElement element = null;
+		Object element = null;
 		// TODO our model is too coarse, here we need access to expressions
 		// try {
 		// element = module.getElementAt(hoverRegion.getOffset());
@@ -355,15 +349,16 @@ public class ErlTextHover implements ITextHover,
 				.getProject();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(module), fImports, model.getExternal(
-				erlProject, ErlangCore.EXTERNAL_MODULES), model
-				.getPathVars());
+				erlProject, ErlangCore.EXTERNAL_MODULES), model.getPathVars());
 		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
-		if (r1 instanceof OtpErlangString) {
-			final OtpErlangString s1 = (OtpErlangString) r1;
-			result.append(s1.stringValue());
-		} else if (r1 instanceof OtpErlangTuple) {
+		final OtpErlangTuple t = (OtpErlangTuple) r1;
+		if (Util.isOk(t)) {
+			final String docStr = Util.stringValue(t.elementAt(1));
+			final OpenResult or = new OpenResult(t.elementAt(2));
+			result.append(docStr);
+			element = or;
+		} else {
 			// h�r ska vi kolla som open, m�ste faktorisera lite...
-			final OtpErlangTuple t = (OtpErlangTuple) r1;
 			final OtpErlangObject o0 = t.elementAt(0);
 			final OtpErlangObject o1 = t.elementAt(1);
 			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
@@ -421,6 +416,7 @@ public class ErlTextHover implements ITextHover,
 					try {
 						m.open(null);
 						f = ErlModelUtils.findFunction(m, erlangFunction);
+						element = f;
 					} catch (final ErlModelException e) {
 					}
 					if (f == null) {
@@ -442,6 +438,7 @@ public class ErlTextHover implements ITextHover,
 								kindToFind, model.getExternal(erlProject,
 										ErlangCore.EXTERNAL_INCLUDES));
 				if (pd != null) {
+					element = pd;
 					result.append(pd.getExtra());
 				}
 			}
@@ -571,6 +568,7 @@ public class ErlTextHover implements ITextHover,
 				final EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
 						.showView(EdocView.ID);
 				// TODO view.setInput(infoInput);
+				view.setText(infoInput.getHtml());
 			} catch (final PartInitException e) {
 				ErlLogger.error(e);
 			}
@@ -598,13 +596,31 @@ public class ErlTextHover implements ITextHover,
 		 */
 		@Override
 		public void run() {
-			final ErlBrowserInformationControlInput infoInput = (ErlBrowserInformationControlInput) fInfoControl
+			final BrowserInformationControlInput infoInput = fInfoControl
 					.getInput();
 			fInfoControl.notifyDelayedInputChange(null);
 			fInfoControl.dispose();
 			// try {
 			// // FIXME: add hover location to editor navigation history?
-			// // TODO ErlideUIPlugin.openInEditor(infoInput.getElement());
+			try {
+				final Object element = infoInput.getInputElement();
+				if (element instanceof IErlElement) {
+					EditorUtility.openElementInEditor(element, true);
+				} else if (element instanceof OpenResult) {
+					final OpenResult or = (OpenResult) element;
+					try {
+						OpenAction.openOpenResult(null, null, ErlangCore
+								.getBackendManager().getIdeBackend(), -1, null,
+								or);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (final PartInitException e) {
+				e.printStackTrace();
+			} catch (final ErlModelException e) {
+				e.printStackTrace();
+			}
 			// } catch (PartInitException e) {
 			// ErlLogger.error(e);
 			// } catch (ErlModelException e) {

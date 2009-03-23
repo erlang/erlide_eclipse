@@ -312,6 +312,17 @@ public class EditorUtility {
 	}
 
 	/**
+	 * Opens the editor on the given element and subsequently selects it.
+	 */
+	public static void openElementInEditor(final Object element,
+			final boolean activate) throws ErlModelException, PartInitException {
+		final IEditorPart part = EditorUtility.openInEditor(element, activate);
+		if (element instanceof IErlElement) {
+			EditorUtility.revealInEditor(part, (IErlElement) element);
+		}
+	}
+
+	/**
 	 * If the current active editor edits a erlang element return it, else
 	 * return null
 	 */

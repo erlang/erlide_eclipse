@@ -23,7 +23,7 @@ import org.erlide.core.erlang.IErlElement;
 public class ErlBrowserInformationControlInput extends
 		BrowserInformationControlInput {
 
-	private final IErlElement fElement;
+	private final Object fElement;
 	private final String fHtml;
 	private final int fLeadingImageWidth;
 
@@ -40,8 +40,8 @@ public class ErlBrowserInformationControlInput extends
 	 *            the indent required for the element image
 	 */
 	public ErlBrowserInformationControlInput(
-			ErlBrowserInformationControlInput previous, IErlElement element,
-			String html, int leadingImageWidth) {
+			final ErlBrowserInformationControlInput previous,
+			final Object element, final String html, final int leadingImageWidth) {
 		super(previous);
 		Assert.isNotNull(html);
 		fElement = element;
@@ -60,14 +60,14 @@ public class ErlBrowserInformationControlInput extends
 		return fLeadingImageWidth;
 	}
 
-	/**
-	 * Returns the Java element.
-	 * 
-	 * @return the element or <code>null</code> if none available
-	 */
-	public IErlElement getElement() {
-		return fElement;
-	}
+	// /**
+	// * Returns the Java element.
+	// *
+	// * @return the element or <code>null</code> if none available
+	// */
+	// public IErlElement getElement() {
+	// return fElement;
+	// }
 
 	/*
 	 * @see org.eclipse.jface.internal.text.html.BrowserInput#getHtml()
@@ -90,7 +90,10 @@ public class ErlBrowserInformationControlInput extends
 	 */
 	@Override
 	public String getInputName() {
-		return fElement == null ? "" : fElement.getName(); //$NON-NLS-1$
+		if (fElement instanceof IErlElement) {
+			final IErlElement element = (IErlElement) fElement;
+			return element.getName();
+		}
+		return ""; //$NON-NLS-1$
 	}
-
 }

@@ -383,20 +383,20 @@ get_all_links_to_other() ->
 get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, PathVars) ->
     try
         case erlide_open:open(Module, Offset, ExternalModules, PathVars) of
-            {external, M, Function, N, P} ->
-                ?D({open, {external, M, Function, N, _P}}),
+            {external, M, Function, N, _Path} = External ->
+                ?D({open, External}),
                 case get_doc_for_external(StateDir, M, [{Function, N}]) of
                     D when is_list(D) ->
-                        lists:flatten(D);
+                        {ok, lists:flatten(D), External};
 		    _Error ->
-			{external, M, Function, N, P}
+			External
                 end;
-            {local, Function, N} ->
+            {local, Function, N} = Local ->
                 case get_doc_for_imported(StateDir, Function, N, Imports) of
                     D when is_list(D) ->
-                        lists:flatten(D);
+                        {ok, lists:flatten(D), Local};
 		    _Error ->
-			{local, Function, N}
+			Local
                 end;
             Error ->
                 ?D(Error),

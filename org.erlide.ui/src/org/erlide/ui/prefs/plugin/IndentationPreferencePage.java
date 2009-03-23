@@ -23,7 +23,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -82,8 +81,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 	public void init(final IWorkbench workbench) {
 	}
 
-	List<Text> textFields = new ArrayList<Text>();
-	List<Button> buttons = new ArrayList<Button>();
+	private final List<Text> textFields = new ArrayList<Text>();
 
 	/**
 	 * Tells whether the fields are initialized.
@@ -170,7 +168,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		}
 	};
 
-	void numberFieldChanged(final Text textControl) {
+	private void numberFieldChanged(final Text textControl) {
 		final String number = textControl.getText();
 		final IStatus status = validatePositiveNumber(number);
 		updateStatus(status);
@@ -202,7 +200,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		return status;
 	}
 
-	void updateStatus(final IStatus status) {
+	private void updateStatus(final IStatus status) {
 		if (!fieldsInitialized) {
 			return;
 		}

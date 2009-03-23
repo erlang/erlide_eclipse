@@ -378,8 +378,7 @@ public class ErlModelUtils {
 		}
 		final String s = ErlideOpen.getExternalInclude(ErlangCore
 				.getBackendManager().getIdeBackend(), filePath,
-				externalIncludes, ErlangCore.getModel()
-						.getPathVars());
+				externalIncludes, ErlangCore.getModel().getPathVars());
 		if (s != null) {
 			return s;
 		}
@@ -486,17 +485,6 @@ public class ErlModelUtils {
 		}
 		EditorUtility.revealInEditor(editor, typespec);
 		return true;
-	}
-
-	/**
-	 * Opens the editor on the given element and subsequently selects it.
-	 */
-	public static void openElementInNewEditor(final Object element,
-			final boolean activate) throws ErlModelException, PartInitException {
-		final IEditorPart part = EditorUtility.openInEditor(element, activate);
-		if (element instanceof IErlElement) {
-			EditorUtility.revealInEditor(part, (IErlElement) element);
-		}
 	}
 
 	public static void disposeScanner(final ErlangEditor editor) {
@@ -613,6 +601,10 @@ public class ErlModelUtils {
 			}
 		}
 		return null;
+	}
+
+	public static void openElementInEditor(final IErlElement element) {
+		;
 	}
 
 }
