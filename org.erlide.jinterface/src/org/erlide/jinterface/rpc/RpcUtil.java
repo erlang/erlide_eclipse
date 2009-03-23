@@ -167,6 +167,15 @@ public class RpcUtil {
 				new OtpErlangAtom("call"), m, f, a, new OtpErlangAtom("user")));
 	}
 
+	public static OtpErlangTuple buildRpcCast(final OtpErlangPid pid,
+			final String module, final String fun, final OtpErlangObject[] args) {
+		final OtpErlangObject m = new OtpErlangAtom(module);
+		final OtpErlangObject f = new OtpErlangAtom(fun);
+		final OtpErlangObject a = new OtpErlangList(args);
+		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
+				new OtpErlangAtom("cast"), m, f, a, new OtpErlangAtom("user")));
+	}
+
 	public static OtpErlangObject execute(OtpErlangObject target,
 			OtpErlangObject method, OtpErlangObject[] args) {
 
