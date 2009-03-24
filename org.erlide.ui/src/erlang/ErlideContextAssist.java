@@ -9,6 +9,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -34,6 +35,24 @@ public class ErlideContextAssist {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public static boolean checkRecordCompletion(final Backend b,
+			final String substring) {
+		try {
+			final OtpErlangObject res = b.rpcx("erlide_content_assist",
+					"check_record", "s", substring);
+			if (Util.isOk(res)) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(1);
+				return a.booleanValue();
+			}
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		} catch (final BackendException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

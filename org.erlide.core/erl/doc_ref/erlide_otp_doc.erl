@@ -400,13 +400,13 @@ get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, Pat
                 end;
             Error ->
                 ?D(Error),
-                Error
+                {error, Error}
         end
     catch
     	error:E ->
-            E;
+            {error, E};
         exit:E ->
-            E
+            {error, E}
     end.
 
 e(E) ->

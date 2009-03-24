@@ -24,7 +24,7 @@
          get_line_offsets/1,
          detab/3, entab/3, start_column/2, initial_whitespace/1,
          left_strip/1, right_strip/1, strip/1,
-	 strip_comments/1]).
+	 strip_comments/1, skip_expr/1]).
 
 %-define(DEBUG, 1).
 

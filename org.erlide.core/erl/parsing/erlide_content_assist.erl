@@ -10,15 +10,29 @@
 %% Include files
 %%
 
+-include("erlide_scanner.hrl").
+
 %%
 %% Exported Functions
 %%
--export([get_variables/2]).
+-export([get_variables/2, check_record/1]).
 
 %%
 %% API Functions
 %%
 
+
+%% check if the text is where to enter record field
+check_record(S) ->
+    case erlide_scan:string(S) of
+	{ok, Tokens, _Pos} ->
+	    {ok, check_record_tokens(erlide_scanner:fix_tokens(Tokens, 0))};
+	_ ->
+	    none
+    end.
+
+%% get list of variables matching prefix
+%% the variables are returne as tokens
 get_variables(Src, Prefix) ->
     case erlide_scan:string(Src) of
 	{ok, Tokens, _Pos} ->
@@ -57,4 +71,27 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
     get_var_tokens(Rest, Prefix, Acc).
 
 
-        
+check_record_tokens(Tokens) ->
+    check_record_tokens(Tokens, false).
+
+check_record_tokens([], A) ->
+    A;
+check_record_tokens([eof | _], A) ->
+    A;
+check_record_tokens([#token{kind=eof} | _], A) ->
+    A;
+check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
+    check_record_tokens(Rest, true);
+check_record_tokens([#token{kind='{'} | Rest], _) ->
+    check_record_tokens(Rest, true);
+check_record_tokens([#token{kind=','} | Rest], _) ->
+    check_record_tokens(Rest, true);
+check_record_tokens(L, _) ->
+    case erlide_text:skip_expr(L) of
+	L ->
+	    check_record_tokens(tl(L), false);
+	Rest ->
+	    check_record_tokens(Rest, false)
+    end.
+    
+

@@ -112,12 +112,14 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			final IDocument doc = viewer.getDocument();
-			String prefix = lastText(doc, offset);
-			final int colonPos = prefix.indexOf(':');
-			final int hashMarkPos = prefix.indexOf('#');
-			final int dotPos = prefix.indexOf('.');
-			final int leftBracketPos = prefix.indexOf('{');
-			final int interrogationMarkPos = prefix.indexOf('?');
+			String before = getBefore(doc, offset);
+			final int commaPos = before.lastIndexOf(',');
+			final int colonPos = before.lastIndexOf(':');
+			final int hashMarkPos = before.lastIndexOf('#');
+			final int dotPos = before.lastIndexOf('.');
+			final int leftBracketPos = before.lastIndexOf('{');
+			final int interrogationMarkPos = before.lastIndexOf('?');
+			final String prefix = getPrefix(before);
 			List<ICompletionProposal> result;
 			int flags;
 			int pos;
@@ -125,39 +127,41 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IErlProject project = module == null ? null : module
 					.getProject();
 			final IErlElement element = getElementAt(offset);
-			if (colonPos >= 0) {
-				// FIXME should we keep quotes here too? as we do with macros
-				// and records
-				moduleOrRecord = unquote(prefix.substring(0, colonPos));
-				flags = EXTERNAL_FUNCTIONS;
-				pos = colonPos;
-				prefix = prefix.substring(colonPos + 1);
-			} else if (hashMarkPos >= 0) {
+			if (hashMarkPos >= 0
+					&& ErlideContextAssist.checkRecordCompletion(b, before
+							.substring(hashMarkPos))) {
 				if (dotPos >= 0) {
 					flags = RECORD_FIELDS;
 					pos = hashMarkPos;
-					moduleOrRecord = prefix.substring(hashMarkPos + 1, dotPos);
-					prefix = prefix.substring(dotPos + 1);
+					moduleOrRecord = before.substring(hashMarkPos + 1, dotPos);
+					before = before.substring(dotPos + 1);
 				} else if (leftBracketPos > hashMarkPos) {
 					flags = RECORD_FIELDS;
 					pos = hashMarkPos;
-					moduleOrRecord = prefix.substring(hashMarkPos + 1,
+					moduleOrRecord = before.substring(hashMarkPos + 1,
 							leftBracketPos);
 					final int n = atomPrefixLength(doc, offset);
-					prefix = prefix.substring(prefix.length() - n);
+					before = before.substring(before.length() - n);
 				} else {
 					flags = RECORD_DEFS;
 					pos = hashMarkPos;
-					prefix = prefix.substring(hashMarkPos + 1);
+					before = before.substring(hashMarkPos + 1);
 				}
+			} else if (colonPos > commaPos) {
+				moduleOrRecord = unquote(getPrefix(before
+						.substring(0, colonPos)));
+				flags = EXTERNAL_FUNCTIONS;
+				pos = colonPos;
+				before = before.substring(colonPos + 1);
 			} else if (interrogationMarkPos >= 0) {
 				flags = MACRO_DEFS;
 				pos = interrogationMarkPos;
-				prefix = prefix.substring(interrogationMarkPos + 1);
+				before = before.substring(interrogationMarkPos + 1);
 			} else {
 				// TODO add more contexts...
 				flags = 0;
 				pos = colonPos;
+				before = prefix;
 				if (element != null) {
 					if (element.getKind() == IErlElement.Kind.EXPORT) {
 						flags = DECLARED_FUNCTIONS | ARITY_ONLY
@@ -178,7 +182,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					}
 				}
 			}
-			result = addCompletions(flags, offset, prefix, moduleOrRecord, pos,
+			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
 					project, b);
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
@@ -691,14 +695,24 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return 0;
 	}
 
-	private String lastText(final IDocument doc, final int offset) {
-		// FIXME rewrite so it handles stuff like #record{field1 = a, field2
-		// we'll probably need to scan it somehow...
+	private String getPrefix(final String before) {
+		for (int n = before.length() - 1; n >= 0; --n) {
+			final char c = before.charAt(n);
+			if (!isErlangIdentifierChar(c)) {
+				return before.substring(n + 1);
+			}
+		}
+		return before;
+	}
+
+	private String getBefore(final IDocument doc, final int offset) {
 		try {
-			for (int n = offset - 1; n >= 0; n--) {
+			for (int n = offset - 1; n >= 0; --n) {
 				final char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c) && c != ':' && c != '.'
-						&& c != '#' && c != '?' && c != '{' && c != '\'') {
+				final int type = Character.getType(c);
+				if (type == Character.LINE_SEPARATOR
+						|| type == Character.PARAGRAPH_SEPARATOR
+						|| type == Character.CONTROL) {
 					return doc.get(n + 1, offset - n - 1);
 				}
 			}
