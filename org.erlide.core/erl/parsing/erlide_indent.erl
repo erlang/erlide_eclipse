@@ -218,12 +218,12 @@ i_with_old_or_new_anchor(none, ANew, I) ->
 i_with_old_or_new_anchor(AOld, _ANew, I) ->
     i_with(none, AOld, I).
 
-i_par_list(R0, #i{in_block=OldIB}=I0) ->
-    I1 = I0#i{in_block=true},
+i_par_list(R0, I0) ->
+    I1 = I0#i{in_block=false},
     R1 = i_kind('(', R0, I1),
     I2 = i_with(end_paren, R0, I1),
     R2 = i_parameters(R1, I1),
-    i_end_paren(R2, I2#i{in_block=OldIB}).
+    i_end_paren(R2, I2).
 
 i_expr([], _I, _A) ->
     {[], eof};
@@ -413,6 +413,8 @@ i_end_or_expr_list(R, I0) ->
 
 i_1_expr([#token{kind=atom} | _] = R, I) ->
     i_one(R, I);
+i_1_expr([#token{kind=integer}, #token{kind=dot} | _] = R, I) ->
+    i_two(R, I);
 i_1_expr([#token{kind=integer} | _] = R, I) ->
     i_one(R, I);
 i_1_expr([#token{kind=string} | _] = R, I) ->
@@ -448,7 +450,7 @@ i_1_expr([#token{kind='if'} | _] = R, I) ->
 i_1_expr([#token{kind='begin'}=T | _] = R0, I0) ->
     R1 = i_kind('begin', R0, I0),
     I1 = i_with('case', R0, I0),
-    R2 = i_end_or_expr_list(R1, I1#i{in_block=true}),
+    R2 = i_end_or_expr_list(R1, I1#i{in_block=false}),
     i_block_end(T#token.kind, R2, I0);
 i_1_expr([#token{kind='receive'} | _] = R, I) ->
     i_receive(R, I);
@@ -505,7 +507,7 @@ i_case(R0, I0) ->
     I1 = I0#i{in_block=true},
     R1 = i_kind('case', R0, I1),
     I2 = i_with('case', R0, I1),
-    {R2, _A} = i_expr(R1, I2, none),
+    {R2, _A} = i_expr(R1, I2#i{in_block=false}, none),
     R3 = i_kind('of', R2, I2),
     R4 = i_clause_list(R3, I2),
     i_block_end('case', R4, I1).
@@ -583,17 +585,21 @@ i_one(R0, I) ->
     [_ | R] = i_comments(R0, I),
     R.
 
+i_two(R0, I) ->
+    R1 = i_one(R0, I),
+    i_one(R1, I).
+
 i_parameters(R, I) ->
     i_check(R, I),
     case i_sniff(R) of
         ')' ->
             R;
         _ ->
-            i_expr_list(R, I)
+            i_expr_list(R, I#i{in_block=false})
     end.
 
 i_record([#token{kind='#'} | R0], I0) ->
-    I = I0#i{in_block=true},
+    I = I0#i{in_block=false},
     R1 = i_comments(R0, I),
     R2 = i_atom_or_macro(R1, I),
     ?D(R2),
@@ -694,7 +700,7 @@ i_declaration(R0, I) ->
 i_fun_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
     R2 = i_par_list(R1, I0),
-    I1 = i_with(before_arrow, R0, I0#i{in_block=true}),
+    I1 = i_with(before_arrow, R0, I0#i{in_block=false}),
     R3 = case i_sniff(R2) of
              'when' ->
                  R21 = i_kind('when', R2, I1),
@@ -756,8 +762,8 @@ i_clause_list(R, I) ->
 i_if_clause(R0, I0) ->
     {R1, A} = i_predicate_list(R0, I0),
     I1 = i_with(before_arrow, A, I0),
+    R2 = i_kind('->', R1, I1),
     I2 = I1#i{in_block=true},
-    R2 = i_kind('->', R1, I2),
     I3 = i_with(after_arrow, I2),
     R = i_expr_list(R2, I3),
     ?D(R),
