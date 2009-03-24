@@ -24,7 +24,6 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
@@ -33,13 +32,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.prefs.plugin.internal.ColorEditor;
 import org.erlide.ui.util.OverlayPreferenceStore;
 import org.erlide.ui.util.StatusInfo;
 
@@ -96,17 +93,18 @@ public class EditorPreferencePage extends PreferencePage implements
 
 	Map<Control, String> fCheckBoxes = new HashMap<Control, String>();
 
-	private final SelectionListener fCheckBoxListener = new SelectionListener() {
-
-		public void widgetDefaultSelected(final SelectionEvent e) {
-		}
-
-		public void widgetSelected(final SelectionEvent e) {
-			final Button button = (Button) e.widget;
-			fOverlayStore.setValue(fCheckBoxes.get(button), button
-					.getSelection());
-		}
-	};
+	// private final SelectionListener fCheckBoxListener = new
+	// SelectionListener() {
+	//
+	// public void widgetDefaultSelected(final SelectionEvent e) {
+	// }
+	//
+	// public void widgetSelected(final SelectionEvent e) {
+	// final Button button = (Button) e.widget;
+	// fOverlayStore.setValue(fCheckBoxes.get(button), button
+	// .getSelection());
+	// }
+	// };
 
 	Map<Control, String> fTextFields = new HashMap<Control, String>();
 
@@ -127,11 +125,11 @@ public class EditorPreferencePage extends PreferencePage implements
 		}
 	};
 
-	List fAppearanceColorList;
-
-	ColorEditor fAppearanceColorEditor;
-
-	Button fAppearanceColorDefault;
+	// List fAppearanceColorList;
+	//
+	// ColorEditor fAppearanceColorEditor;
+	//
+	// Button fAppearanceColorDefault;
 
 	/**
 	 * Tells whether the fields are initialized.
@@ -230,36 +228,37 @@ public class EditorPreferencePage extends PreferencePage implements
 		// ITextEditorHelpContextIds.TEXT_EDITOR_PREFERENCE_PAGE);
 	}
 
-	void handleAppearanceColorListSelection() {
-		final int i = fAppearanceColorList.getSelectionIndex();
-		final String key = fAppearanceColorListModel[i][1];
-		final RGB rgb = PreferenceConverter.getColor(fOverlayStore, key);
-		fAppearanceColorEditor.setColorValue(rgb);
-		updateAppearanceColorWidgets(fAppearanceColorListModel[i][2]);
-	}
-
-	private void updateAppearanceColorWidgets(final String systemDefaultKey) {
-		if (systemDefaultKey == null) {
-			fAppearanceColorDefault.setSelection(false);
-			fAppearanceColorDefault.setVisible(false);
-			fAppearanceColorEditor.getButton().setEnabled(true);
-		} else {
-			final boolean systemDefault = fOverlayStore
-					.getBoolean(systemDefaultKey);
-			fAppearanceColorDefault.setSelection(systemDefault);
-			fAppearanceColorDefault.setVisible(true);
-			fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
-		}
-	}
+	// void handleAppearanceColorListSelection() {
+	// final int i = fAppearanceColorList.getSelectionIndex();
+	// final String key = fAppearanceColorListModel[i][1];
+	// final RGB rgb = PreferenceConverter.getColor(fOverlayStore, key);
+	// fAppearanceColorEditor.setColorValue(rgb);
+	// updateAppearanceColorWidgets(fAppearanceColorListModel[i][2]);
+	// }
+	//
+	// private void updateAppearanceColorWidgets(final String systemDefaultKey)
+	// {
+	// if (systemDefaultKey == null) {
+	// fAppearanceColorDefault.setSelection(false);
+	// fAppearanceColorDefault.setVisible(false);
+	// fAppearanceColorEditor.getButton().setEnabled(true);
+	// } else {
+	// final boolean systemDefault = fOverlayStore
+	// .getBoolean(systemDefaultKey);
+	// fAppearanceColorDefault.setSelection(systemDefault);
+	// fAppearanceColorDefault.setVisible(true);
+	// fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
+	// }
+	// }
 
 	private Control createAppearancePage(final Composite parent) {
 
 		final Composite appearanceComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		appearanceComposite.setLayout(layout);
 
-		String label = ErlEditorMessages.ErlEditorPreferencePage_displayedTabWidth;
+		final String label = ErlEditorMessages.ErlEditorPreferencePage_displayedTabWidth;
 		addTextField(
 				appearanceComposite,
 				label,
@@ -273,12 +272,12 @@ public class EditorPreferencePage extends PreferencePage implements
 		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN,
 		// 3, 0, true);
 
-		label = ErlEditorMessages.ErlEditorPreferencePage_showOverviewRuler;
-		addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_OVERVIEW_RULER,
-				0);
+		// label = ErlEditorMessages.ErlEditorPreferencePage_showOverviewRuler;
+		// addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_OVERVIEW_RULER,
+		// 0);
 
 		// label = ErlEditorMessages.ErlEditorPreferencePage_showLineNumbers;
 		// addCheckBox(
@@ -302,129 +301,133 @@ public class EditorPreferencePage extends PreferencePage implements
 		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_PRINT_MARGIN,
 		// 0);
 
-		label = ErlEditorMessages.ErlEditorPreferencePage_accessibility_disableCustomCarets;
-		final Button master = addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_USE_CUSTOM_CARETS,
-				0);
-
-		label = ErlEditorMessages.ErlEditorPreferencePage_accessibility_wideCaret;
-		final Button slave = addCheckBox(
-				appearanceComposite,
-				label,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_WIDE_CARET,
-				0);
-		createDependency(
-				master,
-				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_USE_CUSTOM_CARETS,
-				slave);
-
-		Label l = new Label(appearanceComposite, SWT.LEFT);
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan = 2;
-		gd.heightHint = convertHeightInCharsToPixels(1) / 2;
-		l.setLayoutData(gd);
-
-		l = new Label(appearanceComposite, SWT.LEFT);
-		l.setText(ErlEditorMessages.ErlEditorPreferencePage_appearanceOptions);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan = 2;
-		l.setLayoutData(gd);
-
-		final Composite editorComposite = new Composite(appearanceComposite,
-				SWT.NONE);
-		layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		editorComposite.setLayout(layout);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.FILL_VERTICAL);
-		gd.horizontalSpan = 2;
-		editorComposite.setLayoutData(gd);
-
-		fAppearanceColorList = new List(editorComposite, SWT.SINGLE
-				| SWT.V_SCROLL | SWT.BORDER);
-		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL);
-		gd.heightHint = convertHeightInCharsToPixels(5);
-		fAppearanceColorList.setLayoutData(gd);
-
-		final Composite stylesComposite = new Composite(editorComposite,
-				SWT.NONE);
-		layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.numColumns = 2;
-		stylesComposite.setLayout(layout);
-		stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		l = new Label(stylesComposite, SWT.LEFT);
-		l.setText(ErlEditorMessages.ErlEditorPreferencePage_color);
-		gd = new GridData();
-		gd.horizontalAlignment = GridData.BEGINNING;
-		l.setLayoutData(gd);
-
-		fAppearanceColorEditor = new ColorEditor(stylesComposite);
-		final Button foregroundColorButton = fAppearanceColorEditor.getButton();
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment = GridData.BEGINNING;
-		foregroundColorButton.setLayoutData(gd);
-
-		final SelectionListener colorDefaultSelectionListener = new SelectionListener() {
-
-			public void widgetSelected(final SelectionEvent e) {
-				final boolean systemDefault = fAppearanceColorDefault
-						.getSelection();
-				fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
-
-				final int i = fAppearanceColorList.getSelectionIndex();
-				final String key = fAppearanceColorListModel[i][2];
-				if (key != null) {
-					fOverlayStore.setValue(key, systemDefault);
-				}
-			}
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-		};
-
-		fAppearanceColorDefault = new Button(stylesComposite, SWT.CHECK);
-		fAppearanceColorDefault
-				.setText(ErlEditorMessages.ErlEditorPreferencePage_systemDefault);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment = GridData.BEGINNING;
-		gd.horizontalSpan = 2;
-		fAppearanceColorDefault.setLayoutData(gd);
-		fAppearanceColorDefault.setVisible(false);
-		fAppearanceColorDefault
-				.addSelectionListener(colorDefaultSelectionListener);
-
-		fAppearanceColorList.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				handleAppearanceColorListSelection();
-			}
-		});
-		foregroundColorButton.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final int i = fAppearanceColorList.getSelectionIndex();
-				final String key = fAppearanceColorListModel[i][1];
-
-				PreferenceConverter.setValue(fOverlayStore, key,
-						fAppearanceColorEditor.getColorValue());
-			}
-		});
+		// label =
+		// ErlEditorMessages.ErlEditorPreferencePage_accessibility_disableCustomCarets;
+		// final Button master = addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_USE_CUSTOM_CARETS,
+		// 0);
+		//
+		// label =
+		// ErlEditorMessages.ErlEditorPreferencePage_accessibility_wideCaret;
+		// final Button slave = addCheckBox(
+		// appearanceComposite,
+		// label,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_WIDE_CARET,
+		// 0);
+		// createDependency(
+		// master,
+		// AbstractDecoratedTextEditorPreferenceConstants.EDITOR_USE_CUSTOM_CARETS,
+		// slave);
+		//
+		// Label l = new Label(appearanceComposite, SWT.LEFT);
+		// GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		// gd.horizontalSpan = 2;
+		// gd.heightHint = convertHeightInCharsToPixels(1) / 2;
+		// l.setLayoutData(gd);
+		//
+		// l = new Label(appearanceComposite, SWT.LEFT);
+		// l.setText(ErlEditorMessages.ErlEditorPreferencePage_appearanceOptions);
+		// gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		// gd.horizontalSpan = 2;
+		// l.setLayoutData(gd);
+		//
+		// final Composite editorComposite = new Composite(appearanceComposite,
+		// SWT.NONE);
+		// layout = new GridLayout();
+		// layout.numColumns = 2;
+		// layout.marginHeight = 0;
+		// layout.marginWidth = 0;
+		// editorComposite.setLayout(layout);
+		// gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+		// | GridData.FILL_VERTICAL);
+		// gd.horizontalSpan = 2;
+		// editorComposite.setLayoutData(gd);
+		//
+		// fAppearanceColorList = new List(editorComposite, SWT.SINGLE
+		// | SWT.V_SCROLL | SWT.BORDER);
+		// gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+		// | GridData.FILL_HORIZONTAL);
+		// gd.heightHint = convertHeightInCharsToPixels(5);
+		// fAppearanceColorList.setLayoutData(gd);
+		//
+		// final Composite stylesComposite = new Composite(editorComposite,
+		// SWT.NONE);
+		// layout = new GridLayout();
+		// layout.marginHeight = 0;
+		// layout.marginWidth = 0;
+		// layout.numColumns = 2;
+		// stylesComposite.setLayout(layout);
+		// stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		//
+		// l = new Label(stylesComposite, SWT.LEFT);
+		// l.setText(ErlEditorMessages.ErlEditorPreferencePage_color);
+		// gd = new GridData();
+		// gd.horizontalAlignment = GridData.BEGINNING;
+		// l.setLayoutData(gd);
+		//
+		// fAppearanceColorEditor = new ColorEditor(stylesComposite);
+		// final Button foregroundColorButton =
+		// fAppearanceColorEditor.getButton();
+		// gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.horizontalAlignment = GridData.BEGINNING;
+		// foregroundColorButton.setLayoutData(gd);
+		//
+		// final SelectionListener colorDefaultSelectionListener = new
+		// SelectionListener() {
+		//
+		// public void widgetSelected(final SelectionEvent e) {
+		// final boolean systemDefault = fAppearanceColorDefault
+		// .getSelection();
+		// fAppearanceColorEditor.getButton().setEnabled(!systemDefault);
+		//
+		// final int i = fAppearanceColorList.getSelectionIndex();
+		// final String key = fAppearanceColorListModel[i][2];
+		// if (key != null) {
+		// fOverlayStore.setValue(key, systemDefault);
+		// }
+		// }
+		//
+		// public void widgetDefaultSelected(final SelectionEvent e) {
+		// }
+		// };
+		//
+		// fAppearanceColorDefault = new Button(stylesComposite, SWT.CHECK);
+		// fAppearanceColorDefault
+		// .setText(ErlEditorMessages.ErlEditorPreferencePage_systemDefault);
+		// gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.horizontalAlignment = GridData.BEGINNING;
+		// gd.horizontalSpan = 2;
+		// fAppearanceColorDefault.setLayoutData(gd);
+		// fAppearanceColorDefault.setVisible(false);
+		// fAppearanceColorDefault
+		// .addSelectionListener(colorDefaultSelectionListener);
+		//
+		// fAppearanceColorList.addSelectionListener(new SelectionListener() {
+		//
+		// public void widgetDefaultSelected(final SelectionEvent e) {
+		// // do nothing
+		// }
+		//
+		// public void widgetSelected(final SelectionEvent e) {
+		// handleAppearanceColorListSelection();
+		// }
+		// });
+		// foregroundColorButton.addSelectionListener(new SelectionListener() {
+		//
+		// public void widgetDefaultSelected(final SelectionEvent e) {
+		// // do nothing
+		// }
+		//
+		// public void widgetSelected(final SelectionEvent e) {
+		// final int i = fAppearanceColorList.getSelectionIndex();
+		// final String key = fAppearanceColorListModel[i][1];
+		//
+		// PreferenceConverter.setValue(fOverlayStore, key,
+		// fAppearanceColorEditor.getColorValue());
+		// }
+		// });
 
 		return appearanceComposite;
 	}
@@ -451,19 +454,19 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		initializeFields();
 
-		for (final String[] element : fAppearanceColorListModel) {
-			fAppearanceColorList.add(element[0]);
-		}
-		fAppearanceColorList.getDisplay().asyncExec(new Runnable() {
-
-			public void run() {
-				if (fAppearanceColorList != null
-						&& !fAppearanceColorList.isDisposed()) {
-					fAppearanceColorList.select(0);
-					handleAppearanceColorListSelection();
-				}
-			}
-		});
+		// for (final String[] element : fAppearanceColorListModel) {
+		// fAppearanceColorList.add(element[0]);
+		// }
+		// fAppearanceColorList.getDisplay().asyncExec(new Runnable() {
+		//
+		// public void run() {
+		// if (fAppearanceColorList != null
+		// && !fAppearanceColorList.isDisposed()) {
+		// fAppearanceColorList.select(0);
+		// handleAppearanceColorListSelection();
+		// }
+		// }
+		// });
 	}
 
 	private void initializeFields() {
@@ -550,7 +553,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
 		initializeFields();
 
-		handleAppearanceColorListSelection();
+		// handleAppearanceColorListSelection();
 
 		super.performDefaults();
 	}
@@ -569,21 +572,21 @@ public class EditorPreferencePage extends PreferencePage implements
 		super.dispose();
 	}
 
-	private Button addCheckBox(final Composite parent, final String label,
-			final String key, final int indentation) {
-		final Button checkBox = new Button(parent, SWT.CHECK);
-		checkBox.setText(label);
-
-		final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = indentation;
-		gd.horizontalSpan = 2;
-		checkBox.setLayoutData(gd);
-		checkBox.addSelectionListener(fCheckBoxListener);
-
-		fCheckBoxes.put(checkBox, key);
-
-		return checkBox;
-	}
+	// private Button addCheckBox(final Composite parent, final String label,
+	// final String key, final int indentation) {
+	// final Button checkBox = new Button(parent, SWT.CHECK);
+	// checkBox.setText(label);
+	//
+	// final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+	// gd.horizontalIndent = indentation;
+	// gd.horizontalSpan = 2;
+	// checkBox.setLayoutData(gd);
+	// checkBox.addSelectionListener(fCheckBoxListener);
+	//
+	// fCheckBoxes.put(checkBox, key);
+	//
+	// return checkBox;
+	// }
 
 	private Control addTextField(final Composite composite, final String label,
 			final String key, final int textLimit, final int indentation,
@@ -611,31 +614,32 @@ public class EditorPreferencePage extends PreferencePage implements
 		return textControl;
 	}
 
-	private void createDependency(final Button master, final String masterKey,
-			final Control slave) {
-		indent(slave);
+	// private void createDependency(final Button master, final String
+	// masterKey,
+	// final Control slave) {
+	// indent(slave);
+	//
+	// final boolean masterState = fOverlayStore.getBoolean(masterKey);
+	// slave.setEnabled(masterState);
+	//
+	// final SelectionListener listener = new SelectionListener() {
+	//
+	// public void widgetSelected(final SelectionEvent e) {
+	// slave.setEnabled(master.getSelection());
+	// }
+	//
+	// public void widgetDefaultSelected(final SelectionEvent e) {
+	// }
+	// };
+	// master.addSelectionListener(listener);
+	// fMasterSlaveListeners.add(listener);
+	// }
 
-		final boolean masterState = fOverlayStore.getBoolean(masterKey);
-		slave.setEnabled(masterState);
-
-		final SelectionListener listener = new SelectionListener() {
-
-			public void widgetSelected(final SelectionEvent e) {
-				slave.setEnabled(master.getSelection());
-			}
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
-		};
-		master.addSelectionListener(listener);
-		fMasterSlaveListeners.add(listener);
-	}
-
-	private static void indent(final Control control) {
-		final GridData gridData = new GridData();
-		gridData.horizontalIndent = 20;
-		control.setLayoutData(gridData);
-	}
+	// private static void indent(final Control control) {
+	// final GridData gridData = new GridData();
+	// gridData.horizontalIndent = 20;
+	// control.setLayoutData(gridData);
+	// }
 
 	void numberFieldChanged(final Text textControl) {
 		final String number = textControl.getText();
