@@ -75,8 +75,17 @@ public class OtpExternal {
     /** The tag used for large bignums */
     public static final int largeBigTag = 111;
 
+    /** The tag used for old new Funs */
+    public static final int newFunTag = 112;
+
+    /** The tag used for external Funs (M:F/A) */
+    public static final int externalFunTag = 113;
+
     /** The tag used for new style references */
     public static final int newRefTag = 114;
+
+    /** The tag used for old Funs */
+    public static final int funTag = 117;
 
     /** The tag used for compressed terms */
     public static final int compressedTag = 80;

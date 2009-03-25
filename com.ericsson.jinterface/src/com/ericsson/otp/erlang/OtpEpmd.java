@@ -89,7 +89,7 @@ public class OtpEpmd {
      *         registered with Epmd.
      * 
      * @exception java.io.IOException
-     *                    if there was no response from the name server.
+     *                if there was no response from the name server.
      */
     public static int lookupPort(final AbstractNode node) throws IOException {
 	try {
@@ -104,13 +104,13 @@ public class OtpEpmd {
      * it.
      * 
      * @param node
-     *                the server node that should be registered with Epmd.
+     *            the server node that should be registered with Epmd.
      * 
      * @return true if the operation was successful. False if the node was
      *         already registered.
      * 
      * @exception java.io.IOException
-     *                    if there was no response from the name server.
+     *                if there was no response from the name server.
      */
     public static boolean publishPort(final OtpLocalNode node)
 	    throws IOException {
@@ -191,7 +191,7 @@ public class OtpEpmd {
 	    final byte[] tmpbuf = new byte[100];
 
 	    s.getInputStream().read(tmpbuf);
-	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
 	    port = ibuf.read2BE();
 	} catch (final IOException e) {
@@ -264,7 +264,7 @@ public class OtpEpmd {
 			+ node.host() + " when looking up " + node.alive());
 	    }
 
-	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
 	    final int response = ibuf.read1();
 	    if (response == port4resp) {
@@ -344,7 +344,7 @@ public class OtpEpmd {
 		return null;
 	    }
 
-	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
 	    if (ibuf.read1() == publish3ok) {
 		node.creation = ibuf.read2BE();
@@ -431,7 +431,7 @@ public class OtpEpmd {
 			+ node.host() + " when publishing " + node.alive());
 	    }
 
-	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 
 	    final int response = ibuf.read1();
 	    if (response == publish4resp) {
@@ -504,7 +504,7 @@ public class OtpEpmd {
 		    out.write(buffer, 0, bytesRead);
 		}
 		final byte[] tmpbuf = out.toByteArray();
-		final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+		final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 		ibuf.read4BE(); // read port int
 		// final int port = ibuf.read4BE();
 		// check if port = epmdPort

@@ -72,6 +72,9 @@ public class OtpNode extends OtpLocalNode {
     // handle status changes
     OtpNodeStatus handler;
 
+    // flags
+    private int flags = 0;
+
     /**
      * <p>
      * Create a node using the default cookie. The default cookie is found by
@@ -86,10 +89,10 @@ public class OtpNode extends OtpLocalNode {
      * </p>
      * 
      * @param node
-     *                the name of this node.
+     *            the name of this node.
      * 
      * @exception IOException
-     *                    if communication could not be initialized.
+     *                if communication could not be initialized.
      * 
      */
     public OtpNode(final String node) throws IOException {
@@ -100,14 +103,14 @@ public class OtpNode extends OtpLocalNode {
      * Create a node.
      * 
      * @param node
-     *                the name of this node.
+     *            the name of this node.
      * 
      * @param cookie
-     *                the authorization cookie that will be used by this node
-     *                when it communicates with other nodes.
+     *            the authorization cookie that will be used by this node when
+     *            it communicates with other nodes.
      * 
      * @exception IOException
-     *                    if communication could not be initialized.
+     *                if communication could not be initialized.
      * 
      */
     public OtpNode(final String node, final String cookie) throws IOException {
@@ -118,18 +121,18 @@ public class OtpNode extends OtpLocalNode {
      * Create a node.
      * 
      * @param node
-     *                the name of this node.
+     *            the name of this node.
      * 
      * @param cookie
-     *                the authorization cookie that will be used by this node
-     *                when it communicates with other nodes.
+     *            the authorization cookie that will be used by this node when
+     *            it communicates with other nodes.
      * 
      * @param port
-     *                the port number you wish to use for incoming connections.
-     *                Specifying 0 lets the system choose an available port.
+     *            the port number you wish to use for incoming connections.
+     *            Specifying 0 lets the system choose an available port.
      * 
      * @exception IOException
-     *                    if communication could not be initialized.
+     *                if communication could not be initialized.
      * 
      */
     public OtpNode(final String node, final String cookie, final int port)
@@ -190,19 +193,20 @@ public class OtpNode extends OtpLocalNode {
      * Close the specified mailbox with reason 'normal'.
      * 
      * @param mbox
-     *                the mailbox to close.
+     *            the mailbox to close.
      * 
-     * <p>
-     * After this operation, the mailbox will no longer be able to receive
-     * messages. Any delivered but as yet unretrieved messages can still be
-     * retrieved however.
-     * </p>
+     *            <p>
+     *            After this operation, the mailbox will no longer be able to
+     *            receive messages. Any delivered but as yet unretrieved
+     *            messages can still be retrieved however.
+     *            </p>
      * 
-     * <p>
-     * If there are links from the mailbox to other {@link OtpErlangPid pids},
-     * they will be broken when this method is called and exit signals with
-     * reason 'normal' will be sent.
-     * </p>
+     *            <p>
+     *            If there are links from the mailbox to other
+     *            {@link OtpErlangPid pids}, they will be broken when this
+     *            method is called and exit signals with reason 'normal' will be
+     *            sent.
+     *            </p>
      * 
      */
     public void closeMbox(final OtpMbox mbox) {
@@ -213,21 +217,22 @@ public class OtpNode extends OtpLocalNode {
      * Close the specified mailbox with the given reason.
      * 
      * @param mbox
-     *                the mailbox to close.
+     *            the mailbox to close.
      * @param reason
-     *                an Erlang term describing the reason for the termination.
+     *            an Erlang term describing the reason for the termination.
      * 
-     * <p>
-     * After this operation, the mailbox will no longer be able to receive
-     * messages. Any delivered but as yet unretrieved messages can still be
-     * retrieved however.
-     * </p>
+     *            <p>
+     *            After this operation, the mailbox will no longer be able to
+     *            receive messages. Any delivered but as yet unretrieved
+     *            messages can still be retrieved however.
+     *            </p>
      * 
-     * <p>
-     * If there are links from the mailbox to other {@link OtpErlangPid pids},
-     * they will be broken when this method is called and exit signals with the
-     * given reason will be sent.
-     * </p>
+     *            <p>
+     *            If there are links from the mailbox to other
+     *            {@link OtpErlangPid pids}, they will be broken when this
+     *            method is called and exit signals with the given reason will
+     *            be sent.
+     *            </p>
      * 
      */
     public void closeMbox(final OtpMbox mbox, final OtpErlangObject reason) {
@@ -245,8 +250,8 @@ public class OtpNode extends OtpLocalNode {
      * {@link OtpMbox#self pid}.
      * 
      * @param name
-     *                a name to register for this mailbox. The name must be
-     *                unique within this OtpNode.
+     *            a name to register for this mailbox. The name must be unique
+     *            within this OtpNode.
      * 
      * @return a mailbox, or null if the name was already in use.
      * 
@@ -265,11 +270,11 @@ public class OtpNode extends OtpLocalNode {
      * </p>
      * 
      * @param name
-     *                the name to register for the mailbox. Specify null to
-     *                unregister the existing name from this mailbox.
+     *            the name to register for the mailbox. Specify null to
+     *            unregister the existing name from this mailbox.
      * 
      * @param mbox
-     *                the mailbox to associate with the name.
+     *            the mailbox to associate with the name.
      * 
      * @return true if the name was available, or false otherwise.
      */
@@ -309,8 +314,8 @@ public class OtpNode extends OtpLocalNode {
      * called when certain events occur.
      * 
      * @param handler
-     *                the callback object to register. To clear the handler,
-     *                specify null as the handler to use.
+     *            the callback object to register. To clear the handler, specify
+     *            null as the handler to use.
      * 
      */
     public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
@@ -339,11 +344,11 @@ public class OtpNode extends OtpLocalNode {
      * </pre>
      * 
      * @param node
-     *                the name of the node to ping.
+     *            the name of the node to ping.
      * 
      * @param timeout
-     *                the time, in milliseconds, to wait for response before
-     *                returning false.
+     *            the time, in milliseconds, to wait for response before
+     *            returning false.
      * 
      * @return true if the node was alive and the correct ping response was
      *         returned. false if the correct response was not returned on time.
@@ -490,6 +495,7 @@ public class OtpNode extends OtpLocalNode {
 		if (conn == null) {
 		    try {
 			conn = new OtpCookedConnection(this, peer);
+			conn.setFlags(flags);
 			addConnection(conn);
 		    } catch (final Exception e) {
 			/* false = outgoing */
@@ -764,6 +770,7 @@ public class OtpNode extends OtpLocalNode {
 		try {
 		    synchronized (connections) {
 			conn = new OtpCookedConnection(OtpNode.this, newsock);
+			conn.setFlags(flags);
 			addConnection(conn);
 		    }
 		} catch (final OtpAuthException e) {
@@ -791,5 +798,9 @@ public class OtpNode extends OtpLocalNode {
 	    // if we have exited loop we must do this too
 	    unPublishPort();
 	}
+    }
+
+    public void setFlags(final int flags) {
+	this.flags = flags;
     }
 }

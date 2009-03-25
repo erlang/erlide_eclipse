@@ -41,11 +41,11 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *                the stream containing the encoded string.
+     *            the stream containing the encoded string.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang string.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang string.
      */
     public OtpErlangString(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -81,8 +81,8 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      * Convert this string to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded string should be
-     *                written.
+     *            an output stream to which the encoded string should be
+     *            written.
      */
 
     @Override
@@ -96,7 +96,7 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      * OtpErlangStrings with each other and with Strings.
      * 
      * @param o
-     *                the OtpErlangString or String to compare to.
+     *            the OtpErlangString or String to compare to.
      * 
      * @return true if the strings consist of the same sequence of characters,
      *         false otherwise.
@@ -111,5 +111,28 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	}
 
 	return false;
+    }
+
+    /**
+     * Return the string as an list of integers
+     * 
+     * @return an OtpErlangList of OtpErlangLong with the code-points of the
+     *         string
+     */
+    public OtpErlangList asList() {
+	final int n = str.length();
+	final int[] codePoints = new int[n];
+	int i = 0, j = 0;
+	while (i < n) {
+	    final int codePoint = str.codePointAt(i);
+	    codePoints[j] = codePoint;
+	    ++j;
+	    i += Character.charCount(codePoint);
+	}
+	final OtpErlangObject[] elements = new OtpErlangObject[i];
+	for (int k = 0; k < i; ++k) {
+	    elements[k] = new OtpErlangLong(codePoints[k]);
+	}
+	return new OtpErlangList(elements);
     }
 }

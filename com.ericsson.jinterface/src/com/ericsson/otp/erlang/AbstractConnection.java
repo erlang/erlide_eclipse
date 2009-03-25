@@ -103,6 +103,8 @@ public abstract class AbstractConnection extends Thread {
 
     protected static Random random = null;
 
+    private int flags = 0;
+
     static {
 	// trace this connection?
 	final String trace = System.getProperties().getProperty(
@@ -120,17 +122,17 @@ public abstract class AbstractConnection extends Thread {
     // private AbstractConnection() {
     // }
 
-    /*
-     * Accept an incoming connection from a remote node. Used by {@link
-     * OtpSelf#accept() OtpSelf.accept()} to create a connection based on data
-     * received when handshaking with the peer node, when the remote node is the
-     * connection intitiator.
+    /**
+     * Accept an incoming connection from a remote node. Used by
+     * {@link OtpSelf#accept() OtpSelf.accept()} to create a connection based on
+     * data received when handshaking with the peer node, when the remote node
+     * is the connection intitiator.
      * 
-     * @exception java.io.IOException if it was not possible to connect to the
-     * peer.
+     * @exception java.io.IOException
+     *                if it was not possible to connect to the peer.
      * 
-     * @exception OtpAuthException if handshake resulted in an authentication
-     * error
+     * @exception OtpAuthException
+     *                if handshake resulted in an authentication error
      */
     protected AbstractConnection(final OtpLocalNode self, final Socket s)
 	    throws IOException, OtpAuthException {
@@ -166,14 +168,14 @@ public abstract class AbstractConnection extends Thread {
 	name = peer.node();
     }
 
-    /*
+    /**
      * Intiate and open a connection to a remote node.
      * 
-     * @exception java.io.IOException if it was not possible to connect to the
-     * peer.
+     * @exception java.io.IOException
+     *                if it was not possible to connect to the peer.
      * 
-     * @exception OtpAuthException if handshake resulted in an authentication
-     * error.
+     * @exception OtpAuthException
+     *                if handshake resulted in an authentication error.
      */
     protected AbstractConnection(final OtpLocalNode self, final OtpPeer other)
 	    throws IOException, OtpAuthException {
@@ -218,13 +220,13 @@ public abstract class AbstractConnection extends Thread {
      * Send a pre-encoded message to a named process on a remote node.
      * 
      * @param dest
-     *                the name of the remote process.
+     *            the name of the remote process.
      * @param payload
-     *                the encoded message to send.
+     *            the encoded message to send.
      * 
      * @exception java.io.IOException
-     *                    if the connection is not active or a communication
-     *                    error occurs.
+     *                if the connection is not active or a communication error
+     *                occurs.
      */
     protected void sendBuf(final OtpErlangPid from, final String dest,
 	    final OtpOutputStream payload) throws IOException {
@@ -262,13 +264,13 @@ public abstract class AbstractConnection extends Thread {
      * Send a pre-encoded message to a process on a remote node.
      * 
      * @param dest
-     *                the Erlang PID of the remote process.
+     *            the Erlang PID of the remote process.
      * @param msg
-     *                the encoded message to send.
+     *            the encoded message to send.
      * 
      * @exception java.io.IOException
-     *                    if the connection is not active or a communication
-     *                    error occurs.
+     *                if the connection is not active or a communication error
+     *                occurs.
      */
     protected void sendBuf(final OtpErlangPid from, final OtpErlangPid dest,
 	    final OtpOutputStream payload) throws IOException {
@@ -301,7 +303,7 @@ public abstract class AbstractConnection extends Thread {
 	do_send(header, payload);
     }
 
-    /*
+    /**
      * Send an auth error to peer because he sent a bad cookie. The auth error
      * uses his cookie (not revealing ours). This is just like send_reg
      * otherwise
@@ -370,11 +372,11 @@ public abstract class AbstractConnection extends Thread {
      * {@link #sendUnlink unlink()} to remove the link.
      * 
      * @param dest
-     *                the Erlang PID of the remote process.
+     *            the Erlang PID of the remote process.
      * 
      * @exception java.io.IOException
-     *                    if the connection is not active or a communication
-     *                    error occurs.
+     *                if the connection is not active or a communication error
+     *                occurs.
      */
     protected void sendLink(final OtpErlangPid from, final OtpErlangPid dest)
 	    throws IOException {
@@ -406,11 +408,11 @@ public abstract class AbstractConnection extends Thread {
      * link()}.
      * 
      * @param dest
-     *                the Erlang PID of the remote process.
+     *            the Erlang PID of the remote process.
      * 
      * @exception java.io.IOException
-     *                    if the connection is not active or a communication
-     *                    error occurs.
+     *                if the connection is not active or a communication error
+     *                occurs.
      */
     protected void sendUnlink(final OtpErlangPid from, final OtpErlangPid dest)
 	    throws IOException {
@@ -446,13 +448,13 @@ public abstract class AbstractConnection extends Thread {
      * Send an exit signal to a remote process.
      * 
      * @param dest
-     *                the Erlang PID of the remote process.
+     *            the Erlang PID of the remote process.
      * @param reason
-     *                an Erlang term describing the exit reason.
+     *            an Erlang term describing the exit reason.
      * 
      * @exception java.io.IOException
-     *                    if the connection is not active or a communication
-     *                    error occurs.
+     *                if the connection is not active or a communication error
+     *                occurs.
      */
     protected void sendExit2(final OtpErlangPid from, final OtpErlangPid dest,
 	    final OtpErlangObject reason) throws IOException {
@@ -507,7 +509,7 @@ public abstract class AbstractConnection extends Thread {
 		    // read 4 bytes - get length of incoming packet
 		    // socket.getInputStream().read(lbuf);
 		    readSock(socket, lbuf);
-		    ibuf = new OtpInputStream(lbuf);
+		    ibuf = new OtpInputStream(lbuf, flags);
 		    len = ibuf.read4BE();
 
 		    // received tick? send tock!
@@ -523,7 +525,7 @@ public abstract class AbstractConnection extends Thread {
 		final byte[] tmpbuf = new byte[len];
 		// i = socket.getInputStream().read(tmpbuf);
 		readSock(socket, tmpbuf);
-		ibuf = new OtpInputStream(tmpbuf);
+		ibuf = new OtpInputStream(tmpbuf, flags);
 
 		if (ibuf.read1() != passThrough) {
 		    break receive_loop;
@@ -739,7 +741,7 @@ public abstract class AbstractConnection extends Thread {
      * </p>
      * 
      * @param level
-     *                the level to set.
+     *            the level to set.
      * 
      * @return the previous trace level.
      */
@@ -1097,7 +1099,7 @@ public abstract class AbstractConnection extends Thread {
 	byte[] tmpbuf;
 
 	readSock(socket, lbuf);
-	final OtpInputStream ibuf = new OtpInputStream(lbuf);
+	final OtpInputStream ibuf = new OtpInputStream(lbuf, 0);
 	final int len = ibuf.read2BE();
 	tmpbuf = new byte[len];
 	readSock(socket, tmpbuf);
@@ -1110,7 +1112,7 @@ public abstract class AbstractConnection extends Thread {
 
 	try {
 	    final byte[] tmpbuf = read2BytePackage();
-	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf);
+	    final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
 	    byte[] tmpname;
 	    final int len = tmpbuf.length;
 	    peer.ntype = ibuf.read1();
@@ -1164,7 +1166,7 @@ public abstract class AbstractConnection extends Thread {
 
 	try {
 	    final byte[] buf = read2BytePackage();
-	    final OtpInputStream ibuf = new OtpInputStream(buf);
+	    final OtpInputStream ibuf = new OtpInputStream(buf, 0);
 	    peer.ntype = ibuf.read1();
 	    if (peer.ntype != AbstractNode.NTYPE_R6) {
 		throw new IOException("Unexpected peer type");
@@ -1238,7 +1240,7 @@ public abstract class AbstractConnection extends Thread {
 
 	try {
 	    final byte[] buf = read2BytePackage();
-	    final OtpInputStream ibuf = new OtpInputStream(buf);
+	    final OtpInputStream ibuf = new OtpInputStream(buf, 0);
 	    final int tag = ibuf.read1();
 	    if (tag != ChallengeReply) {
 		throw new IOException("Handshake protocol error");
@@ -1283,7 +1285,7 @@ public abstract class AbstractConnection extends Thread {
 	final byte[] her_digest = new byte[16];
 	try {
 	    final byte[] buf = read2BytePackage();
-	    final OtpInputStream ibuf = new OtpInputStream(buf);
+	    final OtpInputStream ibuf = new OtpInputStream(buf, 0);
 	    final int tag = ibuf.read1();
 	    if (tag != ChallengeAck) {
 		throw new IOException("Handshake protocol error");
@@ -1325,7 +1327,7 @@ public abstract class AbstractConnection extends Thread {
 
 	try {
 	    final byte[] buf = read2BytePackage();
-	    final OtpInputStream ibuf = new OtpInputStream(buf);
+	    final OtpInputStream ibuf = new OtpInputStream(buf, 0);
 	    final int tag = ibuf.read1();
 	    if (tag != ChallengeStatus) {
 		throw new IOException("Handshake protocol error");
@@ -1345,5 +1347,13 @@ public abstract class AbstractConnection extends Thread {
 	    System.out.println("<- " + "HANDSHAKE recvStatus (ok)" + " local="
 		    + self);
 	}
+    }
+
+    public void setFlags(final int flags) {
+	this.flags = flags;
+    }
+
+    public int getFlags() {
+	return flags;
     }
 }

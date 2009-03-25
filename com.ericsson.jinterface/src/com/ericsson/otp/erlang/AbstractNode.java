@@ -81,10 +81,14 @@ public class AbstractNode {
     static final int dFlagAtomCache = 2;
     static final int dFlagExtendedReferences = 4;
     static final int dFlagDistMonitor = 8;
-    static final int dFlagFunTags = 16;
-    static final int dFlagExtendedPidsPorts = 256;
-    static final int dFlagBitBinaries = 1024;
-    static final int dFlagNewFloats = 2048;
+    static final int dFlagFunTags = 0x10;
+    static final int dFlagDistMonitorName = 0x20; // NOT USED
+    static final int dFlagHiddenAtomCache = 0x40; // NOT SUPPORTED
+    static final int dflagNewFunTags = 0x80;
+    static final int dFlagExtendedPidsPorts = 0x100;
+    static final int dFlagExportPtrTag = 0x200; // NOT SUPPORTED
+    static final int dFlagBitBinaries = 0x400;
+    static final int dFlagNewFloats = 0x800;
 
     int ntype = NTYPE_R6;
     int proto = 0; // tcp/ip
@@ -92,7 +96,8 @@ public class AbstractNode {
     int distLow = 5; // Cannot talk to nodes before R6
     int creation = 0;
     int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
-	    | dFlagBitBinaries | dFlagNewFloats;
+	    | dFlagBitBinaries | dFlagNewFloats | dFlagFunTags
+	    | dflagNewFunTags;
 
     /* initialize hostname and default cookie */
     static {
