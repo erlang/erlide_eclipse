@@ -62,7 +62,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 	protected int fCrtToken;
 	private int rangeLength;
 	private int rangeOffset;
-	private ISourceViewer fSourceViewer;
+	private final ISourceViewer fSourceViewer;
 
 	/**
 	 * Constructs the rules that define syntax highlighting.
@@ -73,7 +73,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 	 * @param fScanner
 	 */
 	public ErlHighlightScanner(final IColorManager lmanager,
-			ISourceViewer editorConfiguration) {
+			final ISourceViewer editorConfiguration) {
 		fColorManager = lmanager;
 		fSourceViewer = editorConfiguration;
 
@@ -91,10 +91,10 @@ public class ErlHighlightScanner implements ITokenScanner,
 
 	}
 
-	private TextAttribute getTextAttribute(TokenHighlight th) {
-		String qualifier = ColoringPreferencePage.COLORS_QUALIFIER
+	private TextAttribute getTextAttribute(final TokenHighlight th) {
+		final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER
 				+ th.getName();
-		HighlightStyle data = new HighlightStyle();
+		final HighlightStyle data = new HighlightStyle();
 		data.load(qualifier, th.getDefaultData());
 		new InstanceScope().getNode(qualifier)
 				.addPreferenceChangeListener(this);
@@ -274,11 +274,11 @@ public class ErlHighlightScanner implements ITokenScanner,
 		return fTokens.get(fCrtToken);
 	}
 
-	public void preferenceChange(PreferenceChangeEvent event) {
-		String key = event.getKey();
-		Preferences node = event.getNode();
-		String newValue = (String) event.getNewValue();
-		Token tk = getToken(node.name());
+	public void preferenceChange(final PreferenceChangeEvent event) {
+		final String key = event.getKey();
+		final Preferences node = event.getNode();
+		final String newValue = (String) event.getNewValue();
+		final Token tk = getToken(node.name());
 		TextAttribute attr = (TextAttribute) tk.getData();
 		if (HighlightStyle.COLOR_KEY.equals(key)) {
 			if (newValue == null) {

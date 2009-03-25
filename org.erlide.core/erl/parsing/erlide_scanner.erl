@@ -17,10 +17,10 @@
 %%
 
 -export([create/2, destroy/1, initialScan/5, getTokenAt/2, getTokenWindow/4, 
-         getTokens/1, replaceText/4, stop/0, tokens_to_string/1]).
+         getTokens/1, replaceText/4, stop/0, tokens_to_string/1, light_scan_string/1]).
 
 %% called from erlide_indent
--export([fix_tokens/2]).
+-export([convert_tokens/1]).
  
 %% just for testing
 -export([all/0, modules/0, getTextLine/2, getText/1, check_all/2,
@@ -114,6 +114,15 @@ scan_test(Module) ->
             "scan mismatch!\n"
     end.
 
+light_scan_string(S) ->
+    case erlide_scan:string(S, {0, 0}) of
+	{ok, T, _} ->
+	    T2 = erlide_scan:filter_ws(T),
+	    {ok, convert_tokens(T2)};	    
+	{error, _, _} ->
+	    error
+    end.
+ 
 %%
 %% Local Functions
 %%
@@ -265,10 +274,12 @@ do_scan(ScannerName, InitialText, ErlidePath) ->
 
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of
-        {ok, T, _} ->
-            {Length, erlide_scan:filter_ws(T)};
+        {ok, T0, _} ->
+	    T = erlide_scan:filter_ws(T0),
+            {Length, convert_tokens(T)};
         {error, _, _} ->
-            {Length, [{string, {{0, 0}, length(S)}, S, "\"" ++ S ++ "\""}]}
+            {Length, [#token{kind=string, line=0, offset=0, length=length(S),
+			     value=S, text="\""++S++"\"", last_line=0}]}
     end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
@@ -285,7 +296,7 @@ get_token_at(Module, Offset) ->
                 token_not_found ->
                     token_not_found;
                 T ->
-                    M = mktoken(T, Pos, N),
+                    M = fix_token(T, Pos, N),
                     {ok, M}
             end;
         _ ->
@@ -303,7 +314,7 @@ get_tokens_at(Module, Offset, N, Acc0) ->
             {M, Ts} = get_tokens_at_aux(Tokens, Offset - Pos, N),
             Acc1 = 
                 lists:foldl(fun(T, LAcc) ->
-                                    [mktoken(T, Pos, LineNo) | LAcc]
+                                    [fix_token(T, Pos, LineNo) | LAcc]
                             end, Acc0, Ts),
             get_tokens_at(Module, Pos+Length, N-M, Acc1);
         _ ->
@@ -333,23 +344,18 @@ get_tokens_before_aux([{LineOfs, LineNo, Tokens} | Rest], Offset, N0, Acc0) ->
 get_tokens_before_aux2(L, _, _, _, N, Acc) when L == []; N == 0 ->
     {N, Acc};
 get_tokens_before_aux2([T | Rest], Offset, LineOfs, LineNo, N, Acc) ->
-    case token_pos(T) of
-        {{_, Ofs}, Len} when Offset >= LineOfs+Ofs+Len ->
-            get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N-1, [mktoken(T, LineOfs, LineNo) | Acc]);
+    case T of
+        #token{offset=Ofs, length=Len} when Offset >= LineOfs+Ofs+Len ->
+            get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N-1, [fix_token(T, LineOfs, LineNo) | Acc]);
         _ ->
             get_tokens_before_aux2(Rest, Offset, LineOfs, LineNo, N, Acc)
     end.
 
-mktokens(Tokens, Offset, Line) ->
-    [mktoken(T, Offset, Line) || T <- Tokens].
-
-
 get_token_at_aux([], _) ->
     token_not_found;
 get_token_at_aux([T | Rest], Offset) ->
-  	case token_pos(T) of
-        {{_, Ofs}, Len} 
-          when Offset >= Ofs, Offset < Ofs+Len ->
+    case T of
+	#token{offset=Ofs, length=Len} when Offset >= Ofs, Offset < Ofs+Len ->
             T;
         _ ->
             get_token_at_aux(Rest, Offset)
@@ -363,9 +369,8 @@ get_tokens_at_aux([], _, M, _, Acc) ->
 get_tokens_at_aux(_, _, M, N, Acc) when M == N ->
     {M, lists:reverse(Acc)};
 get_tokens_at_aux([T | Rest], Offset, M, N, Acc) ->
-    case token_pos(T) of
-        {{_, Ofs}, Len}
-          when Offset < Ofs+Len ->
+    case T of
+        #token{offset=Ofs, length=Len} when Offset < Ofs+Len ->
             get_tokens_at_aux(Rest, Offset, M+1, N, [T | Acc]);
         _ ->
             get_tokens_at_aux(Rest, Offset, M, N, Acc)
@@ -378,7 +383,7 @@ get_all_tokens(#module{tokens=Tokens}) ->
 get_all_tokens([], _, _, Acc) ->
     lists:flatten(Acc); % instead of append(reverse())
 get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
-    T = mktokens(Tokens, Pos, Line),
+    T = fix_tokens(Tokens, Pos, Line),
     get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
 get_token_window(Module, Offset, Before, After) ->
@@ -389,23 +394,67 @@ get_token_window(Module, Offset, Before, After) ->
     ?D(B),
     {A, B}.
 
-token_pos({_, Pos}) -> Pos;
-token_pos({_, Pos, _}) -> Pos;
-token_pos({_, Pos, _, _}) ->Pos.
+fix_token(T = #token{offset=O, line=L, last_line=undefined}, Offset, Line) ->
+    T#token{offset=Offset+O, line=Line+L};
+fix_token(T = #token{offset=O, line=L, last_line=LL}, Offset, Line) ->
+    T#token{offset=Offset+O, line=Line+L, last_line=Line+LL}.
 
- fix_tokens(Tokens, NL) ->
-    [mktoken(T, 0, 0) || T <- Tokens] ++ [#token{kind=eof, line=NL+1}].
+fix_tokens(Tokens, Offset, Line) ->
+    [fix_token(T, Offset, Line) || T <- Tokens].
 
-mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
-    #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
-mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
-    #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
-mktoken({K, {{L, O}, G}}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
-mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
-mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
-    #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
+convert_tokens(Tokens) ->
+    convert_tokens(Tokens, 0).
+
+convert_tokens(Tokens, NL) ->
+    convert_tokens(Tokens, 0, NL).
+
+convert_tokens(Tokens, Offset, NL) ->
+    convert_tokens(Tokens, Offset, NL, []).
+
+convert_tokens([], _Ofs, _NL, Acc) ->
+    lists:reverse(Acc);
+convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
+    T = #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."},
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
+    T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
+	   Ofs, NL, Acc) when O1=:=O+1->
+    T = make_macro(L, NL, O, G, V),
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
+	   Ofs, NL, Acc) when O1=:=O+1->
+    T = make_macro(L, NL, O, G, V),
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V, _Txt} | Rest],
+	   Ofs, NL, Acc) when O1=:=O+1->
+    T = make_macro(L, NL, O, G, V),
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{K, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
+    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G},
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{K, {{L, O}, G}, V} | Rest], Ofs, NL, Acc) ->
+    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V},
+    convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{K, {{L, O}, G}, V, Txt} | Rest], Ofs, NL, Acc) ->
+    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=Txt},
+    convert_tokens(Rest, Ofs, NL, [T | Acc]).
+
+make_macro(L, NL, O, G, V0) ->
+    V = list_to_atom([$? | atom_to_list(V0)]),
+    #token{kind=macro, line=L+NL, offset=O, length=G+1, value=V}.
+
+%% mktoken({dot, {{L, O}, G}}, Ofs, NL) ->
+%%     #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."};
+%% mktoken({ws, {{L, O}, G}, T}, Ofs, NL) ->
+%%     #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=T};
+%% mktoken({K, {{L, O}, G}}, Ofs, NL) ->
+%%     #token{kind=K, line=L+NL, offset=O+Ofs, length=G};
+%% mktoken({K, {{L, O}, G}, V}, Ofs, NL) ->
+%%     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V};
+%% mktoken({K, {{L, O}, G}, V, T}, Ofs, NL) ->
+%%     #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=T}.
 
 cmd(Cmd, From, Args, Modules) ->
     try

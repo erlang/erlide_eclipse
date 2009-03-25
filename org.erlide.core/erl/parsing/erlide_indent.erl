@@ -54,7 +54,8 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
             case scan(S ++ StrippedCommandText) of
                 {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
-                    Tr = erlide_scanner:fix_tokens(T, size(LineOffsets)),
+                    Tr = erlide_scanner:convert_tokens(T) ++
+			     [#token{kind=eof, line=tuple_size(LineOffsets)+1}],
                     LineN = case N of
                                 -1 ->
                                     size(LineOffsets)+1;
@@ -488,7 +489,7 @@ i_macro_rest(R0, I) ->
 	    R2 = i_parameters(R1, I),
 	    R3 = i_end_paren(R2, I),
 	    i_macro_rest(R3, I);
-	K when K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
+	K when K=:=':'; K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
 	       K=:='end' ->
 	    R0;
 	_ ->

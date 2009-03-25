@@ -7,7 +7,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
-import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -15,7 +14,6 @@ import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -95,15 +93,12 @@ public class ErlideScanner {
 	 * @return
 	 * @throws BackendException
 	 */
-	private static final OtpErlangTuple TUPLE00 = JInterfaceFactory.mkTuple(
-			new OtpErlangLong(0), new OtpErlangLong(0));
-
 	public static List<ErlToken> lightScanString(final String string,
 			final int offset) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = ErlangCore.getBackendManager().getIdeBackend().rpcx(
-					"erlide_scan", "string", "sx", string, TUPLE00);
+					"erlide_scanner", "light_scan_string", "s", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -123,7 +118,7 @@ public class ErlideScanner {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": funny return value" + t1);
 		}
-		if (Util.isOk(t1.elementAt(0))) {
+		if (Util.isOk(t1)) {
 			if (t1.elementAt(1) instanceof OtpErlangList) {
 				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {
@@ -131,7 +126,7 @@ public class ErlideScanner {
 					for (int i = 0; i < l.arity(); i++) {
 						final OtpErlangTuple e = (OtpErlangTuple) l
 								.elementAt(i);
-						final ErlToken tk = new ErlToken(e);
+						final ErlToken tk = new ErlToken(e, 0);
 						tk.fixOffset(offset);
 						toks.add(tk);
 					}

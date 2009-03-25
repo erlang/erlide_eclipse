@@ -26,7 +26,7 @@
 check_record(S) ->
     case erlide_scan:string(S) of
 	{ok, Tokens, _Pos} ->
-	    {ok, check_record_tokens(erlide_scanner:fix_tokens(Tokens, 0))};
+	    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
 	_ ->
 	    none
     end.
@@ -86,6 +86,8 @@ check_record_tokens([#token{kind='{'} | Rest], _) ->
     check_record_tokens(Rest, true);
 check_record_tokens([#token{kind=','} | Rest], _) ->
     check_record_tokens(Rest, true);
+check_record_tokens([#token{kind=atom} | Rest], A) ->
+    check_record_tokens(Rest, A);
 check_record_tokens(L, _) ->
     case erlide_text:skip_expr(L) of
 	L ->

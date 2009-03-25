@@ -56,7 +56,10 @@ public class OpenResult {
 				isMacro = kind.equals("macro");
 				isRecord = kind.equals("record");
 				final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
-				name = isMacro ? element.atomValue() : element.toString();
+				name = element.toString();
+				if (isMacro) {
+					name = removeQuestionMark(name);
+				}
 			} else if (kind.equals("variable")) {
 				isVariable = true;
 				final OtpErlangObject o = tres.elementAt(1);
@@ -72,6 +75,14 @@ public class OpenResult {
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
+	}
+
+	public static String removeQuestionMark(final String name) {
+		final int i = name.indexOf('?');
+		if (i == 0 || i == 1) {
+			return name.substring(0, i) + name.substring(i + 1);
+		}
+		return name;
 	}
 
 	public boolean isExternalCall() {

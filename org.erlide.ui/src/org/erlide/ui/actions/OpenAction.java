@@ -393,12 +393,9 @@ public class OpenAction extends SelectionDispatchAction {
 				return;
 			}
 			final boolean macro = res.isMacro();
-			String definedName = res.getName();
+			final String definedName = res.getName();
 			if (definedName.length() == 0) {
 				return;
-			}
-			if (definedName.charAt(0) == '?') {
-				definedName = definedName.substring(1);
 			}
 			final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 					: IErlElement.Kind.RECORD_DEF;

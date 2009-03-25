@@ -433,6 +433,7 @@ public class ErlTextHover implements ITextHover,
 				final IErlProject project = module.getProject();
 				final IProject proj = project == null ? null
 						: (IProject) project.getResource();
+				definedName = OpenResult.removeQuestionMark(a1.toString());
 				final IErlPreprocessorDef pd = ErlModelUtils
 						.findPreprocessorDef(b, proj, module, definedName,
 								kindToFind, model.getExternal(erlProject,

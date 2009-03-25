@@ -28,8 +28,10 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(org.eclipse.jface.text.ITextViewer,
-	 *      org.eclipse.jface.text.IRegion, boolean)
+	 * @see
+	 * org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(
+	 * org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion,
+	 * boolean)
 	 */
 	public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
 			final IRegion region, final boolean canShowMultipleHyperlinks) {

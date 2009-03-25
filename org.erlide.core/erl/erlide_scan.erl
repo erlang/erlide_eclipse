@@ -226,8 +226,8 @@ scan([$"|Cs], _Stack, Toks, Pos, State, Errors) ->      % String
     scan_string(Cs, [$",Pos], Toks, Pos, State, Errors);
 scan([$%|Cs], _Stack, Toks, Pos, State, Errors) ->       % Comment
     scan_comment(Cs, [$%], Toks, Pos, State, Errors);
-scan([$?|Cs], _Stack, Toks, Pos, State, Errors) ->       % Macros
-    sub_scan_name(Cs, [$?,fun scan_macro/6], Toks, Pos, State, Errors);
+%% scan([$?|Cs], _Stack, Toks, Pos, State, Errors) ->       % Macros
+%%     sub_scan_name(Cs, [$?,fun scan_macro/6], Toks, Pos, State, Errors);
 %% Punctuation characters and operators, first recognise multiples.
 %% Clauses are rouped by first character (a short with the same head has
 %% to come after a longer).
