@@ -34,7 +34,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 14).
+-define(CACHE_VERSION, 16).
 
 -define(SERVER, erlide_scanner).
 

@@ -398,6 +398,8 @@ get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, Pat
 		    _Error ->
 			Local
                 end;
+	    {macro, Macro} ->
+		{macro, Macro};
             Error ->
                 ?D(Error),
                 {error, Error}

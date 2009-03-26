@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 15).
+-define(CACHE_VERSION, 16).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
