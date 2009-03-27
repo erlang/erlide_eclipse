@@ -527,8 +527,8 @@ i_receive(R0, I0) ->
 	     'after' ->
 		 ?D('after'),
 		 R3 = i_kind('after', R2, I2),
-		 I2 = i_with('case', clause, R0, I1),
-		 i_after_clause(R3, I2);
+		 I3 = i_with('case', clause, R0, I1),
+		 i_after_clause(R3, I3);
 	     _ ->
 		 R2
 	 end,
