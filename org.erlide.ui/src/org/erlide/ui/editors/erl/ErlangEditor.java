@@ -1055,7 +1055,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	@SuppressWarnings("boxing")
-	private void getBracketInserterPrefs() {
+	void getBracketInserterPrefs() {
 		final List<Boolean> prefs = SmartTypingPreferencePage
 				.getBracketInserterPreferences();
 		final ErlangEditorBracketInserter bracketInserter = getBracketInserter();

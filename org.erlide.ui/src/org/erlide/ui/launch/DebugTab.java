@@ -66,7 +66,7 @@ import org.erlide.ui.util.SWTUtil;
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
+	CheckboxTreeViewer checkboxTreeViewer;
 	private Button attachOnFirstCallCheck;
 	private Button attachOnBreakpointCheck;
 	private Button attachOnExitCheck;
@@ -313,6 +313,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
 				SWT.BORDER);
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+			@SuppressWarnings("synthetic-access")
 			public void checkStateChanged(final CheckStateChangedEvent event) {
 				final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
 						.getElement();

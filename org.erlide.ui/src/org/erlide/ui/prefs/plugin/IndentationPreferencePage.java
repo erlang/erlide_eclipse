@@ -168,7 +168,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 		}
 	};
 
-	private void numberFieldChanged(final Text textControl) {
+	void numberFieldChanged(final Text textControl) {
 		final String number = textControl.getText();
 		final IStatus status = validatePositiveNumber(number);
 		updateStatus(status);
