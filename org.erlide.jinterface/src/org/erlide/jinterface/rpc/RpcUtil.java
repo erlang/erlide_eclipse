@@ -34,15 +34,10 @@ import com.ericsson.otp.erlang.OtpNode;
 public class RpcUtil {
 	static final String REF_NODE = "jRPC";
 
-	private static class MethodDescription {
-		public MethodDescription(String meth, Class<?>[] args) {
-			this.name = meth;
-			this.argTypes = args;
-		}
-
-		String name;
-		Class<?>[] argTypes;
-	}
+	// eclipse uses different classloaders for each plugin. this one is non-ui
+	// so we have to set it from a ui one (when that one is initialized) so that
+	// we can access even the UI classes (which are actually most interesting)
+	public static ClassLoader loader = RpcUtil.class.getClassLoader();
 
 	private static final boolean VERBOSE = false;
 
@@ -153,11 +148,6 @@ public class RpcUtil {
 		return result;
 	}
 
-	// eclipse uses different classloaders for each plugin. this one is non-ui
-	// so we have to set it from a ui one (when that one is initialized) so that
-	// we can access even the UI classes (which are actually most interesting)
-	public static ClassLoader loader = RpcUtil.class.getClassLoader();
-
 	public static OtpErlangTuple buildRpcCall(final OtpErlangPid pid,
 			final String module, final String fun, final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
@@ -165,15 +155,6 @@ public class RpcUtil {
 		final OtpErlangObject a = new OtpErlangList(args);
 		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
 				new OtpErlangAtom("call"), m, f, a, new OtpErlangAtom("user")));
-	}
-
-	public static OtpErlangTuple buildRpcCast(final OtpErlangPid pid,
-			final String module, final String fun, final OtpErlangObject[] args) {
-		final OtpErlangObject m = new OtpErlangAtom(module);
-		final OtpErlangObject f = new OtpErlangAtom(fun);
-		final OtpErlangObject a = new OtpErlangList(args);
-		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
-				new OtpErlangAtom("cast"), m, f, a, new OtpErlangAtom("user")));
 	}
 
 	public static OtpErlangObject execute(OtpErlangObject target,
@@ -480,6 +461,16 @@ public class RpcUtil {
 	private static void warn(Exception e) {
 		log(e.getMessage());
 		e.printStackTrace();
+	}
+
+	private static class MethodDescription {
+		public MethodDescription(String meth, Class<?>[] args) {
+			this.name = meth;
+			this.argTypes = args;
+		}
+
+		String name;
+		Class<?>[] argTypes;
 	}
 
 }

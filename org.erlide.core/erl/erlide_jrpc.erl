@@ -1,4 +1,4 @@
--module(jrpc).
+-module(erlide_jrpc).
 
 %% The processes spawned from this module are not meant to support code reload,
 %% because they are crucial to the functioning of the backends and 

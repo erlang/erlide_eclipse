@@ -32,8 +32,7 @@ public class ErlideBackend {
 			for (OtpErlangObject elem : loaded) {
 				OtpErlangTuple t = (OtpErlangTuple) elem;
 				OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
-				if (mod.atomValue().startsWith("erlide")
-						|| mod.atomValue().equals("jrpc")) {
+				if (mod.atomValue().startsWith("erlide_")) {
 					// ErlLogger.debug(">>> HAD " + mod + "   " +
 					// t.elementAt(1));
 					mine.add(mod);

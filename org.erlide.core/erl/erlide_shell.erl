@@ -220,7 +220,7 @@ handle_io_request(Client, State, From, ReplyAs, IoRequest) ->
     
 send_event(String, From) ->
     %%Client ! {String, group_leader(), From, erlang:now()},
-    jrpc:event(io_server, {String, group_leader(), From, erlang:now()}).
+    erlide_jrpc:event(io_server, {String, group_leader(), From, erlang:now()}).
 
 
 handle_io_requests(ClientSocket, State0, From, ReplyAs, [LastIoReq]) ->

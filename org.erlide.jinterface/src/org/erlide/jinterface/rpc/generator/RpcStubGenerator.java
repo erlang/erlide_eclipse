@@ -198,7 +198,7 @@ public class RpcStubGenerator {
 		}
 		buf.append(") " + guards + " ->\n");
 
-		buf.append("    jrpc:call(");
+		buf.append("    erlide_jrpc:call(");
 		buf.append("<<\"" + clazz.getName() + "\">>, ");
 
 		StringBuilder args = new StringBuilder();
@@ -254,12 +254,12 @@ public class RpcStubGenerator {
 
 		if (supported) {
 			if (method.getReturnType() == Void.TYPE) {
-				buf.append("    jrpc:cast(");
+				buf.append("    erlide_jrpc:cast(");
 			} else {
 				buf.append("    %% ");
 				buf.append(" returns " + method.getReturnType().getName()
 						+ "\n");
-				buf.append("    jrpc:call(");
+				buf.append("    erlide_jrpc:call(");
 			}
 			if (statik) {
 				buf.append("<<\"" + clazz.getName() + "\">>, ");
