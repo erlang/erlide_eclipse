@@ -22,6 +22,11 @@ public class ErlangDebugElement extends DebugElement {
 		return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
 	}
 
+	public ErlangDebugTarget getErlangDebugTarget() {
+		final IErlangDebugNode edn = (IErlangDebugNode) getDebugTarget();
+		return edn.getErlangDebugTarget();
+	}
+
 	// @SuppressWarnings("unchecked")
 	// @Override
 	// public Object getAdapter(Class adapter) {

@@ -250,7 +250,7 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 
     %% Update process dictionary
     put(attached, AttPid),
-    log({break, ?LINE}),
+    log({break, ?LINE, AttPid}),
     put_next_break(break),
 
     %% Tell attached process in which module evalution is located
@@ -488,7 +488,6 @@ tell_attached(Msg) ->
 	    AttPid ! {self(), Msg}
     end.
 
-
 %%====================================================================
 %% get_binding/2
 %%====================================================================
@@ -504,4 +503,10 @@ put_next_break(V) ->
 
 log(_) ->
     ok.
-%% erlide_debug:log(E).
+%% log(E) ->
+%%     erlide_debug:log(E).
+
+
+
+
+

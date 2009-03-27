@@ -30,8 +30,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	protected IErlRecordDef record; // set if this value is a record
 
 	public IndexedErlangValue(final IDebugTarget target, final String varName,
-			final OtpErlangObject value, final ErlangProcess process,
-			final String moduleName) {
+	        final OtpErlangObject value, final ErlangProcess process,
+	        final String moduleName) {
 		super(target, varName, value, process, moduleName);
 		record = checkRecord(value);
 	}
@@ -50,13 +50,13 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 
 	public IVariable getVariable(final int offset) throws DebugException {
 		final String name = record != null ? record.getFields().get(offset)
-				: varName + ":" + offset;
+		        : varName + ":" + offset;
 		return new ErlangVariable(getDebugTarget(), name, true,
-				getElementAt(offset), process, moduleName, -1);
+		        getElementAt(offset), process, moduleName, -1);
 	}
 
 	public IVariable[] getVariables(final int offset, final int length)
-			throws DebugException {
+	        throws DebugException {
 		final IVariable[] result = new IVariable[length];
 		for (int i = 0; i < length; ++i) {
 			result[i] = getVariable(i + offset);
@@ -70,11 +70,11 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 			final OtpErlangObject h = t.elementAt(0);
 			if (h instanceof OtpErlangAtom) {
 				final OtpErlangAtom a = (OtpErlangAtom) h;
-				final ErlangDebugTarget target = (ErlangDebugTarget) getDebugTarget();
+				final ErlangDebugTarget target = getErlangDebugTarget();
 				final Backend b = target.getBackend();
 				final IErlPreprocessorDef pd = ModelUtils.findPreprocessorDef(
-						b, target.getProjects(), moduleName, a.atomValue(),
-						IErlElement.Kind.RECORD_DEF, "");
+				        b, target.getProjects(), moduleName, a.atomValue(),
+				        IErlElement.Kind.RECORD_DEF, "");
 				if (pd != null) {
 					final IErlRecordDef r = (IErlRecordDef) pd;
 					final List<String> fields = r.getFields();
@@ -106,7 +106,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	}
 
 	private String getValueString(final OtpErlangObject o,
-			final boolean recordCheck) {
+	        final boolean recordCheck) {
 		if (o instanceof OtpErlangBinary) {
 			final OtpErlangBinary b = (OtpErlangBinary) o;
 			return getBinaryValueString(b);
@@ -128,7 +128,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	}
 
 	private String getRecordValueString(final IErlRecordDef r,
-			final OtpErlangObject o) {
+	        final OtpErlangObject o) {
 		final StringBuilder b = new StringBuilder();
 		final List<String> fields = r.getFields();
 		final OtpErlangTuple t = (OtpErlangTuple) o;
@@ -137,7 +137,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		if (n > 0) {
 			for (int i = 0; i < n; i++) {
 				b.append(fields.get(i)).append("=").append(
-						t.elementAt(i + 1).toString()).append(", ");
+				        t.elementAt(i + 1).toString()).append(", ");
 			}
 			b.setLength(b.length() - 2);
 		}

@@ -8,26 +8,28 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public abstract class EventHandler {
 
-	public final void handleMsgs(List<OtpErlangObject> msgs) {
-		for (OtpErlangObject msg : msgs) {
+	public final void handleMsgs(final List<OtpErlangObject> msgs) {
+		for (final OtpErlangObject msg : msgs) {
 			handleMsg(msg);
 		}
 	}
 
-	public void handleMsg(OtpErlangObject msg) {
+	public void handleMsg(final OtpErlangObject msg) {
 		if (msg == null) {
 			return;
 		}
 		try {
 			doHandleMsg(msg);
-		} catch (Exception e) {
+		} catch (final Exception e) {
+			e.printStackTrace();
 			// ignore unrecognized messages
 		}
 	}
 
 	protected abstract void doHandleMsg(OtpErlangObject msg) throws Exception;
 
-	public OtpErlangObject getStandardEvent(OtpErlangObject msg, String id) {
+	public OtpErlangObject getStandardEvent(final OtpErlangObject msg,
+			final String id) {
 		// System.out.println("***********************************");
 		try {
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
@@ -45,7 +47,7 @@ public abstract class EventHandler {
 					return t.elementAt(2);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 		}
 		return null;
 	}

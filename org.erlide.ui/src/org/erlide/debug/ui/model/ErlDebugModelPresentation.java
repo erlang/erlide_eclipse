@@ -133,10 +133,25 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	 */
 	private String getErlangProcessText(final ErlangProcess el)
 			throws DebugException {
-		String r = el.isSystemProcess() ? "*" : "";
-		r += el.isErlideProcess() ? "#" : "";
-		return r + el.getName() + " [" + el.getStatus() + "] "
-				+ el.getInitialCall() + " " + el.getCurrentFunction();
+		final StringBuilder sb = new StringBuilder();
+		if (el.isSystemProcess()) {
+			sb.append('*');
+		}
+		if (el.isErlideProcess()) {
+			sb.append('#');
+		}
+		sb.append(el.getName());
+		sb.append(" [").append(el.getStatus());
+		final boolean terminated = el.getStatus().equals(
+				ErlangProcess.STATUS_TERMINATED);
+		if (terminated) {
+			sb.append(", ").append(el.getExitStatus());
+		}
+		sb.append("] ").append(el.getInitialCall());
+		if (!terminated) {
+			sb.append(' ').append(el.getCurrentFunction());
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -146,7 +161,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	 */
 	private String getTargetText(final ErlangDebugTarget el)
 			throws DebugException {
-		return "backend: " + el.getName();
+		return el.getName() + " (backend)";
 	}
 
 	/*

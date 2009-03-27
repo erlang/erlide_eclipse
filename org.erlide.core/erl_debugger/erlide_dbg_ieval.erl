@@ -76,11 +76,11 @@ exit_info(Int, AttPid, OrigPid, Reason, ExitInfo) ->
 	    Stack = binary_to_term(S),
 	    put(stack, Stack),
 	    Le = stack_level(Stack),
-	    erlide_dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le}),
+	    erlide_dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le, OrigPid, all_frames(Stack), Bs}),
 	    exit_loop(OrigPid, Reason, Bs,#ieval{module=Mod,line=Line});
 	{} ->
 	    put(stack, []),
-	    erlide_dbg_icmd:tell_attached({exit_at, null, Reason, 1}),
+	    erlide_dbg_icmd:tell_attached({exit_at, null, Reason, 1, OrigPid}),
 	    exit_loop(OrigPid, Reason, erl_eval:new_bindings(),#ieval{})
     end.
 
@@ -434,7 +434,10 @@ args2arity([]) ->
     [].
 
 all_frames() ->
-    [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs), X} || {X, {{M, F, As}, Wh, Bs}} <- get(stack)].
+    all_frames(get(stack)).
+
+all_frames(Stack) ->
+    [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs), X} || {X, {{M, F, As}, Wh, Bs}} <- Stack].
 
 %% bindings(SP) -> Bs
 %%   SP = Le  % stack pointer

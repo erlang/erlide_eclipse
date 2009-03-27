@@ -35,6 +35,7 @@ import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugElement;
 import org.erlide.runtime.debug.ErlangDebugTarget;
+import org.erlide.runtime.debug.IErlangDebugNode;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
@@ -78,19 +79,21 @@ public class InterpretedModulesView extends AbstractDebugView implements
 			final Object o = structuredSelection.getFirstElement();
 			if (o instanceof ErlangDebugElement) {
 				final ErlangDebugElement e = (ErlangDebugElement) o;
-				erlangDebugTarget = (ErlangDebugTarget) e.getDebugTarget();
+				erlangDebugTarget = e.getErlangDebugTarget();
 			} else if (o instanceof ILaunch) {
 				final ILaunch launch = (ILaunch) o;
 				final IDebugTarget target = launch.getDebugTarget();
-				if (target instanceof ErlangDebugTarget) {
-					erlangDebugTarget = (ErlangDebugTarget) target;
+				if (target instanceof IErlangDebugNode) {
+					final IErlangDebugNode edn = (IErlangDebugNode) target;
+					erlangDebugTarget = edn.getErlangDebugTarget();
 				}
 			} else if (o instanceof ErtsProcess) {
 				final ErtsProcess ep = (ErtsProcess) o;
 				final ILaunch launch = ep.getLaunch();
 				final IDebugTarget target = launch.getDebugTarget();
-				if (target instanceof ErlangDebugTarget) {
-					erlangDebugTarget = (ErlangDebugTarget) target;
+				if (target instanceof IErlangDebugNode) {
+					final IErlangDebugNode edn = (IErlangDebugNode) target;
+					erlangDebugTarget = edn.getErlangDebugTarget();
 				}
 			}
 			if (erlangDebugTarget == null) {
