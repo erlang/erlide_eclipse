@@ -50,7 +50,7 @@ public class ErlideDoc {
 		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
 			res = b.rpcx("erlide_otp_doc", "get_doc_from_scan_tuples",
-					"ailosslx", module, offset, imports, stateDir,
+					"ailossx", module, offset, imports, stateDir,
 					externalModules, pathVars);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
