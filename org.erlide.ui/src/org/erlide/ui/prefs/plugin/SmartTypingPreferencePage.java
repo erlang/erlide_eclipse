@@ -193,6 +193,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private static List<Boolean> getBooleanPreferences(final List<String> p) {
 		final List<Boolean> l = new ArrayList<Boolean>(p.size());
 		for (final String i : p) {
