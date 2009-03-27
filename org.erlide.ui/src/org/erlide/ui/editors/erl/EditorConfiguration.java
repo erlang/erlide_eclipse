@@ -14,7 +14,6 @@ package org.erlide.ui.editors.erl;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -25,7 +24,6 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
@@ -54,7 +52,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	private ErlHighlightScanner fHighlightScanner;
 	private final IColorManager colorManager;
 	private ICharacterPairMatcher fBracketMatcher;
-	private InformationPresenter fOutlinePresenter;
 	private ErlReconciler reconciler;
 
 	/**

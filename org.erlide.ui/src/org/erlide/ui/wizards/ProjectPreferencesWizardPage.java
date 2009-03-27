@@ -157,7 +157,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		// set the composite as the control for this page
 		setControl(composite);
 
-		final Label label = new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 
 		final Button discoverBtn = new Button(composite, SWT.PUSH);
