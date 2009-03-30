@@ -73,7 +73,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
 				.getEndColumn());
-		return managedBackend.call("wrangler", "generalise_eclipse", "sxxsxi",
+		return managedBackend.call_noexception("wrangler", "generalise_eclipse", "sxxsxi",
 				filePath, startPos, endPos, newName, searchPath, parameters
 						.getEditorTabWidth());
 	}
@@ -98,7 +98,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	public GeneraliseRPCMessage callGeneralise1() throws RpcException,
 			WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
-		RpcResult r = managedBackend.call("wrangler", "gen_fun_1_eclipse",
+		RpcResult r = managedBackend.call_noexception("wrangler", "gen_fun_1_eclipse",
 				"xsxxxxxi", b, parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
 				parameters.getEditorTabWidth());
@@ -110,7 +110,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise2() throws RpcException,
 			WranglerException, CoreException {
-		RpcResult r = managedBackend.call("wrangler", "gen_fun_2_eclipse",
+		RpcResult r = managedBackend.call_noexception("wrangler", "gen_fun_2_eclipse",
 				"sxxxxxxi", parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
 				parameters.getSearchPath(), parameters.getEditorTabWidth());

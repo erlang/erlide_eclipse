@@ -61,7 +61,7 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws ErlangRpcException, RpcException, CoreException {
-		return managedBackend.call("wrangler", "fold_expression_1_eclipse",
+		return managedBackend.call_noexception("wrangler", "fold_expression_1_eclipse",
 				"sxxxi", filePath, funClauseDef, selectedPositions, parameters
 						.getSearchPath(), parameters.getEditorTabWidth());
 	}
@@ -69,7 +69,7 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	private RPCMessage callFoldExpression() throws RpcException,
 			WranglerException, CoreException {
-		RpcResult res = managedBackend.call("wrangler",
+		RpcResult res = managedBackend.call_noexception("wrangler",
 				"fold_expr_by_loc_eclipse", "siixi", parameters.getFilePath(),
 				parameters.getStartLine(), parameters.getStartColumn(),
 				parameters.getSearchPath(), parameters.getEditorTabWidth());

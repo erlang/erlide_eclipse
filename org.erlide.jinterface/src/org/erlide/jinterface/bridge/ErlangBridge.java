@@ -60,9 +60,11 @@ public class ErlangBridge {
 
 	public static class ErlangBridgeHandler implements InvocationHandler {
 
+		@SuppressWarnings("unused")
 		private String module;
-		private OtpNode lnode;
+		@SuppressWarnings("unused")
 		private final OtpMbox mbox;
+		private OtpNode lnode;
 
 		public ErlangBridgeHandler(String intf, String node, String module) {
 			this.module = module;

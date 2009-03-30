@@ -61,9 +61,8 @@ public class ErlangXref {
 		try {
 			IPath outputLocation = project.getProject().getFolder(
 					project.getOutputLocation()).getLocation();
-			b
-					.call("erlide_xref", "add_project", "s", outputLocation
-							.toString());
+			b.call("erlide_xref", "add_project", "s", outputLocation
+					.toString());
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -83,7 +82,7 @@ public class ErlangXref {
 	public static FunctionRef[] functionUse(Backend b, String mod, String fun,
 			int arity) {
 		try {
-			OtpErlangObject r = b.callx("erlide_xref", "function_use", 10000,
+			OtpErlangObject r = b.call("erlide_xref", "function_use", 10000,
 					"aai", mod, fun, arity);
 			Bindings bind = ErlUtils.match("{ok, L}", r);
 			if (bind == null) {

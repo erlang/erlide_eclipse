@@ -84,13 +84,13 @@ public class Activator extends AbstractUIPlugin {
 			ErlLogger.debug("Wrangler path has been added.");
 			// ErlangCode.addPathA(mb, wranglerRootPath.toOSString());
 
-			RpcResult res = mb.call("code", "load_file", "a", "wrangler");
+			RpcResult res = mb.call_noexception("code", "load_file", "a", "wrangler");
 			ErlLogger.debug("Wrangler's path is added to Erlang with result:"
 					+ res.isOk() + "\t raw:" + res);
 
-			res = mb.call("application", "load", "a", "wrangler_app");
+			mb.call("application", "load", "a", "wrangler_app");
 			// application:start(wrangler_app)
-			res = mb.call("application", "start", "a", "wrangler_app");
+			mb.call("application", "start", "a", "wrangler_app");
 
 			ErlLogger.debug("Wrangler app started:\n" + res);
 

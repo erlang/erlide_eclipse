@@ -33,7 +33,7 @@ public class ErlideImport {
 			final String prefix, final List<String> importSources) {
 		OtpErlangObject res = null;
 		try {
-			res = b.callx("erlide_import", "import", "sls", prefix,
+			res = b.call("erlide_import", "import", "sls", prefix,
 					importSources);
 			return new ErlProjectImport(res);
 		} catch (final RpcException e) {

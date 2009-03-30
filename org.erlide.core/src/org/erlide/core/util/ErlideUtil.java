@@ -63,7 +63,7 @@ public class ErlideUtil {
 	public static boolean isAccessible(final Backend backend,
 			final String localDir) {
 		try {
-			final OtpErlangObject r = backend.callx("file", "read_file_info",
+			final OtpErlangObject r = backend.call("file", "read_file_info",
 					"s", localDir);
 			final OtpErlangTuple result = (OtpErlangTuple) r;
 			final String tag = ((OtpErlangAtom) result.elementAt(0))

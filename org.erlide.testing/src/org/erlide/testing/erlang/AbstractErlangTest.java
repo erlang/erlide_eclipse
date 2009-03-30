@@ -47,7 +47,7 @@ public abstract class AbstractErlangTest {
 			return null;
 		}
 		try {
-			return backend.callx(m, f, null, (Object[]) args);
+			return backend.call(m, f, null, (Object[]) args);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("RPC failed: " + e.getMessage());

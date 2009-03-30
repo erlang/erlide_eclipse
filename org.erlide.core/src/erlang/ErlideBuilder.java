@@ -19,7 +19,7 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final Backend backend,
 			final String fn, final String output) {
 		try {
-			final OtpErlangObject r = backend.callx("erlide_builder",
+			final OtpErlangObject r = backend.call("erlide_builder",
 					"compile_yrl", 30000, "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
@@ -36,7 +36,7 @@ public class ErlideBuilder {
 			final List<String> includedirs) {
 		try {
 			// FIXME add an option for the compiler options
-			return backend.callx("erlide_builder", "compile", 30000, "sslsla",
+			return backend.call("erlide_builder", "compile", 30000, "sslsla",
 					fn, outputdir, includedirs, new String[] { "debug_info" });
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
@@ -47,14 +47,14 @@ public class ErlideBuilder {
 	public static OtpErlangList getSourceClashes(final Backend backend,
 			final String[] dirList) throws ErlangRpcException,
 			BackendException, RpcException {
-		final OtpErlangList res = (OtpErlangList) backend.callx(
+		final OtpErlangList res = (OtpErlangList) backend.call(
 				"erlide_builder", "source_clash", "ls", (Object) dirList);
 		return res;
 	}
 
 	public static OtpErlangList getCodeClashes(final Backend b)
 			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangList res = (OtpErlangList) b.callx("erlide_builder",
+		final OtpErlangList res = (OtpErlangList) b.call("erlide_builder",
 				"code_clash", null);
 		return res;
 	}
@@ -65,7 +65,7 @@ public class ErlideBuilder {
 					.getExecutionBackends(project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
-				b.callx("erlide_builder", "load", "a", module);
+				b.call("erlide_builder", "load", "a", module);
 			}
 		} catch (final Exception e) {
 			ErlLogger.debug(e);

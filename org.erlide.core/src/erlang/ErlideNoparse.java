@@ -39,7 +39,7 @@ public class ErlideNoparse {
 			final String erlidePath) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.callx(ERLIDE_NOPARSE, "initial_parse",
+			res = (OtpErlangTuple) b.call(ERLIDE_NOPARSE, "initial_parse",
 					"assss", scannerModuleName, moduleFileName, initialText,
 					stateDir, erlidePath);
 		} catch (final RpcException e) {
@@ -54,7 +54,7 @@ public class ErlideNoparse {
 			final String scannerModuleName) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.callx(ERLIDE_NOPARSE, "reparse", 20000,
+			res = (OtpErlangTuple) b.call(ERLIDE_NOPARSE, "reparse", 20000,
 					"a", scannerModuleName);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
@@ -66,7 +66,7 @@ public class ErlideNoparse {
 
 	public static void destroy(final Backend b, final String module) {
 		try {
-			b.callx(ERLIDE_NOPARSE, "destroy", "a", module);
+			b.call(ERLIDE_NOPARSE, "destroy", "a", module);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
@@ -94,7 +94,7 @@ public class ErlideNoparse {
 	public static List<ErlangExternalFunctionCallRef> find(final Backend b,
 			final ErlangExternalFunctionCallRef ref) {
 		try {
-			final OtpErlangList res = (OtpErlangList) b.callx(ERLIDE_NOPARSE,
+			final OtpErlangList res = (OtpErlangList) b.call(ERLIDE_NOPARSE,
 					"find", "aai", ref.getModule(), ref.getFunction(), ref
 							.getArity());
 			final IWorkspace workspace = ResourcesPlugin.getWorkspace();

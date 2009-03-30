@@ -53,7 +53,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.RemoteConnector;
-import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -701,9 +700,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			return;
 		}
 		try {
-			final RpcResult result = ErlangCode.loadBinary(b, beamf, code);
+			final OtpErlangObject result = ErlangCode
+					.loadBinary(b, beamf, code);
 			ErlLogger.debug(" $ distribute " + beamf + " to "
-					+ b.getInfo().getName() + " - " + result.getValue());
+					+ b.getInfo().getName() + " - " + result);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}

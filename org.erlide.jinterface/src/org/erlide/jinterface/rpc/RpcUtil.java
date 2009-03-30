@@ -76,56 +76,38 @@ public class RpcUtil {
 		}
 	}
 
-	public static RpcResult rpcCall(final OtpNode node, String peer,
+	public static OtpErlangObject rpcCall(final OtpNode node, String peer,
 			final String module, final String fun, final int timeout,
 			final String signature, Object... args0) throws RpcException {
 		OtpMbox mbox = sendRpcCall(node, peer, module, fun, signature, args0);
-		return receiveRpcResult(mbox, timeout);
+		OtpErlangObject result = getRpcResult(mbox, timeout);
+		return result;
 	}
 
 	public static OtpMbox sendRpcCall(final OtpNode node, String peer,
 			final String module, final String fun, final String signature,
 			Object... args0) throws RpcException {
-		if (args0 == null) {
-			args0 = new OtpErlangObject[] {};
-		}
-
-		Signature[] type = Signature.parse(signature);
-		if (type == null) {
-			type = new Signature[args0.length];
-			for (int i = 0; i < args0.length; i++) {
-				type[i] = new Signature('x');
-			}
-		}
-		if (type.length != args0.length) {
-			throw new RpcException("Signature doesn't match parameter number: "
-					+ type.length + "/" + args0.length);
-		}
-		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
-		for (int i = 0; i < args.length; i++) {
-			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
-		}
+		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
 		final OtpMbox mbox = node.createMbox();
 		res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
 		mbox.send("rex", peer, res);
 		if (CHECK_RPC) {
-			debug("RPC :: " + res);
+			debug("RPC call:: " + res);
 		}
 		return mbox;
 	}
 
-	public static RpcResult receiveRpcResult(OtpMbox mbox) {
-		return receiveRpcResult(mbox, INFINITY);
+	public static OtpErlangObject getRpcResult(OtpMbox mbox)
+			throws RpcException {
+		return getRpcResult(mbox, INFINITY);
 	}
 
-	public static RpcResult receiveRpcResult(OtpMbox mbox, int timeout) {
-		if (mbox == null) {
-			return RpcResult.error("missing receive mailbox");
-		}
+	public static OtpErlangObject getRpcResult(OtpMbox mbox, int timeout)
+			throws RpcException {
+		assert mbox != null;
 
-		RpcResult result = null;
 		OtpErlangObject res = null;
 		try {
 			try {
@@ -141,22 +123,21 @@ public class RpcUtil {
 				mbox.close();
 			}
 			if (res == null) {
-				return RpcResult.error("timeout");
+				throw new RpcTimeout("");
 			}
 			if (!(res instanceof OtpErlangTuple)) {
-				return RpcResult.error("bad result: " + res);
+				throw new BadRpcException(res.toString());
 			}
 			res = ((OtpErlangTuple) res).elementAt(1);
-			result = new RpcResult(res);
 		} catch (final OtpErlangExit e) {
 			warn(e);
 		} catch (final OtpErlangDecodeException e) {
 			warn(e);
 		}
-		return result;
+		return res;
 	}
 
-	private static OtpErlangTuple buildRpcCall(final OtpErlangPid pid,
+	private static OtpErlangObject buildRpcCall(final OtpErlangPid pid,
 			final String module, final String fun, final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
@@ -167,6 +148,18 @@ public class RpcUtil {
 
 	public static void rpcCast(final OtpNode node, String peer,
 			final String module, final String fun, final String signature,
+			Object... args0) throws RpcException {
+		final OtpErlangObject[] args = convertArgs(signature, args0);
+
+		OtpErlangObject res = null;
+		res = RpcUtil.buildRpcCastMsg(module, fun, args);
+		RpcUtil.send(node, peer, "rex", res);
+		if (CHECK_RPC) {
+			debug("RPC cast:: " + res);
+		}
+	}
+
+	private static OtpErlangObject[] convertArgs(final String signature,
 			Object... args0) throws RpcException {
 		if (args0 == null) {
 			args0 = new OtpErlangObject[] {};
@@ -187,16 +180,10 @@ public class RpcUtil {
 		for (int i = 0; i < args.length; i++) {
 			args[i] = RpcConverter.java2erlang(args0[i], type[i]);
 		}
-
-		OtpErlangObject res = null;
-		res = RpcUtil.buildRpcCastMsg(module, fun, args);
-		RpcUtil.send(node, peer, "rex", res);
-		if (CHECK_RPC) {
-			debug("RPC cast:: " + res);
-		}
+		return args;
 	}
 
-	private static OtpErlangTuple buildRpcCastMsg(final String module,
+	private static OtpErlangObject buildRpcCastMsg(final String module,
 			final String fun, final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);

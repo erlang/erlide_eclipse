@@ -51,7 +51,7 @@ public class ErlideIndent {
 			final int tabw, final Map<String, String> prefs)
 			throws ErlangRpcException, BackendException, RpcException,
 			OtpErlangRangeException {
-		final OtpErlangObject o = b.callx("erlide_indent", "indent_line",
+		final OtpErlangObject o = b.call("erlide_indent", "indent_line",
 				"sssix", txt, oldLine, insertedText, tabw,
 				fixIndentPrefs(prefs));
 		return new IndentResult(o);
@@ -62,7 +62,7 @@ public class ErlideIndent {
 			final int offset, final int length, final String text,
 			final int tabw, final Map<String, String> prefs)
 			throws RpcException, BackendException {
-		final OtpErlangObject o = b.callx("erlide_indent", "indent_lines",
+		final OtpErlangObject o = b.call("erlide_indent", "indent_lines",
 				"siiilx", text, offset, length, tabw, fixIndentPrefs(prefs));
 		return o;
 	}
@@ -72,7 +72,7 @@ public class ErlideIndent {
 			final String fun, final int offset, final int length,
 			final String text) throws BackendException, RpcException {
 		try {
-			final OtpErlangObject r1 = b.callx(module, fun, "sii", text,
+			final OtpErlangObject r1 = b.call(module, fun, "sii", text,
 					offset, length);
 			return r1;
 		} catch (final NoBackendException e) {

@@ -28,7 +28,7 @@ public class ErlideProclist {
 			return new OtpErlangList();
 		}
 		try {
-			return (OtpErlangList) b.callx(MODULE_NAME, "process_list", "");
+			return (OtpErlangList) b.call(MODULE_NAME, "process_list", "");
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final Exception e) {
@@ -42,7 +42,7 @@ public class ErlideProclist {
 			return new OtpErlangAtom("error");
 		}
 		try {
-			return b.callx(MODULE_NAME, "get_process_info", "p", pid);
+			return b.call(MODULE_NAME, "get_process_info", "p", pid);
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final Exception e) {
