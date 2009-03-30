@@ -49,8 +49,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	final ErlangEditor editor;
 	private ITextDoubleClickStrategy doubleClickStrategy;
-	private ErlHighlightScanner fHighlightScanner;
-	private final IColorManager colorManager;
+	protected ErlHighlightScanner fHighlightScanner;
+	protected final IColorManager colorManager;
 	private ICharacterPairMatcher fBracketMatcher;
 	private ErlReconciler reconciler;
 
@@ -103,11 +103,12 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 * 
 	 * @return the highlighting fHighlightScanner
 	 */
-	private ErlHighlightScanner getHighlightScanner(
+	protected ErlHighlightScanner getHighlightScanner(
 			final ISourceViewer sourceViewer) {
 		if (fHighlightScanner == null) {
 			fHighlightScanner = new ErlHighlightScanner(colorManager,
 					sourceViewer);
+			fHighlightScanner.setTokens();
 		}
 		return fHighlightScanner;
 	}

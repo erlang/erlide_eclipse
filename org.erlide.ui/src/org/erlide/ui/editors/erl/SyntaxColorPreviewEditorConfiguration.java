@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.Map;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.erlide.ui.prefs.HighlightStyle;
+import org.erlide.ui.prefs.SyntaxColorPreviewHighlightScanner;
+import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 
-public class SimpleEditorConfiguration extends EditorConfiguration {
+public class SyntaxColorPreviewEditorConfiguration extends EditorConfiguration {
 
-	public SimpleEditorConfiguration(IPreferenceStore store,
-			ErlangEditor leditor, IColorManager lcolorManager) {
-		super(store, leditor, lcolorManager);
+	private final Map<TokenHighlight, HighlightStyle> styles;
+
+	public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
+			final IColorManager lcolorManager,
+			final Map<TokenHighlight, HighlightStyle> styles) {
+		super(store, null, lcolorManager);
+		this.styles = styles;
 	}
 
 	/**
@@ -32,7 +41,7 @@ public class SimpleEditorConfiguration extends EditorConfiguration {
 	 */
 	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
-			ISourceViewer sourceViewer, String contentType) {
+			final ISourceViewer sourceViewer, final String contentType) {
 		return null;
 	}
 
@@ -42,15 +51,26 @@ public class SimpleEditorConfiguration extends EditorConfiguration {
 	 * @param contentType
 	 * @return
 	 */
-	public IAutoEditStrategy getAutoEditStrategy(ISourceViewer sourceViewer,
-			String contentType) {
+	public IAutoEditStrategy getAutoEditStrategy(
+			final ISourceViewer sourceViewer, final String contentType) {
 		return null;
 	}
 
 	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer,
-			String contentType) {
+	public ITextHover getTextHover(final ISourceViewer sourceViewer,
+			final String contentType) {
 		return null;
+	}
+
+	@Override
+	protected ErlHighlightScanner getHighlightScanner(
+			final ISourceViewer sourceViewer) {
+		if (fHighlightScanner == null) {
+			fHighlightScanner = new SyntaxColorPreviewHighlightScanner(
+					colorManager, sourceViewer, styles);
+			fHighlightScanner.setTokens();
+		}
+		return fHighlightScanner;
 	}
 
 }

@@ -10,10 +10,9 @@ a(Z) ->
     Z#state.name.
 
 b(X) ->
-    case erlang:now() of
-        X ->
-            a(?X);
+    case X of
+        $A ->
+            "A";
         _ ->
-            ok
+            a(?X);
     end.
-    

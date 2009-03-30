@@ -45,19 +45,19 @@ import erlang.ErlideScanner;
 public class ErlHighlightScanner implements ITokenScanner,
 		IPreferenceChangeListener {
 
-	private final Token t_default;
-	private final Token t_atom;
-	private final Token t_string;
-	private final Token t_keyword;
-	private final Token t_var;
-	private final Token t_char;
-	private final Token t_arrow;
-	private final Token t_macro;
-	private final Token t_integer;
-	private final Token t_float;
-	private final Token t_comment;
+	private Token t_default;
+	private Token t_atom;
+	private Token t_string;
+	private Token t_keyword;
+	private Token t_var;
+	private Token t_char;
+	private Token t_arrow;
+	private Token t_macro;
+	private Token t_integer;
+	private Token t_float;
+	private Token t_comment;
 
-	private final IColorManager fColorManager;
+	protected final IColorManager fColorManager;
 	protected List<ErlToken> fTokens;
 	protected int fCrtToken;
 	private int rangeLength;
@@ -76,7 +76,9 @@ public class ErlHighlightScanner implements ITokenScanner,
 			final ISourceViewer editorConfiguration) {
 		fColorManager = lmanager;
 		fSourceViewer = editorConfiguration;
+	}
 
+	public void setTokens() {
 		t_string = new Token(getTextAttribute(TokenHighlight.STRING));
 		t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
 		t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
@@ -88,10 +90,9 @@ public class ErlHighlightScanner implements ITokenScanner,
 		t_integer = new Token(getTextAttribute(TokenHighlight.INTEGER));
 		t_float = new Token(getTextAttribute(TokenHighlight.FLOAT));
 		t_comment = new Token(getTextAttribute(TokenHighlight.COMMENT));
-
 	}
 
-	private TextAttribute getTextAttribute(final TokenHighlight th) {
+	protected TextAttribute getTextAttribute(final TokenHighlight th) {
 		final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER
 				+ th.getName();
 		final HighlightStyle data = new HighlightStyle();
