@@ -93,13 +93,16 @@ public class ErlTextHover implements ITextHover,
 	private static URL fgStyleSheet;
 	private IInformationControlCreator fHoverControlCreator;
 	private PresenterControlCreator fPresenterControlCreator;
+	private final ErlangEditor fEditor;
 
-	public ErlTextHover(final IErlModule module) {
+	public ErlTextHover(final ErlangEditor editor, final IErlModule module) {
+		fEditor = editor;
 		fModule = module;
 		initStyleSheet();
 	}
 
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
+		fEditor.reconcileNow();
 		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 		if (token == null) {
 			return null;
@@ -298,7 +301,8 @@ public class ErlTextHover implements ITextHover,
 
 	public static String getHoverTextForOffset(final int offset,
 			final ErlangEditor editor) {
-		final ErlTextHover h = new ErlTextHover(ErlModelUtils.getModule(editor));
+		final ErlTextHover h = new ErlTextHover(null, ErlModelUtils
+				.getModule(editor));
 		final ITextViewer tv = editor.getViewer();
 		final IRegion r = h.getHoverRegion(tv, offset);
 		if (r == null) {
@@ -316,13 +320,16 @@ public class ErlTextHover implements ITextHover,
 
 	public Object getHoverInfo2(final ITextViewer textViewer,
 			final IRegion hoverRegion) {
-		return internalGetHoverInfo(fModule, textViewer, hoverRegion);
+		return internalGetHoverInfo(fEditor, fModule, textViewer, hoverRegion);
 	}
 
 	@SuppressWarnings("restriction")
 	private static ErlBrowserInformationControlInput internalGetHoverInfo(
-			final IErlModule module, final ITextViewer textViewer,
-			final IRegion hoverRegion) {
+			final ErlangEditor editor, final IErlModule module,
+			final ITextViewer textViewer, final IRegion hoverRegion) {
+		if (editor != null) {
+			editor.reconcileNow();
+		}
 		final StringBuffer result = new StringBuffer();
 		Object element = null;
 		// TODO our model is too coarse, here we need access to expressions
@@ -427,20 +434,22 @@ public class ErlTextHover implements ITextHover,
 						return null;
 					}
 					result.append(comment);
-				}
-				final IErlElement.Kind kindToFind = openKind.equals("record") ? IErlElement.Kind.RECORD_DEF
-						: IErlElement.Kind.MACRO_DEF;
-				final IErlProject project = module.getProject();
-				final IProject proj = project == null ? null
-						: (IProject) project.getResource();
-				definedName = OpenResult.removeQuestionMark(a1.toString());
-				final IErlPreprocessorDef pd = ErlModelUtils
-						.findPreprocessorDef(b, proj, module, definedName,
-								kindToFind, model.getExternal(erlProject,
-										ErlangCore.EXTERNAL_INCLUDES));
-				if (pd != null) {
-					element = pd;
-					result.append(pd.getExtra());
+				} else {
+					final IErlElement.Kind kindToFind = openKind
+							.equals("record") ? IErlElement.Kind.RECORD_DEF
+							: IErlElement.Kind.MACRO_DEF;
+					final IErlProject project = module.getProject();
+					final IProject proj = project == null ? null
+							: (IProject) project.getResource();
+					definedName = OpenResult.removeQuestionMark(a1.toString());
+					final IErlPreprocessorDef pd = ErlModelUtils
+							.findPreprocessorDef(b, proj, module, definedName,
+									kindToFind, model.getExternal(erlProject,
+											ErlangCore.EXTERNAL_INCLUDES));
+					if (pd != null) {
+						element = pd;
+						result.append(pd.getExtra());
+					}
 				}
 			}
 		}
