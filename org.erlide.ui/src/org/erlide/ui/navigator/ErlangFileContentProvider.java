@@ -139,7 +139,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		final IResourceDelta delta = event.getDelta();
 		try {
 			if (delta != null) {
-				ErlLogger.debug("change " + event.toString());
+				// ErlLogger.debug("change " + event.toString());
 				delta.accept(this);
 			}
 		} catch (final CoreException e) {
