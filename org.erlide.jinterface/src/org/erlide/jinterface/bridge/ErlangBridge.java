@@ -16,10 +16,8 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.erlide.jinterface.rpc.RpcConverter;
-import org.erlide.jinterface.rpc.RpcUtil;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 
@@ -87,17 +85,16 @@ public class ErlangBridge {
 			for (int i = 0; i < args.length; i++) {
 				eargs[i + 1] = RpcConverter.java2erlang(args[i], "x");
 			}
-			OtpErlangObject msg = RpcUtil.buildRpcCall(this.mbox.self(),
-					this.module, method.getName(), eargs);
-
-			System.out.println("-->" + msg);
-
+			// OtpErlangObject msg = RpcUtil.buildRpcCall(this.mbox.self(),
+			// this.module, method.getName(), eargs);
+			//
+			// System.out.println("-->" + msg);
 			// mbox.send("rex", node, msg);
-			OtpErlangTuple res = (OtpErlangTuple) this.mbox.receive(5000);
-			if (res == null) {
-				return null;
-			}
-			return res.elementAt(1);
+			// OtpErlangTuple res = (OtpErlangTuple) this.mbox.receive(5000);
+			// if (res == null) {
+			return null;
+			// }
+			// return res.elementAt(1);
 		}
 
 	}

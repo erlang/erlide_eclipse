@@ -283,7 +283,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 				return RpcResult.error("not connected");
 			}
 		}
-		return RpcUtil.sendRpc(fNode, fPeer, module, fun, timeout, signature,
+		return RpcUtil.rpcCall(fNode, fPeer, module, fun, timeout, signature,
 				args0);
 	}
 

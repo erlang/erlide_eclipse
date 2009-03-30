@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcUtil;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -50,15 +49,15 @@ public class RpcInterfaceGenerator {
 			OtpMbox mbox = node.createMbox();
 			OtpErlangObject res = null;
 			try {
-				try {
-					OtpErlangObject msg = RpcUtil
-							.buildRpcCall(mbox.self(), "erlang", "module_info",
-									new OtpErlangObject[] { new OtpErlangAtom(
-											"exports") });
-					mbox.send("rex", "wolf", msg);
-				} finally {
-					node.closeMbox(mbox);
-				}
+				// try {
+				// OtpErlangObject msg = RpcUtil
+				// .rpcCall(mbox.self(), "erlang", "module_info",
+				// new OtpErlangObject[] { new OtpErlangAtom(
+				// "exports") });
+				// mbox.send("rex", "wolf", msg);
+				// } finally {
+				// node.closeMbox(mbox);
+				// }
 				res = mbox.receive(1000);
 			} catch (OtpErlangExit e) {
 				// TODO Auto-generated catch block
