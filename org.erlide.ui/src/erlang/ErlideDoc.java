@@ -17,8 +17,8 @@ public class ErlideDoc {
 			final String mod, final String prefix, final String stateDir) {
 		OtpErlangObject res = null;
 		try {
-			res = b.rpcx("erlide_otp_doc", "get_proposals", "ass", mod, prefix,
-					stateDir);
+			res = b.callx("erlide_otp_doc", "get_proposals", "ass", mod,
+					prefix, stateDir);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -31,7 +31,7 @@ public class ErlideDoc {
 			final String prefix, final List<String> projectModules) {
 		OtpErlangObject res = null;
 		try {
-			res = b.rpcx("erlide_otp_doc", "get_modules", "sls", prefix,
+			res = b.callx("erlide_otp_doc", "get_modules", "sls", prefix,
 					projectModules);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
@@ -49,7 +49,7 @@ public class ErlideDoc {
 		OtpErlangObject res = null;
 		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
-			res = b.rpcx("erlide_otp_doc", "get_doc_from_scan_tuples",
+			res = b.callx("erlide_otp_doc", "get_doc_from_scan_tuples",
 					"ailossx", module, offset, imports, stateDir,
 					externalModules, pathVars);
 		} catch (final RpcException e) {

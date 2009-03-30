@@ -23,7 +23,7 @@ public class ErlangCode {
 			OtpErlangObject r;
 			int i = 10;
 			do {
-				r = backend.rpcx("erlang", "whereis", "a", "code_server");
+				r = backend.callx("erlang", "whereis", "a", "code_server");
 				Thread.sleep(200);
 				i--;
 			} while (!(r instanceof OtpErlangPid) && i > 0);
@@ -43,7 +43,7 @@ public class ErlangCode {
 
 	public static void addPathA(final Backend backend, final String path) {
 		try {
-			backend.rpc("code", "add_patha", "s", path);
+			backend.call("code", "add_patha", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -51,7 +51,7 @@ public class ErlangCode {
 
 	public static void addPathZ(final Backend backend, final String path) {
 		try {
-			backend.rpc("code", "add_pathz", "s", path);
+			backend.call("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -60,13 +60,13 @@ public class ErlangCode {
 	public static void removePathZ(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			final RpcResult rr = backend.rpc("filename", "join", "x",
+			final RpcResult rr = backend.call("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
 
-			backend.rpc("code", "del_path", null, new OtpErlangString(path));
+			backend.call("code", "del_path", null, new OtpErlangString(path));
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -75,13 +75,13 @@ public class ErlangCode {
 	public static void removePathA(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
-			final RpcResult rr = backend.rpc("filename", "join", "x",
+			final RpcResult rr = backend.call("filename", "join", "x",
 					new OtpErlangList(new OtpErlangString(path)));
 			if (rr.isOk()) {
 				path = ((OtpErlangString) rr.getValue()).stringValue();
 			}
 
-			backend.rpc("code", "del_path", "s", path);
+			backend.call("code", "del_path", "s", path);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -91,7 +91,7 @@ public class ErlangCode {
 			final OtpErlangBinary code) throws ErlangRpcException, RpcException {
 		RpcResult result;
 		try {
-			result = b.rpc("code", "load_binary", "asb", beamf, beamf, code);
+			result = b.call("code", "load_binary", "asb", beamf, beamf, code);
 		} catch (final NoBackendException e) {
 			return RpcResult.error("no backend");
 		}
@@ -100,7 +100,7 @@ public class ErlangCode {
 
 	public static void delete(final Backend fBackend, final String moduleName) {
 		try {
-			fBackend.rpc("code", "delete", "a", moduleName);
+			fBackend.call("code", "delete", "a", moduleName);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -111,7 +111,7 @@ public class ErlangCode {
 			name = name.substring(0, name.length() - 5);
 		}
 		try {
-			backend.rpc("c", "l", "a", name);
+			backend.call("c", "l", "a", name);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}

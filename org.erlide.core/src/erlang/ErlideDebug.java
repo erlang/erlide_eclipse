@@ -24,9 +24,9 @@ public class ErlideDebug {
 			final boolean showSystemProcesses, final boolean showErlideProcesses) {
 		OtpErlangList procs = null;
 		try {
-			procs = (OtpErlangList) BackendUtil.ok(backend
-					.rpcx("erlide_debug", "processes", "oo",
-							showSystemProcesses, showErlideProcesses));
+			procs = (OtpErlangList) BackendUtil.ok(backend.callx(
+					"erlide_debug", "processes", "oo", showSystemProcesses,
+					showErlideProcesses));
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -40,7 +40,7 @@ public class ErlideDebug {
 			final int debugFlags) {
 		OtpErlangObject res = null;
 		try {
-			res = backend.rpcx("erlide_debug", "start_debug", "i", debugFlags);
+			res = backend.callx("erlide_debug", "start_debug", "i", debugFlags);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -67,7 +67,7 @@ public class ErlideDebug {
 			final OtpErlangPid pid, final OtpErlangPid jpid) {
 		OtpErlangObject res = null;
 		try {
-			res = backend.rpcx("erlide_debug", "attached", "xx", pid, jpid);
+			res = backend.callx("erlide_debug", "attached", "xx", pid, jpid);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangPid meta = (OtpErlangPid) t.elementAt(1);
@@ -86,7 +86,7 @@ public class ErlideDebug {
 	public static OtpErlangObject getProcessInfo(final Backend backend,
 			final OtpErlangPid pid, final String item) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug",
+			final OtpErlangObject res = backend.callx("erlide_debug",
 					"process_info", "pa", pid, item);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -104,7 +104,7 @@ public class ErlideDebug {
 			final OtpErlangPid pid) {
 		boolean res = false;
 		try {
-			final OtpErlangAtom eres = (OtpErlangAtom) backend.rpcx(
+			final OtpErlangAtom eres = (OtpErlangAtom) backend.callx(
 					"erlide_debug", "is_erlide_process", "p", pid);
 			res = "true".equals(eres.atomValue());
 		} catch (final Exception e) {
@@ -116,7 +116,7 @@ public class ErlideDebug {
 	public static boolean interpret(final Backend backend, final String module,
 			final boolean distributed, final boolean interpret) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug",
+			final OtpErlangObject res = backend.callx("erlide_debug",
 					"interpret", "soo", module, distributed, interpret);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -139,7 +139,7 @@ public class ErlideDebug {
 			final OtpErlangPid pid) {
 		boolean res = false;
 		try {
-			final OtpErlangAtom eres = (OtpErlangAtom) backend.rpcx(
+			final OtpErlangAtom eres = (OtpErlangAtom) backend.callx(
 					"pman_process", "is_system_process", "s", pid);
 			res = "true".equals(eres.atomValue());
 		} catch (final Exception e) {
@@ -153,7 +153,7 @@ public class ErlideDebug {
 		try {
 			final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
 					: "delete";
-			backend.rpcx("erlide_debug", "line_breakpoint", "sia", module,
+			backend.callx("erlide_debug", "line_breakpoint", "sia", module,
 					line, a);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
@@ -165,7 +165,7 @@ public class ErlideDebug {
 	public static void sendStarted(final Backend backend,
 			final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "send_started", "x", meta);
+			backend.callx("erlide_debug", "send_started", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -175,7 +175,7 @@ public class ErlideDebug {
 
 	public static void resume(final Backend backend, final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "resume", "x", meta);
+			backend.callx("erlide_debug", "resume", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -185,7 +185,7 @@ public class ErlideDebug {
 
 	public static void suspend(final Backend backend, final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "suspend", "x", meta);
+			backend.callx("erlide_debug", "suspend", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -196,7 +196,7 @@ public class ErlideDebug {
 	public static OtpErlangList getBindings(final Backend backend,
 			final OtpErlangPid meta) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug",
+			final OtpErlangObject res = backend.callx("erlide_debug",
 					"bindings", "x", meta);
 			return (OtpErlangList) res;
 		} catch (final RpcException e) {
@@ -209,7 +209,7 @@ public class ErlideDebug {
 
 	public static void stepOver(final Backend backend, final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "step_over", "x", meta);
+			backend.callx("erlide_debug", "step_over", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -219,7 +219,7 @@ public class ErlideDebug {
 
 	public static void stepReturn(final Backend backend, final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "step_return", "x", meta);
+			backend.callx("erlide_debug", "step_return", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -229,7 +229,7 @@ public class ErlideDebug {
 
 	public static void stepInto(final Backend backend, final OtpErlangPid meta) {
 		try {
-			backend.rpcx("erlide_debug", "step_into", "x", meta);
+			backend.callx("erlide_debug", "step_into", "x", meta);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
 		} catch (final BackendException e) {
@@ -240,7 +240,7 @@ public class ErlideDebug {
 	public static OtpErlangTuple getAllStackframes(final Backend backend,
 			final OtpErlangPid meta) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug",
+			final OtpErlangObject res = backend.callx("erlide_debug",
 					"all_stack_frames", "x", meta);
 			if (res instanceof OtpErlangTuple) {
 				return (OtpErlangTuple) res;
@@ -256,7 +256,7 @@ public class ErlideDebug {
 	public static OtpErlangObject eval(final Backend backend,
 			final String expression, final OtpErlangPid meta) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug", "eval",
+			final OtpErlangObject res = backend.callx("erlide_debug", "eval",
 					"sx", expression, meta);
 			if (res instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -279,7 +279,7 @@ public class ErlideDebug {
 			final String name, final String value, final int stackFrameNo,
 			final OtpErlangPid meta) {
 		try {
-			final OtpErlangObject res = backend.rpcx("erlide_debug",
+			final OtpErlangObject res = backend.callx("erlide_debug",
 					"set_variable_value", "ssix", name, value,
 					stackFrameNo + 1, meta);
 			if (res instanceof OtpErlangTuple) {
@@ -317,7 +317,7 @@ public class ErlideDebug {
 	public static OtpErlangObject distributeDebuggerCode(final Backend backend,
 			final List<OtpErlangTuple> modules) {
 		try {
-			final OtpErlangObject o = backend.rpcx("erlide_debug",
+			final OtpErlangObject o = backend.callx("erlide_debug",
 					"distribute_debugger_code", "lx", modules);
 			return o;
 		} catch (final RpcException e) {
@@ -330,7 +330,8 @@ public class ErlideDebug {
 
 	public static OtpErlangList nodes(final Backend backend) {
 		try {
-			final OtpErlangObject o = backend.rpcx("erlide_debug", "nodes", "");
+			final OtpErlangObject o = backend
+					.callx("erlide_debug", "nodes", "");
 			if (o instanceof OtpErlangList) {
 				return (OtpErlangList) o;
 			}

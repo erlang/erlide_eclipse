@@ -175,11 +175,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	/**
-	 * typed RPC
-	 * 
-	 * @throws NoBackendException
-	 * 
-	 * @throws ConversionException
+	 * @see Backend#callx
+	 * @deprecated
 	 */
 	@Deprecated
 	public RpcResult rpc(final String m, final String f,
@@ -187,6 +184,12 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return call(m, f, signature, a);
 	}
 
+	/**
+	 * typed RPC
+	 * 
+	 * @throws NoBackendException
+	 * @throws ConversionException
+	 */
 	public RpcResult call(final String m, final String f,
 			final String signature, final Object... a) throws RpcException {
 		return call(m, f, DEFAULT_TIMEOUT, signature, a);
@@ -221,7 +224,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * typed RPC , throws Exception
 	 * 
 	 * @throws BackendException
-	 * 
 	 * @throws ConversionException
 	 */
 	public OtpErlangObject callx(final String m, final String f,
@@ -230,6 +232,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return callx(m, f, DEFAULT_TIMEOUT, signature, a);
 	}
 
+	/**
+	 * @see Backend#callx
+	 * @deprecated
+	 */
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
 			final String signature, final Object... a) throws RpcException,
@@ -267,6 +273,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		throw new BackendException(msg);
 	}
 
+	/**
+	 * @see Backend#callx
+	 * @deprecated
+	 */
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)

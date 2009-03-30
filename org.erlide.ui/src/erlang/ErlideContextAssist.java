@@ -20,7 +20,7 @@ public class ErlideContextAssist {
 			final String src, final String prefix) {
 		final SortedSet<String> result = new TreeSet<String>();
 		try {
-			final OtpErlangObject res = b.rpcx("erlide_content_assist",
+			final OtpErlangObject res = b.callx("erlide_content_assist",
 					"get_variables", "ss", src, prefix);
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -40,7 +40,7 @@ public class ErlideContextAssist {
 	public static boolean checkRecordCompletion(final Backend b,
 			final String substring) {
 		try {
-			final OtpErlangObject res = b.rpcx("erlide_content_assist",
+			final OtpErlangObject res = b.callx("erlide_content_assist",
 					"check_record", "s", substring);
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;

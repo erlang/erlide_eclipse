@@ -13,7 +13,7 @@ public class ErlidePairMatch {
 	public static OtpErlangObject match(int offset, String module)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject r1;
-		r1 = ErlangCore.getBackendManager().getIdeBackend().rpcx(
+		r1 = ErlangCore.getBackendManager().getIdeBackend().callx(
 				"erlide_pair_match", "match", "ia", offset, module);
 		return r1;
 	}

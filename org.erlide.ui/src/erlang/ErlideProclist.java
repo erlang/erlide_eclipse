@@ -17,7 +17,7 @@ public class ErlideProclist {
 			return;
 		}
 		try {
-			b.rpc(MODULE_NAME, "process_list_init", "");
+			b.call(MODULE_NAME, "process_list_init", "");
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -28,7 +28,7 @@ public class ErlideProclist {
 			return new OtpErlangList();
 		}
 		try {
-			return (OtpErlangList) b.rpcx(MODULE_NAME, "process_list", "");
+			return (OtpErlangList) b.callx(MODULE_NAME, "process_list", "");
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final Exception e) {
@@ -37,13 +37,12 @@ public class ErlideProclist {
 		return new OtpErlangList();
 	}
 
-	public static OtpErlangObject getProcessInfo(Backend b,
-			OtpErlangPid pid) {
+	public static OtpErlangObject getProcessInfo(Backend b, OtpErlangPid pid) {
 		if (b == null) {
 			return new OtpErlangAtom("error");
 		}
 		try {
-			return b.rpcx(MODULE_NAME, "get_process_info", "p", pid);
+			return b.callx(MODULE_NAME, "get_process_info", "p", pid);
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final Exception e) {

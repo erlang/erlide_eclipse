@@ -41,7 +41,7 @@ public class ErlangXref {
 
 	public static void start(Backend b) {
 		try {
-			b.rpc("erlide_xref", "start", "");
+			b.call("erlide_xref", "start", "");
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -50,7 +50,7 @@ public class ErlangXref {
 
 	public static void stop(Backend b) {
 		try {
-			b.rpc("erlide_xref", "stop", "");
+			b.call("erlide_xref", "stop", "");
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -61,7 +61,9 @@ public class ErlangXref {
 		try {
 			IPath outputLocation = project.getProject().getFolder(
 					project.getOutputLocation()).getLocation();
-			b.rpc("erlide_xref", "add_project", "s", outputLocation.toString());
+			b
+					.call("erlide_xref", "add_project", "s", outputLocation
+							.toString());
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -70,7 +72,7 @@ public class ErlangXref {
 
 	public static void update(Backend b) {
 		try {
-			b.rpc("erlide_xref", "update", "");
+			b.call("erlide_xref", "update", "");
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -81,7 +83,7 @@ public class ErlangXref {
 	public static FunctionRef[] functionUse(Backend b, String mod, String fun,
 			int arity) {
 		try {
-			OtpErlangObject r = b.rpcx("erlide_xref", "function_use", 10000,
+			OtpErlangObject r = b.callx("erlide_xref", "function_use", 10000,
 					"aai", mod, fun, arity);
 			Bindings bind = ErlUtils.match("{ok, L}", r);
 			if (bind == null) {

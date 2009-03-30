@@ -211,11 +211,10 @@ public class ErlangLaunchConfigurationDelegate extends
 										&& function.length() > 0) {
 									if (args.length() > 0) {
 										// TODO issue #84
-										backend
-												.rpc(module, function, "s",
-														args);
+										backend.call(module, function, "s",
+												args);
 									} else {
-										backend.rpc(module, function, "");
+										backend.call(module, function, "");
 									}
 								}
 							} catch (final Exception e) {
@@ -234,9 +233,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				if (module.length() > 0 && function.length() > 0) {
 					if (args.length() > 0) {
 						// TODO issue #84
-						backend.rpc(module, function, "s", args);
+						backend.call(module, function, "s", args);
 					} else {
-						backend.rpc(module, function, "");
+						backend.call(module, function, "");
 					}
 				}
 			} catch (final Exception e) {

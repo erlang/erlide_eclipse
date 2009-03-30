@@ -19,8 +19,8 @@ public class ErlideOpen {
 
 	public static String getIncludeLib(final Backend b, String s)
 			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangObject t = b.rpcx("erlide_open", "get_include_lib", "s",
-				s);
+		final OtpErlangObject t = b.callx("erlide_open", "get_include_lib",
+				"s", s);
 		if (t instanceof OtpErlangTuple) {
 			final OtpErlangObject es = ((OtpErlangTuple) t).elementAt(1);
 			s = ((OtpErlangString) es).stringValue();
@@ -33,7 +33,7 @@ public class ErlideOpen {
 			final String externalModules) throws ErlangRpcException,
 			BackendException, RpcException {
 		final OtpErlangObject res2 = b
-				.rpcx("erlide_open", "get_source_from_module", "asx", mod,
+				.callx("erlide_open", "get_source_from_module", "asx", mod,
 						externalModules, pathVars);
 		return res2;
 	}
@@ -43,18 +43,17 @@ public class ErlideOpen {
 			final String scannerName, final int offset,
 			final String externalModules, final OtpErlangList pathVars)
 			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangObject res = b.rpcx("erlide_open", "open_info", "aisx",
+		final OtpErlangObject res = b.callx("erlide_open", "open_info", "aisx",
 				scannerName, offset, externalModules, pathVars);
 		return res;
 	}
-
 
 	@SuppressWarnings("boxing")
 	public static OpenResult open(final Backend b, final String scannerName,
 			final int offset, final String externalModules,
 			final OtpErlangList pathVars) throws RpcException, BackendException {
 		ErlLogger.debug("open offset " + offset);
-		final OtpErlangObject res = b.rpcx("erlide_open", "open", "aisx",
+		final OtpErlangObject res = b.callx("erlide_open", "open", "aisx",
 				scannerName, offset, externalModules, pathVars);
 		return new OpenResult(res);
 	}
@@ -63,7 +62,7 @@ public class ErlideOpen {
 			final String name, final String source) {
 		OtpErlangObject res;
 		try {
-			res = b.rpcx("erlide_open", "find_first_var", "as", name, source);
+			res = b.callx("erlide_open", "find_first_var", "as", name, source);
 			if (res instanceof OtpErlangTuple) {
 				return (OtpErlangTuple) res;
 			}
@@ -79,7 +78,7 @@ public class ErlideOpen {
 			final String prefix, final String externalModules,
 			final OtpErlangList pathVars) {
 		try {
-			final OtpErlangObject res = b.rpcx("erlide_open",
+			final OtpErlangObject res = b.callx("erlide_open",
 					"get_external_modules", "ssx", prefix, externalModules,
 					pathVars);
 			if (Util.isOk(res)) {
@@ -103,7 +102,7 @@ public class ErlideOpen {
 			final String filePath, final String externalIncludes,
 			final OtpErlangList pathVars) {
 		try {
-			final OtpErlangObject res = b.rpcx("erlide_open",
+			final OtpErlangObject res = b.callx("erlide_open",
 					"get_external_include", "ssx", filePath, externalIncludes,
 					pathVars);
 			if (Util.isOk(res)) {
@@ -121,7 +120,7 @@ public class ErlideOpen {
 	public static String getExternalModule(final Backend b, final String mod,
 			final String externalModules, final OtpErlangList pathVars) {
 		try {
-			final OtpErlangObject res = b.rpcx("erlide_open",
+			final OtpErlangObject res = b.callx("erlide_open",
 					"get_external_module", "ssx", mod, externalModules,
 					pathVars);
 			if (Util.isOk(res)) {
