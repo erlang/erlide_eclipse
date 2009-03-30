@@ -33,6 +33,7 @@ import com.ericsson.otp.erlang.OtpNode;
 
 public class RpcUtil {
 	static final String REF_NODE = "jRPC";
+	public static final int INFINITY = -1;
 
 	// eclipse uses different classloaders for each plugin. this one is non-ui
 	// so we have to set it from a ui one (when that one is initialized) so that
@@ -116,7 +117,7 @@ public class RpcUtil {
 	}
 
 	public static RpcResult receiveRpcResult(OtpMbox mbox) {
-		return receiveRpcResult(mbox, -1);
+		return receiveRpcResult(mbox, INFINITY);
 	}
 
 	public static RpcResult receiveRpcResult(OtpMbox mbox, int timeout) {
@@ -128,7 +129,7 @@ public class RpcUtil {
 		OtpErlangObject res = null;
 		try {
 			try {
-				if (timeout < 0) {
+				if (timeout == INFINITY) {
 					res = mbox.receive();
 				} else {
 					res = mbox.receive(timeout);

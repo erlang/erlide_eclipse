@@ -181,9 +181,15 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
+	@Deprecated
 	public RpcResult rpc(final String m, final String f,
 			final String signature, final Object... a) throws RpcException {
-		return rpc(m, f, DEFAULT_TIMEOUT, signature, a);
+		return call(m, f, signature, a);
+	}
+
+	public RpcResult call(final String m, final String f,
+			final String signature, final Object... a) throws RpcException {
+		return call(m, f, DEFAULT_TIMEOUT, signature, a);
 	}
 
 	/**
@@ -191,9 +197,24 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public RpcResult rpc(final String m, final String f, final int timeout,
+	public RpcResult call(final String m, final String f, final int timeout,
 			final String signature, final Object... args) throws RpcException {
-		return sendRpc(m, f, timeout, signature, args);
+		return makeCall(m, f, timeout, signature, args);
+	}
+
+	public OtpMbox async_call(final String m, final String f,
+			final String signature, final Object... args) throws RpcException {
+		return makeAsyncCall(m, f, signature, args);
+	}
+
+	public RpcResult async_receive(OtpMbox mbox, int timeout)
+			throws RpcException {
+		return RpcUtil.receiveRpcResult(mbox, timeout);
+	}
+
+	public void cast(final String m, final String f, final String signature,
+			final Object... args) throws RpcException {
+		makeCast(m, f, signature, args);
 	}
 
 	/**
@@ -203,10 +224,17 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
+	public OtpErlangObject callx(final String m, final String f,
+			final String signature, final Object... a) throws RpcException,
+			BackendException {
+		return callx(m, f, DEFAULT_TIMEOUT, signature, a);
+	}
+
+	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
 			final String signature, final Object... a) throws RpcException,
 			BackendException {
-		return rpcx(m, f, DEFAULT_TIMEOUT, signature, a);
+		return callx(m, f, signature, a);
 	}
 
 	/**
@@ -214,10 +242,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public OtpErlangObject rpcx(final String m, final String f,
+	public OtpErlangObject callx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
 			throws BackendException, RpcException {
-		final RpcResult r = rpc(m, f, timeout, signature, a);
+		final RpcResult r = call(m, f, timeout, signature, a);
 		if (r != null && r.isOk()) {
 			return r.getValue();
 		}
@@ -237,6 +265,13 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		final String msg = String.format("%s <- %s:%s(%s) @ %s", r.getValue(),
 				m, f, ss, getInfo().toString());
 		throw new BackendException(msg);
+	}
+
+	@Deprecated
+	public OtpErlangObject rpcx(final String m, final String f,
+			final int timeout, final String signature, final Object... a)
+			throws BackendException, RpcException {
+		return callx(m, f, timeout, signature, a);
 	}
 
 	/**
@@ -273,7 +308,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return fCodeManager;
 	}
 
-	private RpcResult sendRpc(final String module, final String fun,
+	private RpcResult makeCall(final String module, final String fun,
 			final int timeout, final String signature, final Object... args0)
 			throws RpcException {
 		if (!fAvailable) {
@@ -285,6 +320,30 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 		return RpcUtil.rpcCall(fNode, fPeer, module, fun, timeout, signature,
 				args0);
+	}
+
+	private OtpMbox makeAsyncCall(final String module, final String fun,
+			final String signature, final Object... args0) throws RpcException {
+		if (!fAvailable) {
+			if (exitStatus >= 0) {
+				restart();
+			} else {
+				throw new RpcException("could not restart backend");
+			}
+		}
+		return RpcUtil.sendRpcCall(fNode, fPeer, module, fun, signature, args0);
+	}
+
+	private void makeCast(final String module, final String fun,
+			final String signature, final Object... args0) throws RpcException {
+		if (!fAvailable) {
+			if (exitStatus >= 0) {
+				restart();
+			} else {
+				throw new RpcException("could not restart backend");
+			}
+		}
+		RpcUtil.rpcCast(fNode, fPeer, module, fun, signature, args0);
 	}
 
 	private synchronized void restart() {
