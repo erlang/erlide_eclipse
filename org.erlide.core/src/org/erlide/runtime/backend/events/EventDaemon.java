@@ -22,9 +22,8 @@ public class EventDaemon implements BackendListener {
 	volatile boolean fStopJob = false;
 	List<EventHandler> fListeners = new ArrayList<EventHandler>();
 	final Object listenersLock = new Object();
-	
-	private boolean DEBUG = "true".equals(System
-									.getProperty("erlide.event.daemon"));
+
+	boolean DEBUG = "true".equals(System.getProperty("erlide.event.daemon"));
 
 	private final class HandlerJob extends Job {
 		HandlerJob(String name) {

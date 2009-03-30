@@ -19,8 +19,8 @@ public class ErlideBuilder {
 	public static OtpErlangObject compileYrl(final Backend backend,
 			final String fn, final String output) {
 		try {
-			final OtpErlangObject r = backend.call("erlide_builder",
-					"compile_yrl", 30000, "ss", fn, output);
+			final OtpErlangObject r = backend.call(30000, "erlide_builder",
+					"compile_yrl", "ss", fn, output);
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("!!! r== " + r);
 			}
@@ -36,7 +36,7 @@ public class ErlideBuilder {
 			final List<String> includedirs) {
 		try {
 			// FIXME add an option for the compiler options
-			return backend.call("erlide_builder", "compile", 30000, "sslsla",
+			return backend.call(30000, "erlide_builder", "compile", "sslsla",
 					fn, outputdir, includedirs, new String[] { "debug_info" });
 		} catch (final Exception e) {
 			ErlLogger.debug(e);

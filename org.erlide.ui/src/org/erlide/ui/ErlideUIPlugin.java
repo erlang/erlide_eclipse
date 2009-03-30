@@ -48,7 +48,7 @@ import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.runtime.backend.RuntimeInfoManager;
-import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
+import org.erlide.ui.editors.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.RuntimePreferencePage;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;

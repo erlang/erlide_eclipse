@@ -58,7 +58,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private Button uz;
 	Text externalIncludes;
 	private Button externalIncludesBrowse;
-	private Text externalModules;
+	Text externalModules;
 	private Button externalModulesBrowse;
 
 	/**

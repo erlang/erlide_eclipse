@@ -130,9 +130,9 @@ public class RpcUtil {
 			}
 			res = ((OtpErlangTuple) res).elementAt(1);
 		} catch (final OtpErlangExit e) {
-			warn(e);
+			throw new RpcException(e);
 		} catch (final OtpErlangDecodeException e) {
-			warn(e);
+			throw new RpcException(e);
 		}
 		return res;
 	}

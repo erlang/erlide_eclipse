@@ -299,6 +299,16 @@ public class ErlParser {
 			final OtpErlangObject pos, final OtpErlangAtom name,
 			final OtpErlangObject val, final OtpErlangObject extra) {
 		final String nameS = name.atomValue();
+		if ("module".equals(nameS)) {
+			if (val instanceof OtpErlangAtom) {
+				final OtpErlangAtom o = (OtpErlangAtom) val;
+				final String s = Util.stringValue(extra);
+				final ErlAttribute r = new ErlAttribute(parent, nameS, o, s);
+				setPos(r, pos);
+				// r.setParseTree(val);
+				return r;
+			}
+		}
 		if ("import".equals(nameS)) {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) val;
@@ -350,7 +360,7 @@ public class ErlParser {
 				// r.setParseTree(val);
 				return r;
 			}
-		} else if (nameS.equals("type") || nameS.equals("spec")) {
+		} else if ("type".equals(nameS) || "spec".equals(nameS)) {
 			final String s = Util.stringValue(extra);
 			final int p = s.indexOf('(');
 			final String typeName = p < 0 ? s : s.substring(0, p);
@@ -405,8 +415,7 @@ public class ErlParser {
 			}
 		}
 
-		final ErlAttribute a = new ErlAttribute((ErlElement) parent, nameS,
-				val1, null);
+		final ErlAttribute a = new ErlAttribute(parent, nameS, val1, null);
 		setPos(a, pos);
 		// a.setParseTree(val);
 		return a;

@@ -629,7 +629,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return global;
 	}
 
-	private OtpErlangList fCachedPathVars = null;
+	OtpErlangList fCachedPathVars = null;
 
 	public OtpErlangList getPathVars() {
 		if (fCachedPathVars == null) {

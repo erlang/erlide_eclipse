@@ -86,7 +86,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 		return m;
 	}
 
-	public GeneraliseRPCMessage callGenerealise() throws ErlangRpcException,
+	public GeneraliseRPCMessage callGeneralise() throws ErlangRpcException,
 			RpcException, WranglerException, CoreException {
 		RpcResult res = sendRPC(parameters.getFilePath(), parameters
 				.getSearchPath());

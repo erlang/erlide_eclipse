@@ -63,7 +63,7 @@ public class NewParameterNameInputPage extends WranglerNewDataInputPage {
 		GeneraliseRefactoring refac = (GeneraliseRefactoring) getRefactoring();
 
 		try {
-			GeneraliseRPCMessage m = refac.callGenerealise();
+			GeneraliseRPCMessage m = refac.callGeneralise();
 
 			if (m.getGeneraliseStatus() == GeneraliseRPCMessage.FREEVARS) {
 				boolean response = showYesOrNoMessageBox(

@@ -185,12 +185,10 @@ public class ErlangLaunchConfigurationDelegate extends
 					for (int i = 1, n = nodes.arity(); i < n; ++i) {
 						final OtpErlangAtom o = (OtpErlangAtom) nodes
 								.elementAt(i);
-						if (o instanceof OtpErlangAtom) {
-							final OtpErlangAtom a = o;
-							final ErlangDebugNode edn = new ErlangDebugNode(
-									target, a.atomValue());
-							launch.addDebugTarget(edn);
-						}
+						final OtpErlangAtom a = o;
+						final ErlangDebugNode edn = new ErlangDebugNode(target,
+								a.atomValue());
+						launch.addDebugTarget(edn);
 					}
 				}
 			}

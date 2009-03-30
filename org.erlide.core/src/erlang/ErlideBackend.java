@@ -267,7 +267,7 @@ public class ErlideBackend {
 	public static String prettyPrint(final Backend b, final OtpErlangObject e)
 			throws ErlangRpcException, BackendException, RpcException {
 		OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
-		p = b.call("lists", "flatten", null, p);
+		p = b.call("lists", "flatten", "x", p);
 		return ((OtpErlangString) p).stringValue();
 	}
 

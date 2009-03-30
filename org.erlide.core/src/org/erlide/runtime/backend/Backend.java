@@ -13,7 +13,6 @@ package org.erlide.runtime.backend;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -192,7 +191,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	public RpcResult call_noexception(final String m, final String f,
 			final String signature, final Object... a) throws RpcException {
-		return call_noexception(m, f, DEFAULT_TIMEOUT, signature, a);
+		return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
 	}
 
 	/**
@@ -200,10 +199,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public RpcResult call_noexception(final String m, final String f, final int timeout,
-			final String signature, final Object... args) {
+	public RpcResult call_noexception(final int timeout, final String m,
+			final String f, final String signature, final Object... args) {
 		try {
-			OtpErlangObject result = makeCall(m, f, timeout, signature, args);
+			OtpErlangObject result = makeCall(timeout, m, f, signature, args);
 			return new RpcResult(result);
 		} catch (RpcException e) {
 			return RpcResult.error(e.getMessage());
@@ -234,7 +233,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public OtpErlangObject call(final String m, final String f,
 			final String signature, final Object... a) throws RpcException,
 			BackendException {
-		return call(m, f, DEFAULT_TIMEOUT, signature, a);
+		return call(DEFAULT_TIMEOUT, m, f, signature, a);
 	}
 
 	/**
@@ -253,29 +252,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 * @throws ConversionException
 	 */
-	public OtpErlangObject call(final String m, final String f,
-			final int timeout, final String signature, final Object... a)
+	public OtpErlangObject call(final int timeout, final String m,
+			final String f, final String signature, final Object... a)
 			throws BackendException, RpcException {
-		final RpcResult r = call_noexception(m, f, timeout, signature, a);
-		if (r != null && r.isOk()) {
-			return r.getValue();
-		}
-		if (r == null) {
-			throw new NoBackendException();
-		}
-		final StringBuffer sa = new StringBuffer();
-		for (final Object x : a) {
-			String val = x.toString();
-			if (x.getClass().isArray()
-					&& !x.getClass().getComponentType().isPrimitive()) {
-				val = Arrays.toString((Object[]) x);
-			}
-			sa.append("'").append(val).append("',");
-		}
-		final String ss = sa.toString().replaceAll("[\\r\\n]", " ");
-		final String msg = String.format("%s <- %s:%s(%s) @ %s", r.getValue(),
-				m, f, ss, getInfo().toString());
-		throw new BackendException(msg);
+		return makeCall(timeout, m, f, signature, a);
 	}
 
 	/**
@@ -286,7 +266,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
 			throws BackendException, RpcException {
-		return call(m, f, timeout, signature, a);
+		return call(timeout, m, f, signature, a);
 	}
 
 	/**
@@ -323,8 +303,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return fCodeManager;
 	}
 
-	private OtpErlangObject makeCall(final String module, final String fun,
-			final int timeout, final String signature, final Object... args0)
+	private OtpErlangObject makeCall(final int timeout, final String module,
+			final String fun, final String signature, final Object... args0)
 			throws RpcException {
 		checkAvailability();
 		OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, module, fun,
@@ -495,7 +475,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public void checkCodePath() {
 		try {
-			rpcx("code", "get_path", "");
+			call("code", "get_path", "");
 		} catch (final Throwable e) {
 			ErlLogger.warn("error getting path for %s: %s", getName(), e
 					.getMessage());
