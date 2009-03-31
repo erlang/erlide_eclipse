@@ -51,7 +51,7 @@ public class TemplateParser {
 	/**
 	 * The output of the buffer
 	 */
-	private UStringBuffer output;
+	private StringBuilder output;
 
 	/**
 	 * Process the specified resource
@@ -74,7 +74,7 @@ public class TemplateParser {
 
 		final int av = tmp.available();
 
-		output = new UStringBuffer((int) (av + (av * 0.10)));
+		output = new StringBuilder((int) (av + (av * 0.10)));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class TemplateParser {
 	 */
 	private void processTag() throws IOException {
 		char cur = (char) input.read();
-		final UStringBuffer tmp = new UStringBuffer();
+		final StringBuilder tmp = new StringBuilder();
 		Object res;
 		while (-1 == cur) {
 			switch (cur) {
@@ -178,15 +178,6 @@ public class TemplateParser {
 	 */
 	public String getOutput() {
 		return output.toString();
-	}
-
-	/**
-	 * Get the char array
-	 * 
-	 * @return return the char
-	 */
-	public char[] getArrayOutput() {
-		return output.toCharArray();
 	}
 
 }
