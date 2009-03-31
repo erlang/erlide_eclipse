@@ -12,6 +12,7 @@ package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -263,7 +264,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 *            reports progress on this object
 	 */
 	protected void createProject(final IProgressMonitor monitor,
-			final List<String> includeDirs, final List<String> sourceDirs) {
+			final Collection<String> includeDirs,
+			final Collection<String> sourceDirs) {
 		monitor.beginTask(ErlideUIPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
 		try {

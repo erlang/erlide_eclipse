@@ -14,9 +14,8 @@ package org.erlide.core.erlang;
 /**
  * Common protocol for Erlang elements that support source code assist and code
  * resolve.
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ICodeAssist {
 
@@ -36,10 +35,9 @@ public interface ICodeAssist {
 	 *                if code assist could not be performed. Reasons include:
 	 *                <ul>
 	 *                <li>This Erlang element does not exist
-	 *                (ELEMENT_DOES_NOT_EXIST)</li>
-	 *                <li> The position specified is < -1 or is greater than
-	 *                this compilation unit's source length
-	 *                (INDEX_OUT_OF_BOUNDS)
+	 *                (ELEMENT_DOES_NOT_EXIST)</li> <li> The position specified
+	 *                is < -1 or is greater than this compilation unit's source
+	 *                length (INDEX_OUT_OF_BOUNDS)
 	 *                </ul>
 	 * 
 	 * @exception IllegalArgumentException
@@ -64,10 +62,9 @@ public interface ICodeAssist {
 	 * @exception ErlModelException
 	 *                if code resolve could not be performed. Reasons include:
 	 *                <li>This Java element does not exist
-	 *                (ELEMENT_DOES_NOT_EXIST)</li>
-	 *                <li> The range specified is not within this element's
-	 *                source range (INDEX_OUT_OF_BOUNDS)
-	 *                </ul>
+	 *                (ELEMENT_DOES_NOT_EXIST)</li> <li>The range specified is
+	 *                not within this element's source range
+	 *                (INDEX_OUT_OF_BOUNDS) </ul>
 	 * 
 	 */
 	IErlElement[] codeSelect(int offset, int length) throws ErlModelException;

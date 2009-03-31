@@ -32,22 +32,21 @@ public class ErlProjectImport {
 
 	private static Collection<String> erlangStringList2Collection(
 			final OtpErlangList l, final Collection<String> c) {
-		for (int i = 0, n = l.arity(); i < n; ++i) {
-			final OtpErlangObject o = l.elementAt(i);
+		for (OtpErlangObject o : l.elements()) {
 			c.add(Util.stringValue(o));
 		}
 		return c;
 	}
 
-	public Set<String> getResources() {
+	public Collection<String> getResources() {
 		return resources;
 	}
 
-	public List<String> getSourceDirs() {
+	public Collection<String> getSourceDirs() {
 		return sourceDirs;
 	}
 
-	public List<String> getIncludeDirs() {
+	public Collection<String> getIncludeDirs() {
 		return includeDirs;
 	}
 }

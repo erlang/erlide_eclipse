@@ -168,16 +168,11 @@ public class ErlideBackend {
 		return ((OtpErlangString) r1).stringValue();
 	}
 
-	/**
-	 * @param scratch
-	 * @param bindings
-	 * @return
-	 */
 	public static BackendEvalResult eval(final Backend b, final String string,
-			final OtpErlangObject bindings) {
+			OtpErlangObject bindings) {
 		final BackendEvalResult result = new BackendEvalResult();
-		OtpErlangObject r1;
 		try {
+			OtpErlangObject r1;
 			// ErlLogger.debug("eval %s %s", string, bindings);
 			if (bindings == null) {
 				r1 = b.call("erlide_backend", "eval", "s", string);

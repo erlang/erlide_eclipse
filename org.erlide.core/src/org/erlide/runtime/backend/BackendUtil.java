@@ -18,7 +18,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
-import org.erlide.runtime.backend.exceptions.ErlangEvalException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -41,16 +40,6 @@ public class BackendUtil {
 			return v.elementAt(1);
 		}
 		return v;
-	}
-
-	/**
-	 * 
-	 * @param string
-	 * @return OtpErlangObject
-	 * @throws ErlangEvalException
-	 */
-	public static BackendEvalResult eval(final Backend b, final String string) {
-		return ErlideBackend.eval(b, string, null);
 	}
 
 	public static void generateRpcStub(final String className,
