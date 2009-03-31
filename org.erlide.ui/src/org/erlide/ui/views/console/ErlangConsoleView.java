@@ -87,8 +87,8 @@ import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
-import org.erlide.ui.editors.erl.ErlangPairMatcher;
 import org.erlide.ui.editors.erl.ErlangAnnotationHover;
+import org.erlide.ui.editors.erl.ErlangPairMatcher;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

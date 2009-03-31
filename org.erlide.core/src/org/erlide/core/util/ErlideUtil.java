@@ -47,7 +47,6 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ICodeBundle;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -80,8 +79,6 @@ public class ErlideUtil {
 			}
 
 		} catch (final RpcException e) {
-			ErlLogger.error(e.getMessage());
-		} catch (final BackendException e) {
 			ErlLogger.error(e.getMessage());
 		} catch (final OtpErlangRangeException e) {
 			ErlLogger.error(e);

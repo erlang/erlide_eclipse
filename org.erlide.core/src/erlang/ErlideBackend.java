@@ -136,7 +136,6 @@ public class ErlideBackend {
 	/**
 	 * @param string
 	 * @return
-	 * @throws BackendException
 	 */
 	public static OtpErlangObject parseString(final Backend b,
 			final String string) throws BackendException {
@@ -237,16 +236,15 @@ public class ErlideBackend {
 	}
 
 	public static OtpErlangObject concreteSyntax(final Backend b,
-			final OtpErlangObject val) throws BackendException, RpcException {
+			final OtpErlangObject val) throws RpcException {
 		try {
 			return b.call("erlide_syntax", "concrete", "x", val);
-		} catch (final NoBackendException e) {
+		} catch (final RpcException e) {
 			return null;
 		}
 	}
 
-	public static String getScriptId(final Backend b) throws BackendException,
-			RpcException {
+	public static String getScriptId(final Backend b) throws RpcException {
 		OtpErlangObject r;
 		r = b.call("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {
@@ -259,14 +257,14 @@ public class ErlideBackend {
 	}
 
 	public static String prettyPrint(final Backend b, final OtpErlangObject e)
-			throws BackendException, RpcException {
+			throws RpcException {
 		OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
 		p = b.call("lists", "flatten", "x", p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
 	public static OtpErlangObject convertErrors(final Backend b,
-			final String lines) throws BackendException, RpcException {
+			final String lines) throws RpcException {
 		OtpErlangObject res;
 		res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;
@@ -277,7 +275,6 @@ public class ErlideBackend {
 			ErlLogger.debug("Start tracer to %s", tracer);
 			b.call("erlide_backend", "start_tracer", "ps", tracer);
 		} catch (final RpcException e) {
-		} catch (final BackendException e) {
 		}
 	}
 
@@ -286,7 +283,6 @@ public class ErlideBackend {
 			ErlLogger.debug("Start tracer to %s", logname);
 			b.call("erlide_backend", "start_tracer", "s", logname);
 		} catch (final RpcException e) {
-		} catch (final BackendException e) {
 		}
 	}
 

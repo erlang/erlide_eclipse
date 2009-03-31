@@ -19,7 +19,6 @@ import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -44,8 +43,6 @@ public class ErlideNoparse {
 					stateDir, erlidePath);
 		} catch (final RpcException e) {
 			ErlLogger.warn(e);
-		} catch (final BackendException e) {
-			ErlLogger.warn(e);
 		}
 		return res;
 	}
@@ -57,8 +54,6 @@ public class ErlideNoparse {
 			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
 					"a", scannerModuleName);
 		} catch (final RpcException e) {
-			ErlLogger.warn(e);
-		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return res;
@@ -141,8 +136,6 @@ public class ErlideNoparse {
 			}
 			return result;
 		} catch (final RpcException e) {
-			ErlLogger.warn(e);
-		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return null;

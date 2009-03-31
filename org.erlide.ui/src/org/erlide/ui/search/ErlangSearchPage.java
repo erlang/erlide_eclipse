@@ -47,7 +47,6 @@ import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -764,11 +763,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				try {
 					res = ErlideOpen.open(b, ErlScanner
 							.createScannerModuleName(erlangEditor.getModule()),
-							offset, "", ErlangCore.getModel()
-									.getPathVars());
+							offset, "", ErlangCore.getModel().getPathVars());
 				} catch (final RpcException e) {
-					res = null;
-				} catch (final BackendException e) {
 					res = null;
 				}
 				ErlLogger.debug("searchPage(open) " + res);

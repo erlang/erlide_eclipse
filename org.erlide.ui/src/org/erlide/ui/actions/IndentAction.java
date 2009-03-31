@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.editors.erl.AutoIndentStrategy;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -41,7 +42,7 @@ public class IndentAction extends ErlangTextEditorAction {
 	 */
 	@Override
 	protected OtpErlangObject callErlang(final int offset, final int length,
-			final String text) throws Exception {
+			final String text) throws RpcException {
 		final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
 		final Map<String, String> prefs = new TreeMap<String, String>();
 		IndentationPreferencePage.addKeysAndPrefs(prefs);

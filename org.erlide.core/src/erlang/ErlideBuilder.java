@@ -8,7 +8,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -44,14 +43,14 @@ public class ErlideBuilder {
 	}
 
 	public static OtpErlangList getSourceClashes(final Backend backend,
-			final String[] dirList) throws BackendException, RpcException {
+			final String[] dirList) throws RpcException {
 		final OtpErlangList res = (OtpErlangList) backend.call(
 				"erlide_builder", "source_clash", "ls", (Object) dirList);
 		return res;
 	}
 
 	public static OtpErlangList getCodeClashes(final Backend b)
-			throws BackendException, RpcException {
+			throws RpcException {
 		final OtpErlangList res = (OtpErlangList) b.call("erlide_builder",
 				"code_clash", null);
 		return res;

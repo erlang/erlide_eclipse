@@ -2,15 +2,12 @@ package org.erlide.selfhost.ui;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.pde.ui.launcher.EclipseApplicationLaunchConfiguration;
 import org.erlide.runtime.backend.ErlLaunchAttributes;
 import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 public class EclipseErlideLaunchConfiguration extends
 		EclipseApplicationLaunchConfiguration {
@@ -28,12 +25,6 @@ public class EclipseErlideLaunchConfiguration extends
 		super.launch(conf, mode, launch, monitor);
 
 		ErlangLaunchConfigurationDelegate erlDelegate = new ErlangLaunchConfigurationDelegate();
-		try {
-			erlDelegate.launchInternal(configuration, mode, launch, monitor);
-		} catch (BackendException e) {
-			IStatus status = new Status(IStatus.ERROR, "org.erlide.selfhost", e
-					.getMessage());
-			throw new CoreException(status);
-		}
+		erlDelegate.launchInternal(configuration, mode, launch, monitor);
 	}
 }

@@ -28,7 +28,6 @@ import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
@@ -76,6 +75,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private final RuntimeLauncher launcher;
 	private boolean trapexit;
 	private int exitStatus = -1;
+	private boolean stopped = false;
 
 	Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
@@ -187,8 +187,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	/**
 	 * typed RPC
 	 * 
-	 * @throws NoBackendException
-	 * @throws ConversionException
 	 */
 	public RpcResult call_noexception(final String m, final String f,
 			final String signature, final Object... a) throws RpcException {
@@ -228,12 +226,9 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	/**
 	 * typed RPC , throws Exception
 	 * 
-	 * @throws BackendException
-	 * @throws ConversionException
 	 */
 	public OtpErlangObject call(final String m, final String f,
-			final String signature, final Object... a) throws RpcException,
-			BackendException {
+			final String signature, final Object... a) throws RpcException {
 		return call(DEFAULT_TIMEOUT, m, f, signature, a);
 	}
 
@@ -243,8 +238,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
-			final String signature, final Object... a) throws RpcException,
-			BackendException {
+			final String signature, final Object... a) throws RpcException {
 		return call(m, f, signature, a);
 	}
 
@@ -255,7 +249,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	public OtpErlangObject call(final int timeout, final String m,
 			final String f, final String signature, final Object... a)
-			throws BackendException, RpcException {
+			throws RpcException {
 		return makeCall(timeout, m, f, signature, a);
 	}
 
@@ -266,7 +260,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
-			throws BackendException, RpcException {
+			throws RpcException {
 		return call(timeout, m, f, signature, a);
 	}
 
@@ -407,8 +401,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	public OtpErlangObject receiveRpc(final long timeout) throws OtpErlangExit,
-			OtpErlangDecodeException {
+	public OtpErlangObject receiveEvent(final long timeout)
+			throws OtpErlangExit, OtpErlangDecodeException {
 		final OtpMbox eventBox = getEventBox();
 		if (eventBox == null) {
 			return null;
@@ -555,11 +549,16 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public void stop() {
+		stopped = true;
 		launcher.stop();
 	}
 
 	public void setExitStatus(final int v) {
 		exitStatus = v;
+	}
+
+	public boolean isStopped() {
+		return stopped;
 	}
 
 }

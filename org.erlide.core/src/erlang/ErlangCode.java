@@ -3,7 +3,6 @@ package erlang;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -88,8 +87,7 @@ public class ErlangCode {
 	}
 
 	public static OtpErlangObject loadBinary(final Backend b,
-			final String beamf, final OtpErlangBinary code)
-			throws RpcException, BackendException {
+			final String beamf, final OtpErlangBinary code) throws RpcException {
 		OtpErlangObject result;
 		result = b.call("code", "load_binary", "asb", beamf, beamf, code);
 		return result;

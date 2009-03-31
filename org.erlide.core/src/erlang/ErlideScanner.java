@@ -26,9 +26,9 @@ public class ErlideScanner {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
-			ErlangCore.getBackendManager().getIdeBackend().call(
-					ERLIDE_SCANNER, "initialScan", "assss", module,
-					moduleFileName, initialText, stateDir, erlidePath);
+			ErlangCore.getBackendManager().getIdeBackend().call(ERLIDE_SCANNER,
+					"initialScan", "assss", module, moduleFileName,
+					initialText, stateDir, erlidePath);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -36,8 +36,8 @@ public class ErlideScanner {
 
 	public static void destroy(final String module) {
 		try {
-			ErlangCore.getBackendManager().getIdeBackend().call(
-					ERLIDE_SCANNER, "destroy", "a", module);
+			ErlangCore.getBackendManager().getIdeBackend().call(ERLIDE_SCANNER,
+					"destroy", "a", module);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -83,7 +83,6 @@ public class ErlideScanner {
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final RpcException e) {
-		} catch (final BackendException e) {
 		}
 	}
 
@@ -138,8 +137,7 @@ public class ErlideScanner {
 				+ "\": " + t1.elementAt(1).toString());
 	}
 
-	public static String checkAll(final String module, final String text)
-			throws BackendException {
+	public static String checkAll(final String module, final String text) {
 		try {
 			final OtpErlangObject o = ErlangCore.getBackendManager()
 					.getIdeBackend().call(ERLIDE_SCANNER, "check_all", "as",

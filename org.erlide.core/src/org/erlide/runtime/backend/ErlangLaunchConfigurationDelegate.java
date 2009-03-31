@@ -74,17 +74,12 @@ public class ErlangLaunchConfigurationDelegate extends
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
-		try {
-			doLaunch(config, mode, launch, false);
-		} catch (final BackendException e) {
-			ErlLogger.error(e);
-		}
+		doLaunch(config, mode, launch, false);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void doLaunch(final ILaunchConfiguration config, final String mode,
-			final ILaunch launch, final boolean internal) throws CoreException,
-			BackendException {
+			final ILaunch launch, final boolean internal) throws CoreException {
 		// try {
 		final String prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS,
 				"").trim();
@@ -158,94 +153,92 @@ public class ErlangLaunchConfigurationDelegate extends
 		}
 		System.out.println("---------------");
 
-		final Backend backend = ErlangCore.getBackendManager().create(rt,
-				options, launch);
-		if (backend == null) {
+		try {
+			final Backend backend = ErlangCore.getBackendManager().create(rt,
+					options, launch);
+			// launch.addProcess(null);
+			backend.registerProjects(projects);
+			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+				// add debug target
+				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+						backend, projects, debugFlags);
+				// target.getWaiter().doWait();
+				launch.addDebugTarget(target);
+				// interpret everything we can
+				final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+				if (distributed) {
+					distributeDebuggerCode(backend);
+					// add other nodes
+					final OtpErlangList nodes = ErlideDebug.nodes(backend);
+					if (nodes != null) {
+						for (int i = 1, n = nodes.arity(); i < n; ++i) {
+							final OtpErlangAtom o = (OtpErlangAtom) nodes
+									.elementAt(i);
+							final OtpErlangAtom a = o;
+							final ErlangDebugNode edn = new ErlangDebugNode(
+									target, a.atomValue());
+							launch.addDebugTarget(edn);
+						}
+					}
+				}
+				for (final String pm : interpretedModules) {
+					final String[] pms = pm.split(":");
+					interpret(backend, pms[0], pms[1], distributed, true);
+				}
+				// send started to target
+				target.sendStarted();
+
+				DebugPlugin.getDefault().addDebugEventListener(
+						new IDebugEventSetListener() {
+
+							public void handleDebugEvents(
+									final DebugEvent[] events) {
+
+								try {
+									if (module.length() > 0
+											&& function.length() > 0) {
+										if (args.length() > 0) {
+											// TODO issue #84
+											backend.call(module, function, "s",
+													args);
+										} else {
+											backend.call(module, function, "");
+										}
+									}
+								} catch (final Exception e) {
+									ErlLogger
+											.debug(
+													"Could not run initial call %s:%s(\"%s\")",
+													module, function, args);
+									ErlLogger.warn(e);
+								}
+								DebugPlugin.getDefault()
+										.removeDebugEventListener(this);
+							}
+						});
+			} else {
+				try {
+					if (module.length() > 0 && function.length() > 0) {
+						if (args.length() > 0) {
+							// TODO issue #84
+							backend.call(module, function, "s", args);
+						} else {
+							backend.call(module, function, "");
+						}
+					}
+				} catch (final Exception e) {
+					ErlLogger.debug("Could not run initial call %s:%s(\"%s\")",
+							module, function, args);
+					ErlLogger.warn(e);
+				}
+			}
+		} catch (BackendException e) {
 			ErlLogger.error("Launch: got null backend!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					DebugException.REQUEST_FAILED, "Couldn't find the node "
 							+ nodeName, null);
 			throw new DebugException(s);
 		}
-		// launch.addProcess(null);
-		backend.registerProjects(projects);
-		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			// add debug target
-			final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-					backend, projects, debugFlags);
-			// target.getWaiter().doWait();
-			launch.addDebugTarget(target);
-			// interpret everything we can
-			final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-			if (distributed) {
-				distributeDebuggerCode(backend);
-				// add other nodes
-				final OtpErlangList nodes = ErlideDebug.nodes(backend);
-				if (nodes != null) {
-					for (int i = 1, n = nodes.arity(); i < n; ++i) {
-						final OtpErlangAtom o = (OtpErlangAtom) nodes
-								.elementAt(i);
-						final OtpErlangAtom a = o;
-						final ErlangDebugNode edn = new ErlangDebugNode(target,
-								a.atomValue());
-						launch.addDebugTarget(edn);
-					}
-				}
-			}
-			for (final String pm : interpretedModules) {
-				final String[] pms = pm.split(":");
-				interpret(backend, pms[0], pms[1], distributed, true);
-			}
-			// send started to target
-			target.sendStarted();
-
-			DebugPlugin.getDefault().addDebugEventListener(
-					new IDebugEventSetListener() {
-
-						public void handleDebugEvents(final DebugEvent[] events) {
-
-							try {
-								if (module.length() > 0
-										&& function.length() > 0) {
-									if (args.length() > 0) {
-										// TODO issue #84
-										backend.call(module, function, "s",
-												args);
-									} else {
-										backend.call(module, function, "");
-									}
-								}
-							} catch (final Exception e) {
-								ErlLogger
-										.debug(
-												"Could not run initial call %s:%s(\"%s\")",
-												module, function, args);
-								ErlLogger.warn(e);
-							}
-							DebugPlugin.getDefault().removeDebugEventListener(
-									this);
-						}
-					});
-		} else {
-			try {
-				if (module.length() > 0 && function.length() > 0) {
-					if (args.length() > 0) {
-						// TODO issue #84
-						backend.call(module, function, "s", args);
-					} else {
-						backend.call(module, function, "");
-					}
-				}
-			} catch (final Exception e) {
-				ErlLogger.debug("Could not run initial call %s:%s(\"%s\")",
-						module, function, args);
-				ErlLogger.warn(e);
-			}
-		}
-		// } catch (final Exception e) {
-		// ErlLogger.debug("Could not launch Erlang:::");
-		// ErlLogger.warn(e);
-		// }
 	}
 
 	public static List<String> addBreakpointProjectsAndModules(
@@ -384,8 +377,7 @@ public class ErlangLaunchConfigurationDelegate extends
 
 	public void launchInternal(final ILaunchConfiguration configuration,
 			final String mode, final ILaunch launch,
-			final IProgressMonitor monitor) throws CoreException,
-			BackendException {
+			final IProgressMonitor monitor) throws CoreException {
 		doLaunch(configuration, mode, launch, true);
 	}
 

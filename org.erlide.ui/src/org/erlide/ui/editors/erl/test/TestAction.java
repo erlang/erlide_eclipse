@@ -15,7 +15,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangXref;
@@ -51,13 +50,9 @@ public class TestAction extends TextEditorAction {
 			final IDocument document = textEditor.getDocumentProvider()
 					.getDocument(textEditor.getEditorInput());
 			final String text = document.get();
-			try {
-				final String s = ErlideScanner.checkAll(ErlScanner
-						.createScannerModuleName(module), text);
-				ErlLogger.debug("%s", s);
-			} catch (final BackendException e) {
-				ErlLogger.warn(e);
-			}
+			final String s = ErlideScanner.checkAll(ErlScanner
+					.createScannerModuleName(module), text);
+			ErlLogger.debug("%s", s);
 		} else {
 			final ErlangEditor ee = (ErlangEditor) textEditor;
 			ee.reconcileNow();

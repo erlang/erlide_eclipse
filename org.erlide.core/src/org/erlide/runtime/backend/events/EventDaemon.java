@@ -36,7 +36,7 @@ public class EventDaemon implements BackendListener {
 				OtpErlangObject msg = null;
 				do {
 					try {
-						msg = fBackend.receiveRpc(5);
+						msg = fBackend.receiveEvent(5);
 						if (msg != null) {
 							if (DEBUG) {
 								ErlLogger.debug("MSG: %s", msg);
@@ -48,8 +48,10 @@ public class EventDaemon implements BackendListener {
 							}
 						}
 					} catch (final OtpErlangExit e) {
-						// backend crashed -- restart?
-						ErlLogger.warn(e);
+						if (!fBackend.isStopped()) {
+							// backend crashed -- restart?
+							ErlLogger.warn(e);
+						}
 					} catch (final Exception e) {
 						ErlLogger.warn(e);
 					}
