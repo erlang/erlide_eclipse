@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * This is a tread driven by a mailbox, that waits for rpc results and
+ * This is a thread driven by a mailbox, that waits for rpc results and
  * dispatches them to registered callback.
  * 
  * Protocol:
@@ -27,14 +31,38 @@ package org.erlide.jinterface.rpc;
 public class RpcResultReceiver implements Runnable {
 
 	private RpcResultCallback callback;
+	private OtpMbox mbox;
 
-	public RpcResultReceiver(RpcResultCallback callback) {
+	public RpcResultReceiver(OtpMbox box, RpcResultCallback callback) {
 		this.callback = callback;
+		mbox = box;
 		new Thread(this, "rpc");
 	}
 
 	public void run() {
-		// OtpMbox box
+		boolean done = false;
+		do {
+			OtpErlangObject msg;
+			try {
+				msg = mbox.receive(10000);
+				if (msg != null) {
+					if (msg instanceof OtpErlangTuple) {
+						OtpErlangTuple tuple = (OtpErlangTuple) msg;
+						String tag = ((OtpErlangAtom) tuple.elementAt(0))
+								.atomValue();
+						if ("start".equals(tag)) {
+							callback.start(tuple.elementAt(1));
+						} else if ("stop".equals(tag)) {
+							done = true;
+							callback.stop(tuple.elementAt(1));
+						} else if ("progress".equals(tag)) {
+							callback.progress(tuple.elementAt(1));
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} while (!done || Thread.interrupted());
 	}
-
 }

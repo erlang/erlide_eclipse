@@ -26,7 +26,7 @@ public class ObjRefCache {
 
 	public static OtpErlangRef registerTarget(Object obj) {
 		if (obj == null) {
-			return new OtpErlangRef(RpcUtil.REF_NODE, new int[] { 0, 0, 0 }, 0);
+			return new OtpErlangRef(JRpcUtil.REF_NODE, new int[] { 0, 0, 0 }, 0);
 		}
 
 		Set<Entry<OtpErlangRef, WeakReference<Object>>> entries = objects
@@ -62,7 +62,7 @@ public class ObjRefCache {
 			}
 			refid2 = 0;
 		}
-		return new OtpErlangRef(RpcUtil.REF_NODE, new int[] { refid0, refid1,
+		return new OtpErlangRef(JRpcUtil.REF_NODE, new int[] { refid0, refid1,
 				refid2 }, 0);
 	}
 

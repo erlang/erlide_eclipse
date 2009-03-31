@@ -93,7 +93,7 @@ public class RpcConverter {
 			return double.class;
 		}
 		try {
-			return Class.forName(arg, true, RpcUtil.loader);
+			return Class.forName(arg, true, JRpcUtil.loader);
 		} catch (final ClassNotFoundException e) {
 			System.out.println("Rpc TypeConverter: can't find class " + arg);
 			return Object.class;
@@ -270,7 +270,7 @@ public class RpcConverter {
 						+ cls.getCanonicalName());
 			}
 			if (obj instanceof OtpErlangRef) {
-				if (!((OtpErlangRef) obj).node().equals(RpcUtil.REF_NODE)) {
+				if (!((OtpErlangRef) obj).node().equals(JRpcUtil.REF_NODE)) {
 					return ObjRefCache.getTarget((OtpErlangRef) obj);
 				}
 				throw new RpcException("wrong arg type "

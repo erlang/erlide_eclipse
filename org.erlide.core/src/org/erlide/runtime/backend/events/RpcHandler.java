@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.jinterface.JInterfaceFactory;
-import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.JRpcUtil;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -38,8 +38,8 @@ public class RpcHandler extends EventHandler {
 					final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
 					executeRpc(new Runnable() {
 						public void run() {
-							final OtpErlangObject result = RpcUtil.execute(
-							        receiver, target, args.elements());
+							final OtpErlangObject result = JRpcUtil.execute(
+									receiver, target, args.elements());
 							rpcReply(from, result);
 						}
 					});
@@ -50,8 +50,8 @@ public class RpcHandler extends EventHandler {
 					// TODO how to mark this as executable in UI thread?
 					executeRpc(new Runnable() {
 						public void run() {
-							final OtpErlangObject result = RpcUtil.execute(
-							        receiver, target, args.elements());
+							final OtpErlangObject result = JRpcUtil.execute(
+									receiver, target, args.elements());
 							rpcReply(from, result);
 						}
 					});
@@ -60,7 +60,7 @@ public class RpcHandler extends EventHandler {
 					final OtpErlangList args = buildArgs(t.elementAt(3));
 					executeRpc(new Runnable() {
 						public void run() {
-							RpcUtil.execute(receiver, target, args.elements());
+							JRpcUtil.execute(receiver, target, args.elements());
 						}
 					});
 				}
@@ -69,7 +69,7 @@ public class RpcHandler extends EventHandler {
 	}
 
 	private static OtpErlangList buildArgs(final OtpErlangObject a)
-	        throws Exception {
+			throws Exception {
 		final OtpErlangList args;
 		if (a instanceof OtpErlangList) {
 			args = (OtpErlangList) a;
@@ -89,7 +89,7 @@ public class RpcHandler extends EventHandler {
 
 	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
 		fBackend.send(from, JInterfaceFactory.mkTuple(
-		        new OtpErlangAtom("reply"), result));
+				new OtpErlangAtom("reply"), result));
 	}
 
 	public void executeRpc(final Runnable runnable) {

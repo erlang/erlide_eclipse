@@ -44,7 +44,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.rpc.RpcUtil;
+import org.erlide.jinterface.rpc.JRpcUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -123,7 +123,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		super.start(context);
 
 		// set this classloader to be used with erlang rpc
-		RpcUtil.loader = getClass().getClassLoader();
+		JRpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
 		ErlangCore.getBackendManager().register(ErlangPlugin.getDefault());
