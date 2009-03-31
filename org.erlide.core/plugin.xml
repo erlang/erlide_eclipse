@@ -94,17 +94,6 @@
       </bundle_dir>
    </extension>
    <extension
-         point="org.erlide.core.javaRpcStubs">
-      <stub
-            class="org.erlide.jinterface.rpc.RpcTest"
-            onlyDeclared="true">
-      </stub>
-      <stub
-            class="org.eclipse.core.runtime.Platform"
-            onlyDeclared="false">
-      </stub>
-   </extension>
-   <extension
          id="org.erlide.core.erlang.lineBreakpoint.marker"
          name="Erlang Line Breakpoint Marker"
          point="org.eclipse.core.resources.markers">

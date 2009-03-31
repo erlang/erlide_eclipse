@@ -181,10 +181,10 @@ public class RpcUtil {
 				mbox.close();
 			}
 			if (res == null) {
-				throw new RpcTimeout("");
+				throw new RpcTimeoutException("");
 			}
 			if (!(res instanceof OtpErlangTuple)) {
-				throw new BadRpcException(res.toString());
+				throw new RpcException(res.toString());
 			}
 			res = ((OtpErlangTuple) res).elementAt(1);
 		} catch (final OtpErlangExit e) {

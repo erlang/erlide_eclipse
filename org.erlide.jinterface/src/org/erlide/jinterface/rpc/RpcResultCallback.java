@@ -12,13 +12,18 @@ package org.erlide.jinterface.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Groups callbacks for {@link RpcUtil#rpcCallWithProgress}. Clients should
+ * extend it locally.
+ * 
+ */
 public class RpcResultCallback {
-	void start(OtpErlangObject msg) {
+	public void start(OtpErlangObject msg) {
 	};
 
-	void stop(OtpErlangObject msg) {
+	public void stop(OtpErlangObject msg) {
 	};
 
-	void progress(OtpErlangObject msg) {
+	public void progress(OtpErlangObject msg) {
 	};
 }

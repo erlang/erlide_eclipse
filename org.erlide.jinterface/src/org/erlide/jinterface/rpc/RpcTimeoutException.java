@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-public class BadRpcException extends RpcException {
+public class RpcTimeoutException extends RpcException {
+	private static final long serialVersionUID = 1229604283654671393L;
 
-	private static final long serialVersionUID = -3985020542523854596L;
-
-	public BadRpcException(Exception e) {
+	public RpcTimeoutException(Exception e) {
 		super(e);
 	}
 
-	public BadRpcException(String string) {
-		super(string);
+	public RpcTimeoutException(String msg) {
+		super(msg);
 	}
 
 }
