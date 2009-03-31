@@ -180,7 +180,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	@Deprecated
 	public RpcResult rpc(final String m, final String f,
-			final String signature, final Object... a) throws RpcException {
+			final String signature, final Object... a) {
 		return call_noexception(m, f, signature, a);
 	}
 
@@ -189,7 +189,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 */
 	public RpcResult call_noexception(final String m, final String f,
-			final String signature, final Object... a) throws RpcException {
+			final String signature, final Object... a) {
 		return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
 	}
 
