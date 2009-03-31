@@ -1,4 +1,5 @@
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.rpc.generator;
+
 
 public class Tuple extends BaseTuple {
 

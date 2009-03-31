@@ -1,4 +1,4 @@
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.rpc.generator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
