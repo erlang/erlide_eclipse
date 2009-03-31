@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.gunit.internal.model.TestElement;
-import org.erlide.runtime.backend.Backend;
 
 public class AbstractTestRunner {
 
-	private Backend fBackend;
+	// private Backend fBackend;
 
 	public AbstractTestRunner(ILaunch launch) {
 		// try {

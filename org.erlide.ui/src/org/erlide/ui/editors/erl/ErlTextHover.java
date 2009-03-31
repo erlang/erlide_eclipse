@@ -352,8 +352,10 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final IErlModel model = ErlangCore.getModel();
-		final IErlProject erlProject = module == null ? null : module
-				.getProject();
+		if (module == null) {
+			return null;
+		}
+		final IErlProject erlProject = module.getProject();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(module), fImports, model.getExternal(
 				erlProject, ErlangCore.EXTERNAL_MODULES), model.getPathVars());

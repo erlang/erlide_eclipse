@@ -214,10 +214,11 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		final List<DebugTreeItem> children = dti.getChildren();
 		if (children == null || children.size() == 0) {
 			interpretOrDeinterpret(dti, checked);
-		}
-		for (final DebugTreeItem i : children) {
-			checkboxTreeViewer.setChecked(i, checked);
-			setSubtreeChecked(i, checked);
+		} else {
+			for (final DebugTreeItem i : children) {
+				checkboxTreeViewer.setChecked(i, checked);
+				setSubtreeChecked(i, checked);
+			}
 		}
 	}
 
