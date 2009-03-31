@@ -9,7 +9,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 import org.erlide.wrangler.refactoring.ui.WranglerNewDataInputPage;
 import org.erlide.wrangler.refactoring.util.NameChecker;
@@ -91,9 +90,6 @@ public class NewParameterNameInputPage extends WranglerNewDataInputPage {
 			}
 			refac.setMessage(m);
 			refac.setRefactoringStatus(new RefactoringStatus());
-		} catch (ErlangRpcException e) {
-			refac.setRefactoringStatus(RefactoringStatus
-					.createFatalErrorStatus(e.getMessage()));
 		} catch (RpcException e) {
 			refac.setRefactoringStatus(RefactoringStatus
 					.createFatalErrorStatus(e.getMessage()));

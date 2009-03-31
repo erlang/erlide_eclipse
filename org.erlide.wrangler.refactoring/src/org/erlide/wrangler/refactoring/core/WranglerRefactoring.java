@@ -18,7 +18,6 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 
@@ -79,8 +78,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 		} catch (WranglerException e) {
 			String s = e.getLocalizedMessage();
 			rs = RefactoringStatus.createFatalErrorStatus(s);
-		} catch (ErlangRpcException e) {
-			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		} catch (RpcException e) {
 			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		} catch (Exception e) {
@@ -204,8 +201,8 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 * @throws ErlangRpcException
 	 * @throws WranglerException
 	 */
-	protected void doRefactoring() throws RpcException, ErlangRpcException,
-			CoreException, WranglerException {
+	protected void doRefactoring() throws RpcException, CoreException,
+			WranglerException {
 
 		String filePath = parameters.getFilePath();
 		ErlLogger.debug("selected file for " + getName() + " refactoring:"
@@ -218,9 +215,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 			ErlLogger.debug("RpcResult converted to RpcMessage");
 			message = m;
 
-		} catch (ErlangRpcException e) {
-			ErlLogger.debug(e);
-			throw e;
 		} catch (RpcException e) {
 			ErlLogger.debug(e);
 			throw e;
@@ -246,8 +240,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 * @throws RpcException
 	 */
 	protected abstract RpcResult sendRPC(String filePath,
-			OtpErlangList searchPath) throws ErlangRpcException, RpcException,
-			CoreException;
+			OtpErlangList searchPath) throws RpcException, CoreException;
 
 	/**
 	 * @param m

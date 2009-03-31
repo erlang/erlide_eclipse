@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.core.movefunction;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 
@@ -29,9 +28,9 @@ public class MoveFunctionRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws ErlangRpcException, RpcException {
-		return managedBackend.call_noexception("wrangler", "move_fun_eclipse", "siisxxi",
-				filePath, parameters.getStartLine(), parameters
+			throws RpcException {
+		return managedBackend.call_noexception("wrangler", "move_fun_eclipse",
+				"siisxxi", filePath, parameters.getStartLine(), parameters
 						.getStartColumn(), newName, new OtpErlangBoolean(
 						isNewModule), searchPath, parameters
 						.getEditorTabWidth());

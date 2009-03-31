@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.core.renamevariable;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.rename.RenameRefactoring;
 
@@ -22,11 +21,11 @@ public class RenameVariableRefactoring extends RenameRefactoring {
 	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws ErlangRpcException, RpcException {
-		return managedBackend.call_noexception("wrangler", "rename_var_eclipse", "siisxi",
-				filePath, parameters.getStartLine(), parameters
-						.getStartColumn(), newName, searchPath, parameters
-						.getEditorTabWidth());
+			throws RpcException {
+		return managedBackend.call_noexception("wrangler",
+				"rename_var_eclipse", "siisxi", filePath, parameters
+						.getStartLine(), parameters.getStartColumn(), newName,
+				searchPath, parameters.getEditorTabWidth());
 
 	}
 

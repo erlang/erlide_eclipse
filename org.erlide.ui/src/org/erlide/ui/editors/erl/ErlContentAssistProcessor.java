@@ -48,7 +48,6 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -194,8 +193,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private List<ICompletionProposal> addCompletions(final int flags,
 			final int offset, final String prefix, final String moduleOrRecord,
 			final int pos, final IErlProject project, final Backend backend)
-			throws CoreException, OtpErlangRangeException, ErlangRpcException,
-			BackendException, RpcException, BadLocationException {
+			throws CoreException, OtpErlangRangeException, BackendException,
+			RpcException, BadLocationException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		if ((flags & DECLARED_FUNCTIONS) != 0) {
 			addSorted(result, getDeclaredFunctions(offset, prefix,
@@ -410,9 +409,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private List<ICompletionProposal> getExternalCallCompletions(
 			final Backend b, final IErlProject project,
 			final String moduleName, final int offset, final String aprefix,
-			final boolean arityOnly) throws ErlangRpcException,
-			BackendException, RpcException, OtpErlangRangeException,
-			CoreException {
+			final boolean arityOnly) throws BackendException, RpcException,
+			OtpErlangRangeException, CoreException {
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		// we have an external call

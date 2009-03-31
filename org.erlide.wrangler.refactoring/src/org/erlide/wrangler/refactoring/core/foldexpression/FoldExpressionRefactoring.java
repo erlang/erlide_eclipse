@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -60,10 +59,11 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws ErlangRpcException, RpcException, CoreException {
-		return managedBackend.call_noexception("wrangler", "fold_expression_1_eclipse",
-				"sxxxi", filePath, funClauseDef, selectedPositions, parameters
-						.getSearchPath(), parameters.getEditorTabWidth());
+			throws RpcException, CoreException {
+		return managedBackend.call_noexception("wrangler",
+				"fold_expression_1_eclipse", "sxxxi", filePath, funClauseDef,
+				selectedPositions, parameters.getSearchPath(), parameters
+						.getEditorTabWidth());
 	}
 
 	@SuppressWarnings("boxing")

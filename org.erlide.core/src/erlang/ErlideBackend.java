@@ -10,7 +10,6 @@ import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.ErlangParseException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -246,8 +245,8 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String getScriptId(final Backend b)
-			throws ErlangRpcException, BackendException, RpcException {
+	public static String getScriptId(final Backend b) throws BackendException,
+			RpcException {
 		OtpErlangObject r;
 		r = b.call("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {
@@ -260,15 +259,14 @@ public class ErlideBackend {
 	}
 
 	public static String prettyPrint(final Backend b, final OtpErlangObject e)
-			throws ErlangRpcException, BackendException, RpcException {
+			throws BackendException, RpcException {
 		OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
 		p = b.call("lists", "flatten", "x", p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
 	public static OtpErlangObject convertErrors(final Backend b,
-			final String lines) throws ErlangRpcException, BackendException,
-			RpcException {
+			final String lines) throws BackendException, RpcException {
 		OtpErlangObject res;
 		res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;

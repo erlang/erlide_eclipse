@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.core.rename;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 
@@ -19,6 +18,6 @@ public abstract class RenameRefactoring extends WranglerRefactoring {
 
 	@Override
 	protected abstract RpcResult sendRPC(String filePath,
-			OtpErlangList searchPath) throws ErlangRpcException, RpcException;
+			OtpErlangList searchPath) throws RpcException;
 
 }

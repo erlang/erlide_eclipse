@@ -27,7 +27,6 @@ import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
 

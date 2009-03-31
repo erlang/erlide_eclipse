@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
@@ -221,8 +220,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 			final String str = document;
 			fTokens = ErlideScanner.lightScanString(str, rangeOffset);
 
-		} catch (final ErlangRpcException e) {
-			// e.printStackTrace();
 		} catch (final BackendException e) {
 			// e.printStackTrace();
 		}

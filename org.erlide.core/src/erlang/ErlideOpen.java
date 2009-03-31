@@ -8,7 +8,6 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangRpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -18,9 +17,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideOpen {
 
 	public static String getIncludeLib(final Backend b, String s)
-			throws ErlangRpcException, BackendException, RpcException {
-		final OtpErlangObject t = b.call("erlide_open", "get_include_lib",
-				"s", s);
+			throws BackendException, RpcException {
+		final OtpErlangObject t = b.call("erlide_open", "get_include_lib", "s",
+				s);
 		if (t instanceof OtpErlangTuple) {
 			final OtpErlangObject es = ((OtpErlangTuple) t).elementAt(1);
 			s = ((OtpErlangString) es).stringValue();
@@ -30,8 +29,7 @@ public class ErlideOpen {
 
 	public static OtpErlangObject getSourceFromModule(final Backend b,
 			final OtpErlangList pathVars, final String mod,
-			final String externalModules) throws ErlangRpcException,
-			BackendException, RpcException {
+			final String externalModules) throws BackendException, RpcException {
 		final OtpErlangObject res2 = b
 				.call("erlide_open", "get_source_from_module", "asx", mod,
 						externalModules, pathVars);
@@ -42,7 +40,7 @@ public class ErlideOpen {
 	public static OtpErlangObject getOpenInfo(final Backend b,
 			final String scannerName, final int offset,
 			final String externalModules, final OtpErlangList pathVars)
-			throws ErlangRpcException, BackendException, RpcException {
+			throws BackendException, RpcException {
 		final OtpErlangObject res = b.call("erlide_open", "open_info", "aisx",
 				scannerName, offset, externalModules, pathVars);
 		return res;
