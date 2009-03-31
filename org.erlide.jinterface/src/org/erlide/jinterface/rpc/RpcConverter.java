@@ -372,7 +372,7 @@ public class RpcConverter {
 			return (OtpErlangObject) obj;
 		}
 		if (obj instanceof OtpErlangObject) {
-			if (RpcConverter.isDeveloper()) {
+			if (RpcConverter.isCheckConversion()) {
 				StackTraceElement el = null;
 				StackTraceElement[] st = null;
 				try {
@@ -517,7 +517,7 @@ public class RpcConverter {
 			return (OtpErlangObject) obj;
 		}
 		if (obj instanceof OtpErlangObject) {
-			if (RpcConverter.isDeveloper()) {
+			if (RpcConverter.isCheckConversion()) {
 				StackTraceElement el = null;
 				StackTraceElement[] st = null;
 				try {
@@ -582,8 +582,8 @@ public class RpcConverter {
 						.getName(), obj.toString(), type.toString()));
 	}
 
-	public static boolean isDeveloper() {
-		final String dev = System.getProperty("erlide.test");
+	public static boolean isCheckConversion() {
+		final String dev = System.getProperty("erlide.test_rpc");
 		return dev != null && "true".equals(dev);
 	}
 
