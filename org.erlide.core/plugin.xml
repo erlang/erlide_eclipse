@@ -84,7 +84,7 @@
    <extension
          point="org.eclipse.debug.core.processFactories">
       <processFactory
-            class="org.erlide.runtime.backend.ErtsProcessFactory"
+            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
             id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
    <extension

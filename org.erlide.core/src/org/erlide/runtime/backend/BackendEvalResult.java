@@ -12,11 +12,6 @@ package org.erlide.runtime.backend;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-/**
- * 
- * 
- * @author VlaDum
- */
 public class BackendEvalResult {
 
 	private boolean ok;

@@ -30,6 +30,7 @@ import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
+import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -55,7 +56,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	{
 		String t = System.getProperty("erlide.rpc.timeout", "9000");
 		if ("infinity".equals(t)) {
-			DEFAULT_TIMEOUT = -1;
+			DEFAULT_TIMEOUT = RpcUtil.INFINITY;
 		} else {
 			DEFAULT_TIMEOUT = Integer.parseInt(t);
 		}

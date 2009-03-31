@@ -1,4 +1,4 @@
-package org.erlide.runtime.backend;
+package org.erlide.runtime.backend.internal;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlUtils;
