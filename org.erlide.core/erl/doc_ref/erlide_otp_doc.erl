@@ -400,6 +400,8 @@ get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, Pat
                 end;
 	    {macro, Macro} ->
 		{macro, Macro};
+	    {record, Record} ->
+		{record, Record};
             Error ->
                 ?D(Error),
                 {error, Error}
