@@ -272,6 +272,7 @@ public class RpcUtil {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void warn(Exception e) {
 		log(e.getMessage());
 		e.printStackTrace();

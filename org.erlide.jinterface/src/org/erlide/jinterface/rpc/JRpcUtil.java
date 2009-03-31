@@ -328,7 +328,7 @@ public class JRpcUtil {
 	}
 
 	private static void log(String s) {
-		System.out.println("RpcUtil: " + s);
+		System.out.println("JRpcUtil: " + s);
 	}
 
 	private static void debug(String s) {
@@ -337,6 +337,7 @@ public class JRpcUtil {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void warn(Exception e) {
 		log(e.getMessage());
 		e.printStackTrace();
