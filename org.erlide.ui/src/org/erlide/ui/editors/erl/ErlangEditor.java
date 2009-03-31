@@ -216,7 +216,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			fActionGroups = null;
 		}
 		fErlangEditorErrorTickUpdater.dispose();
-		fProjectionModelUpdater.uninstall();
+		if (fProjectionModelUpdater != null) {
+			fProjectionModelUpdater.uninstall();
+		}
 
 		disposeModule();
 
