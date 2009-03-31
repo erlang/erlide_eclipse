@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UTFDataFormatException;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -34,9 +35,12 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatusConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -1908,6 +1912,41 @@ public class Util {
 			return isError(t.elementAt(0));
 		}
 		return false;
+	}
+
+	public static String ioListToString(final OtpErlangObject o) {
+		final StringBuilder sb = new StringBuilder();
+		ioListToStringBuilder(o, sb);
+		return sb.toString();
+	}
+
+	private static void ioListToStringBuilder(final OtpErlangObject o,
+			final StringBuilder sb) {
+		if (o instanceof OtpErlangLong) {
+			final OtpErlangLong l = (OtpErlangLong) o;
+			try {
+				sb.append(l.charValue());
+			} catch (final OtpErlangRangeException e) {
+			}
+		} else if (o instanceof OtpErlangString) {
+			final OtpErlangString s = (OtpErlangString) o;
+			sb.append(s.stringValue());
+		} else if (o instanceof OtpErlangList) {
+			final OtpErlangList l = (OtpErlangList) o;
+			for (final OtpErlangObject i : l) {
+				ioListToStringBuilder(i, sb);
+			}
+			ioListToStringBuilder(l.getLastTail(), sb);
+		} else if (o instanceof OtpErlangBinary) {
+			final OtpErlangBinary b = (OtpErlangBinary) o;
+			try {
+				final String s = new String(b.binaryValue(), "ISO-8859-1");
+				sb.append(s);
+			} catch (final UnsupportedEncodingException e) {
+			}
+		} else {
+			sb.append(o.toString());
+		}
 	}
 
 }
