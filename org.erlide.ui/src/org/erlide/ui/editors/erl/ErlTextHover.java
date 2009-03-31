@@ -102,7 +102,9 @@ public class ErlTextHover implements ITextHover,
 	}
 
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
-		fEditor.reconcileNow();
+		if (fEditor != null) {
+			fEditor.reconcileNow();
+		}
 		final ErlToken token = fModule.getScanner().getTokenAt(offset);
 		if (token == null) {
 			return null;
@@ -327,9 +329,6 @@ public class ErlTextHover implements ITextHover,
 	private static ErlBrowserInformationControlInput internalGetHoverInfo(
 			final ErlangEditor editor, final IErlModule module,
 			final ITextViewer textViewer, final IRegion hoverRegion) {
-		if (editor != null) {
-			editor.reconcileNow();
-		}
 		final StringBuffer result = new StringBuffer();
 		Object element = null;
 		// TODO our model is too coarse, here we need access to expressions
@@ -352,10 +351,8 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final IErlModel model = ErlangCore.getModel();
-		if (module == null) {
-			return null;
-		}
-		final IErlProject erlProject = module.getProject();
+		final IErlProject erlProject = module == null ? null : module
+				.getProject();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(module), fImports, model.getExternal(
 				erlProject, ErlangCore.EXTERNAL_MODULES), model.getPathVars());

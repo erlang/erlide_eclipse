@@ -108,7 +108,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (fHighlightScanner == null) {
 			fHighlightScanner = new ErlHighlightScanner(colorManager,
 					sourceViewer);
-			fHighlightScanner.setTokens();
 		}
 		return fHighlightScanner;
 	}

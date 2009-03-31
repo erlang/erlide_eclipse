@@ -66,15 +66,21 @@ public class ErlHighlightScanner implements ITokenScanner,
 	/**
 	 * Constructs the rules that define syntax highlighting.
 	 * 
-	 * @param lmanager
+	 * @param colorManager
 	 *            the color fColorManager
-	 * @param editorConfiguration
+	 * @param sourceViewer
 	 * @param fScanner
 	 */
-	public ErlHighlightScanner(final IColorManager lmanager,
-			final ISourceViewer editorConfiguration) {
-		fColorManager = lmanager;
-		fSourceViewer = editorConfiguration;
+	public ErlHighlightScanner(final IColorManager colorManager,
+			final ISourceViewer sourceViewer) {
+		this(colorManager, sourceViewer, 0);
+		setTokens();
+	}
+
+	protected ErlHighlightScanner(final IColorManager colorManager,
+			final ISourceViewer sourceViewer, final int x) {
+		fColorManager = colorManager;
+		fSourceViewer = sourceViewer;
 	}
 
 	public void setTokens() {

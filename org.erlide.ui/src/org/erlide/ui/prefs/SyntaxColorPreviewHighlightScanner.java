@@ -11,7 +11,7 @@ import org.erlide.ui.util.IColorManager;
 public class SyntaxColorPreviewHighlightScanner extends ErlHighlightScanner {
 	// implements IPropertyChangeListener {
 
-	final Map<TokenHighlight, HighlightStyle> styles;
+	private final Map<TokenHighlight, HighlightStyle> styles;
 
 	public class PreviewTextAttribute extends TextAttribute {
 		TokenHighlight th;
@@ -36,8 +36,9 @@ public class SyntaxColorPreviewHighlightScanner extends ErlHighlightScanner {
 	public SyntaxColorPreviewHighlightScanner(final IColorManager lmanager,
 			final ISourceViewer editorConfiguration,
 			final Map<TokenHighlight, HighlightStyle> styles) {
-		super(lmanager, editorConfiguration);
+		super(lmanager, editorConfiguration, 0);
 		this.styles = styles;
+		setTokens();
 	}
 
 	@Override

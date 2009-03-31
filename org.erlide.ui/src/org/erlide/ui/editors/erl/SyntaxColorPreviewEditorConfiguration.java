@@ -68,7 +68,6 @@ public class SyntaxColorPreviewEditorConfiguration extends EditorConfiguration {
 		if (fHighlightScanner == null) {
 			fHighlightScanner = new SyntaxColorPreviewHighlightScanner(
 					colorManager, sourceViewer, styles);
-			fHighlightScanner.setTokens();
 		}
 		return fHighlightScanner;
 	}
