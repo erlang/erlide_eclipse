@@ -329,6 +329,9 @@ public class ErlTextHover implements ITextHover,
 	private static ErlBrowserInformationControlInput internalGetHoverInfo(
 			final ErlangEditor editor, final IErlModule module,
 			final ITextViewer textViewer, final IRegion hoverRegion) {
+		if (module == null) {
+			return null;
+		}
 		final StringBuffer result = new StringBuffer();
 		Object element = null;
 		// TODO our model is too coarse, here we need access to expressions
@@ -351,8 +354,7 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final IErlModel model = ErlangCore.getModel();
-		final IErlProject erlProject = module == null ? null : module
-				.getProject();
+		final IErlProject erlProject = module.getProject();
 		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
 				.createScannerModuleName(module), fImports, model.getExternal(
 				erlProject, ErlangCore.EXTERNAL_MODULES), model.getPathVars());
@@ -364,7 +366,7 @@ public class ErlTextHover implements ITextHover,
 			result.append(docStr);
 			element = or;
 		} else {
-			// h�r ska vi kolla som open, m�ste faktorisera lite...
+			// TODO here we should check like in 'open'
 			final OtpErlangObject o0 = t.elementAt(0);
 			final OtpErlangObject o1 = t.elementAt(1);
 			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
