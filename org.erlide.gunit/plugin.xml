@@ -275,7 +275,7 @@
 
     <!-- JUnit Container -->
 
-    <extension
+    <!--extension
          point="org.eclipse.jdt.junit.internal_testKinds">
       <kind
             id="org.eclipse.jdt.junit.loader.junit4"
@@ -285,6 +285,6 @@
             loaderClass="org.erlide.gunit.internal.junit4.runner.JUnit4TestLoader">
          <runtimeClasspathEntry pluginId="org.eclipse.jdt.junit4.runtime" />
       </kind>
-   </extension>
+   </extension-->
 
 </plugin>

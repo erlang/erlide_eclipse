@@ -140,7 +140,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 		return null;
 	}
 
-	private IErlModule selectTestType(Set result) {
+	private IErlModule selectTestType(Set<IErlModule> result) {
 		// ILabelProvider labelProvider = new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_PARAMETERS
 		// | JavaElementLabelProvider.SHOW_ROOT);
