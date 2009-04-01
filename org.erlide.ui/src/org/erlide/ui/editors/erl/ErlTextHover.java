@@ -394,8 +394,16 @@ public class ErlTextHover implements ITextHover,
 						final String mod = definedName;
 						definedName = a2.atomValue();
 						arityLong = (OtpErlangLong) t.elementAt(3);
-						final OtpErlangString s4 = (OtpErlangString) t
-								.elementAt(4);
+						final OtpErlangString s4;
+						if (t.elementAt(4) instanceof OtpErlangString) {
+							s4 = (OtpErlangString) t.elementAt(4);
+						} else {
+							ErlLogger
+									.warn(
+											"unrecognized value: %s, expected a string",
+											t);
+							return null;
+						}
 						final String path = Util.stringValue(s4);
 						IResource r = null;
 						try {
