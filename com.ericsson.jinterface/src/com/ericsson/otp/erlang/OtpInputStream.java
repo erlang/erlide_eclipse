@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -1077,6 +1078,10 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    intbuf = new int[len];
 	    for (int i = 0; i < len; i++) {
 		intbuf[i] = read_int();
+		if (! OtpErlangString.isValidCodePoint(intbuf[i])) {
+		    throw new OtpErlangDecodeException
+			("Invalid CodePoint: " + intbuf[i]);
+		}
 	    }
 	    read_nil();
 	    return new String(intbuf, 0, intbuf.length);
@@ -1106,8 +1111,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	final int size = read4BE();
 	final byte[] buf = new byte[size];
-	final java.util.zip.InflaterInputStream is = new java.util.zip.InflaterInputStream(
-		this);
+	final java.util.zip.InflaterInputStream is = 
+	    new java.util.zip.InflaterInputStream(this);
 	try {
 	    final int dsize = is.read(buf, 0, size);
 	    if (dsize != size) {
@@ -1164,8 +1169,13 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	case OtpExternal.listTag:
 	case OtpExternal.nilTag:
-	    if (checkForIntegerList()) {
-		return new OtpErlangString(this);
+	    if ((flags & DECODE_INT_LISTS_AS_STRINGS) != 0) {
+		final int savePos = getPos();
+		try {
+		    return new OtpErlangString(this);
+		} catch (final OtpErlangDecodeException e) {
+		}
+		setPos(savePos);
 	    }
 	    return new OtpErlangList(this);
 
@@ -1189,28 +1199,5 @@ public class OtpInputStream extends ByteArrayInputStream {
 	default:
 	    throw new OtpErlangDecodeException("Uknown data type: " + tag);
 	}
-    }
-
-    private boolean checkForIntegerList() {
-	if ((flags & DECODE_INT_LISTS_AS_STRINGS) != 0) {
-	    try {
-		final int savePos = getPos();
-		try {
-		    final int arity = read_list_head();
-		    for (int i = 0; i < arity; ++i) {
-			final int codePoint = read_int();
-			if (!Character.isDefined(codePoint)) {
-			    return false;
-			}
-		    }
-		    read_nil();
-		    return true;
-		} finally {
-		    setPos(savePos);
-		}
-	    } catch (final OtpErlangDecodeException e) {
-	    }
-	}
-	return false;
     }
 }

@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -120,7 +121,6 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
      * 
      * @return the string representation of the port.
      */
-
     @Override
     public String toString() {
 	return "#Port<" + node + "." + id + ">";
@@ -133,7 +133,6 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
      *                an output stream to which the encoded port should be
      *                written.
      */
-
     @Override
     public void encode(final OtpOutputStream buf) {
 	buf.write_port(node, id, creation);
@@ -148,7 +147,6 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
      * 
      * @return true if the ports are equal, false otherwise.
      */
-
     @Override
     public boolean equals(final Object o) {
 	if (!(o instanceof OtpErlangPort)) {
@@ -159,5 +157,13 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
 
 	return creation == port.creation && id == port.id
 		&& node.compareTo(port.node) == 0;
+    }
+    
+    @Override
+    protected int doHashCode() {
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(6);
+	hash.combine(creation);
+	hash.combine(id, node.hashCode());
+	return hash.valueOf();
     }
 }

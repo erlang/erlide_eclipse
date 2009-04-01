@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -41,7 +42,6 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * 
      * @deprecated use OtpLocalNode:createPid() instead
      */
-
     @Deprecated
     public OtpErlangPid(final OtpLocalNode self) {
 	final OtpErlangPid p = self.createPid();
@@ -141,7 +141,6 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * 
      * @return the string representation of the PID.
      */
-
     @Override
     public String toString() {
 	return "#Pid<" + node.toString() + "." + id + "." + serial + ">";
@@ -154,21 +153,9 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      *                an output stream to which the encoded PID should be
      *                written.
      */
-
     @Override
     public void encode(final OtpOutputStream buf) {
 	buf.write_pid(node, id, serial, creation);
-    }
-
-    /**
-     * Return the hashCode for this Pid.
-     * 
-     * @return the hashCode for this Pid.
-     */
-
-    @Override
-    public int hashCode() {
-	return id;
     }
 
     /**
@@ -180,7 +167,6 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * 
      * @return true if the PIDs are equal, false otherwise.
      */
-
     @Override
     public boolean equals(final Object o) {
 	if (!(o instanceof OtpErlangPid)) {
@@ -192,7 +178,15 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	return creation == pid.creation && serial == pid.serial && id == pid.id
 		&& node.compareTo(pid.node) == 0;
     }
-
+    
+    @Override
+    protected int doHashCode() {
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
+	hash.combine(creation, serial);
+	hash.combine(id, node.hashCode());
+	return hash.valueOf();
+    }
+    
     public int compareTo(final Object o) {
 	if (!(o instanceof OtpErlangPid)) {
 	    return -1;

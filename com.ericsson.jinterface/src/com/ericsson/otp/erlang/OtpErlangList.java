@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -47,7 +48,8 @@ public class OtpErlangList extends OtpErlangObject implements
     }
 
     /**
-     * Create a list of characters (codePoints).
+     * Create a list of Erlang integers representing Unicode codePoints.
+     * This method does not check if the string contains valid code points.
      * 
      * @param str
      *            the characters from which to create the list.
@@ -58,8 +60,8 @@ public class OtpErlangList extends OtpErlangObject implements
 	} else {
 	    final int[] codePoints = OtpErlangString.stringToCodePoints(str);
 	    elems = new OtpErlangObject[codePoints.length];
-	    for (final int i : codePoints) {
-		elems[i] = new OtpErlangChar(str.charAt(i));
+	    for (int i = 0;  i < elems.length;  i++) {
+		elems[i] = new OtpErlangInt(codePoints[i]);
 	    }
 	}
     }
@@ -300,7 +302,25 @@ public class OtpErlangList extends OtpErlangObject implements
     public OtpErlangObject getLastTail() {
 	return lastTail;
     }
-
+    
+    @Override
+    protected int doHashCode() {
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(4);
+	final int a = arity();
+	if (a == 0) {
+	    return (int)3468870702L;
+	}
+	for (int i = 0; i < a; i++) {
+	    hash.combine(elementAt(i).hashCode());
+	}
+	final OtpErlangObject t = getLastTail();
+	if (t != null) {
+	    int h = t.hashCode();
+	    hash.combine(h, h);
+	}
+	return hash.valueOf();
+    }
+    
     @Override
     public Object clone() {
 	try {
@@ -347,6 +367,44 @@ public class OtpErlangList extends OtpErlangObject implements
 	}
 	return null;
     }
+
+    /**
+     * Convert a list of integers into a Unicode string,
+     * interpreting each integer as a Unicode code point value.
+     * 
+     * @return A java.lang.String object created through its
+     *         constructor String(int[], int, int).
+     *
+     * @exception OtpErlangException
+     *                    for non-proper and non-integer lists.
+     *
+     * @exception OtpErlangRangeException
+     *                    if any integer does not fit into a Java int.
+     *
+     * @exception java.security.InvalidParameterException
+     *                    if any integer is not within the Unicode range.
+     *
+     * @see String#String(int[], int, int)
+     *
+     */
+
+    public String stringValue() throws OtpErlangException {
+	if (! isProper()) {
+	    throw new OtpErlangException("Non-proper list: " + this);
+	}
+	final int[] values = new int[arity()];
+	for (int i = 0; i < values.length; ++i) {
+	    final OtpErlangObject o = elementAt(i);
+	    if (! (o instanceof OtpErlangLong)) {
+		throw new OtpErlangException("Non-integer term: " + o);
+	    }
+	    final OtpErlangLong l = (OtpErlangLong) o;
+	    values[i] = l.intValue();
+	}
+	return new String(values, 0, values.length);
+    }
+
+
 
     public static class SubList extends OtpErlangList {
 	private static final long serialVersionUID = OtpErlangList.serialVersionUID;
@@ -443,29 +501,5 @@ public class OtpErlangList extends OtpErlangObject implements
 	    throw new UnsupportedOperationException(
 		    "OtpErlangList cannot be modified!");
 	}
-    }
-
-    public String asString() throws OtpErlangDecodeException {
-	final int[] values = new int[arity()];
-	for (int i = 0; i < values.length; ++i) {
-	    final OtpErlangObject o = elementAt(i);
-	    if (!(o instanceof OtpErlangLong)) {
-		throw new OtpErlangDecodeException(
-			"asString() only works for lists of integers!");
-	    }
-	    final OtpErlangLong l = (OtpErlangLong) o;
-	    try {
-		final int codePoint = l.intValue();
-		if (!Character.isDefined(codePoint)) {
-		    throw new OtpErlangDecodeException(
-			    "asString() invalid code point!");
-		}
-		values[i] = codePoint;
-	    } catch (final OtpErlangRangeException e) {
-		throw new OtpErlangDecodeException(
-			"asString() long outside integer range!");
-	    }
-	}
-	return new String(values, 0, values.length);
     }
 }

@@ -1,6 +1,25 @@
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
+ * Version 1.1, (the "License"); you may not use this file except in
+ * compliance with the License. You should have received a copy of the
+ * Erlang Public License along with this software. If not, it can be
+ * retrieved online at http://www.erlang.org/.
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * %CopyrightEnd% 
+ */
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class OtpErlangFun extends OtpErlangObject implements Serializable {
     // don't change this!
@@ -87,7 +106,23 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
 	}
 	return freeVars.equals(f.freeVars);
     }
-
+    
+    @Override
+    protected int doHashCode() {
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(1);
+	hash.combine(pid.hashCode(), module.hashCode());
+	hash.combine(arity);
+	if (md5 != null) hash.combine(md5);
+	hash.combine(index);
+	hash.combine(uniq);
+	if (freeVars != null) {
+	    for (OtpErlangObject o: freeVars) {
+		hash.combine(o.hashCode(), 1);
+	    }
+	}
+	return hash.valueOf();
+    }
+    
     @Override
     public String toString() {
 	return "#Fun<" + module + "." + old_index + "." + uniq + ">";
