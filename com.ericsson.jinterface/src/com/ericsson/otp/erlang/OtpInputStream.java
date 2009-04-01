@@ -35,6 +35,13 @@ public class OtpInputStream extends ByteArrayInputStream {
     private final int flags;
 
     /**
+     * @param buf
+     */
+    public OtpInputStream(final byte[] buf) {
+	this(buf, 0);
+    }
+
+    /**
      * Create a stream from a buffer containing encoded Erlang terms.
      * 
      * @param flags
@@ -114,11 +121,21 @@ public class OtpInputStream extends ByteArrayInputStream {
      */
     public int readN(final byte[] buf, final int off, final int len)
 	    throws OtpErlangDecodeException {
+	if (len == 0 && available() == 0) {
+	    return 0;
+	}
 	final int i = super.read(buf, off, len);
 	if (i < 0) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
 	return i;
+    }
+
+    /**
+     * Alias for peek1()
+     */
+    public int peek() throws OtpErlangDecodeException {
+	return peek1();
     }
 
     /**
@@ -1181,7 +1198,10 @@ public class OtpInputStream extends ByteArrayInputStream {
 		try {
 		    final int arity = read_list_head();
 		    for (int i = 0; i < arity; ++i) {
-			final int n = read_int();
+			final int codePoint = read_int();
+			if (!Character.isDefined(codePoint)) {
+			    return false;
+			}
 		    }
 		    read_nil();
 		    return true;

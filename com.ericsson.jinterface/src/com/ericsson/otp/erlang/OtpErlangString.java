@@ -37,6 +37,16 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
     }
 
     /**
+     * Create an Erlang string from a list of integers
+     * 
+     * @throws OtpErlangDecodeException
+     */
+    public OtpErlangString(final OtpErlangList list)
+	    throws OtpErlangDecodeException {
+	str = list.asString();
+    }
+
+    /**
      * Create an Erlang string from a stream containing a string encoded in
      * Erlang external format.
      * 
@@ -113,26 +123,14 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	return false;
     }
 
-    /**
-     * Return the string as an list of integers
-     * 
-     * @return an OtpErlangList of OtpErlangLong with the code-points of the
-     *         string
-     */
-    public OtpErlangList asList() {
-	final int n = str.length();
-	final int[] codePoints = new int[n];
-	int i = 0, j = 0;
-	while (i < n) {
-	    final int codePoint = str.codePointAt(i);
+    public static int[] stringToCodePoints(final String s) {
+	final int n = s.length(), m = s.codePointCount(0, n);
+	final int[] codePoints = new int[m];
+	for (int i = 0, j = 0; i < n; ++j) {
+	    final int codePoint = s.codePointAt(i);
 	    codePoints[j] = codePoint;
-	    ++j;
 	    i += Character.charCount(codePoint);
 	}
-	final OtpErlangObject[] elements = new OtpErlangObject[i];
-	for (int k = 0; k < i; ++k) {
-	    elements[k] = new OtpErlangLong(codePoints[k]);
-	}
-	return new OtpErlangList(elements);
+	return codePoints;
     }
 }

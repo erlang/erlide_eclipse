@@ -47,7 +47,7 @@ public class OtpErlangList extends OtpErlangObject implements
     }
 
     /**
-     * Create a list of characters.
+     * Create a list of characters (codePoints).
      * 
      * @param str
      *            the characters from which to create the list.
@@ -56,9 +56,9 @@ public class OtpErlangList extends OtpErlangObject implements
 	if (str == null || str.length() == 0) {
 	    elems = NO_ELEMENTS;
 	} else {
-	    final int len = str.length();
-	    elems = new OtpErlangObject[len];
-	    for (int i = 0; i < len; i++) {
+	    final int[] codePoints = OtpErlangString.stringToCodePoints(str);
+	    elems = new OtpErlangObject[codePoints.length];
+	    for (final int i : codePoints) {
 		elems[i] = new OtpErlangChar(str.charAt(i));
 	    }
 	}
@@ -455,16 +455,17 @@ public class OtpErlangList extends OtpErlangObject implements
 	    }
 	    final OtpErlangLong l = (OtpErlangLong) o;
 	    try {
-		values[i] = l.intValue();
+		final int codePoint = l.intValue();
+		if (!Character.isDefined(codePoint)) {
+		    throw new OtpErlangDecodeException(
+			    "asString() invalid code point!");
+		}
+		values[i] = codePoint;
 	    } catch (final OtpErlangRangeException e) {
 		throw new OtpErlangDecodeException(
 			"asString() long outside integer range!");
 	    }
 	}
 	return new String(values, 0, values.length);
-    }
-
-    public OtpErlangString asOtpErlangString() throws OtpErlangDecodeException {
-	return new OtpErlangString(asString());
     }
 }

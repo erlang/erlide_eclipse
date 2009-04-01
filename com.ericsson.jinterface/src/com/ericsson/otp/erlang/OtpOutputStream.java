@@ -20,6 +20,7 @@ package com.ericsson.otp.erlang;
 // import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -707,37 +708,37 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 	    write_nil();
 	    break;
 	default:
-	    final byte[] bytebuf = s.getBytes();
-
-	    /*
-	     * switch to se if the length of the byte array is equal to the
-	     * length of the list, or if the string is too long for the stream
-	     * protocol
-	     */
-	    if (bytebuf.length == len && len <= 65535) { /* Usual */
-		write1(OtpExternal.stringTag);
-		write2BE(len);
-		writeN(bytebuf);
-	    } else { /* Unicode */
-		final char[] charbuf = s.toCharArray();
-
-		write_list_head(len);
-
-		for (int i = 0; i < len; i++) {
-		    write_char(charbuf[i]);
+	    if (len <= 65535 && is8bitString(s)) { // 8-bit string
+		try {
+		    final byte[] bytebuf = s.getBytes("ISO-8859-1");
+		    write1(OtpExternal.stringTag);
+		    write2BE(len);
+		    writeN(bytebuf);
+		} catch (final UnsupportedEncodingException e) {
+		    write_nil(); // it should never ever get here...
 		}
-
+	    } else { // unicode or longer, must code as list
+		final char[] charbuf = s.toCharArray();
+		write_list_head(len);
+		final int[] codePoints = OtpErlangString.stringToCodePoints(s);
+		for (final int codePoint : codePoints) {
+		    write_int(codePoint);
+		}
 		write_nil();
 	    }
 	}
     }
 
-    /*
-     * This does not work when char > 1 byte Unicode is used
-     * 
-     * public void write_string(String s) { this.write1(OtpExternal.stringTag);
-     * this.write2BE(s.length()); this.writeN(s.getBytes()); }
-     */
+    private boolean is8bitString(final String s) {
+	for (int i = 0; i < s.length(); ++i) {
+	    final char c = s.charAt(i);
+	    if (c < 0 || c > 255) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
     /**
      * Write an arbitrary Erlang term to the stream in compressed format.
      * 
