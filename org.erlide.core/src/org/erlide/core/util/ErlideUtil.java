@@ -78,9 +78,9 @@ public class ErlideUtil {
 				return false;
 			}
 
-		} catch (final BackendException e) {
-			ErlLogger.error(e.getMessage());
 		} catch (final OtpErlangRangeException e) {
+			ErlLogger.error(e);
+		} catch (final BackendException e) {
 			ErlLogger.error(e);
 		}
 		return false;
@@ -316,26 +316,26 @@ public class ErlideUtil {
 		} else {
 			s = "/proj/tecsas/SHADE/erlide/reports";
 		}
-		File dir = new File(s);
+		final File dir = new File(s);
 		if (!dir.exists()) {
 			s = System.getProperty("user.home");
 		}
-		String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+		final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 		return s + "/" + System.getProperty("user.name") + "_" + tstamp
 				+ ".txt";
 	}
 
 	public static String fetchErlideLog() {
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString();
-		dir = (dir == null) ? "c:/" : dir;
-		File log = new File(dir + "_erlide.log");
+		dir = dir == null ? "c:/" : dir;
+		final File log = new File(dir + "_erlide.log");
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(log), "UTF-8"));
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(log), "UTF-8"));
 			for (;;) {
 				String line = reader.readLine();
 				if (line == null) {
@@ -347,18 +347,18 @@ public class ErlideUtil {
 				}
 				result.append(line).append('\n');
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
 		return result.toString();
 	}
 
 	public static String fetchPlatformLog() {
-		List<String> result = new ArrayList<String>();
-		File log = Platform.getLogFileLocation().toFile();
+		final List<String> result = new ArrayList<String>();
+		final File log = Platform.getLogFileLocation().toFile();
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(log), "UTF-8"));
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(log), "UTF-8"));
 			for (;;) {
 				String line = reader.readLine();
 				if (line == null) {
@@ -373,13 +373,23 @@ public class ErlideUtil {
 				}
 				result.add(line);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
-		StringBuffer buf = new StringBuffer();
-		for (String s : result) {
+		final StringBuffer buf = new StringBuffer();
+		for (final String s : result) {
 			buf.append(s).append("\n");
 		}
 		return buf.toString();
 	}
+
+	public static String unquote(final String s) {
+		final int length = s.length();
+		if (length > 2 && s.charAt(0) == '\'' && s.charAt(length - 1) == '\'') {
+			return s.substring(1, length - 1);
+		} else {
+			return s;
+		}
+	}
+
 }

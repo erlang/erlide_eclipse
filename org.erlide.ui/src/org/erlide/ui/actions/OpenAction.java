@@ -43,7 +43,9 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.util.ErlideUtil;
 import org.erlide.core.util.ResourceUtil;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -312,7 +314,7 @@ public class OpenAction extends SelectionDispatchAction {
 			final IErlModule module, final Backend b, final int offset,
 			final IErlProject erlProject, final OpenResult res)
 			throws CoreException, ErlModelException, PartInitException,
-			BackendException, BadLocationException, OtpErlangRangeException {
+			RpcException, BadLocationException, OtpErlangRangeException {
 		final IErlModel model = ErlangCore.getModel();
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();
@@ -356,11 +358,17 @@ public class OpenAction extends SelectionDispatchAction {
 					return;
 				}
 				final String mod = ei.getImportModule();
-				final OtpErlangObject res2 = ErlideOpen.getSourceFromModule(b,
-						model.getPathVars(), mod, model.getExternal(erlProject,
-								ErlangCore.EXTERNAL_MODULES));
+				OtpErlangObject res2 = null;
+				try {
+					res2 = ErlideOpen.getSourceFromModule(b, model
+							.getPathVars(), mod, model.getExternal(erlProject,
+							ErlangCore.EXTERNAL_MODULES));
+				} catch (final BackendException e1) {
+					ErlLogger.warn(e1);
+				}
 				if (res2 instanceof OtpErlangString) {
-					final String path = ((OtpErlangString) res2).stringValue();
+					final OtpErlangString otpErlangString = (OtpErlangString) res2;
+					final String path = otpErlangString.stringValue();
 					ErlModelUtils.openExternalFunction(mod, res.getFunction(),
 							path, project);
 				}
@@ -396,11 +404,16 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 					: IErlElement.Kind.RECORD_DEF;
-			ErlModelUtils.openPreprocessorDef(b, project, page, module,
-					definedName, type, model.getExternal(erlProject,
-							ErlangCore.EXTERNAL_INCLUDES),
-					new ArrayList<IErlModule>());
+			final String[] s = new String[] { definedName,
+					ErlideUtil.unquote(definedName) };
+			for (final String string : s) {
+				if (ErlModelUtils.openPreprocessorDef(b, project, page, module,
+						string, type, model.getExternal(erlProject,
+								ErlangCore.EXTERNAL_INCLUDES),
+						new ArrayList<IErlModule>())) {
+					break;
+				}
+			}
 		}
-		return;
 	}
 }

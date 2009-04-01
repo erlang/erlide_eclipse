@@ -145,8 +145,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					before = before.substring(hashMarkPos + 1);
 				}
 			} else if (colonPos > commaPos) {
-				moduleOrRecord = unquote(getPrefix(before
-						.substring(0, colonPos)));
+				moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
+						0, colonPos)));
 				flags = EXTERNAL_FUNCTIONS;
 				pos = colonPos;
 				before = before.substring(colonPos + 1);
@@ -594,14 +594,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final char c = v.charAt(0);
 		return Character.isLowerCase(c) ? Character.toUpperCase(c)
 				+ v.substring(1) : v;
-	}
-
-	private String unquote(final String moduleName) {
-		if (moduleName.length() > 0 && moduleName.charAt(0) == '\'') {
-			return moduleName.substring(1, moduleName.length() - 1);
-		} else {
-			return moduleName;
-		}
 	}
 
 	/**
