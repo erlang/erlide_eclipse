@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.resource.RenameResourceChange;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.FileResourceChanges;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
@@ -27,8 +26,7 @@ public class RenameModuleRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws RpcException {
+	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
 		return managedBackend.call_noexception("wrangler",
 				"rename_mod_eclipse", "ssxi", filePath, newName, searchPath,
 				parameters.getEditorTabWidth());

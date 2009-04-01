@@ -5,8 +5,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.erlide.core.erlang.util.Util;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -28,7 +28,7 @@ public class ErlideContextAssist {
 					result.add(Util.stringValue(i));
 				}
 			}
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -44,7 +44,7 @@ public class ErlideContextAssist {
 				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(1);
 				return a.booleanValue();
 			}
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			e.printStackTrace();
 		}
 		return false;

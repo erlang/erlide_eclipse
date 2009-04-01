@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.core.funextraction;
 
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -21,8 +20,7 @@ public class FunExtractionRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws RpcException {
+	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
 		OtpErlangTuple startPos = createPos(parameters.getStartLine(),
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters

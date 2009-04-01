@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.erlang.util.Util;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.ErlangParseException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -95,20 +93,20 @@ public class ErlideBackend {
 	 * @throws ErlangParseException
 	 */
 	public static OtpErlangObject parseTerm(final Backend b, final String string)
-			throws ErlangParseException {
+			throws BackendException {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = b.call("erlide_backend", "parse_term", "s", string);
 		} catch (final Exception e) {
-			throw new ErlangParseException("Could not parse term \"" + string
+			throw new BackendException("Could not parse term \"" + string
 					+ "\"");
 		}
 		final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 		if (Util.isOk(t1)) {
 			return t1.elementAt(1);
 		}
-		throw new ErlangParseException("Could not parse term \"" + string
-				+ "\": " + t1.elementAt(1).toString());
+		throw new BackendException("Could not parse term \"" + string + "\": "
+				+ t1.elementAt(1).toString());
 	}
 
 	/**
@@ -236,15 +234,15 @@ public class ErlideBackend {
 	}
 
 	public static OtpErlangObject concreteSyntax(final Backend b,
-			final OtpErlangObject val) throws RpcException {
+			final OtpErlangObject val) {
 		try {
 			return b.call("erlide_syntax", "concrete", "x", val);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			return null;
 		}
 	}
 
-	public static String getScriptId(final Backend b) throws RpcException {
+	public static String getScriptId(final Backend b) throws BackendException {
 		OtpErlangObject r;
 		r = b.call("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {
@@ -257,14 +255,14 @@ public class ErlideBackend {
 	}
 
 	public static String prettyPrint(final Backend b, final OtpErlangObject e)
-			throws RpcException {
+			throws BackendException {
 		OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
 		p = b.call("lists", "flatten", "x", p);
 		return ((OtpErlangString) p).stringValue();
 	}
 
 	public static OtpErlangObject convertErrors(final Backend b,
-			final String lines) throws RpcException {
+			final String lines) throws BackendException {
 		OtpErlangObject res;
 		res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
 		return res;
@@ -274,7 +272,7 @@ public class ErlideBackend {
 		try {
 			ErlLogger.debug("Start tracer to %s", tracer);
 			b.call("erlide_backend", "start_tracer", "ps", tracer);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 		}
 	}
 
@@ -282,7 +280,7 @@ public class ErlideBackend {
 		try {
 			ErlLogger.debug("Start tracer to %s", logname);
 			b.call("erlide_backend", "start_tracer", "s", logname);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 		}
 	}
 

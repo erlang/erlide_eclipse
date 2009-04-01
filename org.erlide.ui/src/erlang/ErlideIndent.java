@@ -5,9 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
+import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -47,7 +46,7 @@ public class ErlideIndent {
 	public static IndentResult indentLine(final Backend b,
 			final String oldLine, final String txt, final String insertedText,
 			final int tabw, final Map<String, String> prefs)
-			throws RpcException, OtpErlangRangeException {
+			throws BackendException, OtpErlangRangeException {
 		final OtpErlangObject o = b.call("erlide_indent", "indent_line",
 				"sssix", txt, oldLine, insertedText, tabw,
 				fixIndentPrefs(prefs));
@@ -58,7 +57,7 @@ public class ErlideIndent {
 	public static OtpErlangObject indentLines(final Backend b,
 			final int offset, final int length, final String text,
 			final int tabw, final Map<String, String> prefs)
-			throws RpcException {
+			throws BackendException {
 		final OtpErlangObject o = b.call("erlide_indent", "indent_lines",
 				"siiilx", text, offset, length, tabw, fixIndentPrefs(prefs));
 		return o;
@@ -67,12 +66,12 @@ public class ErlideIndent {
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject call(final Backend b, final String module,
 			final String fun, final int offset, final int length,
-			final String text) throws RpcException {
+			final String text) {
 		try {
 			final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset,
 					length);
 			return r1;
-		} catch (final NoBackendException e) {
+		} catch (final BackendException e) {
 			return new OtpErlangString("");
 		}
 	}

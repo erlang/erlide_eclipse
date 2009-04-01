@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
@@ -66,8 +65,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws RpcException {
+	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
 		OtpErlangTuple startPos = createPos(parameters.getStartLine(),
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
@@ -85,8 +83,8 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 		return m;
 	}
 
-	public GeneraliseRPCMessage callGeneralise() throws RpcException,
-			WranglerException, CoreException {
+	public GeneraliseRPCMessage callGeneralise() throws WranglerException,
+			CoreException {
 		RpcResult res = sendRPC(parameters.getFilePath(), parameters
 				.getSearchPath());
 		ErlLogger.debug("generalise_eclipse returned:\n" + res);
@@ -94,8 +92,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	}
 
 	@SuppressWarnings("boxing")
-	public GeneraliseRPCMessage callGeneralise1() throws RpcException,
-			WranglerException {
+	public GeneraliseRPCMessage callGeneralise1() throws WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
 		RpcResult r = managedBackend.call_noexception("wrangler",
 				"gen_fun_1_eclipse", "xsxxxxxi", b, parameters.getFilePath(),
@@ -107,8 +104,8 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	}
 
 	@SuppressWarnings("boxing")
-	public GeneraliseRPCMessage callGeneralise2() throws RpcException,
-			WranglerException, CoreException {
+	public GeneraliseRPCMessage callGeneralise2() throws WranglerException,
+			CoreException {
 		RpcResult r = managedBackend.call_noexception("wrangler",
 				"gen_fun_2_eclipse", "sxxxxxxi", parameters.getFilePath(),
 				this.parName, this.funName, this.arity, this.defPos,

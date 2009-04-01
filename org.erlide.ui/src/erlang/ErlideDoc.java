@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.IErlImport;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -18,7 +18,7 @@ public class ErlideDoc {
 		try {
 			res = b.call("erlide_otp_doc", "get_proposals", "ass", mod, prefix,
 					stateDir);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return res;
@@ -30,7 +30,7 @@ public class ErlideDoc {
 		try {
 			res = b.call("erlide_otp_doc", "get_modules", "sls", prefix,
 					projectModules);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return res;
@@ -47,7 +47,7 @@ public class ErlideDoc {
 			res = b.call("erlide_otp_doc", "get_doc_from_scan_tuples",
 					"ailossx", module, offset, imports, stateDir,
 					externalModules, pathVars);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return res;

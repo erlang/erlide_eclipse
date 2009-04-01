@@ -209,18 +209,31 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	public OtpMbox async_call(final String m, final String f,
-			final String signature, final Object... args) throws RpcException {
-		return makeAsyncCall(m, f, signature, args);
+			final String signature, final Object... args)
+			throws BackendException {
+		try {
+			return makeAsyncCall(m, f, signature, args);
+		} catch (RpcException e) {
+			throw new BackendException(e);
+		}
 	}
 
 	public OtpErlangObject async_receive(OtpMbox mbox, int timeout)
-			throws RpcException {
-		return RpcUtil.getRpcResult(mbox, timeout);
+			throws BackendException {
+		try {
+			return RpcUtil.getRpcResult(mbox, timeout);
+		} catch (RpcException e) {
+			throw new BackendException(e);
+		}
 	}
 
 	public void cast(final String m, final String f, final String signature,
-			final Object... args) throws RpcException {
-		makeCast(m, f, signature, args);
+			final Object... args) throws BackendException {
+		try {
+			makeCast(m, f, signature, args);
+		} catch (RpcException e) {
+			throw new BackendException(e);
+		}
 	}
 
 	/**
@@ -228,7 +241,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 * 
 	 */
 	public OtpErlangObject call(final String m, final String f,
-			final String signature, final Object... a) throws RpcException {
+			final String signature, final Object... a) throws BackendException {
 		return call(DEFAULT_TIMEOUT, m, f, signature, a);
 	}
 
@@ -238,7 +251,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
-			final String signature, final Object... a) throws RpcException {
+			final String signature, final Object... a) throws BackendException {
 		return call(m, f, signature, a);
 	}
 
@@ -249,8 +262,12 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	 */
 	public OtpErlangObject call(final int timeout, final String m,
 			final String f, final String signature, final Object... a)
-			throws RpcException {
-		return makeCall(timeout, m, f, signature, a);
+			throws BackendException {
+		try {
+			return makeCall(timeout, m, f, signature, a);
+		} catch (RpcException e) {
+			throw new BackendException(e);
+		}
 	}
 
 	/**
@@ -260,7 +277,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	@Deprecated
 	public OtpErlangObject rpcx(final String m, final String f,
 			final int timeout, final String signature, final Object... a)
-			throws RpcException {
+			throws BackendException {
 		return call(timeout, m, f, signature, a);
 	}
 

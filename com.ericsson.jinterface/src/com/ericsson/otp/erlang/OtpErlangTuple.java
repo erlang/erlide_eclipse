@@ -42,10 +42,10 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * Create a unary tuple containing the given element.
      * 
      * @param elem
-     *                the element to create the tuple from.
+     *            the element to create the tuple from.
      * 
      * @exception java.lang.IllegalArgumentException
-     *                    if the element is null.
+     *                if the element is null.
      */
     public OtpErlangTuple(final OtpErlangObject elem) {
 	if (elem == null) {
@@ -60,11 +60,10 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * Create a tuple from an array of terms.
      * 
      * @param elems
-     *                the array of terms to create the tuple from.
+     *            the array of terms to create the tuple from.
      * 
      * @exception java.lang.IllegalArgumentException
-     *                    if the array is empty (null) or contains null
-     *                    elements.
+     *                if the array is empty (null) or contains null elements.
      */
     public OtpErlangTuple(final OtpErlangObject[] elems) {
 	this(elems, 0, elems.length);
@@ -74,15 +73,14 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * Create a tuple from an array of terms.
      * 
      * @param elems
-     *                the array of terms to create the tuple from.
+     *            the array of terms to create the tuple from.
      * @param start
-     *                the offset of the first term to insert.
+     *            the offset of the first term to insert.
      * @param count
-     *                the number of terms to insert.
+     *            the number of terms to insert.
      * 
      * @exception java.lang.IllegalArgumentException
-     *                    if the array is empty (null) or contains null
-     *                    elements.
+     *                if the array is empty (null) or contains null elements.
      */
     public OtpErlangTuple(OtpErlangObject[] elems, final int start,
 	    final int count) {
@@ -110,11 +108,11 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *                the stream containing the encoded tuple.
+     *            the stream containing the encoded tuple.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang tuple.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang tuple.
      */
     public OtpErlangTuple(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -144,8 +142,8 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * Get the specified element from the tuple.
      * 
      * @param i
-     *                the index of the requested element. Tuple elements are
-     *                numbered as array elements, starting at 0.
+     *            the index of the requested element. Tuple elements are
+     *            numbered as array elements, starting at 0.
      * 
      * @return the requested element, of null if i is not a valid element index.
      */
@@ -196,8 +194,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * Convert this tuple to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded tuple should be
-     *                written.
+     *            an output stream to which the encoded tuple should be written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -215,7 +212,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * arity and all of the elements are equal.
      * 
      * @param o
-     *                the tuple to compare to.
+     *            the tuple to compare to.
      * 
      * @return true if the tuples have the same arity and all the elements are
      *         equal.
@@ -241,7 +238,8 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 
 	return true;
     }
-    
+
+    @Override
     protected int doHashCode() {
 	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(9);
 	final int a = arity();
@@ -251,7 +249,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 	}
 	return hash.valueOf();
     }
-    
+
     @Override
     public Object clone() {
 	final OtpErlangTuple newTuple = (OtpErlangTuple) super.clone();

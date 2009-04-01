@@ -45,7 +45,8 @@ class Link {
 	return this.local.equals(local) && this.remote.equals(remote)
 		|| this.local.equals(remote) && this.remote.equals(local);
     }
-    
+
+    @Override
     public int hashCode() {
 	if (hashCodeValue == 0) {
 	    OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);

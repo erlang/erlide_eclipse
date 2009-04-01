@@ -44,9 +44,9 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -312,7 +312,7 @@ public class OpenAction extends SelectionDispatchAction {
 			final IErlModule module, final Backend b, final int offset,
 			final IErlProject erlProject, final OpenResult res)
 			throws CoreException, ErlModelException, PartInitException,
-			RpcException, BadLocationException, OtpErlangRangeException {
+			BackendException, BadLocationException, OtpErlangRangeException {
 		final IErlModel model = ErlangCore.getModel();
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();

@@ -1,8 +1,7 @@
 package org.erlide.runtime.backend.exceptions;
 
-import org.erlide.jinterface.rpc.RpcException;
 
-public class NoBackendException extends RpcException {
+public class NoBackendException extends BackendException {
 
 	private static final long serialVersionUID = 1L;
 

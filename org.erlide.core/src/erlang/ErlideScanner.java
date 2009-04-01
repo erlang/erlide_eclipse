@@ -7,10 +7,8 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -80,9 +78,8 @@ public class ErlideScanner {
 			if (r instanceof OtpErlangTuple) {
 				ErlLogger.error("GOT::" + r.toString());
 			}
-		} catch (final NoBackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.debug(e);
-		} catch (final RpcException e) {
 		}
 	}
 
@@ -143,7 +140,7 @@ public class ErlideScanner {
 					.getIdeBackend().call(ERLIDE_SCANNER, "check_all", "as",
 							module, text);
 			return o.toString();
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			return "";
 		}
 

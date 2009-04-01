@@ -6,9 +6,9 @@ package erlang;
 import java.util.List;
 
 import org.erlide.core.erlang.ErlProjectImport;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -35,7 +35,7 @@ public class ErlideImport {
 			res = b.call("erlide_import", "import", "sls", prefix,
 					importSources);
 			return new ErlProjectImport(res);
-		} catch (final RpcException e) {
+		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 		return null;

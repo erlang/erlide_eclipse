@@ -11,10 +11,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -84,7 +84,8 @@ public class Activator extends AbstractUIPlugin {
 			ErlLogger.debug("Wrangler path has been added.");
 			// ErlangCode.addPathA(mb, wranglerRootPath.toOSString());
 
-			RpcResult res = mb.call_noexception("code", "load_file", "a", "wrangler");
+			RpcResult res = mb.call_noexception("code", "load_file", "a",
+					"wrangler");
 			ErlLogger.debug("Wrangler's path is added to Erlang with result:"
 					+ res.isOk() + "\t raw:" + res);
 
@@ -98,7 +99,7 @@ public class Activator extends AbstractUIPlugin {
 			ioe.printStackTrace();
 			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID,
 					"Could not load the ebin files!"));
-		} catch (RpcException e) {
+		} catch (BackendException e) {
 			e.printStackTrace();
 			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID,
 					"Could not reach the erlang node!"));

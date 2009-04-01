@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.core.tupletorecord;
 
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -27,8 +26,7 @@ public class TupleToRecordRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws RpcException {
+	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
 		return managedBackend.call_noexception("wrangler",
 				"tuple_to_record_eclipse", "siiiissxi", filePath, parameters
 						.getStartLine(), parameters.getStartColumn(),

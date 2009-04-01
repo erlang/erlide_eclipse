@@ -19,7 +19,6 @@
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class OtpErlangFun extends OtpErlangObject implements Serializable {
     // don't change this!
@@ -106,23 +105,25 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
 	}
 	return freeVars.equals(f.freeVars);
     }
-    
+
     @Override
     protected int doHashCode() {
 	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(1);
 	hash.combine(pid.hashCode(), module.hashCode());
 	hash.combine(arity);
-	if (md5 != null) hash.combine(md5);
+	if (md5 != null) {
+	    hash.combine(md5);
+	}
 	hash.combine(index);
 	hash.combine(uniq);
 	if (freeVars != null) {
-	    for (OtpErlangObject o: freeVars) {
+	    for (OtpErlangObject o : freeVars) {
 		hash.combine(o.hashCode(), 1);
 	    }
 	}
 	return hash.valueOf();
     }
-    
+
     @Override
     public String toString() {
 	return "#Fun<" + module + "." + old_index + "." + uniq + ">";

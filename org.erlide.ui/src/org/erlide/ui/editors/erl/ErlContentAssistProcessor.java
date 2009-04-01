@@ -44,7 +44,6 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
@@ -192,8 +191,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private List<ICompletionProposal> addCompletions(final int flags,
 			final int offset, final String prefix, final String moduleOrRecord,
 			final int pos, final IErlProject project, final Backend backend)
-			throws CoreException, OtpErlangRangeException, RpcException,
-			BadLocationException {
+			throws CoreException, OtpErlangRangeException, BadLocationException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		if ((flags & DECLARED_FUNCTIONS) != 0) {
 			addSorted(result, getDeclaredFunctions(offset, prefix,
@@ -408,8 +406,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private List<ICompletionProposal> getExternalCallCompletions(
 			final Backend b, final IErlProject project,
 			final String moduleName, final int offset, final String aprefix,
-			final boolean arityOnly) throws RpcException,
-			OtpErlangRangeException, CoreException {
+			final boolean arityOnly) throws OtpErlangRangeException,
+			CoreException {
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		// we have an external call

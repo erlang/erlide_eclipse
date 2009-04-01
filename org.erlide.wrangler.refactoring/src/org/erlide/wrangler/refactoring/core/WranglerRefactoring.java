@@ -14,7 +14,6 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.JInterfaceFactory;
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
@@ -78,8 +77,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 		} catch (WranglerException e) {
 			String s = e.getLocalizedMessage();
 			rs = RefactoringStatus.createFatalErrorStatus(s);
-		} catch (RpcException e) {
-			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			rs = RefactoringStatus.createFatalErrorStatus(e.getMessage());
@@ -196,13 +193,11 @@ public abstract class WranglerRefactoring extends Refactoring {
 	/**
 	 * Sends the RPC to Wrangler, then checks the result and stores it.
 	 * 
-	 * @throws RpcException
 	 * @throws CoreException
 	 * @throws ErlangRpcException
 	 * @throws WranglerException
 	 */
-	protected void doRefactoring() throws RpcException, CoreException,
-			WranglerException {
+	protected void doRefactoring() throws CoreException, WranglerException {
 
 		String filePath = parameters.getFilePath();
 		ErlLogger.debug("selected file for " + getName() + " refactoring:"
@@ -215,9 +210,6 @@ public abstract class WranglerRefactoring extends Refactoring {
 			ErlLogger.debug("RpcResult converted to RpcMessage");
 			message = m;
 
-		} catch (RpcException e) {
-			ErlLogger.debug(e);
-			throw e;
 		} catch (WranglerException e) {
 			throw e;
 		} catch (CoreException e) {
@@ -237,10 +229,9 @@ public abstract class WranglerRefactoring extends Refactoring {
 	 *            dependent path
 	 * @return the result of the RPC in raw format
 	 * @throws ErlangRpcException
-	 * @throws RpcException
 	 */
 	protected abstract RpcResult sendRPC(String filePath,
-			OtpErlangList searchPath) throws RpcException, CoreException;
+			OtpErlangList searchPath) throws CoreException;
 
 	/**
 	 * @param m

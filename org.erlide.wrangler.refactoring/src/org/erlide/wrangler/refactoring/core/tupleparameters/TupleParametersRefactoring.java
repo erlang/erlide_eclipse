@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.core.tupleparameters;
 
-import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -20,8 +19,7 @@ public class TupleParametersRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
-			throws RpcException {
+	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
 		return managedBackend.call_noexception("wrangler",
 				"tuple_funpar_eclipse", "siisxi", filePath, parameters
 						.getStartLine(), parameters.getStartColumn(), newName,
