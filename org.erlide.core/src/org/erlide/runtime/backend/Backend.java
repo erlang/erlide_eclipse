@@ -76,6 +76,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private boolean trapexit;
 	private int exitStatus = -1;
 	private boolean stopped = false;
+	private boolean restarted = false;
 
 	Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
@@ -122,10 +123,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			fPeer = BackendManager.buildNodeName(label);
 
 			ftRpcBox = fNode.createMbox("rex");
-			int tries = 50;
+			int tries = 15;
 			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (50 - tries)
-						* RETRY_DELAY / 20);
+				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (15 - tries)
+						* RETRY_DELAY / 5);
 				tries--;
 			}
 			fAvailable &= ErlangCode.waitForCodeServer(this);
@@ -332,7 +333,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private void checkAvailability() throws RpcException {
 		if (!fAvailable) {
-			if (exitStatus >= 0) {
+			if (exitStatus >= 0 && !restarted) {
+				restarted = true;
 				restart();
 			} else {
 				throw new RpcException("could not restart backend");
