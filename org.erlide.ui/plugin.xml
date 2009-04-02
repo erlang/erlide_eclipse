@@ -1048,6 +1048,19 @@
          </description>
       </filter>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <category
+            id="org.erlide.ui.erlang"
+            name="Erlang">
+      </category>
+      <wizard
+            category="org.erlide.ui.erlang"
+            class="org.erlide.ui.wizards.EdocExportWizard"
+            id="org.erlide.ui.edocWizard"
+            name="eDoc">
+      </wizard>
+   </extension>
    <!--extension
          point="org.eclipse.ui.commands">
       <command
