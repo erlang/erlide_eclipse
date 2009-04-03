@@ -490,11 +490,16 @@ i_macro_rest(R0, I) ->
 	    R3 = i_end_paren(R2, I),
 	    i_macro_rest(R3, I);
 	K when K=:=':'; K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
-	       K=:='end' ->
+	       K=:='end'; K=:='->' ->
 	    R0;
-	_ ->
-	    R2 = i_comments(R0, I),
-	    i_one(R2, I)
+	K ->
+	    case is_binary_op(K) of
+		false ->
+		    R2 = i_comments(R0, I),
+		    i_one(R2, I);
+		true ->
+		    R0
+	    end
     end.
 
 i_if(R0, I0) ->
