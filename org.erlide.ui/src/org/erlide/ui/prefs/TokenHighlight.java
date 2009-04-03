@@ -10,21 +10,21 @@ import org.erlide.ui.prefs.PreferenceConstants.Color;
 public enum TokenHighlight {
 	DEFAULT(Color.BLACK.getColor(), SWT.NORMAL),
 
-	KEYWORD(Color.BLACK.getColor(), SWT.BOLD),
+	KEYWORD(new RGB(0xA0, 0x20, 0xF0), SWT.BOLD),
 
 	ATOM(Color.BLACK.getColor(), SWT.NORMAL),
 
-	MACRO(new RGB(50, 150, 50), SWT.NORMAL),
+	MACRO(new RGB(0x5f, 0x9e, 0xA0), SWT.NORMAL),
 
-	ARROW(new RGB(0, 50, 230), SWT.NORMAL),
+	ARROW(new RGB(0x00, 0x00, 0xff), SWT.NORMAL),
 
-	CHAR(new RGB(200, 0, 250), SWT.NORMAL),
+	CHAR(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
 
-	VARIABLE(new RGB(150, 100, 0), SWT.NORMAL),
+	VARIABLE(new RGB(0xB8, 0x86, 0x0B), SWT.NORMAL),
 
-	COMMENT(Color.DARKGREEN.getColor(), SWT.NORMAL),
+	COMMENT(new RGB(0xB2, 0x22, 0x22), SWT.NORMAL),
 
-	STRING(Color.DARKORCHID.getColor(), SWT.NORMAL),
+	STRING(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
 
 	INTEGER(new RGB(90, 90, 180), SWT.NORMAL),
 
