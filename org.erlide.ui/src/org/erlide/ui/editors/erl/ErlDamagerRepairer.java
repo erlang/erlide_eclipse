@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TextPresentation;
@@ -16,6 +17,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
+import org.erlide.runtime.ErlLogger;
 
 public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 
@@ -25,7 +27,7 @@ public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 
 	/*
 	 * @see IPresentationRepairer#createPresentation(TextPresentation,
-	 *      ITypedRegion)
+	 * ITypedRegion)
 	 */
 	@Override
 	public void createPresentation(TextPresentation presentation,
@@ -48,6 +50,15 @@ public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 
 		while (true) {
 			final IToken token = fScanner.nextToken();
+			if (token == null) {
+				try {
+					ErlLogger.warn("null token from §%s§>>>", fDocument.get(
+							lastStart, region.getLength()));
+				} catch (BadLocationException e) {
+					ErlLogger.warn("null token from §%s§", fDocument.get());
+				}
+				break;
+			}
 			if (token.isEOF()) {
 				break;
 			}
