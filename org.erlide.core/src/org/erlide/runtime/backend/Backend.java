@@ -76,7 +76,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private boolean trapexit;
 	private int exitStatus = -1;
 	private boolean stopped = false;
-	private boolean restarted = false;
+	private int restarted = 0;
 
 	Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
@@ -333,8 +333,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private void checkAvailability() throws RpcException {
 		if (!fAvailable) {
-			if (exitStatus >= 0 && !restarted) {
-				restarted = true;
+			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
 				throw new RpcException("could not restart backend");
@@ -353,6 +352,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		if (fAvailable) {
 			return;
 		}
+		restarted++;
 		ErlLogger.info("restarting runtime for %s", toString());
 		if (fNode != null) {
 			fNode.close();
