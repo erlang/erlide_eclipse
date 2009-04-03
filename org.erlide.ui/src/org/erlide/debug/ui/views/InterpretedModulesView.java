@@ -205,7 +205,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
 				.setContentProvider(new DebugTab.TreeContentProvider());
 		DebugUITools.getDebugContextManager().addDebugContextListener(this);
 		DebugPlugin.getDefault().addDebugEventListener(this);
-		DebugPlugin.getDefault().addDebugEventListener(this);
 		return checkboxTreeViewer;
 	}
 
