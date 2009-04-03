@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.rpc.ErlFuture;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
@@ -210,7 +210,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	public ErlFuture async_call(final String m, final String f,
+	public RpcFuture async_call(final String m, final String f,
 			final String signature, final Object... args)
 			throws BackendException {
 		try {
@@ -317,7 +317,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return result;
 	}
 
-	private ErlFuture makeAsyncCall(final String module, final String fun,
+	private RpcFuture makeAsyncCall(final String module, final String fun,
 			final String signature, final Object... args0) throws RpcException {
 		checkAvailability();
 		return RpcUtil.sendRpcCall(fNode, fPeer, module, fun, signature, args0);

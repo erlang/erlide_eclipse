@@ -13,12 +13,12 @@ package org.erlide.jinterface.rpc;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public class ErlFuture {
+public class RpcFuture {
 
 	private OtpMbox mbox;
 	private OtpErlangObject result = null;
 
-	public ErlFuture(OtpMbox mbox) {
+	public RpcFuture(OtpMbox mbox) {
 		this.mbox = mbox;
 	}
 

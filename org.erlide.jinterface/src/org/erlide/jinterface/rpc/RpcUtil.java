@@ -93,7 +93,7 @@ public class RpcUtil {
 	public static OtpErlangObject rpcCall(final OtpNode node, String peer,
 			final String module, final String fun, final int timeout,
 			final String signature, Object... args0) throws RpcException {
-		ErlFuture future = sendRpcCall(node, peer, module, fun, signature,
+		RpcFuture future = sendRpcCall(node, peer, module, fun, signature,
 				args0);
 		OtpErlangObject result;
 		result = future.get(timeout);
@@ -129,7 +129,7 @@ public class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static ErlFuture sendRpcCall(final OtpNode node, String peer,
+	public static RpcFuture sendRpcCall(final OtpNode node, String peer,
 			final String module, final String fun, final String signature,
 			Object... args0) throws RpcException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
@@ -141,7 +141,7 @@ public class RpcUtil {
 		if (CHECK_RPC) {
 			debug("RPC call:: " + res);
 		}
-		return new ErlFuture(mbox);
+		return new RpcFuture(mbox);
 	}
 
 	/**
