@@ -1,6 +1,5 @@
 %% Author: jakob
 %% Created: 25 okt 2007
-%% Description: TODO: Add description to erlide_util
 -module(erlide_util).
 
 %% -define(DEBUG, 1).
@@ -165,4 +164,3 @@ read_cache(CacheFileName) ->
     {ok, B} = file:read_file(CacheFileName),
     <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     binary_to_term(BinTerm).
-
