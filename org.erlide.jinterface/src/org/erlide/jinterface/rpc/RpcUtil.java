@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpNode;
 public class RpcUtil {
 	public static final int INFINITY = -1;
 
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = Boolean
@@ -97,6 +97,9 @@ public class RpcUtil {
 				args0);
 		OtpErlangObject result;
 		result = future.get(timeout);
+		if (CHECK_RPC) {
+			debug("RPC result:: " + result);
+		}
 		return result;
 	}
 

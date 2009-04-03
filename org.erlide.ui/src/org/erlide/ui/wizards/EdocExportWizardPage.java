@@ -11,15 +11,83 @@
 package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
+import org.erlide.core.ErlangPlugin;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 public class EdocExportWizardPage extends WizardPage {
+
+	private CheckboxTableViewer checkboxTableViewer;
+
+	static class TableLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
+		public String getColumnText(Object element, int columnIndex) {
+			return ((IProject) element).getName();
+		}
+
+		public Image getColumnImage(Object element, int columnIndex) {
+			return null;
+		}
+	}
+
+	static class TableContentProvider implements IStructuredContentProvider {
+
+		public Object[] getElements(final Object inputElement) {
+			final java.util.List<IProject> ps = new ArrayList<IProject>();
+
+			final IProject[] projects = ResourcesPlugin.getWorkspace()
+					.getRoot().getProjects();
+			for (final IProject p : projects) {
+				if (p.isAccessible()) {
+					IProjectNature n = null;
+					try {
+						n = p.getNature(ErlangPlugin.NATURE_ID);
+						if (n != null) {
+							ps.add(p);
+						}
+					} catch (final CoreException e) {
+					}
+				}
+			}
+			return ps.toArray(new IProject[0]);
+		}
+
+		public void dispose() {
+		}
+
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
+		}
+
+	}
+
+	private Text destination;
+	private Table table;
 
 	protected EdocExportWizardPage(String pageName,
 			IStructuredSelection selection) {
@@ -30,12 +98,61 @@ public class EdocExportWizardPage extends WizardPage {
 
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
+		final GridLayout gridLayout = new GridLayout();
+		composite.setLayout(gridLayout);
 		setControl(composite);
+
+		final Label selectProjectsForLabel = new Label(composite, SWT.NONE);
+		selectProjectsForLabel.setLayoutData(new GridData());
+		selectProjectsForLabel
+				.setText("Select projects for which edoc documentation will be generated:");
+
+		checkboxTableViewer = CheckboxTableViewer.newCheckList(composite,
+				SWT.BORDER);
+		checkboxTableViewer.setContentProvider(new TableContentProvider());
+		checkboxTableViewer.setLabelProvider(new TableLabelProvider());
+		table = checkboxTableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		checkboxTableViewer.setInput(this);
+
+		final Group optionsGroup = new Group(composite, SWT.NONE);
+		optionsGroup.setText("Options");
+		final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
+				false, false);
+		optionsGroup.setLayoutData(gd_optionsGroup);
+		final GridLayout gridLayout_1 = new GridLayout();
+		gridLayout_1.numColumns = 2;
+		optionsGroup.setLayout(gridLayout_1);
+
+		final Label selectLabel = new Label(optionsGroup, SWT.NONE);
+		selectLabel.setText("Destination (relative to each project):");
+
+		destination = new Text(optionsGroup, SWT.BORDER);
+		final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER,
+				false, false);
+		gd_destination.widthHint = 251;
+		destination.setLayoutData(gd_destination);
+		destination.setText("doc");
 	}
 
-	public List<IResource> getSelectedResources() {
-		ArrayList<IResource> result = new ArrayList<IResource>();
+	public Collection<IProject> getSelectedResources() {
+		ArrayList<IProject> result = new ArrayList<IProject>();
+		Object[] sel = checkboxTableViewer.getCheckedElements();
+		for (Object o : sel) {
+			result.add((IProject) o);
+		}
 		return result;
+	}
+
+	public Map<String, OtpErlangObject> getOptions() {
+		HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
+		result.put("dir", new OtpErlangString(destination.getText()));
+		// result.put("preprocess", new OtpErlangBoolean(false));
+		return result;
+	}
+
+	public String getDestination() {
+		return destination.getText();
 	}
 
 }

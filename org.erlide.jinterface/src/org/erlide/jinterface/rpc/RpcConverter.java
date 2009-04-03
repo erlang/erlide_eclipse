@@ -14,6 +14,11 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import org.erlide.jinterface.JInterfaceFactory;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -607,5 +612,18 @@ public class RpcConverter {
 	public static boolean matchSignature(final OtpErlangObject term,
 			final String signature) throws RpcException {
 		return matchSignature(term, Signature.parse(signature)[0]);
+	}
+
+	public static OtpErlangObject encodeMap(Map<String, OtpErlangObject> map) {
+		final Set<Entry<String, OtpErlangObject>> v = map.entrySet();
+		final OtpErlangObject[] vv = new OtpErlangObject[v.size()];
+		int i = 0;
+		for (Entry<String, OtpErlangObject> entry : v) {
+			OtpErlangAtom key = new OtpErlangAtom(entry.getKey());
+			OtpErlangObject value = entry.getValue();
+			vv[i] = JInterfaceFactory.mkTuple(key, value);
+			i++;
+		}
+		return new OtpErlangList(vv);
 	}
 }

@@ -15,6 +15,7 @@
    <feature url="features/org.erlide.selfhost_0.1.1.200903311037.jar" id="org.erlide.selfhost" version="0.1.1.200903311037">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.5.2.200904030850.jar" id="org.erlide" version="0.5.2.200904030850"/>
    <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.
