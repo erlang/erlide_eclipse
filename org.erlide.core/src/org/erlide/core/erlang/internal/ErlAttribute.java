@@ -56,7 +56,7 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	public String toString() {
 		String sval;
 		if (fValue != null) {
-			sval = ": " + pp(fValue);
+			sval = ": " + fValue.toString(); // pp(fValue);
 		} else if (fExtra != null) {
 			sval = ": " + fExtra;
 		} else {
