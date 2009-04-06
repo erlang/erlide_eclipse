@@ -110,4 +110,10 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	 * Returns the transitive closure of modules that include this one.
 	 **/
 	Set<IErlModule> getAllDependents() throws ErlModelException;
+
+	/**
+	 * Resets parser so that the next parse will be a full parse, possibly
+	 * updating the parser cache
+	 */
+	void resetParser();
 }

@@ -55,7 +55,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
 	public String toString() {
 		String sval;
 		if (fValue != null) {
-			sval = ": " + pp(fValue);
+			sval = ": " + fValue.toString(); // pp(fValue);
 		} else if (fExtra != null) {
 			sval = ": " + fExtra;
 		} else {

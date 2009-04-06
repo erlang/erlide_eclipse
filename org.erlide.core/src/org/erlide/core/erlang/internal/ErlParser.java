@@ -407,15 +407,16 @@ public class ErlParser {
 		}
 
 		// user-defined attribute? or maybe if else endif...
-		OtpErlangObject val1 = concreteTerm(val);
-		if (val instanceof OtpErlangList) {
-			final OtpErlangList list = (OtpErlangList) val;
-			if (list.arity() == 0) {
-				val1 = null;
-			}
-		}
+		// OtpErlangObject val1 = concreteTerm(val);
+		// if (val instanceof OtpErlangList) {
+		// final OtpErlangList list = (OtpErlangList) val;
+		// if (list.arity() == 0) {
+		// val1 = null;
+		// }
+		// }
 
-		final ErlAttribute a = new ErlAttribute(parent, nameS, val1, null);
+		// final ErlAttribute a = new ErlAttribute(parent, nameS, val1, null);
+		final ErlAttribute a = new ErlAttribute(parent, nameS, val, null);
 		setPos(a, pos);
 		// a.setParseTree(val);
 		return a;

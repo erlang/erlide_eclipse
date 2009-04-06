@@ -1524,6 +1524,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void doSave(final IProgressMonitor progressMonitor) {
 		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
+		getModule().resetParser();
 		((EditorConfiguration) getSourceViewerConfiguration())
 				.resetReconciler();
 	}

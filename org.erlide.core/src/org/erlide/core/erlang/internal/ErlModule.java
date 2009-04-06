@@ -536,4 +536,8 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 	}
 
+	public void resetParser() {
+		parsed = false;
+	}
+
 }
