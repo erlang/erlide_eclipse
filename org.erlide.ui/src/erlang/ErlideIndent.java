@@ -58,8 +58,9 @@ public class ErlideIndent {
 			final int offset, final int length, final String text,
 			final int tabw, final Map<String, String> prefs)
 			throws BackendException {
-		final OtpErlangObject o = b.call("erlide_indent", "indent_lines",
-				"siiilx", text, offset, length, tabw, fixIndentPrefs(prefs));
+		final OtpErlangObject o = b.call(20000, "erlide_indent",
+				"indent_lines", "siiilx", text, offset, length, tabw,
+				fixIndentPrefs(prefs));
 		return o;
 	}
 
