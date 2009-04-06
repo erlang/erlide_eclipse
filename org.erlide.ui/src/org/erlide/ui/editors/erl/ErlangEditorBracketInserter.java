@@ -91,30 +91,23 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 					final int end = offset + length;
 
 					if (offset >= eventOffset + eventOldLength) {
-						// position comes
-						// after change - shift
+						// position comes after change - shift
 						position.setOffset(offset + deltaLength);
 					} else if (end <= eventOffset) {
-						// position comes way before change -
-						// leave alone
+						// position comes way before change - leave alone
 					} else if (offset <= eventOffset
 							&& end >= eventOffset + eventOldLength) {
-						// event completely internal to the position -
-						// adjust
+						// event completely internal to the position - adjust
 						// length
 						position.setLength(length + deltaLength);
 					} else if (offset < eventOffset) {
-						// event extends over end of position - adjust
-						// length
+						// event extends over end of position - adjust length
 						final int newEnd = eventOffset;
 						position.setLength(newEnd - offset);
 					} else if (end > eventOffset + eventOldLength) {
-						// event extends from before position into it -
-						// adjust
-						// offset
-						// and length
-						// offset becomes end of event, length adjusted
-						// accordingly
+						// event extends from before position into it - adjust
+						// offset and length offset becomes end of event, length
+						// adjusted accordingly
 						final int newOffset = eventOffset + eventNewLength;
 						position.setOffset(newOffset);
 						position.setLength(end - newOffset);
@@ -208,74 +201,74 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 		final Point selection = fSourceViewer.getSelectedRange();
 		final int offset = selection.x;
 		final int length = selection.y;
-
 		try {
-			// final IRegion startLine = document
-			// .getLineInformationOfOffset(offset);
-			final IRegion endLine = document.getLineInformationOfOffset(offset
-					+ length);
-
-			List<ErlToken> tokens = null;
-			final int getOffset = offset + length, getLength = endLine
-					.getOffset()
-					+ endLine.getLength() - getOffset;
-			final String str = document.get(getOffset, getLength);
 			final String selStr = fEmbraceSelection ? document.get(offset,
 					length) : "";
-			try {
-				tokens = ErlideScanner.lightScanString(str, 0);
-			} catch (final BackendException e) {
-			}
+			if (selStr.length() == 0) {
+				// final IRegion startLine =
+				// document.getLineInformationOfOffset(offset);
+				final IRegion endLine = document
+						.getLineInformationOfOffset(offset + length);
 
-			String kind = "";
-			if (tokens != null && tokens.size() > 0) {
-				kind = tokens.get(0).getKind();
-			} else if (str.length() > 0) {
-				kind = str.substring(0, 1);
-			}
-			// if (isStopper(kind)) {
-			// return;
-			// }
-			if (kind.equals("(") || kind.equals("{") || kind.equals("[")) {
-				return;
-			}
+				List<ErlToken> tokens = null;
+				final int getOffset = offset + length, getLength = endLine
+						.getOffset()
+						+ endLine.getLength() - getOffset;
+				final String str = document.get(getOffset, getLength);
+				try {
+					tokens = ErlideScanner.lightScanString(str, 0);
+				} catch (final BackendException e) {
+				}
 
-			switch (event.character) {
-			case '(':
-				if (!fCloseParens || kind.equals(")")) {
+				String kind = "";
+				if (tokens != null && tokens.size() > 0) {
+					kind = tokens.get(0).getKind();
+				} else if (str.length() > 0) {
+					kind = str.substring(0, 1);
+				}
+				// if (isStopper(kind)) {
+				// return;
+				// }
+				if (kind.equals("(") || kind.equals("{") || kind.equals("[")) {
 					return;
 				}
-				break;
 
-			case '[':
-				if (!fCloseBrackets || kind.equals("]")) {
-					return;
-				}
-				break;
-			case '{':
-				if (!fCloseBraces || kind.equals("}")) {
-					return;
-				}
-				break;
-			case '\'':
-				if (!fCloseAtoms || kind.equals("'")) {
-					return;
-				}
-				break;
-			case '"':
-				if (!fCloseStrings || kind.equals("\"")) {
-					return;
-				}
-				break;
+				switch (event.character) {
+				case '(':
+					if (!fCloseParens || kind.equals(")")) {
+						return;
+					}
+					break;
 
-			default:
-				return;
+				case '[':
+					if (!fCloseBrackets || kind.equals("]")) {
+						return;
+					}
+					break;
+				case '{':
+					if (!fCloseBraces || kind.equals("}")) {
+						return;
+					}
+					break;
+				case '\'':
+					if (!fCloseAtoms || kind.equals("'")) {
+						return;
+					}
+					break;
+				case '"':
+					if (!fCloseStrings || kind.equals("\"")) {
+						return;
+					}
+					break;
+
+				default:
+					return;
+				}
+
+				if (!fErlangEditor.validateEditorInputState()) {
+					return;
+				}
 			}
-
-			if (!fErlangEditor.validateEditorInputState()) {
-				return;
-			}
-
 			final char character = event.character;
 			final char closingCharacter = getPeerCharacter(character);
 			final StringBuilder buffer = new StringBuilder();
@@ -475,11 +468,9 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 								false);
 					}
 				}
-				// when entering an anonymous class between the
-				// parenthesis', we
-				// don't want
-				// to jump after the closing parenthesis when return is
-				// pressed
+				// when entering an anonymous class between the parenthesis', we
+				// don't want to jump after the closing parenthesis when return
+				// is pressed
 				if (event.character == SWT.CR && offset > 0) {
 					final IDocument document = fSourceViewer.getDocument();
 					try {
