@@ -103,6 +103,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.CompileAction;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.IndentAction;
@@ -182,6 +183,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	// private String fExternalIncludes;
 
 	ToggleFoldingRunner fFoldingRunner;
+
+	private CompileAction compileAction;
 
 	/**
 	 * Simple constructor
@@ -338,6 +341,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
 				IErlangHelpContextIds.INDENT_ACTION);
+
+		compileAction = new CompileAction(getSite());
+		compileAction
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
+		setAction("Compile file", compileAction);
+
 		if (ErlideUtil.isTest()) {
 			testAction = new TestAction(ErlangEditorMessages
 					.getBundleForConstructedKeys(), "Test.", this, getModule());
@@ -383,6 +392,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (ErlideUtil.isTest()) {
 			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
 		}
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
 				toggleCommentAction);

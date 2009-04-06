@@ -434,6 +434,9 @@
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
       <command
+            id="org.erlide.ui.actions.compile"
+            name="Compile file"/>
+      <command
             id="org.erlide.ui.actions.show.outline"
             name="Show outline"/>
       <command
@@ -460,6 +463,11 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F3"/>
+      <key
+            commandId="org.erlide.ui.actions.compile"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F9"/>
       <key
             commandId="org.erlide.ui.actions.indent"
             contextId="org.erlide.ui.erlangEditorScope"

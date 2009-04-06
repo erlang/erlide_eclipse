@@ -75,7 +75,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	protected static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".taskmarker";
 
-	private IMarkerGenerator generator = new ErlangBuilderMarkerGenerator();
+	private static IMarkerGenerator generator = new ErlangBuilderMarkerGenerator();
 	IProject currentProject;
 	IWorkspaceRoot workspaceRoot;
 	BuildNotifier notifier;
@@ -282,7 +282,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	protected void deleteMarkers(final IResource resource) {
+	protected static void deleteMarkers(final IResource resource) {
 		try {
 			resource.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
 			resource.deleteMarkers(TASK_MARKER, false, IResource.DEPTH_ZERO);
@@ -295,7 +295,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void deleteMarkersWithCompiledFile(final IProject project,
+	private static void deleteMarkersWithCompiledFile(final IProject project,
 			final IFile file) {
 		if (!project.isAccessible()) {
 			return;
@@ -345,11 +345,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return result;
 	}
 
-	protected void compileFile(final IProject project,
+	public static void compileFile(final IProject project,
 			final IResource resource, Backend backend) {
 		final IPath projectPath = project.getLocation();
 		final ErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(currentProject);
+				.getProjectProperties(project);
 
 		final String s = resource.getFileExtension();
 		if (!s.equals("erl")) {
@@ -484,7 +484,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
-
 	}
 
 	/**
@@ -492,7 +491,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	 * @param prefs
 	 * @return
 	 */
-	private List<String> getIncludeDirs(final IProject project,
+	private static List<String> getIncludeDirs(final IProject project,
 			final List<String> includeDirs) {
 		final ErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
@@ -514,7 +513,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return includeDirs;
 	}
 
-	private void createTaskMarkers(final IProject project,
+	private static void createTaskMarkers(final IProject project,
 			final IResource resource) {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
@@ -547,7 +546,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return result;
 	}
 
-	private void mkMarker(final IResource resource, final IErlComment c,
+	private static void mkMarker(final IResource resource, final IErlComment c,
 			final String name, final String tag, final int prio) {
 		if (name.contains(tag)) {
 			final int ix = name.indexOf(tag);
@@ -563,7 +562,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private void ensureDirExists(final String outputDir) {
+	private static void ensureDirExists(final String outputDir) {
 		final File f = new File(outputDir);
 		f.mkdir();
 	}

@@ -13,18 +13,12 @@ package org.erlide.ui.editors.erl;
 public class IErlangEditorActionDefinitionIds {
 
 	public static final String SHOW_EDOC = "org.erlide.ui.actions.showEDoc";
-
 	public static final String OPEN_EDITOR = "org.erlide.ui.actions.open.editor";
-
 	public static final String INDENT = "org.erlide.ui.actions.indent";
-
 	public static final String TOGGLE_COMMENT = "org.erlide.ui.actions.togglecomment";
-
 	public static final String OPEN_INCLUDE_FILE = "org.erlide.ui.actions.openincludefile";
-
 	public static final String SHOW_OUTLINE = "org.erlide.ui.actions.show.outline";
-
 	public static final String TEST = "org.erlide.ui.actions.test";
-
 	public static final String OPEN = "org.erlide.ui.actions.open";
+	public static final String COMPILE = "org.erlide.ui.actions.compile";
 }
