@@ -112,7 +112,9 @@ public class EdocExportWizardPage extends WizardPage {
 		checkboxTableViewer.setContentProvider(new TableContentProvider());
 		checkboxTableViewer.setLabelProvider(new TableLabelProvider());
 		table = checkboxTableViewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd_table.widthHint = 423;
+		table.setLayoutData(gd_table);
 		checkboxTableViewer.setInput(this);
 
 		final Group optionsGroup = new Group(composite, SWT.NONE);
@@ -130,7 +132,7 @@ public class EdocExportWizardPage extends WizardPage {
 		destination = new Text(optionsGroup, SWT.BORDER);
 		final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER,
 				false, false);
-		gd_destination.widthHint = 251;
+		gd_destination.widthHint = 179;
 		destination.setLayoutData(gd_destination);
 		destination.setText("doc");
 	}
