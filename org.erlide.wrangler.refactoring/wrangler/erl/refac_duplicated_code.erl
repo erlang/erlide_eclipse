@@ -20,7 +20,7 @@
 
 -module(refac_duplicated_code).
 
--export([duplicated_code/4]).
+-export([duplicated_code/4, duplicated_code_eclipse/4]).
 
 -export([duplicated_code_1/4]).
 
@@ -144,10 +144,24 @@ loop(Port) ->
 %% duplicated times}, the default values 2 for both parameters.
 %% </p>
 %% ====================================================================================
-%% @spec duplicated_code(FileName::filename(),MinLines::integer(),MinClones::integer()) -> term().
-%%  
--spec(duplicated_code/4::([dir()], string(), string(), integer()) ->{ok, string()}).
 
+%% -spec(duplicated_code_eclipse/4::(dir(), integer(), integer(), integer()) ->
+%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+
+duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth) ->
+     MinLength = case MinLength1 =< 1 of
+		     true -> 
+			 ?DEFAULT_CLONE_LEN;
+		     _ -> MinLength1
+		end,
+    MinClones = case MinClones1< ?DEFAULT_CLONE_MEMBER of
+		    true -> ?DEFAULT_CLONE_MEMBER;
+		    _ -> MinClones1
+		end,
+    start_suffix_tree_clone_detector(),
+    {Cs5, _FileNames} = duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth),
+    remove_sub_clones(Cs5).
+    
 duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     MinLength = case MinLength1 == [] orelse
 		    list_to_integer(MinLength1) =< 1
@@ -179,8 +193,8 @@ duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     ?debug("Clones:\n~p\n", [Cs6]),
     {ok, "Duplicated code detection finished."}.
 
--spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
-	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+%%-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
+%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
 duplicated_code_1(DirFileList, MinLength, MinClones, TabWidth) ->
     {Cs5, _} = duplicated_code_detection(DirFileList, MinClones,

@@ -1,6 +1,6 @@
-#Sun Mar 01 13:20:40 CET 2009
+#Tue Apr 07 09:29:36 CEST 2009
 backend_cookie=
-backend_name=R12B
+backend_name=r12-5
 backend_node=r12
 backend_version=R12B
 eclipse.preferences.version=1
@@ -9,6 +9,7 @@ external_modules=
 include_dirs=wrangler/hrl
 make_unique=true
 output_dir=wrangler/ebin
+runtimes=r12-5
 source_dirs=wrangler/erl
 type=NORMAL
 use_pathz=true
