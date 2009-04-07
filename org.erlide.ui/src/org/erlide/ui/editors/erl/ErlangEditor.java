@@ -627,7 +627,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@Override
 	protected void doSetInput(final IEditorInput input) throws CoreException {
-		disposeModule();
+		if (input != getEditorInput()) {
+			disposeModule();
+		}
 
 		super.doSetInput(input);
 
@@ -637,7 +639,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
-		ErlModelUtils.reenableScanner(this);
+		// ErlModelUtils.reenableScanner(this);
 	}
 
 	@Override
@@ -1061,7 +1063,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell shell) {
 				return new DefaultInformationControl(shell, true);
-			}
+	}
 		};
 		fInformationPresenter = new InformationPresenter(
 				informationControlCreator);
@@ -1265,12 +1267,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IInformationProvider informationProvider = new InformationProvider(
 						hoverRegion, hoverInfo, controlCreator);
 
-				fInformationPresenter.setOffset(offset);
-				fInformationPresenter
-						.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-				fInformationPresenter.setInformationProvider(
-						informationProvider, contentType);
-				fInformationPresenter.showInformation();
+					fInformationPresenter.setOffset(offset);
+					fInformationPresenter
+							.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+					fInformationPresenter.setInformationProvider(
+							informationProvider, contentType);
+					fInformationPresenter.showInformation();
 			} catch (final BadLocationException e) {
 			}
 		}
