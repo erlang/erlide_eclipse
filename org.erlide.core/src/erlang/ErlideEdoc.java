@@ -28,6 +28,6 @@ public class ErlideEdoc {
 			BackendException {
 		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		OtpErlangObject opts = RpcConverter.encodeMap(options);
-		b.call(5000, "edoc", "files", "lxx", files, opts);
+		b.call(15000, "edoc", "files", "lsx", files, opts);
 	}
 }

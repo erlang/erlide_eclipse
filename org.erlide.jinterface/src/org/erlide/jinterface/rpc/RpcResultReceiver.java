@@ -30,8 +30,8 @@ import com.ericsson.otp.erlang.OtpMbox;
  */
 public class RpcResultReceiver implements Runnable {
 
-	private RpcResultCallback callback;
-	private OtpMbox mbox;
+	private final RpcResultCallback callback;
+	private final OtpMbox mbox;
 
 	public RpcResultReceiver(OtpMbox box, RpcResultCallback callback) {
 		this.callback = callback;
@@ -44,7 +44,7 @@ public class RpcResultReceiver implements Runnable {
 		do {
 			OtpErlangObject msg;
 			try {
-				msg = mbox.receive(10000);
+				msg = mbox.receive(3000);
 				if (msg != null) {
 					if (msg instanceof OtpErlangTuple) {
 						OtpErlangTuple tuple = (OtpErlangTuple) msg;
