@@ -24,7 +24,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
@@ -65,6 +67,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -1054,6 +1057,20 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
+
+		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
+			public IInformationControl createInformationControl(Shell shell) {
+				return new DefaultInformationControl(shell, true);
+			}
+		};
+		fInformationPresenter = new InformationPresenter(
+				informationControlCreator);
+		// sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
+		fInformationPresenter.setSizeConstraints(100, 12, true, true);
+		fInformationPresenter.install(getSourceViewer());
+		fInformationPresenter
+				.setDocumentPartitioning(getSourceViewerConfiguration()
+						.getConfiguredDocumentPartitioning(getSourceViewer()));
 	}
 
 	/**
@@ -1248,18 +1265,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IInformationProvider informationProvider = new InformationProvider(
 						hoverRegion, hoverInfo, controlCreator);
 
-				if (fInformationPresenter == null) {
-					ErlLogger
-							.warn("internal error: fInformationPresenter is null in editor!");
-
-				} else {
-					fInformationPresenter.setOffset(offset);
-					fInformationPresenter
-							.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-					fInformationPresenter.setInformationProvider(
-							informationProvider, contentType);
-					fInformationPresenter.showInformation();
-				}
+				fInformationPresenter.setOffset(offset);
+				fInformationPresenter
+						.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+				fInformationPresenter.setInformationProvider(
+						informationProvider, contentType);
+				fInformationPresenter.showInformation();
 			} catch (final BadLocationException e) {
 			}
 		}
