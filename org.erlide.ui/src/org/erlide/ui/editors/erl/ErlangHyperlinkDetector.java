@@ -79,8 +79,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
 				return null;
 			}
-			return new IHyperlink[] { new ErlangSubHyperlink(editor, token
-					.getContent(), erlPartition) };
+			return new IHyperlink[] { new ErlangSubHyperlink(editor, erlPartition) };
 		} catch (final BadLocationException e) {
 			return null;
 		}
@@ -125,11 +124,10 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 
 		/**
 		 * @param editor
-		 * @param subName
 		 * @param partion
 		 */
 		public ErlangSubHyperlink(final ErlangEditor editor,
-				final String subName, final ErlPartition partion) {
+				final ErlPartition partion) {
 			this.editor = editor;
 			subNameRegion = partion;
 		}

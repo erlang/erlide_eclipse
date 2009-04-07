@@ -11,18 +11,12 @@
 
 package org.erlide.core.erlang;
 
-import java.text.DecimalFormat;
-
 import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangChar;
-import com.ericsson.otp.erlang.OtpErlangDouble;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlToken {
@@ -37,14 +31,14 @@ public class ErlToken {
 
 	private int line;
 
-	private String text;
+	// private String text;
 
-	private final OtpErlangTuple fTuple;
+	// private final OtpErlangTuple fTuple;
 
 	public static final ErlToken EOF = new ErlToken();
 
 	public ErlToken(final OtpErlangTuple e) {
-		fTuple = e;
+		// fTuple = e;
 		kind = ((OtpErlangAtom) e.elementAt(0)).atomValue();
 		if (TRACE) {
 			ErlLogger.debug("    =" + e.toString());
@@ -65,58 +59,61 @@ public class ErlToken {
 			ErlLogger.warn(e1);
 			offset = 0;
 		}
-		OtpErlangObject ee = null;
-		if (e.arity() > 3) {
-			ee = e.elementAt(3);
-		} else if (e.arity() > 2) {
-			ee = e.elementAt(2);
-		}
-		if (ee != null) {
-			if (TRACE) {
-				ErlLogger.debug("   -" + ee.toString() + " "
-						+ ee.getClass().getName());
-			}
-			if (ee instanceof OtpErlangString) {
-				text = ((OtpErlangString) ee).stringValue();
-			} else if (ee instanceof OtpErlangAtom) {
-				text = ((OtpErlangAtom) ee).atomValue();
-			} else if (ee instanceof OtpErlangLong) {
-				text = ((OtpErlangLong) ee).toString();
-			} else if (ee instanceof OtpErlangDouble) {
-				text = new DecimalFormat().format(((OtpErlangDouble) ee)
-						.doubleValue());
-			} else if (ee instanceof OtpErlangChar) {
-				try {
-					text = new StringBuilder().append(
-							((OtpErlangChar) ee).charValue()).toString();
-				} catch (final OtpErlangRangeException e1) {
-					text = "";
-				}
-			} else
-			// might be a list of ints instead of a string
-			{
-				final OtpErlangObject[] ems = ((OtpErlangList) ee).elements();
-				final StringBuilder buf = new StringBuilder(ems.length);
-				for (final OtpErlangObject element : ems) {
-					try {
-						buf.append(((OtpErlangLong) element).intValue());
-					} catch (final OtpErlangRangeException e1) {
-						ErlLogger.warn(e1);
-					}
-				}
-				text = buf.toString();
-			}
-		} else {
-			text = kind;
-		}
+		// OtpErlangObject ee = null;
+		// if (e.arity() > 3) {
+		// ee = e.elementAt(3);
+		// } else if (e.arity() > 2) {
+		// ee = e.elementAt(2);
+		// }
+		// if (ee != null) {
+		// if (TRACE) {
+		// ErlLogger.debug("   -" + ee.toString() + " "
+		// + ee.getClass().getName());
+		// }
+		// if (ee instanceof OtpErlangString) {
+		// text = ((OtpErlangString) ee).stringValue();
+		// } else if (ee instanceof OtpErlangAtom) {
+		// text = ((OtpErlangAtom) ee).atomValue();
+		// } else if (ee instanceof OtpErlangLong) {
+		// text = ((OtpErlangLong) ee).toString();
+		// } else if (ee instanceof OtpErlangDouble) {
+		// text = new DecimalFormat().format(((OtpErlangDouble) ee)
+		// .doubleValue());
+		// } else if (ee instanceof OtpErlangChar) {
+		// try {
+		// text = new StringBuilder().append(
+		// ((OtpErlangChar) ee).charValue()).toString();
+		// } catch (final OtpErlangRangeException e1) {
+		// text = "";
+		// }
+		// } else
+		// // might be a list of ints instead of a string
+		// {
+		// final OtpErlangObject[] ems = ((OtpErlangList) ee).elements();
+		// final StringBuilder buf = new StringBuilder(ems.length);
+		// for (final OtpErlangObject element : ems) {
+		// try {
+		// buf.append(((OtpErlangLong) element).intValue());
+		// } catch (final OtpErlangRangeException e1) {
+		// ErlLogger.warn(e1);
+		// }
+		// }
+		// text = buf.toString();
+		// }
+		// } else {
+		// text = kind;
+		// }
 		if (TRACE) {
-			ErlLogger.debug("mkTok " + kind + " - " + text + " " + offset + ":"
-					+ text.length() + " " + (offset + text.length()));
+			// ErlLogger.debug("mkTok " + kind + " - " + text + " " + offset +
+			// ":"
+			// + text.length() + " " + (offset + text.length()));
+			ErlLogger.debug("mkTok " + kind + " - " + offset + ":" + length
+					+ " " + (offset + length));
 		}
 	}
 
 	public ErlToken(final OtpErlangTuple e, final int x) {
-		fTuple = e;
+		// fTuple = e;
 		if (TRACE) {
 			ErlLogger.debug("    =" + e.toString());
 		}
@@ -137,37 +134,38 @@ public class ErlToken {
 		} catch (final OtpErlangRangeException e1) {
 			ErlLogger.warn(e1);
 		}
-		// value = ((OtpErlangAtom) parts[5]).atomValue();
-		if (parts[6] instanceof OtpErlangString) {
-			text = ((OtpErlangString) parts[6]).stringValue();
-		} else {
-			text = parts[6].toString();
-			if ("undefined".equals(text)) {
-				text = parts[5].toString();
-			}
-		}
+		// // value = ((OtpErlangAtom) parts[5]).atomValue();
+		// if (parts[6] instanceof OtpErlangString) {
+		// text = ((OtpErlangString) parts[6]).stringValue();
+		// } else {
+		// text = parts[6].toString();
+		// if ("undefined".equals(text)) {
+		// text = parts[5].toString();
+		// }
+		// }
 
 		if (TRACE) {
-			ErlLogger.debug("mkTok " + kind + " - " + text + " " + line + "/"
-					+ offset + ":" + text.length() + " "
-					+ (offset + text.length()));
+			ErlLogger.debug("mkTok " + kind + " - " + line + "/" + offset + ":"
+					+ length + " " + (offset + length));
+			// ErlLogger.debug("mkTok " + kind + " - " + text + " " + line + "/"
+			// + offset + ":" + text.length() + " "
+			// + (offset + text.length()));
 		}
 	}
 
 	// eof token
 	private ErlToken() {
 		kind = null;
-		fTuple = null;
+		// fTuple = null;
 	}
 
 	/*
 	 * public ErlToken(String k, String c) { kind = k; text = c; fTuple = null;
 	 * }
 	 */
-	public String getContent() {
-		return text;
-	}
-
+	// public String getContent() {
+	// return text;
+	// }
 	public String getKind() {
 		return kind;
 	}
@@ -182,16 +180,19 @@ public class ErlToken {
 
 	@Override
 	public String toString() {
-		return "{" + kind + ", " + line + "/" + offset + ", '" + text + "'}";
+		// return "{" + kind + ", " + line + "/" + offset + ", '" + text + "'}";
+		return "{" + kind + ", " + line + "/" + offset + "}";
 	}
 
 	/**
 	 * @return Returns the fTuple.
 	 */
-	public OtpErlangTuple getTuple() {
-		return fTuple;
-	}
-
+	// public OtpErlangTuple getTuple() {
+	// return fTuple;
+	// }
+	/**
+	 * @param ofs
+	 */
 	public void fixOffset(final int ofs) {
 		offset += ofs;
 	}

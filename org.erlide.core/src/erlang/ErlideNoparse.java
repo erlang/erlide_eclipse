@@ -38,9 +38,9 @@ public class ErlideNoparse {
 			final String erlidePath) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.call(ERLIDE_NOPARSE, "initial_parse",
-					"assss", scannerModuleName, moduleFileName, initialText,
-					stateDir, erlidePath);
+			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE,
+					"initial_parse", "assss", scannerModuleName,
+					moduleFileName, initialText, stateDir, erlidePath);
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}

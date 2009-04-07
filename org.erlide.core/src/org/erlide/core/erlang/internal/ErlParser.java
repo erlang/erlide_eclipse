@@ -53,12 +53,14 @@ public class ErlParser {
 		if (b == null) {
 			return false;
 		}
-		OtpErlangList forms = null, comments = null;
+		OtpErlangList forms = null;
+		OtpErlangList comments = null;
 		final String scannerModuleName = ErlScanner
 				.createScannerModuleName(module);
 		OtpErlangTuple res = null;
-		ErlLogger.debug("parse=" + module.getName() + " init_len="
-				+ initialText.length() + " initialParse=" + initialParse);
+		ErlLogger.debug("parse=" + module.getResource().getFullPath()
+				+ " init_len=" + initialText.length() + " initialParse="
+				+ initialParse);
 
 		if (initialParse) {
 			final String stateDir = ErlangPlugin.getDefault()
@@ -66,7 +68,6 @@ public class ErlParser {
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
 					moduleFilePath, initialText, stateDir, erlidePath);
 		} else {
-			ErlLogger.info("reparse " + module.getName());
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
 		if (Util.isOk(res)) {
@@ -93,17 +94,16 @@ public class ErlParser {
 			return true;
 		}
 
-		for (int i = 0; i < forms.arity(); i++) {
-			final IErlMember elem = create(module, (OtpErlangTuple) forms
-					.elementAt(i));
+		for (final OtpErlangObject form : forms) {
+			final IErlMember elem = create(module, (OtpErlangTuple) form);
 			if (elem != null) {
 				mm.addMember(elem);
 			}
 		}
 		if (comments != null) {
-			for (int i = 0; i < comments.arity(); i++) {
+			for (final OtpErlangObject comment : comments) {
 				final IErlComment c = createComment(module,
-						(OtpErlangTuple) comments.elementAt(i));
+						(OtpErlangTuple) comment);
 				if (c != null) {
 					mm.addComment(c);
 				}

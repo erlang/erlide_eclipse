@@ -119,10 +119,9 @@ public class ErlideScanner {
 				final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
 				if (l != null) {
 					toks = new ArrayList<ErlToken>(l.arity() + 1);
-					for (int i = 0; i < l.arity(); i++) {
-						final OtpErlangTuple e = (OtpErlangTuple) l
-								.elementAt(i);
-						final ErlToken tk = new ErlToken(e, 0);
+					for (final OtpErlangObject o : l) {
+						final OtpErlangTuple t = (OtpErlangTuple) o;
+						final ErlToken tk = new ErlToken(t, 0);
 						tk.fixOffset(offset);
 						toks.add(tk);
 					}

@@ -58,11 +58,11 @@ all() ->
 xdump() ->
     server_cmd(xdump, []).
 
-cdump() ->
-    server_cmd(cdump, []).
+%% cdump() ->
+%%     server_cmd(cdump, []).
 
-vdump() ->
-    server_cmd(vdump, []).
+%% vdump() ->
+%%     server_cmd(vdump, []).
 
 dump_module(Module) when is_atom(Module) ->
     server_cmd(dump_module, Module).
@@ -75,11 +75,11 @@ find(M, F, A) ->
 
 initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
     try
-    	?D({StateDir, ModuleFileName, ErlidePath}),
+    	%?D({StateDir, ModuleFileName, ErlidePath}),
         RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) end,
         CacheFun = fun(D) -> erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
-        ?D(CacheFileName),
+        %?D(CacheFileName),
         Res = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
         update_state(ScannerName, Res),
         {ok, Res}
@@ -104,8 +104,8 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, code, external_refs, comment}).
--record(clause, {pos, name, args, head, code, name_pos, external_refs}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, code_dont_use, external_refs, comment}).
+-record(clause, {pos, name, args, head, code_dont_use, name_pos, external_refs}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 -record(module, {name, erlide_path, model}).
@@ -116,13 +116,13 @@ reparse(ScannerName) ->
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath),
-    ?D({do_parse, ErlidePath, length(Toks)}),
+    %?D({do_parse, ErlidePath, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
-    ?D({length(UncommentToks), length(Comments)}),
+    %?D({length(UncommentToks), length(Comments)}),
     Functions = split_after_dots(UncommentToks, [], []),
-    ?D(length(Functions)),
+    %?D(length(Functions)),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
-    ?D(length(Collected)),
+    %?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
     create(ScannerName, Model, ErlidePath),
@@ -139,26 +139,28 @@ parse_test(ScannerName, File) ->
     ok.
 
 classify_and_collect(C) ->
-    ?D(C),
+    %?D(C),
     R = cac(check_class(C), C),
-    ?D(R),
+    %?D(R),
     R.
 
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
-    ?D(ClauseList),
+    %?D(ClauseList),
     Clauses = [fix_clause(C) || C <- ClauseList],
-    ?D(length(Clauses)),
-    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, code=Co, external_refs=X} | _] = Clauses,
+    %?D(length(Clauses)),
+%%     [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, code=Co, external_refs=X} | _] = Clauses,
+    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, external_refs=X} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
     case Clauses of					% only show subclauses when more than one
         [_] ->
-            #function{pos=P, name=N, arity=Arity, args=A, head=H, code=Co, external_refs=X, clauses=[], name_pos=NP};
+%%             #function{pos=P, name=N, arity=Arity, args=A, head=H, code=Co, external_refs=X, clauses=[], name_pos=NP};
+            #function{pos=P, name=N, arity=Arity, args=A, head=H, external_refs=X, clauses=[], name_pos=NP};
         _ ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
 cac(attribute, Attribute) ->
-    ?D(Attribute),
+    %?D(Attribute),
     case Attribute of
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
@@ -191,7 +193,7 @@ cac(other, [#token{value=Name, line=Line,
                    offset=Offset, length=Length} | _]) ->
     #other{pos={{Line, Line, Offset}, Length}, name=Name};
 cac(_, _D) ->
-	?D(_D),
+	%?D(_D),
 	eof.
 
 get_attribute_args(import, Between, _Args) ->
@@ -217,7 +219,7 @@ check_class([#token{kind = '-'}, #token{kind = 'spec'} | _]) ->
 check_class([#token{kind = '-'}, #token{kind = 'type'} | _]) ->
     attribute;
 check_class(_X) ->
-    ?D(lists:sublist(_X, 5)),
+    %?D(lists:sublist(_X, 5)),
     other.
 
 get_first_of_kind(Kind, Tokens) ->
@@ -397,13 +399,15 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
             split_clauses(TRest, [[T | ClAcc] | Acc], [])
     end.
 
-fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
+%% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
+fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
     ExternalRefs = get_refs(Rest),
-    ?D([Rest, ExternalRefs]),
+    %?D([Rest, ExternalRefs]),
     #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
-            name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
+%%             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
+            name=Name, args=get_between_pars(Rest), head=get_head(Rest), 
             external_refs=ExternalRefs}.
 
 scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
@@ -576,17 +580,17 @@ do_cmd(find, {external_call, {M, F, A}}, Modules) ->
     {find_external_call({M, F, A}, Modules), Modules};
 do_cmd(dump_log, [], Modules) ->
     {get(log), Modules};
-do_cmd(cdump, [], Modules) ->
-    {do_cdump(Modules), Modules};
-do_cmd(vdump, [], Modules) ->
-    {do_vdump(Modules), Modules};
+%% do_cmd(cdump, [], Modules) ->
+%%     {do_cdump(Modules), Modules};
+%% do_cmd(vdump, [], Modules) ->
+%%     {do_vdump(Modules), Modules};
 do_cmd(xdump, [], Modules) ->
     {do_xdump(Modules), Modules}.
 
 %% find all external calls in the modules known
 find_external_call(MFA, Modules) ->
     D = find_external_call(Modules, MFA, []),
-    ?D(D),
+    %?D(D),
     D.
 
 find_external_call([], _, Acc) ->
@@ -650,16 +654,16 @@ do_xdump1(#module{model=M}) ->
     [[F#function.external_refs | [C#clause.external_refs || C <- F#function.clauses]]
     || F <- Forms, is_record(F, function)].
 
-do_cdump(Modules) ->
-    [{M#module.name, M#module.erlide_path, do_cdump1(M)} || M <- Modules].
+%% do_cdump(Modules) ->
+%%     [{M#module.name, M#module.erlide_path, do_cdump1(M)} || M <- Modules].
+%% 
+%% do_cdump1(#module{model=M}) ->
+%%     Forms = M#model.forms,
+%%     [[{F#function.name, F#function.code, [{C#clause.args, C#clause.code} || C <- F#function.clauses]}]
+%%      || F <- Forms, is_record(F, function)].
 
-do_cdump1(#module{model=M}) ->
-    Forms = M#model.forms,
-    [[{F#function.name, F#function.code, [{C#clause.args, C#clause.code} || C <- F#function.clauses]}]
-    || F <- Forms, is_record(F, function)].
-
-do_vdump(Modules) ->
-    [{M#module.name, M#module.erlide_path, do_vdump1(M)} || M <- Modules].
+%% do_vdump(Modules) ->
+%%     [{M#module.name, M#module.erlide_path, do_vdump1(M)} || M <- Modules].
 
 is_var(#token{kind=var}) -> true;
 is_var(_) -> false.
@@ -669,20 +673,20 @@ vars(Tokens) when is_list(Tokens) ->
 vars(_) ->
     [].
 
-do_vdump1(#module{model=M}) ->
-    Forms = M#model.forms,
-    [[{F#function.name, vars(F#function.code), [{C#clause.head, vars(C#clause.code)} || C <- F#function.clauses]}]
-    || F <- Forms, is_record(F, function)].
+%% do_vdump1(#module{model=M}) ->
+%%     Forms = M#model.forms,
+%%     [[{F#function.name, vars(F#function.code), [{C#clause.head, vars(C#clause.code)} || C <- F#function.clauses]}]
+%%     || F <- Forms, is_record(F, function)].
     
-do_get_vars(FOrC, Module) ->
-    case find_function_or_clause(FOrC, Module) of
-        #function{code=Code} ->
-            {ok, vars(Code)};
-        #clause{code=Code} ->
-            {ok, vars(Code)};
-        _ ->
-            not_found
-    end.
+%% do_get_vars(FOrC, Module) ->
+%%     case find_function_or_clause(FOrC, Module) of
+%%         #function{code=Code} ->
+%%             {ok, vars(Code)};
+%%         #clause{code=Code} ->
+%%             {ok, vars(Code)};
+%%         _ ->
+%%             not_found
+%%     end.
 
 find_function_or_clause({F, A, Head}, Module) ->
     ffoc((Module#module.model)#model.forms, F, A, Head);
