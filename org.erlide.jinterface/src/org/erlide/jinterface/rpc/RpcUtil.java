@@ -91,10 +91,11 @@ public class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static OtpErlangObject rpcCall(final OtpNode node, String peer,
-			final String module, final String fun, final int timeout,
-			final String signature, Object... args0) throws RpcException {
-		RpcFuture future = sendRpcCall(node, peer, module, fun, signature,
-				args0);
+			OtpErlangObject gleader, final String module, final String fun,
+			final int timeout, final String signature, Object... args0)
+			throws RpcException {
+		RpcFuture future = sendRpcCall(node, peer, gleader, module, fun,
+				signature, args0);
 		OtpErlangObject result;
 		result = future.get(timeout);
 		if (CHECK_RPC) {
@@ -108,15 +109,15 @@ public class RpcUtil {
 	 * argument is implicit and is the pid where the reports are to be sent.
 	 */
 	public static void rpcCallWithProgress(RpcResultCallback callback,
-			final OtpNode node, String peer, final String module,
-			final String fun, final int timeout, final String signature,
-			Object... args0) throws RpcException {
+			final OtpNode node, String peer, OtpErlangObject gleader,
+			final String module, final String fun, final int timeout,
+			final String signature, Object... args0) throws RpcException {
 		Object[] args = new Object[args0.length + 1];
 		System.arraycopy(args0, 0, args, 1, args0.length);
 		OtpMbox mbox = node.createMbox();
 		args[0] = mbox.self();
 		new RpcResultReceiver(mbox, callback);
-		rpcCast(node, peer, module, fun, signature, args);
+		rpcCast(node, peer, gleader, module, fun, signature, args);
 	}
 
 	/**
@@ -133,13 +134,13 @@ public class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static RpcFuture sendRpcCall(final OtpNode node, String peer,
-			final String module, final String fun, final String signature,
-			Object... args0) throws RpcException {
+			OtpErlangObject gleader, final String module, final String fun,
+			final String signature, Object... args0) throws RpcException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
 		final OtpMbox mbox = node.createMbox();
-		res = RpcUtil.buildRpcCall(mbox.self(), module, fun, args);
+		res = RpcUtil.buildRpcCall(mbox.self(), gleader, module, fun, args);
 		mbox.send("rex", peer, res);
 		if (CHECK_RPC) {
 			debug("RPC call:: " + res);
@@ -201,12 +202,13 @@ public class RpcUtil {
 	}
 
 	private static OtpErlangObject buildRpcCall(final OtpErlangPid pid,
-			final String module, final String fun, final OtpErlangObject[] args) {
+			OtpErlangObject gleader, final String module, final String fun,
+			final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
 		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
-				new OtpErlangAtom("call"), m, f, a, new OtpErlangAtom("user")));
+				new OtpErlangAtom("call"), m, f, a, gleader));
 	}
 
 	/**
@@ -221,12 +223,12 @@ public class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static void rpcCast(final OtpNode node, String peer,
-			final String module, final String fun, final String signature,
-			Object... args0) throws RpcException {
+			OtpErlangObject gleader, final String module, final String fun,
+			final String signature, Object... args0) throws RpcException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
-		res = RpcUtil.buildRpcCastMsg(module, fun, args);
+		res = RpcUtil.buildRpcCastMsg(gleader, module, fun, args);
 		RpcUtil.send(node, peer, "rex", res);
 		if (CHECK_RPC) {
 			debug("RPC cast:: " + res);
@@ -257,14 +259,14 @@ public class RpcUtil {
 		return args;
 	}
 
-	private static OtpErlangObject buildRpcCastMsg(final String module,
-			final String fun, final OtpErlangObject[] args) {
+	private static OtpErlangObject buildRpcCastMsg(OtpErlangObject gleader,
+			final String module, final String fun, final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
 		final OtpErlangAtom castTag = new OtpErlangAtom("$gen_cast");
 		return JInterfaceFactory.mkTuple(castTag, JInterfaceFactory.mkTuple(
-				new OtpErlangAtom("cast"), m, f, a, new OtpErlangAtom("user")));
+				new OtpErlangAtom("cast"), m, f, a, gleader));
 	}
 
 	private static void log(String s) {

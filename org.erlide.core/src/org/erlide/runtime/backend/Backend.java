@@ -19,8 +19,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.runtime.ErlLogger;
@@ -33,6 +33,7 @@ import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -256,8 +257,14 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public OtpErlangObject call(final int timeout, final String m,
 			final String f, final String signature, final Object... a)
 			throws BackendException {
+		return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
+	}
+
+	public OtpErlangObject call(final int timeout, OtpErlangObject gleader,
+			final String m, final String f, final String signature,
+			final Object... a) throws BackendException {
 		try {
-			return makeCall(timeout, m, f, signature, a);
+			return makeCall(timeout, gleader, m, f, signature, a);
 		} catch (RpcException e) {
 			throw new BackendException(e);
 		}
@@ -311,16 +318,31 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	private OtpErlangObject makeCall(final int timeout, final String module,
 			final String fun, final String signature, final Object... args0)
 			throws RpcException {
+		return makeCall(timeout, new OtpErlangAtom("user"), module, fun,
+				signature, args0);
+	}
+
+	private OtpErlangObject makeCall(final int timeout,
+			OtpErlangObject gleader, final String module, final String fun,
+			final String signature, final Object... args0) throws RpcException {
 		checkAvailability();
-		OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, module, fun,
-				timeout, signature, args0);
+		OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader, module,
+				fun, timeout, signature, args0);
 		return result;
 	}
 
 	private RpcFuture makeAsyncCall(final String module, final String fun,
 			final String signature, final Object... args0) throws RpcException {
+		return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
+				args0);
+	}
+
+	private RpcFuture makeAsyncCall(OtpErlangObject gleader,
+			final String module, final String fun, final String signature,
+			final Object... args0) throws RpcException {
 		checkAvailability();
-		return RpcUtil.sendRpcCall(fNode, fPeer, module, fun, signature, args0);
+		return RpcUtil.sendRpcCall(fNode, fPeer, gleader, module, fun,
+				signature, args0);
 	}
 
 	private void checkAvailability() throws RpcException {
@@ -335,8 +357,14 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private void makeCast(final String module, final String fun,
 			final String signature, final Object... args0) throws RpcException {
+		makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
+	}
+
+	private void makeCast(OtpErlangObject gleader, final String module,
+			final String fun, final String signature, final Object... args0)
+			throws RpcException {
 		checkAvailability();
-		RpcUtil.rpcCast(fNode, fPeer, module, fun, signature, args0);
+		RpcUtil.rpcCast(fNode, fPeer, gleader, module, fun, signature, args0);
 	}
 
 	private synchronized void restart() {
@@ -570,6 +598,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public boolean isStopped() {
 		return stopped;
+	}
+
+	public OtpMbox createMbox() {
+		return fNode.createMbox();
 	}
 
 }
