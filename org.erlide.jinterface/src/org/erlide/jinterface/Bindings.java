@@ -16,7 +16,13 @@ import java.util.Map;
 import org.erlide.jinterface.rpc.RpcConverter;
 import org.erlide.jinterface.rpc.RpcException;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class Bindings {
 
@@ -37,6 +43,46 @@ public class Bindings {
 
 	public OtpErlangObject get(String name) {
 		return this.bindings.get(name);
+	}
+
+	public long getLong(String name) throws OtpErlangException {
+		OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangLong) {
+			return ((OtpErlangLong) r).longValue();
+		}
+		throw new OtpErlangException("value is not an integer");
+	}
+
+	public String getAtom(String name) throws OtpErlangException {
+		OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangAtom) {
+			return ((OtpErlangAtom) r).atomValue();
+		}
+		throw new OtpErlangException("value is not an atom");
+	}
+
+	public String getString(String name) throws OtpErlangException {
+		OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangString) {
+			return ((OtpErlangString) r).stringValue();
+		}
+		throw new OtpErlangException("value is not a string");
+	}
+
+	public OtpErlangObject[] getList(String name) throws OtpErlangException {
+		OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangList) {
+			return ((OtpErlangList) r).elements();
+		}
+		throw new OtpErlangException("value is not a list");
+	}
+
+	public OtpErlangObject[] getTuple(String name) throws OtpErlangException {
+		OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangTuple) {
+			return ((OtpErlangTuple) r).elements();
+		}
+		throw new OtpErlangException("value is not a tuple");
 	}
 
 	@SuppressWarnings("unchecked")
