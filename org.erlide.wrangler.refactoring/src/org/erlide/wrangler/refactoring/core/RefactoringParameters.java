@@ -18,8 +18,10 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -204,6 +206,7 @@ public class RefactoringParameters {
 			if (res instanceof IContainer) {
 				IContainer con = (IContainer) res;
 				findDirectories(con, containers);
+				// TODO: restrict the search only for the source directories
 			}
 		}
 
@@ -333,5 +336,22 @@ public class RefactoringParameters {
 	public void setSelection(final ISelection selection) {
 		// TODO: do I need class checking?
 		this.selection = (ITextSelection) selection;
+	}
+
+	public OtpErlangTuple getEndPos() {
+		return convertToPos(getEndLine(), getEndColumn());
+	}
+
+	public OtpErlangTuple getStartPos() {
+		return convertToPos(getStartLine(), getStartColumn());
+	}
+
+	private OtpErlangTuple convertToPos(int line_, int col_) {
+		OtpErlangInt line, col;
+		line = new OtpErlangInt(line_);
+		col = new OtpErlangInt(col_);
+		OtpErlangObject[] posarray = { line, col };
+		OtpErlangTuple pos = new OtpErlangTuple(posarray);
+		return pos;
 	}
 }
