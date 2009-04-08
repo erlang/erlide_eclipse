@@ -341,10 +341,12 @@ public class OpenAction extends SelectionDispatchAction {
 				EditorUtility.openInEditor(f);
 			}
 		} else if (res.isLocalCall()) {
-			final IErlElement e = editor.getElementAt(offset, true);
-			if (e.getKind() == IErlElement.Kind.TYPESPEC) {
-				if (ErlModelUtils.openTypeInEditor(res.getFun(), editor)) {
-					return;
+			if (editor != null) {
+				final IErlElement e = editor.getElementAt(offset, true);
+				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+					if (ErlModelUtils.openTypeInEditor(res.getFun(), editor)) {
+						return;
+					}
 				}
 			}
 			if (!ErlModelUtils.openFunctionInEditor(res.getFunction(), editor)) {
