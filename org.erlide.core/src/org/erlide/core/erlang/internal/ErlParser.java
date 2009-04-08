@@ -371,9 +371,11 @@ public class ErlParser {
 
 		} else if ("define".equals(nameS)) {
 			if (val instanceof OtpErlangAtom) {
-				final OtpErlangAtom o = (OtpErlangAtom) val;
+				// final OtpErlangAtom o = (OtpErlangAtom) val;
 				final String s = Util.stringValue(extra);
-				final ErlMacroDef r = new ErlMacroDef(parent, o.toString(), s);
+				// final ErlMacroDef r = new ErlMacroDef(parent, o.toString(),
+				// s);
+				final ErlMacroDef r = new ErlMacroDef(parent, s);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;
