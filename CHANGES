@@ -1,3 +1,58 @@
+List of user visible changes between 0.5.1 and 0.5.2 (r2484)
+
+	Bug fixed: wrong arity for function calls with funs
+
+	bug: default ide runtime was not saved
+	
+	updated wrangler code base
+
+	https://www.assembla.com/spaces/erlide/tickets/315-console-doesn-t-work-with-R13
+
+	raised rpc timeout value (fetching documentation is slow)
+
+	http://www.assembla.com/spaces/erlide/tickets/319-Sort-function-list-on-code-completion-after-module-
+
+	http://www.assembla.com/spaces/erlide/tickets/254-folding---preferences-don-t-work
+
+	fixed bug: it didn't show function clauses, only functions w/o clauses (with 1 clause only)
+
+	http://www.assembla.com/spaces/erlide/tickets/310-model---put-externalIncludes-and-externalModules-and-path-vars-in-project-and-model
+
+	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
+
+	http://www.assembla.com/spaces/erlide/tickets/302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
+
+	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
+
+	http://www.assembla.com/spaces/erlide/tickets/124-Editor-preference-page-doesn-t-work
+
+	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
+
+	http://www.assembla.com/spaces/erlide/tickets/202-Improved-code-completion-for-records
+
+	http://www.assembla.com/spaces/erlide/tickets/327-indentation--receive---after
+
+	http://www.assembla.com/spaces/erlide/tickets/322-Debugger---Keep-debug-context-even-if-the-process-is-killed-(works-in-OTP-debugger)
+
+	http://www.assembla.com/spaces/erlide/tickets/324-Debugger---Make-it-more-clear-when-a-breakpoint-has-been-hit
+
+	http://www.assembla.com/spaces/erlide/tickets/178-Debugger--group-erlang-processes-by-node
+
+	http://www.assembla.com/spaces/erlide/tickets/51-Syntax-colors
+
+	http://www.assembla.com/spaces/erlide/tickets/329-Unnecessary-parsing-of-hrl-files-on-doc-hovering
+
+	http://www.assembla.com/spaces/erlide/tickets/330-F3-doesn-t-find-definition-of-macro-if-name-begins-with-lowercase-letter
+
+	http://www.assembla.com/spaces/erlide/tickets/333-if-runtime-exists-but-is-broken--erlide-hangs
+
+	http://www.assembla.com/spaces/erlide/tickets/337-indent-problem
+
+	http://www.assembla.com/spaces/erlide/tickets/320-editor---bracket-insert-doesn-t-always-follow-prefs
+
+	http://erlide.assembla.com/spaces/erlide/tickets/250-build-file-command
+
+	http://www.assembla.com/spaces/erlide/tickets/303-NPE-in-ErlangEditor-InformationDispatchAction
 
 
 List of user visible changes between 0.5.0 and 0.5.1 (r2365)
