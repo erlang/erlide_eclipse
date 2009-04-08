@@ -48,7 +48,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 		final Collection<IProject> projects = page.getSelectedResources();
 		final Map<String, OtpErlangObject> options = page.getOptions();
 		for (IProject prj : projects) {
-			if (prj.isAccessible()) {
+			if (!prj.isAccessible()) {
 				System.out.println("EDOC: " + prj.getName()
 						+ " is not accessible, skipping.");
 				continue;
