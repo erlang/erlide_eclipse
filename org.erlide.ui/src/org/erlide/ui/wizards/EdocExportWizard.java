@@ -49,11 +49,11 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 		final Map<String, OtpErlangObject> options = page.getOptions();
 		for (IProject prj : projects) {
 			if (!prj.isAccessible()) {
-				System.out.println("EDOC: " + prj.getName()
+				ErlLogger.debug("EDOC: " + prj.getName()
 						+ " is not accessible, skipping.");
 				continue;
 			}
-			System.out.println("EDOC: " + prj.getName());
+			ErlLogger.debug("EDOC: " + prj.getName());
 			try {
 				IFolder dest = prj.getFolder(page.getDestination());
 				if (!dest.exists()) {
@@ -61,7 +61,6 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 				}
 				options.put("dir", new OtpErlangString(dest.getLocation()
 						.toString()));
-				System.out.println("out: " + dest.getLocation().toString());
 				final List<String> files = new ArrayList<String>();
 				ErlangProjectProperties props = new ErlangProjectProperties(prj);
 				for (String dir : props.getSourceDirs()) {

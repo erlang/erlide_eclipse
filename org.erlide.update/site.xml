@@ -3,19 +3,12 @@
    <description url="http://erlide.org/update">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.4 and later.
    </description>
-   <feature url="features/org.erlide_0.4.1.jar" id="org.erlide" version="0.4.1">
-      <category name="stable_eclipse33"/>
-   </feature>
-   <feature url="features/org.erlide_0.4.3.jar" id="org.erlide" version="0.4.3">
-      <category name="stable_eclipse33"/>
-   </feature>
-   <feature url="features/org.erlide_0.5.1.200903311033.jar" id="org.erlide" version="0.5.1.200903311033">
-      <category name="unstable"/>
-   </feature>
    <feature url="features/org.erlide.selfhost_0.1.1.200903311037.jar" id="org.erlide.selfhost" version="0.1.1.200903311037">
       <category name="unstable"/>
    </feature>
-   <feature url="features/org.erlide_0.5.2.200904030850.jar" id="org.erlide" version="0.5.2.200904030850"/>
+   <feature url="features/org.erlide_0.5.2.200904081211.jar" id="org.erlide" version="0.5.2.200904081211">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.
@@ -23,7 +16,8 @@
    </category-def>
    <category-def name="unstable" label="erlIDE unstable">
       <description>
-         These builds may be broken, so use at your own risk.
+         These builds may be broken, so use at your own risk. Usually, we don't 
+         let them stay broken for long.
       </description>
    </category-def>
    <category-def name="stable_eclipse33" label="erlIDE Stable (Eclipse 3.3+)">
