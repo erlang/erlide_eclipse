@@ -37,12 +37,7 @@ import erlang.ErlideEdoc;
 public class EdocExportWizard extends Wizard implements IExportWizard {
 
 	private EdocExportWizardPage page;
-	private IWorkbench workbench;
 	private IStructuredSelection selection;
-
-	public EdocExportWizard() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public boolean performFinish() {
@@ -53,6 +48,11 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 		final Collection<IProject> projects = page.getSelectedResources();
 		final Map<String, OtpErlangObject> options = page.getOptions();
 		for (IProject prj : projects) {
+			if (prj.isAccessible()) {
+				System.out.println("EDOC: " + prj.getName()
+						+ " is not accessible, skipping.");
+				continue;
+			}
 			System.out.println("EDOC: " + prj.getName());
 			try {
 				IFolder dest = prj.getFolder(page.getDestination());
@@ -66,23 +66,28 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 				ErlangProjectProperties props = new ErlangProjectProperties(prj);
 				for (String dir : props.getSourceDirs()) {
 					IFolder folder = prj.getFolder(dir);
-					folder.accept(new IResourceVisitor() {
-						public boolean visit(IResource resource)
-								throws CoreException {
-							if ("erl".equals(resource.getFileExtension())) {
-								files.add(resource.getLocation().toString());
+					if (folder.isAccessible()) {
+						folder.accept(new IResourceVisitor() {
+							public boolean visit(IResource resource)
+									throws CoreException {
+								if ("erl".equals(resource.getFileExtension())) {
+									if (resource.isAccessible()) {
+										files.add(resource.getLocation()
+												.toString());
+									}
+								}
+								return true;
 							}
-							return true;
-						}
-					});
+						});
+					}
 				}
 				try {
 					ErlideEdoc.files(files, options);
 				} catch (Exception e) {
-					ErlLogger.warn(e.getMessage());
+					ErlLogger.warn(e);
 				}
 			} catch (CoreException e) {
-				ErlLogger.warn(e.getMessage());
+				ErlLogger.warn(e);
 			}
 		}
 
@@ -91,7 +96,6 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 
 	public void init(final IWorkbench workbench,
 			final IStructuredSelection selection) {
-		this.workbench = workbench;
 		this.selection = selection;
 
 		final List<?> selectedResources = IDE
@@ -101,7 +105,6 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 		}
 		setWindowTitle("eDoc Export Wizard"); // NON-NLS-1
 		setNeedsProgressMonitor(true);
-
 	}
 
 	@Override
