@@ -643,7 +643,7 @@
     <actionSet
           id="org.erlide.debug.ui.ErlangDebugActionSet"
           label="%ErlangDebugActionSet.label"
-          visible="false">
+          visible="true">
        <menu
              id="org.eclipse.ui.run"
              label="%RunMenu.label"
@@ -658,7 +658,7 @@
              helpContextId="toggle_debug_tracing_action_context"
              id="org.erlide.debug.ui.actions.ToggleDebugTracing"
              label="%toggleDebugTracing.label"
-             menubarPath="org.eclise.ui.run/erlideGroup">
+             menubarPath="org.eclipse.ui.run/erlideGroup">
        </action>
     </actionSet>
 <!--
