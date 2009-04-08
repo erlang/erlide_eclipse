@@ -34,14 +34,6 @@ public class IOServer implements Runnable {
 		latin1, unicode;
 	}
 
-	public static enum Mode {
-		binary, list;
-	}
-
-	public static enum Geometry {
-		rows, columns;
-	}
-
 	public IOServer(OtpMbox box, IOCallback callback) {
 		this.callback = callback;
 		mbox = box;
