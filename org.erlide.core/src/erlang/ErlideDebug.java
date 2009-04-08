@@ -2,6 +2,10 @@ package erlang;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
@@ -34,12 +38,19 @@ public class ErlideDebug {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangPid startDebug(final Backend backend,
-			final int debugFlags) {
+			final int debugFlags) throws DebugException {
 		OtpErlangObject res = null;
 		try {
 			res = backend.call("erlide_debug", "start_debug", "i", debugFlags);
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
+		}
+		if (res instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) res;
+			final OtpErlangObject o = t.elementAt(1);
+			final IStatus s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+					DebugException.REQUEST_FAILED, o.toString(), null);
+			throw new DebugException(s);
 		}
 		final OtpErlangPid pid = (OtpErlangPid) res;
 		return pid;
@@ -215,6 +226,20 @@ public class ErlideDebug {
 		try {
 			final OtpErlangObject res = backend.call("erlide_debug",
 					"all_stack_frames", "x", meta);
+			if (res instanceof OtpErlangTuple) {
+				return (OtpErlangTuple) res;
+			}
+		} catch (final BackendException e) {
+			ErlLogger.warn(e);
+		}
+		return null;
+	}
+
+	public static OtpErlangTuple tracing(final Backend backend,
+			final boolean trace, final OtpErlangPid meta) {
+		try {
+			final OtpErlangObject res = backend.call("erlide_debug", "tracing",
+					"ox", trace, meta);
 			if (res instanceof OtpErlangTuple) {
 				return (OtpErlangTuple) res;
 			}

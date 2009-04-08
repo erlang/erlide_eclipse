@@ -38,4 +38,8 @@ public class IErlangHelpContextIds {
 
 	public static final String EDOC_CONFIGURATION_PROPERTY_PAGE = "edocPropertyPage";
 
+	public static final String ERLANG_BREAKPOINT_PROPERTY_PAGE = "erlangBreakpointPropertyPage";
+
+	public static final String ERLANG_LINE_BREAKPOINT_PROPERTY_PAGE = "erlangLineBreakpointPropertyPage";
+
 }

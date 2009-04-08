@@ -68,4 +68,6 @@ public class ActionMessages extends NLS {
 	public static final String MemberFilterActionGroup_hide_macro_record_defs_typespecs_description = "Hide Macro, Record and Type Definitions";
 
 	public static final String MemberFilterActionGroup_hide_macro_record_defs_typespecs_tooltip = "Hide Macro, Record and Type Definitions";
+
+	public static final String ErlangBreakpointPropertiesRulerAction_Breakpoint__Properties_1 = "Breakpoint Properties";
 }

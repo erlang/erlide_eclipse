@@ -29,9 +29,12 @@ import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideDebug;
 
-public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint {
+public class ErlangLineBreakpoint extends Breakpoint implements
+		IErlangBreakpoint, ILineBreakpoint {
 	private ErlangDebugTarget target;
 	private String clauseHead;
+	private int fHitCount;
+	private int fBreakAction = BREAK_ACTION_BREAK;
 
 	public ErlangLineBreakpoint() {
 		super();
@@ -162,6 +165,51 @@ public class ErlangLineBreakpoint extends Breakpoint implements ILineBreakpoint 
 	public void setMarker(final IMarker marker) throws CoreException {
 		super.setMarker(marker);
 		resetClauseHead(getLineNumber() - 1, marker.getResource());
+	}
+
+	public String getCondition() throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isConditionEnabled() throws CoreException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void setCondition(final String condition) throws CoreException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setConditionEnabled(final boolean enabled) throws CoreException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public boolean supportsCondition() {
+		return !true; // FIXME
+	}
+
+	// public String getTypeName() {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
+
+	public void setHitCount(final int hitCount) {
+		fHitCount = hitCount;
+	}
+
+	public int getHitCount() {
+		return fHitCount;
+	}
+
+	public int getBreakAction() {
+		return fBreakAction;
+	}
+
+	public void setBreakAction(final int traceAction) {
+		fBreakAction = traceAction;
 	}
 
 }

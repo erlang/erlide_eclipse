@@ -186,53 +186,23 @@ public class ErlangLaunchConfigurationDelegate extends
 					interpret(backend, pms[0], pms[1], distributed, true);
 				}
 				// send started to target
-				target.sendStarted();
-
 				DebugPlugin.getDefault().addDebugEventListener(
 						new IDebugEventSetListener() {
 
 							public void handleDebugEvents(
 									final DebugEvent[] events) {
 
-								try {
-									if (module.length() > 0
-											&& function.length() > 0) {
-										if (args.length() > 0) {
-											// TODO issue #84
-											backend.call(module, function, "s",
-													args);
-										} else {
-											backend.call(module, function, "");
-										}
-									}
-								} catch (final Exception e) {
-									ErlLogger
-											.debug(
-													"Could not run initial call %s:%s(\"%s\")",
-													module, function, args);
-									ErlLogger.warn(e);
-								}
+								runInitial(module, function, args, backend);
 								DebugPlugin.getDefault()
 										.removeDebugEventListener(this);
 							}
 						});
+				target.sendStarted();
+
 			} else {
-				try {
-					if (module.length() > 0 && function.length() > 0) {
-						if (args.length() > 0) {
-							// TODO issue #84
-							backend.call(module, function, "s", args);
-						} else {
-							backend.call(module, function, "");
-						}
-					}
-				} catch (final Exception e) {
-					ErlLogger.debug("Could not run initial call %s:%s(\"%s\")",
-							module, function, args);
-					ErlLogger.warn(e);
-				}
+				runInitial(module, function, args, backend);
 			}
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.error("Launch: got null backend!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					DebugException.REQUEST_FAILED, "Couldn't find the node "
@@ -379,6 +349,24 @@ public class ErlangLaunchConfigurationDelegate extends
 			final String mode, final ILaunch launch,
 			final IProgressMonitor monitor) throws CoreException {
 		doLaunch(configuration, mode, launch, true);
+	}
+
+	private void runInitial(final String module, final String function,
+			final String args, final Backend backend) {
+		try {
+			if (module.length() > 0 && function.length() > 0) {
+				if (args.length() > 0) {
+					// TODO issue #84
+					backend.cast(module, function, "s", args);
+				} else {
+					backend.cast(module, function, "");
+				}
+			}
+		} catch (final Exception e) {
+			ErlLogger.debug("Could not run initial call %s:%s(\"%s\")", module,
+					function, args);
+			ErlLogger.warn(e);
+		}
 	}
 
 }

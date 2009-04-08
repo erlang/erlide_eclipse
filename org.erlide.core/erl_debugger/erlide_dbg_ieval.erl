@@ -506,62 +506,69 @@ trace(What, Args) ->
 trace(return, {_Le,{dbg_apply,_,_,_}}, _Bool) ->
     ignore;
 trace(What, Args, true) ->
-    Str = case What of
-	      send ->
-		  {To,Msg} = Args,
-		  io_lib:format("==> ~w : ~p~n", [To, Msg]);
-	      receivex ->
-		  {Le, TimeoutP} = Args,
-		  Tail = case TimeoutP of
-			     true -> "with timeout~n";
-			     false -> "~n"
-			 end,
-		  io_lib:format("   (~w) receive " ++ Tail, [Le]);
-		      
-	      received when Args==null ->
-		  io_lib:format("~n", []);
-	      received -> % Args=Msg
-		  io_lib:format("~n<== ~p~n", [Args]);
-		      
-	      call ->
-		  {Called, {Le,Li,M,F,As}} = Args,
-		  case Called of
-		      extern ->
-			  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
-					[Le,Li,M,F,format_args(As)]);
-		      local ->
-			  io_lib:format("++ (~w) <~w> ~w~s~n",
-					[Le,Li,F,format_args(As)])
-		  end;
-	      call_fun ->
-		  {Le,Li,F,As} = Args,
-		  io_lib:format("++ (~w) <~w> ~w~s~n",
-				[Le, Li, F, format_args(As)]);
-	      return ->
-		  {Le,Val} = Args,
-		  io_lib:format("-- (~w) ~p~n", [Le, Val]);
-		      
-		      
-	      bif ->
-		  {Le,Li,M,F,As} = Args,
-		  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
-				[Le, Li, M, F, format_args(As)])
-	  end,
-    erlide_dbg_icmd:tell_attached({trace_output, Str});
+%%     Str = case What of
+%% 	      send ->
+%% %% 		  {To,Msg} = Args,
+%% %% 		  {send, To, Msg};
+%% %% 		  io_lib:format("==> ~w : ~p~n", [To, Msg]);
+%% 	      receivex ->
+%% 		  {Le, TimeoutP} = Args,
+%% 		  {'receive', Le, TimeoutP};
+%% %% 		  Tail = case TimeoutP of
+%% %% 			     true -> "with timeout~n";
+%% %% 			     false -> "~n"
+%% %% 			 end,
+%% %% 		  io_lib:format("   (~w) receive " ++ Tail, [Le]);
+%% %% 		      
+%% 	      received when Args==null ->
+%% 		  {received};
+%% %% 		  io_lib:format("~n", []);
+%% 	      received -> % Args=Msg
+%% 		  {received, Args};
+%% %% 		  io_lib:format("~n<== ~p~n", [Args]);
+%% %% 		      
+%% 	      call ->
+%% 		  {Called, {Le,Li,M,F,As}} = Args,
+%% 		  {call, Called, {Le, Li, M, F, As}};
+%% %% 		  case Called of
+%% %% 		      extern ->
+%% %% 			  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
+%% %% 					[Le,Li,M,F,format_args(As)]);
+%% %% 		      local ->
+%% %% 			  io_lib:format("++ (~w) <~w> ~w~s~n",
+%% %% 					[Le,Li,F,format_args(As)])
+%% %% 		  end;
+%% 	      call_fun ->
+%% 		  {Le,Li,F,As} = Args,
+%% 		  {call_fun, Le, Li, F, As};
+%% %% 	      io_lib:format("++ (~w) <~w> ~w~s~n",
+%% %% 			    [Le, Li, F, format_args(As)]);
+%% 	      return ->
+%% 		  {Le,Val} = Args,
+%% 		  {return, Le, Val};
+%% %% 		  io_lib:format("-- (~w) ~p~n", [Le, Val]);
+%% 	      bif ->
+%% 		  {Le,Li,M,F,As} = Args,
+%% 		  {bif, Le, Li, M, F, As}
+%% %% 		  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
+%% %% 				[Le, Li, M, F, format_args(As)])
+%% 	  end,
+%%     erlide_dbg_icmd:tell_attached({trace_output, Str});
+    erlide_dbg_icmd:tell_attached({trace_output, {What, Args}});
 trace(_What, _Args, false) ->
     ignore.
 
-format_args(As) when is_list(As) ->
-    [$(,format_args1(As),$)];
-format_args(A) ->
-    [$/,io_lib:format('~p', [A])].
-
-format_args1([A]) ->
-    [io_lib:format('~p', [A])];
-format_args1([A|As]) ->
-    [io_lib:format('~p', [A]),$,|format_args1(As)];
-format_args1([]) ->
-    [].
+%% format_args(As) when is_list(As) ->
+%%     [$(,format_args1(As),$)];
+%% format_args(A) ->
+%%     [$/,io_lib:format('~p', [A])].
+%% 
+%% format_args1([A]) ->
+%%     [io_lib:format('~p', [A])];
+%% format_args1([A|As]) ->
+%%     [io_lib:format('~p', [A]),$,|format_args1(As)];
+%% format_args1([]) ->
+%%     [].
 
 %%--Other useful functions--------------------------------------------
 
@@ -597,42 +604,43 @@ eval_mfa(Debugged, M, F, As, Ieval) ->
 eval_function(Mod, Fun, As0, Bs0, _Called, Ieval) when is_function(Fun);
 						       Mod==?MODULE,
 						       Fun==eval_fun ->
-    #ieval{level=Le, line=Li, last_call=Lc} = Ieval,
+    #ieval{level=Le, last_call=Lc} = Ieval,
     case lambda(Fun, As0) of
 	{Cs,Module,Name,As,Bs} ->
 	    push({Module,Name,As}, Bs0, Ieval),
-	    trace(call_fun, {Le,Li,Name,As}),
+	    trace(call_fun, {Ieval, {Name, As, Bs}}),
 	    {value, Val, _Bs} =
 		fnk_clauses(Cs, Module, Name, As, Bs,
 			    Ieval#ieval{level=Le+1}),
 	    pop(),
-	    trace(return, {Le,Val}),
+	    trace(return, {Ieval, {Val}}),
 	    {value, Val, Bs0};
 
 	not_interpreted when Lc -> % We are leaving interpreted code
-	    trace(call_fun, {Le,Li,Fun,As0}),
+	    trace(call_fun, {Ieval, {Fun, As0, Bs0}}),
 	    {value, {dbg_apply,erlang,apply,[Fun,As0]}, Bs0};
 	not_interpreted ->
 	    push({Fun,As0}, Bs0, Ieval),
-	    trace(call_fun, {Le,Li,Fun,As0}),
+	    trace(call_fun, {Ieval, {Fun, As0, Bs0}}),
 	    {value, Val, _Bs} =
 		debugged_cmd({apply,erlang,apply,[Fun,As0]},Bs0,
 			     Ieval#ieval{level=Le+1}),
 	    pop(),
-	    trace(return, {Le,Val}),
+	    trace(return, {Ieval, {Val}}),
 	    {value, Val, Bs0};
 
 	{error,Reason} ->
 	    %% It's ok not to push anything in this case, the error
 	    %% reason contains information about the culprit
 	    %% ({badarity,{{Mod,Name},As}})
+	    trace(error, {Ieval, {Reason, Bs0}}),
 	    exception(error, Reason, Bs0, Ieval)
     end;
 eval_function(Mod, Name, As0, Bs0, Called, Ieval) ->
-    #ieval{level=Le, line=Li, last_call=Lc} = Ieval,
+    #ieval{level=Le, last_call=Lc} = Ieval,
 
     push({Mod,Name,As0}, Bs0, Ieval),
-    trace(call, {Called, {Le,Li,Mod,Name,As0}}),
+    trace(call, {Ieval, {Mod, Name, As0, Bs0}}),
 
     case get_function(Mod, Name, As0, Called) of
 	Cs when is_list(Cs) ->
@@ -640,7 +648,7 @@ eval_function(Mod, Name, As0, Bs0, Called, Ieval) ->
 		fnk_clauses(Cs, Mod, Name, As0, erl_eval:new_bindings(),
 			    Ieval#ieval{level=Le+1}),
 	    pop(),
-	    trace(return, {Le,Val}),
+	    trace(return, {Ieval, {Val}}),
 	    {value, Val, Bs0};
 
 	not_interpreted when Lc -> % We are leaving interpreted code
@@ -650,7 +658,7 @@ eval_function(Mod, Name, As0, Bs0, Called, Ieval) ->
 		debugged_cmd({apply,Mod,Name,As0}, Bs0,
 			     Ieval#ieval{level=Le+1}),
 	    pop(),
-	    trace(return, {Le,Val}),
+	    trace(return, {Ieval, {Val}}),
 	    {value, Val, Bs0};
 
 	undef ->
@@ -832,7 +840,7 @@ expr({'catch',Line,Expr}, Bs0, Ieval) ->
 	    put(exit_info, undefined),
 	    pop(Ieval#ieval.level),
 	    Value = catch_value(Class, Reason),
-	    trace(return, {Ieval#ieval.level,Value}),
+	    trace(return, {Ieval, {Value, Bs0}}),
 	    {value, Value, Bs0}
     end;
 
@@ -971,45 +979,47 @@ expr({call_remote,Line,M,F,As0}, Bs0, Ieval0) ->
     eval_function(M, F, As, Bs, extern, Ieval);
 
 %% Emulated semantics of some BIFs
-expr({dbg,Line,self,[]}, Bs, #ieval{level=Le}) ->
-    trace(bif, {Le,Line,erlang,self,[]}),
+expr({dbg,Line,self,[]}, Bs, Ieval0) ->
+    Ieval = Ieval0#ieval{line=Line},
+    trace(bif, {Ieval, {erlang, self, [], Bs}}),
     Self = get(self),
-    trace(return, {Le,Self}),
+    trace(return, {Ieval, Self}),
     {value,Self,Bs};
-expr({dbg,Line,get_stacktrace,[]}, Bs, #ieval{level=Le}) ->
-    trace(bif, {Le,Line,erlang,get_stacktrace,[]}),
+expr({dbg,Line,get_stacktrace,[]}, Bs, Ieval0) ->
+    Ieval = Ieval0#ieval{line=Line},
+    trace(bif, {Ieval, {erlang, get_stacktrace, [], Bs}}),
     Stacktrace = get(stacktrace),
-    trace(return, {Le,Stacktrace}),
+    trace(return, {Ieval, Stacktrace}),
     {value,Stacktrace,Bs};
-expr({dbg,Line,throw,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({dbg,Line,throw,As0}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {[Term],Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,erlang,throw,[Term]}),
+    trace(bif, {Ieval, {erlang, throw, [Term], Bs}}),
     exception(throw, Term, Bs, Ieval);
-expr({dbg,Line,error,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({dbg,Line,error,As0}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {[Term],Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,erlang,error,[Term]}),
+    trace(bif, {Ieval, {erlang, error, [Term], Bs}}),
     exception(error, Term, Bs, Ieval);
-expr({dbg,Line,fault,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({dbg,Line,fault,As0}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {[Term],Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,erlang,fault,[Term]}),
+    trace(bif, {Ieval, {erlang, fault, [Term], Bs}}),
     exception(fault, Term, Bs, Ieval);
-expr({dbg,Line,exit,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({dbg,Line,exit,As0}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {[Term],Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,erlang,exit,[Term]}),
+    trace(bif, {Ieval, {erlang, exit, [Term], Bs}}),
     exception(exit, Term, Bs, Ieval);
 
 %% Call to "safe" BIF, ie a BIF that can be executed in Meta process
-expr({safe_bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({safe_bif,Line,M,F,As0}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {As,Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,M,F,As}),
+    trace(bif, {Ieval, {M, F, As, Bs}}),
     push({M,F,As}, Bs0, Ieval),
-    {_,Value,_} = Res = safe_bif(M, F, As, Bs, Ieval),
-    trace(return, {Le,Value}),
+    {_,Value, _Bs} = Res = safe_bif(M, F, As, Bs, Ieval),
+    trace(return, {Ieval, Value}),
     pop(),
     Res;
 
@@ -1017,11 +1027,11 @@ expr({safe_bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
 expr({bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {As,Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,M,F,As}),
+    trace(bif, {Ieval, {M, F, As, Bs}}),
     push({M,F,As}, Bs0, Ieval),
-    {_,Value,_} =
+    {_,Value, _Bs} =
 	Res = debugged_cmd({apply,M,F,As}, Bs, Ieval#ieval{level=Le+1}),
-    trace(return, {Le,Value}),
+    trace(return, {Ieval, {Value}}),
     pop(),
     Res;
 
@@ -1029,10 +1039,10 @@ expr({bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
 expr({spawn_bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {As,Bs} = eval_list(As0, Bs0, Ieval),
-    trace(bif, {Le,Line,M,F,As}),
+    trace(bif, {Ieval, {M, F, As, Bs}}),
     push({M,F,As}, Bs0, Ieval),
     Res = debugged_cmd({apply,M,F,As}, Bs,Ieval#ieval{level=Le+1}),
-    trace(return, {Le,Res}),
+    trace(return, {Ieval, {Res}}),
     pop(),
     Res;
 
@@ -1087,15 +1097,16 @@ expr({module_info_1,Line,Mod,[As0]}, Bs0, Ieval0) ->
     {value,module_info(Mod, What),Bs};
 
 %% Receive statement
-expr({'receive',Line,Cs}, Bs0, #ieval{level=Le}=Ieval) ->
-    trace(receivex, {Le,false}),
-    eval_receive(get(self), Cs, Bs0, Ieval#ieval{line=Line});
+expr({'receive',Line,Cs}, Bs0, Ieval0) ->
+    Ieval = Ieval0#ieval{line=Line},
+    trace(receivex, {Ieval, {false, Bs0}}),
+    eval_receive(get(self), Cs, Bs0, Ieval);
 
 %% Receive..after statement
-expr({'receive',Line,Cs,To,ToExprs}, Bs0, #ieval{level=Le}=Ieval0) ->
+expr({'receive',Line,Cs,To,ToExprs}, Bs0, Ieval0) ->
     Ieval = Ieval0#ieval{line=Line},
     {value,ToVal,ToBs} = expr(To, Bs0, Ieval#ieval{last_call=false}),
-    trace(receivex, {Le,true}),
+    trace(receivex, {Ieval, {true, Bs0}}),
     check_timeoutvalue(ToVal, ToBs, To, Ieval),
     {Stamp,_} = statistics(wall_clock),
     eval_receive(get(self), Cs, ToVal, ToExprs, ToBs, Bs0,
@@ -1254,7 +1265,7 @@ safe_bif(M, F, As, Bs, Ieval) ->
 eval_send(To, Msg, Bs, Ieval) ->
     try To ! Msg of
 	Msg -> 
-	    trace(send, {To,Msg}),
+	    trace(send, {Ieval, {To, Msg, Bs}}),
 	    {value,Msg,Bs}
     catch
 	Class:Reason ->
@@ -1269,7 +1280,7 @@ eval_receive(Debugged, Cs, Bs0,
     %% and interpreted process.
     erlang:trace(Debugged,true,['receive']),
     {_,Msgs} = erlang:process_info(Debugged,messages),
-    case receive_clauses(Cs, Bs0, Msgs) of
+    case receive_clauses(Cs, Bs0, Msgs, Ieval) of
 	nomatch ->
 	    erlide_dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
 	    erlide_dbg_icmd:tell_attached({wait_at,M,Line,Le}),
@@ -1281,7 +1292,7 @@ eval_receive(Debugged, Cs, Bs0,
 
 eval_receive1(Debugged, Cs, Bs0, Ieval) ->
     Msgs = do_receive(Debugged, Bs0, Ieval),
-    case receive_clauses(Cs, Bs0, Msgs) of
+    case receive_clauses(Cs, Bs0, Msgs, Ieval) of
 	nomatch ->
 	    eval_receive1(Debugged, Cs, Bs0, Ieval);
 	{eval,B,Bs,Msg} ->
@@ -1299,9 +1310,9 @@ check_timeoutvalue(_ToVal, ToBs, To, Ieval) ->
 
 eval_receive(Debugged, Cs, 0, ToExprs, ToBs, Bs0, 0, _Stamp, Ieval) ->
     {_,Msgs} = erlang:process_info(Debugged,messages),
-    case receive_clauses(Cs, Bs0, Msgs) of
+    case receive_clauses(Cs, Bs0, Msgs, Ieval) of
 	nomatch ->
-	    trace(received,null),
+	    trace(received, {Ieval, {null}}),
 	    seq(ToExprs, ToBs, Ieval);
 	{eval,B,Bs,Msg} ->
 	    rec_mess_no_trace(Debugged, Msg, Bs0, Ieval),
@@ -1311,7 +1322,7 @@ eval_receive(Debugged, Cs, ToVal, ToExprs, ToBs, Bs0,
 	     0, Stamp, #ieval{module=M,line=Line,level=Le}=Ieval)->
     erlang:trace(Debugged,true,['receive']),
     {_,Msgs} = erlang:process_info(Debugged,messages),
-    case receive_clauses(Cs, Bs0, Msgs) of
+    case receive_clauses(Cs, Bs0, Msgs, Ieval) of
 	nomatch ->
 	    {Stamp1,Time1} = newtime(Stamp,ToVal),
 	    erlide_dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
@@ -1326,13 +1337,13 @@ eval_receive(Debugged, Cs, ToVal, ToExprs, ToBs, Bs0,
 	     _, Stamp, Ieval) ->
     case do_receive(Debugged, ToVal, Stamp, Bs0, Ieval) of
 	timeout ->
-	    trace(received,null),
+	    trace(received, {Ieval, {null}}),
 	    rec_mess(Debugged),
 	    erlide_dbg_iserver:cast(get(int), {set_status, self(),running,{}}),
 	    erlide_dbg_icmd:tell_attached(running),
 	    seq(ToExprs, ToBs, Ieval);
 	Msgs ->
-	    case receive_clauses(Cs, Bs0, Msgs) of
+	    case receive_clauses(Cs, Bs0, Msgs, Ieval) of
 		nomatch ->
 		    {Stamp1,Time1} = newtime(Stamp,ToVal),
 		    eval_receive(Debugged, Cs, Time1, ToExprs, ToBs,
@@ -1473,30 +1484,30 @@ catch_clauses(Exception, [{clause,_,[P],G,B}|CatchCs], Bs0, Ieval) ->
 catch_clauses({Class,Reason,[]}, [], _Bs, _Ieval) ->
     erlang:Class(Reason).
 
-receive_clauses(Cs, Bs0, [Msg|Msgs]) ->
-    case rec_clauses(Cs, Bs0, Msg) of
+receive_clauses(Cs, Bs0, [Msg|Msgs], Ieval) ->
+    case rec_clauses(Cs, Bs0, Msg, Ieval) of
 	nomatch ->
-	    receive_clauses(Cs, Bs0, Msgs);
+	    receive_clauses(Cs, Bs0, Msgs, Ieval);
 	{eval,B,Bs} ->
 	    {eval,B,Bs,Msg}
     end;
-receive_clauses(_, _, []) ->
+receive_clauses(_, _, [], _Ieval) ->
     nomatch.
 
-rec_clauses([{clause,_,Pars,G,B}|Cs], Bs0, Msg) ->
+rec_clauses([{clause,_,Pars,G,B}|Cs], Bs0, Msg, Ieval) ->
     case rec_match(Pars, Msg, Bs0) of
 	{match,Bs} ->
 	    case guard(G, Bs) of
 		true ->
-		    trace(received, Msg),
+		    trace(received, {Ieval, {Msg, Bs}}),
 		    {eval,B,Bs};
 		false ->
-		    rec_clauses(Cs, Bs0, Msg)
+		    rec_clauses(Cs, Bs0, Msg, Ieval)
 	    end;
 	nomatch ->
-	    rec_clauses(Cs, Bs0, Msg)
+	    rec_clauses(Cs, Bs0, Msg, Ieval)
     end;
-rec_clauses([], _, _) ->
+rec_clauses([], _, _, _Ieval) ->
     nomatch.
 
 %% guard(GuardTests,Bindings)

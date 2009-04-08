@@ -37,6 +37,13 @@
                id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
                label="%AddBreakpoint.label">
          </action>
+         <action
+               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+               helpContextId="breakpoint_properties_action_context"
+               id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+               label="%ErlangBreakpointProperties.label"
+               style="push">
+         </action>
       </editorContribution>
    </extension>
    <extension
@@ -70,10 +77,6 @@
                value="erlidenature">
          </filter>
       </objectContribution>
-      <viewerContribution
-            id="org.erlide.ui.viewerContribution2"
-            targetID="org.erlide.ui.viewerContribution2">
-      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -215,6 +218,21 @@
 		     </adapt>
         </enabledWhen>
       </page>
+      <page
+            class="org.erlide.debug.ui.properties.ErlangLineBreakpointPropertyPage"
+            id="org.erlide.debug.ui.propertypages.ErlLineBreakpoints"
+            name="%breakpointPropertiesPage.label">
+         <enabledWhen>
+            <or>
+               <instanceof
+                     value="org.erlide.runtime.debug.IErlangBreakpoint">
+               </instanceof>
+               <adapt
+                     type="org.erlide.runtime.debug.IErlangBreakpoint">
+               </adapt>
+            </or>
+         </enabledWhen>
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -231,9 +249,45 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.runtime.debug.ErlangBreakpointActions"
+            objectClass="org.erlide.runtime.debug.ErlangLineBreakpoint">
+         <action
+               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
+               definitionId="org.erlide.debug.ui.breakpoint.properties"
+               enablesFor="1"
+               helpContextId="breakpoint_properties_action_context"
+               id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
+               label="%ErlangBreakpointProperties.label"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
       <viewerContribution
-            id="org.erlide.ui.viewerContribution1"
-            targetID="org.erlide.ui.viewerContribution1">
+            id="org.erlide.debug.ui.ErlangFileRulerPopupActions"
+            targetID="org.erlide.ui.editors.erl.ErlangEditor.RulerContext">
+         <action
+               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+               helpContextId="breakpoint_properties_action_context"
+               id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+               label="%ErlangBreakpointProperties.label"
+               menubarPath="group.properties">
+         </action>
+         <action
+               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+               helpContextId="enable_disable_breakpoint_action_context"
+               id="org.erlide.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate"
+               label="%EnableBreakpoint.label"
+               menubarPath="debug">
+         </action>
+         <action
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               helpContextId="manage_breakpoint_action_context"
+               icon="icons/full/obj16/brkp_obj.gif"
+               id="org.erlide.debug.ui.actions.BreakpointRulerActionDelegate"
+               label="%AddBreakpoint.label"
+               menubarPath="debug">
+         </action>
       </viewerContribution>
    </extension>
   <extension
@@ -446,6 +500,12 @@
             id="org.erlide.ui.actions.test"
             name="Test">
       </command>
+      <command
+            name="Toggle debug tracing"
+            description="Toggle debug tracing"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.erlide.debug.ui.commands.ToggleDebugTracing">
+      </command>
 
  </extension>
  <extension
@@ -578,6 +638,27 @@
              label="&amp;Project"
              menubarPath="org.eclipse.search.menu/referencesSubMenu/group1"
              retarget="true">
+       </action>
+    </actionSet>
+    <actionSet
+          id="org.erlide.debug.ui.ErlangDebugActionSet"
+          label="%ErlangDebugActionSet.label"
+          visible="false">
+       <menu
+             id="org.eclipse.ui.run"
+             label="%RunMenu.label"
+             path="additions">
+          <separator
+                name="erlideGroup">
+          </separator>
+       </menu>
+       <action
+             class="org.erlide.debug.ui.actions.ToggleDebugTracingAction"
+             definitionId="org.erlide.debug.ui.commands.ToggleDebugTracing"
+             helpContextId="toggle_debug_tracing_action_context"
+             id="org.erlide.debug.ui.actions.ToggleDebugTracing"
+             label="%toggleDebugTracing.label"
+             menubarPath="org.eclise.ui.run/erlideGroup">
        </action>
     </actionSet>
 <!--
@@ -945,6 +1026,14 @@
             id="org.erlide.ui.debug.interpretedModulesView"
             name="Interpreted Modules">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.eclipse.debug.ui"
+            class="org.erlide.debug.ui.views.DebuggerTraceView"
+            icon="icons/file.gif"
+            id="org.erlide.ui.debug.debuggerTraceView"
+            name="Debugger Trace">
+      </view>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
@@ -994,6 +1083,11 @@
                id="org.erlide.ui.debug.interpretedModulesView"
                relationship="stack"
                relative="org.eclipse.debug.ui.DebugView"
+               visible="true">
+         </view>
+         <view
+               id="org.erlide.ui.debug.debuggerTraceView"
+               relationship="stack"
                visible="true">
          </view>
       </perspectiveExtension>

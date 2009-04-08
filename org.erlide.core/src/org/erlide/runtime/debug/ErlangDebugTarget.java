@@ -49,9 +49,31 @@ import erlang.ErlideDebug;
 public class ErlangDebugTarget extends ErlangDebugElement implements
 		IDebugTarget, IErlangDebugNode {
 
+	public class TraceChangedEventData {
+		public static final int ADDED = 1;
+		private final int what;
+		private final OtpErlangObject[] objects;
+
+		public TraceChangedEventData(final int what,
+				final OtpErlangObject[] objects) {
+			this.what = what;
+			this.objects = objects;
+		}
+
+		public int getWhat() {
+			return what;
+		}
+
+		public OtpErlangObject[] getObjects() {
+			return objects;
+		}
+
+	}
+
 	public static final IThread[] NO_PROCS = new IThread[] {};
 
 	public static final int INTERPRETED_MODULES_CHANGED = 0;
+	public static final int TRACE_CHANGED = 1;
 
 	private final List<ErlangProcess> fAllProcesses;
 	private final List<ErlangProcess> fLocalProcesses;
@@ -71,10 +93,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private final String fNodeName;
 
+	private ArrayList<OtpErlangTuple> fTraceList;
+
 	// private final WaitingForDebuggerListener waiter;
 
 	public ErlangDebugTarget(final ILaunch launch, final Backend b,
-			final Collection<IProject> projects, final int debugFlags) {
+			final Collection<IProject> projects, final int debugFlags)
+			throws DebugException {
 		super(null);
 		fBackend = b;
 		fNodeName = b.getPeer();
@@ -289,19 +314,32 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fShowSystemProcesses = showSystemProcesses;
 	}
 
-	final private static int META_UNKNOWN = 0;
-	final private static int META_BREAK_AT = 1;
-	final private static int META_WAIT_AT = 2;
-	final private static int META_EXIT_AT = 3;
+	private static final int META_UNKNOWN = 0;
+	private static final int META_BREAK_AT = 1;
+	private static final int META_WAIT_AT = 2;
+	private static final int META_EXIT_AT = 3;
+	private static final int META_TRACE_OUTPUT = 4;
 
-	void handleMetaEvent(final OtpErlangPid metaPid,
+	private void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
 		// ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
 		// ")");
 		final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
 		final String event = a.atomValue();
 		final int what = getMetaWhat(event);
-		if (what != META_UNKNOWN) {
+		if (what == META_TRACE_OUTPUT) {
+			final OtpErlangObject o = metaEvent.elementAt(1);
+			// final String s = Util.ioListToString(o).trim();
+			// final String s = o.toString();
+			addToTraceList((OtpErlangTuple) o);
+			final DebugEvent traceChangedEvent = new DebugEvent(this,
+					DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
+			final TraceChangedEventData data = new TraceChangedEventData(
+					TraceChangedEventData.ADDED, new OtpErlangObject[] { o });
+			traceChangedEvent.setData(data);
+			fireEvent(traceChangedEvent);
+			// ErlLogger.info("Trace: " + s);
+		} else if (what != META_UNKNOWN) {
 			OtpErlangAtom mod = null;
 			OtpErlangLong lineL = null;
 			if (what == META_EXIT_AT) {
@@ -372,17 +410,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			return META_WAIT_AT;
 		} else if (event.equals("exit_at")) {
 			return META_EXIT_AT;
+		} else if (event.equals("trace_output")) {
+			return META_TRACE_OUTPUT;
 		} else {
 			return META_UNKNOWN;
 		}
 	}
 
-	void handleIntEvent(final OtpErlangTuple intEvent) {
+	private void handleIntEvent(final OtpErlangTuple intEvent) {
 		final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
 		final String event = a.atomValue();
 		if (event.equals("new_break")) {
 			// TODO should we do anything here?
 		} else if (event.equals("new_status")) {
+			ErlLogger.info("new status " + intEvent);
 			final OtpErlangPid pid = (OtpErlangPid) intEvent.elementAt(1);
 			ErlangProcess erlangProcess = getErlangProcess(pid);
 			if (erlangProcess == null) {
@@ -399,10 +440,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				erlangProcess.setStatus(status);
 				final OtpErlangAtom esa = (OtpErlangAtom) intEvent.elementAt(3);
 				erlangProcess.setExitStatus(esa.atomValue());
-				erlangProcess.fireChangeEvent(DebugEvent.STATE
-						| DebugEvent.CHANGE);
-				// removeErlangProcess(pid);
-				// erlangProcess.fireTerminateEvent();
+				erlangProcess.fireTerminateEvent();
 			} else if (status.equals("running")) {
 				erlangProcess.setStatus(status);
 				if (erlangProcess.isStepping()) {
@@ -507,7 +545,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-			ErlLogger.debug("@@@ " + msg);
+			// ErlLogger.debug("@@@ " + msg);
 			// TODO More events from erlide_dbg_mon...
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			final OtpErlangObject el0 = t.elementAt(0);
@@ -531,6 +569,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						if (metaPid != null) {
 							putMetaPid(metaPid, pid);
 						}
+						ErlideDebug.tracing(fBackend, true, metaPid);
 					}
 				} else {
 					ErlLogger.debug("other event: " + msg);
@@ -576,6 +615,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	@Override
 	public ErlangDebugTarget getErlangDebugTarget() {
 		return this;
+	}
+
+	public List<OtpErlangTuple> getTraceList() {
+		if (fTraceList == null) {
+			fTraceList = new ArrayList<OtpErlangTuple>();
+		}
+		return fTraceList;
+	}
+
+	private void addToTraceList(final OtpErlangTuple traceTuple) {
+		if (fTraceList == null) {
+			fTraceList = new ArrayList<OtpErlangTuple>();
+		}
+		fTraceList.add(traceTuple);
 	}
 
 }
