@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.erlide.wrangler.refactoring.view"
+            name="Wrangler"
+            parentCategory="org.erlide.views">
+      </category>
+      <view
+            category="org.erlide.wrangler.refactoring.view"
+            class="org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicatesView"
+            icon="icons/erlang.gif"
+            id="org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView"
+            name="Duplicated Codes View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="org.erlide.wrangler.refactoring.duplicatedcode.editorContribution"
+            targetID="org.erlide.ui.editors.erl.ErlangEditor">
+         <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.ExpressionSearchAction"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.expressionsearch"
+               label="&amp;Search expression..."
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.searchGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.EditorActionDelegate2"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.detection"
+               label="Detect duplicated &amp;code..."
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.searchGroup"
+               style="push">
+         </action>
+      </editorContribution>
+   </extension>
+
+</fragment>
