@@ -4,25 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jface.text.AbstractDocument;
-import org.eclipse.jface.text.DefaultLineTracker;
-import org.eclipse.jface.text.GapTextStore;
+import org.eclipse.jface.text.Document;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 //public class ErlConsoleDocument {
-public class ErlConsoleDocument extends AbstractDocument {
+public class ErlConsoleDocument extends Document {
 
 	private final List<IoRequest> requests;
 
 	public ErlConsoleDocument() {
 		super();
 		requests = new ArrayList<IoRequest>(1000);
-		setLineTracker(new DefaultLineTracker());
-		setTextStore(new GapTextStore());
-		completeInitialization();
 	}
 
 	public List<IoRequest> getContentList() {
