@@ -17,10 +17,16 @@
                   name="org.erlide.wranglerrefactoring.separator1">
             </separator>
             <groupMarker
+                  name="org.erlide.wranglerrefactoring.searchGroup">
+            </groupMarker>
+            <separator
+                  name="org.erlide.wrangler.refactoring.separator2">
+            </separator>
+            <groupMarker
                   name="org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
             </groupMarker>
             <separator
-                  name="org.erlide.wranglerrefactoring.separator2">
+                  name="org.erlide.wranglerrefactoring.separator3">
             </separator>
             <groupMarker
                   name="org.erlide.wranglerrefactoring.tupleGroup">
