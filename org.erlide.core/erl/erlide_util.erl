@@ -2,7 +2,7 @@
 %% Created: 25 okt 2007
 -module(erlide_util).
 
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 %%
 %% Include files
