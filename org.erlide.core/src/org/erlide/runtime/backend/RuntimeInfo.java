@@ -170,7 +170,10 @@ public class RuntimeInfo implements Cloneable {
 				getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
-		cmd += " -name " + BackendManager.buildNodeName(getNodeName()) + cky;
+		boolean useLongName = System.getProperty("erlide.longname", "true").equals(
+				"true");
+		String nameTag = useLongName ? " -name " : " -sname ";
+		cmd += nameTag + BackendManager.buildNodeName(getNodeName()) + cky;
 		return cmd;
 	}
 
