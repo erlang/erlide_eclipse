@@ -47,7 +47,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	private final OtpErlangPid fPid;
 
-	private OtpErlangPid cachedMetaPid = null;
+	private OtpErlangPid fCachedMetaPid = null;
 
 	private final Backend fBackend;
 
@@ -59,6 +59,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	private boolean stepping;
 	private ErlangFunctionCall fInitialCall;
+	private boolean fTracing;
 
 	public ErlangProcess(final IDebugTarget target, final Backend backend,
 			final OtpErlangPid pid) {
@@ -69,6 +70,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		fExitStatus = null;
 		stackFrames = new ArrayList<ErlangStackFrame>();
 		stepping = false;
+		fTracing = false;
 	}
 
 	public String getRegisteredName() {
@@ -87,10 +89,10 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public OtpErlangPid getMeta() {
-		if (cachedMetaPid == null) {
-			cachedMetaPid = getErlangDebugTarget().getMetaFromPid(fPid);
+		if (fCachedMetaPid == null) {
+			fCachedMetaPid = getErlangDebugTarget().getMetaFromPid(fPid);
 		}
-		return cachedMetaPid;
+		return fCachedMetaPid;
 	}
 
 	public long getReductions() {
@@ -198,10 +200,14 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings
 				.elementAt(0);
 		final OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);
-		addStackFrames(module, line, erlStackFrames, bs);
+		setStackFrames(module, line, erlStackFrames, bs);
 	}
 
-	public void addStackFrames(String module, int line,
+	public void removeStackFrames() {
+		stackFrames = new ArrayList<ErlangStackFrame>();
+	}
+
+	public void setStackFrames(String module, int line,
 			final OtpErlangList erlStackFrames, OtpErlangList bs) {
 		stackFrames = new ArrayList<ErlangStackFrame>();
 		final IDebugTarget target = getDebugTarget();
@@ -329,8 +335,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public boolean isTerminated() {
-		return getStatus() == STATUS_TERMINATED;
-		// return false; // getStatus() == STATUS_TERMINATED;
+		return getStatus().equals(STATUS_TERMINATED);
 	}
 
 	public void resume() throws DebugException {
@@ -415,6 +420,17 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public String getExitStatus() {
 		return fExitStatus;
+	}
+
+	public void setTracing(final boolean tracing) {
+		if (fTracing != tracing) {
+			fTracing = tracing;
+			ErlideDebug.tracing(fBackend, tracing, getMeta());
+		}
+	}
+
+	public boolean getTracing() {
+		return fTracing;
 	}
 
 }

@@ -2,11 +2,14 @@ package org.erlide.debug.ui.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.debug.ErlangProcess;
 
 public class ToggleDebugTracingAction implements IWorkbenchWindowActionDelegate {
+
+	private ISelection fSelection;
 
 	public void dispose() {
 		// TODO Auto-generated method stub
@@ -14,19 +17,21 @@ public class ToggleDebugTracingAction implements IWorkbenchWindowActionDelegate 
 	}
 
 	public void init(final IWorkbenchWindow window) {
-		int i = 0;
-		++i;
 	}
 
 	public void run(final IAction action) {
-		// TODO Auto-generated method stub
-
+		final IStructuredSelection ss = (IStructuredSelection) fSelection;
+		for (final Object o : ss.toArray()) {
+			if (o instanceof ErlangProcess) {
+				final ErlangProcess p = (ErlangProcess) o;
+				p.setTracing(!p.getTracing());
+			}
+		}
 	}
 
 	public void selectionChanged(final IAction action,
 			final ISelection selection) {
-		ErlLogger.info("selectionChanged action " + action + "   sel "
-				+ selection);
+		fSelection = selection;
 	}
 
 }

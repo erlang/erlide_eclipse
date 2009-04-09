@@ -394,10 +394,15 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 								.elementAt(5);
 						final OtpErlangList bs = (OtpErlangList) metaEvent
 								.elementAt(6);
-						erlangProcess.addStackFrames(module, line,
+						erlangProcess.setStackFrames(module, line,
 								erlStackFrames, bs);
 					}
-					erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO redundant? we have this in int, status too
+				}
+			} else {
+				if (what == META_EXIT_AT) {
+					erlangProcess.removeStackFrames();
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO redundant? we have this in int, status too
 				}
 			}
 		}
@@ -440,7 +445,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				erlangProcess.setStatus(status);
 				final OtpErlangAtom esa = (OtpErlangAtom) intEvent.elementAt(3);
 				erlangProcess.setExitStatus(esa.atomValue());
-				erlangProcess.fireTerminateEvent();
+				erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
 			} else if (status.equals("running")) {
 				erlangProcess.setStatus(status);
 				if (erlangProcess.isStepping()) {
@@ -569,7 +574,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						if (metaPid != null) {
 							putMetaPid(metaPid, pid);
 						}
-						ErlideDebug.tracing(fBackend, true, metaPid);
+						// ErlideDebug.tracing(fBackend, true, metaPid);
 					}
 				} else {
 					ErlLogger.debug("other event: " + msg);
@@ -596,21 +601,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public void removeErlangProcess(final ErlangProcess p) {
 		fLocalProcesses.remove(p);
 	}
-
-	// public IDebugTarget getTargetForErlangProcess(
-	// final ErlangProcess erlangProcess) {
-	// final String nodeName = erlangProcess.getPid().node();
-	// final IDebugTarget[] targets = getLaunch().getDebugTargets();
-	// for (final IDebugTarget debugTarget : targets) {
-	// try {
-	// if (debugTarget.getName().equals(nodeName)) {
-	// return debugTarget;
-	// }
-	// } catch (final DebugException e) {
-	// }
-	// }
-	// return null;
-	// }
 
 	@Override
 	public ErlangDebugTarget getErlangDebugTarget() {
