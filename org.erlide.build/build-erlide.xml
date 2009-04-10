@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="erlide" default="runBuild">
+
+	<property name="builder" location="."/>
+	<property name="topLevelElementId" value="org.erlide"/>
+	<property name="baseLocation" location="${eclipse.home}"/>
+	<property name="base" location="${baseLocation}"/>
+	<property name="buildDirectory" location="/temp/eclipse.build"/>
+	
+	<property name="J2SE-1.5" value="${sun.boot.class.path}"/>
+	<property name="javacSource" value="1.5"/>
+	<property name="javacTarget" value="1.5"/>
+	
+	<property name="erlRoot" location="c:/program files/erl5.6.5"/>
+	
+	<tstamp>
+		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
+	</tstamp>
+	
+	<import file="${eclipse.pdebuild.scripts}/build.xml"/>
+
+    <target name="copyProjects">
+    	<delete dir="${buildDirectory}"/>
+    	<mkdir dir="${buildDirectory}"/>
+    	
+    	<record name="${buildDirectory}/${topLevelElementId}-build.log" loglevel="verbose"/>
+    	<echoproperties/>
+    	
+    	<mkdir dir="${buildDirectory}/features/org.erlide"/>
+    	<copy todir="${buildDirectory}/features/org.erlide">
+    		<fileset dir="../org.erlide"></fileset>
+    	</copy>
+    	
+    	<mkdir dir="${buildDirectory}/plugins"/>
+    	<copy todir="${buildDirectory}/plugins">
+    		<fileset dir="..">
+    			<include name="com.ericsson.jinterface/**"/>
+    			<include name="org.erlide.core/**"/>
+    			<include name="org.erlide.help/**"/>
+    			<include name="org.erlide.jinterface/**"/>
+    			<include name="org.erlide.ui/**"/>
+    			<include name="org.erlide.wrangler.help/**"/>
+    			<include name="org.erlide.wrangler.refactoring/**"/>
+    			<exclude name="**/*.class"/>
+    			<exclude name="**/*.beam"/>
+			<include name=""/>
+    		</fileset>
+    	</copy>
+    </target>
+
+	<!-- ================================= 
+          target: runBuild           
+         ================================= -->
+    <target name="runBuild" depends="copyProjects, main">
+    </target>
+
+	
+</project>

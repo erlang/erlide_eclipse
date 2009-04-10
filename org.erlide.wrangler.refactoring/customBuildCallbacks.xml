@@ -17,17 +17,24 @@
 	<!--   build.result.folder - folder to contain the build results           -->
 	<!-- ===================================================================== -->
 	<target name="pre.build.jars">
-		<taskdef name="erlang" classname="org.erlide.build.ErlcTask" classpath="${builder}/erlc.jar" />
-		<erlang prj="${basedir}" action="build" />
+		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true">
+			<arg value="-o"/>
+			<arg value="wrangler/ebin"/>
+			<arg value="-I"/>
+			<arg value="wrangler/include"/>
+			<fileset dir="wrangler/erl">
+				<include name="**/*.erl"/>
+			</fileset>
+		</apply>
 	</target>
 
-	<target name="pre.erlide-jinterface.jar">
+	<target name="pre.wrangler.jar">
 	</target>
- 
-	<target name="post.erlide-jinterface.jar">
+
+	<target name="post.wrangler.jar">
 	</target>
- 
-	<target name="post.compile.erlide-jinterface.jar">
+
+	<target name="post.compile.wrangler.jar">
 	</target>
 
 	<!-- ===================================================================== -->
@@ -155,8 +162,8 @@
 	<!--   destination.temp.folder - destination folder                        -->
 	<!-- ===================================================================== -->
 	<target name="pre.clean">
-		<taskdef name="erlang" classname="org.erlide.build.ErlcTask" classpath="${builder}/erlc.jar" />
-		<erlang prj="${basedir}" action="clean" />
+		<delete dir="wrangler/ebin"/>
+		<mkdir dir="wrangler/ebin"/>
 	</target>
 
 	<!-- ===================================================================== -->
