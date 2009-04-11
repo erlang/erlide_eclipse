@@ -3,11 +3,12 @@
  */
 package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.wrangler.refactoring.duplicatedcode.Activator;
+import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeInstanceElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedFileElement;
@@ -29,11 +30,10 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 	}
 
 	private void createImages() {
-		erlangFileImage = Activator.getImageDescriptor("icons/erlFile.gif")
-				.createImage();
-		codeSnippetImage = Activator.getImageDescriptor("icons/match.gif")
-				.createImage();
-		duplicateImage = Activator.getImageDescriptor("icons/codeSnippet.gif")
+
+		erlangFileImage = getImageDescriptor("icons/erlFile.gif").createImage();
+		codeSnippetImage = getImageDescriptor("icons/match.gif").createImage();
+		duplicateImage = getImageDescriptor("icons/codeSnippet.gif")
 				.createImage();
 	}
 
@@ -50,5 +50,13 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 			return codeSnippetImage;
 		String imageKey = ISharedImages.IMG_OBJ_FILE;
 		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+	}
+
+	public static ImageDescriptor getImageDescriptor(String name) {
+
+		ImageDescriptor descriptor = Activator.imageDescriptorFromPlugin(
+				Activator.PLUGIN_ID, name);
+
+		return descriptor;
 	}
 }

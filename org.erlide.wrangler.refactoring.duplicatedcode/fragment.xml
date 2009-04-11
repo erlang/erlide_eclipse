@@ -30,7 +30,7 @@
                style="push">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.duplicatedcode.EditorActionDelegate2"
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.DuplicateDetectionAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.detection"
                label="Detect duplicated &amp;code..."
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.searchGroup"
