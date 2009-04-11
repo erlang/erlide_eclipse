@@ -181,7 +181,8 @@ public class ErlideUtil {
 				if (connection instanceof BundleURLConnection) {
 					final URL fileURL = ((BundleURLConnection) connection)
 							.getFileURL();
-					final URI uri = new URI(fileURL.toString());
+					final URI uri = new URI(fileURL.toString().replace(" ",
+							"%20"));
 					final String path = new File(uri).getAbsolutePath();
 					return path;
 				}
