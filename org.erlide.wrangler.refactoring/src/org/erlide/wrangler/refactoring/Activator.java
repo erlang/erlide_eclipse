@@ -28,7 +28,7 @@ public class Activator extends AbstractUIPlugin {
 	/**
 	 * The plug-in ID.
 	 */
-	public static final String PLUGIN_ID = "org.erlide.wranglerrefactoring";
+	public static final String PLUGIN_ID = "org.erlide.wrangler.refactoring";
 
 	// The shared instance
 	private static Activator plugin;
