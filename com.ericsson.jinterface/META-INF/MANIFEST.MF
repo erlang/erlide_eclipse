@@ -7,3 +7,4 @@ Bundle-Vendor: ERICSSON
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.ericsson.otp.erlang
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: jinterface.jar

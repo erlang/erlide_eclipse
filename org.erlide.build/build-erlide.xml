@@ -2,20 +2,26 @@
 <project name="erlide" default="runBuild">
 
 	<property name="builder" location="."/>
-	<property name="topLevelElementId" value="org.erlide"/>
+	<property name="topLevelElementId" value="org.erlide.sdk"/>
 	<property name="baseLocation" location="${eclipse.home}"/>
-	<property name="base" location="${baseLocation}"/>
+	<property name="base" location="${baseLocation}/.."/>
 	<property name="buildDirectory" location="/temp/eclipse.build"/>
 	
 	<property name="J2SE-1.5" value="${sun.boot.class.path}"/>
 	<property name="javacSource" value="1.5"/>
 	<property name="javacTarget" value="1.5"/>
-	
-	<property name="erlRoot" location="c:/program files/erl5.6.5"/>
+	<property name="javacDebugInfo" value="false"/>
 	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
 	</tstamp>
+
+	<property name="outputUpdateJars" value="false"/>
+	<property name="buildType" value="N"/>
+	<property name="buildId" value="${forceContextQualifier}"/>
+	<property name="buildLabel" value="${buildType}.${buildId}"/>
+	
+	<property name="erlRoot" location="c:/program files/erl5.6.5"/>
 	
 	<import file="${eclipse.pdebuild.scripts}/build.xml"/>
 
@@ -26,9 +32,12 @@
     	<record name="${buildDirectory}/${topLevelElementId}-build.log" loglevel="verbose"/>
     	<echoproperties/>
     	
-    	<mkdir dir="${buildDirectory}/features/org.erlide"/>
-    	<copy todir="${buildDirectory}/features/org.erlide">
-    		<fileset dir="../org.erlide"></fileset>
+    	<mkdir dir="${buildDirectory}/features"/>
+    	<copy todir="${buildDirectory}/features">
+    		<fileset dir="..">
+			  <include name="org.erlide/**"/>
+    		  <include name="org.erlide.sdk/**"/>
+			</fileset>
     	</copy>
     	
     	<mkdir dir="${buildDirectory}/plugins"/>

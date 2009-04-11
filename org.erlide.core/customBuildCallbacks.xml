@@ -25,6 +25,9 @@
 			<fileset dir="erl">
 				<include name="**/*.erl"/>
 			</fileset>
+			<fileset dir="erl_debugger">
+				<include name="**/*.erl"/>
+			</fileset>
 		</apply>
 	</target>
 

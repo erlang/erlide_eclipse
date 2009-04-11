@@ -254,44 +254,43 @@ litigation.
 
    <plugin
          id="org.erlide.core"
-         download-size="0"
+         download-size="666"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.ui"
-         download-size="0"
+         download-size="1064"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.help"
-         download-size="0"
+         download-size="455"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.jinterface"
-         download-size="0"
+         download-size="48"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="com.ericsson.jinterface"
-         download-size="0"
+         download-size="64"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.erlide.wrangler.refactoring"
-         download-size="0"
+         download-size="446"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.wrangler.help"
-         download-size="0"
+         download-size="241"
          install-size="0"
          version="0.0.0"/>
 
