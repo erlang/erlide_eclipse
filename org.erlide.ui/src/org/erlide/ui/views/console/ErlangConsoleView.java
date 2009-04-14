@@ -246,8 +246,6 @@ public class ErlangConsoleView extends ViewPart {
 		plainTab.setText("Plain");
 
 		final SashForm composite = new SashForm(tabFolder, SWT.VERTICAL);
-		final GridLayout gridLayout = new GridLayout();
-		composite.setLayout(gridLayout);
 		plainTab.setControl(composite);
 
 		consoleText = new StyledText(composite, SWT.V_SCROLL | SWT.MULTI
