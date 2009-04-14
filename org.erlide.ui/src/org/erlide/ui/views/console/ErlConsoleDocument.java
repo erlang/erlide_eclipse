@@ -3,7 +3,7 @@ package org.erlide.ui.views.console;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.rules.DefaultPartitioner;
+import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 
@@ -16,9 +16,8 @@ public class ErlConsoleDocument extends Document {
 		super();
 		this.model = model;
 
-		IDocumentPartitioner partitioner = new DefaultPartitioner(
-				createScanner(), new String[] { "header", "prompt", "input",
-						"comment" });
+		IDocumentPartitioner partitioner = new FastPartitioner(createScanner(),
+				new String[] { "header", "prompt", "input", "comment" });
 		// partitioner.connect(document);
 		// document.setDocumentPartitioner(partitioner);
 	}

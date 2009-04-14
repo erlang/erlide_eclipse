@@ -43,7 +43,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusAdapter;
@@ -59,6 +58,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -136,9 +136,9 @@ public class ErlangConsoleView extends ViewPart implements
 	StyledText consoleInput;
 	SourceViewer consoleOutputViewer;
 	SourceViewer consoleInputViewer;
-	private ErlConsoleModel model;
-	private BackendShell shell;
-	private Backend backend;
+	ErlConsoleModel model;
+	BackendShell shell;
+	Backend backend;
 
 	public ErlangConsoleView() {
 		super();
@@ -234,13 +234,11 @@ public class ErlangConsoleView extends ViewPart implements
 		final TabItem plainTab = new TabItem(tabFolder, SWT.NONE);
 		plainTab.setText("Plain");
 
-		final SashForm composite = new SashForm(tabFolder, SWT.VERTICAL);
-		plainTab.setControl(composite);
-
-		consoleOutputViewer = new SourceViewer(composite, null, SWT.V_SCROLL
+		consoleOutputViewer = new SourceViewer(tabFolder, null, SWT.V_SCROLL
 				| SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
 		consoleOutputViewer.setDocument(fDoc);
 		consoleText = (StyledText) consoleOutputViewer.getControl();
+		plainTab.setControl(consoleText);
 		consoleOutputViewer
 				.configure(new ErlangConsoleSourceViewerConfiguration());
 
@@ -276,82 +274,17 @@ public class ErlangConsoleView extends ViewPart implements
 				}
 			}
 		});
-		consoleText.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(final FocusEvent e) {
-				consoleInput.setFocus();
-			}
-		});
-
-		// consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
-		// | SWT.V_SCROLL);
-
-		consoleInputViewer = new SourceViewer(composite, null, SWT.V_SCROLL
-				| SWT.BORDER);
-		consoleInputViewer.setDocument(new Document());
-		consoleInput = (StyledText) consoleInputViewer.getControl();
-		consoleInputViewer
-				.configure(new ErlangConsoleSourceViewerConfiguration());
-		consoleInput.addKeyListener(new KeyAdapter() {
-			boolean historyMode = false;
-			int navIndex;
-			int lastPos = 0;
-
+		consoleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				if (e.keyCode == 13 && isInputComplete(lastPos)
-						&& consoleInput.isFocusControl()) {
-					sendInput(lastPos);
-					e.doit = false;
-				} else if (e.keyCode == SWT.ARROW_UP && historyMode) {
-					if (navIndex > 0) {
-						navIndex--;
-					}
-					// else {
-					// navIndex = history.size() - 1;
-					// }
-					if (history.size() > navIndex) {
-						consoleInput.setText(history.get(navIndex));
-						consoleInput.setSelection(consoleInput.getText()
-								.length());
-					} else {
-						consoleInput.setText("");
-					}
-				} else if (e.keyCode == SWT.ARROW_DOWN && historyMode) {
-					// if (navIndex < history.size() - 1) {
-					// navIndex++;
-					// } else {
-					// navIndex = 0;
-					// }
-					if (navIndex < history.size()) {
-						navIndex++;
-					}
-					final String s = navIndex < history.size() ? history
-							.get(navIndex) : "";
-					consoleInput.setText(s);
-					consoleInput.setSelection(consoleInput.getText().length());
-				} else if (e.keyCode == SWT.CTRL) {
-					historyMode = true;
-					navIndex = history.size();
-				} else if (e.keyCode == SWT.ESC) {
-					consoleInput.setText("");
+				if (e.character == (char) 0
+						&& (e.keyCode & SWT.CTRL) != SWT.CTRL) {
+					return;
 				}
-				lastPos = consoleInput.getSelection().x;
-				super.keyPressed(e);
+				createInputField(e.character);
+				e.doit = false;
 			}
-
-			@Override
-			public void keyReleased(final KeyEvent e) {
-				if (e.keyCode == SWT.CTRL) {
-					historyMode = false;
-				}
-				super.keyReleased(e);
-			}
-
 		});
-		consoleInput.setFont(JFaceResources.getTextFont());
-		consoleInput.setWordWrap(true);
-		composite.setWeights(new int[] { 200, 100 });
 
 		final TabItem tracerTab = new TabItem(tabFolder, SWT.NONE);
 		tracerTab.setText("Tracer");
@@ -367,15 +300,92 @@ public class ErlangConsoleView extends ViewPart implements
 		tbl.setFont(JFaceResources.getTextFont());
 		tbl.setLinesVisible(true);
 		initializeToolBar();
-		// initializeToolBar();
-
 	}
 
-	boolean isInputComplete(final int lastPos) {
+	void createInputField(char first) {
+		if (first == SWT.ESC) {
+			return;
+		}
+
+		Rectangle rect = consoleText.getClientArea();
+		Point relpos = consoleText.getLocationAtOffset(consoleText
+				.getCharCount());
+
+		final Shell container = new Shell(Display.getDefault(), SWT.BORDER);
+		container.setLayout(new FillLayout());
+		consoleInputViewer = new SourceViewer(container, null, SWT.H_SCROLL
+				| SWT.V_SCROLL);
+		consoleInputViewer.setDocument(new Document());
+		consoleInputViewer
+				.configure(new ErlangConsoleSourceViewerConfiguration());
+		consoleInput = (StyledText) consoleInputViewer.getControl();
+		consoleInput.setParent(container);
+		container.setAlpha(220);
+
+		// relpos.y = 0;
+		int b = 2;
+		container
+				.setLocation(consoleText.toDisplay(relpos.x - b, relpos.y - b));
+		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
+
+		consoleInput.addKeyListener(new KeyAdapter() {
+			int navIndex = history.size();
+
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
+				if (e.keyCode == 13 && isInputComplete()) {
+					sendInput();
+					container.close();
+					e.doit = false;
+				} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
+					if (navIndex > 0) {
+						navIndex--;
+					}
+					if (history.size() > navIndex) {
+						consoleInput.setText(history.get(navIndex));
+						consoleInput.setSelection(consoleInput.getText()
+								.length());
+					} else {
+						consoleInput.setText("");
+					}
+				} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
+					if (navIndex < history.size()) {
+						navIndex++;
+					}
+					final String s = navIndex < history.size() ? history
+							.get(navIndex) : "";
+					consoleInput.setText(s);
+					consoleInput.setSelection(consoleInput.getText().length());
+				} else if (e.keyCode == SWT.ESC) {
+					container.close();
+				}
+				super.keyPressed(e);
+			}
+		});
+		consoleInput.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				container.close();
+			}
+		});
+		consoleInput.setFont(consoleText.getFont());
+		consoleInput.setBackground(consoleText.getBackground());
+		consoleInput.setWordWrap(true);
+
+		if (first != 0) {
+			consoleInput.setText("" + first);
+			consoleInput.setSelection(1);
+		} else {
+		}
+
+		container.setVisible(true);
+		consoleInput.setFocus();
+	}
+
+	boolean isInputComplete() {
 		try {
 			String str = consoleInput.getText();
-			str = str.substring(0, lastPos) + str.substring(lastPos + 1).trim()
-					+ "\n";
 			final OtpErlangObject o = ErlideBackend.parseString(str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
@@ -386,12 +396,10 @@ public class ErlangConsoleView extends ViewPart implements
 		return true;
 	}
 
-	protected void sendInput(final int lastPos) {
+	protected void sendInput() {
 		String s = consoleInput.getText();
-		s = s.substring(0, lastPos) + s.substring(lastPos + 1).trim() + "\n";
 		input(s);
 		consoleInput.setText("");
-		consoleInput.setSelection(0);
 		refreshView();
 	}
 
@@ -409,7 +417,7 @@ public class ErlangConsoleView extends ViewPart implements
 			}
 		}
 		consoleText.setRedraw(true);
-		consoleText.setSelection(consoleText.getCharCount() - 1);
+		consoleText.setSelection(consoleText.getCharCount());
 	}
 
 	Color getColor(final OtpErlangPid sender) {
@@ -442,10 +450,9 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	public void input(String data) {
-		data = data.trim();
-		model.input(data + "\n");
-		shell.send(data + "\n");
-		addToHistory(data);
+		model.input(data);
+		shell.send(data);
+		addToHistory(data.trim());
 	}
 
 	void refreshView() {
@@ -617,7 +624,7 @@ public class ErlangConsoleView extends ViewPart implements
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @seeorg.eclipse.jface.text.source.SourceViewerConfiguration#
+		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#
 		 * getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
 		 */
 		@Override
