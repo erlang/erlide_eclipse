@@ -385,7 +385,7 @@ public class EditorUtility {
 		if (status.getSeverity() != IStatus.OK
 				&& status.getSeverity() != IStatus.INFO) {
 			if (status.getSeverity() != IStatus.WARNING
-					&& status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
+					|| status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
 				ErlLogger.warn("Can't open %s:: %s", path, status.toString());
 				return null;
 			}
