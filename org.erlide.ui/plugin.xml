@@ -1123,7 +1123,7 @@
     <extension
          point="org.eclipse.ui.console.consolePatternMatchListeners">
       <consolePatternMatchListener
-            class="org.erlide.ui.views.console.ErlPatternMatchListenerDelegate"
+            class="org.erlide.ui.views.ErlPatternMatchListenerDelegate"
             id="ErlPatternMatchListenerDelegate"
             regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
          <enablement></enablement>

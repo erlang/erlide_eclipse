@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -79,7 +80,10 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.console.BackendShell;
-import org.erlide.runtime.backend.events.EventHandler;
+import org.erlide.runtime.backend.console.ErlConsoleModel;
+import org.erlide.runtime.backend.console.ErlConsoleModelListener;
+import org.erlide.runtime.backend.console.IoRequest;
+import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.editors.erl.ColorManager;
@@ -96,7 +100,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 import erlang.ErlideBackend;
 
-public class ErlangConsoleView extends ViewPart {
+public class ErlangConsoleView extends ViewPart implements
+		ErlConsoleModelListener {
 
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -127,27 +132,28 @@ public class ErlangConsoleView extends ViewPart {
 	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 	TableViewer consoleTable;
 	ErlConsoleDocument fDoc;
-	Backend fBackend;
-	BackendShell fShell;
 	final List<String> history = new ArrayList<String>(10);
 	StyledText consoleInput;
+	SourceViewer consoleOutputViewer;
 	SourceViewer consoleInputViewer;
-	ConsoleEventHandler handler;
+	private ErlConsoleModel model;
+	private BackendShell shell;
+	private Backend backend;
 
 	public ErlangConsoleView() {
 		super();
-		fDoc = new ErlConsoleDocument();
-		handler = new ConsoleEventHandler();
+		model = new ErlConsoleModel();
+		final ConsoleEventHandler handler = model.getHandler();
+		backend = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			final Job j = new Job("shell opener") {
 				@Override
 				protected IStatus run(final IProgressMonitor monitor) {
-					fBackend = ErlangCore.getBackendManager().getIdeBackend();
-					if (fBackend == null) {
+					if (backend == null) {
 						schedule(400);
 					} else {
-						fBackend.getEventDaemon().addListener(handler);
-						fShell = fBackend.getShellManager().openShell("main");
+						backend.getEventDaemon().addListener(handler);
+						shell = backend.getShellManager().openShell("main");
 					}
 					return Status.OK_STATUS;
 				}
@@ -158,32 +164,15 @@ public class ErlangConsoleView extends ViewPart {
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
+		model.addListener(this);
+		fDoc = new ErlConsoleDocument(model);
 	}
 
 	@Override
 	public void dispose() {
-		fBackend.getEventDaemon().removeListener(handler);
+		backend.getEventDaemon().removeListener(model.getHandler());
+		model.dispose();
 		super.dispose();
-	}
-
-	class ConsoleEventHandler extends EventHandler {
-
-		@Override
-		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-			final OtpErlangObject event = getStandardEvent(msg, "io_server");
-			if (event == null) {
-				return;
-			}
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					if (!consoleText.isDisposed()) {
-						fDoc.add(event, consoleText.getCharCount());
-						refreshView();
-					}
-				}
-			});
-		}
-
 	}
 
 	@Override
@@ -248,8 +237,12 @@ public class ErlangConsoleView extends ViewPart {
 		final SashForm composite = new SashForm(tabFolder, SWT.VERTICAL);
 		plainTab.setControl(composite);
 
-		consoleText = new StyledText(composite, SWT.V_SCROLL | SWT.MULTI
-				| SWT.READ_ONLY | SWT.BORDER);
+		consoleOutputViewer = new SourceViewer(composite, null, SWT.V_SCROLL
+				| SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
+		consoleOutputViewer.setDocument(fDoc);
+		consoleText = (StyledText) consoleOutputViewer.getControl();
+		consoleOutputViewer
+				.configure(new ErlangConsoleSourceViewerConfiguration());
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
@@ -259,10 +252,10 @@ public class ErlangConsoleView extends ViewPart {
 				try {
 					final int ofs = consoleText.getOffsetAtLocation(new Point(
 							e.x, e.y));
-					final IoRequest req = fDoc.findAtPos(ofs);
+					final IoRequest req = model.findAtPos(ofs);
 					clearMarks();
 					if (req.getSender() != null) {
-						final List<IoRequest> reqs = fDoc.getAllFrom(req
+						final List<IoRequest> reqs = model.getAllFrom(req
 								.getSender());
 						markRequests(reqs);
 					}
@@ -276,7 +269,7 @@ public class ErlangConsoleView extends ViewPart {
 				try {
 					final int ofs = consoleText.getOffsetAtLocation(new Point(
 							e.x, e.y));
-					final IoRequest req = fDoc.findAtPos(ofs);
+					final IoRequest req = model.findAtPos(ofs);
 					consoleText.setToolTipText("sent by "
 							+ ErlangProcess.toLocalPid(req.getSender()));
 				} catch (final Exception ex) {
@@ -289,12 +282,13 @@ public class ErlangConsoleView extends ViewPart {
 				consoleInput.setFocus();
 			}
 		});
+
 		// consoleInput = new StyledText(composite, SWT.BORDER | SWT.MULTI
 		// | SWT.V_SCROLL);
 
 		consoleInputViewer = new SourceViewer(composite, null, SWT.V_SCROLL
 				| SWT.BORDER);
-		consoleInputViewer.setDocument(fDoc);
+		consoleInputViewer.setDocument(new Document());
 		consoleInput = (StyledText) consoleInputViewer.getControl();
 		consoleInputViewer
 				.configure(new ErlangConsoleSourceViewerConfiguration());
@@ -382,7 +376,7 @@ public class ErlangConsoleView extends ViewPart {
 			String str = consoleInput.getText();
 			str = str.substring(0, lastPos) + str.substring(lastPos + 1).trim()
 					+ "\n";
-			final OtpErlangObject o = ErlideBackend.parseString(fBackend, str);
+			final OtpErlangObject o = ErlideBackend.parseString(str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
 			}
@@ -408,7 +402,7 @@ public class ErlangConsoleView extends ViewPart {
 	private void updateConsoleView() {
 		consoleText.setRedraw(false);
 		consoleText.setText("");
-		for (final IoRequest req : fDoc.getContentList()) {
+		for (final IoRequest req : model.getContentList()) {
 			consoleText.append(req.getMessage());
 			if (fColored) {
 				markRequest(req);
@@ -449,8 +443,8 @@ public class ErlangConsoleView extends ViewPart {
 
 	public void input(String data) {
 		data = data.trim();
-		fDoc.input(data + "\n");
-		fShell.send(data + "\n");
+		model.input(data + "\n");
+		shell.send(data + "\n");
 		addToHistory(data);
 	}
 
@@ -501,7 +495,7 @@ public class ErlangConsoleView extends ViewPart {
 					cc.dispose();
 				}
 
-				for (final IoRequest req : fDoc.getContentList()) {
+				for (final IoRequest req : model.getContentList()) {
 					final OtpErlangPid pid = fGroupByLeader ? req.getLeader()
 							: req.getSender();
 					pids.add(pid);
@@ -521,7 +515,7 @@ public class ErlangConsoleView extends ViewPart {
 		}
 
 		public Object[] getElements(final Object inputElement) {
-			return fDoc.getContentList().toArray();
+			return model.getContentList().toArray();
 		}
 	}
 
@@ -739,6 +733,14 @@ public class ErlangConsoleView extends ViewPart {
 			return reconciler;
 		}
 
+	}
+
+	public void changed(ErlConsoleModel erlConsoleModel) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				refreshView();
+			}
+		});
 	}
 
 }

@@ -1,118 +1,31 @@
 package org.erlide.ui.views.console;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangTuple;
+import org.erlide.runtime.backend.console.ErlConsoleModel;
 
 //public class ErlConsoleDocument {
 public class ErlConsoleDocument extends Document {
 
-	private final List<IoRequest> requests;
+	private ErlConsoleModel model;
 
-	public ErlConsoleDocument() {
+	public ErlConsoleDocument(ErlConsoleModel model) {
 		super();
-		requests = new ArrayList<IoRequest>(1000);
+		this.model = model;
 	}
 
-	public List<IoRequest> getContentList() {
-		synchronized (requests) {
-			return new ArrayList<IoRequest>(requests);
-		}
+	public ErlConsoleModel getModel() {
+		return model;
 	}
 
-	public void input(String s) {
-		final IoRequest req = new IoRequest(s);
-		if (requests.size() > 0) {
-			final IoRequest.Timestamp t = requests.get(requests.size() - 1)
-					.getTstamp().next();
-			req.setTstamp(t);
-		} else {
-			req.setTstamp(new IoRequest.Timestamp());
-		}
-		insertSorted(req);
+	@Override
+	public String get() {
+		return super.get();
 	}
 
-	private void insertSorted(IoRequest req) {
-		synchronized (requests) {
-			int index = Collections.binarySearch(requests, req);
-			if (index < 0) {
-				int is = 0;
-				index = -index - 1;
-				if (index <= 0) {
-					is = 0;
-				} else {
-					final IoRequest r = requests.get(index - 1);
-					is = r.getStart() + r.getLength();
-				}
-				req.setStart(is);
-				requests.add(index, req);
-			} else {
-				requests.add(index, req);
-			}
-		}
+	@Override
+	public void replace(int pos, int length, String text)
+			throws BadLocationException {
+		super.replace(pos, length, text);
 	}
-
-	public int add(OtpErlangObject msg, int start) {
-		if (!(msg instanceof OtpErlangTuple)) {
-			return 0;
-		}
-		final IoRequest req = new IoRequest((OtpErlangTuple) msg);
-
-		// TODO this is to filter out process list events
-		if (req.getMessage() == null) {
-			return 0;
-		}
-
-		// TODO use a configuration for this
-		// TODO maybe we should count text lines?
-		synchronized (requests) {
-			if (requests.size() > 5000) {
-				for (int i = 0; i < 1000; i++) {
-					requests.remove(0);
-				}
-			}
-		}
-		insertSorted(req);
-		return req.getLength();
-	}
-
-	public IoRequest findAtPos(int pos) {
-		synchronized (requests) {
-			for (final Object element : requests) {
-				final IoRequest req = (IoRequest) element;
-				if (req.getStart() <= pos
-						&& req.getStart() + req.getLength() > pos) {
-					return req;
-				}
-			}
-			return null;
-		}
-	}
-
-	public List<IoRequest> getAllFrom(OtpErlangPid sender) {
-		final List<IoRequest> result = new ArrayList<IoRequest>(10);
-		for (final Object element0 : requests) {
-			final IoRequest element = (IoRequest) element0;
-			if (element.getSender().equals(sender)) {
-				result.add(element);
-			}
-		}
-		return result;
-	}
-
-	public void add(List<OtpErlangObject> msgs, int start) {
-		int ofs = start;
-		for (final Object element0 : msgs) {
-			final OtpErlangObject element = (OtpErlangObject) element0;
-			ofs += add(element, ofs);
-		}
-
-	}
-
 }
