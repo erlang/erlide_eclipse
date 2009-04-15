@@ -637,9 +637,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// TODO should we use model events here?
 			myOutlinePage.setInput(input);
 		}
-
+		ErlModelUtils.reenableScanner(this);
 		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
-		// ErlModelUtils.reenableScanner(this);
 	}
 
 	@Override
@@ -1060,10 +1059,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 
-		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell shell) {
+		final IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
+			public IInformationControl createInformationControl(
+					final Shell shell) {
 				return new DefaultInformationControl(shell, true);
-	}
+			}
 		};
 		fInformationPresenter = new InformationPresenter(
 				informationControlCreator);
@@ -1267,12 +1267,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				final IInformationProvider informationProvider = new InformationProvider(
 						hoverRegion, hoverInfo, controlCreator);
 
-					fInformationPresenter.setOffset(offset);
-					fInformationPresenter
-							.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-					fInformationPresenter.setInformationProvider(
-							informationProvider, contentType);
-					fInformationPresenter.showInformation();
+				fInformationPresenter.setOffset(offset);
+				fInformationPresenter
+						.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+				fInformationPresenter.setInformationProvider(
+						informationProvider, contentType);
+				fInformationPresenter.showInformation();
 			} catch (final BadLocationException e) {
 			}
 		}
@@ -1546,9 +1546,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void doSave(final IProgressMonitor progressMonitor) {
 		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
-		getModule().resetParser();
-		((EditorConfiguration) getSourceViewerConfiguration())
-				.resetReconciler();
+		getModule().resetParser(getDocument().get());
+		// ((EditorConfiguration) getSourceViewerConfiguration())
+		// .resetReconciler();
 	}
 
 	public void reconcileNow() {

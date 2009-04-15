@@ -51,7 +51,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private long timestamp;
 	private final List<IErlComment> comments;
-	private final String initialText;
+	private String initialText;
 	private IErlScanner scanner;
 	private final IFile fFile;
 	private boolean parsed = false;
@@ -81,15 +81,11 @@ public class ErlModule extends Openable implements IErlModule {
 	synchronized protected boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 		logBuildStructure(underlyingResource);
-
-		final ErlParser parser = new ErlParser();
-		if (initialText != null) {
-			final String path = getFilePath();
-			final String erlidePath = getErlidePath();
-			isStructureKnown = parser.parse(this, initialText, !parsed, path,
-					erlidePath);
-		}
-		parsed = isStructureKnown;
+		final String path = getFilePath();
+		final String erlidePath = getErlidePath();
+		final boolean initialParse = !parsed;
+		final String text = initialParse ? initialText : "";
+		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath);
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -105,8 +101,7 @@ public class ErlModule extends Openable implements IErlModule {
 		} else {
 			timestamp = IResource.NULL_STAMP;
 		}
-
-		return isStructureKnown();
+		return parsed;
 	}
 
 	protected String getErlidePath() {
@@ -272,10 +267,9 @@ public class ErlModule extends Openable implements IErlModule {
 		comments.add(c);
 	}
 
-	public void reset() {
+	public void removeChildren() {
 		fChildren.clear();
 		comments.clear();
-		isStructureKnown = false;
 	}
 
 	public long getTimestamp() {
@@ -339,7 +333,7 @@ public class ErlModule extends Openable implements IErlModule {
 
 	public Collection<ErlangIncludeFile> getIncludedFiles()
 			throws ErlModelException {
-		if (!isStructureKnown) {
+		if (!isStructureKnown()) {
 			open(null);
 		}
 		final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
@@ -406,7 +400,7 @@ public class ErlModule extends Openable implements IErlModule {
 			if (mon != null) {
 				mon.worked(1);
 			}
-			setIsStructureKnown(false);
+			setStructureKnown(false);
 		}
 		fIgnoreNextReconcile = false;
 	}
@@ -461,19 +455,19 @@ public class ErlModule extends Openable implements IErlModule {
 		scanner.dispose();
 		scanner = null;
 		scannerDisposed = true;
-		setIsStructureKnown(false);
+		setStructureKnown(false);
 	}
 
 	public void disposeParser() {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
-		setIsStructureKnown(false);
+		setStructureKnown(false);
 		parsed = false;
 	}
 
 	public void reenableScanner() {
 		scannerDisposed = false;
-		setIsStructureKnown(false);
+		setStructureKnown(false);
 	}
 
 	public IErlProject getProject() {
@@ -536,8 +530,10 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 	}
 
-	public void resetParser() {
-		parsed = false;
+	public void resetParser(final String newText) {
+		scanner = null;
+		initialText = newText;
+		setStructureKnown(false);
 	}
 
 }

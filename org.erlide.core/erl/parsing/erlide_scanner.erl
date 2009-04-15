@@ -42,16 +42,16 @@ create(Module, ErlidePath) when is_atom(Module) ->
     server_cmd(create, {Module, ErlidePath}).
 
 destroy(Module) when is_atom(Module) ->
-	server_cmd(destroy, Module).
+    server_cmd(destroy, Module).
 
 getText(Module) when is_atom(Module) ->
-	server_cmd(get_text, Module).
+    server_cmd(get_text, Module).
 
 getTextLine(Module, Line) when is_atom(Module), is_integer(Line) ->
-	server_cmd(get_text_line, {Module, Line}).
+    server_cmd(get_text_line, {Module, Line}).
 
 getTokens(Module) when is_atom(Module) ->
-	server_cmd(get_tokens, Module).
+    server_cmd(get_tokens, Module).
 
 getTokenWindow(Module, Offset, Before, After) 
   when is_atom(Module), is_integer(Offset), is_integer(Before), is_integer(After) ->
@@ -62,13 +62,13 @@ getTokenAt(Module, Offset) when is_atom(Module), is_integer(Offset) ->
 
 initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) 
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
-	server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath}).
+    server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath}).
 
 scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     server_cmd(scan_uncached, {ScannerName, ModuleFileName, ErlidePath}).
 
 modules() ->
-	server_cmd(modules, []).
+    server_cmd(modules, []).
 
 dump_log() ->
     server_cmd(dump_log, []).
@@ -496,8 +496,8 @@ do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % res
     ?Debug({rescan, _Mod}),
     Modules;
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath}, Modules) ->
-    NewMod = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
-    [NewMod | lists:keydelete(Mod, #module.name, Modules)];
+    {Cached, NewMod} = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
+    {{ok, Cached}, [NewMod | lists:keydelete(Mod, #module.name, Modules)]};
 do_cmd(all, [], Modules) ->
     {Modules, Modules};
 do_cmd(modules, [], Modules) ->
@@ -510,7 +510,7 @@ do_cmd(get_token_at, {Mod, Offset}, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_token_at(Module, Offset), Modules};
 do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
-    ?D({replace_text, Mod}),
+    ?D({replace_text, Mod, Offset, RemoveLength, NewText}),
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     NewMod = replace_text(Module, Offset, RemoveLength, NewText),
     ?D(NewMod),

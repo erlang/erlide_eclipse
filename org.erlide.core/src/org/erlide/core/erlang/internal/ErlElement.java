@@ -537,7 +537,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * 
 	 * @see IErlElement#isStructureKnown()
 	 */
-	protected boolean isStructureKnown = false;
+	protected boolean structureKnown = false;
 
 	/**
 	 * Shared empty collection used for efficiency.
@@ -579,7 +579,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * @see IErlElement#isStructureKnown()
 	 */
 	public boolean isStructureKnown() {
-		return isStructureKnown;
+		return structureKnown;
 	}
 
 	public void removeChild(final IErlElement child) {
@@ -603,15 +603,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * 
 	 * @see IErlElement#isStructureKnown()
 	 */
-	public void setIsStructureKnown(final boolean newIsStructureKnown) {
-		isStructureKnown = newIsStructureKnown;
+	public void setStructureKnown(final boolean newStructureKnown) {
+		structureKnown = newStructureKnown;
 	}
 
 	public void resourceChanged() {
 		// FIXME is this enough? it will rebuild at next occasion, and modules
 		// are handled with reconciles, containers children through add and
 		// remove, but... e.g. name change of folder?
-		setIsStructureKnown(false);
+		setStructureKnown(false);
 	}
 
 	protected String pp(final OtpErlangObject e) {

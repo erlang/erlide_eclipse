@@ -70,7 +70,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	long getTimestamp();
 
-	void reset();
+	void removeChildren();
 
 	IErlImport findImport(ErlangFunction function);
 
@@ -114,6 +114,8 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	/**
 	 * Resets parser so that the next parse will be a full parse, possibly
 	 * updating the parser cache
+	 * 
+	 * @param newText
 	 */
-	void resetParser();
+	void resetParser(String newText);
 }

@@ -428,8 +428,8 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
 		?D({DocFileName, IndexFileName, Renew}),
-        Doc = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
-        ?D({doc, Doc, FuncList}),
+        {_Cached, Doc} = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
+        ?D({doc, _Cached, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
     catch

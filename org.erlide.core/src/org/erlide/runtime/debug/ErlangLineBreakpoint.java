@@ -65,7 +65,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
 
 	protected void resetClauseHead(final int lineNumber,
 			final IResource resource) {
-		clauseHead = null;
+		clauseHead = "";
 		final IErlModel model = ErlModelManager.getDefault().getErlangModel();
 		if (resource instanceof IFile) {
 			final IFile file = (IFile) resource;
@@ -158,13 +158,19 @@ public class ErlangLineBreakpoint extends Breakpoint implements
 	}
 
 	public String getClauseHead() {
+		if (clauseHead == null) {
+			try {
+				resetClauseHead(getLineNumber() - 1, getMarker().getResource());
+			} catch (final CoreException e) {
+			}
+		}
 		return clauseHead;
 	}
 
 	@Override
 	public void setMarker(final IMarker marker) throws CoreException {
 		super.setMarker(marker);
-		resetClauseHead(getLineNumber() - 1, marker.getResource());
+		clauseHead = null;
 	}
 
 	public String getCondition() throws CoreException {

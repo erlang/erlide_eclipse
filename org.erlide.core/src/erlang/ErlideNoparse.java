@@ -41,6 +41,9 @@ public class ErlideNoparse {
 			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE,
 					"initial_parse", "assss", scannerModuleName,
 					moduleFileName, initialText, stateDir, erlidePath);
+			if (res.arity() > 2) {
+				ErlLogger.debug("initialParse " + res.elementAt(2));
+			}
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}

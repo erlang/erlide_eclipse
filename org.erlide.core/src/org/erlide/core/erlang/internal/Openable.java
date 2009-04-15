@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
+import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
-import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.runtime.ErlLogger;
 
@@ -137,7 +137,14 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		return super.exists();
 	}
 
-	public void open(final IProgressMonitor monitor) throws ErlModelException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.erlide.core.erlang.IOpenable#open(org.eclipse.core.runtime.
+	 * IProgressMonitor)
+	 */
+	public synchronized void open(final IProgressMonitor monitor)
+			throws ErlModelException {
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("open " + isStructureKnown() + " > " + this);
 		}
@@ -152,7 +159,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		if (!isStructureKnown()) {
 			final boolean knownStructure = buildStructure(monitor,
 					getResource());
-			setIsStructureKnown(knownStructure);
+			setStructureKnown(knownStructure);
 		}
 	}
 

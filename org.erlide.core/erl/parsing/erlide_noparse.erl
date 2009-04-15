@@ -80,9 +80,9 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
         CacheFun = fun(D) -> erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         %?D(CacheFileName),
-        Res = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
+        {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
         update_state(ScannerName, Res),
-        {ok, Res}
+        {ok, Res, Cached}
     catch
         error:Reason ->
             {error, Reason}

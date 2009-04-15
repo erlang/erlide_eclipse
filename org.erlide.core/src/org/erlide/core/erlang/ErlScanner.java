@@ -25,19 +25,17 @@ public class ErlScanner implements IErlScanner {
 
 	private final String moduleName;
 
-	private String moduleFileName;
-	private final String erlidePath;
+	// private final String moduleFileName;
+	// private final String erlidePath;
 
 	public ErlScanner(final IErlModule module, final String initialText,
 			final String moduleFileName, final String erlidePath) {
 		this.module = module;
 		moduleName = createScannerModuleName(module);
-		this.moduleFileName = moduleFileName;
-		this.erlidePath = erlidePath;
+		// this.moduleFileName = moduleFileName;
+		// this.erlidePath = erlidePath;
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
 				erlidePath);
-		// create();
-		// insertText(0, initialText);
 	}
 
 	static public String createScannerModuleName(final IErlModule module) {
@@ -47,7 +45,7 @@ public class ErlScanner implements IErlScanner {
 			resName = "mod" + res.getFullPath().toPortableString().hashCode()
 					+ "_" + res.getName();
 		} else {
-			// This is not used more than temporarily, so it's ok to have
+			// This is not used more than temporarily, so it's OK to have
 			// a name that's temporary, as long as it's unique
 			resName = "mod" + module.hashCode() + "_";
 		}
@@ -71,10 +69,10 @@ public class ErlScanner implements IErlScanner {
 		return moduleName;
 	}
 
-	public void rescan(final String fullText) {
-		ErlideScanner.initialScan(moduleName, moduleFileName, fullText,
-				erlidePath);
-	}
+	// public void rescan(final String fullText) {
+	// ErlideScanner.initialScan(moduleName, moduleFileName, fullText,
+	// erlidePath);
+	// }
 
 	public Collection<IErlComment> getComments() {
 		return module.getComments();
