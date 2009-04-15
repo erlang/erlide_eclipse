@@ -229,8 +229,7 @@ public class ErlangConsoleView extends ViewPart implements
 		Point relpos = consoleText.getLocationAtOffset(consoleText
 				.getCharCount());
 
-		final Shell container = new Shell(Display.getDefault(),
-				SWT.APPLICATION_MODAL);
+		final Shell container = new Shell(consoleText.getShell(), SWT.MODELESS);
 		container.setLayout(new FillLayout());
 		consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
 				| SWT.WRAP | SWT.V_SCROLL);
