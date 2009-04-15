@@ -255,12 +255,12 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				if (e.character == (char) 0
-						&& (e.keyCode & SWT.CTRL) != SWT.CTRL) {
-					return;
+				boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
+						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
+				if ((e.character != (char) 0) || isHistoryCommand) {
+					createInputField(e.character);
+					e.doit = false;
 				}
-				createInputField(e.character);
-				e.doit = false;
 			}
 		});
 
@@ -284,7 +284,7 @@ public class ErlangConsoleView extends ViewPart implements
 		if (first == SWT.ESC) {
 			return;
 		}
-
+		consoleText.setSelection(consoleText.getCharCount());
 		Rectangle rect = consoleText.getClientArea();
 		Point relpos = consoleText.getLocationAtOffset(consoleText
 				.getCharCount());
@@ -301,10 +301,9 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.setParent(container);
 		container.setAlpha(220);
 
-		// relpos.y = 0;
 		int b = 1;
-		container
-				.setLocation(consoleText.toDisplay(relpos.x - b, relpos.y - b));
+		Point screenPos = consoleText.toDisplay(relpos.x - b, relpos.y - b);
+		container.setLocation(screenPos);
 		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
 
 		consoleInput.addKeyListener(new KeyAdapter() {
@@ -334,13 +333,11 @@ public class ErlangConsoleView extends ViewPart implements
 					if (navIndex > 0) {
 						navIndex--;
 					}
-					if (history.size() > navIndex) {
-						consoleInput.setText(history.get(navIndex));
-						consoleInput.setSelection(consoleInput.getText()
-								.length());
-					} else {
-						consoleInput.setText("");
-					}
+					String s = (history.size() > navIndex) ? history
+							.get(navIndex) : "";
+					consoleInput.setText(s);
+					consoleInput.setSelection(consoleInput.getText().length());
+					fixPosition(container);
 				} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
 					if (navIndex < history.size()) {
 						navIndex++;
@@ -349,10 +346,12 @@ public class ErlangConsoleView extends ViewPart implements
 							.get(navIndex) : "";
 					consoleInput.setText(s);
 					consoleInput.setSelection(consoleInput.getText().length());
+					fixPosition(container);
 				} else if (e.keyCode == SWT.ESC) {
 					container.close();
 				}
 			}
+
 		});
 		consoleInput.addFocusListener(new FocusAdapter() {
 			@Override
@@ -366,12 +365,29 @@ public class ErlangConsoleView extends ViewPart implements
 
 		if (first != 0) {
 			consoleInput.setText("" + first);
-			consoleInput.setSelection(1);
 		} else {
+			final String s = history.size() > 0 ? history.get(0) : "";
+			consoleInput.setText(s);
+			fixPosition(container);
 		}
+		consoleInput.setSelection(consoleInput.getCharCount());
 
 		container.setVisible(true);
 		consoleInput.setFocus();
+	}
+
+	private void fixPosition(final Shell container) {
+		Rectangle loc = container.getBounds();
+		int lineCount = consoleInput.getLineCount();
+		int lineHeight = consoleInput.getLineHeight();
+		int visibleLines = loc.height / lineHeight;
+		int maxLines = consoleText.getSize().y / lineHeight - 1;
+		int lines = Math.max(Math.min(maxLines, lineCount) - visibleLines,
+				visibleLines);
+		if (visibleLines - 1 <= lineCount) {
+			container.setBounds(loc.x, loc.y - lineHeight * lines, loc.width,
+					loc.height + lineHeight * lines);
+		}
 	}
 
 	boolean isInputComplete() {
