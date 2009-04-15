@@ -27,11 +27,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -46,8 +46,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendVisitor;
-import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.events.EventHandler;
+import org.erlide.ui.views.BackendContentProvider;
+import org.erlide.ui.views.BackendLabelProvider;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -65,47 +66,7 @@ import erlang.ErlideProclist;
  */
 public class ProcessListView extends ViewPart {
 
-	public static class BackendContentProvider implements
-			IStructuredContentProvider {
-
-		public void dispose() {
-			// TODO unsubscribe from backend manager
-
-		}
-
-		public void inputChanged(final Viewer vwr, final Object oldInput,
-				final Object newInput) {
-			// TODO subscribe to backendmanager events
-		}
-
-		public Object[] getElements(final Object inputElement) {
-			return ErlangCore.getBackendManager().getAllBackends();
-		}
-	}
-
-	public static class BackendLabelProvider extends LabelProvider {
-
-		@Override
-		public Image getImage(final Object element) {
-			return null;
-		}
-
-		@Override
-		public String getText(final Object element) {
-			final Backend b = (Backend) element;
-			final RuntimeInfo info = b.getInfo();
-			final String s = info.getName();
-			// if (s == null) {
-			// return "<default>";
-			// }
-			return s + "  " + info.getNodeName();
-		}
-
-	}
-
 	public static final String ID = "org.erlide.ui.views.processlist.ProcessListView";
-
-	private Label label;
 	private ComboViewer backends;
 	TableViewer viewer;
 	private Action refreshAction;
@@ -200,9 +161,6 @@ public class ProcessListView extends ViewPart {
 		}
 	}
 
-	static class NameSorter extends ViewerSorter {
-	}
-
 	/**
 	 * The constructor.
 	 */
@@ -215,81 +173,57 @@ public class ProcessListView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(final Composite parent) {
-		label = new Label(parent, SWT.NULL);
-		backends = new ComboViewer(parent, SWT.SINGLE | SWT.V_SCROLL);
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
-		final Table t = (Table) viewer.getControl();
-
-		final GridData labelLData = new GridData();
-		labelLData.verticalAlignment = GridData.BEGINNING;
-		labelLData.horizontalAlignment = GridData.FILL;
-		labelLData.widthHint = 300;
-		labelLData.heightHint = 14;
-		labelLData.horizontalIndent = 0;
-		labelLData.horizontalSpan = 1;
-		labelLData.verticalSpan = 1;
-		labelLData.grabExcessHorizontalSpace = true;
-		labelLData.grabExcessVerticalSpace = false;
-		label.setLayoutData(labelLData);
-		label.setSize(new org.eclipse.swt.graphics.Point(319, 14));
-
-		final GridData comboData = new GridData();
-		comboData.verticalAlignment = GridData.BEGINNING;
-		comboData.horizontalAlignment = GridData.FILL;
-		comboData.widthHint = 300;
-		comboData.heightHint = 18;
-		comboData.horizontalIndent = 0;
-		comboData.horizontalSpan = 1;
-		comboData.verticalSpan = 1;
-		comboData.grabExcessHorizontalSpace = true;
-		comboData.grabExcessVerticalSpace = false;
-		backends.getControl().setLayoutData(comboData);
-		backends.getControl().setSize(
-				new org.eclipse.swt.graphics.Point(319, 18));
-
-		final GridData viewerLData = new GridData();
-		viewerLData.verticalAlignment = GridData.FILL;
-		viewerLData.horizontalAlignment = GridData.FILL;
-		viewerLData.widthHint = 600;
-		viewerLData.heightHint = 150;
-		viewerLData.horizontalIndent = 0;
-		viewerLData.horizontalSpan = 1;
-		viewerLData.verticalSpan = 1;
-		viewerLData.grabExcessHorizontalSpace = true;
-		viewerLData.grabExcessVerticalSpace = true;
-		t.setLayoutData(viewerLData);
-		t.setSize(new org.eclipse.swt.graphics.Point(600, 200));
-
-		final GridLayout thisLayout = new GridLayout(1, true);
-		parent.setLayout(thisLayout);
+		Composite container = new Composite(parent, SWT.NONE);
+		final GridLayout thisLayout = new GridLayout(2, false);
+		container.setLayout(thisLayout);
 		thisLayout.marginWidth = 5;
 		thisLayout.marginHeight = 5;
-		thisLayout.numColumns = 1;
 		thisLayout.makeColumnsEqualWidth = false;
-		thisLayout.horizontalSpacing = 0;
 		thisLayout.verticalSpacing = 1;
 
-		t.setLinesVisible(true);
-		t.setHeaderVisible(true);
+		Label label = new Label(container, SWT.SHADOW_NONE);
+		label.setText("Erlang backend node");
 
+		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
+		Combo combo = backends.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+				1));
+		backends.getControl().setSize(
+				new org.eclipse.swt.graphics.Point(319, 18));
+		backends.setContentProvider(new BackendContentProvider());
+		backends.setLabelProvider(new BackendLabelProvider());
+		backends.setInput(ErlangCore.getBackendManager());
+		viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
+				| SWT.FULL_SELECTION);
+		Table table = viewer.getTable();
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true, 2,
+				1);
+		table.setLayoutData(layoutData);
+		final Table t = (Table) viewer.getControl();
 		final TableColumn colPid = new TableColumn(t, SWT.LEAD);
 		colPid.setText("Pid/Name");
 		colPid.setWidth(150);
-
 		final TableColumn colStart = new TableColumn(t, SWT.LEAD);
 		colStart.setText("Initial call");
 		colStart.setWidth(300);
-
 		final TableColumn colReds = new TableColumn(t, SWT.LEAD);
 		colReds.setText("Reds");
 		colReds.setWidth(80);
-
 		final TableColumn colMsgs = new TableColumn(t, SWT.LEAD);
 		colMsgs.setText("Msgs");
 		colMsgs.setWidth(60);
+		viewer.setContentProvider(new ViewContentProvider());
+		viewer.setLabelProvider(new ViewLabelProvider());
+		// viewer.setSorter(new NameSorter());
+		viewer.setInput(getViewSite());
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(final DoubleClickEvent event) {
+				doubleClickAction.run();
+			}
+		});
 
-		label.setText("Erlang backend node");
+		t.setLinesVisible(true);
+		t.setHeaderVisible(true);
 
 		// TODO this is wrong - all backends should be inited
 		final Backend ideBackend = ErlangCore.getBackendManager()
@@ -304,15 +238,6 @@ public class ProcessListView extends ViewPart {
 					}
 				});
 
-		backends.setContentProvider(new BackendContentProvider());
-		backends.setLabelProvider(new BackendLabelProvider());
-		backends.setInput(ErlangCore.getBackendManager());
-
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		// viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -321,6 +246,9 @@ public class ProcessListView extends ViewPart {
 
 	private void hookContextMenu() {
 		final MenuManager menuMgr = new MenuManager("#PopupMenu");
+		final Menu menu = menuMgr.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, viewer);
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
@@ -328,9 +256,6 @@ public class ProcessListView extends ViewPart {
 				ProcessListView.this.fillContextMenu(manager);
 			}
 		});
-		final Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
 	private void contributeToActionBars() {
@@ -405,12 +330,6 @@ public class ProcessListView extends ViewPart {
 	}
 
 	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-
-			public void doubleClick(final DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
 	}
 
 	void showMessage(final String message) {

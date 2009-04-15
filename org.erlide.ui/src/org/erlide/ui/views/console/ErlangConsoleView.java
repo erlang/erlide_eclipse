@@ -19,15 +19,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -38,28 +37,20 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
@@ -71,6 +62,8 @@ import org.erlide.runtime.backend.console.IoRequest;
 import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
+import org.erlide.ui.views.BackendContentProvider;
+import org.erlide.ui.views.BackendLabelProvider;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -108,7 +101,6 @@ public class ErlangConsoleView extends ViewPart implements
 	boolean fGroupByLeader;
 	boolean fColored;
 	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
-	TableViewer consoleTable;
 	ErlConsoleDocument fDoc;
 	final List<String> history = new ArrayList<String>(10);
 	StyledText consoleInput;
@@ -117,6 +109,9 @@ public class ErlangConsoleView extends ViewPart implements
 	ErlConsoleModel model;
 	BackendShell shell;
 	Backend backend;
+	private Action action;
+
+	private ComboViewer backends;
 
 	public ErlangConsoleView() {
 		super();
@@ -155,68 +150,27 @@ public class ErlangConsoleView extends ViewPart implements
 
 	@Override
 	public void createPartControl(final Composite parent) {
-		parent.setLayout(new GridLayout());
-		final ToolBar toolbar = new ToolBar(parent, SWT.FLAT);
-		toolbar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		toolbar.setLayout(new RowLayout());
+		Composite container = parent;
+		container.setLayout(new GridLayout(2, false));
 
-		final ToolItem refreshBtn = new ToolItem(toolbar, SWT.PUSH);
-		refreshBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				refreshView();
-			}
+		Label label = new Label(container, SWT.SHADOW_NONE);
+		label.setText("Erlang backend node");
+		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
+		Combo combo = backends.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+				1));
+		backends.setContentProvider(new BackendContentProvider());
+		backends.setLabelProvider(new BackendLabelProvider());
+		backends.setInput(ErlangCore.getBackendManager());
+		backends.setSelection(new StructuredSelection(backend));
 
-		});
-		refreshBtn.setText("Refresh");
-		new ToolItem(toolbar, SWT.SEPARATOR);
-
-		final ToolItem colorCheck = new ToolItem(toolbar, SWT.CHECK);
-		colorCheck.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				fColored = !fColored;
-				refreshView();
-			}
-		});
-		colorCheck.setText("Colored");
-
-		final ToolItem groupChk = new ToolItem(toolbar, SWT.CHECK);
-		groupChk.setText("group");
-		groupChk.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				fGroupByLeader = !fGroupByLeader;
-				groupChk.setText(fGroupByLeader ? "leader" : "sender");
-				consoleTable.setInput(fDoc);
-				refreshView();
-			}
-		});
-		groupChk.setText(fGroupByLeader ? "leader" : "sender");
-
-		final ToolItem filterItem = new ToolItem(toolbar, SWT.DROP_DOWN);
-		filterItem.setText("Filter");
-
-		final Menu filter = new Menu(toolbar);
-		addDropDown(filterItem, filter);
-
-		final ToolItem newItemToolItem = new ToolItem(toolbar, SWT.SEPARATOR);
-		newItemToolItem.setText("New item");
-
-		final TabFolder tabFolder = new TabFolder(parent, SWT.NONE);
-		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, true);
-		gridData.widthHint = 475;
-		gridData.heightHint = 290;
-		tabFolder.setLayoutData(gridData);
-
-		final TabItem plainTab = new TabItem(tabFolder, SWT.NONE);
-		plainTab.setText("Plain");
-
-		consoleOutputViewer = new SourceViewer(tabFolder, null, SWT.V_SCROLL
+		consoleOutputViewer = new SourceViewer(container, null, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
 		consoleOutputViewer.setDocument(fDoc);
 		consoleText = (StyledText) consoleOutputViewer.getControl();
-		plainTab.setControl(consoleText);
+		consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
+				2, 1));
+
 		consoleOutputViewer
 				.configure(new ErlangConsoleSourceViewerConfiguration());
 
@@ -263,20 +217,6 @@ public class ErlangConsoleView extends ViewPart implements
 				}
 			}
 		});
-
-		final TabItem tracerTab = new TabItem(tabFolder, SWT.NONE);
-		tracerTab.setText("Tracer");
-
-		consoleTable = new TableViewer(tabFolder, SWT.BORDER);
-		final Table table = consoleTable.getTable();
-		tracerTab.setControl(table);
-		table.setHeaderVisible(true);
-		consoleTable.setContentProvider(new IoRequestContentProvider());
-		consoleTable.setLabelProvider(new IoRequestLabelProvider());
-		consoleTable.setInput(fDoc);
-		final Table tbl = (Table) consoleTable.getControl();
-		tbl.setFont(JFaceResources.getTextFont());
-		tbl.setLinesVisible(true);
 		initializeToolBar();
 	}
 
@@ -410,10 +350,6 @@ public class ErlangConsoleView extends ViewPart implements
 		refreshView();
 	}
 
-	private void updateTableView() {
-		consoleTable.setInput(fDoc);
-	}
-
 	private void updateConsoleView() {
 		consoleText.setRedraw(false);
 		consoleText.setText("");
@@ -442,20 +378,6 @@ public class ErlangConsoleView extends ViewPart implements
 		return colors[0];
 	}
 
-	private static void addDropDown(final ToolItem item, final Menu menu) {
-		item.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(final Event event) {
-				if (event.detail == SWT.ARROW) {
-					final Rectangle rect = item.getBounds();
-					Point pt = new Point(rect.x, rect.y + rect.height);
-					pt = item.getParent().toDisplay(pt);
-					menu.setLocation(pt.x, pt.y);
-					menu.setVisible(true);
-				}
-			}
-		});
-	}
-
 	public void input(String data) {
 		model.input(data);
 		shell.send(data);
@@ -468,7 +390,6 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 		try {
 			updateConsoleView();
-			updateTableView();
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -486,102 +407,6 @@ public class ErlangConsoleView extends ViewPart implements
 
 	public List<String> getHistory() {
 		return history;
-	}
-
-	final class IoRequestContentProvider implements IStructuredContentProvider {
-		public void dispose() {
-		}
-
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-			fDoc = (ErlConsoleDocument) newInput;
-
-			if (fDoc == null) {
-				return;
-			}
-
-			final Table tbl = (Table) viewer.getControl();
-			tbl.setRedraw(false);
-			// TODO hmmm the flicker is still there....
-			try {
-				final TableColumn[] cs = tbl.getColumns();
-				for (final TableColumn cc : cs) {
-					cc.dispose();
-				}
-
-				for (final IoRequest req : model.getContentList()) {
-					final OtpErlangPid pid = fGroupByLeader ? req.getLeader()
-							: req.getSender();
-					pids.add(pid);
-				}
-
-				for (final OtpErlangPid pid : pids) {
-					TableColumn c;
-					c = new TableColumn(tbl, SWT.NONE);
-					c.setText(ErlangProcess.toLocalPid(pid));
-					c.setData(pid);
-					c.setWidth(100);
-				}
-			} finally {
-				tbl.setRedraw(true);
-			}
-
-		}
-
-		public Object[] getElements(final Object inputElement) {
-			return model.getContentList().toArray();
-		}
-	}
-
-	final class IoRequestLabelProvider implements ITableLabelProvider,
-			IColorProvider {
-		public void addListener(final ILabelProviderListener listener) {
-		}
-
-		public void dispose() {
-		}
-
-		public boolean isLabelProperty(final Object element,
-				final String property) {
-			return true;
-		}
-
-		public void removeListener(final ILabelProviderListener listener) {
-		}
-
-		public Image getColumnImage(final Object element, final int columnIndex) {
-			return null;
-		}
-
-		public String getColumnText(final Object element, final int columnIndex) {
-			if (element instanceof IoRequest) {
-				final IoRequest req = (IoRequest) element;
-				final Table tbl = (Table) consoleTable.getControl();
-				final TableColumn c = tbl.getColumn(columnIndex);
-				final OtpErlangPid pid = fGroupByLeader ? req.getLeader() : req
-						.getSender();
-				if (c.getData().equals(pid)) {
-					return req.getMessage();
-				}
-				return null;
-			}
-			return null;
-		}
-
-		public Color getBackground(final Object element) {
-			final IoRequest req = (IoRequest) element;
-			if (fColored) {
-				return getColor(fGroupByLeader ? req.getLeader() : req
-						.getSender());
-			}
-			return null;
-		}
-
-		public Color getForeground(final Object element) {
-			// IoRequest req = (IoRequest) element;
-			return null;
-		}
-
 	}
 
 	public void markRequests(final List<IoRequest> reqs) {
@@ -617,8 +442,26 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	private void initializeToolBar() {
-		// IToolBarManager toolBarManager = getViewSite().getActionBars()
-		// .getToolBarManager();
+		final IActionBars bars = getViewSite().getActionBars();
+		IToolBarManager toolBarManager = bars.getToolBarManager();
+		{
+			action = new Action("New Action") {
+				@Override
+				public int getStyle() {
+					return AS_DROP_DOWN_MENU;
+				}
+			};
+			action.setText("Backends");
+			action.setToolTipText("backend list");
+			action.setImageDescriptor(PlatformUI.getWorkbench()
+					.getSharedImages().getImageDescriptor(
+							ISharedImages.IMG_OBJS_INFO_TSK));
+			toolBarManager.add(action);
+		}
+
+		IMenuManager menuManager = bars.getMenuManager();
+		menuManager.add(action);
+
 	}
 
 	public void changed(ErlConsoleModel erlConsoleModel) {
