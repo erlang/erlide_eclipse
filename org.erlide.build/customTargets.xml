@@ -16,9 +16,6 @@
 	<target name="allElements">
 	</target>
 	
-	<import file="allElements.xml"/>
-
-	
 	<!-- ===================================================================== -->
 	<!-- Check out map files from correct repository -->
 	<!-- Replace values for cvsRoot, package and mapVersionTag as desired. -->
