@@ -19,22 +19,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.source.IAnnotationHover;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -74,7 +60,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.ErlLogger;
@@ -86,13 +71,6 @@ import org.erlide.runtime.backend.console.IoRequest;
 import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlangProcess;
-import org.erlide.ui.editors.erl.ColorManager;
-import org.erlide.ui.editors.erl.DoubleClickStrategy;
-import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
-import org.erlide.ui.editors.erl.ErlDamagerRepairer;
-import org.erlide.ui.editors.erl.ErlHighlightScanner;
-import org.erlide.ui.editors.erl.ErlangAnnotationHover;
-import org.erlide.ui.editors.erl.ErlangPairMatcher;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -235,7 +213,7 @@ public class ErlangConsoleView extends ViewPart implements
 		plainTab.setText("Plain");
 
 		consoleOutputViewer = new SourceViewer(tabFolder, null, SWT.V_SCROLL
-				| SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
+				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
 		consoleOutputViewer.setDocument(fDoc);
 		consoleText = (StyledText) consoleOutputViewer.getControl();
 		plainTab.setControl(consoleText);
@@ -311,10 +289,11 @@ public class ErlangConsoleView extends ViewPart implements
 		Point relpos = consoleText.getLocationAtOffset(consoleText
 				.getCharCount());
 
-		final Shell container = new Shell(Display.getDefault(), SWT.BORDER);
+		final Shell container = new Shell(Display.getDefault(),
+				SWT.APPLICATION_MODAL);
 		container.setLayout(new FillLayout());
-		consoleInputViewer = new SourceViewer(container, null, SWT.H_SCROLL
-				| SWT.V_SCROLL);
+		consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
+				| SWT.WRAP | SWT.V_SCROLL);
 		consoleInputViewer.setDocument(new Document());
 		consoleInputViewer
 				.configure(new ErlangConsoleSourceViewerConfiguration());
@@ -323,7 +302,7 @@ public class ErlangConsoleView extends ViewPart implements
 		container.setAlpha(220);
 
 		// relpos.y = 0;
-		int b = 2;
+		int b = 1;
 		container
 				.setLocation(consoleText.toDisplay(relpos.x - b, relpos.y - b));
 		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
@@ -338,6 +317,19 @@ public class ErlangConsoleView extends ViewPart implements
 					sendInput();
 					container.close();
 					e.doit = false;
+				} else if (e.keyCode == 13) {
+					Rectangle loc = container.getBounds();
+					int topIndex = consoleInput.getTopIndex();
+					int lineCount = consoleInput.getLineCount();
+					int lineHeight = consoleInput.getLineHeight();
+					int visibleLines = loc.height / lineHeight;
+					int maxLines = consoleText.getSize().y / lineHeight - 1;
+					if (topIndex + visibleLines - 1 <= lineCount
+							&& visibleLines < maxLines) {
+						container.setBounds(loc.x, loc.y - lineHeight,
+								loc.width, loc.height + lineHeight);
+						consoleInput.setTopIndex(lineCount - visibleLines + 1);
+					}
 				} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
 					if (navIndex > 0) {
 						navIndex--;
@@ -360,13 +352,12 @@ public class ErlangConsoleView extends ViewPart implements
 				} else if (e.keyCode == SWT.ESC) {
 					container.close();
 				}
-				super.keyPressed(e);
 			}
 		});
 		consoleInput.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				container.close();
+				// container.close();
 			}
 		});
 		consoleInput.setFont(consoleText.getFont());
@@ -612,134 +603,6 @@ public class ErlangConsoleView extends ViewPart implements
 	private void initializeToolBar() {
 		// IToolBarManager toolBarManager = getViewSite().getActionBars()
 		// .getToolBarManager();
-	}
-
-	final class ErlangConsoleSourceViewerConfiguration extends
-			TextSourceViewerConfiguration {
-
-		private DoubleClickStrategy doubleClickStrategy;
-		private ErlHighlightScanner fHighlightScanner;
-		private ICharacterPairMatcher fBracketMatcher;
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#
-		 * getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
-		 */
-		@Override
-		public IContentAssistant getContentAssistant(
-				final ISourceViewer sourceViewer) {
-
-			final ContentAssistant asst = new ContentAssistant();
-
-			// TODO vi vill ha in en punkt h�r, men den f�r return till
-			// styledtext o skickar allt f�r tidigt...
-			asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-					sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
-
-			asst.enableAutoActivation(true);
-			asst.setAutoActivationDelay(500);
-			asst.enableAutoInsert(true);
-			asst.enablePrefixCompletion(false);
-			// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
-			// );
-
-			asst
-					.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-			asst
-					.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-			asst
-					.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-
-			return asst;
-		}
-
-		@Override
-		public IAnnotationHover getAnnotationHover(
-				final ISourceViewer sourceViewer) {
-			return new ErlangAnnotationHover();
-		}
-
-		/*
-		 * @see
-		 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-		 * 
-		 * @since 2.0
-		 */
-		@Override
-		public IInformationControlCreator getInformationControlCreator(
-				final ISourceViewer sourceViewer) {
-			return new IInformationControlCreator() {
-
-				@SuppressWarnings("restriction")
-				public IInformationControl createInformationControl(
-						final Shell parent) {
-					return new DefaultInformationControl(parent,
-							new HTMLTextPresenter(true));
-				}
-			};
-		}
-
-		/**
-		 * The double click strategy
-		 * 
-		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
-		 *      java.lang.String)
-		 */
-		@Override
-		public ITextDoubleClickStrategy getDoubleClickStrategy(
-				final ISourceViewer sourceViewer, final String contentType) {
-			if (doubleClickStrategy == null) {
-				// doubleClickStrategy = new
-				// ErlDoubleClickSelector(getBracketMatcher());
-				doubleClickStrategy = new DoubleClickStrategy(
-						getBracketMatcher());
-			}
-			return doubleClickStrategy;
-		}
-
-		/**
-		 * Creates and returns the fHighlightScanner
-		 * 
-		 * @return the highlighting fHighlightScanner
-		 */
-		protected ErlHighlightScanner getHighlightScanner(
-				final ISourceViewer sourceViewer) {
-			if (fHighlightScanner == null) {
-				fHighlightScanner = new ErlHighlightScanner(new ColorManager(),
-						sourceViewer);
-			}
-			return fHighlightScanner;
-		}
-
-		public ICharacterPairMatcher getBracketMatcher() {
-			if (fBracketMatcher == null) {
-				fBracketMatcher = new ErlangPairMatcher(new String[] { "(",
-						")", "{", "}", "[", "]", "<<", ">>" });
-			}
-			return fBracketMatcher;
-		}
-
-		/**
-		 * Creates the reconciler
-		 * 
-		 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
-		 */
-		@Override
-		public IPresentationReconciler getPresentationReconciler(
-				final ISourceViewer sourceViewer) {
-			final PresentationReconciler reconciler = new PresentationReconciler();
-
-			final ErlHighlightScanner scan = getHighlightScanner(sourceViewer);
-			if (scan != null) {
-				final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
-				reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-				reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-			}
-			return reconciler;
-		}
-
 	}
 
 	public void changed(ErlConsoleModel erlConsoleModel) {
