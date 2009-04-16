@@ -9,6 +9,9 @@
    <feature url="features/org.erlide_0.5.2.200904081211.jar" id="org.erlide" version="0.5.2.200904081211">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.5.3.200904161018.jar" id="org.erlide" version="0.5.3.200904161018">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.
@@ -16,7 +19,7 @@
    </category-def>
    <category-def name="unstable" label="erlIDE unstable">
       <description>
-         These builds may be broken, so use at your own risk. Usually, we don't 
+         These builds may be broken, so use at your own risk. Usually, we don&apos;t 
          let them stay broken for long.
       </description>
    </category-def>

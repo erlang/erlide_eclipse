@@ -1,3 +1,18 @@
+List of user visible changes between 0.5.2 and 0.5.3 (r2525)
+
+	http://www.assembla.com/spaces/erlide/tickets/334-add-edoc-exporter
+
+	Macros with lowercase didn't get hover, uppercase didn't complete
+
+	http://www.assembla.com/spaces/erlide/tickets/350-debugger---exited-process-sometimes-has-wrong-stack
+
+	work on http://www.assembla.com/spaces/erlide/tickets/349-Improve-console-view
+
+	improved layout of ReportPreferencePage, hopefully better on OSX
+
+	Major problems with scanner/noparser and synch, hopefully fixed:
+ 
+
 List of user visible changes between 0.5.1 and 0.5.2 (r2484)
 
 	Bug fixed: wrong arity for function calls with funs
