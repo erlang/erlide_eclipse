@@ -19,6 +19,13 @@
 	<target name="pre.build.jars">
 		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true">
 			<arg value="-o"/>
+			<arg value="erl"/>
+			<fileset dir="erl">
+				<include name="**/*.yrl"/>
+			</fileset>
+		</apply>
+		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true">
+			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>
 			<arg value="include"/>

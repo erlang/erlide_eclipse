@@ -19,7 +19,18 @@
 	<property name="outputUpdateJars" value="false"/>
 	<property name="buildType" value="N"/>
 	<property name="buildId" value="${forceContextQualifier}"/>
-	<property name="buildLabel" value="${buildType}.${buildId}"/>
+	<property name="buildLabel" value="${buildId}-${buildType}"/>
+
+	<property name="version.full" value="0.0.0.${buildLabel}"/>
+	<condition property="isNightlyBuild">
+		<equals arg1="${buildType}" arg2="N" />
+	</condition>
+	<condition property="isNightlyOrIntegrationBuild">
+		<or>
+			<equals arg1="${buildType}" arg2="N" />
+			<equals arg1="${buildType}" arg2="I" />
+		</or>
+	</condition>
 	
 	<import file="${eclipse.pdebuild.scripts}/build.xml"/>
 
@@ -50,7 +61,6 @@
     			<include name="org.erlide.wrangler.refactoring/**"/>
     			<exclude name="**/*.class"/>
     			<exclude name="**/*.beam"/>
-			<include name=""/>
     		</fileset>
     	</copy>
     </target>

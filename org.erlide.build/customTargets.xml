@@ -1,13 +1,4 @@
 <project name="Build specific targets and properties" default="noDefault">
-	<condition property="isNightlyBuild">
-		<equals arg1="${buildType}" arg2="N" />
-	</condition>
-	<condition property="isNightlyOrIntegrationBuild">
-		<or>
-			<equals arg1="${buildType}" arg2="N" />
-			<equals arg1="${buildType}" arg2="I" />
-		</or>
-	</condition>
 	
 	<property file="${buildDirectory}/version.properties" />
 	<property name="buildLabel" value="${buildType}-${version.full}" />
