@@ -24,7 +24,6 @@
 	<property name="buildId" value="${forceContextQualifier}"/>
 	<property name="buildLabel" value="${buildId}-${buildType}"/>
 
-	<property name="version.full" value="0.0.0.${buildLabel}"/>
 	<condition property="isNightlyBuild">
 		<equals arg1="${buildType}" arg2="N" />
 	</condition>

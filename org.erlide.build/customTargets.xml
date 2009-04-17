@@ -1,6 +1,6 @@
 <project name="Build specific targets and properties" default="noDefault">
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${builder}/ant-contrib.jar" />
-	<taskdef resource="org/pluginbuilder/anttasks/pluginbuildertasks.properties" classpath="${builder}/pluginbuilder-anttasks.jar" />
+	<!--taskdef resource="org/pluginbuilder/anttasks/pluginbuildertasks.properties" classpath="${builder}/pluginbuilder-anttasks.jar" /-->
 
 	<target name="allElements">
 		<ant antfile="${genericTargets}" target="${target}" >
@@ -124,6 +124,9 @@
     	<property name="UpdateSiteFinalLocation" value="${buildResultsDirectory}/../updateSite"/>
     	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
 
+		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
+		<property name="version.full" value="${versions.org.erlide.sdk}-${buildType}"/>
+
        <antcall target="-generateUpdateSite"/>
     	<antcall target="-createNightlyBuildSiteXml"/>
     	<copy todir="${UpdateSiteFinalLocation}">
@@ -177,9 +180,7 @@
 		<!-- we can not rely on ${version.full} at this point since people could use
 			a fix feature id like 0.5.0.qualifier. ${version.full} would only work if
 			the feature were set to 0.0.0 --> 
-		<property file="${buildDirectory}/finalFeaturesVersions.properties"/>
-		<property name="realFeatureVersion" value="${featureId}"/>
-
+		<propertycopy name="realFeatureVersion" from="versions.${featureId}"/>
 		<echo file="${siteXmlFile}" append="true">		&lt;feature 
 		url=&quot;features/${featureId}_${realFeatureVersion}.jar&quot; 
 		id=&quot;${featureId}&quot; 
