@@ -2,9 +2,9 @@
 # -- 
 # -- Any changes that are to be persistent should of course be made here
 
-ERLANG_HOME=~/erl5.6.5
+ERLANG_HOME=$(basename `which erl`)/..
 ECLIPSE_HOME=~/eclipse
-JAVA_HOME=~/java/jdk1.5.0_14
+JAVA_HOME=$(basename `which java`)/..
 BUILDDIRROOT=/tmp
 
 # -- end of configuration
