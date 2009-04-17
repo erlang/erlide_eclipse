@@ -1,22 +1,23 @@
 <project name="Run as part of postBuild" default="main">
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${builder}/ant-contrib.jar" />
 	<taskdef resource="org/pluginbuilder/anttasks/pluginbuildertasks.properties" classpath="${builder}/pluginbuilder-anttasks.jar" />
-	
-	
+
     <target name="main">
 
+		<property name="buildResultsDirectory" value="${buildDirectory}/results"/>
     	<property name="UpdateSiteStagingLocation" value="${buildDirectory}/tmpUpdateSite/updateSite"/>
     	<property name="UpdateSiteFinalLocation" value="${buildResultsDirectory}/../updateSite"/>
     	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
-		<property name="buildResultsDirectory" value="${buildDirectory}/results"/>
+
+    	<echoproperties/>
     	
-        <antcall target="-generateUpdateSite"/>
+       <antcall target="-generateUpdateSite"/>
     	<antcall target="-createNightlyBuildSiteXml"/>
     	<copy todir="${UpdateSiteFinalLocation}">
     		<fileset dir="${UpdateSiteStagingLocation}" includes="**"/>
     	</copy>
     	<zip destfile="${buildResultsDirectory}/updateSite-${version.full}.zip" basedir="${UpdateSiteStagingLocation}"/>
-    	<delete dir="${UpdateSiteStagingLocation}/../.." includes="tmpUpdateSite/**" includeemptydirs="true"/>
+    	<!--delete dir="${UpdateSiteStagingLocation}/../.." includes="tmpUpdateSite/**" includeemptydirs="true"/-->
     </target>
     
     <!--======================================================-->
@@ -44,18 +45,19 @@
         </ant>
         <!-- site.xml files for integration and release builds are handled elsewhere -->
         <antcall target="-createNightlyBuildSiteXml"/>
-        <delete dir="${buildDirectory}/temp.updatesite"/>
+        <!--delete dir="${buildDirectory}/temp.updatesite"/-->
     </target>
 	
     <target name="-createNightlyBuildSiteXml" if="isNightlyBuild">
     	<echo>${siteXmlFile}</echo>
         <echo file="${siteXmlFile}">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;site&gt;
-		&lt;description&gt;${updateSiteDescription}&lt;/description&gt;
+		&lt;description&gt;Nightly builds for erlIDE&lt;/description&gt;
 </echo>
-    	<foreach list="${pluginbuilder.features}" delimiter="," target="-appendFeatureElement" param="featureId" inheritall="true"/> 
-        <echo file="${siteXmlFile}" append="true">		&lt;category-def name=&quot;${updateSiteCategoryName}&quot;
-            label=&quot;${updateSiteCategoryLabel}&quot;&gt;
+		
+    	<foreach list="${allFeatures}" delimiter="," target="-appendFeatureElement" param="featureId" inheritall="true"/> 
+        <echo file="${siteXmlFile}" append="true">		&lt;category-def name=&quot;Nightly&quot;
+            label=&quot;Nightly builds&quot;&gt;
 		&lt;/category-def&gt;
 &lt;/site&gt;</echo>
     </target>
@@ -64,13 +66,14 @@
 		<!-- we can not rely on ${version.full} at this point since people could use
 			a fix feature id like 0.5.0.qualifier. ${version.full} would only work if
 			the feature were set to 0.0.0 --> 
-		<loadfile property="featurexml" srcfile="${buildDirectory}/features/${topLevelElementId}/feature.xml"/>
-		<SetRegex input="${featurexml}" match="^.*&lt;feature.+?version=&quot;(.+?)&quot;.*$" property="realFeatureVersion" value="\1" />
-    	<echo file="${siteXmlFile}" append="true">		&lt;feature 
+		<property file="${buildDirectory}/finalFeaturesVersions.properties"/>
+		<property name="realFeatureVersion" value="${featureId}"/>
+
+		<echo file="${siteXmlFile}" append="true">		&lt;feature 
 		url=&quot;features/${featureId}_${realFeatureVersion}.jar&quot; 
 		id=&quot;${featureId}&quot; 
 		version=&quot;${realFeatureVersion}&quot;&gt; 
-    	&lt;category name=&quot;${updateSiteCategoryName}&quot;/&gt; 
+    	&lt;category name=&quot;Nightly&quot;/&gt; 
 		&lt;/feature&gt;
 </echo>    	
     </target>

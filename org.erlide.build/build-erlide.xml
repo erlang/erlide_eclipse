@@ -2,10 +2,10 @@
 <project name="erlide" default="runBuild">
 
 	<property name="builder" location="."/>
-	<property name="topLevelElementId" value="org.erlide.sdk"/>
 	<property name="baseLocation" location="${eclipse.home}"/>
 	<property name="base" location="${baseLocation}/.."/>
 	<property name="buildDirectory" location="${buildDirRoot}/eclipse.build"/>
+	<property name="buildResultsDirectory" value="${buildDirectory}/results" />
 	
 	<property name="J2SE-1.5" value="${sun.boot.class.path}"/>
 	<property name="javacSource" value="1.5"/>
@@ -16,6 +16,9 @@
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
 	</tstamp>
 
+	<property name="allFeatures" value="org.erlide.sdk,org.erlide,org.erlide.source"/>
+	<property name="topLevelElementId" value="org.erlide.sdk"/>
+	
 	<property name="outputUpdateJars" value="false"/>
 	<property name="buildType" value="N"/>
 	<property name="buildId" value="${forceContextQualifier}"/>
@@ -59,8 +62,8 @@
     			<include name="org.erlide.ui/**"/>
     			<include name="org.erlide.wrangler.help/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>
-    			<exclude name="**/*.class"/>
-    			<exclude name="**/*.beam"/>
+				<exclude name="**/*.class"/>
+				<exclude name="**/*.beam"/>
     		</fileset>
     	</copy>
     </target>
@@ -68,16 +71,9 @@
 	<!-- ================================= 
           target: runBuild           
          ================================= -->
-    <target name="runBuild" depends="copyProjects, main, callExternalPostBuild">
+    <target name="runBuild" depends="copyProjects, main">
     </target>
 
-	<!--======================================================-->
-	<!-- Call External post build file if available -->
-	<!-- ==================================================== -->
-	<target name="callExternalPostBuild">
-		<ant antfile="${builder}/postBuild.xml"/>
-	</target>
-	
 	<target name="noDefault">
 		<echo message="You must specify a target when invoking this file" />
 	</target>
