@@ -1,6 +1,7 @@
 <project name="Build specific targets and properties" default="noDefault">
-	
-	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${builder}/ant-contrib.jar" />
+	<taskdef resource="org/pluginbuilder/anttasks/pluginbuildertasks.properties" classpath="${builder}/pluginbuilder-anttasks.jar" />
+
 	<target name="allElements">
 		<ant antfile="${genericTargets}" target="${target}" >
 			<property name="type" value="feature" />
@@ -119,10 +120,73 @@
 	<!-- Call External post build file if available -->
 	<!-- ==================================================== -->
 	<target name="callExternalPostBuild">
-		<!--ant antfile="${builder}/postBuild.xml"/-->
+    	<property name="UpdateSiteStagingLocation" value="${buildDirectory}/tmpUpdateSite/updateSite"/>
+    	<property name="UpdateSiteFinalLocation" value="${buildResultsDirectory}/../updateSite"/>
+    	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
+
+       <antcall target="-generateUpdateSite"/>
+    	<antcall target="-createNightlyBuildSiteXml"/>
+    	<copy todir="${UpdateSiteFinalLocation}">
+    		<fileset dir="${UpdateSiteStagingLocation}" includes="**"/>
+    	</copy>
+    	<zip destfile="${buildResultsDirectory}/updateSite-${version.full}.zip" basedir="${UpdateSiteStagingLocation}"/>
+    	<delete dir="${UpdateSiteStagingLocation}/../.." includes="tmpUpdateSite/**" includeemptydirs="true"/>
 	</target>
 	
-	<target name="noDefault">
-		<echo message="You must specify a target when invoking this file" />
-	</target>
+    <!--======================================================-->
+    <!-- UpdateSite Export target, to be called from allElements  -->
+    <!-- ==================================================== -->
+    <target name="updateSiteExport">
+        <ant antfile="build.xml" dir="${buildDirectory}/features/${id}/" target="build.update.jar">
+            <property name="feature.destination" value="${UpdateSiteStagingLocation}/features"/>
+            <property name="plugin.destination" value="${UpdateSiteStagingLocation}/plugins"/>
+        </ant>
+    </target>
+    
+    <target name="-generateUpdateSite">
+        <!-- Create the directory structure -->
+        <mkdir dir="${UpdateSiteStagingLocation}"/>
+        <mkdir dir="${UpdateSiteStagingLocation}/features"/>
+        <mkdir dir="${UpdateSiteStagingLocation}/plugins"/>
+    	<condition property="jarProcessor.sign" value="true">
+    		<istrue value="${signJars}"/>
+    	</condition>
+        <!-- Build the jar files -->
+        <antcall target="allElements">
+            <param name="genericTargets" value="${builder}/customTargets.xml"/>
+            <param name="target" value="updateSiteExport"/>
+        </antcall>
+        <!-- site.xml files for integration and release builds are handled elsewhere -->
+    </target>
+	
+    <target name="-createNightlyBuildSiteXml" if="isNightlyBuild">
+    	<echo>${siteXmlFile}</echo>
+        <echo file="${siteXmlFile}">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;site&gt;
+		&lt;description&gt;Nightly builds for erlIDE&lt;/description&gt;
+</echo>
+		
+    	<foreach list="${allFeatures}" delimiter="," target="-appendFeatureElement" param="featureId" inheritall="true"/> 
+        <echo file="${siteXmlFile}" append="true">		&lt;category-def name=&quot;Nightly&quot;
+            label=&quot;Nightly builds&quot;&gt;
+		&lt;/category-def&gt;
+&lt;/site&gt;</echo>
+    </target>
+
+	<target name="-appendFeatureElement">
+		<!-- we can not rely on ${version.full} at this point since people could use
+			a fix feature id like 0.5.0.qualifier. ${version.full} would only work if
+			the feature were set to 0.0.0 --> 
+		<property file="${buildDirectory}/finalFeaturesVersions.properties"/>
+		<property name="realFeatureVersion" value="${featureId}"/>
+
+		<echo file="${siteXmlFile}" append="true">		&lt;feature 
+		url=&quot;features/${featureId}_${realFeatureVersion}.jar&quot; 
+		id=&quot;${featureId}&quot; 
+		version=&quot;${realFeatureVersion}&quot;&gt; 
+    	&lt;category name=&quot;Nightly&quot;/&gt; 
+		&lt;/feature&gt;
+</echo>    	
+    </target>
+	
 </project>

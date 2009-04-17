@@ -10,5 +10,5 @@ SET BUILDDIRROOT=c:\temp
 rem -- end of configuration
 
 SET eclipseLauncher=%ECLIPSE_HOME%\plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar
-%JAVA_HOME%\bin\java -jar %eclipseLauncher% -application org.eclipse.ant.core.antRunner -buildfile build-erlide.xml -DerlRoot=%ERLANG_HOME% -DbuildDirRoot=%BUILDDIRROOT% -Xms96m -Xmx256m 2>&1 1>build.log
+%JAVA_HOME%\bin\java -Xms256m -Xmx256m -jar %eclipseLauncher% -application org.eclipse.ant.core.antRunner -buildfile build-erlide.xml -DerlRoot=%ERLANG_HOME% -DbuildDirRoot=%BUILDDIRROOT% 2>&1 1>build.log
 

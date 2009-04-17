@@ -4,13 +4,10 @@
 
     <target name="main">
 
-		<property name="buildResultsDirectory" value="${buildDirectory}/results"/>
     	<property name="UpdateSiteStagingLocation" value="${buildDirectory}/tmpUpdateSite/updateSite"/>
     	<property name="UpdateSiteFinalLocation" value="${buildResultsDirectory}/../updateSite"/>
     	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
 
-    	<echoproperties/>
-    	
        <antcall target="-generateUpdateSite"/>
     	<antcall target="-createNightlyBuildSiteXml"/>
     	<copy todir="${UpdateSiteFinalLocation}">
@@ -44,8 +41,6 @@
             <property name="target" value="updateSiteExport"/>
         </ant>
         <!-- site.xml files for integration and release builds are handled elsewhere -->
-        <antcall target="-createNightlyBuildSiteXml"/>
-        <!--delete dir="${buildDirectory}/temp.updatesite"/-->
     </target>
 	
     <target name="-createNightlyBuildSiteXml" if="isNightlyBuild">
