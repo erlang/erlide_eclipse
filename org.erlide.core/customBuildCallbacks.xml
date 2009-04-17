@@ -23,14 +23,15 @@
 	</target>
 
 	<target name="post.erlide-core.jar">
-		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true" parallel="true">
+		<apply executable="${erlRoot}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="erl"/>
 			<fileset dir="erl">
 				<include name="**/*.yrl"/>
 			</fileset>
 		</apply>
-		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true" parallel="true">
+		<mkdir dir="ebin"/>
+		<apply executable="${erlRoot}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>

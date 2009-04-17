@@ -23,7 +23,8 @@
 	</target>
 
 	<target name="post.wrangler.jar">
-		<apply executable="${erlRoot}/bin/erlc.exe" failonerror="true" parallel="true">
+		<mkdir dir="wrangler/ebin"/>
+		<apply executable="${erlRoot}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="wrangler/ebin"/>
 			<arg value="-I"/>
