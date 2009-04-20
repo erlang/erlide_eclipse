@@ -235,6 +235,7 @@ public class ErlideDebug {
 		return null;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangTuple tracing(final Backend backend,
 			final boolean trace, final OtpErlangPid meta) {
 		try {

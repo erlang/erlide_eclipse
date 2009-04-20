@@ -20,10 +20,10 @@ public class DuplicateCodeInputDialog extends Dialog {
 
 	private String title;
 
-	private Integer minToks;
-	private Integer minClones;
-	private Boolean workOnlyInCurrentFile;
-	private Boolean isFinished = false;
+	private int minToks;
+	private int minClones;
+	private boolean workOnlyInCurrentFile;
+	private boolean isFinished = false;
 
 	private Button okButton;
 	private Text minToksText;
@@ -55,10 +55,12 @@ public class DuplicateCodeInputDialog extends Dialog {
 		return isFinished;
 	}
 
+	@Override
 	protected void buttonPressed(int buttonId) {
 		super.buttonPressed(buttonId);
 	}
 
+	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		if (title != null) {
@@ -66,6 +68,7 @@ public class DuplicateCodeInputDialog extends Dialog {
 		}
 	}
 
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Cancel buttons by default
 		okButton = createButton(parent, IDialogConstants.OK_ID,
@@ -90,6 +93,7 @@ public class DuplicateCodeInputDialog extends Dialog {
 
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		// create composite
 		Composite composite = (Composite) super.createDialogArea(parent);
@@ -162,8 +166,8 @@ public class DuplicateCodeInputDialog extends Dialog {
 		String errorMessage = null;
 		try {
 			workOnlyInCurrentFile = !onlyInFileCheckBoxButton.getSelection();
-			minToks = new Integer(minToksText.getText());
-			minClones = new Integer(minClonesText.getText());
+			minToks = Integer.parseInt(minToksText.getText());
+			minClones = Integer.parseInt(minClonesText.getText());
 			setErrorMessage(null);
 		} catch (Exception e) {
 			errorMessage = "Minimal number of clones and tokens should be integers.";

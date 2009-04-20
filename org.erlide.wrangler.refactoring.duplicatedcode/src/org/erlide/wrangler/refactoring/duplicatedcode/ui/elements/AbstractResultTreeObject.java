@@ -25,6 +25,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 		return parent;
 	}
 
+	@Override
 	public String toString() {
 		return getName();
 	}

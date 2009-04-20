@@ -14,6 +14,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 	protected int minToks;
 	protected int minClones;
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected IResultParser callRefactoring() throws BackendException,
 			CoreException {

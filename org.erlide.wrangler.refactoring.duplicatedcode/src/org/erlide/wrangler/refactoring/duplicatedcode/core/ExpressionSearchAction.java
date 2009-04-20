@@ -6,6 +6,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected IResultParser callRefactoring() throws BackendException {
 

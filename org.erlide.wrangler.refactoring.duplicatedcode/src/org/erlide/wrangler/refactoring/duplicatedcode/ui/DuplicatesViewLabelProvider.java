@@ -37,17 +37,20 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 				.createImage();
 	}
 
+	@Override
 	public String getText(Object obj) {
 		return obj.toString();
 	}
 
+	@Override
 	public Image getImage(Object obj) {
 		if (obj instanceof DuplicatedFileElement) {
 			return erlangFileImage;
 		} else if (obj instanceof DuplicatedCodeElement) {
 			return duplicateImage;
-		} else if (obj instanceof DuplicatedCodeInstanceElement)
+		} else if (obj instanceof DuplicatedCodeInstanceElement) {
 			return codeSnippetImage;
+		}
 		String imageKey = ISharedImages.IMG_OBJ_FILE;
 		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 	}
