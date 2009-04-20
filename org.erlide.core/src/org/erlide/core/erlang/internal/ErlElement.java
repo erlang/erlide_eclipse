@@ -79,14 +79,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public int fOccurrenceCount = 1;
 
 	/**
-	 * This element's parent, or <code>null</code> if this element does not
-	 * have a parent.
+	 * This element's parent, or <code>null</code> if this element does not have
+	 * a parent.
 	 */
 	protected IErlElement fParent;
 
 	/**
-	 * This element's name, or an empty <code>String</code> if this element
-	 * does not have a name.
+	 * This element's name, or an empty <code>String</code> if this element does
+	 * not have a name.
 	 */
 	protected String fName;
 
@@ -111,6 +111,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	protected ErlElement(final IErlElement parent, final String name) {
 		fParent = parent;
 		fName = name;
+		Assert.isNotNull(fName);
 	}
 
 	/**
@@ -208,8 +209,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * Returns a collection of (immediate) children of this node of the
 	 * specified type.
 	 * 
-	 * @param type -
-	 *            one of the constants defined by IErlElement
+	 * @param type
+	 *            - one of the constants defined by IErlElement
 	 */
 	public ArrayList<? extends IErlElement> getChildrenOfType(final Kind type)
 			throws ErlModelException {
@@ -282,8 +283,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
 	/**
 	 * Returns the element that is located at the given source position in this
-	 * element. This is a helper method for <code>IErlModule#getElementAt</code> ,
-	 * and only works on compilation units and types. The position given is
+	 * element. This is a helper method for <code>IErlModule#getElementAt</code>
+	 * , and only works on compilation units and types. The position given is
 	 * known to be within this element's source range already, and if no finer
 	 * grained element is found at the position, this element is returned.
 	 */
