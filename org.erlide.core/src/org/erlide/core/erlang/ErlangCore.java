@@ -149,9 +149,11 @@ public final class ErlangCore {
 				return o2.getName().compareTo(o1.getName());
 			}
 		});
-		getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
-		getRuntimeInfoManager().setErlideRuntime(
-				getRuntimeInfoManager().getDefaultRuntime());
+		if (list.size() > 0) {
+			getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
+			getRuntimeInfoManager().setErlideRuntime(
+					getRuntimeInfoManager().getDefaultRuntime());
+		}
 	}
 
 	private static Collection<File> findRuntime(final String loc) {
