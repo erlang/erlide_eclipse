@@ -12,6 +12,9 @@
    <feature url="features/org.erlide_0.5.3.200904161018.jar" id="org.erlide" version="0.5.3.200904161018">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide.wrangler_0.5.3.200904200949.jar" id="org.erlide.wrangler" version="0.5.3.200904200949">
+      <category name="unstable"/>
+   </feature>
    <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.
