@@ -253,9 +253,6 @@ litigation.
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring"/>
-      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.3.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

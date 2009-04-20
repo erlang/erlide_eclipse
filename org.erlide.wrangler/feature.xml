@@ -17,6 +17,21 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.erlide.jinterface"/>
+      <import plugin="org.erlide.core"/>
+      <import plugin="org.erlide.ui"/>
+   </requires>
+
    <plugin
          id="org.erlide.wrangler.help"
          download-size="0"
