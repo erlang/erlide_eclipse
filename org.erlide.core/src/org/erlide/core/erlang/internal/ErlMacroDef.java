@@ -25,10 +25,10 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 	public ErlMacroDef(final IErlModule parent, final String extra) {
 		super(parent, "macro_definition");
 		this.extra = extra;
-		macro = uptoComma(extra);
+		macro = uptoCommaOrParen(extra);
 	}
 
-	private String uptoComma(final String s) {
+	private String uptoCommaOrParen(final String s) {
 		if (s == null || s.length() == 0) {
 			return s;
 		}
@@ -39,11 +39,15 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 		if (i == -1) {
 			i = 0;
 		}
-		i = s.indexOf(',', i);
-		if (i == 0) {
-			i = s.length();
+		int j = s.indexOf(',', i);
+		if (j == 0 || j == -1) {
+			j = s.length();
 		}
-		return s.substring(0, i);
+		final int k = s.indexOf('(', i);
+		if (k < j && k > 0) {
+			j = k;
+		}
+		return s.substring(0, j);
 	}
 
 	public Kind getKind() {

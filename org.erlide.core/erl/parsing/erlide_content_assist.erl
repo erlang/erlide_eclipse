@@ -88,6 +88,8 @@ check_record_tokens([#token{kind='{'} | Rest], _) ->
     check_record_tokens(Rest, true);
 check_record_tokens([#token{kind=','} | Rest], _) ->
     check_record_tokens(Rest, true);
+check_record_tokens([#token{kind=dot} | Rest], A) ->
+    check_record_tokens(Rest, A);
 check_record_tokens([#token{kind=atom} | Rest], A) ->
     check_record_tokens(Rest, A);
 check_record_tokens(L, _) ->
