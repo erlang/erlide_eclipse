@@ -25,7 +25,7 @@ default_indent_prefs() ->
      {after_binary_op, 4},
      {before_arrow, 2},
      {after_arrow, 4},
-     {after_unary_op, 4},
+     {after_unary_op, 4}, 
      {clause, 4},
      {'case', 4},
      {'try', 4},

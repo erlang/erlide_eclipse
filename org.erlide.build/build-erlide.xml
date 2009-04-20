@@ -16,7 +16,7 @@
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
 	</tstamp>
 
-	<property name="allFeatures" value="org.erlide.sdk,org.erlide,org.erlide.source"/>
+	<property name="allFeatures" value="org.erlide"/>
 	<property name="topLevelElementId" value="org.erlide.sdk"/>
 	
 	<property name="outputUpdateJars" value="false"/>
@@ -61,6 +61,7 @@
     			<include name="org.erlide.ui/**"/>
     			<include name="org.erlide.wrangler.help/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>
+    			<include name="org.erlide.wrangler.refactoring.duplicatedcode/**"/>
 				<exclude name="**/*.class"/>
 				<exclude name="**/*.beam"/>
     		</fileset>
