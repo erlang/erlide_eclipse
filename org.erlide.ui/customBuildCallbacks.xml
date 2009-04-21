@@ -24,7 +24,7 @@
 	
 	<target name="post.erlide-ui.jar">
 		<mkdir dir="ebin"/>
-		<apply executable="${erlRoot}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>

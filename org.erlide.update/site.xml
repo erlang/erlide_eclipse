@@ -9,7 +9,7 @@
    <feature url="features/org.erlide_0.5.2.200904081211.jar" id="org.erlide" version="0.5.2.200904081211">
       <category name="unstable"/>
    </feature>
-   <feature url="features/org.erlide_0.5.3.200904161018.jar" id="org.erlide" version="0.5.3.200904161018">
+   <feature url="features/org.erlide_0.5.3.200904211139.jar" id="org.erlide" version="0.5.3.200904211139">
       <category name="unstable"/>
    </feature>
    <feature url="features/org.erlide.wrangler_0.5.3.200904200949.jar" id="org.erlide.wrangler" version="0.5.3.200904200949">

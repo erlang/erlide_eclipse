@@ -225,6 +225,15 @@ litigation.
    </url>
 
    <includes
+         id="org.erlide"
+         version="0.0.0"/>
+
+   <includes
+         id="org.erlide.source"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
          id="org.erlide.wrangler"
          version="0.0.0"
 		 optional="true"/>
@@ -233,14 +242,5 @@ litigation.
          id="org.erlide.wrangler.source"
          version="0.0.0"
 		 optional="true"/>
-
-   <includes
-         id="org.erlide"
-         version="0.0.0"/>
-
-   <includes
-         id="org.erlide.source"
-         version="0.0.0"
-         optional="true"/>
 
 </feature>

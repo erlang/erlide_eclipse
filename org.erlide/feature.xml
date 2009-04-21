@@ -227,12 +227,6 @@ litigation.
       <update label="Erlide main update site" url="http://erlide.org/update/"/>
    </url>
 
-   <includes
-         id="org.erlide.wrangler"
-         version="0.0.0"
-         name="Wrangler refactoring"
-         optional="true"/>
-
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
