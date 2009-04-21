@@ -170,8 +170,8 @@ public class RuntimeInfo implements Cloneable {
 				getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
-		boolean useLongName = System.getProperty("erlide.longname", "true").equals(
-				"true");
+		boolean useLongName = System.getProperty("erlide.longname", "true")
+				.equals("true");
 		String nameTag = useLongName ? " -name " : " -sname ";
 		cmd += nameTag + BackendManager.buildNodeName(getNodeName()) + cky;
 		return cmd;
@@ -280,7 +280,7 @@ public class RuntimeInfo implements Cloneable {
 					}
 				}
 			});
-			if (kernels.length > 0) {
+			if (kernels != null && kernels.length > 0) {
 				final int[] krnls = new int[kernels.length];
 				for (int i = 0; i < kernels.length; i++) {
 					String k = kernels[i].getName();
