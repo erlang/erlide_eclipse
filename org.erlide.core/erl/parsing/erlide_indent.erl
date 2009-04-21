@@ -55,7 +55,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                 {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
                     Tr = erlide_scanner:convert_tokens(T) ++
-			     [#token{kind=eof, line=tuple_size(LineOffsets)+1}],
+			     [#token{kind=eof, line=size(LineOffsets)+1}],
                     LineN = case N of
                                 -1 ->
                                     size(LineOffsets)+1;
