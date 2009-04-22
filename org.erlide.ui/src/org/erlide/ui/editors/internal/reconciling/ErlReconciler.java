@@ -101,8 +101,11 @@ public class ErlReconciler implements IReconciler {
 		 */
 		public void suspendCallerWhileDirty() {
 			boolean isDirty = true;
-			while (isDirty) {
+			int i = 10;
+			// we don't want to sit in this loop forever if something crashes
+			while (i > 0 && isDirty) {
 				synchronized (fDirtyRegionQueue) {
+					i--;
 					isDirty = !fDirtyRegionQueue.isEmpty();
 					if (isDirty) {
 						try {
