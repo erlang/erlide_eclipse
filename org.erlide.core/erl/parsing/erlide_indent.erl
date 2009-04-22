@@ -11,8 +11,7 @@
 %% Exported Functions
 %%
 
--export([indent_line/5,
-         indent_lines/5]).
+-export([indent_line/6, indent_lines/6]).
 
 %-define(IO_FORMAT_DEBUG, 1).
 %-define(DEBUG, 1).
@@ -41,10 +40,10 @@ default_indent_prefs() ->
 %%
 %% API Functions
 %%
-indent_line(St, OldLine, CommandText, Tablength, Prefs) ->
-    indent_line(St, OldLine, CommandText, -1, Tablength, get_prefs(Prefs)).
+indent_line(St, OldLine, CommandText, Tablength, UseTabs, Prefs) ->
+    indent_line(St, OldLine, CommandText, -1, Tablength, UseTabs, get_prefs(Prefs)).
 
-indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
+indent_line(St, OldLine, CommandText, N, Tablength, UseTabs, Prefs) ->
     ?D(St),
     S = erlide_text:detab(St, Tablength, all),
     StrippedCommandText = erlide_text:left_strip(CommandText),
@@ -66,14 +65,14 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
                         {I, true} ->
                             ?D(I),
                             IS0 = reindent_line("", I),
-                            IS = erlide_text:entab(IS0, Tablength, left),
+                            IS = entab(IS0, UseTabs, Tablength),
                             {IS, erlide_text:initial_whitespace(OldLine), AddNL};
                         {I, false} ->
                             ?D(I),
                             case AddNL of
                                 false ->
 				    IS0 = reindent_line("", I),
-				    IS = erlide_text:entab(IS0, Tablength, left),
+				    IS =  entab(IS0, UseTabs, Tablength),
                                     {IS, 0, false};
                                 true -> {"", 0, false}
                             end
@@ -84,6 +83,11 @@ indent_line(St, OldLine, CommandText, N, Tablength, Prefs) ->
         false ->
             ok
     end.
+
+entab(S, false, _Tablength) ->
+    S;
+entab(S, true, Tablength) ->
+    erlide_text:entab(S, Tablength, left).
 
 get_key(",") -> comma_nl;
 get_key(',') -> comma_nl;
@@ -147,9 +151,9 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
     ?D({O, LO, C, _A}),
     TI+C.
 
-indent_lines(S, From, Length, Tablength, Prefs) ->
+indent_lines(S, From, Length, Tablength, UseTabs, Prefs) ->
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From, Length),
-    do_indent_lines(Lines, Tablength, First, get_prefs(Prefs), FirstLineNum, "").
+    do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, "").
 
 %%
 %% Local Functions
@@ -157,14 +161,14 @@ indent_lines(S, From, Length, Tablength, Prefs) ->
 
 %% TODO: Add description of asd/function_arity
 %%
-do_indent_lines([], _, _, _, _, A) ->
+do_indent_lines([], _, _, _, _, _, A) ->
     A;
-do_indent_lines([Line | Rest], Tablength, Text, Prefs, N, Acc) ->
-    {NewI, _OldI, _AddNL} = indent_line(Text ++ Line, Line, "", N, Tablength, Prefs),
+do_indent_lines([Line | Rest], Tablength, UseTabs, Text, Prefs, N, Acc) ->
+    {NewI, _OldI, _AddNL} = indent_line(Text ++ Line, Line, "", N, Tablength, UseTabs, Prefs),
     NewLine0 = reindent_line(Line, NewI),
-    NewLine = erlide_text:entab(NewLine0, Tablength, left),
+    NewLine = entab(NewLine0, UseTabs, Tablength),
     ?D(NewLine),
-    do_indent_lines(Rest, Tablength, Text ++ NewLine, Prefs, N+1, Acc ++ NewLine).
+    do_indent_lines(Rest, Tablength, UseTabs, Text ++ NewLine, Prefs, N+1, Acc ++ NewLine).
 
 %%
 reindent_line(" " ++ S, I) ->

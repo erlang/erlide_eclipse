@@ -1,10 +1,10 @@
 package erlang;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -21,9 +21,7 @@ public class ErlideIndent {
 			final Map<String, String> m) {
 		final List<OtpErlangTuple> result = new ArrayList<OtpErlangTuple>(m
 				.size());
-		final Iterator<Map.Entry<String, String>> im = m.entrySet().iterator();
-		while (im.hasNext()) {
-			final Map.Entry<String, String> e = im.next();
+		for (final Map.Entry<String, String> e : m.entrySet()) {
 			final OtpErlangAtom a = new OtpErlangAtom(e.getKey());
 			final String s = e.getValue();
 			int n;
@@ -45,10 +43,12 @@ public class ErlideIndent {
 	@SuppressWarnings("boxing")
 	public static IndentResult indentLine(final Backend b,
 			final String oldLine, final String txt, final String insertedText,
-			final int tabw, final Map<String, String> prefs)
-			throws BackendException, OtpErlangRangeException {
+			final int tabw, final boolean useTabs,
+			final Map<String, String> prefs) throws BackendException,
+			OtpErlangRangeException {
+		ErlLogger.debug("indentLine '%s'", txt);
 		final OtpErlangObject o = b.call("erlide_indent", "indent_line",
-				"sssix", txt, oldLine, insertedText, tabw,
+				"sssiox", txt, oldLine, insertedText, tabw, useTabs,
 				fixIndentPrefs(prefs));
 		return new IndentResult(o);
 	}
@@ -56,10 +56,10 @@ public class ErlideIndent {
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject indentLines(final Backend b,
 			final int offset, final int length, final String text,
-			final int tabw, final Map<String, String> prefs)
-			throws BackendException {
+			final int tabw, final boolean useTabs,
+			final Map<String, String> prefs) throws BackendException {
 		final OtpErlangObject o = b.call(20000, "erlide_indent",
-				"indent_lines", "siiilx", text, offset, length, tabw,
+				"indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
 				fixIndentPrefs(prefs));
 		return o;
 	}

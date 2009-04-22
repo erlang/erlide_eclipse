@@ -88,8 +88,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 			final Map<String, String> prefs = new TreeMap<String, String>();
 			IndentationPreferencePage.addKeysAndPrefs(prefs);
 			SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
+			final boolean useTabs = getUseTabsFromPreferences();
 			final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
-					c.text, tabw, prefs);
+					c.text, tabw, useTabs, prefs);
 
 			if (res.isAddNewLine()) {
 				c.text += "\n";
@@ -105,12 +106,6 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 * @return
 	 */
 	public static int getTabWidthFromPreferences() {
-		if (EditorsUI
-				.getPreferenceStore()
-				.getBoolean(
-						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS)) {
-			return 0;
-		}
 		int tabw = ErlideUIPlugin
 				.getDefault()
 				.getPreferenceStore()
@@ -123,6 +118,13 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 							AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 		}
 		return tabw;
+	}
+
+	public static boolean getUseTabsFromPreferences() {
+		return !EditorsUI
+				.getPreferenceStore()
+				.getBoolean(
+						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);
 	}
 
 	/**
