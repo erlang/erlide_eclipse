@@ -499,8 +499,12 @@ public class ErlReconciler implements IReconciler {
 	 */
 	protected void createDirtyRegion(final DocumentEvent e) {
 		synchronized (fDirtyRegionQueue) {
+			String text = e.getText();
+			if (text == null) {
+				text = "";
+			}
 			fDirtyRegionQueue.addDirtyRegion(new ErlDirtyRegion(e.getOffset(),
-					e.getLength(), e.getText()));
+					e.getLength(), text));
 		}
 	}
 
