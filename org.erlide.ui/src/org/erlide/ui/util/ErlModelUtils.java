@@ -422,6 +422,9 @@ public class ErlModelUtils {
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName);
+			if (!org.erlide.core.util.PluginUtils.isOnSourcePath(r.getParent())) {
+				r = null;
+			}
 		}
 		if (r == null) {
 			try {
