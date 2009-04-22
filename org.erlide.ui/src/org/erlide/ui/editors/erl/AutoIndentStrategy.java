@@ -62,6 +62,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 			throws BadLocationException {
 		final int offset = c.offset;
 		String txt = null;
+		fEditor.reconcileNow();
 		final IErlElement element = fEditor.getElementAt(offset, false);
 		final IErlMember member = (IErlMember) element;
 		if (member != null) {
