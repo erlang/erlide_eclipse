@@ -25,7 +25,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -86,6 +88,7 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ContentAssistAction;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ResourceAction;
@@ -189,6 +192,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private CompileAction compileAction;
 
+	private ScannerListener scannerListener;
+
 	/**
 	 * Simple constructor
 	 * 
@@ -270,6 +275,22 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	@Override
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
+	}
+
+	private final class ScannerListener implements IDocumentListener {
+		public ScannerListener() {
+		}
+
+		public void documentAboutToBeChanged(DocumentEvent event) {
+		}
+
+		public void documentChanged(DocumentEvent event) {
+			//System.out.println("" + getModule() + "<<< " + event);
+		}
+
+		public void documentOpened() {
+			//System.out.println("" + getModule() + "!!!");
+		}
 	}
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {
@@ -627,7 +648,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	@Override
 	protected void doSetInput(final IEditorInput input) throws CoreException {
+		final IDocumentProvider provider = getDocumentProvider();
+		IDocument document;
 		if (input != getEditorInput()) {
+			document = provider.getDocument(getEditorInput());
+			if (document != null) {
+				document.removeDocumentListener(scannerListener);
+			}
 			disposeModule();
 		}
 
@@ -639,6 +666,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 		ErlModelUtils.reenableScanner(this);
 		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
+
+		document = provider.getDocument(input);
+		if (document != null) {
+			scannerListener = new ScannerListener();
+			document.addDocumentListener(scannerListener);
+			scannerListener.documentOpened();
+			if (document.getLength() > 0) {
+				// fake a change if the document already has content
+				scannerListener.documentChanged(new DocumentEvent(document, 0,
+						document.getLength(), document.get()));
+			}
+		}
+
 	}
 
 	@Override
