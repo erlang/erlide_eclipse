@@ -153,8 +153,9 @@ public class ErlideScanner {
 	public static void notifyChange(String module, int offset, int length,
 			String text, long stamp) {
 		try {
-			OtpErlangObject msg = ErlUtils.format("{change, ~a, ~i,  ~i, ~s}",
-					module, offset, length, text);
+			OtpErlangObject msg = ErlUtils.format(
+					"{change, ~a, ~i,  ~i, ~s, ~i}", module, offset, length,
+					text, stamp);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {

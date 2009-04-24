@@ -15,7 +15,7 @@ loop(L) ->
 	receive
 		stop ->
 			ok;
-		{change, _Module, _Offset, _Length, _Text} = Msg ->
+		{change, _Module, _Offset, _Length, _Text, _Stamp} = Msg ->
 			erlide_log:logp({scanner_listener, Msg}),
 			loop(aggregate(Msg, L));
 		{new, _Module} = Msg ->
@@ -35,10 +35,10 @@ loop(L) ->
 			loop([])
 	end.
 
-aggregate(Msg={change, Module, Offset, 0, Text}, L=[{change, Module, Offset2, 0, Text2}|T]) ->
+aggregate(Msg={change, Module, Offset, 0, Text, _Stamp}, L=[{change, Module, Offset2, 0, Text2, Stamp2}|T]) ->
 	case Offset2+length(Text2) of
 		Offset ->
-			[{change, Module, Offset2, 0, Text2++Text}|T];
+			[{change, Module, Offset2, 0, Text2++Text, Stamp2}|T];
 		_ ->
 			[Msg|L]
 	end;

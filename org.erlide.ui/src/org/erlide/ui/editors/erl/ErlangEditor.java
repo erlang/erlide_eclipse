@@ -287,6 +287,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		public void documentChanged(DocumentEvent event) {
+			// System.out.println(event);
 			ErlideScanner.notifyChange(getScanner().getScannerModuleName(),
 					event.getOffset(), event.getLength(), event.getText(),
 					event.getModificationStamp());
