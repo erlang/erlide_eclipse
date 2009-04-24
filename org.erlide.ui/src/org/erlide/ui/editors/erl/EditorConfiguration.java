@@ -26,6 +26,8 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
+import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
@@ -33,6 +35,7 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
@@ -273,6 +276,31 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		if (reconciler != null) {
 			reconciler.reconcileNow();
 		}
+	}
+
+	@Override
+	public IQuickAssistAssistant getQuickAssistAssistant(
+			ISourceViewer sourceViewer) {
+		IQuickAssistAssistant assistant = new QuickAssistAssistant();
+		assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
+		assistant
+				.setInformationControlCreator(getQuickAssistAssistantInformationControlCreator());
+		return assistant;
+	}
+
+	/**
+	 * Returns the information control creator for the quick assist assistant.
+	 * 
+	 * @return the information control creator
+	 * @since 3.3
+	 */
+	private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
+		return new IInformationControlCreator() {
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, EditorsPlugin
+						.getAdditionalInfoAffordanceString());
+			}
+		};
 	}
 
 }
