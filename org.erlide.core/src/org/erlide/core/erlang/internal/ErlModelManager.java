@@ -78,10 +78,6 @@ public class ErlModelManager implements IErlModelManager {
 
 	private final HashSet<String> optionNames = new HashSet<String>(20);
 
-	// private final Map<String, IErlElement> elements = new HashMap<String,
-	// IErlElement>(
-	// 10);
-
 	/**
 	 * Queue of reconcile deltas on working copies that have yet to be fired.
 	 * This is a table form IWorkingCopy to IErlElementDelta
@@ -201,7 +197,7 @@ public class ErlModelManager implements IErlModelManager {
 	 * <li>a <code>.erl</code> file - the element returned is the corresponding
 	 * <code>IErlModule</code></li>
 	 * <li>a <code>.beam</code> file - the element returned is the corresponding
-	 * <code>IClassFile</code></li>
+	 * <code>IBeamFile</code></li>
 	 * </ul>
 	 * <p>
 	 * Creating a Erlang element has the side effect of creating and opening all
@@ -223,8 +219,6 @@ public class ErlModelManager implements IErlModelManager {
 		return null;
 	}
 
-	/**
-	 */
 	public IErlFolder createFolder(final IFolder folder,
 			final IErlElement parent) {
 		if (folder == null) {
@@ -241,10 +235,6 @@ public class ErlModelManager implements IErlModelManager {
 		return f;
 	}
 
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
-	 *      org.erlide.core.erlang.IErlProject)
-	 */
 	public IErlModule createModuleFrom(final IFile file,
 			final IErlElement parent) {
 		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
@@ -283,31 +273,6 @@ public class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile,
-	 *      org.erlide.core.erlang.IErlProject)
-	 */
-	public IErlModule createModuleFrom(final String name, final String text,
-			final IErlElement parent) {
-		// ErlLogger.debug("createModuleFrom:: " + file + " " + project);
-		if (name == null || text == null) {
-			return null;
-		}
-
-		// final String key = project.getName() + "/" + name;
-		// if (elements.containsKey(key)) {
-		// return (IErlModule) elements.get(key);
-		// }
-		// final IPath path = new Path(key);
-		// final String ext = path.getFileExtension();
-		if (ErlideUtil.hasModuleExtension(name)) {
-			final IErlModule module = new ErlModule(parent, name, text, null);
-			// elements.put(key, module);
-			return module;
-		}
-		return null;
-	}
-
-	/**
 	 * Returns the Erlang project corresponding to the given project.
 	 * <p>
 	 * Creating a Erlang Project has the side effect of creating and opening all
@@ -336,45 +301,6 @@ public class ErlModelManager implements IErlModelManager {
 		return erlangModel.createOtpProject(project);
 	}
 
-	/**
-	 * Returns the Erlang element corresponding to the given file, or
-	 * <code>null</code> if unable to associate the given file with a Erlang
-	 * element.
-	 * 
-	 * <p>
-	 * The file must be one of:
-	 * <ul>
-	 * <li>a <code>.Erlang</code> file - the element returned is the
-	 * corresponding <code>IErlModule</code></li>
-	 * <li>a <code>.beam</code> file - the element returned is the corresponding
-	 * <code>IBeamFile</code></li>
-	 * </ul>
-	 * <p>
-	 * Creating a Erlang element has the side effect of creating and opening all
-	 * of the element's parents if they are not yet open.
-	 * 
-	 * @param file
-	 *            the given file
-	 * @return the Erlang element corresponding to the given file, or
-	 *         <code>null</code> if unable to associate the given file with a
-	 *         Erlang element
-	 */
-	// public IErlElement create(final IFile file) {
-	// return create(file, null/* unknown Erlang project */);
-	// }
-	/**
-	 * Create IErlFolder from folder
-	 * <p>
-	 * Creating an Erlang element has the side effect of creating and opening
-	 * all of the element's parents if they are not yet open.
-	 * 
-	 * @param folder
-	 *            the given folder
-	 * @return an Erlang folder
-	 */
-	// public IErlFolder create(final IFolder folder) {
-	// return create(folder, null/* unknown Erlang project */);
-	// }
 	/**
 	 * Returns the Erlang element corresponding to the given resource, or
 	 * <code>null</code> if unable to associate the given resource with a Erlang
@@ -434,23 +360,6 @@ public class ErlModelManager implements IErlModelManager {
 	public IErlModule createModuleFrom(final IFile file) {
 		return createModuleFrom(file, null);
 	}
-
-	// /**
-	// * Update the classpath variable cache
-	// */
-	// public static class PluginPreferencesListener implements
-	// Preferences.IPropertyChangeListener {
-	//
-	// /**
-	// * @see
-	// org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange
-	// (Preferences.PropertyChangeEvent)
-	// */
-	// public void propertyChange(final Preferences.PropertyChangeEvent event) {
-	//
-	// // String propertyName = event.getProperty();
-	// }
-	// }
 
 	class ResourceChangeListener implements IResourceChangeListener {
 		public void resourceChanged(final IResourceChangeEvent event) {
@@ -583,116 +492,12 @@ public class ErlModelManager implements IErlModelManager {
 		// nothing to do
 	}
 
-	/*
-	 * Puts the infos in the given map (keys are IErlangElements and values are
-	 * ErlangElementInfos) in the Erlang model cache in an atomic way. First
-	 * checks that the info for the opened element (or one of its ancestors) has
-	 * not been added to the cache. If it is the case, another thread has opened
-	 * the element (or one of its ancestors). So returns without updating the
-	 * cache.
-	 */
-	// protected synchronized void putInfos(IErlElement openedElement,
-	// Map newElements) {
-	// remove children
-	// Object existingInfo = this.cache.peekAtInfo(openedElement);
-	// if (openedElement instanceof IParent
-	// && existingInfo instanceof ErlElementInfo)
-	// {
-	// IErlElement[] children = ((ErlElementInfo) existingInfo)
-	// .getChildren();
-	// for (int i = 0, size = children.length; i < size; ++i)
-	// {
-	// ErlElement child = (ErlElement) children[i];
-	// try
-	// {
-	// child.close();
-	// }
-	// catch (ErlModelException e)
-	// {
-	// // ignore
-	// }
-	// }
-	// }
-	//
-	// Iterator iterator = newElements.keySet().iterator();
-	// while (iterator.hasNext())
-	// {
-	// IErlElement element = (IErlElement) iterator.next();
-	// Object info = newElements.get(element);
-	// this.cache.putInfo(element, info);
-	// }
-	// }
-	/*
-	 * Removes all cached info for the given element (including all children)
-	 * from the cache. Returns the info for the given element, or null if it was
-	 * closed.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
-	 */
-	public synchronized Object removeInfoAndChildren(final IErlElement element)
-			throws ErlModelException {
-		// Object info = this.cache.peekAtInfo(element);
-		// if (info != null)
-		// {
-		// boolean wasVerbose = false;
-		// try
-		// {
-		// if (verbose)
-		// {
-		// System.out
-		// .println("CLOSING Element (" + Thread.currentThread() + "): " +
-		// element.toStringWithAncestors()); //$NON-NLS-1$//$NON-NLS-2$
-		// wasVerbose = true;
-		// verbose = false;
-		// }
-		// element.closing(info);
-		// if (element instanceof IParent
-		// && info instanceof ErlElementInfo)
-		// {
-		// IErlElement[] children = ((ErlElementInfo) info)
-		// .getChildren();
-		// for (int i = 0, size = children.length; i < size; ++i)
-		// {
-		// ErlElement child = (ErlElement) children[i];
-		// child.close();
-		// }
-		// }
-		// this.cache.removeInfo(element);
-		// if (wasVerbose)
-		// {
-		// System.out
-		// .println("-> Package cache size = " + this.cache.pkgSize());
-		// //$NON-NLS-1$
-		// System.out
-		// .println("-> Openable cache filling ratio = " +
-		// NumberFormat.getInstance().format(this.cache.openableFillingRatio())
-		// + "%"); //$NON-NLS-1$//$NON-NLS-2$
-		// }
-		// }
-		// finally
-		// {
-		// ErlModelManager.verbose = wasVerbose;
-		// }
-		// return info;
-		// }
-		return null;
-	}
-
 	/**
 	 * @see ISaveParticipant
 	 */
 	public void rollback(final ISaveContext context) {
 		// nothing to do
 	}
-
-	/* Unused */
-	/*
-	 * private void saveState(PerProjectInfo info, ISaveContext context) throws
-	 * CoreException { // passed this point, save actions are non trivial if
-	 * (context.getKind() == ISaveContext.SNAPSHOT) { return; } // save built
-	 * state if (info.fTriedRead) { saveBuiltState(info); } }
-	 */
 
 	/**
 	 * @see ISaveParticipant

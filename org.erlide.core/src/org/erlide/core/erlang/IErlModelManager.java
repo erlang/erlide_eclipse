@@ -46,27 +46,9 @@ public interface IErlModelManager extends ISaveParticipant {
 	 */
 	IErlProject createOtpProject(IProject project) throws CoreException;
 
-	/**
-	 * Create a module given name, text and parent (most often an IErlFolder)
-	 * <p>
-	 * Currently used by compare functions
-	 */
-	public IErlModule createModuleFrom(String name, String text,
-			IErlElement parent);
-
 	Object getInfo(IErlElement element);
 
 	IErlModel getErlangModel();
-
-	/*
-	 * Removes all cached info for the given element (including all children)
-	 * from the cache. Returns the info for the given element, or null if it was
-	 * closed.
-	 */
-	/**
-	 * @see org.erlide.core.erlang.IErlModelManager#removeInfoAndChildren(org.erlide.core.erlang.internal.ErlElement)
-	 */
-	Object removeInfoAndChildren(IErlElement element) throws ErlModelException;
 
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#shutdown()

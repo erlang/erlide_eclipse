@@ -289,8 +289,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		public void documentChanged(DocumentEvent event) {
 			// System.out.println(event);
 			ErlideScanner.notifyChange(getScanner().getScannerModuleName(),
-					event.getOffset(), event.getLength(), event.getText(),
-					event.getModificationStamp());
+					event.getOffset(), event.getLength(), event.getText());
 		}
 
 		public void documentOpened() {
@@ -679,8 +678,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			scannerListener.documentOpened();
 			if (document.getLength() > 0) {
 				// fake a change if the document already has content
-				scannerListener.documentChanged(new DocumentEvent(document, 0,
-						document.getLength(), document.get()));
+				// scannerListener.documentChanged(new DocumentEvent(document,
+				// 0,
+				// document.getLength(), document.get()));
 			}
 		}
 

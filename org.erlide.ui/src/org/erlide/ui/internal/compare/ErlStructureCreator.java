@@ -35,9 +35,6 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
-/**
- * 
- */
 public class ErlStructureCreator implements IStructureCreator {
 
 	private static final String NAME = "ErlStructureCreator.name"; //$NON-NLS-1$
@@ -57,7 +54,6 @@ public class ErlStructureCreator implements IStructureCreator {
 	 */
 	public ErlStructureCreator(final String name) {
 		super();
-		// TODO Auto-generated constructor stub
 		// fProject = project;
 		fName = name;
 	}

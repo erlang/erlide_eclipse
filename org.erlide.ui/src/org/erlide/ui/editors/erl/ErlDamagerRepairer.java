@@ -52,10 +52,10 @@ public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 			final IToken token = fScanner.nextToken();
 			if (token == null) {
 				try {
-					ErlLogger.warn("null token from §%s§>>>", fDocument.get(
+					ErlLogger.warn("null token from '%s'>>>", fDocument.get(
 							lastStart, region.getLength()));
 				} catch (BadLocationException e) {
-					ErlLogger.warn("null token from §%s§", fDocument.get());
+					ErlLogger.warn("null token from '%s'", fDocument.get());
 				}
 				break;
 			}
