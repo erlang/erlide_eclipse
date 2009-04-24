@@ -33,4 +33,7 @@ public interface IErlScanner extends IDisposable {
 	// void rescan(String fullText);
 
 	Collection<IErlComment> getComments();
+
+	public String getScannerModuleName();
+
 }

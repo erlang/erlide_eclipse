@@ -130,6 +130,8 @@ import org.erlide.ui.views.outline.ErlangContentProvider;
 import org.erlide.ui.views.outline.ErlangLabelProvider;
 import org.erlide.ui.views.outline.ErlangOutlinePage;
 
+import erlang.ErlideScanner;
+
 /**
  * The actual editor itself
  * 
@@ -285,11 +287,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		public void documentChanged(DocumentEvent event) {
-			//System.out.println("" + getModule() + "<<< " + event);
+			ErlideScanner.notifyChange(getScanner().getScannerModuleName(),
+					event.getOffset(), event.getLength(), event.getText(),
+					event.getModificationStamp());
 		}
 
 		public void documentOpened() {
-			//System.out.println("" + getModule() + "!!!");
+			ErlideScanner.notifyNew(getScanner().getScannerModuleName());
 		}
 	}
 

@@ -7,6 +7,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.ErlUtils;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -146,6 +147,29 @@ public class ErlideScanner {
 			return "";
 		}
 
+	}
+
+	@SuppressWarnings("boxing")
+	public static void notifyChange(String module, int offset, int length,
+			String text, long stamp) {
+		try {
+			OtpErlangObject msg = ErlUtils.format("{change, ~a, ~i,  ~i, ~s}",
+					module, offset, length, text);
+			ErlangCore.getBackendManager().getIdeBackend().send(
+					"erlide_scanner_listener", msg);
+		} catch (final Exception e) {
+			ErlLogger.warn(e);
+		}
+	}
+
+	public static void notifyNew(String module) {
+		try {
+			OtpErlangObject msg = ErlUtils.format("{new, ~a}", module);
+			ErlangCore.getBackendManager().getIdeBackend().send(
+					"erlide_scanner_listener", msg);
+		} catch (final Exception e) {
+			ErlLogger.warn(e);
+		}
 	}
 
 }
