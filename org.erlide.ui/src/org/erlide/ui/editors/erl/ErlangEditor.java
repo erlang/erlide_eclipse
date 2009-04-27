@@ -98,12 +98,12 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.ErlideUtil;
@@ -259,10 +259,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		setSourceViewerConfiguration(cfg);
 	}
 
-	public IErlScanner getScanner() {
-		return ErlModelUtils.getScanner(this);
-	}
-
 	public void disposeModule() {
 		ErlModelUtils.disposeScanner(this);
 		ErlModelUtils.disposeParser(this);
@@ -283,17 +279,21 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		public ScannerListener() {
 		}
 
-		public void documentAboutToBeChanged(DocumentEvent event) {
+		public void documentAboutToBeChanged(final DocumentEvent event) {
 		}
 
-		public void documentChanged(DocumentEvent event) {
+		public void documentChanged(final DocumentEvent event) {
 			// System.out.println(event);
-			ErlideScanner.notifyChange(getScanner().getScannerModuleName(),
-					event.getOffset(), event.getLength(), event.getText());
+			ErlideScanner.notifyChange(getScannerModuleName(), event
+					.getOffset(), event.getLength(), event.getText());
 		}
 
 		public void documentOpened() {
-			ErlideScanner.notifyNew(getScanner().getScannerModuleName());
+			ErlideScanner.notifyNew(getScannerModuleName());
+		}
+
+		private String getScannerModuleName() {
+			return ErlScanner.createScannerModuleName(getModule());
 		}
 	}
 
@@ -1592,8 +1592,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
 		getModule().resetParser(getDocument().get());
-		// ((EditorConfiguration) getSourceViewerConfiguration())
-		// .resetReconciler();
+		((EditorConfiguration) getSourceViewerConfiguration())
+				.resetReconciler();
 	}
 
 	public void reconcileNow() {

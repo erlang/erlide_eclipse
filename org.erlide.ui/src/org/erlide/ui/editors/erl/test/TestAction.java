@@ -46,26 +46,27 @@ public class TestAction extends TextEditorAction {
 	public void run() {
 		super.run();
 		final ITextEditor textEditor = getTextEditor();
-		if (false) {
+		if (true) {
 			final IDocument document = textEditor.getDocumentProvider()
 					.getDocument(textEditor.getEditorInput());
 			final String text = document.get();
 			final String s = ErlideScanner.checkAll(ErlScanner
 					.createScannerModuleName(module), text);
 			ErlLogger.debug("%s", s);
+			return;
 		} else {
 			final ErlangEditor ee = (ErlangEditor) textEditor;
 			ee.reconcileNow();
 		}
 
-		Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (first) {
 			ErlangXref.start(b);
 			ErlangXref.addProject(b, module.getProject());
 			first = false;
 		} else {
-			FunctionRef[] x = ErlangXref.functionUse(b, "erlide_open", "open",
-					4);
+			final FunctionRef[] x = ErlangXref.functionUse(b, "erlide_open",
+					"open", 4);
 			System.out.println(x);
 		}
 
@@ -75,7 +76,7 @@ public class TestAction extends TextEditorAction {
 			System.out.println(deps.toString());
 			deps = module.getAllDependents();
 			System.out.println(deps.toString());
-		} catch (ErlModelException e) {
+		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
 

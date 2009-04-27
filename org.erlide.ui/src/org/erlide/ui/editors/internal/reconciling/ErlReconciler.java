@@ -639,4 +639,13 @@ public class ErlReconciler implements IReconciler {
 		fThread.suspendCallerWhileDirty();
 	}
 
+	public void reset() {
+		if (fIsIncrementalReconciler) {
+			synchronized (fDirtyRegionQueue) {
+				fDirtyRegionQueue.purgeQueue();
+			}
+			fThread.reset();
+		}
+	}
+
 }

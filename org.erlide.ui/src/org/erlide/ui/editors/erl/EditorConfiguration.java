@@ -268,7 +268,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	public void resetReconciler() {
 		if (reconciler != null) {
-			reconciler.forceReconciling();
+			reconciler.reset();
 		}
 	}
 
@@ -280,8 +280,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 
 	@Override
 	public IQuickAssistAssistant getQuickAssistAssistant(
-			ISourceViewer sourceViewer) {
-		IQuickAssistAssistant assistant = new QuickAssistAssistant();
+			final ISourceViewer sourceViewer) {
+		final IQuickAssistAssistant assistant = new QuickAssistAssistant();
 		assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
 		assistant
 				.setInformationControlCreator(getQuickAssistAssistantInformationControlCreator());
@@ -296,7 +296,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
 		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
+			public IInformationControl createInformationControl(
+					final Shell parent) {
 				return new DefaultInformationControl(parent, EditorsPlugin
 						.getAdditionalInfoAffordanceString());
 			}
