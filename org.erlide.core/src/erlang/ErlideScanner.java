@@ -76,6 +76,8 @@ public class ErlideScanner {
 			final int newTextLen = newText == null ? 0 : newText.length();
 			ErlLogger.debug("replaceText %s %d %d <length %d>", module, offset,
 					removeLength, newTextLen);
+			// ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
+			// removeLength, newText);
 			final OtpErlangObject r = ErlangCore.getBackendManager()
 					.getIdeBackend().call(ERLIDE_SCANNER, "replaceText",
 							"aiis", module, offset, removeLength, newText);
@@ -150,11 +152,11 @@ public class ErlideScanner {
 	}
 
 	@SuppressWarnings("boxing")
-	public static void notifyChange(String module, int offset, int length,
-			String text) {
+	public static void notifyChange(final String module, final int offset,
+			final int length, final String text) {
 		try {
-			OtpErlangObject msg = ErlUtils.format("{change, ~a, ~i,  ~i, ~s}",
-					module, offset, length, text);
+			final OtpErlangObject msg = ErlUtils.format(
+					"{change, ~a, ~i,  ~i, ~s}", module, offset, length, text);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
@@ -162,9 +164,9 @@ public class ErlideScanner {
 		}
 	}
 
-	public static void notifyNew(String module) {
+	public static void notifyNew(final String module) {
 		try {
-			OtpErlangObject msg = ErlUtils.format("{new, ~a}", module);
+			final OtpErlangObject msg = ErlUtils.format("{new, ~a}", module);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
