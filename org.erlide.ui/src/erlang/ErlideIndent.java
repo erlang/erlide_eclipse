@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -46,7 +45,7 @@ public class ErlideIndent {
 			final int tabw, final boolean useTabs,
 			final Map<String, String> prefs) throws BackendException,
 			OtpErlangRangeException {
-		ErlLogger.debug("indentLine '%s'", txt);
+		// ErlLogger.debug("indentLine '%s'", txt);
 		final OtpErlangObject o = b.call("erlide_indent", "indent_line",
 				"sssiox", txt, oldLine, insertedText, tabw, useTabs,
 				fixIndentPrefs(prefs));
