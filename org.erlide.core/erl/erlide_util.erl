@@ -14,7 +14,7 @@
 %%
 %% Exported Functions
 %%
--export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4, read_cache_date_and_version/1]).
+-export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
 -export([pack/1, unpack/1]).
 -export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
 
@@ -69,7 +69,7 @@ renew_cached(SourceFileName, CacheFileName, Version, Term) ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
     ?D(SourceFileName),
-    renew_cache(SourceModDate, Version, CacheFileName, Term).                   
+    renew_cache(SourceModDate, Version, CacheFileName, Term).                    
 
 check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun) ->
     check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, fun(D) -> D end).
