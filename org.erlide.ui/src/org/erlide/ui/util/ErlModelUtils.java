@@ -46,7 +46,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
@@ -159,15 +158,6 @@ public class ErlModelUtils {
 			return new ArrayList<IErlImport>(0);
 		}
 		return mod.getImports();
-	}
-
-	public static IErlScanner getScanner(final ITextEditor editor) {
-		final IErlModule mod = getModule(editor);
-		// ErlLogger.debug("getScanner:: " + editor + " = " + mod);
-		if (mod != null) {
-			return getModule(editor).getScanner();
-		}
-		return null;
 	}
 
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
@@ -422,7 +412,9 @@ public class ErlModelUtils {
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName);
-			if (!org.erlide.core.util.PluginUtils.isOnSourcePath(r.getParent())) {
+			if (r != null
+					&& !org.erlide.core.util.PluginUtils.isOnSourcePath(r
+							.getParent())) {
 				r = null;
 			}
 		}
