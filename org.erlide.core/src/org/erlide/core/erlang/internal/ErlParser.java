@@ -66,11 +66,6 @@ public class ErlParser {
 				+ (module.getResource() == null ? module.getName() : module
 						.getResource().getFullPath()) + " init_len="
 				+ initialText.length() + " initialParse=" + initialParse);
-		// try {
-		// throw new Exception("parsing");
-		// } catch (final Exception e) {
-		// ErlLogger.info(e);
-		// }
 		if (initialParse) {
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
