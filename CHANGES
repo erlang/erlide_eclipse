@@ -1,3 +1,23 @@
+List of user visible changes between 0.5.3 and 0.6.0 (r2571)
+
+    fixed [erlide-Bugs-2771703 ] Can't start Erlide beyond 0.5.0
+
+    http://www.assembla.com/spaces/erlide/tickets/353-completion---X-rec---doesn-t-suggest-the-record-fields
+
+    fix for #2777621
+
+    open should not find files not in the source path
+
+    bug reported by daniel (indenting at eof in a gtt-file).
+
+    http://www.assembla.com/spaces/erlide/tickets/356-indent---cmd-i-crashes-if--Insert-spaces-for-tabs--is-selected
+
+    https://erlide.assembla.com/spaces/erlide/tickets/357-reconciler-can-hang-the-whole-eclipse
+
+    work on #2777890
+
+    raised reconnection delay
+
 List of user visible changes between 0.5.2 and 0.5.3 (r2525)
 
 	http://www.assembla.com/spaces/erlide/tickets/334-add-edoc-exporter
