@@ -26,8 +26,7 @@
                 <div id="logo">
                     <h1>
                         <a href="index.html" accesskey="4">
-                            <span class="_A80103">erl</span>
-                            <span class="_5C4A95">IDE</span>
+                            <span class="_A80103">erl</span><span class="_5C4A95">IDE</span>
                         </a>
                     </h1>
                     <span id="tagline">Turbo charged Erlang development.<br/>Powered by
@@ -43,77 +42,53 @@
                 </div>
 
                 <h3 class="headerstyle">Overview</h3>
-                <p>We are proud to announce the latest version that is <strong>0.5.0</strong> and
+                <p>We are proud to announce the latest version that is <strong>0.6.0</strong> and
                     offers the following features:</p>
                 <ul>
-                    <li>Works with Eclipse 3.3, Java 1.5 and Erlang R11B, or later.</li>
-                    <li>Debugger was improved</li>
+                    <li>Works with <strong>Eclipse 3.4<img src="img/new.gif"/>, Java 1.5 and Erlang R11B</strong>, or later.</li>
+                    <li>Debugger was improved even more</li>
+                    <li><img src="img/new.gif"/>We support refactoring with Wrangler</li>
+                    <li>Added support for Erlang R13</li>
                     <li>Improved Import, can now create links to projects</li>
                     <li>Improved Erlang navigator, tree model even for .hrl files</li>
                     <li>Support for starting Erlang projects</li>
                     <li>Lots of bugs have been fixed.</li>
                     <li>The documentation has been updated and revamped, so be sure to check it
                         out.</li>
+						<li>Added an exporter for edoc (under <span class="guimenu"
+                                    >File</span> &rarr; <span class="guimenuitem">Export...</span>)</li>
+						<li>The console view works better (unfortunately not the one where your projects are launched, yet)</li>
                 </ul>
-                <p>For those that have been using out unstable releases, there are only few new
-                    things. For the others, a list of some of the new things can be found in the <a
-                        href="http://erlide.svn.sourceforge.net/viewvc/erlide/tags/REL-0.5.0.200903041114/ChangeLog?revision=2267&amp;view=markup"
-                        >ChangeLog </a>. </p>
+                <p>For those that have been using our unstable releases, there are only few new
+                    things. A list of the user-visible changes is in the <a
+                        href="http://erlide.svn.sourceforge.net/viewvc/erlide/tags/REL-0.6.0.200904281124/CHANGES?revision=2574&amp;view=markup"
+                        >change log</a>. </p>
 
                 <p>In the nearest future we will focus on the remaining details/bugs and also start
-                    integrating new features, like for example refactoring or a viewer for trace
-                    logs.</p>
-
-                <p class="block"><strong>IMPORTANT</strong>: Please note that this is the last
-                    release that targets Eclipse 3.3. The answers (or more exactly, lack of) to our
-                    previous questions about which versions we should target tell us that everybody
-                    is running 3.4 or newer. If you're still stuck with 3.3 and will need continued
-                    support, please contact us.</p>
+                    integrating new features, like for example a viewer for trace
+                    logs or support for test servers.</p>
 
                 <h3 class="headerstyle" id="installation">Installation</h3>
 
                 <div class="itemizedlist">
                     <ul>
                         <li>
-                            <p>Install Erlang <span class="emphasis">
-                                    <em>R11</em>
-                                </span> or later, if it isn't already present on your system. On
+                            <p>Install Erlang R11B-5 or later, if it isn't already present on your system. On
                                 Windows systems, use a path with no spaces in it.</p>
                         </li>
                         <li>
-                            <p>Install Eclipse. We target primarily version <span class="emphasis">
-                                    <em>3.3</em>
-                                </span>, but <span class="emphasis">
-                                    <em>3.4</em>
-                                </span> works just as well.</p>
+                            <p>Install Eclipse 3.4, if you didn't already.</p>
                         </li>
                         <li>
                             <p>If your network uses a proxy to connect to the internet, fill in the
-                                appropriate data in <span class="guimenu">Window</span> &rarr;
-                                    <span class="guisubmenu">Preferences</span> &rarr; <span
-                                    class="guisubmenu"> Install/Update</span> &rarr; <span
-                                    class="guimenuitem">Proxy settings</span>, or for 3.4 <span
+                                appropriate data in <span
                                     class="guimenu">Window</span> &rarr; <span
                                     class="guisubmenu">Preferences</span> &rarr; <span
                                     class="guisubmenu">General</span> &rarr; <span
                                     class="guimenuitem">Network connections</span>,</p>
                         </li>
                         <li>
-                            <p>In Eclipse 3.3, install Erlide by going to <span class="guimenu"
-                                    >Help</span> &rarr; <span class="guisubmenu">Software
-                                    Updates</span> &rarr; <span class="guisubmenu">Find and
-                                    Install...</span> &rarr; <span class="guimenuitem">Search
-                                    for new features to install</span>. In the dialog, choose <span
-                                    class="guibutton">New remote site</span> and enter <strong
-                                    class="userinput">
-                                    <code>Erlide</code>
-                                </strong> as name and <strong class="userinput">
-                                    <code> http://erlide.org/update</code>
-                                </strong> as URL. Follow the dialogs with the obvious choices and in
-                                the end you will be asked to restart.</p>
-                        </li>
-                        <li>
-                            <p>In Eclipse 3.4 Install Erlide by going to <span class="guimenu"
+                            <p>Install Erlide by going to <span class="guimenu"
                                     >Help</span> &rarr; <span class="guisubmenu">Software
                                     Updates</span> &rarr; <span class="guimenuitem">Available
                                     software</span>. In the dialog, choose <span class="guibutton"
