@@ -51,7 +51,7 @@ import erlang.ErlideBackend;
 public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
-			"erlide.connect.delay", "250"));
+			"erlide.connect.delay", "300"));
 
 	private static int DEFAULT_TIMEOUT;
 	{
@@ -125,9 +125,9 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			fPeer = BackendManager.buildNodeName(label);
 
 			ftRpcBox = fNode.createMbox("rex");
-			int tries = 15;
+			int tries = 20;
 			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (15 - tries)
+				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (20 - tries)
 						* RETRY_DELAY / 5);
 				tries--;
 			}
