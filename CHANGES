@@ -4,7 +4,7 @@ List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     http://www.assembla.com/spaces/erlide/tickets/353-completion---X-rec---doesn-t-suggest-the-record-fields
 
-    fix for #2777621
+    fix for #2777621: also can't get above 0.5.0 working
 
     open should not find files not in the source path
 
@@ -14,7 +14,7 @@ List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     https://erlide.assembla.com/spaces/erlide/tickets/357-reconciler-can-hang-the-whole-eclipse
 
-    work on #2777890
+    work on #2777890: Editor hangs
 
     raised reconnection delay
 
