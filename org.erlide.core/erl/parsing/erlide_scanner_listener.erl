@@ -26,13 +26,13 @@ loop(L) ->
 		stop ->
 			ok;
 		{change, _Module, _Offset, _Length, _Text} = Msg ->
-			erlide_log:logp({scanner_listener, Msg}),
+			%%erlide_log:logp({scanner_listener, Msg}),
 			loop(aggregate(Msg, L));
 		{new, _Module} = Msg ->
-			erlide_log:logp({scanner_listener, Msg}),
+			%%erlide_log:logp({scanner_listener, Msg}),
 			loop(L);
 		Msg ->
-			erlide_log:logp({scanner_listener, unknown, Msg}),
+			%%erlide_log:logp({scanner_listener, unknown, Msg}),
 			loop(L)
 	
 		after 600 ->
@@ -56,7 +56,7 @@ aggregate(Msg, L) ->
 	[Msg|L].
 
 handle(X={change, _Module, _Offset, _Length, _Text}) ->
-	erlide_log:logp({reconcile, X}),
+	%%erlide_log:logp({reconcile, X}),
 	%%erlide_scanner:replaceText(Module, Offset, Length, Text),
 	ok.
 

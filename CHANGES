@@ -18,9 +18,8 @@ List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     raised reconnection delay
 
-List of user visible changes between 0.5.2 and 0.5.3 (r2525)
 
-	http://www.assembla.com/spaces/erlide/tickets/334-add-edoc-exporter
+List of user visible changes between 0.5.2 and 0.5.3 (r2525)
 
 	Macros with lowercase didn't get hover, uppercase didn't complete
 
