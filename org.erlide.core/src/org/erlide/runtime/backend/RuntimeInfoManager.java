@@ -13,6 +13,7 @@ package org.erlide.runtime.backend;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -251,7 +252,11 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	public RuntimeInfo getErlideRuntime() {
 		if (erlideRuntime == null) {
-			RuntimeInfo ri = getRuntimes().iterator().next();
+			RuntimeInfo ri = null;
+			Iterator<RuntimeInfo> iterator = getRuntimes().iterator();
+			if (iterator.hasNext()) {
+				ri = iterator.next();
+			}
 			if (ri != null) {
 				setErlideRuntime(ri);
 			} else {
