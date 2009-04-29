@@ -11,5 +11,5 @@ Export-Package: org.erlide.wrangler.refactoring.duplicatedcode,
  org.erlide.wrangler.refactoring.duplicatedcode.ui,
  org.erlide.wrangler.refactoring.duplicatedcode.ui.elements,
  org.erlide.wrangler.refactoring.util
-Eclipse-PlatformFilter:  (& (osgi.os=linux) (osgi.arch=x86))
+Eclipse-PlatformFilter:  (& (osgi.arch=x86)  (|(osgi.os=linux) (osgi.os=win32)) )
 
