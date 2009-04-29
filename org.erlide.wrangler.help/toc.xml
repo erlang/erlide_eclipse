@@ -18,5 +18,9 @@
       </topic>
       <topic href="html/refactorings.html#Tuple function parameters" label="Tuple function parameters">
       </topic>
+      <topic href="html/refactorings.html#Search expression" label="Search expression">
+      </topic>
+      <topic href="html/refactorings.html#Duplicated code detection" label="Duplicated code detection">
+      </topic>
    </topic>
 </toc>
