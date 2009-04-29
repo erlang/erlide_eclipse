@@ -67,12 +67,13 @@ expr_search_eclipse(FileName, Start, End, TabWidth) ->
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, [], TabWidth),
     case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End, TabWidth) of 
 	[E|Es] -> 
-	    case Es == [] of 
-		true ->
-		    search_one_expr(AnnAST, E);
-		_ -> 
-		    search_expr_seq(AnnAST, [E|Es])
-	    end;
+	    Res = case Es == [] of 
+		      true ->
+			  search_one_expr(AnnAST, E);
+		      _ -> 
+			  search_expr_seq(AnnAST, [E|Es])
+		  end,
+	    {ok, Res};	
 	_   -> {error, "You have not selected an expression!"}
     end.     
 
@@ -234,3 +235,4 @@ var_binding_structure(ASTList) ->
 		    lists:keysort(1, B1)
 	  end,
     Res.
+

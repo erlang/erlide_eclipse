@@ -25,7 +25,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 			this.startOffset = EditorUtil.calculateOffset(startLine,
 					startColumn, doc) - 1;
 			this.endOffset = EditorUtil
-					.calculateOffset(endLine, endColumn, doc) - 1;
+					.calculateOffset(endLine, endColumn, doc) - 2;
 			this.codePartString = EditorUtil.getTextSegment(startOffset,
 					endOffset, doc);
 		} catch (BadLocationException e) {

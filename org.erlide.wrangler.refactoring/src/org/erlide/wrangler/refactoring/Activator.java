@@ -57,13 +57,8 @@ public class Activator extends AbstractUIPlugin {
 	private void initWrangler() throws CoreException {
 		URL url;
 		try {
-			Bundle b = getDefault().getBundle();
-			url = FileLocator.find(b, new Path(""), null);
-			url = FileLocator.resolve(url);
-
-			ErlLogger.debug("Wrangler installation found at: " + url);
-
-			IPath wranglerRootPath = new Path(url.getPath()).append("wrangler");
+			Path pluginPath = getPluginPath();
+			IPath wranglerRootPath = pluginPath.append("wrangler");
 			String wranglerEbinPath = wranglerRootPath.append("ebin")
 					.toOSString();
 			// FIXME: grant that the source is shipped with the release or move
@@ -106,6 +101,18 @@ public class Activator extends AbstractUIPlugin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Path getPluginPath() throws IOException {
+		URL url;
+		Bundle b = getDefault().getBundle();
+		url = FileLocator.find(b, new Path(""), null);
+		url = FileLocator.resolve(url);
+
+		ErlLogger.debug("Wrangler installation found at: " + url);
+
+		Path pluginPath = new Path(url.getPath());
+		return pluginPath;
 	}
 
 	/*

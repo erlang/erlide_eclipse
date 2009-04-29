@@ -44,7 +44,7 @@
 	 move_fun_eclipse/7, fun_extraction_eclipse/5,
 	 gen_fun_1_eclipse/8, gen_fun_2_eclipse/8,
 	 expression_search_eclipse/4,
-	 duplicated_code_in_buffer_eclipse/4, duplicated_code_in_dirs_eclipse/4,
+	 duplicated_code_in_buffer_eclipse/5, duplicated_code_in_dirs_eclipse/5,
 	 tuple_funpar_eclipse/6, tuple_to_record_eclipse/9,
 	 fold_expr_by_loc_eclipse/5, fold_expr_by_name_eclipse/7,
 	 fold_expression_1_eclipse/5,fold_expression_2_eclipse/7,
@@ -290,10 +290,10 @@ move_fun_eclipse(FileName, Line, Col, TargetModName, CreateNewFile, SearchPaths,
 duplicated_code_in_buffer(FileName, MinToks, MinClones, TabWidth) -> 
     try_refactoring(refac_duplicated_code, duplicated_code, [[FileName], MinToks, MinClones, TabWidth]).
 
-%%-spec(duplicated_code_in_buffer_eclipse/4::(dir(), integer(), integer(), integer()) ->
+%%-spec(duplicated_code_in_buffer_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
 %%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
-duplicated_code_in_buffer_eclipse(FileName, MinToks, MinClones, TabWidth) -> 
-    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [[FileName], MinToks, MinClones, TabWidth]).
+duplicated_code_in_buffer_eclipse(FileName, MinToks, MinClones, TabWidth, SuffixTreeExec) -> 
+    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [[FileName], MinToks, MinClones, TabWidth, SuffixTreeExec]).
 %% =====================================================================================
 %% @doc A duplicated code detector that works with multiple Erlang modules.
 %% <p> This function reports duplicated code fragments found in the directories specified by SearchPaths, it does
@@ -314,10 +314,10 @@ duplicated_code_in_buffer_eclipse(FileName, MinToks, MinClones, TabWidth) ->
 duplicated_code_in_dirs(FileDirList, MinToks, MinClones, TabWidth) ->
     try_refactoring(refac_duplicated_code, duplicated_code, [FileDirList, MinToks, MinClones, TabWidth]).
 
-%%-spec(duplicated_code_in_dirs_eclipse/4::(dir(), integer(), integer(), integer()) ->
+%%-spec(duplicated_code_in_dirs_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
 %%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
-duplicated_code_in_dirs_eclipse(FileDirList, MinToks, MinClones, TabWidth) ->
-    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [FileDirList, MinToks, MinClones, TabWidth]).
+duplicated_code_in_dirs_eclipse(FileDirList, MinToks, MinClones, TabWidth, SuffixTreeExec) ->
+    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [FileDirList, MinToks, MinClones, TabWidth, SuffixTreeExec]).
 %% ==================================================================================================
 %% @doc Search for clones of an expression/expression sequence selected in the current file.
 %% 
@@ -707,3 +707,4 @@ try_refactoring(Mod, Fun, Args) ->
  	_E1:_E2->
 	     {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
      end.
+

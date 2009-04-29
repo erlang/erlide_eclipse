@@ -53,10 +53,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 						.intValue(), endLine.intValue(), endColumn.intValue()));
 			}
 
-			DuplicatedCodeInstanceElement defaultInstance = new DuplicatedCodeInstanceElement(
-					parameter.getFile(), parameter.getStartLine(), parameter
-							.getStartColumn(), parameter.getEndLine(),
-					parameter.getEndColumn());
+			DuplicatedCodeInstanceElement defaultInstance = instances.get(0);
 
 			DuplicatedCodeElement result = new DuplicatedCodeElement(
 					defaultInstance);

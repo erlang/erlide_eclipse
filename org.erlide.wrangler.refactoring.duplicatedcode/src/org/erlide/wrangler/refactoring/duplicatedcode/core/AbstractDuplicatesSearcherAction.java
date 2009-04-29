@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -43,6 +44,8 @@ public abstract class AbstractDuplicatesSearcherAction implements
 				displayErrorNotification(rpcErrorMsg);
 			} catch (CoreException e) {
 				displayErrorNotification(rpcErrorMsg);
+			} catch (IOException e) {
+				displayErrorNotification(rpcErrorMsg);
 			}
 		}
 
@@ -55,7 +58,7 @@ public abstract class AbstractDuplicatesSearcherAction implements
 	}
 
 	protected abstract IResultParser callRefactoring() throws BackendException,
-			CoreException;
+			CoreException, IOException;
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		parameter.setSelection(selection);

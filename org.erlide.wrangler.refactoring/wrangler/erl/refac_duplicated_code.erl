@@ -20,7 +20,7 @@
 
 -module(refac_duplicated_code).
 
--export([duplicated_code/4, duplicated_code_eclipse/4]).
+-export([duplicated_code/4, duplicated_code_eclipse/5]).
 
 -export([duplicated_code_1/4]).
 
@@ -145,10 +145,10 @@ loop(Port) ->
 %% </p>
 %% ====================================================================================
 
-%% -spec(duplicated_code_eclipse/4::(dir(), integer(), integer(), integer()) ->
+%% -spec(duplicated_code_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
 %% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
-duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth) ->
+duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTreeExec) ->
      MinLength = case MinLength1 =< 1 of
 		     true -> 
 			 ?DEFAULT_CLONE_LEN;
@@ -158,7 +158,7 @@ duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth) ->
 		    true -> ?DEFAULT_CLONE_MEMBER;
 		    _ -> MinClones1
 		end,
-    start_suffix_tree_clone_detector(),
+    start(SuffixTreeExec),
     {Cs5, _FileNames} = duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth),
     remove_sub_clones(Cs5).
     

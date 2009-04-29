@@ -34,7 +34,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			// TODO testing all cases
 			if (object instanceof OtpErlangTuple) {
 				OtpErlangTuple objectTuple = (OtpErlangTuple) object;
-				setUnSuccessful(objectTuple.elementAt(1).toString());
+				setUnSuccessful(((OtpErlangString)objectTuple.elementAt(1)).stringValue());
 
 			} else {
 				OtpErlangList resultList = (OtpErlangList) object;
@@ -81,7 +81,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			IFile file = EditorUtil.geFileFromPath(fileNameStr);
 			DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(file,
 					startLine.intValue(), startCol.intValue(), endLine
-							.intValue(), endCol.intValue());
+							.intValue(), endCol.intValue() + 1);
 			if (values.containsKey(file)) {
 				values.get(file).add(instance);
 			} else {

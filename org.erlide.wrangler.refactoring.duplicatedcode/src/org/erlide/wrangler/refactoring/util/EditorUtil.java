@@ -105,7 +105,7 @@ public class EditorUtil {
 
 	static public String getTextSegment(int startOffset, int endOffset,
 			IDocument doc) throws BadLocationException {
-		String s = doc.get(startOffset, endOffset - startOffset + 1);
+		String s = doc.get(startOffset, endOffset - startOffset +1);
 		return s;
 	}
 
@@ -125,9 +125,7 @@ public class EditorUtil {
 
 	static public void highlightSelection(int startOffset, int endOffset,
 			ITextEditor editor) {
-		editor
-				.setHighlightRange(startOffset, endOffset - startOffset + 1,
-						true);
+		editor.setHighlightRange(startOffset, endOffset - startOffset + 1,true);
 		editor.selectAndReveal(startOffset, endOffset - startOffset + 1);
 	}
 
