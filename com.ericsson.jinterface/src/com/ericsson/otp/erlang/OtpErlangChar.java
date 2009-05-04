@@ -31,7 +31,7 @@ public class OtpErlangChar extends OtpErlangLong implements Serializable,
      * Create an Erlang integer from the given value.
      * 
      * @param c
-     *                the char value to use.
+     *            the char value to use.
      */
     public OtpErlangChar(final char c) {
 	super(c);
@@ -42,19 +42,20 @@ public class OtpErlangChar extends OtpErlangLong implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *                the stream containing the encoded value.
+     *            the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang integer.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as a char.
+     *                if the value is too large to be represented as a char.
      */
     public OtpErlangChar(final OtpInputStream buf)
 	    throws OtpErlangRangeException, OtpErlangDecodeException {
 	super(buf);
 
+	@SuppressWarnings("unused")
 	final char i = charValue();
     }
 }

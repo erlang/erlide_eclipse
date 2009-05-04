@@ -39,19 +39,20 @@ public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
      * external format.
      * 
      * @param buf
-     *                the stream containing the encoded value.
+     *            the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang float.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang float.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value cannot be represented as a Java float.
+     *                if the value cannot be represented as a Java float.
      */
     public OtpErlangFloat(final OtpInputStream buf)
 	    throws OtpErlangDecodeException, OtpErlangRangeException {
 	super(buf);
 
+	@SuppressWarnings("unused")
 	final float f = floatValue();
     }
 }

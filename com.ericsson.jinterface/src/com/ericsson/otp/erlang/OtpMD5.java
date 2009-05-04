@@ -143,6 +143,7 @@ class OtpMD5 {
 
     }
 
+    @SuppressWarnings("unused")
     private void dumpstate() {
 	System.out.println("state = {" + state[0] + ", " + state[1] + ", "
 		+ state[2] + ", " + state[3] + "}");

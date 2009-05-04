@@ -1016,6 +1016,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    }
 	    return new OtpErlangFun(pid, module, index, uniq, freeVars);
 	} else if (tag == OtpExternal.newFunTag) {
+	    @SuppressWarnings("unused")
 	    final int n = read4BE();
 	    final int arity = read1();
 	    final byte[] md5 = new byte[16];
@@ -1078,9 +1079,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    intbuf = new int[len];
 	    for (int i = 0; i < len; i++) {
 		intbuf[i] = read_int();
-		if (! OtpErlangString.isValidCodePoint(intbuf[i])) {
-		    throw new OtpErlangDecodeException
-			("Invalid CodePoint: " + intbuf[i]);
+		if (!OtpErlangString.isValidCodePoint(intbuf[i])) {
+		    throw new OtpErlangDecodeException("Invalid CodePoint: "
+			    + intbuf[i]);
 		}
 	    }
 	    read_nil();
@@ -1111,8 +1112,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	final int size = read4BE();
 	final byte[] buf = new byte[size];
-	final java.util.zip.InflaterInputStream is = 
-	    new java.util.zip.InflaterInputStream(this);
+	final java.util.zip.InflaterInputStream is = new java.util.zip.InflaterInputStream(
+		this);
 	try {
 	    final int dsize = is.read(buf, 0, size);
 	    if (dsize != size) {

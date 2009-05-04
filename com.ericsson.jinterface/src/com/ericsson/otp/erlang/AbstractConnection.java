@@ -489,6 +489,7 @@ public abstract class AbstractConnection extends Thread {
 	do_send(header);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void run() {
 	if (!connected) {

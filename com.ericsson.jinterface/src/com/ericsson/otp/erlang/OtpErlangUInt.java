@@ -31,14 +31,15 @@ public class OtpErlangUInt extends OtpErlangLong implements Serializable,
      * Create an Erlang integer from the given value.
      * 
      * @param i
-     *                the non-negative int value to use.
+     *            the non-negative int value to use.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is negative.
+     *                if the value is negative.
      */
     public OtpErlangUInt(final int i) throws OtpErlangRangeException {
 	super(i);
 
+	@SuppressWarnings("unused")
 	final int j = uIntValue();
     }
 
@@ -47,20 +48,21 @@ public class OtpErlangUInt extends OtpErlangLong implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *                the stream containing the encoded value.
+     *            the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang integer.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as an int,
-     *                    or the value is negative.
+     *                if the value is too large to be represented as an int, or
+     *                the value is negative.
      */
     public OtpErlangUInt(final OtpInputStream buf)
 	    throws OtpErlangRangeException, OtpErlangDecodeException {
 	super(buf);
 
+	@SuppressWarnings("unused")
 	final int j = uIntValue();
     }
 }
