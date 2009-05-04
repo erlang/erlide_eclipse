@@ -349,13 +349,17 @@ public final class BackendManager implements IEpmdListener {
 		// TODO which backends?
 	}
 
-	public static String buildNodeName(final String label) {
+	public static String buildNodeName(final String label, boolean longName) {
 		if (label.indexOf('@') > 0) {
 			// ignore unique here?
 			return label;
 		}
-		final String host = getHost();
-		return label + "@" + host;
+		if (longName) {
+			final String host = getHost();
+			return label + "@" + host;
+		} else {
+			return label;
+		}
 	}
 
 	public static String getHost() {
@@ -440,7 +444,7 @@ public final class BackendManager implements IEpmdListener {
 					.entrySet()) {
 				for (Backend be : e.getValue()) {
 					String bnode = be.getInfo().getNodeName();
-					if (buildNodeName(bnode).equals(node)) {
+					if (buildNodeName(bnode, true).equals(node)) {
 						removeExecution(e.getKey(), be);
 						break;
 					}

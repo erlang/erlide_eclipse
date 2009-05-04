@@ -122,7 +122,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed,
 					len, cookie);
 			fNode.registerStatusHandler(this);
-			fPeer = BackendManager.buildNodeName(label);
+			fPeer = BackendManager.buildNodeName(label, true);
 
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 20;

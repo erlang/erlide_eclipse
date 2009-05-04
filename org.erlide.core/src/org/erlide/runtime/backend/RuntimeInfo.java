@@ -173,7 +173,9 @@ public class RuntimeInfo implements Cloneable {
 		boolean useLongName = System.getProperty("erlide.longname", "true")
 				.equals("true");
 		String nameTag = useLongName ? " -name " : " -sname ";
-		cmd += nameTag + BackendManager.buildNodeName(getNodeName()) + cky;
+		cmd += nameTag
+				+ BackendManager.buildNodeName(getNodeName(), useLongName)
+				+ cky;
 		return cmd;
 	}
 
