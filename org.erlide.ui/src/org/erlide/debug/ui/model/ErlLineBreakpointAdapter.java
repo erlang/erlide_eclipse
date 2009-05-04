@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/cpl-v10.html
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at 
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,8 +21,8 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.runtime.debug.ErlDebugConstants;
+import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -32,8 +32,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints
+	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection)
 			throws CoreException {
@@ -68,8 +69,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @seeorg.eclipse.debug.ui.actions.IToggleBreakpointsTarget#
+	 * canToggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart,
+	 * org.eclipse.jface.viewers.ISelection)
 	 */
 	public boolean canToggleLineBreakpoints(IWorkbenchPart part,
 			ISelection selection) {
@@ -95,8 +97,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleMethodBreakpoints
+	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleMethodBreakpoints(IWorkbenchPart part,
 			ISelection selection) throws CoreException {
@@ -105,8 +108,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @seeorg.eclipse.debug.ui.actions.IToggleBreakpointsTarget#
+	 * canToggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart,
+	 * org.eclipse.jface.viewers.ISelection)
 	 */
 	public boolean canToggleMethodBreakpoints(IWorkbenchPart part,
 			ISelection selection) {
@@ -116,8 +120,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleWatchpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleWatchpoints
+	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleWatchpoints(IWorkbenchPart part, ISelection selection)
 			throws CoreException {
@@ -126,8 +131,9 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleWatchpoints(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleWatchpoints
+	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public boolean canToggleWatchpoints(IWorkbenchPart part,
 			ISelection selection) {

@@ -1,8 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at 
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -398,27 +399,27 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 								erlStackFrames, bs);
 					}
 					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-																			// redundant?
-																			// we
-																			// have
-																			// this
-																			// in
-																			// int,
-																			// status
-																			// too
+					// redundant?
+					// we
+					// have
+					// this
+					// in
+					// int,
+					// status
+					// too
 				}
 			} else {
 				if (what == META_EXIT_AT) {
 					erlangProcess.removeStackFrames();
 					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-																			// redundant?
-																			// we
-																			// have
-																			// this
-																			// in
-																			// int,
-																			// status
-																			// too
+					// redundant?
+					// we
+					// have
+					// this
+					// in
+					// int,
+					// status
+					// too
 				}
 			}
 		}

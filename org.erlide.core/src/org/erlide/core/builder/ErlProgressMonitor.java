@@ -1,8 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at 
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -34,8 +35,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#beginTask(String, int)
@@ -45,9 +46,9 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitorWithBlocking</code>
-	 * method forwards to the wrapped progress monitor. Clients may override
-	 * this method to do additional processing.
+	 * This implementation of a <code>IProgressMonitorWithBlocking</code> method
+	 * forwards to the wrapped progress monitor. Clients may override this
+	 * method to do additional processing.
 	 * 
 	 * @see IProgressMonitorWithBlocking#clearBlocked()
 	 * @since 3.0
@@ -59,8 +60,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#done()
@@ -79,8 +80,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#internalWorked(double)
@@ -90,8 +91,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#isCanceled()
@@ -101,9 +102,9 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitorWithBlocking</code>
-	 * method forwards to the wrapped progress monitor. Clients may override
-	 * this method to do additional processing.
+	 * This implementation of a <code>IProgressMonitorWithBlocking</code> method
+	 * forwards to the wrapped progress monitor. Clients may override this
+	 * method to do additional processing.
 	 * 
 	 * @see IProgressMonitorWithBlocking#setBlocked(IStatus)
 	 * @since 3.0
@@ -115,8 +116,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#setCanceled(boolean)
@@ -126,8 +127,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#setTaskName(String)
@@ -137,8 +138,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#subTask(String)
@@ -148,8 +149,8 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	}
 
 	/**
-	 * This implementation of a <code>IProgressMonitor</code> method forwards
-	 * to the wrapped progress monitor. Clients may override this method to do
+	 * This implementation of a <code>IProgressMonitor</code> method forwards to
+	 * the wrapped progress monitor. Clients may override this method to do
 	 * additional processing.
 	 * 
 	 * @see IProgressMonitor#worked(int)
