@@ -55,7 +55,6 @@ public class Activator extends AbstractUIPlugin {
 	 *             detailed exception about the loading process errors
 	 */
 	private void initWrangler() throws CoreException {
-		URL url;
 		try {
 			Path pluginPath = getPluginPath();
 			IPath wranglerRootPath = pluginPath.append("wrangler");

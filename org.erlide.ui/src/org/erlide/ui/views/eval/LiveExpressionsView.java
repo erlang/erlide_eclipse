@@ -88,29 +88,10 @@ public class LiveExpressionsView extends ViewPart implements
 	Backend fBackend;
 
 	static private class LiveExpr {
-
 		String fExpr;
-
-		private boolean fActive = true;
 
 		public LiveExpr(String s) {
 			fExpr = s;
-		}
-
-		public boolean isActive() {
-			return fActive;
-		}
-
-		public void setActive(boolean active) {
-			fActive = active;
-		}
-
-		public String getExpr() {
-			return fExpr;
-		}
-
-		public void setExpr(String expr) {
-			fExpr = expr;
 		}
 
 		@Override

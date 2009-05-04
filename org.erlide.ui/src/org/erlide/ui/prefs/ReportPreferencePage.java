@@ -53,7 +53,6 @@ public class ReportPreferencePage extends PreferencePage implements
 
 	private Label responseLabel;
 	Button attachTechnicalDataButton;
-	private Label label;
 	private Label lblDescription;
 
 	@Override

@@ -32,6 +32,7 @@ public class DuplicateCodeInputDialog extends Dialog {
 
 	private Text errorMessageText;
 
+	@SuppressWarnings("unused")
 	private String errorMessage;
 
 	public DuplicateCodeInputDialog(Shell parentShell, String dialogTitle) {

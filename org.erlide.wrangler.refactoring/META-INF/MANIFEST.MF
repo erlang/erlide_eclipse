@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
  org.erlide.jinterface,
  org.erlide.core
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.wrangler.refactoring;uses:="org.osgi.framework,org.eclipse.ui.plugin",
+Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",
  org.erlide.wrangler.refactoring.core;
   uses:="com.ericsson.otp.erlang,
    org.eclipse.jface.viewers,
@@ -46,8 +46,8 @@ Export-Package: org.erlide.wrangler.refactoring;uses:="org.osgi.framework,org.ec
    org.eclipse.swt.layout,
    org.eclipse.swt.widgets,
    org.eclipse.ui",
- org.erlide.wrangler.refactoring.util;uses:="org.incava.util.diff",
- org.incava.util.diff
+ org.erlide.wrangler.refactoring.util;x-internal:=true;uses:="org.incava.util.diff",
+ org.incava.util.diff;x-internal:=true
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

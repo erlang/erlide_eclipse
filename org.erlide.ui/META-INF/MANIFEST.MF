@@ -7,9 +7,9 @@ Bundle-ClassPath: erlide-ui.jar
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: com.bdaum.overlayPages,
- com.novocode.naf.swt.custom,
- com.swtdesigner,
+Export-Package: com.bdaum.overlayPages;x-internal:=true,
+ com.novocode.naf.swt.custom;x-internal:=true,
+ com.swtdesigner;x-internal:=true,
  erlang,
  org.erlide.debug.ui.actions,
  org.erlide.debug.ui.model;
@@ -21,7 +21,7 @@ Export-Package: com.bdaum.overlayPages,
  org.erlide.debug.ui.properties,
  org.erlide.debug.ui.utils,
  org.erlide.debug.ui.views,
- org.erlide.ui;
+ org.erlide.ui;x-internal:=true;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.ui.navigator,

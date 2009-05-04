@@ -397,12 +397,28 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						erlangProcess.setStackFrames(module, line,
 								erlStackFrames, bs);
 					}
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO redundant? we have this in int, status too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
+																			// redundant?
+																			// we
+																			// have
+																			// this
+																			// in
+																			// int,
+																			// status
+																			// too
 				}
 			} else {
 				if (what == META_EXIT_AT) {
 					erlangProcess.removeStackFrames();
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO redundant? we have this in int, status too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
+																			// redundant?
+																			// we
+																			// have
+																			// this
+																			// in
+																			// int,
+																			// status
+																			// too
 				}
 			}
 		}
@@ -520,6 +536,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private void removeErlangProcess(final OtpErlangPid pid) {
 		final ErlangProcess p = getErlangProcess(pid);
 		if (p != null) {

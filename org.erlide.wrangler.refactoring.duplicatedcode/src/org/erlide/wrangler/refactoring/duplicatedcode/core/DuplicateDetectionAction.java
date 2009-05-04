@@ -1,7 +1,6 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
-import java.rmi.activation.Activator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -9,7 +8,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
-import org.erlide.wrangler.refactoring.util.EditorUtil;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -25,11 +23,13 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			CoreException, IOException {
 		String functionName;
 		OtpErlangObject result;
-		
-		//FIXME: add parameter file
-		Path pluginPath = org.erlide.wrangler.refactoring.Activator.getPluginPath();
-		String suffixPath = pluginPath.append("wrangler").append("bin").toOSString();
-		
+
+		// FIXME: add parameter file
+		Path pluginPath = org.erlide.wrangler.refactoring.Activator
+				.getPluginPath();
+		String suffixPath = pluginPath.append("wrangler").append("bin")
+				.toOSString();
+
 		if (onlyInfile) {
 			functionName = "duplicated_code_in_buffer_eclipse";
 			result = backend.call("wrangler", functionName, "siiis", parameter

@@ -11,8 +11,8 @@ Require-Bundle: org.eclipse.pde.ui,
  org.erlide.core,
  org.eclipse.jdt.launching,
  org.eclipse.jface
-Export-Package: org.erlide.selfhost.core,
- org.erlide.selfhost.ui
+Export-Package: org.erlide.selfhost.core;x-internal:=true,
+ org.erlide.selfhost.ui;x-internal:=true
 Bundle-Vendor: erlide.org
 Bundle-ClassPath: selfhost.jar
  

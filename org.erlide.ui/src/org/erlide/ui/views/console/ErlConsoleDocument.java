@@ -16,6 +16,7 @@ public class ErlConsoleDocument extends Document {
 		super();
 		this.model = model;
 
+		@SuppressWarnings("unused")
 		IDocumentPartitioner partitioner = new FastPartitioner(createScanner(),
 				new String[] { "header", "prompt", "input", "comment", "text" });
 		// partitioner.connect(document);
