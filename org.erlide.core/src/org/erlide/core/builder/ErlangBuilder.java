@@ -9,9 +9,7 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.net.bsd.RLoginClient;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -36,9 +33,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.IMarkerGenerator;
@@ -52,7 +47,6 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.util.ErlangIncludeFile;
-import org.erlide.core.util.RemoteConnector;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -1017,119 +1011,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	private void initializeBuilder() throws CoreException, BackendException {
 		workspaceRoot = currentProject.getWorkspace().getRoot();
 	}
-
-	@SuppressWarnings("unchecked")
-	protected IProject[] build_remote(final int kind, final Map args)
-			throws CoreException {
-		try {
-			// args.put("server", "gsnbuild1");
-			// args.put("remoteuser", "qvladum");
-			// args.put("password", "");
-
-			ErlLogger.debug("## BUILDING!!! " + args.toString());
-
-			final String server = (String) args.get("server");
-			final String localuser = (String) args.get("remoteuser");
-			final String remoteuser = (String) args.get("remoteuser");
-			final String terminal = "network";
-
-			ErlLogger
-					.debug("## " + server + "." + localuser + "." + remoteuser);
-
-			if (server == null || localuser == null || remoteuser == null) {
-				return null;
-				// throw new CoreException(new Status(IStatus.ERROR,
-				// ErlangPlugin.PLUGIN_ID,
-				// 1,
-				// "build failed: bad or no arguments", null));
-			}
-
-			RLoginClient client;
-
-			client = new RLoginClient();
-
-			try {
-				client.connect(server);
-			} catch (final IOException e) {
-				throw new CoreException(new Status(IStatus.ERROR,
-						ErlangPlugin.PLUGIN_ID, 1,
-						"build failed: Could not connect to server.", e));
-			}
-
-			try {
-				client.rlogin(localuser, remoteuser, terminal);
-			} catch (final IOException e) {
-				try {
-					client.disconnect();
-				} catch (final IOException f) {
-				}
-				throw new CoreException(new Status(IStatus.ERROR,
-						ErlangPlugin.PLUGIN_ID, 1,
-						"build failed: rlogin authentication failed.", e));
-			}
-
-			final String pass = args.get("password") + "\n";
-
-			final RemoteConnector rconn = new RemoteConnector();
-
-			final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-
-			rconn.connectReadWrite(client.getInputStream(), client
-					.getOutputStream(), null, out);
-
-			rconn.write(pass);
-			rconn.write("4\n");
-			rconn.write("ls\nls -l\ncleartool lsview | grep " + remoteuser
-					+ "\n");
-
-			rconn.write("exit\n");
-			rconn.waitDisconnect();
-
-			try {
-				out.close();
-			} catch (final IOException e1) {
-				// e1.printStackTrace();
-			}
-
-			ErlLogger.debug(out.toString());
-
-			try {
-				client.disconnect();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-		} finally {
-			notifier.done();
-		}
-		return null;
-	}
-
-	protected void clean_remote(final IProgressMonitor monitor)
-			throws CoreException {
-		super.clean(monitor);
-	}
-
-	// private void scheduleRefresh()
-	// {
-	// Job job = new Job("Refreshing resources...") {
-	//
-	// public IStatus run(final IProgressMonitor monitor)
-	// {
-	// IStatus result = Status.OK_STATUS;
-	// try
-	// {
-	// getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-	// } catch (CoreException cex)
-	// {
-	// String msg = "Problem during resource refresh after build.";
-	// ErlangPlugin.log(msg, cex);
-	// result = cex.getStatus();
-	// }
-	// return result;
-	// }
-	// };
-	// job.schedule();
-	// }
 
 	protected void createProblemFor(final IResource resource,
 			final IErlFunction erlElement, final String message,
