@@ -87,14 +87,14 @@ public class ErlangXref {
 					"aai", mod, fun, arity);
 			Bindings bind = ErlUtils.match("{ok, L}", r);
 			if (bind == null) {
-				return null;
+				return new FunctionRef[0];
 			}
 			OtpErlangList l = (OtpErlangList) bind.get("L");
 			List<FunctionRef> result = new ArrayList<FunctionRef>();
 			for (OtpErlangObject e : l.elements()) {
 				result.add(new FunctionRef(e));
 			}
-			return result.toArray(new FunctionRef[0]);
+			return result.toArray(new FunctionRef[result.size()]);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}

@@ -210,7 +210,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 
 			public void run(IProgressMonitor progressMonitor)
 					throws CoreException {
-				IProject[] projects = null;
+				IProject[] projects;
 				// projects = model.getJavaProjects();
 				IWorkspace root = ResourcesPlugin.getWorkspace();
 				projects = root.getRoot().getProjects();

@@ -194,17 +194,20 @@ public class ComparerTool {
 		ArrayList<Character> result = new ArrayList<Character>();
 		BufferedReader input = new BufferedReader(new FileReader(file));
 
-		char c[] = new char[1];
-		while (input.read(c) > 0) {
-			/*
-			 * char[] chars = line.toCharArray(); for (int i = 0; i <
-			 * chars.length; ++i) { result.add(chars[i]); } result.add('\n'); }
-			 * input.close(); if (result.size() != 0) {
-			 * result.remove(result.size() - 1);
-			 */
-			result.add(c[0]);
+		try {
+			char c[] = new char[1];
+			while (input.read(c) > 0) {
+				/*
+				 * char[] chars = line.toCharArray(); for (int i = 0; i <
+				 * chars.length; ++i) { result.add(chars[i]); }
+				 * result.add('\n'); } input.close(); if (result.size() != 0) {
+				 * result.remove(result.size() - 1);
+				 */
+				result.add(c[0]);
+			}
+		} finally {
+			input.close();
 		}
-
 		return result;
 	}
 

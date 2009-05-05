@@ -162,11 +162,6 @@ public class ErlModel extends Openable implements IErlModel {
 		return super.equals(o);
 	}
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
 	/**
 	 * @see IErlElement
 	 */

@@ -50,7 +50,7 @@ import erlang.ErlideDebug;
 public class ErlangDebugTarget extends ErlangDebugElement implements
 		IDebugTarget, IErlangDebugNode {
 
-	public class TraceChangedEventData {
+	public static class TraceChangedEventData {
 		public static final int ADDED = 1;
 		private final int what;
 		private final OtpErlangObject[] objects;

@@ -885,20 +885,6 @@ public class Util {
 		return true;
 	}
 
-	/*
-	 * Add a log entry
-	 */
-	public static void log(Throwable e, final String message) {
-		Throwable nestedException;
-		if (e instanceof ErlModelException
-				&& (nestedException = ((ErlModelException) e).getException()) != null) {
-			e = nestedException;
-		}
-		// IStatus status = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-		// IStatus.ERROR, message, e);
-		// ErlangCore.getPlugin().getLog().log(status);
-	}
-
 	// /**
 	// * Normalizes the cariage returns in the given text. They are all changed
 	// to

@@ -93,7 +93,8 @@ public class FileResourceChanges {
 	 * @throws IOException
 	 *             if the given path could not be found on the workspace
 	 */
-	private IFile findEclipseRepresentation(String anOldPath) throws IOException {
+	private IFile findEclipseRepresentation(String anOldPath)
+			throws IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		Path p = new Path(anOldPath);
@@ -115,12 +116,12 @@ public class FileResourceChanges {
 	}
 
 	/**
-	 * True if the file name is changed during the refacrtoring.
+	 * True if the file name is changed during the refactoring.
 	 * 
 	 * @return
 	 */
 	public boolean isNameChanged() {
-		return newPath != oldPath;
+		return !newPath.equals(oldPath);
 	}
 
 	/**
