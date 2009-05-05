@@ -400,10 +400,8 @@ public class ErlTextHover implements ITextHover,
 						if (t.elementAt(4) instanceof OtpErlangString) {
 							s4 = (OtpErlangString) t.elementAt(4);
 						} else {
-							ErlLogger
-									.warn(
-											"unrecognized value: %s, expected a string",
-											t);
+							String msg = "unrecognized value: %s, expected a string instead of %s";
+							ErlLogger.warn(msg, t, t.elementAt(4));
 							return null;
 						}
 						final String path = Util.stringValue(s4);
