@@ -514,7 +514,7 @@ public class ErlTextHover implements ITextHover,
 
 			if (current != null && current.getPrevious() != null) {
 				final BrowserInput previous = current.getPrevious();
-				setToolTipText(String.format("Go back to {0}", previous
+				setToolTipText(String.format("Go back to %s", previous
 						.getInputName()));
 				setEnabled(true);
 			} else {
@@ -558,8 +558,8 @@ public class ErlTextHover implements ITextHover,
 					.getInput();
 
 			if (current != null && current.getNext() != null) {
-				setToolTipText(String.format("Go to next {0}", current
-						.getNext().getInputName()));
+				setToolTipText(String.format("Go to next %s", current.getNext()
+						.getInputName()));
 				setEnabled(true);
 			} else {
 				setToolTipText("");

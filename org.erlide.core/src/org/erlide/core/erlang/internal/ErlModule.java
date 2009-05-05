@@ -166,12 +166,10 @@ public class ErlModule extends Openable implements IErlModule {
 		return getModel().innermostThat(this, new IErlangFirstThat() {
 			public boolean firstThat(final IErlElement e) {
 				if (e instanceof ISourceReference) {
-					if (e instanceof ISourceReference) {
-						final ISourceReference sr = (ISourceReference) e;
-						if (sr.getLineStart() <= lineNumber
-								&& sr.getLineEnd() >= lineNumber) {
-							return true;
-						}
+					final ISourceReference sr = (ISourceReference) e;
+					if (sr.getLineStart() <= lineNumber
+							&& sr.getLineEnd() >= lineNumber) {
+						return true;
 					}
 				}
 				return false;

@@ -39,7 +39,6 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 
 		@Override
 		public int hashCode() {
-
 			return 42;
 		}
 	};
@@ -129,14 +128,16 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 	}
 
 	/*
-	 * @see IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
+	 * @see
+	 * IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
 	 */
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] { '$' };
 	}
 
 	/*
-	 * @see IContentAssistProcessor#getContextInformationAutoActivationCharacters()
+	 * @see
+	 * IContentAssistProcessor#getContextInformationAutoActivationCharacters()
 	 */
 	public char[] getContextInformationAutoActivationCharacters() {
 		return null;

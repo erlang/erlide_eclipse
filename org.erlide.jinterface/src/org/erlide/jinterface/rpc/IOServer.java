@@ -78,7 +78,7 @@ public class IOServer implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} while (!done || Thread.interrupted());
+		} while (!done || !Thread.interrupted());
 	}
 
 	private final OtpErlangObject error = JInterfaceFactory.mkTuple(

@@ -26,7 +26,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
-public class RuntimeInfo implements Cloneable {
+public class RuntimeInfo {
 	static final String CODE_PATH = "codePath";
 	static final String HOME_DIR = "homeDir";
 	static final String ARGS = "args";

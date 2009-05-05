@@ -132,7 +132,7 @@ public class EdocView extends AbstractInfoView {
 			// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 			setEnabled(!fIsUsingBrowserWidget);
 
-			setText("Select All");
+			this.setText("Select All");
 			setToolTipText("Select All");
 			setDescription("Select All");
 
