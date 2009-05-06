@@ -34,7 +34,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideBackend;
 import erlang.ErlideNoparse;
 
-public class ErlParser {
+public final class ErlParser {
 
 	private ErlParser() {
 

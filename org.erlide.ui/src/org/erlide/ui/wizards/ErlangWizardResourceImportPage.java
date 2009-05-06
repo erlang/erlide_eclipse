@@ -67,9 +67,9 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * destination.
 	 * 
 	 * @param name
-	 * 		the name of the page
+	 *            the name of the page
 	 * @param selection
-	 * 		the current resource selection
+	 *            the current resource selection
 	 */
 	protected ErlangWizardResourceImportPage(String name,
 			IStructuredSelection selection) {
@@ -191,7 +191,7 @@ public abstract class ErlangWizardResourceImportPage extends
 		// Just create with a dummy root.
 		selectionGroup = new ResourceTreeAndListGroup(
 				parent,
-				new FileSystemElement("Dummy", null, true),//$NON-NLS-1$
+				new FileSystemElement("Dummy", null, true), //$NON-NLS-1$
 				getFolderProvider(), new WorkbenchLabelProvider(),
 				getFileProvider(), new WorkbenchLabelProvider(), SWT.NONE,
 				DialogUtil.inRegularFontMode(parent));
@@ -216,7 +216,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * </p>
 	 * 
 	 * @param parent
-	 * 		the parent control
+	 *            the parent control
 	 */
 	protected abstract void createSourceGroup(Composite parent);
 
@@ -237,7 +237,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * </p>
 	 * 
 	 * @return the full path of the container resource specified in the
-	 * 	container name entry field, or <code>null</code>
+	 *         container name entry field, or <code>null</code>
 	 */
 	protected IPath getContainerFullPath() {
 		// IWorkspace workspace = IDEWorkbenchPlugin.getPluginWorkspace();
@@ -276,7 +276,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * This is the primary resource selection facility accessor for subclasses.
 	 * 
 	 * @return a list of resources currently selected for export (element type:
-	 * 	<code>IResource</code>)
+	 *         <code>IResource</code>)
 	 */
 	@SuppressWarnings("unchecked")
 	protected java.util.List getSelectedResources() {
@@ -299,7 +299,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * workbench.
 	 * 
 	 * @return the container resource specified in the container name entry
-	 * 	field, or <code>null</code>
+	 *         field, or <code>null</code>
 	 */
 	protected IContainer getSpecifiedContainer() {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -346,7 +346,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * controls on this page. Subclasses may extend.
 	 * 
 	 * @param event
-	 * 		Event
+	 *            Event
 	 */
 	// public void handleEvent(Event event) {
 	// Widget source = event.widget;
@@ -391,7 +391,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * Set all of the selections in the selection group to value
 	 * 
 	 * @param value
-	 * 		boolean
+	 *            boolean
 	 */
 	protected void setAllSelections(boolean value) {
 		selectionGroup.setAllSelections(value);
@@ -402,7 +402,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * future use if this page's controls do not exist yet.
 	 * 
 	 * @param value
-	 * 		String
+	 *            String
 	 */
 	public void setContainerFieldValue(String value) {
 		if (value != null) {
@@ -421,7 +421,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * Update the selections with those in map .
 	 * 
 	 * @param map
-	 * 		Map - key tree elements, values Lists of list elements
+	 *            Map - key tree elements, values Lists of list elements
 	 */
 	protected void updateSelections(final Map<Object, List<Object>> map) {
 
@@ -519,9 +519,9 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * returned.
 	 * 
 	 * @param sourcePath
-	 * 		the path being checked
+	 *            the path being checked
 	 * @return <code>true</code> if the source location conflicts with the
-	 * 	destination resource, <code>false</code> if not
+	 *         destination resource, <code>false</code> if not
 	 */
 	protected boolean sourceConflictsWithDestination(IPath sourcePath) {
 		return false;

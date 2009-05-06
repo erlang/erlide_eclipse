@@ -10,7 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-public class ErlangCode {
+public final class ErlangCode {
 
 	private ErlangCode() {
 	}

@@ -78,7 +78,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	@Override
-	synchronized protected boolean buildStructure(final IProgressMonitor pm,
+	protected synchronized boolean buildStructure(final IProgressMonitor pm,
 			IResource underlyingResource) throws ErlModelException {
 		logBuildStructure(underlyingResource);
 		final String path = getFilePath();

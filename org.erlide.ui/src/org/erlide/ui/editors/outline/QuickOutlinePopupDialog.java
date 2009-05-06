@@ -65,27 +65,17 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		IInformationControlExtension2, DisposeListener {
 
 	TreeViewer fTreeViewer;
-
 	private final IOutlineContentCreator fOutlineContentCreator;
-
 	private final IOutlineSelectionHandler fOutlineSelectionHandler;
-
 	private Text fFilterText;
-
 	private StringMatcher fStringMatcher;
-
 	private QuickOutlineNamePatternFilter fNamePatternFilter;
-
 	private SortAction fSortAction;
-
 	private ITreeContentProvider fTreeContentProvider;
-
 	private ILabelProvider fTreeLabelProvider;
-
 	private final ErlangEditor fEditor;
 
 	// private ViewerComparator fTreeViewerComparator;
-	//
 	// private ViewerComparator fTreeViewerDefaultComparator;
 
 	public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,

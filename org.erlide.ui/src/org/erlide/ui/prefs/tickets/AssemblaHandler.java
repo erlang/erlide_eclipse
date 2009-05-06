@@ -22,16 +22,16 @@ public class AssemblaHandler extends TicketHandlerImpl {
 	// private static final String LOGINURL =
 	// "https://www.assembla.com/users/login";
 
-	private static byte[] userHash = { (byte) 248, (byte) 254, (byte) 185,
-			(byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147, (byte) 211,
-			(byte) 177, 10, 93, (byte) 209, (byte) 151, 59 };
+	private static final byte[] userHash = { (byte) 248, (byte) 254,
+			(byte) 185, (byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147,
+			(byte) 211, (byte) 177, 10, 93, (byte) 209, (byte) 151, 59 };
 
 	private boolean checkUser(String user) {
 		try {
 			MessageDigest algorithm = MessageDigest.getInstance("MD5");
 			algorithm.reset();
 			algorithm.update(user.getBytes());
-			byte messageDigest[] = algorithm.digest();
+			byte[] messageDigest = algorithm.digest();
 			return Arrays.equals(messageDigest, userHash);
 		} catch (NoSuchAlgorithmException nsae) {
 		}

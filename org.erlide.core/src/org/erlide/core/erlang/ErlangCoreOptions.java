@@ -2,7 +2,7 @@ package org.erlide.core.erlang;
 
 import org.erlide.core.ErlangPlugin;
 
-public class ErlangCoreOptions {
+public final class ErlangCoreOptions {
 	// *************** Possible IDs for configurable options.
 	// ********************
 

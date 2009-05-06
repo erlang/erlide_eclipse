@@ -38,7 +38,7 @@ public class ErlScanner implements IErlScanner {
 				erlidePath);
 	}
 
-	static public String createScannerModuleName(final IErlModule module) {
+	public static String createScannerModuleName(final IErlModule module) {
 		final IResource res = module.getResource();
 		String resName;
 		if (res != null) {

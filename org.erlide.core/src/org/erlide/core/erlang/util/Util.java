@@ -47,7 +47,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * Provides convenient utility methods to other types in this package.
  */
-public class Util {
+public final class Util {
 
 	public interface Comparable {
 
@@ -1761,8 +1761,8 @@ public class Util {
 			}
 			// resize contents if necessary
 			if (contentsLength < contents.length) {
-				System.arraycopy(contents, start,
-						contents = new char[contentsLength], 0, contentsLength);
+				contents = new char[contentsLength];
+				System.arraycopy(contents, start, contents, 0, contentsLength);
 			}
 		} else {
 			contents = new char[length];
@@ -1788,8 +1788,8 @@ public class Util {
 			// one byte for each
 			// character
 			if (len != length) {
-				System.arraycopy(contents, start, (contents = new char[len]),
-						0, len);
+				contents = new char[len];
+				System.arraycopy(contents, start, contents, 0, len);
 			}
 		}
 

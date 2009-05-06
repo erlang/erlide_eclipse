@@ -20,7 +20,7 @@ package org.erlide.core.erlang;
  * @see IErlModelStatus
  * @see org.eclipse.core.runtime.IStatus#getCode()
  */
-public class ErlModelStatusConstants {
+public final class ErlModelStatusConstants {
 
 	/**
 	 * Status constant indicating that a classpath entry was invalid

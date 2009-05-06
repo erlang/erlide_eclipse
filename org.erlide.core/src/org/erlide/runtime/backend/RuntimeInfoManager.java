@@ -29,7 +29,7 @@ import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-public class RuntimeInfoManager implements IPreferenceChangeListener {
+public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	private RuntimeInfo erlideRuntime;
 
@@ -43,7 +43,7 @@ public class RuntimeInfoManager implements IPreferenceChangeListener {
 		public static final RuntimeInfoManager instance = new RuntimeInfoManager();
 	}
 
-	public synchronized static RuntimeInfoManager getDefault() {
+	public static synchronized RuntimeInfoManager getDefault() {
 		return LazyRuntimeInfoManagerHolder.instance;
 	}
 

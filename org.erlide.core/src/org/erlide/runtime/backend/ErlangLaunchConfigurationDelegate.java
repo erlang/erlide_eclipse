@@ -236,7 +236,7 @@ public class ErlangLaunchConfigurationDelegate extends
 	}
 
 	private void distributeDebuggerCode(final Backend backend) {
-		final String debuggerModules[] = { "erlide_dbg_debugged",
+		final String[] debuggerModules = { "erlide_dbg_debugged",
 				"erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
 				"erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
 		final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(

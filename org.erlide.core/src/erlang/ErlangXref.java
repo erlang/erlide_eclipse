@@ -13,7 +13,7 @@ import org.erlide.runtime.backend.Backend;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlangXref {
+public final class ErlangXref {
 
 	private ErlangXref() {
 	}

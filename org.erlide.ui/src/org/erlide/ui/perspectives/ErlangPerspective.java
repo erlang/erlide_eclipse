@@ -76,8 +76,10 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		bottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 		bottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 
-		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float) 0.7,
-				editorArea);
+		final float d = 0.7f;
+		layout
+				.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, d,
+						editorArea);
 
 	}
 

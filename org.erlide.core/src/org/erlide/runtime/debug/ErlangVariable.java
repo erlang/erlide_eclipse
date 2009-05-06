@@ -108,8 +108,8 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 		return true;
 	}
 
-	public boolean verifyValue(final IValue _value) throws DebugException {
-		return verifyValue(_value.toString());
+	public boolean verifyValue(final IValue aValue) throws DebugException {
+		return verifyValue(aValue.toString());
 	}
 
 }

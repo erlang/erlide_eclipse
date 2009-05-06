@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.osgi.framework.Bundle;
 
-public class CoreUtility {
+public final class CoreUtility {
 
 	private CoreUtility() {
 	}

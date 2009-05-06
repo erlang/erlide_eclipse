@@ -87,7 +87,7 @@ public class LiveExpressionsView extends ViewPart implements
 	Action fRemoveAction;
 	Backend fBackend;
 
-	static private class LiveExpr {
+	private static class LiveExpr {
 		String fExpr;
 
 		public LiveExpr(String s) {

@@ -171,7 +171,7 @@ public final class BackendManager implements IEpmdListener {
 		return b;
 	}
 
-	synchronized public Set<Backend> getExecutionBackends(final IProject project) {
+	public synchronized Set<Backend> getExecutionBackends(final IProject project) {
 		Set<Backend> bs = fExecutionBackends.get(project);
 		if (bs == null) {
 			return Collections.emptySet();
@@ -379,7 +379,7 @@ public final class BackendManager implements IEpmdListener {
 		return host;
 	}
 
-	synchronized public void updateNodeStatus(String host,
+	public synchronized void updateNodeStatus(final String host,
 			final List<String> started, final List<String> stopped) {
 		for (final String b : started) {
 			String name = b + "@" + host;
@@ -402,7 +402,8 @@ public final class BackendManager implements IEpmdListener {
 
 	}
 
-	synchronized public void addExecution(IProject project, Backend b) {
+	public synchronized void addExecution(final IProject project,
+			final Backend b) {
 		Set<Backend> list = fExecutionBackends.get(project);
 		if (list == null) {
 			list = new HashSet<Backend>();
@@ -411,7 +412,7 @@ public final class BackendManager implements IEpmdListener {
 		list.add(b);
 	}
 
-	synchronized public void removeExecution(IProject project, Backend b) {
+	public synchronized void removeExecution(IProject project, Backend b) {
 		Set<Backend> list = fExecutionBackends.get(project);
 		if (list == null) {
 			list = new HashSet<Backend>();

@@ -99,7 +99,7 @@ public class ErlPatternMatchListenerDelegate implements
 		if (r != null) {
 			return r;
 		}
-		final IResource members[] = container.members();
+		final IResource[] members = container.members();
 		for (final IResource element : members) {
 			r = element;
 			if (r instanceof IContainer) {

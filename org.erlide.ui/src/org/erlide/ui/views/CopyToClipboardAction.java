@@ -25,7 +25,7 @@ import org.erlide.ui.actions.SelectionDispatchAction;
 
 class CopyToClipboardAction extends SelectionDispatchAction {
 
-	private final static int MAX_REPEAT_COUNT = 10;
+	private static final int MAX_REPEAT_COUNT = 10;
 
 	private Clipboard fClipboard;
 
@@ -71,8 +71,8 @@ class CopyToClipboardAction extends SelectionDispatchAction {
 			fClipboard.setContents(new String[] { selection.getText() },
 					new Transfer[] { TextTransfer.getInstance() });
 		} catch (final SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD ||
-					repeatCount >= MAX_REPEAT_COUNT) {
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD
+					|| repeatCount >= MAX_REPEAT_COUNT) {
 				throw e;
 			}
 

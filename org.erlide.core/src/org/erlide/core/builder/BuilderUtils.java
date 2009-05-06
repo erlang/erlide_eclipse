@@ -13,7 +13,7 @@ package org.erlide.core.builder;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.ErlangPlugin;
 
-public class BuilderUtils {
+public final class BuilderUtils {
 	private BuilderUtils() {
 	}
 

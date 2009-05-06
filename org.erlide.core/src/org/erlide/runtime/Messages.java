@@ -17,7 +17,7 @@ import java.text.MessageFormat;
  * 
  * @since 3.1
  */
-public class Messages {
+public final class Messages {
 
 	public static String format(String message, Object object) {
 		return MessageFormat.format(message, new Object[] { object });

@@ -722,7 +722,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return null;
 	}
 
-	static private boolean isErlangIdentifierChar(final char char1) {
+	private static boolean isErlangIdentifierChar(final char char1) {
 		return Character.isJavaIdentifierPart(char1);
 	}
 

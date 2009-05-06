@@ -98,9 +98,7 @@ public class ErlModel extends Openable implements IErlModel {
 
 	@Override
 	protected boolean buildStructure(final IProgressMonitor pm,
-			final IResource underlyingResource)
-	// throws ErlModelException
-	{
+			final IResource underlyingResource) {
 		logBuildStructure(underlyingResource);
 		final IErlModelManager modelManager = ErlangCore.getModelManager();
 		// determine my children
@@ -594,7 +592,7 @@ public class ErlModel extends Openable implements IErlModel {
 						}
 					}
 					if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
-						; // FIXME hur ska vi g�ra detta nu d�...
+						// FIXME how do we do that?
 					}
 				}
 			}

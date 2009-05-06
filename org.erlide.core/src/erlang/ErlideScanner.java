@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner {
-	private final static String ERLIDE_SCANNER = "erlide_scanner";
+	private static final String ERLIDE_SCANNER = "erlide_scanner";
 
 	public static void initialScan(final String module,
 			final String moduleFileName, final String initialText,

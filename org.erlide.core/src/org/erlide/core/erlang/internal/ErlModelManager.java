@@ -69,7 +69,7 @@ import org.erlide.runtime.ErlLogger;
  * The single instance of <code>ErlModelManager</code> is available from the
  * static method <code>ErlModelManager.getErlangModelManager()</code>.
  */
-public class ErlModelManager implements IErlModelManager {
+public final class ErlModelManager implements IErlModelManager {
 
 	/**
 	 * Unique handle onto the ErlModel

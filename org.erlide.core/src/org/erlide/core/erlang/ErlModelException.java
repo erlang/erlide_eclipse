@@ -37,9 +37,9 @@ public class ErlModelException extends CoreException {
 
 	/**
 	 * Creates a Erlang model exception that wrappers the given
-	 * <code>Throwable</code>. The exception contains a Erlang-specific
-	 * status object with severity <code>IStatus.ERROR</code> and the given
-	 * status code.
+	 * <code>Throwable</code>. The exception contains a Erlang-specific status
+	 * object with severity <code>IStatus.ERROR</code> and the given status
+	 * code.
 	 * 
 	 * @param e
 	 *            the <code>Throwable</code>
@@ -54,9 +54,10 @@ public class ErlModelException extends CoreException {
 	}
 
 	/**
-	 * Creates a Erlang model exception for the given <code>CoreException</code>.
-	 * Equivalent to
-	 * <code>ErlModelException(exception,IErlModelStatusConstants.CORE_EXCEPTION</code>.
+	 * Creates a Erlang model exception for the given <code>CoreException</code>
+	 * . Equivalent to
+	 * <code>ErlModelException(exception,IErlModelStatusConstants.CORE_EXCEPTION</code>
+	 * .
 	 * 
 	 * @param exception
 	 *            the <code>CoreException</code>
@@ -92,8 +93,8 @@ public class ErlModelException extends CoreException {
 	/**
 	 * Returns the underlying <code>Throwable</code> that caused the failure.
 	 * 
-	 * @return the wrappered <code>Throwable</code>, or <code>null</code>
-	 *         if the direct case of the failure was at the Erlang model layer
+	 * @return the wrappered <code>Throwable</code>, or <code>null</code> if the
+	 *         direct case of the failure was at the Erlang model layer
 	 */
 	public Throwable getException() {
 		if (nestedCoreException == null) {
@@ -119,11 +120,11 @@ public class ErlModelException extends CoreException {
 	/**
 	 * Returns whether this exception indicates that a Erlang model element does
 	 * not exist. Such exceptions have a status with a code of
-	 * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is
-	 * a convenience method.
+	 * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is a
+	 * convenience method.
 	 * 
-	 * @return <code>true</code> if this exception indicates that a Erlang
-	 *         model element does not exist
+	 * @return <code>true</code> if this exception indicates that a Erlang model
+	 *         element does not exist
 	 * @see IErlModelStatus#isDoesNotExist()
 	 * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
 	 */

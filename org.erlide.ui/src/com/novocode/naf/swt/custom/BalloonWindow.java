@@ -57,32 +57,22 @@ import org.eclipse.swt.widgets.Widget;
 public class BalloonWindow {
 
 	final Shell shell;
-
 	private final Composite contents;
-
 	private Label titleLabel;
-
 	private Canvas titleImageLabel;
-
 	private final int style;
-
 	private int preferredAnchor = SWT.BOTTOM | SWT.RIGHT;
-
 	private boolean autoAnchor = true;
-
 	private int locX = Integer.MIN_VALUE, locY = Integer.MIN_VALUE;
-
-	private int marginLeft = 12, marginRight = 12, marginTop = 5,
-			marginBottom = 10;
-
-	private int titleSpacing = 3, titleWidgetSpacing = 8;
-
+	private int marginLeft = 12;
+	private int marginRight = 12;
+	private int marginTop = 5;
+	private int marginBottom = 10;
+	private int titleSpacing = 3;
+	private int titleWidgetSpacing = 8;
 	private ToolBar systemControlsBar;
-
 	final ArrayList<Control> selectionControls = new ArrayList<Control>();
-
 	boolean addedGlobalListener;
-
 	final ArrayList<Listener> selectionListeners = new ArrayList<Listener>();
 
 	public BalloonWindow(Shell parent, int style) {
@@ -354,9 +344,7 @@ public class BalloonWindow {
 						+ screen.width) {
 					anchor = anchor - SWT.LEFT + SWT.RIGHT;
 				}
-			} else
-			// RIGHT
-			{
+			} else {
 				if (locX - contentsSize.x - marginLeft - marginRight + 16 < screen.x) {
 					anchor = anchor - SWT.RIGHT + SWT.LEFT;
 				}
@@ -366,9 +354,7 @@ public class BalloonWindow {
 						+ screen.height) {
 					anchor = anchor - SWT.TOP + SWT.BOTTOM;
 				}
-			} else
-			// BOTTOM
-			{
+			} else {
 				if (locY - contentsSize.y - 20 - marginTop - marginBottom < screen.y) {
 					anchor = anchor - SWT.BOTTOM + SWT.TOP;
 				}

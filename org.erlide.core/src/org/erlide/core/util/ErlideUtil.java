@@ -160,7 +160,7 @@ public class ErlideUtil {
 		try {
 			final FileInputStream s = (FileInputStream) beamPath.openStream();
 			final int sz = (int) s.getChannel().size();
-			final byte buf[] = new byte[sz];
+			final byte[] buf = new byte[sz];
 			try {
 				s.read(buf);
 				return new OtpErlangBinary(buf);

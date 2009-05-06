@@ -132,7 +132,6 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 				try {
 					line = ((OtpErlangLong) data.elementAt(0)).intValue();
 				} catch (final OtpErlangRangeException e) {
-					;
 				}
 			}
 			int sev = IMarker.SEVERITY_INFO;
@@ -149,7 +148,6 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 					break;
 				}
 			} catch (final OtpErlangRangeException e) {
-				;
 			}
 
 			mg.addMarker(res, resource, msg, line, sev, "");

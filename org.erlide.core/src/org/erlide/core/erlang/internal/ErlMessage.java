@@ -19,8 +19,7 @@ public class ErlMessage extends ErlMember implements IErlMessage {
 	private final String message;
 	private final MessageKind fKind;
 
-	protected ErlMessage(IErlElement parent, MessageKind kind, String name)
-			throws IllegalArgumentException {
+	protected ErlMessage(IErlElement parent, MessageKind kind, String name) {
 		super(parent, name);
 		fKind = kind;
 		message = name;

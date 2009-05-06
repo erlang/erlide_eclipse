@@ -123,10 +123,10 @@ public class ErlLogger {
 	public static class ErlSimpleFormatter extends Formatter {
 
 		Date dat = new Date();
-		private final static String format = "{0,time,HH:mm:ss,SSS}";
+		private static final String format = "{0,time,HH:mm:ss,SSS}";
 		private MessageFormat formatter;
 
-		private Object args[] = new Object[1];
+		private Object[] args = new Object[1];
 
 		private String lineSeparator = System.getProperty("line.separator");
 
